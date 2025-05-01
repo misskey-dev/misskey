@@ -21,14 +21,19 @@ type AccountWithToken = Misskey.entities.MeDetailed & { token: string };
 
 export async function getAccounts(): Promise<{
 	host: string;
-	user: Misskey.entities.User;
+	id: Misskey.entities.User['id'];
+	username: Misskey.entities.User['username'];
+	user?: Misskey.entities.User | null;
 	token: string | null;
 }[]> {
 	const tokens = store.s.accountTokens;
+	const accountInfos = store.s.accountInfos;
 	const accounts = prefer.s.accounts;
 	return accounts.map(([host, user]) => ({
 		host,
-		user,
+		id: user.id,
+		username: user.username,
+		user: accountInfos[host + '/' + user.id],
 		token: tokens[host + '/' + user.id] ?? null,
 	}));
 }
@@ -37,8 +42,8 @@ async function addAccount(host: string, user: Misskey.entities.User, token: Acco
 	if (!prefer.s.accounts.some(x => x[0] === host && x[1].id === user.id)) {
 		// 両方のストレージにトークンを保存
 		store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + user.id]: token });
-		prefer.commit('accountTokens', { ...prefer.s.accountTokens, [host + '/' + user.id]: token });
-		prefer.commit('accounts', [...prefer.s.accounts, [host, user]]);
+		store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + user.id]: user });
+		prefer.commit('accounts', [...prefer.s.accounts, [host, { id: user.id, username: user.username }]]);
 	}
 }
 
@@ -46,6 +51,10 @@ export async function removeAccount(host: string, id: AccountWithToken['id']) {
 	const tokens = JSON.parse(JSON.stringify(store.s.accountTokens));
 	delete tokens[host + '/' + id];
 	store.set('accountTokens', tokens);
+	const accountInfos = JSON.parse(JSON.stringify(store.s.accountInfos));
+	delete accountInfos[host + '/' + id];
+	store.set('accountInfos', accountInfos);
+
 	prefer.commit('accounts', prefer.s.accounts.filter(x => x[0] !== host || x[1].id !== id));
 }
 
@@ -123,14 +132,7 @@ export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
-	prefer.commit('accounts', prefer.s.accounts.map(([host, user]) => {
-		// TODO: $iのホストも比較したいけど通常null
-		if (user.id === $i.id) {
-			return [host, $i];
-		} else {
-			return [host, user];
-		}
-	}));
+	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
 	$i.token = token;
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
@@ -140,17 +142,9 @@ export function updateCurrentAccountPartial(accountData: Partial<Misskey.entitie
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
-	prefer.commit('accounts', prefer.s.accounts.map(([host, user]) => {
-		// TODO: $iのホストも比較したいけど通常null
-		if (user.id === $i.id) {
-			const newUser = JSON.parse(JSON.stringify($i));
-			for (const [key, value] of Object.entries(accountData)) {
-				newUser[key] = value;
-			}
-			return [host, newUser];
-		}
-		return [host, user];
-	}));
+
+	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
+
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
 
@@ -230,25 +224,42 @@ export async function openAccountMenu(opts: {
 }, ev: MouseEvent) {
 	if (!$i) return;
 
-	function createItem(host: string, account: Misskey.entities.User): MenuItem {
-		return {
-			type: 'user' as const,
-			user: account,
-			active: opts.active != null ? opts.active === account.id : false,
-			action: async () => {
-				if (opts.onChoose) {
-					opts.onChoose(account);
-				} else {
-					switchAccount(host, account.id);
-				}
-			},
-		};
+	function createItem(host: string, id: Misskey.entities.User['id'], username: Misskey.entities.User['username'], account: Misskey.entities.User | null | undefined, token: string): MenuItem {
+		if (account) {
+			return {
+				type: 'user' as const,
+				user: account,
+				active: opts.active != null ? opts.active === id : false,
+				action: async () => {
+					if (opts.onChoose) {
+						opts.onChoose(account);
+					} else {
+						switchAccount(host, id);
+					}
+				},
+			};
+		} else {
+			return {
+				type: 'button' as const,
+				text: username,
+				active: opts.active != null ? opts.active === id : false,
+				action: async () => {
+					if (opts.onChoose) {
+						fetchAccount(token, id).then(account => {
+							opts.onChoose(account);
+						});
+					} else {
+						switchAccount(host, id);
+					}
+				},
+			};
+		}
 	}
 
 	const menuItems: MenuItem[] = [];
 
 	// TODO: $iのホストも比較したいけど通常null
-	const accountItems = (await getAccounts().then(accounts => accounts.filter(x => x.user.id !== $i.id))).map(a => createItem(a.host, a.user));
+	const accountItems = (await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id))).map(a => createItem(a.host, a.id, a.username, a.user, a.token));
 
 	if (opts.withExtraOperation) {
 		menuItems.push({
@@ -261,7 +272,7 @@ export async function openAccountMenu(opts: {
 		});
 
 		if (opts.includeCurrentAccount) {
-			menuItems.push(createItem(host, $i));
+			menuItems.push(createItem(host, $i.id, $i.username, $i, $i.token));
 		}
 
 		menuItems.push(...accountItems);
@@ -297,7 +308,7 @@ export async function openAccountMenu(opts: {
 		});
 	} else {
 		if (opts.includeCurrentAccount) {
-			menuItems.push(createItem(host, $i));
+			menuItems.push(createItem(host, $i.id, $i.username, $i, $i.token));
 		}
 
 		menuItems.push(...accountItems);

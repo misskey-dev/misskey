@@ -129,7 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkA>
 				<span v-if="appearNote.deleteAt"><i class="ti ti-bomb"></i>{{ i18n.ts.scheduledNoteDelete }}: <MkTime :time="appearNote.deleteAt" mode="detail" colored/></span>
 			</div>
-			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :note="appearNote"/>
+			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" style="margin-top: 6px;" :note="appearNote"/>
 			<button class="_button" :class="$style.noteFooterButton" @click="reply()">
 				<i class="ti ti-arrow-back-up"></i>
 				<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>

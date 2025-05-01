@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 900px; --MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -177,7 +177,8 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		action: async () => {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.ts.logoutConfirm,
+				title: i18n.ts.logoutConfirm,
+				text: i18n.ts.logoutWillClearClientData,
 			});
 			if (canceled) return;
 			signout();

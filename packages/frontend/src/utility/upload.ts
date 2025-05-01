@@ -40,7 +40,7 @@ export function uploadFile(
 
 	const _folder = typeof folder === 'string' ? folder : folder?.id;
 
-	if (file.size > instance.maxFileSize) {
+	if ((file.size > instance.maxFileSize) || (file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
 		alert({
 			type: 'error',
 			title: i18n.ts.failedToUpload,

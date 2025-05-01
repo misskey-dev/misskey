@@ -60,6 +60,14 @@ export function openAntenna(antennaId: string, loginId: string): ReturnType<type
 	return openClient('push', `/timeline/antenna/${antennaId}`, loginId, { antennaId });
 }
 
+export function openChat(body: any, loginId: string): ReturnType<typeof openClient> {
+	if (body.toRoomId != null) {
+		return openClient('push', `/chat/room/${body.toRoomId}`, loginId, { body });
+	} else {
+		return openClient('push', `/chat/user/${body.toUserId}`, loginId, { body });
+	}
+}
+
 // post-formのオプションから投稿フォームを開く
 export async function openPost(options: { initialText?: string; reply?: Misskey.entities.Note; renote?: Misskey.entities.Note }, loginId?: string): ReturnType<typeof openClient> {
 	// クエリを作成しておく

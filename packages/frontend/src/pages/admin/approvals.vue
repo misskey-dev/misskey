@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :contentMax="900">
 			<div class="_gaps_m">
 				<MkPagination ref="paginationComponent" :pagination="pagination">
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, shallowRef } from 'vue';
-import XHeader from './_header_.vue';
+import MkPageHeader from '@/components/global/MkPageHeader.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkApprovalUser from '@/components/MkApprovalUser.vue';
 import { i18n } from '@/i18n.js';

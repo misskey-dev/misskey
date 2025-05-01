@@ -4,26 +4,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<MkSpacer v-if="tab === 'note'" :contentMax="800">
-			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
-				<XNote v-bind="props"/>
-			</div>
-			<div v-else>
-				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
-			</div>
-		</MkSpacer>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div v-if="tab === 'note'" class="_spacer" style="--MI_SPACER-w: 800px;">
+		<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
+			<XNote v-bind="props"/>
+		</div>
+		<div v-else>
+			<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+		</div>
+	</div>
 
-		<MkSpacer v-else-if="tab === 'user'" key="user" :contentMax="800">
-			<div v-if="usersSearchAvailable">
-				<XUser v-bind="props"/>
-			</div>
-			<div v-else>
-				<MkInfo warn>{{ i18n.ts.usersSearchNotAvailable }}</MkInfo>
-			</div>
-		</MkSpacer>
-	</MkHorizontalSwipe>
+	<div v-else-if="tab === 'user'" key="user" class="_spacer" style="--MI_SPACER-w: 800px;">
+		<div v-if="usersSearchAvailable">
+			<XUser v-bind="props"/>
+		</div>
+		<div v-else>
+			<MkInfo warn>{{ i18n.ts.usersSearchNotAvailable }}</MkInfo>
+		</div>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -33,7 +31,6 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { notesSearchAvailable, usersSearchAvailable } from '@/utility/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const props = withDefaults(defineProps<{
 	query?: string,

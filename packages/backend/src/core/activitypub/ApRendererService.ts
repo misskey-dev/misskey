@@ -19,7 +19,7 @@ import type { MiEmoji } from '@/models/Emoji.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiPollVote } from '@/models/PollVote.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
-import { MfmService } from '@/core/MfmService.js';
+import { MfmService, type Appender } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
@@ -430,10 +430,24 @@ export class ApRendererService {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
 
-		let apAppend = '';
+		const apAppend: Appender[] = [];
 
 		if (quote) {
-			apAppend += `\n\nRE: ${quote}`;
+			// Append quote link as `<br><br><span class="quote-inline">RE: <a href="...">...</a></span>`
+			// the claas name `quote-inline` is used in non-misskey clients for styling quote notes.
+			// For compatibility, the span part should be kept as possible.
+			apAppend.push((doc, body) => {
+				body.appendChild(doc.createElement('br'));
+				body.appendChild(doc.createElement('br'));
+				const span = doc.createElement('span');
+				span.className = 'quote-inline';
+				span.appendChild(doc.createTextNode('RE: '));
+				const link = doc.createElement('a');
+				link.setAttribute('href', quote);
+				link.textContent = quote;
+				span.appendChild(link);
+				body.appendChild(span);
+			});
 		}
 
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
@@ -509,7 +523,7 @@ export class ApRendererService {
 				const urlPart = match[0];
 				const urlPartParsed = new URL(urlPart);
 				const restPart = maybeUrl.slice(match[0].length);
-				
+
 				return `<a href="${urlPartParsed.href}" rel="me nofollow noopener" target="_blank">${urlPart}</a>${restPart}`;
 			} catch (e) {
 				return maybeUrl;

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer v-if="token" :contentMax="700" :marginMin="16" :marginMax="32">
+	<div v-if="token" class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="_gaps_m">
 			<MkInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
