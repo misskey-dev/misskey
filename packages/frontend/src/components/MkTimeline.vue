@@ -136,11 +136,9 @@ if (!store.s.realtimeMode) {
 
 globalEvents.on('notePosted', (note: Misskey.entities.Note) => {
 	const isTop = rootEl.value == null ? false : isHeadVisible(rootEl.value, 16);
-	if (isTop) {
-		paginator.fetchNewer({
-			toQueue: false,
-		});
-	}
+	paginator.fetchNewer({
+		toQueue: !isTop,
+	});
 });
 
 function releaseQueue() {
@@ -403,7 +401,7 @@ defineExpose({
 	z-index: 1000;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 8px 0;
+	padding: 10px 0;
 }
 
 /* 疑似progressive blur */
@@ -432,13 +430,21 @@ defineExpose({
 .newButton {
 	position: relative;
 	display: block;
-	padding: 8px 16px;
+	padding: 6px 12px;
 	border-radius: 999px;
 	width: max-content;
 	margin: auto;
 	background: var(--MI_THEME-accent);
 	color: var(--MI_THEME-fgOnAccent);
-	font-size: 90%;
+	font-size: 85%;
+
+	&:hover {
+		background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
+	}
+
+	&:active {
+		background: hsl(from var(--MI_THEME-accent) h s calc(l - 5));
+	}
 }
 
 .ad:empty {
