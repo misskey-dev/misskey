@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
-	<div v-else-if="paginator.items.value.size === 0" key="_empty_">
+	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
 		<slot name="empty">
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass=" $style.transition_x_move"
 			tag="div"
 		>
-			<template v-for="(note, i) in Array.from(paginator.items.value.values())" :key="note.id">
+			<template v-for="(note, i) in paginator.items.value" :key="note.id">
 				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
-	<div v-else-if="paginator.items.value.size === 0" key="_empty_">
+	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
 		<slot name="empty">
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass=" $style.transition_x_move"
 			tag="div"
 		>
-			<template v-for="(notification, i) in Array.from(paginator.items.value.values())" :key="notification.id">
+			<template v-for="(notification, i) in paginator.items.value" :key="notification.id">
 				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.item" :note="notification.note" :withHardMute="true" :data-scroll-anchor="notification.id"/>
 				<XNotification v-else :class="$style.item" :notification="notification" :withTime="true" :full="true" :data-scroll-anchor="notification.id"/>
 			</template>

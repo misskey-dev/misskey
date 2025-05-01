@@ -38,26 +38,12 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 	offsetMode?: boolean;
 };
 
-function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
-	return entities.map(en => [en.id, en]);
-}
-
-export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['endpoint']]['res']>(props: {
-	ctx: Ctx;
+export function usePagination<T extends MisskeyEntity>(props: {
+	ctx: PagingCtx;
 }) {
-	/**
-	 * 表示するアイテムのソース
-	 * 最新が0番目
-	 */
-	const items = ref<Map<string, T>>(new Map());
-
+	const items = ref<T[]>([]);
 	const queue = ref<T[]>([]);
-
-	/**
-	 * 初期化中かどうか（trueならMkLoadingで全て隠す）
-	 */
 	const fetching = ref(true);
-
 	const moreFetching = ref(false);
 	const canFetchMore = ref(false);
 	const error = ref(false);
@@ -67,19 +53,19 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 
 	function getNewestId() {
 		// 様々な要因により並び順は保証されないのでソートが必要
-		return Array.from(items.value.keys()).sort().at(-1);
+		return items.value.map(x => x.id).sort().at(-1);
 	}
 
 	function getOldestId() {
 		// 様々な要因により並び順は保証されないのでソートが必要
-		return Array.from(items.value.keys()).sort().at(0);
+		return items.value.map(x => x.id).sort().at(0);
 	}
 
 	async function init(): Promise<void> {
-		items.value = new Map();
+		items.value = [];
 		fetching.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
-		await misskeyApi<MisskeyEntity[]>(props.ctx.endpoint, {
+		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
 			limit: props.ctx.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
@@ -90,11 +76,11 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 			}
 
 			if (res.length === 0 || props.ctx.noPaging) {
-				concatItems(res);
+				pushItems(res);
 				canFetchMore.value = false;
 			} else {
 				if (props.ctx.reversed) moreFetching.value = true;
-				concatItems(res);
+				pushItems(res);
 				canFetchMore.value = true;
 			}
 
@@ -111,14 +97,14 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 	}
 
 	async function fetchOlder(): Promise<void> {
-		if (!canFetchMore.value || fetching.value || moreFetching.value || items.value.size === 0) return;
+		if (!canFetchMore.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 		moreFetching.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
-		await misskeyApi<MisskeyEntity[]>(props.ctx.endpoint, {
+		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
 			limit: SECOND_FETCH_LIMIT,
 			...(props.ctx.offsetMode ? {
-				offset: items.value.size,
+				offset: items.value.length,
 			} : {
 				untilId: getOldestId(),
 			}),
@@ -132,7 +118,7 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 				canFetchMore.value = false;
 				moreFetching.value = false;
 			} else {
-				items.value = new Map([...items.value, ...arrayToEntries(res)]);
+				items.value.push(...res);
 				canFetchMore.value = true;
 				moreFetching.value = false;
 			}
@@ -145,11 +131,11 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 		toQueue?: boolean;
 	} = {}): Promise<void> {
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
-		await misskeyApi<MisskeyEntity[]>(props.ctx.endpoint, {
+		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
 			limit: SECOND_FETCH_LIMIT,
 			...(props.ctx.offsetMode ? {
-				offset: items.value.size,
+				offset: items.value.length,
 			} : {
 				sinceId: getNewestId(),
 			}),
@@ -157,26 +143,26 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 			if (options.toQueue) {
 				queue.value.unshift(...res.toReversed());
 			} else {
-				items.value = new Map([...arrayToEntries(res.toReversed()), ...items.value]);
+				items.value.unshift(...res.toReversed());
 			}
 		});
 	}
 
 	function trim() {
-		if (items.value.size >= MAX_ITEMS) canFetchMore.value = true;
-		items.value = new Map([...items.value].slice(0, MAX_ITEMS));
+		if (items.value.length >= MAX_ITEMS) canFetchMore.value = true;
+		items.value = items.value.slice(0, MAX_ITEMS);
 	}
 
 	function unshiftItems(newItems: T[]) {
-		items.value = new Map([...arrayToEntries(newItems), ...items.value]);
+		items.value.unshift(...newItems);
 	}
 
-	function concatItems(oldItems: T[]) {
-		items.value = new Map([...items.value, ...arrayToEntries(oldItems)]);
+	function pushItems(oldItems: T[]) {
+		items.value.push(...oldItems);
 	}
 
 	function prepend(item: T) {
-		unshiftItems([item]);
+		items.value.unshift(item);
 	}
 
 	function enqueue(item: T) {

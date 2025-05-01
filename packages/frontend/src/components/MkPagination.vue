@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
-	<div v-else-if="paginator.items.value.size === 0" key="_empty_">
+	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
 		<slot name="empty">
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkButton>
 			<MkLoading v-else/>
 		</div>
-		<slot :items="Array.from(paginator.items.value.values())" :fetching="paginator.fetching.value || paginator.moreFetching.value"></slot>
+		<slot :items="paginator.items.value" :fetching="paginator.fetching.value || paginator.moreFetching.value"></slot>
 		<div v-show="!pagination.reversed && paginator.canFetchMore.value" key="_more_">
 			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchOlder">
 				{{ i18n.ts.loadMore }}
