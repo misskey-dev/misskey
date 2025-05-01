@@ -11,10 +11,11 @@ import { MiChannel } from './Channel.js';
 import type { MiDriveFile } from './DriveFile.js';
 
 // Note: When you create a new index for existing column of this table,
-// it might be better to index concurrently by editing generated migration file
-// Since this table is very large, and it takes a long time to create index in most cases.
+// it might be better to index concurrently under isConcurrentIndexMigrationEnabled flag
+// by editing generated migration file since this table is very large,
+// and it will make a long lock to create index in most cases.
 // Please note that `CREATE INDEX CONCURRENTLY` is not supported in transaction,
-// so you need to set `transaction = false` in migration.
+// so you need to set `transaction = false` in migration if isConcurrentIndexMigrationEnabled() is true.
 // Please refer 1745378064470-composite-note-index.js for example.
 // You should not use `@Index({ concurrent: true })` decorator because database initialization for test will fail
 // because it will always run CREATE INDEX in transaction based on decorators.
