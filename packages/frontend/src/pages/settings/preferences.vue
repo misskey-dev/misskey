@@ -41,6 +41,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkRadios>
 						</SearchMarker>
 
+						<SearchMarker :keywords="['realtimemode']">
+							<MkSwitch v-model="realtimeMode">
+								<template #label><SearchLabel>{{ i18n.ts.realtimeMode }}</SearchLabel></template>
+								<template #caption><SearchKeyword>{{ i18n.ts._settings.realtimeMode_description }}</SearchKeyword></template>
+							</MkSwitch>
+						</SearchMarker>
+
+						<MkDisableSection :disabled="realtimeMode">
+							<SearchMarker :keywords="['polling', 'interval']">
+								<MkPreferenceContainer k="pollingInterval">
+									<MkRange v-model="pollingInterval" :min="1" :max="3" :step="1" easing :textConverter="(v) => v === 1 ? i18n.ts.low : v === 2 ? i18n.ts.middle : v === 3 ? i18n.ts.high : ''">
+										<template #label><SearchLabel>{{ i18n.ts._settings.contentsUpdateFrequency }}</SearchLabel></template>
+										<template #caption><SearchKeyword>{{ i18n.ts._settings.contentsUpdateFrequency_description }}</SearchKeyword><br><SearchKeyword>{{ i18n.ts._settings.contentsUpdateFrequency_description2 }}</SearchKeyword></template>
+									</MkRange>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</MkDisableSection>
+
 						<div class="_gaps_s">
 							<SearchMarker :keywords="['titlebar', 'show']">
 								<MkPreferenceContainer k="showTitlebar">
@@ -717,7 +735,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormSection from '@/components/form/section.vue';
+import MkDisableSection from '@/components/MkDisableSection.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -740,8 +758,10 @@ const $i = ensureSignin();
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
+const realtimeMode = computed(store.makeGetterSetter('realtimeMode'));
 
 const overridedDeviceKind = prefer.model('overridedDeviceKind');
+const pollingInterval = prefer.model('pollingInterval');
 const showTitlebar = prefer.model('showTitlebar');
 const keepCw = prefer.model('keepCw');
 const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
@@ -824,6 +844,8 @@ watch(useSystemFont, () => {
 watch([
 	hemisphere,
 	lang,
+	realtimeMode,
+	pollingInterval,
 	enableInfiniteScroll,
 	showNoteActionsOnlyHover,
 	overridedDeviceKind,

@@ -64,6 +64,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	async function init(): Promise<void> {
 		items.value = [];
+		queue.value = [];
 		fetching.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<T[]>(props.ctx.endpoint, {

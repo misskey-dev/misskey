@@ -5717,6 +5717,22 @@ export interface Locale extends ILocale {
          * デバイス間でインストールしたテーマを同期
          */
         "enableSyncThemesBetweenDevices": string;
+        /**
+         * サーバーと接続を確立し、リアルタイムでコンテンツを更新します。通信量とバッテリーの消費が多くなる場合があります。
+         */
+        "realtimeMode_description": string;
+        /**
+         * コンテンツの取得頻度
+         */
+        "contentsUpdateFrequency": string;
+        /**
+         * 高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。
+         */
+        "contentsUpdateFrequency_description": string;
+        /**
+         * リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。
+         */
+        "contentsUpdateFrequency_description2": string;
         "_chat": {
             /**
              * 送信者の名前を表示

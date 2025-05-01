@@ -11,6 +11,7 @@ import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { prefer } from '@/preferences.js';
 
 export const noteEvents = new EventEmitter<{
 	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
@@ -59,7 +60,12 @@ function pollingDequeue(note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>) {
 }
 
 const CAPTURE_MAX = 30;
-const POLLING_INTERVAL = 1000 * 15;
+const MIN_POLLING_INTERVAL = 1000 * 10;
+const POLLING_INTERVAL =
+	prefer.s.pollingInterval === 1 ? MIN_POLLING_INTERVAL :
+	prefer.s.pollingInterval === 2 ? MIN_POLLING_INTERVAL * 1.5 :
+	prefer.s.pollingInterval === 3 ? MIN_POLLING_INTERVAL * 1.5 * 1.5 :
+	MIN_POLLING_INTERVAL;
 
 window.setInterval(() => {
 	const ids = [...pollingQueue.entries()]
