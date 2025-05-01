@@ -19,7 +19,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-if="paginator.queue.value.length > 0" :class="$style.new" @click="releaseQueue()"><button class="_button" :class="$style.newButton">{{ i18n.ts.newNoteRecived }}</button></div>
+		<div v-if="paginator.queue.value.length > 0" :class="$style.new" @click="releaseQueue()">
+			<div :class="$style.newBg1"></div>
+			<div :class="$style.newBg2"></div>
+			<div :class="$style.newBg3"></div>
+			<div :class="$style.newBg4"></div>
+			<button class="_button" :class="$style.newButton"><i class="ti ti-circle-arrow-up"></i> {{ i18n.ts.newNote }}</button>
+		</div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
 			:class="[$style.notes, { [$style.noGap]: noGap, '_gaps': !noGap }]"
@@ -398,11 +404,33 @@ defineExpose({
 	width: 100%;
 	box-sizing: border-box;
 	padding: 8px 0;
-	-webkit-backdrop-filter: var(--MI-blur, blur(4px));
-	backdrop-filter: var(--MI-blur, blur(4px));
+}
+
+/* 疑似progressive blur */
+.newBg1, .newBg2, .newBg3, .newBg4 {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	-webkit-backdrop-filter: var(--MI-blur, blur(1px));
+	backdrop-filter: var(--MI-blur, blur(1px));
+}
+
+.newBg2 {
+	height: 75%;
+}
+
+.newBg3 {
+	height: 50%;
+}
+
+.newBg4 {
+	height: 25%;
 }
 
 .newButton {
+	position: relative;
 	display: block;
 	padding: 8px 16px;
 	border-radius: 999px;

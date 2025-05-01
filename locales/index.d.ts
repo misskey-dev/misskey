@@ -2323,6 +2323,10 @@ export interface Locale extends ILocale {
      */
     "newNoteRecived": string;
     /**
+     * 新しいノート
+     */
+    "newNote": string;
+    /**
      * サウンド
      */
     "sounds": string;
