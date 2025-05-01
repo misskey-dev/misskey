@@ -16,8 +16,9 @@ import type { MiDriveFile } from './DriveFile.js';
 // Please note that `CREATE INDEX CONCURRENTLY` is not supported in transaction,
 // so you need to set `transaction = false` in migration.
 // Please refer 1745378064470-composite-note-index.js for example.
-// You should not use `@Index({ concurrent: true })` decorator because
-// it will break database initialization on test, because it will always run CREATE INDEX in transaction.
+// You should not use `@Index({ concurrent: true })` decorator because database initialization for test will fail
+// because it will always run CREATE INDEX in transaction based on decorators.
+// Not appending `{ concurrent: true }` to `@Index` will not cause any problem in production,
 @Index(['userId', 'id'])
 @Entity('note')
 export class MiNote {
