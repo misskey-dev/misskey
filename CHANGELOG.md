@@ -1,4 +1,10 @@
-## unreleased
+## Unreleased
+
+### General
+-
+
+### Client
+-
 
 ### Server
 - Enhance: 凍結されたユーザのノートが各種タイムラインで表示されないように `#15775`
