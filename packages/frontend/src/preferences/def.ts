@@ -333,6 +333,9 @@ export const PREF_DEF = {
 	showNavbarSubButtons: {
 		default: true,
 	},
+	showTitlebar: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},
