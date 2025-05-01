@@ -67,6 +67,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
+import { globalEvents } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -121,6 +122,15 @@ if (!store.s.realtimeMode) {
 		afterMounted: true,
 	});
 }
+
+globalEvents.on('notePosted', (note: Misskey.entities.Note) => {
+	const isTop = rootEl.value == null ? false : isHeadVisible(rootEl.value, 16);
+	if (isTop) {
+		paginator.fetchNewer({
+			toQueue: false,
+		});
+	}
+});
 
 function releaseQueue() {
 	paginator.releaseQueue();

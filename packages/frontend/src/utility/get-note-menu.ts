@@ -25,6 +25,7 @@ import { getAppearNote } from '@/utility/get-appear-note.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { globalEvents } from '@/events.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -569,8 +570,9 @@ export function getRenoteMenu(props: {
 					misskeyApi('notes/create', {
 						renoteId: appearNote.id,
 						channelId: appearNote.channelId,
-					}).then(() => {
+					}).then((res) => {
 						os.toast(i18n.ts.renoted);
+						globalEvents.emit('notePosted', res.createdNote);
 					});
 				}
 			},
@@ -617,8 +619,9 @@ export function getRenoteMenu(props: {
 						localOnly,
 						visibility,
 						renoteId: appearNote.id,
-					}).then(() => {
+					}).then((res) => {
 						os.toast(i18n.ts.renoted);
+						globalEvents.emit('notePosted', res.createdNote);
 					});
 				}
 			},
@@ -658,8 +661,9 @@ export function getRenoteMenu(props: {
 							misskeyApi('notes/create', {
 								renoteId: appearNote.id,
 								channelId: channel.id,
-							}).then(() => {
+							}).then((res) => {
 								os.toast(i18n.tsx.renotedToX({ name: channel.name }));
+								globalEvents.emit('notePosted', res.createdNote);
 							});
 						}
 					},

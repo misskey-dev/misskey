@@ -65,6 +65,16 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 	// パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
 	watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
 
+	function getNewestId() {
+		// 様々な要因により並び順は保証されないのでソートが必要
+		return Array.from(items.value.keys()).sort().at(-1);
+	}
+
+	function getOldestId() {
+		// 様々な要因により並び順は保証されないのでソートが必要
+		return Array.from(items.value.keys()).sort().at(0);
+	}
+
 	async function init(): Promise<void> {
 		items.value = new Map();
 		fetching.value = true;
@@ -110,7 +120,7 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 			...(props.ctx.offsetMode ? {
 				offset: items.value.size,
 			} : {
-				untilId: Array.from(items.value.keys()).at(-1),
+				untilId: getOldestId(),
 			}),
 		}).then(res => {
 			for (let i = 0; i < res.length; i++) {
@@ -141,7 +151,7 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 			...(props.ctx.offsetMode ? {
 				offset: items.value.size,
 			} : {
-				sinceId: Array.from(items.value.keys()).at(0),
+				sinceId: getNewestId(),
 			}),
 		}).then(res => {
 			if (options.toQueue) {
