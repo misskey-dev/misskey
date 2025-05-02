@@ -9,6 +9,7 @@ import type { RouteDef } from '@/lib/nirax.js';
 import { $i, iAmModerator } from '@/i.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
+import PageTimeline from '@/pages/timeline.vue';
 
 export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	loader: loader,
@@ -21,6 +22,13 @@ function chatPage(...args: Parameters<typeof page>) {
 }
 
 export const ROUTE_DEF = [{
+	name: 'index',
+	path: '/',
+	component: $i ? PageTimeline : page(() => import('@/pages/welcome.vue')),
+}, {
+	path: '/timeline',
+	component: PageTimeline,
+}, {
 	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {
@@ -579,13 +587,6 @@ export const ROUTE_DEF = [{
 	path: '/reversi/g/:gameId',
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
-}, {
-	path: '/timeline',
-	component: page(() => import('@/pages/timeline.vue')),
-}, {
-	name: 'index',
-	path: '/',
-	component: $i ? page(() => import('@/pages/timeline.vue')) : page(() => import('@/pages/welcome.vue')),
 }, {
 	// テスト用リダイレクト設定。ログイン中ユーザのプロフィールにリダイレクトする
 	path: '/redirect-test',
