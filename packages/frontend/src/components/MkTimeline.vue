@@ -394,12 +394,14 @@ defineExpose({
 }
 
 .new {
+	--gapFill: 0.5px; // 上位ヘッダーの高さにフォントの関係などで少数が含まれると、レンダリングエンジンによっては隙間が表示されてしまうため、隙間を隠すために少しずらす
+
 	position: sticky;
-	top: var(--MI-stickyTop, 0px);
+	top: calc(var(--MI-stickyTop, 0px) - var(--gapFill));
 	z-index: 1000;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 10px 0;
+	padding: calc(10px + var(--gapFill)) 0 10px 0;
 }
 
 /* 疑似progressive blur */
