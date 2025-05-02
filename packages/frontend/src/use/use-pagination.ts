@@ -127,6 +127,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 				moreFetching.value = false;
 			} else {
 				items.value.push(...res);
+				if (props.useShallowRef) triggerRef(items);
 				canFetchMore.value = true;
 				moreFetching.value = false;
 			}
