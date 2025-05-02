@@ -136,7 +136,7 @@ function moveEnd() {
 	}
 }
 
-function moving(event: TouchEvent | PointerEvent) {
+function moving(event: TouchEvent | PointerEvent | MouseEvent) {
 	if (!isPullStart.value || isRefreshing.value || disabled) return;
 
 	if ((scrollEl?.scrollTop ?? 0) > SCROLL_STOP + pullDistance.value || isHorizontalSwipeSwiping.value) {
@@ -206,7 +206,7 @@ function unregisterEventListenersForReadyToPull() {
 	rootEl.value.removeEventListener('mousedown', moveStartByMouse);
 	rootEl.value.removeEventListener('touchstart', moveStart);
 	rootEl.value.removeEventListener('touchmove', moving);
-	window.removeEventListener('pointermove', moving);
+	window.removeEventListener('mousemove', moving);
 }
 
 onMounted(() => {
