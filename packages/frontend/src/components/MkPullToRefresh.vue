@@ -39,7 +39,6 @@ const isPullEnd = ref(false);
 const isRefreshing = ref(false);
 const pullDistance = ref(0);
 
-let supportPointerDesktop = false;
 let startScreenY: number | null = null;
 
 const rootEl = useTemplateRef('rootEl');
@@ -58,10 +57,11 @@ const emit = defineEmits<{
 }>();
 
 function getScreenY(event) {
-	if (supportPointerDesktop) {
+	if (event.touches && event.touches[0] && event.touches[0].screenY != null) {
+		return event.touches[0].screenY;
+	} else {
 		return event.screenY;
 	}
-	return event.touches[0].screenY;
 }
 
 function moveStart(event) {
@@ -69,6 +69,16 @@ function moveStart(event) {
 		isPullStart.value = true;
 		startScreenY = getScreenY(event);
 		pullDistance.value = 0;
+	}
+}
+
+function moveStartByMouse(event: MouseEvent) {
+	if (!isPullStart.value && !isRefreshing.value && !disabled) {
+		isPullStart.value = true;
+		startScreenY = event.screenY;
+		pullDistance.value = 0;
+		window.addEventListener('mousemove', moving, { passive: false });
+		window.addEventListener('mouseup', moveEnd, { passive: true, once: true });
 	}
 }
 
@@ -129,7 +139,7 @@ function moveEnd() {
 function moving(event: TouchEvent | PointerEvent) {
 	if (!isPullStart.value || isRefreshing.value || disabled) return;
 
-	if ((scrollEl?.scrollTop ?? 0) > (supportPointerDesktop ? SCROLL_STOP : SCROLL_STOP + pullDistance.value) || isHorizontalSwipeSwiping.value) {
+	if ((scrollEl?.scrollTop ?? 0) > SCROLL_STOP + pullDistance.value || isHorizontalSwipeSwiping.value) {
 		pullDistance.value = 0;
 		isPullEnd.value = false;
 		moveEnd();
@@ -186,14 +196,17 @@ function onScrollContainerScroll() {
 
 function registerEventListenersForReadyToPull() {
 	if (rootEl.value == null) return;
+	rootEl.value.addEventListener('mousedown', moveStartByMouse, { passive: true });
 	rootEl.value.addEventListener('touchstart', moveStart, { passive: true });
 	rootEl.value.addEventListener('touchmove', moving, { passive: false }); // passive: falseにしないとpreventDefaultが使えない
 }
 
 function unregisterEventListenersForReadyToPull() {
 	if (rootEl.value == null) return;
+	rootEl.value.removeEventListener('mousedown', moveStartByMouse);
 	rootEl.value.removeEventListener('touchstart', moveStart);
 	rootEl.value.removeEventListener('touchmove', moving);
+	window.removeEventListener('pointermove', moving);
 }
 
 onMounted(() => {
