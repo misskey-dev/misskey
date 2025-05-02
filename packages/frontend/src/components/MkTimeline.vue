@@ -91,9 +91,6 @@ const props = withDefaults(defineProps<{
 	onlyFiles: false,
 });
 
-const emit = defineEmits<{
-}>();
-
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
