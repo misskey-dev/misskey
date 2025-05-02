@@ -1,3 +1,12 @@
+## 2025.4.1-kinel.2
+
+### General
+- Fix: ユーザのリアクション一覧が開けない問題を修正 #268
+
+### Client
+
+### Server
+
 ## 2025.4.1-kinel.1
 
 ### General
