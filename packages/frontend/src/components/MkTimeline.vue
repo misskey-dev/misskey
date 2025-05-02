@@ -19,12 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-if="paginator.queue.value.length > 0" :class="$style.new" @click="releaseQueue()">
+		<div v-if="paginator.queuedAheadItemsCount.value > 0" :class="$style.new">
 			<div :class="$style.newBg1"></div>
 			<div :class="$style.newBg2"></div>
-			<div :class="$style.newBg3"></div>
-			<div :class="$style.newBg4"></div>
-			<button class="_button" :class="$style.newButton"><i class="ti ti-circle-arrow-up"></i> {{ i18n.ts.newNote }}</button>
+			<button class="_button" :class="$style.newButton" @click="releaseQueue()"><i class="ti ti-circle-arrow-up"></i> {{ i18n.ts.newNote }}</button>
 		</div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
@@ -405,26 +403,46 @@ defineExpose({
 }
 
 /* 疑似progressive blur */
-.newBg1, .newBg2, .newBg3, .newBg4 {
+.newBg1, .newBg2 {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	-webkit-backdrop-filter: var(--MI-blur, blur(1px));
-	backdrop-filter: var(--MI-blur, blur(1px));
+}
+
+.newBg1 {
+	height: 100%;
+	-webkit-backdrop-filter: var(--MI-blur, blur(2px));
+	backdrop-filter: var(--MI-blur, blur(2px));
+	mask-image: linear-gradient( /* 疑似Easing Linear Gradients */
+		to top,
+		rgb(0 0 0 / 0%) 0%,
+		rgb(0 0 0 / 4.9%) 7.75%,
+		rgb(0 0 0 / 10.4%) 11.25%,
+		rgb(0 0 0 / 45%) 23.55%,
+		rgb(0 0 0 / 55%) 26.45%,
+		rgb(0 0 0 / 89.6%) 38.75%,
+		rgb(0 0 0 / 95.1%) 42.25%,
+		rgb(0 0 0 / 100%) 50%
+	);
 }
 
 .newBg2 {
 	height: 75%;
-}
-
-.newBg3 {
-	height: 50%;
-}
-
-.newBg4 {
-	height: 25%;
+	-webkit-backdrop-filter: var(--MI-blur, blur(4px));
+	backdrop-filter: var(--MI-blur, blur(4px));
+	mask-image: linear-gradient( /* 疑似Easing Linear Gradients */
+		to top,
+		rgb(0 0 0 / 0%) 0%,
+		rgb(0 0 0 / 4.9%) 15.5%,
+		rgb(0 0 0 / 10.4%) 22.5%,
+		rgb(0 0 0 / 45%) 47.1%,
+		rgb(0 0 0 / 55%) 52.9%,
+		rgb(0 0 0 / 89.6%) 77.5%,
+		rgb(0 0 0 / 95.1%) 91.9%,
+		rgb(0 0 0 / 100%) 100%
+	);
 }
 
 .newButton {

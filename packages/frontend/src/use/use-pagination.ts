@@ -9,6 +9,7 @@ import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAX_ITEMS = 20;
+const MAX_QUEUE_ITEMS = 100;
 const FIRST_FETCH_LIMIT = 15;
 const SECOND_FETCH_LIMIT = 30;
 
@@ -43,7 +44,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	useShallowRef?: boolean;
 }) {
 	const items = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
-	const queue = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
+	let aheadQueue: T[] = [];
+	const queuedAheadItemsCount = ref(0);
 	const fetching = ref(true);
 	const moreFetching = ref(false);
 	const canFetchMore = ref(false);
@@ -54,6 +56,9 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	function getNewestId() {
 		// 様々な要因により並び順は保証されないのでソートが必要
+		if (aheadQueue.length > 0) {
+			return aheadQueue.map(x => x.id).sort().at(-1);
+		}
 		return items.value.map(x => x.id).sort().at(-1);
 	}
 
@@ -64,7 +69,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	async function init(): Promise<void> {
 		items.value = [];
-		queue.value = [];
+		aheadQueue = [];
+		queuedAheadItemsCount.value = 0;
 		fetching.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<T[]>(props.ctx.endpoint, {
@@ -143,8 +149,11 @@ export function usePagination<T extends MisskeyEntity>(props: {
 			}),
 		}).then(res => {
 			if (options.toQueue) {
-				queue.value.unshift(...res.toReversed());
-				if (props.useShallowRef) triggerRef(queue);
+				aheadQueue.unshift(...res.toReversed());
+				if (aheadQueue.length > MAX_QUEUE_ITEMS) {
+					aheadQueue = aheadQueue.slice(0, MAX_QUEUE_ITEMS);
+				}
+				queuedAheadItemsCount.value = aheadQueue.length;
 			} else {
 				items.value.unshift(...res.toReversed());
 				if (props.useShallowRef) triggerRef(items);
@@ -173,13 +182,17 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function enqueue(item: T) {
-		queue.value.unshift(item);
-		if (props.useShallowRef) triggerRef(queue);
+		aheadQueue.unshift(item);
+		if (aheadQueue.length > MAX_QUEUE_ITEMS) {
+			aheadQueue.pop();
+		}
+		queuedAheadItemsCount.value = aheadQueue.length;
 	}
 
 	function releaseQueue() {
-		unshiftItems(queue.value);
-		queue.value = [];
+		unshiftItems(aheadQueue);
+		aheadQueue = [];
+		queuedAheadItemsCount.value = 0;
 	}
 
 	onMounted(() => {
@@ -188,7 +201,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	return {
 		items,
-		queue,
+		queuedAheadItemsCount,
 		fetching,
 		moreFetching,
 		canFetchMore,
