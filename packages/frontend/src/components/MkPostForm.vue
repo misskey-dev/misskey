@@ -50,7 +50,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
 				</button>
 			</template>
-			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+			<button
+				v-tooltip="isNoteInYamiMode
+					? (localOnly ? i18n.ts._visibility.disableFederation : i18n.ts._visibility.yamiNoteFederationEnabled)
+					: (localOnly ? i18n.ts._visibility.disableFederation : i18n.ts._visibility.enableFederation)"
+				class="_button"
+				:class="[$style.headerRightItem, {
+					[$style.danger]: localOnly,
+					[$style.warning]: isNoteInYamiMode && !localOnly
+				}]"
+				:disabled="channel != null || visibility === 'specified'"
+				@click="toggleLocalOnly"
+			>
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
@@ -1496,6 +1507,10 @@ defineExpose({
 
 	&.danger {
 		color: #ff2a2a;
+	}
+
+	&.warning {
+		color: var(--MI_THEME-warn);
 	}
 }
 

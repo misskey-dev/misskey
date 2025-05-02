@@ -122,6 +122,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton primary @click="save_blockedHosts">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-exchange"></i></template>
+					<template #label>{{ i18n.ts._settings.yamiNoteFederation }}</template>
+
+					<div class="_gaps">
+						<MkSwitch
+							v-model="yamiNoteFederationEnabled"
+							@update:modelValue="onChange_yamiNoteFederationEnabled"
+						>
+							{{ i18n.ts._yami.yamiNoteFederationEnabled }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+						</MkSwitch>
+
+						<div v-if="yamiNoteFederationEnabled" class="_gaps">
+							<MkTextarea v-model="yamiNoteFederationTrustedInstances">
+								<template #label>{{ i18n.ts._yami.yamiNoteFederationTrustedInstances }}</template>
+								<template #caption>{{ i18n.ts._yami.yamiNoteFederationTrustedInstancesDescription }}</template>
+							</MkTextarea>
+
+							<MkInfo warn>{{ i18n.ts._yami.yamiNoteFederationWarning }}</MkInfo>
+
+							<MkButton primary @click="save_yamiNoteFederationTrustedInstances">{{ i18n.ts.save }}</MkButton>
+						</div>
+					</div>
+				</MkFolder>
 			</div>
 		</FormSuspense>
 	</div>
@@ -142,6 +167,7 @@ import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
@@ -154,6 +180,8 @@ const preservedUsernames = ref<string>('');
 const blockedHosts = ref<string>('');
 const silencedHosts = ref<string>('');
 const mediaSilencedHosts = ref<string>('');
+const yamiNoteFederationEnabled = ref<boolean>(false);
+const yamiNoteFederationTrustedInstances = ref<string>('');
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -168,6 +196,10 @@ async function init() {
 	blockedHosts.value = meta.blockedHosts.join('\n');
 	silencedHosts.value = meta.silencedHosts?.join('\n') ?? '';
 	mediaSilencedHosts.value = meta.mediaSilencedHosts.join('\n');
+	yamiNoteFederationEnabled.value = meta.yamiNoteFederationEnabled || false;
+	yamiNoteFederationTrustedInstances.value = Array.isArray(meta.yamiNoteFederationTrustedInstances)
+		? meta.yamiNoteFederationTrustedInstances.join('\n')
+		: '';
 }
 
 async function onChange_enableRegistration(value: boolean) {
@@ -263,6 +295,29 @@ function save_silencedHosts() {
 function save_mediaSilencedHosts() {
 	os.apiWithDialog('admin/update-meta', {
 		mediaSilencedHosts: mediaSilencedHosts.value.split('\n') || [],
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_yamiNoteFederationEnabled(value: boolean) {
+	yamiNoteFederationEnabled.value = value;
+
+	os.apiWithDialog('admin/update-meta', {
+		yamiNoteFederationEnabled: value,
+		yamiNoteFederationTrustedInstances: value
+			? yamiNoteFederationTrustedInstances.value.split('\n').map(x => x.trim()).filter(x => x)
+			: [],
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_yamiNoteFederationTrustedInstances() {
+	const cleanedInstances = yamiNoteFederationTrustedInstances.value.split('\n').map(x => x.trim()).filter(x => x);
+
+	os.apiWithDialog('admin/update-meta', {
+		yamiNoteFederationTrustedInstances: cleanedInstances,
 	}).then(() => {
 		fetchInstance(true);
 	});

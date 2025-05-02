@@ -186,6 +186,11 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		yamiNoteFederationEnabled: { type: 'boolean' },
+		yamiNoteFederationTrustedInstances: {
+			type: 'array',
+			items: { type: 'string' },
+		},
 	},
 	required: [],
 } as const;
@@ -678,6 +683,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.yamiNoteFederationEnabled !== undefined) {
+				set.yamiNoteFederationEnabled = ps.yamiNoteFederationEnabled;
+			}
+
+			if (ps.yamiNoteFederationTrustedInstances !== undefined) {
+				set.yamiNoteFederationTrustedInstances = ps.yamiNoteFederationTrustedInstances;
 			}
 
 			const before = await this.metaService.fetch(true);

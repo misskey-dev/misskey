@@ -301,6 +301,20 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		yamiNoteFederationEnabled: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			default: false,
+		},
+		yamiNoteFederationTrustedInstances: {
+			type: 'array',
+			optional: false, nullable: false,
+			default: [],
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
 		maxFileSize: {
 			type: 'number',
 			optional: false, nullable: false,

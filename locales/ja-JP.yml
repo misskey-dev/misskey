@@ -1464,6 +1464,7 @@ _settings:
   ifOn: "オンのとき"
   ifOff: "オフのとき"
   enableSyncThemesBetweenDevices: "デバイス間でインストールしたテーマを同期"
+  yamiNoteFederation: "やみノート連合"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -2555,8 +2556,13 @@ _visibility:
   followersDescription: "自分のフォロワーのみに公開"
   specified: "ダイレクト"
   specifiedDescription: "指定したユーザーのみに公開"
+  enableFederation: "連合あり"
   disableFederation: "連合なし"
   disableFederationDescription: "他サーバーへの配信を行いません"
+  yamiNoteFederationDisabled: "やみノートの連合は管理者により無効化されています"
+  yamiNoteFederationEnabled: "やみノートの連合は管理者が許可したサーバーにのみ配信されます"
+  yamiNoteEnableFederationConfirm: "やみノートを信頼済みサーバーに配信しますか？（管理者設定の範囲内でのみ配信されます）"
+  yamiNoteDisableFederationConfirm: "やみノートの配信をローカルのみに制限しますか？"
 
 _postForm:
   replyPlaceholder: "このノートに返信..."
@@ -3188,6 +3194,10 @@ _yami:
   yamiTimeline: "やみタイムライン"
   showYamiNonFollowingPublicNotes: "フォローしていないユーザーのパブリックやみノートを表示"
   showYamiFollowingNotes: "フォローしているユーザーのやみノートを表示"
+  yamiNoteFederationEnabled: 'やみノート連合を有効にする'
+  yamiNoteFederationTrustedInstances: '信頼済みやみモード対応インスタンス'
+  yamiNoteFederationTrustedInstancesDescription: 'やみノートを配信するインスタンスのホスト名を改行で区切って入力します。'
+  yamiNoteFederationWarning: '警告: やみノートは信頼済みインスタンスにのみ配信されますが、リモートインスタンスの実装状況によっては適切に処理されない可能性があります。信頼できるインスタンスのみを追加してください。'
   _yamiModeSwitcher:
     enterYamiModeConfirm: "やみモードに切り替えますか？やみモードにすると、他人のやみノートを閲覧できるようになります"
     exitYamiModeConfirm: "通常モードに戻りますか？通常モードにすると、他人のやみノートを閲覧できなくなります"

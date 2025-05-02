@@ -5,7 +5,7 @@
 
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
-import { In, DataSource, IsNull, LessThan } from 'typeorm';
+import { In, DataSource, IsNull, LessThan, Not } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { Data } from 'ws';
@@ -58,6 +58,7 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { CacheService } from '@/core/CacheService.js';
 import { prefer } from '@/preferences.js';
+import { MetaService } from '@/core/MetaService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -221,6 +222,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
 		private cacheService: CacheService,
+		private metaService: MetaService,
 	) {
 		this.updateNotesCountQueue = new CollapsedQueue(process.env.NODE_ENV !== 'test' ? 60 * 1000 * 5 : 0, this.collapseNotesCount, this.performUpdateNotesCount);
 	}
@@ -870,6 +872,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 					const noteActivity = await this.renderNoteOrRenoteActivity(data, note);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
 
+					// やみノートの場合は配送先制限処理
+					if (note.isNoteInYamiMode) {
+						await this.deliverYamiNote(note, user, dm);
+						return; // やみノート処理完了後は他の配送をしない
+					}
+
+					// 以下、通常ノートの配送処理
 					// メンションされたリモートユーザーに配送
 					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {
 						dm.addDirectRecipe(u as MiRemoteUser);
@@ -1478,6 +1487,41 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async performUpdateNotesCount(id: MiNote['id'], incrBy: number) {
 		await this.instancesRepository.increment({ id: id }, 'notesCount', incrBy);
+	}
+
+	@bindThis
+	private async deliverYamiNote(note: MiNote, user: { id: MiUser['id'] }, dm: any): Promise<void> {
+		const meta = await this.metaService.fetch();
+
+		// やみノート連合が無効の場合は配送しない
+		if (!meta.yamiNoteFederationEnabled) {
+			note.localOnly = true;
+			return;
+		}
+
+		const trustedHosts = meta.yamiNoteFederationTrustedInstances || [];
+
+		// 信頼済みインスタンスがなければ配送しない
+		if (trustedHosts.length === 0) return;
+
+		// リモートフォロワーを取得
+		const followers = await this.followingsRepository.find({
+			where: {
+				followeeId: user.id,
+				followerHost: Not(IsNull()), // リモートユーザーのみ
+			},
+			relations: ['follower'],
+		});
+
+		// 信頼済みインスタンスのフォロワーのみにフィルタリング
+		const trustedFollowers = followers.filter(following =>
+			trustedHosts.includes(following.follower.host),
+		);
+
+		// フィルタリングしたフォロワーにのみ配送
+		for (const following of trustedFollowers) {
+			dm.addDirectRecipe(following.follower as MiRemoteUser);
+		}
 	}
 
 	@bindThis

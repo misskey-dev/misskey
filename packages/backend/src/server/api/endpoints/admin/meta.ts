@@ -532,6 +532,18 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			yamiNoteFederationEnabled: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			yamiNoteFederationTrustedInstances: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 		},
 	},
 } as const;
@@ -677,6 +689,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
 				federation: instance.federation,
 				federationHosts: instance.federationHosts,
+				yamiNoteFederationEnabled: instance.yamiNoteFederationEnabled,
+				yamiNoteFederationTrustedInstances: instance.yamiNoteFederationTrustedInstances,
 			};
 		});
 	}

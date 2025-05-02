@@ -669,4 +669,10 @@ export class MiMeta {
 		nullable: true,
 	})
 	public googleAnalyticsMeasurementId: string | null;
+
+	@Column('boolean', { default: false })
+	public yamiNoteFederationEnabled: boolean;
+
+	@Column('jsonb', { default: [], array: true })
+	public yamiNoteFederationTrustedInstances: string[];
 }
