@@ -456,7 +456,7 @@ defineExpose({
 	margin: auto;
 	background: var(--MI_THEME-accent);
 	color: var(--MI_THEME-fgOnAccent);
-	font-size: 85%;
+	font-size: 90%;
 
 	&:hover {
 		background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
