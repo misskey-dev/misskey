@@ -54,7 +54,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	// パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
 	watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
 
-	function getNewestId() {
+	function getNewestId(): string | null | undefined {
 		// 様々な要因により並び順は保証されないのでソートが必要
 		if (aheadQueue.length > 0) {
 			return aheadQueue.map(x => x.id).sort().at(-1);
@@ -62,7 +62,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 		return items.value.map(x => x.id).sort().at(-1);
 	}
 
-	function getOldestId() {
+	function getOldestId(): string | null | undefined {
 		// 様々な要因により並び順は保証されないのでソートが必要
 		return items.value.map(x => x.id).sort().at(0);
 	}
