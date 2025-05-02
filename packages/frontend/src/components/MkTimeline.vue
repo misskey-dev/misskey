@@ -115,9 +115,9 @@ let adInsertionCounter = 0;
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
 const POLLING_INTERVAL =
-	prefer.s.pollingInterval === 1 ? MIN_POLLING_INTERVAL :
+	prefer.s.pollingInterval === 1 ? MIN_POLLING_INTERVAL * 1.5 * 1.5 :
 	prefer.s.pollingInterval === 2 ? MIN_POLLING_INTERVAL * 1.5 :
-	prefer.s.pollingInterval === 3 ? MIN_POLLING_INTERVAL * 1.5 * 1.5 :
+	prefer.s.pollingInterval === 3 ? MIN_POLLING_INTERVAL :
 	MIN_POLLING_INTERVAL;
 
 if (!store.s.realtimeMode) {
