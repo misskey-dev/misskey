@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: アップロードしたファイルの名前がすべて untitled になる問題を修正 `#15926`
 
 ### Client
 -

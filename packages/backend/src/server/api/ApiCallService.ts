@@ -356,27 +356,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		// Cast non JSON input
-		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
-			for (const k of Object.keys(ep.params.properties)) {
-				const param = ep.params.properties![k];
-				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
-					try {
-						data[k] = JSON.parse(data[k]);
-					} catch (e) {
-						throw new ApiError({
-							message: 'Invalid param.',
-							code: 'INVALID_PARAM',
-							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
-						}, {
-							param: k,
-							reason: `cannot cast to ${param.type}`,
-						});
-					}
-				}
-			}
-		}
-
 		if (token && ((ep.meta.kind && !token.permission.some(p => p === ep.meta.kind))
 			|| (!ep.meta.kind && (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin)))) {
 			throw new ApiError({
@@ -430,6 +409,33 @@ export class ApiCallService implements OnApplicationShutdown {
 			);
 			attachmentFile = result.attachmentFile;
 			cleanup = result.cleanup;
+
+			// We've read entire file now so we re-retrieve parameters from the request
+			// since fields sent after the file are not available in prior to file read.
+			for (const [k, v] of Object.entries(multipartFile.fields)) {
+				data[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
+			}
+		}
+
+		// Cast non JSON input
+		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
+			for (const k of Object.keys(ep.params.properties)) {
+				const param = ep.params.properties![k];
+				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
+					try {
+						data[k] = JSON.parse(data[k]);
+					} catch (e) {
+						throw new ApiError({
+							message: 'Invalid param.',
+							code: 'INVALID_PARAM',
+							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
+						}, {
+							param: k,
+							reason: `cannot cast to ${param.type}`,
+						});
+					}
+				}
+			}
 		}
 
 		// API invoking
