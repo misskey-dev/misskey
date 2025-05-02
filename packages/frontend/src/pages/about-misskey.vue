@@ -128,6 +128,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img src="https://avatars.githubusercontent.com/u/61457993?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@Sayamame-beans</span>
 						</a>
+						<a href="https://github.com/samunohito" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/46447427?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@samunohito</span>
+						</a>
 					</div>
 					<template #caption><MkLink url="https://github.com/niri-la/misskey.niri.la/graphs/contributors">{{ i18n.ts._aboutMisskey.allForkContributors }}</MkLink></template>
 				</FormSection>
