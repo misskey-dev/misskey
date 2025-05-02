@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</component>
 		<button v-show="paginator.canFetchMore.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.moreFetching.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.moreFetching.value">{{ i18n.ts.loadMore }}</div>
-			<MkLoading v-else/>
+			<MkLoading v-else :inline="true"/>
 		</button>
 	</div>
 </MkPullToRefresh>
