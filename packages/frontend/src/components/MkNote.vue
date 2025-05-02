@@ -415,11 +415,7 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
-if (props.mock) {
-	watch(() => props.note, (to) => {
-		note = deepClone(to);
-	}, { deep: true });
-} else {
+if (!props.mock) {
 	useNoteCapture({
 		note: appearNote,
 		parentNote: note,
@@ -540,6 +536,9 @@ function react(): void {
 
 			if (props.mock) {
 				emit('reaction', reaction);
+				$appearNote.reactions[reaction] = 1;
+				$appearNote.reactionCount++;
+				$appearNote.myReaction = reaction;
 				return;
 			}
 
