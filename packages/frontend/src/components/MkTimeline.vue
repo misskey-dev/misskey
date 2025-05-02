@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import { isHeadVisible, scrollToTop } from '@@/js/scroll.js';
+import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { PagingCtx } from '@/use/use-pagination.js';
 import { usePagination } from '@/use/use-pagination.js';
@@ -98,7 +98,35 @@ provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
+function isTop() {
+	if (scrollContainer == null) return false;
+	if (rootEl.value == null) return false;
+	const scrollTop = scrollContainer.scrollTop;
+	const tlTop = rootEl.value.offsetTop - scrollContainer.offsetTop;
+	return scrollTop <= tlTop;
+}
+
+let scrollContainer: HTMLElement | null = null;
+
+function onScrollContainerScroll() {
+	if (isTop()) {
+		paginator.releaseQueue();
+	}
+}
+
 const rootEl = useTemplateRef('rootEl');
+watch(rootEl, (el) => {
+	if (el && scrollContainer == null) {
+		scrollContainer = getScrollContainer(el)!;
+		scrollContainer.addEventListener('scroll', onScrollContainerScroll, { passive: true }); // ほんとはscrollendにしたいけどiosが非対応
+	}
+}, { immediate: true });
+
+onUnmounted(() => {
+	if (scrollContainer) {
+		scrollContainer.removeEventListener('scroll', onScrollContainerScroll);
+	}
+});
 
 type TimelineQueryType = {
 	antennaId?: string,
@@ -122,9 +150,8 @@ const POLLING_INTERVAL =
 
 if (!store.s.realtimeMode) {
 	useInterval(async () => {
-		const isTop = rootEl.value == null ? false : isHeadVisible(rootEl.value, 16);
 		paginator.fetchNewer({
-			toQueue: !isTop,
+			toQueue: !isTop(),
 		});
 	}, POLLING_INTERVAL, {
 		immediate: false,
@@ -133,9 +160,8 @@ if (!store.s.realtimeMode) {
 }
 
 globalEvents.on('notePosted', (note: Misskey.entities.Note) => {
-	const isTop = rootEl.value == null ? false : isHeadVisible(rootEl.value, 16);
 	paginator.fetchNewer({
-		toQueue: !isTop,
+		toQueue: !isTop(),
 	});
 });
 
@@ -151,8 +177,7 @@ function prepend(note: Misskey.entities.Note) {
 		note._shouldInsertAd_ = true;
 	}
 
-	const isTop = isHeadVisible(rootEl.value, 16);
-	if (isTop) {
+	if (isTop()) {
 		paginator.prepend(note);
 	} else {
 		paginator.enqueue(note);
