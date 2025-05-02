@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<SearchMarker :keywords="['realtimemode']">
 							<MkSwitch v-model="realtimeMode">
-								<template #label><SearchLabel>{{ i18n.ts.realtimeMode }}</SearchLabel></template>
+								<template #label><i class="ti ti-bolt"></i> <SearchLabel>{{ i18n.ts.realtimeMode }}</SearchLabel></template>
 								<template #caption><SearchKeyword>{{ i18n.ts._settings.realtimeMode_description }}</SearchKeyword></template>
 							</MkSwitch>
 						</SearchMarker>
@@ -51,9 +51,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkDisableSection :disabled="realtimeMode">
 							<SearchMarker :keywords="['polling', 'interval']">
 								<MkPreferenceContainer k="pollingInterval">
-									<MkRange v-model="pollingInterval" :min="1" :max="3" :step="1" easing :textConverter="(v) => v === 1 ? i18n.ts.low : v === 2 ? i18n.ts.middle : v === 3 ? i18n.ts.high : ''">
+									<MkRange v-model="pollingInterval" :min="1" :max="3" :step="1" easing :showTicks="true" :textConverter="(v) => v === 1 ? i18n.ts.low : v === 2 ? i18n.ts.middle : v === 3 ? i18n.ts.high : ''">
 										<template #label><SearchLabel>{{ i18n.ts._settings.contentsUpdateFrequency }}</SearchLabel></template>
 										<template #caption><SearchKeyword>{{ i18n.ts._settings.contentsUpdateFrequency_description }}</SearchKeyword><br><SearchKeyword>{{ i18n.ts._settings.contentsUpdateFrequency_description2 }}</SearchKeyword></template>
+										<template #prefix><i class="ti ti-player-play"></i></template>
+										<template #suffix><i class="ti ti-player-track-next"></i></template>
 									</MkRange>
 								</MkPreferenceContainer>
 							</SearchMarker>
