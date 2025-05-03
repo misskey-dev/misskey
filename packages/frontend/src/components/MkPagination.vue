@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
+<component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
 		:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
@@ -59,8 +59,10 @@ const props = withDefaults(defineProps<{
 	pagination: PagingCtx;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
+	pullToRefresh?: boolean;
 }>(), {
 	displayLimit: 20,
+	pullToRefresh: true,
 });
 
 const paginator = usePagination({

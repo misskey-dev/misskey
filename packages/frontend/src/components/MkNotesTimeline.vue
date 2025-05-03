@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
+<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad" :pullToRefresh="pullToRefresh">
 	<template #empty>
 		<div class="_fullinfo">
 			<img :src="infoImageUrl" draggable="false"/>
@@ -35,11 +35,14 @@ import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
-}>();
+	pullToRefresh?: boolean;
+}>(), {
+	pullToRefresh: true,
+});
 
 const pagingComponent = useTemplateRef('pagingComponent');
 
