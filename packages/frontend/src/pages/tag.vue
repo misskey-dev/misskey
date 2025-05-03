@@ -48,7 +48,7 @@ async function post() {
 	await os.post();
 	store.set('postFormHashtags', '');
 	store.set('postFormWithHashtags', false);
-	notes.value?.pagingComponent?.reload();
+	notes.value?.reload();
 }
 
 const headerActions = computed(() => [{
