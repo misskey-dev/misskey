@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
@@ -31,7 +31,7 @@ const pagination = {
 	},
 };
 
-const tlComponent = ref<InstanceType<typeof MkNotes>>();
+const tlComponent = useTemplateRef('tlComponent');
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {

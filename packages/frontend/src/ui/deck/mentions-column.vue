@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import { i18n } from '@/i18n.js';
@@ -23,7 +23,7 @@ defineProps<{
 	isStacked: boolean;
 }>();
 
-const tlComponent = ref<InstanceType<typeof MkNotes>>();
+const tlComponent = useTemplateRef('tlComponent');
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
