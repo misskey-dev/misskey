@@ -217,7 +217,7 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .isPulling {
-	//will-change: contents;
+	will-change: contents;
 }
 
 .frame {
