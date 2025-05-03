@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh :refresher="() => reloadTimeline()">
+<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => reloadTimeline()">
 	<MkLoading v-if="paginator.fetching.value"/>
 
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading v-else :inline="true"/>
 		</button>
 	</div>
-</MkPullToRefresh>
+</component>
 </template>
 
 <script lang="ts" setup>

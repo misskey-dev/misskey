@@ -5722,6 +5722,10 @@ export interface Locale extends ILocale {
          */
         "enableSyncThemesBetweenDevices": string;
         /**
+         * ひっぱって更新
+         */
+        "enablePullToRefresh": string;
+        /**
          * サーバーと接続を確立し、リアルタイムでコンテンツを更新します。通信量とバッテリーの消費が多くなる場合があります。
          */
         "realtimeMode_description": string;
