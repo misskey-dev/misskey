@@ -308,12 +308,12 @@ defineExpose({
 .transition_x_move,
 .transition_x_enterActive,
 .transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0,.5,.5,1), transform 0.3s cubic-bezier(0,.5,.5,1) !important;
+	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 .transition_x_enterFrom,
 .transition_x_leaveTo {
 	opacity: 0;
-	transform: translateY(-50%);
+	transform: translateY(-64px);
 }
 .transition_x_leaveActive {
 	position: absolute;
