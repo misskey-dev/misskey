@@ -10,6 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="$style.instance" @click="openInstanceMenu">
 			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
 		</button>
+		<button class="_button" :class="[$style.realtimeMode, store.r.realtimeMode.value ? $style.on : null]" @click="toggleRealtimeMode">
+			<i class="ti ti-bolt ti-fw"></i>
+		</button>
 	</div>
 	<div :class="$style.middle">
 		<MkA :class="$style.item" :activeClass="$style.active" to="/" exact>
@@ -58,6 +61,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { store } from '@/store.js';
 
 const otherMenuItemIndicated = computed(() => {
 	for (const def in navbarItemDef) {
@@ -66,6 +70,20 @@ const otherMenuItemIndicated = computed(() => {
 	}
 	return false;
 });
+
+function toggleRealtimeMode(ev: MouseEvent) {
+	os.popupMenu([{
+		type: 'label',
+		text: i18n.ts.realtimeMode,
+	}, {
+		text: store.s.realtimeMode ? i18n.ts.turnItOff : i18n.ts.turnItOn,
+		icon: store.s.realtimeMode ? 'ti ti-bolt-off' : 'ti ti-bolt',
+		action: () => {
+			store.set('realtimeMode', !store.s.realtimeMode);
+			window.location.reload();
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 
 function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
@@ -89,13 +107,53 @@ function more() {
 }
 
 .top {
+	--top-height: 80px;
+
 	position: sticky;
 	top: 0;
 	z-index: 1;
-	padding: 20px 0;
-	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
-	backdrop-filter: var(--MI-blur, blur(8px));
+	display: flex;
+	height: var(--top-height);
+
+	/* 疑似progressive blur */
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		content: "";
+		backdrop-filter: blur(8px);
+		mask-image: linear-gradient(
+			to top,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 7.75%,
+			rgb(0 0 0 / 10.4%) 11.25%,
+			rgb(0 0 0 / 45%) 23.55%,
+			rgb(0 0 0 / 55%) 26.45%,
+			rgb(0 0 0 / 89.6%) 38.75%,
+			rgb(0 0 0 / 95.1%) 42.25%,
+			rgb(0 0 0 / 100%) 50%
+		);
+	}
+
+	&::after {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		bottom: 25%;
+		content: "";
+		backdrop-filter: blur(16px);
+		mask-image: linear-gradient(
+			to top,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 15.5%,
+			rgb(0 0 0 / 10.4%) 22.5%,
+			rgb(0 0 0 / 45%) 47.1%,
+			rgb(0 0 0 / 55%) 52.9%,
+			rgb(0 0 0 / 89.6%) 77.5%,
+			rgb(0 0 0 / 95.1%) 91.9%,
+			rgb(0 0 0 / 100%) 100%
+		);
+	}
 }
 
 .banner {
@@ -106,15 +164,24 @@ function more() {
 	height: 100%;
 	background-size: cover;
 	background-position: center center;
-	-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-	mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
+	mask-image: linear-gradient(
+		to top,
+		rgb(0 0 0 / 0%) 0%,
+		rgb(0 0 0 / 4.9%) 15.5%,
+		rgb(0 0 0 / 10.4%) 22.5%,
+		rgb(0 0 0 / 45%) 47.1%,
+		rgb(0 0 0 / 55%) 52.9%,
+		rgb(0 0 0 / 89.6%) 77.5%,
+		rgb(0 0 0 / 95.1%) 91.9%,
+		rgb(0 0 0 / 100%) 100%
+	);
+	pointer-events: none;
+	opacity: 0.5;
 }
 
 .instance {
 	position: relative;
-	display: block;
-	text-align: center;
-	width: 100%;
+	width: var(--top-height);
 }
 
 .instanceIcon {
@@ -124,13 +191,60 @@ function more() {
 	border-radius: 8px;
 }
 
+.realtimeMode {
+	display: inline-block;
+	width: var(--top-height);
+	margin-left: auto;
+
+	&.on {
+		color: var(--MI_THEME-accent);
+	}
+}
+
 .bottom {
 	position: sticky;
 	bottom: 0;
 	padding: 20px 0;
-	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
-	backdrop-filter: var(--MI-blur, blur(8px));
+
+	/* 疑似progressive blur */
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: -30px 0 0 0;
+		content: "";
+		backdrop-filter: blur(8px);
+		mask-image: linear-gradient(
+			to bottom,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 7.75%,
+			rgb(0 0 0 / 10.4%) 11.25%,
+			rgb(0 0 0 / 45%) 23.55%,
+			rgb(0 0 0 / 55%) 26.45%,
+			rgb(0 0 0 / 89.6%) 38.75%,
+			rgb(0 0 0 / 95.1%) 42.25%,
+			rgb(0 0 0 / 100%) 50%
+		);
+	}
+
+	&::after {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		top: 25%;
+		content: "";
+		backdrop-filter: blur(16px);
+		mask-image: linear-gradient(
+			to bottom,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 15.5%,
+			rgb(0 0 0 / 10.4%) 22.5%,
+			rgb(0 0 0 / 45%) 47.1%,
+			rgb(0 0 0 / 55%) 52.9%,
+			rgb(0 0 0 / 89.6%) 77.5%,
+			rgb(0 0 0 / 95.1%) 91.9%,
+			rgb(0 0 0 / 100%) 100%
+		);
+	}
 }
 
 .post {

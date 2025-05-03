@@ -342,7 +342,6 @@ function menuEdit() {
 	.bottom {
 		position: sticky;
 		bottom: 0;
-		padding-top: 20px;
 		background: var(--nav-bg-transparent);
 		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 		backdrop-filter: var(--MI-blur, blur(8px));
