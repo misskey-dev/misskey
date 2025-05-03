@@ -139,6 +139,7 @@ async function closeContent() {
 }
 
 function onPullRelease() {
+	window.document.body.removeAttribute('inert');
 	startScreenY = null;
 	if (isPulledEnough.value) {
 		isPulledEnough.value = false;
@@ -180,6 +181,11 @@ function moving(event: MouseEvent | TouchEvent) {
 
 	const moveHeight = moveScreenY - startScreenY!;
 	pullDistance.value = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
+
+	// マウスでのpull時、画面上のテキスト選択が発生して画面がスクロールされたりするのを防ぐ
+	if (pullDistance.value > 3) { // ある程度遊びを持たせないと通常のクリックでも発火しクリックできなくなる
+		window.document.body.setAttribute('inert', 'true');
+	}
 
 	isPulledEnough.value = pullDistance.value >= FIRE_THRESHOLD;
 }
