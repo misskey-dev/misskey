@@ -205,6 +205,7 @@ function refreshFinished() {
 onMounted(() => {
 	if (rootEl.value == null) return;
 	scrollEl = getScrollContainer(rootEl.value);
+	lockDownScroll();
 	rootEl.value.addEventListener('pointerdown', moveStart, { passive: true });
 	rootEl.value.addEventListener('touchend', toggleScrollLockOnTouchEnd, { passive: true });
 });
