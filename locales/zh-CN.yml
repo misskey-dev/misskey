@@ -1423,6 +1423,7 @@ _settings:
   showNavbarSubButtons: "在导航栏中显示副按钮"
   ifOn: "启用时"
   ifOff: "关闭时"
+  enablePullToRefresh: "开启下拉刷新"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"
