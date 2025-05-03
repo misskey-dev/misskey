@@ -54,7 +54,7 @@ const emit = defineEmits<{
 	(ev: 'refresh'): void;
 }>();
 
-function getScreenY(event: TouchEvent | MouseEvent): number {
+function getScreenY(event: TouchEvent | MouseEvent | PointerEvent): number {
 	if (event.touches && event.touches[0] && event.touches[0].screenY != null) {
 		return event.touches[0].screenY;
 	} else {
@@ -73,7 +73,7 @@ function unlockDownScroll() {
 	scrollEl!.style.overscrollBehavior = 'contain';
 }
 
-function moveStart(event: TouchEvent) {
+function moveStart(event: PointerEvent) {
 	const scrollPos = scrollEl!.scrollTop;
 	if (scrollPos === 0) {
 		lockDownScroll();
@@ -81,27 +81,24 @@ function moveStart(event: TouchEvent) {
 			isPulling.value = true;
 			startScreenY = getScreenY(event);
 			pullDistance.value = 0;
-			rootEl.value.addEventListener('touchmove', moving, { passive: true });
-			rootEl.value.addEventListener('touchend', () => {
-				rootEl.value.removeEventListener('touchmove', moving);
-				onPullRelease();
-			}, { passive: true, once: true });
+
+			// タッチデバイスでPointerEventを使うとなんか挙動がおかしいので、TouchEventとMouseEventを使い分ける
+			if (event.pointerType === 'mouse') {
+				window.addEventListener('mousemove', moving, { passive: true });
+				window.addEventListener('mouseup', () => {
+					window.removeEventListener('mousemove', moving);
+					onPullRelease();
+				}, { passive: true, once: true });
+			} else {
+				window.addEventListener('touchmove', moving, { passive: true });
+				window.addEventListener('touchend', () => {
+					window.removeEventListener('touchmove', moving);
+					onPullRelease();
+				}, { passive: true, once: true });
+			}
 		}
 	} else {
 		unlockDownScroll();
-	}
-}
-
-function moveStartByMouse(event: MouseEvent) {
-	if (!isPulling.value && !isRefreshing.value) {
-		isPulling.value = true;
-		startScreenY = event.screenY;
-		pullDistance.value = 0;
-		window.addEventListener('mousemove', moving, { passive: true });
-		window.addEventListener('mouseup', () => {
-			window.removeEventListener('mousemove', moving);
-			onPullRelease();
-		}, { passive: true, once: true });
 	}
 }
 
@@ -166,7 +163,7 @@ function toggleScrollLockOnTouchEnd() {
 	}
 }
 
-function moving(event: TouchEvent | PointerEvent | MouseEvent) {
+function moving(event: MouseEvent | TouchEvent) {
 	if (!isPulling.value || isRefreshing.value) return;
 
 	if ((scrollEl?.scrollTop ?? 0) > SCROLL_STOP + pullDistance.value || isHorizontalSwipeSwiping.value) {
@@ -204,14 +201,12 @@ onMounted(() => {
 
 	scrollEl = getScrollContainer(rootEl.value);
 
-	rootEl.value.addEventListener('mousedown', moveStartByMouse, { passive: true });
-	rootEl.value.addEventListener('touchstart', moveStart, { passive: true });
+	rootEl.value.addEventListener('pointerdown', moveStart, { passive: true });
 	rootEl.value.addEventListener('touchend', toggleScrollLockOnTouchEnd, { passive: true });
 });
 
 onUnmounted(() => {
-	rootEl.value.removeEventListener('mousedown', moveStartByMouse);
-	rootEl.value.removeEventListener('touchstart', moveStart);
+	rootEl.value.removeEventListener('pointerdown', moveStart);
 	rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
 });
 </script>
