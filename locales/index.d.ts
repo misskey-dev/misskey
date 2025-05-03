@@ -5709,6 +5709,10 @@ export interface Locale extends ILocale {
          * デバイス間でインストールしたテーマを同期
          */
         "enableSyncThemesBetweenDevices": string;
+        /**
+         * ひっぱって更新
+         */
+        "enablePullToRefresh": string;
         "_chat": {
             /**
              * 送信者の名前を表示

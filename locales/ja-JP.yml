@@ -1427,6 +1427,7 @@ _settings:
   ifOn: "オンのとき"
   ifOff: "オフのとき"
   enableSyncThemesBetweenDevices: "デバイス間でインストールしたテーマを同期"
+  enablePullToRefresh: "ひっぱって更新"
 
   _chat:
     showSenderName: "送信者の名前を表示"
