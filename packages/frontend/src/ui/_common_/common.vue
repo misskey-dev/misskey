@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
 >
 	<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
-		<XDrawerMenu/>
+		<XNavbar style="height: 100%;" :asDrawer="true" :showWidgetButton="false"/>
 	</div>
 </Transition>
 
@@ -113,7 +113,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 import { store } from '@/store.js';
-import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
+import XNavbar from '@/ui/_common_/navbar.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -230,12 +230,6 @@ if ($i) {
 	left: 0;
 	z-index: 1001;
 	height: 100dvh;
-	width: 240px;
-	box-sizing: border-box;
-	contain: strict;
-	overflow: auto;
-	overscroll-behavior: contain;
-	background: var(--MI_THEME-navBg);
 }
 
 .widgetsDrawerBg {
