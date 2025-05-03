@@ -214,10 +214,16 @@ function menuEdit() {
 	overscroll-behavior: contain;
 	background: var(--MI_THEME-navBg);
 	contain: strict;
-	direction: rtl; // スクロールバーを左に表示したいため
+
+	/* 画面が縦に長い、設置している項目数が少ないなどの環境においても確実にbottomを最下部に表示するため */
+	display: flex;
+	flex-direction: column;
+
+	direction: rtl; /* スクロールバーを左に表示したいため */
 }
 
 .top {
+	flex-shrink: 0;
 	direction: ltr;
 
 	/* 疑似progressive blur */
@@ -262,10 +268,12 @@ function menuEdit() {
 }
 
 .middle {
+	flex: 1;
 	direction: ltr;
 }
 
 .bottom {
+	flex-shrink: 0;
 	direction: ltr;
 
 	/* 疑似progressive blur */
@@ -514,10 +522,6 @@ function menuEdit() {
 		padding-right: 8px;
 	}
 
-	.middle {
-		flex: 1;
-	}
-
 	.divider {
 		margin: 16px 16px;
 		border-top: solid 0.5px var(--MI_THEME-divider);
@@ -739,10 +743,6 @@ function menuEdit() {
 
 	.acct {
 		display: none;
-	}
-
-	.middle {
-		flex: 1;
 	}
 
 	.divider {
