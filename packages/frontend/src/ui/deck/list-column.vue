@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ (column.name || listName) ?? i18n.ts._deck._columns.list }}</span>
 	</template>
 
-	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes"/>
+	<MkStreamingNotesTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes"/>
 </XColumn>
 </template>
 
@@ -21,7 +21,7 @@ import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { updateColumn } from '@/deck.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';

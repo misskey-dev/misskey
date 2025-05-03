@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkTimeline ref="timeline" src="channel" :channel="column.channelId"/>
+		<MkStreamingNotesTimeline ref="timeline" src="channel" :channel="column.channelId"/>
 	</template>
 </XColumn>
 </template>
@@ -26,7 +26,7 @@ import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { updateColumn } from '@/deck.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';

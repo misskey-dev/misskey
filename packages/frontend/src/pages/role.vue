@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-else-if="tab === 'timeline'" class="_spacer" style="--MI_SPACER-w: 700px;">
-		<MkTimeline v-if="visible" ref="timeline" src="role" :role="props.roleId"/>
+		<MkStreamingNotesTimeline v-if="visible" ref="timeline" src="role" :role="props.roleId"/>
 		<div v-else-if="!visible" class="_fullinfo">
 			<img :src="infoImageUrl" draggable="false"/>
 			<div>{{ i18n.ts.nothing }}</div>
@@ -42,7 +42,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { serverErrorImageUrl, infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{

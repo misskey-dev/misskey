@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-antenna"></i><span style="margin-left: 8px;">{{ column.name || antennaName || i18n.ts._deck._columns.antenna }}</span>
 	</template>
 
-	<MkTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId"/>
+	<MkStreamingNotesTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId"/>
 </XColumn>
 </template>
 
@@ -21,7 +21,7 @@ import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { updateColumn } from '@/deck.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';

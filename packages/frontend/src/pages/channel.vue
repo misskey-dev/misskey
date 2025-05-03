@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 			<MkPostForm v-if="$i && prefer.r.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
-			<MkTimeline :key="channelId" src="channel" :channel="channelId"/>
+			<MkStreamingNotesTimeline :key="channelId" src="channel" :channel="channelId"/>
 		</div>
 		<div v-else-if="tab === 'featured'">
 			<MkNotes :pagination="featuredPagination"/>
@@ -76,7 +76,7 @@ import { url } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkPostForm from '@/components/MkPostForm.vue';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
