@@ -204,16 +204,14 @@ function refreshFinished() {
 
 onMounted(() => {
 	if (rootEl.value == null) return;
-
 	scrollEl = getScrollContainer(rootEl.value);
-
 	rootEl.value.addEventListener('pointerdown', moveStart, { passive: true });
 	rootEl.value.addEventListener('touchend', toggleScrollLockOnTouchEnd, { passive: true });
 });
 
 onUnmounted(() => {
-	rootEl.value.removeEventListener('pointerdown', moveStart);
-	rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
+	if (rootEl.value) rootEl.value.removeEventListener('pointerdown', moveStart);
+	if (rootEl.value) rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
 });
 </script>
 

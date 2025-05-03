@@ -96,8 +96,8 @@ provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
 function isTop() {
-	if (scrollContainer == null) return false;
-	if (rootEl.value == null) return false;
+	if (scrollContainer == null) return true;
+	if (rootEl.value == null) return true;
 	const scrollTop = scrollContainer.scrollTop;
 	const tlTop = rootEl.value.offsetTop - scrollContainer.offsetTop;
 	return scrollTop <= tlTop;
