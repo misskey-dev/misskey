@@ -181,6 +181,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 
+		<SearchMarker :keywords="['sync', 'themes', 'devices']">
+			<MkSwitch :modelValue="themesSyncEnabled" @update:modelValue="changeThemesSyncEnabled">
+				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._settings.enableSyncThemesBetweenDevices }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
+
 		<FormSection>
 			<div class="_formLinksGrid">
 				<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
@@ -189,17 +195,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
 			</div>
 		</FormSection>
-
-		<SearchMarker :keywords="['wallpaper']">
-			<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ i18n.ts.setWallpaper }}</SearchLabel></MkButton>
-			<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
-		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
@@ -207,23 +208,18 @@ import type { Theme } from '@/theme.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
-import { getBuiltinThemesRef } from '@/theme.js';
-import { selectFile } from '@/utility/select-file.js';
+import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
-import { getThemes } from '@/theme-store.js';
 import { definePage } from '@/page.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 
-const installedThemes = ref(getThemes());
+const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
 
 const instanceDarkTheme = computed<Theme | null>(() => instance.defaultDarkTheme ? JSON5.parse(instance.defaultDarkTheme) : null);
@@ -263,7 +259,6 @@ const lightThemeId = computed({
 
 const darkMode = computed(store.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
-const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
@@ -272,23 +267,18 @@ watch(syncDeviceDarkMode, () => {
 	}
 });
 
-watch(wallpaper, async () => {
-	if (wallpaper.value == null) {
-		miLocalStorage.removeItem('wallpaper');
+const themesSyncEnabled = ref(prefer.isSyncEnabled('themes'));
+
+function changeThemesSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('themes').then((res) => {
+			if (res == null) return;
+			if (res.enabled) themesSyncEnabled.value = true;
+		});
 	} else {
-		miLocalStorage.setItem('wallpaper', wallpaper.value);
+		prefer.disableSync('themes');
+		themesSyncEnabled.value = false;
 	}
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
-});
-
-onActivated(() => {
-	installedThemes.value = getThemes();
-});
-
-function setWallpaper(event) {
-	selectFile(event.currentTarget ?? event.target, null).then(file => {
-		wallpaper.value = file.url;
-	});
 }
 
 const headerActions = computed(() => []);

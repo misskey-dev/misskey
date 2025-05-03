@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" :class="$style.pageMain" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps">
 			<MkInfo v-if="!$i || !$i.policies.canSearchWithHanamiSearchV1">{{ i18n.ts._hana.searchIsInBeta }}</MkInfo>
 
@@ -116,7 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 
 	<MkStickyContainer v-if="notePagination">
 		<template #header>
@@ -129,7 +129,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</template>
-		<MkSpacer :contentMax="showAsGrid ? null : 800">
+		<div class="_spacer" :style="{
+			'--MI_SPACER-w': (showAsGrid ? undefined : '800px'),
+		}">
 			<MkPagination
 				v-if="searchMode === 'v1' && onlyWithFiles && showAsGrid"
 				v-slot="{ items }"
@@ -141,7 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkPagination>
 			<MkNotes v-else :key="`searchNotes:${key}:note`" :pagination="notePagination"/>
-		</MkSpacer>
+		</div>
 	</MkStickyContainer>
 </div>
 </template>

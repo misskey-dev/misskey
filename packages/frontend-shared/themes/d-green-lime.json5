@@ -15,7 +15,6 @@
 		fgOnWhite: '@accent',
 		divider: '#e7fffb24',
 		panel: '#192320',
-		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		popup: '#293330',
 		renote: '@accent',
 		mentionMe: '#ffaa00',

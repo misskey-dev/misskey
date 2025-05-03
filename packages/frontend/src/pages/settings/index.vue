@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 900px; --MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -42,7 +42,7 @@ import { instance } from '@/instance.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router.js';
-import { searchIndexes } from '@/utility/autogen/settings-search-index.js';
+import { searchIndexes } from '@/utility/settings-search-index.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 import { signout } from '@/signout.js';
@@ -129,11 +129,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: currentPage.value?.route.name === 'sounds',
-	}, {
-		icon: 'ti ti-accessible',
-		text: i18n.ts.accessibility,
-		to: '/settings/accessibility',
-		active: currentPage.value?.route.name === 'accessibility',
 	}, {
 		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,

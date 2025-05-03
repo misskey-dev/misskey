@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.avatarDecorations }}</template>
 
 	<div>
-		<MkSpacer :marginMin="20" :marginMax="28">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 			<div style="text-align: center;">
 				<div :class="$style.name">{{ decoration.name }}</div>
 				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decorations="decorationsForPreview" forceShowDecoration/>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.flip }}</template>
 				</MkSwitch>
 			</div>
-		</MkSpacer>
+		</div>
 
 		<div :class="$style.footer" class="_buttonsCenter">
 			<MkButton v-if="usingIndex != null" primary rounded @click="update"><i class="ti ti-check"></i> {{ i18n.ts.update }}</MkButton>

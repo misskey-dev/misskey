@@ -42,26 +42,26 @@ describe('Streaming', () => {
 	test('useChannel with parameters', async () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
-		const messagingChannelReceived: any[] = [];
-		const messaging = stream.useChannel('messaging', { otherparty: 'aaa' });
-		messaging.on('message', payload => {
-			messagingChannelReceived.push(payload);
+		const chatChannelReceived: any[] = [];
+		const chat = stream.useChannel('chat', { other: 'aaa' });
+		chat.on('message', payload => {
+			chatChannelReceived.push(payload);
 		});
 
 		const ws = await server.connected;
 		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
 
 		const msg = JSON.parse(await server.nextMessage as string);
-		const messagingChannelId = msg.body.id;
+		const chatChannelId = msg.body.id;
 		expect(msg.type).toEqual('connect');
-		expect(msg.body.channel).toEqual('messaging');
-		expect(msg.body.params).toEqual({ otherparty: 'aaa' });
-		expect(messagingChannelId != null).toEqual(true);
+		expect(msg.body.channel).toEqual('chat');
+		expect(msg.body.params).toEqual({ other: 'aaa' });
+		expect(chatChannelId != null).toEqual(true);
 
 		server.send(JSON.stringify({
 			type: 'channel',
 			body: {
-				id: messagingChannelId,
+				id: chatChannelId,
 				type: 'message',
 				body: {
 					id: 'foo'
@@ -69,7 +69,7 @@ describe('Streaming', () => {
 			}
 		}));
 
-		expect(messagingChannelReceived[0]).toEqual({
+		expect(chatChannelReceived[0]).toEqual({
 			id: 'foo'
 		});
 
@@ -81,20 +81,20 @@ describe('Streaming', () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
 
-		stream.useChannel('messaging', { otherparty: 'aaa' });
-		stream.useChannel('messaging', { otherparty: 'bbb' });
+		stream.useChannel('chat', { other: 'aaa' });
+		stream.useChannel('chat', { other: 'bbb' });
 
 		const ws = await server.connected;
 		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
 
 		const msg = JSON.parse(await server.nextMessage as string);
-		const messagingChannelId = msg.body.id;
+		const chatChannelId = msg.body.id;
 		const msg2 = JSON.parse(await server.nextMessage as string);
-		const messagingChannelId2 = msg2.body.id;
+		const chatChannelId2 = msg2.body.id;
 
-		expect(messagingChannelId != null).toEqual(true);
-		expect(messagingChannelId2 != null).toEqual(true);
-		expect(messagingChannelId).not.toEqual(messagingChannelId2);
+		expect(chatChannelId != null).toEqual(true);
+		expect(chatChannelId2 != null).toEqual(true);
+		expect(chatChannelId).not.toEqual(chatChannelId2);
 
 		stream.close();
 		server.close();
@@ -104,8 +104,8 @@ describe('Streaming', () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
 
-		const messaging = stream.useChannel('messaging', { otherparty: 'aaa' });
-		messaging.send('read', { id: 'aaa' });
+		const chat = stream.useChannel('chat', { other: 'aaa' });
+		chat.send('read', { id: 'aaa' });
 
 		const ws = await server.connected;
 		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');

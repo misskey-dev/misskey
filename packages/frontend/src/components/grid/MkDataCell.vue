@@ -345,7 +345,7 @@ $cellHeight: 28px;
 	border: solid 0.5px transparent;
 
 	&.selected {
-		border: solid 0.5px var(--MI_THEME-accentLighten);
+		border: solid 0.5px hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	}
 
 	&.ranged {

@@ -32,15 +32,15 @@ const mimeTypeMap = {
 
 export function uploadFile(
 	file: File,
-	folder?: string | Misskey.entities.DriveFolder,
+	folder?: string | Misskey.entities.DriveFolder | null,
 	name?: string,
-	keepOriginal: boolean = prefer.s.keepOriginalUploading,
+	keepOriginal = false,
 ): Promise<Misskey.entities.DriveFile> {
 	if ($i == null) throw new Error('Not logged in');
 
 	const _folder = typeof folder === 'string' ? folder : folder?.id;
 
-	if (file.size > instance.maxFileSize) {
+	if ((file.size > instance.maxFileSize) || (file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
 		alert({
 			type: 'error',
 			title: i18n.ts.failedToUpload,

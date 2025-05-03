@@ -266,18 +266,20 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 			throw new Error('no route found for: ' + fullPath);
 		}
 
-		if ('redirect' in res.route) {
-			let redirectPath: string;
-			if (typeof res.route.redirect === 'function') {
-				redirectPath = res.route.redirect(res.props);
-			} else {
-				redirectPath = res.route.redirect + (res._parsedRoute.queryString ? '?' + res._parsedRoute.queryString : '') + (res._parsedRoute.hash ? '#' + res._parsedRoute.hash : '');
+		for (let current: PathResolvedResult | undefined = res; current; current = current.child) {
+			if ('redirect' in current.route) {
+				let redirectPath: string;
+				if (typeof current.route.redirect === 'function') {
+					redirectPath = current.route.redirect(current.props);
+				} else {
+					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? '?' + current._parsedRoute.queryString : '') + (current._parsedRoute.hash ? '#' + current._parsedRoute.hash : '');
+				}
+				if (_DEV_) console.log('Redirecting to: ', redirectPath);
+				if (_redirected && this.redirectCount++ > 10) {
+					throw new Error('redirect loop detected');
+				}
+				return this.navigate(redirectPath, emitChange, true);
 			}
-			if (_DEV_) console.log('Redirecting to: ', redirectPath);
-			if (_redirected && this.redirectCount++ > 10) {
-				throw new Error('redirect loop detected');
-			}
-			return this.navigate(redirectPath, emitChange, true);
 		}
 
 		if (res.route.loginRequired && !this.isLoggedIn) {

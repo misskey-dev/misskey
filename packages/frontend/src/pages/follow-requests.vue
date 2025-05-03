@@ -4,39 +4,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<MkPagination ref="paginationComponent" :pagination="pagination">
-				<template #empty>
-					<div class="_fullinfo">
-						<img :src="infoImageUrl" draggable="false"/>
-						<div>{{ i18n.ts.noFollowRequests }}</div>
-					</div>
-				</template>
-				<template #default="{items}">
-					<div class="mk-follow-requests _gaps">
-						<div v-for="req in items" :key="req.id" class="user _panel">
-							<MkAvatar class="avatar" :user="displayUser(req)" indicator link preview/>
-							<div class="body">
-								<div class="name">
-									<MkA v-user-preview="displayUser(req).id" class="name" :to="userPage(displayUser(req))"><MkUserName :user="displayUser(req)"/></MkA>
-									<p class="acct">@{{ acct(displayUser(req)) }}</p>
-								</div>
-								<div v-if="tab === 'list'" class="commands">
-									<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
-									<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
-								</div>
-								<div v-else class="commands">
-									<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.cancel }}</MkButton>
-								</div>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<MkPagination ref="paginationComponent" :pagination="pagination">
+			<template #empty>
+				<div class="_fullinfo">
+					<img :src="infoImageUrl" draggable="false"/>
+					<div>{{ i18n.ts.noFollowRequests }}</div>
+				</div>
+			</template>
+			<template #default="{items}">
+				<div class="mk-follow-requests _gaps">
+					<div v-for="req in items" :key="req.id" class="user _panel">
+						<MkAvatar class="avatar" :user="displayUser(req)" indicator link preview/>
+						<div class="body">
+							<div class="name">
+								<MkA v-user-preview="displayUser(req).id" class="name" :to="userPage(displayUser(req))"><MkUserName :user="displayUser(req)"/></MkA>
+								<p class="acct">@{{ acct(displayUser(req)) }}</p>
+							</div>
+							<div v-if="tab === 'list'" class="commands">
+								<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
+								<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
+							</div>
+							<div v-else class="commands">
+								<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.cancel }}</MkButton>
 							</div>
 						</div>
 					</div>
-				</template>
-			</MkPagination>
-		</MkHorizontalSwipe>
-	</MkSpacer>
+				</div>
+			</template>
+		</MkPagination>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -52,7 +50,6 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { infoImageUrl } from '@/instance.js';
 import { $i } from '@/i.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const paginationComponent = useTemplateRef('paginationComponent');
 

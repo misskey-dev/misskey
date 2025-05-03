@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div style="overflow: clip;">
-		<MkSpacer :contentMax="600" :marginMin="20">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-w: 600px;">
 			<div class="_gaps_m znqjceqz">
 				<div v-panel class="about">
 					<div ref="containerEl" class="container">
@@ -90,7 +90,7 @@
 					<p>{{ i18n.ts._hana._aboutHanaMisskey.morePatrons }}</p>
 				</FormSection>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
 </MkStickyContainer>
 </template>
@@ -138,7 +138,7 @@ function handleIconClick() {
 	clickCount.value++;
 	if (clickCount.value === 10 && !imageChanged.value) {
 		isFadingOut.value = true;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			// イースターエッグの画像
 			imageSource.value = '/client-assets/about-bsk-logo.png';
 			isFadingOut.value = false;

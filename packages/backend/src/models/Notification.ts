@@ -76,6 +76,12 @@ export type MiNotification = {
 	createdAt: string;
 	roleId: MiRole['id'];
 } | {
+	type: 'chatRoomInvitationReceived';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	invitationId: string;
+} | {
 	type: 'achievementEarned';
 	id: string;
 	createdAt: string;

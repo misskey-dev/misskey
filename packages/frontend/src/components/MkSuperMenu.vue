@@ -93,11 +93,11 @@ export type SuperMenuDef = {
 </script>
 
 <script lang="ts" setup>
-import { useTemplateRef, ref, watch, nextTick } from 'vue';
-import type { SearchIndexItem } from '@/utility/autogen/settings-search-index.js';
+import { useTemplateRef, ref, watch, nextTick, computed } from 'vue';
+import { getScrollContainer } from '@@/js/scroll.js';
+import type { SearchIndexItem } from '@/utility/settings-search-index.js';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
-import { getScrollContainer } from '@@/js/scroll.js';
 import { useRouter } from '@/router.js';
 import { initIntlString, compareStringIncludes } from '@/utility/intl-string.js';
 
@@ -124,6 +124,7 @@ const searchResult = ref<{
 	isRoot: boolean;
 	parentLabels: string[];
 }[]>([]);
+const searchIndexItemByIdComputed = computed(() => props.searchIndex && new Map<string, SearchIndexItem>(props.searchIndex.map(i => [i.id, i])));
 
 watch(searchQuery, (value) => {
 	rawSearchQuery.value = value;
@@ -137,32 +138,41 @@ watch(rawSearchQuery, (value) => {
 		return;
 	}
 
-	const dive = (items: SearchIndexItem[], parents: SearchIndexItem[] = []) => {
-		for (const item of items) {
-			const matched = (
+	const searchIndexItemById = searchIndexItemByIdComputed.value;
+	if (searchIndexItemById != null) {
+		const addSearchResult = (item: SearchIndexItem) => {
+			let path: string | undefined = item.path;
+			let icon: string | undefined = item.icon;
+			const parentLabels: string[] = [];
+
+			for (let current = searchIndexItemById.get(item.parentId ?? '');
+				current != null;
+				current = searchIndexItemById.get(current.parentId ?? '')) {
+				path ??= current.path;
+				icon ??= current.icon;
+				parentLabels.push(current.label);
+			}
+
+			if (_DEV_ && path == null) throw new Error('path is null for ' + item.id);
+
+			searchResult.value.push({
+				id: item.id,
+				path: path ?? '/', // never gets `/`
+				label: item.label,
+				parentLabels: parentLabels.toReversed(),
+				icon,
+				isRoot: item.parentId == null,
+			});
+		};
+
+		for (const item of searchIndexItemById.values()) {
+			if (
 				compareStringIncludes(item.label, value) ||
 				item.keywords.some((x) => compareStringIncludes(x, value))
-			);
-
-			if (matched) {
-				searchResult.value.push({
-					id: item.id,
-					path: item.path ?? parents.find((x) => x.path != null)?.path ?? '/', // never gets `/`
-					label: item.label,
-					parentLabels: parents.map((x) => x.label).toReversed(),
-					icon: item.icon ?? parents.find((x) => x.icon != null)?.icon,
-					isRoot: parents.length === 0,
-				});
-			}
-
-			if (item.children) {
-				dive(item.children, [item, ...parents]);
+			) {
+				addSearchResult(item);
 			}
 		}
-	};
-
-	if (props.searchIndex) {
-		dive(props.searchIndex);
 	}
 });
 

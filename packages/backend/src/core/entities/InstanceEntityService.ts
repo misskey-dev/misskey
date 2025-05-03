@@ -31,6 +31,7 @@ export class InstanceEntityService {
 		me?: { id: MiUser['id']; } | null | undefined,
 	): Promise<Packed<'FederationInstance'>> {
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
+		const softwareSuspended = this.utilityService.isDeliverSuspendedSoftware(instance);
 
 		return {
 			id: instance.id,
@@ -41,8 +42,8 @@ export class InstanceEntityService {
 			followingCount: instance.followingCount,
 			followersCount: instance.followersCount,
 			isNotResponding: instance.isNotResponding,
-			isSuspended: instance.suspensionState !== 'none',
-			suspensionState: instance.suspensionState,
+			isSuspended: instance.suspensionState !== 'none' || Boolean(softwareSuspended),
+			suspensionState: instance.suspensionState === 'none' && softwareSuspended ? 'softwareSuspended' : instance.suspensionState,
 			isBlocked: this.utilityService.isBlockedHost(this.meta.blockedHosts, instance.host),
 			softwareName: instance.softwareName,
 			softwareVersion: instance.softwareVersion,

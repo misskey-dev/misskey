@@ -22,7 +22,7 @@ const modal = useTemplateRef('modal');
 const props = defineProps<{
 	success: boolean;
 	showing: boolean;
-	text?: string;
+	text?: string | null;
 }>();
 
 const emit = defineEmits<{

@@ -313,6 +313,7 @@ onUnmounted(() => {
 	box-shadow: 0 0 0 1px var(--MI_THEME-divider);
 	border-radius: 8px;
 	overflow: clip;
+	text-align: left;
 
 	&:hover {
 		text-decoration: none;

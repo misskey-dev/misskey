@@ -38,6 +38,8 @@
 				'packages/misskey-reversi/**/package.json',
 				'packages/sw/**/package.json',
 			],
+			// prevent wastage of Chromatic snapshots
+			rebaseWhen: 'never',
 		},
 		{
 			groupName: '[misskey-js] Update dependencies',

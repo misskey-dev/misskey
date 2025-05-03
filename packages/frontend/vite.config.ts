@@ -24,7 +24,8 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
  */
 export const searchIndexes = [{
 	targetFilePaths: ['src/pages/settings/*.vue'],
-	exportFilePath: './src/utility/autogen/settings-search-index.ts',
+	mainVirtualModule: 'search-index:settings',
+	modulesToHmrOnUpdate: ['src/pages/settings/index.vue'],
 	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
 }] satisfies SearchIndexOptions[];
 

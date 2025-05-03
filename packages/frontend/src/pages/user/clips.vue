@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="700">
+<div class="_spacer" style="--MI_SPACER-w: 700px;">
 	<div>
 		<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
 			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel _margin">
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</MkPagination>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>

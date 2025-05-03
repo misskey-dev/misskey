@@ -4,35 +4,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'featured'">
-				<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
-					<div class="_gaps">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
-					</div>
-				</MkPagination>
-			</div>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
+		<div v-if="tab === 'featured'">
+			<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
+				<div class="_gaps">
+					<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
+				</div>
+			</MkPagination>
+		</div>
 
-			<div v-else-if="tab === 'my'" class="_gaps">
-				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-				<MkPagination v-slot="{items}" :pagination="myPagesPagination">
-					<div class="_gaps">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
-					</div>
-				</MkPagination>
-			</div>
+		<div v-else-if="tab === 'my'" class="_gaps">
+			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkPagination v-slot="{items}" :pagination="myPagesPagination">
+				<div class="_gaps">
+					<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
+				</div>
+			</MkPagination>
+		</div>
 
-			<div v-else-if="tab === 'liked'">
-				<MkPagination v-slot="{items}" :pagination="likedPagesPagination">
-					<div class="_gaps">
-						<MkPagePreview v-for="like in items" :key="like.page.id" :page="like.page"/>
-					</div>
-				</MkPagination>
-			</div>
-		</MkHorizontalSwipe>
-	</MkSpacer>
+		<div v-else-if="tab === 'liked'">
+			<MkPagination v-slot="{items}" :pagination="likedPagesPagination">
+				<div class="_gaps">
+					<MkPagePreview v-for="like in items" :key="like.page.id" :page="like.page"/>
+				</div>
+			</MkPagination>
+		</div>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -41,7 +39,6 @@ import { computed, ref } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';

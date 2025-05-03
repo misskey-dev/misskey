@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:moveClass="$style.transition_zoom_move"
 	mode="out-in"
 >
-	<MkSpacer v-if="!gameStarted" :contentMax="800">
+	<div v-if="!gameStarted" class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div :class="$style.root">
 			<div class="_gaps">
 				<div class="_woodenFrame" style="text-align: center;">
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 	<XGame v-else :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
 </Transition>
 </template>

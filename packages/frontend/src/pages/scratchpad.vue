@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="800">
-		<div :class="$style.root">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<div class="_gaps">
 			<div class="_gaps_s">
 				<div :class="$style.editor" class="_panel">
 					<MkCodeEditor v-model="code" lang="aiscript"/>
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.scratchpadDescription }}
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -207,9 +207,6 @@ definePage(() => ({
 
 <style lang="scss" module>
 .root {
-	display: flex;
-	flex-direction: column;
-	gap: var(--MI-margin);
 }
 
 .editor {
@@ -247,7 +244,7 @@ definePage(() => ({
 }
 
 .uiInspectorUnShown {
-	color: var(--MI_THEME-fgTransparent);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 }
 
 .uiInspectorType {

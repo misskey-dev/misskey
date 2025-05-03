@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="_root">
 			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkFollowButton v-if="!$i || $i.id != post.user.id" v-model:user="post.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 						</div>
 					</div>
-					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+					<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					<MkContainer :max-height="300" :foldable="true" class="other">
 						<template #icon><i class="ti ti-clock"></i></template>
 						<template #header>{{ i18n.ts.recentPosts }}</template>
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkLoading v-else/>
 			</Transition>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

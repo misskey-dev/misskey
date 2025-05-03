@@ -79,7 +79,7 @@ function opening() {
 	picker.value?.focus();
 
 	// 何故かちょっと待たないとフォーカスされない
-	setTimeout(() => {
+	window.setTimeout(() => {
 		picker.value?.focus();
 	}, 10);
 }

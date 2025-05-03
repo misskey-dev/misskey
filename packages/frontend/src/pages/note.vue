@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div>
 			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note">
 					<div v-if="showNext" class="_margin">
-						<MkNotes class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true" :disableJsRenderSkip="true"/>
+						<MkNotes class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
 					</div>
 
 					<div class="_margin">
@@ -35,14 +35,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 
 					<div v-if="showPrev" class="_margin">
-						<MkNotes class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true" :disableJsRenderSkip="true"/>
+						<MkNotes class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true"/>
 					</div>
 				</div>
 				<MkError v-else-if="error" @retry="fetchNote()"/>
 				<MkLoading v-else/>
 			</Transition>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

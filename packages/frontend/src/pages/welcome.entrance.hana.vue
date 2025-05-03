@@ -84,14 +84,14 @@ let timeoutId: number | null = null;
 watch(iframeLoaded, (to) => {
 	if (!to) {
 		if (timeoutId) {
-			clearTimeout(timeoutId);
+			window.clearTimeout(timeoutId);
 		}
 		timeoutId = window.setTimeout(() => {
 			isTakingTooLong.value = true;
 		}, 5000);
 	} else {
 		if (timeoutId) {
-			clearTimeout(timeoutId);
+			window.clearTimeout(timeoutId);
 			timeoutId = null;
 		}
 		isTakingTooLong.value = false;

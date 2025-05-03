@@ -66,6 +66,7 @@ export const notificationTypes = [
 	'receiveFollowRequest',
 	'followRequestAccepted',
 	'roleAssigned',
+	'chatRoomInvitationReceived',
 	'achievementEarned',
 	'exportCompleted',
 	'login',
@@ -89,9 +90,11 @@ export const ROLE_POLICIES = [
 	'canManageCustomEmojis',
 	'canManageAvatarDecorations',
 	'canSearchNotes',
+	'canSearchWithHanamiSearchV1',
 	'canUseTranslator',
 	'canHideAds',
 	'driveCapacityMb',
+	'maxFileSizeMb',
 	'alwaysMarkNsfw',
 	'canUpdateBioMedia',
 	'pinLimit',
@@ -109,6 +112,7 @@ export const ROLE_POLICIES = [
 	'canImportFollowing',
 	'canImportMuting',
 	'canImportUserLists',
+	'chatAvailability',
 ] as const;
 
 export const DEFAULT_SERVER_ERROR_IMAGE_URL = 'https://xn--931a.moe/assets/error.jpg';

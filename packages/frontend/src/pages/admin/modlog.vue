@@ -4,10 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="900">
-		<div>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
+		<div class="_gaps">
 			<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
@@ -19,41 +18,68 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 			</div>
 
-			<MkPagination v-slot="{items}" ref="logs" :pagination="pagination" style="margin-top: var(--MI-margin);">
-				<MkDateSeparatedList v-slot="{ item }" :items="items" :noGap="false" style="--MI-margin: 8px;">
-					<XModLog :key="item.id" :log="item"/>
-				</MkDateSeparatedList>
-			</MkPagination>
+			<MkTl :events="timeline">
+				<template #left="{ event }">
+					<div>
+						<MkAvatar :user="event.user" style="width: 24px; height: 24px;"/>
+					</div>
+				</template>
+				<template #right="{ event, timestamp, delta }">
+					<div style="margin: 4px 0;">
+						<XModLog :key="event.id" :log="event"/>
+					</div>
+				</template>
+			</MkTl>
+
+			<MkButton primary rounded style="margin: 0 auto;" @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, useTemplateRef, ref } from 'vue';
+import { computed, useTemplateRef, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XHeader from './_header_.vue';
 import XModLog from './modlog.ModLog.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkTl from '@/components/MkTl.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-
-const logs = useTemplateRef('logs');
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
 
 const type = ref<string | null>(null);
 const moderatorId = ref('');
 
-const pagination = {
-	endpoint: 'admin/show-moderation-logs' as const,
-	limit: 30,
-	params: computed(() => ({
+const timeline = ref([]);
+
+watch([type, moderatorId], async () => {
+	const res = await misskeyApi('admin/show-moderation-logs', {
 		type: type.value,
 		userId: moderatorId.value === '' ? null : moderatorId.value,
-	})),
-};
+	});
+	timeline.value = res.map(x => ({
+		id: x.id,
+		timestamp: x.createdAt,
+		data: x,
+	}));
+}, { immediate: true });
+
+function fetchMore() {
+	const last = timeline.value[timeline.value.length - 1];
+	misskeyApi('admin/show-moderation-logs', {
+		type: type.value,
+		userId: moderatorId.value === '' ? null : moderatorId.value,
+		untilId: last.id,
+	}).then(res => {
+		timeline.value.push(...res.map(x => ({
+			id: x.id,
+			timestamp: x.createdAt,
+			data: x,
+		})));
+	});
+}
 
 const headerActions = computed(() => []);
 

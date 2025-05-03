@@ -8,11 +8,13 @@ import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import JSON5 from 'json5';
+import type { Ref } from 'vue';
 import type { BundledTheme } from 'shiki/themes';
 import { deepClone } from '@/utility/clone.js';
 import { globalEvents } from '@/events.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { addTheme, getThemes } from '@/theme-store.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 export type Theme = {
 	id: string;
@@ -57,11 +59,34 @@ export const getBuiltinThemes = () => Promise.all(
 	].map(name => import(`@@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
-export const getBuiltinThemesRef = () => {
+export function getBuiltinThemesRef() {
 	const builtinThemes = ref<Theme[]>([]);
 	getBuiltinThemes().then(themes => builtinThemes.value = themes);
 	return builtinThemes;
-};
+}
+
+export function getThemesRef(): Ref<Theme[]> {
+	return prefer.r.themes;
+}
+
+export async function addTheme(theme: Theme): Promise<void> {
+	if ($i == null) return;
+	const builtinThemes = await getBuiltinThemes();
+	if (builtinThemes.some(t => t.id === theme.id)) {
+		throw new Error('builtin theme');
+	}
+	const themes = prefer.s.themes;
+	if (themes.some(t => t.id === theme.id)) {
+		throw new Error('already exists');
+	}
+	prefer.commit('themes', [...themes, theme]);
+}
+
+export async function removeTheme(theme: Theme): Promise<void> {
+	if ($i == null) return;
+	const themes = prefer.s.themes.filter(t => t.id !== theme.id);
+	prefer.commit('themes', themes);
+}
 
 let timeout: number | null = null;
 
@@ -173,7 +198,7 @@ export function parseThemeCode(code: string): Theme {
 	if (!validateTheme(theme)) {
 		throw new Error('This theme is invaild');
 	}
-	if (getThemes().some(t => t.id === theme.id)) {
+	if (prefer.s.themes.some(t => t.id === theme.id)) {
 		throw new Error('This theme is already installed');
 	}
 

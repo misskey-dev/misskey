@@ -5,7 +5,7 @@
 
 const requestIdleCallback: typeof globalThis.requestIdleCallback = globalThis.requestIdleCallback ?? ((callback) => {
 	const start = performance.now();
-	const timeoutId = setTimeout(() => {
+	const timeoutId = window.setTimeout(() => {
 		callback({
 			didTimeout: false, // polyfill でタイムアウト発火することはない
 			timeRemaining() {
@@ -17,7 +17,7 @@ const requestIdleCallback: typeof globalThis.requestIdleCallback = globalThis.re
 	return timeoutId;
 });
 const cancelIdleCallback: typeof globalThis.cancelIdleCallback = globalThis.cancelIdleCallback ?? ((timeoutId) => {
-	clearTimeout(timeoutId);
+	window.clearTimeout(timeoutId);
 });
 
 class IdlingRenderScheduler {

@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { isTouchUsing } from '@/utility/touch.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
@@ -32,10 +33,11 @@ export type SoundStore = {
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
 export const PREF_DEF = {
-	// TODO: 持つのはホストやユーザーID、ユーザー名など最低限にしといて、その他のプロフィール情報はpreferences外で管理した方が綺麗そう
-	// 現状だと、updateCurrentAccount/updateCurrentAccountPartialが呼ばれるたびに「設定」へのcommitが行われて不自然(明らかに設定の更新とは捉えにくい)だし
 	accounts: {
-		default: [] as [host: string, user: Misskey.entities.User][],
+		default: [] as [host: string, user: {
+			id: string;
+			username: string;
+		}][],
 	},
 
 	pinnedUserLists: {
@@ -118,9 +120,6 @@ export const PREF_DEF = {
 	keepCw: {
 		default: true,
 	},
-	keepOriginalUploading: {
-		default: false,
-	},
 	rememberNoteVisibility: {
 		default: false,
 	},
@@ -135,6 +134,7 @@ export const PREF_DEF = {
 			'notifications',
 			'clips',
 			'drive',
+			'chat',
 			'-',
 			'explore',
 			'announcements',
@@ -196,6 +196,9 @@ export const PREF_DEF = {
 	},
 	useBlurEffect: {
 		default: false,
+	},
+	useStickyIcons: {
+		default: true,
 	},
 	showFixedPostForm: {
 		default: false,
@@ -295,6 +298,9 @@ export const PREF_DEF = {
 	enableHorizontalSwipe: {
 		default: true,
 	},
+	enablePullToRefresh: {
+		default: isTouchUsing,
+	},
 	useNativeUiForVideoAudioPlayer: {
 		default: false,
 	},
@@ -311,7 +317,7 @@ export const PREF_DEF = {
 		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
 	skipNoteRender: {
-		default: 'none' as 'css' | 'js' | 'none',
+		default: false,
 	},
 	alwaysUseAbsoluteTime: {
 		default: false,
@@ -328,9 +334,16 @@ export const PREF_DEF = {
 	makeEveryTextElementsSelectable: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
+	showNavbarSubButtons: {
+		default: true,
+	},
+	showTitlebar: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},
+
 	'sound.masterVolume': {
 		default: 0.3,
 	},
@@ -352,6 +365,10 @@ export const PREF_DEF = {
 	'sound.on.reaction': {
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+	'sound.on.chatMessage': {
+		default: { type: 'syuilo/waon', volume: 1 } as SoundStore,
+	},
+
 	'deck.alwaysShowMainColumn': {
 		default: true,
 	},
@@ -362,8 +379,28 @@ export const PREF_DEF = {
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'left' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'right' | 'center',
 	},
+	'deck.columnGap': {
+		default: 6,
+	},
+	'deck.menuPosition': {
+		default: 'bottom' as 'right' | 'bottom',
+	},
+	'deck.navbarPosition': {
+		default: 'left' as 'left' | 'top' | 'bottom',
+	},
+	'deck.wallpaper': {
+		default: null as string | null,
+	},
+
+	'chat.showSenderName': {
+		default: false,
+	},
+	'chat.sendOnEnter': {
+		default: false,
+	},
+
 	'game.dropAndFusion': {
 		default: {
 			bgmVolume: 0.25,

@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkNotes ref="notes" class="" :pagination="pagination"/>
-	</MkSpacer>
+	</div>
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
-			<MkSpacer :contentMax="800" :marginMin="16" :marginMax="16">
+			<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashtag }}</MkButton>
-			</MkSpacer>
+			</div>
 		</div>
 	</template>
 </PageWithHeader>
@@ -56,7 +56,7 @@ const headerActions = computed(() => [{
 	label: i18n.ts.more,
 	handler: (ev: MouseEvent) => {
 		os.popupMenu([{
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			icon: 'ti ti-code',
 			action: () => {
 				genEmbedCode('tags', props.tag);
@@ -77,7 +77,7 @@ definePage(() => ({
 .footer {
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-top: solid 0.5px var(--MI_THEME-divider);
 	display: flex;
 }
