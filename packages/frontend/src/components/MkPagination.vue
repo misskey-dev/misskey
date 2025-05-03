@@ -4,43 +4,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<Transition
-	:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
-	:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
-	:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
-	:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
-	:css="prefer.s.animation"
-	mode="out-in"
->
-	<MkLoading v-if="paginator.fetching.value"/>
+<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
+	<Transition
+		:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
+		:css="prefer.s.animation"
+		mode="out-in"
+	>
+		<MkLoading v-if="paginator.fetching.value"/>
 
-	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
+		<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
-	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
-		<slot name="empty">
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.nothing }}</div>
+		<div v-else-if="paginator.items.value.length === 0" key="_empty_">
+			<slot name="empty">
+				<div class="_fullinfo">
+					<img :src="infoImageUrl" draggable="false"/>
+					<div>{{ i18n.ts.nothing }}</div>
+				</div>
+			</slot>
+		</div>
+
+		<div v-else ref="rootEl" class="_gaps">
+			<div v-show="pagination.reversed && paginator.canFetchMore.value" key="_more_">
+				<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchNewer">
+					{{ i18n.ts.loadMore }}
+				</MkButton>
+				<MkLoading v-else/>
 			</div>
-		</slot>
-	</div>
-
-	<div v-else ref="rootEl" class="_gaps">
-		<div v-show="pagination.reversed && paginator.canFetchMore.value" key="_more_">
-			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchNewer">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
-			<MkLoading v-else/>
+			<slot :items="paginator.items.value" :fetching="paginator.fetching.value || paginator.moreFetching.value"></slot>
+			<div v-show="!pagination.reversed && paginator.canFetchMore.value" key="_more_">
+				<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchOlder">
+					{{ i18n.ts.loadMore }}
+				</MkButton>
+				<MkLoading v-else/>
+			</div>
 		</div>
-		<slot :items="paginator.items.value" :fetching="paginator.fetching.value || paginator.moreFetching.value"></slot>
-		<div v-show="!pagination.reversed && paginator.canFetchMore.value" key="_more_">
-			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchOlder">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
-			<MkLoading v-else/>
-		</div>
-	</div>
-</Transition>
+	</Transition>
+</component>
 </template>
 
 <script lang="ts" setup>
@@ -51,6 +53,7 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { usePagination } from '@/use/use-pagination.js';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 
 const props = withDefaults(defineProps<{
 	pagination: PagingCtx;

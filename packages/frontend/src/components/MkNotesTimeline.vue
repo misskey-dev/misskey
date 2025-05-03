@@ -4,30 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => reload()">
-	<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
-		<template #empty>
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.noNotes }}</div>
-			</div>
-		</template>
+<MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
+	<template #empty>
+		<div class="_fullinfo">
+			<img :src="infoImageUrl" draggable="false"/>
+			<div>{{ i18n.ts.noNotes }}</div>
+		</div>
+	</template>
 
-		<template #default="{ items: notes }">
-			<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: pagination.reversed }]">
-				<template v-for="(note, i) in notes" :key="note.id">
-					<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
-						<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
-						<div :class="$style.ad">
-							<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
-						</div>
+	<template #default="{ items: notes }">
+		<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: pagination.reversed }]">
+			<template v-for="(note, i) in notes" :key="note.id">
+				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
+					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
+					<div :class="$style.ad">
+						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					</div>
-					<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
-				</template>
-			</div>
-		</template>
-	</MkPagination>
-</component>
+				</div>
+				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
+			</template>
+		</div>
+	</template>
+</MkPagination>
 </template>
 
 <script lang="ts" setup>
@@ -36,8 +34,6 @@ import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	pagination: Paging;
