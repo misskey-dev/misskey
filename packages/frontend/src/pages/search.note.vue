@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, shallowRef, toRef } from 'vue';
 import type * as Misskey from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/use/use-pagination.js';
 import { $i } from '@/i.js';
 import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
@@ -144,7 +144,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const key = ref(0);
-const notePagination = ref<Paging<'notes/search'>>();
+const notePagination = ref<PagingCtx<'notes/search'>>();
 
 const searchQuery = ref(toRef(props, 'query').value);
 const hostInput = ref(toRef(props, 'host').value);

@@ -109,7 +109,7 @@ function addUser() {
 			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
-			paginationEl.value?.reload();
+			paginationEl.value?.paginator.reload();
 		});
 	});
 }
@@ -125,7 +125,7 @@ async function removeUser(item, ev) {
 				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
-				paginationEl.value?.removeItem(item.id);
+				paginationEl.value?.paginator.removeItem(item.id);
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -147,7 +147,7 @@ async function showMembershipMenu(item, ev) {
 			userId: item.userId,
 			withReplies,
 		}).then(() => {
-			paginationEl.value!.updateItem(item.id, (old) => ({
+			paginationEl.value!.paginator.updateItem(item.id, (old) => ({
 				...old,
 				withReplies,
 			}));

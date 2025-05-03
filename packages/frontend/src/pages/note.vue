@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/use/use-pagination.js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
@@ -80,7 +80,7 @@ const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
 const error = ref();
 
-const prevUserPagination: Paging = {
+const prevUserPagination: PagingCtx = {
 	endpoint: 'users/notes',
 	limit: 10,
 	params: computed(() => note.value ? ({
@@ -89,7 +89,7 @@ const prevUserPagination: Paging = {
 	}) : undefined),
 };
 
-const nextUserPagination: Paging = {
+const nextUserPagination: PagingCtx = {
 	reversed: true,
 	endpoint: 'users/notes',
 	limit: 10,
@@ -99,7 +99,7 @@ const nextUserPagination: Paging = {
 	}) : undefined),
 };
 
-const prevChannelPagination: Paging = {
+const prevChannelPagination: PagingCtx = {
 	endpoint: 'channels/timeline',
 	limit: 10,
 	params: computed(() => note.value ? ({
@@ -108,7 +108,7 @@ const prevChannelPagination: Paging = {
 	}) : undefined),
 };
 
-const nextChannelPagination: Paging = {
+const nextChannelPagination: PagingCtx = {
 	reversed: true,
 	endpoint: 'channels/timeline',
 	limit: 10,

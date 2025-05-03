@@ -86,10 +86,10 @@ async function read(target) {
 	}
 
 	if (!paginationEl.value) return;
-	paginationEl.value.updateItem(target.id, a => {
-		a.isRead = true;
-		return a;
-	});
+	paginationEl.value.paginator.updateItem(target.id, a => ({
+		...a,
+		isRead: true,
+	}));
 	misskeyApi('i/read-announcement', { announcementId: target.id });
 	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),

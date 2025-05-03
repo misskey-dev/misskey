@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/use/use-pagination.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -51,7 +51,7 @@ const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
-const pagination: Paging = {
+const pagination: PagingCtx = {
 	endpoint: 'invite/list' as const,
 	limit: 10,
 };
@@ -74,13 +74,13 @@ async function create() {
 		text: ticket.code,
 	});
 
-	pagingComponent.value?.prepend(ticket);
+	pagingComponent.value?.paginator.prepend(ticket);
 	update();
 }
 
 function deleted(id: string) {
 	if (pagingComponent.value) {
-		pagingComponent.value.items.delete(id);
+		pagingComponent.value.paginator.removeItem(id);
 	}
 	update();
 }

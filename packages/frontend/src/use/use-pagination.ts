@@ -196,6 +196,23 @@ export function usePagination<T extends MisskeyEntity>(props: {
 		queuedAheadItemsCount.value = 0;
 	}
 
+	function removeItem(id: string) {
+		const index = items.value.findIndex(x => x.id === id);
+		if (index !== -1) {
+			items.value.splice(index, 1);
+			if (props.useShallowRef) triggerRef(items);
+		}
+	}
+
+	function updateItem(id: string, updator: (item: T) => T) {
+		const index = items.value.findIndex(x => x.id === id);
+		if (index !== -1) {
+			const item = items.value[index]!;
+			items.value[index] = updator(item);
+			if (props.useShallowRef) triggerRef(items);
+		}
+	}
+
 	onMounted(() => {
 		init();
 	});
@@ -213,6 +230,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 		unshiftItems,
 		prepend,
 		trim,
+		removeItem,
+		updateItem,
 		enqueue,
 		releaseQueue,
 		error,

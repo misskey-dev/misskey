@@ -78,7 +78,7 @@ const pagination = {
 
 function revoke(token) {
 	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
-		list.value?.reload();
+		list.value?.paginator.reload();
 	});
 }
 
