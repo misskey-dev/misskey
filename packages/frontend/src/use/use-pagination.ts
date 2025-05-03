@@ -31,12 +31,10 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 	 */
 	noPaging?: boolean;
 
-	/**
-	 * items 配列の中身を逆順にする(新しい方が最後)
-	 */
-	reversed?: boolean;
-
 	offsetMode?: boolean;
+
+	baseId?: MisskeyEntity['id'];
+	direction?: 'newer' | 'older';
 };
 
 export function usePagination<T extends MisskeyEntity>(props: {
@@ -47,8 +45,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	let aheadQueue: T[] = [];
 	const queuedAheadItemsCount = ref(0);
 	const fetching = ref(true);
-	const moreFetching = ref(false);
-	const canFetchMore = ref(false);
+	const fetchingOlder = ref(false);
+	const canFetchOlder = ref(false);
 	const error = ref(false);
 
 	// パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
@@ -73,11 +71,22 @@ export function usePagination<T extends MisskeyEntity>(props: {
 		queuedAheadItemsCount.value = 0;
 		fetching.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
+
 		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
 			limit: props.ctx.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
+			...(props.ctx.baseId && props.ctx.direction === 'newer' ? {
+				sinceId: props.ctx.baseId,
+			} : props.ctx.baseId && props.ctx.direction === 'older' ? {
+				untilId: props.ctx.baseId,
+			} : {}),
 		}).then(res => {
+			// 逆順で返ってくるので
+			if (props.ctx.baseId && props.ctx.direction === 'newer') {
+				res.reverse();
+			}
+
 			for (let i = 0; i < res.length; i++) {
 				const item = res[i];
 				if (i === 3) item._shouldInsertAd_ = true;
@@ -85,11 +94,10 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 			if (res.length === 0 || props.ctx.noPaging) {
 				pushItems(res);
-				canFetchMore.value = false;
+				canFetchOlder.value = false;
 			} else {
-				if (props.ctx.reversed) moreFetching.value = true;
 				pushItems(res);
-				canFetchMore.value = true;
+				canFetchOlder.value = true;
 			}
 
 			error.value = false;
@@ -105,8 +113,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	async function fetchOlder(): Promise<void> {
-		if (!canFetchMore.value || fetching.value || moreFetching.value || items.value.length === 0) return;
-		moreFetching.value = true;
+		if (!canFetchOlder.value || fetching.value || fetchingOlder.value || items.value.length === 0) return;
+		fetchingOlder.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
@@ -123,16 +131,16 @@ export function usePagination<T extends MisskeyEntity>(props: {
 			}
 
 			if (res.length === 0) {
-				canFetchMore.value = false;
-				moreFetching.value = false;
+				canFetchOlder.value = false;
+				fetchingOlder.value = false;
 			} else {
 				items.value.push(...res);
 				if (props.useShallowRef) triggerRef(items);
-				canFetchMore.value = true;
-				moreFetching.value = false;
+				canFetchOlder.value = true;
+				fetchingOlder.value = false;
 			}
 		}, err => {
-			moreFetching.value = false;
+			fetchingOlder.value = false;
 		});
 	}
 
@@ -163,7 +171,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function trim() {
-		if (items.value.length >= MAX_ITEMS) canFetchMore.value = true;
+		if (items.value.length >= MAX_ITEMS) canFetchOlder.value = true;
 		items.value = items.value.slice(0, MAX_ITEMS);
 	}
 
@@ -225,8 +233,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 		items,
 		queuedAheadItemsCount,
 		fetching,
-		moreFetching,
-		canFetchMore,
+		fetchingOlder,
+		canFetchOlder,
 		init,
 		reload,
 		fetchOlder,
