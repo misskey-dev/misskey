@@ -263,16 +263,14 @@ watch(isNoteInYamiMode, (newValue) => {
 	}
 }, { immediate: true });
 
-// 固定フォーム（埋め込み）の場合のみ、isInYamiTimelineプロップに基づいてやみノートモードを設定
+// 固定フォーム（埋め込み）の場合のみ、親タイムラインの種類に基づいてやみノートモードを設定
 watch(
 	() => props.isInYamiTimeline,
 	(isInYamiTimeline) => {
 		// 固定フォーム（埋め込み）の場合のみ処理
 		if (props.fixed) {
-			// 親投稿がやみノートでない場合のみ変更
-			if (!(props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)) {
-				isNoteInYamiMode.value = !!isInYamiTimeline;
-			}
+			// 現在やみタイムラインならやみノートモード、そうでなければ通常ノートモード
+			isNoteInYamiMode.value = !!isInYamiTimeline;
 		}
 	},
 	{ immediate: true },
@@ -1352,10 +1350,16 @@ onMounted(() => {
 				if (draft.data.scheduledNoteDelete) {
 					scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 				}
-				isNoteInYamiMode.value = $i.policies.canYamiNote ?
-					(draft.data.isNoteInYamiMode ??
-					(prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)) :
-					false;
+				if (props.fixed) {
+					// 固定フォームの場合は親タイムラインタイプを優先
+					isNoteInYamiMode.value = !!props.isInYamiTimeline;
+				} else {
+					// 通常フォームの場合は下書きの値を使用
+					isNoteInYamiMode.value = $i.policies.canYamiNote ?
+						(draft.data.isNoteInYamiMode ??
+        (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)) :
+						false;
+				}
 			}
 		}
 
@@ -1395,6 +1399,13 @@ onMounted(() => {
 					scheduledAt: new Date(init.createdAt).getTime(),
 					isValid: true,
 				};
+			}
+			if (props.fixed) {
+				// 固定フォームの場合は親タイムラインタイプを優先
+				isNoteInYamiMode.value = !!props.isInYamiTimeline;
+			} else {
+				// 通常フォームの場合は元の投稿のやみノート状態を継承
+				isNoteInYamiMode.value = init.isNoteInYamiMode ?? false;
 			}
 		}
 
