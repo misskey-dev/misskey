@@ -9,7 +9,6 @@ import { DI } from '@/di-symbols.js';
 import { type Config, FulltextSearchProvider } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { MiNote } from '@/models/Note.js';
-import { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository } from '@/models/_.js';
 import { MiUser } from '@/models/_.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
@@ -18,9 +17,6 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
-import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
 
 type K = string;
@@ -94,7 +90,6 @@ export class SearchService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private idService: IdService,
@@ -183,24 +178,16 @@ export class SearchService {
 		me: MiUser | null,
 		opts: SearchOpts,
 		pagination: SearchPagination,
-	): Promise<Packed<'Note'>[]> {
-		const [
-			userIdsWhoMeMuting,
-			userIdsWhoBlockingMe,
-		] = me ? await Promise.all([
-			this.cacheService.userMutingsCache.fetch(me.id),
-			this.cacheService.userBlockedCache.fetch(me.id),
-		]) : [new Set<string>(), new Set<string>()];
-
+	): Promise<MiNote[]> {
 		switch (this.provider) {
 			case 'sqlLike':
 			case 'sqlPgroonga': {
 				// ほとんど内容に差がないのでsqlLikeとsqlPgroongaを同じ処理にしている.
 				// 今後の拡張で差が出る用であれば関数を分ける.
-				return this.searchNoteByLike(q, me, opts, pagination, userIdsWhoMeMuting, userIdsWhoBlockingMe);
+				return this.searchNoteByLike(q, me, opts, pagination);
 			}
 			case 'meilisearch': {
-				return this.searchNoteByMeiliSearch(q, me, opts, pagination, userIdsWhoMeMuting, userIdsWhoBlockingMe);
+				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
 			}
 			default: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -216,9 +203,7 @@ export class SearchService {
 		me: MiUser | null,
 		opts: SearchOpts,
 		pagination: SearchPagination,
-		userIdsWhoMeMuting: Set<string>,
-		userIdsWhoBlockingMe: Set<string>,
-	): Promise<Packed<'Note'>[]> {
+	): Promise<MiNote[]> {
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
 
 		if (opts.userId) {
@@ -250,20 +235,11 @@ export class SearchService {
 
 		this.queryService.generateVisibilityQuery(query, me);
 		this.queryService.generateBlockedHostQueryForNote(query);
+		this.queryService.generateSuspendedUserQueryForNote(query);
 		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
 		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
 
-		const notes = (await query.getMany()).filter(note => {
-			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-			if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-
-			return true;
-		});
-		const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !isMustRemove(note, 'home'));
-		await Promise.all(
-			packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
-		);
-		return packedNotes;
+		return query.limit(pagination.limit).getMany();
 	}
 
 	@bindThis
@@ -272,10 +248,7 @@ export class SearchService {
 		me: MiUser | null,
 		opts: SearchOpts,
 		pagination: SearchPagination,
-		userIdsWhoMeMuting: Set<string>,
-		userIdsWhoBlockingMe: Set<string>,
-
-	): Promise<Packed<'Note'>[]> {
+	): Promise<MiNote[]> {
 		if (!this.meilisearch || !this.meilisearchNoteIndex) {
 			throw new Error('MeiliSearch is not available');
 		}
@@ -325,11 +298,17 @@ export class SearchService {
 			])
 			: [new Set<string>(), new Set<string>()];
 
-		const query = this.notesRepository.createQueryBuilder('note');
+		const query = this.notesRepository.createQueryBuilder('note')
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		query.where('note.id IN (:...noteIds)', { noteIds: res.hits.map(x => x.id) });
 
 		this.queryService.generateBlockedHostQueryForNote(query);
+		this.queryService.generateSuspendedUserQueryForNote(query);
 
 		const notes = (await query.getMany()).filter(note => {
 			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
@@ -337,12 +316,6 @@ export class SearchService {
 			return true;
 		});
 
-		notes.sort((a, b) => a.id > b.id ? -1 : 1);
-		const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !isMustRemove(note, 'home'));
-		await Promise.all(
-			packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
-		);
-
-		return packedNotes;
+		return notes.sort((a, b) => a.id > b.id ? -1 : 1);
 	}
 }

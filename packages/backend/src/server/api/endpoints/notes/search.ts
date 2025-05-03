@@ -6,6 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { SearchService } from '@/core/SearchService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
@@ -56,6 +57,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		private noteEntityService: NoteEntityService,
 		private searchService: SearchService,
 		private roleService: RoleService,
 	) {
@@ -65,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.unavailable);
 			}
 
-			return await this.searchService.searchNote(ps.query, me, {
+			const notes = await this.searchService.searchNote(ps.query, me, {
 				userId: ps.userId,
 				channelId: ps.channelId,
 				host: ps.host,
@@ -74,6 +76,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sinceId: ps.sinceId,
 				limit: ps.limit,
 			});
+
+			return await this.noteEntityService.packMany(notes, me);
 		});
 	}
 }
+
