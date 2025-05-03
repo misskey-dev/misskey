@@ -1548,6 +1548,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 					// DeliverManagerの標準APIを使用
 					dm.addDirectRecipe(following.follower as MiRemoteUser);
 				}
+
+				// 配信を実行するためにdm.execute()を呼び出す
+				await dm.execute();
+
 				console.log(`[YamiNote] 配信処理完了 (${trustedFollowers.length}件)`);
 			} else {
 				console.log('[YamiNote] 配信対象のフォロワーが見つかりませんでした');
