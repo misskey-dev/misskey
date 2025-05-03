@@ -7690,6 +7690,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * 連合投稿の許可
+             */
+            "canFederateNote": string;
+            /**
              * ノート内の最大メンション数
              */
             "mentionMax": string;
@@ -9714,6 +9718,10 @@ export interface Locale extends ILocale {
          * 指定したユーザーのみに公開
          */
         "specifiedDescription": string;
+        /**
+         * ノートの連合は管理者により無効化されています
+         */
+        "noteFederationDisabled": string;
         /**
          * 連合あり
          */

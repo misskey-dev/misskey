@@ -37,6 +37,7 @@ export type RolePolicies = {
 	yamiTlAvailable: boolean;
 	canYamiNote: boolean;
 	canPublicNote: boolean;
+	canFederateNote: boolean;
 	scheduleNoteMax: number;
 	mentionLimit: number;
 	canInvite: boolean;
@@ -84,6 +85,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	yamiTlAvailable: false,
 	canYamiNote: false,
 	canPublicNote: false,
+	canFederateNote: false,
 	scheduleNoteMax: 15,
 	mentionLimit: 20,
 	canInvite: false,
@@ -418,6 +420,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			yamiTlAvailable: calc('yamiTlAvailable', vs => vs.some(v => v === true)),
 			canYamiNote: calc('canYamiNote', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+			canFederateNote: calc('canFederateNote', vs => vs.some(v => v === true)),
 			scheduleNoteMax: calc('scheduleNoteMax', vs => Math.max(...vs)),
 			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),

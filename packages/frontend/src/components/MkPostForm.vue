@@ -51,18 +51,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 			</template>
 			<button
-				v-tooltip="isNoteInYamiMode
-					? (localOnly ? i18n.ts._visibility.disableFederation : i18n.ts._visibility.yamiNoteFederationEnabled)
-					: (localOnly ? i18n.ts._visibility.disableFederation : i18n.ts._visibility.enableFederation)"
+				v-tooltip="$i.policies?.canFederateNote === false
+					? (isNoteInYamiMode
+						? i18n.ts._visibility.yamiNoteFederationDisabled
+						: i18n.ts._visibility.noteFederationDisabled)
+					: (isNoteInYamiMode
+						? (localOnly ? i18n.ts._visibility.disableFederation : i18n.ts._visibility.yamiNoteFederationEnabled)
+						: (localOnly ? i18n.ts._visibility.disableFederation : i18n.ts._visibility.enableFederation))"
 				class="_button"
 				:class="[$style.headerRightItem, {
 					[$style.danger]: localOnly,
-					[$style.warning]: isNoteInYamiMode && !localOnly
+					[$style.warning]: isNoteInYamiMode && !localOnly,
+					[$style.disabled]: $i.policies?.canFederateNote === false
 				}]"
-				:disabled="channel != null || visibility === 'specified'"
+				:disabled="channel != null || visibility === 'specified' || $i.policies?.canFederateNote === false"
 				@click="toggleLocalOnly"
 			>
-				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+				<span v-if="!localOnly && $i.policies?.canFederateNote !== false"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
 			<button ref="otherSettingsButton" v-tooltip="i18n.ts.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>

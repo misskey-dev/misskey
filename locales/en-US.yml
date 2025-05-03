@@ -1951,6 +1951,7 @@ _role:
     yamiTlAvailable: "Can view the yami timeline"
     canYamiNote: "Can post yami notes"
     canPublicNote: "Can send public notes"
+    canFederateNote: "Allow federated notes"
     mentionMax: "Maximum number of mentions in a note"
     canImportNotes: "Can import notes"
     canInvite: "Can create instance invite codes"
@@ -2471,6 +2472,7 @@ _visibility:
   followersDescription: "Make visible to your followers only"
   specified: "Direct"
   specifiedDescription: "Make visible for specified users only"
+  noteFederationDisabled: "Note federation has been disabled by admin"
   disableFederation: "Defederate"
   disableFederationDescription: "Don't transmit to other instances"
 _postForm:

@@ -279,6 +279,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
+		// 連合権限のチェック - ローカルオンリーでない場合に権限を確認
+		if (data.localOnly === false) {
+			const policies = await this.roleService.getUserPolicies(user.id);
+			if (policies.canFederateNote === false) {
+				data.localOnly = true; // 連合権限がない場合は強制的にローカルオンリーに
+			}
+		}
+
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = this.meta.sensitiveWords;
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
@@ -462,6 +470,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibility = 'public';
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
+
+		// 連合権限のチェック - ローカルオンリーでない場合に権限を確認
+		if (data.localOnly === false) {
+			const policies = await this.roleService.getUserPolicies(user.id);
+			if (policies.canFederateNote === false) {
+				data.localOnly = true; // 連合権限がない場合は強制的にローカルオンリーに
+			}
+		}
 
 		const meta = await this.metaService.fetch();
 
