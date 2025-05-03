@@ -143,7 +143,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notes.sort((a, b) => a.id > b.id ? -1 : 1);
 			}
 
-			const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !isMustRemove(note, 'home'));
+			const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !note.isHidden);
 			await Promise.all(
 				packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
 			);
