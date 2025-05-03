@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { isTouchUsing } from '@/utility/touch.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
@@ -301,7 +302,7 @@ export const PREF_DEF = {
 		default: true,
 	},
 	enablePullToRefresh: {
-		default: true,
+		default: isTouchUsing,
 	},
 	useNativeUiForVideoAudioPlayer: {
 		default: false,
