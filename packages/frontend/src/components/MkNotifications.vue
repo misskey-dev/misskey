@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh :refresher="() => reload()">
+<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => reload()">
 	<MkPagination ref="pagingComponent" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</component>
 		</template>
 	</MkPagination>
-</MkPullToRefresh>
+</component>
 </template>
 
 <script lang="ts" setup>

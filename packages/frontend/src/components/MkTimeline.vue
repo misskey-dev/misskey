@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
-	<MkPagination v-if="paginationQuery" ref="pagingComponent" :pagination="paginationQuery" @queue="emit('queue', $event)" @status="prComponent?.setDisabled($event)">
+<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => reloadTimeline()">
+	<MkPagination v-if="paginationQuery" ref="pagingComponent" :pagination="paginationQuery" @queue="emit('queue', $event)">
 		<template #empty>
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</component>
 		</template>
 	</MkPagination>
-</MkPullToRefresh>
+</component>
 </template>
 
 <script lang="ts" setup>
@@ -93,7 +93,6 @@ type TimelineQueryType = {
 	roleId?: string
 };
 
-const prComponent = useTemplateRef('prComponent');
 const pagingComponent = useTemplateRef('pagingComponent');
 
 let tlNotesCount = 0;

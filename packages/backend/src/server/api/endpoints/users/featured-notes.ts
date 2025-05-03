@@ -88,6 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('note.channel', 'channel');
 
 			this.queryService.generateBlockedHostQueryForNote(query);
+			this.queryService.generateSuspendedUserQueryForNote(query);
 
 			const notes = (await query.getMany()).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;

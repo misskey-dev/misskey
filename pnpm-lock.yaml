@@ -390,6 +390,9 @@ importers:
       secure-json-parse:
         specifier: 3.0.2
         version: 3.0.2
+      semver:
+        specifier: 7.7.1
+        version: 7.7.1
       sharp:
         specifier: 0.34.1
         version: 0.34.1
@@ -547,9 +550,6 @@ importers:
       '@types/sinonjs__fake-timers':
         specifier: 8.1.5
         version: 8.1.5
-      '@types/supertest':
-        specifier: 6.0.3
-        version: 6.0.3
       '@types/tinycolor2':
         specifier: 1.4.6
         version: 1.4.6
@@ -601,9 +601,6 @@ importers:
       simple-oauth2:
         specifier: 5.1.0
         version: 5.1.0
-      supertest:
-        specifier: 7.1.0
-        version: 7.1.0
     optionalDependencies:
       '@swc/core-android-arm64':
         specifier: 1.3.11
@@ -2787,10 +2784,6 @@ packages:
       '@nestjs/platform-express':
         optional: true
 
-  '@noble/hashes@1.6.1':
-    resolution: {integrity: sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w==}
-    engines: {node: ^14.21.3 || >=16}
-
   '@noble/hashes@1.7.1':
     resolution: {integrity: sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ==}
     engines: {node: ^14.21.3 || >=16}
@@ -3051,9 +3044,6 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
-
-  '@paralleldrive/cuid2@2.2.2':
-    resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
 
   '@parcel/watcher-android-arm64@2.5.0':
     resolution: {integrity: sha512-qlX4eS28bUcQCdribHkg/herLe+0A9RyYC+mm2PXpncit8z5b3nSqGVzMNR3CmtAOgRutiZ02eIJJgP/b1iEFQ==}
@@ -4198,9 +4188,6 @@ packages:
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
-  '@types/cookiejar@2.1.5':
-    resolution: {integrity: sha512-he+DHOWReW0nghN24E1WUqM0efK4kI9oTqDm6XmK8ZPe2djZ90BSNdGnIyCLzCPw7/pogPlGbzI2wHGGmi4O/Q==}
-
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
@@ -4287,9 +4274,6 @@ packages:
 
   '@types/mdx@2.0.3':
     resolution: {integrity: sha512-IgHxcT3RC8LzFLhKwP3gbMPeaK7BM9eBH46OdapPA7yvuIUJ8H6zHZV53J8hGZcTSnt95jANt+rTBNUUc22ACQ==}
-
-  '@types/methods@1.1.4':
-    resolution: {integrity: sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ==}
 
   '@types/micromatch@4.0.9':
     resolution: {integrity: sha512-7V+8ncr22h4UoYRLnLXSpTxjQrNUXtWHGeMPRJt1nULXI57G9bIcpyrHlmrQ7QK24EyyuXvYcSSWAM8GA9nqCg==}
@@ -4431,12 +4415,6 @@ packages:
 
   '@types/statuses@2.0.4':
     resolution: {integrity: sha512-eqNDvZsCNY49OAXB0Firg/Sc2BgoWsntsLUdybGFOhAfCD6QJ2n9HXUIHGqt5qjrxmMv4wS8WLAw43ZkKcJ8Pw==}
-
-  '@types/superagent@8.1.9':
-    resolution: {integrity: sha512-pTVjI73witn+9ILmoJdajHGW2jkSaOzhiFYF1Rd3EQ94kymLqB9PjD9ISg7WaALC7+dCHT0FGe9T2LktLq/3GQ==}
-
-  '@types/supertest@6.0.3':
-    resolution: {integrity: sha512-8WzXq62EXFhJ7QsH3Ocb/iKQ/Ty9ZVWnVzoTKc9tyyFRRF3a74Tk2+TLFgaFFw364Ere+npzHKEJ6ga2LzIL7w==}
 
   '@types/tedious@4.0.14':
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
@@ -5578,9 +5556,6 @@ packages:
   compare-versions@6.1.1:
     resolution: {integrity: sha512-4hm4VPpIecmlg59CHXnRDnqGplJFrbLG4aFEl5vl6cK1u76ws3LLvX7ikFnTDl5vo39sjWD6AaDPYodJp/NNHg==}
 
-  component-emitter@1.3.1:
-    resolution: {integrity: sha512-T0+barUSQRTUQASh8bx02dl+DhF54GtIDY13Y3m9oWTklKbb3Wv974meRpeZ3lp1JpLVECWWNHC4vaG2XHXouQ==}
-
   compress-commons@6.0.2:
     resolution: {integrity: sha512-6FqVXeETqWPoGcfzrXb37E50NP0LXT8kAMu5ooZayhWWdgEY4lBEEcbQNXtkuKQsGduxiIcI4gOTsxTmuq/bSg==}
     engines: {node: '>= 14'}
@@ -5637,9 +5612,6 @@ packages:
   cookie@1.0.1:
     resolution: {integrity: sha512-Xd8lFX4LM9QEEwxQpF9J9NTUh8pmdJO0cyRJhFiDoLTk2eH8FXlRv2IFGYVadZpqI3j8fhNrSdKCeYPxiAhLXw==}
     engines: {node: '>=18'}
-
-  cookiejar@2.1.4:
-    resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
 
   core-js@3.29.1:
     resolution: {integrity: sha512-+jwgnhg6cQxKYIIjGtAHq2nwUOolo9eoFZ4sHfUH09BLXBgxnH4gA0zEd+t+BO2cNB8idaBtZFcFTRjQJRJmAw==}
@@ -5952,9 +5924,6 @@ packages:
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
-
-  dezalgo@1.0.4:
-    resolution: {integrity: sha512-rXSP0bf+5n0Qonsb+SVVfNfIsimO4HEtmnIpPHY8Q1UCzKlQrDMfdobr8nJOOsRgWCyMRqeSBQzmWUMq7zvVig==}
 
   diff-match-patch@1.0.5:
     resolution: {integrity: sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==}
@@ -6614,10 +6583,6 @@ packages:
   formdata-polyfill@4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
-
-  formidable@3.5.4:
-    resolution: {integrity: sha512-YikH+7CUTOtP44ZTnUhR7Ic2UASBPOqmaRkRKxRbywPTe5VxF7RRCck4af9wutiZ/QKM5nME9Bie2fFaPz5Gug==}
-    engines: {node: '>=14.0.0'}
 
   forwarded-parse@2.1.2:
     resolution: {integrity: sha512-alTFZZQDKMporBH77856pXgzhEzaUVmLCDk+egLgIgHst3Tpndzz8MnKe+GzRJRfvVdn69HhpW7cmXzvtLvJAw==}
@@ -9198,10 +9163,6 @@ packages:
     resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
     engines: {node: '>=0.6'}
 
-  qs@6.13.1:
-    resolution: {integrity: sha512-EJPeIn0CYrGu+hli1xilKAPXODtJ12T0sP63Ijx2/khC2JtuaN3JyNIpvmnkmaEtha9ocbG4A4cMcr+TvqvwQg==}
-    engines: {node: '>=0.6'}
-
   qs@6.14.0:
     resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
     engines: {node: '>=0.6'}
@@ -10049,14 +10010,6 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
       postcss: ^8.4.31
-
-  superagent@9.0.2:
-    resolution: {integrity: sha512-xuW7dzkUpcJq7QnhOsnNUgtYp3xRwpt2F7abdRYIpCsAt0hhUqia0EdxyXZQQpNmGtsCzYHryaKSV3q3GJnq7w==}
-    engines: {node: '>=14.18.0'}
-
-  supertest@7.1.0:
-    resolution: {integrity: sha512-5QeSO8hSrKghtcWEoPiO036fxH0Ii2wVQfFZSP0oqQhmjk8bOLhDFXr4JrvaFmPuEWUoq4znY3uSi8UzLKxGqw==}
-    engines: {node: '>=14.18.0'}
 
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
@@ -12829,8 +12782,6 @@ snapshots:
     optionalDependencies:
       '@nestjs/platform-express': 10.4.17(@nestjs/common@11.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.0)
 
-  '@noble/hashes@1.6.1': {}
-
   '@noble/hashes@1.7.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -13164,10 +13115,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.9.0)
-
-  '@paralleldrive/cuid2@2.2.2':
-    dependencies:
-      '@noble/hashes': 1.6.1
 
   '@parcel/watcher-android-arm64@2.5.0':
     optional: true
@@ -14596,8 +14543,6 @@ snapshots:
 
   '@types/cookie@0.6.0': {}
 
-  '@types/cookiejar@2.1.5': {}
-
   '@types/debug@4.1.12':
     dependencies:
       '@types/ms': 0.7.34
@@ -14690,8 +14635,6 @@ snapshots:
       '@types/unist': 3.0.2
 
   '@types/mdx@2.0.3': {}
-
-  '@types/methods@1.1.4': {}
 
   '@types/micromatch@4.0.9':
     dependencies:
@@ -14831,18 +14774,6 @@ snapshots:
   '@types/stack-utils@2.0.1': {}
 
   '@types/statuses@2.0.4': {}
-
-  '@types/superagent@8.1.9':
-    dependencies:
-      '@types/cookiejar': 2.1.5
-      '@types/methods': 1.1.4
-      '@types/node': 22.15.2
-      form-data: 4.0.2
-
-  '@types/supertest@6.0.3':
-    dependencies:
-      '@types/methods': 1.1.4
-      '@types/superagent': 8.1.9
 
   '@types/tedious@4.0.14':
     dependencies:
@@ -16246,8 +16177,6 @@ snapshots:
 
   compare-versions@6.1.1: {}
 
-  component-emitter@1.3.1: {}
-
   compress-commons@6.0.2:
     dependencies:
       crc-32: 1.2.2
@@ -16299,8 +16228,6 @@ snapshots:
   cookie@0.7.2: {}
 
   cookie@1.0.1: {}
-
-  cookiejar@2.1.4: {}
 
   core-js@3.29.1: {}
 
@@ -16684,11 +16611,6 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
-
-  dezalgo@1.0.4:
-    dependencies:
-      asap: 2.0.6
-      wrappy: 1.0.2
 
   diff-match-patch@1.0.5: {}
 
@@ -17625,12 +17547,6 @@ snapshots:
   formdata-polyfill@4.0.10:
     dependencies:
       fetch-blob: 3.2.0
-
-  formidable@3.5.4:
-    dependencies:
-      '@paralleldrive/cuid2': 2.2.2
-      dezalgo: 1.0.4
-      once: 1.4.0
 
   forwarded-parse@2.1.2: {}
 
@@ -20637,10 +20553,6 @@ snapshots:
     dependencies:
       side-channel: 1.0.6
 
-  qs@6.13.1:
-    dependencies:
-      side-channel: 1.0.6
-
   qs@6.14.0:
     dependencies:
       side-channel: 1.1.0
@@ -21630,27 +21542,6 @@ snapshots:
       browserslist: 4.24.4
       postcss: 8.5.3
       postcss-selector-parser: 6.1.2
-
-  superagent@9.0.2:
-    dependencies:
-      component-emitter: 1.3.1
-      cookiejar: 2.1.4
-      debug: 4.4.0(supports-color@8.1.1)
-      fast-safe-stringify: 2.1.1
-      form-data: 4.0.2
-      formidable: 3.5.4
-      methods: 1.1.2
-      mime: 2.6.0
-      qs: 6.13.1
-    transitivePeerDependencies:
-      - supports-color
-
-  supertest@7.1.0:
-    dependencies:
-      methods: 1.1.2
-      superagent: 9.0.2
-    transitivePeerDependencies:
-      - supports-color
 
   supports-color@5.5.0:
     dependencies:
