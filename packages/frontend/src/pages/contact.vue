@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-	<MkSpacer :contentMax="600" :marginMin="20">
+<PageWithHeader>
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
 		<div class="_gaps_m">
 			<MkKeyValue :copy="instance.maintainerName">
 				<template #key>{{ i18n.ts.administrator }}</template>
@@ -30,18 +29,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkKeyValue>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.inquiry,
 	icon: 'ti ti-help-circle',
 }));

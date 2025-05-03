@@ -4,107 +4,93 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.rootIsMobile]: isMobile }]">
-	<XSidebar v-if="!isMobile"/>
+<div :class="[$style.root]">
+	<XTitlebar v-if="prefer.r.showTitlebar.value" style="flex-shrink: 0;"/>
 
-	<div :class="$style.main">
-		<XAnnouncements v-if="$i"/>
-		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
-			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-			<section
-				v-for="ids in layout"
-				:class="$style.section"
-				:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
-				@wheel.self="onWheel"
-			>
-				<component
-					:is="columnComponents[columns.find(c => c.id === id)!.type] ?? XTlColumn"
-					v-for="id in ids"
-					:ref="id"
-					:key="id"
-					:class="$style.column"
-					:column="columns.find(c => c.id === id)!"
-					:isStacked="ids.length > 1"
-					@headerWheel="onWheel"
-				/>
-			</section>
-			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
-				<div>{{ i18n.ts._deck.introduction }}</div>
-				<MkButton primary style="margin: 1em auto;" @click="addColumn">{{ i18n.ts._deck.addColumn }}</MkButton>
-				<div>{{ i18n.ts._deck.introduction2 }}</div>
+	<div :class="$style.nonTitlebarArea">
+		<XSidebar v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'left'"/>
+
+		<div :class="[$style.main, { [$style.withWallpaper]: withWallpaper, [$style.withSidebarAndTitlebar]: !isMobile && prefer.r['deck.navbarPosition'].value === 'left' && prefer.r.showTitlebar.value }]" :style="{ backgroundImage: prefer.s['deck.wallpaper'] != null ? `url(${ prefer.s['deck.wallpaper'] })` : null }">
+			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'top'"/>
+
+			<XAnnouncements v-if="$i"/>
+			<XStatusBars/>
+			<div :class="$style.columnsWrapper">
+				<!-- passive: https://bugs.webkit.org/show_bug.cgi?id=281300 -->
+				<div ref="columnsEl" :class="[$style.columns, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.passive.self="onWheel">
+					<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
+					<section
+						v-for="ids in layout"
+						:class="$style.section"
+						:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+						@wheel.passive.self="onWheel"
+					>
+						<component
+							:is="columnComponents[columns.find(c => c.id === id)!.type] ?? XTlColumn"
+							v-for="id in ids"
+							:ref="id"
+							:key="id"
+							:class="[$style.column, { '_shadow': withWallpaper }]"
+							:column="columns.find(c => c.id === id)!"
+							:isStacked="ids.length > 1"
+							@headerWheel="onWheel"
+						/>
+					</section>
+					<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
+						<div>{{ i18n.ts._deck.introduction }}</div>
+						<div>{{ i18n.ts._deck.introduction2 }}</div>
+					</div>
+				</div>
+
+				<div v-if="prefer.r['deck.menuPosition'].value === 'right'" :class="$style.sideMenu">
+					<div :class="$style.sideMenuTop">
+						<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
+						<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
+					</div>
+					<div :class="$style.sideMenuMiddle">
+						<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
+					</div>
+					<div :class="$style.sideMenuBottom">
+						<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
+					</div>
+				</div>
 			</div>
-			<div :class="$style.sideMenu">
-				<div :class="$style.sideMenuTop">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${store.state['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
-					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
+
+			<div v-if="prefer.r['deck.menuPosition'].value === 'bottom'" :class="$style.bottomMenu">
+				<div :class="$style.bottomMenuLeft">
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.bottomMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.bottomMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
-				<div :class="$style.sideMenuMiddle">
-					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
+				<div :class="$style.bottomMenuMiddle">
+					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.bottomMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
 				</div>
-				<div :class="$style.sideMenuBottom">
-					<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings"></i></button>
+				<div :class="$style.bottomMenuRight">
+					<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.bottomMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
 				</div>
 			</div>
+
+			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'bottom'"/>
+
+			<XMobileFooterMenu v-if="isMobile" v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 		</div>
 	</div>
 
-	<div v-if="isMobile" :class="$style.nav">
-		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
-			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
-			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
-				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
-			</span>
-		</button>
-		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
-	</div>
-
-	<Transition
-		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
-	>
-		<div
-			v-if="drawerMenuShowing"
-			:class="$style.menuBg"
-			class="_modalBg"
-			@click="drawerMenuShowing = false"
-			@touchstart.passive="drawerMenuShowing = false"
-		></div>
-	</Transition>
-
-	<Transition
-		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
-	>
-		<div v-if="drawerMenuShowing" :class="$style.menu">
-			<XDrawerMenu/>
-		</div>
-	</Transition>
-
-	<XCommon/>
+	<XCommon v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
+import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import type { MenuItem } from '@/types/menu.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
-import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
-import MkButton from '@/components/MkButton.vue';
+import XNavbarH from '@/ui/_common_/navbar-h.vue';
+import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
+import XTitlebar from '@/ui/_common_/titlebar.vue';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import { prefer } from '@/preferences.js';
 import XMainColumn from '@/ui/deck/main-column.vue';
 import XTlColumn from '@/ui/deck/tl-column.vue';
@@ -116,9 +102,10 @@ import XWidgetsColumn from '@/ui/deck/widgets-column.vue';
 import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
-import { mainRouter } from '@/router/main.js';
-import { store } from '@/store.js';
-import { columnTypes, forceSaveDeck, getProfiles, loadDeck, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
+import XChatColumn from '@/ui/deck/chat-column.vue';
+import { mainRouter } from '@/router.js';
+import { columns, layout, columnTypes, switchProfileMenu, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
+
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -133,11 +120,12 @@ const columnComponents = {
 	mentions: XMentionsColumn,
 	direct: XDirectColumn,
 	roleTimeline: XRoleTimelineColumn,
+	chat: XChatColumn,
 };
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
-	const noMainColumn = !store.state['deck.columns'].some(x => x.type === 'main');
+	const noMainColumn = !columns.value.some(x => x.type === 'main');
 	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
 		return true;
@@ -150,8 +138,12 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
 });
 
-const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
+// ポインターイベント非対応用に初期値はUAから出す
+const snapScroll = ref(deviceKind === 'smartphone' || deviceKind === 'tablet');
+const withWallpaper = prefer.s['deck.wallpaper'] != null;
 const drawerMenuShowing = ref(false);
+const widgetsShowing = ref(false);
+const gap = prefer.r['deck.columnGap'];
 
 /*
 const route = 'TODO';
@@ -160,21 +152,11 @@ watch(route, () => {
 });
 */
 
-const columns = store.reactiveState['deck.columns'];
-const layout = store.reactiveState['deck.layout'];
-const menuIndicated = computed(() => {
-	if ($i == null) return false;
-	for (const def in navbarItemDef) {
-		if (navbarItemDef[def].indicated) return true;
-	}
-	return false;
-});
-
 function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-const columnsEl = shallowRef<HTMLElement>();
+const columnsEl = useTemplateRef('columnsEl');
 
 const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
@@ -201,136 +183,57 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
+// タッチでスクロールしてるときはスナップスクロールを有効にする
+function pointerEvent(ev: PointerEvent) {
+	snapScroll.value = ev.pointerType === 'touch';
+}
+
+window.document.addEventListener('pointerdown', pointerEvent, { passive: true });
+
 function onWheel(ev: WheelEvent) {
+	// WheelEvent はマウスからしか発火しないのでスナップスクロールは無効化する
+	snapScroll.value = false;
 	if (ev.deltaX === 0 && columnsEl.value != null) {
 		columnsEl.value.scrollLeft += ev.deltaY;
 	}
 }
 
-document.documentElement.style.overflowY = 'hidden';
-document.documentElement.style.scrollBehavior = 'auto';
-
-loadDeck();
-
-function changeProfile(ev: MouseEvent) {
-	let items: MenuItem[] = [{
-		text: store.state['deck.profile'],
-		active: true,
-		action: () => {},
-	}];
-	getProfiles().then(profiles => {
-		items.push(...(profiles.filter(k => k !== store.state['deck.profile']).map(k => ({
-			text: k,
-			action: () => {
-				store.set('deck.profile', k);
-				unisonReload();
-			},
-		}))), { type: 'divider' as const }, {
-			text: i18n.ts._deck.newProfile,
-			icon: 'ti ti-plus',
-			action: async () => {
-				const { canceled, result: name } = await os.inputText({
-					title: i18n.ts._deck.profile,
-					minLength: 1,
-				});
-
-				if (canceled || name == null) return;
-
-				os.promiseDialog((async () => {
-					await store.set('deck.profile', name);
-					await forceSaveDeck();
-				})(), () => {
-					unisonReload();
-				});
-			},
-		});
-	}).then(() => {
-		os.popupMenu(items, ev.currentTarget ?? ev.target);
-	});
-}
-
 async function deleteProfile() {
+	if (prefer.s['deck.profile'] == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: store.state['deck.profile'] }),
+		text: i18n.tsx.deleteAreYouSure({ x: prefer.s['deck.profile'] }),
 	});
 	if (canceled) return;
 
-	os.promiseDialog((async () => {
-		if (store.state['deck.profile'] === 'default') {
-			await store.set('deck.columns', []);
-			await store.set('deck.layout', []);
-			await forceSaveDeck();
-		} else {
-			await deleteProfile_(store.state['deck.profile']);
-		}
-		await store.set('deck.profile', 'default');
-	})(), () => {
-		unisonReload();
-	});
+	await deleteProfile_(prefer.s['deck.profile']);
+
+	os.success();
 }
+
+window.document.documentElement.style.overflowY = 'hidden';
+window.document.documentElement.style.scrollBehavior = 'auto';
 </script>
 
-<style>
-html,
-body {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: fixed;
-	top: 0;
-	left: 0;
-	overscroll-behavior: none;
-}
-
-#misskey_app {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-</style>
-
 <style lang="scss" module>
-.transition_menuDrawerBg_enterActive,
-.transition_menuDrawerBg_leaveActive {
-	opacity: 1;
-	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.transition_menuDrawerBg_enterFrom,
-.transition_menuDrawerBg_leaveTo {
-	opacity: 0;
-}
-
-.transition_menuDrawer_enterActive,
-.transition_menuDrawer_leaveActive {
-	opacity: 1;
-	transform: translateX(0);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.transition_menuDrawer_enterFrom,
-.transition_menuDrawer_leaveTo {
-	opacity: 0;
-	transform: translateX(-240px);
-}
-
 .root {
-	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
-
 	--MI-margin: var(--MI-marginHalf);
 
-	--columnGap: 6px;
+	--columnGap: v-bind("gap + 'px'");
 
 	display: flex;
+	flex-direction: column;
 	height: 100dvh;
 	box-sizing: border-box;
 	flex: 1;
+	background: var(--MI_THEME-navBg);
 }
 
-.rootIsMobile {
-	padding-bottom: 100px;
+.nonTitlebarArea {
+	display: flex;
+	flex: 1;
+	min-height: 0;
 }
 
 .main {
@@ -338,15 +241,34 @@ body {
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
+
+	&:not(.withWallpaper) {
+		background: var(--MI_THEME-deckBg);
+	}
+
+	&.withSidebarAndTitlebar {
+		border-radius: 12px 0 0 0;
+		overflow: clip;
+	}
 }
 
-.sections {
+.columnsWrapper {
+	flex: 1;
+	display: flex;
+	flex-direction: row;
+
+	// これがないと狭い画面でマージンが広いデッキを表示したときにナビゲーションフッターが画面の外に追いやられて操作不能になる場合がある
+	min-height: 0;
+}
+
+.columns {
 	flex: 1;
 	display: flex;
 	overflow-x: auto;
 	overflow-y: clip;
 	overscroll-behavior: contain;
-	background: var(--MI_THEME-deckBg);
+	padding: var(--columnGap);
+	gap: var(--columnGap);
 
 	&.center {
 		> .section:first-of-type {
@@ -366,15 +288,10 @@ body {
 .section {
 	display: flex;
 	flex-direction: column;
-	scroll-snap-align: start;
 	flex-shrink: 0;
-	padding-top: var(--columnGap);
-	padding-bottom: var(--columnGap);
-	padding-left: var(--columnGap);
-
-	> .column:not(:last-of-type) {
-		margin-bottom: var(--columnGap);
-	}
+	gap: var(--columnGap);
+	scroll-snap-align: start;
+	scroll-margin-left: var(--columnGap);
 }
 
 .onboarding {
@@ -413,90 +330,30 @@ body {
 	margin-top: auto;
 }
 
-.menuBg {
-	z-index: 1001;
+.bottomMenu {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	height: 32px;
 }
 
-.menu {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1001;
-	height: 100dvh;
-	width: 240px;
-	box-sizing: border-box;
-	contain: strict;
-	overflow: auto;
-	overscroll-behavior: contain;
-	background: var(--MI_THEME-navBg);
-}
-
-.nav {
-	position: fixed;
-	z-index: 1000;
-	bottom: 0;
-	left: 0;
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
-	grid-gap: 8px;
-	width: 100%;
-	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--MI-blur, blur(32px));
-	backdrop-filter: var(--MI-blur, blur(32px));
-	background-color: var(--MI_THEME-header);
-	border-top: solid 0.5px var(--MI_THEME-divider);
-}
-
-.navButton {
-	position: relative;
-	padding: 0;
+.bottomMenuButton {
+	display: block;
+	height: 100%;
 	aspect-ratio: 1;
-	width: 100%;
-	max-width: 60px;
-	margin: auto;
-	border-radius: 100%;
-	background: var(--MI_THEME-panel);
-	color: var(--MI_THEME-fg);
-
-	&:hover {
-		background: var(--MI_THEME-panelHighlight);
-	}
-
-	&:active {
-		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
-	}
 }
 
-.postButton {
-	composes: navButton;
-	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
-	color: var(--MI_THEME-fgOnAccent);
-
-	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-
-	&:active {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
+.bottomMenuLeft {
+	margin-right: auto;
 }
 
-.navButtonIcon {
-	font-size: 18px;
-	vertical-align: middle;
+.bottomMenuMiddle {
+	margin-left: auto;
+	margin-right: auto;
 }
 
-.navButtonIndicator {
-	position: absolute;
-	top: 0;
-	left: 0;
-	color: var(--MI_THEME-indicator);
-	font-size: 16px;
-
-	&:has(.itemIndicateValueIcon) {
-		animation: none;
-		font-size: 12px;
-	}
+.bottomMenuRight {
+	margin-left: auto;
 }
 </style>

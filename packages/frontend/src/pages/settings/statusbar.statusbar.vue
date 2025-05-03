@@ -96,7 +96,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
@@ -137,10 +137,10 @@ async function save() {
 	const i = prefer.s.statusbars.findIndex(x => x.id === props._id);
 	const statusbars = deepClone(prefer.s.statusbars);
 	statusbars[i] = deepClone(statusbar);
-	prefer.set('statusbars', statusbars);
+	prefer.commit('statusbars', statusbars);
 }
 
 function del() {
-	prefer.set('statusbars', prefer.s.statusbars.filter(x => x.id !== props._id));
+	prefer.commit('statusbars', prefer.s.statusbars.filter(x => x.id !== props._id));
 }
 </script>

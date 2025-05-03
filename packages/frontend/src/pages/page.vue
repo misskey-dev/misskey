@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<Transition
 			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
 			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
@@ -81,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 					</div>
 				</div>
-				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
@@ -93,8 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetchPage()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -105,7 +104,7 @@ import type { MenuItem } from '@/types/menu.js';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -113,16 +112,16 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pageViewInterruptors } from '@/store.js';
-import { deepClone } from '@/scripts/clone.js';
-import { $i } from '@/account.js';
-import { isSupportShare } from '@/scripts/navigator.js';
+import { definePage } from '@/page.js';
+import { deepClone } from '@/utility/clone.js';
+import { $i } from '@/i.js';
+import { isSupportShare } from '@/utility/navigator.js';
 import { instance } from '@/instance.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { useRouter } from '@/router/supplier.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
+import { getPluginHandlers } from '@/plugin.js';
 
 const router = useRouter();
 
@@ -151,6 +150,7 @@ function fetchPage() {
 		page.value = _page;
 
 		// plugin
+		const pageViewInterruptors = getPluginHandlers('page_view_interruptor');
 		if (pageViewInterruptors.length > 0) {
 			let result = deepClone(_page);
 			for (const interruptor of pageViewInterruptors) {
@@ -189,7 +189,6 @@ function copyLink() {
 	if (!page.value) return;
 
 	copyToClipboard(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
-	os.success();
 }
 
 function shareWithNote() {
@@ -319,7 +318,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
 	...page.value ? {
 		avatar: page.value.user,

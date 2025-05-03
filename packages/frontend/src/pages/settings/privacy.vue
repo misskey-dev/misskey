@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/privacy" :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/unlocked_3d.png" color="#aeff00">
+			<SearchKeyword>{{ i18n.ts._settings.privacyBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<SearchMarker :keywords="['follow', 'lock']">
 			<MkSwitch v-model="isLocked" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.makeFollowManuallyApprove }}</SearchLabel></template>
@@ -74,6 +78,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
+		<SearchMarker :keywords="['chat']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<MkInfo v-if="$i.policies.chatAvailability === 'unavailable'">{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+					<SearchMarker :keywords="['chat']">
+						<MkSelect v-model="chatScope" @update:modelValue="save()">
+							<template #label><SearchLabel>{{ i18n.ts._chat.chatAllowedUsers }}</SearchLabel></template>
+							<option value="everyone">{{ i18n.ts._chat._chatAllowedUsers.everyone }}</option>
+							<option value="followers">{{ i18n.ts._chat._chatAllowedUsers.followers }}</option>
+							<option value="following">{{ i18n.ts._chat._chatAllowedUsers.following }}</option>
+							<option value="mutual">{{ i18n.ts._chat._chatAllowedUsers.mutual }}</option>
+							<option value="none">{{ i18n.ts._chat._chatAllowedUsers.none }}</option>
+							<template #caption>{{ i18n.ts._chat.chatAllowedUsers_note }}</template>
+						</MkSelect>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
+
 		<SearchMarker :keywords="['lockdown']">
 			<FormSection>
 				<template #label><SearchLabel>{{ i18n.ts.lockdown }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
@@ -85,7 +110,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #caption>
 								<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
 								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
-								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
 							</template>
 						</MkSwitch>
 					</SearchMarker>
@@ -123,7 +147,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<template #caption>
 								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchKeyword></div>
-								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
@@ -161,52 +184,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<template #caption>
 								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchKeyword></div>
-								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
+
+					<MkInfo warn>{{ i18n.ts._accountSettings.mayNotEffectSomeSituations }}</MkInfo>
 				</div>
 			</FormSection>
 		</SearchMarker>
-
-		<FormSection>
-			<div class="_gaps_m">
-				<SearchMarker :keywords="['remember', 'keep', 'note', 'visibility']">
-					<MkPreferenceContainer k="rememberNoteVisibility">
-						<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">
-							<template #label><SearchLabel>{{ i18n.ts.rememberNoteVisibility }}</SearchLabel></template>
-						</MkSwitch>
-					</MkPreferenceContainer>
-				</SearchMarker>
-
-				<SearchMarker :keywords="['default', 'note', 'visibility']">
-					<MkDisableSection :disabled="rememberNoteVisibility">
-						<MkFolder>
-							<template #label><SearchLabel>{{ i18n.ts.defaultNoteVisibility }}</SearchLabel></template>
-							<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
-							<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
-							<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
-							<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
-
-							<div class="_gaps_m">
-								<MkPreferenceContainer k="defaultNoteVisibility">
-									<MkSelect v-model="defaultNoteVisibility">
-										<option value="public">{{ i18n.ts._visibility.public }}</option>
-										<option value="home">{{ i18n.ts._visibility.home }}</option>
-										<option value="followers">{{ i18n.ts._visibility.followers }}</option>
-										<option value="specified">{{ i18n.ts._visibility.specified }}</option>
-									</MkSelect>
-								</MkPreferenceContainer>
-
-								<MkPreferenceContainer k="defaultNoteLocalOnly">
-									<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
-								</MkPreferenceContainer>
-							</div>
-						</MkFolder>
-					</MkDisableSection>
-				</SearchMarker>
-			</div>
-		</FormSection>
 	</div>
 </SearchMarker>
 </template>
@@ -217,20 +202,20 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { signinRequired } from '@/account.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { ensureSignin } from '@/i.js';
+import { definePage } from '@/page.js';
 import FormSlot from '@/components/form/slot.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import MkDisableSection from '@/components/MkDisableSection.vue';
-import { prefer } from '@/preferences.js';
-import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);
@@ -244,10 +229,7 @@ const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
-
-const defaultNoteVisibility = prefer.model('defaultNoteVisibility');
-const defaultNoteLocalOnly = prefer.model('defaultNoteLocalOnly');
-const rememberNoteVisibility = prefer.model('rememberNoteVisibility');
+const chatScope = ref($i.chatScope);
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
 	if (makeNotesFollowersOnlyBefore.value == null) {
@@ -300,6 +282,7 @@ function save() {
 		publicReactions: !!publicReactions.value,
 		followingVisibility: followingVisibility.value,
 		followersVisibility: followersVisibility.value,
+		chatScope: chatScope.value,
 	});
 }
 
@@ -307,7 +290,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.privacy,
 	icon: 'ti ti-lock-open',
 }));

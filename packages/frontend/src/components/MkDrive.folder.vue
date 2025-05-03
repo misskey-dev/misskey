@@ -38,10 +38,10 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
@@ -245,7 +245,7 @@ function deleteFolder() {
 		folderId: props.folder.id,
 	}).then(() => {
 		if (prefer.s.uploadFolder === props.folder.id) {
-			prefer.set('uploadFolder', null);
+			prefer.commit('uploadFolder', null);
 		}
 	}).catch(err => {
 		switch (err.id) {
@@ -266,7 +266,7 @@ function deleteFolder() {
 }
 
 function setAsUploadFolder() {
-	prefer.set('uploadFolder', props.folder.id);
+	prefer.commit('uploadFolder', props.folder.id);
 }
 
 function onContextmenu(ev: MouseEvent) {
@@ -297,7 +297,7 @@ function onContextmenu(ev: MouseEvent) {
 	}];
 	if (prefer.s.devMode) {
 		menu = menu.concat([{ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyFolderId,
 			action: () => {
 				copyToClipboard(props.folder.id);

@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { hideRestoreBackupSuggestion, restoreFromCloudBackup } from '@/preferences/utility.js';
 
@@ -39,15 +39,6 @@ function skip() {
 	overflow: clip;
 	contain: strict;
 	background: var(--MI_THEME-panel);
-
-	@container (max-width: 1000px) {
-		display: block;
-		text-align: center;
-
-		> .body {
-			display: none;
-		}
-	}
 }
 
 .icon {

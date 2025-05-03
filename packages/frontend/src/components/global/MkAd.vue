@@ -36,7 +36,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
 	</div>
 </div>
-<div v-else></div>
 </template>
 
 <script lang="ts" setup>
@@ -47,13 +46,13 @@ import { instance } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
 type Ad = (typeof instance)['ads'][number];
 
 const props = defineProps<{
-	prefer: string[];
+	preferForms: string[];
 	specify?: Ad;
 }>();
 
@@ -67,12 +66,12 @@ const choseAd = (): Ad | null => {
 		return props.specify;
 	}
 
-	const allAds = instance.ads.map(ad => store.state.mutedAds.includes(ad.id) ? {
+	const allAds = instance.ads.map(ad => store.s.mutedAds.includes(ad.id) ? {
 		...ad,
 		ratio: 0,
 	} : ad);
 
-	let ads = allAds.filter(ad => props.prefer.includes(ad.place));
+	let ads = allAds.filter(ad => props.preferForms.includes(ad.place));
 
 	if (ads.length === 0) {
 		ads = allAds.filter(ad => ad.place === 'square');
@@ -112,7 +111,7 @@ const shouldHide = ref(!prefer.s.forceShowAds && $i && $i.policies.canHideAds &&
 
 function reduceFrequency(): void {
 	if (chosen.value == null) return;
-	if (store.state.mutedAds.includes(chosen.value.id)) return;
+	if (store.s.mutedAds.includes(chosen.value.id)) return;
 	store.push('mutedAds', chosen.value.id);
 	os.success();
 	chosen.value = choseAd();

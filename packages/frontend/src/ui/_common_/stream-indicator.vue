@@ -34,7 +34,7 @@ function resetDisconnected() {
 }
 
 function reload() {
-	location.reload();
+	window.location.reload();
 }
 
 useStream().on('_disconnected_', onDisconnected);

@@ -5,10 +5,13 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
-import type { Theme } from '@/scripts/theme.js';
-import type { SoundType } from '@/scripts/sound.js';
+import type { Theme } from '@/theme.js';
+import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
-import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
+import type { DeviceKind } from '@/utility/device-kind.js';
+import type { DeckProfile } from '@/deck.js';
+import type { PreferencesDefinition } from './manager.js';
+import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 /** サウンド設定 */
 export type SoundStore = {
@@ -26,7 +29,16 @@ export type SoundStore = {
 	volume: number;
 };
 
+// NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
+
 export const PREF_DEF = {
+	accounts: {
+		default: [] as [host: string, user: {
+			id: string;
+			username: string;
+		}][],
+	},
+
 	pinnedUserLists: {
 		accountDependent: true,
 		default: [] as Misskey.entities.UserList[],
@@ -35,7 +47,57 @@ export const PREF_DEF = {
 		accountDependent: true,
 		default: null as string | null,
 	},
+	widgets: {
+		accountDependent: true,
+		default: [{
+			name: 'calendar',
+			id: 'a', place: 'right', data: {},
+		}, {
+			name: 'notifications',
+			id: 'b', place: 'right', data: {},
+		}, {
+			name: 'trends',
+			id: 'c', place: 'right', data: {},
+		}] as {
+			name: string;
+			id: string;
+			place: string | null;
+			data: Record<string, any>;
+		}[],
+	},
+	'deck.profile': {
+		accountDependent: true,
+		default: null as string | null,
+	},
+	'deck.profiles': {
+		accountDependent: true,
+		default: [] as DeckProfile[],
+	},
 
+	emojiPalettes: {
+		serverDependent: true,
+		default: [{
+			id: 'a',
+			name: '',
+			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		}] as {
+			id: string;
+			name: string;
+			emojis: string[];
+		}[],
+	},
+	emojiPaletteForReaction: {
+		serverDependent: true,
+		default: null as string | null,
+	},
+	emojiPaletteForMain: {
+		serverDependent: true,
+		default: null as string | null,
+	},
+
+	overridedDeviceKind: {
+		default: null as DeviceKind | null,
+	},
 	themes: {
 		default: [] as Theme[],
 	},
@@ -57,9 +119,6 @@ export const PREF_DEF = {
 	keepCw: {
 		default: true,
 	},
-	keepOriginalUploading: {
-		default: false,
-	},
 	rememberNoteVisibility: {
 		default: false,
 	},
@@ -75,9 +134,11 @@ export const PREF_DEF = {
 			'clips',
 			'drive',
 			'followRequests',
+			'chat',
 			'-',
 			'explore',
 			'announcements',
+			'channels',
 			'search',
 			'-',
 			'ui',
@@ -138,6 +199,9 @@ export const PREF_DEF = {
 	useBlurEffect: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
+	useStickyIcons: {
+		default: true,
+	},
 	showFixedPostForm: {
 		default: false,
 	},
@@ -157,13 +221,13 @@ export const PREF_DEF = {
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
 	emojiPickerScale: {
-		default: 1,
+		default: 2,
 	},
 	emojiPickerWidth: {
-		default: 1,
+		default: 2,
 	},
 	emojiPickerHeight: {
-		default: 2,
+		default: 3,
 	},
 	emojiPickerStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
@@ -236,6 +300,9 @@ export const PREF_DEF = {
 	enableHorizontalSwipe: {
 		default: true,
 	},
+	enablePullToRefresh: {
+		default: true,
+	},
 	useNativeUiForVideoAudioPlayer: {
 		default: false,
 	},
@@ -260,9 +327,22 @@ export const PREF_DEF = {
 	confirmOnReact: {
 		default: false,
 	},
+	defaultFollowWithReplies: {
+		default: false,
+	},
+	makeEveryTextElementsSelectable: {
+		default: DEFAULT_DEVICE_KIND === 'desktop',
+	},
+	showNavbarSubButtons: {
+		default: true,
+	},
+	showTitlebar: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},
+
 	'sound.masterVolume': {
 		default: 0.3,
 	},
@@ -284,6 +364,10 @@ export const PREF_DEF = {
 	'sound.on.reaction': {
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+	'sound.on.chatMessage': {
+		default: { type: 'syuilo/waon', volume: 1 } as SoundStore,
+	},
+
 	'deck.alwaysShowMainColumn': {
 		default: true,
 	},
@@ -294,15 +378,36 @@ export const PREF_DEF = {
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'left' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'right' | 'center',
 	},
+	'deck.columnGap': {
+		default: 6,
+	},
+	'deck.menuPosition': {
+		default: 'bottom' as 'right' | 'bottom',
+	},
+	'deck.navbarPosition': {
+		default: 'left' as 'left' | 'top' | 'bottom',
+	},
+	'deck.wallpaper': {
+		default: null as string | null,
+	},
+
+	'chat.showSenderName': {
+		default: false,
+	},
+	'chat.sendOnEnter': {
+		default: false,
+	},
+
 	'game.dropAndFusion': {
 		default: {
 			bgmVolume: 0.25,
 			sfxVolume: 1,
 		},
 	},
-} satisfies Record<string, {
-	default: any;
-	accountDependent?: boolean;
-}>;
+
+	'experimental.stackingRouterView': {
+		default: false,
+	},
+} satisfies PreferencesDefinition;

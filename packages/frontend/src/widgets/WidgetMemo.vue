@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -48,7 +48,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const text = ref<string | null>(store.state.memo);
+const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
 let timeoutId;
 
@@ -63,7 +63,7 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(() => store.reactiveState.memo, newText => {
+watch(() => store.r.memo, newText => {
 	text.value = newText.value;
 });
 
