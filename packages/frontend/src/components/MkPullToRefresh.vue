@@ -29,7 +29,7 @@ import { isHorizontalSwipeSwiping } from '@/utility/touch.js';
 
 const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;
-const FIRE_THRESHOLD = 230;
+const FIRE_THRESHOLD = 200;
 const RELEASE_TRANSITION_DURATION = 200;
 const PULL_BRAKE_BASE = 1.5;
 const PULL_BRAKE_FACTOR = 170;
@@ -239,7 +239,6 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	font-size: 14px;
 
 	> .icon, > .loader {
 		margin: 6px 0;
@@ -255,6 +254,7 @@ onUnmounted(() => {
 
 	> .text {
 		margin: 5px 0;
+		font-size: 90%;
 	}
 }
 </style>
