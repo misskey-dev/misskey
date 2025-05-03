@@ -1424,6 +1424,7 @@ _settings:
   ifOn: "Quan s'activa"
   ifOff: "Quan es desactiva"
   enableSyncThemesBetweenDevices: "Sincronitzar els temes instal·lats entre dispositius"
+  enablePullToRefresh: "Lliscar i actualitzar "
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
