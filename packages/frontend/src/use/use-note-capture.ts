@@ -12,12 +12,12 @@ import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
+import { globalEvents } from '@/events.js';
 
 export const noteEvents = new EventEmitter<{
 	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
 	[ev: `unreacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
 	[ev: `pollVoted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; choice: string; }) => void;
-	[ev: `deleted:${string}`]: () => void;
 }>();
 
 const fetchEvent = new EventEmitter<{
@@ -113,7 +113,6 @@ function pollingSubscribe(props: {
 
 function realtimeSubscribe(props: {
 	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
-	isDeletedRef: Ref<boolean>;
 }): void {
 	const note = props.note;
 	const connection = useStream();
@@ -151,7 +150,7 @@ function realtimeSubscribe(props: {
 			}
 
 			case 'deleted': {
-				noteEvents.emit(`deleted:${id}`);
+				globalEvents.emit('noteDeleted', id);
 				break;
 			}
 		}
@@ -198,7 +197,6 @@ export function useNoteCapture(props: {
 	noteEvents.on(`reacted:${note.id}`, onReacted);
 	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
 	noteEvents.on(`pollVoted:${note.id}`, onPollVoted);
-	noteEvents.on(`deleted:${note.id}`, onDeleted);
 
 	let latestReactedKey: string | null = null;
 	let latestUnreactedKey: string | null = null;
@@ -256,15 +254,10 @@ export function useNoteCapture(props: {
 		$note.pollChoices = choices;
 	}
 
-	function onDeleted(): void {
-		$note.isDeleted = true;
-	}
-
 	onUnmounted(() => {
 		noteEvents.off(`reacted:${note.id}`, onReacted);
 		noteEvents.off(`unreacted:${note.id}`, onUnreacted);
 		noteEvents.off(`pollVoted:${note.id}`, onPollVoted);
-		noteEvents.off(`deleted:${note.id}`, onDeleted);
 	});
 
 	// 投稿からある程度経過している(=タイムラインを遡って表示した)ノートは、イベントが発生する可能性が低いためそもそも購読しない

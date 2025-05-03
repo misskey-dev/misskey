@@ -71,7 +71,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { globalEvents } from '@/events.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -156,12 +156,16 @@ if (!store.s.realtimeMode) {
 		afterMounted: true,
 	});
 
-	globalEvents.on('notePosted', (note: Misskey.entities.Note) => {
+	useGlobalEvent('notePosted', (note) => {
 		paginator.fetchNewer({
 			toQueue: !isTop(),
 		});
 	});
 }
+
+useGlobalEvent('noteDeleted', (noteId) => {
+	paginator.removeItem(noteId);
+});
 
 function releaseQueue() {
 	paginator.releaseQueue();

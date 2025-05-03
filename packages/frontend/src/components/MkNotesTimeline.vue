@@ -35,6 +35,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	pagination: PagingCtx;
@@ -46,6 +47,10 @@ const props = withDefaults(defineProps<{
 });
 
 const pagingComponent = useTemplateRef('pagingComponent');
+
+useGlobalEvent('noteDeleted', (noteId) => {
+	pagingComponent.value?.paginator.removeItem(noteId);
+});
 
 function reload() {
 	return pagingComponent.value?.paginator.reload();

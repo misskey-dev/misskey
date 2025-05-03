@@ -197,6 +197,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function removeItem(id: string) {
+		// TODO: queueからも消す
+
 		const index = items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
 			items.value.splice(index, 1);
@@ -205,6 +207,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function updateItem(id: string, updator: (item: T) => T) {
+		// TODO: queueのも更新
+
 		const index = items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
 			const item = items.value[index]!;

@@ -29,7 +29,6 @@ import { globalEvents } from '@/events.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
-	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
 	function getClipName(clip: Misskey.entities.Clip) {
@@ -69,7 +68,6 @@ export async function getNoteClipMenu(props: {
 									}
 								}));
 							});
-							if (props.currentClip?.id === clip.id) props.isDeleted.value = true;
 						}
 					} else if (err.id === 'f0dba960-ff73-4615-8df4-d6ac5d9dc118') {
 						os.alert({
@@ -179,7 +177,6 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
-	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
 	const appearNote = getAppearNote(props.note);
@@ -195,6 +192,8 @@ export function getNoteMenu(props: {
 
 			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
+			}).then(() => {
+				globalEvents.emit('noteDeleted', appearNote.id);
 			});
 
 			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60 && appearNote.userId === $i.id) {
@@ -212,6 +211,8 @@ export function getNoteMenu(props: {
 
 			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
+			}).then(() => {
+				globalEvents.emit('noteDeleted', appearNote.id);
 			});
 
 			os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
@@ -252,7 +253,6 @@ export function getNoteMenu(props: {
 	async function unclip(): Promise<void> {
 		if (!props.currentClip) return;
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
-		props.isDeleted.value = true;
 	}
 
 	async function promote(): Promise<void> {

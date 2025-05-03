@@ -5,12 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-if="!muted"
-	v-show="!isDeleted"
+	v-if="!muted && !isDeleted"
 	ref="rootEl"
 	v-hotkey="keymap"
 	:class="$style.root"
-	:tabindex="isDeleted ? '-1' : '0'"
+	tabindex="0"
 >
 	<div v-if="appearNote.reply && appearNote.reply.replyId">
 		<div v-if="!conversationLoaded" style="padding: 16px">
@@ -217,7 +216,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 </div>
-<div v-else class="_panel" :class="$style.muted" @click="muted = false">
+<div v-else-if="muted" class="_panel" :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -274,6 +273,7 @@ import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -294,10 +294,6 @@ if (noteViewInterruptors.length > 0) {
 		for (const interruptor of noteViewInterruptors) {
 			try {
 				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-				if (result === null) {
-					isDeleted.value = true;
-					return;
-				}
 			} catch (err) {
 				console.error(err);
 			}
@@ -335,6 +331,12 @@ const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceT
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i?.id);
+
+useGlobalEvent('noteDeleted', (noteId) => {
+	if (noteId === note.id || noteId === appearNote.id) {
+		isDeleted.value = true;
+	}
+});
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
@@ -544,18 +546,18 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, isDeleted });
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation });
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function showMenu(): void {
-	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, isDeleted });
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation });
 	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
 }
 
 async function clip(): Promise<void> {
-	os.popupMenu(await getNoteClipMenu({ note: note, isDeleted }), clipButton.value).then(focus);
+	os.popupMenu(await getNoteClipMenu({ note: note }), clipButton.value).then(focus);
 }
 
 function showRenoteMenu(): void {
@@ -568,8 +570,9 @@ function showRenoteMenu(): void {
 		action: () => {
 			misskeyApi('notes/delete', {
 				noteId: note.id,
+			}).then(() => {
+				globalEvents.emit('noteDeleted', note.id);
 			});
-			isDeleted.value = true;
 		},
 	}], renoteTime.value);
 }

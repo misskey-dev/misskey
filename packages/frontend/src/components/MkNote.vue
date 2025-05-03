@@ -6,11 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-if="!hardMuted && muted === false"
-	v-show="!isDeleted"
 	ref="rootEl"
 	v-hotkey="keymap"
 	:class="[$style.root, { [$style.showActionsOnlyHover]: prefer.s.showNoteActionsOnlyHover, [$style.skipRender]: prefer.s.skipNoteRender }]"
-	:tabindex="isDeleted ? '-1' : '0'"
+	tabindex="0"
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
@@ -241,6 +240,7 @@ import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
+import { globalEvents } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -273,10 +273,6 @@ if (noteViewInterruptors.length > 0) {
 		for (const interruptor of noteViewInterruptors) {
 			try {
 				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-				if (result === null) {
-					isDeleted.value = true;
-					return;
-				}
 			} catch (err) {
 				console.error(err);
 			}
@@ -308,7 +304,6 @@ const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : nul
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
 const isLong = shouldCollapsed(appearNote, urls.value ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
-const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote, $i?.hardMutedWords, true));
 const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
@@ -595,7 +590,7 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, isDeleted, currentClip: currentClip?.value });
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value });
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
@@ -605,7 +600,7 @@ function showMenu(): void {
 		return;
 	}
 
-	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, isDeleted, currentClip: currentClip?.value });
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value });
 	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
 }
 
@@ -614,7 +609,7 @@ async function clip(): Promise<void> {
 		return;
 	}
 
-	os.popupMenu(await getNoteClipMenu({ note: note, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
+	os.popupMenu(await getNoteClipMenu({ note: note, currentClip: currentClip?.value }), clipButton.value).then(focus);
 }
 
 function showRenoteMenu(): void {
@@ -630,8 +625,9 @@ function showRenoteMenu(): void {
 			action: () => {
 				misskeyApi('notes/delete', {
 					noteId: note.id,
+				}).then(() => {
+					globalEvents.emit('noteDeleted', note.id);
 				});
-				isDeleted.value = true;
 			},
 		};
 	}
@@ -682,7 +678,6 @@ function readPromo() {
 	misskeyApi('promo/read', {
 		noteId: appearNote.id,
 	});
-	isDeleted.value = true;
 }
 
 function emitUpdReaction(emoji: string, delta: number) {
