@@ -114,4 +114,32 @@ export class FanoutTimelineService {
 	public purge(name: FanoutTimelineName) {
 		return this.redisForTimelines.del('list:' + name);
 	}
+
+	@bindThis
+	public async purgeAllcache() {
+		const timeLinePatterns = [
+			'*list:homeTimeline*',
+			'*list:localTimeline*',
+			'*list:userTimeline*',
+			'*list:userListTimeline*',
+			'*list:channelTimeline*',
+			'*list:roleTimeline*',
+		];
+		let timeLines = [] as string[];
+
+		for (const timeline of timeLinePatterns) {
+			let cursor = '0';
+			do {
+				const scanResult = await this.redisForTimelines.scan(cursor, 'MATCH', timeline, 'COUNT', 300);
+				cursor = scanResult[0];
+				timeLines = timeLines.concat(scanResult[1]);
+			} while (cursor !== '0');
+		}
+
+		const pipeline = this.redisForTimelines.pipeline();
+		for (const timeLine of timeLines) {
+			pipeline.del(`list:${timeLine.split('list:')[1]}`);
+		}
+		await pipeline.exec();
+	}
 }
