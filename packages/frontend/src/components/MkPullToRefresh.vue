@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl">
+<div ref="rootEl" :class="isPulling ? $style.isPulling : null">
 	<div v-if="isPulling" :class="$style.frame" :style="`--frame-min-height: ${pullDistance / (PULL_BRAKE_BASE + (pullDistance / PULL_BRAKE_FACTOR))}px;`">
 		<div :class="$style.frameContent">
 			<MkLoading v-if="isRefreshing" :class="$style.loader" :em="true"/>
@@ -204,20 +204,23 @@ function refreshFinished() {
 
 onMounted(() => {
 	if (rootEl.value == null) return;
-
 	scrollEl = getScrollContainer(rootEl.value);
-
+	lockDownScroll();
 	rootEl.value.addEventListener('pointerdown', moveStart, { passive: true });
 	rootEl.value.addEventListener('touchend', toggleScrollLockOnTouchEnd, { passive: true });
 });
 
 onUnmounted(() => {
-	rootEl.value.removeEventListener('pointerdown', moveStart);
-	rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
+	if (rootEl.value) rootEl.value.removeEventListener('pointerdown', moveStart);
+	if (rootEl.value) rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
 });
 </script>
 
 <style lang="scss" module>
+.isPulling {
+	will-change: contents;
+}
+
 .frame {
 	position: relative;
 	overflow: clip;
