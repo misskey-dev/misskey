@@ -136,6 +136,8 @@ export class MetaEntityService {
 			reversiVersion: NodeinfoServerService.reversiVersion,
 			maxFileSize: this.config.maxFileSize,
 			federation: this.meta.federation,
+			yamiNoteFederationEnabled: instance.yamiNoteFederationEnabled,
+			yamiNoteFederationTrustedInstances: instance.yamiNoteFederationTrustedInstances,
 		};
 
 		return packed;
