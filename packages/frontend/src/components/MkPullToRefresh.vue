@@ -64,13 +64,15 @@ function getScreenY(event: TouchEvent | MouseEvent | PointerEvent): number {
 
 // When at the top of the page, disable vertical overscroll so passive touch listeners can take over.
 function lockDownScroll() {
-	scrollEl!.style.touchAction = 'pan-x pan-down pinch-zoom';
-	scrollEl!.style.overscrollBehavior = 'none';
+	if (scrollEl == null) return;
+	scrollEl.style.touchAction = 'pan-x pan-down pinch-zoom';
+	scrollEl.style.overscrollBehavior = 'none';
 }
 
 function unlockDownScroll() {
-	scrollEl!.style.touchAction = 'auto';
-	scrollEl!.style.overscrollBehavior = 'contain';
+	if (scrollEl == null) return;
+	scrollEl.style.touchAction = 'auto';
+	scrollEl.style.overscrollBehavior = 'contain';
 }
 
 function moveStart(event: PointerEvent) {
@@ -211,6 +213,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	unlockDownScroll();
 	if (rootEl.value) rootEl.value.removeEventListener('pointerdown', moveStart);
 	if (rootEl.value) rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
 });
