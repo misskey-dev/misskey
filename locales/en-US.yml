@@ -1424,6 +1424,7 @@ _settings:
   ifOn: "When turned on"
   ifOff: "When turned off"
   enableSyncThemesBetweenDevices: "Synchronize installed themes across devices"
+  enablePullToRefresh: "Pull to Refresh"
   _chat:
     showSenderName: "Show sender's name"
     sendOnEnter: "Press Enter to send"
