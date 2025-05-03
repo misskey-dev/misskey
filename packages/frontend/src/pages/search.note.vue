@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkFoldableSection v-if="notePagination">
 		<template #header>{{ i18n.ts.searchResult }}</template>
-		<MkNotes :key="`searchNotes:${key}`" :pagination="notePagination"/>
+		<MkNotesTimeline :key="`searchNotes:${key}`" :pagination="notePagination"/>
 	</MkFoldableSection>
 </div>
 </template>
@@ -125,7 +125,7 @@ import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkNotes from '@/components/MkNotes.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
