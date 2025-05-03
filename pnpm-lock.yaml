@@ -390,6 +390,9 @@ importers:
       secure-json-parse:
         specifier: 3.0.2
         version: 3.0.2
+      semver:
+        specifier: 7.7.1
+        version: 7.7.1
       sharp:
         specifier: 0.34.1
         version: 0.34.1
