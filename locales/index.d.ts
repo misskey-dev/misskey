@@ -12022,6 +12022,10 @@ export interface Locale extends ILocale {
              */
             "settingFutureDateToChangeNotesVisibilityIsProhibitedDescription": string;
         };
+        /**
+         * はなモード内で作成されたノートはローカルのみをオンにすると除外されます。
+         */
+        "notesCreatedInHanaModeWillBeExcluded": string;
     };
 }
 declare const locales: {

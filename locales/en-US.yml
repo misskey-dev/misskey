@@ -3089,3 +3089,4 @@ _hana:
   _willBeMergedToUpstream:
     settingFutureDateToChangeNotesVisibilityIsProhibited: "Future dates are not allowed."
     settingFutureDateToChangeNotesVisibilityIsProhibitedDescription: "You cannot set a future date in the lockdown settings."
+  notesCreatedInHanaModeWillBeExcluded: "Notes created in Hana Mode will be excluded when 'Local only' is enabled"

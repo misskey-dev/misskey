@@ -3214,3 +3214,4 @@ _hana:
   _willBeMergedToUpstream:
     settingFutureDateToChangeNotesVisibilityIsProhibited: "未来の日付が選択されています。"
     settingFutureDateToChangeNotesVisibilityIsProhibitedDescription: "ロックダウン設定にて未来の日付を設定することはできません。"
+  notesCreatedInHanaModeWillBeExcluded: "はなモード内で作成されたノートはローカルのみをオンにすると除外されます。"
