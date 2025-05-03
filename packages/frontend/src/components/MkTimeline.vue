@@ -155,13 +155,13 @@ if (!store.s.realtimeMode) {
 		immediate: false,
 		afterMounted: true,
 	});
-}
 
-globalEvents.on('notePosted', (note: Misskey.entities.Note) => {
-	paginator.fetchNewer({
-		toQueue: !isTop(),
+	globalEvents.on('notePosted', (note: Misskey.entities.Note) => {
+		paginator.fetchNewer({
+			toQueue: !isTop(),
+		});
 	});
-});
+}
 
 function releaseQueue() {
 	paginator.releaseQueue();
