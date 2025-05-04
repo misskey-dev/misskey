@@ -641,7 +641,7 @@ onBeforeUnmount(() => {
 }
 
 .item_content_text {
-	max-width: calc(100vw - 4rem);
+	max-width: 100%;
 }
 
 .item_content_text_title {
