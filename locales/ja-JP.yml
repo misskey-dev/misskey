@@ -1429,7 +1429,6 @@ _settings:
   ifOff: "オフのとき"
   enableSyncThemesBetweenDevices: "デバイス間でインストールしたテーマを同期"
   enablePullToRefresh: "ひっぱって更新"
-  enablePullToRefresh_description: "マウスでは、ホイールを押し込みながらドラッグします。"
 
   _chat:
     showSenderName: "送信者の名前を表示"
