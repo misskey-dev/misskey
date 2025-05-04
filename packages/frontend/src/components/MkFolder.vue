@@ -148,15 +148,10 @@ onMounted(() => {
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
 	overflow-y: hidden; // 子要素のmarginが突き出るため clip を使ってはいけない
-	transition: opacity 0.3s, height 0.3s, transform 0.3s;
+	transition: opacity 0.3s, height 0.3s;
 }
 
 @supports (interpolate-size: allow-keywords) {
-	.transition_toggle_enterActive,
-	.transition_toggle_leaveActive {
-		transition: opacity 0.3s, height 0.3s;
-	}
-
 	.transition_toggle_enterFrom,
 	.transition_toggle_leaveTo {
 		height: 0;
