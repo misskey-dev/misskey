@@ -15,23 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getTickerColors, getTickerInfo } from '@/utility/instance-ticker.js';
+import { getTickerColors, getTickerInfo } from '@/components/MkInstanceTicker.impl.js';
+import type { MkInstanceTickerProps } from '@/components/MkInstanceTicker.impl.js';
 
-export type TickerProps = {
-	readonly instance?: {
-		readonly name?: string | null;
-		// NOTE: リモートサーバーにおいてiconUrlを参照すると意図した画像にならない https://github.com/taiyme/misskey/issues/210
-		// readonly iconUrl?: string | null;
-		readonly faviconUrl?: string | null;
-		readonly themeColor?: string | null;
-	} | null;
-	readonly channel?: {
-		readonly name: string;
-		readonly color: string;
-	} | null;
-};
-
-const props = defineProps<TickerProps>();
+const props = defineProps<MkInstanceTickerProps>();
 
 const tickerInfoRef = computed(() => getTickerInfo(props));
 const tickerColorsRef = computed(() => getTickerColors(tickerInfoRef.value));
