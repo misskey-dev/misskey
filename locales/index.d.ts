@@ -6384,6 +6384,28 @@ export interface Locale extends ILocale {
          * 非ログイン訪問者に対するユーザー作成コンテンツの公開範囲
          */
         "visibleUserGeneratedContentsForNonLoggedInVisitors": string;
+        /**
+         * モデレーションが行き届きにくい不適切なリモートコンテンツなどが、自サーバー経由で図らずもインターネットに公開されてしまうことによるトラブル防止などに役立ちます。
+         */
+        "visibleUserGeneratedContentsForNonLoggedInVisitors_description": string;
+        /**
+         * サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。
+         */
+        "visibleUserGeneratedContentsForNonLoggedInVisitors_description2": string;
+        "_visibleUserGeneratedContentsForNonLoggedInVisitors": {
+            /**
+             * 全て公開
+             */
+            "all": string;
+            /**
+             * ローカルコンテンツのみ公開し、リモートコンテンツは非公開
+             */
+            "localOnly": string;
+            /**
+             * 全て非公開
+             */
+            "none": string;
+        };
     };
     "_accountMigration": {
         /**

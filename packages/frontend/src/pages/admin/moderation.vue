@@ -17,14 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 
 				<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
-					<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+					<template #label>{{ i18n.ts.emailRequiredForSignup }} ({{ i18n.ts.recommended }})</template>
 				</MkSwitch>
 
 				<MkSelect v-model="visibleUserGeneratedContentsForNonLoggedInVisitors" @update:modelValue="onChange_visibleUserGeneratedContentsForNonLoggedInVisitors">
 					<template #label>{{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors }}</template>
-					<option value="all">{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.localOnly }}</option>
-					<option value="none">{{ i18n.ts.none }}</option>
+					<option value="all">{{ i18n.ts._serverSettings._visibleUserGeneratedContentsForNonLoggedInVisitors.all }}</option>
+					<option value="local">{{ i18n.ts._serverSettings._visibleUserGeneratedContentsForNonLoggedInVisitors.localOnly }} ({{ i18n.ts.recommended }})</option>
+					<option value="none">{{ i18n.ts._serverSettings._visibleUserGeneratedContentsForNonLoggedInVisitors.none }}</option>
+					<template #caption>
+						<div>{{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors_description }}</div>
+						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors_description2 }}</div>
+					</template>
 				</MkSelect>
 
 				<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
