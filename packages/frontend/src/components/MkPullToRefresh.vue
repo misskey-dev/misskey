@@ -88,7 +88,7 @@ function moveStartByMouse(event: MouseEvent) {
 
 	lockDownScroll();
 
-	event.preventDefault();
+	event.preventDefault(); // 中クリックによるスクロール、テキスト選択などを防ぐ
 
 	isPulling.value = true;
 	startScreenY = getScreenY(event);
