@@ -90,7 +90,7 @@ const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);
 
-//#region interpolate-sizeに対応していないブラウザ向け（TODO: そのうち消す）
+//#region interpolate-sizeに対応していないブラウザ向け（TODO: 主要ブラウザが対応したら消す）
 function enter(el: Element) {
 	if (CSS.supports('interpolate-size', 'allow-keywords')) return;
 	if (!(el instanceof HTMLElement)) return;
@@ -157,6 +157,11 @@ onMounted(() => {
 		transition: opacity 0.3s, height 0.3s;
 	}
 
+	.transition_toggle_enterFrom,
+	.transition_toggle_leaveTo {
+		height: 0;
+	}
+
 	.root {
 		interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
 	}
@@ -165,7 +170,6 @@ onMounted(() => {
 .transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
 	opacity: 0;
-	height: 0;
 }
 
 .root {
