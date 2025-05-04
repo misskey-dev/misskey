@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
 	<div :class="$style.body">
 		<div :class="$style.top">
-			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
 			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
 				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon" style="viewTransitionName: navbar-serverIcon;"/>
 			</button>
@@ -197,12 +196,9 @@ function menuEdit() {
 }
 
 .body {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1001;
+	position: relative;
 	width: var(--nav-icon-only-width);
-	height: 100dvh;
+	height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
 	overflow-x: clip;
@@ -317,18 +313,6 @@ function menuEdit() {
 		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
-	.banner {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-size: cover;
-		background-position: center center;
-		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-	}
-
 	.instance {
 		position: relative;
 		display: block;
@@ -349,6 +333,7 @@ function menuEdit() {
 		display: inline-block;
 		width: 38px;
 		aspect-ratio: 1;
+		border-radius: 8px;
 	}
 
 	.bottom {
@@ -573,6 +558,7 @@ function menuEdit() {
 		display: inline-block;
 		width: 30px;
 		aspect-ratio: 1;
+		border-radius: 8px;
 	}
 
 	.bottom {

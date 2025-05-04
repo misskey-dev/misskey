@@ -73,7 +73,7 @@ export class ServerService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async launch(): Promise<void> {
+	public async launch() {
 		const fastify = Fastify({
 			trustProxy: true,
 			logger: false,
@@ -133,8 +133,8 @@ export class ServerService implements OnApplicationShutdown {
 				reply.header('content-type', 'text/plain; charset=utf-8');
 				reply.header('link', `<${encodeURI(location)}>; rel="canonical"`);
 				done(null, [
-					"Refusing to relay remote ActivityPub object lookup.",
-					"",
+					'Refusing to relay remote ActivityPub object lookup.',
+					'',
 					`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
 				].join('\n'));
 			});
@@ -221,7 +221,7 @@ export class ServerService implements OnApplicationShutdown {
 			reply.header('Cache-Control', 'public, max-age=86400');
 
 			if (user) {
-				reply.redirect(user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user));
+				reply.redirect((user.avatarId == null ? null : user.avatarUrl) ?? this.userEntityService.getIdenticonUrl(user));
 			} else {
 				reply.redirect('/static-assets/user-unknown.png');
 			}
@@ -301,6 +301,7 @@ export class ServerService implements OnApplicationShutdown {
 		}
 
 		await fastify.ready();
+		return fastify;
 	}
 
 	@bindThis
