@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:leaveActiveClass="$style.transition_x_leaveActive"
 				:enterFromClass="$style.transition_x_enterFrom"
 				:leaveToClass="$style.transition_x_leaveTo"
-				:moveClass=" $style.transition_x_move"
+				:moveClass="$style.transition_x_move"
 				tag="div"
 			>
 				<template v-for="(note, i) in notes" :key="note.id">
@@ -311,6 +311,12 @@ defineExpose({
 
 .transition_x_enterActive {
 	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+
+	&.note,
+	.note {
+		/* Skip Note Rendering有効時、TransitionGroupでnoteを追加するときに一瞬がくっとなる問題を抑制する */
+		content-visibility: visible !important;
+	}
 }
 
 .transition_x_leaveActive {
