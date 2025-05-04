@@ -109,6 +109,12 @@ defineExpose({
 
 .transition_x_enterActive {
 	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+
+	&.item,
+	.item {
+		/* Skip Note Rendering有効時、TransitionGroupでnoteを追加するときに一瞬がくっとなる問題を抑制する */
+		content-visibility: visible !important;
+	}
 }
 
 .transition_x_leaveActive {
