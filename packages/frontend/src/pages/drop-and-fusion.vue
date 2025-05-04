@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:moveClass="$style.transition_zoom_move"
 	mode="out-in"
 >
-	<MkSpacer v-if="!gameStarted" :contentMax="800">
+	<div v-if="!gameStarted" class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div :class="$style.root">
 			<div class="_gaps">
 				<div class="_woodenFrame" style="text-align: center;">
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 	<XGame v-else :gameMode="gameMode" :mute="mute" @end="onGameEnd"/>
 </Transition>
 </template>
@@ -88,12 +88,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import XGame from './drop-and-fusion.game.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 
 const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
 const gameStarted = ref(false);
@@ -121,7 +121,7 @@ function onGameEnd() {
 	gameStarted.value = false;
 }
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-device-gamepad',
 }));

@@ -38,7 +38,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:setting="rowSetting"
 			:bus="bus"
 			:using="row.using"
-			:class="[lastLine === row.index ? 'last_row' : '']"
 			@operation:beginEdit="onCellEditBegin"
 			@operation:endEdit="onCellEditEnd"
 			@change:value="onChangeCellValue"
@@ -50,11 +49,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import { DataSource, GridEventEmitter, GridSetting, GridState, Size } from '@/components/grid/grid.js';
+import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
+import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
+import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
+import type { GridColumn } from '@/components/grid/column.js';
+import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
+import type { MenuItem } from '@/types/menu.js';
+import { GridEventEmitter } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import { cellValidation } from '@/components/grid/cell-validators.js';
-import { CELL_ADDRESS_NONE, CellAddress, CellValue, createCell, GridCell, resetCell } from '@/components/grid/cell.js';
+import { CELL_ADDRESS_NONE, createCell, resetCell } from '@/components/grid/cell.js';
 import {
 	copyGridDataToClipboard,
 	equalCellAddress,
@@ -63,18 +68,16 @@ import {
 	pasteToGridFromClipboard,
 	removeDataFromGrid,
 } from '@/components/grid/grid-utils.js';
-import { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { GridContext, GridEvent } from '@/components/grid/grid-event.js';
-import { createColumn, GridColumn } from '@/components/grid/column.js';
-import { createRow, defaultGridRowSetting, GridRow, GridRowSetting, resetRow } from '@/components/grid/row.js';
-import { handleKeyEvent } from '@/scripts/key-event.js';
+import { createColumn } from '@/components/grid/column.js';
+import { createRow, defaultGridRowSetting, resetRow } from '@/components/grid/row.js';
+import { handleKeyEvent } from '@/utility/key-event.js';
 
 type RowHolder = {
 	row: GridRow,
 	cells: GridCell[],
 	origin: DataSource,
-}
+};
 
 const emit = defineEmits<{
 	(ev: 'event', event: GridEvent, context: GridContext): void;
@@ -125,7 +128,7 @@ const bus = new GridEventEmitter();
  *
  * @see {@link onResize}
  */
-const resizeObserver = new ResizeObserver((entries) => setTimeout(() => onResize(entries)));
+const resizeObserver = new ResizeObserver((entries) => window.setTimeout(() => onResize(entries)));
 
 const rootEl = ref<InstanceType<typeof HTMLTableElement>>();
 /**
@@ -1297,8 +1300,6 @@ onMounted(() => {
 </style>
 
 <style lang="scss">
-$borderSetting: solid 0.5px var(--MI_THEME-divider);
-
 // 配下コンポーネントを含めて一括してコントロールするため、scopedもmoduleも使用できない
 .mk_grid_border {
 	--rootBorderSetting: none;
@@ -1306,66 +1307,39 @@ $borderSetting: solid 0.5px var(--MI_THEME-divider);
 
 	border-spacing: 0;
 
-	&.mk_grid_root_border {
-		--rootBorderSetting: #{$borderSetting};
-	}
-
 	&.mk_grid_root_rounded {
 		--borderRadius: var(--MI-radius);
 	}
 
 	.mk_grid_thead {
+		position: sticky;
+    z-index: 1;
+    left: 0;
+		top: 0;
+		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+		backdrop-filter: var(--MI-blur, blur(20px));
+		background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
+
 		.mk_grid_tr {
 			.mk_grid_th {
-				border-left: $borderSetting;
-				border-top: var(--rootBorderSetting);
 
-				&:first-child {
-					// 左上セル
-					border-left: var(--rootBorderSetting);
-					border-top-left-radius: var(--borderRadius);
-				}
-
-				&:last-child {
-					// 右上セル
-					border-top-right-radius: var(--borderRadius);
-					border-right: var(--rootBorderSetting);
-				}
 			}
 		}
 	}
 
 	.mk_grid_tbody {
 		.mk_grid_tr {
-			.mk_grid_td, .mk_grid_th {
-				border-left: $borderSetting;
-				border-top: $borderSetting;
-
-				&:first-child {
-					// 左端の列
-					border-left: var(--rootBorderSetting);
-				}
-
-				&:last-child {
-					// 一番右端の列
-					border-right: var(--rootBorderSetting);
-				}
+			&:nth-child(odd) {
+				background: var(--MI_THEME-panel);
 			}
-		}
 
-		.last_row {
+			&:nth-child(even) {
+				background: var(--MI_THEME-bg);
+			}
+
 			.mk_grid_td, .mk_grid_th {
-				// 一番下の行
-				border-bottom: var(--rootBorderSetting);
-
-				&:first-child {
-					// 左下セル
-					border-bottom-left-radius: var(--borderRadius);
-				}
-
-				&:last-child {
-					// 右下セル
-					border-bottom-right-radius: var(--borderRadius);
+				&:hover {
+					box-shadow: 0 0 0 1px var(--MI_THEME-divider) inset;
 				}
 			}
 		}
