@@ -196,6 +196,10 @@ export const paramDef = {
 				required: ['software', 'versionRange'],
 			},
 		},
+		visibleUserGeneratedContentsForNonLoggedInVisitors: {
+			type: 'string',
+			enum: ['all', 'local', 'none'],
+		},
 	},
 	required: [],
 } as const;
@@ -688,6 +692,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.visibleUserGeneratedContentsForNonLoggedInVisitors !== undefined) {
+				set.visibleUserGeneratedContentsForNonLoggedInVisitors = ps.visibleUserGeneratedContentsForNonLoggedInVisitors;
 			}
 
 			const before = await this.metaService.fetch(true);

@@ -8769,6 +8769,8 @@ export type operations = {
                 software: string;
                 versionRange: string;
               }[];
+            /** @enum {string} */
+            visibleUserGeneratedContentsForNonLoggedInVisitors: 'all' | 'local' | 'none';
           };
         };
       };
@@ -11439,6 +11441,8 @@ export type operations = {
               software: string;
               versionRange: string;
             }[];
+          /** @enum {string} */
+          visibleUserGeneratedContentsForNonLoggedInVisitors?: 'all' | 'local' | 'none';
         };
       };
     };

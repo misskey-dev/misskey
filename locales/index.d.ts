@@ -6380,6 +6380,10 @@ export interface Locale extends ILocale {
          * 脆弱性などの理由で、サーバーのソフトウェアの名前及びバージョンの範囲を指定して配信を停止できます。このバージョン情報はサーバーが提供したものであり、信頼性は保証されません。バージョン指定には semver の範囲指定が使用できますが、>= 2024.3.1 と指定すると 2024.3.1-custom.0 のようなカスタムバージョンが含まれないため、>= 2024.3.1-0 のように prerelease の指定を行うことを推奨します。
          */
         "deliverSuspendedSoftwareDescription": string;
+        /**
+         * 非ログイン訪問者に対するユーザー作成コンテンツの公開範囲
+         */
+        "visibleUserGeneratedContentsForNonLoggedInVisitors": string;
     };
     "_accountMigration": {
         /**

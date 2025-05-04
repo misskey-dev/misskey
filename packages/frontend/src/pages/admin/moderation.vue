@@ -20,6 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
 				</MkSwitch>
 
+				<MkSelect v-model="visibleUserGeneratedContentsForNonLoggedInVisitors" @update:modelValue="onChange_visibleUserGeneratedContentsForNonLoggedInVisitors">
+					<template #label>{{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors }}</template>
+					<option value="all">{{ i18n.ts.all }}</option>
+					<option value="local">{{ i18n.ts.localOnly }}</option>
+					<option value="none">{{ i18n.ts.none }}</option>
+				</MkSelect>
+
 				<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
 				<MkFolder>
@@ -137,9 +144,11 @@ import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
+const visibleUserGeneratedContentsForNonLoggedInVisitors = ref<string>('all');
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
 const prohibitedWordsForNameOfUser = ref<string>('');
@@ -153,6 +162,7 @@ async function init() {
 	const meta = await misskeyApi('admin/meta');
 	enableRegistration.value = !meta.disableRegistration;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
+	visibleUserGeneratedContentsForNonLoggedInVisitors.value = meta.visibleUserGeneratedContentsForNonLoggedInVisitors;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
 	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
@@ -184,6 +194,14 @@ async function onChange_enableRegistration(value: boolean) {
 function onChange_emailRequiredForSignup(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		emailRequiredForSignup: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_visibleUserGeneratedContentsForNonLoggedInVisitors(value: string) {
+	os.apiWithDialog('admin/update-meta', {
+		visibleUserGeneratedContentsForNonLoggedInVisitors: value,
 	}).then(() => {
 		fetchInstance(true);
 	});
