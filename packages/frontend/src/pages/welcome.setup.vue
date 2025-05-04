@@ -47,8 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>Welcome to Misskey!</div>
 				<div :class="$style.version">v{{ version }}</div>
 			</div>
-			<div class="_gaps_m" style="padding: 32px;">
-				<template v-if="!accountCreated">
+			<div style="padding: 24px 32px 32px 32px;">
+				<form v-if="!accountCreated" class="_gaps_m" @submit.prevent="createAccount()">
 					<div style="text-align: center;" class="_gaps_s">
 						<div><b>{{ i18n.ts._serverSetupWizard.installCompleted }}</b></div>
 						<div>{{ i18n.ts._serverSetupWizard.firstCreateAccount }}</div>
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-lock"></i></template>
 					</MkInput>
 					<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
-						<template #label>{{ i18n.ts.username }}</template>
+						<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 						<template #prefix>@</template>
 						<template #suffix>@{{ host }}</template>
 					</MkInput>
@@ -67,11 +67,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-lock"></i></template>
 					</MkInput>
 					<div>
-						<MkButton gradate large rounded :disabled="accountCreating" data-cy-admin-ok style="margin: 0 auto;" @click="createAccount">
+						<MkButton gradate large rounded :disabled="accountCreating" data-cy-admin-ok style="margin: 0 auto;" type="submit">
 							{{ accountCreating ? i18n.ts.processing : i18n.ts.next }}<MkEllipsis v-if="accountCreating"/>
 						</MkButton>
 					</div>
-				</template>
+				</form>
 				<template v-else-if="step === 0">
 					<div style="text-align: center;" class="_gaps_s">
 						<div><b>{{ i18n.ts._serverSetupWizard.accountCreated }}</b></div>
@@ -113,7 +113,7 @@ const username = ref('');
 const password = ref('');
 const setupPassword = ref('');
 const accountCreating = ref(false);
-const accountCreated = ref(true);
+const accountCreated = ref(false);
 const step = ref(0);
 
 let token;
@@ -157,8 +157,7 @@ function createAccount() {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-	display: grid;
-	place-content: center;
+	align-content: center;
 }
 
 .form {
@@ -168,6 +167,7 @@ function createAccount() {
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: clip;
 	max-width: 500px;
+	margin: 0 auto;
 }
 
 .title {
