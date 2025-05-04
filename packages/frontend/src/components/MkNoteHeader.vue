@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="note.visibility !== 'public'"
 			style="margin-left: 0.5em;"
 			:class="{
-				[$style.enableColorlize]: defaultStore.state.enableNoteVisibilityColor,
+				[$style.enableColorlize]: prefer.s.enableNoteVisibilityColor,
 				[$style.colorHome]: note.visibility === 'home',
 				[$style.colorFollowers]: note.visibility === 'followers',
 				[$style.colorSpecified]: note.visibility === 'specified',
@@ -51,6 +51,7 @@ import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { DI } from '@/di.js';
+import { prefer } from '@/preferences.js';
 
 defineProps<{
 	note: Misskey.entities.Note;

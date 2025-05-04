@@ -327,6 +327,9 @@ export const PREF_DEF = {
 	confirmOnReact: {
 		default: false,
 	},
+	enableNoteVisibilityColor: {
+		default: false,
+	},
 	defaultFollowWithReplies: {
 		default: false,
 	},
