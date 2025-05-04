@@ -4,6 +4,7 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+--- 2025.4.1-kinel.2 released at this time ---
 --- 2025.4.1-kinel.1 released at this time ---
 
 - fix(backend): 自分のフォロワー限定投稿に対するリプライがぶいみみソーシャルタイムラインで見えないことが有る問題を修正 - 2025/04/30 #224
