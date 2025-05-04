@@ -1023,10 +1023,6 @@ export interface Locale extends ILocale {
      */
     "pinLimitExceeded": string;
     /**
-     * Misskeyのインストールが完了しました！管理者アカウントを作成しましょう。
-     */
-    "intro": string;
-    /**
      * 完了
      */
     "done": string;
@@ -11615,6 +11611,20 @@ export interface Locale extends ILocale {
          * 例: misskey.example.com
          */
         "serverHostPlaceholder": string;
+    };
+    "_serverSetupWizard": {
+        /**
+         * Misskeyのインストールが完了しました！
+         */
+        "installCompleted": string;
+        /**
+         * まずは、管理者アカウントを作成しましょう。
+         */
+        "firstCreateAccount": string;
+        /**
+         * 管理者アカウントが作成されました！
+         */
+        "accountCreated": string;
     };
 }
 declare const locales: {

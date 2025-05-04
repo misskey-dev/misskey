@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithAnimBg>
 	<div :class="$style.formContainer">
-		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
+		<div :class="$style.form" class="_panel">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="z-index:1;position:relative" viewBox="0 0 854 300">
 				<defs>
 					<linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -48,27 +48,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.version">v{{ version }}</div>
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
-				<div>{{ i18n.ts.intro }}</div>
-				<MkInput v-model="setupPassword" type="password" data-cy-admin-initial-password>
-					<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
-					<template #prefix><i class="ti ti-lock"></i></template>
-				</MkInput>
-				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
-					<template #label>{{ i18n.ts.username }}</template>
-					<template #prefix>@</template>
-					<template #suffix>@{{ host }}</template>
-				</MkInput>
-				<MkInput v-model="password" type="password" data-cy-admin-password>
-					<template #label>{{ i18n.ts.password }}</template>
-					<template #prefix><i class="ti ti-lock"></i></template>
-				</MkInput>
-				<div>
-					<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
-						{{ submitting ? i18n.ts.processing : i18n.ts.done }}<MkEllipsis v-if="submitting"/>
+				<template v-if="!accountCreated">
+					<div style="text-align: center;" class="_gaps_s">
+						<div><b>{{ i18n.ts._serverSetupWizard.installCompleted }}</b></div>
+						<div>{{ i18n.ts._serverSetupWizard.firstCreateAccount }}</div>
+					</div>
+					<MkInput v-model="setupPassword" type="password" data-cy-admin-initial-password>
+						<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
+						<template #prefix><i class="ti ti-lock"></i></template>
+					</MkInput>
+					<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
+						<template #label>{{ i18n.ts.username }}</template>
+						<template #prefix>@</template>
+						<template #suffix>@{{ host }}</template>
+					</MkInput>
+					<MkInput v-model="password" type="password" data-cy-admin-password>
+						<template #label>{{ i18n.ts.password }}</template>
+						<template #prefix><i class="ti ti-lock"></i></template>
+					</MkInput>
+					<div>
+						<MkButton gradate large rounded :disabled="accountCreating" data-cy-admin-ok style="margin: 0 auto;" @click="createAccount">
+							{{ accountCreating ? i18n.ts.processing : i18n.ts.next }}<MkEllipsis v-if="accountCreating"/>
+						</MkButton>
+					</div>
+				</template>
+				<template v-else-if="step === 0">
+					<div style="text-align: center;" class="_gaps_s">
+						<div><b>{{ i18n.ts._serverSetupWizard.accountCreated }}</b></div>
+					</div>
+					<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
+						{{ i18n.ts.next }}
 					</MkButton>
-				</div>
+				</template>
+				<template v-else-if="step === 1">
+					<div style="text-align: center;" class="_gaps_s">
+						<div><b>お願い</b></div>
+						<div>Misskeyは有志によって開発されている無料のソフトウェアです。<br>今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。<br>ご支援特典もあります！</div>
+					</div>
+					<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
+					<div class="_buttonsCenter">
+						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
+							{{ i18n.ts.next }}
+						</MkButton>
+					</div>
+				</template>
 			</div>
-		</form>
+		</div>
 	</div>
 </PageWithAnimBg>
 </template>
@@ -82,24 +107,30 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { login } from '@/accounts.js';
+import MkLink from '@/components/MkLink.vue';
 
 const username = ref('');
 const password = ref('');
 const setupPassword = ref('');
-const submitting = ref(false);
+const accountCreating = ref(false);
+const accountCreated = ref(true);
+const step = ref(0);
 
-function submit() {
-	if (submitting.value) return;
-	submitting.value = true;
+let token;
+
+function createAccount() {
+	if (accountCreating.value) return;
+	accountCreating.value = true;
 
 	misskeyApi('admin/accounts/create', {
 		username: username.value,
 		password: password.value,
 		setupPassword: setupPassword.value === '' ? null : setupPassword.value,
 	}).then(res => {
-		return login(res.token);
+		token = res.token;
+		accountCreated.value = true;
 	}).catch((err) => {
-		submitting.value = false;
+		accountCreating.value = false;
 
 		let title = i18n.ts.somethingHappened;
 		let text = err.message + '\n' + err.id;

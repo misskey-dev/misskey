@@ -251,7 +251,6 @@ noUsers: "ユーザーはいません"
 editProfile: "プロフィールを編集"
 noteDeleteConfirm: "このノートを削除しますか？"
 pinLimitExceeded: "これ以上ピン留めできません"
-intro: "Misskeyのインストールが完了しました！管理者アカウントを作成しましょう。"
 done: "完了"
 processing: "処理中"
 preview: "プレビュー"
@@ -3106,3 +3105,8 @@ _search:
   pleaseEnterServerHost: "サーバーのホストを入力してください"
   pleaseSelectUser: "ユーザーを選択してください"
   serverHostPlaceholder: "例: misskey.example.com"
+
+_serverSetupWizard:
+  installCompleted: "Misskeyのインストールが完了しました！"
+  firstCreateAccount: "まずは、管理者アカウントを作成しましょう。"
+  accountCreated: "管理者アカウントが作成されました！"
