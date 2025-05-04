@@ -76,8 +76,8 @@ function unlockDownScroll() {
 	scrollEl.style.overscrollBehavior = 'contain';
 }
 
-function moveStart(event: PointerEvent) {
-	if (event.pointerType === 'mouse' && event.button !== 1) return;
+function moveStartByMouse(event: MouseEvent) {
+	if (event.button !== 1) return;
 	if (isRefreshing.value) return;
 
 	const scrollPos = scrollEl!.scrollTop;
@@ -88,27 +88,39 @@ function moveStart(event: PointerEvent) {
 
 	lockDownScroll();
 
-	// マウスでのpull時、画面上のテキスト選択が発生したり、ブラウザの中クリックによる挙動が競合したりして画面がスクロールされたりするのを防ぐ
-	window.document.body.setAttribute('inert', 'true');
+	event.preventDefault(); // 中クリックによるスクロール、テキスト選択などを防ぐ
 
 	isPulling.value = true;
 	startScreenY = getScreenY(event);
 	pullDistance.value = 0;
 
-	// タッチデバイスでPointerEventを使うとなんか挙動がおかしいので、TouchEventとMouseEventを使い分ける
-	if (event.pointerType === 'mouse') {
-		window.addEventListener('mousemove', moving, { passive: true });
-		window.addEventListener('mouseup', () => {
-			window.removeEventListener('mousemove', moving);
-			onPullRelease();
-		}, { passive: true, once: true });
-	} else {
-		window.addEventListener('touchmove', moving, { passive: true });
-		window.addEventListener('touchend', () => {
-			window.removeEventListener('touchmove', moving);
-			onPullRelease();
-		}, { passive: true, once: true });
+	window.addEventListener('mousemove', moving, { passive: true });
+	window.addEventListener('mouseup', () => {
+		window.removeEventListener('mousemove', moving);
+		onPullRelease();
+	}, { passive: true, once: true });
+}
+
+function moveStartByTouch(event: TouchEvent) {
+	if (isRefreshing.value) return;
+
+	const scrollPos = scrollEl!.scrollTop;
+	if (scrollPos !== 0) {
+		unlockDownScroll();
+		return;
 	}
+
+	lockDownScroll();
+
+	isPulling.value = true;
+	startScreenY = getScreenY(event);
+	pullDistance.value = 0;
+
+	window.addEventListener('touchmove', moving, { passive: true });
+	window.addEventListener('touchend', () => {
+		window.removeEventListener('touchmove', moving);
+		onPullRelease();
+	}, { passive: true, once: true });
 }
 
 function moveBySystem(to: number): Promise<void> {
@@ -148,7 +160,6 @@ async function closeContent() {
 }
 
 function onPullRelease() {
-	window.document.body.removeAttribute('inert');
 	startScreenY = null;
 	if (isPulledEnough.value) {
 		isPulledEnough.value = false;
@@ -208,13 +219,15 @@ onMounted(() => {
 	if (rootEl.value == null) return;
 	scrollEl = getScrollContainer(rootEl.value);
 	lockDownScroll();
-	rootEl.value.addEventListener('pointerdown', moveStart, { passive: true });
+	rootEl.value.addEventListener('mousedown', moveStartByMouse, { passive: false }); // preventDefaultするため
+	rootEl.value.addEventListener('touchstart', moveStartByTouch, { passive: true });
 	rootEl.value.addEventListener('touchend', toggleScrollLockOnTouchEnd, { passive: true });
 });
 
 onUnmounted(() => {
 	unlockDownScroll();
-	if (rootEl.value) rootEl.value.removeEventListener('pointerdown', moveStart);
+	if (rootEl.value) rootEl.value.removeEventListener('mousedown', moveStartByMouse);
+	if (rootEl.value) rootEl.value.removeEventListener('touchstart', moveStartByTouch);
 	if (rootEl.value) rootEl.value.removeEventListener('touchend', toggleScrollLockOnTouchEnd);
 });
 </script>
