@@ -77,31 +77,37 @@ function unlockDownScroll() {
 }
 
 function moveStart(event: PointerEvent) {
-	const scrollPos = scrollEl!.scrollTop;
-	if (scrollPos === 0) {
-		lockDownScroll();
-		if (!isPulling.value && !isRefreshing.value) {
-			isPulling.value = true;
-			startScreenY = getScreenY(event);
-			pullDistance.value = 0;
+	if (event.pointerType === 'mouse' && event.button !== 1) return;
+	if (isRefreshing.value) return;
 
-			// タッチデバイスでPointerEventを使うとなんか挙動がおかしいので、TouchEventとMouseEventを使い分ける
-			if (event.pointerType === 'mouse') {
-				window.addEventListener('mousemove', moving, { passive: true });
-				window.addEventListener('mouseup', () => {
-					window.removeEventListener('mousemove', moving);
-					onPullRelease();
-				}, { passive: true, once: true });
-			} else {
-				window.addEventListener('touchmove', moving, { passive: true });
-				window.addEventListener('touchend', () => {
-					window.removeEventListener('touchmove', moving);
-					onPullRelease();
-				}, { passive: true, once: true });
-			}
-		}
-	} else {
+	const scrollPos = scrollEl!.scrollTop;
+	if (scrollPos !== 0) {
 		unlockDownScroll();
+		return;
+	}
+
+	lockDownScroll();
+
+	// マウスでのpull時、画面上のテキスト選択が発生したり、ブラウザの中クリックによる挙動が競合したりして画面がスクロールされたりするのを防ぐ
+	window.document.body.setAttribute('inert', 'true');
+
+	isPulling.value = true;
+	startScreenY = getScreenY(event);
+	pullDistance.value = 0;
+
+	// タッチデバイスでPointerEventを使うとなんか挙動がおかしいので、TouchEventとMouseEventを使い分ける
+	if (event.pointerType === 'mouse') {
+		window.addEventListener('mousemove', moving, { passive: true });
+		window.addEventListener('mouseup', () => {
+			window.removeEventListener('mousemove', moving);
+			onPullRelease();
+		}, { passive: true, once: true });
+	} else {
+		window.addEventListener('touchmove', moving, { passive: true });
+		window.addEventListener('touchend', () => {
+			window.removeEventListener('touchmove', moving);
+			onPullRelease();
+		}, { passive: true, once: true });
 	}
 }
 
@@ -168,8 +174,6 @@ function toggleScrollLockOnTouchEnd() {
 }
 
 function moving(event: MouseEvent | TouchEvent) {
-	if (!isPulling.value || isRefreshing.value) return;
-
 	if ((scrollEl?.scrollTop ?? 0) > SCROLL_STOP + pullDistance.value || isHorizontalSwipeSwiping.value) {
 		pullDistance.value = 0;
 		isPulledEnough.value = false;
@@ -184,11 +188,6 @@ function moving(event: MouseEvent | TouchEvent) {
 
 	const moveHeight = moveScreenY - startScreenY!;
 	pullDistance.value = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
-
-	// マウスでのpull時、画面上のテキスト選択が発生して画面がスクロールされたりするのを防ぐ
-	if (pullDistance.value > 3) { // ある程度遊びを持たせないと通常のクリックでも発火しクリックできなくなる
-		window.document.body.setAttribute('inert', 'true');
-	}
 
 	isPulledEnough.value = pullDistance.value >= FIRE_THRESHOLD;
 }
