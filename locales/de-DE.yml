@@ -220,6 +220,7 @@ silenceThisInstance: "Instanz stummschalten"
 mediaSilenceThisInstance: "Medien dieses Servers stummschalten"
 operations: "Aktionen"
 software: "Software"
+softwareName: "Software Name"
 version: "Version"
 metadata: "Metadaten"
 withNFiles: "{n} Datei(en)"
@@ -1423,6 +1424,7 @@ _settings:
   ifOn: "Wenn eingeschaltet"
   ifOff: "Wenn ausgeschaltet"
   enableSyncThemesBetweenDevices: "Synchronisierung von installierten Themen auf verschiedenen Endgeräten"
+  enablePullToRefresh: "Ziehen zum Aktualisieren"
   _chat:
     showSenderName: "Name des Absenders anzeigen"
     sendOnEnter: "Eingabetaste sendet Nachricht"
@@ -1468,6 +1470,7 @@ _delivery:
     manuallySuspended: "Manuell gesperrt"
     goneSuspended: "Gesperrt wegen Löschung des Servers"
     autoSuspendedForNotResponding: "Gesperrt, weil der Server nicht antwortet"
+    softwareSuspended: "Ausgesetzt, weil die Software nicht mehr beliefert wird"
 _bubbleGame:
   howToPlay: "Wie man spielt"
   hold: "Halten"
@@ -1599,6 +1602,8 @@ _serverSettings:
   openRegistration: "Registrierung von Konten aktivieren"
   openRegistrationWarning: "Das Aktivieren von Registrierungen ist riskant. Es wird empfohlen, sie nur dann zu aktivieren, wenn der Server ständig überwacht wird und im Falle eines Problems sofort reagiert werden kann."
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "Wenn über einen bestimmten Zeitraum keine Moderatorenaktivität festgestellt wird, wird diese Einstellung automatisch deaktiviert, um Spam zu verhindern."
+  deliverSuspendedSoftware: "Software, die nicht mehr beliefert wird"
+  deliverSuspendedSoftwareDescription: "Sie können eine Auswahl von Namen und Versionen verschiedener Serversoftware angeben, um die Zustellung zu stoppen, z. B. aufgrund von Sicherheitslücken. Diese Versionsinformationen werden vom Server bereitgestellt und ihre Zuverlässigkeit ist nicht garantiert. Es wird jedoch empfohlen, eine Vorabversion anzugeben, wie z. B. >= 2024.3.1-0, da die Angabe >= 2024.3.1 keine benutzerdefinierten Versionen wie 2024.3.1-custom.0 einschließt."
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"

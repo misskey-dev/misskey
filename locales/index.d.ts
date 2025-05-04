@@ -5726,6 +5726,10 @@ export interface Locale extends ILocale {
          */
         "enablePullToRefresh": string;
         /**
+         * マウスでは、ホイールを押し込みながらドラッグします。
+         */
+        "enablePullToRefresh_description": string;
+        /**
          * サーバーと接続を確立し、リアルタイムでコンテンツを更新します。通信量とバッテリーの消費が多くなる場合があります。
          */
         "realtimeMode_description": string;
