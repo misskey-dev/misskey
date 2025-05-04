@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	:class="$style.root"
-	:style="tickerColorsRef"
+	:style="tickerColors"
 >
-	<img :class="$style.icon" :src="tickerInfoRef.iconUrl"/>
-	<div :class="$style.name">{{ tickerInfoRef.name }}</div>
+	<img :class="$style.icon" :src="tickerInfo.iconUrl"/>
+	<div :class="$style.name">{{ tickerInfo.name }}</div>
 </div>
 </template>
 
@@ -20,8 +20,8 @@ import type { MkInstanceTickerProps } from '@/components/MkInstanceTicker.impl.j
 
 const props = defineProps<MkInstanceTickerProps>();
 
-const tickerInfoRef = computed(() => getTickerInfo(props));
-const tickerColorsRef = computed(() => getTickerColors(tickerInfoRef.value));
+const tickerInfo = computed(() => getTickerInfo(props));
+const tickerColors = computed(() => getTickerColors(tickerInfo.value));
 </script>
 
 <style lang="scss" module>
