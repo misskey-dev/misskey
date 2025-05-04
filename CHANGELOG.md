@@ -10,6 +10,8 @@
 - Feat: マウスでもタイムラインを引っ張って更新できるように
   - アクセシビリティ設定からオフにすることもできます
 - Enhance: タイムラインのパフォーマンスを向上
+- Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 - Fix: 一部のブラウザでアコーディオンメニューのアニメーションが動作しない問題を修正
 - Fix: ダイアログのお知らせが画面からはみ出ることがある問題を修正
 
