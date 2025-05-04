@@ -12,7 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	appear @afterLeave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
-		<div v-if="user != null">
+		<MkError v-if="error" @retry="fetchUser()"/>
+		<div v-else-if="user != null">
 			<div :class="$style.banner" :style="user.bannerUrl ? { backgroundImage: `url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` } : ''">
 				<span v-if="$i && $i.id != user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
 			</div>
@@ -85,6 +86,7 @@ const zIndex = os.claimZIndex('middle');
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const top = ref(0);
 const left = ref(0);
+const error = ref(false);
 
 function showMenu(ev: MouseEvent) {
 	if (user.value == null) return;
@@ -92,19 +94,27 @@ function showMenu(ev: MouseEvent) {
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
-onMounted(() => {
+async function fetchUser() {
 	if (typeof props.q === 'object') {
 		user.value = props.q;
+		error.value = false;
 	} else {
-		const query = props.q.startsWith('@') ?
+		const query: Omit<Misskey.entities.UsersShowRequest, 'userIds'> = props.q.startsWith('@') ?
 			Misskey.acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
 		misskeyApi('users/show', query).then(res => {
 			if (!props.showing) return;
 			user.value = res;
+			error.value = false;
+		}, () => {
+			error.value = true;
 		});
 	}
+}
+
+onMounted(() => {
+	fetchUser();
 
 	const rect = props.source.getBoundingClientRect();
 	const x = ((rect.left + (props.source.offsetWidth / 2)) - (300 / 2)) + window.scrollX;
