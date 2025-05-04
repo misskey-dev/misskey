@@ -760,6 +760,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 	& + .article {
 		padding-top: 8px;
 	}
+
+	> .colorBar {
+		height: calc(100% - 6px);
+	}
 }
 
 .renoteAvatar {
@@ -829,6 +833,16 @@ function emitUpdReaction(emoji: string, delta: number) {
 	position: relative;
 	display: flex;
 	padding: 28px 32px;
+}
+
+.colorBar {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	width: 5px;
+	height: calc(100% - 16px);
+	border-radius: 999px;
+	pointer-events: none;
 }
 
 .avatar {
@@ -1053,6 +1067,13 @@ function emitUpdReaction(emoji: string, delta: number) {
 				margin-right: 12px;
 			}
 		}
+	}
+
+	.colorBar {
+		top: 6px;
+		left: 6px;
+		width: 4px;
+		height: calc(100% - 12px);
 	}
 }
 

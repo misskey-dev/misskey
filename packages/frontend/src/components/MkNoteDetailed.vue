@@ -60,7 +60,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
 						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
-						<span v-if="appearNote.channel" style="margin-left: 0.5em;" :title="appearNote.channel.name"><i class="ti ti-device-tv"></i></span>
 					</div>
 				</div>
 				<div :class="$style.noteHeaderUsernameAndBadgeRoles">
