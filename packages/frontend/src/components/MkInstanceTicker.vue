@@ -8,9 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
 	<div :class="$style.name">
 		<svg :class="$style.nameSvg" version="1.1" xmlns="http://www.w3.org/2000/svg">
-			<text x="0" y="0" :class="$style.nameSvgText">
-				<tspan x="0" y="0" :class="$style.nameSvgTspan">{{ instanceName }}</tspan>
-			</text>
+			<text x="0" y="0" :class="$style.nameSvgText">{{ instanceName }}</text>
 		</svg>
 	</div>
 </div>
@@ -103,10 +101,7 @@ $height: 2ex;
 	font-size: inherit;
 	font-weight: inherit;
 	text-rendering: optimizeLegibility;
-	transform: translateY(calc(100% - 2.5px));
-}
-
-.nameSvgTspan {
+	transform: translateY(calc(100% - 2.5px)); // 縁取りの上部分 2.5px
 	fill: currentColor;
 	stroke: #000;
 	stroke-linecap: round;
