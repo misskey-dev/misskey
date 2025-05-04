@@ -6,7 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" :style="themeColorStyle">
 	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
-	<div :class="$style.name">{{ instanceName }}</div>
+	<div :class="$style.name">
+		<svg :class="$style.nameSvg" version="1.1" xmlns="http://www.w3.org/2000/svg">
+			<text x="0" y="0" :class="$style.nameSvgText">
+				<tspan x="0" y="0" :class="$style.nameSvgTspan">{{ instanceName }}</tspan>
+			</text>
+		</svg>
+	</div>
 </div>
 </template>
 
@@ -78,10 +84,34 @@ $height: 2ex;
 
 .name {
 	margin-left: 4px;
+	height: 100%;
 	line-height: 1;
 	font-size: 0.9em;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: visible;
+}
+
+.nameSvg {
+	width: auto;
+	height: 100%;
+	overflow: visible;
+}
+
+.nameSvgText {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	text-rendering: optimizeLegibility;
+	transform: translateY(calc(100% - 2.5px));
+}
+
+.nameSvgTspan {
+	fill: currentColor;
+	stroke: #000;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 2.5px;
+	paint-order: stroke fill markers;
 }
 </style>
