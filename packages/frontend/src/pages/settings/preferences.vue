@@ -210,6 +210,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkPreferenceContainer>
 								</SearchMarker>
 
+								<SearchMarker :keywords="['reaction', 'confirm', 'remove']">
+									<MkPreferenceContainer k="enableNoteVisibilityColor">
+										<MkSwitch v-model="enableNoteVisibilityColor">
+											<template #label><SearchLabel>{{ i18n.ts.enableNoteVisibilityColor }}</SearchLabel></template>
+											<template #caption>{{ i18n.ts.enableNoteVisibilityColorDescription }}</template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
 								<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']">
 									<MkPreferenceContainer k="loadRawImages">
 										<MkSwitch v-model="loadRawImages">
@@ -782,6 +791,7 @@ const useGroupedNotifications = prefer.model('useGroupedNotifications');
 const alwaysConfirmFollow = prefer.model('alwaysConfirmFollow');
 const confirmWhenRevealingSensitiveMedia = prefer.model('confirmWhenRevealingSensitiveMedia');
 const confirmOnReact = prefer.model('confirmOnReact');
+const enableNoteVisibilityColor = prefer.model('enableNoteVisibilityColor');
 const defaultNoteVisibility = prefer.model('defaultNoteVisibility');
 const defaultNoteLocalOnly = prefer.model('defaultNoteLocalOnly');
 const rememberNoteVisibility = prefer.model('rememberNoteVisibility');
@@ -849,6 +859,7 @@ watch([
 	disableStreamingTimeline,
 	alwaysConfirmFollow,
 	confirmWhenRevealingSensitiveMedia,
+	enableNoteVisibilityColor,
 	showGapBetweenNotesInTimeline,
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,

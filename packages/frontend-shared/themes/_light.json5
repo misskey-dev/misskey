@@ -72,6 +72,10 @@
 		codeBoolean: '#62b70c',
 		deckBg: ':darken<3<@bg',
 		htmlThemeColor: '@bg',
+		notePublic: 'transparent',
+		noteHome: '#43b3f4',
+		noteSpecified: '#f09e05',
+		noteFollowers: '#c54630',
 	},
 
 	codeHighlighter: {
