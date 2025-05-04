@@ -1425,6 +1425,7 @@ _settings:
   ifOff: "Quan es desactiva"
   enableSyncThemesBetweenDevices: "Sincronitzar els temes instal·lats entre dispositius"
   enablePullToRefresh: "Lliscar i actualitzar "
+  enablePullToRefresh_description: "Amb el ratolí, llisca mentre prems la roda."
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
