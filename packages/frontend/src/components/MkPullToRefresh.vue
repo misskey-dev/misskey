@@ -160,7 +160,6 @@ async function closeContent() {
 }
 
 function onPullRelease() {
-	window.document.body.removeAttribute('inert');
 	startScreenY = null;
 	if (isPulledEnough.value) {
 		isPulledEnough.value = false;
