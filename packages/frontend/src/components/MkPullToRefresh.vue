@@ -77,6 +77,8 @@ function unlockDownScroll() {
 }
 
 function moveStart(event: PointerEvent) {
+	if (event.pointerType === 'mouse' && event.button !== 1) return;
+
 	const scrollPos = scrollEl!.scrollTop;
 	if (scrollPos === 0) {
 		lockDownScroll();
