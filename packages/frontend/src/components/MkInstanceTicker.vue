@@ -4,84 +4,77 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" :style="themeColorStyle">
-	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
-	<div :class="$style.name">{{ instanceName }}</div>
+<div
+	:class="$style.root"
+	:style="tickerColorsRef"
+>
+	<img :class="$style.icon" :src="tickerInfoRef.iconUrl"/>
+	<div :class="$style.name">{{ tickerInfoRef.name }}</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { instanceName as localInstanceName } from '@@/js/config.js';
-import type { CSSProperties } from 'vue';
-import { instance as localInstance } from '@/instance.js';
-import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
+import { getTickerColors, getTickerInfo } from '@/scripts/tms/instance-ticker.js';
 
-const props = defineProps<{
-	host: string | null;
-	instance?: {
-		faviconUrl?: string | null
-		name?: string | null
-		themeColor?: string | null
-	}
-}>();
+export type TickerProps = {
+	readonly instance?: {
+		readonly name?: string | null;
+		readonly iconUrl?: string | null;
+		readonly faviconUrl?: string | null;
+		readonly themeColor?: string | null;
+	} | null;
+	readonly channel?: {
+		readonly name: string;
+		readonly color: string;
+	} | null;
+};
 
-// if no instance data is given, this is for the local instance
-const instanceName = computed(() => props.host == null ? localInstanceName : props.instance?.name ?? props.host);
+const props = defineProps<TickerProps>();
 
-const faviconUrl = computed(() => {
-	let imageSrc: string | null = null;
-	if (props.host == null) {
-		if (localInstance.iconUrl == null) {
-			return '/favicon.ico';
-		} else {
-			imageSrc = localInstance.iconUrl;
-		}
-	} else {
-		imageSrc = props.instance?.faviconUrl ?? null;
-	}
-	return getProxiedImageUrlNullable(imageSrc);
-});
-
-const themeColorStyle = computed<CSSProperties>(() => {
-	const themeColor = (props.host == null ? localInstance.themeColor : props.instance?.themeColor) ?? '#777777';
-	return {
-		background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`,
-	};
-});
+const tickerInfoRef = computed(() => getTickerInfo(props));
+const tickerColorsRef = computed(() => getTickerColors(tickerInfoRef.value));
 </script>
 
 <style lang="scss" module>
-$height: 2ex;
-
 .root {
-	display: flex;
-	align-items: center;
-	height: $height;
-	border-radius: 4px 0 0 4px;
+	overflow: hidden;
 	overflow: clip;
-	color: #fff;
+	display: block;
+	box-sizing: border-box;
+	background-color: var(--ticker-bg, #777777);
+	color: var(--ticker-fg, #ffffff);
 
-	// text-shadowは重いから使うな
+	--ticker-size: 2ex;
+	display: grid;
+	align-items: center;
+	grid-template: var(--ticker-size) / var(--ticker-size) 1fr;
+	gap: 4px;
+	border-radius: 4px;
 
-	mask-image: linear-gradient(90deg,
-		rgb(0,0,0),
-		rgb(0,0,0) calc(100% - 16px),
-		rgba(0,0,0,0) 100%
-	);
+	> .icon {
+		width: var(--ticker-size);
+		height: var(--ticker-size);
+	}
+
+	> .name {
+		line-height: var(--ticker-size);
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
 }
 
 .icon {
-	height: $height;
-	flex-shrink: 0;
+	display: block;
+	aspect-ratio: 1 / 1;
+	box-sizing: border-box;
 }
 
 .name {
-	margin-left: 4px;
-	line-height: 1;
+	display: block;
 	font-size: 0.9em;
 	font-weight: bold;
-	white-space: nowrap;
-	overflow: visible;
+	box-sizing: border-box;
 }
 </style>
