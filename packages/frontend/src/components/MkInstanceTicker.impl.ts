@@ -49,7 +49,7 @@ export const getTickerInfo = (props: MkInstanceTickerProps): ITickerInfo => {
 	return {
 		name: localInstance.name ?? host,
 		iconUrl: getProxiedImageUrlNullable(localInstance.iconUrl, 'preview') ?? '/favicon.ico',
-		themeColor: localInstance.themeColor ?? document.querySelector<HTMLMetaElement>('meta[name="theme-color-orig"]')?.content ?? TICKER_BG_COLOR_DEFAULT,
+		themeColor: localInstance.themeColor ?? window.document.querySelector<HTMLMetaElement>('meta[name="theme-color-orig"]')?.content ?? TICKER_BG_COLOR_DEFAULT,
 	} as const satisfies ITickerInfo;
 };
 //#endregion ticker info
