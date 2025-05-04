@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="page === 0">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._landing.title }}</div>
@@ -37,15 +37,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="page++">{{ i18n.ts._initialTutorial.launchTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
 							<MkButton style="margin: 0 auto;" transparent rounded @click="close(true)">{{ i18n.ts.close }}</MkButton>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XNote phase="aboutNote"/>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton v-if="initialPage !== 1" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -58,12 +58,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<div class="_gaps">
 								<XNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
 								<div v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</div>
 							</div>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton v-if="initialPage !== 2" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -76,9 +76,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 3">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XTimeline/>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton v-if="initialPage !== 3" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -91,9 +91,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 4">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XPostNote/>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton v-if="initialPage !== 3" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -106,12 +106,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 5">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<div class="_gaps">
 								<XSensitive @succeeded="isSensitiveTutorialSucceeded = true"/>
 								<div v-if="!isSensitiveTutorialSucceeded">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.doItToContinue }}</div>
 							</div>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton v-if="initialPage !== 2" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -124,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 6">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._done.title }}</div>
@@ -139,7 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkButton rounded primary gradate @click="close(false)">{{ i18n.ts.close }}</MkButton>
 							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 		</Transition>
