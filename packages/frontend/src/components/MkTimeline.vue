@@ -322,10 +322,15 @@ defineExpose({
 	transform: translateY(max(-64px, -100%));
 }
 
+@supports (interpolate-size: allow-keywords) {
+	.transition_x_leaveTo {
+		interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
+		height: 0;
+	}
+}
+
 .transition_x_leaveTo {
-	interpolate-size: allow-keywords;
-	height: 0;
-	overflow: clip;
+	opacity: 0;
 }
 
 .reverse {
