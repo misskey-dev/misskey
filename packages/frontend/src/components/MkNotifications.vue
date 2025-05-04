@@ -112,7 +112,7 @@ defineExpose({
 
 	&.item,
 	.item {
-		/* Skip Note Rendering有効時、TransitionGroupでnoteを追加するときに一瞬がくっとなる問題を抑制する */
+		/* Skip Note Rendering有効時、TransitionGroupで通知を追加するときに一瞬がくっとなる問題を抑制する */
 		content-visibility: visible !important;
 	}
 }
