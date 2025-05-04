@@ -51,6 +51,10 @@ services:
         target: /misskey/packages/backend/jest.config.fed.cjs
         read_only: true
       - type: bind
+        source: ../jest.js
+        target: /misskey/packages/backend/jest.js
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true

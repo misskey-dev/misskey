@@ -1,5 +1,8 @@
 ## 2025.5.0
 
+### Note
+- DockerのNode.jsが22.15.0に更新されました
+
 ### General
 -
 
