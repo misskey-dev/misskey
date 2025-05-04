@@ -7,7 +7,7 @@ import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import Fastify, { FastifyInstance } from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
@@ -307,6 +307,13 @@ export class ServerService implements OnApplicationShutdown {
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
 		await this.#fastify.close();
+	}
+
+	/**
+	 * Get the Fastify instance for testing.
+	 */
+	public get fastify(): FastifyInstance {
+		return this.#fastify;
 	}
 
 	@bindThis

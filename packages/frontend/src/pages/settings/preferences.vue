@@ -475,6 +475,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="enablePullToRefresh">
 									<MkSwitch v-model="enablePullToRefresh">
 										<template #label><SearchLabel>{{ i18n.ts._settings.enablePullToRefresh }}</SearchLabel></template>
+										<template #caption><SearchKeyword>{{ i18n.ts._settings.enablePullToRefresh_description }}</SearchKeyword></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
