@@ -313,9 +313,19 @@ defineExpose({
 	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.transition_x_leaveActive {
+	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
+}
+
 .transition_x_enterFrom {
 	opacity: 0;
 	transform: translateY(max(-64px, -100%));
+}
+
+.transition_x_leaveTo {
+	interpolate-size: allow-keywords;
+	height: 0;
+	overflow: clip;
 }
 
 .reverse {
