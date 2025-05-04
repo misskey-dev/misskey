@@ -220,6 +220,7 @@ silenceThisInstance: "Silence this instance"
 mediaSilenceThisInstance: "Media-silence this server"
 operations: "Operations"
 software: "Software"
+softwareName: "Software"
 version: "Version"
 metadata: "Metadata"
 withNFiles: "{n} file(s)"
@@ -1423,6 +1424,7 @@ _settings:
   ifOn: "When turned on"
   ifOff: "When turned off"
   enableSyncThemesBetweenDevices: "Synchronize installed themes across devices"
+  enablePullToRefresh: "Pull to Refresh"
   _chat:
     showSenderName: "Show sender's name"
     sendOnEnter: "Press Enter to send"
@@ -1468,6 +1470,7 @@ _delivery:
     manuallySuspended: "Manually suspended"
     goneSuspended: "Server is suspended due to server deletion"
     autoSuspendedForNotResponding: "Server is suspended due to no responding"
+    softwareSuspended: "Suspended as this software is no longer being distributed to"
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"
@@ -1599,6 +1602,8 @@ _serverSettings:
   openRegistration: "Make the account creation open"
   openRegistrationWarning: "Opening registration carries risks. It is recommended to only enable it if you have a system in place to continuously monitor the server and respond immediately in case of any issues."
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "If no moderator activity is detected for a while, this setting will be automatically turned off to prevent spam."
+  deliverSuspendedSoftware: "Suspended Software"
+  deliverSuspendedSoftwareDescription: "You can specify a range of names and versions of the server's software to stop delivery for vulnerability or other reasons. This version information is provided by the server and is not guaranteed to be reliable. A semver range specification can be used to specify the version, but specifying >= 2024.3.1 will not include custom versions such as 2024.3.1-custom.0, so it is recommended that a prerelease specification be used, such as >= 2024.3.1-0"
 _accountMigration:
   moveFrom: "Migrate another account to this one"
   moveFromSub: "Create alias to another account"

@@ -16,7 +16,7 @@ services:
       "
 
   tester:
-    image: node:20
+    image: node:${NODE_VERSION}
     depends_on:
       a.test:
         condition: service_healthy
@@ -85,7 +85,7 @@ services:
     command: pnpm -F backend test:fed
 
   daemon:
-    image: node:20
+    image: node:${NODE_VERSION}
     depends_on:
       redis.test:
         condition: service_healthy

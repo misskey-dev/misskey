@@ -220,6 +220,7 @@ silenceThisInstance: "禁言此伺服器"
 mediaSilenceThisInstance: "將這個伺服器的媒體設為禁言"
 operations: "操作"
 software: "軟體"
+softwareName: "軟體名稱"
 version: "版本"
 metadata: "詮釋資料"
 withNFiles: "{n} 個檔案"
@@ -1423,6 +1424,7 @@ _settings:
   ifOn: "開啟時"
   ifOff: "關閉時"
   enableSyncThemesBetweenDevices: "在裝置之間同步已安裝的主題"
+  enablePullToRefresh: "下拉更新"
   _chat:
     showSenderName: "顯示發送者的名稱"
     sendOnEnter: "按下 Enter 發送訊息"
@@ -1468,6 +1470,7 @@ _delivery:
     manuallySuspended: "手動暫停中"
     goneSuspended: "因為伺服器刪除所以暫停中"
     autoSuspendedForNotResponding: "因為伺服器沒有回應所以暫停中"
+    softwareSuspended: "此軟體因已停止發佈，目前無法使用"
 _bubbleGame:
   howToPlay: "玩法說明"
   hold: "保留"
@@ -1599,6 +1602,8 @@ _serverSettings:
   openRegistration: "允許建立帳戶"
   openRegistrationWarning: "開放註冊伴隨著風險。 建議只有在伺服器受到持續監控，並準備好在出現問題時能立即處理的情況下才開放註冊。"
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "如果在一段期間內沒有偵測到任何審查員活動，此設定將自動關閉，以防止垃圾內容。"
+  deliverSuspendedSoftware: "已停止發佈的軟體"
+  deliverSuspendedSoftwareDescription: "由於脆弱性等原因，可以指定伺服器軟體的名稱與版本範圍來停止其發佈。這些版本資訊是由伺服器所提供，其可靠性無法保證。版本的指定可以使用 semver（語意化版本控制） 的範圍語法，但如果指定為 >= 2024.3.1，則像 2024.3.1-custom.0 這樣的自訂版本將不會被包含在內，因此建議使用 >= 2024.3.1-0 的方式來同時包含預發佈版本。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"

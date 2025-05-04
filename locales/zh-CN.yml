@@ -220,6 +220,7 @@ silenceThisInstance: "静音此服务器"
 mediaSilenceThisInstance: "隐藏此服务器的媒体文件"
 operations: "操作"
 software: "软件"
+softwareName: "软件名"
 version: "版本"
 metadata: "元数据"
 withNFiles: "{n} 个文件"
@@ -1422,6 +1423,7 @@ _settings:
   showNavbarSubButtons: "在导航栏中显示副按钮"
   ifOn: "启用时"
   ifOff: "关闭时"
+  enablePullToRefresh: "开启下拉刷新"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"
@@ -1467,6 +1469,7 @@ _delivery:
     manuallySuspended: "手动停止中"
     goneSuspended: "因服务器被删除而停止"
     autoSuspendedForNotResponding: "因服务器无应答而停止"
+    softwareSuspended: "因有不可用的软件而停止"
 _bubbleGame:
   howToPlay: "游戏说明"
   hold: "抓住"
@@ -1598,6 +1601,7 @@ _serverSettings:
   openRegistration: "开放注册"
   openRegistrationWarning: "开放注册有风险。建议仅当能够持续监控服务器并在出现问题时能够立即响应时才打开它。"
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "若在一段时间内没有检测到管理活动，为防止垃圾信息，此设定将自动关闭。"
+  deliverSuspendedSoftware: "不可用的软件"
 _accountMigration:
   moveFrom: "从别的账号迁移到此账户"
   moveFromSub: "为另一个账户建立别名"

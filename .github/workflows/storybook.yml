@@ -38,7 +38,7 @@ jobs:
       run: git checkout "$(git rev-list --parents -n1 HEAD | cut -d" " -f3)"
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-    - name: Use Node.js 20.x
+    - name: Use Node.js
       uses: actions/setup-node@v4.4.0
       with:
         node-version-file: '.node-version'
@@ -78,7 +78,7 @@ jobs:
       if: github.event_name == 'pull_request_target'
       id: chromatic_pull_request
       run: |
-        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF} | xargs))"
+        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff --name-only origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF} | xargs))"
         if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
           echo "skip=true" >> $GITHUB_OUTPUT
         fi
