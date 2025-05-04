@@ -10,6 +10,7 @@ args.push(...[
 	'--experimental-vm-modules',
 	'--experimental-import-meta-resolve',
 	path.join(import.meta.dirname, 'node_modules/jest/bin/jest.js'),
-])
+	...process.argv.slice(2),
+]);
 
 child_process.spawn(process.execPath, args, { stdio: 'inherit' });

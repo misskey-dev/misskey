@@ -8,8 +8,10 @@ export default [
 		ignores: ['**/node_modules', 'built', '@types/**/*', 'migration'],
 	},
 	{
-		globals: {
-			...globals.node,
+		languageOptions: {
+			globals: {
+				...globals.node,
+			},
 		},
 	},
 	{
