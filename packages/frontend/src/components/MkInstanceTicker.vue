@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getTickerColors, getTickerInfo } from '@/scripts/tms/instance-ticker.js';
+import { getTickerColors, getTickerInfo } from '@/utility/instance-ticker.js';
 
 export type TickerProps = {
 	readonly instance?: {

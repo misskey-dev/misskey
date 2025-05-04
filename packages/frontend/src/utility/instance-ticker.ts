@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { instance as localInstance } from '@/instance.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
-import { type HEX, hexToRgb } from '@/scripts/tms/color.js';
-import { type TickerProps } from '@/components/TmsInstanceTicker.vue';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
+import { hexToRgb } from '@/utility/color.js';
+import type { HEX } from '@/utility/color.js';
+import type { TickerProps } from '@/components/MkInstanceTicker.vue';
 
 //#region ticker info
 type TickerInfo = {
@@ -78,22 +79,3 @@ export const getTickerColors = (info: TickerInfo): TickerColors => {
 	return tickerColors;
 };
 //#endregion ticker colors
-
-//#region ticker state
-type TickerState = {
-	readonly normal: boolean;
-	readonly vertical: boolean;
-	readonly watermark: boolean;
-	readonly left: boolean;
-	readonly right: boolean;
-};
-
-export const getTickerState = (props: TickerProps): TickerState => {
-	const vertical = props.position === 'leftVerticalBar' || props.position === 'rightVerticalBar';
-	const watermark = props.position === 'leftWatermark' || props.position === 'rightWatermark';
-	const normal = !vertical && !watermark;
-	const left = props.position === 'leftVerticalBar' || props.position === 'leftWatermark';
-	const right = props.position === 'rightVerticalBar' || props.position === 'rightWatermark';
-	return { normal, vertical, watermark, left, right } as const satisfies TickerState;
-};
-//#endregion ticker state
