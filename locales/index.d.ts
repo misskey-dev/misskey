@@ -5414,6 +5414,10 @@ export interface Locale extends ILocale {
      */
     "driveAboutTip": string;
     /**
+     * スクロールして閉じる
+     */
+    "scrollToClose": string;
+    /**
      * リアルタイムモード
      */
     "realtimeMode": string;
