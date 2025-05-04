@@ -663,7 +663,7 @@ export class MiMeta {
 		length: 128,
 		default: 'local',
 	})
-	public visibleUserGeneratedContentsForNonLoggedInVisitors: 'all' | 'local' | 'none';
+	public ugcVisibilityForVisitor: 'all' | 'local' | 'none';
 
 	@Column('varchar', {
 		length: 64,

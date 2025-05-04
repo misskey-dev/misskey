@@ -8770,7 +8770,7 @@ export type operations = {
                 versionRange: string;
               }[];
             /** @enum {string} */
-            visibleUserGeneratedContentsForNonLoggedInVisitors: 'all' | 'local' | 'none';
+            ugcVisibilityForVisitor: 'all' | 'local' | 'none';
           };
         };
       };
@@ -11442,7 +11442,7 @@ export type operations = {
               versionRange: string;
             }[];
           /** @enum {string} */
-          visibleUserGeneratedContentsForNonLoggedInVisitors?: 'all' | 'local' | 'none';
+          ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
         };
       };
     };

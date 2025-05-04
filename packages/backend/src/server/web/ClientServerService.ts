@@ -515,8 +515,8 @@ export class ClientServerService {
 
 			if (
 				user != null && (
-					this.meta.visibleUserGeneratedContentsForNonLoggedInVisitors === 'all' ||
-						(this.meta.visibleUserGeneratedContentsForNonLoggedInVisitors === 'local' && user.host == null)
+					this.meta.ugcVisibilityForVisitor === 'all' ||
+						(this.meta.ugcVisibilityForVisitor === 'local' && user.host == null)
 				)
 			) {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
@@ -585,8 +585,8 @@ export class ClientServerService {
 			if (
 				note &&
 				!note.user!.requireSigninToViewContents &&
-				(this.meta.visibleUserGeneratedContentsForNonLoggedInVisitors === 'all' ||
-					(this.meta.visibleUserGeneratedContentsForNonLoggedInVisitors === 'local' && note.userHost == null)
+				(this.meta.ugcVisibilityForVisitor === 'all' ||
+					(this.meta.ugcVisibilityForVisitor === 'local' && note.userHost == null)
 				)
 			) {
 				const _note = await this.noteEntityService.pack(note);

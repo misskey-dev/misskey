@@ -20,14 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.emailRequiredForSignup }} ({{ i18n.ts.recommended }})</template>
 				</MkSwitch>
 
-				<MkSelect v-model="visibleUserGeneratedContentsForNonLoggedInVisitors" @update:modelValue="onChange_visibleUserGeneratedContentsForNonLoggedInVisitors">
-					<template #label>{{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors }}</template>
-					<option value="all">{{ i18n.ts._serverSettings._visibleUserGeneratedContentsForNonLoggedInVisitors.all }}</option>
-					<option value="local">{{ i18n.ts._serverSettings._visibleUserGeneratedContentsForNonLoggedInVisitors.localOnly }} ({{ i18n.ts.recommended }})</option>
-					<option value="none">{{ i18n.ts._serverSettings._visibleUserGeneratedContentsForNonLoggedInVisitors.none }}</option>
+				<MkSelect v-model="ugcVisibilityForVisitor" @update:modelValue="onChange_ugcVisibilityForVisitor">
+					<template #label>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor }}</template>
+					<option value="all">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all }}</option>
+					<option value="local">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly }} ({{ i18n.ts.recommended }})</option>
+					<option value="none">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none }}</option>
 					<template #caption>
-						<div>{{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors_description }}</div>
-						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors_description2 }}</div>
+						<div>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description }}</div>
+						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description2 }}</div>
 					</template>
 				</MkSelect>
 
@@ -152,7 +152,7 @@ import MkSelect from '@/components/MkSelect.vue';
 
 const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
-const visibleUserGeneratedContentsForNonLoggedInVisitors = ref<string>('all');
+const ugcVisibilityForVisitor = ref<string>('all');
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
 const prohibitedWordsForNameOfUser = ref<string>('');
@@ -166,7 +166,7 @@ async function init() {
 	const meta = await misskeyApi('admin/meta');
 	enableRegistration.value = !meta.disableRegistration;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
-	visibleUserGeneratedContentsForNonLoggedInVisitors.value = meta.visibleUserGeneratedContentsForNonLoggedInVisitors;
+	ugcVisibilityForVisitor.value = meta.ugcVisibilityForVisitor;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
 	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
@@ -203,9 +203,9 @@ function onChange_emailRequiredForSignup(value: boolean) {
 	});
 }
 
-function onChange_visibleUserGeneratedContentsForNonLoggedInVisitors(value: string) {
+function onChange_ugcVisibilityForVisitor(value: string) {
 	os.apiWithDialog('admin/update-meta', {
-		visibleUserGeneratedContentsForNonLoggedInVisitors: value,
+		ugcVisibilityForVisitor: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

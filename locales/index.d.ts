@@ -6381,18 +6381,18 @@ export interface Locale extends ILocale {
          */
         "deliverSuspendedSoftwareDescription": string;
         /**
-         * 非ログイン訪問者に対するユーザー作成コンテンツの公開範囲
+         * 非利用者に対するユーザー作成コンテンツの公開範囲
          */
-        "visibleUserGeneratedContentsForNonLoggedInVisitors": string;
+        "userGeneratedContentsVisibilityForVisitor": string;
         /**
          * モデレーションが行き届きにくい不適切なリモートコンテンツなどが、自サーバー経由で図らずもインターネットに公開されてしまうことによるトラブル防止などに役立ちます。
          */
-        "visibleUserGeneratedContentsForNonLoggedInVisitors_description": string;
+        "userGeneratedContentsVisibilityForVisitor_description": string;
         /**
          * サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。
          */
-        "visibleUserGeneratedContentsForNonLoggedInVisitors_description2": string;
-        "_visibleUserGeneratedContentsForNonLoggedInVisitors": {
+        "userGeneratedContentsVisibilityForVisitor_description2": string;
+        "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
              */

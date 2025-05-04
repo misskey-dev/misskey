@@ -546,7 +546,7 @@ export const meta = {
 					},
 				},
 			},
-			visibleUserGeneratedContentsForNonLoggedInVisitors: {
+			ugcVisibilityForVisitor: {
 				type: 'string',
 				enum: ['all', 'local', 'none'],
 				optional: false, nullable: false,
@@ -696,7 +696,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				federation: instance.federation,
 				federationHosts: instance.federationHosts,
 				deliverSuspendedSoftware: instance.deliverSuspendedSoftware,
-				visibleUserGeneratedContentsForNonLoggedInVisitors: instance.visibleUserGeneratedContentsForNonLoggedInVisitors,
+				ugcVisibilityForVisitor: instance.ugcVisibilityForVisitor,
 			};
 		});
 	}

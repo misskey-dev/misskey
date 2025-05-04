@@ -64,11 +64,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			if (this.serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors === 'none' && me == null) {
+			if (this.serverSettings.ugcVisibilityForVisitor === 'none' && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			if (this.serverSettings.visibleUserGeneratedContentsForNonLoggedInVisitors === 'local' && note.userHost != null && me == null) {
+			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.userHost != null && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
