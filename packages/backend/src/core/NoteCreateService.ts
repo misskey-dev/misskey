@@ -295,7 +295,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					}
 
 					// Renote対象がpublic/homeならfollowersにする
-          if (data.visibility === 'public' || data.visibility === 'home) {
+          if (data.visibility === 'public' || data.visibility === 'home') {
 						data.visibility = 'followers';
 					}
 					break;
