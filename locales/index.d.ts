@@ -11634,7 +11634,7 @@ export interface Locale extends ILocale {
          */
         "serverSetting": string;
         /**
-         * このウィザードで簡単に最適なサーバーの設定を行えます。
+         * このウィザードで簡単に最適なサーバーの設定が行えます。
          */
         "youCanEasilyConfigureOptimalServerSettingsWithThisWizard": string;
         /**
@@ -11698,7 +11698,7 @@ export interface Locale extends ILocale {
             "large": string;
         };
         /**
-         * 大規模なサーバーでは、データベースのレプリケーションなど、高度なインフラストラクチャーの知識が必要になる場合があります。
+         * 大規模なサーバーでは、ロードバランシングやデータベースのレプリケーションなど、高度なインフラストラクチャーの知識が必要になる場合があります。
          */
         "largeScaleServerAdvice": string;
         /**
@@ -11714,13 +11714,29 @@ export interface Locale extends ILocale {
          */
         "doYouConnectToFediverse_description2": string;
         /**
+         * 連合可能なサーバーの指定など、高度な設定も後ほど可能です。
+         */
+        "youCanConfigureMoreFederationSettingsLater": string;
+        /**
          * 以下の設定が推奨されます
          */
         "followingSettingsAreRecommended": string;
         /**
-         * この設定で始める
+         * この設定を適用
          */
-        "startWithTheseSettings": string;
+        "applyTheseSettings": string;
+        /**
+         * 設定をスキップ
+         */
+        "skipSettings": string;
+        /**
+         * 設定が完了しました！
+         */
+        "settingsCompleted": string;
+        /**
+         * お疲れ様でした。準備が整ったので、さっそくサーバーの使用を開始できます。
+         */
+        "settingsCompleted_description": string;
         /**
          * 寄付のお願い
          */
