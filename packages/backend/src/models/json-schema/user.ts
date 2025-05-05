@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ACHIEVEMENT_TYPES } from '@/models/UserProfile.js';
+
 export const notificationRecieveConfig = {
 	type: 'object',
 	oneOf: [
@@ -635,6 +637,7 @@ export const packedMeDetailedOnlySchema = {
 				properties: {
 					name: {
 						type: 'string',
+						enum: ACHIEVEMENT_TYPES,
 						nullable: false, optional: false,
 					},
 					unlockedAt: {
