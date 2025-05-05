@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_gaps_s">
 			<MkRadios v-model="q_use" :vertical="true">
-				<option value="one">
-					<div><i class="ti ti-user"></i> <b>{{ i18n.ts._serverSetupWizard._use.one }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.one_description }}</div>
+				<option value="single">
+					<div><i class="ti ti-user"></i> <b>{{ i18n.ts._serverSetupWizard._use.single }}</b></div>
+					<div>{{ i18n.ts._serverSetupWizard._use.single_description }}</div>
 				</option>
 				<option value="group">
 					<div><i class="ti ti-lock"></i> <b>{{ i18n.ts._serverSetupWizard._use.group }}</b></div>
@@ -29,12 +29,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</option>
 			</MkRadios>
 
-			<MkInfo v-if="q_use === 'one'">{{ i18n.ts._serverSetupWizard._use.one_youCanCreateMultipleAccounts }}</MkInfo>
+			<MkInfo v-if="q_use === 'single'">{{ i18n.ts._serverSetupWizard._use.single_youCanCreateMultipleAccounts }}</MkInfo>
 			<MkInfo v-if="q_use === 'open'" warn><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.openServerAdvice }}</MkInfo>
 		</div>
 	</MkFolder>
 
-	<MkFolder v-if="q_use !== 'one'" :defaultOpen="true">
+	<MkFolder v-if="q_use !== 'single'" :defaultOpen="true">
 		<template #label>{{ i18n.ts._serverSetupWizard.howManyUsersDoYouExpect }}</template>
 		<template #icon><i class="ti ti-users"></i></template>
 
@@ -192,7 +192,7 @@ const props = withDefaults(defineProps<{
 });
 
 const q_name = ref('');
-const q_use = ref('one');
+const q_use = ref('single');
 const q_scale = ref('small');
 const q_federation = ref('yes');
 const q_adminName = ref('');
@@ -200,7 +200,7 @@ const q_adminEmail = ref('');
 
 const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 	let enableReactionsBuffering;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		enableReactionsBuffering = false;
 	} else {
 		enableReactionsBuffering = q_scale.value !== 'small';
@@ -212,14 +212,14 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 		enableIpLogging: q_use.value === 'open',
 		federation: q_federation.value === 'yes' ? 'all' : 'none',
 		enableFanoutTimeline: true,
-		enableFanoutTimelineDbFallback: q_use.value === 'one',
+		enableFanoutTimelineDbFallback: q_use.value === 'single',
 		enableReactionsBuffering,
 	};
 });
 
 const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], any>>>(() => {
 	let driveCapacityMb;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		driveCapacityMb = 8192;
 	} else if (q_use.value === 'group') {
 		driveCapacityMb = 1000;
@@ -228,7 +228,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 	}
 
 	let rateLimitFactor;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		rateLimitFactor = 0.3;
 	} else if (q_use.value === 'group') {
 		rateLimitFactor = 0.7;
@@ -243,7 +243,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 	}
 
 	let userListLimit;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		userListLimit = 100;
 	} else if (q_use.value === 'group') {
 		userListLimit = 5;
@@ -252,7 +252,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 	}
 
 	let antennaLimit;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		antennaLimit = 100;
 	} else if (q_use.value === 'group') {
 		antennaLimit = 5;
@@ -261,7 +261,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 	}
 
 	let webhookLimit;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		webhookLimit = 100;
 	} else if (q_use.value === 'group') {
 		webhookLimit = 0;
@@ -270,35 +270,35 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 	}
 
 	let canImportFollowing;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		canImportFollowing = true;
 	} else {
 		canImportFollowing = false;
 	}
 
 	let canImportMuting;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		canImportMuting = true;
 	} else {
 		canImportMuting = false;
 	}
 
 	let canImportBlocking;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		canImportBlocking = true;
 	} else {
 		canImportBlocking = false;
 	}
 
 	let canImportUserLists;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		canImportUserLists = true;
 	} else {
 		canImportUserLists = false;
 	}
 
 	let canImportAntennas;
-	if (q_use.value === 'one') {
+	if (q_use.value === 'single') {
 		canImportAntennas = true;
 	} else {
 		canImportAntennas = false;

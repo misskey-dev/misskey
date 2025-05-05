@@ -3116,9 +3116,9 @@ _serverSetupWizard:
   settingsYouMakeHereCanBeChangedLater: "ここでの設定は、あとからでも変更できます。"
   howWillYouUseMisskey: "Misskeyをどのように使いますか？"
   _use:
-    one: "お一人様サーバー"
-    one_description: "自分専用のサーバーとして、一人で使う"
-    one_youCanCreateMultipleAccounts: "お一人様サーバーとして運用する場合でも、アカウントは必要に応じて複数作成可能です。"
+    single: "お一人様サーバー"
+    single_description: "自分専用のサーバーとして、一人で使う"
+    single_youCanCreateMultipleAccounts: "お一人様サーバーとして運用する場合でも、アカウントは必要に応じて複数作成可能です。"
     group: "グループサーバー"
     group_description: "信頼できる他の利用者を招待して、複数人で使う"
     open: "オープンサーバー"

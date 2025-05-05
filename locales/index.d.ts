@@ -11649,15 +11649,15 @@ export interface Locale extends ILocale {
             /**
              * お一人様サーバー
              */
-            "one": string;
+            "single": string;
             /**
              * 自分専用のサーバーとして、一人で使う
              */
-            "one_description": string;
+            "single_description": string;
             /**
              * お一人様サーバーとして運用する場合でも、アカウントは必要に応じて複数作成可能です。
              */
-            "one_youCanCreateMultipleAccounts": string;
+            "single_youCanCreateMultipleAccounts": string;
             /**
              * グループサーバー
              */
