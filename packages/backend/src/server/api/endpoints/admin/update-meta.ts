@@ -70,6 +70,7 @@ export const paramDef = {
 		cacheRemoteFiles: { type: 'boolean' },
 		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
+		emailInquiredForSignup: { type: 'boolean' },
 		approvalRequiredForSignup: { type: 'boolean' },
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
@@ -319,6 +320,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.emailRequiredForSignup !== undefined) {
 				set.emailRequiredForSignup = ps.emailRequiredForSignup;
+			}
+
+			if (ps.emailInquiredForSignup !== undefined) {
+				set.emailInquiredForSignup = ps.emailInquiredForSignup;
 			}
 
 			if (ps.approvalRequiredForSignup !== undefined) {

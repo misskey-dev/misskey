@@ -79,6 +79,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		emailInquiredForSignup: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		approvalRequiredForSignup: {
 			type: 'boolean',
 			optional: false, default: false,
@@ -340,6 +344,10 @@ export const packedMetaDetailedOnlySchema = {
 					optional: false, nullable: false,
 				},
 				emailRequiredForSignup: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				emailInquiredForSignup: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},

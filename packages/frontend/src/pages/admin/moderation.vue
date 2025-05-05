@@ -16,8 +16,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 				</MkSwitch>
 
-				<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
+				<MkSwitch v-model="emailInquiredForSignup" @change="onChange_emailInquiredForSignup">
+					<template #label>{{ i18n.ts.emailInquiredForSignup }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+					<template #caption>{{ i18n.ts.emailInquiredForSignupDescription }}</template>
+				</MkSwitch>
+
+				<MkSwitch
+					v-if="emailInquiredForSignup"
+					v-model="emailRequiredForSignup"
+					:disabled="!emailInquiredForSignup"
+					@change="onChange_emailRequiredForSignup"
+				>
 					<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+					<template #caption>{{ i18n.ts.emailRequiredForSignupDescription }}</template>
 				</MkSwitch>
 
 				<MkSwitch v-model="approvalRequiredForSignup" @change="onChange_approvalRequiredForSignup">
@@ -170,6 +181,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 
 const enableRegistration = ref<boolean>(false);
+const emailInquiredForSignup = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
 const approvalRequiredForSignup = ref<boolean>(false);
 const sensitiveWords = ref<string>('');
@@ -186,6 +198,7 @@ const yamiNoteFederationTrustedInstances = ref<string>('');
 async function init() {
 	const meta = await misskeyApi('admin/meta');
 	enableRegistration.value = !meta.disableRegistration;
+	emailInquiredForSignup.value = meta.emailInquiredForSignup ?? false;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
 	approvalRequiredForSignup.value = meta.approvalRequiredForSignup;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
@@ -220,7 +233,28 @@ async function onChange_enableRegistration(value: boolean) {
 	});
 }
 
+function onChange_emailInquiredForSignup(value: boolean) {
+	emailInquiredForSignup.value = value;
+
+	// If email is not inquired, it can't be required
+	if (!value) {
+		emailRequiredForSignup.value = false;
+	}
+
+	os.apiWithDialog('admin/update-meta', {
+		emailInquiredForSignup: value,
+		emailRequiredForSignup: emailRequiredForSignup.value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
 function onChange_emailRequiredForSignup(value: boolean) {
+	// This only works if email is inquired
+	if (!emailInquiredForSignup.value) {
+		return;
+	}
+
 	os.apiWithDialog('admin/update-meta', {
 		emailRequiredForSignup: value,
 	}).then(() => {

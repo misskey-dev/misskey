@@ -3731,9 +3731,25 @@ export interface Locale extends ILocale {
      */
     "off": string;
     /**
-     * アカウント登録にメールアドレスを必須にする
+     * メールアドレスをサインアップ時に入力欄を表示する
+     */
+    "emailInquiredForSignup": string;
+    /**
+     * 有効にすると、ユーザー登録フォームにメールアドレス入力欄が表示されますが、入力は任意です。「メールアドレスを必須にする」設定を有効にするには、この設定も有効にする必要があります。
+     */
+    "emailInquiredForSignupDescription": string;
+    /**
+     * メールアドレスをサインアップ時に必須にする
      */
     "emailRequiredForSignup": string;
+    /**
+     * 有効にすると、ユーザー登録時にメールアドレスの入力が必須になります。
+     */
+    "emailRequiredForSignupDescription": string;
+    /**
+     * アカウント登録にメールアドレスを任意にする
+     */
+    "emailOptionalForSignup": string;
     /**
      * アカウント登録を承認制にする
      */

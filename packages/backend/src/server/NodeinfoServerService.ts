@@ -117,6 +117,7 @@ export class NodeinfoServerService {
 					disableRegistration: meta.disableRegistration,
 					disableLocalTimeline: !basePolicies.ltlAvailable,
 					disableGlobalTimeline: !basePolicies.gtlAvailable,
+					emailInquiredForSignup: meta.emailInquiredForSignup,
 					emailRequiredForSignup: meta.emailRequiredForSignup,
 					enableHcaptcha: meta.enableHcaptcha,
 					enableRecaptcha: meta.enableRecaptcha,

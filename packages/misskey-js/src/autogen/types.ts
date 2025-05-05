@@ -5469,6 +5469,7 @@ export type components = {
       defaultDarkTheme: string | null;
       defaultLightTheme: string | null;
       disableRegistration: boolean;
+			emailInquiredForSignup: boolean;
       emailRequiredForSignup: boolean;
       /** @default false */
       approvalRequiredForSignup: boolean;
@@ -5554,6 +5555,7 @@ export type components = {
     MetaDetailedOnly: {
       features?: {
         registration: boolean;
+				emailInquiredForSignup: boolean;
         emailRequiredForSignup: boolean;
         localTimeline: boolean;
         globalTimeline: boolean;
@@ -8847,6 +8849,7 @@ export type operations = {
           'application/json': {
             cacheRemoteFiles: boolean;
             cacheRemoteSensitiveFiles: boolean;
+						emailInquiredForSignup: boolean;
             emailRequiredForSignup: boolean;
             approvalRequiredForSignup: boolean;
             enableHcaptcha: boolean;
@@ -11562,6 +11565,7 @@ export type operations = {
           defaultDarkTheme?: string | null;
           cacheRemoteFiles?: boolean;
           cacheRemoteSensitiveFiles?: boolean;
+					emailInquiredForSignup?: boolean;
           emailRequiredForSignup?: boolean;
           approvalRequiredForSignup?: boolean;
           enableHcaptcha?: boolean;

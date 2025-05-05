@@ -129,6 +129,13 @@ export class SignupApiService {
 				reply.code(400);
 				return;
 			}
+		} else if (this.meta.emailInquiredForSignup && emailAddress) {
+			// If email is displayed but optional, validate it only if provided
+			const res = await this.emailService.validateEmailForAccount(emailAddress);
+			if (!res.available) {
+				reply.code(400);
+				return;
+			}
 		}
 
 		if (this.meta.approvalRequiredForSignup) {
@@ -233,6 +240,23 @@ export class SignupApiService {
 			});
 
 			if (emailAddress) {
+				// メールアドレスをプロファイルに保存（未認証状態）
+				await this.userProfilesRepository.update({ userId: account.id }, {
+					email: emailAddress,
+					// 認証コードを生成
+					emailVerifyCode: secureRndstr(16, { chars: L_CHARS }),
+				});
+
+				// プロファイルから認証コードを取得
+				const code = (await this.userProfilesRepository.findOneByOrFail({ userId: account.id })).emailVerifyCode;
+				const verifyLink = `${this.config.url}/verify-email/${code}`;
+
+				// 1. メールアドレス確認メールのみ送信
+				this.emailService.sendEmail(emailAddress, 'Email verification',
+					`To verify your email address, please click this link:<br><a href="${verifyLink}">${verifyLink}</a>`,
+					`To verify your email address, please click this link: ${verifyLink}`);
+
+				// 2. 承認待ち通知は別途送信
 				this.emailService.sendEmail(emailAddress, 'Approval pending',
 					'Your account is now pending approval.<br>You will get notified when you have been accepted.',
 					'Your account is now pending approval. You will get notified when you have been accepted.');
@@ -269,10 +293,22 @@ export class SignupApiService {
 				// ここで承認済みに設定する処理が必要
 				await this.usersRepository.update({ id: account.id }, { approved: true });
 
-				const res = await this.userEntityService.pack(account, account, {
-					schema: 'MeDetailed',
-					includeSecrets: true,
-				});
+				// 任意入力されたメールアドレスを処理する
+				if (emailAddress) {
+					// メールアドレスをプロファイルに保存
+					await this.userProfilesRepository.update({ userId: account.id }, {
+						email: emailAddress,
+						// 認証コードを生成
+						emailVerifyCode: secureRndstr(16, { chars: L_CHARS }),
+					});
+
+					// 確認メールを送信
+					const code = (await this.userProfilesRepository.findOneByOrFail({ userId: account.id })).emailVerifyCode;
+					const link = `${this.config.url}/verify-email/${code}`;
+					this.emailService.sendEmail(emailAddress, 'Email verification',
+						`To verify your email address, please click this link:<br><a href="${link}">${link}</a>`,
+						`To verify your email address, please click this link: ${link}`);
+				}
 
 				if (ticket) {
 					await this.registrationTicketsRepository.update(ticket.id, {
@@ -281,6 +317,12 @@ export class SignupApiService {
 						usedById: account.id,
 					});
 				}
+
+				// ユーザー情報を取得して返す
+				const res = await this.userEntityService.pack(account, account, {
+					schema: 'MeDetailed',
+					includeSecrets: true,
+				});
 
 				return {
 					...res,

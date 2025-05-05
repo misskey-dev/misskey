@@ -190,6 +190,11 @@ export class MiMeta {
 	public emailRequiredForSignup: boolean;
 
 	@Column('boolean', {
+		default: true,
+	})
+	public emailInquiredForSignup: boolean;
+
+	@Column('boolean', {
 		default: false,
 	})
 	public approvalRequiredForSignup: boolean;

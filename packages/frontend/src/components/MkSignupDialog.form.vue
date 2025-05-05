@@ -53,11 +53,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkInput>
 			<MkInput
-				v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email"
-				:spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail"
+				v-if="instance.emailInquiredForSignup" v-model="email" :debounce="true" type="email"
+				:spellcheck="false" :required="instance.emailRequiredForSignup" data-cy-signup-email @update:modelValue="onChangeEmail"
 			>
 				<template #label>
-					{{ i18n.ts.emailAddress }} <div
+					{{ i18n.ts.emailAddress }} <span v-if="!instance.emailRequiredForSignup">({{ i18n.ts.optional }})</span> <div
 						v-tooltip:dialog="i18n.ts._signup.emailAddressInfo"
 						class="_button _help"
 					>
