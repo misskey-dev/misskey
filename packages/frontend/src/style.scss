@@ -179,7 +179,12 @@ rt {
 ._spacer {
 	width: 100%;
 	max-width: min(var(--MI_SPACER-w, 100%), calc(100% - (var(--MI_SPACER-max, 24px) * 2)));
-	margin: var(--MI_SPACER-max, 24px) auto;
+
+	/* marginを使って余白を表現すると、margin特有の親突き抜け仕様などが厄介になってくるので上下はpaddingを使う */
+	padding: var(--MI_SPACER-max, 24px) 0;
+	margin: 0 auto;
+
+	box-sizing: border-box;
 	container-type: inline-size;
 
 	/* 子に継承させない */
@@ -190,13 +195,13 @@ rt {
 
 ._forceShrinkSpacer ._spacer {
 	max-width: min(var(--MI_SPACER-w, 100%), calc(100% - (var(--MI_SPACER-min, 12px) * 2)));
-	margin: var(--MI_SPACER-min, 12px) auto;
+	padding: var(--MI_SPACER-min, 12px) 0;
 }
 
 @container (max-width: 450px) {
 	._spacer {
 		max-width: min(var(--MI_SPACER-w, 100%), calc(100% - (var(--MI_SPACER-min, 12px) * 2)));
-		margin: var(--MI_SPACER-min, 12px) auto;
+		padding: var(--MI_SPACER-min, 12px) 0;
 	}
 }
 

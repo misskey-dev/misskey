@@ -168,7 +168,7 @@
 		"rxjs": "7.8.2",
 		"sanitize-html": "2.16.0",
 		"secure-json-parse": "3.0.2",
-		"sharp": "0.34.1",
+		"sharp": "0.33.5",
 		"semver": "7.7.1",
 		"slacc": "0.0.10",
 		"strict-event-emitter-types": "2.0.0",
