@@ -294,8 +294,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 						throw new Error('Renote target is not public or home');
 					}
 
-					// Renote対象がfollowersならfollowersにする
-					data.visibility = 'followers';
+					// Renote対象がpublic/homeならfollowersにする
+          if (data.visibility === 'public' || data.visibility === 'home) {
+						data.visibility = 'followers';
+					}
 					break;
 				case 'specified':
 					// specified / direct noteはreject
