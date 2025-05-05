@@ -53,11 +53,11 @@ const MIN_SWIPE_DISTANCE = 20;
 // スワイプ時の動作を発火する最小の距離
 const SWIPE_DISTANCE_THRESHOLD = 70;
 
-// スワイプを中断するY方向の移動距離
-const SWIPE_ABORT_Y_THRESHOLD = 75;
-
 // スワイプできる最大の距離
 const MAX_SWIPE_DISTANCE = 120;
+
+// スワイプ方向を判定する角度の許容範囲（度数）
+const SWIPE_DIRECTION_ANGLE_THRESHOLD = 50;
 
 // ▲ しきい値 ▲ //
 
@@ -69,6 +69,7 @@ const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === t
 const pullDistance = ref(0);
 const isSwipingForClass = ref(false);
 let swipeAborted = false;
+let swipeDirectionLocked: 'horizontal' | 'vertical' | null = null;
 
 function touchStart(event: TouchEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
@@ -79,6 +80,7 @@ function touchStart(event: TouchEvent) {
 
 	startScreenX = event.touches[0].screenX;
 	startScreenY = event.touches[0].screenY;
+	swipeDirectionLocked = null; // スワイプ方向をリセット
 }
 
 function touchMove(event: TouchEvent) {
@@ -95,15 +97,24 @@ function touchMove(event: TouchEvent) {
 	let distanceX = event.touches[0].screenX - startScreenX;
 	let distanceY = event.touches[0].screenY - startScreenY;
 
-	if (Math.abs(distanceY) > SWIPE_ABORT_Y_THRESHOLD) {
-		swipeAborted = true;
+	// スワイプ方向をロック
+	if (!swipeDirectionLocked) {
+		const angle = Math.abs(Math.atan2(distanceY, distanceX) * (180 / Math.PI));
+		if (angle > 90 - SWIPE_DIRECTION_ANGLE_THRESHOLD && angle < 90 + SWIPE_DIRECTION_ANGLE_THRESHOLD) {
+			swipeDirectionLocked = 'vertical';
+		} else {
+			swipeDirectionLocked = 'horizontal';
+		}
+	}
 
+	// 縦方向のスワイプの場合は中断
+	if (swipeDirectionLocked === 'vertical') {
+		swipeAborted = true;
 		pullDistance.value = 0;
 		isSwiping.value = false;
 		window.setTimeout(() => {
 			isSwipingForClass.value = false;
 		}, 400);
-
 		return;
 	}
 
@@ -164,6 +175,8 @@ function touchEnd(event: TouchEvent) {
 	window.setTimeout(() => {
 		isSwipingForClass.value = false;
 	}, 400);
+
+	swipeDirectionLocked = null; // スワイプ方向をリセット
 }
 
 /** 横スワイプに関与する可能性のある要素を調べる */
@@ -190,7 +203,7 @@ watch(tabModel, (newTab, oldTab) => {
 	const newIndex = props.tabs.findIndex(tab => tab.key === newTab);
 	const oldIndex = props.tabs.findIndex(tab => tab.key === oldTab);
 
-	if (oldIndex >= 0 && newIndex && oldIndex < newIndex) {
+	if (oldIndex >= 0 && newIndex >= 0 && oldIndex < newIndex) {
 		transitionName.value = 'swipeAnimationLeft';
 	} else {
 		transitionName.value = 'swipeAnimationRight';

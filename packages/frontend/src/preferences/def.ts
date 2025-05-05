@@ -296,7 +296,7 @@ export const PREF_DEF = {
 		default: false,
 	},
 	enableHorizontalSwipe: {
-		default: true,
+		default: false,
 	},
 	enablePullToRefresh: {
 		default: isTouchUsing,
