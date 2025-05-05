@@ -99,8 +99,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>{{ i18n.ts._serverSetupWizard.settingsYouMakeHereCanBeChangedLater }}</div>
 					</div>
 
+					<MkInput v-model="q_name">
+						<template #label>{{ i18n.ts.instanceName }}</template>
+					</MkInput>
+
 					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts._serverSetupWizard.howWillYouUseMisskey }}</template>
+						<template #icon><i class="ti ti-settings-question"></i></template>
 
 						<div class="_gaps_s">
 							<MkRadios v-model="q_use" :vertical="true">
@@ -123,14 +128,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 
-					<MkFolder :defaultOpen="true">
+					<MkFolder v-if="q_use !== 'one'" :defaultOpen="true">
 						<template #label>{{ i18n.ts._serverSetupWizard.howManyUsersDoYouExpect }}</template>
+						<template #icon><i class="ti ti-users"></i></template>
 
-						<MkRadios v-model="q_scale" :vertical="true">
-							<option value="small">{{ i18n.ts._serverSetupWizard._scale.small }}</option>
-							<option value="medium">{{ i18n.ts._serverSetupWizard._scale.medium }}</option>
-							<option value="large">{{ i18n.ts._serverSetupWizard._scale.large }}</option>
-						</MkRadios>
+						<div class="_gaps_s">
+							<MkRadios v-model="q_scale" :vertical="true">
+								<option value="small">{{ i18n.ts._serverSetupWizard._scale.small }}</option>
+								<option value="medium">{{ i18n.ts._serverSetupWizard._scale.medium }}</option>
+								<option value="large">{{ i18n.ts._serverSetupWizard._scale.large }}</option>
+							</MkRadios>
+
+							<MkInfo v-if="q_scale === 'large'"><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.largeScaleServerAdvice }}</MkInfo>
+						</div>
+					</MkFolder>
+
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse }}</template>
+						<template #icon><i class="ti ti-planet"></i></template>
+
+						<div class="_gaps_s">
+							<MkInfo>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description1 }}<br>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description2 }}</MkInfo>
+
+							<MkRadios v-model="q_federation" :vertical="true">
+								<option value="yes">{{ i18n.ts.yes }}</option>
+								<option value="no">{{ i18n.ts.no }}</option>
+							</MkRadios>
+						</div>
+					</MkFolder>
+
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._serverSetupWizard.followingSettingsAreRecommended }}</template>
+						<template #icon><i class="ti ti-adjustments-alt"></i></template>
+
+						<div class="_gaps_s">
+							<div>
+								<div><b>{{ i18n.ts._serverSettings.openRegistration }}:</b></div>
+								<div>{{ !serverSettings.disableRegistration ? i18n.ts.yes : i18n.ts.no }}</div>
+							</div>
+							<div>
+								<div><b>{{ i18n.ts.federation }}:</b></div>
+								<div>{{ serverSettings.federation === 'none' ? i18n.ts.no : i18n.ts.all }}</div>
+							</div>
+							<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
+								{{ i18n.ts._serverSetupWizard.startWithTheseSettings }}
+							</MkButton>
+						</div>
 					</MkFolder>
 
 					<div v-if="qStep === 999" class="_buttonsCenter">
@@ -146,7 +189,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -166,8 +210,17 @@ const accountCreating = ref(false);
 const accountCreated = ref(false);
 const step = ref(0);
 const qStep = ref(0);
+const q_name = ref('');
 const q_use = ref('one');
 const q_scale = ref('small');
+const q_federation = ref('yes');
+
+const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
+	return {
+		disableRegistration: q_use.value !== 'open',
+		federation: q_federation.value === 'yes' ? 'all' : 'none',
+	};
+});
 
 let token;
 
@@ -219,7 +272,7 @@ function createAccount() {
 	border-radius: var(--MI-radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: clip;
-	max-width: 500px;
+	max-width: 550px;
 	margin: 0 auto;
 }
 

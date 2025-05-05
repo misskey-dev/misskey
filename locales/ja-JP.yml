@@ -3129,6 +3129,12 @@ _serverSetupWizard:
     small: "100人以下 (小規模)"
     medium: "100人以上1000人以下 (中規模)"
     large: "1000人以上 (大規模)"
+  largeScaleServerAdvice: "大規模なサーバーでは、データベースのレプリケーションなど、高度なインフラストラクチャーの知識が必要になる場合があります。"
+  doYouConnectToFediverse: "Fediverseと接続しますか？"
+  doYouConnectToFediverse_description1: "分散型サーバーで構成されるネットワーク(Fediverse)に接続すると、他のサーバーと相互にコンテンツのやり取りが可能です。"
+  doYouConnectToFediverse_description2: "Fediverseと接続することは「連合」とも呼ばれます。"
+  followingSettingsAreRecommended: "以下の設定が推奨されます"
+  startWithTheseSettings: "この設定で始める"
   donationRequest: "寄付のお願い"
   _donationRequest:
     text1: "Misskeyは有志によって開発されている無料のソフトウェアです。"

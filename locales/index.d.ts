@@ -11698,6 +11698,30 @@ export interface Locale extends ILocale {
             "large": string;
         };
         /**
+         * 大規模なサーバーでは、データベースのレプリケーションなど、高度なインフラストラクチャーの知識が必要になる場合があります。
+         */
+        "largeScaleServerAdvice": string;
+        /**
+         * Fediverseと接続しますか？
+         */
+        "doYouConnectToFediverse": string;
+        /**
+         * 分散型サーバーで構成されるネットワーク(Fediverse)に接続すると、他のサーバーと相互にコンテンツのやり取りが可能です。
+         */
+        "doYouConnectToFediverse_description1": string;
+        /**
+         * Fediverseと接続することは「連合」とも呼ばれます。
+         */
+        "doYouConnectToFediverse_description2": string;
+        /**
+         * 以下の設定が推奨されます
+         */
+        "followingSettingsAreRecommended": string;
+        /**
+         * この設定で始める
+         */
+        "startWithTheseSettings": string;
+        /**
          * 寄付のお願い
          */
         "donationRequest": string;
