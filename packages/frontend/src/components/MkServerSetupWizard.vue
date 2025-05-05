@@ -90,6 +90,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_gaps_s">
 			<div>
+				<div><b>{{ i18n.ts._serverSettings.singleUserMode }}:</b></div>
+				<div>{{ serverSettings.singleUserMode ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
 				<div><b>{{ i18n.ts._serverSettings.openRegistration }}:</b></div>
 				<div>{{ !serverSettings.disableRegistration ? i18n.ts.yes : i18n.ts.no }}</div>
 			</div>
@@ -207,6 +211,7 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 	}
 
 	return {
+		singleUserMode: q_use.value === 'single',
 		disableRegistration: q_use.value !== 'open',
 		emailRequiredForSignup: q_use.value === 'open',
 		enableIpLogging: q_use.value === 'open',

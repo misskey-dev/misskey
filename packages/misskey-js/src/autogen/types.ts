@@ -8769,6 +8769,7 @@ export type operations = {
                 software: string;
                 versionRange: string;
               }[];
+            singleUserMode: boolean;
           };
         };
       };
@@ -11439,6 +11440,7 @@ export type operations = {
               software: string;
               versionRange: string;
             }[];
+          singleUserMode?: boolean;
         };
       };
     };
