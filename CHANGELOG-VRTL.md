@@ -3,12 +3,13 @@
 VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
+- fix(frontend): LTLが無効な場合、公式クライアント上でVSTLが利用出来なくなる問題を修正 (anatawa12#228) - 2025/05/05
 
 --- 2025.4.1-kinel.2 released at this time ---
 --- 2025.4.1-kinel.1 released at this time ---
 
 - fix(backend): 自分のフォロワー限定投稿に対するリプライがぶいみみソーシャルタイムラインで見えないことが有る問題を修正 - 2025/04/30 #224
-- feat(backend): VRTLのサーバーリストを Redis にキャッシュし、取得に失敗した場合はキャッシュを使用するよにしました - 2025/04/30 #223
+- feat(backend): VRTLのサーバーリストを Redis にキャッシュし、取得に失敗した場合はキャッシュを使用するようにしました - 2025/04/30 #223
 
 --- 2025.4.0-kinel.1 released at this time ---
 --- 2025.2.1-kinel.1 released at this time ---
