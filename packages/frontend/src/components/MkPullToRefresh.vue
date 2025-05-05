@@ -27,6 +27,7 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
 import { i18n } from '@/i18n.js';
 import { isHorizontalSwipeSwiping } from '@/utility/touch.js';
+import * as sound from '@/utility/sound.js';
 
 const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;
@@ -200,7 +201,13 @@ function moving(event: MouseEvent | TouchEvent) {
 	const moveHeight = moveScreenY - startScreenY!;
 	pullDistance.value = Math.min(Math.max(moveHeight, 0), MAX_PULL_DISTANCE);
 
+	let before = isPulledEnough.value;
 	isPulledEnough.value = pullDistance.value >= FIRE_THRESHOLD;
+	if (before === false && isPulledEnough.value === true) {
+		sound.playUrl('/client-assets/sounds/syuilo/sho.mp3', {
+			volume: 1,
+		});
+	}
 }
 
 /**
@@ -209,6 +216,9 @@ function moving(event: MouseEvent | TouchEvent) {
  * タイムアウトがないのでこれを最終的に実行しないと出たままになる
  */
 function refreshFinished() {
+	sound.playUrl('/client-assets/sounds/syuilo/pa.mp3', {
+		volume: 1,
+	});
 	closeContent().then(() => {
 		isPulling.value = false;
 		isRefreshing.value = false;
