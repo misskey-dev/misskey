@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>Welcome to Misskey!</div>
 				<div :class="$style.version">v{{ version }}</div>
 			</div>
-			<div style="padding: 24px 32px 32px 32px;">
+			<div style="padding: 16px 32px 32px 32px;">
 				<form v-if="!accountCreated" class="_gaps_m" @submit.prevent="createAccount()">
 					<div style="text-align: center;" class="_gaps_s">
 						<div><b>{{ i18n.ts._serverSetupWizard.installCompleted }}</b></div>
@@ -72,18 +72,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkButton>
 					</div>
 				</form>
-				<template v-else-if="step === 0">
+				<div v-else-if="step === 0" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
 						<div><b>{{ i18n.ts._serverSetupWizard.accountCreated }}</b></div>
 					</div>
 					<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
 						{{ i18n.ts.next }}
 					</MkButton>
-				</template>
-				<template v-else-if="step === 1">
+				</div>
+				<div v-else-if="step === 1" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
-						<div><b>お願い</b></div>
-						<div>Misskeyは有志によって開発されている無料のソフトウェアです。<br>今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。<br>ご支援特典もあります！</div>
+						<div><b>{{ i18n.ts._serverSetupWizard.donationRequest }}</b></div>
+						<div>{{ i18n.ts._serverSetupWizard._donationRequest.text1 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text2 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text3 }}</div>
 					</div>
 					<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
 					<div class="_buttonsCenter">
@@ -91,7 +91,54 @@ SPDX-License-Identifier: AGPL-3.0-only
 							{{ i18n.ts.next }}
 						</MkButton>
 					</div>
-				</template>
+				</div>
+				<div v-else-if="step === 2" class="_gaps_m">
+					<div style="text-align: center;" class="_gaps_s">
+						<div style="font-size: 120%;"><b>{{ i18n.ts._serverSetupWizard.serverSetting }}</b></div>
+						<div>{{ i18n.ts._serverSetupWizard.youCanEasilyConfigureOptimalServerSettingsWithThisWizard }}</div>
+						<div>{{ i18n.ts._serverSetupWizard.settingsYouMakeHereCanBeChangedLater }}</div>
+					</div>
+
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._serverSetupWizard.howWillYouUseMisskey }}</template>
+
+						<div class="_gaps_s">
+							<MkRadios v-model="q_use" :vertical="true">
+								<option value="one">
+									<div><b>{{ i18n.ts._serverSetupWizard._use.one }}</b></div>
+									<div>{{ i18n.ts._serverSetupWizard._use.one_description }}</div>
+								</option>
+								<option value="group">
+									<div><b>{{ i18n.ts._serverSetupWizard._use.group }}</b></div>
+									<div>{{ i18n.ts._serverSetupWizard._use.group_description }}</div>
+								</option>
+								<option value="open">
+									<div><b>{{ i18n.ts._serverSetupWizard._use.open }}</b></div>
+									<div>{{ i18n.ts._serverSetupWizard._use.open_description }}</div>
+								</option>
+							</MkRadios>
+
+							<MkInfo v-if="q_use === 'one'">{{ i18n.ts._serverSetupWizard._use.one_youCanCreateMultipleAccounts }}</MkInfo>
+							<MkInfo v-if="q_use === 'open'" warn><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.openServerAdvice }}</MkInfo>
+						</div>
+					</MkFolder>
+
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._serverSetupWizard.howManyUsersDoYouExpect }}</template>
+
+						<MkRadios v-model="q_scale" :vertical="true">
+							<option value="small">{{ i18n.ts._serverSetupWizard._scale.small }}</option>
+							<option value="medium">{{ i18n.ts._serverSetupWizard._scale.medium }}</option>
+							<option value="large">{{ i18n.ts._serverSetupWizard._scale.large }}</option>
+						</MkRadios>
+					</MkFolder>
+
+					<div v-if="qStep === 999" class="_buttonsCenter">
+						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
+							{{ i18n.ts.next }}
+						</MkButton>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -108,6 +155,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { login } from '@/accounts.js';
 import MkLink from '@/components/MkLink.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const username = ref('');
 const password = ref('');
@@ -115,6 +165,9 @@ const setupPassword = ref('');
 const accountCreating = ref(false);
 const accountCreated = ref(false);
 const step = ref(0);
+const qStep = ref(0);
+const q_use = ref('one');
+const q_scale = ref('small');
 
 let token;
 

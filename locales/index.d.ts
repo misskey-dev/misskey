@@ -5413,6 +5413,10 @@ export interface Locale extends ILocale {
      * スクロールして閉じる
      */
     "scrollToClose": string;
+    /**
+     * アドバイス
+     */
+    "advice": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -11625,6 +11629,92 @@ export interface Locale extends ILocale {
          * 管理者アカウントが作成されました！
          */
         "accountCreated": string;
+        /**
+         * サーバーの設定
+         */
+        "serverSetting": string;
+        /**
+         * このウィザードで簡単に最適なサーバーの設定を行えます。
+         */
+        "youCanEasilyConfigureOptimalServerSettingsWithThisWizard": string;
+        /**
+         * ここでの設定は、あとからでも変更できます。
+         */
+        "settingsYouMakeHereCanBeChangedLater": string;
+        /**
+         * Misskeyをどのように使いますか？
+         */
+        "howWillYouUseMisskey": string;
+        "_use": {
+            /**
+             * お一人様サーバー
+             */
+            "one": string;
+            /**
+             * 自分専用のサーバーとして、一人で使う
+             */
+            "one_description": string;
+            /**
+             * お一人様サーバーとして運用する場合でも、アカウントは必要に応じて複数作成可能です。
+             */
+            "one_youCanCreateMultipleAccounts": string;
+            /**
+             * グループサーバー
+             */
+            "group": string;
+            /**
+             * 信頼できる他の利用者を招待して、複数人で使う
+             */
+            "group_description": string;
+            /**
+             * オープンサーバー
+             */
+            "open": string;
+            /**
+             * 不特定多数の利用者を受け入れる運営を行う
+             */
+            "open_description": string;
+        };
+        /**
+         * 不特定多数の利用者を受け入れることはリスクが伴います。トラブルに対処できるよう、確実なモデレーション体制で運営することを推奨します。
+         */
+        "openServerAdvice": string;
+        /**
+         * どれくらいの人数を想定していますか？
+         */
+        "howManyUsersDoYouExpect": string;
+        "_scale": {
+            /**
+             * 100人以下 (小規模)
+             */
+            "small": string;
+            /**
+             * 100人以上1000人以下 (中規模)
+             */
+            "medium": string;
+            /**
+             * 1000人以上 (大規模)
+             */
+            "large": string;
+        };
+        /**
+         * 寄付のお願い
+         */
+        "donationRequest": string;
+        "_donationRequest": {
+            /**
+             * Misskeyは有志によって開発されている無料のソフトウェアです。
+             */
+            "text1": string;
+            /**
+             * 今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。
+             */
+            "text2": string;
+            /**
+             * 支援者向け特典もあります！
+             */
+            "text3": string;
+        };
     };
 }
 declare const locales: {
