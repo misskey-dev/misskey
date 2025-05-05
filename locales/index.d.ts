@@ -11718,6 +11718,18 @@ export interface Locale extends ILocale {
          */
         "youCanConfigureMoreFederationSettingsLater": string;
         /**
+         * 管理者情報
+         */
+        "adminInfo": string;
+        /**
+         * 問い合わせを受け付けるために使用される管理者情報を設定します。
+         */
+        "adminInfo_description": string;
+        /**
+         * オープンサーバー、または連合がオンの場合は必ず入力が必要です。
+         */
+        "adminInfo_mustBeFilled": string;
+        /**
          * 以下の設定が推奨されます
          */
         "followingSettingsAreRecommended": string;
@@ -11737,6 +11749,10 @@ export interface Locale extends ILocale {
          * お疲れ様でした。準備が整ったので、さっそくサーバーの使用を開始できます。
          */
         "settingsCompleted_description": string;
+        /**
+         * 詳細なサーバー設定は、「コントロールパネル」から行えます。
+         */
+        "settingsCompleted_description2": string;
         /**
          * 寄付のお願い
          */
