@@ -7,7 +7,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { ACHIEVEMENT_TYPES } from '@/models/UserProfile.js';
 
 export const meta = {
 	requireCredential: false,
@@ -15,16 +14,7 @@ export const meta = {
 	res: {
 		type: 'array',
 		items: {
-			type: 'object',
-			properties: {
-				name: {
-					type: 'string',
-					enum: ACHIEVEMENT_TYPES,
-				},
-				unlockedAt: {
-					type: 'number',
-				},
-			},
+			ref: 'Achievement',
 		},
 	},
 } as const;
