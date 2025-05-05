@@ -8,7 +8,7 @@ import * as Misskey from 'misskey-js';
 import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
-const MAX_ITEMS = 20;
+const MAX_ITEMS = 30;
 const MAX_QUEUE_ITEMS = 100;
 const FIRST_FETCH_LIMIT = 15;
 const SECOND_FETCH_LIMIT = 30;
@@ -165,18 +165,21 @@ export function usePagination<T extends MisskeyEntity>(props: {
 				queuedAheadItemsCount.value = aheadQueue.length;
 			} else {
 				items.value.unshift(...res.toReversed());
+				trim(false);
 				if (props.useShallowRef) triggerRef(items);
 			}
 		});
 	}
 
-	function trim() {
+	function trim(trigger = true) {
 		if (items.value.length >= MAX_ITEMS) canFetchOlder.value = true;
 		items.value = items.value.slice(0, MAX_ITEMS);
+		if (props.useShallowRef && trigger) triggerRef(items);
 	}
 
 	function unshiftItems(newItems: T[]) {
 		items.value.unshift(...newItems);
+		trim(false);
 		if (props.useShallowRef) triggerRef(items);
 	}
 
@@ -187,6 +190,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	function prepend(item: T) {
 		items.value.unshift(item);
+		trim(false);
 		if (props.useShallowRef) triggerRef(items);
 	}
 
