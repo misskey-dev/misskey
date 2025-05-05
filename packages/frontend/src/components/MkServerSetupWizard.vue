@@ -102,8 +102,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ serverSettings.federation === 'none' ? i18n.ts.no : i18n.ts.all }}</div>
 			</div>
 			<div>
-				<div><b>{{ i18n.ts.baseRole }}/{{ i18n.ts._role._options.rateLimitFactor }}:</b></div>
+				<div><b>FTT:</b></div>
+				<div>{{ serverSettings.enableFanoutTimeline ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>FTT/{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}:</b></div>
+				<div>{{ serverSettings.enableFanoutTimelineDbFallback ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>RBT:</b></div>
+				<div>{{ serverSettings.enableReactionsBuffering ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.rateLimitFactor }}:</b></div>
 				<div>{{ defaultPolicies.rateLimitFactor }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.driveCapacity }}:</b></div>
+				<div>{{ defaultPolicies.driveCapacityMb }} MB</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.antennaMax }}:</b></div>
+				<div>{{ defaultPolicies.antennaLimit }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.webhookMax }}:</b></div>
+				<div>{{ defaultPolicies.webhookLimit }}</div>
 			</div>
 			<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="applySettings">
 				<i class="ti ti-check"></i> {{ i18n.ts._serverSetupWizard.applyTheseSettings }}
@@ -143,14 +168,24 @@ const q_adminName = ref('');
 const q_adminEmail = ref('');
 
 const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
+	let enableReactionsBuffering;
+	if (q_use.value === 'one') {
+		enableReactionsBuffering = false;
+	} else {
+		enableReactionsBuffering = q_scale.value !== 'small';
+	}
+
 	return {
 		disableRegistration: q_use.value !== 'open',
 		emailRequiredForSignup: q_use.value === 'open',
 		federation: q_federation.value === 'yes' ? 'all' : 'none',
+		enableFanoutTimeline: true,
+		enableFanoutTimelineDbFallback: q_use.value === 'one',
+		enableReactionsBuffering,
 	};
 });
 
-const defaultPolicies = computed<Misskey.entities.AdminRolesUpdateDefaultPoliciesRequest>(() => {
+const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], any>>>(() => {
 	let driveCapacityMb;
 	if (q_use.value === 'one') {
 		driveCapacityMb = 8192;
@@ -175,10 +210,30 @@ const defaultPolicies = computed<Misskey.entities.AdminRolesUpdateDefaultPolicie
 		}
 	}
 
+	let antennaLimit;
+	if (q_use.value === 'one') {
+		antennaLimit = 100;
+	} else if (q_use.value === 'group') {
+		antennaLimit = 5;
+	} else if (q_use.value === 'open') {
+		antennaLimit = 0;
+	}
+
+	let webhookLimit;
+	if (q_use.value === 'one') {
+		webhookLimit = 100;
+	} else if (q_use.value === 'group') {
+		webhookLimit = 0;
+	} else if (q_use.value === 'open') {
+		webhookLimit = 0;
+	}
+
 	return {
 		rateLimitFactor,
 		driveCapacityMb,
-	} satisfies Partial<Record<typeof ROLE_POLICIES[number], any>>;
+		antennaLimit,
+		webhookLimit,
+	};
 });
 
 function applySettings() {
