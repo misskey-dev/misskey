@@ -51,7 +51,7 @@ export function isAvailableBasicTimeline(timeline: BasicTimelineType | undefined
 		case 'vmimi-relay':
 			return ($i == null && instance.policies.vrtlAvailable) || ($i != null && $i.policies.vrtlAvailable);
 		case 'vmimi-relay-social':
-			return $i != null && $i.policies.ltlAvailable && $i.policies.vrtlAvailable;
+			return $i != null && $i.policies.vrtlAvailable;
 		default:
 			return false;
 	}
