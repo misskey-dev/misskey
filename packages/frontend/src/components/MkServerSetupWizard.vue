@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFolder>
 
-	<MkFolder :defaultOpen="true">
+	<MkFolder :defaultOpen="true" :maxHeight="300">
 		<template #label>{{ i18n.ts._serverSetupWizard.followingSettingsAreRecommended }}</template>
 		<template #icon><i class="ti ti-adjustments-alt"></i></template>
 
@@ -96,6 +96,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<div><b>{{ i18n.ts.emailRequiredForSignup }}:</b></div>
 				<div>{{ serverSettings.emailRequiredForSignup ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>Log IP:</b></div>
+				<div>{{ serverSettings.enableIpLogging ? i18n.ts.yes : i18n.ts.no }}</div>
 			</div>
 			<div>
 				<div><b>{{ i18n.ts.federation }}:</b></div>
@@ -123,6 +127,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ defaultPolicies.driveCapacityMb }} MB</div>
 			</div>
 			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.userListMax }}:</b></div>
+				<div>{{ defaultPolicies.userListLimit }}</div>
+			</div>
+			<div>
 				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.antennaMax }}:</b></div>
 				<div>{{ defaultPolicies.antennaLimit }}</div>
 			</div>
@@ -130,10 +138,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.webhookMax }}:</b></div>
 				<div>{{ defaultPolicies.webhookLimit }}</div>
 			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.canImportFollowing }}:</b></div>
+				<div>{{ defaultPolicies.canImportFollowing ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.canImportMuting }}:</b></div>
+				<div>{{ defaultPolicies.canImportMuting ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.canImportBlocking }}:</b></div>
+				<div>{{ defaultPolicies.canImportBlocking ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.canImportUserLists }}:</b></div>
+				<div>{{ defaultPolicies.canImportUserLists ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._role.baseRole }}/{{ i18n.ts._role._options.canImportAntennas }}:</b></div>
+				<div>{{ defaultPolicies.canImportAntennas ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+		</div>
+
+		<template #footer>
 			<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="applySettings">
 				<i class="ti ti-check"></i> {{ i18n.ts._serverSetupWizard.applyTheseSettings }}
 			</MkButton>
-		</div>
+		</template>
 	</MkFolder>
 </div>
 </template>
@@ -178,6 +209,7 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 	return {
 		disableRegistration: q_use.value !== 'open',
 		emailRequiredForSignup: q_use.value === 'open',
+		enableIpLogging: q_use.value === 'open',
 		federation: q_federation.value === 'yes' ? 'all' : 'none',
 		enableFanoutTimeline: true,
 		enableFanoutTimelineDbFallback: q_use.value === 'one',
@@ -210,6 +242,15 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		}
 	}
 
+	let userListLimit;
+	if (q_use.value === 'one') {
+		userListLimit = 100;
+	} else if (q_use.value === 'group') {
+		userListLimit = 5;
+	} else if (q_use.value === 'open') {
+		userListLimit = 3;
+	}
+
 	let antennaLimit;
 	if (q_use.value === 'one') {
 		antennaLimit = 100;
@@ -228,11 +269,52 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		webhookLimit = 0;
 	}
 
+	let canImportFollowing;
+	if (q_use.value === 'one') {
+		canImportFollowing = true;
+	} else {
+		canImportFollowing = false;
+	}
+
+	let canImportMuting;
+	if (q_use.value === 'one') {
+		canImportMuting = true;
+	} else {
+		canImportMuting = false;
+	}
+
+	let canImportBlocking;
+	if (q_use.value === 'one') {
+		canImportBlocking = true;
+	} else {
+		canImportBlocking = false;
+	}
+
+	let canImportUserLists;
+	if (q_use.value === 'one') {
+		canImportUserLists = true;
+	} else {
+		canImportUserLists = false;
+	}
+
+	let canImportAntennas;
+	if (q_use.value === 'one') {
+		canImportAntennas = true;
+	} else {
+		canImportAntennas = false;
+	}
+
 	return {
 		rateLimitFactor,
 		driveCapacityMb,
+		userListLimit,
 		antennaLimit,
 		webhookLimit,
+		canImportFollowing,
+		canImportMuting,
+		canImportBlocking,
+		canImportUserLists,
+		canImportAntennas,
 	};
 });
 
