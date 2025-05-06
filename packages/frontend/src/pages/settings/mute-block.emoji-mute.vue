@@ -34,6 +34,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isMuted } from '@/utility/emoji-mute.js';
 
 const emojis = prefer.model('mutingEmojis');
 
@@ -56,29 +57,10 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 	return target as HTMLElement;
 }
 
-function mute(emoji: string) {
-	const emojiCodeToMute = emoji.startsWith(':') ? emoji : `:${emoji}:`;
-	os.confirm({
-		type: 'question',
-		title: i18n.tsx.muteX({ x: emojiCodeToMute }),
-	}).then(({ canceled }) => {
-		if (canceled) {
-			return;
-		}
-		const mutedEmojis = prefer.r.mutingEmojis.value;
-		if (!mutedEmojis.includes(emojiCodeToMute)) {
-			prefer.commit('mutingEmojis', [...mutedEmojis, emojiCodeToMute]);
-		}
-	});
-}
-
 function add(ev: MouseEvent) {
 	os.pickEmoji(getHTMLElement(ev), { showPinned: false }).then((emoji) => {
 		if (emoji) {
-			const mutedEmojis = prefer.r.mutingEmojis.value;
-			if (!mutedEmojis.includes(emoji)) {
-				prefer.commit('mutingEmojis', [...mutedEmojis, emoji]);
-			}
+			muteEmoji(emoji);
 		}
 	});
 }
@@ -103,10 +85,7 @@ function unmute(emoji: string) {
 		if (canceled) {
 			return;
 		}
-		const mutedEmojis = prefer.r.mutingEmojis.value;
-		if (mutedEmojis.includes(emoji)) {
-			prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emoji));
-		}
+		unmuteEmoji(emoji);
 	});
 }
 </script>

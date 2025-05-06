@@ -40,6 +40,7 @@ import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialo
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { makeEmojiMuteKey, mute as muteEmoji, checkMuted as checkEmojiMuted } from '@/utility/emoji-mute';
 
 const props = defineProps<{
 	name: string;
@@ -58,8 +59,8 @@ const react = inject(DI.mfmEmojiReactCallback);
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
-const emojiCodeToMute = props.name.startsWith(':') ? props.name : `:${props.name}${props.host	? `@${props.host}` : ''}:`;
-const isMuted = computed(() => prefer.r.mutingEmojis.value.includes(emojiCodeToMute));
+const emojiCodeToMute = makeEmojiMuteKey(props);
+const isMuted = computed(() => checkEmojiMuted(emojiCodeToMute));
 const shouldMute = computed(() => !props.ignoreMuted && isMuted.value);
 
 const rawUrl = computed(() => {
@@ -180,10 +181,7 @@ function mute() {
 		if (canceled) {
 			return;
 		}
-		const mutedEmojis = prefer.r.mutingEmojis.value;
-		if (!mutedEmojis.includes(emojiCodeToMute)) {
-			prefer.commit('mutingEmojis', [...mutedEmojis, emojiCodeToMute]);
-		}
+		muteEmoji(emojiCodeToMute);
 	});
 }
 

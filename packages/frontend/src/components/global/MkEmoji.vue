@@ -19,6 +19,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
 
 const props = defineProps<{
 	emoji: string;
@@ -34,7 +35,7 @@ const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : cha
 const useOsNativeEmojis = computed(() => prefer.s.emojiStyle === 'native');
 const url = computed(() => char2path(props.emoji));
 const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
-const isMuted = computed(() => prefer.r.mutingEmojis.value.includes(props.emoji));
+const isMuted = checkMutedEmoji(props.emoji);
 const shouldMute = computed(() => isMuted.value && !props.ignoreMuted);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
@@ -50,10 +51,7 @@ function mute() {
 		if (canceled) {
 			return;
 		}
-		const mutedEmojis = prefer.r.mutingEmojis.value;
-		if (!mutedEmojis.includes(props.emoji)) {
-			prefer.commit('mutingEmojis', [...mutedEmojis, props.emoji]);
-		}
+		muteEmoji(props.emoji);
 	});
 }
 
@@ -65,12 +63,7 @@ function unmute() {
 		if (canceled) {
 			return;
 		}
-		const mutedEmojis = prefer.r.mutingEmojis.value;
-		const index = mutedEmojis.indexOf(props.emoji);
-		if (index !== -1) {
-			mutedEmojis.splice(index, 1);
-			prefer.commit('mutingEmojis', mutedEmojis);
-		}
+		unmuteEmoji(props.emoji);
 	});
 }
 
