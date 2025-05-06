@@ -3163,10 +3163,6 @@ export interface Locale extends ILocale {
      */
     "makeExplorableDescription": string;
     /**
-     * タイムラインのノートを離して表示
-     */
-    "showGapBetweenNotesInTimeline": string;
-    /**
      * 複製
      */
     "duplicate": string;

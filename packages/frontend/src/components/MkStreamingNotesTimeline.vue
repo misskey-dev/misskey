@@ -35,7 +35,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			tag="div"
 		>
 			<template v-for="(note, i) in paginator.items.value" :key="note.id">
-				<div v-if="note._shouldInsertAd_" :data-scroll-anchor="note.id">
+				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, note.createdAt)" :data-scroll-anchor="note.id">
+					<div :class="$style.date">
+						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).prevText }}</span>
+						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+						<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+					</div>
+					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
+				</div>
+				<div v-else-if="note._shouldInsertAd_" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
@@ -72,6 +80,7 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
+import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -414,17 +423,10 @@ defineExpose({
 .notes {
 	container-type: inline-size;
 	background: var(--MI_THEME-panel);
+}
 
-	.note:not(:last-child) {
-		border-bottom: solid 0.5px var(--MI_THEME-divider);
-	}
-
-	.ad {
-		padding: 8px;
-		background-size: auto auto;
-		background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
-		border-bottom: solid 0.5px var(--MI_THEME-divider);
-	}
+.note {
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
 .new {
@@ -501,8 +503,27 @@ defineExpose({
 	}
 }
 
-.ad:empty {
-	display: none;
+.date {
+	display: flex;
+	font-size: 85%;
+	align-items: center;
+	justify-content: center;
+	gap: 1em;
+	opacity: 0.75;
+	padding: 8px 8px;
+	margin: 0 auto;
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.ad {
+	padding: 8px;
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+
+	&:empty {
+		display: none;
+	}
 }
 
 .more {
