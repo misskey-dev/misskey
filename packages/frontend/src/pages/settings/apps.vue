@@ -6,12 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<FormPagination ref="list" :pagination="pagination">
-		<template #empty>
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
-		</template>
+		<template #empty><MkResult type="empty"/></template>
 		<template #default="{items}">
 			<div class="_gaps">
 				<MkFolder v-for="token in items" :key="token.id" :defaultOpen="true">
@@ -63,7 +58,6 @@ import { definePage } from '@/page.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { infoImageUrl } from '@/instance.js';
 
 const list = ref<InstanceType<typeof FormPagination>>();
 

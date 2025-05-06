@@ -5,18 +5,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="root" :class="[$style.root]" class="_gaps">
-	<i v-if="type === 'empty'" class="ti ti-info-circle" :class="$style.icon"></i>
-	<div>{{ props.text }}</div>
+	<img v-if="type === 'empty' && instance.infoImageUrl" :src="instance.infoImageUrl" draggable="false" :class="$style.img"/>
+	<i v-else-if="type === 'empty'" class="ti ti-info-circle" :class="$style.icon"></i>
+	<div>{{ props.text ?? (type === 'empty' ? i18n.ts.nothing : type === 'notFound' ? i18n.ts.notFound : null) }}</div>
 	<slot></slot>
 </div>
 </template>
 
 <script lang="ts" setup>
 import {} from 'vue';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	type: 'empty' | 'notFound' | 'error';
-	text: string;
+	text?: string;
 }>();
 </script>
 
@@ -25,6 +28,13 @@ const props = defineProps<{
 	position: relative;
 	text-align: center;
 	padding: 32px;
+}
+
+.img {
+	vertical-align: bottom;
+	height: 128px;
+	margin-bottom: 16px;
+	border-radius: 16px;
 }
 
 .icon {
