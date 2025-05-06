@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as AhoCorasick from 'modern-ahocorasick';
+import { shallowRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { $i } from '@/i.js';
 
@@ -13,10 +14,12 @@ type WordMuteInfo = false | {
 	ahoCorasick: AhoCorasick.default;
 };
 
-type GlobalMisskeyWordMute = {
+type WordMuteGroup = {
 	soft: WordMuteInfo;
 	hard: WordMuteInfo;
 };
+
+const builtWordMutes = shallowRef<WordMuteGroup | undefined>(undefined);
 
 export function createWordMuteInfo(mutedWords: Array<string | string[]>) : WordMuteInfo {
 	if (mutedWords.length <= 0) return false;
@@ -58,12 +61,11 @@ function setWordMuteInfo(mutedWords: Array<string | string[]>, hardMutedWords: A
 	const soft = createWordMuteInfo(mutedWords);
 	const hard = createWordMuteInfo(hardMutedWords);
 
-	globalThis._misskeyWordMute = { soft, hard };
+	builtWordMutes.value = { soft, hard };
 }
 
-function getWordMuteInfo(): GlobalMisskeyWordMute | undefined {
-	if (!globalThis._misskeyWordMute) return undefined;
-	return globalThis._misskeyWordMute as unknown as GlobalMisskeyWordMute;
+function getWordMuteInfo(): WordMuteGroup | undefined {
+	return builtWordMutes.value;
 }
 
 export function initWordMuteInfo(): void {
