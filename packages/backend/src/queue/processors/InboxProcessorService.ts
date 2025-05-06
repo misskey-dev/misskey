@@ -107,12 +107,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// それでもわからなければ終了
 		if (authUser == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user');
+			throw new Bull.UnrecoverableError(`skip: failed to resolve user ${getApId(activity.actor)}`);
 		}
 
 		// publicKey がなくても終了
 		if (authUser.key == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user publicKey');
+			throw new Bull.UnrecoverableError(`skip: failed to resolve user publicKey ${getApId(activity.actor)}`);
 		}
 
 		// HTTP-Signatureの検証

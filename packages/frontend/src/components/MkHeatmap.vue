@@ -13,14 +13,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, watch, shallowRef, ref } from 'vue';
+import { onMounted, nextTick, watch, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { alpha } from '@/utility/color.js';
+import { initChart } from '@/utility/init-chart.js';
 
 initChart();
 
@@ -35,8 +35,8 @@ const props = withDefaults(defineProps<{
 	label: '',
 });
 
-const rootEl = shallowRef<HTMLDivElement | null>(null);
-const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+const rootEl = useTemplateRef('rootEl');
+const chartEl = useTemplateRef('chartEl');
 const now = new Date();
 let chartInstance: Chart | null = null;
 const fetching = ref(true);
@@ -106,7 +106,7 @@ async function renderChart() {
 
 	await nextTick();
 
-	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
+	const color = store.s.darkMode ? '#b4e900' : '#86b300';
 
 	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
 	const max = values.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
