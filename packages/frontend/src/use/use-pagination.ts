@@ -157,6 +157,8 @@ export function usePagination<T extends MisskeyEntity>(props: {
 				sinceId: getNewestId(),
 			}),
 		}).then(res => {
+			if (res.length === 0) return; // これやらないと余計なre-renderが走る
+
 			if (options.toQueue) {
 				aheadQueue.unshift(...res.toReversed());
 				if (aheadQueue.length > MAX_QUEUE_ITEMS) {
@@ -178,6 +180,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function unshiftItems(newItems: T[]) {
+		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
 		items.value.unshift(...newItems);
 		trim(false);
 		if (props.useShallowRef) triggerRef(items);
@@ -203,6 +206,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function releaseQueue() {
+		if (aheadQueue.length === 0) return; // これやらないと余計なre-renderが走る
 		unshiftItems(aheadQueue);
 		aheadQueue = [];
 		queuedAheadItemsCount.value = 0;
