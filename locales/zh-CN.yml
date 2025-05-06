@@ -1433,6 +1433,7 @@ _preferencesProfile:
   profileName: "配置名"
   profileNameDescription: "请指定用于识别此设备的名称"
   profileNameDescription2: "如「PC」、「手机」等"
+  manageProfiles: "管理配置文件"
 _preferencesBackup:
   autoBackup: "自动备份"
   restoreFromBackup: "从备份恢复"
