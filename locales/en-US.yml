@@ -1434,6 +1434,7 @@ _preferencesProfile:
   profileName: "Profile name"
   profileNameDescription: "Set a name that identifies this device."
   profileNameDescription2: "Example: \"Main PC\", \"Smartphone\""
+  manageProfiles: "Manage Profiles"
 _preferencesBackup:
   autoBackup: "Auto backup"
   restoreFromBackup: "Restore from backup"
