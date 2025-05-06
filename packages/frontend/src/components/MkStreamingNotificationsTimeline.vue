@@ -10,12 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
 	<div v-else-if="paginator.items.value.length === 0" key="_empty_">
-		<slot name="empty">
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.noNotifications }}</div>
-			</div>
-		</slot>
+		<slot name="empty"><MkResult type="empty" :text="i18n.ts.noNotifications"/></slot>
 	</div>
 
 	<div v-else ref="rootEl">
@@ -55,7 +50,6 @@ import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
