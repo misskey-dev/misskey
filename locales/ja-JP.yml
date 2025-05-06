@@ -3126,6 +3126,7 @@ _serverSetupWizard:
     open: "オープンサーバー"
     open_description: "不特定多数の利用者を受け入れる運営を行う"
   openServerAdvice: "不特定多数の利用者を受け入れることはリスクが伴います。トラブルに対処できるよう、確実なモデレーション体制で運営することを推奨します。"
+  openServerAntiSpamAdvice: "自サーバーがスパムの踏み台にならないように、reCAPTCHAといったアンチボット機能を有効にするなど、セキュリティについても細心の注意が必要です。"
   howManyUsersDoYouExpect: "どれくらいの人数を想定していますか？"
   _scale:
     small: "100人以下 (小規模)"

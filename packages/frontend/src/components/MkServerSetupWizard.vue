@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkInfo v-if="q_use === 'single'">{{ i18n.ts._serverSetupWizard._use.single_youCanCreateMultipleAccounts }}</MkInfo>
 			<MkInfo v-if="q_use === 'open'" warn><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.openServerAdvice }}</MkInfo>
+			<MkInfo v-if="q_use === 'open'" warn><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.openServerAntiSpamAdvice }}</MkInfo>
 		</div>
 	</MkFolder>
 

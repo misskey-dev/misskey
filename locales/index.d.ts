@@ -11688,6 +11688,10 @@ export interface Locale extends ILocale {
          */
         "openServerAdvice": string;
         /**
+         * 自サーバーがスパムの踏み台にならないように、reCAPTCHAといったアンチボット機能を有効にするなど、セキュリティについても細心の注意が必要です。
+         */
+        "openServerAntiSpamAdvice": string;
+        /**
          * どれくらいの人数を想定していますか？
          */
         "howManyUsersDoYouExpect": string;
