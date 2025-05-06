@@ -88,8 +88,8 @@ const props = defineProps<{
 }
 
 .icon {
-	width: 64px;
-	height: 64px;
+	width: 50px;
+	height: 50px;
 	margin: 0 auto;
 	color: var(--MI_THEME-accent);
 }
