@@ -1434,6 +1434,7 @@ _preferencesProfile:
   profileName: "Nom del perfil"
   profileNameDescription: "Estableix un nom que identifiqui aquest dispositiu."
   profileNameDescription2: "Per exemple: \"PC Principal\", \"Smartphone\", etc"
+  manageProfiles: "Gestionar perfils"
 _preferencesBackup:
   autoBackup: "Còpia de seguretat automàtica "
   restoreFromBackup: "Restaurar des d'una còpia de seguretat"
