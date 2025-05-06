@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
 	<div :class="[$style.root, { [$style.warn]: type === 'notFound', [$style.error]: type === 'error' }]" class="_gaps_m">
 		<img v-if="type === 'empty' && instance.infoImageUrl" :src="instance.infoImageUrl" draggable="false" :class="$style.img"/>
-		<svg v-else-if="type === 'empty'" :class="$style.icon" viewBox="0 0 128 128" style="stroke-linecap:round;">
+		<svg v-else-if="type === 'empty'" :class="$style.icon" viewBox="0 0 128 128" style="stroke-linecap:round;stroke-linejoin:round;">
 			<g transform="matrix(1,0,0,0.9,0,12.8)">
 				<path d="M64,88L64,48" style="fill:none;stroke:currentColor;stroke-width:8.41px;"/>
 			</g>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</g>
 		</svg>
 		<img v-if="type === 'notFound' && instance.notFoundImageUrl" :src="instance.notFoundImageUrl" draggable="false" :class="$style.img"/>
-		<svg v-else-if="type === 'notFound'" :class="$style.icon" viewBox="0 0 128 128" style="stroke-linecap:round;">
+		<svg v-else-if="type === 'notFound'" :class="$style.icon" viewBox="0 0 128 128" style="stroke-linecap:round;stroke-linejoin:round;">
 			<g transform="matrix(1,0,0,1,0,12)">
 				<path d="M64,64L64,56C72.533,55.777 80,49.333 80,40C80,31.667 73.333,24 64,24C55.667,24 47.556,31.667 48,40" style="fill:none;stroke:currentColor;stroke-width:8px;"/>
 			</g>
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</g>
 		</svg>
 		<img v-if="type === 'error' && instance.serverErrorImageUrl" :src="instance.serverErrorImageUrl" draggable="false" :class="$style.img"/>
-		<svg v-else-if="type === 'error'" :class="$style.icon" viewBox="0 0 128 128" style="stroke-linecap:round;">
+		<svg v-else-if="type === 'error'" :class="$style.icon" viewBox="0 0 128 128" style="stroke-linecap:round;stroke-linejoin:round;">
 			<g transform="matrix(0.707107,0.707107,-0.636396,0.636396,62.0201,-24.5298)">
 				<path d="M64,94.667L64,41.333" style="fill:none;stroke:currentColor;stroke-width:8.41px;"/>
 			</g>
