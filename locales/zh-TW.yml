@@ -1434,6 +1434,7 @@ _preferencesProfile:
   profileName: "設定檔案名稱"
   profileNameDescription: "設定一個名稱來識別此裝置。"
   profileNameDescription2: "例如：「主要個人電腦」、「智慧型手機」等"
+  manageProfiles: "管理個人檔案"
 _preferencesBackup:
   autoBackup: "自動備份"
   restoreFromBackup: "從備份還原"
