@@ -1426,7 +1426,7 @@ _settings:
   ifOff: "When turned off"
   enableSyncThemesBetweenDevices: "Synchronize installed themes across devices"
   enablePullToRefresh: "Pull to Refresh"
-  enablePullToRefresh_description: "When using a mouse, drag while pressing in the scrolling wheel."
+  enablePullToRefresh_description: "When using a mouse, drag while pressing in the scroll wheel."
   _chat:
     showSenderName: "Show sender's name"
     sendOnEnter: "Press Enter to send"
