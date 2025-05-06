@@ -134,8 +134,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 				canFetchOlder.value = false;
 				fetchingOlder.value = false;
 			} else {
-				items.value.push(...res);
-				if (props.useShallowRef) triggerRef(items);
+				pushItems(res);
 				canFetchOlder.value = true;
 				fetchingOlder.value = false;
 			}
@@ -166,9 +165,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 				}
 				queuedAheadItemsCount.value = aheadQueue.length;
 			} else {
-				items.value.unshift(...res.toReversed());
-				trim(false);
-				if (props.useShallowRef) triggerRef(items);
+				unshiftItems(res.toReversed());
 			}
 		});
 	}
@@ -181,17 +178,19 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	function unshiftItems(newItems: T[]) {
 		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
-		items.value.unshift(...newItems);
+		items.value.unshift(...newItems.filter(x => !items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
 		trim(false);
 		if (props.useShallowRef) triggerRef(items);
 	}
 
 	function pushItems(oldItems: T[]) {
+		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
 		items.value.push(...oldItems);
 		if (props.useShallowRef) triggerRef(items);
 	}
 
 	function prepend(item: T) {
+		if (items.value.some(x => x.id === item.id)) return;
 		items.value.unshift(item);
 		trim(false);
 		if (props.useShallowRef) triggerRef(items);
