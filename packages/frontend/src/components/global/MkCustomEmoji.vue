@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <img
-	v-if="errored && fallbackToImage"
+	v-if="(errored || shouldMute ) && fallbackToImage"
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
 	src="/client-assets/dummy.png"
 	:title="alt"
 	draggable="false"
 	style="-webkit-user-drag: none;"
 />
-<span v-else-if="errored">:{{ customEmojiName }}:</span>
+<span v-else-if="errored || shouldMute">:{{ customEmojiName }}:</span>
 <img
 	v-else
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
@@ -51,12 +51,16 @@ const props = defineProps<{
 	menu?: boolean;
 	menuReaction?: boolean;
 	fallbackToImage?: boolean;
+	ignoreMuted?: boolean;
 }>();
 
 const react = inject(DI.mfmEmojiReactCallback);
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
+const emojiCodeToMute = props.name.startsWith(':') ? props.name : `:${props.name}${props.host	? `@${props.host}` : ''}:`;
+const isMuted = computed(() => prefer.r.mutingEmojis.value.includes(emojiCodeToMute));
+const shouldMute = computed(() => !props.ignoreMuted && isMuted.value);
 
 const rawUrl = computed(() => {
 	if (props.url) {
@@ -95,13 +99,17 @@ function onClick(ev: MouseEvent) {
 		menuItems.push({
 			type: 'label',
 			text: `:${props.name}:`,
-		}, {
-			text: i18n.ts.copy,
-			icon: 'ti ti-copy',
-			action: () => {
-				copyToClipboard(`:${props.name}:`);
-			},
 		});
+
+		if (isLocal.value) {
+			menuItems.push({
+				text: i18n.ts.copy,
+				icon: 'ti ti-copy',
+				action: () => {
+					copyToClipboard(`:${props.name}:`);
+				},
+			});
+		}
 
 		if (props.menuReaction && react) {
 			menuItems.push({
@@ -113,21 +121,33 @@ function onClick(ev: MouseEvent) {
 			});
 		}
 
+		if (isLocal.value) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				text: i18n.ts.info,
+				icon: 'ti ti-info-circle',
+				action: async () => {
+					const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
+						emoji: await misskeyApiGet('emoji', {
+							name: customEmojiName.value,
+						}),
+					}, {
+						closed: () => dispose(),
+					});
+				},
+			});
+		}
+
 		menuItems.push({
-			text: i18n.ts.info,
-			icon: 'ti ti-info-circle',
+			text: i18n.ts.mute,
+			icon: 'ti ti-mood-off',
 			action: async () => {
-				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
-					emoji: await misskeyApiGet('emoji', {
-						name: customEmojiName.value,
-					}),
-				}, {
-					closed: () => dispose(),
-				});
+				await mute();
 			},
 		});
 
-		if ($i?.isModerator ?? $i?.isAdmin) {
+		if (($i?.isModerator ?? $i?.isAdmin) && isLocal.value) {
 			menuItems.push({
 				text: i18n.ts.edit,
 				icon: 'ti ti-pencil',
@@ -149,6 +169,21 @@ async function edit(name: string) {
 		emoji: emoji,
 	}, {
 		closed: () => dispose(),
+	});
+}
+
+function mute() {
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.muteX({ x: emojiCodeToMute }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		const mutedEmojis = prefer.r.mutingEmojis.value;
+		if (!mutedEmojis.includes(emojiCodeToMute)) {
+			prefer.commit('mutingEmojis', [...mutedEmojis, emojiCodeToMute]);
+		}
 	});
 }
 

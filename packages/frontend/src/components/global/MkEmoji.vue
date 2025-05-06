@@ -4,7 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img v-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<img v-if="shouldMute" :class="$style.root" src="/client-assets/dummy.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<img v-else-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
 <span v-else :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ colorizedNativeEmoji }}</span>
 </template>
 
@@ -23,6 +24,7 @@ const props = defineProps<{
 	emoji: string;
 	menu?: boolean;
 	menuReaction?: boolean;
+	ignoreMuted?: boolean;
 }>();
 
 const react = inject(DI.mfmEmojiReactCallback, null);
@@ -32,10 +34,44 @@ const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : cha
 const useOsNativeEmojis = computed(() => prefer.s.emojiStyle === 'native');
 const url = computed(() => char2path(props.emoji));
 const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
+const isMuted = computed(() => prefer.r.mutingEmojis.value.includes(props.emoji));
+const shouldMute = computed(() => isMuted.value && !props.ignoreMuted);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
 	(event.target as HTMLElement).title = getEmojiName(props.emoji);
+}
+
+function mute() {
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.muteX({ x: props.emoji }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		const mutedEmojis = prefer.r.mutingEmojis.value;
+		if (!mutedEmojis.includes(props.emoji)) {
+			prefer.commit('mutingEmojis', [...mutedEmojis, props.emoji]);
+		}
+	});
+}
+
+function unmute() {
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.unmuteX({ x: props.emoji }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		const mutedEmojis = prefer.r.mutingEmojis.value;
+		const index = mutedEmojis.indexOf(props.emoji);
+		if (index !== -1) {
+			mutedEmojis.splice(index, 1);
+			prefer.commit('mutingEmojis', mutedEmojis);
+		}
+	});
 }
 
 function onClick(ev: MouseEvent) {
@@ -62,6 +98,22 @@ function onClick(ev: MouseEvent) {
 				},
 			});
 		}
+
+		menuItems.push({
+			type: 'divider',
+		}, isMuted.value ? {
+			text: i18n.ts.unmute,
+			icon: 'ti ti-mood-smile',
+			action: () => {
+				unmute();
+			},
+		} : {
+			text: i18n.ts.mute,
+			icon: 'ti ti-mood-off',
+			action: () => {
+				mute();
+			},
+		});
 
 		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 	}
