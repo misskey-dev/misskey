@@ -184,7 +184,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	}
 
 	function pushItems(oldItems: T[]) {
-		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
+		if (oldItems.length === 0) return; // これやらないと余計なre-renderが走る
 		items.value.push(...oldItems);
 		if (props.useShallowRef) triggerRef(items);
 	}
