@@ -254,6 +254,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (!policies.canYamiNote) {
 				throw new Error('You do not have permission to post yami notes.');
 			}
+
+			// 重要: やみノートの場合、サーバー設定を確認して連合を強制的に制御
+			const meta = await this.metaService.fetch();
+			if (!meta.yamiNoteFederationEnabled) {
+				// 連合が無効な場合は強制的にローカルオンリーに
+				data.localOnly = true;
+			}
 		}
 
 		// チャンネル外にリプライしたら対象のスコープに合わせる

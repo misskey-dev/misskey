@@ -237,44 +237,54 @@ const getInitialScheduledDelete = () => {
 };
 // 初期化
 const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
-// やみノート状態を管理する変数
-// 親投稿がやみノートの場合は強制的にやみノートにする
+
+// まずyamiNoteFederationEnabledを定義
+const yamiNoteFederationEnabled = computed(() => {
+	return instance.yamiNoteFederationEnabled === true;
+});
+// 次にisNoteInYamiModeを定義
 const isNoteInYamiMode = ref(
-	// 親投稿がやみノートの場合は必ずtrue
 	(props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)
 		? true
-	// それ以外は権限に基づいて設定
 		: ($i.policies.canYamiNote
 			? (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)
 			: false),
 );
-
-// yamiNoteFederationEnabled の取得方法を修正
-const yamiNoteFederationEnabled = computed(() => {
-	// 明示的にブール値として評価
-	return instance.yamiNoteFederationEnabled === true;
+// そしてshouldLocalOnlyを定義
+const shouldLocalOnly = computed<boolean>(() => {
+	return isNoteInYamiMode.value && !yamiNoteFederationEnabled.value;
 });
+// 最後にlocalOnlyを定義
+const localOnly = ref(
+	shouldLocalOnly.value
+		? true
+		: (props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly)),
+);
 
-// isNoteInYamiMode を監視し、やみノートモードの時に自動的に連合を制御
-watch(isNoteInYamiMode, (newValue) => {
-	// やみノートモードがオンで連合が無効な場合、強制的にローカルオンリーに
-	if (newValue && !yamiNoteFederationEnabled.value) {
-		localOnly.value = true;
-	}
-}, { immediate: true });
-
-// 固定フォーム（埋め込み）の場合のみ、親タイムラインの種類に基づいてやみノートモードを設定
+// 固定フォームの場合はタイムラインタイプを監視して即時反映
 watch(
 	() => props.isInYamiTimeline,
 	(isInYamiTimeline) => {
-		// 固定フォーム（埋め込み）の場合のみ処理
 		if (props.fixed) {
-			// 現在やみタイムラインならやみノートモード、そうでなければ通常ノートモード
 			isNoteInYamiMode.value = !!isInYamiTimeline;
 		}
 	},
 	{ immediate: true },
 );
+
+// 管理者がやみノート連合を無効にしている場合は、やみノートを連合なし投稿に強制
+watch(() => yamiNoteFederationEnabled.value, () => {
+	if (shouldLocalOnly.value) {
+		localOnly.value = true;
+	}
+}, { immediate: true });
+
+// やみノートモードの変更も監視して連合設定を強制
+watch(() => isNoteInYamiMode.value, () => {
+	if (shouldLocalOnly.value) {
+		localOnly.value = true;
+	}
+}, { immediate: true });
 
 // 親投稿がやみノートかどうかの判定を計算プロパティに
 const parentIsYamiNote = computed(() => {
@@ -294,7 +304,6 @@ watch(showPreview, () => store.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => prefer.commit('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
 const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
@@ -699,8 +708,8 @@ async function toggleLocalOnly() {
 		return;
 	}
 
-	// やみノートモードがオンで連合が無効な場合、ローカルオンリーを解除できないようにする
-	if (isNoteInYamiMode.value && !yamiNoteFederationEnabled.value) {
+	// 管理者がやみノート連合を無効にしている場合は、やみノートを連合なし投稿に強制
+	if (shouldLocalOnly.value) {
 		localOnly.value = true;
 		return;
 	}
@@ -1335,7 +1344,9 @@ onMounted(() => {
 				useCw.value = draft.data.useCw;
 				cw.value = draft.data.cw;
 				visibility.value = draft.data.visibility;
-				localOnly.value = draft.data.localOnly;
+				localOnly.value = shouldLocalOnly.value
+					? true
+					: (draft.data.localOnly ?? false);
 				files.value = (draft.data.files || []).filter(draftFile => draftFile);
 				if (draft.data.poll) {
 					poll.value = draft.data.poll;
@@ -1350,15 +1361,12 @@ onMounted(() => {
 				if (draft.data.scheduledNoteDelete) {
 					scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 				}
-				if (props.fixed) {
-					// 固定フォームの場合は親タイムラインタイプを優先
-					isNoteInYamiMode.value = !!props.isInYamiTimeline;
-				} else {
-					// 通常フォームの場合は下書きの値を使用
-					isNoteInYamiMode.value = $i.policies.canYamiNote ?
-						(draft.data.isNoteInYamiMode ??
-        (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)) :
-						false;
+				// 通常フォームの場合のみドラフトから復元（固定フォームは上のwatchで処理済み）
+				if (!props.fixed && !parentIsYamiNote.value) {
+					isNoteInYamiMode.value = $i.policies.canYamiNote
+						? (draft.data.isNoteInYamiMode ??
+						  (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode))
+						: false;
 				}
 			}
 		}
@@ -1370,7 +1378,9 @@ onMounted(() => {
 			useCw.value = init.cw != null;
 			cw.value = init.cw ?? null;
 			visibility.value = init.visibility;
-			localOnly.value = init.localOnly ?? false;
+			localOnly.value = shouldLocalOnly.value
+				? true
+				: (init.localOnly ?? false);
 			files.value = init.files ?? [];
 			if (init.poll) {
 				poll.value = {
@@ -1400,11 +1410,8 @@ onMounted(() => {
 					isValid: true,
 				};
 			}
-			if (props.fixed) {
-				// 固定フォームの場合は親タイムラインタイプを優先
-				isNoteInYamiMode.value = !!props.isInYamiTimeline;
-			} else {
-				// 通常フォームの場合は元の投稿のやみノート状態を継承
+			// 通常フォームの場合のみ元の投稿状態を継承（固定フォームは上のwatchで処理済み）
+			if (!props.fixed && !parentIsYamiNote.value) {
 				isNoteInYamiMode.value = init.isNoteInYamiMode ?? false;
 			}
 		}

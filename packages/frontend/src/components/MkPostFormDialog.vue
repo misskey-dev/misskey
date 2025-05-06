@@ -40,6 +40,7 @@ const props = withDefaults(defineProps<PostFormProps & {
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
+	(ev: 'posted'): void;
 }>();
 
 const modal = useTemplateRef('modal');
