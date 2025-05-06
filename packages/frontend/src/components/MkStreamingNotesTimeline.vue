@@ -117,7 +117,8 @@ function onScrollContainerScroll() {
 const rootEl = useTemplateRef('rootEl');
 watch(rootEl, (el) => {
 	if (el && scrollContainer == null) {
-		scrollContainer = getScrollContainer(el)!;
+		scrollContainer = getScrollContainer(el);
+		if (scrollContainer == null) return;
 		scrollContainer.addEventListener('scroll', onScrollContainerScroll, { passive: true }); // ほんとはscrollendにしたいけどiosが非対応
 	}
 }, { immediate: true });
