@@ -74,12 +74,17 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 		action: () => {
 			importProfile();
 		},
+	}, {
+		type: 'divider',
+	}, {
+		type: 'link',
+		text: i18n.ts._preferencesProfile.manageProfiles + '...',
+		icon: 'ti ti-settings-cog',
+		to: '/settings/profiles',
 	}];
 
 	if (prefer.s.devMode) {
 		menu.push({
-			type: 'divider',
-		}, {
 			text: 'Copy profile as text',
 			icon: 'ti ti-clipboard',
 			action: () => {
@@ -145,17 +150,30 @@ export async function cloudBackup() {
 	});
 }
 
-export async function restoreFromCloudBackup() {
-	if ($i == null) return;
-
-	// TODO: 更新日時でソートして取得したい
+export async function listCloudBackups() {
 	const keys = await misskeyApi('i/registry/keys', {
 		scope: ['client', 'preferences', 'backups'],
 	});
 
-	if (_DEV_) console.log(keys);
+	return keys.map(k => ({
+		name: k,
+	}));
+}
 
-	if (keys.length === 0) {
+export async function deleteCloudBackup(key: string) {
+	await os.apiWithDialog('i/registry/remove', {
+		scope: ['client', 'preferences', 'backups'],
+		key,
+	});
+}
+
+export async function restoreFromCloudBackup() {
+	if ($i == null) return;
+
+	// TODO: 更新日時でソートしたい
+	const backups = await listCloudBackups();
+
+	if (backups.length === 0) {
 		os.alert({
 			type: 'warning',
 			title: i18n.ts._preferencesBackup.noBackupsFoundTitle,
@@ -166,9 +184,9 @@ export async function restoreFromCloudBackup() {
 
 	const select = await os.select({
 		title: i18n.ts._preferencesBackup.selectBackupToRestore,
-		items: keys.map(k => ({
-			text: k,
-			value: k,
+		items: backups.map(backup => ({
+			text: backup.name,
+			value: backup.name,
 		})),
 	});
 	if (select.canceled) return;
