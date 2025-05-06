@@ -5,12 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad" :pullToRefresh="pullToRefresh">
-	<template #empty>
-		<div class="_fullinfo">
-			<img :src="infoImageUrl" draggable="false"/>
-			<div>{{ i18n.ts.noNotes }}</div>
-		</div>
-	</template>
+	<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]">
@@ -42,7 +37,6 @@ import type { PagingCtx } from '@/use/use-pagination.js';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 

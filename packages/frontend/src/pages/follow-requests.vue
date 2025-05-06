@@ -7,12 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkPagination ref="paginationComponent" :pagination="pagination">
-			<template #empty>
-				<div class="_fullinfo">
-					<img :src="infoImageUrl" draggable="false"/>
-					<div>{{ i18n.ts.noFollowRequests }}</div>
-				</div>
-			</template>
+			<template #empty><MkResult type="empty" :text="i18n.ts.noFollowRequests"/></template>
 			<template #default="{items}">
 				<div class="mk-follow-requests _gaps">
 					<div v-for="req in items" :key="req.id" class="user _panel">
@@ -48,7 +43,6 @@ import { userPage, acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { infoImageUrl } from '@/instance.js';
 import { $i } from '@/i.js';
 
 const paginationComponent = useTemplateRef('paginationComponent');

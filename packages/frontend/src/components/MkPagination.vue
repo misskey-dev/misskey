@@ -18,12 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
 		<div v-else-if="paginator.items.value.length === 0" key="_empty_">
-			<slot name="empty">
-				<div class="_fullinfo">
-					<img :src="infoImageUrl" draggable="false"/>
-					<div>{{ i18n.ts.nothing }}</div>
-				</div>
-			</slot>
+			<slot name="empty"><MkResult type="empty"/></slot>
 		</div>
 
 		<div v-else ref="rootEl" class="_gaps">
@@ -46,9 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
 import type { PagingCtx } from '@/use/use-pagination.js';
-import { infoImageUrl } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
