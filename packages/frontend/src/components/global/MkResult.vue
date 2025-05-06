@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="root" :class="[$style.root]" class="_gaps">
+<div :class="[$style.root]" class="_gaps">
 	<img v-if="type === 'empty' && instance.infoImageUrl" :src="instance.infoImageUrl" draggable="false" :class="$style.img"/>
 	<i v-else-if="type === 'empty'" class="ti ti-info-circle" :class="$style.icon"></i>
 	<div>{{ props.text ?? (type === 'empty' ? i18n.ts.nothing : type === 'notFound' ? i18n.ts.notFound : null) }}</div>
