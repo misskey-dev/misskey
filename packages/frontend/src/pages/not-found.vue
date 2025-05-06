@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div style="align-content: center; height: 100cqh;">
 	<MkResult type="notFound" :text="i18n.ts.notFoundDescription"/>
 </div>
 </template>
