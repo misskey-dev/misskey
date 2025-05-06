@@ -93,7 +93,6 @@ export function migrateOldSettings() {
 		prefer.commit('showFixedPostFormInChannel', store.s.showFixedPostFormInChannel);
 		prefer.commit('enableInfiniteScroll', store.s.enableInfiniteScroll);
 		prefer.commit('useReactionPickerForContextMenu', store.s.useReactionPickerForContextMenu);
-		prefer.commit('showGapBetweenNotesInTimeline', store.s.showGapBetweenNotesInTimeline);
 		prefer.commit('instanceTicker', store.s.instanceTicker);
 		prefer.commit('emojiPickerScale', store.s.emojiPickerScale);
 		prefer.commit('emojiPickerWidth', store.s.emojiPickerWidth);

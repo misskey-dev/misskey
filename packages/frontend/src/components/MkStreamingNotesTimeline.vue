@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
-			:class="[$style.notes, { [$style.noGap]: noGap, '_gaps': !noGap }]"
+			:class="$style.notes"
 			:enterActiveClass="$style.transition_x_enterActive"
 			:leaveActiveClass="$style.transition_x_leaveActive"
 			:enterFromClass="$style.transition_x_enterFrom"
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			tag="div"
 		>
 			<template v-for="(note, i) in paginator.items.value" :key="note.id">
-				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
+				<div v-if="note._shouldInsertAd_" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
@@ -193,7 +193,6 @@ function prepend(note: Misskey.entities.Note) {
 let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: PagingCtx;
-const noGap = !prefer.s.showGapBetweenNotesInTimeline;
 
 const stream = store.s.realtimeMode ? useStream() : null;
 
@@ -414,29 +413,17 @@ defineExpose({
 
 .notes {
 	container-type: inline-size;
+	background: var(--MI_THEME-panel);
 
-	&.noGap {
-		background: var(--MI_THEME-panel);
-
-		.note:not(:last-child) {
-			border-bottom: solid 0.5px var(--MI_THEME-divider);
-		}
-
-		.ad {
-			padding: 8px;
-			background-size: auto auto;
-			background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
-			border-bottom: solid 0.5px var(--MI_THEME-divider);
-		}
+	.note:not(:last-child) {
+		border-bottom: solid 0.5px var(--MI_THEME-divider);
 	}
 
-	&:not(.noGap) {
-		background: var(--MI_THEME-bg);
-
-		.note {
-			background: var(--MI_THEME-panel);
-			border-radius: var(--MI-radius);
-		}
+	.ad {
+		padding: 8px;
+		background-size: auto auto;
+		background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
+		border-bottom: solid 0.5px var(--MI_THEME-divider);
 	}
 }
 
