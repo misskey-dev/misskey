@@ -28,10 +28,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass="$style.transition_x_move"
 			tag="div"
 		>
-			<template v-for="(notification, i) in paginator.items.value" :key="notification.id">
-				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.item" :note="notification.note" :withHardMute="true" :data-scroll-anchor="notification.id"/>
-				<XNotification v-else :class="$style.item" :notification="notification" :withTime="true" :full="true" :data-scroll-anchor="notification.id"/>
-			</template>
+			<div v-for="(notification, i) in paginator.items.value" :key="notification.id" :data-scroll-anchor="notification.id" :class="$style.item">
+				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, notification.createdAt)" :class="$style.date">
+					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt).prevText }}</span>
+					<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+					<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+				</div>
+				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.content" :note="notification.note" :withHardMute="true"/>
+				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
+			</div>
 		</component>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
@@ -55,6 +60,7 @@ import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { usePagination } from '@/use/use-pagination.js';
+import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -140,8 +146,8 @@ defineExpose({
 .transition_x_enterActive {
 	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 
-	&.item,
-	.item {
+	&.content,
+	.content {
 		/* Skip Note Rendering有効時、TransitionGroupで通知を追加するときに一瞬がくっとなる問題を抑制する */
 		content-visibility: visible !important;
 	}
@@ -172,7 +178,19 @@ defineExpose({
 	background: var(--MI_THEME-panel);
 }
 
-.item:not(:last-child) {
+.item {
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.date {
+	display: flex;
+	font-size: 85%;
+	align-items: center;
+	justify-content: center;
+	gap: 1em;
+	opacity: 0.75;
+	padding: 8px 8px;
+	margin: 0 auto;
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 

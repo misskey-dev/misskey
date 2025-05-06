@@ -532,6 +532,5 @@ defineExpose({
 	box-sizing: border-box;
 	padding: 16px;
 	background: var(--MI_THEME-panel);
-	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>
