@@ -39,5 +39,6 @@ const props = defineProps<{
 
 .icon {
 	font-size: 24px;
+	margin: 0 auto;
 }
 </style>
