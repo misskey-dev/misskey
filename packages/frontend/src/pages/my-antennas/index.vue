@@ -7,12 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div>
-			<div v-if="antennas.length === 0" class="empty">
-				<div class="_fullinfo">
-					<img :src="infoImageUrl" draggable="false"/>
-					<div>{{ i18n.ts.nothing }}</div>
-				</div>
-			</div>
+			<MkResult v-if="antennas.length === 0" type="empty"/>
 
 			<MkButton :link="true" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
@@ -32,7 +27,6 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
-import { infoImageUrl } from '@/instance.js';
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 

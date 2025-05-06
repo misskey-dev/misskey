@@ -6,30 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :tabs="headerTabs">
 	<div v-if="error != null" class="_spacer" style="--MI_SPACER-w: 1200px;">
-		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
-			<p :class="$style.text">
-				<i class="ti ti-alert-triangle"></i>
-				{{ error }}
-			</p>
-		</div>
+		<MkResult type="error" :text="error"/>
 	</div>
 	<div v-else-if="tab === 'users'" class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div class="_gaps_s">
 			<div v-if="role">{{ role.description }}</div>
 			<MkUserList v-if="visible" :pagination="users" :extractor="(item) => item.user"/>
-			<div v-else-if="!visible" class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
+			<MkResult v-else-if="!visible" type="empty" :text="i18n.ts.nothing"/>
 		</div>
 	</div>
 	<div v-else-if="tab === 'timeline'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<MkTimeline v-if="visible" ref="timeline" src="role" :role="props.roleId"/>
-		<div v-else-if="!visible" class="_fullinfo">
-			<img :src="infoImageUrl" draggable="false"/>
-			<div>{{ i18n.ts.nothing }}</div>
-		</div>
+		<MkResult v-else-if="!visible" type="empty" :text="i18n.ts.nothing"/>
 	</div>
 </PageWithHeader>
 </template>
@@ -37,13 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { instanceName } from '@@/js/config.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { serverErrorImageUrl, infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	roleId: string;
@@ -97,24 +83,3 @@ definePage(() => ({
 	icon: 'ti ti-badge',
 }));
 </script>
-
-<style lang="scss" module>
-.root {
-	padding: 32px;
-	text-align: center;
-  align-items: center;
-}
-
-.text {
-	margin: 0 0 8px 0;
-}
-
-.img {
-	vertical-align: bottom;
-  width: 128px;
-	height: 128px;
-	margin-bottom: 16px;
-	border-radius: 16px;
-}
-</style>
-

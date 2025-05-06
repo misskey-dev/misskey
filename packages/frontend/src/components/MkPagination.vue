@@ -16,12 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkError v-else-if="error" @retry="init()"/>
 
 	<div v-else-if="empty" key="_empty_">
-		<slot name="empty">
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
-		</slot>
+		<slot name="empty"><MkResult type="empty"/></slot>
 	</div>
 
 	<div v-else ref="rootEl" class="_gaps">
@@ -88,7 +83,6 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 
 </script>
 <script lang="ts" setup>
-import { infoImageUrl } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{

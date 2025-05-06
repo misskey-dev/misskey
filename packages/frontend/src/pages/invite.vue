@@ -6,13 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader>
 	<div v-if="!instance.disableRegistration || !($i && ($i.isAdmin || $i.policies.canInvite))" class="_spacer" style="--MI_SPACER-w: 1200px;">
-		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
-			<div :class="$style.text">
-				<i class="ti ti-alert-triangle"></i>
-				{{ i18n.ts.nothing }}
-			</div>
-		</div>
+		<MkResult type="empty"/>
 	</div>
 	<div v-else class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps_m" style="text-align: center;">
@@ -43,7 +37,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
-import { serverErrorImageUrl, instance } from '@/instance.js';
+import { instance } from '@/instance.js';
 import { $i } from '@/i.js';
 
 const pagingComponent = useTemplateRef('pagingComponent');
@@ -96,23 +90,3 @@ definePage(() => ({
 	icon: 'ti ti-user-plus',
 }));
 </script>
-
-<style lang="scss" module>
-.root {
-	padding: 32px;
-	text-align: center;
-	align-items: center;
-}
-
-.text {
-	margin: 0 0 8px 0;
-}
-
-.img {
-	vertical-align: bottom;
-	width: 128px;
-	height: 128px;
-	margin-bottom: 16px;
-	border-radius: 16px;
-}
-</style>
