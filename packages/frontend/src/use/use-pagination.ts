@@ -5,7 +5,7 @@
 
 import { computed, isRef, onMounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { ComputedRef, Ref, ShallowRef } from 'vue';
+import type { ComputedRef, DeepReadonly, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAX_ITEMS = 30;
@@ -237,7 +237,7 @@ export function usePagination<T extends MisskeyEntity>(props: {
 	});
 
 	return {
-		items,
+		items: items as DeepReadonly<ShallowRef<T[]>>,
 		queuedAheadItemsCount,
 		fetching,
 		fetchingOlder,
