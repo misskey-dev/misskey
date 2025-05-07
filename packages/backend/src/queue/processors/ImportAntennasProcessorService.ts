@@ -22,7 +22,7 @@ const exportedAntennaSchema = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
-		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'users_blacklist'] },
 		userListAccts: {
 			type: 'array',
 			items: {
