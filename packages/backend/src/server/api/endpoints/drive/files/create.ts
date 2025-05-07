@@ -61,6 +61,7 @@ export const meta = {
 			message: 'Cannot upload the file because it exceeds the maximum file size.',
 			code: 'MAX_FILE_SIZE_EXCEEDED',
 			id: 'b9d8c348-33f0-4673-b9a9-5d4da058977a',
+			httpStatusCode: 413,
 		},
 	},
 } as const;
