@@ -5,6 +5,7 @@
 
 import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
+import { Ref, ref } from 'vue';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
@@ -12,6 +13,7 @@ fetchMocker.enableMocks();
 // Set i18n
 import locales from '../../../locales/index.js';
 import { updateI18n } from '@/i18n.js';
+import { K } from 'vitest/dist/chunks/reporters.d.79o4mouw.js';
 updateI18n(locales['en-US']);
 
 // XXX: misskey-js panics if WebSocket is not defined
@@ -30,11 +32,21 @@ export const preferState: Record<string, unknown> = {
 	mutedEmojis: [],
 };
 
+export let preferReactive: Record<string, Ref<unknown>> = {};
+
+for (const key in preferState) {
+	if (preferState[key] !== undefined) {
+		preferReactive[key] = ref(preferState[key]);
+	}
+}
+
 // XXX: store somehow becomes undefined in vitest?
 vi.mock('@/preferences.js', () => {
+
 	return {
 		prefer: {
 			s: preferState,
+			r: preferReactive,
 		},
 	};
 });
