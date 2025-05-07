@@ -140,7 +140,7 @@ function importProfile() {
 export async function cloudBackup() {
 	if ($i == null) return;
 	if (!canAutoBackup()) {
-		throw new Error('Profile name is not set');
+		throw new Error('cannot auto backup for this profile');
 	}
 
 	await misskeyApi('i/registry/set', {

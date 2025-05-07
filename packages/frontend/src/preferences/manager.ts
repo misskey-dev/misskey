@@ -79,7 +79,7 @@ export type PreferencesProfile = {
 
 export type StorageProvider = {
 	save: (ctx: { profile: PreferencesProfile; }) => void;
-	cloudGets: <K extends keyof PREF>(ctx: { needs: { key: K; scope: Scope; }[] }) => Promise<Partial<Record<K, ValueOf<K>>>>;
+	cloudGetBulk: <K extends keyof PREF>(ctx: { needs: { key: K; scope: Scope; }[] }) => Promise<Partial<Record<K, ValueOf<K>>>>;
 	cloudGet: <K extends keyof PREF>(ctx: { key: K; scope: Scope; }) => Promise<{ value: ValueOf<K>; } | null>;
 	cloudSet: <K extends keyof PREF>(ctx: { key: K; scope: Scope; value: ValueOf<K>; }) => Promise<void>;
 };
@@ -240,7 +240,7 @@ export class PreferencesManager {
 			}
 		}
 
-		const cloudValues = await this.storageProvider.cloudGets({ needs });
+		const cloudValues = await this.storageProvider.cloudGetBulk({ needs });
 
 		for (const _key in PREF_DEF) {
 			const key = _key as keyof PREF;
