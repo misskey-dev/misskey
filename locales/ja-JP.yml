@@ -220,6 +220,7 @@ silenceThisInstance: "サーバーをサイレンス"
 mediaSilenceThisInstance: "サーバーをメディアサイレンス"
 operations: "操作"
 software: "ソフトウェア"
+softwareName: "ソフトウェア名"
 version: "バージョン"
 metadata: "メタデータ"
 withNFiles: "{n}つのファイル"
@@ -1347,6 +1348,7 @@ readonly: "読み取り専用"
 goToDeck: "デッキへ戻る"
 federationJobs: "連合ジョブ"
 driveAboutTip: "ドライブでは、過去にアップロードしたファイルの一覧が表示されます。<br>\nノートに添付する際に再利用したり、あとで投稿するファイルを予めアップロードしておくこともできます。<br>\n<b>ファイルを削除すると、今までそのファイルを使用した全ての場所(ノート、ページ、アバター、バナー等)からも見えなくなるので注意してください。</b><br>\nフォルダを作って整理することもできます。"
+scrollToClose: "スクロールして閉じる"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1426,6 +1428,8 @@ _settings:
   ifOn: "オンのとき"
   ifOff: "オフのとき"
   enableSyncThemesBetweenDevices: "デバイス間でインストールしたテーマを同期"
+  enablePullToRefresh: "ひっぱって更新"
+  enablePullToRefresh_description: "マウスでは、ホイールを押し込みながらドラッグします。"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -1435,6 +1439,7 @@ _preferencesProfile:
   profileName: "プロファイル名"
   profileNameDescription: "このデバイスを識別する名前を設定してください。"
   profileNameDescription2: "例: 「メインPC」、「スマホ」など"
+  manageProfiles: "プロファイルの管理"
 
 _preferencesBackup:
   autoBackup: "自動バックアップ"
@@ -1477,6 +1482,7 @@ _delivery:
     manuallySuspended: "手動停止中"
     goneSuspended: "サーバー削除のため停止中"
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
+    softwareSuspended: "配信停止中のソフトウェアであるため停止中"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -1615,6 +1621,8 @@ _serverSettings:
   openRegistration: "アカウントの作成をオープンにする"
   openRegistrationWarning: "登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。"
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。"
+  deliverSuspendedSoftware: "配信停止中のソフトウェア"
+  deliverSuspendedSoftwareDescription: "脆弱性などの理由で、サーバーのソフトウェアの名前及びバージョンの範囲を指定して配信を停止できます。このバージョン情報はサーバーが提供したものであり、信頼性は保証されません。バージョン指定には semver の範囲指定が使用できますが、>= 2024.3.1 と指定すると 2024.3.1-custom.0 のようなカスタムバージョンが含まれないため、>= 2024.3.1-0 のように prerelease の指定を行うことを推奨します。"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
