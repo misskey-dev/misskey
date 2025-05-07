@@ -342,6 +342,9 @@ export const PREF_DEF = {
 	plugins: {
 		default: [] as Plugin[],
 	},
+	mutingEmojis: {
+		default: [] as string[],
+	},
 
 	'sound.masterVolume': {
 		default: 0.3,

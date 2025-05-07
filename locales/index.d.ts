@@ -5417,6 +5417,22 @@ export interface Locale extends ILocale {
      * スクロールして閉じる
      */
     "scrollToClose": string;
+    /**
+     * 絵文字ミュート
+     */
+    "emojiMute": string;
+    /**
+     * 絵文字ミュート解除
+     */
+    "emojiUnmute": string;
+    /**
+     * {x}をミュート
+     */
+    "muteX": ParameterizedString<"x">;
+    /**
+     * {x}のミュートを解除
+     */
+    "unmuteX": ParameterizedString<"x">;
     "_chat": {
         /**
          * まだメッセージはありません
