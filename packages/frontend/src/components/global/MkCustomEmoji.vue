@@ -5,14 +5,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <img
-	v-if="(errored || shouldMute ) && fallbackToImage"
+	v-if="shouldMute"
+	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
+	src="/client-assets/unknown.png"
+	:title="alt"
+	draggable="false"
+	style="-webkit-user-drag: none;"
+	@click="onClick"
+/>
+<img
+	v-else-if="errored && fallbackToImage"
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
 	src="/client-assets/dummy.png"
 	:title="alt"
 	draggable="false"
 	style="-webkit-user-drag: none;"
 />
-<span v-else-if="errored || shouldMute">:{{ customEmojiName }}:</span>
+<span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
 	v-else
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
@@ -40,7 +49,7 @@ import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialo
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
-import { makeEmojiMuteKey, mute as muteEmoji, checkMuted as checkEmojiMuted } from '@/utility/emoji-mute';
+import { makeEmojiMuteKey, mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkEmojiMuted } from '@/utility/emoji-mute';
 
 const props = defineProps<{
 	name: string;
@@ -140,13 +149,23 @@ function onClick(ev: MouseEvent) {
 			});
 		}
 
-		menuItems.push({
-			text: i18n.ts.emojiMute,
-			icon: 'ti ti-mood-off',
-			action: async () => {
-				await mute();
-			},
-		});
+		if (isMuted.value) {
+			menuItems.push({
+				text: i18n.ts.emojiUnmute,
+				icon: 'ti ti-mood-smile',
+				action: async () => {
+					await unmute();
+				},
+			});
+		} else {
+			menuItems.push({
+				text: i18n.ts.emojiMute,
+				icon: 'ti ti-mood-off',
+				action: async () => {
+					await mute();
+				},
+			});
+		}
 
 		if (($i?.isModerator ?? $i?.isAdmin) && isLocal.value) {
 			menuItems.push({
@@ -185,6 +204,21 @@ function mute() {
 			return;
 		}
 		muteEmoji(emojiCodeToMute);
+	});
+}
+
+function unmute() {
+	const titleEmojiName = isLocal.value
+		? `:${customEmojiName.value}:`
+		: emojiCodeToMute;
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.unmuteX({ x: titleEmojiName }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		unmuteEmoji(emojiCodeToMute);
 	});
 }
 

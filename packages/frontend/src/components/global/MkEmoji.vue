@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img v-if="shouldMute" :class="$style.root" src="/client-assets/dummy.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<img v-if="shouldMute" :class="$style.root" src="/client-assets/unknown.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
 <img v-else-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
 <span v-else :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ colorizedNativeEmoji }}</span>
 </template>
