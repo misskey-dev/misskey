@@ -4388,10 +4388,7 @@ export type components = {
         }]>;
       };
       emailNotificationTypes: string[];
-      achievements: {
-          name: string;
-          unlockedAt: number;
-        }[];
+      achievements: components['schemas']['Achievement'][];
       loggedInDays: number;
       policies: components['schemas']['RolePolicies'];
       /** @default false */
@@ -4429,6 +4426,12 @@ export type components = {
       userIds?: string[];
       isPublic: boolean;
     };
+    Achievement: {
+      name: components['schemas']['AchievementName'];
+      unlockedAt: number;
+    };
+    /** @enum {string} */
+    AchievementName: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'markedAsYamiModeUser' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
     Ad: {
       /**
        * Format: id
@@ -4707,16 +4710,15 @@ export type components = {
       /** @enum {string} */
       type: 'chatRoomInvitationReceived';
       invitation: components['schemas']['ChatRoomInvitation'];
-    } | ({
+    } | {
       /** Format: id */
       id: string;
       /** Format: date-time */
       createdAt: string;
       /** @enum {string} */
       type: 'achievementEarned';
-      /** @enum {string} */
-      achievement: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'markedAsYamiModeUser' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
-    }) | ({
+      achievement: components['schemas']['AchievementName'];
+    } | ({
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -5116,7 +5118,7 @@ export type components = {
       isNotResponding: boolean;
       isSuspended: boolean;
       /** @enum {string} */
-      suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
+      suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding' | 'softwareSuspended';
       isBlocked: boolean;
       /** @example misskey */
       softwareName: string | null;
@@ -5469,8 +5471,8 @@ export type components = {
       defaultDarkTheme: string | null;
       defaultLightTheme: string | null;
       disableRegistration: boolean;
-			emailInquiredForSignup: boolean;
       emailRequiredForSignup: boolean;
+      emailInquiredForSignup: boolean;
       /** @default false */
       approvalRequiredForSignup: boolean;
       enableHcaptcha: boolean;
@@ -5547,7 +5549,6 @@ export type components = {
       yamiNoteFederationEnabled: boolean;
       /** @default [] */
       yamiNoteFederationTrustedInstances: string[];
-      yamiModeVersion: string;
       maxFileSize: number;
       /** @enum {string} */
       federation: 'all' | 'specified' | 'none';
@@ -5555,8 +5556,8 @@ export type components = {
     MetaDetailedOnly: {
       features?: {
         registration: boolean;
-				emailInquiredForSignup: boolean;
         emailRequiredForSignup: boolean;
+        emailInquiredForSignup: boolean;
         localTimeline: boolean;
         globalTimeline: boolean;
         yamiTimeline: boolean;
@@ -8849,8 +8850,8 @@ export type operations = {
           'application/json': {
             cacheRemoteFiles: boolean;
             cacheRemoteSensitiveFiles: boolean;
-						emailInquiredForSignup: boolean;
             emailRequiredForSignup: boolean;
+            emailInquiredForSignup: boolean;
             approvalRequiredForSignup: boolean;
             enableHcaptcha: boolean;
             hcaptchaSiteKey: string | null;
@@ -8973,6 +8974,10 @@ export type operations = {
             federationHosts: string[];
             yamiNoteFederationEnabled: boolean;
             yamiNoteFederationTrustedInstances: string[];
+            deliverSuspendedSoftware: {
+                software: string;
+                versionRange: string;
+              }[];
           };
         };
       };
@@ -11565,8 +11570,8 @@ export type operations = {
           defaultDarkTheme?: string | null;
           cacheRemoteFiles?: boolean;
           cacheRemoteSensitiveFiles?: boolean;
-					emailInquiredForSignup?: boolean;
           emailRequiredForSignup?: boolean;
+          emailInquiredForSignup?: boolean;
           approvalRequiredForSignup?: boolean;
           enableHcaptcha?: boolean;
           hcaptchaSiteKey?: string | null;
@@ -11662,6 +11667,10 @@ export type operations = {
           federationHosts?: string[];
           yamiNoteFederationEnabled?: boolean;
           yamiNoteFederationTrustedInstances?: string[];
+          deliverSuspendedSoftware?: {
+              software: string;
+              versionRange: string;
+            }[];
         };
       };
     };
@@ -29169,10 +29178,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': {
-              name: string;
-              unlockedAt: number;
-            }[];
+          'application/json': components['schemas']['Achievement'][];
         };
       };
       /** @description Client error */

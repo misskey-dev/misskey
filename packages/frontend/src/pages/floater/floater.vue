@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.content">
 				<MkLoading v-if="fetching && items.length === 0"/>
 				<div v-else-if="items.length === 0" class="_fullinfo">
-					<img :src="infoImageUrl" draggable="false"/>
+					<img :src="instance.infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts.nothing }}</div>
 				</div>
 				<div v-for="item in items" :key="item.id" :class="$style.userNotes">
@@ -32,7 +32,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
+import { instance } from '@/instance.js';
 
 provide('inTimeline', true);
 provide('shouldOmitHeaderTitle', true);

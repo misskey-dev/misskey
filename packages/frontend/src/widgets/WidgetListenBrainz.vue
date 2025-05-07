@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<MkLoading v-if="fetching"/>
 		<div v-else-if="!playingNow" style="text-align: center;">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img :src="instance.infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 		<div v-else class="_gaps_s" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -34,7 +34,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
+import { instance } from '@/instance.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const name = i18n.ts._widgets.listenBrainz;

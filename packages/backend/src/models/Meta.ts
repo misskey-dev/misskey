@@ -680,4 +680,14 @@ export class MiMeta {
 
 	@Column('jsonb', { default: [], array: true })
 	public yamiNoteFederationTrustedInstances: string[];
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public deliverSuspendedSoftware: SoftwareSuspension[];
 }
+
+export type SoftwareSuspension = {
+	software: string,
+	versionRange: string,
+};
