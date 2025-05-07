@@ -50,7 +50,7 @@ watch([() => props.column.name, () => props.column.listId], () => {
 		misskeyApi('users/lists/show', { listId: props.column.listId })
 			.then(value => listName.value = value.name);
 	}
-});
+}, { immediate: true });
 
 watch(withRenotes, v => {
 	updateColumn(props.column.id, {

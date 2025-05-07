@@ -47,7 +47,7 @@ watch([() => props.column.name, () => props.column.roleId], () => {
 		misskeyApi('roles/show', { roleId: props.column.roleId })
 			.then(value => roleName.value = value.name);
 	}
-});
+}, { immediate: true });
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });

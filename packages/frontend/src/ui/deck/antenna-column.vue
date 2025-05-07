@@ -49,7 +49,7 @@ watch([() => props.column.name, () => props.column.antennaId], () => {
 		misskeyApi('antennas/show', { antennaId: props.column.antennaId })
 			.then(value => antennaName.value = value.name);
 	}
-});
+}, { immediate: true });
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });

@@ -55,7 +55,7 @@ watch([() => props.column.name, () => props.column.channelId], () => {
 		misskeyApi('channels/show', { channelId: props.column.channelId })
 			.then(value => channel.value = value);
 	}
-});
+}, { immediate: true });
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });
