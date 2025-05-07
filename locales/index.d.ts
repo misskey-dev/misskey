@@ -5737,6 +5737,14 @@ export interface Locale extends ILocale {
          * デバイス間でインストールしたテーマを同期
          */
         "enableSyncThemesBetweenDevices": string;
+        /**
+         * ひっぱって更新
+         */
+        "enablePullToRefresh": string;
+        /**
+         * マウスでは、ホイールを押し込みながらドラッグします。
+         */
+        "enablePullToRefresh_description": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -5761,6 +5769,10 @@ export interface Locale extends ILocale {
          * 例: 「メインPC」、「スマホ」など
          */
         "profileNameDescription2": string;
+        /**
+         * プロファイルの管理
+         */
+        "manageProfiles": string;
     };
     "_preferencesBackup": {
         /**
