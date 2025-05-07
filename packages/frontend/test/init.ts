@@ -27,6 +27,7 @@ export const preferState: Record<string, unknown> = {
 		code: false,
 	},
 
+	mutedEmojis: [],
 };
 
 // XXX: store somehow becomes undefined in vitest?
