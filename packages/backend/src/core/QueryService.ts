@@ -43,29 +43,36 @@ export class QueryService {
 	) {
 	}
 
-	public makePaginationQuery<T extends ObjectLiteral>(q: SelectQueryBuilder<T>, sinceId?: string | null, untilId?: string | null, sinceDate?: number | null, untilDate?: number | null): SelectQueryBuilder<T> {
+	public makePaginationQuery<T extends ObjectLiteral>(
+		q: SelectQueryBuilder<T>,
+		sinceId?: string | null,
+		untilId?: string | null,
+		sinceDate?: number | null,
+		untilDate?: number | null,
+		targetColumn = 'id',
+	): SelectQueryBuilder<T> {
 		if (sinceId && untilId) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: sinceId });
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: untilId });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else if (sinceId) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });
-			q.orderBy(`${q.alias}.id`, 'ASC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: sinceId });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'ASC');
 		} else if (untilId) {
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: untilId });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else if (sinceDate && untilDate) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: this.idService.gen(untilDate) });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: this.idService.gen(untilDate) });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else if (sinceDate) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
-			q.orderBy(`${q.alias}.id`, 'ASC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'ASC');
 		} else if (untilDate) {
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: this.idService.gen(untilDate) });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: this.idService.gen(untilDate) });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else {
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		}
 		return q;
 	}

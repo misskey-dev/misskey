@@ -479,6 +479,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['swipe', 'pull', 'refresh']">
+								<MkPreferenceContainer k="enablePullToRefresh">
+									<MkSwitch v-model="enablePullToRefresh">
+										<template #label><SearchLabel>{{ i18n.ts._settings.enablePullToRefresh }}</SearchLabel></template>
+										<template #caption><SearchKeyword>{{ i18n.ts._settings.enablePullToRefresh_description }}</SearchKeyword></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['keep', 'screen', 'display', 'on']">
 								<MkPreferenceContainer k="keepScreenOn">
 									<MkSwitch v-model="keepScreenOn">
@@ -809,6 +818,7 @@ const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
 const keepScreenOn = prefer.model('keepScreenOn');
 const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
+const enablePullToRefresh = prefer.model('enablePullToRefresh');
 const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
@@ -866,6 +876,8 @@ watch([
 	fontSize,
 	useSystemFont,
 	makeEveryTextElementsSelectable,
+	enableHorizontalSwipe,
+	enablePullToRefresh,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

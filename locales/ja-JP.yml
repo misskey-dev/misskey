@@ -1434,6 +1434,8 @@ _settings:
   ifOn: "オンのとき"
   ifOff: "オフのとき"
   enableSyncThemesBetweenDevices: "デバイス間でインストールしたテーマを同期"
+  enablePullToRefresh: "ひっぱって更新"
+  enablePullToRefresh_description: "マウスでは、ホイールを押し込みながらドラッグします。"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -1443,6 +1445,7 @@ _preferencesProfile:
   profileName: "プロファイル名"
   profileNameDescription: "このデバイスを識別する名前を設定してください。"
   profileNameDescription2: "例: 「メインPC」、「スマホ」など"
+  manageProfiles: "プロファイルの管理"
 
 _preferencesBackup:
   autoBackup: "自動バックアップ"

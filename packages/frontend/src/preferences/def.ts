@@ -304,6 +304,9 @@ export const PREF_DEF = {
 		default: false,
 	},
 	enableHorizontalSwipe: {
+		default: false,
+	},
+	enablePullToRefresh: {
 		default: true,
 	},
 	useNativeUiForVideoAudioPlayer: {
