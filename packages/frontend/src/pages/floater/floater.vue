@@ -9,10 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination v-slot="{ items, fetching }" ref="list" :pagination="followingPagination" :class="$style.tl">
 			<div :class="$style.content">
 				<MkLoading v-if="fetching && items.length === 0"/>
-				<div v-else-if="items.length === 0" class="_fullinfo">
-					<img :src="instance.infoImageUrl" draggable="false"/>
-					<div>{{ i18n.ts.nothing }}</div>
-				</div>
+				<MkResult v-else-if="items.length === 0" type="empty"/>
 				<div v-for="item in items" :key="item.id" :class="$style.userNotes">
 					<div v-for="note in item.notes" :key="note.id">
 						<MkNote :note="note" :class="$style.note" :withHardMute="true"/>
@@ -30,9 +27,9 @@ import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
+import MkResult from '@/components/global/MkResult.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 
 provide('inTimeline', true);
 provide('shouldOmitHeaderTitle', true);

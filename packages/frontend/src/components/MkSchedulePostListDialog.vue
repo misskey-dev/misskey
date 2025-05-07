@@ -14,10 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="14" :marginMax="16">
 		<MkPagination ref="paginationEl" :pagination="pagination">
 			<template #empty>
-				<div class="_fullinfo">
-					<img :src="instance.infoImageUrl" class="_ghost"/>
-					<div>{{ i18n.ts.nothing }}</div>
-				</div>
+				<MkResult type="empty"/>
 			</template>
 
 			<template #default="{ items }">
@@ -36,8 +33,8 @@ import type { Paging } from '@/components/MkPagination.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkResult from '@/components/global/MkResult.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'cancel'): void;
