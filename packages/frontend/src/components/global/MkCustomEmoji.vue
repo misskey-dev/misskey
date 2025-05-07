@@ -60,7 +60,7 @@ const react = inject(DI.mfmEmojiReactCallback);
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
 const emojiCodeToMute = makeEmojiMuteKey(props);
-const isMuted = computed(() => checkEmojiMuted(emojiCodeToMute));
+const isMuted = checkEmojiMuted(emojiCodeToMute);
 const shouldMute = computed(() => !props.ignoreMuted && isMuted.value);
 
 const rawUrl = computed(() => {
@@ -174,9 +174,12 @@ async function edit(name: string) {
 }
 
 function mute() {
+	const titleEmojiName = isLocal.value
+		? `:${customEmojiName.value}:`
+		: emojiCodeToMute;
 	os.confirm({
 		type: 'question',
-		title: i18n.tsx.muteX({ x: emojiCodeToMute }),
+		title: i18n.tsx.muteX({ x: titleEmojiName }),
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;

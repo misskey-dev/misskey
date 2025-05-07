@@ -34,23 +34,14 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isMuted } from '@/utility/emoji-mute.js';
+import {
+	mute as muteEmoji,
+	unmute as unmuteEmoji,
+	extractCustomEmojiName as customEmojiName,
+	extractCustomEmojiHost as customEmojiHost,
+} from '@/utility/emoji-mute.js';
 
 const emojis = prefer.model('mutingEmojis');
-
-function customEmojiName (name:string) {
-	return (name[0] === ':' ? name.substring(1, name.length - 1) : name).replace('@.', '').split('@')[0];
-}
-
-function customEmojiHost (name:string) {
-	// nameは:emojiName@host:の形式
-	// 取り出したい部分はhostなので、@以降を取り出す
-	const index = name.indexOf('@');
-	if (index === -1) {
-		return null;
-	}
-	return name.substring(index + 1, name.length - 1);
-}
 
 function getHTMLElement(ev: MouseEvent): HTMLElement {
 	const target = ev.currentTarget ?? ev.target;
