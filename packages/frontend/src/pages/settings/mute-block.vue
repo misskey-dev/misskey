@@ -69,12 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><SearchLabel>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</SearchLabel></template>
 
 					<MkPagination :pagination="renoteMutingPagination">
-						<template #empty>
-							<div class="_fullinfo">
-								<img :src="infoImageUrl" draggable="false"/>
-								<div>{{ i18n.ts.noUsers }}</div>
-							</div>
-						</template>
+						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -105,12 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.mutedUsers }}</template>
 
 					<MkPagination :pagination="mutingPagination">
-						<template #empty>
-							<div class="_fullinfo">
-								<img :src="infoImageUrl" draggable="false"/>
-								<div>{{ i18n.ts.noUsers }}</div>
-							</div>
-						</template>
+						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -143,12 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.blockedUsers }}</template>
 
 					<MkPagination :pagination="blockingPagination">
-						<template #empty>
-							<div class="_fullinfo">
-								<img :src="infoImageUrl" draggable="false"/>
-								<div>{{ i18n.ts.noUsers }}</div>
-							</div>
-						</template>
+						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -186,7 +171,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
-import { instance, infoImageUrl } from '@/instance.js';
+import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
