@@ -3,6 +3,7 @@
 VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
+--- 2025.5.0-kinel.1 released at this time ---
 --- 2025.4.1-kinel.3 released at this time ---
 
 - fix(frontend): LTLが無効な場合、公式クライアント上でVSTLが利用出来なくなる問題を修正 (anatawa12#228) - 2025/05/05
