@@ -1,3 +1,9 @@
+## 2025.5.0-kinel.1
+
+### Client
+- Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
+  (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
+
 ## 2025.5.0
 
 ### Note

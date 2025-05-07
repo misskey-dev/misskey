@@ -16,6 +16,7 @@ import { instanceName as localInstanceName } from '@@/js/config.js';
 import type { CSSProperties } from 'vue';
 import { instance as localInstance } from '@/instance.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
+import { getTickerColors } from '@/components/MkInstanceTicker.impl.js';
 
 const props = defineProps<{
 	host: string | null;
@@ -45,8 +46,10 @@ const faviconUrl = computed(() => {
 
 const themeColorStyle = computed<CSSProperties>(() => {
 	const themeColor = (props.host == null ? localInstance.themeColor : props.instance?.themeColor) ?? '#777777';
+	const colors = getTickerColors(themeColor);
 	return {
-		background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`,
+		background: `linear-gradient(90deg, ${colors.bg}, ${colors.bg}00)`,
+		color: colors.fg,
 	};
 });
 </script>
@@ -60,7 +63,6 @@ $height: 2ex;
 	height: $height;
 	border-radius: 4px 0 0 4px;
 	overflow: clip;
-	color: #fff;
 
 	// text-shadowは重いから使うな
 
