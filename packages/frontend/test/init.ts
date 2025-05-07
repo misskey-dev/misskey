@@ -5,7 +5,8 @@
 
 import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
-import { Ref, ref } from 'vue';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
@@ -13,7 +14,6 @@ fetchMocker.enableMocks();
 // Set i18n
 import locales from '../../../locales/index.js';
 import { updateI18n } from '@/i18n.js';
-import { K } from 'vitest/dist/chunks/reporters.d.79o4mouw.js';
 updateI18n(locales['en-US']);
 
 // XXX: misskey-js panics if WebSocket is not defined
