@@ -11,13 +11,14 @@ import Logger from '@/logger.js';
 import type { AntennasRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { Schema, SchemaType } from '@/misc/json-schema.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import { DBAntennaImportJobData } from '../types.js';
 import type * as Bull from 'bullmq';
 
 const Ajv = _Ajv.default;
 
-const validate = new Ajv().compile({
+const exportedAntennaSchema = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
@@ -43,13 +44,17 @@ const validate = new Ajv().compile({
 			type: 'string',
 		} },
 		caseSensitive: { type: 'boolean' },
-		localOnly: { type: 'boolean' },
-		excludeBots: { type: 'boolean' },
+		localOnly: { type: 'boolean', nullable: true },
+		excludeBots: { type: 'boolean', nullable: true },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 	},
 	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
-});
+} as const satisfies Schema;
+
+export type ExportedAntenna = SchemaType<typeof exportedAntennaSchema>;
+
+const validate = new Ajv().compile<ExportedAntenna>(exportedAntennaSchema);
 
 @Injectable()
 export class ImportAntennasProcessorService {
