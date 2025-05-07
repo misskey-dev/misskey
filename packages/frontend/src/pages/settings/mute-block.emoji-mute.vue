@@ -61,7 +61,7 @@ function onEmojiClick(ev: MouseEvent, emoji: string) {
 		type: 'label',
 		text: emoji,
 	}, {
-		text: i18n.ts.unmute,
+		text: i18n.ts.emojiUnmute,
 		icon: 'ti ti-mood-off',
 		action: () => unmute(emoji),
 	}];

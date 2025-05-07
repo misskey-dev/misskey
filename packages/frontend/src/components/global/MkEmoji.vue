@@ -95,13 +95,13 @@ function onClick(ev: MouseEvent) {
 		menuItems.push({
 			type: 'divider',
 		}, isMuted.value ? {
-			text: i18n.ts.unmute,
+			text: i18n.ts.emojiUnmute,
 			icon: 'ti ti-mood-smile',
 			action: () => {
 				unmute();
 			},
 		} : {
-			text: i18n.ts.mute,
+			text: i18n.ts.emojiMute,
 			icon: 'ti ti-mood-off',
 			action: () => {
 				mute();

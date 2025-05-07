@@ -141,7 +141,7 @@ function onClick(ev: MouseEvent) {
 		}
 
 		menuItems.push({
-			text: i18n.ts.mute,
+			text: i18n.ts.emojiMute,
 			icon: 'ti ti-mood-off',
 			action: async () => {
 				await mute();

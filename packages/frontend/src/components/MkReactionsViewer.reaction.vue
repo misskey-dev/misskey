@@ -141,7 +141,7 @@ async function menu(ev) {
 
 	if (isEmojiMuted(props.reaction).value) {
 		menuItems.push({
-			text: i18n.ts.unmute,
+			text: i18n.ts.emojiUnmute,
 			icon: 'ti ti-mood-smile',
 			action: () => {
 				os.confirm({
@@ -155,7 +155,7 @@ async function menu(ev) {
 		});
 	} else {
 		menuItems.push({
-			text: i18n.ts.mute,
+			text: i18n.ts.emojiMute,
 			icon: 'ti ti-mood-off',
 			action: () => {
 				os.confirm({

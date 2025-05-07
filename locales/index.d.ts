@@ -5422,6 +5422,10 @@ export interface Locale extends ILocale {
      */
     "emojiMute": string;
     /**
+     * 絵文字ミュート解除
+     */
+    "emojiUnmute": string;
+    /**
      * {x}をミュート
      */
     "muteX": ParameterizedString<"x">;
