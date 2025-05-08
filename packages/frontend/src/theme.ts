@@ -130,13 +130,13 @@ let timeout: number | null = null;
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) {
-		clearTimeout(timeout);
+		window.clearTimeout(timeout);
 		timeout = null;
 	}
 
-	if (document.startViewTransition != null && prefer.s.animation) {
+	if (window.document.startViewTransition != null && prefer.s.animation) {
 		window.document.documentElement.classList.add('_themeChanging_');
-		document.startViewTransition(async () => {
+		window.document.startViewTransition(async () => {
 			applyThemeInternal(theme, persist);
 			await nextTick();
 		}).finished.then(() => {
