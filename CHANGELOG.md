@@ -4,7 +4,8 @@
 -
 
 ### Client
--
+- Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
+  (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 
 ### Server
 -
@@ -20,8 +21,6 @@
   - アクセシビリティ設定からオフにすることもできます
 - Enhance: タイムラインのパフォーマンスを向上
 - Enhance: バックアップされた設定のプロファイルを削除できるように
-- Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
-  (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 - Fix: 一部のブラウザでアコーディオンメニューのアニメーションが動作しない問題を修正
 - Fix: ダイアログのお知らせが画面からはみ出ることがある問題を修正
 - Fix: ユーザーポップアップでエラーが生じてもインジケーターが表示され続けてしまう問題を修正
