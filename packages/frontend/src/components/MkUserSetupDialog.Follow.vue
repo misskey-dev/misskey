@@ -39,7 +39,7 @@ import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { PagingCtx } from '@/use/use-pagination.js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 
 const pinnedUsers: PagingCtx = {
 	endpoint: 'pinned-users',

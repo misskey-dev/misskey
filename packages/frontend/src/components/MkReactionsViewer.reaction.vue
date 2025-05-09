@@ -35,7 +35,7 @@ import { checkReactionPermissions } from '@/utility/check-reaction-permissions.j
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
-import { noteEvents } from '@/use/use-note-capture.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
 
 const props = defineProps<{
 	noteId: Misskey.entities.Note['id'];
