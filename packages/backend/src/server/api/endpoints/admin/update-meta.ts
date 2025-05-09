@@ -197,6 +197,10 @@ export const paramDef = {
 			},
 		},
 		singleUserMode: { type: 'boolean' },
+		ugcVisibilityForVisitor: {
+			type: 'string',
+			enum: ['all', 'local', 'none'],
+		},
 	},
 	required: [],
 } as const;
@@ -693,6 +697,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.singleUserMode !== undefined) {
 				set.singleUserMode = ps.singleUserMode;
+			}
+
+			if (ps.ugcVisibilityForVisitor !== undefined) {
+				set.ugcVisibilityForVisitor = ps.ugcVisibilityForVisitor;
 			}
 
 			const before = await this.metaService.fetch(true);
