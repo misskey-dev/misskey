@@ -7,13 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div v-if="tab === 'all'">
-			<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
+			<MkStreamingNotificationsTimeline :class="$style.notifications" :excludeTypes="excludeTypes"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
-			<MkNotes :pagination="mentionsPagination"/>
+			<MkNotesTimeline :pagination="mentionsPagination"/>
 		</div>
 		<div v-else-if="tab === 'directNotes'">
-			<MkNotes :pagination="directNotesPagination"/>
+			<MkNotesTimeline :pagination="directNotesPagination"/>
 		</div>
 	</div>
 </PageWithHeader>
@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { notificationTypes } from '@@/js/const.js';
-import XNotifications from '@/components/MkNotifications.vue';
-import MkNotes from '@/components/MkNotes.vue';
+import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
