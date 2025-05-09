@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || channel?.name || i18n.ts._deck._columns.channel }}</span>
+		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.channel }}</span>
 	</template>
 
 	<template v-if="column.channelId">
@@ -47,15 +47,11 @@ const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, 
 onMounted(() => {
 	if (props.column.channelId == null) {
 		setChannel();
+	} else if (!props.column.name && props.column.channelId) {
+		misskeyApi('channels/show', { channelId: props.column.channelId })
+			.then(value => updateColumn(props.column.id, { timelineNameCache: value.name }));
 	}
 });
-
-watch([() => props.column.name, () => props.column.channelId], () => {
-	if (!props.column.name && props.column.channelId) {
-		misskeyApi('channels/show', { channelId: props.column.channelId })
-			.then(value => channel.value = value);
-	}
-}, { immediate: true });
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });
@@ -73,7 +69,7 @@ async function setChannel() {
 	if (canceled || chosenChannel == null) return;
 	updateColumn(props.column.id, {
 		channelId: chosenChannel.id,
-		name: chosenChannel.name,
+		timelineNameCache: chosenChannel.name,
 	});
 }
 
