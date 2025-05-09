@@ -578,6 +578,20 @@ export class ChatService {
 
 	@bindThis
 	public async deleteRoom(room: MiChatRoom, deleter?: MiUser) {
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: room.id })).map(m => ({
+			userId: m.userId,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: room.ownerId,
+		});
+
+		// 未読フラグ削除
+		const redisPipeline = this.redisClient.pipeline();
+		for (const membership of memberships) {
+			redisPipeline.del(`newRoomChatMessageExists:${membership.userId}:${room.id}`);
+			redisPipeline.srem(`newChatMessagesExists:${membership.userId}`, `room:${room.id}`);
+		}
+		await redisPipeline.exec();
+
 		await this.chatRoomsRepository.delete(room.id);
 
 		if (deleter) {
@@ -709,6 +723,12 @@ export class ChatService {
 	public async leaveRoom(userId: MiUser['id'], roomId: MiChatRoom['id']) {
 		const membership = await this.chatRoomMembershipsRepository.findOneByOrFail({ roomId, userId });
 		await this.chatRoomMembershipsRepository.delete(membership.id);
+
+		// 未読フラグを消す (「既読にする」というわけでもないのでreadメソッドは使わないでおく)
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.del(`newRoomChatMessageExists:${userId}:${roomId}`);
+		redisPipeline.srem(`newChatMessagesExists:${userId}`, `room:${roomId}`);
+		await redisPipeline.exec();
 	}
 
 	@bindThis
