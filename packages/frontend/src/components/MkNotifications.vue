@@ -4,14 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh :refresher="() => reload()">
+<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => reload()">
 	<MkPagination ref="pagingComponent" :pagination="pagination">
-		<template #empty>
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.noNotifications }}</div>
-			</div>
-		</template>
+		<template #empty><MkResult type="empty" :text="i18n.ts.noNotifications"/></template>
 
 		<template #default="{ items: notifications }">
 			<component
@@ -30,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</component>
 		</template>
 	</MkPagination>
-</MkPullToRefresh>
+</component>
 </template>
 
 <script lang="ts" setup>
@@ -42,7 +37,6 @@ import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 
@@ -103,18 +97,38 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.transition_x_move,
-.transition_x_enterActive,
-.transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0,.5,.5,1), transform 0.3s cubic-bezier(0,.5,.5,1) !important;
+.transition_x_move {
+	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.transition_x_enterFrom,
+
+.transition_x_enterActive {
+	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+
+	&.item,
+	.item {
+		/* Skip Note Rendering有効時、TransitionGroupで通知を追加するときに一瞬がくっとなる問題を抑制する */
+		content-visibility: visible !important;
+	}
+}
+
+.transition_x_leaveActive {
+	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
+}
+
+.transition_x_enterFrom {
+	opacity: 0;
+	transform: translateY(max(-64px, -100%));
+}
+
+@supports (interpolate-size: allow-keywords) {
+	.transition_x_enterFrom {
+		interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
+		height: 0;
+	}
+}
+
 .transition_x_leaveTo {
 	opacity: 0;
-	transform: translateY(-50%);
-}
-.transition_x_leaveActive {
-	position: absolute;
 }
 
 .notifications {
