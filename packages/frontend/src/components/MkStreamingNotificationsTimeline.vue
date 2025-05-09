@@ -53,7 +53,7 @@ import { i18n } from '@/i18n.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
-import { usePagination } from '@/use/use-pagination.js';
+import { usePagination } from '@/composables/use-pagination.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 
 const props = defineProps<{
