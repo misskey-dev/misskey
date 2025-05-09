@@ -784,7 +784,6 @@ thisIsExperimentalFeature: "Dit is een experimentele functie. De functionaliteit
 developer: "Ontwikkelaar"
 makeExplorable: "Gebruikersaccount zichtbaar maken in “Verkennen”"
 makeExplorableDescription: "Als deze optie is uitgeschakeld, is uw gebruikersaccount niet zichtbaar in het gedeelte “Verkennen”."
-showGapBetweenNotesInTimeline: "Een gat tussen noten op de tijdlijn weergeven"
 duplicate: "Dupliceren"
 left: "Links"
 center: "Center"

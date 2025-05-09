@@ -726,7 +726,6 @@ thisIsExperimentalFeature: "Tohle je experimentální funkce. Její funkce se m�
 developer: "Vývojář"
 makeExplorable: "Udělat účet viditelný v \"Objevit\""
 makeExplorableDescription: "Pokud tohle vypnete, tak se účet přestane zobrazovat v sekci \"Objevit\"."
-showGapBetweenNotesInTimeline: "Zobrazit mezeru mezi příspěvkama na časové ose"
 duplicate: "Duplikovat"
 left: "Vlevo"
 center: "Uprostřed"

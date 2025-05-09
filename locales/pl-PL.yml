@@ -749,7 +749,6 @@ thisIsExperimentalFeature: "Ta funkcja jest eksperymentalna. Jej funkcjonalnoś�
 developer: "Programista"
 makeExplorable: "Pokazuj konto na stronie „Eksploruj”"
 makeExplorableDescription: "Jeżeli wyłączysz tę opcję, Twoje konto nie będzie wyświetlać się w sekcji „Eksploruj”."
-showGapBetweenNotesInTimeline: "Pokazuj odstęp między wpisami na osi czasu."
 duplicate: "Duplikuj"
 left: "Lewo"
 center: "Wyśsrodkuj"

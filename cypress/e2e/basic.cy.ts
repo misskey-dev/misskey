@@ -31,6 +31,15 @@ describe('Before setup instance', () => {
 		// なぜか動かない
 		//cy.wait('@signup').should('have.property', 'response.statusCode');
 		cy.wait('@signup');
+
+		cy.intercept('POST', '/api/admin/update-meta').as('update-meta');
+
+		cy.get('[data-cy-next]').click();
+		cy.get('[data-cy-next]').click();
+		cy.get('[data-cy-server-name] input').type('Testskey');
+		cy.get('[data-cy-server-setup-wizard-apply]').click();
+
+		cy.wait('@update-meta');
   });
 });
 

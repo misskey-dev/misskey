@@ -4504,6 +4504,7 @@ export type components = {
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
+      hasPoll?: boolean;
       myReaction?: string | null;
     };
     NoteReaction: {
@@ -8812,6 +8813,7 @@ export type operations = {
                 software: string;
                 versionRange: string;
               }[];
+            singleUserMode: boolean;
             /** @enum {string} */
             ugcVisibilityForVisitor: 'all' | 'local' | 'none';
           };
@@ -11485,6 +11487,7 @@ export type operations = {
               software: string;
               versionRange: string;
             }[];
+          singleUserMode?: boolean;
           /** @enum {string} */
           ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
         };
