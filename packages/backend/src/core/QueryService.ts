@@ -137,13 +137,21 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateMutedUserQueryForNotes(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: { id: MiUser['id'] }): void {
+	public generateMutedUserQueryForNotes(
+		q: SelectQueryBuilder<any>,
+		me: { id: MiUser['id'] },
+		{
+			excludeUserFromMute,
+		}: {
+			excludeUserFromMute?: MiUser['id'],
+		} = {},
+	): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
 
-		if (exclude) {
-			mutingQuery.andWhere('muting.muteeId != :excludeId', { excludeId: exclude.id });
+		if (excludeUserFromMute) {
+			mutingQuery.andWhere('muting.muteeId != :excludeId', { excludeId: excludeUserFromMute });
 		}
 
 		const mutingInstanceQuery = this.userProfilesRepository.createQueryBuilder('user_profile')
