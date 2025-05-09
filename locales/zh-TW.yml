@@ -1346,6 +1346,7 @@ goToDeck: "回去甲板"
 federationJobs: "聯邦通訊作業"
 driveAboutTip: "在「雲端硬碟」中，會顯示過去上傳的檔案列表。<br>\n可以在附加到貼文時重新利用，或者事先上傳之後再用於發布。<br>\n<b>請注意，刪除檔案後，之前使用過該檔案的所有地方（貼文、頁面、大頭貼、橫幅等）也會一併無法顯示。</b><br>\n也可以建立資料夾來整理檔案。"
 scrollToClose: "用滾輪關閉"
+advice: "建議"
 _chat:
   noMessagesYet: "尚無訊息"
   newMessage: "新訊息"
@@ -1604,6 +1605,8 @@ _serverSettings:
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "如果在一段期間內沒有偵測到任何審查員活動，此設定將自動關閉，以防止垃圾內容。"
   deliverSuspendedSoftware: "已停止發佈的軟體"
   deliverSuspendedSoftwareDescription: "由於脆弱性等原因，可以指定伺服器軟體的名稱與版本範圍來停止其發佈。這些版本資訊是由伺服器所提供，其可靠性無法保證。版本的指定可以使用 semver（語意化版本控制） 的範圍語法，但如果指定為 >= 2024.3.1，則像 2024.3.1-custom.0 這樣的自訂版本將不會被包含在內，因此建議使用 >= 2024.3.1-0 的方式來同時包含預發佈版本。"
+  singleUserMode: "單人模式"
+  singleUserMode_description: "如果只有自己使用此伺服器的話，啟用此模式將使效能最佳化。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
@@ -3009,3 +3012,9 @@ _search:
   pleaseEnterServerHost: "請輸入伺服器的主機名稱"
   pleaseSelectUser: "請選擇使用者"
   serverHostPlaceholder: "例：misskey.example.com"
+_serverSetupWizard:
+  installCompleted: "Misskey 的安裝已經完成了！"
+  firstCreateAccount: "首先，請建立管理者帳戶。"
+  accountCreated: "已建立管理者帳戶！"
+  serverSetting: "伺服器設定"
+  youCanEasilyConfigureOptimalServerSettingsWithThisWizard: "利用這個精靈，可以簡單地最佳化伺服器的設定。"
