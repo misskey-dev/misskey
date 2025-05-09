@@ -16,6 +16,8 @@
 	- チャットなど、一部の機能は引き続き設定に関わらずWebsocket接続が行われます
 - Enhance: メモリ使用量を軽減しました
 - Enhance: リプライ元にアンケートがあることが表示されるように
+- Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
+  (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 - Fix: "時計"ウィジェット(Clock)において、Transparent設定が有効でも、その背景が透過されない問題を修正
 
 ### Server
