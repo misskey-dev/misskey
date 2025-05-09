@@ -238,6 +238,8 @@ export class SearchService {
 		this.queryService.generateSuspendedUserQueryForNote(query);
 		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
 		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
+		if (me) this.queryService.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
 
 		return query.limit(pagination.limit).getMany();
 	}

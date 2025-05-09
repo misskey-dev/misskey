@@ -106,6 +106,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.queryService.generateSuspendedUserQueryForNote(query);
 			this.queryService.generateMutedUserQueryForNotes(query, me);
 			this.queryService.generateBlockedUserQueryForNotes(query, me);
+			this.queryService.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+			this.queryService.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
 
 			const notes = await query.getMany();
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);

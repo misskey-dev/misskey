@@ -81,6 +81,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (me) {
 				this.queryService.generateMutedUserQueryForNotes(query, me);
 				this.queryService.generateBlockedUserQueryForNotes(query, me);
+				this.queryService.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+				this.queryService.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
 				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 			}
 
