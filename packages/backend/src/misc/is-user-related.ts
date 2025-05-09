@@ -13,7 +13,7 @@ interface NoteLike {
 	renoteUserId?: MiUser['id'] | null;
 }
 
-export function isUserRelated(note: NoteLike | null, userIds: Set<string>, ignoreAuthor = false): boolean {
+export function isUserRelated(note: NoteLike | null | undefined, userIds: Set<string>, ignoreAuthor = false): boolean {
 	if (!note) {
 		return false;
 	}
