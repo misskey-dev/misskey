@@ -1424,6 +1424,7 @@ _settings:
   ifOn: "启用时"
   ifOff: "关闭时"
   enablePullToRefresh: "开启下拉刷新"
+  enablePullToRefresh_description: "使用鼠标时按下滚轮来拖动"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"

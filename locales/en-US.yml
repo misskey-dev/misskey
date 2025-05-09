@@ -1348,6 +1348,7 @@ readonly: "Read only"
 goToDeck: "Return to Deck"
 federationJobs: "Federation Jobs"
 driveAboutTip: "In Drive, a list of files you've uploaded in the past will be displayed. <br>  \nYou can reuse these files when attaching them to notes, or you can upload files in advance to post later. <br>  \n<b>Be careful when deleting a file, as it will not be available in all places where it was used (such as notes, pages, avatars, banners, etc.).</b> <br>  \nYou can also create folders to organize your files."
+scrollToClose: "Scroll to close"
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"
@@ -1425,6 +1426,7 @@ _settings:
   ifOff: "When turned off"
   enableSyncThemesBetweenDevices: "Synchronize installed themes across devices"
   enablePullToRefresh: "Pull to Refresh"
+  enablePullToRefresh_description: "When using a mouse, drag while pressing in the scroll wheel."
   _chat:
     showSenderName: "Show sender's name"
     sendOnEnter: "Press Enter to send"

@@ -214,9 +214,6 @@ export const PREF_DEF = {
 	useReactionPickerForContextMenu: {
 		default: false,
 	},
-	showGapBetweenNotesInTimeline: {
-		default: false,
-	},
 	instanceTicker: {
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
@@ -240,6 +237,12 @@ export const PREF_DEF = {
 	},
 	numberOfPageCache: {
 		default: 3,
+	},
+	pollingInterval: {
+		// 1 ... 低
+		// 2 ... 中
+		// 3 ... 高
+		default: 2,
 	},
 	showNoteActionsOnlyHover: {
 		default: false,
@@ -277,9 +280,6 @@ export const PREF_DEF = {
 	keepScreenOn: {
 		default: false,
 	},
-	disableStreamingTimeline: {
-		default: false,
-	},
 	useGroupedNotifications: {
 		default: true,
 	},
@@ -298,7 +298,7 @@ export const PREF_DEF = {
 		default: false,
 	},
 	enableHorizontalSwipe: {
-		default: true,
+		default: false,
 	},
 	enablePullToRefresh: {
 		default: true,

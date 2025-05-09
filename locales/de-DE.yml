@@ -1348,6 +1348,7 @@ readonly: "Nur Lesezugriff"
 goToDeck: "Zurück zum Deck"
 federationJobs: "Föderation Jobs"
 driveAboutTip: "In Drive sehen Sie eine Liste der Dateien, die Sie in der Vergangenheit hochgeladen haben. <br>\nSie können diese Dateien wiederverwenden um sie zu beispiel an Notizen anzuhängen, oder sie können Dateien vorab hochzuladen, um sie später zu versenden! <br>\n<b>Wenn Sie eine Datei löschen, verschwindet sie auch von allen Stellen, an denen Sie sie verwendet haben (Notizen, Seiten, Avatare, Banner usw.).</b><br>\nSie können auch Ordner erstellen, um sie zu organisieren."
+scrollToClose: "Zum Schließen scrollen"
 _chat:
   noMessagesYet: "Noch keine Nachrichten"
   newMessage: "Neue Nachricht"
@@ -1425,6 +1426,7 @@ _settings:
   ifOff: "Wenn ausgeschaltet"
   enableSyncThemesBetweenDevices: "Synchronisierung von installierten Themen auf verschiedenen Endgeräten"
   enablePullToRefresh: "Ziehen zum Aktualisieren"
+  enablePullToRefresh_description: "Bei Benutzung einer Maus, mit gedrücktem Mausrad ziehen"
   _chat:
     showSenderName: "Name des Absenders anzeigen"
     sendOnEnter: "Eingabetaste sendet Nachricht"

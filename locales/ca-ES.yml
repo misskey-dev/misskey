@@ -1348,6 +1348,7 @@ readonly: "Només lectura"
 goToDeck: "Tornar al tauler"
 federationJobs: "Treballs sindicats "
 driveAboutTip: "Al Disc veure's una llista de tots els arxius que has anat pujant.<br>\nPots tornar-los a fer servir adjuntant-los a notes noves o pots adelantar-te i pujar arxius per publicar-los més tard!<br>\n<b>Tingués en compte que si esborres un arxiu també desapareixerà de tots els llocs on l'has fet servir (notes, pàgines, avatars, imatges de capçalera, etc.)</b><br>\nTambé pots crear carpetes per organitzar les."
+scrollToClose: "Desplaçar per tancar"
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"
@@ -1425,6 +1426,7 @@ _settings:
   ifOff: "Quan es desactiva"
   enableSyncThemesBetweenDevices: "Sincronitzar els temes instal·lats entre dispositius"
   enablePullToRefresh: "Lliscar i actualitzar "
+  enablePullToRefresh_description: "Amb el ratolí, llisca mentre prems la roda."
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
