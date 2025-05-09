@@ -50,9 +50,71 @@ export default [
 			// defineExposeが誤検知されてしまう
 			'@typescript-eslint/no-unused-expressions': 'off',
 			'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
-			// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
-			// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
-			'id-denylist': ['error', 'window', 'e'],
+			// window ... グローバルスコープと衝突し、予期せぬ結果を招くため
+			// e ... error や event など、複数のキーワードの頭文字であり分かりにくいため
+			// close ... window.closeと衝突 or 紛らわしい
+			// open ... window.openと衝突 or 紛らわしい
+			// fetch ... window.fetchと衝突 or 紛らわしい
+			// location ... window.locationと衝突 or 紛らわしい
+			// document ... window.documentと衝突 or 紛らわしい
+			// history ... window.historyと衝突 or 紛らわしい
+			// scroll ... window.scrollと衝突 or 紛らわしい
+			// setTimeout ... window.setTimeoutと衝突 or 紛らわしい
+			// setInterval ... window.setIntervalと衝突 or 紛らわしい
+			// clearTimeout ... window.clearTimeoutと衝突 or 紛らわしい
+			// clearInterval ... window.clearIntervalと衝突 or 紛らわしい
+			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history', 'scroll', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval'],
+			'no-restricted-globals': [
+				'error',
+				{
+					'name': 'open',
+					'message': 'Use `window.open`.',
+				},
+				{
+					'name': 'close',
+					'message': 'Use `window.close`.',
+				},
+				{
+					'name': 'fetch',
+					'message': 'Use `window.fetch`.',
+				},
+				{
+					'name': 'location',
+					'message': 'Use `window.location`.',
+				},
+				{
+					'name': 'document',
+					'message': 'Use `window.document`.',
+				},
+				{
+					'name': 'history',
+					'message': 'Use `window.history`.',
+				},
+				{
+					'name': 'scroll',
+					'message': 'Use `window.scroll`.',
+				},
+				{
+					'name': 'setTimeout',
+					'message': 'Use `window.setTimeout`.',
+				},
+				{
+					'name': 'setInterval',
+					'message': 'Use `window.setInterval`.',
+				},
+				{
+					'name': 'clearTimeout',
+					'message': 'Use `window.clearTimeout`.',
+				},
+				{
+					'name': 'clearInterval',
+					'message': 'Use `window.clearInterval`.',
+				},
+				{
+					'name': 'name',
+					'message': 'Use `window.name`. もしくは name という変数名を定義し忘れている',
+				},
+			],
 			'no-shadow': ['warn'],
 			'vue/attributes-order': ['error', {
 				alphabetical: false,

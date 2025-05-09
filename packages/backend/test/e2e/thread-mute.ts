@@ -45,48 +45,6 @@ describe('Note thread mute', () => {
 		assert.strictEqual(res.body.some(note => note.id === carolReplyWithoutMention.id), false);
 	});
 
-	test('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
-		// 状態リセット
-		await api('i/read-all-unread-notes', {}, alice);
-
-		const bobNote = await post(bob, { text: '@alice @carol root note' });
-
-		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
-
-		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
-
-		await waitForPushToNotification();
-
-		const res = await api('i', {}, alice);
-
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(res.body.hasUnreadMentions, false);
-	});
-
-	test('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', async () => {
-		// 状態リセット
-		await api('i/read-all-unread-notes', {}, alice);
-
-		const bobNote = await post(bob, { text: '@alice @carol root note' });
-
-		await api('notes/thread-muting/create', { noteId: bobNote.id }, alice);
-
-		let fired = false;
-
-		const ws = await connectStream(alice, 'main', async ({ type, body }) => {
-			if (type === 'unreadMention') {
-				if (body === bobNote.id) fired = true;
-			}
-		});
-
-		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
-
-		await setTimeout(5000);
-
-		assert.strictEqual(fired, false);
-		ws.close();
-	});
-
 	test('i/notifications にミュートしているスレッドの通知(メンション, リプライ, リノート, 引用リノート, リアクション)が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });

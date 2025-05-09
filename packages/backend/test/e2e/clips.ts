@@ -182,7 +182,6 @@ describe('クリップ', () => {
 		{ label: 'nameがnull', parameters: { name: null } },
 		{ label: 'nameが最大長+1', parameters: { name: 'x'.repeat(101) } },
 		{ label: 'isPublicがboolじゃない', parameters: { isPublic: 'true' } },
-		{ label: 'descriptionがゼロ長', parameters: { description: '' } },
 		{ label: 'descriptionが最大長+1', parameters: { description: 'a'.repeat(2049) } },
 	];
 	test.each(createClipDenyPattern)('の作成は$labelならできない', async ({ parameters }) => failedApiCall({
@@ -198,6 +197,23 @@ describe('クリップ', () => {
 		code: 'INVALID_PARAM',
 		id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 	}));
+
+	test('の作成はdescriptionが空文字ならnullになる', async () => {
+		const clip = await successfulApiCall({
+			endpoint: 'clips/create',
+			parameters: {
+				...defaultCreate(),
+				description: '',
+			},
+			user: alice,
+		});
+
+		assert.deepStrictEqual(clip, {
+			...clip,
+			...defaultCreate(),
+			description: null,
+		});
+	});
 
 	test('の更新ができる', async () => {
 		const res = await update({
@@ -248,6 +264,24 @@ describe('クリップ', () => {
 		id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 		...assertion,
 	}));
+
+	test('の更新はdescriptionが空文字ならnullになる', async () => {
+		const clip = await successfulApiCall({
+			endpoint: 'clips/update',
+			parameters: {
+				clipId: (await create()).id,
+				name: 'updated',
+				description: '',
+			},
+			user: alice,
+		});
+
+		assert.deepStrictEqual(clip, {
+			...clip,
+			name: 'updated',
+			description: null,
+		});
+	});
 
 	test('の削除ができる', async () => {
 		await deleteClip({
@@ -875,7 +909,7 @@ describe('クリップ', () => {
 			assert.deepStrictEqual(res.map(x => x.id), [aliceNote.id]);
 		});
 
-		test('はPublicなクリップなら認証なしでも取得できる。(非公開ノートはhideされて返ってくる)', async () => {
+		test('はPublicなクリップなら認証なしでも取得できる。(非公開ノートは含まれない)', async () => {
 			const publicClip = await create({ isPublic: true });
 			await addNote({ clipId: publicClip.id, noteId: aliceNote.id });
 			await addNote({ clipId: publicClip.id, noteId: aliceHomeNote.id });
@@ -885,8 +919,6 @@ describe('クリップ', () => {
 			const res = await notes({ clipId: publicClip.id }, { user: undefined });
 			const expects = [
 				aliceNote, aliceHomeNote,
-				// 認証なしだと非公開ノートは結果には含むけどhideされる。
-				hiddenNote(aliceFollowersNote), hiddenNote(aliceSpecifiedNote),
 			];
 			assert.deepStrictEqual(
 				res.sort(compareBy(s => s.id)).map(x => x.id),

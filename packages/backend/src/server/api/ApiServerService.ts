@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
-import fastifyCookie from '@fastify/cookie';
 import { ModuleRef } from '@nestjs/core';
 import { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { Config } from '@/config.js';
@@ -56,8 +55,6 @@ export class ApiServerService {
 				files: 1,
 			},
 		});
-
-		fastify.register(fastifyCookie, {});
 
 		// Prevent cache
 		fastify.addHook('onRequest', (request, reply, done) => {

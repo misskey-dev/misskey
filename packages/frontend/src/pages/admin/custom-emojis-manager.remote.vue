@@ -142,8 +142,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import type { GridSetting } from '@/components/grid/grid.js';
+import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -152,15 +156,10 @@ import { emptyStrToUndefined, gridSortOrderKeys } from '@/pages/admin/custom-emo
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import * as os from '@/os.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { useLoading } from '@/components/hook/useLoading.js';
-
-import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { GridSetting } from '@/components/grid/grid.js';
-import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 type GridItem = {
 	checked: boolean;
@@ -260,7 +259,7 @@ const queryHost = ref<string | null>(null);
 const queryLicense = ref<string | null>(null);
 const queryUri = ref<string | null>(null);
 const queryPublicUrl = ref<string | null>(null);
-const queryLimit = ref<number>(25);
+const queryLimit = ref<number>(100);
 const previousQuery = ref<string | undefined>(undefined);
 const sortOrders = ref<SortOrder<GridSortOrderKey>[]>([]);
 const requestLogs = ref<RequestLogItem[]>([]);

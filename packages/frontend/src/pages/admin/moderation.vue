@@ -4,146 +4,155 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
-			<FormSuspense :p="init">
-				<div class="_gaps_m">
-					<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
-						<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
-						<template #caption>
-							<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
-							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
-						</template>
-					</MkSwitch>
+<PageWithHeader :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
+		<FormSuspense :p="init">
+			<div class="_gaps_m">
+				<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
+					<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
+					<template #caption>
+						<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
+						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
+					</template>
+				</MkSwitch>
 
-					<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
-						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
-					</MkSwitch>
+				<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
+					<template #label>{{ i18n.ts.emailRequiredForSignup }} ({{ i18n.ts.recommended }})</template>
+				</MkSwitch>
 
-					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
+				<MkSelect v-model="ugcVisibilityForVisitor" @update:modelValue="onChange_ugcVisibilityForVisitor">
+					<template #label>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor }}</template>
+					<option value="all">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all }}</option>
+					<option value="local">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly }} ({{ i18n.ts.recommended }})</option>
+					<option value="none">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none }}</option>
+					<template #caption>
+						<div>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description }}</div>
+						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description2 }}</div>
+					</template>
+				</MkSelect>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-lock-star"></i></template>
-						<template #label>{{ i18n.ts.preservedUsernames }}</template>
+				<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
-						<div class="_gaps">
-							<MkTextarea v-model="preservedUsernames">
-								<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_preservedUsernames">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-lock-star"></i></template>
+					<template #label>{{ i18n.ts.preservedUsernames }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-message-exclamation"></i></template>
-						<template #label>{{ i18n.ts.sensitiveWords }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="preservedUsernames">
+							<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_preservedUsernames">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="sensitiveWords">
-								<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_sensitiveWords">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-message-exclamation"></i></template>
+					<template #label>{{ i18n.ts.sensitiveWords }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-message-x"></i></template>
-						<template #label>{{ i18n.ts.prohibitedWords }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="sensitiveWords">
+							<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_sensitiveWords">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="prohibitedWords">
-								<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_prohibitedWords">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-message-x"></i></template>
+					<template #label>{{ i18n.ts.prohibitedWords }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-user-x"></i></template>
-						<template #label>{{ i18n.ts.prohibitedWordsForNameOfUser }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="prohibitedWords">
+							<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_prohibitedWords">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="prohibitedWordsForNameOfUser">
-								<template #caption>{{ i18n.ts.prohibitedWordsForNameOfUserDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_prohibitedWordsForNameOfUser">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-user-x"></i></template>
+					<template #label>{{ i18n.ts.prohibitedWordsForNameOfUser }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-eye-off"></i></template>
-						<template #label>{{ i18n.ts.hiddenTags }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="prohibitedWordsForNameOfUser">
+							<template #caption>{{ i18n.ts.prohibitedWordsForNameOfUserDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_prohibitedWordsForNameOfUser">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="hiddenTags">
-								<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_hiddenTags">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #label>{{ i18n.ts.hiddenTags }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-eye-off"></i></template>
-						<template #label>{{ i18n.ts.silencedInstances }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="hiddenTags">
+							<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_hiddenTags">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="silencedHosts">
-								<template #caption>{{ i18n.ts.silencedInstancesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_silencedHosts">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #label>{{ i18n.ts.silencedInstances }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-eye-off"></i></template>
-						<template #label>{{ i18n.ts.mediaSilencedInstances }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="silencedHosts">
+							<template #caption>{{ i18n.ts.silencedInstancesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_silencedHosts">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="mediaSilencedHosts">
-								<template #caption>{{ i18n.ts.mediaSilencedInstancesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_mediaSilencedHosts">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #label>{{ i18n.ts.mediaSilencedInstances }}</template>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-ban"></i></template>
-						<template #label>{{ i18n.ts.blockedInstances }}</template>
+					<div class="_gaps">
+						<MkTextarea v-model="mediaSilencedHosts">
+							<template #caption>{{ i18n.ts.mediaSilencedInstancesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_mediaSilencedHosts">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-						<div class="_gaps">
-							<MkTextarea v-model="blockedHosts">
-								<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_blockedHosts">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
-				</div>
-			</FormSuspense>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+				<MkFolder>
+					<template #icon><i class="ti ti-ban"></i></template>
+					<template #label>{{ i18n.ts.blockedInstances }}</template>
+
+					<div class="_gaps">
+						<MkTextarea v-model="blockedHosts">
+							<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_blockedHosts">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
+			</div>
+		</FormSuspense>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
+const ugcVisibilityForVisitor = ref<string>('all');
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
 const prohibitedWordsForNameOfUser = ref<string>('');
@@ -157,6 +166,7 @@ async function init() {
 	const meta = await misskeyApi('admin/meta');
 	enableRegistration.value = !meta.disableRegistration;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
+	ugcVisibilityForVisitor.value = meta.ugcVisibilityForVisitor;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
 	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
@@ -188,6 +198,14 @@ async function onChange_enableRegistration(value: boolean) {
 function onChange_emailRequiredForSignup(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		emailRequiredForSignup: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_ugcVisibilityForVisitor(value: string) {
+	os.apiWithDialog('admin/update-meta', {
+		ugcVisibilityForVisitor: value,
 	}).then(() => {
 		fetchInstance(true);
 	});
@@ -259,7 +277,7 @@ function save_mediaSilencedHosts() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.moderation,
 	icon: 'ti ti-shield',
 }));
