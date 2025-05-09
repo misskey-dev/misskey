@@ -77,7 +77,7 @@ type Select = {
 		sectionTitle: string;
 		items: SelectItem[];
 	})[];
-	default: string | null;
+	default: any | null;
 };
 
 type Result = string | number | true | null;
