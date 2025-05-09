@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<MkNotes ref="notes" class="" :pagination="pagination"/>
+		<MkNotesTimeline ref="tlComponent" class="" :pagination="pagination"/>
 	</div>
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import MkNotes from '@/components/MkNotes.vue';
+import { computed, ref, useTemplateRef } from 'vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
@@ -40,7 +40,8 @@ const pagination = {
 		tag: props.tag,
 	})),
 };
-const notes = ref<InstanceType<typeof MkNotes>>();
+
+const tlComponent = useTemplateRef('tlComponent');
 
 async function post() {
 	store.set('postFormHashtags', props.tag);
@@ -48,7 +49,7 @@ async function post() {
 	await os.post();
 	store.set('postFormHashtags', '');
 	store.set('postFormWithHashtags', false);
-	notes.value?.pagingComponent?.reload();
+	tlComponent.value?.reload();
 }
 
 const headerActions = computed(() => [{
