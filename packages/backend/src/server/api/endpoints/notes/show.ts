@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
+import { DI } from '@/di-symbols.js';
+import { MiMeta } from '@/models/Meta.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -48,6 +50,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
 		private getterService: GetterService,
@@ -59,6 +64,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			if (note.user!.requireSigninToViewContents && me == null) {
+				throw new ApiError(meta.errors.signinRequired);
+			}
+
+			if (this.serverSettings.ugcVisibilityForVisitor === 'none' && me == null) {
+				throw new ApiError(meta.errors.signinRequired);
+			}
+
+			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.userHost != null && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 

@@ -2339,6 +2339,10 @@ export interface Locale extends ILocale {
      */
     "newNoteRecived": string;
     /**
+     * 新しいノート
+     */
+    "newNote": string;
+    /**
      * サウンド
      */
     "sounds": string;
@@ -3174,10 +3178,6 @@ export interface Locale extends ILocale {
      * オフにすると、「みつける」にアカウントが載らなくなります。
      */
     "makeExplorableDescription": string;
-    /**
-     * タイムラインのノートを離して表示
-     */
-    "showGapBetweenNotesInTimeline": string;
     /**
      * 複製
      */
@@ -4987,10 +4987,6 @@ export interface Locale extends ILocale {
      */
     "pullDownToRefresh": string;
     /**
-     * タイムラインのリアルタイム更新を無効にする
-     */
-    "disableStreamingTimeline": string;
-    /**
      * 通知をグルーピング
      */
     "useGroupedNotifications": string;
@@ -5434,6 +5430,18 @@ export interface Locale extends ILocale {
      */
     "scrollToClose": string;
     /**
+     * リアルタイムモード
+     */
+    "realtimeMode": string;
+    /**
+     * オンにする
+     */
+    "turnItOn": string;
+    /**
+     * オフにする
+     */
+    "turnItOff": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
@@ -5745,6 +5753,26 @@ export interface Locale extends ILocale {
          * ひっぱって更新
          */
         "enablePullToRefresh": string;
+        /**
+         * マウスでは、ホイールを押し込みながらドラッグします。
+         */
+        "enablePullToRefresh_description": string;
+        /**
+         * サーバーと接続を確立し、リアルタイムでコンテンツを更新します。通信量とバッテリーの消費が多くなる場合があります。
+         */
+        "realtimeMode_description": string;
+        /**
+         * コンテンツの取得頻度
+         */
+        "contentsUpdateFrequency": string;
+        /**
+         * 高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。
+         */
+        "contentsUpdateFrequency_description": string;
+        /**
+         * リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。
+         */
+        "contentsUpdateFrequency_description2": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -6473,6 +6501,32 @@ export interface Locale extends ILocale {
          * 脆弱性などの理由で、サーバーのソフトウェアの名前及びバージョンの範囲を指定して配信を停止できます。このバージョン情報はサーバーが提供したものであり、信頼性は保証されません。バージョン指定には semver の範囲指定が使用できますが、>= 2024.3.1 と指定すると 2024.3.1-custom.0 のようなカスタムバージョンが含まれないため、>= 2024.3.1-0 のように prerelease の指定を行うことを推奨します。
          */
         "deliverSuspendedSoftwareDescription": string;
+        /**
+         * 非利用者に対するユーザー作成コンテンツの公開範囲
+         */
+        "userGeneratedContentsVisibilityForVisitor": string;
+        /**
+         * モデレーションが行き届きにくい不適切なリモートコンテンツなどが、自サーバー経由で図らずもインターネットに公開されてしまうことによるトラブル防止などに役立ちます。
+         */
+        "userGeneratedContentsVisibilityForVisitor_description": string;
+        /**
+         * サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。
+         */
+        "userGeneratedContentsVisibilityForVisitor_description2": string;
+        "_userGeneratedContentsVisibilityForVisitor": {
+            /**
+             * 全て公開
+             */
+            "all": string;
+            /**
+             * ローカルコンテンツのみ公開し、リモートコンテンツは非公開
+             */
+            "localOnly": string;
+            /**
+             * 全て非公開
+             */
+            "none": string;
+        };
     };
     "_accountMigration": {
         /**

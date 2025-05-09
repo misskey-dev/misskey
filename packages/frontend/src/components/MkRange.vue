@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="label"></slot>
 	</div>
 	<div v-adaptive-border class="body">
+		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
 				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
@@ -25,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@touchstart="onMousedown"
 			></div>
 		</div>
+		<slot name="suffix"></slot>
 	</div>
 	<div class="caption">
 		<slot name="caption"></slot>
@@ -224,12 +226,17 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	$thumbWidth: 20px;
 
 	> .body {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
 		padding: 7px 12px;
 		background: var(--MI_THEME-panel);
 		border: solid 1px var(--MI_THEME-panel);
 		border-radius: 6px;
 
 		> .container {
+			flex: 1;
 			position: relative;
 			height: $thumbHeight;
 
