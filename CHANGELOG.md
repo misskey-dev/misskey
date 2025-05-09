@@ -4,11 +4,12 @@
 -
 
 ### Client
-- Websocket接続を行わずにMisskeyを利用するNo Websocketモードが実装されました(beta)
+- Feat: Websocket接続を行わずにMisskeyを利用するNo Websocketモードが実装されました(beta)
   - サーバーのパフォーマンス向上に寄与することが期待されます
 	- 何らの理由によりWebsocket接続が行えない環境でも快適に利用可能です
   - 従来のWebsocket接続を行うモードはリアルタイムモードとして再定義されました
 	- チャットなど、一部の機能は引き続き設定に関わらずWebsocket接続が行われます
+- Enhance: メモリ使用量を軽減しました
 
 ### Server
 -
