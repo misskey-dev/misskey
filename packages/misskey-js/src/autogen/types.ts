@@ -8780,6 +8780,8 @@ export type operations = {
                 software: string;
                 versionRange: string;
               }[];
+            /** @enum {string} */
+            ugcVisibilityForVisitor: 'all' | 'local' | 'none';
           };
         };
       };
@@ -11450,6 +11452,8 @@ export type operations = {
               software: string;
               versionRange: string;
             }[];
+          /** @enum {string} */
+          ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
         };
       };
     };

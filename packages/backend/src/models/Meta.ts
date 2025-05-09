@@ -660,6 +660,12 @@ export class MiMeta {
 	public federationHosts: string[];
 
 	@Column('varchar', {
+		length: 128,
+		default: 'local',
+	})
+	public ugcVisibilityForVisitor: 'all' | 'local' | 'none';
+
+	@Column('varchar', {
 		length: 64,
 		nullable: true,
 	})
