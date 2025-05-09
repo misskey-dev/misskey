@@ -99,7 +99,7 @@ export class QueryService {
 		}: {
 			excludeUserFromMute?: MiUser['id'],
 			excludeAuthor?: boolean,
-		},
+		} = {},
 	): void {
 		this.generateBlockedHostQueryForNote(query, excludeAuthor);
 		this.generateSuspendedUserQueryForNote(query, excludeAuthor);
