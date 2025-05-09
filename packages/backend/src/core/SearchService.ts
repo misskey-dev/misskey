@@ -234,12 +234,7 @@ export class SearchService {
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		this.queryService.generateBlockedHostQueryForNote(query);
-		this.queryService.generateSuspendedUserQueryForNote(query);
-		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
-		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
-		if (me) this.queryService.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote' });
-		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
 
 		return query.limit(pagination.limit).getMany();
 	}

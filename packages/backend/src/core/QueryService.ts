@@ -77,6 +77,40 @@ export class QueryService {
 		return q;
 	}
 
+	/**
+	 * ミュートやブロックのようにすべてのタイムラインで共通に使用するフィルターを定義します。
+	 *
+	 * 特別な事情がない限り、各タイムラインはこの関数を呼び出してフィルターを適用してください。
+	 *
+	 * Notes for future maintainers:
+	 * 1) この関数で生成するクエリと同等の処理が FanoutTimelineEndpointService にあります。
+	 *    この関数を変更した場合、FanoutTimelineEndpointService の方も変更する必要があります。
+	 * 2) 以下のエンドポイントでは特別な事情があるため queryService のそれぞれの関数を呼び出しています。
+	 *    この関数を変更した場合、以下のエンドポイントの方も変更する必要があることがあります。
+	 *    - packages/backend/src/server/api/endpoints/clips/notes.ts
+	 */
+	@bindThis
+	public generateBaseNoteFilteringQuery(
+		query: SelectQueryBuilder<any>,
+		me: { id: MiUser['id'] } | null,
+		{
+			excludeUserFromMute,
+			excludeAuthor,
+		}: {
+			excludeUserFromMute?: MiUser['id'],
+			excludeAuthor?: boolean,
+		},
+	): void {
+		this.generateBlockedHostQueryForNote(query, excludeAuthor);
+		this.generateSuspendedUserQueryForNote(query, excludeAuthor);
+		if (me) {
+			this.generateMutedUserQueryForNotes(query, me, { excludeUserFromMute });
+			this.generateBlockedUserQueryForNotes(query, me);
+			this.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote', excludeUserFromMute });
+			this.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+		}
+	}
+
 	// ここでいうBlockedは被Blockedの意
 	@bindThis
 	public generateBlockedUserQueryForNotes(
