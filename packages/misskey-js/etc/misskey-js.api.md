@@ -671,6 +671,17 @@ export type Channels = {
         };
         receives: null;
     };
+    hanamiTimeline: {
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
     localTimeline: {
         params: {
             withRenotes?: boolean;
@@ -3739,8 +3750,8 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 //
 // src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:218:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:229:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:239:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

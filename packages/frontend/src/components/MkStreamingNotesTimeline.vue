@@ -212,7 +212,13 @@ function connectChannel() {
 			withFiles: props.onlyFiles ? true : undefined,
 		});
 		connection2 = stream.useChannel('main');
-	} else if (props.src === 'local') {
+	} else if (props.src === 'hanami') {
+		connection = stream.useChannel('hanamiTimeline', {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		});
+		connection2 = stream.useChannel('main');
+	}else if (props.src === 'local') {
 		connection = stream.useChannel('localTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
