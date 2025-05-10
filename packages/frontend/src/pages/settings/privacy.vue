@@ -238,6 +238,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkDisableSection from '@/components/MkDisableSection.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import * as os from '@/os.js';
 
 const $i = ensureSignin();
 
