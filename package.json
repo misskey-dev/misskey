@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2025.5.0",
+	"version": "2025.5.1-alpha.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -34,7 +34,7 @@
 		"watch": "pnpm dev",
 		"dev": "node scripts/dev.mjs",
 		"lint": "pnpm -r lint",
-		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+		"cy:open": "pnpm cypress open --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
 		"e2e-dev-container": "ncp ./.config/cypress-devcontainer.yml ./.config/test.yml && pnpm start-server-and-test start:test http://localhost:61812 cy:run",

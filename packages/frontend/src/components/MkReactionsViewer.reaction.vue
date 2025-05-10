@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -26,22 +26,24 @@ import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import { useTooltip } from '@/use/use-tooltip.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { claimAchievement } from '@/utility/achievements.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/utility/sound.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
 
 const props = defineProps<{
+	noteId: Misskey.entities.Note['id'];
 	reaction: string;
+	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
+	myReaction: Misskey.entities.Note['myReaction'];
 	count: number;
 	isInitial: boolean;
-	note: Misskey.entities.Note;
 }>();
 
 const mock = inject(DI.mock, false);
@@ -56,14 +58,16 @@ const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./,
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
-	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
+	// TODO
+	//return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
+	return !props.reaction.match(/@\w/) && $i && emoji.value;
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
-	const oldReaction = props.note.myReaction;
+	const oldReaction = props.myReaction;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
@@ -81,12 +85,23 @@ async function toggleReaction() {
 		}
 
 		misskeyApi('notes/reactions/delete', {
-			noteId: props.note.id,
+			noteId: props.noteId,
 		}).then(() => {
+			noteEvents.emit(`unreacted:${props.noteId}`, {
+				userId: $i!.id,
+				reaction: props.reaction,
+				emoji: emoji.value,
+			});
 			if (oldReaction !== props.reaction) {
 				misskeyApi('notes/reactions/create', {
-					noteId: props.note.id,
+					noteId: props.noteId,
 					reaction: props.reaction,
+				}).then(() => {
+					noteEvents.emit(`reacted:${props.noteId}`, {
+						userId: $i!.id,
+						reaction: props.reaction,
+						emoji: emoji.value,
+					});
 				});
 			}
 		});
@@ -108,12 +123,19 @@ async function toggleReaction() {
 		}
 
 		misskeyApi('notes/reactions/create', {
-			noteId: props.note.id,
+			noteId: props.noteId,
 			reaction: props.reaction,
+		}).then(() => {
+			noteEvents.emit(`reacted:${props.noteId}`, {
+				userId: $i!.id,
+				reaction: props.reaction,
+				emoji: emoji.value,
+			});
 		});
-		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
-		}
+		// TODO: 上位コンポーネントでやる
+		//if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
+		//	claimAchievement('reactWithoutRead');
+		//}
 	}
 }
 
@@ -157,7 +179,7 @@ onMounted(() => {
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
 		const reactions = await misskeyApiGet('notes/reactions', {
-			noteId: props.note.id,
+			noteId: props.noteId,
 			type: props.reaction,
 			limit: 10,
 			_cacheKey_: props.count,

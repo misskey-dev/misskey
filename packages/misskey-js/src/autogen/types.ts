@@ -3247,6 +3247,15 @@ export type paths = {
      */
     post: operations['notes___show'];
   };
+  '/notes/show-partial-bulk': {
+    /**
+     * notes/show-partial-bulk
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['notes___show-partial-bulk'];
+  };
   '/notes/state': {
     /**
      * notes/state
@@ -4472,6 +4481,7 @@ export type components = {
       url?: string;
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
+      hasPoll?: boolean;
       myReaction?: string | null;
     };
     NoteReaction: {
@@ -5524,6 +5534,7 @@ export type components = {
       name: string;
       description: string;
       isMuted?: boolean;
+      invitationExists?: boolean;
     };
     ChatRoomInvitation: {
       id: string;
@@ -8771,6 +8782,9 @@ export type operations = {
                 software: string;
                 versionRange: string;
               }[];
+            singleUserMode: boolean;
+            /** @enum {string} */
+            ugcVisibilityForVisitor: 'all' | 'local' | 'none';
           };
         };
       };
@@ -11441,6 +11455,9 @@ export type operations = {
               software: string;
               versionRange: string;
             }[];
+          singleUserMode?: boolean;
+          /** @enum {string} */
+          ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
         };
       };
     };
@@ -25704,6 +25721,59 @@ export type operations = {
       200: {
         content: {
           'application/json': components['schemas']['Note'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notes/show-partial-bulk
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'notes___show-partial-bulk': {
+    requestBody: {
+      content: {
+        'application/json': {
+          noteIds: string[];
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': Record<string, never>[];
         };
       };
       /** @description Client error */

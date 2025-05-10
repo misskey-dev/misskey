@@ -4,158 +4,160 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_spacer" :style="{ '--MI_SPACER-w': narrow ? '800px' : '1100px' }">
-	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
-		<div class="main _gaps">
-			<!-- TODO -->
-			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
-			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
+<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => reload()">
+	<div class="_spacer" :style="{ '--MI_SPACER-w': narrow ? '800px' : '1100px' }">
+		<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
+			<div class="main _gaps">
+				<!-- TODO -->
+				<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
+				<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
-			<div class="profile _gaps">
-				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
-				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!"/>
-				<MkInfo v-if="user.host == null && user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
+				<div class="profile _gaps">
+					<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
+					<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!"/>
+					<MkInfo v-if="user.host == null && user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
-				<div :key="user.id" class="main _panel">
-					<div class="banner-container" :style="style">
-						<div ref="bannerEl" class="banner" :style="style"></div>
-						<div class="fade"></div>
+					<div :key="user.id" class="main _panel">
+						<div class="banner-container" :style="style">
+							<div ref="bannerEl" class="banner" :style="style"></div>
+							<div class="fade"></div>
+							<div class="title">
+								<MkUserName class="name" :user="user" :nowrap="true"/>
+								<div class="bottom">
+									<span class="username"><MkAcct :user="user" :detail="true"/></span>
+									<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
+									<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
+									<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
+										<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+									</button>
+								</div>
+							</div>
+							<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
+							<div class="actions">
+								<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
+								<MkFollowButton v-if="$i?.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+							</div>
+						</div>
+						<MkAvatar class="avatar" :user="user" indicator/>
 						<div class="title">
-							<MkUserName class="name" :user="user" :nowrap="true"/>
+							<MkUserName :user="user" :nowrap="false" class="name"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
-								<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
-								</button>
 							</div>
 						</div>
-						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
-						<div class="actions">
-							<button class="menu _button" @click="menu"><i class="ti ti-dots"></i></button>
-							<MkFollowButton v-if="$i?.id != user.id" v-model:user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+						<div v-if="user.followedMessage != null" class="followedMessage">
+							<MkFukidashi class="fukidashi" :tail="narrow ? 'none' : 'left'" negativeMargin>
+								<div class="messageHeader">{{ i18n.ts.messageToFollower }}</div>
+								<div><MkSparkle><Mfm :plain="true" :text="user.followedMessage" :author="user" class="_selectable"/></MkSparkle></div>
+							</MkFukidashi>
 						</div>
-					</div>
-					<MkAvatar class="avatar" :user="user" indicator/>
-					<div class="title">
-						<MkUserName :user="user" :nowrap="false" class="name"/>
-						<div class="bottom">
-							<span class="username"><MkAcct :user="user" :detail="true"/></span>
-							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
-							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
-							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+						<div v-if="user.roles.length > 0" class="roles">
+							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
+									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+									{{ role.name }}
+								</MkA>
+							</span>
 						</div>
-					</div>
-					<div v-if="user.followedMessage != null" class="followedMessage">
-						<MkFukidashi class="fukidashi" :tail="narrow ? 'none' : 'left'" negativeMargin>
-							<div class="messageHeader">{{ i18n.ts.messageToFollower }}</div>
-							<div><MkSparkle><Mfm :plain="true" :text="user.followedMessage" :author="user" class="_selectable"/></MkSparkle></div>
-						</MkFukidashi>
-					</div>
-					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
-								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-								{{ role.name }}
+						<div v-if="iAmModerator" class="moderationNote">
+							<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
+								<template #label>{{ i18n.ts.moderationNote }}</template>
+								<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+							</MkTextarea>
+							<div v-else>
+								<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
+							</div>
+						</div>
+						<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
+							<div class="heading" v-text="i18n.ts.memo"/>
+							<textarea
+								ref="memoTextareaEl"
+								v-model="memoDraft"
+								rows="1"
+								@focus="isEditingMemo = true"
+								@blur="updateMemo"
+								@input="adjustMemoTextarea"
+							/>
+						</div>
+						<div class="description">
+							<MkOmit>
+								<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user" class="_selectable"/>
+								<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+							</MkOmit>
+						</div>
+						<div class="fields system">
+							<dl v-if="user.location" class="field">
+								<dt class="name"><i class="ti ti-map-pin ti-fw"></i> {{ i18n.ts.location }}</dt>
+								<dd class="value">{{ user.location }}</dd>
+							</dl>
+							<dl v-if="user.birthday" class="field">
+								<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
+								<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
+							</dl>
+							<dl class="field">
+								<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
+								<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
+							</dl>
+						</div>
+						<div v-if="user.fields.length > 0" class="fields">
+							<dl v-for="(field, i) in user.fields" :key="i" class="field">
+								<dt class="name">
+									<Mfm :text="field.name" :author="user" :plain="true" :colored="false" class="_selectable"/>
+								</dt>
+								<dd class="value">
+									<Mfm :text="field.value" :author="user" :colored="false" class="_selectable"/>
+									<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
+								</dd>
+							</dl>
+						</div>
+						<div class="status">
+							<MkA :to="userPage(user)">
+								<b>{{ number(user.notesCount) }}</b>
+								<span>{{ i18n.ts.notes }}</span>
 							</MkA>
-						</span>
-					</div>
-					<div v-if="iAmModerator" class="moderationNote">
-						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>{{ i18n.ts.moderationNote }}</template>
-							<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
-						</MkTextarea>
-						<div v-else>
-							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
+							<MkA v-if="isFollowingVisibleForMe(user)" :to="userPage(user, 'following')">
+								<b>{{ number(user.followingCount) }}</b>
+								<span>{{ i18n.ts.following }}</span>
+							</MkA>
+							<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
+								<b>{{ number(user.followersCount) }}</b>
+								<span>{{ i18n.ts.followers }}</span>
+							</MkA>
 						</div>
 					</div>
-					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-						<div class="heading" v-text="i18n.ts.memo"/>
-						<textarea
-							ref="memoTextareaEl"
-							v-model="memoDraft"
-							rows="1"
-							@focus="isEditingMemo = true"
-							@blur="updateMemo"
-							@input="adjustMemoTextarea"
-						/>
-					</div>
-					<div class="description">
-						<MkOmit>
-							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user" class="_selectable"/>
-							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
-						</MkOmit>
-					</div>
-					<div class="fields system">
-						<dl v-if="user.location" class="field">
-							<dt class="name"><i class="ti ti-map-pin ti-fw"></i> {{ i18n.ts.location }}</dt>
-							<dd class="value">{{ user.location }}</dd>
-						</dl>
-						<dl v-if="user.birthday" class="field">
-							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
-						</dl>
-						<dl class="field">
-							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
-							<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
-						</dl>
-					</div>
-					<div v-if="user.fields.length > 0" class="fields">
-						<dl v-for="(field, i) in user.fields" :key="i" class="field">
-							<dt class="name">
-								<Mfm :text="field.name" :author="user" :plain="true" :colored="false" class="_selectable"/>
-							</dt>
-							<dd class="value">
-								<Mfm :text="field.value" :author="user" :colored="false" class="_selectable"/>
-								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
-							</dd>
-						</dl>
-					</div>
-					<div class="status">
-						<MkA :to="userPage(user)">
-							<b>{{ number(user.notesCount) }}</b>
-							<span>{{ i18n.ts.notes }}</span>
-						</MkA>
-						<MkA v-if="isFollowingVisibleForMe(user)" :to="userPage(user, 'following')">
-							<b>{{ number(user.followingCount) }}</b>
-							<span>{{ i18n.ts.following }}</span>
-						</MkA>
-						<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
-							<b>{{ number(user.followersCount) }}</b>
-							<span>{{ i18n.ts.followers }}</span>
-						</MkA>
-					</div>
 				</div>
-			</div>
 
-			<div class="contents _gaps">
-				<div v-if="user.pinnedNotes.length > 0" class="_gaps">
-					<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
-				</div>
-				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
-				<template v-if="narrow">
-					<MkLazy>
-						<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
-					</MkLazy>
-					<MkLazy>
-						<XActivity :key="user.id" :user="user"/>
-					</MkLazy>
-				</template>
-				<div v-if="!disableNotes">
-					<MkLazy>
-						<XTimeline :user="user"/>
-					</MkLazy>
+				<div class="contents _gaps">
+					<div v-if="user.pinnedNotes.length > 0" class="_gaps">
+						<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
+					</div>
+					<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
+					<template v-if="narrow">
+						<MkLazy>
+							<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
+						</MkLazy>
+						<MkLazy>
+							<XActivity :key="user.id" :user="user"/>
+						</MkLazy>
+					</template>
+					<div v-if="!disableNotes">
+						<MkLazy>
+							<XTimeline :user="user"/>
+						</MkLazy>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-			<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
-			<XActivity :key="user.id" :user="user"/>
+			<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
+				<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
+				<XActivity :key="user.id" :user="user"/>
+			</div>
 		</div>
 	</div>
-</div>
+</component>
 </template>
 
 <script lang="ts" setup>
@@ -185,6 +187,7 @@ import { useRouter } from '@/router.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -207,7 +210,7 @@ const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed;
-	/** Test only; MkNotes currently causes problems in vitest */
+	/** Test only; MkNotesTimeline currently causes problems in vitest */
 	disableNotes: boolean;
 }>(), {
 	disableNotes: false,
@@ -298,6 +301,10 @@ async function updateMemo() {
 watch([props.user], () => {
 	memoDraft.value = props.user.memo;
 });
+
+async function reload() {
+	// TODO
+}
 
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);

@@ -1023,10 +1023,6 @@ export interface Locale extends ILocale {
      */
     "pinLimitExceeded": string;
     /**
-     * Misskeyのインストールが完了しました！管理者アカウントを作成しましょう。
-     */
-    "intro": string;
-    /**
      * 完了
      */
     "done": string;
@@ -2323,6 +2319,10 @@ export interface Locale extends ILocale {
      */
     "newNoteRecived": string;
     /**
+     * 新しいノート
+     */
+    "newNote": string;
+    /**
      * サウンド
      */
     "sounds": string;
@@ -3158,10 +3158,6 @@ export interface Locale extends ILocale {
      * オフにすると、「みつける」にアカウントが載らなくなります。
      */
     "makeExplorableDescription": string;
-    /**
-     * タイムラインのノートを離して表示
-     */
-    "showGapBetweenNotesInTimeline": string;
     /**
      * 複製
      */
@@ -4971,10 +4967,6 @@ export interface Locale extends ILocale {
      */
     "pullDownToRefresh": string;
     /**
-     * タイムラインのリアルタイム更新を無効にする
-     */
-    "disableStreamingTimeline": string;
-    /**
      * 通知をグルーピング
      */
     "useGroupedNotifications": string;
@@ -5417,6 +5409,22 @@ export interface Locale extends ILocale {
      * スクロールして閉じる
      */
     "scrollToClose": string;
+    /**
+     * アドバイス
+     */
+    "advice": string;
+    /**
+     * リアルタイムモード
+     */
+    "realtimeMode": string;
+    /**
+     * オンにする
+     */
+    "turnItOn": string;
+    /**
+     * オフにする
+     */
+    "turnItOff": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5547,6 +5555,14 @@ export interface Locale extends ILocale {
          * チャットが使えない状態になっているか、相手がチャットを開放していません。
          */
         "cannotChatWithTheUser_description": string;
+        /**
+         * あなたはこのルームの参加者ではありませんが、招待が届いています。参加するには、招待を承認してください。
+         */
+        "youAreNotAMemberOfThisRoomButInvited": string;
+        /**
+         * 招待を承認しますか？
+         */
+        "doYouAcceptInvitation": string;
         /**
          * チャットする
          */
@@ -5721,6 +5737,22 @@ export interface Locale extends ILocale {
          * マウスでは、ホイールを押し込みながらドラッグします。
          */
         "enablePullToRefresh_description": string;
+        /**
+         * サーバーと接続を確立し、リアルタイムでコンテンツを更新します。通信量とバッテリーの消費が多くなる場合があります。
+         */
+        "realtimeMode_description": string;
+        /**
+         * コンテンツの取得頻度
+         */
+        "contentsUpdateFrequency": string;
+        /**
+         * 高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。
+         */
+        "contentsUpdateFrequency_description": string;
+        /**
+         * リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。
+         */
+        "contentsUpdateFrequency_description2": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -6388,6 +6420,40 @@ export interface Locale extends ILocale {
          * 脆弱性などの理由で、サーバーのソフトウェアの名前及びバージョンの範囲を指定して配信を停止できます。このバージョン情報はサーバーが提供したものであり、信頼性は保証されません。バージョン指定には semver の範囲指定が使用できますが、>= 2024.3.1 と指定すると 2024.3.1-custom.0 のようなカスタムバージョンが含まれないため、>= 2024.3.1-0 のように prerelease の指定を行うことを推奨します。
          */
         "deliverSuspendedSoftwareDescription": string;
+        /**
+         * お一人様モード
+         */
+        "singleUserMode": string;
+        /**
+         * このサーバーを利用するのが自分だけの場合、このモードを有効にすることで動作が最適化されます。
+         */
+        "singleUserMode_description": string;
+        /**
+         * 非利用者に対するユーザー作成コンテンツの公開範囲
+         */
+        "userGeneratedContentsVisibilityForVisitor": string;
+        /**
+         * モデレーションが行き届きにくい不適切なリモートコンテンツなどが、自サーバー経由で図らずもインターネットに公開されてしまうことによるトラブル防止などに役立ちます。
+         */
+        "userGeneratedContentsVisibilityForVisitor_description": string;
+        /**
+         * サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。
+         */
+        "userGeneratedContentsVisibilityForVisitor_description2": string;
+        "_userGeneratedContentsVisibilityForVisitor": {
+            /**
+             * 全て公開
+             */
+            "all": string;
+            /**
+             * ローカルコンテンツのみ公開し、リモートコンテンツは非公開
+             */
+            "localOnly": string;
+            /**
+             * 全て非公開
+             */
+            "none": string;
+        };
     };
     "_accountMigration": {
         /**
@@ -11619,6 +11685,166 @@ export interface Locale extends ILocale {
          * 例: misskey.example.com
          */
         "serverHostPlaceholder": string;
+    };
+    "_serverSetupWizard": {
+        /**
+         * Misskeyのインストールが完了しました！
+         */
+        "installCompleted": string;
+        /**
+         * まずは、管理者アカウントを作成しましょう。
+         */
+        "firstCreateAccount": string;
+        /**
+         * 管理者アカウントが作成されました！
+         */
+        "accountCreated": string;
+        /**
+         * サーバーの設定
+         */
+        "serverSetting": string;
+        /**
+         * このウィザードで簡単に最適なサーバーの設定が行えます。
+         */
+        "youCanEasilyConfigureOptimalServerSettingsWithThisWizard": string;
+        /**
+         * ここでの設定は、あとからでも変更できます。
+         */
+        "settingsYouMakeHereCanBeChangedLater": string;
+        /**
+         * Misskeyをどのように使いますか？
+         */
+        "howWillYouUseMisskey": string;
+        "_use": {
+            /**
+             * お一人様サーバー
+             */
+            "single": string;
+            /**
+             * 自分専用のサーバーとして、一人で使う
+             */
+            "single_description": string;
+            /**
+             * お一人様サーバーとして運用する場合でも、アカウントは必要に応じて複数作成可能です。
+             */
+            "single_youCanCreateMultipleAccounts": string;
+            /**
+             * グループサーバー
+             */
+            "group": string;
+            /**
+             * 信頼できる他の利用者を招待して、複数人で使う
+             */
+            "group_description": string;
+            /**
+             * オープンサーバー
+             */
+            "open": string;
+            /**
+             * 不特定多数の利用者を受け入れる運営を行う
+             */
+            "open_description": string;
+        };
+        /**
+         * 不特定多数の利用者を受け入れることはリスクが伴います。トラブルに対処できるよう、確実なモデレーション体制で運営することを推奨します。
+         */
+        "openServerAdvice": string;
+        /**
+         * 自サーバーがスパムの踏み台にならないように、reCAPTCHAといったアンチボット機能を有効にするなど、セキュリティについても細心の注意が必要です。
+         */
+        "openServerAntiSpamAdvice": string;
+        /**
+         * どれくらいの人数を想定していますか？
+         */
+        "howManyUsersDoYouExpect": string;
+        "_scale": {
+            /**
+             * 100人以下 (小規模)
+             */
+            "small": string;
+            /**
+             * 100人以上1000人以下 (中規模)
+             */
+            "medium": string;
+            /**
+             * 1000人以上 (大規模)
+             */
+            "large": string;
+        };
+        /**
+         * 大規模なサーバーでは、ロードバランシングやデータベースのレプリケーションなど、高度なインフラストラクチャーの知識が必要になる場合があります。
+         */
+        "largeScaleServerAdvice": string;
+        /**
+         * Fediverseと接続しますか？
+         */
+        "doYouConnectToFediverse": string;
+        /**
+         * 分散型サーバーで構成されるネットワーク(Fediverse)に接続すると、他のサーバーと相互にコンテンツのやり取りが可能です。
+         */
+        "doYouConnectToFediverse_description1": string;
+        /**
+         * Fediverseと接続することは「連合」とも呼ばれます。
+         */
+        "doYouConnectToFediverse_description2": string;
+        /**
+         * 連合可能なサーバーの指定など、高度な設定も後ほど可能です。
+         */
+        "youCanConfigureMoreFederationSettingsLater": string;
+        /**
+         * 管理者情報
+         */
+        "adminInfo": string;
+        /**
+         * 問い合わせを受け付けるために使用される管理者情報を設定します。
+         */
+        "adminInfo_description": string;
+        /**
+         * オープンサーバー、または連合がオンの場合は必ず入力が必要です。
+         */
+        "adminInfo_mustBeFilled": string;
+        /**
+         * 以下の設定が推奨されます
+         */
+        "followingSettingsAreRecommended": string;
+        /**
+         * この設定を適用
+         */
+        "applyTheseSettings": string;
+        /**
+         * 設定をスキップ
+         */
+        "skipSettings": string;
+        /**
+         * 設定が完了しました！
+         */
+        "settingsCompleted": string;
+        /**
+         * お疲れ様でした。準備が整ったので、さっそくサーバーの使用を開始できます。
+         */
+        "settingsCompleted_description": string;
+        /**
+         * 詳細なサーバー設定は、「コントロールパネル」から行えます。
+         */
+        "settingsCompleted_description2": string;
+        /**
+         * 寄付のお願い
+         */
+        "donationRequest": string;
+        "_donationRequest": {
+            /**
+             * Misskeyは有志によって開発されている無料のソフトウェアです。
+             */
+            "text1": string;
+            /**
+             * 今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。
+             */
+            "text2": string;
+            /**
+             * 支援者向け特典もあります！
+             */
+            "text3": string;
+        };
     };
 }
 declare const locales: {
