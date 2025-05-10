@@ -263,7 +263,7 @@ function onDrop(ev: DragEvent) {
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
-		if (files.value.some(f => f.id === file.id)) return;
+		if (filesPaginator.items.value.some(f => f.id === file.id)) return;
 		removeFile(file.id);
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
@@ -279,7 +279,7 @@ function onDrop(ev: DragEvent) {
 
 		// 移動先が自分自身ならreject
 		if (folder.value && droppedFolder.id === folder.value.id) return false;
-		if (folders.value.some(f => f.id === droppedFolder.id)) return false;
+		if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
 		removeFolder(droppedFolder.id);
 		misskeyApi('drive/folders/update', {
 			folderId: droppedFolder.id,
@@ -463,16 +463,16 @@ function addFolder(folderToAdd: Misskey.entities.DriveFolder, unshift = false) {
 	const current = folder.value ? folder.value.id : null;
 	if (current !== folderToAdd.parentId) return;
 
-	if (folders.value.some(f => f.id === folderToAdd.id)) {
-		const exist = folders.value.map(f => f.id).indexOf(folderToAdd.id);
-		folders.value[exist] = folderToAdd;
+	if (foldersPaginator.items.value.some(f => f.id === folderToAdd.id)) {
+		const exist = foldersPaginator.items.value.map(f => f.id).indexOf(folderToAdd.id);
+		foldersPaginator.items.value[exist] = folderToAdd;
 		return;
 	}
 
 	if (unshift) {
-		folders.value.unshift(folderToAdd);
+		foldersPaginator.items.value.unshift(folderToAdd);
 	} else {
-		folders.value.push(folderToAdd);
+		foldersPaginator.items.value.push(folderToAdd);
 	}
 }
 
@@ -480,27 +480,27 @@ function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
 	const current = folder.value ? folder.value.id : null;
 	if (current !== fileToAdd.folderId) return;
 
-	if (files.value.some(f => f.id === fileToAdd.id)) {
-		const exist = files.value.map(f => f.id).indexOf(fileToAdd.id);
-		files.value[exist] = fileToAdd;
+	if (filesPaginator.items.value.some(f => f.id === fileToAdd.id)) {
+		const exist = filesPaginator.items.value.map(f => f.id).indexOf(fileToAdd.id);
+		filesPaginator.items.value[exist] = fileToAdd;
 		return;
 	}
 
 	if (unshift) {
-		files.value.unshift(fileToAdd);
+		filesPaginator.items.value.unshift(fileToAdd);
 	} else {
-		files.value.push(fileToAdd);
+		filesPaginator.items.value.push(fileToAdd);
 	}
 }
 
 function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
-	folders.value = folders.value.filter(f => f.id !== folderIdToRemove);
+	foldersPaginator.items.value = foldersPaginator.items.value.filter(f => f.id !== folderIdToRemove);
 }
 
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
-	files.value = files.value.filter(f => f.id !== fileId);
+	filesPaginator.items.value = filesPaginator.items.value.filter(f => f.id !== fileId);
 }
 
 function appendFile(file: Misskey.entities.DriveFile) {
