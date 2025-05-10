@@ -102,7 +102,7 @@ pageLoadErrorDescription: "Có thể là do bộ nhớ đệm của trình duy�
 serverIsDead: "Máy chủ không phản hồi. Vui lòng thử lại sau giây lát."
 youShouldUpgradeClient: "Để xem trang này, hãy làm tươi để cập nhật ứng dụng."
 enterListName: "Đặt tên cho danh sách"
-privacy: "Bảo mật"
+privacy: "Riêng tư"
 makeFollowManuallyApprove: "Yêu cầu theo dõi cần được duyệt"
 defaultNoteVisibility: "Kiểu tút mặc định"
 follow: "Theo dõi"
