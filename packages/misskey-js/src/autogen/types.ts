@@ -10582,9 +10582,9 @@ export type components = {
             langs: string[];
             tosUrl: string | null;
             /** @default https://github.com/misskey-dev/misskey */
-            repositoryUrl: string;
+            repositoryUrl: string | null;
             /** @default https://github.com/misskey-dev/misskey/issues/new */
-            feedbackUrl: string;
+            feedbackUrl: string | null;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
             disableRegistration: boolean;
@@ -14854,7 +14854,7 @@ export interface operations {
                         googleAnalyticsMeasurementId: string | null;
                         swPublickey: string | null;
                         /** @default /assets/ai.png */
-                        mascotImageUrl: string;
+                        mascotImageUrl: string | null;
                         bannerUrl: string | null;
                         serverErrorImageUrl: string | null;
                         infoImageUrl: string | null;
@@ -40752,7 +40752,7 @@ export interface operations {
                     /** @default hello */
                     default?: string;
                     /** @default hello */
-                    nullableDefault?: string;
+                    nullableDefault?: string | null;
                     /** Format: misskey:id */
                     id?: string;
                 };
@@ -40772,7 +40772,7 @@ export interface operations {
                         string?: string;
                         default?: string;
                         /** @default hello */
-                        nullableDefault: string;
+                        nullableDefault: string | null;
                     };
                 };
             };
