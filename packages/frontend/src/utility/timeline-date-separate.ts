@@ -4,26 +4,13 @@
  */
 
 import { computed } from 'vue';
-import type { Ref } from 'vue';
+import type { Ref, ShallowRef } from 'vue';
 
 export function getDateText(dateInstance: Date) {
 	const date = dateInstance.getDate();
 	const month = dateInstance.getMonth() + 1;
 	return `${month.toString()}/${date.toString()}`;
 }
-
-export type DateSeparetedTimelineItem<T> = {
-	id: string;
-	type: 'item';
-	data: T;
-} | {
-	id: string;
-	type: 'date';
-	prev: Date;
-	prevText: string;
-	next: Date;
-	nextText: string;
-};
 
 // TODO: いちいちDateインスタンス作成するのは無駄感あるから文字列のまま解析したい
 export function isSeparatorNeeded(
@@ -56,7 +43,20 @@ export function getSeparatorInfo(
 	};
 }
 
-export function makeDateSeparatedTimelineComputedRef<T extends { id: string; createdAt: string; }>(items: Ref<T[]>) {
+export type DateSeparetedTimelineItem<T> = {
+	id: string;
+	type: 'item';
+	data: T;
+} | {
+	id: string;
+	type: 'date';
+	prev: Date;
+	prevText: string;
+	next: Date;
+	nextText: string;
+};
+
+export function makeDateSeparatedTimelineComputedRef<T extends { id: string; createdAt: string; }>(items: Ref<T[]> | ShallowRef<T[]>) {
 	return computed<DateSeparetedTimelineItem<T>[]>(() => {
 		const tl: DateSeparetedTimelineItem<T>[] = [];
 		for (let i = 0; i < items.value.length; i++) {
@@ -88,6 +88,38 @@ export function makeDateSeparatedTimelineComputedRef<T extends { id: string; cre
 					nextText: getDateText(nextDate),
 				});
 			}
+		}
+		return tl;
+	});
+}
+
+export type DateGroupedTimelineItem<T> = {
+	date: Date;
+	items: T[];
+};
+
+export function makeDateGroupedTimelineComputedRef<T extends { id: string; createdAt: string; }>(items: Ref<T[]> | ShallowRef<T[]>, span: 'day' | 'month' = 'day') {
+	return computed<DateGroupedTimelineItem<T>[]>(() => {
+		const tl: DateGroupedTimelineItem<T>[] = [];
+		for (let i = 0; i < items.value.length; i++) {
+			const item = items.value[i];
+			const date = new Date(item.createdAt);
+			const nextDate = items.value[i + 1] ? new Date(items.value[i + 1].createdAt) : null;
+
+			if (tl.length === 0 || (
+				span === 'day' && tl[tl.length - 1].date.getTime() !== date.getTime()
+			) || (
+				span === 'month' && (
+					tl[tl.length - 1].date.getFullYear() !== date.getFullYear() ||
+					tl[tl.length - 1].date.getMonth() !== date.getMonth()
+				)
+			)) {
+				tl.push({
+					date,
+					items: [],
+				});
+			}
+			tl[tl.length - 1].items.push(item);
 		}
 		return tl;
 	});

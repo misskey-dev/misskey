@@ -42,7 +42,7 @@ function describe(file: Misskey.entities.DriveFile) {
 }
 
 function move(file: Misskey.entities.DriveFile) {
-	os.selectDriveFolder(false).then(folder => {
+	os.selectDriveFolder().then(folder => {
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			folderId: folder[0] ? folder[0].id : null,

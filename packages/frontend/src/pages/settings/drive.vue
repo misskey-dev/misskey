@@ -138,7 +138,7 @@ if (prefer.s.uploadFolder) {
 }
 
 function chooseUploadFolder() {
-	os.selectDriveFolder(false).then(async folder => {
+	os.selectDriveFolder().then(async folder => {
 		prefer.commit('uploadFolder', folder[0] ? folder[0].id : null);
 		os.success();
 		if (prefer.s.uploadFolder) {

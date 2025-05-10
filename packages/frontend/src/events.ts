@@ -13,6 +13,7 @@ type Events = {
 	clientNotification: (notification: Misskey.entities.Notification) => void;
 	notePosted: (note: Misskey.entities.Note) => void;
 	noteDeleted: (noteId: Misskey.entities.Note['id']) => void;
+	driveFilesMoved: (files: Misskey.entities.DriveFile[], to: Misskey.entities.DriveFolder | null) => void;
 };
 
 export const globalEvents = new EventEmitter<Events>();

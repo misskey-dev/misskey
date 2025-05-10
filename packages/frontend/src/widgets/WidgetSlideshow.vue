@@ -93,7 +93,7 @@ const fetch = () => {
 };
 
 const choose = () => {
-	os.selectDriveFolder(false).then(folder => {
+	os.selectDriveFolder().then(folder => {
 		if (folder[0] == null) {
 			return;
 		}
