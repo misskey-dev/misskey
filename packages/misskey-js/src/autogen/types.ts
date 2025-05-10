@@ -5534,6 +5534,7 @@ export type components = {
       name: string;
       description: string;
       isMuted?: boolean;
+      invitationExists?: boolean;
     };
     ChatRoomInvitation: {
       id: string;

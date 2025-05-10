@@ -5556,6 +5556,14 @@ export interface Locale extends ILocale {
          */
         "cannotChatWithTheUser_description": string;
         /**
+         * あなたはこのルームの参加者ではありませんが、招待が届いています。参加するには、招待を承認してください。
+         */
+        "youAreNotAMemberOfThisRoomButInvited": string;
+        /**
+         * 招待を承認しますか？
+         */
+        "doYouAcceptInvitation": string;
+        /**
          * チャットする
          */
         "chatWithThisUser": string;

@@ -15,6 +15,7 @@
   - 従来のWebsocket接続を行うモードはリアルタイムモードとして再定義されました
 	- チャットなど、一部の機能は引き続き設定に関わらずWebsocket接続が行われます
 - Enhance: メモリ使用量を軽減しました
+- Enhance: 招待されているが参加していないルームを開いたときに、招待を承認するかどうか尋ねるように
 - Enhance: リプライ元にアンケートがあることが表示されるように
 - Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
   (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
@@ -22,6 +23,7 @@
 
 ### Server
 - Enhance: ノートのレスポンスにアンケートが添付されているかどうかを示すフラグ`hasPoll`を追加
+- Enhance: チャットルームのレスポンスに招待されているかどうかを示すフラグ`invitationExists`を追加
 - Fix: チャットルームが削除された場合・チャットルームから抜けた場合に、未読状態が残り続けることがあるのを修正
 - Fix: ユーザ除外アンテナをインポートできない問題を修正
 - Fix: アンテナのセンシティブなチャンネルのノートを含むかどうかの情報がエクスポートされない問題を修正

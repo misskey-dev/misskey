@@ -1385,6 +1385,8 @@ _chat:
   chatNotAvailableInOtherAccount: "相手のアカウントでチャット機能が使えない状態になっています。"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
+  youAreNotAMemberOfThisRoomButInvited: "あなたはこのルームの参加者ではありませんが、招待が届いています。参加するには、招待を承認してください。"
+  doYouAcceptInvitation: "招待を承認しますか？"
   chatWithThisUser: "チャットする"
   thisUserAllowsChatOnlyFromFollowers: "このユーザーはフォロワーからのみチャットを受け付けています。"
   thisUserAllowsChatOnlyFromFollowing: "このユーザーは、このユーザーがフォローしているユーザーからのみチャットを受け付けています。"
