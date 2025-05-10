@@ -35,72 +35,80 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</nav>
 	</template>
 
-	<div
-		ref="main"
-		:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
-		@dragover.prevent.stop="onDragover"
-		@dragenter="onDragenter"
-		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop"
-		@contextmenu.stop="onContextmenu"
-	>
-		<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-		<div v-show="foldersPaginator.items.value.length > 0">
-			<div :class="$style.folders">
-				<XFolder
-					v-for="(f, i) in foldersPaginator.items.value"
-					:key="f.id"
-					v-anim="i"
-					:class="$style.folder"
-					:folder="f"
-					:selectMode="select === 'folder'"
-					:isSelected="selectedFolders.some(x => x.id === f.id)"
-					@chosen="chooseFolder"
-					@unchose="unchoseFolder"
-					@move="move"
-					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
-					@dragstart="isDragSource = true"
-					@dragend="isDragSource = false"
-				/>
-			</div>
-			<MkButton v-if="foldersPaginator.canFetchOlder" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
-		</div>
-
-		<div v-show="filesPaginator.items.value.length > 0">
-			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
-				<template #header>
-					<div :class="$style.date">
-						<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
-					</div>
-				</template>
-
-				<div :class="$style.files">
-					<XFile
-						v-for="file in item.items" :key="file.id"
-						:class="$style.file"
-						:file="file"
-						:folder="folder"
-						:selectMode="select === 'file'"
-						:isSelected="selectedFiles.some(x => x.id === file.id)"
-						@chosen="chooseFile"
+	<div>
+		<div
+			ref="main"
+			:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
+			@dragover.prevent.stop="onDragover"
+			@dragenter="onDragenter"
+			@dragleave="onDragleave"
+			@drop.prevent.stop="onDrop"
+			@contextmenu.stop="onContextmenu"
+		>
+			<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
+			<div v-show="foldersPaginator.items.value.length > 0">
+				<div :class="$style.folders">
+					<XFolder
+						v-for="(f, i) in foldersPaginator.items.value"
+						:key="f.id"
+						v-anim="i"
+						:class="$style.folder"
+						:folder="f"
+						:selectMode="select === 'folder'"
+						:isSelected="selectedFolders.some(x => x.id === f.id)"
+						@chosen="chooseFolder"
+						@unchose="unchoseFolder"
+						@move="move"
+						@upload="upload"
+						@removeFile="removeFile"
+						@removeFolder="removeFolder"
 						@dragstart="isDragSource = true"
 						@dragend="isDragSource = false"
 					/>
 				</div>
-			</MkStickyContainer>
-			<MkButton v-show="filesPaginator.canFetchOlder" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
-		</div>
+				<MkButton v-if="foldersPaginator.canFetchOlder" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			</div>
 
-		<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
-			<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
-			<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
-			<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
+			<div v-show="filesPaginator.items.value.length > 0">
+				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
+					<template #header>
+						<div :class="$style.date">
+							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
+						</div>
+					</template>
+
+					<div :class="$style.files">
+						<XFile
+							v-for="file in item.items" :key="file.id"
+							:class="$style.file"
+							:file="file"
+							:folder="folder"
+							:selectMode="select === 'file'"
+							:isSelected="selectedFiles.some(x => x.id === file.id)"
+							@chosen="chooseFile"
+							@dragstart="isDragSource = true"
+							@dragend="isDragSource = false"
+						/>
+					</div>
+				</MkStickyContainer>
+				<MkButton v-show="filesPaginator.canFetchOlder" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			</div>
+
+			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
+				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
+				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
+				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
+			</div>
 		</div>
+		<MkLoading v-if="fetching"/>
+		<div v-if="draghover" :class="$style.dropzone"></div>
 	</div>
-	<MkLoading v-if="fetching"/>
-	<div v-if="draghover" :class="$style.dropzone"></div>
+
+	<template #footer>
+		<div v-if="isEditMode" :class="$style.footer">
+			<MkButton primary rounded @click="move()"><i class="ti ti-folder-symlink"></i> {{ i18n.ts.move }}...</MkButton>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
@@ -156,6 +164,8 @@ const draghover = ref(false);
 // (自分自身の階層にドロップできないようにするためのフラグ)
 const isDragSource = ref(false);
 
+const isEditMode = ref(false);
+
 const fetching = ref(true);
 
 const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
@@ -171,6 +181,7 @@ const filesPaginator = usePagination({
 		})),
 	},
 	autoInit: false,
+	autoReInit: false,
 });
 
 const foldersPaginator = usePagination({
@@ -182,6 +193,7 @@ const foldersPaginator = usePagination({
 		})),
 	},
 	autoInit: false,
+	autoReInit: false,
 });
 
 const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
@@ -613,6 +625,11 @@ function getMenu() {
 		text: i18n.ts.createFolder,
 		icon: 'ti ti-folder-plus',
 		action: () => { createFolder(); },
+	}, { type: 'divider' }, {
+		type: 'switch',
+		text: i18n.ts.edit,
+		icon: 'ti ti-pointer',
+		ref: isEditMode,
 	});
 
 	return menu;
@@ -732,6 +749,14 @@ onBeforeUnmount(() => {
 }
 
 .date {
+	padding: 8px 16px;
+	font-size: 90%;
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.85);
+}
+
+.footer {
 	padding: 8px 16px;
 	font-size: 90%;
 	-webkit-backdrop-filter: var(--MI-blur, blur(8px));

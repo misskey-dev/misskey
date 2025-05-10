@@ -240,8 +240,8 @@ function onDragend() {
 
 .name {
 	display: block;
-	margin: 4px 0 0 0;
-	font-size: 0.8em;
+	margin: 8px 0 0 0;
+	font-size: 85%;
 	text-align: center;
 	word-break: break-all;
 	color: var(--MI_THEME-fg);

@@ -40,6 +40,7 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I : never>(props: {
 	ctx: PagingCtx<Endpoint>;
 	autoInit?: boolean;
+	autoReInit?: boolean;
 	useShallowRef?: boolean;
 }) {
 	const items = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
@@ -50,8 +51,9 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 	const canFetchOlder = ref(false);
 	const error = ref(false);
 
-	// パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
-	watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
+	if (props.autoReInit !== false) {
+		watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
+	}
 
 	function getNewestId(): string | null | undefined {
 		// 様々な要因により並び順は保証されないのでソートが必要
