@@ -151,6 +151,7 @@ import { chooseFileFromPc } from '@/utility/select-file.js';
 import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -515,10 +516,12 @@ async function moveFilesBulk() {
 
 	const toFolder = await os.selectDriveFolder(folder.value ? folder.value.id : null);
 
-	os.apiWithDialog('drive/files/move-bulk', {
+	await os.apiWithDialog('drive/files/move-bulk', {
 		fileIds: selectedFiles.value.map(f => f.id),
 		folderId: toFolder[0] ? toFolder[0].id : null,
 	});
+
+	globalEvents.emit('driveFilesMoved', selectedFiles.value, toFolder[0]);
 }
 
 function addFolder(folderToAdd: Misskey.entities.DriveFolder, unshift = false) {
@@ -693,6 +696,10 @@ function onContextmenu(ev: MouseEvent) {
 function closeTip() {
 	store.set('readDriveTip', true);
 }
+
+useGlobalEvent('driveFilesMoved', (files, to) => {
+	// TODO
+});
 
 let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
 
