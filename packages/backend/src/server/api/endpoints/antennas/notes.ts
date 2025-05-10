@@ -111,11 +111,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// NOTE: センシティブ除外の設定はこのエンドポイントでは無視する。
 			// https://github.com/misskey-dev/misskey/pull/15346#discussion_r1929950255
 
-			this.queryService.generateBlockedHostQueryForNote(query);
-			this.queryService.generateSuspendedUserQueryForNote(query);
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQueryForNotes(query, me);
-			this.queryService.generateBlockedUserQueryForNotes(query, me);
+			this.queryService.generateBaseNoteFilteringQuery(query, me);
 
 			const notes = await query.getMany();
 			if (sinceId != null && untilId == null) {
