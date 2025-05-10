@@ -5,61 +5,70 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer v-if="tab === 'chat'" :contentMax="700">
-		<div v-if="initializing">
-			<MkLoading/>
-		</div>
-
-		<div v-else-if="messages.length === 0">
-			<div class="_gaps" style="text-align: center;">
-				<div>{{ i18n.ts._chat.noMessagesYet }}</div>
-				<template v-if="user">
-					<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
-					<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
-					<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
-					<div v-else-if="user.chatScope === 'none'">{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
-				</template>
-				<template v-else-if="room">
-					<div>{{ i18n.ts._chat.inviteUserToChat }}</div>
-				</template>
-			</div>
-		</div>
-
-		<div v-else ref="timelineEl" class="_gaps">
-			<div v-if="canFetchMore">
-				<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
+	<div v-if="tab === 'chat'" class="_spacer" style="--MI_SPACER-w: 700px;">
+		<div class="_gaps">
+			<div v-if="initializing">
+				<MkLoading/>
 			</div>
 
-			<TransitionGroup
-				:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-				:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-				:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-				:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-				:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
-				tag="div" class="_gaps"
-			>
-				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message"/>
-			</TransitionGroup>
+			<div v-else-if="messages.length === 0">
+				<div class="_gaps" style="text-align: center;">
+					<div>{{ i18n.ts._chat.noMessagesYet }}</div>
+					<template v-if="user">
+						<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
+						<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
+						<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
+						<div v-else-if="user.chatScope === 'none'">{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+					</template>
+					<template v-else-if="room">
+						<div>{{ i18n.ts._chat.inviteUserToChat }}</div>
+					</template>
+				</div>
+			</div>
+
+			<div v-else ref="timelineEl" class="_gaps">
+				<div v-if="canFetchMore">
+					<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
+				</div>
+
+				<TransitionGroup
+					:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+					:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+					:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+					:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+					:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+					tag="div" class="_gaps"
+				>
+					<template v-for="item in timeline.toReversed()" :key="item.id">
+						<XMessage v-if="item.type === 'item'" :message="item.data"/>
+						<div v-else-if="item.type === 'date'" :class="$style.dateDivider">
+							<span><i class="ti ti-chevron-up"></i> {{ item.nextText }}</span>
+							<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+							<span>{{ item.prevText }} <i class="ti ti-chevron-down"></i></span>
+						</div>
+					</template>
+				</TransitionGroup>
+			</div>
+
+			<div v-if="user && (!user.canChat || user.host !== null)">
+				<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
+			</div>
+
+			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ $i.policies.chatAvailability === 'readonly' ? i18n.ts._chat.chatIsReadOnlyForThisAccountOrServer : i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 		</div>
+	</div>
 
-		<div v-if="user && (!user.canChat || user.host !== null)">
-			<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
-		</div>
-
-		<MkInfo v-if="!$i.policies.canChat" warn>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
-	</MkSpacer>
-
-	<MkSpacer v-else-if="tab === 'search'" :contentMax="700">
+	<div v-else-if="tab === 'search'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XSearch :userId="userId" :roomId="roomId"/>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'members'" :contentMax="700">
+	<div v-else-if="tab === 'members'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'info'" :contentMax="700">
+	<div v-else-if="tab === 'info'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XInfo v-if="room != null" :room="room"/>
-	</MkSpacer>
+	</div>
 
 	<template #footer>
 		<div v-if="tab === 'chat'" :class="$style.footer">
@@ -67,11 +76,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Transition name="fade">
 					<div v-show="showIndicator" :class="$style.new">
 						<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
-							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts.newMessageExists }}
+							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts._chat.newMessage }}
 						</button>
 					</div>
 				</Transition>
-				<XForm v-if="!initializing" :user="user" :room="room" :class="$style.form"/>
+				<XForm v-if="initialized" :user="user" :room="room" :class="$style.form"/>
 			</div>
 		</div>
 	</template>
@@ -79,15 +88,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
+import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getScrollContainer, isTailVisible } from '@@/js/scroll.js';
+import { getScrollContainer } from '@@/js/scroll.js';
 import XMessage from './XMessage.vue';
 import XForm from './room.form.vue';
 import XSearch from './room.search.vue';
 import XMembers from './room.members.vue';
 import XInfo from './room.info.vue';
 import type { MenuItem } from '@/types/menu.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -98,8 +108,9 @@ import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
-import { useMutationObserver } from '@/use/use-mutation-observer.js';
+import { useMutationObserver } from '@/composables/use-mutation-observer.js';
 import MkInfo from '@/components/MkInfo.vue';
+import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 
 const $i = ensureSignin();
 const router = useRouter();
@@ -109,15 +120,24 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
-const initializing = ref(true);
+export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'fromUser' | 'reactions'> & {
+	fromUser: Misskey.entities.UserLite;
+	reactions: (Misskey.entities.ChatMessageLite['reactions'][number] & {
+		user: Misskey.entities.UserLite;
+	})[];
+};
+
+const initializing = ref(false);
+const initialized = ref(false);
 const moreFetching = ref(false);
-const messages = ref<Misskey.entities.ChatMessage[]>([]);
+const messages = ref<NormalizedChatMessage[]>([]);
 const canFetchMore = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
-const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chatUser'] | Misskey.Channels['chatRoom']> | null>(null);
+const connection = ref<Misskey.IChannelConnection<Misskey.Channels['chatUser']> | Misskey.IChannelConnection<Misskey.Channels['chatRoom']> | null>(null);
 const showIndicator = ref(false);
 const timelineEl = useTemplateRef('timelineEl');
+const timeline = makeDateSeparatedTimelineComputedRef(messages);
 
 const SCROLL_HEAD_THRESHOLD = 200;
 
@@ -138,25 +158,24 @@ useMutationObserver(timelineEl, {
 	}
 });
 
-function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage) {
-	const reactions = [...message.reactions];
-	for (const record of reactions) {
-		if (room.value == null && record.user == null) { // 1on1の時はuserは省略される
-			record.user = message.fromUserId === $i.id ? user.value : $i;
-		}
-	}
-
+function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage): NormalizedChatMessage {
 	return {
 		...message,
-		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user),
-		reactions,
+		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user.value!),
+		reactions: message.reactions.map(record => ({
+			...record,
+			user: record.user ?? (message.fromUserId === $i.id ? user.value! : $i),
+		})),
 	};
 }
 
 async function initialize() {
 	const LIMIT = 20;
 
+	if (initializing.value) return;
+
 	initializing.value = true;
+	initialized.value = false;
 
 	if (props.userId) {
 		const [u, m] = await Promise.all([
@@ -179,10 +198,41 @@ async function initialize() {
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
 	} else {
-		const [r, m] = await Promise.all([
+		const [rResult, mResult] = await Promise.allSettled([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
 			misskeyApi('chat/messages/room-timeline', { roomId: props.roomId, limit: LIMIT }),
 		]);
+
+		if (rResult.status === 'rejected') {
+			os.alert({
+				type: 'error',
+				text: i18n.ts.somethingHappened,
+			});
+			initializing.value = false;
+			return;
+		}
+
+		const r = rResult.value as Misskey.entities.ChatRoomsShowResponse;
+
+		if (r.invitationExists) {
+			const confirm = await os.confirm({
+				type: 'question',
+				title: r.name,
+				text: i18n.ts._chat.youAreNotAMemberOfThisRoomButInvited + '\n' + i18n.ts._chat.doYouAcceptInvitation,
+			});
+			if (confirm.canceled) {
+				initializing.value = false;
+				router.push('/chat');
+				return;
+			} else {
+				await os.apiWithDialog('chat/rooms/join', { roomId: r.id });
+				initializing.value = false;
+				initialize();
+				return;
+			}
+		}
+
+		const m = mResult.status === 'fulfilled' ? mResult.value as Misskey.entities.ChatMessagesRoomTimelineResponse : [];
 
 		room.value = r;
 		messages.value = m.map(x => normalizeMessage(x));
@@ -202,6 +252,7 @@ async function initialize() {
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
 
+	initialized.value = true;
 	initializing.value = false;
 }
 
@@ -221,11 +272,11 @@ async function fetchMore() {
 	moreFetching.value = true;
 
 	const newMessages = props.userId ? await misskeyApi('chat/messages/user-timeline', {
-		userId: user.value.id,
+		userId: user.value!.id,
 		limit: LIMIT,
 		untilId: messages.value[messages.value.length - 1].id,
 	}) : await misskeyApi('chat/messages/room-timeline', {
-		roomId: room.value.id,
+		roomId: room.value!.id,
 		limit: LIMIT,
 		untilId: messages.value[messages.value.length - 1].id,
 	});
@@ -236,7 +287,7 @@ async function fetchMore() {
 	moreFetching.value = false;
 }
 
-function onMessage(message: Misskey.entities.ChatMessage) {
+function onMessage(message: Misskey.entities.ChatMessageLite) {
 	sound.playMisskeySfx('chatMessage');
 
 	messages.value.unshift(normalizeMessage(message));
@@ -253,34 +304,34 @@ function onMessage(message: Misskey.entities.ChatMessage) {
 	}
 }
 
-function onDeleted(id) {
+function onDeleted(id: string) {
 	const index = messages.value.findIndex(m => m.id === id);
 	if (index !== -1) {
 		messages.value.splice(index, 1);
 	}
 }
 
-function onReact(ctx) {
+function onReact(ctx: Parameters<Misskey.Channels['chatUser']['events']['react']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['react']>[0]) {
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	if (message) {
 		if (room.value == null) { // 1on1の時はuserは省略される
 			message.reactions.push({
 				reaction: ctx.reaction,
-				user: message.fromUserId === $i.id ? user : $i,
+				user: message.fromUserId === $i.id ? user.value! : $i,
 			});
 		} else {
 			message.reactions.push({
 				reaction: ctx.reaction,
-				user: ctx.user,
+				user: ctx.user!,
 			});
 		}
 	}
 }
 
-function onUnreact(ctx) {
+function onUnreact(ctx: Parameters<Misskey.Channels['chatUser']['events']['unreact']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['unreact']>[0]) {
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	if (message) {
-		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user.id);
+		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user!.id);
 		if (index !== -1) {
 			message.reactions.splice(index, 1);
 		}
@@ -304,20 +355,30 @@ onMounted(() => {
 	initialize();
 });
 
+onActivated(() => {
+	if (!initialized.value) {
+		initialize();
+	}
+});
+
 onBeforeUnmount(() => {
 	connection.value?.dispose();
 	window.document.removeEventListener('visibilitychange', onVisibilitychange);
 });
 
 async function inviteUser() {
+	if (room.value == null) return;
+
 	const invitee = await os.selectUser({ includeSelf: false, localOnly: true });
 	os.apiWithDialog('chat/rooms/invitations/create', {
-		roomId: room.value?.id,
+		roomId: room.value.id,
 		userId: invitee.id,
 	});
 }
 
 async function leaveRoom() {
+	if (room.value == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.areYouSure,
@@ -325,7 +386,7 @@ async function leaveRoom() {
 	if (canceled) return;
 
 	misskeyApi('chat/rooms/leave', {
-		roomId: room.value?.id,
+		roomId: room.value.id,
 	});
 	router.push('/chat');
 }
@@ -384,18 +445,36 @@ const headerTabs = computed(() => room.value ? [{
 	icon: 'ti ti-search',
 }]);
 
-const headerActions = computed(() => [{
+const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-dots',
+	text: '',
 	handler: showMenu,
 }]);
 
-definePage(computed(() => !initializing.value ? user.value ? {
-	userName: user,
-	avatar: user,
-} : {
-	title: room.value?.name,
-	icon: 'ti ti-users',
-} : null));
+definePage(computed(() => {
+	if (initialized.value) {
+		if (user.value) {
+			return {
+				userName: user.value,
+				title: user.value.name ?? user.value.username,
+				avatar: user.value,
+			};
+		} else if (room.value) {
+			return {
+				title: room.value.name,
+				icon: 'ti ti-users',
+			};
+		} else {
+			return {
+				title: i18n.ts.chat,
+			};
+		}
+	} else {
+		return {
+			title: i18n.ts.chat,
+		};
+	}
+}));
 </script>
 
 <style lang="scss" module>
@@ -462,5 +541,19 @@ definePage(computed(() => !initializing.value ? user.value ? {
 .fade-enter-from, .fade-leave-to {
 	transition: opacity 0.5s;
 	opacity: 0;
+}
+
+.dateDivider {
+	display: flex;
+	font-size: 85%;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	opacity: 0.75;
+	border: solid 0.5px var(--MI_THEME-divider);
+	border-radius: 999px;
+	width: fit-content;
+	padding: 0.5em 1em;
+	margin: 0 auto;
 }
 </style>

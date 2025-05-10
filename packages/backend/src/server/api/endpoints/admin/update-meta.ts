@@ -185,6 +185,22 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		deliverSuspendedSoftware: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					software: { type: 'string' },
+					versionRange: { type: 'string' },
+				},
+				required: ['software', 'versionRange'],
+			},
+		},
+		singleUserMode: { type: 'boolean' },
+		ugcVisibilityForVisitor: {
+			type: 'string',
+			enum: ['all', 'local', 'none'],
+		},
 	},
 	required: [],
 } as const;
@@ -671,8 +687,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.federation = ps.federation;
 			}
 
+			if (ps.deliverSuspendedSoftware !== undefined) {
+				set.deliverSuspendedSoftware = ps.deliverSuspendedSoftware;
+			}
+
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.singleUserMode !== undefined) {
+				set.singleUserMode = ps.singleUserMode;
+			}
+
+			if (ps.ugcVisibilityForVisitor !== undefined) {
+				set.ugcVisibilityForVisitor = ps.ugcVisibilityForVisitor;
 			}
 
 			const before = await this.metaService.fetch(true);

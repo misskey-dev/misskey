@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps_m">
 			<MkFolder :expanded="false">
 				<template #icon><i class="ti ti-plus"></i></template>
@@ -50,14 +49,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from 'vue';
-import XHeader from './_header_.vue';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -75,7 +73,7 @@ const pagingComponent = useTemplateRef('pagingComponent');
 const type = ref('all');
 const sort = ref('+createdAt');
 
-const pagination: Paging = {
+const pagination: PagingCtx = {
 	endpoint: 'admin/invite/list' as const,
 	limit: 10,
 	params: computed(() => ({
@@ -102,12 +100,12 @@ async function createWithOptions() {
 		text: tickets.map(x => x.code).join('\n'),
 	});
 
-	tickets.forEach(ticket => pagingComponent.value?.prepend(ticket));
+	tickets.forEach(ticket => pagingComponent.value?.paginator.prepend(ticket));
 }
 
 function deleted(id: string) {
 	if (pagingComponent.value) {
-		pagingComponent.value.items.delete(id);
+		pagingComponent.value.paginator.removeItem(id);
 	}
 }
 

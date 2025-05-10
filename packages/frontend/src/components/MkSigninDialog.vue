@@ -84,7 +84,7 @@ function onLogin(res: Misskey.entities.SigninFlowResponse & { finished: true }) 
 	align-items: center;
 	font-weight: bold;
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	z-index: 1;
 }
 

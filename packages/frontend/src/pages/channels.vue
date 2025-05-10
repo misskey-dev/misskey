@@ -4,57 +4,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="1200">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'search'" :class="$style.searchRoot">
-				<div class="_gaps">
-					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
-						<template #prefix><i class="ti ti-search"></i></template>
-					</MkInput>
-					<MkRadios v-model="searchType" @update:modelValue="search()">
-						<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
-						<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
-					</MkRadios>
-					<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
-				</div>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
+		<div v-if="tab === 'search'" :class="$style.searchRoot">
+			<div class="_gaps">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
+				<MkRadios v-model="searchType" @update:modelValue="search()">
+					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
+					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
+				</MkRadios>
+				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+			</div>
 
-				<MkFoldableSection v-if="channelPagination">
-					<template #header>{{ i18n.ts.searchResult }}</template>
-					<MkChannelList :key="key" :pagination="channelPagination"/>
-				</MkFoldableSection>
-			</div>
-			<div v-if="tab === 'featured'">
-				<MkPagination v-slot="{items}" :pagination="featuredPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'favorites'">
-				<MkPagination v-slot="{items}" :pagination="favoritesPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'following'">
-				<MkPagination v-slot="{items}" :pagination="followingPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'owned'">
-				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-				<MkPagination v-slot="{items}" :pagination="ownedPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-		</MkHorizontalSwipe>
-	</MkSpacer>
+			<MkFoldableSection v-if="channelPagination">
+				<template #header>{{ i18n.ts.searchResult }}</template>
+				<MkChannelList :key="key" :pagination="channelPagination"/>
+			</MkFoldableSection>
+		</div>
+		<div v-if="tab === 'featured'">
+			<MkPagination v-slot="{items}" :pagination="featuredPagination">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'favorites'">
+			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'following'">
+			<MkPagination v-slot="{items}" :pagination="followingPagination">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'owned'">
+			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkPagination v-slot="{items}" :pagination="ownedPagination">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -67,7 +65,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';

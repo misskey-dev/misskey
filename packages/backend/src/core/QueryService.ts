@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { SelectQueryBuilder } from 'typeorm';
@@ -36,33 +36,43 @@ export class QueryService {
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		private idService: IdService,
 	) {
 	}
 
-	public makePaginationQuery<T extends ObjectLiteral>(q: SelectQueryBuilder<T>, sinceId?: string | null, untilId?: string | null, sinceDate?: number | null, untilDate?: number | null): SelectQueryBuilder<T> {
+	public makePaginationQuery<T extends ObjectLiteral>(
+		q: SelectQueryBuilder<T>,
+		sinceId?: string | null,
+		untilId?: string | null,
+		sinceDate?: number | null,
+		untilDate?: number | null,
+		targetColumn = 'id',
+	): SelectQueryBuilder<T> {
 		if (sinceId && untilId) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: sinceId });
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: untilId });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else if (sinceId) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });
-			q.orderBy(`${q.alias}.id`, 'ASC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: sinceId });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'ASC');
 		} else if (untilId) {
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: untilId });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else if (sinceDate && untilDate) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: this.idService.gen(untilDate) });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: this.idService.gen(untilDate) });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else if (sinceDate) {
-			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
-			q.orderBy(`${q.alias}.id`, 'ASC');
+			q.andWhere(`${q.alias}.${targetColumn} > :sinceId`, { sinceId: this.idService.gen(sinceDate) });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'ASC');
 		} else if (untilDate) {
-			q.andWhere(`${q.alias}.id < :untilId`, { untilId: this.idService.gen(untilDate) });
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.andWhere(`${q.alias}.${targetColumn} < :untilId`, { untilId: this.idService.gen(untilDate) });
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		} else {
-			q.orderBy(`${q.alias}.id`, 'DESC');
+			q.orderBy(`${q.alias}.${targetColumn}`, 'DESC');
 		}
 		return q;
 	}
@@ -250,5 +260,60 @@ export class QueryService {
 		}));
 
 		q.setParameters(mutingQuery.getParameters());
+	}
+
+	@bindThis
+	public generateBlockedHostQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean): void {
+		let nonBlockedHostQuery: (part: string) => string;
+		if (this.meta.blockedHosts.length === 0) {
+			nonBlockedHostQuery = () => '1=1';
+		} else {
+			nonBlockedHostQuery = (match: string) => `${match} NOT ILIKE ALL(ARRAY[:...blocked])`;
+			q.setParameters({ blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) });
+		}
+
+		if (excludeAuthor) {
+			const instanceSuspension = (user: string) => new Brackets(qb => qb
+				.where(`note.${user}Id IS NULL`) // no corresponding user
+				.orWhere(`note.userId = note.${user}Id`)
+				.orWhere(`note.${user}Host IS NULL`) // local
+				.orWhere(nonBlockedHostQuery(`note.${user}Host`)));
+
+			q
+				.andWhere(instanceSuspension('replyUser'))
+				.andWhere(instanceSuspension('renoteUser'));
+		} else {
+			const instanceSuspension = (user: string) => new Brackets(qb => qb
+				.where(`note.${user}Id IS NULL`) // no corresponding user
+				.orWhere(`note.${user}Host IS NULL`) // local
+				.orWhere(nonBlockedHostQuery(`note.${user}Host`)));
+
+			q
+				.andWhere(instanceSuspension('user'))
+				.andWhere(instanceSuspension('replyUser'))
+				.andWhere(instanceSuspension('renoteUser'));
+		}
+	}
+
+	// Requirements: user replyUser renoteUser must be joined
+	@bindThis
+	public generateSuspendedUserQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean): void {
+		if (excludeAuthor) {
+			const brakets = (user: string) => new Brackets(qb => qb
+				.where(`note.${user}Id IS NULL`)
+				.orWhere(`user.id = ${user}.id`)
+				.orWhere(`${user}.isSuspended = FALSE`));
+			q
+				.andWhere(brakets('replyUser'))
+				.andWhere(brakets('renoteUser'));
+		} else {
+			const brakets = (user: string) => new Brackets(qb => qb
+				.where(`note.${user}Id IS NULL`)
+				.orWhere(`${user}.isSuspended = FALSE`));
+			q
+				.andWhere('user.isSuspended = FALSE')
+				.andWhere(brakets('replyUser'))
+				.andWhere(brakets('renoteUser'));
+		}
 	}
 }

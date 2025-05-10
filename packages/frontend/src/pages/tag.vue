@@ -5,22 +5,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
-		<MkNotes ref="notes" class="" :pagination="pagination"/>
-	</MkSpacer>
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<MkNotesTimeline ref="tlComponent" class="" :pagination="pagination"/>
+	</div>
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
-			<MkSpacer :contentMax="800" :marginMin="16" :marginMax="16">
+			<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashtag }}</MkButton>
-			</MkSpacer>
+			</div>
 		</div>
 	</template>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import MkNotes from '@/components/MkNotes.vue';
+import { computed, ref, useTemplateRef } from 'vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
@@ -40,7 +40,8 @@ const pagination = {
 		tag: props.tag,
 	})),
 };
-const notes = ref<InstanceType<typeof MkNotes>>();
+
+const tlComponent = useTemplateRef('tlComponent');
 
 async function post() {
 	store.set('postFormHashtags', props.tag);
@@ -48,7 +49,7 @@ async function post() {
 	await os.post();
 	store.set('postFormHashtags', '');
 	store.set('postFormWithHashtags', false);
-	notes.value?.pagingComponent?.reload();
+	tlComponent.value?.reload();
 }
 
 const headerActions = computed(() => [{
@@ -56,7 +57,7 @@ const headerActions = computed(() => [{
 	label: i18n.ts.more,
 	handler: (ev: MouseEvent) => {
 		os.popupMenu([{
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			icon: 'ti ti-code',
 			action: () => {
 				genEmbedCode('tags', props.tag);
@@ -77,7 +78,7 @@ definePage(() => ({
 .footer {
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-top: solid 0.5px var(--MI_THEME-divider);
 	display: flex;
 }

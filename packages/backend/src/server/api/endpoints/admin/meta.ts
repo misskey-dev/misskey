@@ -528,6 +528,33 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			deliverSuspendedSoftware: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						software: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+						versionRange: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+				},
+			},
+			singleUserMode: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			ugcVisibilityForVisitor: {
+				type: 'string',
+				enum: ['all', 'local', 'none'],
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -672,6 +699,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
 				federation: instance.federation,
 				federationHosts: instance.federationHosts,
+				deliverSuspendedSoftware: instance.deliverSuspendedSoftware,
+				singleUserMode: instance.singleUserMode,
+				ugcVisibilityForVisitor: instance.ugcVisibilityForVisitor,
 			};
 		});
 	}

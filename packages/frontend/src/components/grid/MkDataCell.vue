@@ -95,7 +95,7 @@ import type { Size } from '@/components/grid/grid.js';
 import type { CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridRowSetting } from '@/components/grid/row.js';
 import { GridEventEmitter } from '@/components/grid/grid.js';
-import { useTooltip } from '@/use/use-tooltip.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
 
@@ -345,7 +345,7 @@ $cellHeight: 28px;
 	border: solid 0.5px transparent;
 
 	&.selected {
-		border: solid 0.5px var(--MI_THEME-accentLighten);
+		border: solid 0.5px hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	}
 
 	&.ranged {

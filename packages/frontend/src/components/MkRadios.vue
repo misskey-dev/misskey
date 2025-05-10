@@ -5,13 +5,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { defineComponent, h, ref, watch } from 'vue';
-import type { VNode } from 'vue';
 import MkRadio from './MkRadio.vue';
+import type { VNode } from 'vue';
 
 export default defineComponent({
 	props: {
 		modelValue: {
 			required: false,
+		},
+		vertical: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, context) {
@@ -34,7 +38,10 @@ export default defineComponent({
 		options = options.filter(vnode => !(typeof vnode.type === 'symbol' && vnode.type.description === 'v-cmt' && vnode.children === 'v-if'));
 
 		return () => h('div', {
-			class: 'novjtcto',
+			class: [
+				'novjtcto',
+				...(props.vertical ? ['vertical'] : []),
+			],
 		}, [
 			...(label ? [h('div', {
 				class: 'label',
@@ -71,17 +78,23 @@ export default defineComponent({
 
 	> .body {
 		display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
 	}
 
 	> .caption {
 		font-size: 0.85em;
 		padding: 8px 0 0 0;
-		color: var(--MI_THEME-fgTransparentWeak);
+		color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 		&:empty {
 			display: none;
+		}
+	}
+
+	&.vertical {
+		> .body {
+			flex-direction: column;
 		}
 	}
 }
