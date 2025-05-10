@@ -4,18 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-	<MkSpacer v-if="!instance.disableRegistration || !($i && ($i.isAdmin || $i.policies.canInvite))" :contentMax="1200">
-		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
-			<div :class="$style.text">
-				<i class="ti ti-alert-triangle"></i>
-				{{ i18n.ts.nothing }}
-			</div>
-		</div>
-	</MkSpacer>
-	<MkSpacer v-else :contentMax="800">
+<PageWithHeader>
+	<div v-if="!instance.disableRegistration || !($i && ($i.isAdmin || $i.policies.canInvite))" class="_spacer" style="--MI_SPACER-w: 1200px;">
+		<MkResult type="empty"/>
+	</div>
+	<div v-else class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps_m" style="text-align: center;">
 			<div v-if="resetCycle && inviteLimit">{{ i18n.tsx.inviteLimitResetCycle({ time: resetCycle, limit: inviteLimit }) }}</div>
 			<MkButton inline primary rounded :disabled="currentInviteLimit !== null && currentInviteLimit <= 0" @click="create"><i class="ti ti-user-plus"></i> {{ i18n.ts.createInviteCode }}</MkButton>
@@ -29,30 +22,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { serverErrorImageUrl, instance } from '@/instance.js';
-import { $i } from '@/account.js';
+import { definePage } from '@/page.js';
+import { instance } from '@/instance.js';
+import { $i } from '@/i.js';
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
-const pagination: Paging = {
+const pagination: PagingCtx = {
 	endpoint: 'invite/list' as const,
 	limit: 10,
 };
@@ -75,13 +68,13 @@ async function create() {
 		text: ticket.code,
 	});
 
-	pagingComponent.value?.prepend(ticket);
+	pagingComponent.value?.paginator.prepend(ticket);
 	update();
 }
 
 function deleted(id: string) {
 	if (pagingComponent.value) {
-		pagingComponent.value.items.delete(id);
+		pagingComponent.value.paginator.removeItem(id);
 	}
 	update();
 }
@@ -92,28 +85,8 @@ async function update() {
 
 update();
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.invite,
 	icon: 'ti ti-user-plus',
 }));
 </script>
-
-<style lang="scss" module>
-.root {
-	padding: 32px;
-	text-align: center;
-	align-items: center;
-}
-
-.text {
-	margin: 0 0 8px 0;
-}
-
-.img {
-	vertical-align: bottom;
-	width: 128px;
-	height: 128px;
-	margin-bottom: 16px;
-	border-radius: 16px;
-}
-</style>

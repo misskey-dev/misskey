@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
 			<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
 			<div class="_buttons">
@@ -25,18 +25,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.ts._notification._types[ntype] }}</MkSwitch>
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
-import type { Ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
+import { notificationTypes } from '@@/js/const.js';
 import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
+import type { Ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { notificationTypes } from '@@/js/const.js';
 import { i18n } from '@/i18n.js';
 
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<{
 	excludeTypes: () => [],
 });
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
 const typesMap = notificationTypes.reduce((p, t) => ({ ...p, [t]: ref<boolean>(!props.excludeTypes.includes(t)) }), {} as TypesMap);
 

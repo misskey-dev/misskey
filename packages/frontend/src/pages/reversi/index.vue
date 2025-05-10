@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer v-if="!matchingAny && !matchingUser" :contentMax="600">
+<div v-if="!matchingAny && !matchingUser" class="_spacer" style="--MI_SPACER-w: 600px;">
 	<div class="_gaps">
 		<div>
 			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</MkFolder>
 	</div>
-</MkSpacer>
-<MkSpacer v-else :contentMax="600">
+</div>
+<div v-else class="_spacer" style="--MI_SPACER-w: 600px;">
 	<div :class="$style.waitingScreen">
 		<div v-if="matchingUser" :class="$style.waitingScreenTitle">
 			<I18n :src="i18n.ts.waitingFor" tag="span">
@@ -101,25 +101,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline rounded @click="cancelMatching">{{ i18n.ts.cancel }}</MkButton>
 		</div>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
-import { useInterval } from '@@/js/use-interval.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import * as sound from '@/scripts/sound.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import * as sound from '@/utility/sound.js';
 
 const myGamesPagination = {
 	endpoint: 'reversi/games' as const,
@@ -261,7 +261,7 @@ onUnmounted(() => {
 	cancelMatching();
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
 }));

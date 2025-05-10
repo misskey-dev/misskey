@@ -15,22 +15,21 @@ on:
       - packages/misskey-js/**
       - .github/workflows/test-federation.yml
 
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   test:
     name: Federation test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22.11.0]
+        node-version-file:
+          - .node-version
+          - .github/min.node-version
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.1.0
       - name: Install FFmpeg
         run: |
           for i in {1..3}; do
@@ -46,31 +45,45 @@ jobs:
               exit 1
             fi
           done
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.2.0
+      - name: Use Node.js
+        uses: actions/setup-node@v4.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
       - name: Build Misskey
         run: |
-          corepack enable && corepack prepare
           pnpm i --frozen-lockfile
           pnpm build
       - name: Setup
         run: |
+          echo "NODE_VERSION=$(cat ${{ matrix.node-version-file }})" >> $GITHUB_ENV
           cd packages/backend/test-federation
           bash ./setup.sh
           sudo chmod 644 ./certificates/*.test.key
       - name: Start servers
+        id: start_servers
+        continue-on-error: true
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
         run: |
           cd packages/backend/test-federation
           docker compose up -d --scale tester=0
+      - name: Print start_servers error
+        if: ${{ steps.start_servers.outcome == 'failure' }}
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs | tail -n 300
+          exit 1
       - name: Test
         run: |
           cd packages/backend/test-federation
           docker compose run --no-deps tester
+      - name: Log
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs
       - name: Stop servers
+        if: always()
         run: |
           cd packages/backend/test-federation
           docker compose down

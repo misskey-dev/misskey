@@ -9,23 +9,26 @@ services:
       service: misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F backend i
         pnpm -F misskey-js i
         pnpm -F misskey-reversi i
       "
 
   tester:
-    image: node:20
+    image: node:${NODE_VERSION}
     depends_on:
       a.test:
         condition: service_healthy
+      misskey.a.test:
+        condition: service_healthy
       b.test:
+        condition: service_healthy
+      misskey.b.test:
         condition: service_healthy
     environment:
       - NODE_ENV=development
       - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/rootCA.crt
-      - COREPACK_DEFAULT_TO_LATEST=0
     volumes:
       - type: bind
         source: ../package.json
@@ -46,6 +49,10 @@ services:
       - type: bind
         source: ../jest.config.fed.cjs
         target: /misskey/packages/backend/jest.config.fed.cjs
+        read_only: true
+      - type: bind
+        source: ../jest.js
+        target: /misskey/packages/backend/jest.js
         read_only: true
       - type: bind
         source: ../../misskey-js/built
@@ -74,7 +81,7 @@ services:
     working_dir: /misskey
     entrypoint: >
       bash -c '
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F misskey-js i --frozen-lockfile
         pnpm -F backend i --frozen-lockfile
         exec "$0" "$@"
@@ -82,12 +89,10 @@ services:
     command: pnpm -F backend test:fed
 
   daemon:
-    image: node:20
+    image: node:${NODE_VERSION}
     depends_on:
       redis.test:
         condition: service_healthy
-    environment:
-      - COREPACK_DEFAULT_TO_LATEST=0
     volumes:
       - type: bind
         source: ../package.json
@@ -116,7 +121,7 @@ services:
     working_dir: /misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F backend i --frozen-lockfile
         pnpm exec tsc -p ./packages/backend/test-federation
         node ./packages/backend/test-federation/built/daemon.js
