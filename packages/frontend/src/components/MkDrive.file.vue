@@ -114,7 +114,7 @@ function onDragend() {
 	&:hover {
 		background: rgba(#000, 0.05);
 
-		> .label {
+		.label {
 			&::before,
 			&::after {
 				background: #0b65a5;
@@ -132,7 +132,7 @@ function onDragend() {
 	&:active {
 		background: rgba(#000, 0.1);
 
-		> .label {
+		.label {
 			&::before,
 			&::after {
 				background: #0b588c;
@@ -158,19 +158,19 @@ function onDragend() {
 			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 
-		> .label {
+		.label {
 			&::before,
 			&::after {
 				display: none;
 			}
 		}
 
-		> .name {
-			color: #fff;
+		.name {
+			color: var(--MI_THEME-fgOnAccent);
 		}
 
-		> .thumbnail {
-			color: #fff;
+		.thumbnail {
+			color: var(--MI_THEME-fgOnAccent);
 		}
 	}
 }
@@ -241,7 +241,7 @@ function onDragend() {
 .name {
 	display: block;
 	margin: 8px 0 0 0;
-	font-size: 85%;
+	font-size: 82%;
 	text-align: center;
 	word-break: break-all;
 	color: var(--MI_THEME-fg);

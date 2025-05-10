@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #footer>
 		<div v-if="isEditMode" :class="$style.footer">
-			<MkButton primary rounded @click="move()"><i class="ti ti-folder-symlink"></i> {{ i18n.ts.move }}...</MkButton>
+			<MkButton primary rounded @click="moveFilesBulk()"><i class="ti ti-folder-symlink"></i> {{ i18n.ts.move }}...</MkButton>
 		</div>
 	</template>
 </MkStickyContainer>
@@ -481,6 +481,17 @@ function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFold
 
 		emit('open-folder', folderToMove);
 		initialize();
+	});
+}
+
+async function moveFilesBulk() {
+	if (selectedFiles.value.length === 0) return;
+
+	const toFolder = await os.selectDriveFolder(false);
+
+	os.apiWithDialog('drive/files/move-bulk', {
+		fileIds: selectedFiles.value.map(f => f.id),
+		folderId: toFolder[0] ? toFolder[0].id : null,
 	});
 }
 
