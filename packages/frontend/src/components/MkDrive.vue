@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:class="$style.file"
 							:file="file"
 							:folder="folder"
-							:selectMode="select === 'file'"
+							:selectMode="select === 'file' || isEditMode"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
 							@chosen="chooseFile"
 							@dragstart="isDragSource = true"
@@ -405,6 +405,16 @@ function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null
 
 function chooseFile(file: Misskey.entities.DriveFile) {
 	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
+
+	if (isEditMode.value) {
+		if (isAlreadySelected) {
+			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
+		} else {
+			selectedFiles.value.push(file);
+		}
+		return;
+	}
+
 	if (props.multiple) {
 		if (isAlreadySelected) {
 			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
