@@ -1384,6 +1384,8 @@ _chat:
   chatNotAvailableInOtherAccount: "The chat function is disabled for the other user."
   cannotChatWithTheUser: "Cannot start a chat with this user"
   cannotChatWithTheUser_description: "Chat is either unavailable or the other party has not enabled chat."
+  youAreNotAMemberOfThisRoomButInvited: "You are not a participant in this room, but you have received an invitation. Please accept the invitation to join."
+  doYouAcceptInvitation: "Do you accept the invitation?"
   chatWithThisUser: "Chat with user"
   thisUserAllowsChatOnlyFromFollowers: "This user accepts chats from followers only."
   thisUserAllowsChatOnlyFromFollowing: "This user accepts chats only from users they follow."
