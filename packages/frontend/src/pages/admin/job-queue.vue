@@ -153,14 +153,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTl
 						v-else
 						:events="jobs.map((job) => ({
-							id: job.id!,
+							id: job.id,
 							timestamp: job.finishedOn ?? job.processedOn ?? job.timestamp,
 							data: job,
 						}))"
 						class="_monospace"
 					>
 						<template #right="{ event: job }">
-							<XJob :job="job" :queueType="tab" style="margin: 4px 0;" @needRefresh="refreshJob(job.id!)"/>
+							<XJob :job="job" :queueType="tab" style="margin: 4px 0;" @needRefresh="refreshJob(job.id)"/>
 						</template>
 					</MkTl>
 				</div>
