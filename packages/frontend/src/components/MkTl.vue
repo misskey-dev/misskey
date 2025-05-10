@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-export type TlEvent<E extends unknown = any> = {
+export type TlEvent<E = any> = {
 	id: string;
 	timestamp: number;
 	data: E;
