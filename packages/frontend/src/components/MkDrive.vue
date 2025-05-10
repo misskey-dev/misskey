@@ -68,23 +68,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
 				<MkButton v-if="moreFolders" ref="moreFolders" @click="fetchMoreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
-			<div v-show="files.length > 0" ref="filesContainer" :class="$style.files">
-				<XFile
-					v-for="(file, i) in files"
-					:key="file.id"
-					v-anim="i"
-					:class="$style.file"
-					:file="file"
-					:folder="folder"
-					:selectMode="select === 'file'"
-					:isSelected="selectedFiles.some(x => x.id === file.id)"
-					@chosen="chooseFile"
-					@dragstart="isDragSource = true"
-					@dragend="isDragSource = false"
-				/>
-				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
+
+			<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer" :class="$style.files">
+				<div v-for="(file, i) in filesPaginator.items.value" :key="file.id">
+					<div v-if="i > 0 && isSeparatorNeeded(filesPaginator.items.value[i -1].createdAt, file.createdAt)" :class="$style.date">
+						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(filesPaginator.items.value[i -1].createdAt, file.createdAt).prevText }}</span>
+						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+						<span>{{ getSeparatorInfo(filesPaginator.items.value[i -1].createdAt, file.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+					</div>
+					<XFile
+						v-else
+						:class="$style.file"
+						:file="file"
+						:folder="folder"
+						:selectMode="select === 'file'"
+						:isSelected="selectedFiles.some(x => x.id === file.id)"
+						@chosen="chooseFile"
+						@dragstart="isDragSource = true"
+						@dragend="isDragSource = false"
+					/>
+				</div>
+				<MkButton v-show="filesPaginator.canFetchOlder" ref="loadMoreFiles" @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
@@ -99,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
@@ -116,6 +120,8 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPc } from '@/utility/select-file.js';
 import { store } from '@/store.js';
+import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { usePagination } from '@/composables/use-pagination.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -137,16 +143,33 @@ const emit = defineEmits<{
 
 const loadMoreFiles = useTemplateRef('loadMoreFiles');
 
+const filesPaginator = usePagination({
+	ctx: {
+		endpoint: 'drive/files' as const,
+		limit: 30,
+		params: computed(() => ({
+			folderId: folder.value ? folder.value.id : null,
+			type: props.type,
+			sort: sortModeSelect.value,
+		})),
+	},
+});
+
+const foldersPaginator = usePagination({
+	ctx: {
+		endpoint: 'drive/folders' as const,
+		limit: 30,
+		params: computed(() => ({
+			folderId: folder.value ? folder.value.id : null,
+		})),
+	},
+});
+
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
-const files = ref<Misskey.entities.DriveFile[]>([]);
-const folders = ref<Misskey.entities.DriveFolder[]>([]);
-const moreFiles = ref(false);
-const moreFolders = ref(false);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
-const connection = useStream().useChannel('drive');
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -165,8 +188,11 @@ const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort'
 
 watch(folder, () => emit('cd', folder.value));
 watch(sortModeSelect, () => {
-	fetch();
+	initialize();
 });
+
+function initialize() {
+}
 
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
@@ -456,7 +482,7 @@ function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFold
 		if (folderToMove.parent) dive(folderToMove.parent);
 
 		emit('open-folder', folderToMove);
-		fetch();
+		initialize();
 	});
 }
 
@@ -528,95 +554,7 @@ function goRoot() {
 	folder.value = null;
 	hierarchyFolders.value = [];
 	emit('move-root');
-	fetch();
-}
-
-async function fetch() {
-	folders.value = [];
-	files.value = [];
-	moreFolders.value = false;
-	moreFiles.value = false;
-	fetching.value = true;
-
-	const foldersMax = 30;
-	const filesMax = 30;
-
-	const foldersPromise = misskeyApi('drive/folders', {
-		folderId: folder.value ? folder.value.id : null,
-		limit: foldersMax + 1,
-	}).then(fetchedFolders => {
-		if (fetchedFolders.length === foldersMax + 1) {
-			moreFolders.value = true;
-			fetchedFolders.pop();
-		}
-		return fetchedFolders;
-	});
-
-	const filesPromise = misskeyApi('drive/files', {
-		folderId: folder.value ? folder.value.id : null,
-		type: props.type,
-		limit: filesMax + 1,
-		sort: sortModeSelect.value,
-	}).then(fetchedFiles => {
-		if (fetchedFiles.length === filesMax + 1) {
-			moreFiles.value = true;
-			fetchedFiles.pop();
-		}
-		return fetchedFiles;
-	});
-
-	const [fetchedFolders, fetchedFiles] = await Promise.all([foldersPromise, filesPromise]);
-
-	for (const x of fetchedFolders) appendFolder(x);
-	for (const x of fetchedFiles) appendFile(x);
-
-	fetching.value = false;
-}
-
-function fetchMoreFolders() {
-	fetching.value = true;
-
-	const max = 30;
-
-	misskeyApi('drive/folders', {
-		folderId: folder.value ? folder.value.id : null,
-		type: props.type,
-		untilId: folders.value.at(-1)?.id,
-		limit: max + 1,
-	}).then(folders => {
-		if (folders.length === max + 1) {
-			moreFolders.value = true;
-			folders.pop();
-		} else {
-			moreFolders.value = false;
-		}
-		for (const x of folders) appendFolder(x);
-		fetching.value = false;
-	});
-}
-
-function fetchMoreFiles() {
-	fetching.value = true;
-
-	const max = 30;
-
-	// ファイル一覧取得
-	misskeyApi('drive/files', {
-		folderId: folder.value ? folder.value.id : null,
-		type: props.type,
-		untilId: files.value.at(-1)?.id,
-		limit: max + 1,
-		sort: sortModeSelect.value,
-	}).then(files => {
-		if (files.length === max + 1) {
-			moreFiles.value = true;
-			files.pop();
-		} else {
-			moreFiles.value = false;
-		}
-		for (const x of files) appendFile(x);
-		fetching.value = false;
-	});
+	initialize();
 }
 
 function getMenu() {
@@ -733,7 +671,7 @@ onMounted(() => {
 	if (props.initialFolder) {
 		move(props.initialFolder);
 	} else {
-		fetch();
+		initialize();
 	}
 });
 
