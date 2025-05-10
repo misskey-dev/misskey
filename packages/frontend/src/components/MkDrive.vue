@@ -46,9 +46,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<div ref="contents">
 			<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-			<div v-show="folders.length > 0" ref="foldersContainer" :class="$style.folders">
+			<div v-show="foldersPaginator.items.value.length > 0" ref="foldersContainer" :class="$style.folders">
 				<XFolder
-					v-for="(f, i) in folders"
+					v-for="(f, i) in foldersPaginator.items.value"
 					:key="f.id"
 					v-anim="i"
 					:class="$style.folder"
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders" @click="fetchMoreFolders">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-if="foldersPaginator.canFetchOlder" ref="moreFolders" @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 
 			<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer" :class="$style.files">
@@ -90,7 +90,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkButton v-show="filesPaginator.canFetchOlder" ref="loadMoreFiles" @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
-			<div v-if="files.length == 0 && folders.length == 0 && !fetching" :class="$style.empty">
+
+			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
 				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
@@ -145,7 +146,7 @@ const loadMoreFiles = useTemplateRef('loadMoreFiles');
 
 const filesPaginator = usePagination({
 	ctx: {
-		endpoint: 'drive/files' as const,
+		endpoint: 'drive/files',
 		limit: 30,
 		params: computed(() => ({
 			folderId: folder.value ? folder.value.id : null,
@@ -157,7 +158,7 @@ const filesPaginator = usePagination({
 
 const foldersPaginator = usePagination({
 	ctx: {
-		endpoint: 'drive/folders' as const,
+		endpoint: 'drive/folders',
 		limit: 30,
 		params: computed(() => ({
 			folderId: folder.value ? folder.value.id : null,
