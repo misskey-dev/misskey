@@ -39,6 +39,7 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 
 export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I : never>(props: {
 	ctx: PagingCtx<Endpoint>;
+	autoInit?: boolean;
 	useShallowRef?: boolean;
 }) {
 	const items = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
@@ -232,9 +233,11 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 		}
 	}
 
-	onMounted(() => {
-		init();
-	});
+	if (props.autoInit !== false) {
+		onMounted(() => {
+			init();
+		});
+	}
 
 	return {
 		items: items as DeepReadonly<ShallowRef<T[]>>,

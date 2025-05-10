@@ -142,8 +142,6 @@ const emit = defineEmits<{
 	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
-const loadMoreFiles = useTemplateRef('loadMoreFiles');
-
 const filesPaginator = usePagination({
 	ctx: {
 		endpoint: 'drive/files',
@@ -154,6 +152,7 @@ const filesPaginator = usePagination({
 			sort: sortModeSelect.value,
 		})),
 	},
+	autoInit: false,
 });
 
 const foldersPaginator = usePagination({
@@ -164,6 +163,7 @@ const foldersPaginator = usePagination({
 			folderId: folder.value ? folder.value.id : null,
 		})),
 	},
+	autoInit: false,
 });
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
@@ -181,10 +181,6 @@ const isDragSource = ref(false);
 
 const fetching = ref(true);
 
-const ilFilesObserver = new IntersectionObserver(
-	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
-);
-
 const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
 
 watch(folder, () => emit('cd', folder.value));
@@ -192,41 +188,17 @@ watch(sortModeSelect, () => {
 	initialize();
 });
 
-function initialize() {
+async function initialize() {
+	fetching.value = true;
+	await Promise.all([
+		foldersPaginator.init(),
+		filesPaginator.init(),
+	]);
+	fetching.value = false;
 }
 
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
-}
-
-function onStreamDriveFileUpdated(file: Misskey.entities.DriveFile) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== file.folderId) {
-		removeFile(file);
-	} else {
-		addFile(file, true);
-	}
-}
-
-function onStreamDriveFileDeleted(fileId: string) {
-	removeFile(fileId);
-}
-
-function onStreamDriveFolderCreated(createdFolder: Misskey.entities.DriveFolder) {
-	addFolder(createdFolder, true);
-}
-
-function onStreamDriveFolderUpdated(updatedFolder: Misskey.entities.DriveFolder) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== updatedFolder.parentId) {
-		removeFolder(updatedFolder);
-	} else {
-		addFolder(updatedFolder, true);
-	}
-}
-
-function onStreamDriveFolderDeleted(folderId: string) {
-	removeFolder(folderId);
 }
 
 function onDragover(ev: DragEvent) {
@@ -656,18 +628,7 @@ function closeTip() {
 }
 
 onMounted(() => {
-	if (prefer.s.enableInfiniteScroll && loadMoreFiles.value) {
-		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el);
-		});
-	}
-
 	connection.on('fileCreated', onStreamDriveFileCreated);
-	connection.on('fileUpdated', onStreamDriveFileUpdated);
-	connection.on('fileDeleted', onStreamDriveFileDeleted);
-	connection.on('folderCreated', onStreamDriveFolderCreated);
-	connection.on('folderUpdated', onStreamDriveFolderUpdated);
-	connection.on('folderDeleted', onStreamDriveFolderDeleted);
 
 	if (props.initialFolder) {
 		move(props.initialFolder);
@@ -677,16 +638,10 @@ onMounted(() => {
 });
 
 onActivated(() => {
-	if (prefer.s.enableInfiniteScroll) {
-		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el);
-		});
-	}
 });
 
 onBeforeUnmount(() => {
 	connection.dispose();
-	ilFilesObserver.disconnect();
 });
 </script>
 
