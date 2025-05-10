@@ -89,7 +89,7 @@ import { Chart } from 'chart.js';
 import type { HeatmapSource } from '@/components/MkHeatmap.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';

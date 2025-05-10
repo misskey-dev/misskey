@@ -238,13 +238,15 @@ export class ChatEntityService {
 		options?: {
 			_hint_?: {
 				packedOwners: Map<MiChatRoom['id'], Packed<'UserLite'>>;
-				memberships?: Map<MiChatRoom['id'], MiChatRoomMembership | null | undefined>;
+				myMemberships?: Map<MiChatRoom['id'], MiChatRoomMembership | null | undefined>;
+				myInvitations?: Map<MiChatRoom['id'], MiChatRoomInvitation | null | undefined>;
 			};
 		},
 	): Promise<Packed<'ChatRoom'>> {
 		const room = typeof src === 'object' ? src : await this.chatRoomsRepository.findOneByOrFail({ id: src });
 
-		const membership = me && me.id !== room.ownerId ? (options?._hint_?.memberships?.get(room.id) ?? await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId: me.id })) : null;
+		const membership = me && me.id !== room.ownerId ? (options?._hint_?.myMemberships?.get(room.id) ?? await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId: me.id })) : null;
+		const invitation = me && me.id !== room.ownerId ? (options?._hint_?.myInvitations?.get(room.id) ?? await this.chatRoomInvitationsRepository.findOneBy({ roomId: room.id, userId: me.id })) : null;
 
 		return {
 			id: room.id,
@@ -254,6 +256,7 @@ export class ChatEntityService {
 			ownerId: room.ownerId,
 			owner: options?._hint_?.packedOwners.get(room.ownerId) ?? await this.userEntityService.pack(room.owner ?? room.ownerId, me),
 			isMuted: membership != null ? membership.isMuted : false,
+			invitationExists: invitation != null,
 		};
 	}
 
@@ -278,7 +281,7 @@ export class ChatEntityService {
 
 		const owners = _rooms.map(x => x.owner ?? x.ownerId);
 
-		const [packedOwners, memberships] = await Promise.all([
+		const [packedOwners, myMemberships, myInvitations] = await Promise.all([
 			this.userEntityService.packMany(owners, me)
 				.then(users => new Map(users.map(u => [u.id, u]))),
 			this.chatRoomMembershipsRepository.find({
@@ -287,9 +290,15 @@ export class ChatEntityService {
 					userId: me.id,
 				},
 			}).then(memberships => new Map(_rooms.map(r => [r.id, memberships.find(m => m.roomId === r.id)]))),
+			this.chatRoomInvitationsRepository.find({
+				where: {
+					roomId: In(_rooms.map(x => x.id)),
+					userId: me.id,
+				},
+			}).then(invitations => new Map(_rooms.map(r => [r.id, invitations.find(i => i.roomId === r.id)]))),
 		]);
 
-		return Promise.all(_rooms.map(room => this.packRoom(room, me, { _hint_: { packedOwners, memberships } })));
+		return Promise.all(_rooms.map(room => this.packRoom(room, me, { _hint_: { packedOwners, myMemberships, myInvitations } })));
 	}
 
 	@bindThis

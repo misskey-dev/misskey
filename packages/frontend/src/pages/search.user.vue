@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, toRef } from 'vue';
 import type { Endpoints } from 'misskey-js';
-import type { PagingCtx } from '@/use/use-pagination.js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';

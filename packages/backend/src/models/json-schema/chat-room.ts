@@ -36,5 +36,9 @@ export const packedChatRoomSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		invitationExists: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 	},
 } as const;
