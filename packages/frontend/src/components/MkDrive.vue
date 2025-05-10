@@ -45,30 +45,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@contextmenu.stop="onContextmenu"
 	>
 		<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-		<div v-show="foldersPaginator.items.value.length > 0" ref="foldersContainer" :class="$style.folders">
-			<XFolder
-				v-for="(f, i) in foldersPaginator.items.value"
-				:key="f.id"
-				v-anim="i"
-				:class="$style.folder"
-				:folder="f"
-				:selectMode="select === 'folder'"
-				:isSelected="selectedFolders.some(x => x.id === f.id)"
-				@chosen="chooseFolder"
-				@unchose="unchoseFolder"
-				@move="move"
-				@upload="upload"
-				@removeFile="removeFile"
-				@removeFolder="removeFolder"
-				@dragstart="isDragSource = true"
-				@dragend="isDragSource = false"
-			/>
-			<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-			<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-			<MkButton v-if="foldersPaginator.canFetchOlder" ref="moreFolders" @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+		<div v-show="foldersPaginator.items.value.length > 0">
+			<div :class="$style.folders">
+				<XFolder
+					v-for="(f, i) in foldersPaginator.items.value"
+					:key="f.id"
+					v-anim="i"
+					:class="$style.folder"
+					:folder="f"
+					:selectMode="select === 'folder'"
+					:isSelected="selectedFolders.some(x => x.id === f.id)"
+					@chosen="chooseFolder"
+					@unchose="unchoseFolder"
+					@move="move"
+					@upload="upload"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
+					@dragstart="isDragSource = true"
+					@dragend="isDragSource = false"
+				/>
+			</div>
+			<MkButton v-if="foldersPaginator.canFetchOlder" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
 
-		<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer">
+		<div v-show="filesPaginator.items.value.length > 0">
 			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
 				<template #header>
 					<div :class="$style.date">
@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</div>
 			</MkStickyContainer>
-			<MkButton v-show="filesPaginator.canFetchOlder" ref="loadMoreFiles" @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton v-show="filesPaginator.canFetchOlder" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
 
 		<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
