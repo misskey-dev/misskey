@@ -32,7 +32,6 @@ export const meta = {
 				optional: false, nullable: false,
 				additionalProperties: {
 					type: 'number',
-					optional: false, nullable: false,
 				},
 			},
 			isPaused: {
