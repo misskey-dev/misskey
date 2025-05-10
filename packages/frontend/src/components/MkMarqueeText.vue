@@ -7,14 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.wrap">
 	<span
 		ref="contentEl"
-		:class="{
-			[$style.content]: true,
+		:class="[$style.content, {
 			[$style.paused]: paused,
 			[$style.reverse]: reverse,
-		}"
+		}]"
 	>
-		<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
-		<span v-for="_unused in repeat" :class="$style.text">
+		<span v-for="key in repeat" :key="key" :class="$style.text">
 			<slot></slot>
 		</span>
 	</span>
@@ -38,13 +36,13 @@ const props = withDefaults(defineProps<{
 
 const contentEl = useTemplateRef('contentEl');
 
-const calcDuration = () => {
+function calcDuration() {
 	if (contentEl.value == null) return;
 	const eachLength = contentEl.value.offsetWidth / props.repeat;
 	const factor = 3000;
 	const duration = props.duration / ((1 / eachLength) * factor);
 	contentEl.value.style.animationDuration = `${duration}s`;
-};
+}
 
 watch(() => props.duration, calcDuration);
 
