@@ -1384,6 +1384,8 @@ _chat:
   chatNotAvailableInOtherAccount: "對方的帳號無法使用聊天功能。"
   cannotChatWithTheUser: "無法與此使用者聊天"
   cannotChatWithTheUser_description: "聊天功能目前無法使用，或對方尚未開放聊天功能。"
+  youAreNotAMemberOfThisRoomButInvited: "您不是此聊天室的參與者，但已收到邀請。若要加入，請先接受邀請。\n"
+  doYouAcceptInvitation: "您要接受這個邀請嗎？\n"
   chatWithThisUser: "聊天"
   thisUserAllowsChatOnlyFromFollowers: "此使用者僅接受來自追隨者的聊天訊息。"
   thisUserAllowsChatOnlyFromFollowing: "此使用者僅接受自己追隨的使用者傳送聊天訊息。"
