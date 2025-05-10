@@ -142,6 +142,23 @@ const emit = defineEmits<{
 	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
+const folder = ref<Misskey.entities.DriveFolder | null>(null);
+const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
+const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
+const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
+const uploadings = uploads;
+
+// ドロップされようとしているか
+const draghover = ref(false);
+
+// 自身の所有するアイテムがドラッグをスタートさせたか
+// (自分自身の階層にドロップできないようにするためのフラグ)
+const isDragSource = ref(false);
+
+const fetching = ref(true);
+
+const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
+
 const filesPaginator = usePagination({
 	ctx: {
 		endpoint: 'drive/files',
@@ -165,23 +182,6 @@ const foldersPaginator = usePagination({
 	},
 	autoInit: false,
 });
-
-const folder = ref<Misskey.entities.DriveFolder | null>(null);
-const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
-const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const uploadings = uploads;
-
-// ドロップされようとしているか
-const draghover = ref(false);
-
-// 自身の所有するアイテムがドラッグをスタートさせたか
-// (自分自身の階層にドロップできないようにするためのフラグ)
-const isDragSource = ref(false);
-
-const fetching = ref(true);
-
-const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
 
 watch(folder, () => emit('cd', folder.value));
 watch(sortModeSelect, () => {
@@ -627,8 +627,13 @@ function closeTip() {
 	store.set('readDriveTip', true);
 }
 
+let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
+
 onMounted(() => {
-	connection.on('fileCreated', onStreamDriveFileCreated);
+	if (store.s.realtimeMode) {
+		connection = useStream().useChannel('drive');
+		connection.on('fileCreated', onStreamDriveFileCreated);
+	}
 
 	if (props.initialFolder) {
 		move(props.initialFolder);
@@ -641,7 +646,9 @@ onActivated(() => {
 });
 
 onBeforeUnmount(() => {
-	connection.dispose();
+	if (connection != null) {
+		connection.dispose();
+	}
 });
 </script>
 
