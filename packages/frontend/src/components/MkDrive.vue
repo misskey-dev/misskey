@@ -44,64 +44,62 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@drop.prevent.stop="onDrop"
 		@contextmenu.stop="onContextmenu"
 	>
-		<div ref="contents">
-			<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-			<div v-show="foldersPaginator.items.value.length > 0" ref="foldersContainer" :class="$style.folders">
-				<XFolder
-					v-for="(f, i) in foldersPaginator.items.value"
-					:key="f.id"
-					v-anim="i"
-					:class="$style.folder"
-					:folder="f"
-					:selectMode="select === 'folder'"
-					:isSelected="selectedFolders.some(x => x.id === f.id)"
-					@chosen="chooseFolder"
-					@unchose="unchoseFolder"
-					@move="move"
-					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
-					@dragstart="isDragSource = true"
-					@dragend="isDragSource = false"
-				/>
-				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-if="foldersPaginator.canFetchOlder" ref="moreFolders" @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
-			</div>
-
-			<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer">
-				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
-					<template #header>
-						<div :class="$style.date">
-							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}/{{ item.date.getDate() }}</span>
-						</div>
-					</template>
-
-					<div :class="$style.files">
-						<XFile
-							v-for="file in item.items" :key="file.id"
-							:class="$style.file"
-							:file="file"
-							:folder="folder"
-							:selectMode="select === 'file'"
-							:isSelected="selectedFiles.some(x => x.id === file.id)"
-							@chosen="chooseFile"
-							@dragstart="isDragSource = true"
-							@dragend="isDragSource = false"
-						/>
-					</div>
-				</MkStickyContainer>
-				<MkButton v-show="filesPaginator.canFetchOlder" ref="loadMoreFiles" @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
-			</div>
-
-			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
-				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
-				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
-				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
-			</div>
+		<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
+		<div v-show="foldersPaginator.items.value.length > 0" ref="foldersContainer" :class="$style.folders">
+			<XFolder
+				v-for="(f, i) in foldersPaginator.items.value"
+				:key="f.id"
+				v-anim="i"
+				:class="$style.folder"
+				:folder="f"
+				:selectMode="select === 'folder'"
+				:isSelected="selectedFolders.some(x => x.id === f.id)"
+				@chosen="chooseFolder"
+				@unchose="unchoseFolder"
+				@move="move"
+				@upload="upload"
+				@removeFile="removeFile"
+				@removeFolder="removeFolder"
+				@dragstart="isDragSource = true"
+				@dragend="isDragSource = false"
+			/>
+			<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
+			<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
+			<MkButton v-if="foldersPaginator.canFetchOlder" ref="moreFolders" @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
-		<MkLoading v-if="fetching"/>
+
+		<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer">
+			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
+				<template #header>
+					<div :class="$style.date">
+						<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
+					</div>
+				</template>
+
+				<div :class="$style.files">
+					<XFile
+						v-for="file in item.items" :key="file.id"
+						:class="$style.file"
+						:file="file"
+						:folder="folder"
+						:selectMode="select === 'file'"
+						:isSelected="selectedFiles.some(x => x.id === file.id)"
+						@chosen="chooseFile"
+						@dragstart="isDragSource = true"
+						@dragend="isDragSource = false"
+					/>
+				</div>
+			</MkStickyContainer>
+			<MkButton v-show="filesPaginator.canFetchOlder" ref="loadMoreFiles" @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+		</div>
+
+		<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
+			<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
+			<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
+			<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
+		</div>
 	</div>
+	<MkLoading v-if="fetching"/>
 	<div v-if="draghover" :class="$style.dropzone"></div>
 </MkStickyContainer>
 </template>
@@ -712,9 +710,6 @@ onBeforeUnmount(() => {
 }
 
 .main {
-	flex: 1;
-	overflow: auto;
-	padding: var(--MI-margin);
 	user-select: none;
 
 	&.fetching {
@@ -733,6 +728,15 @@ onBeforeUnmount(() => {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 	grid-gap: 12px;
+	padding: var(--MI-margin);
+}
+
+.date {
+	padding: 8px 16px;
+	font-size: 90%;
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.85);
 }
 
 .empty {
