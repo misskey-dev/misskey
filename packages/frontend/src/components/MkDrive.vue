@@ -69,25 +69,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="foldersPaginator.canFetchOlder" ref="moreFolders" @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 
-			<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer" :class="$style.files">
-				<div v-for="(file, i) in filesPaginator.items.value" :key="file.id">
-					<div v-if="i > 0 && isSeparatorNeeded(filesPaginator.items.value[i -1].createdAt, file.createdAt)" :class="$style.date">
-						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(filesPaginator.items.value[i -1].createdAt, file.createdAt).prevText }}</span>
-						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
-						<span>{{ getSeparatorInfo(filesPaginator.items.value[i -1].createdAt, file.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+			<div v-show="filesPaginator.items.value.length > 0" ref="filesContainer">
+				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
+					<template #header>
+						<div :class="$style.date">
+							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}/{{ item.date.getDate() }}</span>
+						</div>
+					</template>
+
+					<div :class="$style.files">
+						<XFile
+							v-for="file in item.items" :key="file.id"
+							:class="$style.file"
+							:file="file"
+							:folder="folder"
+							:selectMode="select === 'file'"
+							:isSelected="selectedFiles.some(x => x.id === file.id)"
+							@chosen="chooseFile"
+							@dragstart="isDragSource = true"
+							@dragend="isDragSource = false"
+						/>
 					</div>
-					<XFile
-						v-else
-						:class="$style.file"
-						:file="file"
-						:folder="folder"
-						:selectMode="select === 'file'"
-						:isSelected="selectedFiles.some(x => x.id === file.id)"
-						@chosen="chooseFile"
-						@dragstart="isDragSource = true"
-						@dragend="isDragSource = false"
-					/>
-				</div>
+				</MkStickyContainer>
 				<MkButton v-show="filesPaginator.canFetchOlder" ref="loadMoreFiles" @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 
@@ -121,7 +124,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPc } from '@/utility/select-file.js';
 import { store } from '@/store.js';
-import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
 
 const props = withDefaults(defineProps<{
@@ -182,6 +185,8 @@ const foldersPaginator = usePagination({
 	},
 	autoInit: false,
 });
+
+const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
 
 watch(folder, () => emit('cd', folder.value));
 watch(sortModeSelect, () => {
@@ -725,22 +730,9 @@ onBeforeUnmount(() => {
 
 .folders,
 .files {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.folder,
-.file {
-	flex-grow: 1;
-	width: 128px;
-	margin: 4px;
-	box-sizing: border-box;
-}
-
-.padding {
-	flex-grow: 1;
-	pointer-events: none;
-	width: 128px + 8px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	grid-gap: 12px;
 }
 
 .empty {
