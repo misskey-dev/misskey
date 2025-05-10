@@ -21,15 +21,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+export type TlEvent<E = any> = {
+	id: string;
+	timestamp: number;
+	data: E;
+};
+</script>
+
+<script lang="ts" setup generic="T extends unknown">
 import { computed } from 'vue';
 
 const props = defineProps<{
-	events: {
-		id: string;
-		timestamp: number;
-		data: any;
-	}[];
+	events: TlEvent<T>[];
 }>();
 
 const events = computed(() => {
@@ -44,12 +48,12 @@ function getDateText(dateInstance: Date) {
 	return `${year.toString()}/${month.toString()}/${date.toString()} ${hour.toString().padStart(2, '0')}:00:00`;
 }
 
-const items = computed<({
+type TlItem<T> = ({
 	id: string;
 	type: 'event';
 	timestamp: number;
-	delta: number;
-	data: any;
+	delta: number
+	data: T;
 } | {
 	id: string;
 	type: 'date';
@@ -57,8 +61,10 @@ const items = computed<({
 	prevText: string;
 	next: Date | null;
 	nextText: string;
-})[]>(() => {
-		const results = [];
+});
+
+const items = computed<TlItem<T>[]>(() => {
+		const results: TlItem<T>[] = [];
 		for (let i = 0; i < events.value.length; i++) {
 			const item = events.value[i];
 
@@ -97,17 +103,10 @@ const items = computed<({
 </script>
 
 <style lang="scss" module>
-.root {
-
-}
-
 .items {
 	display: grid;
 	grid-template-columns: max-content 18px 1fr;
 	gap: 0 8px;
-}
-
-.item {
 }
 
 .center {
@@ -140,6 +139,7 @@ const items = computed<({
 	height: 100%;
 	background: color-mix(in srgb, var(--MI_THEME-accent), var(--MI_THEME-bg) 75%);
 }
+
 .centerPoint {
 	position: absolute;
 	top: 0;

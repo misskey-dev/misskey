@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 	<template #suffix>
 		<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
-		<span v-if="job.progress != null && job.progress > 0" style="margin-left: 1em;">{{ Math.floor(job.progress * 100) }}%</span>
+		<span v-if="job.progress != null && typeof job.progress === 'number' && job.progress > 0" style="margin-left: 1em;">{{ Math.floor(job.progress * 100) }}%</span>
 		<span v-if="job.opts.attempts != null && job.opts.attempts > 0 && job.attempts > 1" style="margin-left: 1em; color: var(--MI_THEME-warn); font-variant-numeric: diagonal-fractions;">{{ job.attempts }}/{{ job.opts.attempts }}</span>
 		<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
 		<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton rounded @click="copyRaw()"><i class="ti ti-copy"></i> Copy raw</MkButton>
 			<MkButton rounded @click="refresh()"><i class="ti ti-reload"></i> Refresh view</MkButton>
 			<MkButton rounded @click="promoteJob()"><i class="ti ti-player-track-next"></i> Promote</MkButton>
-			<MkButton rounded @click="moveJob"><i class="ti ti-arrow-right"></i> Move to</MkButton>
+			<!-- <MkButton rounded @click="moveJob"><i class="ti ti-arrow-right"></i> Move to</MkButton> -->
 			<MkButton danger rounded style="margin-left: auto;" @click="removeJob()"><i class="ti ti-trash"></i> Remove</MkButton>
 		</div>
 	</template>
@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #key>Attempts</template>
 				<template #value>{{ job.attempts }} of {{ job.opts.attempts }}</template>
 			</MkKeyValue>
-			<MkKeyValue v-if="job.progress != null && job.progress > 0">
+			<MkKeyValue v-if="job.progress != null && typeof job.progress === 'number' && job.progress > 0">
 				<template #key>Progress</template>
 				<template #value>{{ Math.floor(job.progress * 100) }}%</template>
 			</MkKeyValue>
@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton><i class="ti ti-device-floppy"></i> Update</MkButton>
 	</div>
 	<div v-else-if="tab === 'result'">
-		<MkCode :code="job.returnValue"/>
+		<MkCode :code="String(job.returnValue)"/>
 	</div>
 	<div v-else-if="tab === 'error'" class="_gaps_s">
 		<MkCode v-for="log in job.stacktrace" :code="log" lang="stacktrace"/>
@@ -159,22 +159,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import JSON5 from 'json5';
-import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import MkTabs from '@/components/MkTabs.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTl from '@/components/MkTl.vue';
-import kmg from '@/filters/kmg.js';
-import bytes from '@/filters/bytes.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import type { TlEvent } from '@/components/MkTl.vue';
 
 function msSMH(v: number | null) {
 	if (v == null) return 'N/A';
@@ -189,25 +187,34 @@ function msSMH(v: number | null) {
 }
 
 const props = defineProps<{
-	job: any;
-	queueType: string;
+	job: Misskey.entities.QueueJob;
+	queueType: typeof Misskey.queueTypes[number];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'needRefresh'): void,
+	(ev: 'needRefresh'): void;
 }>();
 
 const tab = ref('info');
 const editData = ref(JSON5.stringify(props.job.data, null, '\t'));
 const canEdit = true;
+
+type TlType = TlEvent<{
+	type: 'created' | 'processed' | 'finished';
+} | {
+	type: 'attempt';
+	attempt: number;
+}>;
+
 const timeline = computed(() => {
-	const events = [{
+	const events: TlType[] = [{
 		id: 'created',
 		timestamp: props.job.timestamp,
 		data: {
 			type: 'created',
 		},
 	}];
+
 	if (props.job.attempts > 1) {
 		for (let i = 1; i < props.job.attempts; i++) {
 			events.push({
@@ -261,9 +268,10 @@ async function removeJob() {
 	os.apiWithDialog('admin/queue/remove-job', { queue: props.queueType, jobId: props.job.id });
 }
 
-function moveJob() {
-	// TODO
-}
+// TODO
+// function moveJob() {
+//
+// }
 
 function refresh() {
 	emit('needRefresh');
