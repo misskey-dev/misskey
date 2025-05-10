@@ -230,7 +230,7 @@ function rename() {
 }
 
 function move() {
-	os.selectDriveFolder(false).then(folder => {
+	os.selectDriveFolder().then(folder => {
 		if (folder[0] && folder[0].id === props.folder.id) return;
 
 		misskeyApi('drive/folders/update', {

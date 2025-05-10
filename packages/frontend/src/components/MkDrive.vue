@@ -36,6 +36,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div>
+		<div v-if="select === 'folder'">
+			<template v-if="folder == null">
+				<MkButton v-if="!isRootSelected" @click="isRootSelected = true">
+					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+				</MkButton>
+				<MkButton v-else @click="isRootSelected = false">
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+				</MkButton>
+			</template>
+			<template v-else>
+				<MkButton v-if="!selectedFolders.some(f => f.id === folder.id)" @click="selectedFolders.push(folder)">
+					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+				</MkButton>
+				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder.id)">
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+				</MkButton>
+			</template>
+		</div>
+
 		<div
 			ref="main"
 			:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
@@ -85,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:folder="folder"
 							:selectMode="select === 'file' || isEditMode"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
-							@chosen="chooseFile"
+							@chosen="onChooseFile"
 							@dragstart="isDragSource = true"
 							@dragend="isDragSource = false"
 						/>
@@ -134,7 +153,7 @@ import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef
 import { usePagination } from '@/composables/use-pagination.js';
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder;
+	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
@@ -144,8 +163,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
-	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
+	(ev: 'changeSelectedFiles', v: Misskey.entities.DriveFile[]): void;
+	(ev: 'changeSelectedFolders', v: (Misskey.entities.DriveFolder | null)[]): void;
 	(ev: 'move-root'): void;
 	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
 	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
@@ -153,8 +172,6 @@ const emit = defineEmits<{
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
-const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 
 // ドロップされようとしているか
@@ -165,6 +182,18 @@ const draghover = ref(false);
 const isDragSource = ref(false);
 
 const isEditMode = ref(false);
+
+const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
+const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
+const isRootSelected = ref(false);
+
+watch(selectedFiles, () => {
+	emit('changeSelectedFiles', selectedFiles.value);
+});
+
+watch([selectedFolders, isRootSelected], () => {
+	emit('changeSelectedFolders', isRootSelected.value ? [null, ...selectedFolders.value] : selectedFolders.value);
+});
 
 const fetching = ref(true);
 
@@ -403,7 +432,7 @@ function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null
 	});
 }
 
-function chooseFile(file: Misskey.entities.DriveFile) {
+function onChooseFile(file: Misskey.entities.DriveFile) {
 	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
 
 	if (isEditMode.value) {
@@ -421,13 +450,11 @@ function chooseFile(file: Misskey.entities.DriveFile) {
 		} else {
 			selectedFiles.value.push(file);
 		}
-		emit('change-selection', selectedFiles.value);
 	} else {
 		if (isAlreadySelected) {
-			emit('selected', file);
+			//emit('selected', file);
 		} else {
 			selectedFiles.value = [file];
-			emit('change-selection', [file]);
 		}
 	}
 }
@@ -440,20 +467,17 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 		} else {
 			selectedFolders.value.push(folderToChoose);
 		}
-		emit('change-selection', selectedFolders.value);
 	} else {
 		if (isAlreadySelected) {
-			emit('selected', folderToChoose);
+			//emit('selected', folderToChoose);
 		} else {
 			selectedFolders.value = [folderToChoose];
-			emit('change-selection', [folderToChoose]);
 		}
 	}
 }
 
 function unchoseFolder(folderToUnchose: Misskey.entities.DriveFolder) {
 	selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToUnchose.id);
-	emit('change-selection', selectedFolders.value);
 }
 
 function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
@@ -487,7 +511,7 @@ function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFold
 async function moveFilesBulk() {
 	if (selectedFiles.value.length === 0) return;
 
-	const toFolder = await os.selectDriveFolder(false);
+	const toFolder = await os.selectDriveFolder(folder.value ? folder.value.id : null);
 
 	os.apiWithDialog('drive/files/move-bulk', {
 		fileIds: selectedFiles.value.map(f => f.id),
