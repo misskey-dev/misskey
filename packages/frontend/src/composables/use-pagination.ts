@@ -35,6 +35,9 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 
 	baseId?: MisskeyEntity['id'];
 	direction?: 'newer' | 'older';
+
+	// 一部のAPIはさらに遡れる場合でもパフォーマンス上の理由でlimit以下の結果を返す場合があり、その場合はsafe、それ以外はlimitにすることを推奨
+	canFetchDetection?: 'safe' | 'limit';
 };
 
 export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I : never>(props: {
@@ -95,12 +98,20 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 				if (i === 3) item._shouldInsertAd_ = true;
 			}
 
-			if (res.length === 0 || props.ctx.noPaging) {
-				pushItems(res);
-				canFetchOlder.value = false;
-			} else {
-				pushItems(res);
-				canFetchOlder.value = true;
+			pushItems(res);
+
+			if (props.ctx.canFetchDetection === 'limit') {
+				if (res.length < FIRST_FETCH_LIMIT) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
+			} else if (props.ctx.canFetchDetection === 'safe' || props.ctx.canFetchDetection == null) {
+				if (res.length === 0 || props.ctx.noPaging) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
 			}
 
 			error.value = false;
@@ -133,13 +144,20 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 				if (i === 10) item._shouldInsertAd_ = true;
 			}
 
-			if (res.length === 0) {
-				canFetchOlder.value = false;
-				fetchingOlder.value = false;
-			} else {
-				pushItems(res);
-				canFetchOlder.value = true;
-				fetchingOlder.value = false;
+			pushItems(res);
+
+			if (props.ctx.canFetchDetection === 'limit') {
+				if (res.length < FIRST_FETCH_LIMIT) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
+			} else if (props.ctx.canFetchDetection === 'safe' || props.ctx.canFetchDetection == null) {
+				if (res.length === 0) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
 			}
 		}, err => {
 			fetchingOlder.value = false;

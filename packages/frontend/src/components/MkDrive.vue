@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@dragend="isDragSource = false"
 					/>
 				</div>
-				<MkButton v-if="foldersPaginator.canFetchOlder" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 
 			<div v-show="filesPaginator.items.value.length > 0">
@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						/>
 					</div>
 				</MkStickyContainer>
-				<MkButton v-show="filesPaginator.canFetchOlder" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-show="filesPaginator.canFetchOlder.value" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
@@ -203,6 +203,7 @@ const filesPaginator = usePagination({
 	ctx: {
 		endpoint: 'drive/files',
 		limit: 30,
+		canFetchDetection: 'limit',
 		params: computed(() => ({
 			folderId: folder.value ? folder.value.id : null,
 			type: props.type,
@@ -217,6 +218,7 @@ const foldersPaginator = usePagination({
 	ctx: {
 		endpoint: 'drive/folders',
 		limit: 30,
+		canFetchDetection: 'limit',
 		params: computed(() => ({
 			folderId: folder.value ? folder.value.id : null,
 		})),
