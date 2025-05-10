@@ -191,7 +191,9 @@ export function useNoteCapture(props: {
 	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
 	parentNote: Misskey.entities.Note | null;
 	$note: ReactiveNoteData;
-}) {
+}): {
+	subscribe: () => void;
+} {
 	const { note, parentNote, $note } = props;
 
 	noteEvents.on(`reacted:${note.id}`, onReacted);
@@ -254,6 +256,14 @@ export function useNoteCapture(props: {
 		$note.pollChoices = choices;
 	}
 
+	function subscribe() {
+		if ($i && store.s.realtimeMode) {
+			realtimeSubscribe(props);
+		} else {
+			pollingSubscribe(props);
+		}
+	}
+
 	onUnmounted(() => {
 		noteEvents.off(`reacted:${note.id}`, onReacted);
 		noteEvents.off(`unreacted:${note.id}`, onUnreacted);
@@ -265,19 +275,29 @@ export function useNoteCapture(props: {
 	// TODO: デバイスとサーバーの時計がズレていると不具合の元になるため、ズレを検知して警告を表示するなどのケアが必要かもしれない
 	if (parentNote == null) {
 		if ((Date.now() - new Date(note.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
-			// リノートで表示されているノートでもないし、投稿からある程度経過しているので購読しない
-			return;
+			// リノートで表示されているノートでもないし、投稿からある程度経過しているので自動で購読しない
+			return {
+				subscribe: () => {
+					subscribe();
+				},
+			};
 		}
 	} else {
 		if ((Date.now() - new Date(parentNote.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
-			// リノートで表示されているノートだが、リノートされてからある程度経過しているので購読しない
-			return;
+			// リノートで表示されているノートだが、リノートされてからある程度経過しているので自動で購読しない
+			return {
+				subscribe: () => {
+					subscribe();
+				},
+			};
 		}
 	}
 
-	if ($i && store.s.realtimeMode) {
-		realtimeSubscribe(props);
-	} else {
-		pollingSubscribe(props);
-	}
+	subscribe();
+
+	return {
+		subscribe: () => {
+			// すでに購読しているので何もしない
+		},
+	};
 }
