@@ -89,8 +89,7 @@ async function toggleReaction() {
 		}).then(() => {
 			noteEvents.emit(`unreacted:${props.noteId}`, {
 				userId: $i!.id,
-				reaction: props.reaction,
-				emoji: emoji.value,
+				reaction: oldReaction,
 			});
 			if (oldReaction !== props.reaction) {
 				misskeyApi('notes/reactions/create', {
