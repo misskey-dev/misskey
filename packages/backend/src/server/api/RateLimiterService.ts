@@ -18,7 +18,7 @@ type RateLimitInfo = {
 } | {
 	code: 'RATE_LIMIT_EXCEEDED',
 	info: Limiter.LimiterInfo,
-}
+};
 
 @Injectable()
 export class RateLimiterService {
@@ -68,7 +68,6 @@ export class RateLimiterService {
 			this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
-				// eslint-disable-next-line no-throw-literal
 				return { code: 'BRIEF_REQUEST_INTERVAL', info };
 			}
 		}
@@ -85,7 +84,6 @@ export class RateLimiterService {
 			this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
-				// eslint-disable-next-line no-throw-literal
 				return { code: 'RATE_LIMIT_EXCEEDED', info };
 			}
 		}
