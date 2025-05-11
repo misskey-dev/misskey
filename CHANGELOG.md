@@ -23,6 +23,14 @@
 - Fix: "時計"ウィジェット(Clock)において、Transparent設定が有効でも、その背景が透過されない問題を修正
 
 ### Server
+- Enhance: 設定ファイルの以下の項目がコントロールパネルから設定するようになりました
+  - signToActivityPubGet
+    - 設定値がtrueになっているので、必要に応じてコントロールパネルから再設定してください。
+  - proxyRemoteFiles
+    - 設定値がtrueになっているので、必要に応じてコントロールパネルから再設定してください。
+  - disallowExternalApRedirect
+    - 許可しないかどうかではなく、許可するかどうかの設定(allowExternalApRedirect)になりました
+    - 設定値がtrueになっているので、必要に応じてコントロールパネルから再設定してください。
 - Enhance: チャットルームの最大メンバー数を30人から50人に調整
 - Enhance: ノートのレスポンスにアンケートが添付されているかどうかを示すフラグ`hasPoll`を追加
 - Enhance: チャットルームのレスポンスに招待されているかどうかを示すフラグ`invitationExists`を追加
