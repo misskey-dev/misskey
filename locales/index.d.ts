@@ -5718,6 +5718,10 @@ export interface Locale extends ILocale {
          */
         "enableHighQualityImagePlaceholders": string;
         /**
+         * UIのアニメーション
+         */
+        "uiAnimations": string;
+        /**
          * ナビゲーションバーに副ボタンを表示
          */
         "showNavbarSubButtons": string;
