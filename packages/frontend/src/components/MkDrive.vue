@@ -245,7 +245,9 @@ async function initialize() {
 }
 
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
-	addFile(file, true);
+	if (file.folderId === (folder.value?.id ?? null)) {
+		filesPaginator.prepend(file);
+	}
 }
 
 function onDragover(ev: DragEvent) {
@@ -354,55 +356,55 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 }
 
-function urlUpload() {
-	os.inputText({
+async function urlUpload() {
+	const { canceled, result: url } = await os.inputText({
 		title: i18n.ts.uploadFromUrl,
 		type: 'url',
 		placeholder: i18n.ts.uploadFromUrlDescription,
-	}).then(({ canceled, result: url }) => {
-		if (canceled || !url) return;
-		misskeyApi('drive/files/upload-from-url', {
-			url: url,
-			folderId: folder.value ? folder.value.id : undefined,
-		});
+	});
+	if (canceled || !url) return;
 
-		os.alert({
-			title: i18n.ts.uploadFromUrlRequested,
-			text: i18n.ts.uploadFromUrlMayTakeTime,
-		});
+	await os.apiWithDialog('drive/files/upload-from-url', {
+		url: url,
+		folderId: folder.value ? folder.value.id : undefined,
+	});
+
+	os.alert({
+		title: i18n.ts.uploadFromUrlRequested,
+		text: i18n.ts.uploadFromUrlMayTakeTime,
 	});
 }
 
-function createFolder() {
-	os.inputText({
+async function createFolder() {
+	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.createFolder,
 		placeholder: i18n.ts.folderName,
-	}).then(({ canceled, result: name }) => {
-		if (canceled || name == null) return;
-		misskeyApi('drive/folders/create', {
-			name: name,
-			parentId: folder.value ? folder.value.id : undefined,
-		}).then(createdFolder => {
-			addFolder(createdFolder, true);
-		});
 	});
+	if (canceled || name == null) return;
+
+	const createdFolder = await os.apiWithDialog('drive/folders/create', {
+		name: name,
+		parentId: folder.value ? folder.value.id : undefined,
+	});
+
+	foldersPaginator.prepend(createdFolder);
 }
 
-function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
-	os.inputText({
+async function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
+	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.renameFolder,
 		placeholder: i18n.ts.inputNewFolderName,
 		default: folderToRename.name,
-	}).then(({ canceled, result: name }) => {
-		if (canceled) return;
-		misskeyApi('drive/folders/update', {
-			folderId: folderToRename.id,
-			name: name,
-		}).then(updatedFolder => {
-			// FIXME: 画面を更新するために自分自身に移動
-			move(updatedFolder);
-		});
 	});
+	if (canceled) return;
+
+	const updatedFolder = await os.apiWithDialog('drive/folders/update', {
+		folderId: folderToRename.id,
+		name: name,
+	});
+
+	// FIXME: 画面を更新するために自分自身に移動
+	move(updatedFolder);
 }
 
 function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
@@ -431,7 +433,9 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 
 function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null, keepOriginal?: boolean) {
 	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal).then(res => {
-		addFile(res, true);
+		if (res.folderId === (folder.value?.id ?? null)) {
+			filesPaginator.prepend(res);
+		}
 	});
 }
 
@@ -524,67 +528,16 @@ async function moveFilesBulk() {
 	globalEvents.emit('driveFilesMoved', selectedFiles.value, toFolder[0]);
 }
 
-function addFolder(folderToAdd: Misskey.entities.DriveFolder, unshift = false) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== folderToAdd.parentId) return;
-
-	if (foldersPaginator.items.value.some(f => f.id === folderToAdd.id)) {
-		const exist = foldersPaginator.items.value.map(f => f.id).indexOf(folderToAdd.id);
-		foldersPaginator.items.value[exist] = folderToAdd;
-		return;
-	}
-
-	if (unshift) {
-		foldersPaginator.items.value.unshift(folderToAdd);
-	} else {
-		foldersPaginator.items.value.push(folderToAdd);
-	}
-}
-
-function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== fileToAdd.folderId) return;
-
-	if (filesPaginator.items.value.some(f => f.id === fileToAdd.id)) {
-		const exist = filesPaginator.items.value.map(f => f.id).indexOf(fileToAdd.id);
-		filesPaginator.items.value[exist] = fileToAdd;
-		return;
-	}
-
-	if (unshift) {
-		filesPaginator.items.value.unshift(fileToAdd);
-	} else {
-		filesPaginator.items.value.push(fileToAdd);
-	}
-}
-
 function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
-	foldersPaginator.items.value = foldersPaginator.items.value.filter(f => f.id !== folderIdToRemove);
+	foldersPaginator.removeItem(folderIdToRemove);
 }
 
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
-	filesPaginator.items.value = filesPaginator.items.value.filter(f => f.id !== fileId);
+	filesPaginator.removeItem(fileId);
 }
 
-function appendFile(file: Misskey.entities.DriveFile) {
-	addFile(file);
-}
-
-function appendFolder(folderToAppend: Misskey.entities.DriveFolder) {
-	addFolder(folderToAppend);
-}
-
-/*
-function prependFile(file: Misskey.entities.DriveFile) {
-	addFile(file, true);
-}
-
-function prependFolder(folderToPrepend: Misskey.entities.DriveFolder) {
-	addFolder(folderToPrepend, true);
-}
-*/
 function goRoot() {
 	// 既にrootにいるなら何もしない
 	if (folder.value == null) return;
