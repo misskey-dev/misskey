@@ -72,6 +72,7 @@ function unmute(emoji: string) {
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.unmuteX({ x: emoji }),
+		text: i18n.ts.reloadToApplySetting,
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;
