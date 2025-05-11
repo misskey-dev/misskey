@@ -1425,6 +1425,8 @@ _settings:
   makeEveryTextElementsSelectable: "Fes que tots els elements del text siguin seleccionables"
   makeEveryTextElementsSelectable_description: "L'activació pot reduir la usabilitat en determinades ocasions."
   useStickyIcons: "Utilitza icones fixes"
+  enableHighQualityImagePlaceholders: "Mostrar marcadors de posició per imatges d'alta qualitat"
+  uiAnimations: "Animacions de la interfície"
   showNavbarSubButtons: "Mostrar sub botons a la barra de navegació "
   ifOn: "Quan s'activa"
   ifOff: "Quan es desactiva"
