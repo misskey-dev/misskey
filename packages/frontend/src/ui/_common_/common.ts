@@ -4,10 +4,10 @@
  */
 
 import { defineAsyncComponent } from 'vue';
+import { host } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
-import { host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 
@@ -29,9 +29,9 @@ function toolsMenuItems(): MenuItem[] {
 		icon: 'ti ti-cookie',
 	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
-		to: '/custom-emojis-manager',
-		text: i18n.ts.manageCustomEmojis,
+		text: i18n.ts.customEmojis,
 		icon: 'ti ti-icons',
+		to: '/custom-emojis-manager',
 	} : undefined, ($i && ($i.isAdmin || $i.policies.canManageAvatarDecorations)) ? {
 		type: 'link',
 		to: '/avatar-decorations',
@@ -51,12 +51,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.instanceInfo,
 		icon: 'ti ti-info-circle',
 		to: '/about',
-	}, {
+	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
 		text: i18n.ts.customEmojis,
 		icon: 'ti ti-icons',
 		to: '/custom-emojis-manager',
-	}, { type: 'divider' }, {
+	} : undefined, { type: 'divider' }, {
 		type: 'link',
 		text: i18n.ts.ads,
 		icon: 'ti ti-ad',

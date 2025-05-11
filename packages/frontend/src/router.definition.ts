@@ -249,6 +249,7 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/search',
 	component: page(() => import('@/pages/search.vue')),
+	loginRequired: true,
 	query: {
 		q: 'query',
 		userId: 'userId',
@@ -366,6 +367,7 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/custom-emojis-manager',
 	component: page(() => import('@/pages/custom-emojis-manager.vue')),
+	loginRequired: true,
 }, {
 	path: '/avatar-decorations',
 	name: 'avatarDecorations',
