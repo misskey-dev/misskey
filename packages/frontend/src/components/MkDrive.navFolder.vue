@@ -32,8 +32,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'move', v?: Misskey.entities.DriveFolder): void;
 	(ev: 'upload', file: File, folder?: Misskey.entities.DriveFolder | null): void;
-	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
-	(ev: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
 }>();
 
 const hover = ref(false);
@@ -112,7 +110,6 @@ function onDrop(ev: DragEvent) {
 	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
-		emit('removeFile', file.id);
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			folderId: props.folder ? props.folder.id : null,
@@ -126,7 +123,6 @@ function onDrop(ev: DragEvent) {
 		const folder = JSON.parse(driveFolder);
 		// 移動先が自分自身ならreject
 		if (props.folder && folder.id === props.folder.id) return;
-		emit('removeFolder', folder.id);
 		misskeyApi('drive/folders/update', {
 			folderId: folder.id,
 			parentId: props.folder ? props.folder.id : null,

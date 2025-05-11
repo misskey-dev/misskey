@@ -13,8 +13,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:parentFolder="folder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
 				/>
 				<template v-for="f in hierarchyFolders">
 					<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -24,8 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:class="[$style.navPathItem]"
 						@move="move"
 						@upload="upload"
-						@removeFile="removeFile"
-						@removeFolder="removeFolder"
 					/>
 				</template>
 				<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -79,8 +75,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@unchose="unchoseFolder"
 						@move="move"
 						@upload="upload"
-						@removeFile="removeFile"
-						@removeFolder="removeFolder"
 						@dragstart="isDragSource = true"
 						@dragend="isDragSource = false"
 					/>
@@ -257,8 +251,10 @@ function onFileDragstart(file: Misskey.entities.DriveFile, ev: DragEvent) {
 			selectedFiles.value.push(file);
 		}
 
-		ev.dataTransfer.effectAllowed = 'move';
-		ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FILES, JSON.stringify(selectedFiles.value));
+		if (ev.dataTransfer) {
+			ev.dataTransfer.effectAllowed = 'move';
+			ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FILES, JSON.stringify(selectedFiles.value));
+		}
 	}
 
 	isDragSource.value = true;
@@ -327,7 +323,6 @@ function onDrop(ev: DragEvent) {
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		if (filesPaginator.items.value.some(f => f.id === file.id)) return;
-		removeFile(file.id);
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			folderId: folder.value ? folder.value.id : null,
@@ -343,7 +338,6 @@ function onDrop(ev: DragEvent) {
 		// 移動先が自分自身ならreject
 		if (folder.value && droppedFolder.id === folder.value.id) return false;
 		if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
-		removeFolder(droppedFolder.id);
 		misskeyApi('drive/folders/update', {
 			folderId: droppedFolder.id,
 			parentId: folder.value ? folder.value.id : null,
@@ -540,16 +534,6 @@ async function moveFilesBulk() {
 	});
 
 	globalEvents.emit('driveFilesMoved', selectedFiles.value, toFolder[0]);
-}
-
-function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
-	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
-	foldersPaginator.removeItem(folderIdToRemove);
-}
-
-function removeFile(file: Misskey.entities.DriveFile | string) {
-	const fileId = typeof file === 'object' ? file.id : file;
-	filesPaginator.removeItem(fileId);
 }
 
 function goRoot() {
