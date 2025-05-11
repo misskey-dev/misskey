@@ -5714,6 +5714,14 @@ export interface Locale extends ILocale {
          */
         "useStickyIcons": string;
         /**
+         * 高品質な画像のプレースホルダを表示
+         */
+        "enableHighQualityImagePlaceholders": string;
+        /**
+         * UIのアニメーション
+         */
+        "uiAnimations": string;
+        /**
          * ナビゲーションバーに副ボタンを表示
          */
         "showNavbarSubButtons": string;
