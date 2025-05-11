@@ -43,6 +43,7 @@ import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
+import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FOLDER } from '@/consts.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -101,8 +102,8 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
+	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
+	const isDriveFolder = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDER;
 
 	if (isFile || isDriveFile || isDriveFolder) {
 		switch (ev.dataTransfer.effectAllowed) {
@@ -148,7 +149,7 @@ function onDrop(ev: DragEvent) {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
@@ -160,7 +161,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
+	const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
 	if (driveFolder != null && driveFolder !== '') {
 		const folder = JSON.parse(driveFolder);
 
@@ -198,7 +199,7 @@ function onDragstart(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	ev.dataTransfer.effectAllowed = 'move';
-	ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FOLDER_, JSON.stringify(props.folder));
+	ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FOLDER, JSON.stringify(props.folder));
 	isDragging.value = true;
 
 	// 親ブラウザに対して、ドラッグが開始されたフラグを立てる

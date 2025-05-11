@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:selectMode="select === 'file' || isEditMode"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
 							@chosen="onChooseFile"
-							@dragstart="isDragSource = true"
+							@dragstart="onFileDragstart(file, $event)"
 							@dragend="isDragSource = false"
 						/>
 					</div>
@@ -152,6 +152,7 @@ import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
+import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDER } from '@/consts.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -250,6 +251,19 @@ function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	}
 }
 
+function onFileDragstart(file: Misskey.entities.DriveFile, ev: DragEvent) {
+	if (isEditMode.value) {
+		if (!selectedFiles.value.some(f => f.id === file.id)) {
+			selectedFiles.value.push(file);
+		}
+
+		ev.dataTransfer.effectAllowed = 'move';
+		ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FILES, JSON.stringify(selectedFiles.value));
+	}
+
+	isDragSource.value = true;
+}
+
 function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
@@ -261,8 +275,8 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
+	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
+	const isDriveFolder = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDER;
 	if (isFile || isDriveFile || isDriveFolder) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
@@ -309,7 +323,7 @@ function onDrop(ev: DragEvent) {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		if (filesPaginator.items.value.some(f => f.id === file.id)) return;
@@ -322,7 +336,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
+	const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
 	if (driveFolder != null && driveFolder !== '') {
 		const droppedFolder = JSON.parse(driveFolder);
 
@@ -651,7 +665,9 @@ function closeTip() {
 }
 
 useGlobalEvent('driveFilesMoved', (files, to) => {
-	// TODO
+	if ((to?.id ?? null) === (folder.value?.id ?? null)) {
+		filesPaginator.unshiftItems(files);
+	}
 });
 
 let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
