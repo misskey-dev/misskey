@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XNavFolder
 					:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
 					:parentFolder="folder"
-					@move="move"
+					@click="cd(null)"
 					@upload="upload"
 				/>
 				<template v-for="f in hierarchyFolders">
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:folder="f"
 						:parentFolder="folder"
 						:class="[$style.navPathItem]"
-						@move="move"
+						@click="cd(f)"
 						@upload="upload"
 					/>
 				</template>
@@ -42,10 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</template>
 			<template v-else>
-				<MkButton v-if="!selectedFolders.some(f => f.id === folder.id)" @click="selectedFolders.push(folder)">
+				<MkButton v-if="!selectedFolders.some(f => f.id === folder!.id)" @click="selectedFolders.push(folder)">
 					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
 				</MkButton>
-				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder.id)">
+				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder!.id)">
 					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
 				</MkButton>
 			</template>
@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:isSelected="selectedFolders.some(x => x.id === f.id)"
 						@chosen="chooseFolder"
 						@unchose="unchoseFolder"
-						@move="move"
+						@click="cd(f)"
 						@upload="upload"
 						@dragstart="isDragSource = true"
 						@dragend="isDragSource = false"
@@ -412,7 +412,7 @@ async function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	});
 
 	// FIXME: 画面を更新するために自分自身に移動
-	move(updatedFolder);
+	cd(updatedFolder);
 }
 
 function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
@@ -420,7 +420,7 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 		folderId: folderToDelete.id,
 	}).then(() => {
 		// 削除時に親フォルダに移動
-		move(folderToDelete.parentId);
+		cd(folderToDelete.parentId);
 	}).catch(err => {
 		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
@@ -495,7 +495,7 @@ function unchoseFolder(folderToUnchose: Misskey.entities.DriveFolder) {
 	selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToUnchose.id);
 }
 
-function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
+function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
 	if (!target) {
 		goRoot();
 		return;
@@ -663,7 +663,7 @@ onMounted(() => {
 	}
 
 	if (props.initialFolder) {
-		move(props.initialFolder);
+		cd(props.initialFolder);
 	} else {
 		initialize();
 	}

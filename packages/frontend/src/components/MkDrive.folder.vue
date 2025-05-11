@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.draghover]: draghover }]"
 	draggable="true"
 	:title="title"
-	@click="onClick"
 	@contextmenu.stop="onContextmenu"
 	@mouseover="onMouseover"
 	@mouseout="onMouseout"
@@ -57,7 +56,6 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
 	(ev: 'unchose', v: Misskey.entities.DriveFolder): void;
-	(ev: 'move', v: Misskey.entities.DriveFolder): void;
 	(ev: 'upload', file: File, folder: Misskey.entities.DriveFolder);
 	(ev: 'dragstart'): void;
 	(ev: 'dragend'): void;
@@ -75,10 +73,6 @@ function checkboxClicked() {
 	} else {
 		emit('chosen', props.folder);
 	}
-}
-
-function onClick() {
-	emit('move', props.folder);
 }
 
 function onMouseover() {

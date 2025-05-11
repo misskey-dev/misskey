@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	:class="[$style.root, { [$style.draghover]: draghover }]"
-	@click="onClick"
 	@dragover.prevent.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -30,24 +29,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'move', v?: Misskey.entities.DriveFolder): void;
 	(ev: 'upload', file: File, folder?: Misskey.entities.DriveFolder | null): void;
 }>();
 
-const hover = ref(false);
 const draghover = ref(false);
-
-function onClick() {
-	emit('move', props.folder);
-}
-
-function onMouseover() {
-	hover.value = true;
-}
-
-function onMouseout() {
-	hover.value = false;
-}
 
 function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
