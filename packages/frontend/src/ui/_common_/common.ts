@@ -51,7 +51,12 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.instanceInfo,
 		icon: 'ti ti-info-circle',
 		to: '/about',
-	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
+	}, $i ? {
+		type: 'link',
+		text: i18n.ts.charts,
+		icon: 'ti ti-chart-line',
+		to: '/charts',
+	} : undefined, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 		type: 'link',
 		text: i18n.ts.customEmojis,
 		icon: 'ti ti-icons',

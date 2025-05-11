@@ -222,6 +222,10 @@ export const ROUTE_DEF = [{
 	path: '/contact',
 	component: page(() => import('@/pages/contact.vue')),
 }, {
+	path: '/charts',
+	component: page(() => import('@/pages/charts.vue')),
+	loginRequired: true,
+}, {
 	path: '/about-misskey',
 	component: page(() => import('@/pages/about-misskey.vue')),
 }, {
