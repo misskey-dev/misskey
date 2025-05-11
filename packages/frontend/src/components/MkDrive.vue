@@ -319,47 +319,66 @@ function onDrop(ev: DragEvent) {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
-		if (filesPaginator.items.value.some(f => f.id === file.id)) return;
-		misskeyApi('drive/files/update', {
-			fileId: file.id,
-			folderId: folder.value ? folder.value.id : null,
-		});
+	{
+		const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
+		if (driveFile != null && driveFile !== '') {
+			const file = JSON.parse(driveFile);
+			if (filesPaginator.items.value.some(f => f.id === file.id)) return;
+			misskeyApi('drive/files/update', {
+				fileId: file.id,
+				folderId: folder.value ? folder.value.id : null,
+			});
+		}
+	}
+	//#endregion
+
+	//#region ドライブのファイル(複数)
+	{
+		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
+		if (driveFiles != null && driveFiles !== '') {
+			const files = JSON.parse(driveFiles);
+			misskeyApi('drive/files/move-bulk', {
+				fileIds: files.map(f => f.id),
+				folderId: folder.value ? folder.value.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFilesMoved', files, folder.value);
+			});
+		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
-	if (driveFolder != null && driveFolder !== '') {
-		const droppedFolder = JSON.parse(driveFolder);
+	{
+		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
+		if (driveFolder != null && driveFolder !== '') {
+			const droppedFolder = JSON.parse(driveFolder);
 
-		// 移動先が自分自身ならreject
-		if (folder.value && droppedFolder.id === folder.value.id) return false;
-		if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
-		misskeyApi('drive/folders/update', {
-			folderId: droppedFolder.id,
-			parentId: folder.value ? folder.value.id : null,
-		}).then(() => {
+			// 移動先が自分自身ならreject
+			if (folder.value && droppedFolder.id === folder.value.id) return false;
+			if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
+			misskeyApi('drive/folders/update', {
+				folderId: droppedFolder.id,
+				parentId: folder.value ? folder.value.id : null,
+			}).then(() => {
 			// noop
-		}).catch(err => {
-			switch (err.code) {
-				case 'RECURSIVE_NESTING':
-					claimAchievement('driveFolderCircularReference');
-					os.alert({
-						type: 'error',
-						title: i18n.ts.unableToProcess,
-						text: i18n.ts.circularReferenceFolder,
-					});
-					break;
-				default:
-					os.alert({
-						type: 'error',
-						text: i18n.ts.somethingHappened,
-					});
-			}
-		});
+			}).catch(err => {
+				switch (err.code) {
+					case 'RECURSIVE_NESTING':
+						claimAchievement('driveFolderCircularReference');
+						os.alert({
+							type: 'error',
+							title: i18n.ts.unableToProcess,
+							text: i18n.ts.circularReferenceFolder,
+						});
+						break;
+					default:
+						os.alert({
+							type: 'error',
+							text: i18n.ts.somethingHappened,
+						});
+				}
+			});
+		}
 	}
 	//#endregion
 }
@@ -649,6 +668,9 @@ function closeTip() {
 }
 
 useGlobalEvent('driveFilesMoved', (files, to) => {
+	for (const f of files) {
+		filesPaginator.removeItem(f.id);
+	}
 	if ((to?.id ?? null) === (folder.value?.id ?? null)) {
 		filesPaginator.unshiftItems(files);
 	}

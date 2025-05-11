@@ -43,6 +43,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
 import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDER, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
+import { globalEvents } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -143,46 +144,65 @@ function onDrop(ev: DragEvent) {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
-		misskeyApi('drive/files/update', {
-			fileId: file.id,
-			folderId: props.folder.id,
-		});
+	{
+		const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
+		if (driveFile != null && driveFile !== '') {
+			const file = JSON.parse(driveFile);
+			misskeyApi('drive/files/update', {
+				fileId: file.id,
+				folderId: props.folder.id,
+			});
+		}
+	}
+	//#endregion
+
+	//#region ドライブのファイル(複数)
+	{
+		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
+		if (driveFiles != null && driveFiles !== '') {
+			const files = JSON.parse(driveFiles);
+			misskeyApi('drive/files/move-bulk', {
+				fileIds: files.map(f => f.id),
+				folderId: props.folder.id,
+			}).then(() => {
+				globalEvents.emit('driveFilesMoved', files, props.folder);
+			});
+		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
-	if (driveFolder != null && driveFolder !== '') {
-		const folder = JSON.parse(driveFolder);
+	{
+		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
+		if (driveFolder != null && driveFolder !== '') {
+			const folder = JSON.parse(driveFolder);
 
-		// 移動先が自分自身ならreject
-		if (folder.id === props.folder.id) return;
+			// 移動先が自分自身ならreject
+			if (folder.id === props.folder.id) return;
 
-		misskeyApi('drive/folders/update', {
-			folderId: folder.id,
-			parentId: props.folder.id,
-		}).then(() => {
+			misskeyApi('drive/folders/update', {
+				folderId: folder.id,
+				parentId: props.folder.id,
+			}).then(() => {
 			// noop
-		}).catch(err => {
-			switch (err.code) {
-				case 'RECURSIVE_NESTING':
-					claimAchievement('driveFolderCircularReference');
-					os.alert({
-						type: 'error',
-						title: i18n.ts.unableToProcess,
-						text: i18n.ts.circularReferenceFolder,
-					});
-					break;
-				default:
-					os.alert({
-						type: 'error',
-						text: i18n.ts.somethingHappened,
-					});
-			}
-		});
+			}).catch(err => {
+				switch (err.code) {
+					case 'RECURSIVE_NESTING':
+						claimAchievement('driveFolderCircularReference');
+						os.alert({
+							type: 'error',
+							title: i18n.ts.unableToProcess,
+							text: i18n.ts.circularReferenceFolder,
+						});
+						break;
+					default:
+						os.alert({
+							type: 'error',
+							text: i18n.ts.somethingHappened,
+						});
+				}
+			});
+		}
 	}
 	//#endregion
 }
@@ -202,10 +222,6 @@ function onDragstart(ev: DragEvent) {
 function onDragend() {
 	isDragging.value = false;
 	emit('dragend');
-}
-
-function go() {
-	emit('move', props.folder);
 }
 
 function rename() {

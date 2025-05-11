@@ -21,7 +21,8 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FOLDER } from '@/consts.js';
+import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDER, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
+import { globalEvents } from '@/events.js';
 
 const props = defineProps<{
 	folder?: Misskey.entities.DriveFolder;
@@ -44,9 +45,11 @@ function onDragover(ev: DragEvent) {
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
 	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
+	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
 	const isDriveFolder = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDER;
+	const isDriveFolders = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDERS;
 
-	if (isFile || isDriveFile || isDriveFolder) {
+	if (isFile || isDriveFile || isDriveFolder || isDriveFiles || isDriveFolders) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -92,26 +95,45 @@ function onDrop(ev: DragEvent) {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
-		misskeyApi('drive/files/update', {
-			fileId: file.id,
-			folderId: props.folder ? props.folder.id : null,
-		});
+	{
+		const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
+		if (driveFile != null && driveFile !== '') {
+			const file = JSON.parse(driveFile);
+			misskeyApi('drive/files/update', {
+				fileId: file.id,
+				folderId: props.folder ? props.folder.id : null,
+			});
+		}
+	}
+	//#endregion
+
+	//#region ドライブのファイル(複数)
+	{
+		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
+		if (driveFiles != null && driveFiles !== '') {
+			const files = JSON.parse(driveFiles);
+			misskeyApi('drive/files/move-bulk', {
+				fileIds: files.map(f => f.id),
+				folderId: props.folder ? props.folder.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFilesMoved', files, props.folder ?? null);
+			});
+		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
-	if (driveFolder != null && driveFolder !== '') {
-		const folder = JSON.parse(driveFolder);
-		// 移動先が自分自身ならreject
-		if (props.folder && folder.id === props.folder.id) return;
-		misskeyApi('drive/folders/update', {
-			folderId: folder.id,
-			parentId: props.folder ? props.folder.id : null,
-		});
+	{
+		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
+		if (driveFolder != null && driveFolder !== '') {
+			const folder = JSON.parse(driveFolder);
+			// 移動先が自分自身ならreject
+			if (props.folder && folder.id === props.folder.id) return;
+			misskeyApi('drive/folders/update', {
+				folderId: folder.id,
+				parentId: props.folder ? props.folder.id : null,
+			});
+		}
 	}
 	//#endregion
 }
