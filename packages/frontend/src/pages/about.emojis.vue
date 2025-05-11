@@ -42,18 +42,34 @@ import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
+import { customEmojis, customEmojisMap, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
+import { searchCustomEmojisUnlimited } from '@/hana/scripts/emoji-search.js';
+import { hanaStore } from '@/hana/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 
 const customEmojiTags = getCustomEmojiTags();
 const q = ref('');
-const searchEmojis = ref<Misskey.entities.EmojiSimple[]>(null);
+const searchEmojis = ref<Misskey.entities.EmojiSimple[] | null>(null);
 const selectedTags = ref(new Set());
 
-function search() {
+async function search() {
 	if ((q.value === '' || q.value == null) && selectedTags.value.size === 0) {
 		searchEmojis.value = null;
+		return;
+	}
+
+	if (hanaStore.s.enableWasmEmojiSearch) {
+		const res = await searchCustomEmojisUnlimited(q.value);
+		console.log('emoji search result:', res);
+		if (res == null || res.length === 0) {
+			searchEmojis.value = null;
+		} else {
+			searchEmojis.value = res.map((emoji) => {
+				const name = emoji.replaceAll(':', '');
+				return customEmojisMap.get(name) ?? null;
+			}).filter((emoji) => emoji != null);
+		}
 		return;
 	}
 

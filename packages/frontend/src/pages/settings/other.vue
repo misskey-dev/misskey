@@ -96,6 +96,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="stackingRouterView">
 							<template #label>Enable stacking router view</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableWasmEmojiSearch">
+							<template #label>Enable Hanami In-Browser Search Engine for custom emojis</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -139,6 +142,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
+import { hanaStore } from '@/hana/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -157,8 +161,12 @@ const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
+const enableWasmEmojiSearch = computed(hanaStore.makeGetterSetter('enableWasmEmojiSearch'));
 
-watch(skipNoteRender, async () => {
+watch([
+	skipNoteRender,
+	enableWasmEmojiSearch,
+], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 

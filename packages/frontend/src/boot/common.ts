@@ -28,6 +28,7 @@ import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimedAchievements } from '@/utility/achievements.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
+import { clearEmojiSearchIndex, initEmojiSearch } from '@/hana/scripts/emoji-search.js';
 import { prefer } from '@/preferences.js';
 import { iAmModerator, $i } from '@/i.js';
 
@@ -270,6 +271,11 @@ export async function common(createVue: () => Promise<App<Element>>) {
 
 	try {
 		await fetchCustomEmojis();
+		if (hanaStore.s.enableWasmEmojiSearch) {
+			await initEmojiSearch();
+		} else {
+			await clearEmojiSearchIndex();
+		}
 	} catch (err) { /* empty */ }
 
 	// analytics

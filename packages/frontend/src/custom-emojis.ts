@@ -6,6 +6,12 @@
 import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import {
+	regenerateCustomEmojiSearchIndex,
+	addCustomEmojiToSearchIndex,
+	updateCustomEmojiOnSearchIndex,
+	removeCustomEmojiFromSearchIndex,
+} from '@/hana/scripts/emoji-search.js';
 import { get, set } from '@/utility/idb-proxy.js';
 
 const storageCache = await get('emojis');
@@ -31,22 +37,25 @@ watch(customEmojis, emojis => {
 export function addCustomEmoji(emoji: Misskey.entities.EmojiSimple) {
 	customEmojis.value = [emoji, ...customEmojis.value];
 	set('emojis', customEmojis.value);
+	addCustomEmojiToSearchIndex(emoji);
 }
 
 export function updateCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 	customEmojis.value = customEmojis.value.map(item => emojis.find(search => search.name === item.name) ?? item);
 	set('emojis', customEmojis.value);
+	updateCustomEmojiOnSearchIndex(emojis);
 }
 
 export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 	customEmojis.value = customEmojis.value.filter(item => !emojis.some(search => search.name === item.name));
 	set('emojis', customEmojis.value);
+	removeCustomEmojiFromSearchIndex(emojis);
 }
 
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
 
-	let res;
+	let res: Misskey.entities.EmojisResponse;
 	if (force) {
 		res = await misskeyApi('emojis', {});
 	} else {
@@ -58,6 +67,7 @@ export async function fetchCustomEmojis(force = false) {
 	customEmojis.value = res.emojis;
 	set('emojis', res.emojis);
 	set('lastEmojisFetchedAt', now);
+	regenerateCustomEmojiSearchIndex(res.emojis);
 }
 
 let cachedTags;
