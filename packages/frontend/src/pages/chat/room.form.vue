@@ -47,7 +47,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { DATA_TRANSFER_DRIVE_FILE } from '@/consts.js';
+import { DATA_TRANSFER_DRIVE_FILES } from '@/consts.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -102,8 +102,8 @@ function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
-	if (isFile || isDriveFile) {
+	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
+	if (isFile || isDriveFiles) {
 		ev.preventDefault();
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
@@ -142,10 +142,12 @@ function onDrop(ev: DragEvent): void {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
-	if (driveFile != null && driveFile !== '') {
-		file.value = JSON.parse(driveFile);
-		ev.preventDefault();
+	{
+		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
+		if (driveFiles != null && driveFiles !== '') {
+			file.value = JSON.parse(driveFiles)[0];
+			ev.preventDefault();
+		}
 	}
 	//#endregion
 }

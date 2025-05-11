@@ -42,7 +42,7 @@ import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
-import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDER, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
+import { DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
 import { globalEvents } from '@/events.js';
 
 const props = withDefaults(defineProps<{
@@ -95,12 +95,10 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
 	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
-	const isDriveFolder = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDER;
 	const isDriveFolders = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDERS;
 
-	if (isFile || isDriveFile || isDriveFolder || isDriveFiles || isDriveFolders) {
+	if (isFile || isDriveFiles || isDriveFolders) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -145,21 +143,6 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのファイル
 	{
-		const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
-		if (driveFile != null && driveFile !== '') {
-			const file = JSON.parse(driveFile);
-			misskeyApi('drive/files/update', {
-				fileId: file.id,
-				folderId: props.folder.id,
-			}).then(() => {
-				globalEvents.emit('driveFilesMoved', [file], props.folder);
-			});
-		}
-	}
-	//#endregion
-
-	//#region ドライブのファイル(複数)
-	{
 		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
 		if (driveFiles != null && driveFiles !== '') {
 			const files = JSON.parse(driveFiles);
@@ -174,8 +157,9 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 
 	//#region ドライブのフォルダ
+	// TODO
 	{
-		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
+		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDERS);
 		if (driveFolder != null && driveFolder !== '') {
 			const folder = JSON.parse(driveFolder);
 

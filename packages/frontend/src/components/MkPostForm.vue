@@ -138,7 +138,7 @@ import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
-import { DATA_TRANSFER_DRIVE_FILE } from '@/consts.js';
+import { DATA_TRANSFER_DRIVE_FILES } from '@/consts.js';
 
 const $i = ensureSignin();
 
@@ -702,8 +702,8 @@ async function onPaste(ev: ClipboardEvent) {
 function onDragover(ev) {
 	if (!ev.dataTransfer.items[0]) return;
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
-	if (isFile || isDriveFile) {
+	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
+	if (isFile || isDriveFiles) {
 		ev.preventDefault();
 		draghover.value = true;
 		switch (ev.dataTransfer.effectAllowed) {
@@ -744,11 +744,12 @@ function onDrop(ev: DragEvent): void {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer?.getData(DATA_TRANSFER_DRIVE_FILE);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
-		files.value.push(file);
-		ev.preventDefault();
+	{
+		const driveFiles = ev.dataTransfer?.getData(DATA_TRANSFER_DRIVE_FILES);
+		if (driveFiles != null && driveFiles !== '') {
+			files.value.push(...JSON.parse(driveFiles));
+			ev.preventDefault();
+		}
 	}
 	//#endregion
 }

@@ -83,14 +83,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-show="filesPaginator.items.value.length > 0">
-				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="item.date.toISOString()">
+				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
 					<template #header>
 						<div :class="$style.date">
 							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
 						</div>
 					</template>
 
-					<div :class="$style.files">
+					<TransitionGroup
+						tag="div"
+						:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+						:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+						:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+						:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+						:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+						:class="$style.files"
+					>
 						<XFile
 							v-for="file in item.items" :key="file.id"
 							:class="$style.file"
@@ -102,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							@dragstart="onFileDragstart(file, $event)"
 							@dragend="isDragSource = false"
 						/>
-					</div>
+					</TransitionGroup>
 				</MkStickyContainer>
 				<MkButton v-show="filesPaginator.canFetchOlder.value" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
@@ -126,7 +134,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
@@ -146,7 +154,7 @@ import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
-import { DATA_TRANSFER_DRIVE_FILE, DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDER } from '@/consts.js';
+import { DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -271,9 +279,9 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILE;
-	const isDriveFolder = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDER;
-	if (isFile || isDriveFile || isDriveFolder) {
+	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
+	const isDriveFolders = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDERS;
+	if (isFile || isDriveFiles || isDriveFolders) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -320,22 +328,6 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのファイル
 	{
-		const driveFile = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILE);
-		if (driveFile != null && driveFile !== '') {
-			const file = JSON.parse(driveFile);
-			if (filesPaginator.items.value.some(f => f.id === file.id)) return;
-			misskeyApi('drive/files/update', {
-				fileId: file.id,
-				folderId: folder.value ? folder.value.id : null,
-			}).then(() => {
-				globalEvents.emit('driveFilesMoved', [file], folder.value);
-			});
-		}
-	}
-	//#endregion
-
-	//#region ドライブのファイル(複数)
-	{
 		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
 		if (driveFiles != null && driveFiles !== '') {
 			const files = JSON.parse(driveFiles);
@@ -350,6 +342,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 
 	//#region ドライブのフォルダ
+	// TODO
 	{
 		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
 		if (driveFolder != null && driveFolder !== '') {
@@ -704,6 +697,19 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" module>
+.transition_files_move,
+.transition_files_enterActive,
+.transition_files_leaveActive {
+	transition: all 0.2s ease;
+}
+.transition_files_enterFrom,
+.transition_files_leaveTo {
+	opacity: 0;
+}
+.transition_files_leaveActive {
+	position: absolute;
+}
+
 .nav {
 	display: flex;
 	width: 100%;

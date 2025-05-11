@@ -48,7 +48,7 @@ import { $i } from '@/i.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { useRouter } from '@/router.js';
-import { DATA_TRANSFER_DRIVE_FILE } from '@/consts.js';
+import { DATA_TRANSFER_DRIVE_FILES } from '@/consts.js';
 
 const router = useRouter();
 
@@ -91,7 +91,7 @@ function onContextmenu(ev: MouseEvent) {
 function onDragstart(ev: DragEvent) {
 	if (ev.dataTransfer) {
 		ev.dataTransfer.effectAllowed = 'move';
-		ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FILE, JSON.stringify(props.file));
+		ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FILES, JSON.stringify([props.file]));
 	}
 	isDragging.value = true;
 
