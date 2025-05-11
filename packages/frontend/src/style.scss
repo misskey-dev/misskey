@@ -209,6 +209,7 @@ rt {
 	container-type: size;
 	contain: strict;
 	overflow: auto;
+	overflow-x: clip;
 	overscroll-behavior: contain;
 }
 

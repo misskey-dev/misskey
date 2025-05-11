@@ -5,15 +5,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_pageContainer" :class="$style.root">
-	<KeepAlive :max="prefer.s.numberOfPageCache">
-		<Suspense :timeout="0">
-			<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+	<Transition
+		mode="in-out"
+		:enterActiveClass="prefer.s.animation ? (isBackNavigation ? $style.transition_back_enterActive : $style.transition_forward_enterActive) : ''"
+		:leaveActiveClass="prefer.s.animation ? (isBackNavigation ? $style.transition_back_leaveActive : $style.transition_forward_leaveActive) : ''"
+		:enterFromClass="prefer.s.animation ? (isBackNavigation ? $style.transition_back_enterFrom : $style.transition_forward_enterFrom) : ''"
+		:leaveToClass="prefer.s.animation ? (isBackNavigation ? $style.transition_back_leaveTo : $style.transition_forward_leaveTo) : ''"
+	>
+		<KeepAlive :max="prefer.s.numberOfPageCache">
+			<Suspense :timeout="1000">
+				<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
 
-			<template #fallback>
-				<MkLoading/>
-			</template>
-		</Suspense>
-	</KeepAlive>
+				<template #fallback>
+					<MkLoading/>
+				</template>
+			</Suspense>
+		</KeepAlive>
+	</Transition>
 </div>
 </template>
 
@@ -47,6 +55,7 @@ const currentPageComponent = shallowRef('component' in current.route ? current.r
 const currentPageProps = ref(current.props);
 let currentRoutePath = current.route.path;
 const key = ref(router.getCurrentFullPath());
+const isBackNavigation = ref(false);
 
 router.useListener('change', ({ resolved }) => {
 	if (resolved == null || 'redirect' in resolved.route) return;
@@ -64,6 +73,44 @@ router.useListener('change', ({ resolved }) => {
 </script>
 
 <style lang="scss" module>
+.transition_forward_enterActive,
+.transition_forward_leaveActive {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--MI_THEME-bg);
+	transition: transform 0.5s cubic-bezier(0,.25,.25,1), filter 0.5s cubic-bezier(0,.25,.25,1);
+}
+.transition_forward_enterFrom {
+	transform: translateX(100%);
+}
+.transition_forward_leaveTo {
+	transform: translateX(-50%);
+	filter: brightness(0.5);
+}
+
+.transition_back_enterActive,
+.transition_back_leaveActive {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--MI_THEME-bg);
+	transition: transform 10.5s cubic-bezier(0,.25,.25,1), filter 10.5s cubic-bezier(0,.25,.25,1);
+}
+.transition_back_enterFrom {
+	transform: translateX(-20%);
+	filter: brightness(0.5);
+}
+.transition_back_leaveTo {
+	position: absolute;
+	transform: translateX(100%);
+	z-index: 100;
+}
+
 .root {
 	height: 100%;
 	background-color: var(--MI_THEME-bg);
