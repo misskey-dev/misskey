@@ -7,7 +7,7 @@ import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import Fastify, { FastifyInstance } from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
@@ -73,7 +73,7 @@ export class ServerService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async launch() {
+	public async launch(): Promise<void> {
 		const fastify = Fastify({
 			trustProxy: true,
 			logger: false,
@@ -133,8 +133,8 @@ export class ServerService implements OnApplicationShutdown {
 				reply.header('content-type', 'text/plain; charset=utf-8');
 				reply.header('link', `<${encodeURI(location)}>; rel="canonical"`);
 				done(null, [
-					'Refusing to relay remote ActivityPub object lookup.',
-					'',
+					"Refusing to relay remote ActivityPub object lookup.",
+					"",
 					`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
 				].join('\n'));
 			});
@@ -301,13 +301,19 @@ export class ServerService implements OnApplicationShutdown {
 		}
 
 		await fastify.ready();
-		return fastify;
 	}
 
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
 		await this.#fastify.close();
+	}
+
+	/**
+	 * Get the Fastify instance for testing.
+	 */
+	public get fastify(): FastifyInstance {
+		return this.#fastify;
 	}
 
 	@bindThis

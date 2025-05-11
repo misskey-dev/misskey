@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkLoading v-if="!loaded"/>
 <Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" :class="$style.root">
-		<img :src="serverErrorImageUrl" draggable="false" :class="$style.img"/>
+		<img v-if="instance.serverErrorImageUrl" :src="instance.serverErrorImageUrl" draggable="false" :class="$style.img"/>
 		<div class="_gaps">
 			<div><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></div>
 			<div v-if="meta && (version === meta.version)">{{ i18n.ts.pageLoadErrorDescription }}</div>
@@ -36,7 +36,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
-import { serverErrorImageUrl } from '@/instance.js';
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	error?: Error;
