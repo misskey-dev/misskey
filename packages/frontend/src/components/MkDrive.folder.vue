@@ -151,6 +151,8 @@ function onDrop(ev: DragEvent) {
 			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				folderId: props.folder.id,
+			}).then(() => {
+				globalEvents.emit('driveFilesMoved', [file], props.folder);
 			});
 		}
 	}
