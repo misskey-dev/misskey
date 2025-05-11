@@ -73,15 +73,15 @@ async function create() {
 
 	clipsCache.delete();
 
-	pagingComponent.value?.reload();
+	pagingComponent.value?.paginator.reload();
 }
 
 function onClipCreated() {
-	pagingComponent.value?.reload();
+	pagingComponent.value?.paginator.reload();
 }
 
 function onClipDeleted() {
-	pagingComponent.value?.reload();
+	pagingComponent.value?.paginator.reload();
 }
 
 const headerActions = computed(() => []);

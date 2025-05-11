@@ -21,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22.11.0]
+        node-version-file:
+          - .node-version
+          - .github/min.node-version
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,10 +45,10 @@ jobs:
               exit 1
             fi
           done
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v4.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
       - name: Build Misskey
         run: |
@@ -54,6 +56,7 @@ jobs:
           pnpm build
       - name: Setup
         run: |
+          echo "NODE_VERSION=$(cat ${{ matrix.node-version-file }})" >> $GITHUB_ENV
           cd packages/backend/test-federation
           bash ./setup.sh
           sudo chmod 644 ./certificates/*.test.key

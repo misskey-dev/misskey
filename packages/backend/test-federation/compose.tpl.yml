@@ -12,7 +12,7 @@ services:
       retries: 20
 
   misskey:
-    image: node:20
+    image: node:${NODE_VERSION}
     env_file:
       - ./.config/docker.env
     environment:

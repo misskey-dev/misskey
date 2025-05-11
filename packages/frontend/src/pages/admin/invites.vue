@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from 'vue';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -73,7 +73,7 @@ const pagingComponent = useTemplateRef('pagingComponent');
 const type = ref('all');
 const sort = ref('+createdAt');
 
-const pagination: Paging = {
+const pagination: PagingCtx = {
 	endpoint: 'admin/invite/list' as const,
 	limit: 10,
 	params: computed(() => ({
@@ -100,12 +100,12 @@ async function createWithOptions() {
 		text: tickets.map(x => x.code).join('\n'),
 	});
 
-	tickets.forEach(ticket => pagingComponent.value?.prepend(ticket));
+	tickets.forEach(ticket => pagingComponent.value?.paginator.prepend(ticket));
 }
 
 function deleted(id: string) {
 	if (pagingComponent.value) {
-		pagingComponent.value.items.delete(id);
+		pagingComponent.value.paginator.removeItem(id);
 	}
 }
 

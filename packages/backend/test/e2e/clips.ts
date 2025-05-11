@@ -909,7 +909,7 @@ describe('クリップ', () => {
 			assert.deepStrictEqual(res.map(x => x.id), [aliceNote.id]);
 		});
 
-		test('はPublicなクリップなら認証なしでも取得できる。(非公開ノートはhideされて返ってくる)', async () => {
+		test('はPublicなクリップなら認証なしでも取得できる。(非公開ノートは含まれない)', async () => {
 			const publicClip = await create({ isPublic: true });
 			await addNote({ clipId: publicClip.id, noteId: aliceNote.id });
 			await addNote({ clipId: publicClip.id, noteId: aliceHomeNote.id });
@@ -919,8 +919,6 @@ describe('クリップ', () => {
 			const res = await notes({ clipId: publicClip.id }, { user: undefined });
 			const expects = [
 				aliceNote, aliceHomeNote,
-				// 認証なしだと非公開ノートは結果には含むけどhideされる。
-				hiddenNote(aliceFollowersNote), hiddenNote(aliceSpecifiedNote),
 			];
 			assert.deepStrictEqual(
 				res.sort(compareBy(s => s.id)).map(x => x.id),

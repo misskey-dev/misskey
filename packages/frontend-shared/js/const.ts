@@ -112,10 +112,6 @@ export const ROLE_POLICIES = [
 	'chatAvailability',
 ] as const;
 
-export const DEFAULT_SERVER_ERROR_IMAGE_URL = 'https://xn--931a.moe/assets/error.jpg';
-export const DEFAULT_NOT_FOUND_IMAGE_URL = 'https://xn--931a.moe/assets/not-found.jpg';
-export const DEFAULT_INFO_IMAGE_URL = 'https://xn--931a.moe/assets/info.jpg';
-
 export const MFM_TAGS = ['tada', 'jelly', 'twitch', 'shake', 'spin', 'jump', 'bounce', 'flip', 'x2', 'x3', 'x4', 'scale', 'position', 'fg', 'bg', 'border', 'font', 'blur', 'rainbow', 'sparkle', 'rotate', 'ruby', 'unixtime'];
 export const MFM_PARAMS: Record<typeof MFM_TAGS[number], string[]> = {
 	tada: ['speed=', 'delay='],

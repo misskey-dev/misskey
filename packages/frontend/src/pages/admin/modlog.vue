@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkTl :events="timeline">
 				<template #left="{ event }">
 					<div>
-						<MkAvatar :user="event.user" style="width: 24px; height: 24px;"/>
+						<MkAvatar :user="event.user" style="width: 26px; height: 26px;"/>
 					</div>
 				</template>
 				<template #right="{ event, timestamp, delta }">

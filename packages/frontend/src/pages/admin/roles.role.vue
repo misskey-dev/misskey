@@ -24,12 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
 					<MkPagination :pagination="usersPagination">
-						<template #empty>
-							<div class="_fullinfo">
-								<img :src="infoImageUrl" draggable="false"/>
-								<div>{{ i18n.ts.noUsers }}</div>
-							</div>
-						</template>
+						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
@@ -70,7 +65,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { infoImageUrl } from '@/instance.js';
 import { useRouter } from '@/router.js';
 
 const router = useRouter();

@@ -323,6 +323,7 @@ export * as 'notes/replies' from './endpoints/notes/replies.js';
 export * as 'notes/search' from './endpoints/notes/search.js';
 export * as 'notes/search-by-tag' from './endpoints/notes/search-by-tag.js';
 export * as 'notes/show' from './endpoints/notes/show.js';
+export * as 'notes/show-partial-bulk' from './endpoints/notes/show-partial-bulk.js';
 export * as 'notes/state' from './endpoints/notes/state.js';
 export * as 'notes/thread-muting/create' from './endpoints/notes/thread-muting/create.js';
 export * as 'notes/thread-muting/delete' from './endpoints/notes/thread-muting/delete.js';

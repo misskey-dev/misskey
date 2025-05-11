@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -81,7 +81,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void
 }>();
 
-const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
+const windowEl = useTemplateRef('windowEl');
 
 const name = computed(() => props.emoji.name);
 const host = computed(() => props.emoji.host);

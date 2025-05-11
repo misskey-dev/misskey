@@ -22,10 +22,11 @@ jobs:
   unit:
     name: Unit tests (backend)
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [22.11.0]
+        node-version-file:
+          - .node-version
+          - .github/min.node-version
 
     services:
       postgres:
@@ -61,10 +62,10 @@ jobs:
             exit 1
           fi
         done
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js
       uses: actions/setup-node@v4.4.0
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: ${{ matrix.node-version-file }}
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
@@ -84,10 +85,11 @@ jobs:
   e2e:
     name: E2E tests (backend)
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [22.11.0]
+        node-version-file:
+          - .node-version
+          - .github/min.node-version
 
     services:
       postgres:
@@ -108,10 +110,10 @@ jobs:
           submodules: true
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.1.0
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v4.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
       - run: pnpm i --frozen-lockfile
       - name: Check pnpm-lock.yaml

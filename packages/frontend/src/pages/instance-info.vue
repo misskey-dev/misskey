@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkKeyValue>
 					<MkButton v-if="suspensionState === 'none'" :disabled="!instance" danger @click="stopDelivery">{{ i18n.ts._delivery.stop }}</MkButton>
-					<MkButton v-if="suspensionState !== 'none'" :disabled="!instance" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
+					<MkButton v-if="suspensionState !== 'none'" :disabled="!instance || suspensionState == 'softwareSuspended'" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
 					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
 					<MkSwitch v-model="isMediaSilenced" :disabled="!meta || !instance" @update:modelValue="toggleMediaSilenced">{{ i18n.ts.mediaSilenceThisInstance }}</MkSwitch>
@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ChartSrc } from '@/components/MkChart.vue';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -164,7 +164,7 @@ const tab = ref('overview');
 const chartSrc = ref<ChartSrc>('instance-requests');
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
 const instance = ref<Misskey.entities.FederationInstance | null>(null);
-const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding'>('none');
+const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding' | 'softwareSuspended'>('none');
 const isBlocked = ref(false);
 const isSilenced = ref(false);
 const isMediaSilenced = ref(false);
@@ -180,7 +180,7 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-} satisfies Paging;
+} satisfies PagingCtx;
 
 if (iAmModerator) {
 	watch(moderationNote, async () => {

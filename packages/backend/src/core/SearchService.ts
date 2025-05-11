@@ -235,6 +235,7 @@ export class SearchService {
 
 		this.queryService.generateVisibilityQuery(query, me);
 		this.queryService.generateBlockedHostQueryForNote(query);
+		this.queryService.generateSuspendedUserQueryForNote(query);
 		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
 		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
 
@@ -297,11 +298,17 @@ export class SearchService {
 			])
 			: [new Set<string>(), new Set<string>()];
 
-		const query = this.notesRepository.createQueryBuilder('note');
+		const query = this.notesRepository.createQueryBuilder('note')
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		query.where('note.id IN (:...noteIds)', { noteIds: res.hits.map(x => x.id) });
 
 		this.queryService.generateBlockedHostQueryForNote(query);
+		this.queryService.generateSuspendedUserQueryForNote(query);
 
 		const notes = (await query.getMany()).filter(note => {
 			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;

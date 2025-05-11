@@ -25,6 +25,37 @@ export type DateSeparetedTimelineItem<T> = {
 	nextText: string;
 };
 
+// TODO: いちいちDateインスタンス作成するのは無駄感あるから文字列のまま解析したい
+export function isSeparatorNeeded(
+	prev: string | null,
+	next: string | null,
+) {
+	if (prev == null || next == null) return false;
+	const prevDate = new Date(prev);
+	const nextDate = new Date(next);
+	return (
+		prevDate.getFullYear() !== nextDate.getFullYear() ||
+		prevDate.getMonth() !== nextDate.getMonth() ||
+		prevDate.getDate() !== nextDate.getDate()
+	);
+}
+
+// TODO: いちいちDateインスタンス作成するのは無駄感あるから文字列のまま解析したい
+export function getSeparatorInfo(
+	prev: string | null,
+	next: string | null,
+) {
+	if (prev == null || next == null) return null;
+	const prevDate = new Date(prev);
+	const nextDate = new Date(next);
+	return {
+		prevDate,
+		prevText: getDateText(prevDate),
+		nextDate,
+		nextText: getDateText(nextDate),
+	};
+}
+
 export function makeDateSeparatedTimelineComputedRef<T extends { id: string; createdAt: string; }>(items: Ref<T[]>) {
 	return computed<DateSeparetedTimelineItem<T>[]>(() => {
 		const tl: DateSeparetedTimelineItem<T>[] = [];
