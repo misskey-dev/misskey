@@ -1425,6 +1425,8 @@ _settings:
   makeEveryTextElementsSelectable: "允許選取所有文字"
   makeEveryTextElementsSelectable_description: "啟用此功能後，可能會在某些情境下降低可用性。"
   useStickyIcons: "使大頭貼跟隨捲動"
+  enableHighQualityImagePlaceholders: "顯示高品質的圖片預覽圖"
+  uiAnimations: "使用者介面的動畫效果\n"
   showNavbarSubButtons: "在導覽列顯示輔助按鈕"
   ifOn: "開啟時"
   ifOff: "關閉時"
