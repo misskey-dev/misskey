@@ -138,7 +138,7 @@ import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
-import { DATA_TRANSFER_DRIVE_FILES } from '@/consts.js';
+import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 
 const $i = ensureSignin();
 
@@ -702,8 +702,7 @@ async function onPaste(ev: ClipboardEvent) {
 function onDragover(ev) {
 	if (!ev.dataTransfer.items[0]) return;
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
-	if (isFile || isDriveFiles) {
+	if (isFile || checkDragDataType(ev, ['driveFiles'])) {
 		ev.preventDefault();
 		draghover.value = true;
 		switch (ev.dataTransfer.effectAllowed) {
@@ -745,9 +744,9 @@ function onDrop(ev: DragEvent): void {
 
 	//#region ドライブのファイル
 	{
-		const driveFiles = ev.dataTransfer?.getData(DATA_TRANSFER_DRIVE_FILES);
-		if (driveFiles != null && driveFiles !== '') {
-			files.value.push(...JSON.parse(driveFiles));
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
+			files.value.push(...droppedData);
 			ev.preventDefault();
 		}
 	}

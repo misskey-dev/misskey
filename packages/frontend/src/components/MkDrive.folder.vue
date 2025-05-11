@@ -42,8 +42,8 @@ import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
-import { DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
 import { globalEvents } from '@/events.js';
+import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -95,10 +95,7 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
-	const isDriveFolders = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDERS;
-
-	if (isFile || isDriveFiles || isDriveFolders) {
+	if (isFile || checkDragDataType(ev, ['driveFiles', 'driveFolders'])) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -143,31 +140,29 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのファイル
 	{
-		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
-		if (driveFiles != null && driveFiles !== '') {
-			const files = JSON.parse(driveFiles);
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
 			misskeyApi('drive/files/move-bulk', {
-				fileIds: files.map(f => f.id),
+				fileIds: droppedData.map(f => f.id),
 				folderId: props.folder.id,
 			}).then(() => {
-				globalEvents.emit('driveFilesMoved', files, props.folder);
+				globalEvents.emit('driveFilesMoved', droppedData, props.folder);
 			});
 		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	// TODO
 	{
-		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDERS);
-		if (driveFolder != null && driveFolder !== '') {
-			const folder = JSON.parse(driveFolder);
+		const droppedData = getDragData(ev, 'driveFolders');
+		if (droppedData != null) {
+			const droppedFolder = droppedData[0];
 
 			// 移動先が自分自身ならreject
-			if (folder.id === props.folder.id) return;
+			if (droppedFolder.id === props.folder.id) return;
 
 			misskeyApi('drive/folders/update', {
-				folderId: folder.id,
+				folderId: droppedFolder.id,
 				parentId: props.folder.id,
 			}).then(() => {
 			// noop
@@ -197,7 +192,7 @@ function onDragstart(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	ev.dataTransfer.effectAllowed = 'move';
-	ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FOLDER, JSON.stringify(props.folder));
+	setDragData(ev, 'driveFolders', [props.folder]);
 	isDragging.value = true;
 
 	// 親ブラウザに対して、ドラッグが開始されたフラグを立てる

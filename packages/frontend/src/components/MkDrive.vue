@@ -154,7 +154,7 @@ import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
-import { DATA_TRANSFER_DRIVE_FILES, DATA_TRANSFER_DRIVE_FOLDERS } from '@/consts.js';
+import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -261,7 +261,7 @@ function onFileDragstart(file: Misskey.entities.DriveFile, ev: DragEvent) {
 
 		if (ev.dataTransfer) {
 			ev.dataTransfer.effectAllowed = 'move';
-			ev.dataTransfer.setData(DATA_TRANSFER_DRIVE_FILES, JSON.stringify(selectedFiles.value));
+			setDragData(ev, 'driveFiles', selectedFiles.value);
 		}
 	}
 
@@ -279,9 +279,7 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFiles = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FILES;
-	const isDriveFolders = ev.dataTransfer.types[0] === DATA_TRANSFER_DRIVE_FOLDERS;
-	if (isFile || isDriveFiles || isDriveFolders) {
+	if (isFile || checkDragDataType(ev, ['driveFiles', 'driveFolders'])) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -328,26 +326,23 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのファイル
 	{
-		const driveFiles = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FILES);
-		if (driveFiles != null && driveFiles !== '') {
-			const files = JSON.parse(driveFiles);
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
 			misskeyApi('drive/files/move-bulk', {
-				fileIds: files.map(f => f.id),
+				fileIds: droppedData.map(f => f.id),
 				folderId: folder.value ? folder.value.id : null,
 			}).then(() => {
-				globalEvents.emit('driveFilesMoved', files, folder.value);
+				globalEvents.emit('driveFilesMoved', droppedData, folder.value);
 			});
 		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	// TODO
 	{
-		const driveFolder = ev.dataTransfer.getData(DATA_TRANSFER_DRIVE_FOLDER);
-		if (driveFolder != null && driveFolder !== '') {
-			const droppedFolder = JSON.parse(driveFolder);
-
+		const droppedData = getDragData(ev, 'driveFolders');
+		if (droppedData != null) {
+			const droppedFolder = droppedData[0];
 			// 移動先が自分自身ならreject
 			if (folder.value && droppedFolder.id === folder.value.id) return false;
 			if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
