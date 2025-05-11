@@ -2000,6 +2000,7 @@ _role:
     canImportMuting: "Allow importing muting"
     canImportUserLists: "Allow importing lists"
     chatAvailability: "Allow Chat"
+    canViewCharts: 'Can view charts'
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"

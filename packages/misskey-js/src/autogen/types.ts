@@ -5378,6 +5378,7 @@ export type components = {
       canUseUnFollowNotification: boolean;
       canUseBlockedNotification: boolean;
       canUseUnBlockedNotification: boolean;
+      canViewCharts: boolean;
     };
     ReversiGameLite: {
       /** Format: id */

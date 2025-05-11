@@ -348,6 +348,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canViewCharts: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 

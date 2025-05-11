@@ -7901,6 +7901,10 @@ export interface Locale extends ILocale {
              * チャットを許可
              */
             "chatAvailability": string;
+            /**
+             * インスタンス統計を閲覧
+             */
+            "canViewCharts": string;
         };
         "_condition": {
             /**

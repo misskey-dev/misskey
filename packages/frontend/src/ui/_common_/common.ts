@@ -51,7 +51,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.instanceInfo,
 		icon: 'ti ti-info-circle',
 		to: '/about',
-	}, $i ? {
+	}, ($i && ($i.isAdmin || $i.policies.canViewCharts)) ? {
 		type: 'link',
 		text: i18n.ts.charts,
 		icon: 'ti ti-chart-line',

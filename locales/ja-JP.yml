@@ -2045,6 +2045,7 @@ _role:
     canImportUserLists: "リストのインポートを許可"
     scheduleNoteMax: "予約投稿の最大数"
     chatAvailability: "チャットを許可"
+    canViewCharts: 'インスタンス統計を閲覧'
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
