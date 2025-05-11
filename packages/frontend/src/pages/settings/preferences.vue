@@ -575,6 +575,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
+						<SearchMarker :keywords="['blurhash', 'image', 'photo', 'picture', 'thumbnail', 'placeholder']">
+							<MkPreferenceContainer k="enableHighQualityImagePlaceholders">
+								<MkSwitch v-model="enableHighQualityImagePlaceholders">
+									<template #label><SearchLabel>{{ i18n.ts._settings.enableHighQualityImagePlaceholders }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
 						<SearchMarker :keywords="['sticky']">
 							<MkPreferenceContainer k="useStickyIcons">
 								<MkSwitch v-model="useStickyIcons">
@@ -808,6 +817,7 @@ const defaultFollowWithReplies = prefer.model('defaultFollowWithReplies');
 const chatShowSenderName = prefer.model('chat.showSenderName');
 const chatSendOnEnter = prefer.model('chat.sendOnEnter');
 const useStickyIcons = prefer.model('useStickyIcons');
+const enableHighQualityImagePlaceholders = prefer.model('enableHighQualityImagePlaceholders');
 const reduceAnimation = prefer.model('animation', v => !v, v => !v);
 const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
@@ -866,6 +876,7 @@ watch([
 	enableSeasonalScreenEffect,
 	chatShowSenderName,
 	useStickyIcons,
+	enableHighQualityImagePlaceholders,
 	keepScreenOn,
 	contextMenu,
 	fontSize,
