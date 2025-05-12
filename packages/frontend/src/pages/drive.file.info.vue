@@ -68,10 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 		</div>
 	</div>
-	<div v-else class="_fullinfo">
-		<img :src="infoImageUrl" class="_ghost"/>
-		<div>{{ i18n.ts.nothing }}</div>
-	</div>
+	<MkResult v-else type="empty"/>
 </div>
 </template>
 
@@ -82,11 +79,10 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import bytes from '@/filters/bytes.js';
-import { infoImageUrl } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 

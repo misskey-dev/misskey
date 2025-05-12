@@ -20,15 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- TODO: 下書きの保存可能数の残り表示 -->
 		<MkPagination ref="pagingEl" :pagination="paging">
 			<template #empty>
-				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
-					<div>{{ i18n.ts._drafts.noDrafts }}</div>
-				</div>
+				<MkResult type="empty" :text="i18n.ts._drafts.noDrafts"/>
 			</template>
 
 			<template #default="{ items }">
 				<button
-					v-for="draft in (items as Misskey.entities.NoteDraft[])"
+					v-for="draft in (items as unknown as Misskey.entities.NoteDraft[])"
 					:key="draft.id"
 					class="_button"
 					:class="[$style.draft, { [$style.selected]: selected && selected.id === draft.id }]"
@@ -80,7 +77,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							short
 							:class="$style.itemButton"
 							@click.stop="deleteDraft(draft)"
-						><i class="ti ti-trash"></i></MkButton>
+						>
+							<i class="ti ti-trash"></i>
+						</MkButton>
 					</div>
 				</button>
 			</template>
@@ -92,13 +91,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkButton from '@/components/MkButton.vue';
-import MkPagination, { type Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { infoImageUrl } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.NoteDraft): void;
@@ -109,7 +108,7 @@ const emit = defineEmits<{
 const paging = {
 	endpoint: 'notes/drafts',
 	limit: 10,
-} satisfies Paging;
+} satisfies PagingCtx;
 
 const pagingComponent = useTemplateRef('pagingEl');
 
@@ -163,7 +162,7 @@ async function deleteDraft(draft: Misskey.entities.NoteDraft) {
 	if (canceled) return;
 
 	os.apiWithDialog('notes/drafts/delete', { draftId: draft.id }).then(() => {
-		pagingComponent.value?.reload();
+		pagingComponent.value?.paginator.reload();
 	});
 }
 </script>

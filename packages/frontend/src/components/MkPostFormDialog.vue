@@ -4,16 +4,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick()" @closed="onModalClosed()" @esc="onEsc">
-	<MkPostForm ref="form" :class="$style.form" v-bind="props" autofocus freezeAfterPosted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
+<MkModal
+	ref="modal"
+	:preferType="'dialog'"
+	@click="onBgClick()"
+	@closed="onModalClosed()"
+	@esc="onEsc"
+>
+	<MkPostForm
+		ref="form"
+		:class="$style.form"
+		v-bind="props"
+		autofocus
+		freezeAfterPosted
+		@posted="onPosted"
+		@cancel="modal?.close()"
+		@esc="modal?.close()"
+	/>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
 import { useTemplateRef } from 'vue';
+import type { PostFormProps } from '@/types/post-form.js';
 import MkModal from '@/components/MkModal.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import type { PostFormProps } from '@/types/post-form.js';
 
 const props = withDefaults(defineProps<PostFormProps & {
 	instant?: boolean;

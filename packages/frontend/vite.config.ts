@@ -1,7 +1,8 @@
 import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { type UserConfig, defineConfig } from 'vite';
+import { defineConfig } from 'vite';
+import type { UserConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
 
@@ -10,11 +11,23 @@ import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
+import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
+import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+/**
+ * 検索インデックスの生成設定
+ */
+export const searchIndexes = [{
+	targetFilePaths: ['src/pages/settings/*.vue'],
+	mainVirtualModule: 'search-index:settings',
+	modulesToHmrOnUpdate: ['src/pages/settings/index.vue'],
+	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
+}] satisfies SearchIndexOptions[];
 
 /**
  * Misskeyのフロントエンドにバンドルせず、CDNなどから別途読み込むリソースを記述する。
@@ -34,7 +47,7 @@ const externalPackages = [
 	},
 ];
 
-const hash = (str: string, seed = 0): number => {
+export const hash = (str: string, seed = 0): number => {
 	let h1 = 0xdeadbeef ^ seed,
 		h2 = 0x41c6ce57 ^ seed;
 	for (let i = 0, ch; i < str.length; i++) {
@@ -49,9 +62,9 @@ const hash = (str: string, seed = 0): number => {
 	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
-const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function toBase62(n: number): string {
+export function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';
 	}
@@ -83,6 +96,7 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
+			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
 			pluginVue(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),

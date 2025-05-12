@@ -54,7 +54,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
@@ -80,7 +81,7 @@ const pagination = {
 			state.value === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-} as Paging;
+} as PagingCtx;
 
 function getStatus(instance) {
 	if (instance.isSuspended) return 'Suspended';

@@ -4,32 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
-			<XOverview/>
-		</MkSpacer>
-		<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
-			<XEmojis/>
-		</MkSpacer>
-		<MkSpacer v-else-if="instance.federation !== 'none' && tab === 'federation'" :contentMax="1000" :marginMin="20">
-			<XFederation/>
-		</MkSpacer>
-		<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
-			<MkInstanceStats/>
-		</MkSpacer>
-	</MkHorizontalSwipe>
-</MkStickyContainer>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div v-if="tab === 'overview'" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
+		<XOverview/>
+	</div>
+	<div v-else-if="tab === 'emojis'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
+		<XEmojis/>
+	</div>
+	<div v-else-if="instance.federation !== 'none' && tab === 'federation'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
+		<XFederation/>
+	</div>
+	<div v-else-if="tab === 'charts'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
+		<MkInstanceStats/>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import { claimAchievement } from '@/utility/achievements.js';
+import { definePage } from '@/page.js';
 
 const XOverview = defineAsyncComponent(() => import('@/pages/about.overview.vue'));
 const XEmojis = defineAsyncComponent(() => import('@/pages/about.emojis.vue'));
@@ -81,7 +77,7 @@ const headerTabs = computed(() => {
 	return items;
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'ti ti-info-circle',
 }));

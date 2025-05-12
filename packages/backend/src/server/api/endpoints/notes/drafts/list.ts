@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery<MiNoteDraft>(this.noteDraftsRepository.createQueryBuilder('drafts'), ps.sinceId, ps.untilId)
-				.where('drafts.userId = :meId', { meId: me.id });
+				.andWhere('drafts.userId = :meId', { meId: me.id });
 
 			const drafts = await query
 				.limit(ps.limit)
