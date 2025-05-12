@@ -407,6 +407,7 @@ function menuEdit() {
 		z-index: 1;
 		display: flex;
 		height: var(--top-height);
+		padding-left: 6px;
 	}
 
 	.instance {
