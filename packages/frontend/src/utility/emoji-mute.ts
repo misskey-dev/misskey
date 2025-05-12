@@ -4,6 +4,7 @@
  */
 
 import { computed } from 'vue';
+import { misskeyApi } from './misskey-api';
 import { prefer } from '@/preferences.js';
 
 // custom絵文字の情報からキーを作成する
@@ -29,14 +30,16 @@ export function extractCustomEmojiHost (name:string) {
 	return host;
 }
 
-export function mute(emoji: string) {
+export async function mute(emoji: string) {
 	const isCustomEmoji = emoji.startsWith(':') && emoji.endsWith(':');
 	const emojiMuteKey = isCustomEmoji ?
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
 	const mutedEmojis = prefer.r.mutingEmojis.value;
 	if (!mutedEmojis.includes(emojiMuteKey)) {
-		return prefer.commit('mutingEmojis', [...mutedEmojis, emojiMuteKey]);
+		prefer.commit('mutingEmojis', [...mutedEmojis, emojiMuteKey]);
+		await updateEmojiMuteToServer();
+		return;
 	}
 	throw new Error('Emoji is already muted', { cause: `${emojiMuteKey} is Already Muted` });
 }
@@ -47,9 +50,8 @@ export function unmute(emoji:string) {
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
 	const mutedEmojis = prefer.r.mutingEmojis.value;
-	console.log('unmute', emoji, emojiMuteKey);
-	console.log('mutedEmojis', mutedEmojis);
 	prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emojiMuteKey));
+	updateEmojiMuteToServer();
 }
 
 export function checkMuted(emoji: string) {
@@ -58,4 +60,17 @@ export function checkMuted(emoji: string) {
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
 	return computed(() => prefer.r.mutingEmojis.value.includes(emojiMuteKey));
+}
+
+export async function getEmojiMuteFromServer() {
+	const emojis = await misskeyApi('i/emoji-mute/list', {});
+	if (Array.isArray(emojis)) {
+		prefer.commit('mutingEmojis', emojis);
+	}
+}
+
+export async function updateEmojiMuteToServer() {
+	misskeyApi('i/emoji-mute/update', {
+		emojis: prefer.r.mutingEmojis.value,
+	});
 }
