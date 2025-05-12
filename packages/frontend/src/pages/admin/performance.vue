@@ -117,7 +117,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkLink from '@/components/MkLink.vue';
-import { useForm } from '@/use/use-form.js';
+import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 
 const meta = await misskeyApi('admin/meta');

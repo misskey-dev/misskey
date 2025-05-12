@@ -87,7 +87,7 @@ const pagination = {
 };
 
 function resolved(reportId) {
-	reports.value?.removeItem(reportId);
+	reports.value?.paginator.removeItem(reportId);
 }
 
 function closeTutorial() {

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkA :to="`/gallery/${post.id}`" class="ttasepnz _panel" tabindex="-1" @pointerenter="enterHover" @pointerleave="leaveHover">
 	<div class="thumbnail">
 		<Transition>
-			<ImgWithBlurhash
+			<MkImgWithBlurhash
 				class="img layered"
 				:transition="safe ? null : {
 					duration: 500,
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
-import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{

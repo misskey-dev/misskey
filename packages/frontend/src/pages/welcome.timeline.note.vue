@@ -23,11 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="note.files && note.files.length > 0" :class="$style.richcontent">
 			<MkMediaList :mediaList="note.files.slice(0, 4)"/>
 		</div>
-		<div v-if="note.poll">
-			<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="true"/>
-		</div>
 		<div v-if="note.reactionCount > 0" :class="$style.reactions">
-			<MkReactionsViewer :note="note" :maxNumber="16"/>
+			<!-- TODO -->
+			<!--<MkReactionsViewer :note="note" :maxNumber="16"/>-->
 		</div>
 	</div>
 </div>

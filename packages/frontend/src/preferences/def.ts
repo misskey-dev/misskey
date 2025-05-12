@@ -202,6 +202,9 @@ export const PREF_DEF = {
 	useStickyIcons: {
 		default: true,
 	},
+	enableHighQualityImagePlaceholders: {
+		default: true,
+	},
 	showFixedPostForm: {
 		default: false,
 	},
@@ -212,9 +215,6 @@ export const PREF_DEF = {
 		default: true,
 	},
 	useReactionPickerForContextMenu: {
-		default: false,
-	},
-	showGapBetweenNotesInTimeline: {
 		default: false,
 	},
 	instanceTicker: {
@@ -240,6 +240,12 @@ export const PREF_DEF = {
 	},
 	numberOfPageCache: {
 		default: 3,
+	},
+	pollingInterval: {
+		// 1 ... 低
+		// 2 ... 中
+		// 3 ... 高
+		default: 2,
 	},
 	showNoteActionsOnlyHover: {
 		default: false,
@@ -275,9 +281,6 @@ export const PREF_DEF = {
 		default: true,
 	},
 	keepScreenOn: {
-		default: false,
-	},
-	disableStreamingTimeline: {
 		default: false,
 	},
 	useGroupedNotifications: {
