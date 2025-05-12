@@ -4,7 +4,7 @@
  */
 
 import { describe, test, assert } from 'vitest';
-import { createWordMuteInfo, checkWordMute } from '@/utility/check-word-mute.js';
+import { checkWordMute, setWordMuteInfo } from '@/utility/check-word-mute.js';
 import { NoteMock } from './mocks.js';
 
 type TestCases = {
@@ -63,10 +63,7 @@ describe('check-word-mute', () => {
 	cases.forEach((c) => {
 		test(`text: ${c.text}, cw: ${c.cw}, mutedWords: ${c.mutedWords}` , async () => {
 			// initWordMuteInfoが実行されないので代わりにここで初期化
-			(globalThis as any)._misskeyWordMute = {
-				soft: createWordMuteInfo(c.mutedWords),
-				hard: createWordMuteInfo([]),
-			}
+			setWordMuteInfo(c.mutedWords, []);
 
 			const note = NoteMock({ text: c.text, cw: c.cw });
 			const result = checkWordMute(note, null, 'soft');

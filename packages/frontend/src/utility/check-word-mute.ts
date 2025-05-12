@@ -57,7 +57,7 @@ export function createWordMuteInfo(mutedWords: Array<string | string[]>) : WordM
 	};
 }
 
-function setWordMuteInfo(mutedWords: Array<string | string[]>, hardMutedWords: Array<string | string[]>): void {
+export function setWordMuteInfo(mutedWords: Array<string | string[]>, hardMutedWords: Array<string | string[]>): void {
 	const soft = createWordMuteInfo(mutedWords);
 	const hard = createWordMuteInfo(hardMutedWords);
 
