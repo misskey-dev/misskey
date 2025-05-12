@@ -4,7 +4,7 @@
  */
 
 import { describe, test, assert } from 'vitest';
-import { createWordMuteInfo, checkWordMute } from '@/scripts/check-word-mute.js';
+import { createWordMuteInfo, checkWordMute } from '@/utility/check-word-mute.js';
 import { NoteMock } from './mocks.js';
 
 type TestCases = {
