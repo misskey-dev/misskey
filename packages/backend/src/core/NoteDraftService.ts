@@ -22,7 +22,7 @@ export type NoteDraftOptions = {
 	localOnly?: boolean | null;
 	reactionAcceptance?: typeof noteReactionAcceptances[number];
 	visibility?: typeof noteVisibilities[number];
-	files? : MiDriveFile[];
+	files?: MiDriveFile[];
 	visibleUsers?: MiUser[];
 	hashtag?: string;
 	channel?: MiChannel | null;
