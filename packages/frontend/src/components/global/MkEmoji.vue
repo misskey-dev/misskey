@@ -47,7 +47,6 @@ function mute() {
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.muteX({ x: props.emoji }),
-		text: i18n.ts.reloadToApplySetting,
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;
@@ -60,7 +59,6 @@ function unmute() {
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.unmuteX({ x: props.emoji }),
-		text: i18n.ts.reloadToApplySetting,
 	}).then(({ canceled }) => {
 		if (canceled) {
 			return;

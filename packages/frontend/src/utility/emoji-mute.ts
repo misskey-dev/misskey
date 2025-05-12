@@ -11,12 +11,10 @@ export function makeEmojiMuteKey(props: { name: string; host?: string | null }) 
 	return props.name.startsWith(':') ? props.name : `:${props.name}${props.host ? `@${props.host}` : ''}:`;
 }
 
-// custom絵文字の名前部分を取り出す
 export function extractCustomEmojiName (name:string) {
 	return (name[0] === ':' ? name.substring(1, name.length - 1) : name).replace('@.', '').split('@')[0];
 }
 
-// custom絵文字のホスト部分を取り出す
 export function extractCustomEmojiHost (name:string) {
 	// nameは:emojiName@host:の形式
 	// 取り出したい部分はhostなので、@以降を取り出す
@@ -31,25 +29,27 @@ export function extractCustomEmojiHost (name:string) {
 	return host;
 }
 
-export async function mute(emoji: string) {
+export function mute(emoji: string) {
 	const isCustomEmoji = emoji.startsWith(':') && emoji.endsWith(':');
 	const emojiMuteKey = isCustomEmoji ?
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
-	const mutedEmojis = prefer.s.mutingEmojis;
+	const mutedEmojis = prefer.r.mutingEmojis.value;
 	if (!mutedEmojis.includes(emojiMuteKey)) {
 		return prefer.commit('mutingEmojis', [...mutedEmojis, emojiMuteKey]);
 	}
 	throw new Error('Emoji is already muted', { cause: `${emojiMuteKey} is Already Muted` });
 }
 
-export async function unmute(emoji:string) {
+export function unmute(emoji:string) {
 	const isCustomEmoji = emoji.startsWith(':') && emoji.endsWith(':');
 	const emojiMuteKey = isCustomEmoji ?
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
-	const mutedEmojis = prefer.s.mutingEmojis;
-	return prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emojiMuteKey));
+	const mutedEmojis = prefer.r.mutingEmojis.value;
+	console.log('unmute', emoji, emojiMuteKey);
+	console.log('mutedEmojis', mutedEmojis);
+	prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emojiMuteKey));
 }
 
 export function checkMuted(emoji: string) {
@@ -57,5 +57,5 @@ export function checkMuted(emoji: string) {
 	const emojiMuteKey = isCustomEmoji ?
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
-	return computed(() => prefer.s.mutingEmojis.includes(emojiMuteKey));
+	return computed(() => prefer.r.mutingEmojis.value.includes(emojiMuteKey));
 }

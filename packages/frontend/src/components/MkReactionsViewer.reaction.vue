@@ -168,7 +168,6 @@ async function menu(ev) {
 				os.confirm({
 					type: 'question',
 					title: i18n.tsx.unmuteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
-					text: i18n.ts.reloadToApplySetting,
 				}).then(({ canceled }) => {
 					if (canceled) return;
 					unmuteEmoji(props.reaction);
@@ -183,7 +182,6 @@ async function menu(ev) {
 				os.confirm({
 					type: 'question',
 					title: i18n.tsx.muteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
-					text: i18n.ts.reloadToApplySetting,
 				}).then(({ canceled }) => {
 					if (canceled) return;
 					muteEmoji(props.reaction);
