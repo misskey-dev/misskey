@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.body">
 			<slot></slot>
 		</div>
-		<div :class="$style.footer">
+		<div v-if="$slots.footer" :class="$style.footer">
 			<slot name="footer"></slot>
 		</div>
 	</div>
@@ -125,15 +125,14 @@ defineExpose({
 .body {
 	flex: 1;
 	overflow: auto;
-	background: var(--MI_THEME-panel);
+	background: var(--MI_THEME-bg);
 	container-type: size;
 }
 
 .footer {
-	display: flex;
-	flex-shrink: 0;
-	background: var(--MI_THEME-windowHeader);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
-	backdrop-filter: var(--MI-blur, blur(15px));
+	padding: 8px 16px;
+	overflow: auto;
+	background: var(--MI_THEME-bg);
+	border-top: 1px solid var(--MI_THEME-divider);
 }
 </style>

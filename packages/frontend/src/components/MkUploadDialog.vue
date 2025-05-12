@@ -8,34 +8,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="800"
 	:height="500"
-	@click="cancel()"
 	@close="cancel()"
 	@closed="emit('closed')"
 >
 	<template #header>
-		{{ i18n.tsx.uploadNFiles({ n: files.length }) }}
+		<i class="ti ti-upload"></i> {{ i18n.tsx.uploadNFiles({ n: files.length }) }}
 	</template>
 
-	<div>
-		<div :class="$style.items">
-			<div v-for="ctx in items" :key="ctx.id" :class="$style.item">
-				<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ ctx.thumbnail })` }"></div>
-				<div class="top">
-					<p class="name"><MkLoading :em="true"/>{{ ctx.name }}</p>
-					<p class="status">
-						<span v-if="ctx.progressValue === null" class="initing">{{ i18n.ts.waiting }}<MkEllipsis/></span>
-						<span v-if="ctx.progressValue !== null" class="kb">{{ String(Math.floor(ctx.progressValue / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progressMax / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
-						<span v-if="ctx.progressValue !== null" class="percentage">{{ Math.floor((ctx.progressValue / ctx.progressMax) * 100) }}</span>
-					</p>
+	<div :class="$style.root" class="_gaps_s">
+		<MkSwitch v-model="compress">
+			<template #label>{{ i18n.ts.compress }}</template>
+		</MkSwitch>
+		<div :class="$style.items" class="_gaps_s">
+			<div v-for="ctx in items" :key="ctx.id" v-panel :class="$style.item" :style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }">
+				<div :class="$style.itemInner">
+					<div>
+						<MkButton :iconOnly="true" rounded><i class="ti ti-dots"></i></MkButton>
+					</div>
+					<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ ctx.thumbnail })` }"></div>
+					<div :class="$style.itemBody">
+						<div>{{ ctx.name }}</div>
+						<div style="opacity: 0.7; margin-top: 4px; font-size: 90%;">
+							<span>{{ bytes(ctx.file.size) }}</span>
+						</div>
+						<div>
+						</div>
+					</div>
+					<div>
+						<MkLoading v-if="ctx.uploading" :em="true"/>
+						<MkSystemIcon v-else-if="ctx.uploaded" type="success" style="width: 40px;"/>
+					</div>
 				</div>
-				<progress :value="ctx.progressValue || 0" :max="ctx.progressMax || 0" :class="{ initing: ctx.progressValue === null, waiting: ctx.progressValue !== null && ctx.progressValue === ctx.progressMax }"></progress>
 			</div>
 		</div>
 	</div>
 
 	<template #footer>
-		<div>
-			<MkButton primary rounded @click="upload()">{{ i18n.ts.upload }}</MkButton>
+		<div class="_buttonsCenter">
+			<MkButton primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
 		</div>
 	</template>
 </MkModalWindow>
@@ -46,13 +56,18 @@ import { markRaw, onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
+import { apiUrl } from '@@/js/config.js';
 import { getCompressionConfig } from '@/utility/upload/compress-config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { $i } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { instance } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
+import bytes from '@/filters/bytes.js';
+import MkSwitch from '@/components/MkSwitch.vue';
+
+const $i = ensureSignin();
 
 const mimeTypeMap = {
 	'image/webp': 'webp',
@@ -78,11 +93,14 @@ const items = ref([] as {
 	progressMax: number | null;
 	progressValue: number | null;
 	thumbnail: string;
+	uploading: boolean;
 	uploaded: Misskey.entities.DriveFile | null;
 	file: File;
 }[]);
 
 const dialog = useTemplateRef('dialog');
+
+const compress = ref(true);
 
 function cancel() {
 	// TODO: アップロードを中止しますか？
@@ -91,52 +109,51 @@ function cancel() {
 
 function upload() {
 	for (const item of items.value) {
-		if ((file.size > instance.maxFileSize) || (file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
+		if ((item.file.size > instance.maxFileSize) || (item.file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
 			alert({
 				type: 'error',
 				title: i18n.ts.failedToUpload,
 				text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
 			});
-			return Promise.reject();
+			continue;
 		}
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
-			const config = !keepOriginal ? await getCompressionConfig(file) : undefined;
+			const config = compress.value ? await getCompressionConfig(item.file) : undefined;
 			let resizedImage: Blob | undefined;
 			if (config) {
 				try {
-					const resized = await readAndCompressImage(file, config);
-					if (resized.size < file.size || file.type === 'image/webp') {
+					const resized = await readAndCompressImage(item.file, config);
+					if (resized.size < item.file.size || item.file.type === 'image/webp') {
 						// The compression may not always reduce the file size
 						// (and WebP is not browser safe yet)
 						resizedImage = resized;
 					}
 					if (_DEV_) {
-						const saved = ((1 - resized.size / file.size) * 100).toFixed(2);
-						console.log(`Image compression: before ${file.size} bytes, after ${resized.size} bytes, saved ${saved}%`);
+						const saved = ((1 - resized.size / item.file.size) * 100).toFixed(2);
+						console.log(`Image compression: before ${item.file.size} bytes, after ${resized.size} bytes, saved ${saved}%`);
 					}
 
-					ctx.name = file.type !== config.mimeType ? `${ctx.name}.${mimeTypeMap[config.mimeType]}` : ctx.name;
+					item.name = item.file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
 				} catch (err) {
 					console.error('Failed to resize image', err);
 				}
 			}
 
 			const formData = new FormData();
-			formData.append('i', $i!.token);
+			formData.append('i', $i.token);
 			formData.append('force', 'true');
-			formData.append('file', resizedImage ?? file);
-			formData.append('name', ctx.name);
-			if (_folder) formData.append('folderId', _folder);
+			formData.append('file', resizedImage ?? item.file);
+			formData.append('name', item.name);
+			if (props.folderId) formData.append('folderId', props.folderId);
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
 			xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
-				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
-					// TODO: 消すのではなくて(ネットワーク的なエラーなら)再送できるようにしたい
-					uploa______ds.value = uploa______ds.value.filter(x => x.id !== id);
+				item.uploading = false;
 
+				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 					if (xhr.status === 413) {
 						alert({
 							type: 'error',
@@ -177,22 +194,19 @@ function upload() {
 				}
 
 				const driveFile = JSON.parse(ev.target.response);
-
-				resolve(driveFile);
-
-				uploa______ds.value = uploa______ds.value.filter(x => x.id !== id);
+				item.uploaded = driveFile;
 			}) as (ev: ProgressEvent<EventTarget>) => any;
 
 			xhr.upload.onprogress = ev => {
 				if (ev.lengthComputable) {
-					ctx.progressMax = ev.total;
-					ctx.progressValue = ev.loaded;
+					item.progressMax = ev.total;
+					item.progressValue = ev.loaded;
 				}
 			};
 
 			xhr.send(formData);
 		};
-		reader.readAsArrayBuffer(file);
+		reader.readAsArrayBuffer(item.file);
 	}
 }
 
@@ -215,23 +229,50 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.mk-uploader > ol > li > progress {
-  display: block;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  overflow: hidden;
-  grid-column: 2/3;
-  grid-row: 2/3;
-  z-index: 2;
-	width: 100%;
-	height: 8px;
+.root {
+	padding: 12px;
 }
-.mk-uploader > ol > li > progress::-webkit-progress-value {
-  background: var(--MI_THEME-accent);
+
+.items {
 }
-.mk-uploader > ol > li > progress::-webkit-progress-bar {
-  //background: var(--MI_THEME-accentAlpha01);
-	background: transparent;
+
+.item {
+	position: relative;
+	border-radius: 10px;
+	overflow: clip;
+
+	&::before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: var(--p);
+		height: 100%;
+		background: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
+	}
+}
+
+.itemInner {
+	position: relative;
+	z-index: 1;
+	padding: 8px 16px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.itemThumbnail {
+	width: 70px;
+	height: 70px;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	border-radius: 6px;
+}
+
+.itemBody {
+	flex: 1;
+	min-width: 0;
 }
 </style>

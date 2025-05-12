@@ -111,7 +111,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile, uploa______ds } from '@/utility/upload.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPc } from '@/utility/select-file.js';

@@ -9,7 +9,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile } from '@/utility/upload.js';
 import { prefer } from '@/preferences.js';
 
 export function chooseFileFromPc(
@@ -31,7 +30,7 @@ export function chooseFileFromPc(
 
 			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUploadDialog.vue')), {
 				files: markRaw(Array.from(input.files)),
-				uploadFolder,
+				folderId: uploadFolder,
 			}, {
 				done: driveFiles => {
 					res(driveFiles);
