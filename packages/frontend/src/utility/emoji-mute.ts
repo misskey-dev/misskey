@@ -62,7 +62,7 @@ export function checkMuted(emoji: string) {
 	return computed(() => prefer.r.mutingEmojis.value.includes(emojiMuteKey));
 }
 
-export async function getEmojiMuteFromServer() {
+export async function syncEmojiMuteWithServer() {
 	const emojis = await misskeyApi('i/emoji-mute/list', {});
 	if (Array.isArray(emojis)) {
 		prefer.commit('mutingEmojis', emojis);
