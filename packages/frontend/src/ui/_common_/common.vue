@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
 >
 	<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
-		<XDrawerMenu/>
+		<XNavbar style="height: 100%;" :asDrawer="true" :showWidgetButton="false"/>
 	</div>
 </Transition>
 
@@ -112,7 +112,8 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
-import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
+import { store } from '@/store.js';
+import XNavbar from '@/ui/_common_/navbar.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -129,7 +130,9 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 	if (window.document.visibilityState === 'visible') {
 		if (!isClient && notification.type !== 'test') {
 			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
-			useStream().send('readNotification');
+			if (store.s.realtimeMode) {
+				useStream().send('readNotification');
+			}
 		}
 
 		notifications.value.unshift(notification);
@@ -146,11 +149,12 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 }
 
 if ($i) {
-	const connection = useStream().useChannel('main', null, 'UI');
-	connection.on('notification', onNotification);
+	if (store.s.realtimeMode) {
+		const connection = useStream().useChannel('main');
+		connection.on('notification', onNotification);
+	}
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
-	//#region Listen message from SW
 	if ('serviceWorker' in navigator) {
 		swInject();
 	}
@@ -226,12 +230,6 @@ if ($i) {
 	left: 0;
 	z-index: 1001;
 	height: 100dvh;
-	width: 240px;
-	box-sizing: border-box;
-	contain: strict;
-	overflow: auto;
-	overscroll-behavior: contain;
-	background: var(--MI_THEME-navBg);
 }
 
 .widgetsDrawerBg {

@@ -31,6 +31,12 @@ declare namespace acct {
 export { acct }
 
 // @public (undocumented)
+type Achievement = components['schemas']['Achievement'];
+
+// @public (undocumented)
+type AchievementName = components['schemas']['AchievementName'];
+
+// @public (undocumented)
 type Ad = components['schemas']['Ad'];
 
 // Warning: (ae-forgotten-export) The symbol "operations" needs to be exported by the entry point index.d.ts
@@ -1956,6 +1962,8 @@ declare namespace entities {
         NotesSearchByTagResponse,
         NotesShowRequest,
         NotesShowResponse,
+        NotesShowPartialBulkRequest,
+        NotesShowPartialBulkResponse,
         NotesStateRequest,
         NotesStateResponse,
         NotesThreadMutingCreateRequest,
@@ -2084,6 +2092,8 @@ declare namespace entities {
         UserDetailed,
         User,
         UserList,
+        Achievement,
+        AchievementName,
         Ad,
         Announcement,
         App,
@@ -3049,6 +3059,12 @@ type NotesSearchRequest = operations['notes___search']['requestBody']['content']
 
 // @public (undocumented)
 type NotesSearchResponse = operations['notes___search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesShowPartialBulkRequest = operations['notes___show-partial-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesShowPartialBulkResponse = operations['notes___show-partial-bulk']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesShowRequest = operations['notes___show']['requestBody']['content']['application/json'];
