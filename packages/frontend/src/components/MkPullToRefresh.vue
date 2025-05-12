@@ -216,7 +216,7 @@ function moving(event: MouseEvent | TouchEvent) {
  * タイムアウトがないのでこれを最終的に実行しないと出たままになる
  */
 function refreshFinished() {
-	sound.playUrl('/client-assets/sounds/syuilo/pa.mp3', {
+	sound.playUrl('/client-assets/sounds/syuilo/pa2.mp3', {
 		volume: 1,
 	});
 	closeContent().then(() => {
