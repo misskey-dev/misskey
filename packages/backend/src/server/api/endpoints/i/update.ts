@@ -174,6 +174,7 @@ export const paramDef = {
 		isLocked: { type: 'boolean' },
 		isExplorable: { type: 'boolean' },
 		hideOnlineStatus: { type: 'boolean' },
+		showActiveStatus: { type: 'boolean' },
 		hideSearchResult: { type: 'boolean' },
 		publicReactions: { type: 'boolean' },
 		hideActivity: { type: 'boolean' },
@@ -343,6 +344,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 			if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
 			if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
+			if (typeof ps.showActiveStatus === 'boolean') updates.showActiveStatus = ps.showActiveStatus;
 			if (typeof ps.hideSearchResult === 'boolean') updates.hideSearchResult = ps.hideSearchResult;
 			if (typeof ps.publicReactions === 'boolean') profileUpdates.publicReactions = ps.publicReactions;
 			if (typeof ps.hideActivity === 'boolean') profileUpdates.hideActivity = ps.hideActivity;

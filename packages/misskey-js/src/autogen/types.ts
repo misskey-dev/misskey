@@ -4218,6 +4218,7 @@ export type components = {
       /** @enum {string} */
       twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
       hideOnlineStatus: boolean;
+      showActiveStatus: boolean;
       hideSearchResult: boolean;
       hasUnreadSpecifiedNotes: boolean;
       hasUnreadMentions: boolean;
@@ -5337,7 +5338,7 @@ export type components = {
       yamiTlAvailable: boolean;
       canYamiNote: boolean;
       canPublicNote: boolean;
-			canFederateNote: boolean;
+      canFederateNote: boolean;
       mentionLimit: number;
       canInvite: boolean;
       canImportNotes: boolean;
@@ -20205,6 +20206,15 @@ export type operations = {
         content: {
           'application/json': {
             count: number;
+            details: ({
+                id: string;
+                username: string;
+                name?: string | null;
+                avatarUrl?: string | null;
+                avatarBlurhash?: string | null;
+                host?: string | null;
+                lastActiveDate: string;
+              })[];
           };
         };
       };
@@ -23355,6 +23365,7 @@ export type operations = {
           isLocked?: boolean;
           isExplorable?: boolean;
           hideOnlineStatus?: boolean;
+          showActiveStatus?: boolean;
           hideSearchResult?: boolean;
           publicReactions?: boolean;
           hideActivity?: boolean;

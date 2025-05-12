@@ -546,6 +546,10 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		showActiveStatus: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
 		hideSearchResult: {
 			type: 'boolean',
 			nullable: false, optional: false,

@@ -26,6 +26,7 @@ export default function(app: App) {
 	app.component('WidgetSlideshow', defineAsyncComponent(() => import('./WidgetSlideshow.vue')));
 	app.component('WidgetServerMetric', defineAsyncComponent(() => import('./server-metric/index.vue')));
 	app.component('WidgetOnlineUsers', defineAsyncComponent(() => import('./WidgetOnlineUsers.vue')));
+	app.component('WidgetActiveUsers', defineAsyncComponent(() => import('./WidgetActiveUsers.vue')));
 	app.component('WidgetJobQueue', defineAsyncComponent(() => import('./WidgetJobQueue.vue')));
 	app.component('WidgetInstanceCloud', defineAsyncComponent(() => import('./WidgetInstanceCloud.vue')));
 	app.component('WidgetButton', defineAsyncComponent(() => import('./WidgetButton.vue')));
@@ -76,4 +77,5 @@ export const widgets = [
 	'birthdayFollowings',
 	'listenBrainz',
 	'chat',
+	'activeUsers',
 ];

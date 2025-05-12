@@ -86,6 +86,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ i18n.ts.hideOnlineStatus }}
 			<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
 		</MkSwitch>
+		<!-- privacy.vue の変更 -->
+		<MkSwitch v-model="showActiveStatus" @update:modelValue="save()">
+			<template #label><SearchLabel>{{ i18n.ts.showActiveStatus }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+			<template #caption>{{ i18n.ts.showActiveStatusDescription }}</template>
+		</MkSwitch>
 		<MkSwitch v-model="hideSearchResult" @update:modelValue="save()">
 			<template #label><SearchLabel>{{ i18n.ts.hideSearchResult }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 			<template #caption><SearchKeyword>{{ i18n.ts.hideSearchResultDescription }}</SearchKeyword></template>
@@ -252,6 +257,7 @@ const requireSigninToViewContents = ref($i.requireSigninToViewContents ?? false)
 const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null);
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
+const showActiveStatus = ref($i.showActiveStatus);
 const hideSearchResult = ref($i.hideSearchResult);
 const publicReactions = ref($i.publicReactions);
 const hideActivity = ref($i.hideActivity);
@@ -311,6 +317,7 @@ function save() {
 		makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
 		makeNotesHiddenBefore: makeNotesHiddenBefore.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
+		showActiveStatus: !!showActiveStatus.value,
 		hideSearchResult: !!hideSearchResult.value,
 		publicReactions: !!publicReactions.value,
 		hideActivity: !!hideActivity.value,

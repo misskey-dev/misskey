@@ -39,6 +39,11 @@ export class MiUser {
 	@Column('boolean', {
 		default: false,
 	})
+	public showActiveStatus: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public hideSearchResult: boolean;
 
 	@Column('varchar', {

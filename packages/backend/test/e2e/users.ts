@@ -130,6 +130,7 @@ describe('ユーザー', () => {
 			isDeleted: user.isDeleted,
 			twoFactorBackupCodesStock: user.twoFactorBackupCodesStock,
 			hideOnlineStatus: user.hideOnlineStatus,
+			showActiveStatus: user.showActiveStatus,
 			hasUnreadSpecifiedNotes: user.hasUnreadSpecifiedNotes,
 			hasUnreadMentions: user.hasUnreadMentions,
 			hasUnreadAnnouncement: user.hasUnreadAnnouncement,
@@ -371,6 +372,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.isDeleted, false);
 		assert.strictEqual(response.twoFactorBackupCodesStock, 'none');
 		assert.strictEqual(response.hideOnlineStatus, false);
+		assert.strictEqual(response.showActiveStatus, false);
 		assert.strictEqual(response.hasUnreadSpecifiedNotes, false);
 		assert.strictEqual(response.hasUnreadMentions, false);
 		assert.strictEqual(response.hasUnreadAnnouncement, false);
@@ -443,6 +445,8 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ isExplorable: true }) },
 		{ parameters: () => ({ hideOnlineStatus: true }) },
 		{ parameters: () => ({ hideOnlineStatus: false }) },
+		{ parameters: () => ({ showActiveStatus: true }) },
+		{ parameters: () => ({ showActiveStatus: false }) },
 		{ parameters: () => ({ publicReactions: false }) },
 		{ parameters: () => ({ publicReactions: true }) },
 		{ parameters: () => ({ autoAcceptFollowed: true }) },

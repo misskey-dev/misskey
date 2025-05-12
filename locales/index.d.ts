@@ -107,6 +107,10 @@ export interface Locale extends ILocale {
      */
     "noNotifications": string;
     /**
+     * 相互フォロワーはいません
+     */
+    "noMutualFollowers": string;
+    /**
      * サーバー
      */
     "instance": string;
@@ -3462,6 +3466,14 @@ export interface Locale extends ILocale {
      * オンライン状態を隠すと、検索などの一部機能において利便性が低下することがあります。
      */
     "hideOnlineStatusDescription": string;
+    /**
+     * アクティブ状態を表示
+     */
+    "showActiveStatus": string;
+    /**
+     * アクティブ状態を相互フォロワーの「アクティブユーザー」ウィジットで表示します。
+     */
+    "showActiveStatusDescription": string;
     /**
      * 自分のノートを他人の検索結果から隠す
      */
@@ -9582,6 +9594,10 @@ export interface Locale extends ILocale {
          * オンラインユーザー
          */
         "onlineUsers": string;
+        /**
+         * アクティブユーザー
+         */
+        "activeUsers": string;
         /**
          * ジョブキュー
          */

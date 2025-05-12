@@ -56,7 +56,7 @@ export const PREF_DEF = {
 			name: 'notifications',
 			id: 'b', place: 'right', data: {},
 		}, {
-			name: 'trends',
+			name: 'activeUsers',
 			id: 'c', place: 'right', data: {},
 		}] as {
 			name: string;
@@ -495,5 +495,8 @@ export const PREF_DEF = {
 	},
 	showPreferencesAutoCloudBackupSuggestion: {
 		default: true,
+	},
+	showActiveStatus: {
+		default: false,
 	},
 } satisfies PreferencesDefinition;
