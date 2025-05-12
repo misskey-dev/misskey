@@ -17,4 +17,8 @@ export const hanaStore = markRaw(new Pizzax('hanaMain', {
 		where: 'device',
 		default: false,
 	},
+	enableWasmEmojiSearch: {
+		where: 'device',
+		default: false,
+	},
 }));

@@ -707,6 +707,9 @@ importers:
       '@github/webauthn-json':
         specifier: 2.1.1
         version: 2.1.1
+      '@hanamisskey/browser-search':
+        specifier: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.1.0.tar.gz
+        version: https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0
       '@mcaptcha/vanilla-glue':
         specifier: 0.1.0-alpha-3
         version: 0.1.0-alpha-3
@@ -2281,6 +2284,10 @@ packages:
   '@github/webauthn-json@2.1.1':
     resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
     hasBin: true
+
+  '@hanamisskey/browser-search@https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0':
+    resolution: {tarball: https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0}
+    version: 0.1.0
 
   '@hapi/boom@10.0.1':
     resolution: {integrity: sha512-ERcCZaEjdH3OgSJlyjVk8pHIFeus91CjKP3v+MpgBNp5IvGzP2l/bRiD78nqYcKPaZdbKkK5vDBVPd2ohHBlsA==}
@@ -5879,6 +5886,9 @@ packages:
   define-properties@1.2.1:
     resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
     engines: {node: '>= 0.4'}
+
+  defu@6.1.4:
+    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
 
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
@@ -12212,6 +12222,10 @@ snapshots:
 
   '@github/webauthn-json@2.1.1': {}
 
+  '@hanamisskey/browser-search@https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0':
+    dependencies:
+      defu: 6.1.4
+
   '@hapi/boom@10.0.1':
     dependencies:
       '@hapi/hoek': 11.0.4
@@ -16579,6 +16593,8 @@ snapshots:
       define-data-property: 1.1.4
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
+
+  defu@6.1.4: {}
 
   delayed-stream@1.0.0: {}
 

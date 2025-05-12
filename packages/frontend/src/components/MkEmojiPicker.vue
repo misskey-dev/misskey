@@ -138,6 +138,8 @@ import { store } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/i.js';
 import { romajiIncludes } from '@/hana/scripts/romaji-includes.js';
+import { searchCustomEmojis } from '@/hana/scripts/emoji-search.js';
+import { hanaStore } from '@/hana/store.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
 
@@ -214,7 +216,7 @@ customEmojiCategories.value.forEach(ec => {
 
 parseAndMergeCategories('', customEmojiFolderRoot);
 
-watch(q, () => {
+watch(q, async () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
 
 	if (q.value === '') {
@@ -367,7 +369,19 @@ watch(q, () => {
 		return matches;
 	};
 
-	searchResultCustom.value = Array.from(searchCustom());
+	async function _searchCustom() {
+		if (hanaStore.s.enableWasmEmojiSearch) {
+			const result = await searchCustomEmojis(q.value);
+			return (result ?? []).map((emoji) => {
+				const name = emoji.replaceAll(':', '');
+				return customEmojisMap.get(name) ?? null;
+			}).filter((emoji) => emoji != null);
+		} else {
+			return Array.from(searchCustom());
+		}
+	}
+
+	searchResultCustom.value = await _searchCustom();
 	searchResultUnicode.value = Array.from(searchUnicode());
 });
 
