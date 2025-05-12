@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </svg>
 <svg v-else-if="type === 'success'" :class="[$style.icon, $style.success]" viewBox="0 0 160 160">
 	<path d="M62,80L74,92L98,68" style="--l:50;" :class="[$style.line, $style.animLine]"/>
-	<circle cx="80" cy="80" r="56" style="--l:350;" :class="[$style.line, $style.animCircleSuccess]"/>
+	<circle cx="80" cy="80" r="56" style="--l:350;" :class="[$style.line, $style.animCircle]"/>
 </svg>
 <svg v-else-if="type === 'warn'" :class="[$style.icon, $style.warn]" viewBox="0 0 160 160">
 	<path d="M80,64L80,88" style="--l:27;" :class="[$style.line, $style.animLine]"/>
@@ -87,14 +87,6 @@ const props = defineProps<{
 	transform: rotate(-90deg);
 }
 
-.animCircleSuccess {
-	stroke-dasharray: var(--l);
-	stroke-dashoffset: var(--l);
-	animation: circleSuccess var(--duration, 0.5s) cubic-bezier(0,0,.25,1) 1 forwards;
-	animation-delay: var(--delay, 0s);
-	transform-origin: center;
-}
-
 .animFade {
 	opacity: 0;
 	animation: fade-in var(--duration, 0.5s) cubic-bezier(0,0,.25,1) 1 forwards;
@@ -109,19 +101,6 @@ const props = defineProps<{
 	100% {
 		stroke-dashoffset: 0;
 		opacity: 1;
-	}
-}
-
-@keyframes circleSuccess {
-	0% {
-		stroke-dashoffset: var(--l);
-		opacity: 0;
-		transform: rotate(-90deg);
-	}
-	100% {
-		stroke-dashoffset: 0;
-		opacity: 1;
-		transform: rotate(90deg);
 	}
 }
 

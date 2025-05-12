@@ -37,8 +37,8 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 	direction?: 'newer' | 'older';
 };
 
-export function usePagination<T extends MisskeyEntity>(props: {
-	ctx: PagingCtx;
+export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I : never>(props: {
+	ctx: PagingCtx<Endpoint>;
 	useShallowRef?: boolean;
 }) {
 	const items = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);

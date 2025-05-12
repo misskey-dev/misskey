@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</div>
-					<div v-if="appearNote.files && appearNote.files.length > 0">
+					<div v-if="appearNote.files && appearNote.files.length > 0" style="margin-top: 8px;">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll
@@ -411,12 +411,15 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
+let subscribeManuallyToNoteCapture: () => void = () => { };
+
 if (!props.mock) {
-	useNoteCapture({
+	const { subscribe } = useNoteCapture({
 		note: appearNote,
 		parentNote: note,
 		$note: $appearNote,
 	});
+	subscribeManuallyToNoteCapture = subscribe;
 }
 
 if (!props.mock) {
@@ -473,6 +476,8 @@ function renote(viaKeyboard = false) {
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
+
+	subscribeManuallyToNoteCapture();
 }
 
 function reply(): void {
@@ -568,6 +573,11 @@ function undoReact(): void {
 
 	misskeyApi('notes/reactions/delete', {
 		noteId: appearNote.id,
+	}).then(() => {
+		noteEvents.emit(`unreacted:${appearNote.id}`, {
+			userId: $i!.id,
+			reaction: oldReaction,
+		});
 	});
 }
 

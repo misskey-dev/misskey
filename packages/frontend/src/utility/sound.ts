@@ -133,7 +133,7 @@ export function playMisskeySfx(operationType: OperationType) {
 	playMisskeySfxFile(sound).then((succeed) => {
 		if (!succeed && sound.type === '_driveFile_') {
 			// ドライブファイルが存在しない場合はデフォルトのサウンドを再生する
-			const soundName = PREF_DEF[`sound_${operationType}`].default.type as Exclude<SoundType, '_driveFile_'>;
+			const soundName = PREF_DEF[`sound.on.${operationType}`].default.type as Exclude<SoundType, '_driveFile_'>;
 			if (_DEV_) console.log(`Failed to play sound: ${sound.fileUrl}, so play default sound: ${soundName}`);
 			playMisskeySfxFileInternal({
 				type: soundName,

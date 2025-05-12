@@ -50,6 +50,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker
+				:label="i18n.ts.emojiMute"
+				:keywords="['emoji', 'mute', 'hide']"
+			>
+				<MkFolder>
+					<template #icon><i class="ti ti-mood-off"></i></template>
+					<template #label>{{ i18n.ts.emojiMute }}</template>
+
+					<div class="_gaps_m">
+						<XEmojiMute/>
+					</div>
+				</mkfolder>
+			</SearchMarker>
+
+			<SearchMarker
 				:label="i18n.ts.instanceMute"
 				:keywords="['note', 'server', 'instance', 'host', 'federation', 'mute', 'hide']"
 			>
@@ -163,6 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
+import XEmojiMute from './mute-block.emoji-mute.vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
