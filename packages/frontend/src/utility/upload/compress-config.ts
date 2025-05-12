@@ -7,30 +7,23 @@ import isAnimated from 'is-file-animated';
 import { isWebpSupported } from './isWebpSupported.js';
 import type { BrowserImageResizerConfigWithConvertedOutput } from '@misskey-dev/browser-image-resizer';
 
-const compressTypeMap = {
-	'image/jpeg': { quality: 0.85, mimeType: 'image/webp' },
-	'image/png': { quality: 1, mimeType: 'image/webp' },
-	'image/webp': { quality: 0.85, mimeType: 'image/webp' },
-	'image/svg+xml': { quality: 1, mimeType: 'image/webp' },
-} as const;
-
-const compressTypeMapFallback = {
-	'image/jpeg': { quality: 0.8, mimeType: 'image/jpeg' },
-	'image/png': { quality: 1, mimeType: 'image/png' },
-	'image/webp': { quality: 0.8, mimeType: 'image/jpeg' },
-	'image/svg+xml': { quality: 1, mimeType: 'image/png' },
-} as const;
+const supportedTypes = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/svg+xml',
+] as const;
 
 export async function getCompressionConfig(file: File, options: Partial<{ maxWidth: number; maxHeight: number; }> = {}): Promise<BrowserImageResizerConfigWithConvertedOutput | undefined> {
-	const imgConfig = (isWebpSupported() ? compressTypeMap : compressTypeMapFallback)[file.type];
-	if (!imgConfig || await isAnimated(file)) {
+	if (!supportedTypes.includes(file.type) || await isAnimated(file)) {
 		return;
 	}
 
 	return {
+		mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
 		maxWidth: options.maxWidth ?? 2048,
 		maxHeight: options.maxHeight ?? 2048,
+		quality: isWebpSupported() ? 0.9 : 0.85,
 		debug: true,
-		...imgConfig,
 	};
 }
