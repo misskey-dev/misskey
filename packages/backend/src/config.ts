@@ -222,7 +222,7 @@ const dir = `${_dirname}/../../../.config`;
 /**
  * Path of configuration file
  */
-const path = process.env.MISSKEY_CONFIG_YML
+export const path = process.env.MISSKEY_CONFIG_YML
 	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
 	: process.env.NODE_ENV === 'test'
 		? resolve(dir, 'test.yml')
