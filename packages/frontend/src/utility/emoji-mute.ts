@@ -37,10 +37,10 @@ export async function mute(emoji: string) {
 		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
 		emoji;
 	const mutedEmojis = prefer.s.mutingEmojis;
-	if (!mutedEmojis.includes(emoji)) {
+	if (!mutedEmojis.includes(emojiMuteKey)) {
 		return prefer.commit('mutingEmojis', [...mutedEmojis, emojiMuteKey]);
 	}
-	throw new Error('Emoji is already muted');
+	throw new Error('Emoji is already muted', { cause: `${emojiMuteKey} is Already Muted` });
 }
 
 export async function unmute(emoji:string) {
