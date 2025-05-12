@@ -608,7 +608,6 @@ export class UserEntityService implements OnModuleInit {
 				hasUnreadNotification: notificationsInfo?.hasUnread, // 後方互換性のため
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				unreadNotificationsCount: notificationsInfo?.unreadCount,
-				mutedWords: profile!.mutedWords,
 				hardMutedWords: profile!.hardMutedWords,
 				mutedEmojis: profile!.mutedEmojis,
 				mutedInstances: profile!.mutedInstances,
