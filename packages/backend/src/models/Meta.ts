@@ -680,6 +680,21 @@ export class MiMeta {
 		default: false,
 	})
 	public singleUserMode: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public proxyRemoteFiles: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public signToActivityPubGet: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public allowExternalApRedirect: boolean;
 }
 
 export type SoftwareSuspension = {

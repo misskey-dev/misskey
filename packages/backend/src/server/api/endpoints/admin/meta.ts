@@ -555,6 +555,18 @@ export const meta = {
 				enum: ['all', 'local', 'none'],
 				optional: false, nullable: false,
 			},
+			proxyRemoteFiles: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			signToActivityPubGet: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			allowExternalApRedirect: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -702,6 +714,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				deliverSuspendedSoftware: instance.deliverSuspendedSoftware,
 				singleUserMode: instance.singleUserMode,
 				ugcVisibilityForVisitor: instance.ugcVisibilityForVisitor,
+				proxyRemoteFiles: instance.proxyRemoteFiles,
+				signToActivityPubGet: instance.signToActivityPubGet,
+				allowExternalApRedirect: instance.allowExternalApRedirect,
 			};
 		});
 	}
