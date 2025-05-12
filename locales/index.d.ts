@@ -4407,6 +4407,10 @@ export interface Locale extends ILocale {
      */
     "exploreOtherServers": string;
     /**
+     * 他のサービスを探す
+     */
+    "exploreOtherServices": string;
+    /**
      * タイムラインを見てみる
      */
     "letsLookAtTimeline": string;

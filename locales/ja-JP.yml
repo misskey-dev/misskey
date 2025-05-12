@@ -1097,6 +1097,7 @@ internalServerErrorDescription: "サーバー内部で予期しないエラー�
 copyErrorInfo: "エラー情報をコピー"
 joinThisServer: "このサーバーに登録する"
 exploreOtherServers: "他のサーバーを探す"
+exploreOtherServices: "他のサービスを探す"
 letsLookAtTimeline: "タイムラインを見てみる"
 disableFederationConfirm: "連合なしにしますか？"
 disableFederationConfirmWarn: "連合なしにしても投稿は非公開になりません。ほとんどの場合、連合なしにする必要はありません。"
