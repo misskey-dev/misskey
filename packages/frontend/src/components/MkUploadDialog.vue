@@ -39,9 +39,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<MkSwitch v-model="compress">
+		<MkSelect
+			v-if="items.length > 0"
+			v-model="compressionLevel"
+			:items="[
+				{ value: 0, label: i18n.ts.none },
+				{ value: 1, label: i18n.ts.low },
+				{ value: 2, label: i18n.ts.middle },
+				{ value: 3, label: i18n.ts.high },
+			]"
+		>
 			<template #label>{{ i18n.ts.compress }}</template>
-		</MkSwitch>
+		</MkSelect>
 	</div>
 
 	<template #footer>
@@ -54,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
@@ -68,6 +77,7 @@ import { instance } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const $i = ensureSignin();
 
@@ -103,8 +113,29 @@ const items = ref([] as {
 
 const dialog = useTemplateRef('dialog');
 
-const compress = ref(true);
 const uploadStarted = ref(false);
+const compressionLevel = ref<0 | 1 | 2 | 3>(2);
+
+const compressionSettings = computed(() => {
+	if (compressionLevel.value === 1) {
+		return {
+			maxWidth: 1024 + 512,
+			maxHeight: 1024 + 512,
+		};
+	} else if (compressionLevel.value === 2) {
+		return {
+			maxWidth: 1024 + 256,
+			maxHeight: 1024 + 256,
+		};
+	} else if (compressionLevel.value === 3) {
+		return {
+			maxWidth: 1024,
+			maxHeight: 1024,
+		};
+	} else {
+		return null;
+	}
+});
 
 watch(items, () => {
 	if (uploadStarted.value && items.value.every(item => item.uploaded)) {
@@ -135,7 +166,7 @@ function upload() {
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
-			const config = compress.value ? await getCompressionConfig(item.file) : undefined;
+			const config = compressionLevel.value !== 0 ? await getCompressionConfig(item.file, compressionSettings.value) : undefined;
 			let resizedImage: Blob | undefined;
 			if (config) {
 				try {
