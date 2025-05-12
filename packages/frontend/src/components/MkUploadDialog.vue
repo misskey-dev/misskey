@@ -16,11 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div :class="$style.root" class="_gaps_s">
-		<MkSwitch v-model="compress">
-			<template #label>{{ i18n.ts.compress }}</template>
-		</MkSwitch>
 		<div :class="$style.items" class="_gaps_s">
-			<div v-for="ctx in items" :key="ctx.id" v-panel :class="$style.item" :style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }">
+			<div v-for="ctx in items" :key="ctx.id" v-panel :class="[$style.item, ctx.waiting ? $style.itemWaiting : null]" :style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }">
 				<div :class="$style.itemInner">
 					<div>
 						<MkButton :iconOnly="true" rounded><i class="ti ti-dots"></i></MkButton>
@@ -41,18 +38,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
+
+		<MkSwitch v-model="compress">
+			<template #label>{{ i18n.ts.compress }}</template>
+		</MkSwitch>
 	</div>
 
 	<template #footer>
 		<div class="_buttonsCenter">
-			<MkButton primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
+			<MkButton v-if="uploadStarted" rounded @click=""><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton v-else primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
 		</div>
 	</template>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, ref, useTemplateRef } from 'vue';
+import { markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
@@ -93,6 +95,7 @@ const items = ref([] as {
 	progressMax: number | null;
 	progressValue: number | null;
 	thumbnail: string;
+	waiting: boolean;
 	uploading: boolean;
 	uploaded: Misskey.entities.DriveFile | null;
 	file: File;
@@ -101,6 +104,14 @@ const items = ref([] as {
 const dialog = useTemplateRef('dialog');
 
 const compress = ref(true);
+const uploadStarted = ref(false);
+
+watch(items, () => {
+	if (uploadStarted.value && items.value.every(item => item.uploaded)) {
+		emit('done', items.value.map(item => item.uploaded!));
+		dialog.value?.close();
+	}
+}, { deep: true });
 
 function cancel() {
 	// TODO: アップロードを中止しますか？
@@ -108,6 +119,8 @@ function cancel() {
 }
 
 function upload() {
+	uploadStarted.value = true;
+
 	for (const item of items.value) {
 		if ((item.file.size > instance.maxFileSize) || (item.file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
 			alert({
@@ -117,6 +130,8 @@ function upload() {
 			});
 			continue;
 		}
+
+		item.waiting = true;
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
@@ -199,12 +214,14 @@ function upload() {
 
 			xhr.upload.onprogress = ev => {
 				if (ev.lengthComputable) {
+					item.waiting = false;
 					item.progressMax = ev.total;
 					item.progressValue = ev.loaded;
 				}
 			};
 
 			xhr.send(formData);
+			item.uploading = true;
 		};
 		reader.readAsArrayBuffer(item.file);
 	}
@@ -221,6 +238,8 @@ onMounted(() => {
 			progressMax: null,
 			progressValue: null,
 			thumbnail: window.URL.createObjectURL(file),
+			waiting: false,
+			uploading: false,
 			uploaded: null,
 			file: markRaw(file),
 		});
@@ -250,7 +269,30 @@ onMounted(() => {
 		width: var(--p);
 		height: 100%;
 		background: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
+		transition: width 0.2s ease;
 	}
+
+	&.itemWaiting {
+		&::after {
+			--c: color(from var(--MI_THEME-accent) srgb r g b / 0.25);
+
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(-45deg, transparent 25%, var(--c) 25%,var(--c) 50%, transparent 50%, transparent 75%, var(--c) 75%, var(--c));
+			background-size: 25px 25px;
+			animation: stripe .8s infinite linear;
+		}
+	}
+}
+
+@keyframes stripe {
+	0% { background-position-x: 0; }
+	100% { background-position-x: -25px; }
 }
 
 .itemInner {
@@ -259,7 +301,7 @@ onMounted(() => {
 	padding: 8px 16px;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 12px;
 }
 
 .itemThumbnail {
