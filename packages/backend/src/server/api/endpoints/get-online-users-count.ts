@@ -15,7 +15,7 @@ import { UserMutingService } from '@/core/UserMutingService.js';
 
 export const meta = {
 	tags: ['meta'],
-	requireCredential: true,
+	requireCredential: false,
 	allowGet: true,
 	cacheSec: 60 * 1,
 	kind: 'read:account',
@@ -92,6 +92,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const count = await this.usersRepository.countBy({
 				lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),
 			});
+
+			// 未認証ユーザーの場合は数のみを返す
+			if (me == null) {
+				return {
+					count,
+					details: [], // 詳細情報は空配列を返す
+				};
+			}
 
 			// ミュートしているユーザーのIDリストを取得
 			const mutingIds = await this.mutingsRepository.find({
