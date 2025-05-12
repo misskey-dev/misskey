@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref } from 'vue';
+import { defineAsyncComponent, markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -16,12 +16,10 @@ export function chooseFileFromPc(
 	multiple: boolean,
 	options?: {
 		uploadFolder?: string | null;
-		keepOriginal?: boolean;
 		nameConverter?: (file: File) => string | undefined;
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
 	const uploadFolder = options?.uploadFolder ?? prefer.s.uploadFolder;
-	const keepOriginal = options?.keepOriginal ?? false;
 	const nameConverter = options?.nameConverter ?? (() => undefined);
 
 	return new Promise((res, rej) => {
@@ -30,15 +28,15 @@ export function chooseFileFromPc(
 		input.multiple = multiple;
 		input.onchange = () => {
 			if (!input.files) return res([]);
-			const promises = Array.from(
-				input.files,
-				file => uploadFile(file, uploadFolder, nameConverter(file), keepOriginal),
-			);
 
-			Promise.all(promises).then(driveFiles => {
-				res(driveFiles);
-			}).catch(err => {
-				// アップロードのエラーは uploadFile 内でハンドリングされているためアラートダイアログを出したりはしてはいけない
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUploadDialog.vue')), {
+				files: markRaw(Array.from(input.files)),
+				uploadFolder,
+			}, {
+				done: driveFiles => {
+					res(driveFiles);
+				},
+				closed: () => dispose(),
 			});
 
 			// 一応廃棄
@@ -100,10 +98,6 @@ function select(src: HTMLElement | EventTarget | null, label: string | null, mul
 			text: label,
 			type: 'label',
 		} : undefined, {
-			text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
-			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, { keepOriginal: false }).then(files => res(files)),
-		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
 			action: () => chooseFileFromPc(multiple, { keepOriginal: true }).then(files => res(files)),

@@ -1211,6 +1211,10 @@ export interface Locale extends ILocale {
      */
     "uploadFromUrlMayTakeTime": string;
     /**
+     * {n}個のファイルをアップロード
+     */
+    "uploadNFiles": ParameterizedString<"n">;
+    /**
      * みつける
      */
     "explore": string;
