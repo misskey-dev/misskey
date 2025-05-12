@@ -3187,6 +3187,10 @@ export interface Locale extends ILocale {
      */
     "needReloadToApply": string;
     /**
+     * 反映にはサーバーの再起動が必要です。
+     */
+    "needToRestartServerToApply": string;
+    /**
      * タイトルバーを表示する
      */
     "showTitlebar": string;

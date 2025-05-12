@@ -246,7 +246,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkSwitch v-model="federationForm.state.allowExternalApRedirect">
 						<template #label>{{ i18n.ts._serverSettings.allowExternalApRedirect }}<span v-if="federationForm.modifiedStates.allowExternalApRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</div>
+							<div>{{ i18n.ts.needToRestartServerToApply }}</div>
+						</template>
 					</MkSwitch>
 
 					<MkSwitch v-model="federationForm.state.cacheRemoteFiles">
