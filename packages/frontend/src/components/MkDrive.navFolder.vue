@@ -113,6 +113,8 @@ function onDrop(ev: DragEvent) {
 			misskeyApi('drive/folders/update', {
 				folderId: droppedFolder.id,
 				parentId: props.folder ? props.folder.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFoldersMoved', [droppedFolder], props.folder ?? null);
 			});
 		}
 	}

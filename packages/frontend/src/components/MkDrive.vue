@@ -348,7 +348,7 @@ function onDrop(ev: DragEvent) {
 				folderId: droppedFolder.id,
 				parentId: folder.value ? folder.value.id : null,
 			}).then(() => {
-			// noop
+				globalEvents.emit('driveFoldersMoved', [droppedFolder], folder.value);
 			}).catch(err => {
 				switch (err.code) {
 					case 'RECURSIVE_NESTING':
@@ -656,6 +656,15 @@ useGlobalEvent('driveFilesMoved', (files, to) => {
 	}
 	if ((to?.id ?? null) === (folder.value?.id ?? null)) {
 		filesPaginator.unshiftItems(files);
+	}
+});
+
+useGlobalEvent('driveFoldersMoved', (folders, to) => {
+	for (const f of folders) {
+		foldersPaginator.removeItem(f.id);
+	}
+	if ((to?.id ?? null) === (folder.value?.id ?? null)) {
+		foldersPaginator.unshiftItems(folders);
 	}
 });
 

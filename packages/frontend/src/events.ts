@@ -15,6 +15,7 @@ type Events = {
 	noteDeleted: (noteId: Misskey.entities.Note['id']) => void;
 	driveFileCreated: (file: Misskey.entities.DriveFile) => void;
 	driveFilesMoved: (files: Misskey.entities.DriveFile[], to: Misskey.entities.DriveFolder | null) => void;
+	driveFoldersMoved: (folders: Misskey.entities.DriveFolder[], to: Misskey.entities.DriveFolder | null) => void;
 };
 
 export const globalEvents = new EventEmitter<Events>();

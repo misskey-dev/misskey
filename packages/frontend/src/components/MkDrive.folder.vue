@@ -166,7 +166,7 @@ function onDrop(ev: DragEvent) {
 				folderId: droppedFolder.id,
 				parentId: props.folder.id,
 			}).then(() => {
-			// noop
+				globalEvents.emit('driveFoldersMoved', [droppedFolder], props.folder);
 			}).catch(err => {
 				switch (err.code) {
 					case 'RECURSIVE_NESTING':
