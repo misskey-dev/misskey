@@ -79,21 +79,17 @@ import { computed, markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
-import { apiUrl } from '@@/js/config.js';
 import isAnimated from 'is-file-animated';
-import type { BrowserImageResizerConfigWithConvertedOutput } from '@misskey-dev/browser-image-resizer';
 import type { MenuItem } from '@/types/menu.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { ensureSignin } from '@/i.js';
-import { instance } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
-import { uploadFile } from '@/utility/upload.js';
+import { uploadFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 
 const COMPRESSION_SUPPORTED_TYPES = [

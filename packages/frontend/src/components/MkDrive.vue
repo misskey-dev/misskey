@@ -148,7 +148,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
-import { chooseFileFromPcAndUpload } from '@/utility/select-file.js';
+import { chooseFileFromPcAndUpload } from '@/utility/drive.js';
 import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';

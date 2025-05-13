@@ -20,9 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
 					<i class="ti ti-pencil"></i>
 				</button>
-				<button v-if="isImage" v-tooltip="i18n.ts.cropImage" class="_button" :class="$style.fileQuickActionsOthersButton" @click="crop()">
-					<i class="ti ti-crop"></i>
-				</button>
 				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye"></i>
 				</button>
@@ -124,15 +121,6 @@ function postThis() {
 
 	os.post({
 		initialFiles: [file.value],
-	});
-}
-
-function crop() {
-	if (!file.value) return;
-
-	os.createCroppedImageDriveFileFromImageDriveFile(file.value, {
-		aspectRatio: NaN,
-		uploadFolder: file.value.folderId ?? null,
 	});
 }
 

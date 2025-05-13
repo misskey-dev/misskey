@@ -112,17 +112,6 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		action: () => describe(file),
 	});
 
-	if (isImage) {
-		menuItems.push({
-			text: i18n.ts.cropImage,
-			icon: 'ti ti-crop',
-			action: () => os.createCroppedImageDriveFileFromImageDriveFile(file, {
-				aspectRatio: NaN,
-				uploadFolder: folder ? folder.id : folder,
-			}),
-		});
-	}
-
 	menuItems.push({ type: 'divider' }, {
 		text: i18n.ts.createNoteFromTheFile,
 		icon: 'ti ti-pencil',

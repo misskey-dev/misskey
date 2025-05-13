@@ -83,7 +83,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
-import { chooseFileFromDrive, chooseFileFromPcAndUpload } from '@/utility/select-file.js';
+import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
@@ -311,7 +311,7 @@ async function onFileSelectClicked() {
 }
 
 async function onDriveSelectClicked() {
-	const driveFiles = await chooseFileFromDrive({
+	const driveFiles = await chooseDriveFile({
 		multiple: true,
 	});
 	gridItems.value.push(...driveFiles.map(fromDriveFile));

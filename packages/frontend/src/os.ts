@@ -9,7 +9,6 @@ import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import { getProxiedImageUrl } from './utility/media-proxy.js';
-import { uploadFile } from './utility/upload.js';
 import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
@@ -594,21 +593,6 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 	});
 }
 
-export async function selectDriveFile(options: { multiple?: boolean; } = {}): Promise<Misskey.entities.DriveFile[]> {
-	return new Promise(resolve => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDriveFileSelectDialog.vue')), {
-			multiple: options.multiple,
-		}, {
-			done: files => {
-				if (files) {
-					resolve(files);
-				}
-			},
-			closed: () => dispose(),
-		});
-	});
-}
-
 export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<Misskey.entities.DriveFolder[]> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDriveFolderSelectDialog.vue')), {
@@ -668,35 +652,6 @@ export async function cropImageFile(imageFile: File | Blob, options: {
 			},
 			closed: () => dispose(),
 		});
-	});
-}
-
-export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFile: Misskey.entities.DriveFile, options: {
-	aspectRatio: number;
-}): Promise<Misskey.entities.DriveFile> {
-	return new Promise(resolve => {
-		const imgUrl = getProxiedImageUrl(imageDriveFile.url, undefined, true);
-		const image = new Image();
-		image.src = imgUrl;
-		image.onload = () => {
-			const canvas = window.document.createElement('canvas');
-			const ctx = canvas.getContext('2d')!;
-			canvas.width = image.width;
-			canvas.height = image.height;
-			ctx.drawImage(image, 0, 0);
-			canvas.toBlob(blob => {
-				cropImageFile(blob, {
-					aspectRatio: options.aspectRatio,
-				}).then(croppedImageFile => {
-					uploadFile(croppedImageFile, {
-						name: imageDriveFile.name,
-						folderId: imageDriveFile.folderId,
-					}).then(driveFile => {
-						resolve(driveFile);
-					});
-				});
-			});
-		};
 	});
 }
 

@@ -161,7 +161,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
@@ -298,7 +298,7 @@ function changeAvatar(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			os.selectDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false }).then(files => {
 				done(files[0]);
 			});
 		},
@@ -346,7 +346,7 @@ function changeBanner(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			os.selectDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false }).then(files => {
 				done(files[0]);
 			});
 		},

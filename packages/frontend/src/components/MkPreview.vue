@@ -44,6 +44,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkRadio from '@/components/MkRadio.vue';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
+import { chooseDriveFile } from '@/utility/drive.js';
 
 const text = ref('');
 const flag = ref(true);
@@ -79,7 +80,7 @@ const openForm = async () => {
 };
 
 const openDrive = async () => {
-	await os.selectDriveFile({
+	await chooseDriveFile({
 		multiple: false,
 	});
 };

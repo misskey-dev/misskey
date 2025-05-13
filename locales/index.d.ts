@@ -11454,22 +11454,6 @@ export interface Locale extends ILocale {
                  */
                 "directoryToCategoryCaption": string;
                 /**
-                 * いずれかの方法で登録する絵文字を選択してください。
-                 */
-                "emojiInputAreaCaption": string;
-                /**
-                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
-                 */
-                "emojiInputAreaList1": string;
-                /**
-                 * このリンクをクリックしてPCから選択する
-                 */
-                "emojiInputAreaList2": string;
-                /**
-                 * このリンクをクリックしてドライブから選択する
-                 */
-                "emojiInputAreaList3": string;
-                /**
                  * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
                  */
                 "confirmRegisterEmojisDescription": ParameterizedString<"count">;
