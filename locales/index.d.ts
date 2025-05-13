@@ -11915,6 +11915,10 @@ export interface Locale extends ILocale {
          * アップロードされていないファイルがありますが、中止しますか？
          */
         "abortConfirm": string;
+        /**
+         * アップロードされていないファイルがありますが、完了しますか？
+         */
+        "doneConfirm": string;
     };
 }
 declare const locales: {

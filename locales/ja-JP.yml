@@ -3187,3 +3187,4 @@ _uploader:
   compressedToX: "{x}に圧縮"
   savedXPercent: "{x}%節約"
   abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"
+  doneConfirm: "アップロードされていないファイルがありますが、完了しますか？"

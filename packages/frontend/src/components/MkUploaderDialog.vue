@@ -65,7 +65,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_buttonsCenter">
 			<MkButton v-if="isUploading" rounded @click="cancel()"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 			<MkButton v-else-if="!firstUploadAttempted" primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
-			<MkButton v-else-if="canRetry" primary rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+
+			<MkButton v-if="canRetry" rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+			<MkButton v-if="canDone" rounded @click="done()"><i class="ti ti-arrow-right"></i> {{ i18n.ts.done }}</MkButton>
 		</div>
 	</template>
 </MkModalWindow>
@@ -79,6 +81,7 @@ import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { apiUrl } from '@@/js/config.js';
 import isAnimated from 'is-file-animated';
 import type { BrowserImageResizerConfigWithConvertedOutput } from '@misskey-dev/browser-image-resizer';
+import type { MenuItem } from '@/types/menu.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -116,6 +119,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'done', driveFiles: Misskey.entities.DriveFile[]): void;
+	(ev: 'canceled'): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -139,6 +143,7 @@ const dialog = useTemplateRef('dialog');
 const firstUploadAttempted = ref(false);
 const isUploading = computed(() => items.value.some(item => item.uploading));
 const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.waiting) && items.value.some(item => item.uploaded == null));
+const canDone = computed(() => items.value.some(item => item.uploaded != null));
 
 const compressionLevel = ref<0 | 1 | 2 | 3>(2);
 const compressionSettings = computed(() => {
@@ -164,6 +169,7 @@ const compressionSettings = computed(() => {
 
 watch(items, () => {
 	if (items.value.length === 0) {
+		emit('canceled');
 		dialog.value?.close();
 		return;
 	}
@@ -183,12 +189,39 @@ async function cancel() {
 	});
 	if (canceled) return;
 
+	emit('canceled');
+	dialog.value?.close();
+}
+
+async function done() {
+	if (items.value.some(item => item.uploaded == null)) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts._uploader.doneConfirm,
+			okText: i18n.ts.yes,
+			cancelText: i18n.ts.no,
+		});
+		if (canceled) return;
+	}
+
 	emit('done', items.value.filter(item => item.uploaded != null).map(item => item.uploaded!));
 	dialog.value?.close();
 }
 
 function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
+	const menu: MenuItem[] = [];
 
+	if (!item.waiting && !item.uploading && !item.uploaded) {
+		menu.push({
+			icon: 'ti ti-x',
+			text: i18n.ts.remove,
+			action: () => {
+				items.value.splice(items.value.indexOf(item), 1);
+			},
+		});
+	}
+
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
 async function upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
