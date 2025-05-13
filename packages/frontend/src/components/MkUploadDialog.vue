@@ -20,13 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-for="ctx in items" :key="ctx.id" v-panel :class="[$style.item, ctx.waiting ? $style.itemWaiting : null]" :style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }">
 				<div :class="$style.itemInner">
 					<div>
-						<MkButton :iconOnly="true" rounded><i class="ti ti-dots"></i></MkButton>
+						<MkButton :iconOnly="true" rounded @click="showMenu($event, ctx)"><i class="ti ti-dots"></i></MkButton>
 					</div>
 					<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ ctx.thumbnail })` }"></div>
 					<div :class="$style.itemBody">
 						<div>{{ ctx.name }}</div>
-						<div style="opacity: 0.7; margin-top: 4px; font-size: 90%;">
+						<div :class="$style.itemInfo">
 							<span>{{ bytes(ctx.file.size) }}</span>
+							<span v-if="ctx.compressedSize">({{ bytes(ctx.compressedSize) }})</span>
 						</div>
 						<div>
 						</div>
@@ -34,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div>
 						<MkLoading v-if="ctx.uploading" :em="true"/>
 						<MkSystemIcon v-else-if="ctx.uploaded" type="success" style="width: 40px;"/>
+						<MkSystemIcon v-else-if="ctx.uploadFailed" type="error" style="width: 40px;"/>
 					</div>
 				</div>
 			</div>
@@ -55,8 +57,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #footer>
 		<div class="_buttonsCenter">
-			<MkButton v-if="uploadStarted" rounded @click=""><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
-			<MkButton v-else primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
+			<MkButton v-if="isUploading" rounded @click=""><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton v-else-if="!firstUploadAttempted" primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
+			<MkButton v-else-if="canRetry" primary rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
 		</div>
 	</template>
 </MkModalWindow>
@@ -68,7 +71,8 @@ import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { apiUrl } from '@@/js/config.js';
-import { getCompressionConfig } from '@/utility/upload/compress-config.js';
+import isAnimated from 'is-file-animated';
+import type { BrowserImageResizerConfigWithConvertedOutput } from '@misskey-dev/browser-image-resizer';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -78,8 +82,17 @@ import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import { isWebpSupported } from '@/utility/isWebpSupported.js';
+import { uploadFile } from '@/utility/upload.js';
 
 const $i = ensureSignin();
+
+const compressionSupportedTypes = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/svg+xml',
+] as const;
 
 const mimeTypeMap = {
 	'image/webp': 'webp',
@@ -108,29 +121,34 @@ const items = ref([] as {
 	waiting: boolean;
 	uploading: boolean;
 	uploaded: Misskey.entities.DriveFile | null;
+	uploadFailed: boolean;
+	compressedSize?: number | null;
+	compressedImage?: Blob | null;
 	file: File;
 }[]);
 
 const dialog = useTemplateRef('dialog');
 
-const uploadStarted = ref(false);
-const compressionLevel = ref<0 | 1 | 2 | 3>(2);
+const firstUploadAttempted = ref(false);
+const isUploading = computed(() => items.value.some(item => item.uploading));
+const canRetry = computed(() => firstUploadAttempted.value && !isUploading.value && items.value.some(item => item.uploaded == null));
 
+const compressionLevel = ref<0 | 1 | 2 | 3>(2);
 const compressionSettings = computed(() => {
 	if (compressionLevel.value === 1) {
 		return {
-			maxWidth: 1024 + 512,
-			maxHeight: 1024 + 512,
+			maxWidth: 2000,
+			maxHeight: 2000,
 		};
 	} else if (compressionLevel.value === 2) {
 		return {
-			maxWidth: 1024 + 256,
-			maxHeight: 1024 + 256,
+			maxWidth: 2000 * 0.75, // =1500
+			maxHeight: 2000 * 0.75, // =1500
 		};
 	} else if (compressionLevel.value === 3) {
 		return {
-			maxWidth: 1024,
-			maxHeight: 1024,
+			maxWidth: 2000 * 0.75 * 0.75, // =1125
+			maxHeight: 2000 * 0.75 * 0.75, // =1125
 		};
 	} else {
 		return null;
@@ -138,7 +156,12 @@ const compressionSettings = computed(() => {
 });
 
 watch(items, () => {
-	if (uploadStarted.value && items.value.every(item => item.uploaded)) {
+	if (items.value.length === 0) {
+		dialog.value?.close();
+		return;
+	}
+
+	if (items.value.every(item => item.uploaded)) {
 		emit('done', items.value.map(item => item.uploaded!));
 		dialog.value?.close();
 	}
@@ -149,112 +172,60 @@ function cancel() {
 	dialog.value?.close();
 }
 
-function upload() {
-	uploadStarted.value = true;
+function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 
-	for (const item of items.value) {
-		if ((item.file.size > instance.maxFileSize) || (item.file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
-			alert({
-				type: 'error',
-				title: i18n.ts.failedToUpload,
-				text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
-			});
-			continue;
-		}
+}
 
+async function upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
+	firstUploadAttempted.value = true;
+
+	for (const item of items.value.filter(item => item.uploaded == null)) {
 		item.waiting = true;
 
-		const reader = new FileReader();
-		reader.onload = async (): Promise<void> => {
-			const config = compressionLevel.value !== 0 ? await getCompressionConfig(item.file, compressionSettings.value) : undefined;
-			let resizedImage: Blob | undefined;
-			if (config) {
-				try {
-					const resized = await readAndCompressImage(item.file, config);
-					if (resized.size < item.file.size || item.file.type === 'image/webp') {
-						// The compression may not always reduce the file size
-						// (and WebP is not browser safe yet)
-						resizedImage = resized;
-					}
-					if (_DEV_) {
-						const saved = ((1 - resized.size / item.file.size) * 100).toFixed(2);
-						console.log(`Image compression: before ${item.file.size} bytes, after ${resized.size} bytes, saved ${saved}%`);
-					}
+		const shouldCompress = item.compressedImage == null && compressionLevel.value !== 0 && compressionSettings.value && compressionSupportedTypes.includes(item.file.type) && !(await isAnimated(item.file));
 
-					item.name = item.file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
-				} catch (err) {
-					console.error('Failed to resize image', err);
-				}
-			}
-
-			const formData = new FormData();
-			formData.append('i', $i.token);
-			formData.append('force', 'true');
-			formData.append('file', resizedImage ?? item.file);
-			formData.append('name', item.name);
-			if (props.folderId) formData.append('folderId', props.folderId);
-
-			const xhr = new XMLHttpRequest();
-			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
-				item.uploading = false;
-
-				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
-					if (xhr.status === 413) {
-						alert({
-							type: 'error',
-							title: i18n.ts.failedToUpload,
-							text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
-						});
-					} else if (ev.target?.response) {
-						const res = JSON.parse(ev.target.response);
-						if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
-							alert({
-								type: 'error',
-								title: i18n.ts.failedToUpload,
-								text: i18n.ts.cannotUploadBecauseInappropriate,
-							});
-						} else if (res.error?.id === 'd08dbc37-a6a9-463a-8c47-96c32ab5f064') {
-							alert({
-								type: 'error',
-								title: i18n.ts.failedToUpload,
-								text: i18n.ts.cannotUploadBecauseNoFreeSpace,
-							});
-						} else {
-							alert({
-								type: 'error',
-								title: i18n.ts.failedToUpload,
-								text: `${res.error?.message}\n${res.error?.code}\n${res.error?.id}`,
-							});
-						}
-					} else {
-						alert({
-							type: 'error',
-							title: 'Failed to upload',
-							text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`,
-						});
-					}
-
-					reject();
-					return;
-				}
-
-				const driveFile = JSON.parse(ev.target.response);
-				item.uploaded = driveFile;
-			}) as (ev: ProgressEvent<EventTarget>) => any;
-
-			xhr.upload.onprogress = ev => {
-				if (ev.lengthComputable) {
-					item.waiting = false;
-					item.progressMax = ev.total;
-					item.progressValue = ev.loaded;
-				}
+		if (shouldCompress) {
+			const config = {
+				mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
+				maxWidth: compressionSettings.value.maxWidth,
+				maxHeight: compressionSettings.value.maxHeight,
+				quality: isWebpSupported() ? 0.85 : 0.8,
 			};
 
-			xhr.send(formData);
-			item.uploading = true;
-		};
-		reader.readAsArrayBuffer(item.file);
+			try {
+				const result = await readAndCompressImage(item.file, config);
+				if (result.size < item.file.size || item.file.type === 'image/webp') {
+					// The compression may not always reduce the file size
+					// (and WebP is not browser safe yet)
+					item.compressedImage = markRaw(result);
+					item.compressedSize = result.size;
+					item.name = item.file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
+				}
+			} catch (err) {
+				console.error('Failed to resize image', err);
+			}
+		}
+
+		item.uploading = true;
+
+		const driveFile = await uploadFile(item.compressedImage ?? item.file, {
+			name: item.name,
+			folderId: props.folderId,
+			onProgress: (progress) => {
+				item.waiting = false;
+				item.progressMax = progress.total;
+				item.progressValue = progress.loaded;
+			},
+		}).catch(err => {
+			item.uploadFailed = true;
+			item.progressMax = null;
+			item.progressValue = null;
+			throw err;
+		}).finally(() => {
+			item.uploading = false;
+		});
+
+		item.uploaded = driveFile;
 	}
 }
 
@@ -272,6 +243,7 @@ onMounted(() => {
 			waiting: false,
 			uploading: false,
 			uploaded: null,
+			uploadFailed: false,
 			file: markRaw(file),
 		});
 	}
@@ -347,5 +319,13 @@ onMounted(() => {
 .itemBody {
 	flex: 1;
 	min-width: 0;
+}
+
+.itemInfo {
+	opacity: 0.7;
+	margin-top: 4px;
+	font-size: 90%;
+	display: flex;
+	gap: 8px;
 }
 </style>
