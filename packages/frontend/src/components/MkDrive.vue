@@ -428,6 +428,7 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	}).then(() => {
 		// 削除時に親フォルダに移動
 		cd(folderToDelete.parentId);
+		globalEvents.emit('driveFoldersDeleted', [folderToDelete]);
 	}).catch(err => {
 		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
@@ -671,6 +672,12 @@ useGlobalEvent('driveFoldersMoved', (folders, to) => {
 	}
 	if ((to?.id ?? null) === (folder.value?.id ?? null)) {
 		foldersPaginator.unshiftItems(folders);
+	}
+});
+
+useGlobalEvent('driveFoldersDeleted', (folders) => {
+	for (const f of folders) {
+		foldersPaginator.removeItem(f.id);
 	}
 });
 

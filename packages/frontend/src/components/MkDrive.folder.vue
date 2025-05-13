@@ -238,6 +238,7 @@ function deleteFolder() {
 		if (prefer.s.uploadFolder === props.folder.id) {
 			prefer.commit('uploadFolder', null);
 		}
+		globalEvents.emit('driveFoldersDeleted', [props.folder]);
 	}).catch(err => {
 		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
