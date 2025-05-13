@@ -11,6 +11,8 @@ type DragDataMap = {
 	deckColumn: string;
 };
 
+// NOTE: dataTransfer の format は大文字小文字区別されないっぽいので toLowerCase が必要
+
 export function setDragData<T extends keyof DragDataMap>(
 	event: DragEvent,
 	type: T,
@@ -18,7 +20,7 @@ export function setDragData<T extends keyof DragDataMap>(
 ) {
 	if (event.dataTransfer == null) return;
 
-	event.dataTransfer.setData(`misskey/${type}`, JSON.stringify(data));
+	event.dataTransfer.setData(`misskey/${type}`.toLowerCase(), JSON.stringify(data));
 }
 
 export function getDragData<T extends keyof DragDataMap>(
@@ -27,7 +29,7 @@ export function getDragData<T extends keyof DragDataMap>(
 ): DragDataMap[T] | null {
 	if (event.dataTransfer == null) return null;
 
-	const data = event.dataTransfer.getData(`misskey/${type}`);
+	const data = event.dataTransfer.getData(`misskey/${type}`.toLowerCase());
 	if (data == null || data === '') return null;
 
 	return JSON.parse(data);
@@ -42,5 +44,5 @@ export function checkDragDataType(
 	const dataType = event.dataTransfer.types[0];
 	if (dataType == null || dataType === '') return false;
 
-	return types.some((type) => dataType === `misskey/${type}`);
+	return types.some((type) => `misskey/${type}`.toLowerCase() === dataType.toLowerCase());
 }
