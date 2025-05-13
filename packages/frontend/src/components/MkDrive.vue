@@ -555,7 +555,10 @@ function getMenu() {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
 		action: () => {
-			chooseFileFromPcAndUpload(true, { uploadFolder: folder.value?.id, keepOriginal: true });
+			chooseFileFromPcAndUpload({
+				multiple: true,
+				folderId: folder.value?.id,
+			});
 		},
 	}, {
 		text: i18n.ts.fromUrl,

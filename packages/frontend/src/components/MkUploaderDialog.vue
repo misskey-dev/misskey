@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.itemBody">
 						<div>{{ ctx.name }}</div>
 						<div :class="$style.itemInfo">
+							<span>{{ ctx.file.type }}</span>
 							<span>{{ bytes(ctx.file.size) }}</span>
 							<span v-if="ctx.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(ctx.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - ctx.compressedSize / ctx.file.size) * 100) }) }})</span>
 						</div>
