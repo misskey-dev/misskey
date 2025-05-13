@@ -11,34 +11,21 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
-export function chooseFileFromPc(
+export function chooseFileFromPcAndUpload(
 	options: {
 		multiple?: boolean;
 		folderId?: string | null;
 	} = {},
 ): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		const input = window.document.createElement('input');
-		input.type = 'file';
-		input.multiple = options.multiple ?? false;
-		input.onchange = () => {
-			if (!input.files) return res([]);
-
-			os.launchUploader(Array.from(input.files), {
+		os.chooseFileFromPc({ multiple: options.multiple }).then(files => {
+			if (files.length === 0) return;
+			os.launchUploader(files, {
 				folderId: options.folderId,
 			}).then(driveFiles => {
 				res(driveFiles);
 			});
-
-			// 一応廃棄
-			(window as any).__misskey_input_ref__ = null;
-		};
-
-		// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
-		// iOS Safari で正常に動かす為のおまじない
-		(window as any).__misskey_input_ref__ = input;
-
-		input.click();
+		});
 	});
 }
 
@@ -91,7 +78,7 @@ function select(src: HTMLElement | EventTarget | null, label: string | null, mul
 		} : undefined, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, { keepOriginal: true }).then(files => res(files)),
+			action: () => chooseFileFromPcAndUpload({ multiple }).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',

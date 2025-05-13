@@ -130,7 +130,7 @@ function postThis() {
 function crop() {
 	if (!file.value) return;
 
-	os.cropImage(file.value, {
+	os.createCroppedImageDriveFileFromImageDriveFile(file.value, {
 		aspectRatio: NaN,
 		uploadFolder: file.value.folderId ?? null,
 	});

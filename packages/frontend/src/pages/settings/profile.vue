@@ -268,7 +268,7 @@ function changeAvatar(ev) {
 		});
 
 		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
+			originalOrCropped = await os.createCroppedImageDriveFileFromImageDriveFile(file, {
 				aspectRatio: 1,
 			});
 		}
@@ -294,7 +294,7 @@ function changeBanner(ev) {
 		});
 
 		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
+			originalOrCropped = await os.createCroppedImageDriveFileFromImageDriveFile(file, {
 				aspectRatio: 2,
 			});
 		}

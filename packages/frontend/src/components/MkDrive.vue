@@ -148,7 +148,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
-import { chooseFileFromPc } from '@/utility/select-file.js';
+import { chooseFileFromPcAndUpload } from '@/utility/select-file.js';
 import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
@@ -555,7 +555,7 @@ function getMenu() {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
 		action: () => {
-			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: true });
+			chooseFileFromPcAndUpload(true, { uploadFolder: folder.value?.id, keepOriginal: true });
 		},
 	}, {
 		text: i18n.ts.fromUrl,

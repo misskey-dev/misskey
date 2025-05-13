@@ -8,6 +8,7 @@
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
+import { getProxiedImageUrl } from './utility/media-proxy.js';
 import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
@@ -653,21 +654,42 @@ export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof Mk
 	});
 }
 
-export async function cropImage(image: Misskey.entities.DriveFile, options: {
+export async function cropImageFile(imageFile: File, options: {
 	aspectRatio: number;
-	uploadFolder?: string | null;
-}): Promise<Misskey.entities.DriveFile> {
+}): Promise<File> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
-			file: image,
+			imageFile: imageFile,
 			aspectRatio: options.aspectRatio,
-			uploadFolder: options.uploadFolder,
 		}, {
 			ok: x => {
 				resolve(x);
 			},
 			closed: () => dispose(),
 		});
+	});
+}
+
+export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFile: Misskey.entities.DriveFile, options: {
+	aspectRatio: number;
+	uploadFolder?: string | null;
+}): Promise<Misskey.entities.DriveFile> {
+	return new Promise(resolve => {
+		const imgUrl = getProxiedImageUrl(imageDriveFile.url, undefined, true);
+		const image = new Image();
+		image.src = imgUrl;
+		image.onload = () => {
+			const canvas = window.document.createElement('canvas');
+			const ctx = canvas.getContext('2d')!;
+			canvas.width = image.width;
+			canvas.height = image.height;
+			ctx.drawImage(image, 0, 0);
+			const imageFile = new File([canvas.toBlob()], imageDriveFile.name, { type: imageDriveFile.type });
+
+			cropImageFile(imageFile).then(croppedImageFile => {
+
+			});
+		};
 	});
 }
 
@@ -774,6 +796,32 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 	});
 }*/
 
+export function chooseFileFromPc(
+	options: {
+		multiple?: boolean;
+	} = {},
+): Promise<File[]> {
+	return new Promise((res, rej) => {
+		const input = window.document.createElement('input');
+		input.type = 'file';
+		input.multiple = options.multiple ?? false;
+		input.onchange = () => {
+			if (!input.files) return res([]);
+
+			res(Array.from(input.files));
+
+			// 一応廃棄
+			(window as any).__misskey_input_ref__ = null;
+		};
+
+		// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
+		// iOS Safari で正常に動かす為のおまじない
+		(window as any).__misskey_input_ref__ = input;
+
+		input.click();
+	});
+}
+
 export function launchUploader(
 	files: File[],
 	options?: {
@@ -781,6 +829,7 @@ export function launchUploader(
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
+		if (files.length === 0) return;
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUploaderDialog.vue')), {
 			files: markRaw(files),
 			folderId: options?.folderId,

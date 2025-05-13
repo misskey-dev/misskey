@@ -94,7 +94,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
-import { chooseFileFromDrive, chooseFileFromPc } from '@/utility/select-file.js';
+import { chooseFileFromDrive, chooseFileFromPcAndUpload } from '@/utility/select-file.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
@@ -364,7 +364,7 @@ async function onDrop(ev: DragEvent) {
 }
 
 async function onFileSelectClicked() {
-	const driveFiles = await chooseFileFromPc(
+	const driveFiles = await chooseFileFromPcAndUpload(
 		true,
 		{
 			uploadFolder: selectedFolderId.value,

@@ -33,27 +33,23 @@ import { onMounted, useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
-import { apiUrl } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
-import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { getProxiedImageUrl } from '@/utility/media-proxy.js';
-import { prefer } from '@/preferences.js';
-
-const emit = defineEmits<{
-	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
-	(ev: 'cancel'): void;
-	(ev: 'closed'): void;
-}>();
 
 const props = defineProps<{
-	file: Misskey.entities.DriveFile;
+	imageFile: File;
 	aspectRatio: number;
 	uploadFolder?: string | null;
 }>();
 
-const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
+const emit = defineEmits<{
+	(ev: 'ok', cropped: File | Blob): void;
+	(ev: 'cancel'): void;
+	(ev: 'closed'): void;
+}>();
+
+const imgUrl = URL.createObjectURL(props.imageFile);
 const dialogEl = useTemplateRef('dialogEl');
 const imgEl = useTemplateRef('imgEl');
 let cropper: Cropper | null = null;
@@ -71,26 +67,7 @@ const ok = async () => {
 		const croppedCanvas = await croppedSection?.$toCanvas({ width: widthToRender });
 		croppedCanvas?.toBlob(blob => {
 			if (!blob) return;
-			const formData = new FormData();
-			formData.append('file', blob);
-			formData.append('name', `cropped_${props.file.name}`);
-			formData.append('isSensitive', props.file.isSensitive ? 'true' : 'false');
-			if (props.file.comment) { formData.append('comment', props.file.comment);}
-			formData.append('i', $i!.token);
-			if (props.uploadFolder) {
-				formData.append('folderId', props.uploadFolder);
-			} else if (props.uploadFolder !== null && prefer.s.uploadFolder) {
-				formData.append('folderId', prefer.s.uploadFolder);
-			}
-
-			window.fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: formData,
-			})
-				.then(response => response.json())
-				.then(f => {
-					res(f);
-				});
+			res(blob);
 		});
 	});
 

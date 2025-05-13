@@ -145,7 +145,7 @@ async function describe(file: Misskey.entities.DriveFile) {
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {
 	if (mock) return;
 
-	const newFile = await os.cropImage(file, { aspectRatio: NaN });
+	const newFile = await os.createCroppedImageDriveFileFromImageDriveFile(file, { aspectRatio: NaN });
 	emit('replaceFile', file, newFile);
 }
 

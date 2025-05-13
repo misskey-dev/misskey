@@ -116,7 +116,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		menuItems.push({
 			text: i18n.ts.cropImage,
 			icon: 'ti ti-crop',
-			action: () => os.cropImage(file, {
+			action: () => os.createCroppedImageDriveFileFromImageDriveFile(file, {
 				aspectRatio: NaN,
 				uploadFolder: folder ? folder.id : folder,
 			}),
