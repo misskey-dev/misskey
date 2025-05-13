@@ -3182,3 +3182,7 @@ _serverSetupWizard:
     text1: "Misskeyは有志によって開発されている無料のソフトウェアです。"
     text2: "今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。"
     text3: "支援者向け特典もあります！"
+
+_uploader:
+  compressedToX: "{x}に圧縮"
+  savedXPercent: "{x}%節約"

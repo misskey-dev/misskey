@@ -11902,6 +11902,16 @@ export interface Locale extends ILocale {
             "text3": string;
         };
     };
+    "_uploader": {
+        /**
+         * {x}に圧縮
+         */
+        "compressedToX": ParameterizedString<"x">;
+        /**
+         * {x}%節約
+         */
+        "savedXPercent": ParameterizedString<"x">;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

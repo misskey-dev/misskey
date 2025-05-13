@@ -17,7 +17,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.root" class="_gaps_s">
 		<div :class="$style.items" class="_gaps_s">
-			<div v-for="ctx in items" :key="ctx.id" v-panel :class="[$style.item, ctx.waiting ? $style.itemWaiting : null]" :style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }">
+			<div
+				v-for="ctx in items"
+				:key="ctx.id"
+				v-panel
+				:class="[$style.item, ctx.waiting ? $style.itemWaiting : null, ctx.uploaded ? $style.itemCompleted : null, ctx.uploadFailed ? $style.itemFailed : null]"
+				:style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }"
+			>
 				<div :class="$style.itemInner">
 					<div>
 						<MkButton :iconOnly="true" rounded @click="showMenu($event, ctx)"><i class="ti ti-dots"></i></MkButton>
@@ -27,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>{{ ctx.name }}</div>
 						<div :class="$style.itemInfo">
 							<span>{{ bytes(ctx.file.size) }}</span>
-							<span v-if="ctx.compressedSize">({{ bytes(ctx.compressedSize) }})</span>
+							<span v-if="ctx.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(ctx.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - ctx.compressedSize / ctx.file.size) * 100) }) }})</span>
 						</div>
 						<div>
 						</div>
@@ -181,6 +187,7 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 
 	for (const item of items.value.filter(item => item.uploaded == null)) {
 		item.waiting = true;
+		item.uploadFailed = false;
 
 		const shouldCompress = item.compressedImage == null && compressionLevel.value !== 0 && compressionSettings.value && compressionSupportedTypes.includes(item.file.type) && !(await isAnimated(item.file));
 
@@ -272,7 +279,7 @@ onMounted(() => {
 		width: var(--p);
 		height: 100%;
 		background: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
-		transition: width 0.2s ease;
+		transition: width 0.2s ease, left 0.2s ease;
 	}
 
 	&.itemWaiting {
@@ -289,6 +296,23 @@ onMounted(() => {
 			background: linear-gradient(-45deg, transparent 25%, var(--c) 25%,var(--c) 50%, transparent 50%, transparent 75%, var(--c) 75%, var(--c));
 			background-size: 25px 25px;
 			animation: stripe .8s infinite linear;
+		}
+	}
+
+	&.itemCompleted {
+		&::before {
+			left: 100%;
+			width: var(--p);
+		}
+
+		.itemBody {
+			color: var(--MI_THEME-accent);
+		}
+	}
+
+	&.itemFailed {
+		.itemBody {
+			color: var(--MI_THEME-error);
 		}
 	}
 }
@@ -310,6 +334,7 @@ onMounted(() => {
 .itemThumbnail {
 	width: 70px;
 	height: 70px;
+	background-color: var(--MI_THEME-bg);
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
