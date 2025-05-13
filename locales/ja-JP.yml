@@ -298,6 +298,7 @@ uploadFromUrl: "URLアップロード"
 uploadFromUrlDescription: "アップロードしたいファイルのURL"
 uploadFromUrlRequested: "アップロードをリクエストしました"
 uploadFromUrlMayTakeTime: "アップロードが完了するまで時間がかかる場合があります。"
+uploadNFiles: "{n}個のファイルをアップロード"
 explore: "みつける"
 messageRead: "既読"
 noMoreHistory: "これより過去の履歴はありません"
@@ -3181,3 +3182,8 @@ _serverSetupWizard:
     text1: "Misskeyは有志によって開発されている無料のソフトウェアです。"
     text2: "今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。"
     text3: "支援者向け特典もあります！"
+
+_uploader:
+  compressedToX: "{x}に圧縮"
+  savedXPercent: "{x}%節約"
+  abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"

@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div
 			ref="main"
-			:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
+			:class="[$style.main, { [$style.fetching]: fetching }]"
 			@dragover.prevent.stop="onDragover"
 			@dragenter="onDragenter"
 			@dragleave="onDragleave"
@@ -146,7 +146,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile, uploads } from '@/utility/upload.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPc } from '@/utility/select-file.js';
@@ -176,7 +175,6 @@ const emit = defineEmits<{
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const uploadings = uploads;
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -562,12 +560,6 @@ function getMenu() {
 		text: i18n.ts.addFile,
 		type: 'label',
 	}, {
-		text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
-		icon: 'ti ti-upload',
-		action: () => {
-			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: false });
-		},
-	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
 		action: () => {
@@ -765,10 +757,6 @@ onBeforeUnmount(() => {
 		cursor: wait !important;
 		opacity: 0.5;
 		pointer-events: none;
-	}
-
-	&.uploading {
-		height: calc(100% - 38px - 100px);
 	}
 }
 

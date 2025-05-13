@@ -1211,6 +1211,10 @@ export interface Locale extends ILocale {
      */
     "uploadFromUrlMayTakeTime": string;
     /**
+     * {n}個のファイルをアップロード
+     */
+    "uploadNFiles": ParameterizedString<"n">;
+    /**
      * みつける
      */
     "explore": string;
@@ -11897,6 +11901,20 @@ export interface Locale extends ILocale {
              */
             "text3": string;
         };
+    };
+    "_uploader": {
+        /**
+         * {x}に圧縮
+         */
+        "compressedToX": ParameterizedString<"x">;
+        /**
+         * {x}%節約
+         */
+        "savedXPercent": ParameterizedString<"x">;
+        /**
+         * アップロードされていないファイルがありますが、中止しますか？
+         */
+        "abortConfirm": string;
     };
 }
 declare const locales: {

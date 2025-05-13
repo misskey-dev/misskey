@@ -95,7 +95,6 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
 import { chooseFileFromDrive, chooseFileFromPc } from '@/utility/select-file.js';
-import { uploadFile } from '@/utility/upload.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';

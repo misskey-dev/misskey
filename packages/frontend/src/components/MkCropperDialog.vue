@@ -15,18 +15,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.cropImage }}</template>
-	<template #default="{ width, height }">
-		<div class="mk-cropper-dialog" :style="`--vw: ${width}px; --vh: ${height}px;`">
-			<Transition name="fade">
-				<div v-if="loading" class="loading">
-					<MkLoading/>
-				</div>
-			</Transition>
-			<div class="container">
-				<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
+	<div class="mk-cropper-dialog" :style="`--vw: 100%; --vh: 100%;`">
+		<Transition name="fade">
+			<div v-if="loading" class="loading">
+				<MkLoading/>
 			</div>
+		</Transition>
+		<div class="container">
+			<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
 		</div>
-	</template>
+	</div>
 </MkModalWindow>
 </template>
 

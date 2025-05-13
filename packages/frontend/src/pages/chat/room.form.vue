@@ -41,7 +41,6 @@ import { formatTimeString } from '@/utility/format-time-string.js';
 import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile } from '@/utility/upload.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
