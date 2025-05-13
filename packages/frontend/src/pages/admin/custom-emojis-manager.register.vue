@@ -35,20 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XRegisterLogs :logs="requestLogs"/>
 		</MkFolder>
 
-		<div
-			:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
-			@dragover.prevent="isDragOver = true"
-			@dragleave.prevent="isDragOver = false"
-			@drop.prevent.stop="onDrop"
-		>
-			<div style="margin-top: 1em">
-				{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaCaption }}
-			</div>
-			<ul>
-				<li>{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList1 }}</li>
-				<li><a @click.prevent="onFileSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList2 }}</a></li>
-				<li><a @click.prevent="onDriveSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList3 }}</a></li>
-			</ul>
+		<div class="_buttonsCenter">
+			<MkButton primary rounded @click="onFileSelectClicked">{{ i18n.ts.uplaod }}</MkButton>
+			<MkButton primary rounded @click="onDriveSelectClicked">{{ i18n.ts.fromDrive }}</MkButton>
 		</div>
 
 		<div v-if="gridItems.length > 0" :class="$style.gridArea">
@@ -310,59 +299,6 @@ async function onClearClicked() {
 	}
 }
 
-async function onDrop(ev: DragEvent) {
-	isDragOver.value = false;
-
-	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
-	const confirm = await os.confirm({
-		type: 'info',
-		text: i18n.tsx._customEmojisManager._local._register.confirmUploadEmojisDescription({ count: droppedFiles.length }),
-	});
-	if (confirm.canceled) {
-		return;
-	}
-
-	const uploadedItems = Array.of<{ droppedFile: DroppedFile, driveFile: Misskey.entities.DriveFile }>();
-	try {
-		uploadedItems.push(
-			...await os.promiseDialog(
-				Promise.all(
-					droppedFiles.map(async (it) => ({
-						droppedFile: it,
-						driveFile: await uploadFile( // TODO
-							it.file,
-							selectedFolderId.value,
-							it.file.name.replace(/\.[^.]+$/, ''),
-							true,
-						),
-					}),
-					),
-				),
-				() => {
-				},
-				() => {
-				},
-			),
-		);
-	} catch (err) {
-		// ダイアログは共通部品側で出ているはずなので何もしない
-		return;
-	}
-
-	const items = uploadedItems.map(({ droppedFile, driveFile }) => {
-		const item = fromDriveFile(driveFile);
-		if (directoryToCategory.value) {
-			item.category = droppedFile.path
-				.replace(/^\//, '')
-				.replace(/\/[^/]+$/, '')
-				.replace(droppedFile.file.name, '');
-		}
-		return item;
-	});
-
-	gridItems.value.push(...items);
-}
-
 async function onFileSelectClicked() {
 	const driveFiles = await chooseFileFromPcAndUpload(
 		true,
@@ -433,23 +369,6 @@ onMounted(async () => {
 <style module lang="scss">
 .violationRow {
 	background-color: var(--MI_THEME-infoWarnBg);
-}
-
-.uploadBox {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: auto;
-	border: 0.5px dotted var(--MI_THEME-accentedBg);
-	border-radius: var(--MI-radius);
-	background-color: var(--MI_THEME-accentedBg);
-	box-sizing: border-box;
-
-	&.dragOver {
-		cursor: copy;
-	}
 }
 
 .gridArea {
