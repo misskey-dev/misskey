@@ -147,7 +147,11 @@ function onDrop(ev: DragEvent) {
 				fileIds: droppedData.map(f => f.id),
 				folderId: props.folder.id,
 			}).then(() => {
-				globalEvents.emit('driveFilesMoved', droppedData, props.folder);
+				globalEvents.emit('driveFilesUpdated', droppedData.map(x => ({
+					...x,
+					folderId: props.folder.id,
+					folder: props.folder,
+				})));
 			});
 		}
 	}
@@ -166,7 +170,11 @@ function onDrop(ev: DragEvent) {
 				folderId: droppedFolder.id,
 				parentId: props.folder.id,
 			}).then(() => {
-				globalEvents.emit('driveFoldersMoved', [droppedFolder], props.folder);
+				globalEvents.emit('driveFoldersUpdated', [droppedFolder].map(x => ({
+					...x,
+					parentId: props.folder.id,
+					parent: props.folder,
+				})));
 			}).catch(err => {
 				switch (err.code) {
 					case 'RECURSIVE_NESTING':
@@ -216,6 +224,11 @@ function rename() {
 		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
 			name: name,
+		}).then(() => {
+			globalEvents.emit('driveFoldersUpdated', [{
+				...props.folder,
+				name: name,
+			}]);
 		});
 	});
 }
@@ -227,6 +240,12 @@ function move() {
 		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
 			parentId: folder[0] ? folder[0].id : null,
+		}).then(() => {
+			globalEvents.emit('driveFoldersUpdated', [{
+				...props.folder,
+				parentId: folder[0] ? folder[0].id : null,
+				parent: folder[0] ?? null,
+			}]);
 		});
 	});
 }

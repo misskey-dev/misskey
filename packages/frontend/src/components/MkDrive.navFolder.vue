@@ -97,7 +97,11 @@ function onDrop(ev: DragEvent) {
 				fileIds: droppedData.map(f => f.id),
 				folderId: props.folder ? props.folder.id : null,
 			}).then(() => {
-				globalEvents.emit('driveFilesMoved', droppedData, props.folder ?? null);
+				globalEvents.emit('driveFilesUpdated', droppedData.map(x => ({
+					...x,
+					folderId: props.folder ? props.folder.id : null,
+					folder: props.folder ?? null,
+				})));
 			});
 		}
 	}
@@ -114,7 +118,11 @@ function onDrop(ev: DragEvent) {
 				folderId: droppedFolder.id,
 				parentId: props.folder ? props.folder.id : null,
 			}).then(() => {
-				globalEvents.emit('driveFoldersMoved', [droppedFolder], props.folder ?? null);
+				globalEvents.emit('driveFoldersUpdated', [droppedFolder].map(x => ({
+					...x,
+					parentId: props.folder ? props.folder.id : null,
+					parent: props.folder ?? null,
+				})));
 			});
 		}
 	}

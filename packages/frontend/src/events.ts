@@ -14,9 +14,9 @@ type Events = {
 	notePosted: (note: Misskey.entities.Note) => void;
 	noteDeleted: (noteId: Misskey.entities.Note['id']) => void;
 	driveFileCreated: (file: Misskey.entities.DriveFile) => void;
-	driveFilesMoved: (files: Misskey.entities.DriveFile[], to: Misskey.entities.DriveFolder | null) => void;
+	driveFilesUpdated: (files: Misskey.entities.DriveFile[]) => void;
 	driveFilesDeleted: (files: Misskey.entities.DriveFile[]) => void;
-	driveFoldersMoved: (folders: Misskey.entities.DriveFolder[], to: Misskey.entities.DriveFolder | null) => void;
+	driveFoldersUpdated: (folders: Misskey.entities.DriveFolder[]) => void;
 	driveFoldersDeleted: (folders: Misskey.entities.DriveFolder[]) => void;
 };
 
