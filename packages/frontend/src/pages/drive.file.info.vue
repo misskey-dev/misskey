@@ -139,7 +139,7 @@ function crop() {
 function move() {
 	if (!file.value) return;
 
-	os.selectDriveFolder(false).then(folder => {
+	os.selectDriveFolder().then(folder => {
 		misskeyApi('drive/files/update', {
 			fileId: file.value.id,
 			folderId: folder[0] ? folder[0].id : null,
