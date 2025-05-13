@@ -37,7 +37,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { chooseFileFromPcAndUpload } from '@/utility/select-file.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 

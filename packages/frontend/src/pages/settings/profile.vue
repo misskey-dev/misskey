@@ -298,7 +298,7 @@ function changeAvatar(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			os.selectDriveFile(false).then(files => {
+			os.selectDriveFile({ multiple: false }).then(files => {
 				done(files[0]);
 			});
 		},
@@ -346,7 +346,7 @@ function changeBanner(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			os.selectDriveFile(false).then(files => {
+			os.selectDriveFile({ multiple: false }).then(files => {
 				done(files[0]);
 			});
 		},

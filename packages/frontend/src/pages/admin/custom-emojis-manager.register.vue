@@ -300,21 +300,20 @@ async function onClearClicked() {
 }
 
 async function onFileSelectClicked() {
-	const driveFiles = await chooseFileFromPcAndUpload(
-		true,
-		{
-			uploadFolder: selectedFolderId.value,
-			keepOriginal: true,
-			// 拡張子は消す
-			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
-		},
-	);
+	const driveFiles = await chooseFileFromPcAndUpload({
+		multiple: true,
+		folderId: selectedFolderId.value,
+		// 拡張子は消す
+		nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+	});
 
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
 async function onDriveSelectClicked() {
-	const driveFiles = await chooseFileFromDrive(true);
+	const driveFiles = await chooseFileFromDrive({
+		multiple: true,
+	});
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 

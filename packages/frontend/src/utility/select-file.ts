@@ -29,9 +29,13 @@ export function chooseFileFromPcAndUpload(
 	});
 }
 
-export function chooseFileFromDrive(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+export function chooseFileFromDrive(options: {
+	multiple?: boolean;
+} = {}): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		os.selectDriveFile(multiple).then(files => {
+		os.selectDriveFile({
+			multiple: options.multiple,
+		}).then(files => {
 			res(files);
 		});
 	});
