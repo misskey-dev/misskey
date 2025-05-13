@@ -48,6 +48,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 
 			const marker = Math.random().toString(); // TODO: UUIDとか使う
 
+			// TODO: no websocketモード対応
 			const connection = useStream().useChannel('main');
 			connection.on('urlUploadFinished', urlResponse => {
 				if (urlResponse.marker === marker) {

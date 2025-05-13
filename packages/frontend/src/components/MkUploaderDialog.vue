@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:key="ctx.id"
 				v-panel
 				:class="[$style.item, ctx.waiting ? $style.itemWaiting : null, ctx.uploaded ? $style.itemCompleted : null, ctx.uploadFailed ? $style.itemFailed : null]"
-				:style="{ '--p': ctx.progressValue !== null ? `${ctx.progressValue / ctx.progressMax * 100}%` : '0%' }"
+				:style="{ '--p': ctx.progress != null ? `${ctx.progress.value / ctx.progress.max * 100}%` : '0%' }"
 			>
 				<div :class="$style.itemInner">
 					<div>
@@ -127,8 +127,7 @@ const emit = defineEmits<{
 const items = ref([] as {
 	id: string;
 	name: string;
-	progressMax: number | null;
-	progressValue: number | null;
+	progress: { max: number; value: number } | null;
 	thumbnail: string;
 	waiting: boolean;
 	uploading: boolean;
@@ -263,13 +262,16 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 			folderId: props.folderId,
 			onProgress: (progress) => {
 				item.waiting = false;
-				item.progressMax = progress.total;
-				item.progressValue = progress.loaded;
+				if (item.progress == null) {
+					item.progress = { max: progress.total, value: progress.loaded };
+				} else {
+					item.progress.value = progress.loaded;
+					item.progress.max = progress.total;
+				}
 			},
 		}).catch(err => {
 			item.uploadFailed = true;
-			item.progressMax = null;
-			item.progressValue = null;
+			item.progress = null;
 			throw err;
 		}).finally(() => {
 			item.uploading = false;
@@ -287,8 +289,7 @@ onMounted(() => {
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
-			progressMax: null,
-			progressValue: null,
+			progress: null,
 			thumbnail: window.URL.createObjectURL(file),
 			waiting: false,
 			uploading: false,
