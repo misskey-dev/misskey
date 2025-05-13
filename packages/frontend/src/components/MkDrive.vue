@@ -795,6 +795,7 @@ onBeforeUnmount(() => {
 }
 
 .main {
+	min-height: 100cqh;
 	user-select: none;
 
 	&.fetching {
