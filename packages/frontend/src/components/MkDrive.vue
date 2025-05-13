@@ -148,7 +148,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
-import { chooseFileFromPcAndUpload } from '@/utility/drive.js';
+import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { usePagination } from '@/composables/use-pagination.js';
@@ -525,7 +525,7 @@ function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder
 async function moveFilesBulk() {
 	if (selectedFiles.value.length === 0) return;
 
-	const toFolder = await os.selectDriveFolder(folder.value ? folder.value.id : null);
+	const toFolder = await selectDriveFolder(folder.value ? folder.value.id : null);
 
 	await os.apiWithDialog('drive/files/move-bulk', {
 		fileIds: selectedFiles.value.map(f => f.id),
