@@ -601,6 +601,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
+
+						<MkInfo>
+							<div class="_gaps_s">
+								<div>{{ i18n.ts._clientPerformanceIssueTip.title }}</div>
+								<div>
+									<div><b>{{ i18n.ts._clientPerformanceIssueTip.makeSureDisabledAdBlocker }}</b></div>
+									<div>{{ i18n.ts._clientPerformanceIssueTip.makeSureDisabledAdBlocker_description }}</div>
+								</div>
+								<div>
+									<div><b>{{ i18n.ts._clientPerformanceIssueTip.makeSureDisabledCustomCss }}</b></div>
+									<div>{{ i18n.ts._clientPerformanceIssueTip.makeSureDisabledCustomCss_description }}</div>
+								</div>
+								<div>
+									<div><b>{{ i18n.ts._clientPerformanceIssueTip.makeSureDisabledAddons }}</b></div>
+									<div>{{ i18n.ts._clientPerformanceIssueTip.makeSureDisabledAddons_description }}</div>
+								</div>
+							</div>
+						</MkInfo>
 					</div>
 				</MkFolder>
 			</SearchMarker>

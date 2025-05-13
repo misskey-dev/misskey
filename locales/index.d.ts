@@ -11904,6 +11904,36 @@ export interface Locale extends ILocale {
          */
         "doneConfirm": string;
     };
+    "_clientPerformanceIssueTip": {
+        /**
+         * バッテリー消費が多いと感じたら
+         */
+        "title": string;
+        /**
+         * アドブロッカーを無効にしてください
+         */
+        "makeSureDisabledAdBlocker": string;
+        /**
+         * アドブロッカーはパフォーマンスに影響を及ぼすことがあります。OSの機能やブラウザの機能・アドオンなどでアドブロッカーが有効になっていないか確認してください。
+         */
+        "makeSureDisabledAdBlocker_description": string;
+        /**
+         * カスタムCSSを無効にしてください
+         */
+        "makeSureDisabledCustomCss": string;
+        /**
+         * スタイルを上書きするとパフォーマンスに影響を及ぼすことがあります。カスタムCSSや、スタイルを上書きする拡張機能が有効になっていないか確認してください。
+         */
+        "makeSureDisabledCustomCss_description": string;
+        /**
+         * 拡張機能を無効にしてください
+         */
+        "makeSureDisabledAddons": string;
+        /**
+         * 一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。
+         */
+        "makeSureDisabledAddons_description": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
