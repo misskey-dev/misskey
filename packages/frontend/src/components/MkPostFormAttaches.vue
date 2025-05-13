@@ -43,6 +43,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { globalEvents } from '@/events.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -81,12 +82,13 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
-
 	if (canceled) return;
 
-	os.apiWithDialog('drive/files/delete', {
+	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
 function toggleSensitive(file) {

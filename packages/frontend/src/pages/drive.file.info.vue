@@ -81,6 +81,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
 import { selectDriveFolder } from '@/utility/drive.js';
+import { globalEvents } from '@/events.js';
 
 const router = useRouter();
 
@@ -199,11 +200,13 @@ async function deleteFile() {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.value.name }),
 	});
-
 	if (canceled) return;
+
 	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.value.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file.value]);
 
 	router.push('/my/drive');
 }

@@ -659,6 +659,12 @@ useGlobalEvent('driveFilesMoved', (files, to) => {
 	}
 });
 
+useGlobalEvent('driveFilesDeleted', (files) => {
+	for (const f of files) {
+		filesPaginator.removeItem(f.id);
+	}
+});
+
 useGlobalEvent('driveFoldersMoved', (folders, to) => {
 	for (const f of folders) {
 		foldersPaginator.removeItem(f.id);

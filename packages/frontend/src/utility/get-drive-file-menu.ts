@@ -12,6 +12,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
+import { globalEvents } from '@/events.js';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -78,11 +79,13 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
-
 	if (canceled) return;
-	misskeyApi('drive/files/delete', {
+
+	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
