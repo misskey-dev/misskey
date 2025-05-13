@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
+<MkStickyContainer style="background: var(--MI_THEME-bg);">
 	<template #header>
 		<nav :class="$style.nav">
 			<div :class="$style.navPath" @contextmenu.prevent.stop="() => {}">
@@ -168,9 +168,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'changeSelectedFiles', v: Misskey.entities.DriveFile[]): void;
 	(ev: 'changeSelectedFolders', v: (Misskey.entities.DriveFolder | null)[]): void;
-	(ev: 'move-root'): void;
 	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
-	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
@@ -525,7 +523,6 @@ function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder
 
 		if (folderToMove.parent) dive(folderToMove.parent);
 
-		emit('open-folder', folderToMove);
 		initialize();
 	});
 }
@@ -553,7 +550,6 @@ function goRoot() {
 
 	folder.value = null;
 	hierarchyFolders.value = [];
-	emit('move-root');
 	initialize();
 }
 
