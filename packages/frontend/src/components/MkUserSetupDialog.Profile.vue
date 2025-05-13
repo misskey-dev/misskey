@@ -67,33 +67,32 @@ watch(description, () => {
 	});
 });
 
-function setAvatar(ev) {
-	os.chooseFileFromPc({ multiple: false }).then(async (files) => {
-		const file = files[0];
+async function setAvatar(ev) {
+	const files = await os.chooseFileFromPc({ multiple: false });
+	const file = files[0];
 
-		let originalOrCropped = file;
+	let originalOrCropped = file;
 
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.cropImageAsk,
-			okText: i18n.ts.cropYes,
-			cancelText: i18n.ts.cropNo,
-		});
-
-		if (!canceled) {
-			originalOrCropped = await os.cropImageFile(file, {
-				aspectRatio: 1,
-			});
-		}
-
-		const driveFile = (await os.launchUploader([originalOrCropped], {}))[0];
-
-		const i = await os.apiWithDialog('i/update', {
-			avatarId: driveFile.id,
-		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
+	const { canceled } = await os.confirm({
+		type: 'question',
+		text: i18n.ts.cropImageAsk,
+		okText: i18n.ts.cropYes,
+		cancelText: i18n.ts.cropNo,
 	});
+
+	if (!canceled) {
+		originalOrCropped = await os.cropImageFile(file, {
+			aspectRatio: 1,
+		});
+	}
+
+	const driveFile = (await os.launchUploader([originalOrCropped], {}))[0];
+
+	const i = await os.apiWithDialog('i/update', {
+		avatarId: driveFile.id,
+	});
+	$i.avatarId = i.avatarId;
+	$i.avatarUrl = i.avatarUrl;
 }
 </script>
 

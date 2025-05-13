@@ -71,8 +71,6 @@ const ok = async () => {
 		});
 	});
 
-	os.promiseDialog(promise);
-
 	const f = await promise;
 
 	emit('ok', f);
