@@ -773,3 +773,22 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		});
 	});
 }*/
+
+export function launchUploader(
+	files: File[],
+	options?: {
+		folderId?: string | null;
+	},
+): Promise<Misskey.entities.DriveFile[]> {
+	return new Promise((res, rej) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUploaderDialog.vue')), {
+			files: markRaw(files),
+			folderId: options?.folderId,
+		}, {
+			done: driveFiles => {
+				res(driveFiles);
+			},
+			closed: () => dispose(),
+		});
+	});
+}

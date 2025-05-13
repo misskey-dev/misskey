@@ -128,7 +128,7 @@ function onDrop(ev: DragEvent): void {
 	// ファイルだったら
 	if (ev.dataTransfer.files.length === 1) {
 		ev.preventDefault();
-		upload(ev.dataTransfer.files[0]);
+		os.launchUploader([Array.from(ev.dataTransfer.files)[0]], {});
 		return;
 	} else if (ev.dataTransfer.files.length > 1) {
 		ev.preventDefault();
@@ -173,7 +173,11 @@ function chooseFile(ev: MouseEvent) {
 function onChangeFile() {
 	if (fileEl.value == null || fileEl.value.files == null) return;
 
-	if (fileEl.value.files[0]) upload(fileEl.value.files[0]);
+	if (fileEl.value.files[0]) {
+		os.launchUploader(Array.from(fileEl.value.files), {}).then(driveFiles => {
+			file.value = driveFiles[0];
+		});
+	}
 }
 
 function send() {

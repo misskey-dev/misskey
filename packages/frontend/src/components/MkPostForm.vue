@@ -729,7 +729,7 @@ function onDrop(ev: DragEvent): void {
 	// ファイルだったら
 	if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
 		ev.preventDefault();
-		for (const x of Array.from(ev.dataTransfer.files)) upload(x);
+		os.launchUploader(Array.from(ev.dataTransfer.files), {});
 		return;
 	}
 

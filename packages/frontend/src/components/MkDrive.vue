@@ -316,9 +316,9 @@ function onDrop(ev: DragEvent) {
 
 	// ドロップされてきたものがファイルだったら
 	if (ev.dataTransfer.files.length > 0) {
-		for (const file of Array.from(ev.dataTransfer.files)) {
-			upload(file, folder.value);
-		}
+		os.launchUploader(Array.from(ev.dataTransfer.files), {
+			folderId: folder.value?.id ?? null,
+		});
 		return;
 	}
 

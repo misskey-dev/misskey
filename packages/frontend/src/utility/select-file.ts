@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, markRaw, ref } from 'vue';
+import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -12,30 +12,22 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
 export function chooseFileFromPc(
-	multiple: boolean,
-	options?: {
-		uploadFolder?: string | null;
-		nameConverter?: (file: File) => string | undefined;
-	},
+	options: {
+		multiple?: boolean;
+		folderId?: string | null;
+	} = {},
 ): Promise<Misskey.entities.DriveFile[]> {
-	const uploadFolder = options?.uploadFolder ?? prefer.s.uploadFolder;
-	const nameConverter = options?.nameConverter ?? (() => undefined);
-
 	return new Promise((res, rej) => {
 		const input = window.document.createElement('input');
 		input.type = 'file';
-		input.multiple = multiple;
+		input.multiple = options.multiple ?? false;
 		input.onchange = () => {
 			if (!input.files) return res([]);
 
-			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUploadDialog.vue')), {
-				files: markRaw(Array.from(input.files)),
-				folderId: uploadFolder,
-			}, {
-				done: driveFiles => {
-					res(driveFiles);
-				},
-				closed: () => dispose(),
+			os.launchUploader(Array.from(input.files), {
+				folderId: options.folderId,
+			}).then(driveFiles => {
+				res(driveFiles);
 			});
 
 			// 一応廃棄
