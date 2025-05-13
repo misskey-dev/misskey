@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div>
-						<MkLoading v-if="ctx.uploading" :em="true"/>
+						<MkSystemIcon v-if="ctx.uploading" type="waiting" style="width: 40px;"/>
 						<MkSystemIcon v-else-if="ctx.uploaded" type="success" style="width: 40px;"/>
 						<MkSystemIcon v-else-if="ctx.uploadFailed" type="error" style="width: 40px;"/>
 					</div>
@@ -319,6 +319,12 @@ onMounted(() => {
 .itemBody {
 	flex: 1;
 	min-width: 0;
+}
+
+@container (max-width: 500px) {
+	.itemBody {
+		font-size: 90%;
+	}
 }
 
 .itemInfo {
