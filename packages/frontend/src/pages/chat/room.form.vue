@@ -84,8 +84,11 @@ async function onPaste(ev: ClipboardEvent) {
 			if (!pastedFile) return;
 			const lio = pastedFile.name.lastIndexOf('.');
 			const ext = lio >= 0 ? pastedFile.name.slice(lio) : '';
-			const formatted = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
-			if (formatted) upload(pastedFile, formatted);
+			const formattedName = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
+			const renamedFile = new File([pastedFile], formattedName, { type: pastedFile.type });
+			os.launchUploader([renamedFile], {}).then(driveFiles => {
+				file.value = driveFiles[0];
+			});
 		}
 	} else {
 		if (items[0].kind === 'file') {
