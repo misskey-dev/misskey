@@ -80,6 +80,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
+import { selectDriveFolder } from '@/utility/drive.js';
 
 const router = useRouter();
 
@@ -127,7 +128,7 @@ function postThis() {
 function move() {
 	if (!file.value) return;
 
-	os.selectDriveFolder().then(folder => {
+	selectDriveFolder(null).then(folder => {
 		misskeyApi('drive/files/update', {
 			fileId: file.value.id,
 			folderId: folder[0] ? folder[0].id : null,

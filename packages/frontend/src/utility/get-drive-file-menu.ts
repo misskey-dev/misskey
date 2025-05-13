@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
+import { selectDriveFolder } from './drive.js';
 import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -42,7 +43,7 @@ function describe(file: Misskey.entities.DriveFile) {
 }
 
 function move(file: Misskey.entities.DriveFile) {
-	os.selectDriveFolder().then(folder => {
+	selectDriveFolder(null).then(folder => {
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			folderId: folder[0] ? folder[0].id : null,

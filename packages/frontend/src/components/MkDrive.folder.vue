@@ -44,6 +44,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+import { selectDriveFolder } from '@/utility/drive.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -220,7 +221,7 @@ function rename() {
 }
 
 function move() {
-	os.selectDriveFolder().then(folder => {
+	selectDriveFolder(null).then(folder => {
 		if (folder[0] && folder[0].id === props.folder.id) return;
 
 		misskeyApi('drive/folders/update', {

@@ -8,7 +8,6 @@
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import { getProxiedImageUrl } from './utility/media-proxy.js';
 import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
@@ -587,21 +586,6 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 		}, {
 			ok: user => {
 				resolve(user);
-			},
-			closed: () => dispose(),
-		});
-	});
-}
-
-export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<Misskey.entities.DriveFolder[]> {
-	return new Promise(resolve => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDriveFolderSelectDialog.vue')), {
-			initialFolder,
-		}, {
-			done: folders => {
-				if (folders) {
-					resolve(folders);
-				}
 			},
 			closed: () => dispose(),
 		});

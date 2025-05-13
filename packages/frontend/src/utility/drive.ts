@@ -229,3 +229,18 @@ export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFi
 		};
 	});
 }
+
+export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<Misskey.entities.DriveFolder[]> {
+	return new Promise(resolve => {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkDriveFolderSelectDialog.vue')), {
+			initialFolder,
+		}, {
+			done: folders => {
+				if (folders) {
+					resolve(folders);
+				}
+			},
+			closed: () => dispose(),
+		});
+	});
+}
