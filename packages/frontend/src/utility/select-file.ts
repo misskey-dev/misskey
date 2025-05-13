@@ -87,7 +87,7 @@ function select(src: HTMLElement | EventTarget | null, label: string | null, mul
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
-			action: () => chooseFileFromDrive(multiple).then(files => res(files)),
+			action: () => chooseFileFromDrive({ multiple }).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
