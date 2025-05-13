@@ -829,12 +829,13 @@ export function launchUploader(
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		if (files.length === 0) return;
+		if (files.length === 0) return rej();
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUploaderDialog.vue')), {
 			files: markRaw(files),
 			folderId: options?.folderId,
 		}, {
 			done: driveFiles => {
+				if (driveFiles.length === 0) return rej();
 				res(driveFiles);
 			},
 			closed: () => dispose(),
