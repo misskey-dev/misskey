@@ -9,6 +9,7 @@ import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import { getProxiedImageUrl } from './utility/media-proxy.js';
+import { uploadFile } from './utility/upload.js';
 import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
@@ -654,7 +655,7 @@ export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof Mk
 	});
 }
 
-export async function cropImageFile(imageFile: File, options: {
+export async function cropImageFile(imageFile: File | Blob, options: {
 	aspectRatio: number;
 }): Promise<File> {
 	return new Promise(resolve => {
@@ -672,7 +673,6 @@ export async function cropImageFile(imageFile: File, options: {
 
 export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFile: Misskey.entities.DriveFile, options: {
 	aspectRatio: number;
-	uploadFolder?: string | null;
 }): Promise<Misskey.entities.DriveFile> {
 	return new Promise(resolve => {
 		const imgUrl = getProxiedImageUrl(imageDriveFile.url, undefined, true);
@@ -684,10 +684,17 @@ export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFi
 			canvas.width = image.width;
 			canvas.height = image.height;
 			ctx.drawImage(image, 0, 0);
-			const imageFile = new File([canvas.toBlob()], imageDriveFile.name, { type: imageDriveFile.type });
-
-			cropImageFile(imageFile).then(croppedImageFile => {
-
+			canvas.toBlob(blob => {
+				cropImageFile(blob, {
+					aspectRatio: options.aspectRatio,
+				}).then(croppedImageFile => {
+					uploadFile(croppedImageFile, {
+						name: imageDriveFile.name,
+						folderId: imageDriveFile.folderId,
+					}).then(driveFile => {
+						resolve(driveFile);
+					});
+				});
 			});
 		};
 	});

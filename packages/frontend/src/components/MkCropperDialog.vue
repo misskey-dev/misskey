@@ -38,7 +38,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	imageFile: File;
+	imageFile: File | Blob;
 	aspectRatio: number;
 	uploadFolder?: string | null;
 }>();
