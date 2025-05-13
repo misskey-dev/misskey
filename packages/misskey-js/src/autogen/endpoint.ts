@@ -485,6 +485,7 @@ import type {
 	NotesDeleteRequest,
 	NotesDraftsRequest,
 	NotesDraftsResponse,
+	NotesDraftsCountResponse,
 	NotesDraftsCreateRequest,
 	NotesDraftsCreateResponse,
 	NotesDraftsDeleteRequest,
@@ -964,6 +965,7 @@ export type Endpoints = {
 	'notes/create': { req: NotesCreateRequest; res: NotesCreateResponse };
 	'notes/delete': { req: NotesDeleteRequest; res: EmptyResponse };
 	'notes/drafts': { req: NotesDraftsRequest; res: NotesDraftsResponse };
+	'notes/drafts/count': { req: EmptyRequest; res: NotesDraftsCountResponse };
 	'notes/drafts/create': { req: NotesDraftsCreateRequest; res: NotesDraftsCreateResponse };
 	'notes/drafts/delete': { req: NotesDraftsDeleteRequest; res: EmptyResponse };
 	'notes/drafts/update': { req: NotesDraftsUpdateRequest; res: NotesDraftsUpdateResponse };

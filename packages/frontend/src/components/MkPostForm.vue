@@ -996,19 +996,19 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
-async function confirmSavingServerDraft(ev?: Event) {
-	if (canSaveAsServerDraft.value) {
+async function handleSavingServerDraft(ev?: Event) {
+	const draftCount = await misskeyApi('notes/drafts/count');
+	const isOver = draftCount >= $i.policies.noteDraftLimit;
+	if (canSaveAsServerDraft.value && !isOver) {
+		return await saveServerDraft(true);
+	} else if (canSaveAsServerDraft.value) {
 		ev?.stopPropagation();
 
 		const { canceled, result } = await os.actions({
 			type: 'question',
-			title: i18n.ts._drafts.saveConfirm,
-			text: i18n.ts._drafts.saveConfirmDescription,
+			title: i18n.ts._drafts.cannotCreateDraftAnymore,
+			text: i18n.ts._drafts.cannotCreateDraftAnymoreDescription,
 			actions: [{
-				value: 'save' as const,
-				text: i18n.ts.save,
-				primary: true,
-			}, {
 				value: 'discard' as const,
 				text: i18n.ts.dontSave,
 			}, {
@@ -1019,8 +1019,6 @@ async function confirmSavingServerDraft(ev?: Event) {
 
 		if (canceled || result === 'cancel') {
 			return { canClosePostForm: false };
-		} else if (result === 'save') {
-			return await saveServerDraft(true);
 		} else {
 			return { canClosePostForm: true };
 		}
@@ -1030,14 +1028,14 @@ async function confirmSavingServerDraft(ev?: Event) {
 }
 
 async function esc(ev: Event) {
-	const { canClosePostForm } = await confirmSavingServerDraft(ev);
+	const { canClosePostForm } = await handleSavingServerDraft(ev);
 	if (canClosePostForm) {
 		emit('esc');
 	}
 }
 
 async function cancel() {
-	const { canClosePostForm } = await confirmSavingServerDraft();
+	const { canClosePostForm } = await handleSavingServerDraft();
 	if (canClosePostForm) {
 		emit('cancel');
 	}

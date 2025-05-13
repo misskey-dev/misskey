@@ -11916,13 +11916,13 @@ export interface Locale extends ILocale {
          */
         "select": string;
         /**
-         * サーバーに下書きを保存しますか？
+         * 下書きの作成可能数を超えています。
          */
-        "saveConfirm": string;
+        "cannotCreateDraftAnymore": string;
         /**
-         * ここで「保存しない」を選択しても、下書きは端末内に保存されます。
+         * サーバーに下書きを保存するには、下書きを削除する必要があります。ここで「保存しない」を選択しても、下書きは端末内に保存されます。
          */
-        "saveConfirmDescription": string;
+        "cannotCreateDraftAnymoreDescription": string;
         /**
          * 下書きを削除
          */

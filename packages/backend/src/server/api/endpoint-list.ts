@@ -310,6 +310,7 @@ export * as 'notes/drafts' from './endpoints/notes/drafts/list.js';
 export * as 'notes/drafts/create' from './endpoints/notes/drafts/create.js';
 export * as 'notes/drafts/delete' from './endpoints/notes/drafts/delete.js';
 export * as 'notes/drafts/update' from './endpoints/notes/drafts/update.js';
+export * as 'notes/drafts/count' from './endpoints/notes/drafts/count.js';
 export * as 'notes/favorites/create' from './endpoints/notes/favorites/create.js';
 export * as 'notes/favorites/delete' from './endpoints/notes/favorites/delete.js';
 export * as 'notes/featured' from './endpoints/notes/featured.js';

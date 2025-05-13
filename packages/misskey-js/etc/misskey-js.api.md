@@ -1935,6 +1935,7 @@ declare namespace entities {
         NotesDeleteRequest,
         NotesDraftsRequest,
         NotesDraftsResponse,
+        NotesDraftsCountResponse,
         NotesDraftsCreateRequest,
         NotesDraftsCreateResponse,
         NotesDraftsDeleteRequest,
@@ -2983,6 +2984,9 @@ type NotesCreateResponse = operations['notes___create']['responses']['200']['con
 
 // @public (undocumented)
 type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCountResponse = operations['notes___drafts___count']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesDraftsCreateRequest = operations['notes___drafts___create']['requestBody']['content']['application/json'];

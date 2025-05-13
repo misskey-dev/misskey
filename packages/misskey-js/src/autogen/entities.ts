@@ -488,6 +488,7 @@ export type NotesCreateResponse = operations['notes___create']['responses']['200
 export type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']['application/json'];
 export type NotesDraftsRequest = operations['notes___drafts']['requestBody']['content']['application/json'];
 export type NotesDraftsResponse = operations['notes___drafts']['responses']['200']['content']['application/json'];
+export type NotesDraftsCountResponse = operations['notes___drafts___count']['responses']['200']['content']['application/json'];
 export type NotesDraftsCreateRequest = operations['notes___drafts___create']['requestBody']['content']['application/json'];
 export type NotesDraftsCreateResponse = operations['notes___drafts___create']['responses']['200']['content']['application/json'];
 export type NotesDraftsDeleteRequest = operations['notes___drafts___delete']['requestBody']['content']['application/json'];
