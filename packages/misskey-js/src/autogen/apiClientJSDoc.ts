@@ -2684,7 +2684,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *No* / **Permission**: *read:account*
      */
     request<E extends 'get-online-users-count', P extends Endpoints[E]['req']>(
       endpoint: E,

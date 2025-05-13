@@ -58,6 +58,9 @@ export const PREF_DEF = {
 		}, {
 			name: 'activeUsers',
 			id: 'c', place: 'right', data: {},
+		}, {
+			name: 'listenBrainz',
+			id: 'd', place: 'right', data: {},
 		}] as {
 			name: string;
 			id: string;

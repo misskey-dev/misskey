@@ -52,6 +52,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkInput>
 		</SearchMarker>
 
+		<SearchMarker :keywords="['listenbrainz', 'music']">
+			<MkInput v-model="profile.listenbrainz" manualSave>
+				<template #label><SearchLabel>{{ i18n.ts._profile.listenbrainz }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<template #prefix><i class="ti ti-headphones"></i></template>
+			</MkInput>
+		</SearchMarker>
+
 		<SearchMarker :keywords="['language', 'locale']">
 			<MkSelect v-model="profile.lang">
 				<template #label><SearchLabel>{{ i18n.ts.language }}</SearchLabel></template>
@@ -188,6 +195,7 @@ const profile = reactive({
 	followedMessage: $i.followedMessage,
 	location: $i.location,
 	birthday: $i.birthday,
+	listenbrainz: $i?.listenbrainz,
 	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
@@ -238,6 +246,7 @@ function save() {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		birthday: profile.birthday || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		listenbrainz: profile.listenbrainz || null,
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,

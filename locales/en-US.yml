@@ -2519,6 +2519,7 @@ _profile:
   followedMessage: "Message when you are followed"
   followedMessageDescription: "You can set a short message to be displayed to the recipient when they follow you."
   followedMessageDescriptionForLockedAccount: "If you have set up that follow requests require approval, this will be displayed when you grant a follow request."
+  listenbrainz: "ListenBrainz username"
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"

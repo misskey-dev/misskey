@@ -37,6 +37,13 @@ export class MiUserProfile {
 	public birthday: string | null;
 
 	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		comment: 'The ListenBrainz username of the User.',
+	})
+	public listenbrainz: string | null;
+
+	@Column('varchar', {
 		length: 2048, nullable: true,
 		comment: 'The description (bio) of the User.',
 	})
