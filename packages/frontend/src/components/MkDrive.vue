@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div
 			ref="main"
-			:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
+			:class="[$style.main, { [$style.fetching]: fetching }]"
 			@dragover.prevent.stop="onDragover"
 			@dragenter="onDragenter"
 			@dragleave="onDragleave"
@@ -175,7 +175,6 @@ const emit = defineEmits<{
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const uploadings = uploads;
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -758,10 +757,6 @@ onBeforeUnmount(() => {
 		cursor: wait !important;
 		opacity: 0.5;
 		pointer-events: none;
-	}
-
-	&.uploading {
-		height: calc(100% - 38px - 100px);
 	}
 }
 
