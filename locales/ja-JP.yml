@@ -3181,3 +3181,12 @@ _serverSetupWizard:
     text1: "Misskeyは有志によって開発されている無料のソフトウェアです。"
     text2: "今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。"
     text3: "支援者向け特典もあります！"
+
+_clientPerformanceIssueTip:
+  title: "バッテリー消費が多いと感じたら"
+  makeSureDisabledAdBlocker: "アドブロッカーを無効にしてください"
+  makeSureDisabledAdBlocker_description: "アドブロッカーはパフォーマンスに影響を及ぼすことがあります。OSの機能やブラウザの機能・アドオンなどでアドブロッカーが有効になっていないか確認してください。"
+  makeSureDisabledCustomCss: "カスタムCSSを無効にしてください"
+  makeSureDisabledCustomCss_description: "スタイルを上書きするとパフォーマンスに影響を及ぼすことがあります。カスタムCSSや、スタイルを上書きする拡張機能が有効になっていないか確認してください。"
+  makeSureDisabledAddons: "拡張機能を無効にしてください"
+  makeSureDisabledAddons_description: "一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。"
