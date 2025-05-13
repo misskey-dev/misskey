@@ -656,7 +656,7 @@ export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof Mk
 }
 
 export async function cropImageFile(imageFile: File | Blob, options: {
-	aspectRatio: number;
+	aspectRatio: number | null;
 }): Promise<File> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {

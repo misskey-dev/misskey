@@ -96,14 +96,18 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile } from '@/utility/upload.js';
 import * as os from '@/os.js';
 
-const $i = ensureSignin();
-
-const compressionSupportedTypes = [
+const COMPRESSION_SUPPORTED_TYPES = [
 	'image/jpeg',
 	'image/png',
 	'image/webp',
 	'image/svg+xml',
-] as const;
+];
+
+const CROPPING_SUPPORTED_TYPES = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+];
 
 const mimeTypeMap = {
 	'image/webp': 'webp',
@@ -211,6 +215,21 @@ async function done() {
 function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 	const menu: MenuItem[] = [];
 
+	if (CROPPING_SUPPORTED_TYPES.includes(item.file.type) && !item.waiting && !item.uploading && !item.uploaded) {
+		menu.push({
+			icon: 'ti ti-crop',
+			text: i18n.ts.cropImage,
+			action: async () => {
+				const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
+				items.value.splice(items.value.indexOf(item), 1, {
+					...item,
+					file: markRaw(cropped),
+					thumbnail: window.URL.createObjectURL(cropped),
+				});
+			},
+		});
+	}
+
 	if (!item.waiting && !item.uploading && !item.uploaded) {
 		menu.push({
 			icon: 'ti ti-x',
@@ -231,7 +250,7 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 		item.waiting = true;
 		item.uploadFailed = false;
 
-		const shouldCompress = item.compressedImage == null && compressionLevel.value !== 0 && compressionSettings.value && compressionSupportedTypes.includes(item.file.type) && !(await isAnimated(item.file));
+		const shouldCompress = item.compressedImage == null && compressionLevel.value !== 0 && compressionSettings.value && COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) && !(await isAnimated(item.file));
 
 		if (shouldCompress) {
 			const config = {
@@ -275,6 +294,7 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 			throw err;
 		}).finally(() => {
 			item.uploading = false;
+			item.waiting = false;
 		});
 
 		item.uploaded = driveFile;

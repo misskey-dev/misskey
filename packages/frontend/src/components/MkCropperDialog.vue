@@ -39,7 +39,7 @@ import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	imageFile: File | Blob;
-	aspectRatio: number;
+	aspectRatio: number | null;
 	uploadFolder?: string | null;
 }>();
 
@@ -99,8 +99,8 @@ onMounted(() => {
 
 	const selection = cropper.getCropperSelection()!;
 	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
-	selection.aspectRatio = props.aspectRatio;
-	selection.initialAspectRatio = props.aspectRatio;
+	if (props.aspectRatio != null) selection.aspectRatio = props.aspectRatio;
+	selection.initialAspectRatio = props.aspectRatio ?? 1;
 	selection.outlined = true;
 
 	window.setTimeout(() => {
