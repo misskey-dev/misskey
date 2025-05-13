@@ -138,7 +138,7 @@ const dialog = useTemplateRef('dialog');
 
 const firstUploadAttempted = ref(false);
 const isUploading = computed(() => items.value.some(item => item.uploading));
-const canRetry = computed(() => firstUploadAttempted.value && !isUploading.value && items.value.some(item => item.uploaded == null));
+const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.waiting) && items.value.some(item => item.uploaded == null));
 
 const compressionLevel = ref<0 | 1 | 2 | 3>(2);
 const compressionSettings = computed(() => {

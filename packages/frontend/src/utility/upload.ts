@@ -10,7 +10,7 @@ import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
-export function uploadFile(file: File, options: {
+export function uploadFile(file: File | Blob, options: {
 	name?: string;
 	folderId?: string | null;
 	onProgress?: (ctx: { total: number; loaded: number; }) => void;
@@ -89,7 +89,7 @@ export function uploadFile(file: File, options: {
 		formData.append('i', $i.token);
 		formData.append('force', 'true');
 		formData.append('file', file);
-		formData.append('name', options.name ?? file.name);
+		formData.append('name', options.name ?? file.name ?? 'untitled');
 		if (options.folderId) formData.append('folderId', options.folderId);
 
 		xhr.send(formData);
