@@ -9,6 +9,7 @@ import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { globalEvents } from '@/events.js';
 
 export function uploadFile(file: File | Blob, options: {
 	name?: string;
@@ -71,6 +72,7 @@ export function uploadFile(file: File | Blob, options: {
 			}
 
 			const driveFile = JSON.parse(ev.target.response);
+			globalEvents.emit('driveFileCreated', driveFile);
 			resolve(driveFile);
 		}) as (ev: ProgressEvent<EventTarget>) => any;
 

@@ -446,14 +446,6 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null, keepOriginal?: boolean) {
-	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal).then(res => {
-		if (res.folderId === (folder.value?.id ?? null)) {
-			filesPaginator.prepend(res);
-		}
-	});
-}
-
 function onChooseFile(file: Misskey.entities.DriveFile) {
 	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
 
@@ -648,6 +640,12 @@ function onContextmenu(ev: MouseEvent) {
 function closeTip() {
 	store.set('readDriveTip', true);
 }
+
+useGlobalEvent('driveFileCreated', (file) => {
+	if (file.folderId === (folder.value?.id ?? null)) {
+		filesPaginator.prepend(file);
+	}
+});
 
 useGlobalEvent('driveFilesMoved', (files, to) => {
 	for (const f of files) {

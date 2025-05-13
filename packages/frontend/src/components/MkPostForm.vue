@@ -463,14 +463,6 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 	files.value[files.value.findIndex(x => x.id === file.id)] = newFile;
 }
 
-function upload(file: File, name?: string): void {
-	if (props.mock) return;
-
-	uploadFile(file, prefer.s.uploadFolder, name).then(res => {
-		files.value.push(res);
-	});
-}
-
 function setVisibility() {
 	if (props.channel) {
 		visibility.value = 'public';

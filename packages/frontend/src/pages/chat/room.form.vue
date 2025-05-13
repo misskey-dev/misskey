@@ -176,12 +176,6 @@ function onChangeFile() {
 	if (fileEl.value.files[0]) upload(fileEl.value.files[0]);
 }
 
-function upload(fileToUpload: File, name?: string) {
-	uploadFile(fileToUpload, prefer.s.uploadFolder, name).then(res => {
-		file.value = res;
-	});
-}
-
 function send() {
 	if (!canSend.value) return;
 

@@ -329,7 +329,7 @@ async function onDrop(ev: DragEvent) {
 				Promise.all(
 					droppedFiles.map(async (it) => ({
 						droppedFile: it,
-						driveFile: await uploadFile(
+						driveFile: await uploadFile( // TODO
 							it.file,
 							selectedFolderId.value,
 							it.file.name.replace(/\.[^.]+$/, ''),
