@@ -3186,3 +3186,4 @@ _serverSetupWizard:
 _uploader:
   compressedToX: "{x}に圧縮"
   savedXPercent: "{x}%節約"
+  abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"

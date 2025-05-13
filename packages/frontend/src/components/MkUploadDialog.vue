@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #footer>
 		<div class="_buttonsCenter">
-			<MkButton v-if="isUploading" rounded @click=""><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton v-if="isUploading" rounded @click="cancel()"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 			<MkButton v-else-if="!firstUploadAttempted" primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
 			<MkButton v-else-if="canRetry" primary rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
 		</div>
@@ -90,6 +90,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile } from '@/utility/upload.js';
+import * as os from '@/os.js';
 
 const $i = ensureSignin();
 
@@ -173,8 +174,16 @@ watch(items, () => {
 	}
 }, { deep: true });
 
-function cancel() {
-	// TODO: アップロードを中止しますか？
+async function cancel() {
+	const { canceled } = await os.confirm({
+		type: 'question',
+		text: i18n.ts._uploader.abortConfirm,
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
+	});
+	if (canceled) return;
+
+	emit('done', items.value.filter(item => item.uploaded != null).map(item => item.uploaded!));
 	dialog.value?.close();
 }
 

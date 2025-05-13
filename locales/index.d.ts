@@ -11911,6 +11911,10 @@ export interface Locale extends ILocale {
          * {x}%節約
          */
         "savedXPercent": ParameterizedString<"x">;
+        /**
+         * アップロードされていないファイルがありますが、中止しますか？
+         */
+        "abortConfirm": string;
     };
 }
 declare const locales: {
