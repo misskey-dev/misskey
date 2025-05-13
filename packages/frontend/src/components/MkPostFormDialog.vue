@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModal
 	ref="modal"
 	:preferType="'dialog'"
-	@click="modal?.close()"
+	@click="onBgClick()"
 	@closed="onModalClosed()"
-	@esc="modal?.close()"
+	@esc="onEsc"
 >
 	<MkPostForm
 		ref="form"
@@ -43,11 +43,24 @@ const emit = defineEmits<{
 }>();
 
 const modal = useTemplateRef('modal');
+const form = useTemplateRef('form');
 
 function onPosted() {
 	modal.value?.close({
 		useSendAnimation: true,
 	});
+}
+
+function onEsc(ev: KeyboardEvent) {
+	// PostForm側で下書き保存確認を行う
+	// 実際のclose処理はPostForm側のesc emitから
+	form.value?.onEsc(ev);
+}
+
+function onBgClick() {
+	// PostForm側で下書き保存確認を行う
+	// 実際のclose処理はPostForm側のcancel emitから
+	form.value?.onCancel();
 }
 
 function onModalClosed() {

@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<template v-if="!(channel != null && fixed)">
-				<button v-if="channel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+			<template v-if="!(targetChannel != null && fixed)">
+				<button v-if="targetChannel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
@@ -29,10 +29,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
 					<span><i class="ti ti-device-tv"></i></span>
-					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+					<span :class="$style.headerRightButtonText">{{ targetChannel.name }}</span>
 				</button>
 			</template>
-			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : replyTargetNote ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
 				</div>
 			</button>
 		</div>
 	</header>
-	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
+	<MkNoteSimple v-if="replyTargetNote" :class="$style.targetNote" :note="replyTargetNote"/>
 	<MkNoteSimple v-if="renoteTargetNote" :class="$style.targetNote" :note="renoteTargetNote"/>
 	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null; renoteTargetNote = null;"><i class="ti ti-x"></i></button></div>
 	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
 	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
-		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
+		<div v-if="targetChannel" :class="$style.colorBar" :style="{ background: targetChannel.color }"></div>
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
@@ -85,6 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draft" class="_button" :class="$style.footerButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-pencil-minus"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 		</div>
 		<div :class="$style.footerRight">
@@ -199,15 +200,19 @@ const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
+const replyTargetNote: ShallowRef<PostFormProps['reply'] | null> = shallowRef(props.reply);
+const targetChannel = shallowRef(props.channel);
+
+const serverDraftId = ref<string | null>(null);
 const postFormActions = getPluginHandlers('post_form_action');
 
 const draftKey = computed((): string => {
-	let key = props.channel ? `channel:${props.channel.id}` : '';
+	let key = targetChannel.value ? `channel:${targetChannel.value.id}` : '';
 
 	if (renoteTargetNote.value) {
 		key += `renote:${renoteTargetNote.value.id}`;
-	} else if (props.reply) {
-		key += `reply:${props.reply.id}`;
+	} else if (replyTargetNote.value) {
+		key += `reply:${replyTargetNote.value.id}`;
 	} else {
 		key += `note:${$i.id}`;
 	}
@@ -218,9 +223,9 @@ const draftKey = computed((): string => {
 const placeholder = computed((): string => {
 	if (renoteTargetNote.value) {
 		return i18n.ts._postForm.quotePlaceholder;
-	} else if (props.reply) {
+	} else if (replyTargetNote.value) {
 		return i18n.ts._postForm.replyPlaceholder;
-	} else if (props.channel) {
+	} else if (targetChannel.value) {
 		return i18n.ts._postForm.channelPlaceholder;
 	} else {
 		const xs = [
@@ -238,7 +243,7 @@ const placeholder = computed((): string => {
 const submitText = computed((): string => {
 	return renoteTargetNote.value
 		? i18n.ts.quote
-		: props.reply
+		: replyTargetNote.value
 			? i18n.ts.reply
 			: i18n.ts.note;
 });
@@ -278,6 +283,10 @@ const canPost = computed((): boolean => {
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
+const canSaveAsServerDraft = computed((): boolean => {
+	return canPost.value && (textLength.value > 0 || files.value.length > 0 || poll.value != null);
+});
+
 const withHashtags = computed(store.makeGetterSetter('postFormWithHashtags'));
 const hashtags = computed(store.makeGetterSetter('postFormHashtags'));
 
@@ -300,13 +309,13 @@ if (props.mention) {
 	text.value += ' ';
 }
 
-if (props.reply && (props.reply.user.username !== $i.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
-	text.value = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
+if (replyTargetNote.value && (replyTargetNote.value.user.username !== $i.username || (replyTargetNote.value.user.host != null && replyTargetNote.value.user.host !== host))) {
+	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? '@' + toASCII(replyTargetNote.value.user.host) : ''} `;
 }
 
-if (props.reply && props.reply.text != null) {
-	const ast = mfm.parse(props.reply.text);
-	const otherHost = props.reply.user.host;
+if (replyTargetNote.value && replyTargetNote.value.text != null) {
+	const ast = mfm.parse(replyTargetNote.value.text);
+	const otherHost = replyTargetNote.value.user.host;
 
 	for (const x of extractMentions(ast)) {
 		const mention = x.host ?
@@ -329,32 +338,32 @@ if ($i.isSilenced && visibility.value === 'public') {
 	visibility.value = 'home';
 }
 
-if (props.channel) {
+if (targetChannel.value) {
 	visibility.value = 'public';
 	localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 }
 
 // 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
-	if (props.reply.visibility === 'home' && visibility.value === 'followers') {
+if (replyTargetNote.value && ['home', 'followers', 'specified'].includes(replyTargetNote.value.visibility)) {
+	if (replyTargetNote.value.visibility === 'home' && visibility.value === 'followers') {
 		visibility.value = 'followers';
-	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility.value === 'specified') {
+	} else if (['home', 'followers'].includes(replyTargetNote.value.visibility) && visibility.value === 'specified') {
 		visibility.value = 'specified';
 	} else {
-		visibility.value = props.reply.visibility;
+		visibility.value = replyTargetNote.value.visibility;
 	}
 
 	if (visibility.value === 'specified') {
-		if (props.reply.visibleUserIds) {
+		if (replyTargetNote.value.visibleUserIds) {
 			misskeyApi('users/show', {
-				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
+				userIds: replyTargetNote.value.visibleUserIds.filter(uid => uid !== $i.id && uid !== replyTargetNote.value?.userId),
 			}).then(users => {
 				users.forEach(u => pushVisibleUser(u));
 			});
 		}
 
-		if (props.reply.userId !== $i.id) {
-			misskeyApi('users/show', { userId: props.reply.userId }).then(user => {
+		if (replyTargetNote.value.userId !== $i.id) {
+			misskeyApi('users/show', { userId: replyTargetNote.value.userId }).then(user => {
 				pushVisibleUser(user);
 			});
 		}
@@ -367,9 +376,9 @@ if (props.specified) {
 }
 
 // keep cw when reply
-if (prefer.s.keepCw && props.reply && props.reply.cw) {
+if (prefer.s.keepCw && replyTargetNote.value && replyTargetNote.value.cw) {
 	useCw.value = true;
-	cw.value = props.reply.cw;
+	cw.value = replyTargetNote.value.cw;
 }
 
 function watchForDraft() {
@@ -472,7 +481,7 @@ function upload(file: File, name?: string): void {
 }
 
 function setVisibility() {
-	if (props.channel) {
+	if (targetChannel.value) {
 		visibility.value = 'public';
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
@@ -483,7 +492,7 @@ function setVisibility() {
 		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
-		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
+		...(replyTargetNote.value ? { isReplyVisibilitySpecified: replyTargetNote.value.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
@@ -496,7 +505,7 @@ function setVisibility() {
 }
 
 async function toggleLocalOnly() {
-	if (props.channel) {
+	if (targetChannel.value) {
 		visibility.value = 'public';
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
@@ -629,7 +638,7 @@ function onKeydown(ev: KeyboardEvent) {
 
 	// justEndedComposition.value is for Safari, which keyDown occurs after compositionend.
 	// ev.isComposing is for another browsers.
-	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) emit('esc');
+	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) esc(ev);
 }
 
 function onKeyup(ev: KeyboardEvent) {
@@ -767,7 +776,7 @@ function saveDraft() {
 			localOnly: localOnly.value,
 			files: files.value,
 			poll: poll.value,
-			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			quoteId: quoteId.value,
 			reactionAcceptance: reactionAcceptance.value,
 		},
@@ -782,6 +791,34 @@ function deleteDraft() {
 	delete draftData[draftKey.value];
 
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+}
+
+async function saveServerDraft(clearLocal = false): Promise<{ canClosePostForm: boolean }> {
+	return await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
+		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
+		text: text.value,
+		useCw: useCw.value,
+		cw: cw.value,
+		visibility: visibility.value,
+		localOnly: localOnly.value,
+		hashtag: hashtags.value,
+		...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
+		poll: poll.value,
+		...(visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
+		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
+		replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
+		quoteId: quoteId.value,
+		channelId: targetChannel.value ? targetChannel.value.id : undefined,
+		reactionAcceptance: reactionAcceptance.value,
+	}).then(() => {
+		if (clearLocal) {
+			clear();
+			deleteDraft();
+		}
+		return { canClosePostForm: true };
+	}).catch((err) => {
+		return { canClosePostForm: false };
+	});
 }
 
 function isAnnoying(text: string): boolean {
@@ -838,9 +875,9 @@ async function post(ev?: MouseEvent) {
 	let postData = {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
-		replyId: props.reply ? props.reply.id : undefined,
+		replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : undefined,
-		channelId: props.channel ? props.channel.id : undefined,
+		channelId: targetChannel.value ? targetChannel.value.id : undefined,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
 		localOnly: localOnly.value,
@@ -945,6 +982,10 @@ async function post(ev?: MouseEvent) {
 			if (m === 0 && s === 0) {
 				claimAchievement('postedAt0min0sec');
 			}
+
+			if (serverDraftId.value != null) {
+				misskeyApi('notes/drafts/delete', { draftId: serverDraftId.value });
+			}
 		});
 	}).catch(err => {
 		posting.value = false;
@@ -955,8 +996,49 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
-function cancel() {
-	emit('cancel');
+async function handleSavingServerDraft(ev?: Event) {
+	const draftCount = await misskeyApi('notes/drafts/count');
+	const isOver = draftCount >= $i.policies.noteDraftLimit;
+	if (canSaveAsServerDraft.value && !isOver) {
+		return await saveServerDraft(true);
+	} else if (canSaveAsServerDraft.value) {
+		ev?.stopPropagation();
+
+		const { canceled, result } = await os.actions({
+			type: 'question',
+			title: i18n.ts._drafts.cannotCreateDraftAnymore,
+			text: i18n.ts._drafts.cannotCreateDraftAnymoreDescription,
+			actions: [{
+				value: 'discard' as const,
+				text: i18n.ts.dontSave,
+			}, {
+				value: 'cancel' as const,
+				text: i18n.ts.cancel,
+			}],
+		});
+
+		if (canceled || result === 'cancel') {
+			return { canClosePostForm: false };
+		} else {
+			return { canClosePostForm: true };
+		}
+	} else {
+		return { canClosePostForm: true };
+	}
+}
+
+async function esc(ev: Event) {
+	const { canClosePostForm } = await handleSavingServerDraft(ev);
+	if (canClosePostForm) {
+		emit('esc');
+	}
+}
+
+async function cancel() {
+	const { canClosePostForm } = await handleSavingServerDraft();
+	if (canClosePostForm) {
+		emit('cancel');
+	}
 }
 
 function insertMention() {
@@ -1038,6 +1120,70 @@ function openAccountMenu(ev: MouseEvent) {
 	}, ev);
 }
 
+function getNoteDraftDialog(): Promise<Misskey.entities.NoteDraft | null> {
+	return new Promise((resolve) => {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftSelectDialog.vue')), {}, {
+			ok: async (res: Misskey.entities.NoteDraft) => {
+				resolve(res);
+			},
+			cancel: () => {
+				resolve(null);
+			},
+			closed: () => {
+				dispose();
+			},
+		});
+	});
+}
+
+function showDraftMenu() {
+	getNoteDraftDialog().then(draft => {
+		if (draft == null) return;
+
+		text.value = draft.text ?? '';
+		useCw.value = draft.cw != null;
+		cw.value = draft.cw ?? null;
+		visibility.value = draft.visibility;
+		localOnly.value = draft.localOnly ?? false;
+		files.value = draft.files ?? [];
+		hashtags.value = draft.hashtag ?? '';
+		if (draft.hashtag) withHashtags.value = true;
+		if (draft.poll) {
+			// 投票を一時的に空にしないと反映されないため
+			poll.value = null;
+			nextTick(() => {
+				poll.value = {
+					choices: draft.poll!.choices,
+					multiple: draft.poll!.multiple,
+					expiresAt: draft.poll!.expiresAt ? (new Date(draft.poll!.expiresAt)).getTime() : null,
+					expiredAfter: null,
+				};
+			});
+		}
+		if (draft.visibleUserIds) {
+			misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
+				users.forEach(u => pushVisibleUser(u));
+			});
+		}
+		quoteId.value = draft.renoteId ?? null;
+		renoteTargetNote.value = draft.renote;
+		replyTargetNote.value = draft.reply;
+		reactionAcceptance.value = draft.reactionAcceptance;
+		if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
+
+		visibleUsers.value = [];
+		draft.visibleUserIds?.forEach(uid => {
+			if (!visibleUsers.value.some(u => u.id === uid)) {
+				misskeyApi('users/show', { userId: uid }).then(user => {
+					pushVisibleUser(user);
+				});
+			}
+		});
+
+		serverDraftId.value = draft.id;
+	});
+}
+
 onMounted(() => {
 	if (props.autofocus) {
 		focus();
@@ -1108,6 +1254,8 @@ onMounted(() => {
 
 defineExpose({
 	clear,
+	onEsc: esc,
+	onCancel: cancel,
 });
 </script>
 

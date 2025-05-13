@@ -167,6 +167,10 @@ export interface Locale extends ILocale {
      */
     "save": string;
     /**
+     * 保存しない
+     */
+    "dontSave": string;
+    /**
      * ユーザー
      */
     "users": string;
@@ -5255,6 +5259,10 @@ export interface Locale extends ILocale {
      */
     "federationDisabled": string;
     /**
+     * 下書き
+     */
+    "draft": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -7713,6 +7721,10 @@ export interface Locale extends ILocale {
              * チャットを許可
              */
             "chatAvailability": string;
+            /**
+             * サーバーサイドのノートの下書きの作成可能数
+             */
+            "noteDraftLimit": string;
         };
         "_condition": {
             /**
@@ -11897,6 +11909,44 @@ export interface Locale extends ILocale {
              */
             "text3": string;
         };
+    };
+    "_drafts": {
+        /**
+         * 下書きを選択
+         */
+        "select": string;
+        /**
+         * 下書きの作成可能数を超えています。
+         */
+        "cannotCreateDraftAnymore": string;
+        /**
+         * サーバーに下書きを保存するには、下書きを削除する必要があります。ここで「保存しない」を選択しても、下書きは端末内に保存されます。
+         */
+        "cannotCreateDraftAnymoreDescription": string;
+        /**
+         * 下書きを削除
+         */
+        "delete": string;
+        /**
+         * 下書きを削除しますか？
+         */
+        "deleteAreYouSure": string;
+        /**
+         * 下書きはありません
+         */
+        "noDrafts": string;
+        /**
+         * {user}への返信
+         */
+        "replyTo": ParameterizedString<"user">;
+        /**
+         * {user}のノートへの引用
+         */
+        "quoteOf": ParameterizedString<"user">;
+        /**
+         * {channel}への投稿
+         */
+        "postTo": ParameterizedString<"channel">;
     };
 }
 declare const locales: {
