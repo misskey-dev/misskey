@@ -18,14 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@dragstart="onDragstart"
 	@dragend="onDragend"
 >
-	<p :class="$style.name">
-		<template v-if="hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
-		<template v-if="!hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
-		{{ folder.name }}
-	</p>
-	<p v-if="prefer.s.uploadFolder == folder.id" :class="$style.upload">
+	<svg :class="[$style.shape]" viewBox="0 0 200 150" preserveAspectRatio="none">
+		<path d="M190,25C195.523,25 200,29.477 200,35C200,58.415 200,116.585 200,140C200,145.523 195.523,150 190,150C155.86,150 44.14,150 10,150C4.477,150 0,145.523 0,140C0,112.727 0,37.273 0,10C0,4.477 4.477,0 10,-0C26.642,0 59.332,0 70.858,0C73.51,-0 76.054,1.054 77.929,2.929C82.74,7.74 92.26,17.26 97.071,22.071C98.946,23.946 101.49,25 104.142,25C118.808,25 168.535,25 190,25Z" style="fill:var(--MI_THEME-driveFolderBg);"/>
+	</svg>
+	<div :class="$style.name">{{ folder.name }}</div>
+	<div v-if="prefer.s.uploadFolder == folder.id" :class="$style.upload">
 		{{ i18n.ts.uploadFolder }}
-	</p>
+	</div>
 	<button v-if="selectMode" class="_button" :class="$style.checkboxWrapper" @click.prevent.stop="checkboxClicked">
 		<div :class="[$style.checkbox, { [$style.checked]: isSelected }]"></div>
 	</button>
@@ -320,10 +319,9 @@ function onContextmenu(ev: MouseEvent) {
 <style lang="scss" module>
 .root {
 	position: relative;
-	padding: 8px;
-	height: 64px;
-	background: var(--MI_THEME-driveFolderBg);
-	border-radius: 4px;
+	height: 90px;
+	padding: 24px 16px;
+	box-sizing: border-box;
 	cursor: pointer;
 
 	&.draghover {
@@ -339,6 +337,14 @@ function onContextmenu(ev: MouseEvent) {
 			border-radius: 4px;
 		}
 	}
+}
+
+.shape {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .checkboxWrapper {
@@ -382,7 +388,6 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 .name {
-	margin: 0;
 	font-size: 0.9em;
 }
 
@@ -393,7 +398,6 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 .upload {
-	margin: 4px 4px;
 	font-size: 0.8em;
 	text-align: right;
 }
