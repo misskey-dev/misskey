@@ -159,7 +159,7 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 					canFetchOlder.value = true;
 				}
 			}
-		}, err => {
+		}).finally(() => {
 			fetchingOlder.value = false;
 		});
 	}

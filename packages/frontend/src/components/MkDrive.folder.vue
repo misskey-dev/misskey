@@ -58,7 +58,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
 	(ev: 'unchose', v: Misskey.entities.DriveFolder): void;
-	(ev: 'upload', file: File, folder: Misskey.entities.DriveFolder);
+	(ev: 'upload', files: File[], folder: Misskey.entities.DriveFolder);
 	(ev: 'dragstart'): void;
 	(ev: 'dragend'): void;
 }>();
@@ -133,9 +133,7 @@ function onDrop(ev: DragEvent) {
 
 	// ファイルだったら
 	if (ev.dataTransfer.files.length > 0) {
-		for (const file of Array.from(ev.dataTransfer.files)) {
-			emit('upload', file, props.folder);
-		}
+		emit('upload', Array.from(ev.dataTransfer.files), props.folder);
 		return;
 	}
 

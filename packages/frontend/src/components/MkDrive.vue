@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
 					:parentFolder="folder"
 					@click="cd(null)"
-					@upload="upload"
+					@upload="onUploadRequested"
 				/>
 				<template v-for="f in hierarchyFolders">
 					<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:parentFolder="folder"
 						:class="[$style.navPathItem]"
 						@click="cd(f)"
-						@upload="upload"
+						@upload="onUploadRequested"
 					/>
 				</template>
 				<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@chosen="chooseFolder"
 						@unchose="unchoseFolder"
 						@click="cd(f)"
-						@upload="upload"
+						@upload="onUploadRequested"
 						@dragstart="isDragSource = true"
 						@dragend="isDragSource = false"
 					/>
@@ -112,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						/>
 					</TransitionGroup>
 				</MkStickyContainer>
-				<MkButton v-show="filesPaginator.canFetchOlder.value" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
@@ -375,6 +375,12 @@ function onDrop(ev: DragEvent) {
 		}
 	}
 	//#endregion
+}
+
+function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder | null) {
+	os.launchUploader(files, {
+		folderId: folder?.id ?? null,
+	});
 }
 
 async function urlUpload() {
@@ -819,6 +825,10 @@ onBeforeUnmount(() => {
 	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 	backdrop-filter: var(--MI-blur, blur(8px));
 	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.85);
+}
+
+.loadMore {
+	margin: 16px auto;
 }
 
 .footer {
