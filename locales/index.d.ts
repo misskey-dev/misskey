@@ -8536,10 +8536,6 @@ export interface Locale extends ILocale {
              */
             "inputBorder": string;
             /**
-             * ドライブフォルダーの背景
-             */
-            "driveFolderBg": string;
-            /**
              * バッジ
              */
             "badge": string;

@@ -2237,7 +2237,6 @@ _theme:
     buttonBg: "ボタンの背景"
     buttonHoverBg: "ボタンの背景 (ホバー)"
     inputBorder: "入力ボックスの縁取り"
-    driveFolderBg: "ドライブフォルダーの背景"
     badge: "バッジ"
     messageBg: "チャットの背景"
     fgHighlighted: "強調された文字"
