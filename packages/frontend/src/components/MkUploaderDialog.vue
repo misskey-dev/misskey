@@ -60,6 +60,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template #label>{{ i18n.ts.compress }}</template>
 		</MkSelect>
+
+		<div>{{ i18n.tsx._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
 	</div>
 
 	<template #footer>
@@ -91,6 +93,9 @@ import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
+import { ensureSignin } from '@/i.js';
+
+const $i = ensureSignin();
 
 const COMPRESSION_SUPPORTED_TYPES = [
 	'image/jpeg',

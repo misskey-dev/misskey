@@ -11899,6 +11899,10 @@ export interface Locale extends ILocale {
          * アップロードされていないファイルがありますが、完了しますか？
          */
         "doneConfirm": string;
+        /**
+         * アップロード可能な最大ファイルサイズは{x}です。
+         */
+        "maxFileSizeIsX": ParameterizedString<"x">;
     };
     "_clientPerformanceIssueTip": {
         /**
