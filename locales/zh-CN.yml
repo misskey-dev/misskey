@@ -1438,6 +1438,8 @@ _settings:
   enablePullToRefresh_description: "使用鼠标时按下滚轮来拖动"
   realtimeMode_description: "与服务器建立连接并实时更新内容。将会增加流量和电池消耗。"
   contentsUpdateFrequency: "内容获取频率"
+  contentsUpdateFrequency_description: "设置越高，内容更新越实时，但性能会降低，并且会消耗更多的流量和电池。"
+  contentsUpdateFrequency_description2: "当实时模式开启时，无论此设置如何，内容都会实时更新。"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"
@@ -1620,6 +1622,11 @@ _serverSettings:
   deliverSuspendedSoftwareDescription: "可因安全漏洞之类的原因，停止向指定的服务器及服务器版本送信。版本信息由服务器提供，不保证可靠性。可使用 semver 范围来指定版本，但指定 >= 2024.3.1 将不包括如 2024.3.1-custom.0 等自定义版本，因此建议像 >= 2024.3.1-0 这样指定 prerelease 版本。"
   signToActivityPubGet: "对 GET 请求签名"
   proxyRemoteFiles: "代理远程文件"
+  userGeneratedContentsVisibilityForVisitor: "用户生成内容对非用户的可见性"
+  _userGeneratedContentsVisibilityForVisitor:
+    all: "全部公开"
+    localOnly: "仅公开本地内容，隐藏远程内容"
+    none: "全部隐藏"
 _accountMigration:
   moveFrom: "从别的账号迁移到此账户"
   moveFromSub: "为另一个账户建立别名"
@@ -3025,3 +3032,11 @@ _search:
   pleaseEnterServerHost: "请填写服务器主机名"
   pleaseSelectUser: "请选择用户"
   serverHostPlaceholder: "如：misskey.example.com"
+_clientPerformanceIssueTip:
+  title: "如果觉得电池耗电过高"
+  makeSureDisabledAdBlocker: "请关闭广告拦截器"
+  makeSureDisabledAdBlocker_description: "广告拦截器会影响性能。请检查操作系统功能、浏览器功能或附加组件是否启用了广告拦截器。"
+  makeSureDisabledCustomCss: "请关闭自定义 CSS"
+  makeSureDisabledCustomCss_description: "覆盖样式可能会影响性能。请确保没有启用任何自定义 CSS 或覆盖样式的扩展。"
+  makeSureDisabledAddons: "请关闭扩展"
+  makeSureDisabledAddons_description: "某些扩展可能会干扰客户端的运行并影响性能。尝试禁用浏览器扩展并查看是否有改善。"
