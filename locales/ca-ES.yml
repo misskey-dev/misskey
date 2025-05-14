@@ -3088,4 +3088,7 @@ _clientPerformanceIssueTip:
   title: "Si creus que el consum de bateria és molt alt"
   makeSureDisabledAdBlocker: "Desactiva els bloquejadors de publicitat"
   makeSureDisabledAdBlocker_description: "Els bloquejadors d'anuncis pot afectar el rendiment, comprova que no estiguin activats per característiques del sistema operatiu o del navegador."
-  makeSureDisabledCustomCss: "Desactivar CSS personalitzat"
+  makeSureDisabledCustomCss: "Desactiva CSS personalitzat"
+  makeSureDisabledCustomCss_description: "L'anul·lació dels estils pot afectar el rendiment. Comprova que el CSS personalitzat o les extensions que reescriuen estils no estiguin activats."
+  makeSureDisabledAddons: "Desactiva extensions"
+  makeSureDisabledAddons_description: "Algunes extensions poden interferir en el comportament del client i afectar el rendiment. Desactiva les extensions del navegador i comprovar-ho."
