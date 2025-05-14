@@ -227,77 +227,37 @@ watch(q, () => {
 	const searchCustom = () => {
 		const max = 100;
 		const emojis = customEmojis.value;
-		const matches = new Set<Misskey.entities.EmojiSimple>();
-
-		const exactMatch = emojis.find(emoji => emoji.name === newQ);
-		if (exactMatch) matches.add(exactMatch);
-
-		if (newQ.includes(' ')) { // AND検索
-			const keywords = newQ.split(' ');
-
-			// 名前にキーワードが含まれている
-			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
+		const results: Misskey.entities.EmojiSimple[] = [];
+		const words = newQ.split(/\s+/);
+		
+		let i = 0;
+		
+		for (const emoji of emojis) {
+			if (i >= max) break;
+		
+			const matching = words.slice();
+			for (const text of [emoji.name, ...emoji.aliases]) {
+				if (!matching.length) break;
+		
+				for (let j = 0; j < matching.length; j++) {
+					if (text.toLowerCase().includes(matching[j])) {
+						matching.splice(j, 1);
+		
+						j -= 1;
+		
+						continue;
+					}
 				}
 			}
-			if (matches.size >= max) return matches;
-
-			// 名前またはエイリアスにキーワードが含まれている
-			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-		} else {
-			if (customEmojisMap.has(newQ)) {
-				matches.add(customEmojisMap.get(newQ)!);
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.aliases.some(alias => alias === newQ)) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.name.startsWith(newQ)) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.aliases.some(alias => alias.startsWith(newQ))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.name.includes(newQ)) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.aliases.some(alias => alias.includes(newQ))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
+		
+			if (matching.length) continue;
+		
+			results.push(emoji);
+		
+			i++;
 		}
-
-		return matches;
+		
+		return results;
 	};
 
 	const searchUnicode = () => {
