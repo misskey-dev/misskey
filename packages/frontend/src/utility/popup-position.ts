@@ -39,6 +39,10 @@ export function calcPopupPosition(el: HTMLElement, props: {
 			left = window.innerWidth - contentWidth + window.scrollX - 1;
 		}
 
+		if (left < window.scrollX) {
+			left = window.scrollX;
+		}
+
 		return [left, top];
 	};
 
@@ -60,6 +64,10 @@ export function calcPopupPosition(el: HTMLElement, props: {
 			left = window.innerWidth - contentWidth + window.scrollX - 1;
 		}
 
+		if (left < window.scrollX) {
+			left = window.scrollX;
+		}
+
 		return [left, top];
 	};
 
@@ -79,6 +87,10 @@ export function calcPopupPosition(el: HTMLElement, props: {
 
 		if (top + contentHeight - window.scrollY > window.innerHeight) {
 			top = window.innerHeight - contentHeight + window.scrollY - 1;
+		}
+
+		if (left < window.scrollX) {
+			left = window.scrollX;
 		}
 
 		return [left, top];
@@ -108,6 +120,10 @@ export function calcPopupPosition(el: HTMLElement, props: {
 
 		if (top + contentHeight - window.scrollY > window.innerHeight) {
 			top = window.innerHeight - contentHeight + window.scrollY - 1;
+		}
+
+		if (left < window.scrollX) {
+			left = window.scrollX;
 		}
 
 		return [left, top];
