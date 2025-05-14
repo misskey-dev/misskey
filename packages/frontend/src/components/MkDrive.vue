@@ -60,59 +60,58 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onDrop"
 			@contextmenu.stop="onContextmenu"
 		>
-			<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-			<div v-show="foldersPaginator.items.value.length > 0">
-				<div :class="$style.folders">
-					<XFolder
-						v-for="(f, i) in foldersPaginator.items.value"
-						:key="f.id"
-						v-anim="i"
-						:class="$style.folder"
-						:folder="f"
-						:selectMode="select === 'folder'"
-						:isSelected="selectedFolders.some(x => x.id === f.id)"
-						@chosen="chooseFolder"
-						@unchose="unchoseFolder"
-						@click="cd(f)"
-						@upload="onUploadRequested"
-						@dragstart="isDragSource = true"
+			<div v-if="!store.r.readDriveTip.value" style="padding: 8px;">
+				<MkInfo closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
+			</div>
+
+			<div :class="$style.folders">
+				<XFolder
+					v-for="(f, i) in foldersPaginator.items.value"
+					:key="f.id"
+					v-anim="i"
+					:class="$style.folder"
+					:folder="f"
+					:selectMode="select === 'folder'"
+					:isSelected="selectedFolders.some(x => x.id === f.id)"
+					@chosen="chooseFolder"
+					@unchose="unchoseFolder"
+					@click="cd(f)"
+					@upload="onUploadRequested"
+					@dragstart="isDragSource = true"
+					@dragend="isDragSource = false"
+				/>
+			</div>
+			<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+
+			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
+				<template #header>
+					<div :class="$style.date">
+						<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
+					</div>
+				</template>
+
+				<TransitionGroup
+					tag="div"
+					:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+					:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+					:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+					:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+					:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+					:class="$style.files"
+				>
+					<XFile
+						v-for="file in item.items" :key="file.id"
+						:class="$style.file"
+						:file="file"
+						:folder="folder"
+						:isSelected="selectedFiles.some(x => x.id === file.id)"
+						@click="onFileClick($event, file)"
+						@dragstart="onFileDragstart(file, $event)"
 						@dragend="isDragSource = false"
 					/>
-				</div>
-				<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
-			</div>
-
-			<div v-show="filesPaginator.items.value.length > 0">
-				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
-					<template #header>
-						<div :class="$style.date">
-							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
-						</div>
-					</template>
-
-					<TransitionGroup
-						tag="div"
-						:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
-						:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
-						:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
-						:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
-						:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
-						:class="$style.files"
-					>
-						<XFile
-							v-for="file in item.items" :key="file.id"
-							:class="$style.file"
-							:file="file"
-							:folder="folder"
-							:isSelected="selectedFiles.some(x => x.id === file.id)"
-							@click="onFileClick($event, file)"
-							@dragstart="onFileDragstart(file, $event)"
-							@dragend="isDragSource = false"
-						/>
-					</TransitionGroup>
-				</MkStickyContainer>
-				<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
-			</div>
+				</TransitionGroup>
+			</MkStickyContainer>
+			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
