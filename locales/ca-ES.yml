@@ -3084,3 +3084,8 @@ _serverSetupWizard:
     text1: "Misskey és un programari gratuït fet per voluntaris."
     text2: "Si ho desitges, agrairíem molt la teva donació per poder seguir desenvolupant el projecte."
     text3: "També hi ha privilegis especials per als donants!"
+_clientPerformanceIssueTip:
+  title: "Si creus que el consum de bateria és molt alt"
+  makeSureDisabledAdBlocker: "Desactiva els bloquejadors de publicitat"
+  makeSureDisabledAdBlocker_description: "Els bloquejadors d'anuncis pot afectar el rendiment, comprova que no estiguin activats per característiques del sistema operatiu o del navegador."
+  makeSureDisabledCustomCss: "Desactivar CSS personalitzat"
