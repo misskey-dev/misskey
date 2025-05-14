@@ -15,53 +15,57 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-upload"></i> {{ i18n.tsx.uploadNFiles({ n: files.length }) }}
 	</template>
 
-	<div :class="$style.root" class="_gaps_s">
-		<div :class="$style.items" class="_gaps_s">
-			<div
-				v-for="ctx in items"
-				:key="ctx.id"
-				v-panel
-				:class="[$style.item, ctx.waiting ? $style.itemWaiting : null, ctx.uploaded ? $style.itemCompleted : null, ctx.uploadFailed ? $style.itemFailed : null]"
-				:style="{ '--p': ctx.progress != null ? `${ctx.progress.value / ctx.progress.max * 100}%` : '0%' }"
-			>
-				<div :class="$style.itemInner">
-					<div :class="$style.itemActionWrapper">
-						<MkButton :iconOnly="true" rounded @click="showMenu($event, ctx)"><i class="ti ti-dots"></i></MkButton>
-					</div>
-					<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ ctx.thumbnail })` }"></div>
-					<div :class="$style.itemBody">
-						<div><MkCondensedLine :minScale="2 / 3">{{ ctx.name }}</MkCondensedLine></div>
-						<div :class="$style.itemInfo">
-							<span>{{ ctx.file.type }}</span>
-							<span>{{ bytes(ctx.file.size) }}</span>
-							<span v-if="ctx.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(ctx.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - ctx.compressedSize / ctx.file.size) * 100) }) }})</span>
+	<div :class="$style.root">
+		<div :class="[$style.overallProgress, canRetry ? $style.overallProgressError : null]" :style="{ '--op': `${overallProgress}%` }"></div>
+
+		<div :class="$style.main" class="_gaps_s">
+			<div :class="$style.items" class="_gaps_s">
+				<div
+					v-for="ctx in items"
+					:key="ctx.id"
+					v-panel
+					:class="[$style.item, ctx.waiting ? $style.itemWaiting : null, ctx.uploaded ? $style.itemCompleted : null, ctx.uploadFailed ? $style.itemFailed : null]"
+					:style="{ '--p': ctx.progress != null ? `${ctx.progress.value / ctx.progress.max * 100}%` : '0%' }"
+				>
+					<div :class="$style.itemInner">
+						<div :class="$style.itemActionWrapper">
+							<MkButton :iconOnly="true" rounded @click="showMenu($event, ctx)"><i class="ti ti-dots"></i></MkButton>
 						</div>
-						<div>
+						<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ ctx.thumbnail })` }"></div>
+						<div :class="$style.itemBody">
+							<div><MkCondensedLine :minScale="2 / 3">{{ ctx.name }}</MkCondensedLine></div>
+							<div :class="$style.itemInfo">
+								<span>{{ ctx.file.type }}</span>
+								<span>{{ bytes(ctx.file.size) }}</span>
+								<span v-if="ctx.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(ctx.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - ctx.compressedSize / ctx.file.size) * 100) }) }})</span>
+							</div>
+							<div>
+							</div>
 						</div>
-					</div>
-					<div :class="$style.itemIconWrapper">
-						<MkSystemIcon v-if="ctx.uploading" :class="$style.itemIcon" type="waiting"/>
-						<MkSystemIcon v-else-if="ctx.uploaded" :class="$style.itemIcon" type="success"/>
-						<MkSystemIcon v-else-if="ctx.uploadFailed" :class="$style.itemIcon" type="error"/>
+						<div :class="$style.itemIconWrapper">
+							<MkSystemIcon v-if="ctx.uploading" :class="$style.itemIcon" type="waiting"/>
+							<MkSystemIcon v-else-if="ctx.uploaded" :class="$style.itemIcon" type="success"/>
+							<MkSystemIcon v-else-if="ctx.uploadFailed" :class="$style.itemIcon" type="error"/>
+						</div>
 					</div>
 				</div>
 			</div>
+
+			<MkSelect
+				v-if="items.length > 0"
+				v-model="compressionLevel"
+				:items="[
+					{ value: 0, label: i18n.ts.none },
+					{ value: 1, label: i18n.ts.low },
+					{ value: 2, label: i18n.ts.middle },
+					{ value: 3, label: i18n.ts.high },
+				]"
+			>
+				<template #label>{{ i18n.ts.compress }}</template>
+			</MkSelect>
+
+			<div>{{ i18n.tsx._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
 		</div>
-
-		<MkSelect
-			v-if="items.length > 0"
-			v-model="compressionLevel"
-			:items="[
-				{ value: 0, label: i18n.ts.none },
-				{ value: 1, label: i18n.ts.low },
-				{ value: 2, label: i18n.ts.middle },
-				{ value: 3, label: i18n.ts.high },
-			]"
-		>
-			<template #label>{{ i18n.ts.compress }}</template>
-		</MkSelect>
-
-		<div>{{ i18n.tsx._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
 	</div>
 
 	<template #footer>
@@ -149,6 +153,16 @@ const firstUploadAttempted = ref(false);
 const isUploading = computed(() => items.value.some(item => item.uploading));
 const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.waiting) && items.value.some(item => item.uploaded == null));
 const canDone = computed(() => items.value.some(item => item.uploaded != null));
+const overallProgress = computed(() => {
+	const max = items.value.length;
+	if (max === 0) return 0;
+	const v = items.value.reduce((acc, item) => {
+		if (item.uploaded) return acc + 1;
+		if (item.progress) return acc + (item.progress.value / item.progress.max);
+		return acc;
+	}, 0);
+	return Math.round((v / max) * 100);
+});
 
 const compressionLevel = ref<0 | 1 | 2 | 3>(2);
 const compressionSettings = computed(() => {
@@ -324,6 +338,25 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
+	position: relative;
+}
+
+.overallProgress {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: var(--op);
+	height: 4px;
+	background: var(--MI_THEME-accent);
+	border-radius: 0 999px 999px 0;
+	transition: width 0.2s ease;
+
+	&.overallProgressError {
+		background: var(--MI_THEME-warn);
+	}
+}
+
+.main {
 	padding: 12px;
 }
 
