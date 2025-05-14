@@ -25,12 +25,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:style="{ '--p': ctx.progress != null ? `${ctx.progress.value / ctx.progress.max * 100}%` : '0%' }"
 			>
 				<div :class="$style.itemInner">
-					<div>
+					<div :class="$style.itemActionWrapper">
 						<MkButton :iconOnly="true" rounded @click="showMenu($event, ctx)"><i class="ti ti-dots"></i></MkButton>
 					</div>
 					<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ ctx.thumbnail })` }"></div>
 					<div :class="$style.itemBody">
-						<div>{{ ctx.name }}</div>
+						<div><MkCondensedLine :minScale="2 / 3">{{ ctx.name }}</MkCondensedLine></div>
 						<div :class="$style.itemInfo">
 							<span>{{ ctx.file.type }}</span>
 							<span>{{ bytes(ctx.file.size) }}</span>
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>
 						</div>
 					</div>
-					<div>
+					<div :class="$style.itemIconWrapper">
 						<MkSystemIcon v-if="ctx.uploading" :class="$style.itemIcon" type="waiting"/>
 						<MkSystemIcon v-else-if="ctx.uploaded" :class="$style.itemIcon" type="success"/>
 						<MkSystemIcon v-else-if="ctx.uploadFailed" :class="$style.itemIcon" type="error"/>
@@ -406,12 +406,6 @@ onMounted(() => {
 	min-width: 0;
 }
 
-@container (max-width: 500px) {
-	.itemBody {
-		font-size: 90%;
-	}
-}
-
 .itemInfo {
 	opacity: 0.7;
 	margin-top: 4px;
@@ -422,5 +416,35 @@ onMounted(() => {
 
 .itemIcon {
 	width: 35px;
+}
+
+@container (max-width: 500px) {
+	.itemInner {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.itemBody {
+		font-size: 90%;
+		text-align: center;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.itemActionWrapper {
+		position: absolute;
+		top: 8px;
+		left: 8px;
+	}
+
+	.itemInfo {
+		justify-content: center;
+	}
+
+	.itemIconWrapper {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+	}
 }
 </style>
