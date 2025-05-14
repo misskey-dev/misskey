@@ -104,9 +104,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:class="$style.file"
 							:file="file"
 							:folder="folder"
-							:selectMode="select === 'file' || isEditMode"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
-							@chosen="onChooseFile"
+							@click="onFileClick($event, file)"
 							@dragstart="onFileDragstart(file, $event)"
 							@dragend="isDragSource = false"
 						/>
@@ -154,6 +153,7 @@ import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef
 import { usePagination } from '@/composables/use-pagination.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -458,30 +458,38 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function onChooseFile(file: Misskey.entities.DriveFile) {
-	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
-
-	if (isEditMode.value) {
-		if (isAlreadySelected) {
-			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
-		} else {
-			selectedFiles.value.push(file);
-		}
-		return;
+function onFileClick(ev: MouseEvent, file: Misskey.entities.DriveFile) {
+	if (ev.shiftKey) {
+		isEditMode.value = true;
 	}
 
-	if (props.multiple) {
-		if (isAlreadySelected) {
-			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
+	if (props.select === 'file' || isEditMode.value) {
+		const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
+
+		if (isEditMode.value) {
+			if (isAlreadySelected) {
+				selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
+			} else {
+				selectedFiles.value.push(file);
+			}
+			return;
+		}
+
+		if (props.multiple) {
+			if (isAlreadySelected) {
+				selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
+			} else {
+				selectedFiles.value.push(file);
+			}
 		} else {
-			selectedFiles.value.push(file);
+			if (isAlreadySelected) {
+				//emit('selected', file);
+			} else {
+				selectedFiles.value = [file];
+			}
 		}
 	} else {
-		if (isAlreadySelected) {
-			//emit('selected', file);
-		} else {
-			selectedFiles.value = [file];
-		}
+		os.popupMenu(getDriveFileMenu(file, folder.value), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	}
 }
 

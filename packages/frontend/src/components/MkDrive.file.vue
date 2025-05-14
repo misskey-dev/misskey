@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.isSelected]: isSelected }]"
 	draggable="true"
 	:title="title"
-	@click="onClick"
 	@contextmenu.stop="onContextmenu"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
@@ -46,24 +45,17 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
-import { deviceKind } from '@/utility/device-kind.js';
-import { useRouter } from '@/router.js';
 import { setDragData } from '@/drag-and-drop.js';
-
-const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
 	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
-	selectMode?: boolean;
 }>(), {
 	isSelected: false,
-	selectMode: false,
 });
 
 const emit = defineEmits<{
-	(ev: 'chosen', r: Misskey.entities.DriveFile): void;
 	(ev: 'dragstart', dragEvent: DragEvent): void;
 	(ev: 'dragend'): void;
 }>();
@@ -71,18 +63,6 @@ const emit = defineEmits<{
 const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
-
-function onClick(ev: MouseEvent) {
-	if (props.selectMode) {
-		emit('chosen', props.file);
-	} else {
-		if (deviceKind === 'desktop') {
-			router.push(`/my/drive/file/${props.file.id}`);
-		} else {
-			os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
-		}
-	}
-}
 
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
