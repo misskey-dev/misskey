@@ -823,7 +823,14 @@ onBeforeUnmount(() => {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 	grid-gap: 12px;
-	padding: var(--MI-margin);
+	padding: 16px 32px;
+}
+
+@container (max-width: 600px) {
+	.folders,
+	.files {
+		padding: 16px;
+	}
 }
 
 .date {
