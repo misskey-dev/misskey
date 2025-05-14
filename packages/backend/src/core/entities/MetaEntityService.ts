@@ -131,7 +131,6 @@ export class MetaEntityService {
 			mediaProxy: this.config.mediaProxy,
 			enableUrlPreview: instance.urlPreviewEnabled,
 			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
-			maxFileSize: this.config.maxFileSize,
 			federation: this.meta.federation,
 		};
 

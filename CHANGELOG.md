@@ -6,6 +6,8 @@
   - proxyRemoteFiles
   - disallowExternalApRedirect
     - 許可しないかどうかではなく、許可するかどうかの設定(allowExternalApRedirect)になりました
+- 設定ファイルの maxFileSize が削除されました
+  - リクエストの最大ペイロードサイズは、nginxやCDNなどのMisskeyの前段で制限をするか、ロール設定で制限してください。
 
 ### General
 - Feat: 非ログインでサーバーを閲覧された際に、サーバー内のコンテンツを非公開にすることができるようになりました

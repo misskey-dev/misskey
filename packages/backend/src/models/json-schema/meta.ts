@@ -293,10 +293,6 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: false,
 			default: 'local',
 		},
-		maxFileSize: {
-			type: 'number',
-			optional: false, nullable: false,
-		},
 		federation: {
 			type: 'string',
 			enum: ['all', 'specified', 'none'],

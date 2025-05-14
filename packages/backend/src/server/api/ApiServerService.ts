@@ -51,7 +51,6 @@ export class ApiServerService {
 
 		fastify.register(multipart, {
 			limits: {
-				fileSize: this.config.maxFileSize,
 				files: 1,
 			},
 		});

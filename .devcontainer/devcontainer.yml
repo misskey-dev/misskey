@@ -205,6 +205,3 @@ proxyBypassHosts:
 allowedPrivateNetworks: [
   '127.0.0.1/32'
 ]
-
-# Upload or download file size limits (bytes)
-#maxFileSize: 262144000
