@@ -61,6 +61,10 @@ const widgetPropsDef = {
 			{ label: 'Followers', value: 'followers' },
 		],
 	},
+	localOnly: {
+		type: 'boolean' as const,
+		default: false,
+	},
 	refreshIntervalSec: {
 		type: 'number' as const,
 		default: 60,
@@ -130,6 +134,7 @@ const postNote = async () => {
 	misskeyApi('notes/create', {
 		text: note,
 		visibility: widgetProps.visibility,
+		localOnly: widgetProps.localOnly,
 	});
 };
 
