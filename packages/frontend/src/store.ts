@@ -220,18 +220,18 @@ export const store = markRaw(new Pizzax('base', {
 	menu: {
 		where: 'deviceAccount',
 		default: [
-			'mode',
 			'notifications',
 			'drive',
 			'followRequests',
-			'-',
 			'chat',
-			'channels',
 			'-',
 			'floater',
 			'explore',
-			'search',
 			'announcements',
+			'channels',
+			'search',
+			'-',
+			'mode',
 		],
 	},
 	postFormActions: {

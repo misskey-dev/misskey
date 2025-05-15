@@ -133,18 +133,18 @@ export const PREF_DEF = {
 	},
 	menu: {
 		default: [
-			'mode',
 			'notifications',
 			'drive',
 			'followRequests',
-			'-',
 			'chat',
-			'channels',
 			'-',
 			'floater',
 			'explore',
-			'search',
 			'announcements',
+			'channels',
+			'search',
+			'-',
+			'mode',
 		],
 	},
 	statusbars: {
