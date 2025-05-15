@@ -510,8 +510,14 @@ export class ApRendererService {
 
 	@bindThis
 	private renderYamiNote(note: MiNote, attributedTo: string, to: string[], cc: string[], inReplyTo: any): IPost {
-		// Misskey標準の非表示処理に合わせたやみノート表現
 		return {
+			'@context': [
+				'https://www.w3.org/ns/activitystreams',
+				{
+					misskey: 'https://misskey-hub.net/ns#',
+					_misskey_isNoteInYamiMode: 'misskey:_misskey_isNoteInYamiMode',
+				},
+			],
 			id: `${this.config.url}/notes/${note.id}`,
 			type: 'Note',
 			attributedTo,
@@ -524,8 +530,6 @@ export class ApRendererService {
 			inReplyTo,
 			attachment: [], // 添付ファイルも非表示
 			sensitive: true,
-			// 標準のActivityPubコンテキスト
-			'@context': 'https://www.w3.org/ns/activitystreams',
 		};
 	}
 

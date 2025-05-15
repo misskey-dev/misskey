@@ -396,7 +396,7 @@ export class NoteEntityService implements OnModuleInit {
 		return {
 			...note,
 			fileIds: [], // ファイルIDを空にして添付ファイルを隠す
-			text: null, // テキストを隠す
+			text: 'Yami note is hidden in untrusted instances.',
 			cw: null, // コンテンツ警告を隠す
 			hasPoll: false, // 投票を隠す
 			// isHidden は意図的に含めない（MiNote型に存在しないため）
