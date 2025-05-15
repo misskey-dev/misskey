@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #icon><i class="ti ti-users"></i></template>
 	<template #header>{{ i18n.ts._widgets.activeUsers }}</template>
 	<template #func="{ buttonStyleClass }">
-		<button class="_button" :class="buttonStyleClass" @click="configure()"><i class="ti ti-settings"></i></button>
 		<button class="_button" :class="buttonStyleClass" @click="tick()"><i class="ti ti-refresh"></i></button>
+		<button class="_button" :class="buttonStyleClass" @click="configure()"><i class="ti ti-settings"></i></button>
 	</template>
 
 	<div :class="$style.content">
