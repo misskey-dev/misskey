@@ -723,7 +723,7 @@ export interface Locale extends ILocale {
      */
     "cacheRemoteFiles": string;
     /**
-     * この設定を有効にすると、リモートファイルをこのサーバーのストレージにキャッシュするようになります。画像の表示が高速になりますが、サーバーのストレージを多く消費します。リモートユーザーがどれほどキャッシュを保持するかは、ロールによるドライブ容量制限によって決定されます。この制限を超えた場合、古いファイルからキャッシュが削除されリンクになります。この設定が無効の場合、リモートのファイルを最初からリンクとして保持しますが、画像のサムネイル生成やユーザーのプライバシー保護のために、default.ymlでproxyRemoteFilesをtrueにすることをお勧めします。
+     * この設定を有効にすると、リモートファイルをこのサーバーのストレージにキャッシュするようになります。画像の表示が高速になりますが、サーバーのストレージを多く消費します。リモートユーザーがどれほどキャッシュを保持するかは、ロールによるドライブ容量制限によって決定されます。この制限を超えた場合、古いファイルからキャッシュが削除されリンクになります。この設定が無効の場合、リモートのファイルを最初からリンクとして保持します。
      */
     "cacheRemoteFilesDescription": string;
     /**
@@ -3202,6 +3202,10 @@ export interface Locale extends ILocale {
      * 反映には再起動が必要です。
      */
     "needReloadToApply": string;
+    /**
+     * 反映にはサーバーの再起動が必要です。
+     */
+    "needToRestartServerToApply": string;
     /**
      * タイトルバーを表示する
      */
@@ -6541,6 +6545,30 @@ export interface Locale extends ILocale {
          * このサーバーを利用するのが自分だけの場合、このモードを有効にすることで動作が最適化されます。
          */
         "singleUserMode_description": string;
+        /**
+         * GETリクエストに署名する
+         */
+        "signToActivityPubGet": string;
+        /**
+         * 通常は有効にしてください。連合の通信に関する問題がある場合に、無効にすると改善することがありますが、逆にサーバーによっては通信が不可になることがあります。
+         */
+        "signToActivityPubGet_description": string;
+        /**
+         * リモートファイルをプロキシする
+         */
+        "proxyRemoteFiles": string;
+        /**
+         * 有効にすると、リモートのファイルをプロキシして提供します。画像のサムネイル生成やユーザーのプライバシー保護に役立ちます。
+         */
+        "proxyRemoteFiles_description": string;
+        /**
+         * ActivityPub経由の照会にリダイレクトを許可する
+         */
+        "allowExternalApRedirect": string;
+        /**
+         * 有効にすると、他のサーバーがこのサーバーを通して第三者のコンテンツを照会することが可能になりますが、コンテンツのなりすましが発生する可能性があります。
+         */
+        "allowExternalApRedirect_description": string;
         /**
          * 非利用者に対するユーザー作成コンテンツの公開範囲
          */
@@ -12016,6 +12044,36 @@ export interface Locale extends ILocale {
              */
             "text3": string;
         };
+    };
+    "_clientPerformanceIssueTip": {
+        /**
+         * バッテリー消費が多いと感じたら
+         */
+        "title": string;
+        /**
+         * アドブロッカーを無効にしてください
+         */
+        "makeSureDisabledAdBlocker": string;
+        /**
+         * アドブロッカーはパフォーマンスに影響を及ぼすことがあります。OSの機能やブラウザの機能・アドオンなどでアドブロッカーが有効になっていないか確認してください。
+         */
+        "makeSureDisabledAdBlocker_description": string;
+        /**
+         * カスタムCSSを無効にしてください
+         */
+        "makeSureDisabledCustomCss": string;
+        /**
+         * スタイルを上書きするとパフォーマンスに影響を及ぼすことがあります。カスタムCSSや、スタイルを上書きする拡張機能が有効になっていないか確認してください。
+         */
+        "makeSureDisabledCustomCss_description": string;
+        /**
+         * 拡張機能を無効にしてください
+         */
+        "makeSureDisabledAddons": string;
+        /**
+         * 一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。
+         */
+        "makeSureDisabledAddons_description": string;
     };
     "_hana": {
         /**
