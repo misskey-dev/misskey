@@ -1210,7 +1210,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 
 			// パブリックなやみノートの場合の処理を修正
-			if (note.visibility === 'public' && note.userHost == null) {
+			if (note.visibility === 'public') {
 				this.fanoutTimelineService.push('yamiPublicNotes', note.id, 1000, r);
 				if (note.fileIds.length > 0) {
 					this.fanoutTimelineService.push('yamiPublicNotesWithFiles', note.id, 500, r);
