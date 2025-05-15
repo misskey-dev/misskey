@@ -234,6 +234,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 									if (ps.localOnly) {
 										qb3.andWhere('note.userHost IS NULL');
 									}
+									// ここでは userHost の条件を付けない（リモートユーザーのノートも表示するため）
 
 									// フォローしているユーザーのノートは条件2で既に処理されているため除外
 									if (followingIds.length > 0) {

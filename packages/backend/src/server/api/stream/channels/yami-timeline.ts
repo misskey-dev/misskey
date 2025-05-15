@@ -126,7 +126,8 @@ class YamiTimelineChannel extends Channel {
 				shouldDisplay = this.showYamiFollowingNotes;
 			}
 			// フォローしていないユーザーのパブリック投稿 - showYamiNonFollowingPublicNotesで制御
-			else if (note.visibility === 'public' && note.userHost === null) {
+			// リモートインスタンスからのやみノートも含める
+			else if (note.visibility === 'public') {
 				shouldDisplay = this.showYamiNonFollowingPublicNotes;
 			}
 
