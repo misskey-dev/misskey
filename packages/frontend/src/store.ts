@@ -141,7 +141,19 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	widgets: {
 		where: 'account',
-		default: [] as {
+		default: [{
+			name: 'notifications',
+			id: 'a', place: 'right', data: {},
+		}, {
+			name: 'onlineUsers',
+			id: 'b', place: 'right', data: {},
+		}, {
+			name: 'activeUsers',
+			id: 'c', place: 'right', data: {},
+		}, {
+			name: 'listenBrainz',
+			id: 'd', place: 'right', data: {},
+		}] as {
 			name: string;
 			id: string;
 			place: string | null;

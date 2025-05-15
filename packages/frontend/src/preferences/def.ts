@@ -50,10 +50,10 @@ export const PREF_DEF = {
 	widgets: {
 		accountDependent: true,
 		default: [{
-			name: 'calendar',
+			name: 'notifications',
 			id: 'a', place: 'right', data: {},
 		}, {
-			name: 'notifications',
+			name: 'onlineUsers',
 			id: 'b', place: 'right', data: {},
 		}, {
 			name: 'activeUsers',
