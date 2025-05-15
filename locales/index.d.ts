@@ -12064,7 +12064,7 @@ export interface Locale extends ILocale {
          */
         "yamiNoteFederationTrustedInstances": string;
         /**
-         * やみノートを配信するインスタンスのホスト名を改行で区切って入力します。
+         * やみノートを配信・閲覧するインスタンスのホスト名を改行で区切って入力します。
          */
         "yamiNoteFederationTrustedInstancesDescription": string;
         /**

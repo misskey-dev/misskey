@@ -1519,7 +1519,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// やみノート連合が無効の場合は配送しない
 		if (!meta.yamiNoteFederationEnabled) {
 			console.log('[YamiNote] 連合機能が無効のため配信せず');
-			note.localOnly = true;
+			await this.notesRepository.update(note.id, { localOnly: true });
 			return;
 		}
 

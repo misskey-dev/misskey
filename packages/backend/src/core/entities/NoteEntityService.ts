@@ -16,6 +16,7 @@ import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { MetaService } from '@/core/MetaService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -54,6 +55,7 @@ export class NoteEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	private reactionsBufferingService: ReactionsBufferingService;
 	private idService: IdService;
+	private metaService: MetaService; // Add this property
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
@@ -99,6 +101,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
 		this.idService = this.moduleRef.get('IdService');
+		this.metaService = this.moduleRef.get('MetaService'); // Add this line to resolve MetaService
 	}
 
 	@bindThis
@@ -384,6 +387,22 @@ export class NoteEntityService implements OnModuleInit {
 		return fileIds.map(id => packedFiles.get(id)).filter(x => x != null);
 	}
 
+	/**
+ * ノートの内容を非表示にする（データレベル）
+ * 注: 表示用のisHiddenフラグはpack()内のhideNote()で設定される
+ */
+	@bindThis
+	private hideNoteContent(note: MiNote): MiNote {
+		return {
+			...note,
+			fileIds: [], // ファイルIDを空にして添付ファイルを隠す
+			text: null, // テキストを隠す
+			cw: null, // コンテンツ警告を隠す
+			hasPoll: false, // 投票を隠す
+			// isHidden は意図的に含めない（MiNote型に存在しないため）
+		};
+	}
+
 	@bindThis
 	public async pack(
 		src: MiNote['id'] | MiNote,
@@ -409,10 +428,10 @@ export class NoteEntityService implements OnModuleInit {
 		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 
-		// Add early check for Yami note visibility
-		if (note.isNoteInYamiMode && me) {
-			// 自分の投稿でなければ、自分がやみモードがONかチェック
-			if (note.userId !== me.id) {
+		// やみノートの処理
+		if (note.isNoteInYamiMode) {
+			// 早期チェック - 閲覧者がやみモードかどうか確認
+			if (me && note.userId !== me.id) {
 				// meオブジェクトにisInYamiModeが含まれていない場合、取得
 				const hasYamiMode = 'isInYamiMode' in me
 					? me.isInYamiMode
@@ -420,17 +439,17 @@ export class NoteEntityService implements OnModuleInit {
 
 				if (!hasYamiMode) {
 					// やみモードでない場合は早期リターンでノート内容を隠す
-					return {
-						id: note.id,
-						createdAt: this.idService.parse(note.id).date.toISOString(),
-						userId: note.userId,
-						user: opts._hint_?.packedUsers.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
-						visibility: note.visibility, // やみノートでも元の可視性を維持
-						text: null,
-						isHidden: true,
-						isNoteInYamiMode: true,
-					} as Packed<'Note'>;
+					return this.pack(this.hideNoteContent(note), me, options);
 				}
+			}
+
+			// 自分のノートか信頼済みインスタンスからのノートか確認
+			const isTrustedYamiNote = await this.isFromTrustedYamiInstance(note, me);
+
+			// 信頼できないやみノートは非表示として扱う
+			if (!isTrustedYamiNote) {
+				// 早期処理のため、非表示処理の適用
+				return this.pack(this.hideNoteContent(note), me, options);
 			}
 		}
 
@@ -661,5 +680,37 @@ export class NoteEntityService implements OnModuleInit {
 			where: { id },
 			relations: ['user'],
 		});
+	}
+
+	/**
+	 * やみノートが信頼済みインスタンスからのものかを確認する
+	 */
+	@bindThis
+	private async isFromTrustedYamiInstance(note: MiNote, me?: { id: MiUser['id'] } | null | undefined): Promise<boolean> {
+		// 自分のノートは常に信頼
+		if (me && note.userId === me.id) return true;
+
+		// ローカルユーザーのやみノートは常に信頼
+		if (note.userHost === null) return true;
+
+		// リモートノートの場合のみ信頼チェック
+		const meta = await this.metaService.fetch();
+		const trustedHosts = meta.yamiNoteFederationTrustedInstances || [];
+
+		// 信頼済みインスタンスリストが空なら表示しない
+		if (trustedHosts.length === 0) return false;
+
+		// ノートの送信元ホストを取得して信頼チェック（サブドメイン対応）
+		return this.isTrustedHost(note.userHost, trustedHosts);
+	}
+
+	/**
+	 * ホストが信頼済みリストに含まれているか確認（サブドメイン対応）
+	 */
+	@bindThis
+	private isTrustedHost(host: string, trustedHosts: string[]): boolean {
+		return trustedHosts.some(trusted =>
+			host === trusted || host.endsWith(`.${trusted}`),
+		);
 	}
 }

@@ -3219,7 +3219,7 @@ _yami:
   showYamiFollowingNotes: "フォローしているユーザーのやみノートを表示"
   yamiNoteFederationEnabled: 'やみノート連合を有効にする'
   yamiNoteFederationTrustedInstances: '信頼済みやみモード対応インスタンス'
-  yamiNoteFederationTrustedInstancesDescription: 'やみノートを配信するインスタンスのホスト名を改行で区切って入力します。'
+  yamiNoteFederationTrustedInstancesDescription: 'やみノートを配信・閲覧するインスタンスのホスト名を改行で区切って入力します。'
   yamiNoteFederationWarning: '警告: やみノートは信頼済みインスタンスにのみ配信されますが、リモートインスタンスの実装状況によっては適切に処理されない可能性があります。信頼できるインスタンスのみを追加してください。'
   _yamiModeSwitcher:
     enterYamiModeConfirm: "やみモードに切り替えますか？やみモードにすると、他人のやみノートを閲覧できるようになります"

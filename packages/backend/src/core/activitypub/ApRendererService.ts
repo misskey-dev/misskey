@@ -476,6 +476,12 @@ export class ApRendererService {
 			})),
 		} as const : {};
 
+		// やみノートの場合は非表示バージョンを作成 - Misskey標準の非表示処理に合わせる
+		if (note.isNoteInYamiMode) {
+			// hideNote相当の処理でActivityPubオブジェクトを生成
+			return this.renderYamiNote(note, attributedTo, to, cc, inReplyTo);
+		}
+
 		return {
 			id: `${this.config.url}/notes/${note.id}`,
 			type: 'Note',
@@ -499,6 +505,27 @@ export class ApRendererService {
 			sensitive: note.cw != null || files.some(file => file.isSensitive),
 			tag,
 			...asPoll,
+		};
+	}
+
+	@bindThis
+	private renderYamiNote(note: MiNote, attributedTo: string, to: string[], cc: string[], inReplyTo: any): IPost {
+		// Misskey標準の非表示処理に合わせたやみノート表現
+		return {
+			id: `${this.config.url}/notes/${note.id}`,
+			type: 'Note',
+			attributedTo,
+			_misskey_isNoteInYamiMode: true,
+			content: undefined, // 内容を非表示に (nullではなくundefinedを使用)
+			summary: undefined, // CWも非表示に (nullではなくundefinedを使用)
+			published: this.idService.parse(note.id).date.toISOString(),
+			to,
+			cc,
+			inReplyTo,
+			attachment: [], // 添付ファイルも非表示
+			sensitive: true,
+			// 標準のActivityPubコンテキスト
+			'@context': 'https://www.w3.org/ns/activitystreams',
 		};
 	}
 
@@ -819,11 +846,11 @@ export class ApRendererService {
 	public async renderReversiUpdate(local_user:MiUser, remote_user:MiRemoteUser,
 		game_state: {
 			game_session_id: string;
-			type:string;
-			pos?:number;//石配置
-			key?:string;//設定変更
-			value?:any;//設定変更
-			ready?:boolean;//ゲーム開始
+			type: string;
+			pos?: number;//石配置
+			key?: string;//設定変更
+			value?: any;//設定変更
+			ready?: boolean;//ゲーム開始
 		},
 	) {
 		const game:IApReversi = {

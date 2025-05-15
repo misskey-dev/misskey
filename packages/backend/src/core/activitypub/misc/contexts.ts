@@ -560,6 +560,7 @@ const extension_context_definition = {
 	'_misskey_makeNotesFollowersOnlyBefore': 'misskey:_misskey_makeNotesFollowersOnlyBefore',
 	'_misskey_makeNotesHiddenBefore': 'misskey:_misskey_makeNotesHiddenBefore',
 	'_misskey_license': 'misskey:_misskey_license',
+	'_misskey_isNoteInYamiMode': 'misskey:_misskey_isNoteInYamiMode',
 	'freeText': {
 		'@id': 'misskey:freeText',
 		'@type': 'schema:text',
