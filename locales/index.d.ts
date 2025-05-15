@@ -111,6 +111,10 @@ export interface Locale extends ILocale {
      */
     "noMutualFollowers": string;
     /**
+     * 再生中の音楽はありません
+     */
+    "noListeningMusic": string;
+    /**
      * サーバー
      */
     "instance": string;
