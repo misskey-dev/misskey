@@ -3084,3 +3084,11 @@ _serverSetupWizard:
     text1: "Misskey is a free software developed by volunteers."
     text2: "We would appreciate your support so that we can continue to develop this software further into the future."
     text3: "There are also special benefits for supporters!"
+_clientPerformanceIssueTip:
+  title: "Performance tips"
+  makeSureDisabledAdBlocker: "Disable your adblocker"
+  makeSureDisabledAdBlocker_description: "Adblockers can affect performance, please make sure that adblockers are not enabled by your system or browser features/extensions."
+  makeSureDisabledCustomCss: "Disable custom CSS"
+  makeSureDisabledCustomCss_description: "Overriding styles can affect performance. Please make sure that custom CSS or extensions that override styles are not enabled."
+  makeSureDisabledAddons: "Disable extensions"
+  makeSureDisabledAddons_description: "Some extensions may interfere with client behavior and affect performance. Please disable your browser extensions and see if this improves the situation."
