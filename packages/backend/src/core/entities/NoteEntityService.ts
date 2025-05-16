@@ -17,6 +17,7 @@ import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import { MetaService } from '@/core/MetaService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -55,7 +56,8 @@ export class NoteEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	private reactionsBufferingService: ReactionsBufferingService;
 	private idService: IdService;
-	private metaService: MetaService; // Add this property
+	private metaService: MetaService;
+	private utilityService: UtilityService;
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
@@ -101,7 +103,8 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
 		this.idService = this.moduleRef.get('IdService');
-		this.metaService = this.moduleRef.get('MetaService'); // Add this line to resolve MetaService
+		this.metaService = this.moduleRef.get('MetaService');
+		this.utilityService = this.moduleRef.get('UtilityService');
 	}
 
 	@bindThis
@@ -688,29 +691,25 @@ export class NoteEntityService implements OnModuleInit {
 	@bindThis
 	private async isFromTrustedYamiInstance(note: MiNote, me?: { id: MiUser['id'] } | null | undefined): Promise<boolean> {
 		// 自分のノートは常に信頼
-		if (me && note.userId === me.id) return true;
+		if (me && note.userId === me.id) {
+			return true;
+		}
 
 		// ローカルユーザーのやみノートは常に信頼
-		if (note.userHost === null) return true;
+		if (note.userHost === null) {
+			return true;
+		}
 
 		// リモートノートの場合のみ信頼チェック
 		const meta = await this.metaService.fetch();
 		const trustedHosts = meta.yamiNoteFederationTrustedInstances || [];
 
 		// 信頼済みインスタンスリストが空なら表示しない
-		if (trustedHosts.length === 0) return false;
+		if (trustedHosts.length === 0) {
+			return false;
+		}
 
-		// ノートの送信元ホストを取得して信頼チェック（サブドメイン対応）
-		return this.isTrustedHost(note.userHost, trustedHosts);
-	}
-
-	/**
-	 * ホストが信頼済みリストに含まれているか確認（サブドメイン対応）
-	 */
-	@bindThis
-	private isTrustedHost(host: string, trustedHosts: string[]): boolean {
-		return trustedHosts.some(trusted =>
-			host === trusted || host.endsWith(`.${trusted}`),
-		);
+		// ユーティリティサービスの共通関数を使用
+		return this.utilityService.isTrustedHost(note.userHost, trustedHosts);
 	}
 }

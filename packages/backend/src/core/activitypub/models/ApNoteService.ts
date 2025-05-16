@@ -141,17 +141,7 @@ export class ApNoteService {
 		if (trustedHosts.length === 0) return false;
 
 		// サブドメイン対応で信頼済みホストチェック
-		return this.isTrustedHost(host, trustedHosts);
-	}
-
-	/**
-	 * ホストが信頼済みリストに含まれているか確認（サブドメイン対応）
-	 */
-	@bindThis
-	private isTrustedHost(host: string, trustedHosts: string[]): boolean {
-		return trustedHosts.some(trusted =>
-			host === trusted || host.endsWith(`.${trusted}`),
-		);
+		return this.utilityService.isTrustedHost(host, trustedHosts);
 	}
 
 	/**

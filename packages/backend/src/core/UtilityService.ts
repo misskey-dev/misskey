@@ -161,4 +161,25 @@ export class UtilityService {
 				&& semver.satisfies(softwareVersion, x.versionRange, { includePrerelease: true }));
 		}
 	}
+
+	/**
+	 * ホストが信頼済みリストに含まれているか確認（サブドメイン対応）
+	 * @param host 検証するホスト名
+	 * @param trustedHosts 信頼済みホストのリスト
+	 */
+	@bindThis
+	public isTrustedHost(
+		host: string | null | undefined,
+		trustedHosts: string[],
+	): boolean {
+		// 既存のtoPunyNullableメソッドを使用して正規化
+		const normalizedHost = this.toPunyNullable(host);
+		if (!normalizedHost) return false;
+
+		// isBlockedHostと同様のロジックを使用
+		return trustedHosts.some(trusted => {
+			const normalizedTrusted = this.toPuny(trusted);
+			return `.${normalizedHost}`.endsWith(`.${normalizedTrusted}`);
+		});
+	}
 }
