@@ -409,7 +409,19 @@ export class ApNoteService {
 			// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
 			// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
 			const createFrom = options.sentFrom?.origin === new URL(uri).origin ? value : uri;
-			return await this.createNote(createFrom, undefined, options.resolver, true);
+
+			// やみノートかどうかを判定
+			let silent = true; // デフォルトはsilent=true
+
+			// オブジェクト形式の場合、直接やみモードフラグをチェック
+			if (typeof createFrom === 'object' && createFrom._misskey_isNoteInYamiMode === true) {
+				// やみノートの場合はsilent=falseに設定
+				this.logger.info(`Remote yami note detected, setting silent=false: ${createFrom.id}`);
+				silent = false;
+			}
+
+			// やみノート判定に基づいてsilentフラグを設定
+			return await this.createNote(createFrom, undefined, options.resolver, silent);
 		} finally {
 			unlock();
 		}

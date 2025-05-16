@@ -764,7 +764,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Increment notes count (user)
 		this.incNotesCountOfUser(user);
 
-		// やみモード投稿とそれ以外で分岐処理
+		// やみノートもしくは通常ノートのタイムライン処理
 		if (!silent) {
 			// タイムラインへのファンアウト
 			this.pushToTl(note, user);
