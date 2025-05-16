@@ -28,13 +28,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<path d="M96,63L63,96" style="--l:47;--duration:0.3s;--delay:0.2s;" :class="[$style.line, $style.animLine]"/>
 	<circle cx="80" cy="80" r="56" style="--l:350;" :class="[$style.line, $style.animCircle]"/>
 </svg>
+<svg v-else-if="type === 'waiting'" :class="[$style.icon, $style.waiting]" viewBox="0 0 160 160">
+	<circle cx="80" cy="80" r="56" style="--l:350;" :class="[$style.line, $style.animCircleWaiting]"/>
+	<circle cx="80" cy="80" r="56" style="opacity: 0.25;" :class="[$style.line]"/>
+</svg>
 </template>
 
 <script lang="ts" setup>
 import {} from 'vue';
 
 const props = defineProps<{
-	type: 'info' | 'question' | 'success' | 'warn' | 'error';
+	type: 'info' | 'question' | 'success' | 'warn' | 'error' | 'waiting';
 }>();
 </script>
 
@@ -62,6 +66,10 @@ const props = defineProps<{
 	&.error {
 		color: var(--MI_THEME-error);
 	}
+
+	&.waiting {
+		color: var(--MI_THEME-accent);
+	}
 }
 
 .line {
@@ -87,6 +95,13 @@ const props = defineProps<{
 	transform: rotate(-90deg);
 }
 
+.animCircleWaiting {
+	stroke-dasharray: var(--l);
+	stroke-dashoffset: calc(var(--l) / 1.5);
+	animation: waiting 0.75s linear infinite;
+	transform-origin: center;
+}
+
 .animFade {
 	opacity: 0;
 	animation: fade-in var(--duration, 0.5s) cubic-bezier(0,0,.25,1) 1 forwards;
@@ -101,6 +116,15 @@ const props = defineProps<{
 	100% {
 		stroke-dashoffset: 0;
 		opacity: 1;
+	}
+}
+
+@keyframes waiting {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
 	}
 }
 
