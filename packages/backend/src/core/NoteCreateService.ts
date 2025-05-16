@@ -248,11 +248,30 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// やみノート投稿時のチェック
 		if (data.isNoteInYamiMode) {
-			const policies = await this.roleService.getUserPolicies(user.id);
+			// 重要: やみノートの場合、サーバー設定を確認して連合を強制的に制御
+			const yamiMeta = await this.metaService.fetch();
+			if (!yamiMeta.yamiNoteFederationEnabled) {
+				// 連合が無効な場合は強制的にローカルオンリーに
+				data.localOnly = true;
+			}
 
-			// canYamiNote 権限のみでチェックする
-			if (!policies.canYamiNote) {
-				throw new Error('You do not have permission to post yami notes.');
+			// リモートユーザーとローカルユーザーで分岐
+			if (user.host !== null) {
+				// リモートユーザーの場合: 信頼済みインスタンスのみチェック
+				const trustedHosts = yamiMeta.yamiNoteFederationTrustedInstances || [];
+				const isTrusted = trustedHosts.some(trusted =>
+					user.host === trusted || user.host?.endsWith(`.${trusted}`),
+				);
+
+				if (!isTrusted) {
+					throw new Error('You do not have permission to post yami notes: Remote user from untrusted instance');
+				}
+			} else {
+				// ローカルユーザーの場合: ロール権限をチェック
+				const policies = await this.roleService.getUserPolicies(user.id);
+				if (!policies.canYamiNote) {
+					throw new Error('You do not have permission to post yami notes: Local user without necessary role permission');
+				}
 			}
 
 			// 重要: やみノートの場合、サーバー設定を確認して連合を強制的に制御
