@@ -509,8 +509,9 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	private renderYamiNote(note: MiNote, attributedTo: string, to: string[], cc: string[], inReplyTo: any): IPost {
-		return {
+	private async renderYamiNote(note: MiNote, attributedTo: string, to: string[], cc: string[], inReplyTo: any): Promise<IPost> {
+		// 基本オブジェクトの作成
+		const baseObject = {
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
 				{
@@ -522,15 +523,68 @@ export class ApRendererService {
 			type: 'Note',
 			attributedTo,
 			_misskey_isNoteInYamiMode: true,
-			content: undefined, // 内容を非表示に (nullではなくundefinedを使用)
-			summary: undefined, // CWも非表示に (nullではなくundefinedを使用)
 			published: this.idService.parse(note.id).date.toISOString(),
 			to,
 			cc,
 			inReplyTo,
-			attachment: [], // 添付ファイルも非表示
 			sensitive: true,
 		};
+
+		// 設定から信頼済みホストリストを取得
+		const trustedHosts = this.meta.yamiNoteFederationTrustedInstances || [];
+
+		// 受信者リストから Public を除外
+		const recipients = [...to, ...cc].filter(uri => uri !== 'https://www.w3.org/ns/activitystreams#Public');
+
+		// 信頼済みホストが含まれるか確認
+		const hasTrustedRecipient = this.isRecipientTrusted(recipients, trustedHosts);
+
+		// 信頼済みホストが含まれる場合のみコンテンツを含める
+		if (hasTrustedRecipient) {
+			// ファイルオブジェクトを取得（本家の実装パターンに合わせる）
+			const files = note.fileIds.length > 0
+				? await this.driveFilesRepository.findBy({ id: In(note.fileIds) })
+				: [];
+
+			return {
+				...baseObject,
+				content: note.text,
+				summary: note.cw,
+				attachment: files.map(x => this.renderDocument(x)),
+			};
+		} else {
+			// 非信頼ホストにはコンテンツなしで送信
+			return {
+				...baseObject,
+				content: 'This is a yami note. Content is only visible to trusted instances. Please contact the administrator of the originating instance to request trusted instance status.',
+				summary: 'Yami Note - Content hidden',
+				tag: [
+					// 追跡用のハッシュタグを追加
+					this.renderHashtag('IsNoteInYamiMode'),
+				],
+				attachment: [],
+			};
+		}
+	}
+
+	@bindThis
+	private isRecipientTrusted(recipients: string[], trustedHosts: string[]): boolean {
+		const recipientHosts = recipients
+			.map(uri => {
+				try {
+					if (uri.startsWith('https://') || uri.startsWith('http://')) {
+						return this.utilityService.extractDbHost(uri);
+					}
+					return null;
+				} catch {
+					return null;
+				}
+			})
+			.filter((host): host is string => host != null);
+
+		return recipientHosts.some(host =>
+			this.utilityService.isTrustedHost(host, trustedHosts),
+		);
 	}
 
 	@bindThis
