@@ -16,7 +16,6 @@ import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import { CacheService } from '@/core/CacheService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -120,12 +119,29 @@ export class NoteEntityService implements OnModuleInit {
 
 	@bindThis
 	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null): Promise<void> {
+		// 自分のノートは常に表示
 		if (meId === packedNote.userId) return;
 
-		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
-		if (packedNote.user.requireSigninToViewContents && meId == null) {
+		// やみノートの処理を追加
+		if (packedNote.isNoteInYamiMode) {
+			// 未ログインならやみノートは常に非表示
+			if (meId == null) {
+				hide = true;
+			} else {
+				// 自分がやみモードでない場合は非表示
+				const hasYamiMode = await this.usersRepository.findOneBy({ id: meId })
+					.then(u => u?.isInYamiMode ?? false);
+
+				if (!hasYamiMode) {
+					hide = true;
+				}
+			}
+		}
+
+		// 既存の表示条件チェック
+		if (!hide && packedNote.user.requireSigninToViewContents && meId == null) {
 			hide = true;
 		}
 
@@ -385,21 +401,6 @@ export class NoteEntityService implements OnModuleInit {
 		return fileIds.map(id => packedFiles.get(id)).filter(x => x != null);
 	}
 
-	/**
- * ノートの内容を非表示にする（データレベル）
- * 注: 表示用のisHiddenフラグはpack()内のhideNote()で設定される
- */
-	@bindThis
-	private hideNoteContent(note: MiNote): MiNote {
-		return {
-			...note,
-			fileIds: [],
-			text: 'This is a yami note. Content is only visible to trusted instances. Please contact the administrator of the originating instance to request trusted instance status.',
-			cw: 'Yami Note - Content hidden',
-			hasPoll: false,
-		};
-	}
-
 	@bindThis
 	public async pack(
 		src: MiNote['id'] | MiNote,
@@ -425,26 +426,10 @@ export class NoteEntityService implements OnModuleInit {
 		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
 
-		// やみノートの処理
-		if (note.isNoteInYamiMode) {
-			// 早期チェック - 閲覧者がやみモードかどうか確認
-			if (me && note.userId !== me.id) {
-					// 既存のチェック処理
-					const hasYamiMode = 'isInYamiMode' in me
-						? me.isInYamiMode
-						: await this.usersRepository.findOneBy({ id: me.id }).then(u => u?.isInYamiMode ?? false);
-
-					if (!hasYamiMode) {
-							// やみモードでない場合は早期リターンでノート内容を隠す
-							return this.pack(this.hideNoteContent(note), me, options);
-					}
-			}
-		}
-
 		const host = note.userHost;
 
 		const bufferedReactions = opts._hint_?.bufferedReactions != null
-			? (opts._hint_.bufferedReactions.get(note.id) ?? { deltas: {}, pairs: [] })
+			? (opts._hint_?.bufferedReactions.get(note.id) ?? { deltas: {}, pairs: [] })
 			: this.meta.enableReactionsBuffering
 				? await this.reactionsBufferingService.get(note.id)
 				: { deltas: {}, pairs: [] };
@@ -505,7 +490,7 @@ export class NoteEntityService implements OnModuleInit {
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
-			isNoteInYamiMode: note.isNoteInYamiMode, // やみノートかどうか
+			isNoteInYamiMode: note.isNoteInYamiMode,
 
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
