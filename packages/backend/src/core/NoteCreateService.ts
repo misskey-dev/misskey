@@ -1535,71 +1535,40 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async deliverYamiNote(note: MiNote, user: { id: MiUser['id'] }, dm: any): Promise<void> {
 		const meta = await this.metaService.fetch();
 
-		// やみノート連合が無効の場合は配送しない
+		// 連合が無効なら配送しない
 		if (!meta.yamiNoteFederationEnabled) {
-			console.log('[YamiNote] 連合機能が無効のため配信せず');
 			await this.notesRepository.update(note.id, { localOnly: true });
 			return;
 		}
 
-		// 信頼済みインスタンスリスト
+		// 信頼済みホストリスト
 		const trustedHosts = meta.yamiNoteFederationTrustedInstances || [];
-
-		// 信頼済みインスタンスがなければ配送しない
-		if (trustedHosts.length === 0) {
-			console.log('[YamiNote] 信頼済みインスタンスが設定されていないため配信せず');
-			return;
-		}
-
-		console.log(`[YamiNote] 信頼済みインスタンス: ${trustedHosts.join(', ')}`);
-
-		// UtilityServiceを流用してホスト名を判定する
-		// 複数の信頼済みホストがあるので、1つずつチェックする最適な方法
-		const isHostTrusted = (host: string | null): boolean => {
-			if (!host) return false;
-
-			// どれか1つの信頼済みホストにマッチするか確認
-			return this.utilityService.isSilencedHost(trustedHosts, host);
-		};
+		if (trustedHosts.length === 0) return;
 
 		try {
-			// リモートフォロワーを取得
+			// リモートフォロワーを取得して、信頼済みホストのみフィルタリング
 			const followers = await this.followingsRepository.find({
 				where: {
 					followeeId: user.id,
-					followerHost: Not(IsNull()), // リモートユーザーのみ
+					followerHost: Not(IsNull()),
 				},
 				relations: ['follower'],
 			});
 
-			console.log(`[YamiNote] リモートフォロワー数: ${followers.length}`);
-
-			// 信頼済みインスタンスのフォロワーのみにフィルタリング
+			// 信頼済みフォロワーにのみ配送
 			const trustedFollowers = followers.filter(following =>
-				following.follower && isHostTrusted(following.follower.host),
+				following.follower && this.utilityService.isTrustedHost(following.follower.host, trustedHosts),
 			);
 
-			console.log(`[YamiNote] 信頼済みインスタンスのフォロワー数: ${trustedFollowers.length}`);
-
-			// DeliverManagerのレシピシステムを活用して配信
-			if (trustedFollowers.length > 0) {
-				// フィルタリングしたフォロワーにのみ配送
-				for (const following of trustedFollowers) {
-					if (!following.follower) continue;
-					console.log(`[YamiNote] "${following.follower.host}" へ配信`);
-					// DeliverManagerの標準APIを使用
-					dm.addDirectRecipe(following.follower as MiRemoteUser);
-				}
-
-				// 配信を実行するためにdm.execute()を呼び出す
-				await dm.execute();
-
-				console.log(`[YamiNote] 配信処理完了 (${trustedFollowers.length}件)`);
-			} else {
-				console.log('[YamiNote] 配信対象のフォロワーが見つかりませんでした');
+			for (const following of trustedFollowers) {
+				if (!following.follower) continue;
+				dm.addDirectRecipe(following.follower as MiRemoteUser);
 			}
+
+			// 配信実行
+			await dm.execute();
 		} catch (err) {
-			console.error(`[YamiNote] 配信処理中にエラーが発生しました: ${err}`);
+			console.error(`[YamiNote] 配信エラー: ${err}`);
 		}
 	}
 
