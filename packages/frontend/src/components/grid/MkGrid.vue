@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
@@ -130,7 +130,7 @@ const bus = new GridEventEmitter();
  */
 const resizeObserver = new ResizeObserver((entries) => window.setTimeout(() => onResize(entries)));
 
-const rootEl = ref<InstanceType<typeof HTMLTableElement>>();
+const rootEl = useTemplateRef('rootEl');
 /**
  * グリッドの最も上位にある状態。
  */

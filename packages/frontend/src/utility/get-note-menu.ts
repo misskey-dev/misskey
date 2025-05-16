@@ -25,10 +25,10 @@ import { getAppearNote } from '@/utility/get-appear-note.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { globalEvents } from '@/events.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
-	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
 	function getClipName(clip: Misskey.entities.Clip) {
@@ -68,7 +68,6 @@ export async function getNoteClipMenu(props: {
 									}
 								}));
 							});
-							if (props.currentClip?.id === clip.id) props.isDeleted.value = true;
 						}
 					} else if (err.id === 'f0dba960-ff73-4615-8df4-d6ac5d9dc118') {
 						os.alert({
@@ -178,7 +177,6 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
-	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
 	const appearNote = getAppearNote(props.note);
@@ -194,6 +192,8 @@ export function getNoteMenu(props: {
 
 			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
+			}).then(() => {
+				globalEvents.emit('noteDeleted', appearNote.id);
 			});
 
 			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60 && appearNote.userId === $i.id) {
@@ -211,6 +211,8 @@ export function getNoteMenu(props: {
 
 			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
+			}).then(() => {
+				globalEvents.emit('noteDeleted', appearNote.id);
 			});
 
 			os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
@@ -251,7 +253,6 @@ export function getNoteMenu(props: {
 	async function unclip(): Promise<void> {
 		if (!props.currentClip) return;
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
-		props.isDeleted.value = true;
 	}
 
 	async function promote(): Promise<void> {
@@ -569,8 +570,9 @@ export function getRenoteMenu(props: {
 					misskeyApi('notes/create', {
 						renoteId: appearNote.id,
 						channelId: appearNote.channelId,
-					}).then(() => {
+					}).then((res) => {
 						os.toast(i18n.ts.renoted);
+						globalEvents.emit('notePosted', res.createdNote);
 					});
 				}
 			},
@@ -617,8 +619,9 @@ export function getRenoteMenu(props: {
 						localOnly,
 						visibility,
 						renoteId: appearNote.id,
-					}).then(() => {
+					}).then((res) => {
 						os.toast(i18n.ts.renoted);
+						globalEvents.emit('notePosted', res.createdNote);
 					});
 				}
 			},
@@ -658,8 +661,9 @@ export function getRenoteMenu(props: {
 							misskeyApi('notes/create', {
 								renoteId: appearNote.id,
 								channelId: channel.id,
-							}).then(() => {
+							}).then((res) => {
 								os.toast(i18n.tsx.renotedToX({ name: channel.name }));
+								globalEvents.emit('notePosted', res.createdNote);
 							});
 						}
 					},

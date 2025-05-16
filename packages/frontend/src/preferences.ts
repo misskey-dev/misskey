@@ -86,7 +86,7 @@ const storageProvider: StorageProvider = {
 		});
 	},
 
-	cloudGets: async (ctx) => {
+	cloudGetBulk: async (ctx) => {
 		// TODO: 値の取得を1つのリクエストで済ませたい(バックエンド側でAPIの新設が必要)
 		const fetchings = ctx.needs.map(need => storageProvider.cloudGet(need).then(res => [need.key, res] as const));
 		const cloudDatas = await Promise.all(fetchings);

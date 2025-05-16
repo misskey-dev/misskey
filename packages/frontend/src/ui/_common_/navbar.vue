@@ -10,6 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
 				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon" style="viewTransitionName: navbar-serverIcon;"/>
 			</button>
+			<button v-if="!iconOnly" v-tooltip.noDelay.right="i18n.ts.realtimeMode" class="_button" :class="[$style.realtimeMode, store.r.realtimeMode.value ? $style.on : null]" @click="toggleRealtimeMode">
+				<i class="ti ti-bolt ti-fw"></i>
+			</button>
 		</div>
 		<div :class="$style.middle">
 			<MkA v-tooltip.noDelay.right="i18n.ts.timeline" :class="$style.item" :activeClass="$style.active" to="/" exact>
@@ -50,6 +53,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="showWidgetButton" class="_button" :class="[$style.widget]" @click="() => emit('widgetButtonClick')">
 				<i class="ti ti-apps ti-fw"></i>
 			</button>
+			<button v-if="iconOnly" v-tooltip.noDelay.right="i18n.ts.realtimeMode" class="_button" :class="[$style.realtimeMode, store.r.realtimeMode.value ? $style.on : null]" @click="toggleRealtimeMode">
+				<i class="ti ti-bolt ti-fw"></i>
+			</button>
 			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
@@ -76,16 +82,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</svg>
 			<button class="_button" :class="$style.subButtonClickable" @click="menuEdit"><i :class="$style.subButtonIcon" class="ti ti-settings-2"></i></button>
 		</div>
-		<div :class="$style.subButtonGapFill"></div>
-		<div :class="$style.subButtonGapFillDivider"></div>
-		<div :class="[$style.subButton, $style.toggleButton]">
-			<svg viewBox="0 0 16 64" :class="$style.subButtonShape">
-				<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
-					<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
-				</g>
-			</svg>
-			<button class="_button" :class="$style.subButtonClickable" @click="toggleIconOnly"><i v-if="iconOnly" class="ti ti-chevron-right" :class="$style.subButtonIcon"></i><i v-else class="ti ti-chevron-left" :class="$style.subButtonIcon"></i></button>
-		</div>
+		<template v-if="!props.asDrawer">
+			<div :class="$style.subButtonGapFill"></div>
+			<div :class="$style.subButtonGapFillDivider"></div>
+			<div :class="[$style.subButton, $style.toggleButton]">
+				<svg viewBox="0 0 16 64" :class="$style.subButtonShape">
+					<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
+						<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
+					</g>
+				</svg>
+				<button class="_button" :class="$style.subButtonClickable" @click="toggleIconOnly"><i v-if="iconOnly" class="ti ti-chevron-right" :class="$style.subButtonIcon"></i><i v-else class="ti ti-chevron-left" :class="$style.subButtonIcon"></i></button>
+			</div>
+		</template>
 	</div>
 </div>
 </template>
@@ -108,15 +116,16 @@ const router = useRouter();
 
 const props = defineProps<{
 	showWidgetButton?: boolean;
+	asDrawer?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'widgetButtonClick'): void;
 }>();
 
-const forceIconOnly = ref(window.innerWidth <= 1279);
+const forceIconOnly = ref(!props.asDrawer && window.innerWidth <= 1279);
 const iconOnly = computed(() => {
-	return forceIconOnly.value || (store.r.menuDisplay.value === 'sideIcon');
+	return !props.asDrawer && (forceIconOnly.value || (store.r.menuDisplay.value === 'sideIcon'));
 });
 
 const otherMenuItemIndicated = computed(() => {
@@ -145,6 +154,20 @@ function toggleIconOnly() {
 	} else {
 		store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 	}
+}
+
+function toggleRealtimeMode(ev: MouseEvent) {
+	os.popupMenu([{
+		type: 'label',
+		text: i18n.ts.realtimeMode,
+	}, {
+		text: store.s.realtimeMode ? i18n.ts.turnItOff : i18n.ts.turnItOn,
+		icon: store.s.realtimeMode ? 'ti ti-bolt-off' : 'ti ti-bolt',
+		action: () => {
+			store.set('realtimeMode', !store.s.realtimeMode);
+			window.location.reload();
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 function openAccountMenu(ev: MouseEvent) {
@@ -191,21 +214,108 @@ function menuEdit() {
 	overscroll-behavior: contain;
 	background: var(--MI_THEME-navBg);
 	contain: strict;
+
+	/* 画面が縦に長い、設置している項目数が少ないなどの環境においても確実にbottomを最下部に表示するため */
 	display: flex;
 	flex-direction: column;
-	direction: rtl; // スクロールバーを左に表示したいため
+
+	direction: rtl; /* スクロールバーを左に表示したいため */
 }
 
 .top {
+	flex-shrink: 0;
 	direction: ltr;
+
+	/* 疑似progressive blur */
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		content: "";
+		backdrop-filter: blur(8px);
+		mask-image: linear-gradient(
+			to top,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 7.75%,
+			rgb(0 0 0 / 10.4%) 11.25%,
+			rgb(0 0 0 / 45%) 23.55%,
+			rgb(0 0 0 / 55%) 26.45%,
+			rgb(0 0 0 / 89.6%) 38.75%,
+			rgb(0 0 0 / 95.1%) 42.25%,
+			rgb(0 0 0 / 100%) 50%
+		);
+	}
+
+	&::after {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		bottom: 25%;
+		content: "";
+		backdrop-filter: blur(16px);
+		mask-image: linear-gradient(
+			to top,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 15.5%,
+			rgb(0 0 0 / 10.4%) 22.5%,
+			rgb(0 0 0 / 45%) 47.1%,
+			rgb(0 0 0 / 55%) 52.9%,
+			rgb(0 0 0 / 89.6%) 77.5%,
+			rgb(0 0 0 / 95.1%) 91.9%,
+			rgb(0 0 0 / 100%) 100%
+		);
+	}
 }
 
 .middle {
+	flex: 1;
 	direction: ltr;
 }
 
 .bottom {
+	flex-shrink: 0;
 	direction: ltr;
+
+	/* 疑似progressive blur */
+	&::before {
+		position: absolute;
+		z-index: -1;
+		inset: -30px 0 0 0;
+		content: "";
+		backdrop-filter: blur(8px);
+		mask-image: linear-gradient(
+			to bottom,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 7.75%,
+			rgb(0 0 0 / 10.4%) 11.25%,
+			rgb(0 0 0 / 45%) 23.55%,
+			rgb(0 0 0 / 55%) 26.45%,
+			rgb(0 0 0 / 89.6%) 38.75%,
+			rgb(0 0 0 / 95.1%) 42.25%,
+			rgb(0 0 0 / 100%) 50%
+		);
+		pointer-events: none;
+	}
+
+	&::after {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		top: 25%;
+		content: "";
+		backdrop-filter: blur(16px);
+		mask-image: linear-gradient(
+			to bottom,
+			rgb(0 0 0 / 0%) 0%,
+			rgb(0 0 0 / 4.9%) 15.5%,
+			rgb(0 0 0 / 10.4%) 22.5%,
+			rgb(0 0 0 / 45%) 47.1%,
+			rgb(0 0 0 / 55%) 52.9%,
+			rgb(0 0 0 / 89.6%) 77.5%,
+			rgb(0 0 0 / 95.1%) 91.9%,
+			rgb(0 0 0 / 100%) 100%
+		);
+	}
 }
 
 .subButtons {
@@ -290,29 +400,19 @@ function menuEdit() {
 	}
 
 	.top {
+		--top-height: 80px;
+
 		position: sticky;
 		top: 0;
 		z-index: 1;
-		padding: 20px 0;
-		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
-		backdrop-filter: var(--MI-blur, blur(8px));
+		display: flex;
+		height: var(--top-height);
+		padding-left: 6px;
 	}
 
 	.instance {
 		position: relative;
-		display: block;
-		text-align: center;
-		width: 100%;
-
-		&:focus-visible {
-			outline: none;
-
-			> .instanceIcon {
-				outline: 2px solid var(--MI_THEME-focus);
-				outline-offset: 2px;
-			}
-		}
+		width: var(--top-height);
 	}
 
 	.instanceIcon {
@@ -322,13 +422,20 @@ function menuEdit() {
 		border-radius: 8px;
 	}
 
+	.realtimeMode {
+		display: inline-block;
+		width: var(--top-height);
+		margin-left: auto;
+
+		&.on {
+			color: var(--MI_THEME-accent);
+		}
+	}
+
 	.bottom {
 		position: sticky;
 		bottom: 0;
 		padding-top: 20px;
-		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
-		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.post {
@@ -414,10 +521,6 @@ function menuEdit() {
 		display: block;
 		flex-shrink: 1;
 		padding-right: 8px;
-	}
-
-	.middle {
-		flex: 1;
 	}
 
 	.divider {
@@ -520,9 +623,6 @@ function menuEdit() {
 		top: 0;
 		z-index: 1;
 		padding: 20px 0;
-		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
-		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.instance {
@@ -551,9 +651,6 @@ function menuEdit() {
 		position: sticky;
 		bottom: 0;
 		padding-top: 20px;
-		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
-		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.widget {
@@ -562,6 +659,18 @@ function menuEdit() {
 		width: 100%;
 		height: 52px;
 		text-align: center;
+	}
+
+	.realtimeMode {
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 52px;
+		text-align: center;
+
+		&.on {
+			color: var(--MI_THEME-accent);
+		}
 	}
 
 	.post {
@@ -637,10 +746,6 @@ function menuEdit() {
 		display: none;
 	}
 
-	.middle {
-		flex: 1;
-	}
-
 	.divider {
 		margin: 8px auto;
 		width: calc(100% - 32px);
@@ -650,7 +755,7 @@ function menuEdit() {
 	.item {
 		display: block;
 		position: relative;
-		padding: 18px 0;
+		padding: 16px 0;
 		width: 100%;
 		text-align: center;
 

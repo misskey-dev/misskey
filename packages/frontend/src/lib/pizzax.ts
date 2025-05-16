@@ -12,7 +12,6 @@ import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { get, set } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
-import { useStream } from '@/stream.js';
 import { deepClone } from '@/utility/clone.js';
 import { deepMerge } from '@/utility/merge.js';
 
@@ -129,25 +128,6 @@ export class Pizzax<T extends StateDef> {
 			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
 			this.r[key].value = this.s[key] = value;
 		});
-
-		if ($i) {
-			const connection = useStream().useChannel('main');
-
-			// streamingのuser storage updateイベントを監視して更新
-			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
-				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.s[key] === value) return;
-
-				this.r[key].value = this.s[key] = value;
-
-				this.addIdbSetJob(async () => {
-					const cache = await get(this.registryCacheKeyName);
-					if (cache[key] !== value) {
-						cache[key] = value;
-						await set(this.registryCacheKeyName, cache);
-					}
-				});
-			});
-		}
 	}
 
 	private load(): Promise<void> {
