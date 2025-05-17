@@ -373,6 +373,10 @@ const filterItems = computed(() => {
 	} else if (src.value === 'yami') {
 		items.push({
 			type: 'switch',
+			text: i18n.ts.localOnly,
+			ref: localOnly,
+		}, {
+			type: 'switch',
 			text: i18n.ts._yami.showYamiNonFollowingPublicNotes,
 			ref: showYamiNonFollowingPublicNotes,
 			// 闇モードでない場合は視覚的に無効化

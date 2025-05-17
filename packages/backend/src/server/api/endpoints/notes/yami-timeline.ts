@@ -203,25 +203,44 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 								qb.orWhere(new Brackets(qb2 => {
 									// フォローしているユーザーのノート（可視性に応じて制限）
 									qb2.where(new Brackets(qb3 => {
+										// localOnlyパラメータがtrueの場合は追加の条件を設定
+										const baseCondition = ps.localOnly
+											? 'note.userId IN (:...followingIds) AND note.visibility = :public AND note.userHost IS NULL'
+											: 'note.userId IN (:...followingIds) AND note.visibility = :public';
+
 										// パブリック投稿
-										qb3.where('note.userId IN (:...followingIds) AND note.visibility = :public',
-											{ followingIds, public: 'public' });
+										qb3.where(baseCondition, { followingIds, public: 'public' });
 
-										// フォロワー限定投稿
-										qb3.orWhere('note.userId IN (:...followingIds) AND note.visibility = :followers',
-											{ followingIds, followers: 'followers' });
+										// フォロワー限定投稿 (ローカルユーザーのみで絞る場合)
+										if (ps.localOnly) {
+											qb3.orWhere('note.userId IN (:...followingIds) AND note.visibility = :followers AND note.userHost IS NULL',
+												{ followingIds, followers: 'followers' });
+										} else {
+											qb3.orWhere('note.userId IN (:...followingIds) AND note.visibility = :followers',
+												{ followingIds, followers: 'followers' });
+										}
 
-										// ホーム投稿
-										qb3.orWhere('note.userId IN (:...followingIds) AND note.visibility = :home',
-											{ followingIds, home: 'home' });
+										// ホーム投稿 (ローカルユーザーのみで絞る場合)
+										if (ps.localOnly) {
+											qb3.orWhere('note.userId IN (:...followingIds) AND note.visibility = :home AND note.userHost IS NULL',
+												{ followingIds, home: 'home' });
+										} else {
+											qb3.orWhere('note.userId IN (:...followingIds) AND note.visibility = :home',
+												{ followingIds, home: 'home' });
+										}
 									}));
 								}));
 							}
 
-							// ダイレクト投稿 (常に表示)
+							// ダイレクト投稿 (localOnly が true の場合はローカルユーザーからのみに制限)
 							qb.orWhere(new Brackets(qb2 => {
 								qb2.where('note.visibility = :specified', { specified: 'specified' })
 									.andWhere(':meId = ANY(note."visibleUserIds")', { meId: me.id });
+
+								// localOnlyパラメータがtrueの場合のみローカルに限定
+								if (ps.localOnly) {
+									qb2.andWhere('note.userHost IS NULL');
+								}
 							}));
 
 							// 条件3: パブリックやみノート - showYamiNonFollowingPublicNotes が true の場合のみ

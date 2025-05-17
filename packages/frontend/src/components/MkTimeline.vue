@@ -177,6 +177,7 @@ function connectChannel() {
 			withFiles: props.withFiles ? true : undefined,
 			showYamiNonFollowingPublicNotes: props.showYamiNonFollowingPublicNotes,
 			showYamiFollowingNotes: props.showYamiFollowingNotes,
+			localOnly: props.localOnly,
 		});
 
 		connection.on('note', prepend);
@@ -268,6 +269,7 @@ function updatePaginationQuery() {
 			withFiles: props.withFiles ? true : undefined,
 			showYamiNonFollowingPublicNotes: props.showYamiNonFollowingPublicNotes,
 			showYamiFollowingNotes: props.showYamiFollowingNotes,
+			localOnly: props.localOnly,
 		};
 	} else if (props.src === 'local') {
 		endpoint = 'notes/local-timeline';
