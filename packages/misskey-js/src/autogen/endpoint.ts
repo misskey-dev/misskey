@@ -401,6 +401,9 @@ import type {
 	IChangePasswordRequest,
 	IClaimAchievementRequest,
 	IDeleteAccountRequest,
+	IEmojiMuteListResponse,
+	IEmojiMuteUpdateRequest,
+	IEmojiMuteUpdateResponse,
 	IExportFollowingRequest,
 	IFavoritesRequest,
 	IFavoritesResponse,
@@ -897,6 +900,8 @@ export type Endpoints = {
 	'i/change-password': { req: IChangePasswordRequest; res: EmptyResponse };
 	'i/claim-achievement': { req: IClaimAchievementRequest; res: EmptyResponse };
 	'i/delete-account': { req: IDeleteAccountRequest; res: EmptyResponse };
+	'i/emoji-mute/list': { req: EmptyRequest; res: IEmojiMuteListResponse };
+	'i/emoji-mute/update': { req: IEmojiMuteUpdateRequest; res: IEmojiMuteUpdateResponse };
 	'i/export-antennas': { req: EmptyRequest; res: EmptyResponse };
 	'i/export-blocking': { req: EmptyRequest; res: EmptyResponse };
 	'i/export-clips': { req: EmptyRequest; res: EmptyResponse };

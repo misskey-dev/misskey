@@ -1851,6 +1851,9 @@ declare namespace entities {
         IChangePasswordRequest,
         IClaimAchievementRequest,
         IDeleteAccountRequest,
+        IEmojiMuteListResponse,
+        IEmojiMuteUpdateRequest,
+        IEmojiMuteUpdateResponse,
         IExportFollowingRequest,
         IFavoritesRequest,
         IFavoritesResponse,
@@ -2485,6 +2488,15 @@ type ID = string;
 
 // @public (undocumented)
 type IDeleteAccountRequest = operations['i___delete-account']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IEmojiMuteListResponse = operations['i___emoji-mute___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IEmojiMuteUpdateRequest = operations['i___emoji-mute___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IEmojiMuteUpdateResponse = operations['i___emoji-mute___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type IExportFollowingRequest = operations['i___export-following']['requestBody']['content']['application/json'];
