@@ -101,9 +101,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #value>{{ Math.floor(job.progress * 100) }}%</template>
 			</MkKeyValue>
 		</div>
-		<MkFolder :withSpacer="false">
+		<MkFolder>
 			<template #label>Options</template>
-			<MkCode :code="JSON5.stringify(job.opts, null, '\t')" lang="js"/>
+			<MkCode :code="JSON5.stringify(job.opts, null, '\t')" lang="json5" :withOuterStyle="false"/>
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'timeline'">
@@ -143,7 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkTl>
 	</div>
 	<div v-else-if="tab === 'data'">
-		<MkCode :code="JSON5.stringify(job.data, null, '\t')" lang="js"/>
+		<MkCode :code="JSON5.stringify(job.data, null, '\t')" lang="json5"/>
 	</div>
 	<div v-else-if="tab === 'dataEdit'" class="_gaps_s">
 		<MkCodeEditor v-model="editData" lang="json5"></MkCodeEditor>
@@ -153,7 +153,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkCode :code="job.returnValue"/>
 	</div>
 	<div v-else-if="tab === 'error'" class="_gaps_s">
-		<MkCode v-for="log in job.stacktrace" :code="log" lang="stacktrace"/>
+		<MkCode v-for="log in job.stacktrace" :code="log"/>
 	</div>
 </MkFolder>
 </template>
