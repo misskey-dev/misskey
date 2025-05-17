@@ -4,6 +4,235 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  date-fns2:
+    date-fns:
+      specifier: 2.30.0
+      version: 2.30.0
+  date-fns4:
+    date-fns:
+      specifier: 4.1.0
+      version: 4.1.0
+  default:
+    '@discordapp/twemoji':
+      specifier: 15.1.0
+      version: 15.1.0
+    '@misskey-dev/summaly':
+      specifier: 5.2.1
+      version: 5.2.1
+    '@rollup/plugin-json':
+      specifier: 6.1.0
+      version: 6.1.0
+    '@rollup/plugin-replace':
+      specifier: 6.0.2
+      version: 6.0.2
+    '@rollup/pluginutils':
+      specifier: 5.1.4
+      version: 5.1.4
+    '@sentry/vue':
+      specifier: 9.14.0
+      version: 9.14.0
+    '@simplewebauthn/types':
+      specifier: 12.0.0
+      version: 12.0.0
+    '@swc/jest':
+      specifier: 0.2.38
+      version: 0.2.38
+    '@tabler/icons-webfont':
+      specifier: 3.31.0
+      version: 3.31.0
+    '@testing-library/vue':
+      specifier: 8.1.0
+      version: 8.1.0
+    '@twemoji/parser':
+      specifier: 15.1.1
+      version: 15.1.1
+    '@types/estree':
+      specifier: 1.0.7
+      version: 1.0.7
+    '@types/jest':
+      specifier: 29.5.14
+      version: 29.5.14
+    '@types/matter-js':
+      specifier: 0.19.8
+      version: 0.19.8
+    '@types/micromatch':
+      specifier: 4.0.9
+      version: 4.0.9
+    '@types/node':
+      specifier: 22.15.2
+      version: 22.15.2
+    '@types/punycode.js':
+      specifier: npm:@types/punycode@2.1.4
+      version: 2.1.4
+    '@types/sanitize-html':
+      specifier: 2.15.0
+      version: 2.15.0
+    '@types/seedrandom':
+      specifier: 3.0.8
+      version: 3.0.8
+    '@types/tinycolor2':
+      specifier: 1.4.6
+      version: 1.4.6
+    '@types/ws':
+      specifier: 8.18.1
+      version: 8.18.1
+    '@typescript-eslint/eslint-plugin':
+      specifier: 8.31.0
+      version: 8.31.0
+    '@typescript-eslint/parser':
+      specifier: 8.31.0
+      version: 8.31.0
+    '@typescript/lib-webworker':
+      specifier: npm:@types/serviceworker@0.0.74
+      version: 0.0.74
+    '@vitejs/plugin-vue':
+      specifier: 5.2.3
+      version: 5.2.3
+    '@vitest/coverage-v8':
+      specifier: 3.1.2
+      version: 3.1.2
+    '@vue/compiler-sfc':
+      specifier: 3.5.13
+      version: 3.5.13
+    '@vue/runtime-core':
+      specifier: 3.5.13
+      version: 3.5.13
+    acorn:
+      specifier: 8.14.1
+      version: 8.14.1
+    astring:
+      specifier: 1.9.0
+      version: 1.9.0
+    buraha:
+      specifier: 0.0.1
+      version: 0.0.1
+    cross-env:
+      specifier: 7.0.3
+      version: 7.0.3
+    esbuild:
+      specifier: 0.25.3
+      version: 0.25.3
+    eslint-plugin-import:
+      specifier: 2.31.0
+      version: 2.31.0
+    eslint-plugin-vue:
+      specifier: 10.0.0
+      version: 10.0.0
+    estree-walker:
+      specifier: 3.0.3
+      version: 3.0.3
+    eventemitter3:
+      specifier: 5.0.1
+      version: 5.0.1
+    execa:
+      specifier: 9.5.2
+      version: 9.5.2
+    fast-glob:
+      specifier: 3.3.3
+      version: 3.3.3
+    glob:
+      specifier: 11.0.2
+      version: 11.0.2
+    idb-keyval:
+      specifier: 6.2.1
+      version: 6.2.1
+    intersection-observer:
+      specifier: 0.12.2
+      version: 0.12.2
+    jest:
+      specifier: 29.7.0
+      version: 29.7.0
+    json5:
+      specifier: 2.2.3
+      version: 2.2.3
+    matter-js:
+      specifier: 0.20.0
+      version: 0.20.0
+    mfm-js:
+      specifier: 0.24.0
+      version: 0.24.0
+    micromatch:
+      specifier: 4.0.8
+      version: 4.0.8
+    msw:
+      specifier: 2.7.5
+      version: 2.7.5
+    ncp:
+      specifier: 2.0.0
+      version: 2.0.0
+    nodemon:
+      specifier: 3.1.10
+      version: 3.1.10
+    prettier:
+      specifier: 3.5.3
+      version: 3.5.3
+    punycode.js:
+      specifier: 2.3.1
+      version: 2.3.1
+    rollup:
+      specifier: 4.40.0
+      version: 4.40.0
+    sanitize-html:
+      specifier: 2.16.0
+      version: 2.16.0
+    sass:
+      specifier: 1.87.0
+      version: 1.87.0
+    seedrandom:
+      specifier: 3.0.5
+      version: 3.0.5
+    shiki:
+      specifier: 3.3.0
+      version: 3.3.0
+    start-server-and-test:
+      specifier: 2.0.11
+      version: 2.0.11
+    strict-event-emitter-types:
+      specifier: 2.0.0
+      version: 2.0.0
+    tinycolor2:
+      specifier: 1.6.0
+      version: 1.6.0
+    tsc-alias:
+      specifier: 1.8.15
+      version: 1.8.15
+    tsconfig-paths:
+      specifier: 4.2.0
+      version: 4.2.0
+    typescript:
+      specifier: 5.8.3
+      version: 5.8.3
+    uuid:
+      specifier: 11.1.0
+      version: 11.1.0
+    vite:
+      specifier: 6.3.4
+      version: 6.3.4
+    vite-plugin-turbosnap:
+      specifier: 1.0.3
+      version: 1.0.3
+    vue:
+      specifier: 3.5.13
+      version: 3.5.13
+    vue-component-type-helpers:
+      specifier: 2.2.10
+      version: 2.2.10
+    vue-eslint-parser:
+      specifier: 10.1.3
+      version: 10.1.3
+    vue-tsc:
+      specifier: 2.2.10
+      version: 2.2.10
+  happy-dom16:
+    happy-dom:
+      specifier: 16.8.1
+      version: 16.8.1
+  happy-dom17:
+    happy-dom:
+      specifier: 17.4.4
+      version: 17.4.4
+
 overrides:
   chokidar: 4.0.3
   lodash: 4.17.21
@@ -17,16 +246,16 @@ importers:
         specifier: 7.0.6
         version: 7.0.6(postcss@8.5.3)
       esbuild:
-        specifier: 0.25.3
+        specifier: 'catalog:'
         version: 0.25.3
       execa:
-        specifier: 9.5.2
+        specifier: 'catalog:'
         version: 9.5.2
       fast-glob:
-        specifier: 3.3.3
+        specifier: 'catalog:'
         version: 3.3.3
       glob:
-        specifier: 11.0.2
+        specifier: 'catalog:'
         version: 11.0.2
       ignore-walk:
         specifier: 7.0.0
@@ -44,23 +273,23 @@ importers:
         specifier: 5.39.0
         version: 5.39.0
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
     devDependencies:
       '@misskey-dev/eslint-plugin':
         specifier: 2.1.0
         version: 2.1.0(@eslint/compat@1.1.1)(@stylistic/eslint-plugin@2.13.0(eslint@9.25.1)(typescript@5.8.3))(@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3))(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1))(eslint@9.25.1)(globals@16.0.0)
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       cross-env:
-        specifier: 7.0.3
+        specifier: 'catalog:'
         version: 7.0.3
       cypress:
         specifier: 14.3.2
@@ -72,13 +301,13 @@ importers:
         specifier: 16.0.0
         version: 16.0.0
       ncp:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       pnpm:
         specifier: 10.10.0
         version: 10.10.0
       start-server-and-test:
-        specifier: 2.0.11
+        specifier: 'catalog:'
         version: 2.0.11
     optionalDependencies:
       '@tensorflow/tfjs-core':
@@ -94,7 +323,7 @@ importers:
         specifier: 3.797.0
         version: 3.797.0(@aws-sdk/client-s3@3.797.0)
       '@discordapp/twemoji':
-        specifier: 15.1.0
+        specifier: 'catalog:'
         version: 15.1.0
       '@fastify/accepts':
         specifier: 5.0.2
@@ -124,7 +353,7 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       '@misskey-dev/summaly':
-        specifier: 5.2.1
+        specifier: 'catalog:'
         version: 5.2.1
       '@napi-rs/canvas':
         specifier: 0.1.69
@@ -163,7 +392,7 @@ importers:
         specifier: 1.11.22
         version: 1.11.22
       '@twemoji/parser':
-        specifier: 15.1.1
+        specifier: 'catalog:'
         version: 15.1.1
       '@types/redis-info':
         specifier: 3.0.3
@@ -217,7 +446,7 @@ importers:
         specifier: 0.5.4
         version: 0.5.4
       date-fns:
-        specifier: 2.30.0
+        specifier: catalog:date-fns2
         version: 2.30.0
       deep-email-validator:
         specifier: 0.1.21
@@ -244,7 +473,7 @@ importers:
         specifier: 14.4.7
         version: 14.4.7
       happy-dom:
-        specifier: 16.8.1
+        specifier: catalog:happy-dom16
         version: 16.8.1
       hpagent:
         specifier: 1.2.0
@@ -274,7 +503,7 @@ importers:
         specifier: 26.1.0
         version: 26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5)
       json5:
-        specifier: 2.2.3
+        specifier: 'catalog:'
         version: 2.2.3
       jsonld:
         specifier: 8.3.3
@@ -289,7 +518,7 @@ importers:
         specifier: 0.50.0
         version: 0.50.0
       mfm-js:
-        specifier: 0.24.0
+        specifier: 'catalog:'
         version: 0.24.0
       microformats-parser:
         specifier: 2.0.2
@@ -385,7 +614,7 @@ importers:
         specifier: 7.8.2
         version: 7.8.2
       sanitize-html:
-        specifier: 2.16.0
+        specifier: 'catalog:'
         version: 2.16.0
       secure-json-parse:
         specifier: 3.0.2
@@ -400,7 +629,7 @@ importers:
         specifier: 0.0.10
         version: 0.0.10
       strict-event-emitter-types:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       stringz:
         specifier: 2.1.0
@@ -409,22 +638,22 @@ importers:
         specifier: 5.25.11
         version: 5.25.11
       tinycolor2:
-        specifier: 1.6.0
+        specifier: 'catalog:'
         version: 1.6.0
       tmp:
         specifier: 0.2.3
         version: 0.2.3
       tsc-alias:
-        specifier: 1.8.15
+        specifier: 'catalog:'
         version: 1.8.15
       tsconfig-paths:
-        specifier: 4.2.0
+        specifier: 'catalog:'
         version: 4.2.0
       typeorm:
         specifier: 0.3.22
         version: 0.3.22(ioredis@5.6.1)(pg@8.15.6)(reflect-metadata@0.2.2)
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       ulid:
         specifier: 2.4.0
@@ -449,13 +678,13 @@ importers:
         specifier: 10.4.17
         version: 10.4.17(@nestjs/common@11.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.0)
       '@sentry/vue':
-        specifier: 9.14.0
+        specifier: 'catalog:'
         version: 9.14.0(vue@3.5.13(typescript@5.8.3))
       '@simplewebauthn/types':
-        specifier: 12.0.0
+        specifier: 'catalog:'
         version: 12.0.0
       '@swc/jest':
-        specifier: 0.2.38
+        specifier: 'catalog:'
         version: 0.2.38(@swc/core@1.11.22)
       '@types/accepts':
         specifier: 1.3.7
@@ -485,7 +714,7 @@ importers:
         specifier: 1.0.7
         version: 1.0.7
       '@types/jest':
-        specifier: 29.5.14
+        specifier: 'catalog:'
         version: 29.5.14
       '@types/js-yaml':
         specifier: 4.0.9
@@ -506,7 +735,7 @@ importers:
         specifier: 0.7.34
         version: 0.7.34
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@types/nodemailer':
         specifier: 6.4.17
@@ -539,7 +768,7 @@ importers:
         specifier: 1.0.7
         version: 1.0.7
       '@types/sanitize-html':
-        specifier: 2.15.0
+        specifier: 'catalog:'
         version: 2.15.0
       '@types/semver':
         specifier: 7.7.0
@@ -554,7 +783,7 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       '@types/tinycolor2':
-        specifier: 1.4.6
+        specifier: 'catalog:'
         version: 1.4.6
       '@types/tmp':
         specifier: 0.2.6
@@ -566,37 +795,37 @@ importers:
         specifier: 3.6.4
         version: 3.6.4
       '@types/ws':
-        specifier: 8.18.1
+        specifier: 'catalog:'
         version: 8.18.1
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       aws-sdk-client-mock:
         specifier: 4.1.0
         version: 4.1.0
       cross-env:
-        specifier: 7.0.3
+        specifier: 'catalog:'
         version: 7.0.3
       eslint-plugin-import:
-        specifier: 2.31.0
+        specifier: 'catalog:'
         version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
       execa:
-        specifier: 8.0.1
-        version: 8.0.1
+        specifier: 'catalog:'
+        version: 9.5.2
       fkill:
         specifier: 9.0.0
         version: 9.0.0
       jest:
-        specifier: 29.7.0
+        specifier: 'catalog:'
         version: 29.7.0(@types/node@22.15.2)
       jest-mock:
         specifier: 29.7.0
         version: 29.7.0
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       pid-port:
         specifier: 1.0.2
@@ -702,7 +931,7 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@discordapp/twemoji':
-        specifier: 15.1.0
+        specifier: 'catalog:'
         version: 15.1.0
       '@github/webauthn-json':
         specifier: 2.1.1
@@ -714,31 +943,31 @@ importers:
         specifier: 2024.1.0
         version: 2024.1.0
       '@rollup/plugin-json':
-        specifier: 6.1.0
+        specifier: 'catalog:'
         version: 6.1.0(rollup@4.40.0)
       '@rollup/plugin-replace':
-        specifier: 6.0.2
+        specifier: 'catalog:'
         version: 6.0.2(rollup@4.40.0)
       '@rollup/pluginutils':
-        specifier: 5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(rollup@4.40.0)
       '@sentry/vue':
-        specifier: 9.14.0
+        specifier: 'catalog:'
         version: 9.14.0(vue@3.5.13(typescript@5.8.3))
       '@syuilo/aiscript':
         specifier: 0.19.0
         version: 0.19.0
       '@tabler/icons-webfont':
-        specifier: 3.31.0
+        specifier: 'catalog:'
         version: 3.31.0
       '@twemoji/parser':
-        specifier: 15.1.1
+        specifier: 'catalog:'
         version: 15.1.1
       '@vitejs/plugin-vue':
-        specifier: 5.2.3
+        specifier: 'catalog:'
         version: 5.2.3(vite@6.3.4(@types/node@22.15.2)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3))(vue@3.5.13(typescript@5.8.3))
       '@vue/compiler-sfc':
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13
       aiscript-vscode:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.15
@@ -747,13 +976,13 @@ importers:
         specifier: 0.8.16
         version: 0.8.16(@types/dlv@1.1.5)
       astring:
-        specifier: 1.9.0
+        specifier: 'catalog:'
         version: 1.9.0
       broadcast-channel:
         specifier: 7.1.0
         version: 7.1.0
       buraha:
-        specifier: 0.0.1
+        specifier: 'catalog:'
         version: 0.0.1
       canvas-confetti:
         specifier: 1.9.3
@@ -783,19 +1012,19 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       date-fns:
-        specifier: 4.1.0
+        specifier: catalog:date-fns4
         version: 4.1.0
       estree-walker:
-        specifier: 3.0.3
+        specifier: 'catalog:'
         version: 3.0.3
       eventemitter3:
-        specifier: 5.0.1
+        specifier: 'catalog:'
         version: 5.0.1
       frontend-shared:
         specifier: workspace:*
         version: link:../frontend-shared
       idb-keyval:
-        specifier: 6.2.1
+        specifier: 'catalog:'
         version: 6.2.1
       insert-text-at-cursor:
         specifier: 0.3.0
@@ -804,16 +1033,16 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       json5:
-        specifier: 2.2.3
+        specifier: 'catalog:'
         version: 2.2.3
       magic-string:
         specifier: 0.30.17
         version: 0.30.17
       matter-js:
-        specifier: 0.20.0
+        specifier: 'catalog:'
         version: 0.20.0
       mfm-js:
-        specifier: 0.24.0
+        specifier: 'catalog:'
         version: 0.24.0
       misskey-bubble-game:
         specifier: workspace:*
@@ -828,22 +1057,22 @@ importers:
         specifier: 5.4.4
         version: 5.4.4
       punycode.js:
-        specifier: 2.3.1
+        specifier: 'catalog:'
         version: 2.3.1
       rollup:
-        specifier: 4.40.0
+        specifier: 'catalog:'
         version: 4.40.0
       sanitize-html:
-        specifier: 2.16.0
+        specifier: 'catalog:'
         version: 2.16.0
       sass:
-        specifier: 1.87.0
+        specifier: 'catalog:'
         version: 1.87.0
       shiki:
-        specifier: 3.3.0
+        specifier: 'catalog:'
         version: 3.3.0
       strict-event-emitter-types:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       textarea-caret:
         specifier: 3.1.0
@@ -855,28 +1084,28 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
       tinycolor2:
-        specifier: 1.6.0
+        specifier: 'catalog:'
         version: 1.6.0
       tsc-alias:
-        specifier: 1.8.15
+        specifier: 'catalog:'
         version: 1.8.15
       tsconfig-paths:
-        specifier: 4.2.0
+        specifier: 'catalog:'
         version: 4.2.0
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       uuid:
-        specifier: 11.1.0
+        specifier: 'catalog:'
         version: 11.1.0
       v-code-diff:
         specifier: 1.13.1
         version: 1.13.1(vue@3.5.13(typescript@5.8.3))
       vite:
-        specifier: 6.3.4
+        specifier: 'catalog:'
         version: 6.3.4(@types/node@22.15.2)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.3)
       vuedraggable:
         specifier: next
@@ -886,7 +1115,7 @@ importers:
         version: 5.3.1
     devDependencies:
       '@misskey-dev/summaly':
-        specifier: 5.2.1
+        specifier: 'catalog:'
         version: 5.2.1
       '@storybook/addon-actions':
         specifier: 8.6.12
@@ -943,97 +1172,97 @@ importers:
         specifier: 8.6.12
         version: 8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5))(vite@6.3.4(@types/node@22.15.2)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3))(vue@3.5.13(typescript@5.8.3))
       '@testing-library/vue':
-        specifier: 8.1.0
+        specifier: 'catalog:'
         version: 8.1.0(@vue/compiler-sfc@3.5.13)(@vue/server-renderer@3.5.13(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
       '@types/estree':
-        specifier: 1.0.7
+        specifier: 'catalog:'
         version: 1.0.7
       '@types/matter-js':
-        specifier: 0.19.8
+        specifier: 'catalog:'
         version: 0.19.8
       '@types/micromatch':
-        specifier: 4.0.9
+        specifier: 'catalog:'
         version: 4.0.9
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@types/punycode.js':
-        specifier: npm:@types/punycode@2.1.4
+        specifier: 'catalog:'
         version: '@types/punycode@2.1.4'
       '@types/sanitize-html':
-        specifier: 2.15.0
+        specifier: 'catalog:'
         version: 2.15.0
       '@types/seedrandom':
-        specifier: 3.0.8
+        specifier: 'catalog:'
         version: 3.0.8
       '@types/throttle-debounce':
         specifier: 5.0.2
         version: 5.0.2
       '@types/tinycolor2':
-        specifier: 1.4.6
+        specifier: 'catalog:'
         version: 1.4.6
       '@types/ws':
-        specifier: 8.18.1
+        specifier: 'catalog:'
         version: 8.18.1
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       '@vitest/coverage-v8':
-        specifier: 3.1.2
+        specifier: 'catalog:'
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.2)(happy-dom@17.4.4)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.7.5(@types/node@22.15.2)(typescript@5.8.3))(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3))
       '@vue/compiler-core':
         specifier: 3.5.13
         version: 3.5.13
       '@vue/runtime-core':
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13
       acorn:
-        specifier: 8.14.1
+        specifier: 'catalog:'
         version: 8.14.1
       cross-env:
-        specifier: 7.0.3
+        specifier: 'catalog:'
         version: 7.0.3
       cypress:
         specifier: 14.3.2
         version: 14.3.2
       eslint-plugin-import:
-        specifier: 2.31.0
+        specifier: 'catalog:'
         version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
       eslint-plugin-vue:
-        specifier: 10.0.0
+        specifier: 'catalog:'
         version: 10.0.0(eslint@9.25.1)(vue-eslint-parser@10.1.3(eslint@9.25.1))
       fast-glob:
-        specifier: 3.3.3
+        specifier: 'catalog:'
         version: 3.3.3
       happy-dom:
-        specifier: 17.4.4
+        specifier: catalog:happy-dom17
         version: 17.4.4
       intersection-observer:
-        specifier: 0.12.2
+        specifier: 'catalog:'
         version: 0.12.2
       micromatch:
-        specifier: 4.0.8
+        specifier: 'catalog:'
         version: 4.0.8
       minimatch:
         specifier: 10.0.1
         version: 10.0.1
       msw:
-        specifier: 2.7.5
+        specifier: 'catalog:'
         version: 2.7.5(@types/node@22.15.2)(typescript@5.8.3)
       msw-storybook-addon:
         specifier: 2.0.4
         version: 2.0.4(msw@2.7.5(@types/node@22.15.2)(typescript@5.8.3))
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       prettier:
-        specifier: 3.5.3
+        specifier: 'catalog:'
         version: 3.5.3
       react:
         specifier: 19.1.0
@@ -1042,10 +1271,10 @@ importers:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
       seedrandom:
-        specifier: 3.0.5
+        specifier: 'catalog:'
         version: 3.0.5
       start-server-and-test:
-        specifier: 2.0.11
+        specifier: 'catalog:'
         version: 2.0.11
       storybook:
         specifier: 8.6.12
@@ -1054,7 +1283,7 @@ importers:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
         version: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@8.6.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/components@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/core-events@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/manager-api@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/preview-api@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/theming@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/types@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite-plugin-turbosnap:
-        specifier: 1.0.3
+        specifier: 'catalog:'
         version: 1.0.3
       vitest:
         specifier: 3.1.2
@@ -1063,179 +1292,179 @@ importers:
         specifier: 0.4.5
         version: 0.4.5(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.2)(happy-dom@17.4.4)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.7.5(@types/node@22.15.2)(typescript@5.8.3))(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3))
       vue-component-type-helpers:
-        specifier: 2.2.10
+        specifier: 'catalog:'
         version: 2.2.10
       vue-eslint-parser:
-        specifier: 10.1.3
+        specifier: 'catalog:'
         version: 10.1.3(eslint@9.25.1)
       vue-tsc:
-        specifier: 2.2.10
+        specifier: 'catalog:'
         version: 2.2.10(typescript@5.8.3)
 
   packages/frontend-embed:
     dependencies:
       '@discordapp/twemoji':
-        specifier: 15.1.0
+        specifier: 'catalog:'
         version: 15.1.0
       '@rollup/plugin-json':
-        specifier: 6.1.0
+        specifier: 'catalog:'
         version: 6.1.0(rollup@4.40.0)
       '@rollup/plugin-replace':
-        specifier: 6.0.2
+        specifier: 'catalog:'
         version: 6.0.2(rollup@4.40.0)
       '@rollup/pluginutils':
-        specifier: 5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(rollup@4.40.0)
       '@tabler/icons-webfont':
-        specifier: 3.31.0
+        specifier: 'catalog:'
         version: 3.31.0
       '@twemoji/parser':
-        specifier: 15.1.1
+        specifier: 'catalog:'
         version: 15.1.1
       '@vitejs/plugin-vue':
-        specifier: 5.2.3
+        specifier: 'catalog:'
         version: 5.2.3(vite@6.3.4(@types/node@22.15.2)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3))(vue@3.5.13(typescript@5.8.3))
       '@vue/compiler-sfc':
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13
       astring:
-        specifier: 1.9.0
+        specifier: 'catalog:'
         version: 1.9.0
       buraha:
-        specifier: 0.0.1
+        specifier: 'catalog:'
         version: 0.0.1
       estree-walker:
-        specifier: 3.0.3
+        specifier: 'catalog:'
         version: 3.0.3
       frontend-shared:
         specifier: workspace:*
         version: link:../frontend-shared
       json5:
-        specifier: 2.2.3
+        specifier: 'catalog:'
         version: 2.2.3
       mfm-js:
-        specifier: 0.24.0
+        specifier: 'catalog:'
         version: 0.24.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
       punycode.js:
-        specifier: 2.3.1
+        specifier: 'catalog:'
         version: 2.3.1
       rollup:
-        specifier: 4.40.0
+        specifier: 'catalog:'
         version: 4.40.0
       sass:
-        specifier: 1.87.0
+        specifier: 'catalog:'
         version: 1.87.0
       shiki:
-        specifier: 3.3.0
+        specifier: 'catalog:'
         version: 3.3.0
       tinycolor2:
-        specifier: 1.6.0
+        specifier: 'catalog:'
         version: 1.6.0
       tsc-alias:
-        specifier: 1.8.15
+        specifier: 'catalog:'
         version: 1.8.15
       tsconfig-paths:
-        specifier: 4.2.0
+        specifier: 'catalog:'
         version: 4.2.0
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       uuid:
-        specifier: 11.1.0
+        specifier: 'catalog:'
         version: 11.1.0
       vite:
-        specifier: 6.3.4
+        specifier: 'catalog:'
         version: 6.3.4(@types/node@22.15.2)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.3)
     devDependencies:
       '@misskey-dev/summaly':
-        specifier: 5.2.1
+        specifier: 'catalog:'
         version: 5.2.1
       '@testing-library/vue':
-        specifier: 8.1.0
+        specifier: 'catalog:'
         version: 8.1.0(@vue/compiler-sfc@3.5.13)(@vue/server-renderer@3.5.13(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
       '@types/estree':
-        specifier: 1.0.7
+        specifier: 'catalog:'
         version: 1.0.7
       '@types/micromatch':
-        specifier: 4.0.9
+        specifier: 'catalog:'
         version: 4.0.9
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@types/punycode.js':
-        specifier: npm:@types/punycode@2.1.4
+        specifier: 'catalog:'
         version: '@types/punycode@2.1.4'
       '@types/tinycolor2':
-        specifier: 1.4.6
+        specifier: 'catalog:'
         version: 1.4.6
       '@types/ws':
-        specifier: 8.18.1
+        specifier: 'catalog:'
         version: 8.18.1
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       '@vitest/coverage-v8':
-        specifier: 3.1.2
+        specifier: 'catalog:'
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.2)(happy-dom@17.4.4)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.7.5(@types/node@22.15.2)(typescript@5.8.3))(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3))
       '@vue/runtime-core':
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13
       acorn:
-        specifier: 8.14.1
+        specifier: 'catalog:'
         version: 8.14.1
       cross-env:
-        specifier: 7.0.3
+        specifier: 'catalog:'
         version: 7.0.3
       eslint-plugin-import:
-        specifier: 2.31.0
+        specifier: 'catalog:'
         version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
       eslint-plugin-vue:
-        specifier: 10.0.0
+        specifier: 'catalog:'
         version: 10.0.0(eslint@9.25.1)(vue-eslint-parser@10.1.3(eslint@9.25.1))
       fast-glob:
-        specifier: 3.3.3
+        specifier: 'catalog:'
         version: 3.3.3
       happy-dom:
-        specifier: 17.4.4
+        specifier: catalog:happy-dom17
         version: 17.4.4
       intersection-observer:
-        specifier: 0.12.2
+        specifier: 'catalog:'
         version: 0.12.2
       micromatch:
-        specifier: 4.0.8
+        specifier: 'catalog:'
         version: 4.0.8
       msw:
-        specifier: 2.7.5
+        specifier: 'catalog:'
         version: 2.7.5(@types/node@22.15.2)(typescript@5.8.3)
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       prettier:
-        specifier: 3.5.3
+        specifier: 'catalog:'
         version: 3.5.3
       start-server-and-test:
-        specifier: 2.0.11
+        specifier: 'catalog:'
         version: 2.0.11
       vite-plugin-turbosnap:
-        specifier: 1.0.3
+        specifier: 'catalog:'
         version: 1.0.3
       vue-component-type-helpers:
-        specifier: 2.2.10
+        specifier: 'catalog:'
         version: 2.2.10
       vue-eslint-parser:
-        specifier: 10.1.3
+        specifier: 'catalog:'
         version: 10.1.3(eslint@9.25.1)
       vue-tsc:
-        specifier: 2.2.10
+        specifier: 'catalog:'
         version: 2.2.10(typescript@5.8.3)
 
   packages/frontend-shared:
@@ -1244,84 +1473,84 @@ importers:
         specifier: workspace:*
         version: link:../misskey-js
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.3)
     devDependencies:
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       esbuild:
-        specifier: 0.25.3
+        specifier: 'catalog:'
         version: 0.25.3
       eslint-plugin-vue:
-        specifier: 10.0.0
+        specifier: 'catalog:'
         version: 10.0.0(eslint@9.25.1)(vue-eslint-parser@10.1.3(eslint@9.25.1))
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       vue-eslint-parser:
-        specifier: 10.1.3
+        specifier: 'catalog:'
         version: 10.1.3(eslint@9.25.1)
 
   packages/misskey-bubble-game:
     dependencies:
       eventemitter3:
-        specifier: 5.0.1
+        specifier: 'catalog:'
         version: 5.0.1
       matter-js:
-        specifier: 0.20.0
+        specifier: 'catalog:'
         version: 0.20.0
       seedrandom:
-        specifier: 3.0.5
+        specifier: 'catalog:'
         version: 3.0.5
     devDependencies:
       '@types/matter-js':
-        specifier: 0.19.8
+        specifier: 'catalog:'
         version: 0.19.8
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@types/seedrandom':
-        specifier: 3.0.8
+        specifier: 'catalog:'
         version: 3.0.8
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       esbuild:
-        specifier: 0.25.3
+        specifier: 'catalog:'
         version: 0.25.3
       execa:
-        specifier: 9.5.2
+        specifier: 'catalog:'
         version: 9.5.2
       glob:
-        specifier: 11.0.2
+        specifier: 'catalog:'
         version: 11.0.2
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
 
   packages/misskey-js:
     dependencies:
       '@simplewebauthn/types':
-        specifier: 12.0.0
+        specifier: 'catalog:'
         version: 12.0.0
       eventemitter3:
-        specifier: 5.0.1
+        specifier: 'catalog:'
         version: 5.0.1
       reconnecting-websocket:
         specifier: 4.4.0
@@ -1331,31 +1560,31 @@ importers:
         specifier: 7.52.5
         version: 7.52.5(@types/node@22.15.2)
       '@swc/jest':
-        specifier: 0.2.38
+        specifier: 'catalog:'
         version: 0.2.38(@swc/core@1.11.22)
       '@types/jest':
-        specifier: 29.5.14
+        specifier: 'catalog:'
         version: 29.5.14
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       esbuild:
-        specifier: 0.25.3
+        specifier: 'catalog:'
         version: 0.25.3
       execa:
-        specifier: 8.0.1
-        version: 8.0.1
+        specifier: 'catalog:'
+        version: 9.5.2
       glob:
-        specifier: 11.0.2
+        specifier: 'catalog:'
         version: 11.0.2
       jest:
-        specifier: 29.7.0
+        specifier: 'catalog:'
         version: 29.7.0(@types/node@22.15.2)
       jest-fetch-mock:
         specifier: 3.0.3
@@ -1367,16 +1596,16 @@ importers:
         specifier: 9.3.1
         version: 9.3.1
       ncp:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       tsd:
         specifier: 0.32.0
         version: 0.32.0
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
 
   packages/misskey-js/generator:
@@ -1385,13 +1614,13 @@ importers:
         specifier: 2.7.0
         version: 2.7.0(openapi-types@12.1.3)
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       openapi-types:
         specifier: 12.1.3
@@ -1406,7 +1635,7 @@ importers:
         specifier: 4.19.3
         version: 4.19.3
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
 
   packages/misskey-reversi:
@@ -1416,56 +1645,56 @@ importers:
         version: 1.2.2
     devDependencies:
       '@types/node':
-        specifier: 22.15.2
+        specifier: 'catalog:'
         version: 22.15.2
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3)
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       esbuild:
-        specifier: 0.25.3
+        specifier: 'catalog:'
         version: 0.25.3
       execa:
-        specifier: 9.5.2
+        specifier: 'catalog:'
         version: 9.5.2
       glob:
-        specifier: 11.0.2
+        specifier: 'catalog:'
         version: 11.0.2
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
 
   packages/sw:
     dependencies:
       esbuild:
-        specifier: 0.25.3
+        specifier: 'catalog:'
         version: 0.25.3
       idb-keyval:
-        specifier: 6.2.1
+        specifier: 'catalog:'
         version: 6.2.1
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
     devDependencies:
       '@typescript-eslint/parser':
-        specifier: 8.31.0
+        specifier: 'catalog:'
         version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
       '@typescript/lib-webworker':
-        specifier: npm:@types/serviceworker@0.0.74
+        specifier: 'catalog:'
         version: '@types/serviceworker@0.0.74'
       eslint-plugin-import:
-        specifier: 2.31.0
+        specifier: 'catalog:'
         version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
       nodemon:
-        specifier: 3.1.10
+        specifier: 'catalog:'
         version: 3.1.10
       typescript:
-        specifier: 5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
 
 packages:
@@ -1966,34 +2195,16 @@ packages:
   '@emnapi/runtime@1.4.0':
     resolution: {integrity: sha512-64WYIf4UYcdLnbKn/umDlNjQDSS8AgZrI/R9+x5ilkUVFxXcA1Ebl+gQLc/6mERA4407Xof0R7wEyEuj091CVw==}
 
-  '@esbuild/aix-ppc64@0.25.0':
-    resolution: {integrity: sha512-O7vun9Sf8DFjH2UtqK8Ku3LkquL9SZL8OLY1T5NZkA34+wG3OQF7cl4Ql8vdNzM6fzBbYfLaiRLIOZ+2FOCgBQ==}
-    engines: {node: '>=18'}
-    cpu: [ppc64]
-    os: [aix]
-
   '@esbuild/aix-ppc64@0.25.3':
     resolution: {integrity: sha512-W8bFfPA8DowP8l//sxjJLSLkD8iEjMc7cBVyP+u4cEv9sM7mdUCkgsj+t0n/BWPFtv7WWCN5Yzj0N6FJNUUqBQ==}
     engines: {node: '>=18'}
     cpu: [ppc64]
     os: [aix]
 
-  '@esbuild/android-arm64@0.25.0':
-    resolution: {integrity: sha512-grvv8WncGjDSyUBjN9yHXNt+cq0snxXbDxy5pJtzMKGmmpPxeAmAhWxXI+01lU5rwZomDgD3kJwulEnhTRUd6g==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [android]
-
   '@esbuild/android-arm64@0.25.3':
     resolution: {integrity: sha512-XelR6MzjlZuBM4f5z2IQHK6LkK34Cvv6Rj2EntER3lwCBFdg6h2lKbtRjpTTsdEjD/WSe1q8UyPBXP1x3i/wYQ==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [android]
-
-  '@esbuild/android-arm@0.25.0':
-    resolution: {integrity: sha512-PTyWCYYiU0+1eJKmw21lWtC+d08JDZPQ5g+kFyxP0V+es6VPPSUhM6zk8iImp2jbV6GwjX4pap0JFbUQN65X1g==}
-    engines: {node: '>=18'}
-    cpu: [arm]
     os: [android]
 
   '@esbuild/android-arm@0.25.3':
@@ -2002,34 +2213,16 @@ packages:
     cpu: [arm]
     os: [android]
 
-  '@esbuild/android-x64@0.25.0':
-    resolution: {integrity: sha512-m/ix7SfKG5buCnxasr52+LI78SQ+wgdENi9CqyCXwjVR2X4Jkz+BpC3le3AoBPYTC9NHklwngVXvbJ9/Akhrfg==}
-    engines: {node: '>=18'}
-    cpu: [x64]
-    os: [android]
-
   '@esbuild/android-x64@0.25.3':
     resolution: {integrity: sha512-ogtTpYHT/g1GWS/zKM0cc/tIebFjm1F9Aw1boQ2Y0eUQ+J89d0jFY//s9ei9jVIlkYi8AfOjiixcLJSGNSOAdQ==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [android]
 
-  '@esbuild/darwin-arm64@0.25.0':
-    resolution: {integrity: sha512-mVwdUb5SRkPayVadIOI78K7aAnPamoeFR2bT5nszFUZ9P8UpK4ratOdYbZZXYSqPKMHfS1wdHCJk1P1EZpRdvw==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@esbuild/darwin-arm64@0.25.3':
     resolution: {integrity: sha512-eESK5yfPNTqpAmDfFWNsOhmIOaQA59tAcF/EfYvo5/QWQCzXn5iUSOnqt3ra3UdzBv073ykTtmeLJZGt3HhA+w==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@esbuild/darwin-x64@0.25.0':
-    resolution: {integrity: sha512-DgDaYsPWFTS4S3nWpFcMn/33ZZwAAeAFKNHNa1QN0rI4pUjgqf0f7ONmXf6d22tqTY+H9FNdgeaAa+YIFUn2Rg==}
-    engines: {node: '>=18'}
-    cpu: [x64]
     os: [darwin]
 
   '@esbuild/darwin-x64@0.25.3':
@@ -2038,22 +2231,10 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@esbuild/freebsd-arm64@0.25.0':
-    resolution: {integrity: sha512-VN4ocxy6dxefN1MepBx/iD1dH5K8qNtNe227I0mnTRjry8tj5MRk4zprLEdG8WPyAPb93/e4pSgi1SoHdgOa4w==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [freebsd]
-
   '@esbuild/freebsd-arm64@0.25.3':
     resolution: {integrity: sha512-EJiyS70BYybOBpJth3M0KLOus0n+RRMKTYzhYhFeMwp7e/RaajXvP+BWlmEXNk6uk+KAu46j/kaQzr6au+JcIw==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [freebsd]
-
-  '@esbuild/freebsd-x64@0.25.0':
-    resolution: {integrity: sha512-mrSgt7lCh07FY+hDD1TxiTyIHyttn6vnjesnPoVDNmDfOmggTLXRv8Id5fNZey1gl/V2dyVK1VXXqVsQIiAk+A==}
-    engines: {node: '>=18'}
-    cpu: [x64]
     os: [freebsd]
 
   '@esbuild/freebsd-x64@0.25.3':
@@ -2062,22 +2243,10 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
-  '@esbuild/linux-arm64@0.25.0':
-    resolution: {integrity: sha512-9QAQjTWNDM/Vk2bgBl17yWuZxZNQIF0OUUuPZRKoDtqF2k4EtYbpyiG5/Dk7nqeK6kIJWPYldkOcBqjXjrUlmg==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [linux]
-
   '@esbuild/linux-arm64@0.25.3':
     resolution: {integrity: sha512-xCUgnNYhRD5bb1C1nqrDV1PfkwgbswTTBRbAd8aH5PhYzikdf/ddtsYyMXFfGSsb/6t6QaPSzxtbfAZr9uox4A==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [linux]
-
-  '@esbuild/linux-arm@0.25.0':
-    resolution: {integrity: sha512-vkB3IYj2IDo3g9xX7HqhPYxVkNQe8qTK55fraQyTzTX/fxaDtXiEnavv9geOsonh2Fd2RMB+i5cbhu2zMNWJwg==}
-    engines: {node: '>=18'}
-    cpu: [arm]
     os: [linux]
 
   '@esbuild/linux-arm@0.25.3':
@@ -2086,22 +2255,10 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@esbuild/linux-ia32@0.25.0':
-    resolution: {integrity: sha512-43ET5bHbphBegyeqLb7I1eYn2P/JYGNmzzdidq/w0T8E2SsYL1U6un2NFROFRg1JZLTzdCoRomg8Rvf9M6W6Gg==}
-    engines: {node: '>=18'}
-    cpu: [ia32]
-    os: [linux]
-
   '@esbuild/linux-ia32@0.25.3':
     resolution: {integrity: sha512-yplPOpczHOO4jTYKmuYuANI3WhvIPSVANGcNUeMlxH4twz/TeXuzEP41tGKNGWJjuMhotpGabeFYGAOU2ummBw==}
     engines: {node: '>=18'}
     cpu: [ia32]
-    os: [linux]
-
-  '@esbuild/linux-loong64@0.25.0':
-    resolution: {integrity: sha512-fC95c/xyNFueMhClxJmeRIj2yrSMdDfmqJnyOY4ZqsALkDrrKJfIg5NTMSzVBr5YW1jf+l7/cndBfP3MSDpoHw==}
-    engines: {node: '>=18'}
-    cpu: [loong64]
     os: [linux]
 
   '@esbuild/linux-loong64@0.25.3':
@@ -2110,22 +2267,10 @@ packages:
     cpu: [loong64]
     os: [linux]
 
-  '@esbuild/linux-mips64el@0.25.0':
-    resolution: {integrity: sha512-nkAMFju7KDW73T1DdH7glcyIptm95a7Le8irTQNO/qtkoyypZAnjchQgooFUDQhNAy4iu08N79W4T4pMBwhPwQ==}
-    engines: {node: '>=18'}
-    cpu: [mips64el]
-    os: [linux]
-
   '@esbuild/linux-mips64el@0.25.3':
     resolution: {integrity: sha512-eRAOV2ODpu6P5divMEMa26RRqb2yUoYsuQQOuFUexUoQndm4MdpXXDBbUoKIc0iPa4aCO7gIhtnYomkn2x+bag==}
     engines: {node: '>=18'}
     cpu: [mips64el]
-    os: [linux]
-
-  '@esbuild/linux-ppc64@0.25.0':
-    resolution: {integrity: sha512-NhyOejdhRGS8Iwv+KKR2zTq2PpysF9XqY+Zk77vQHqNbo/PwZCzB5/h7VGuREZm1fixhs4Q/qWRSi5zmAiO4Fw==}
-    engines: {node: '>=18'}
-    cpu: [ppc64]
     os: [linux]
 
   '@esbuild/linux-ppc64@0.25.3':
@@ -2134,22 +2279,10 @@ packages:
     cpu: [ppc64]
     os: [linux]
 
-  '@esbuild/linux-riscv64@0.25.0':
-    resolution: {integrity: sha512-5S/rbP5OY+GHLC5qXp1y/Mx//e92L1YDqkiBbO9TQOvuFXM+iDqUNG5XopAnXoRH3FjIUDkeGcY1cgNvnXp/kA==}
-    engines: {node: '>=18'}
-    cpu: [riscv64]
-    os: [linux]
-
   '@esbuild/linux-riscv64@0.25.3':
     resolution: {integrity: sha512-LDDODcFzNtECTrUUbVCs6j9/bDVqy7DDRsuIXJg6so+mFksgwG7ZVnTruYi5V+z3eE5y+BJZw7VvUadkbfg7QA==}
     engines: {node: '>=18'}
     cpu: [riscv64]
-    os: [linux]
-
-  '@esbuild/linux-s390x@0.25.0':
-    resolution: {integrity: sha512-XM2BFsEBz0Fw37V0zU4CXfcfuACMrppsMFKdYY2WuTS3yi8O1nFOhil/xhKTmE1nPmVyvQJjJivgDT+xh8pXJA==}
-    engines: {node: '>=18'}
-    cpu: [s390x]
     os: [linux]
 
   '@esbuild/linux-s390x@0.25.3':
@@ -2158,34 +2291,16 @@ packages:
     cpu: [s390x]
     os: [linux]
 
-  '@esbuild/linux-x64@0.25.0':
-    resolution: {integrity: sha512-9yl91rHw/cpwMCNytUDxwj2XjFpxML0y9HAOH9pNVQDpQrBxHy01Dx+vaMu0N1CKa/RzBD2hB4u//nfc+Sd3Cw==}
-    engines: {node: '>=18'}
-    cpu: [x64]
-    os: [linux]
-
   '@esbuild/linux-x64@0.25.3':
     resolution: {integrity: sha512-nQHDz4pXjSDC6UfOE1Fw9Q8d6GCAd9KdvMZpfVGWSJztYCarRgSDfOVBY5xwhQXseiyxapkiSJi/5/ja8mRFFA==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [linux]
 
-  '@esbuild/netbsd-arm64@0.25.0':
-    resolution: {integrity: sha512-RuG4PSMPFfrkH6UwCAqBzauBWTygTvb1nxWasEJooGSJ/NwRw7b2HOwyRTQIU97Hq37l3npXoZGYMy3b3xYvPw==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [netbsd]
-
   '@esbuild/netbsd-arm64@0.25.3':
     resolution: {integrity: sha512-1QaLtOWq0mzK6tzzp0jRN3eccmN3hezey7mhLnzC6oNlJoUJz4nym5ZD7mDnS/LZQgkrhEbEiTn515lPeLpgWA==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [netbsd]
-
-  '@esbuild/netbsd-x64@0.25.0':
-    resolution: {integrity: sha512-jl+qisSB5jk01N5f7sPCsBENCOlPiS/xptD5yxOx2oqQfyourJwIKLRA2yqWdifj3owQZCL2sn6o08dBzZGQzA==}
-    engines: {node: '>=18'}
-    cpu: [x64]
     os: [netbsd]
 
   '@esbuild/netbsd-x64@0.25.3':
@@ -2194,22 +2309,10 @@ packages:
     cpu: [x64]
     os: [netbsd]
 
-  '@esbuild/openbsd-arm64@0.25.0':
-    resolution: {integrity: sha512-21sUNbq2r84YE+SJDfaQRvdgznTD8Xc0oc3p3iW/a1EVWeNj/SdUCbm5U0itZPQYRuRTW20fPMWMpcrciH2EJw==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [openbsd]
-
   '@esbuild/openbsd-arm64@0.25.3':
     resolution: {integrity: sha512-zGAVApJEYTbOC6H/3QBr2mq3upG/LBEXr85/pTtKiv2IXcgKV0RT0QA/hSXZqSvLEpXeIxah7LczB4lkiYhTAQ==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [openbsd]
-
-  '@esbuild/openbsd-x64@0.25.0':
-    resolution: {integrity: sha512-2gwwriSMPcCFRlPlKx3zLQhfN/2WjJ2NSlg5TKLQOJdV0mSxIcYNTMhk3H3ulL/cak+Xj0lY1Ym9ysDV1igceg==}
-    engines: {node: '>=18'}
-    cpu: [x64]
     os: [openbsd]
 
   '@esbuild/openbsd-x64@0.25.3':
@@ -2218,34 +2321,16 @@ packages:
     cpu: [x64]
     os: [openbsd]
 
-  '@esbuild/sunos-x64@0.25.0':
-    resolution: {integrity: sha512-bxI7ThgLzPrPz484/S9jLlvUAHYMzy6I0XiU1ZMeAEOBcS0VePBFxh1JjTQt3Xiat5b6Oh4x7UC7IwKQKIJRIg==}
-    engines: {node: '>=18'}
-    cpu: [x64]
-    os: [sunos]
-
   '@esbuild/sunos-x64@0.25.3':
     resolution: {integrity: sha512-ROJhm7d8bk9dMCUZjkS8fgzsPAZEjtRJqCAmVgB0gMrvG7hfmPmz9k1rwO4jSiblFjYmNvbECL9uhaPzONMfgA==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [sunos]
 
-  '@esbuild/win32-arm64@0.25.0':
-    resolution: {integrity: sha512-ZUAc2YK6JW89xTbXvftxdnYy3m4iHIkDtK3CLce8wg8M2L+YZhIvO1DKpxrd0Yr59AeNNkTiic9YLf6FTtXWMw==}
-    engines: {node: '>=18'}
-    cpu: [arm64]
-    os: [win32]
-
   '@esbuild/win32-arm64@0.25.3':
     resolution: {integrity: sha512-YWcow8peiHpNBiIXHwaswPnAXLsLVygFwCB3A7Bh5jRkIBFWHGmNQ48AlX4xDvQNoMZlPYzjVOQDYEzWCqufMQ==}
     engines: {node: '>=18'}
     cpu: [arm64]
-    os: [win32]
-
-  '@esbuild/win32-ia32@0.25.0':
-    resolution: {integrity: sha512-eSNxISBu8XweVEWG31/JzjkIGbGIJN/TrRoiSVZwZ6pkC6VX4Im/WV2cz559/TXLcYbcrDN8JtKgd9DJVIo8GA==}
-    engines: {node: '>=18'}
-    cpu: [ia32]
     os: [win32]
 
   '@esbuild/win32-ia32@0.25.3':
@@ -2254,23 +2339,11 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@esbuild/win32-x64@0.25.0':
-    resolution: {integrity: sha512-ZENoHJBxA20C2zFzh6AI4fT6RraMzjYw4xKWemRTRmRVtN9c5DcH9r/f2ihEkMjOW5eGgrwCslG/+Y/3bL+DHQ==}
-    engines: {node: '>=18'}
-    cpu: [x64]
-    os: [win32]
-
   '@esbuild/win32-x64@0.25.3':
     resolution: {integrity: sha512-ICgUR+kPimx0vvRzf+N/7L7tVSQeE3BYY+NhHRHXS1kBuPO7z2+7ea2HbhDyZdTephgvNvKrlDDKUexuCVBVvg==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@eslint-community/eslint-utils@4.4.0':
-    resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
 
   '@eslint-community/eslint-utils@4.6.1':
     resolution: {integrity: sha512-KTsJMmobmbrFLe3LDh0PC2FXpcSYJt/MLjlkh/9LEnmKYLSYmT/0EW9JWANjeoemiuZrmogti0tW5Ch+qNUYDw==}
@@ -4997,9 +5070,6 @@ packages:
   aria-query@5.3.0:
     resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
-  array-buffer-byte-length@1.0.0:
-    resolution: {integrity: sha512-LPuwb2P+NrQw3XhxGc36+XSvuBPopovXYTR9Ew++Du9Yb/bx5AzBfrIsBoj0EZUifjQU+sHL21sseZ3jerWO/A==}
-
   array-buffer-byte-length@1.0.1:
     resolution: {integrity: sha512-ahC5W1xgou+KTXix4sAO8Ki12Q+jf4i0+tmk3sC+zgcynshkHxzpXdImBehiUYKKKDwvfFiJl1tZt6ewscS1Mg==}
     engines: {node: '>= 0.4'}
@@ -5025,10 +5095,6 @@ packages:
 
   array.prototype.flatmap@1.3.2:
     resolution: {integrity: sha512-Ewyx0c9PmpcsByhSW4r+9zDU7sGjFc86qf/kKtuSCRdhfbk0SNLLkaT5qvcHnRGgc5NP/ly/y+qkXkqONX54CQ==}
-    engines: {node: '>= 0.4'}
-
-  arraybuffer.prototype.slice@1.0.1:
-    resolution: {integrity: sha512-09x0ZWFEjj4WD8PDbykUwo3t9arLn8NIzmmYEJFpYekOAQjpkGSyrQhNoRTcwwcFRu+ycWF78QZ63oWTqSjBcw==}
     engines: {node: '>= 0.4'}
 
   arraybuffer.prototype.slice@1.0.3:
@@ -5094,10 +5160,6 @@ packages:
   atomic-sleep@1.0.0:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
-
-  available-typed-arrays@1.0.5:
-    resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
-    engines: {node: '>= 0.4'}
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -5913,10 +5975,6 @@ packages:
     resolution: {integrity: sha512-Ds09qNh8yw3khSjiJjiUInaGX9xlqZDY7JVryGxdxV7NPeuqQfplOpQ66yJFZut3jLa5zOwkXw1g9EI2uKh4Og==}
     engines: {node: '>=8'}
 
-  define-properties@1.2.0:
-    resolution: {integrity: sha512-xvqAVKGfT1+UAvPwKTVw/njhdQ8ZhXK4lI0bCIuCMrp2up9nPnaDftrLtmpTazqd1o+UY4zgzU+avtMbDP+ldA==}
-    engines: {node: '>= 0.4'}
-
   define-properties@1.2.1:
     resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
     engines: {node: '>= 0.4'}
@@ -6118,10 +6176,6 @@ packages:
   error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
 
-  es-abstract@1.22.1:
-    resolution: {integrity: sha512-ioRRcXMO6OFyRpyzV3kE1IIBd4WG5/kltnzdxSCqoP8CMGs/Li+M1uF5o7lOkZVFjDs+NLesthnF66Pg/0q0Lw==}
-    engines: {node: '>= 0.4'}
-
   es-abstract@1.23.3:
     resolution: {integrity: sha512-e+HfNH61Bj1X9/jLc5v1owaLYuHdeHHSQlkhCBiTK8rBvKaULl/beGMxwrMXjpYrv4pz22BlY570vVePA2ho4A==}
     engines: {node: '>= 0.4'}
@@ -6152,16 +6206,9 @@ packages:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
     engines: {node: '>= 0.4'}
 
-  es-set-tostringtag@2.0.3:
-    resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
-    engines: {node: '>= 0.4'}
-
   es-set-tostringtag@2.1.0:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
-
-  es-shim-unscopables@1.0.0:
-    resolution: {integrity: sha512-Jm6GPcCdC30eMLbZ2x8z2WuRwAws3zTBBKuusffYVUrNj/GVSUAZ+xKMaUpfNDR5IbyNA5LJbaecoUVbmUcB1w==}
 
   es-shim-unscopables@1.0.2:
     resolution: {integrity: sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==}
@@ -6183,11 +6230,6 @@ packages:
     resolution: {integrity: sha512-+4G/XmakeBAsvJuDugJvtyF1x+XJT4FMocynNpxrvEBViirpfUn2PgNpCHedfWhF4WokNsO/OvMKrmJOIJsI5A==}
     peerDependencies:
       esbuild: '>=0.12 <1'
-
-  esbuild@0.25.0:
-    resolution: {integrity: sha512-BXq5mqc8ltbaN34cDqWuYKyNhX8D/Z0J1xdtdQ8UcIIIyJyz+ZMKUt58tF3SrZ85jcfN/PZYhjR5uDQAYNVbuw==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   esbuild@0.25.3:
     resolution: {integrity: sha512-qKA6Pvai73+M2FtftpNKRxJ78GIjmFXFxd/1DVBqGo/qNhLSfv+G12n9pNoWdytJC8U00TrViOwpjT0zgqQS8Q==}
@@ -6680,10 +6722,6 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  function.prototype.name@1.1.5:
-    resolution: {integrity: sha512-uN7m/BzVKQnCUF/iW8jYea67v++2u7m5UgENbHRtdDVclOUP+FMPlCNdmk0h/ysGyo2tavMJEDqJAkJdRa1vMA==}
-    engines: {node: '>= 0.4'}
-
   function.prototype.name@1.1.6:
     resolution: {integrity: sha512-Z5kx79swU5P27WEayXM1tBi5Ze/lbIyiNgU3qyXUOf9b2rgXYyF9Dy9Cx+IQv/Lc8WCG6L82zwUPpSS9hGehIg==}
     engines: {node: '>= 0.4'}
@@ -6739,10 +6777,6 @@ packages:
   get-stream@9.0.1:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
-
-  get-symbol-description@1.0.0:
-    resolution: {integrity: sha512-2EmdH1YvIQiZpltCNgkuiUnyukzxM/R6NDJX31Ke3BG1Nq5b0S2PhX59UKi9vZpPDQVdqn+1IcaAwnzTT5vCjw==}
-    engines: {node: '>= 0.4'}
 
   get-symbol-description@1.0.2:
     resolution: {integrity: sha512-g0QYk1dZBxGwk+Ngc+ltRH2IBp2f7zBkBMBJZCDerh6EhlhSR6+9irMCuT/09zD6qkarHUSn529sK/yL4S27mg==}
@@ -6816,9 +6850,6 @@ packages:
   google-protobuf@3.21.2:
     resolution: {integrity: sha512-3MSOYFO5U9mPGikIYCzK0SaThypfGgS6bHqrUGXG3DPHCrb+txNqeEcns1W0lkGfk0rCyNXm7xB9rMxnCiZOoA==}
 
-  gopd@1.0.1:
-    resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
-
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -6868,9 +6899,6 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  has-property-descriptors@1.0.0:
-    resolution: {integrity: sha512-62DVLZGoiEBDHQyqG4w9xCuZ7eJEwNmJRWw2VY84Oedb7WFcA27fiEVe8oUQx9hAUJ4ekurquucTGwsyO1XGdQ==}
-
   has-property-descriptors@1.0.2:
     resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
 
@@ -6900,10 +6928,6 @@ packages:
 
   has-unicode@2.0.1:
     resolution: {integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==}
-
-  has@1.0.3:
-    resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
-    engines: {node: '>= 0.4.0'}
 
   hash-sum@2.0.0:
     resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==}
@@ -7116,10 +7140,6 @@ packages:
     resolution: {integrity: sha512-gZHC7f/cJgXz7MXlHFBxPVMsvIbev1OQN1uKQYKVJDydGNm9oYf9JstbU4Atnh/eSvk41WtEovoRm+8IF686xg==}
     hasBin: true
 
-  internal-slot@1.0.5:
-    resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
-    engines: {node: '>= 0.4'}
-
   internal-slot@1.0.7:
     resolution: {integrity: sha512-NGnrKwXzSms2qUUih/ILZ5JBqNTSa1+ZmP6flaIp6KmSElgE9qdndzS3cqjrDovwFdmwsGsLdeFgB6suw+1e9g==}
     engines: {node: '>= 0.4'}
@@ -7161,9 +7181,6 @@ packages:
   is-arguments@1.1.1:
     resolution: {integrity: sha512-8Q7EARjzEnKpt/PCD7e1cgUS0a6X8u5tdSiMqXhojOdoV9TsMsiO+9VLC5vAmO8N7/GmXn7yjR8qnA6bVAEzfA==}
     engines: {node: '>= 0.4'}
-
-  is-array-buffer@3.0.2:
-    resolution: {integrity: sha512-y+FyyR/w8vfIRq4eQcM1EYgSTnmHXPqaF+IgzgraytCFq5Xh8lllDVmAZolPJiZttZLeFSINPYMaEJ7/vWUa1w==}
 
   is-array-buffer@3.0.4:
     resolution: {integrity: sha512-wcjaerHw0ydZwfhiKbXJWLDY8A7yV7KhjQOpb83hGgGfId/aQa4TOvwyzn2PuswW2gPCYEL/nEAiSVpdOj1lXw==}
@@ -7239,10 +7256,6 @@ packages:
   is-map@2.0.2:
     resolution: {integrity: sha512-cOZFQQozTha1f4MxLFzlgKYPTyj26picdZTx82hbc/Xf4K/tZOOXSCkMvU4pKioRXGDLJRn0GM7Upe7kR721yg==}
 
-  is-negative-zero@2.0.2:
-    resolution: {integrity: sha512-dqJvarLawXsFbNDeJW7zAz8ItJ9cd28YufuuFzh0G8pNHjJMnY08Dv7sYX2uF5UpQOwieAeOExEYAWWfu7ZZUA==}
-    engines: {node: '>= 0.4'}
-
   is-negative-zero@2.0.3:
     resolution: {integrity: sha512-5KoIu2Ngpyek75jXodFvnafB6DJgr3u8uuK0LEZJjrU19DrMD3EVERaR8sjz8CCGgpZvxPl9SuE1GMVPFHx1mw==}
     engines: {node: '>= 0.4'}
@@ -7287,9 +7300,6 @@ packages:
   is-set@2.0.2:
     resolution: {integrity: sha512-+2cnTEZeY5z/iXGbLhPrOAaK/Mau5k5eXq9j14CpRTftq0pAJu2MwVRSZhyZWBzx3o6X795Lz6Bpb6R0GKf37g==}
 
-  is-shared-array-buffer@1.0.2:
-    resolution: {integrity: sha512-sqN2UDu1/0y6uvXyStCOzyhAjCSlHceFoMKJW8W9EU9cvic/QdsZ0kEU93HEy3IUEFZIiH/3w+AH/UQbPHNdhA==}
-
   is-shared-array-buffer@1.0.3:
     resolution: {integrity: sha512-nA2hv5XIhLR3uVzDDfCIknerhx8XUKnstuOERPNNIinXG7v9u+ohXF67vxm4TPTEPU6lm61ZkwP3c9PCB97rhg==}
     engines: {node: '>= 0.4'}
@@ -7316,10 +7326,6 @@ packages:
 
   is-symbol@1.0.4:
     resolution: {integrity: sha512-C/CPBqKWnvdcxqIARxyOh4v1UUEOCHpgDa0WYgpKDFMszcrPcffg5uhwSgPCLD2WWxmq6isisz87tzT01tuGhg==}
-    engines: {node: '>= 0.4'}
-
-  is-typed-array@1.1.10:
-    resolution: {integrity: sha512-PJqgEHiWZvMpaFZ3uTc8kHPM4+4ADTlDniuQL7cU/UDA0Ql7F70yGfHph3cLNe+c9toaigv+DFzTJKhc2CtO6A==}
     engines: {node: '>= 0.4'}
 
   is-typed-array@1.1.13:
@@ -8454,10 +8460,6 @@ packages:
     resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
     engines: {node: '>= 0.4'}
 
-  object.assign@4.1.4:
-    resolution: {integrity: sha512-1mxKf0e58bvyjSCtKYY4sRe9itRk3PJpquJOjeIkz885CczcI4IvJJDLPS72oowuSh+pBxUFROpX+TU++hxhZQ==}
-    engines: {node: '>= 0.4'}
-
   object.assign@4.1.5:
     resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
     engines: {node: '>= 0.4'}
@@ -9356,10 +9358,6 @@ packages:
   regex@6.0.1:
     resolution: {integrity: sha512-uorlqlzAKjKQZ5P+kTJr3eeJGSVroLKoHmquUj4zHWuR+hEyNqlXsSKlYYF5F4NI6nl7tWCs0apKJ0lmfsXAPA==}
 
-  regexp.prototype.flags@1.5.0:
-    resolution: {integrity: sha512-0SutC3pNudRKgquxGoRGIz946MZVHqbNfPjBdxeOhBrdgDKlRoXmYLQN9xRbrR09ZXWeGAdPuif7egofn6v5LA==}
-    engines: {node: '>= 0.4'}
-
   regexp.prototype.flags@1.5.2:
     resolution: {integrity: sha512-NcDiDkTLuPR+++OCKB0nWafEmhg/Da8aUPLPMQbK+bxKKCm1/S5he+AqYa4PlMCVBalb4/yxIRub6qkEx5yJbw==}
     engines: {node: '>= 0.4'}
@@ -9477,10 +9475,6 @@ packages:
   rxjs@7.8.2:
     resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
 
-  safe-array-concat@1.0.0:
-    resolution: {integrity: sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==}
-    engines: {node: '>=0.4'}
-
   safe-array-concat@1.1.2:
     resolution: {integrity: sha512-vj6RsCsWBCf19jIeHEfkRMw8DPiBb+DMXklQ/1SGDHOMlHdPUkZXFQ2YdplS23zESTijAcurb1aSgJA3AgMu1Q==}
     engines: {node: '>=0.4'}
@@ -9490,9 +9484,6 @@ packages:
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
-
-  safe-regex-test@1.0.0:
-    resolution: {integrity: sha512-JBUUzyOgEwXQY1NuPtvcj/qcBDbDmEvWufhlnXZIm75DEHp+afM1r1ujJpJsV/gSM4t59tpDyPi1sd6ZaPFfsA==}
 
   safe-regex-test@1.0.3:
     resolution: {integrity: sha512-CdASjNJPvRa7roO6Ra/gLYBTzYzzPyyBXxIMdGW3USQLyjWEls2RgW5UBTXaQVp+OrpeCK3bLem8smtmheoRuw==}
@@ -9948,22 +9939,12 @@ packages:
     resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
     engines: {node: '>=12'}
 
-  string.prototype.trim@1.2.7:
-    resolution: {integrity: sha512-p6TmeT1T3411M8Cgg9wBTMRtY2q9+PNy9EV1i2lIXUN/btt763oIfxwN3RR8VU6wHX8j/1CFy0L+YuThm6bgOg==}
-    engines: {node: '>= 0.4'}
-
   string.prototype.trim@1.2.9:
     resolution: {integrity: sha512-klHuCNxiMZ8MlsOihJhJEBJAiMVqU3Z2nEXWfWnIqjN0gEFS9J9+IxKozWWtQGcgoa1WUZzLjKPTr4ZHNFTFxw==}
     engines: {node: '>= 0.4'}
 
-  string.prototype.trimend@1.0.6:
-    resolution: {integrity: sha512-JySq+4mrPf9EsDBEDYMOb/lM7XQLulwg5R/m1r0PXEFqrV0qHvl58sdTilSXtKOflCsK2E8jxf+GKC0T07RWwQ==}
-
   string.prototype.trimend@1.0.8:
     resolution: {integrity: sha512-p73uL5VCHCO2BZZ6krwwQE3kCzM7NKmis8S//xEC6fQonchbum4eP6kR4DLEjQFO3Wnj3Fuo8NM0kOSjVdHjZQ==}
-
-  string.prototype.trimstart@1.0.6:
-    resolution: {integrity: sha512-omqjMDaY92pbn5HOX7f9IccLA+U1tA9GvtU4JrodiXFfYB7jPzzHpRzpglLAjtUV6bB557zwClJezTqnAiYnQA==}
 
   string.prototype.trimstart@1.0.8:
     resolution: {integrity: sha512-UXSH262CSZY1tfu3G3Secr6uGLCFVPMhIqHjlgCUtCCcgihYc/xKs9djMTMUOb2j1mVSeU8EU6NWc/iQKU6Gfg==}
@@ -10346,32 +10327,17 @@ packages:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
 
-  typed-array-buffer@1.0.0:
-    resolution: {integrity: sha512-Y8KTSIglk9OZEr8zywiIHG/kmQ7KWyjseXs1CbSo8vC42w7hg2HgYTxSWwP0+is7bWDc1H+Fo026CpHFwm8tkw==}
-    engines: {node: '>= 0.4'}
-
   typed-array-buffer@1.0.2:
     resolution: {integrity: sha512-gEymJYKZtKXzzBzM4jqa9w6Q1Jjm7x2d+sh19AdsD4wqnMPDYyvwpsIc2Q/835kHuo3BEQ7CjelGhfTsoBb2MQ==}
-    engines: {node: '>= 0.4'}
-
-  typed-array-byte-length@1.0.0:
-    resolution: {integrity: sha512-Or/+kvLxNpeQ9DtSydonMxCx+9ZXOswtwJn17SNLvhptaXYDJvkFFP5zbfU/uLmvnBJlI4yrnXRxpdWH/M5tNA==}
     engines: {node: '>= 0.4'}
 
   typed-array-byte-length@1.0.1:
     resolution: {integrity: sha512-3iMJ9q0ao7WE9tWcaYKIptkNBuOIcZCCT0d4MRvuuH88fEoEH62IuQe0OtraD3ebQEoTRk8XCBoknUNc1Y67pw==}
     engines: {node: '>= 0.4'}
 
-  typed-array-byte-offset@1.0.0:
-    resolution: {integrity: sha512-RD97prjEt9EL8YgAgpOkf3O4IF9lhJFr9g0htQkm0rchFp/Vx7LW5Q8fSXXub7BXAODyUQohRMyOc3faCPd0hg==}
-    engines: {node: '>= 0.4'}
-
   typed-array-byte-offset@1.0.2:
     resolution: {integrity: sha512-Ous0vodHa56FviZucS2E63zkgtgrACj7omjwd/8lTEMEPFFyjfixMZ1ZXenpgCFBBt4EC1J2XsyVS2gkG0eTFA==}
     engines: {node: '>= 0.4'}
-
-  typed-array-length@1.0.4:
-    resolution: {integrity: sha512-KjZypGq+I/H7HI5HlOoGHkWUUGq+Q0TPhQurLbyrVrvnKTBgzLhIJ7j6J/XTQOi0d1RjyZ0wdas8bKs2p0x3Ng==}
 
   typed-array-length@1.0.6:
     resolution: {integrity: sha512-/OxDN6OtAk5KBpGb28T+HZc2M+ADtvRxXrKKbUwtsLgdoxgX13hyy7ek6bFRl5+aBs2yZzB0c4CnQfAtVypW/g==}
@@ -10855,10 +10821,6 @@ packages:
 
   which-module@2.0.0:
     resolution: {integrity: sha512-B+enWhmw6cjfVC7kS8Pj9pCrKSc5txArRyaYGe088shv/FGWH+0Rjx/xPgtsWfsUtS27FkP697E4DDhgrgoc0Q==}
-
-  which-typed-array@1.1.11:
-    resolution: {integrity: sha512-qe9UWWpkeG5yzZ0tNYxDmd7vo58HDBc39mZ0xWWpolAGADdFOzkfamWLDxkOWcvHQKVmdTyQdLD4NOfjLWTKew==}
-    engines: {node: '>= 0.4'}
 
   which-typed-array@1.1.15:
     resolution: {integrity: sha512-oV0jmFtUky6CXfkqehVvBP/LSWJ2sy4vWMioiENyJLePrBO/yKyV9OyJySfAKosh+RYkIl5zJCNZ8/4JncrpdA==}
@@ -11713,9 +11675,19 @@ snapshots:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-async-generators@7.8.4(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-bigint@7.8.3(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
+      '@babel/helper-plugin-utils': 7.22.5
+
+  '@babel/plugin-syntax-bigint@7.8.3(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.22.5
 
   '@babel/plugin-syntax-class-properties@7.12.13(@babel/core@7.23.5)':
@@ -11723,14 +11695,29 @@ snapshots:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-class-properties@7.12.13(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-import-meta@7.10.4(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-import-meta@7.10.4(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-json-strings@7.8.3(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
+      '@babel/helper-plugin-utils': 7.22.5
+
+  '@babel/plugin-syntax-json-strings@7.8.3(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.22.5
 
   '@babel/plugin-syntax-jsx@7.23.3(@babel/core@7.23.5)':
@@ -11743,9 +11730,19 @@ snapshots:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-logical-assignment-operators@7.10.4(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-nullish-coalescing-operator@7.8.3(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
+      '@babel/helper-plugin-utils': 7.22.5
+
+  '@babel/plugin-syntax-nullish-coalescing-operator@7.8.3(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.22.5
 
   '@babel/plugin-syntax-numeric-separator@7.10.4(@babel/core@7.23.5)':
@@ -11753,9 +11750,19 @@ snapshots:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-numeric-separator@7.10.4(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-object-rest-spread@7.8.3(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
+      '@babel/helper-plugin-utils': 7.22.5
+
+  '@babel/plugin-syntax-object-rest-spread@7.8.3(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.22.5
 
   '@babel/plugin-syntax-optional-catch-binding@7.8.3(@babel/core@7.23.5)':
@@ -11763,14 +11770,29 @@ snapshots:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-optional-catch-binding@7.8.3(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-optional-chaining@7.8.3(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
       '@babel/helper-plugin-utils': 7.22.5
 
+  '@babel/plugin-syntax-optional-chaining@7.8.3(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
+      '@babel/helper-plugin-utils': 7.22.5
+
   '@babel/plugin-syntax-top-level-await@7.14.5(@babel/core@7.23.5)':
     dependencies:
       '@babel/core': 7.23.5
+      '@babel/helper-plugin-utils': 7.22.5
+
+  '@babel/plugin-syntax-top-level-await@7.14.5(@babel/core@7.24.7)':
+    dependencies:
+      '@babel/core': 7.24.7
       '@babel/helper-plugin-utils': 7.22.5
 
   '@babel/plugin-syntax-typescript@7.23.3(@babel/core@7.23.5)':
@@ -11977,160 +11999,80 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@esbuild/aix-ppc64@0.25.0':
-    optional: true
-
   '@esbuild/aix-ppc64@0.25.3':
-    optional: true
-
-  '@esbuild/android-arm64@0.25.0':
     optional: true
 
   '@esbuild/android-arm64@0.25.3':
     optional: true
 
-  '@esbuild/android-arm@0.25.0':
-    optional: true
-
   '@esbuild/android-arm@0.25.3':
-    optional: true
-
-  '@esbuild/android-x64@0.25.0':
     optional: true
 
   '@esbuild/android-x64@0.25.3':
     optional: true
 
-  '@esbuild/darwin-arm64@0.25.0':
-    optional: true
-
   '@esbuild/darwin-arm64@0.25.3':
-    optional: true
-
-  '@esbuild/darwin-x64@0.25.0':
     optional: true
 
   '@esbuild/darwin-x64@0.25.3':
     optional: true
 
-  '@esbuild/freebsd-arm64@0.25.0':
-    optional: true
-
   '@esbuild/freebsd-arm64@0.25.3':
-    optional: true
-
-  '@esbuild/freebsd-x64@0.25.0':
     optional: true
 
   '@esbuild/freebsd-x64@0.25.3':
     optional: true
 
-  '@esbuild/linux-arm64@0.25.0':
-    optional: true
-
   '@esbuild/linux-arm64@0.25.3':
-    optional: true
-
-  '@esbuild/linux-arm@0.25.0':
     optional: true
 
   '@esbuild/linux-arm@0.25.3':
     optional: true
 
-  '@esbuild/linux-ia32@0.25.0':
-    optional: true
-
   '@esbuild/linux-ia32@0.25.3':
-    optional: true
-
-  '@esbuild/linux-loong64@0.25.0':
     optional: true
 
   '@esbuild/linux-loong64@0.25.3':
     optional: true
 
-  '@esbuild/linux-mips64el@0.25.0':
-    optional: true
-
   '@esbuild/linux-mips64el@0.25.3':
-    optional: true
-
-  '@esbuild/linux-ppc64@0.25.0':
     optional: true
 
   '@esbuild/linux-ppc64@0.25.3':
     optional: true
 
-  '@esbuild/linux-riscv64@0.25.0':
-    optional: true
-
   '@esbuild/linux-riscv64@0.25.3':
-    optional: true
-
-  '@esbuild/linux-s390x@0.25.0':
     optional: true
 
   '@esbuild/linux-s390x@0.25.3':
     optional: true
 
-  '@esbuild/linux-x64@0.25.0':
-    optional: true
-
   '@esbuild/linux-x64@0.25.3':
-    optional: true
-
-  '@esbuild/netbsd-arm64@0.25.0':
     optional: true
 
   '@esbuild/netbsd-arm64@0.25.3':
     optional: true
 
-  '@esbuild/netbsd-x64@0.25.0':
-    optional: true
-
   '@esbuild/netbsd-x64@0.25.3':
-    optional: true
-
-  '@esbuild/openbsd-arm64@0.25.0':
     optional: true
 
   '@esbuild/openbsd-arm64@0.25.3':
     optional: true
 
-  '@esbuild/openbsd-x64@0.25.0':
-    optional: true
-
   '@esbuild/openbsd-x64@0.25.3':
-    optional: true
-
-  '@esbuild/sunos-x64@0.25.0':
     optional: true
 
   '@esbuild/sunos-x64@0.25.3':
     optional: true
 
-  '@esbuild/win32-arm64@0.25.0':
-    optional: true
-
   '@esbuild/win32-arm64@0.25.3':
-    optional: true
-
-  '@esbuild/win32-ia32@0.25.0':
     optional: true
 
   '@esbuild/win32-ia32@0.25.3':
     optional: true
 
-  '@esbuild/win32-x64@0.25.0':
-    optional: true
-
   '@esbuild/win32-x64@0.25.3':
     optional: true
-
-  '@eslint-community/eslint-utils@4.4.0(eslint@9.25.1)':
-    dependencies:
-      eslint: 9.25.1
-      eslint-visitor-keys: 3.4.3
 
   '@eslint-community/eslint-utils@4.6.1(eslint@9.25.1)':
     dependencies:
@@ -14510,7 +14452,7 @@ snapshots:
   '@testing-library/dom@9.3.4':
     dependencies:
       '@babel/code-frame': 7.24.7
-      '@babel/runtime': 7.23.4
+      '@babel/runtime': 7.27.0
       '@types/aria-query': 5.0.1
       aria-query: 5.1.3
       chalk: 4.1.2
@@ -14534,7 +14476,7 @@ snapshots:
 
   '@testing-library/vue@8.1.0(@vue/compiler-sfc@3.5.13)(@vue/server-renderer@3.5.13(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))':
     dependencies:
-      '@babel/runtime': 7.23.4
+      '@babel/runtime': 7.27.0
       '@testing-library/dom': 9.3.4
       '@vue/test-utils': 2.4.1(@vue/server-renderer@3.5.13(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
       vue: 3.5.13(typescript@5.8.3)
@@ -15479,11 +15421,6 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  array-buffer-byte-length@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      is-array-buffer: 3.0.2
-
   array-buffer-byte-length@1.0.1:
     dependencies:
       call-bind: 1.0.7
@@ -15496,8 +15433,8 @@ snapshots:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-abstract: 1.23.3
-      es-object-atoms: 1.0.0
-      get-intrinsic: 1.2.4
+      es-object-atoms: 1.1.1
+      get-intrinsic: 1.3.0
       is-string: 1.0.7
 
   array-union@2.1.0: {}
@@ -15508,31 +15445,22 @@ snapshots:
       define-properties: 1.2.1
       es-abstract: 1.23.3
       es-errors: 1.3.0
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
       es-shim-unscopables: 1.0.2
 
   array.prototype.flat@1.3.2:
     dependencies:
       call-bind: 1.0.7
-      define-properties: 1.2.0
-      es-abstract: 1.22.1
-      es-shim-unscopables: 1.0.0
+      define-properties: 1.2.1
+      es-abstract: 1.23.3
+      es-shim-unscopables: 1.0.2
 
   array.prototype.flatmap@1.3.2:
     dependencies:
       call-bind: 1.0.7
-      define-properties: 1.2.0
-      es-abstract: 1.22.1
-      es-shim-unscopables: 1.0.0
-
-  arraybuffer.prototype.slice@1.0.1:
-    dependencies:
-      array-buffer-byte-length: 1.0.0
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      get-intrinsic: 1.2.4
-      is-array-buffer: 3.0.2
-      is-shared-array-buffer: 1.0.2
+      define-properties: 1.2.1
+      es-abstract: 1.23.3
+      es-shim-unscopables: 1.0.2
 
   arraybuffer.prototype.slice@1.0.3:
     dependencies:
@@ -15541,7 +15469,7 @@ snapshots:
       define-properties: 1.2.1
       es-abstract: 1.23.3
       es-errors: 1.3.0
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
 
@@ -15594,8 +15522,6 @@ snapshots:
 
   atomic-sleep@1.0.0: {}
 
-  available-typed-arrays@1.0.5: {}
-
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.0.0
@@ -15631,13 +15557,13 @@ snapshots:
 
   b4a@1.6.4: {}
 
-  babel-jest@29.7.0(@babel/core@7.23.5):
+  babel-jest@29.7.0(@babel/core@7.24.7):
     dependencies:
-      '@babel/core': 7.23.5
+      '@babel/core': 7.24.7
       '@jest/transform': 29.7.0
       '@types/babel__core': 7.20.0
       babel-plugin-istanbul: 6.1.1
-      babel-preset-jest: 29.6.3(@babel/core@7.23.5)
+      babel-preset-jest: 29.6.3(@babel/core@7.24.7)
       chalk: 4.1.2
       graceful-fs: 4.2.11
       slash: 3.0.0
@@ -15677,11 +15603,27 @@ snapshots:
       '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.23.5)
       '@babel/plugin-syntax-top-level-await': 7.14.5(@babel/core@7.23.5)
 
-  babel-preset-jest@29.6.3(@babel/core@7.23.5):
+  babel-preset-current-node-syntax@1.0.1(@babel/core@7.24.7):
     dependencies:
-      '@babel/core': 7.23.5
+      '@babel/core': 7.24.7
+      '@babel/plugin-syntax-async-generators': 7.8.4(@babel/core@7.24.7)
+      '@babel/plugin-syntax-bigint': 7.8.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-class-properties': 7.12.13(@babel/core@7.24.7)
+      '@babel/plugin-syntax-import-meta': 7.10.4(@babel/core@7.24.7)
+      '@babel/plugin-syntax-json-strings': 7.8.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-logical-assignment-operators': 7.10.4(@babel/core@7.24.7)
+      '@babel/plugin-syntax-nullish-coalescing-operator': 7.8.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-numeric-separator': 7.10.4(@babel/core@7.24.7)
+      '@babel/plugin-syntax-object-rest-spread': 7.8.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-optional-catch-binding': 7.8.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.24.7)
+      '@babel/plugin-syntax-top-level-await': 7.14.5(@babel/core@7.24.7)
+
+  babel-preset-jest@29.6.3(@babel/core@7.24.7):
+    dependencies:
+      '@babel/core': 7.24.7
       babel-plugin-jest-hoist: 29.6.3
-      babel-preset-current-node-syntax: 1.0.1(@babel/core@7.23.5)
+      babel-preset-current-node-syntax: 1.0.1(@babel/core@7.24.7)
 
   babel-walk@3.0.0-canary-5:
     dependencies:
@@ -16253,7 +16195,7 @@ snapshots:
 
   cross-env@7.0.3:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
 
   cross-fetch@3.1.6(encoding@0.1.13):
     dependencies:
@@ -16439,7 +16381,7 @@ snapshots:
 
   date-fns@2.30.0:
     dependencies:
-      '@babel/runtime': 7.23.4
+      '@babel/runtime': 7.27.0
 
   date-fns@4.1.0: {}
 
@@ -16518,17 +16460,17 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       es-get-iterator: 1.1.3
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       is-arguments: 1.1.1
-      is-array-buffer: 3.0.2
+      is-array-buffer: 3.0.4
       is-date-object: 1.0.5
       is-regex: 1.1.4
-      is-shared-array-buffer: 1.0.2
+      is-shared-array-buffer: 1.0.3
       isarray: 2.0.5
       object-is: 1.1.5
       object-keys: 1.1.1
-      object.assign: 4.1.4
-      regexp.prototype.flags: 1.5.0
+      object.assign: 4.1.5
+      regexp.prototype.flags: 1.5.2
       side-channel: 1.1.0
       which-boxed-primitive: 1.0.2
       which-collection: 1.0.1
@@ -16552,11 +16494,6 @@ snapshots:
       gopd: 1.2.0
 
   define-lazy-prop@2.0.0: {}
-
-  define-properties@1.2.0:
-    dependencies:
-      has-property-descriptors: 1.0.0
-      object-keys: 1.1.1
 
   define-properties@1.2.1:
     dependencies:
@@ -16737,48 +16674,6 @@ snapshots:
     dependencies:
       is-arrayish: 0.2.1
 
-  es-abstract@1.22.1:
-    dependencies:
-      array-buffer-byte-length: 1.0.0
-      arraybuffer.prototype.slice: 1.0.1
-      available-typed-arrays: 1.0.5
-      call-bind: 1.0.7
-      es-set-tostringtag: 2.0.3
-      es-to-primitive: 1.2.1
-      function.prototype.name: 1.1.5
-      get-intrinsic: 1.2.4
-      get-symbol-description: 1.0.0
-      globalthis: 1.0.3
-      gopd: 1.0.1
-      has: 1.0.3
-      has-property-descriptors: 1.0.2
-      has-proto: 1.0.1
-      has-symbols: 1.0.3
-      internal-slot: 1.0.5
-      is-array-buffer: 3.0.2
-      is-callable: 1.2.7
-      is-negative-zero: 2.0.2
-      is-regex: 1.1.4
-      is-shared-array-buffer: 1.0.2
-      is-string: 1.0.7
-      is-typed-array: 1.1.10
-      is-weakref: 1.0.2
-      object-inspect: 1.13.2
-      object-keys: 1.1.1
-      object.assign: 4.1.4
-      regexp.prototype.flags: 1.5.0
-      safe-array-concat: 1.0.0
-      safe-regex-test: 1.0.0
-      string.prototype.trim: 1.2.7
-      string.prototype.trimend: 1.0.6
-      string.prototype.trimstart: 1.0.6
-      typed-array-buffer: 1.0.0
-      typed-array-byte-length: 1.0.0
-      typed-array-byte-offset: 1.0.0
-      typed-array-length: 1.0.4
-      unbox-primitive: 1.0.2
-      which-typed-array: 1.1.11
-
   es-abstract@1.23.3:
     dependencies:
       array-buffer-byte-length: 1.0.1
@@ -16788,19 +16683,19 @@ snapshots:
       data-view-buffer: 1.0.1
       data-view-byte-length: 1.0.1
       data-view-byte-offset: 1.0.0
-      es-define-property: 1.0.0
+      es-define-property: 1.0.1
       es-errors: 1.3.0
-      es-object-atoms: 1.0.0
-      es-set-tostringtag: 2.0.3
+      es-object-atoms: 1.1.1
+      es-set-tostringtag: 2.1.0
       es-to-primitive: 1.2.1
       function.prototype.name: 1.1.6
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       get-symbol-description: 1.0.2
       globalthis: 1.0.3
-      gopd: 1.0.1
+      gopd: 1.2.0
       has-property-descriptors: 1.0.2
       has-proto: 1.0.3
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       hasown: 2.0.2
       internal-slot: 1.0.7
       is-array-buffer: 3.0.4
@@ -16812,7 +16707,7 @@ snapshots:
       is-string: 1.0.7
       is-typed-array: 1.1.13
       is-weakref: 1.0.2
-      object-inspect: 1.13.2
+      object-inspect: 1.13.4
       object-keys: 1.1.1
       object.assign: 4.1.5
       regexp.prototype.flags: 1.5.2
@@ -16839,8 +16734,8 @@ snapshots:
   es-get-iterator@1.1.3:
     dependencies:
       call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
+      get-intrinsic: 1.3.0
+      has-symbols: 1.1.0
       is-arguments: 1.1.1
       is-map: 2.0.2
       is-set: 2.0.2
@@ -16858,22 +16753,12 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
 
-  es-set-tostringtag@2.0.3:
-    dependencies:
-      get-intrinsic: 1.2.4
-      has-tostringtag: 1.0.2
-      hasown: 2.0.2
-
   es-set-tostringtag@2.1.0:
     dependencies:
       es-errors: 1.3.0
       get-intrinsic: 1.2.7
       has-tostringtag: 1.0.2
       hasown: 2.0.2
-
-  es-shim-unscopables@1.0.0:
-    dependencies:
-      has: 1.0.3
 
   es-shim-unscopables@1.0.2:
     dependencies:
@@ -16901,34 +16786,6 @@ snapshots:
       esbuild: 0.25.3
     transitivePeerDependencies:
       - supports-color
-
-  esbuild@0.25.0:
-    optionalDependencies:
-      '@esbuild/aix-ppc64': 0.25.0
-      '@esbuild/android-arm': 0.25.0
-      '@esbuild/android-arm64': 0.25.0
-      '@esbuild/android-x64': 0.25.0
-      '@esbuild/darwin-arm64': 0.25.0
-      '@esbuild/darwin-x64': 0.25.0
-      '@esbuild/freebsd-arm64': 0.25.0
-      '@esbuild/freebsd-x64': 0.25.0
-      '@esbuild/linux-arm': 0.25.0
-      '@esbuild/linux-arm64': 0.25.0
-      '@esbuild/linux-ia32': 0.25.0
-      '@esbuild/linux-loong64': 0.25.0
-      '@esbuild/linux-mips64el': 0.25.0
-      '@esbuild/linux-ppc64': 0.25.0
-      '@esbuild/linux-riscv64': 0.25.0
-      '@esbuild/linux-s390x': 0.25.0
-      '@esbuild/linux-x64': 0.25.0
-      '@esbuild/netbsd-arm64': 0.25.0
-      '@esbuild/netbsd-x64': 0.25.0
-      '@esbuild/openbsd-arm64': 0.25.0
-      '@esbuild/openbsd-x64': 0.25.0
-      '@esbuild/sunos-x64': 0.25.0
-      '@esbuild/win32-arm64': 0.25.0
-      '@esbuild/win32-ia32': 0.25.0
-      '@esbuild/win32-x64': 0.25.0
 
   esbuild@0.25.3:
     optionalDependencies:
@@ -17036,7 +16893,7 @@ snapshots:
 
   eslint-plugin-vue@10.0.0(eslint@9.25.1)(vue-eslint-parser@10.1.3(eslint@9.25.1)):
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@9.25.1)
+      '@eslint-community/eslint-utils': 4.6.1(eslint@9.25.1)
       eslint: 9.25.1
       natural-compare: 1.4.0
       nth-check: 2.1.1
@@ -17604,13 +17461,6 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  function.prototype.name@1.1.5:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      es-abstract: 1.22.1
-      functions-have-names: 1.2.3
-
   function.prototype.name@1.1.6:
     dependencies:
       call-bind: 1.0.7
@@ -17691,16 +17541,11 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
-  get-symbol-description@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-
   get-symbol-description@1.0.2:
     dependencies:
       call-bind: 1.0.7
       es-errors: 1.3.0
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
 
   get-tsconfig@4.10.0:
     dependencies:
@@ -17776,7 +17621,7 @@ snapshots:
 
   globalthis@1.0.3:
     dependencies:
-      define-properties: 1.2.0
+      define-properties: 1.2.1
 
   globby@11.1.0:
     dependencies:
@@ -17789,10 +17634,6 @@ snapshots:
 
   google-protobuf@3.21.2:
     optional: true
-
-  gopd@1.0.1:
-    dependencies:
-      get-intrinsic: 1.2.4
 
   gopd@1.2.0: {}
 
@@ -17850,10 +17691,6 @@ snapshots:
 
   has-flag@4.0.0: {}
 
-  has-property-descriptors@1.0.0:
-    dependencies:
-      get-intrinsic: 1.2.4
-
   has-property-descriptors@1.0.2:
     dependencies:
       es-define-property: 1.0.0
@@ -17876,10 +17713,6 @@ snapshots:
 
   has-unicode@2.0.1:
     optional: true
-
-  has@1.0.3:
-    dependencies:
-      function-bind: 1.1.2
 
   hash-sum@2.0.0: {}
 
@@ -18096,12 +17929,6 @@ snapshots:
 
   install-artifact-from-github@1.3.5: {}
 
-  internal-slot@1.0.5:
-    dependencies:
-      get-intrinsic: 1.2.4
-      has: 1.0.3
-      side-channel: 1.1.0
-
   internal-slot@1.0.7:
     dependencies:
       es-errors: 1.3.0
@@ -18148,16 +17975,10 @@ snapshots:
       call-bind: 1.0.7
       has-tostringtag: 1.0.2
 
-  is-array-buffer@3.0.2:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      is-typed-array: 1.1.13
-
   is-array-buffer@3.0.4:
     dependencies:
       call-bind: 1.0.7
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
 
   is-arrayish@0.2.1: {}
 
@@ -18218,8 +18039,6 @@ snapshots:
 
   is-map@2.0.2: {}
 
-  is-negative-zero@2.0.2: {}
-
   is-negative-zero@2.0.3: {}
 
   is-node-process@1.2.0: {}
@@ -18249,10 +18068,6 @@ snapshots:
 
   is-set@2.0.2: {}
 
-  is-shared-array-buffer@1.0.2:
-    dependencies:
-      call-bind: 1.0.7
-
   is-shared-array-buffer@1.0.3:
     dependencies:
       call-bind: 1.0.7
@@ -18274,14 +18089,6 @@ snapshots:
   is-symbol@1.0.4:
     dependencies:
       has-symbols: 1.0.3
-
-  is-typed-array@1.1.10:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.2.0
-      has-tostringtag: 1.0.2
 
   is-typed-array@1.1.13:
     dependencies:
@@ -18434,10 +18241,10 @@ snapshots:
 
   jest-config@29.7.0(@types/node@22.15.2):
     dependencies:
-      '@babel/core': 7.23.5
+      '@babel/core': 7.24.7
       '@jest/test-sequencer': 29.7.0
       '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.23.5)
+      babel-jest: 29.7.0(@babel/core@7.24.7)
       chalk: 4.1.2
       ci-info: 3.7.1
       deepmerge: 4.2.2
@@ -19810,22 +19617,15 @@ snapshots:
   object-is@1.1.5:
     dependencies:
       call-bind: 1.0.7
-      define-properties: 1.2.0
+      define-properties: 1.2.1
 
   object-keys@1.1.1: {}
-
-  object.assign@4.1.4:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      has-symbols: 1.0.3
-      object-keys: 1.1.1
 
   object.assign@4.1.5:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       object-keys: 1.1.1
 
   object.fromentries@2.0.8:
@@ -19833,7 +19633,7 @@ snapshots:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-abstract: 1.23.3
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
 
   object.groupby@1.0.3:
     dependencies:
@@ -19845,7 +19645,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
 
   obliterator@2.0.4: {}
 
@@ -20731,12 +20531,6 @@ snapshots:
     dependencies:
       regex-utilities: 2.3.0
 
-  regexp.prototype.flags@1.5.0:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      functions-have-names: 1.2.3
-
   regexp.prototype.flags@1.5.2:
     dependencies:
       call-bind: 1.0.7
@@ -20888,29 +20682,16 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  safe-array-concat@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
-      isarray: 2.0.5
-
   safe-array-concat@1.1.2:
     dependencies:
       call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
+      get-intrinsic: 1.3.0
+      has-symbols: 1.1.0
       isarray: 2.0.5
 
   safe-buffer@5.1.2: {}
 
   safe-buffer@5.2.1: {}
-
-  safe-regex-test@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      is-regex: 1.1.4
 
   safe-regex-test@1.0.3:
     dependencies:
@@ -21358,7 +21139,7 @@ snapshots:
 
   stop-iteration-iterator@1.0.0:
     dependencies:
-      internal-slot: 1.0.5
+      internal-slot: 1.0.7
 
   storybook-addon-misskey-theme@https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@8.6.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/components@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/core-events@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/manager-api@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/preview-api@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/theming@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(@storybook/types@8.6.12(storybook@8.6.12(bufferutil@4.0.9)(prettier@3.5.3)(utf-8-validate@6.0.5)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -21428,42 +21209,24 @@ snapshots:
       emoji-regex: 9.2.2
       strip-ansi: 7.1.0
 
-  string.prototype.trim@1.2.7:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      es-abstract: 1.22.1
-
   string.prototype.trim@1.2.9:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-abstract: 1.23.3
-      es-object-atoms: 1.0.0
-
-  string.prototype.trimend@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      es-abstract: 1.22.1
+      es-object-atoms: 1.1.1
 
   string.prototype.trimend@1.0.8:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-object-atoms: 1.0.0
-
-  string.prototype.trimstart@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.0
-      es-abstract: 1.22.1
+      es-object-atoms: 1.1.1
 
   string.prototype.trimstart@1.0.8:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
 
   string_decoder@1.1.1:
     dependencies:
@@ -21812,7 +21575,7 @@ snapshots:
 
   tsx@4.19.3:
     dependencies:
-      esbuild: 0.25.0
+      esbuild: 0.25.3
       get-tsconfig: 4.9.0
     optionalDependencies:
       fsevents: 2.3.3
@@ -21846,23 +21609,10 @@ snapshots:
       media-typer: 0.3.0
       mime-types: 2.1.35
 
-  typed-array-buffer@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      is-typed-array: 1.1.13
-
   typed-array-buffer@1.0.2:
     dependencies:
       call-bind: 1.0.7
       es-errors: 1.3.0
-      is-typed-array: 1.1.13
-
-  typed-array-byte-length@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      has-proto: 1.0.1
       is-typed-array: 1.1.13
 
   typed-array-byte-length@1.0.1:
@@ -21873,14 +21623,6 @@ snapshots:
       has-proto: 1.0.3
       is-typed-array: 1.1.13
 
-  typed-array-byte-offset@1.0.0:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      has-proto: 1.0.1
-      is-typed-array: 1.1.13
-
   typed-array-byte-offset@1.0.2:
     dependencies:
       available-typed-arrays: 1.0.7
@@ -21888,12 +21630,6 @@ snapshots:
       for-each: 0.3.3
       gopd: 1.2.0
       has-proto: 1.0.3
-      is-typed-array: 1.1.13
-
-  typed-array-length@1.0.4:
-    dependencies:
-      call-bind: 1.0.7
-      for-each: 0.3.3
       is-typed-array: 1.1.13
 
   typed-array-length@1.0.6:
@@ -21947,7 +21683,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       has-bigints: 1.0.2
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       which-boxed-primitive: 1.0.2
 
   unbzip2-stream@1.4.3:
@@ -22370,14 +22106,6 @@ snapshots:
       is-weakset: 2.0.2
 
   which-module@2.0.0: {}
-
-  which-typed-array@1.1.11:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.2.0
-      has-tostringtag: 1.0.2
 
   which-typed-array@1.1.15:
     dependencies:

@@ -22,23 +22,23 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/matter-js": "0.19.8",
-		"@types/seedrandom": "3.0.8",
-		"@types/node": "22.15.2",
-		"@typescript-eslint/eslint-plugin": "8.31.0",
-		"@typescript-eslint/parser": "8.31.0",
-		"nodemon": "3.1.10",
-		"execa": "9.5.2",
-		"typescript": "5.8.3",
-		"esbuild": "0.25.3",
-		"glob": "11.0.2"
+		"@types/matter-js": "catalog:",
+		"@types/seedrandom": "catalog:",
+		"@types/node": "catalog:",
+		"@typescript-eslint/eslint-plugin": "catalog:",
+		"@typescript-eslint/parser": "catalog:",
+		"nodemon": "catalog:",
+		"execa": "catalog:",
+		"typescript": "catalog:",
+		"esbuild": "catalog:",
+		"glob": "catalog:"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
-		"eventemitter3": "5.0.1",
-		"matter-js": "0.20.0",
-		"seedrandom": "3.0.5"
+		"eventemitter3": "catalog:",
+		"matter-js": "catalog:",
+		"seedrandom": "catalog:"
 	}
 }
