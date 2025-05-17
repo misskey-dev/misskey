@@ -9,16 +9,16 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"esbuild": "0.25.3",
-		"idb-keyval": "6.2.1",
+		"esbuild": "catalog:",
+		"idb-keyval": "catalog:",
 		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "8.31.0",
-		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.74",
-		"eslint-plugin-import": "2.31.0",
-		"nodemon": "3.1.10",
-		"typescript": "5.8.3"
+		"@typescript-eslint/parser": "catalog:",
+		"@typescript/lib-webworker": "catalog:",
+		"eslint-plugin-import": "catalog:",
+		"nodemon": "catalog:",
+		"typescript": "catalog:"
 	},
 	"type": "module"
 }
