@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkPostForm
 			v-if="state === 'writing'"
 			fixed
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
 			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

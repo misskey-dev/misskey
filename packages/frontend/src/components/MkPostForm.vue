@@ -137,6 +137,7 @@ import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
+import { globalEvents } from '@/events.js';
 
 const $i = ensureSignin();
 
@@ -879,16 +880,19 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.user.id === postAccount.value?.id)?.token;
+		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
 	}
 
 	posting.value = true;
-	misskeyApi('notes/create', postData, token).then(() => {
+	misskeyApi('notes/create', postData, token).then((res) => {
 		if (props.freezeAfterPosted) {
 			posted.value = true;
 		} else {
 			clear();
 		}
+
+		globalEvents.emit('notePosted', res.createdNote);
+
 		nextTick(() => {
 			deleteDraft();
 			emit('posted');

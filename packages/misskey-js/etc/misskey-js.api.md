@@ -31,6 +31,12 @@ declare namespace acct {
 export { acct }
 
 // @public (undocumented)
+type Achievement = components['schemas']['Achievement'];
+
+// @public (undocumented)
+type AchievementName = components['schemas']['AchievementName'];
+
+// @public (undocumented)
 type Ad = components['schemas']['Ad'];
 
 // Warning: (ae-forgotten-export) The symbol "operations" needs to be exported by the entry point index.d.ts
@@ -258,13 +264,31 @@ type AdminMetaResponse = operations['admin___meta']['responses']['200']['content
 type AdminPromoCreateRequest = operations['admin___promo___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminQueueClearRequest = operations['admin___queue___clear']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminQueueDeliverDelayedResponse = operations['admin___queue___deliver-delayed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminQueueInboxDelayedResponse = operations['admin___queue___inbox-delayed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type AdminQueuePromoteRequest = operations['admin___queue___promote']['requestBody']['content']['application/json'];
+type AdminQueueJobsRequest = operations['admin___queue___jobs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueuePromoteJobsRequest = operations['admin___queue___promote-jobs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueQueueStatsRequest = operations['admin___queue___queue-stats']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueRemoveJobRequest = operations['admin___queue___remove-job']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueRetryJobRequest = operations['admin___queue___retry-job']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueShowJobRequest = operations['admin___queue___show-job']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminQueueStatsResponse = operations['admin___queue___stats']['responses']['200']['content']['application/json'];
@@ -1038,13 +1062,7 @@ type ChatMessagesCreateToUserResponse = operations['chat___messages___create-to-
 type ChatMessagesDeleteRequest = operations['chat___messages___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type ChatMessagesDeleteResponse = operations['chat___messages___delete']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type ChatMessagesReactRequest = operations['chat___messages___react']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type ChatMessagesReactResponse = operations['chat___messages___react']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatMessagesRoomTimelineRequest = operations['chat___messages___room-timeline']['requestBody']['content']['application/json'];
@@ -1066,9 +1084,6 @@ type ChatMessagesShowResponse = operations['chat___messages___show']['responses'
 
 // @public (undocumented)
 type ChatMessagesUnreactRequest = operations['chat___messages___unreact']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type ChatMessagesUnreactResponse = operations['chat___messages___unreact']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatMessagesUserTimelineRequest = operations['chat___messages___user-timeline']['requestBody']['content']['application/json'];
@@ -1095,9 +1110,6 @@ type ChatRoomsCreateResponse = operations['chat___rooms___create']['responses'][
 type ChatRoomsDeleteRequest = operations['chat___rooms___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type ChatRoomsDeleteResponse = operations['chat___rooms___delete']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type ChatRoomsInvitationsCreateRequest = operations['chat___rooms___invitations___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1105,9 +1117,6 @@ type ChatRoomsInvitationsCreateResponse = operations['chat___rooms___invitations
 
 // @public (undocumented)
 type ChatRoomsInvitationsIgnoreRequest = operations['chat___rooms___invitations___ignore']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type ChatRoomsInvitationsIgnoreResponse = operations['chat___rooms___invitations___ignore']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatRoomsInvitationsInboxRequest = operations['chat___rooms___invitations___inbox']['requestBody']['content']['application/json'];
@@ -1131,13 +1140,7 @@ type ChatRoomsJoiningResponse = operations['chat___rooms___joining']['responses'
 type ChatRoomsJoinRequest = operations['chat___rooms___join']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type ChatRoomsJoinResponse = operations['chat___rooms___join']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type ChatRoomsLeaveRequest = operations['chat___rooms___leave']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type ChatRoomsLeaveResponse = operations['chat___rooms___leave']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatRoomsMembersRequest = operations['chat___rooms___members']['requestBody']['content']['application/json'];
@@ -1147,9 +1150,6 @@ type ChatRoomsMembersResponse = operations['chat___rooms___members']['responses'
 
 // @public (undocumented)
 type ChatRoomsMuteRequest = operations['chat___rooms___mute']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type ChatRoomsMuteResponse = operations['chat___rooms___mute']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatRoomsOwnedRequest = operations['chat___rooms___owned']['requestBody']['content']['application/json'];
@@ -1534,9 +1534,15 @@ declare namespace entities {
         AdminInviteListResponse,
         AdminMetaResponse,
         AdminPromoCreateRequest,
+        AdminQueueClearRequest,
         AdminQueueDeliverDelayedResponse,
         AdminQueueInboxDelayedResponse,
-        AdminQueuePromoteRequest,
+        AdminQueueJobsRequest,
+        AdminQueuePromoteJobsRequest,
+        AdminQueueQueueStatsRequest,
+        AdminQueueRemoveJobRequest,
+        AdminQueueRetryJobRequest,
+        AdminQueueShowJobRequest,
         AdminQueueStatsResponse,
         AdminRelaysAddRequest,
         AdminRelaysAddResponse,
@@ -1676,9 +1682,7 @@ declare namespace entities {
         ChatMessagesCreateToUserRequest,
         ChatMessagesCreateToUserResponse,
         ChatMessagesDeleteRequest,
-        ChatMessagesDeleteResponse,
         ChatMessagesReactRequest,
-        ChatMessagesReactResponse,
         ChatMessagesRoomTimelineRequest,
         ChatMessagesRoomTimelineResponse,
         ChatMessagesSearchRequest,
@@ -1686,31 +1690,25 @@ declare namespace entities {
         ChatMessagesShowRequest,
         ChatMessagesShowResponse,
         ChatMessagesUnreactRequest,
-        ChatMessagesUnreactResponse,
         ChatMessagesUserTimelineRequest,
         ChatMessagesUserTimelineResponse,
         ChatRoomsCreateRequest,
         ChatRoomsCreateResponse,
         ChatRoomsDeleteRequest,
-        ChatRoomsDeleteResponse,
         ChatRoomsInvitationsCreateRequest,
         ChatRoomsInvitationsCreateResponse,
         ChatRoomsInvitationsIgnoreRequest,
-        ChatRoomsInvitationsIgnoreResponse,
         ChatRoomsInvitationsInboxRequest,
         ChatRoomsInvitationsInboxResponse,
         ChatRoomsInvitationsOutboxRequest,
         ChatRoomsInvitationsOutboxResponse,
         ChatRoomsJoinRequest,
-        ChatRoomsJoinResponse,
         ChatRoomsJoiningRequest,
         ChatRoomsJoiningResponse,
         ChatRoomsLeaveRequest,
-        ChatRoomsLeaveResponse,
         ChatRoomsMembersRequest,
         ChatRoomsMembersResponse,
         ChatRoomsMuteRequest,
-        ChatRoomsMuteResponse,
         ChatRoomsOwnedRequest,
         ChatRoomsOwnedResponse,
         ChatRoomsShowRequest,
@@ -1976,6 +1974,8 @@ declare namespace entities {
         NotesSearchByTagResponse,
         NotesShowRequest,
         NotesShowResponse,
+        NotesShowPartialBulkRequest,
+        NotesShowPartialBulkResponse,
         NotesStateRequest,
         NotesStateResponse,
         NotesThreadMutingCreateRequest,
@@ -2104,6 +2104,8 @@ declare namespace entities {
         UserDetailed,
         User,
         UserList,
+        Achievement,
+        AchievementName,
         Ad,
         Announcement,
         App,
@@ -3069,6 +3071,12 @@ type NotesSearchRequest = operations['notes___search']['requestBody']['content']
 
 // @public (undocumented)
 type NotesSearchResponse = operations['notes___search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesShowPartialBulkRequest = operations['notes___show-partial-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesShowPartialBulkResponse = operations['notes___show-partial-bulk']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesShowRequest = operations['notes___show']['requestBody']['content']['application/json'];

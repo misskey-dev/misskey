@@ -89,7 +89,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import { selectFile } from '@/utility/select-file.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
-import { useLoading } from '@/components/hook/useLoading.js';
+import { useLoading } from '@/composables/use-loading.js';
 
 type GridItem = {
 	checked: boolean;
@@ -285,7 +285,7 @@ const searchQuery = ref<EmojiSearchQuery>({
 	localOnly: null,
 	roles: [],
 	sortOrders: [],
-	limit: 25,
+	limit: 100,
 });
 let searchWindowOpening = false;
 

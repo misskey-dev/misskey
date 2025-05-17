@@ -32,10 +32,11 @@ export type SoundStore = {
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
 export const PREF_DEF = {
-	// TODO: 持つのはホストやユーザーID、ユーザー名など最低限にしといて、その他のプロフィール情報はpreferences外で管理した方が綺麗そう
-	// 現状だと、updateCurrentAccount/updateCurrentAccountPartialが呼ばれるたびに「設定」へのcommitが行われて不自然(明らかに設定の更新とは捉えにくい)だし
 	accounts: {
-		default: [] as [host: string, user: Misskey.entities.User][],
+		default: [] as [host: string, user: {
+			id: string;
+			username: string;
+		}][],
 	},
 
 	pinnedUserLists: {
@@ -201,6 +202,9 @@ export const PREF_DEF = {
 	useStickyIcons: {
 		default: true,
 	},
+	enableHighQualityImagePlaceholders: {
+		default: true,
+	},
 	showFixedPostForm: {
 		default: false,
 	},
@@ -211,9 +215,6 @@ export const PREF_DEF = {
 		default: true,
 	},
 	useReactionPickerForContextMenu: {
-		default: false,
-	},
-	showGapBetweenNotesInTimeline: {
 		default: false,
 	},
 	instanceTicker: {
@@ -239,6 +240,12 @@ export const PREF_DEF = {
 	},
 	numberOfPageCache: {
 		default: 3,
+	},
+	pollingInterval: {
+		// 1 ... 低
+		// 2 ... 中
+		// 3 ... 高
+		default: 2,
 	},
 	showNoteActionsOnlyHover: {
 		default: false,
@@ -276,9 +283,6 @@ export const PREF_DEF = {
 	keepScreenOn: {
 		default: false,
 	},
-	disableStreamingTimeline: {
-		default: false,
-	},
 	useGroupedNotifications: {
 		default: true,
 	},
@@ -297,6 +301,9 @@ export const PREF_DEF = {
 		default: false,
 	},
 	enableHorizontalSwipe: {
+		default: false,
+	},
+	enablePullToRefresh: {
 		default: true,
 	},
 	useNativeUiForVideoAudioPlayer: {
@@ -332,8 +339,14 @@ export const PREF_DEF = {
 	showNavbarSubButtons: {
 		default: true,
 	},
+	showTitlebar: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
+	},
+	mutingEmojis: {
+		default: [] as string[],
 	},
 
 	'sound.masterVolume': {

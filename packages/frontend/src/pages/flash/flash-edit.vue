@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
@@ -24,16 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkCodeEditor>
 		</div>
-	</MkSpacer>
+	</div>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer>
+			<div class="_spacer">
 				<div class="_buttons">
 					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 					<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 				</div>
-			</MkSpacer>
+			</div>
 		</div>
 	</template>
 </PageWithHeader>
