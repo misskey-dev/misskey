@@ -1623,6 +1623,7 @@ _serverSettings:
   signToActivityPubGet: "对 GET 请求签名"
   proxyRemoteFiles: "代理远程文件"
   userGeneratedContentsVisibilityForVisitor: "用户生成内容对非用户的可见性"
+  userGeneratedContentsVisibilityForVisitor_description: "这对于防止诸如难以审核的不适当的远程内容通过您自己的服务器无意中在互联网上公开等问题很有用。"
   _userGeneratedContentsVisibilityForVisitor:
     all: "全部公开"
     localOnly: "仅公开本地内容，隐藏远程内容"
