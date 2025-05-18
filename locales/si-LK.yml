@@ -9,7 +9,10 @@ password: "මුරපදය"
 ok: "හරි"
 gotIt: "තේරුණා"
 cancel: "අවලංගු කරන්න"
+noThankYou: "එපා, ස්තුතියි"
+noNotifications: "දැනුම්දීම් නැත"
 instance: "සර්වර්"
+settings: "සැකසුම්"
 login: "පිවිසෙන්න"
 users: "පරිශීලක"
 note: "නෝට්"
@@ -22,6 +25,8 @@ searchByGoogle: "සොයන්න"
 _sfx:
   note: "නෝට්"
   notification: "දැනුම්දීම්"
+_2fa:
+  renewTOTPCancel: "එපා, ස්තුතියි"
 _widgets:
   notifications: "දැනුම්දීම්"
 _profile:
