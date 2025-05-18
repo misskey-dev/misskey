@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MoreThan, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import { MoreThan, In } from 'typeorm';
 import { USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { UsersRepository, MutingsRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js'; // MiUser型をインポート
+import type { UsersRepository, MutingsRepository, UserListMembershipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
-import { UserMutingService } from '@/core/UserMutingService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -84,8 +83,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
+
 		private userFollowingService: UserFollowingService,
-		private userMutingService: UserMutingService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// オンラインユーザー総数の取得
@@ -109,47 +111,66 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				select: ['muteeId'],
 			}).then(mutings => mutings.map(m => m.muteeId));
 
-			// 最近アクティブなすべてのユーザーを取得（showActiveStatusを含む）
+			// 最近アクティブなすべてのユーザーを取得
 			const activeUsers = await this.usersRepository.find({
 				where: {
 					lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),
-					showActiveStatus: true, // showActiveStatus=trueのユーザーのみ
 				},
-				select: ['id', 'showActiveStatus'],
+				select: ['id', 'activeStatusVisibility'],
 			});
 
-			// アクティブかつshowActiveStatus=trueのユーザーのIDのみの配列（ミュートしているユーザーを除外）
-			const activeUserIds = activeUsers
-				.map(user => user.id)
-				.filter(id => !mutingIds.includes(id));
+			// 表示すべきユーザーIDのリストを作成
+			let visibleUserIds: string[] = [];
 
-			// 1. 相互フォロー関係のユーザーIDを抽出 (showActiveStatus=trueのユーザーのみ)
-			const mutualFollowingIds: string[] = [];
+			// 管理者の場合は全ユーザーを表示（ミュートしているユーザーを除く）
+			if (me && await this.roleService.isAdministrator(me)) {
+				visibleUserIds = activeUsers
+					.map(user => user.id)
+					.filter(id => !mutingIds.includes(id));
+			} else {
+				// 通常のユーザーの場合は各ユーザーの公開設定に従って判断
+				for (const user of activeUsers) {
+					// 旧システムからの移行期間の互換性処理を削除し、常にactiveStatusVisibilityを使用
+					const visibility = user.activeStatusVisibility || { type: 'never' };
 
-			for (const userId of activeUserIds) {
-				if (userId === me.id) continue; // 自分自身は除外（後で別条件で追加）
+					// 自分自身、ミュート、非公開設定のチェック
+					if (user.id === me.id) {
+						visibleUserIds.push(user.id);
+						continue;
+					}
+					if (visibility.type === 'never' || mutingIds.includes(user.id)) continue;
 
-				// UserFollowingServiceを使って相互フォロー関係をチェック
-				const isMutual = await this.userFollowingService.isMutual(me.id, userId);
-				if (isMutual) {
-					mutualFollowingIds.push(userId);
+					// 各可視性タイプに応じた処理
+					if (visibility.type === 'all') {
+						visibleUserIds.push(user.id);
+					} else if (visibility.type === 'following') {
+						const isFollowing = await this.userFollowingService.isFollowing(user.id, me.id);
+						if (isFollowing) visibleUserIds.push(user.id);
+					} else if (visibility.type === 'followers') {
+						const isFollower = await this.userFollowingService.isFollowing(me.id, user.id);
+						if (isFollower) visibleUserIds.push(user.id);
+					} else if (visibility.type === 'mutualFollow') {
+						const isMutual = await this.userFollowingService.isMutual(me.id, user.id);
+						if (isMutual) visibleUserIds.push(user.id);
+					} else if (visibility.type === 'followingOrFollower') {
+						const [isFollowing, isFollower] = await Promise.all([
+							this.userFollowingService.isFollowing(me.id, user.id),
+							this.userFollowingService.isFollowing(user.id, me.id),
+						]);
+						if (isFollowing || isFollower) visibleUserIds.push(user.id);
+					} else if (visibility.type === 'list' && visibility.userListId) {
+						// userが選択したリストのメンバーにmeが含まれているかチェック
+						const membership = await this.userListMembershipsRepository.findOneBy({
+							userListId: visibility.userListId,
+							userId: me.id,
+						});
+
+						if (membership) visibleUserIds.push(user.id);
+					}
 				}
 			}
 
-			// 2. 自分のshowActiveStatusをチェック
-			const myUser = await this.usersRepository.findOneBy({
-				id: me.id,
-			});
-
-			// 3. 表示すべきユーザーIDのリストを作成
-			const visibleUserIds = [...mutualFollowingIds]; // 相互フォロワーかつshowActiveStatus=trueのユーザー
-
-			// 自分自身のshowActiveStatusが有効なら自分も追加
-			if (myUser?.showActiveStatus === true) {
-				visibleUserIds.push(me.id);
-			}
-
-			// 4. 詳細情報を取得 (lastActiveDateを文字列に変換)
+			// 詳細情報を取得（配列が空の場合は空文字ID指定でクエリを回避）
 			const usersData = await this.usersRepository.find({
 				select: {
 					id: true,
@@ -161,7 +182,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					lastActiveDate: true,
 				},
 				where: {
-					id: In(visibleUserIds.length > 0 ? visibleUserIds : ['']), // 空配列回避
+					id: In(visibleUserIds.length > 0 ? visibleUserIds : ['']),
 					lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),
 				},
 				order: {
@@ -169,8 +190,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				},
 			});
 
-			// userパラメータに型を指定
-			const details = usersData.map((user: Pick<MiUser, 'id' | 'username' | 'name' | 'avatarUrl' | 'avatarBlurhash' | 'host' | 'lastActiveDate'>) => ({
+			// lastActiveDateをISOString形式に変換
+			const details = usersData.map(user => ({
 				...user,
 				lastActiveDate: user.lastActiveDate?.toISOString() ?? new Date().toISOString(),
 			}));

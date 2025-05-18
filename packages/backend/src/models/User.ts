@@ -36,10 +36,15 @@ export class MiUser {
 	})
 	public hideOnlineStatus: boolean;
 
-	@Column('boolean', {
-		default: false,
+	@Column('jsonb', {
+		default: {
+			type: 'mutualFollow', // デフォルトは相互フォロー
+		},
 	})
-	public showActiveStatus: boolean;
+	public activeStatusVisibility: {
+		type: 'all' | 'following' | 'followers' | 'mutualFollow' | 'followingOrFollower' | 'list' | 'never',
+		userListId?: string, // typeがlistの場合に使用
+	} & Record<string, any>;
 
 	@Column('boolean', {
 		default: false,

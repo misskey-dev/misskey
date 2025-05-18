@@ -175,7 +175,36 @@ export const paramDef = {
 		isLocked: { type: 'boolean' },
 		isExplorable: { type: 'boolean' },
 		hideOnlineStatus: { type: 'boolean' },
-		showActiveStatus: { type: 'boolean' },
+		activeStatusVisibility: {
+			type: 'object',
+			nullable: false,
+			oneOf: [
+				{
+					type: 'object',
+					properties: {
+						type: {
+							type: 'string',
+							enum: ['all', 'following', 'followers', 'mutualFollow', 'followingOrFollower', 'never'],
+						},
+					},
+					required: ['type'],
+				},
+				{
+					type: 'object',
+					properties: {
+						type: {
+							type: 'string',
+							enum: ['list'],
+						},
+						userListId: {
+							type: 'string',
+							format: 'misskey:id',
+						},
+					},
+					required: ['type', 'userListId'],
+				},
+			],
+		},
 		hideSearchResult: { type: 'boolean' },
 		publicReactions: { type: 'boolean' },
 		hideActivity: { type: 'boolean' },
@@ -346,7 +375,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 			if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
 			if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
-			if (typeof ps.showActiveStatus === 'boolean') updates.showActiveStatus = ps.showActiveStatus;
+			if (ps.activeStatusVisibility !== undefined) updates.activeStatusVisibility = ps.activeStatusVisibility;
 			if (typeof ps.hideSearchResult === 'boolean') updates.hideSearchResult = ps.hideSearchResult;
 			if (typeof ps.publicReactions === 'boolean') profileUpdates.publicReactions = ps.publicReactions;
 			if (typeof ps.hideActivity === 'boolean') profileUpdates.hideActivity = ps.hideActivity;

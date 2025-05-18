@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<MkResult v-else type="empty" :text="!$i ? i18n.ts.signinRequired : i18n.ts.noMutualFollowers" :class="$style.result"/>
+		<MkResult v-else type="empty" :text="!$i ? i18n.ts.signinRequired : i18n.ts.noActiveUsers" :class="$style.result"/>
 	</div>
 </MkContainer>
 </template>

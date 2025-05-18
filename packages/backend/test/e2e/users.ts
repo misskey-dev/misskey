@@ -130,7 +130,7 @@ describe('ユーザー', () => {
 			isDeleted: user.isDeleted,
 			twoFactorBackupCodesStock: user.twoFactorBackupCodesStock,
 			hideOnlineStatus: user.hideOnlineStatus,
-			showActiveStatus: user.showActiveStatus,
+			activeStatusVisibility: user.activeStatusVisibility,
 			hasUnreadSpecifiedNotes: user.hasUnreadSpecifiedNotes,
 			hasUnreadMentions: user.hasUnreadMentions,
 			hasUnreadAnnouncement: user.hasUnreadAnnouncement,
@@ -372,7 +372,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.isDeleted, false);
 		assert.strictEqual(response.twoFactorBackupCodesStock, 'none');
 		assert.strictEqual(response.hideOnlineStatus, false);
-		assert.strictEqual(response.showActiveStatus, false);
+		assert.deepStrictEqual(response.activeStatusVisibility, { type: 'mutualFollow' });
 		assert.strictEqual(response.hasUnreadSpecifiedNotes, false);
 		assert.strictEqual(response.hasUnreadMentions, false);
 		assert.strictEqual(response.hasUnreadAnnouncement, false);
@@ -445,8 +445,13 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ isExplorable: true }) },
 		{ parameters: () => ({ hideOnlineStatus: true }) },
 		{ parameters: () => ({ hideOnlineStatus: false }) },
-		{ parameters: () => ({ showActiveStatus: true }) },
-		{ parameters: () => ({ showActiveStatus: false }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'all' } }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'following' } }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'followers' } }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'mutualFollow' } }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'followingOrFollower' } }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'never' } }) },
+		{ parameters: () => ({ activeStatusVisibility: { type: 'list', userListId: 'xxx' } }) },
 		{ parameters: () => ({ publicReactions: false }) },
 		{ parameters: () => ({ publicReactions: true }) },
 		{ parameters: () => ({ autoAcceptFollowed: true }) },

@@ -82,14 +82,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSelect>
 		</SearchMarker>
 
+		<SearchMarker :keywords="['active', 'status', 'visibility', 'online']">
+			<MkSelect v-model="activeStatusVisibility.type" @update:modelValue="save()">
+				<template #label><SearchLabel>{{ i18n.ts.activeStatusVisibility }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<option value="all">{{ i18n.ts.public }}</option>
+				<option value="following">{{ i18n.ts.following }}</option>
+				<option value="followers">{{ i18n.ts.followers }}</option>
+				<option value="mutualFollow">{{ i18n.ts.mutualFollow }}</option>
+				<option value="followingOrFollower">{{ i18n.ts.followingOrFollower }}</option>
+				<option value="list">{{ i18n.ts.lists }}</option>
+				<option value="never">{{ i18n.ts.private }}</option>
+			</MkSelect>
+
+			<div v-if="activeStatusVisibility.type === 'list'" class="_panel" style="padding: 12px; margin-top: 8px; background: var(--panelHighlight); border-radius: 8px;">
+				<!-- リストが選択されていない場合は追加ボタンを表示 -->
+				<div v-if="!activeStatusVisibility.userListId || !selectedList">
+					<MkButton primary full @click="selectActiveStatusList()">
+						<i class="ti ti-plus" style="margin-right: 6px;"></i>
+						{{ i18n.ts.selectList }}
+					</MkButton>
+				</div>
+
+				<!-- リストが選択されている場合はリスト名と削除ボタンを表示 -->
+				<div v-else>
+					<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+						<div style="display: flex; align-items: center; flex-grow: 1; overflow: hidden;">
+							<i class="ti ti-list" style="margin-right: 8px;"></i>
+							<span style="font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+								{{ selectedList.name }}
+							</span>
+						</div>
+						<MkButton danger compact style="margin-left: 8px;" @click="removeActiveStatusList()">
+							<i class="ti ti-trash"></i>
+							<span class="text">{{ i18n.ts.remove }}</span>
+						</MkButton>
+					</div>
+				</div>
+			</div>
+		</searchmarker>
+
 		<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
 			{{ i18n.ts.hideOnlineStatus }}
 			<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
-		</MkSwitch>
-		<!-- privacy.vue の変更 -->
-		<MkSwitch v-model="showActiveStatus" @update:modelValue="save()">
-			<template #label><SearchLabel>{{ i18n.ts.showActiveStatus }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-			<template #caption>{{ i18n.ts.showActiveStatusDescription }}</template>
 		</MkSwitch>
 		<MkSwitch v-model="hideSearchResult" @update:modelValue="save()">
 			<template #label><SearchLabel>{{ i18n.ts.hideSearchResult }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
@@ -227,7 +261,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -257,7 +291,6 @@ const requireSigninToViewContents = ref($i.requireSigninToViewContents ?? false)
 const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null);
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
-const showActiveStatus = ref($i.showActiveStatus);
 const hideSearchResult = ref($i.hideSearchResult);
 const publicReactions = ref($i.publicReactions);
 const hideActivity = ref($i.hideActivity);
@@ -266,6 +299,7 @@ const notesVisibility = ref($i.notesVisibility);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
 const ffVisibility = ref($i.ffVisibility);
+const activeStatusVisibility = ref($i.activeStatusVisibility);
 const chatScope = ref($i.chatScope);
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
@@ -292,6 +326,41 @@ watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 	save();
 });
 
+// 選択されているリスト情報を取得する
+const selectedList = computed(() => {
+	if (!activeStatusVisibility.value?.type === 'list' || !activeStatusVisibility.value?.userListId) return null;
+	return userLists.value.find(list => list.id === activeStatusVisibility.value.userListId) || null;
+});
+
+// リスト選択ダイアログを表示
+async function selectActiveStatusList() {
+	const lists = await misskeyApi('users/lists/list');
+	const { canceled, result: list } = await os.select({
+		title: i18n.ts.selectList,
+		items: lists.map(x => ({
+			value: x, text: x.name,
+		})),
+	});
+	if (canceled) return;
+	if (list == null) return;
+
+	// 選択されたリストをセット
+	activeStatusVisibility.value = {
+		type: 'list',
+		userListId: list.id,
+	};
+	save();
+}
+
+// 選択されたリストをクリア
+function removeActiveStatusList() {
+	activeStatusVisibility.value = {
+		type: 'list',
+		userListId: null,
+	};
+	save();
+}
+
 async function update_requireSigninToViewContents(value: boolean) {
 	if (value === true && instance.federation !== 'none') {
 		const { canceled } = await os.confirm({
@@ -317,7 +386,6 @@ function save() {
 		makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
 		makeNotesHiddenBefore: makeNotesHiddenBefore.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
-		showActiveStatus: !!showActiveStatus.value,
 		hideSearchResult: !!hideSearchResult.value,
 		publicReactions: !!publicReactions.value,
 		hideActivity: !!hideActivity.value,
@@ -326,6 +394,7 @@ function save() {
 		followingVisibility: followingVisibility.value,
 		followersVisibility: followersVisibility.value,
 		ffVisibility: ffVisibility.value,
+		activeStatusVisibility: activeStatusVisibility.value,
 		chatScope: chatScope.value,
 	});
 }
@@ -338,4 +407,16 @@ definePage(() => ({
 	title: i18n.ts.privacy,
 	icon: 'ti ti-lock-open',
 }));
+
+// ユーザーリストのデータ取得のみ保持
+const userLists = ref([]);
+
+// コンポーネントマウント時にユーザーリストを取得
+onMounted(async () => {
+	try {
+		userLists.value = await misskeyApi('users/lists/list');
+	} catch (e) {
+		console.error('Failed to fetch user lists', e);
+	}
+});
 </script>

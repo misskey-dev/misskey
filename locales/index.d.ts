@@ -107,9 +107,9 @@ export interface Locale extends ILocale {
      */
     "noNotifications": string;
     /**
-     * 相互フォロワーはいません
+     * アクティブユーザーはいません
      */
-    "noMutualFollowers": string;
+    "noActiveUsers": string;
     /**
      * 再生中の音楽はありません
      */
@@ -3471,13 +3471,9 @@ export interface Locale extends ILocale {
      */
     "hideOnlineStatusDescription": string;
     /**
-     * アクティブ状態を表示
+     * アクティブ状態の公開範囲
      */
-    "showActiveStatus": string;
-    /**
-     * アクティブ状態を相互フォロワーの「アクティブユーザー」ウィジットで表示します。
-     */
-    "showActiveStatusDescription": string;
+    "activeStatusVisibility": string;
     /**
      * 自分のノートを他人の検索結果から隠す
      */

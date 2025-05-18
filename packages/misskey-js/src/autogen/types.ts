@@ -4220,7 +4220,15 @@ export type components = {
       /** @enum {string} */
       twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
       hideOnlineStatus: boolean;
-      showActiveStatus: boolean;
+      activeStatusVisibility: OneOf<[{
+        /** @enum {string} */
+        type: 'all' | 'following' | 'followers' | 'mutualFollow' | 'followingOrFollower' | 'never';
+      }, {
+        /** @enum {string} */
+        type: 'list';
+        /** Format: misskey:id */
+        userListId: string;
+      }]>;
       hideSearchResult: boolean;
       hasUnreadSpecifiedNotes: boolean;
       hasUnreadMentions: boolean;
@@ -4414,7 +4422,7 @@ export type components = {
         }[];
     };
     UserDetailedNotMe: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'];
-    MeDetailed: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'] & components['schemas']['MeDetailedOnly'];
+    MeDetailed: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMe'] & components['schemas']['MeDetailedOnly'];
     UserDetailed: components['schemas']['UserDetailedNotMe'] | components['schemas']['MeDetailed'];
     User: components['schemas']['UserLite'] | components['schemas']['UserDetailed'];
     UserList: {
@@ -23368,7 +23376,15 @@ export type operations = {
           isLocked?: boolean;
           isExplorable?: boolean;
           hideOnlineStatus?: boolean;
-          showActiveStatus?: boolean;
+          activeStatusVisibility?: OneOf<[{
+            /** @enum {string} */
+            type: 'all' | 'following' | 'followers' | 'mutualFollow' | 'followingOrFollower' | 'never';
+          }, {
+            /** @enum {string} */
+            type: 'list';
+            /** Format: misskey:id */
+            userListId: string;
+          }]>;
           hideSearchResult?: boolean;
           publicReactions?: boolean;
           hideActivity?: boolean;

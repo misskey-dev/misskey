@@ -552,9 +552,38 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		showActiveStatus: {
-			type: 'boolean',
+		activeStatusVisibility: {
+			type: 'object',
 			nullable: false, optional: false,
+			oneOf: [
+				{
+					type: 'object',
+					properties: {
+						type: {
+							type: 'string',
+							enum: ['all', 'following', 'followers', 'mutualFollow', 'followingOrFollower', 'never'],
+							nullable: false,
+						},
+					},
+					required: ['type'],
+				},
+				{
+					type: 'object',
+					properties: {
+						type: {
+							type: 'string',
+							enum: ['list'],
+							nullable: false,
+						},
+						userListId: {
+							type: 'string',
+							format: 'misskey:id',
+							nullable: false,
+						},
+					},
+					required: ['type', 'userListId'],
+				},
+			],
 		},
 		hideSearchResult: {
 			type: 'boolean',
@@ -760,7 +789,7 @@ export const packedMeDetailedSchema = {
 		},
 		{
 			type: 'object',
-			ref: 'UserDetailedNotMeOnly',
+			ref: 'UserDetailedNotMe',
 		},
 		{
 			type: 'object',

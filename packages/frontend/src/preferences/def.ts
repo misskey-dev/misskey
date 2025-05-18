@@ -499,7 +499,13 @@ export const PREF_DEF = {
 	showPreferencesAutoCloudBackupSuggestion: {
 		default: true,
 	},
-	showActiveStatus: {
+	'activeStatusVisibility': {
+		default: { type: 'mutualFollow' } as {
+			type: 'all' | 'following' | 'followers' | 'mutualFollow' | 'followingOrFollower' | 'never' | 'list';
+			userListId?: string;
+		},
+	},
+	hideOnlineStatus: {
 		default: false,
 	},
 } satisfies PreferencesDefinition;
