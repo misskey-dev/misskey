@@ -1,8 +1,13 @@
 ---
 _lang_: "සිංහල"
 monthAndDay: "{month}-{day}"
+search: "සොයන්න"
+reset: "යළි සකසන්න"
+notifications: "දැනුම්දීම්"
 username: "පරිශීලක නාමය"
 password: "මුරපදය"
+ok: "හරි"
+gotIt: "තේරුණා"
 cancel: "අවලංගු කරන්න"
 instance: "සර්වර්"
 login: "පිවිසෙන්න"
@@ -13,10 +18,17 @@ instances: "සර්වර්"
 smtpUser: "පරිශීලක නාමය"
 smtpPass: "මුරපදය"
 user: "පරිශීලක"
+searchByGoogle: "සොයන්න"
 _sfx:
   note: "නෝට්"
+  notification: "දැනුම්දීම්"
+_widgets:
+  notifications: "දැනුම්දීම්"
 _profile:
   username: "පරිශීලක නාමය"
 _notification:
   _types:
     login: "පිවිසෙන්න"
+_deck:
+  _columns:
+    notifications: "දැනුම්දීම්"
