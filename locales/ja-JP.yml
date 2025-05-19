@@ -1445,6 +1445,7 @@ _settings:
   contentsUpdateFrequency: "コンテンツの取得頻度"
   contentsUpdateFrequency_description: "高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。"
   contentsUpdateFrequency_description2: "リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。"
+  showUrlPreview: "URLプレビューを表示する"
 
   _chat:
     showSenderName: "送信者の名前を表示"

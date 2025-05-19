@@ -5781,6 +5781,10 @@ export interface Locale extends ILocale {
          * リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。
          */
         "contentsUpdateFrequency_description2": string;
+        /**
+         * URLプレビューを表示する
+         */
+        "showUrlPreview": string;
         "_chat": {
             /**
              * 送信者の名前を表示

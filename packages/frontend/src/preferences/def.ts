@@ -348,6 +348,9 @@ export const PREF_DEF = {
 	mutingEmojis: {
 		default: [] as string[],
 	},
+	showUrlPreview: {
+		default: true,
+	},
 
 	'sound.masterVolume': {
 		default: 0.3,

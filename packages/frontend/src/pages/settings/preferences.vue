@@ -602,6 +602,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
+
+						<template v-if="instance.enableUrlPreview">
+							<SearchMarker :keywords="['url', 'preview']">
+								<MkPreferenceContainer k="showUrlPreview">
+									<MkSwitch v-model="showUrlPreview">
+										<template #label><SearchLabel>{{ i18n.ts._settings.showUrlPreview }}</SearchLabel></template>
+										<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</template>
+
 						<MkInfo>
 							<div class="_gaps_s">
 								<div>{{ i18n.ts._clientPerformanceIssueTip.title }}</div>
@@ -845,6 +857,7 @@ const chatShowSenderName = prefer.model('chat.showSenderName');
 const chatSendOnEnter = prefer.model('chat.sendOnEnter');
 const useStickyIcons = prefer.model('useStickyIcons');
 const enableHighQualityImagePlaceholders = prefer.model('enableHighQualityImagePlaceholders');
+const showUrlPreview = prefer.model('showUrlPreview');
 const reduceAnimation = prefer.model('animation', v => !v, v => !v);
 const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
