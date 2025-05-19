@@ -602,17 +602,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
-						<template v-if="instance.enableUrlPreview">
-							<SearchMarker :keywords="['url', 'preview']">
-								<MkPreferenceContainer k="showUrlPreview">
-									<MkSwitch v-model="showUrlPreview">
-										<template #label><SearchLabel>{{ i18n.ts._settings.showUrlPreview }}</SearchLabel></template>
-										<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
-						</template>
-
 						<MkInfo>
 							<div class="_gaps_s">
 								<div>{{ i18n.ts._clientPerformanceIssueTip.title }}</div>
@@ -655,9 +644,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{{ i18n.ts._dataSaver._avatar.title }}
 								<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
 							</MkSwitch>
-							<MkSwitch v-model="dataSaver.urlPreview">
-								{{ i18n.ts._dataSaver._urlPreview.title }}
-								<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+							<MkSwitch v-model="dataSaver.disableUrlPreview" :disabled="!instance.enableUrlPreview">
+								{{ i18n.ts._dataSaver._disableUrlPreview.title }}
+								<template #caption>{{ i18n.ts._dataSaver._disableUrlPreview.description }}</template>
+							</MkSwitch>
+							<MkSwitch v-model="dataSaver.urlPreviewThumbnail" :disabled="!instance.enableUrlPreview || dataSaver.disableUrlPreview">
+								{{ i18n.ts._dataSaver._urlPreviewThumbnail.title }}
+								<template #caption>{{ i18n.ts._dataSaver._urlPreviewThumbnail.description }}</template>
 							</MkSwitch>
 							<MkSwitch v-model="dataSaver.code">
 								{{ i18n.ts._dataSaver._code.title }}
@@ -856,7 +849,6 @@ const chatShowSenderName = prefer.model('chat.showSenderName');
 const chatSendOnEnter = prefer.model('chat.sendOnEnter');
 const useStickyIcons = prefer.model('useStickyIcons');
 const enableHighQualityImagePlaceholders = prefer.model('enableHighQualityImagePlaceholders');
-const showUrlPreview = prefer.model('showUrlPreview');
 const reduceAnimation = prefer.model('animation', v => !v, v => !v);
 const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
