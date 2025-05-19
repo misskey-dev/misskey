@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFoldableSection>
 					<MkFoldableSection v-if="user.communityRoles.length > 0" class="role-folder" :expanded="user.communityRoles.length < 5">
-						<template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
+						<template #header>{{ i18n.ts.communityRole }}</template>
 						<div class="roles">
 							<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
 								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
