@@ -18,8 +18,6 @@ export const meta = {
 
 	errors: {
 	},
-
-	res: {},
 } as const;
 
 export const paramDef = {
