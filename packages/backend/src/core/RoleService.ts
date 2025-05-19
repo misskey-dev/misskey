@@ -128,7 +128,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canUseBlockedNotification: false,
 	canUseUnBlockedNotification: false,
 	canViewCharts: false,
-	canAddRoles: true,
+	canAddRoles: false,
 };
 
 @Injectable()

@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed, ref, watch } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -82,6 +82,7 @@ import MkColorInput from '@/components/MkColorInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import DialogRole from '@/pages/DialogRole.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { $i } from '@/i.js';
 
 const props = defineProps<{
 	role?: any,
@@ -101,6 +102,54 @@ let roleList = [];
 
 const rolesAssigned = computed(() => assignedList);
 const roles = computed(() => roleList);
+
+// ユーザーの権限チェックのみを使用
+const canAddRolesPermission = computed(() => {
+	return $i && ($i.isAdmin || $i.policies.canAddRoles);
+});
+
+// タブ定義を権限に応じて変更
+const headerTabs = computed(() => {
+	const tabs = [];
+
+	// 編集モードか権限がある場合は add タブを表示
+	if (props.role || canAddRolesPermission.value) {
+		tabs.push({
+			key: 'add',
+			title: i18n.ts.add,
+		});
+	}
+
+	// 「管理」タブは常に表示
+	tabs.push({
+		key: 'manage',
+		title: i18n.ts.manage,
+	});
+
+	return tabs;
+});
+
+// 初期タブを権限に応じて設定（編集時は必ず'add'タブ）
+const tab = ref(props.role ? 'add' : (canAddRolesPermission.value ? 'add' : 'manage'));
+
+// タブの状態を監視し、権限に応じて調整
+watch(() => canAddRolesPermission.value, (hasPermission) => {
+	// 編集モードか権限がある場合は add タブを表示
+	if (props.role || hasPermission) {
+		if (!headerTabs.value.some(tab => tab.key === 'add')) {
+			// 権限が付与されたら動的にタブを追加
+			headerTabs.value.unshift({
+				key: 'add',
+				title: i18n.ts.add,
+			});
+			// 権限が付与されたので初期タブも変更
+			if (!props.role) tab.value = 'add';
+		}
+	} else {
+		// 管理タブのみ表示
+		tab.value = 'manage';
+	}
+}, { immediate: true });
 
 watch(() => iconId.value, async () => {
 	if (iconId.value == null) {
@@ -126,15 +175,6 @@ onMounted(async () => {
 		communityPublicOnly: true,
 	}).then(v => v.filter(r => !assignedList.some(ra => r.id === ra.id)));
 });
-
-const tab = ref('add');
-const headerTabs = computed(() => [{
-	key: 'add',
-	title: i18n.ts.add,
-}, {
-	key: 'manage',
-	title: i18n.ts.manage,
-}]);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,

@@ -23,20 +23,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkRolePreview v-for="role in rolesCommunity" :key="role.id" :role="role" :forModeration="false"/>
 		</div>
 	</MkFoldableSection>
+	<!-- 権限がある場合のみ表示 -->
+	<MkButton v-if="canAddRoles" primary rounded @click="createRole">
+		<i class="ti ti-plus"></i> {{ i18n.ts._role.new }}
+	</MkButton>
 </MkSpacer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { $i } from '@/i.js';
 
 const rolesManual = ref<Misskey.entities.Role[] | null>(null);
 const rolesConditional = ref<Misskey.entities.Role[] | null>(null);
 const rolesCommunity = ref<Misskey.entities.Role[] | null>(null);
+const canAddRoles = computed(() => {
+	return $i && ($i.isAdmin || $i.policies.canAddRoles);
+});
 
 misskeyApi('roles/list').then(res => {
 	const roles = res.sort((a, b) => b.displayOrder - a.displayOrder);
@@ -44,6 +53,21 @@ misskeyApi('roles/list').then(res => {
 	rolesConditional.value = roles.filter(x => x.target === 'conditional' && x.permissionGroup !== 'Community');
 	rolesCommunity.value = roles.filter(x => x.permissionGroup === 'Community');
 });
+
+function createRole() {
+	// 権限チェック - 権限がない場合は実行しない
+	if (!canAddRoles.value) {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: i18n.ts.operationForbidden,
+		});
+		return;
+	}
+
+	// 権限がある場合のみダイアログを表示
+	os.popup(defineAsyncComponent(() => import('./role-add-dialog.vue')), {}, {}, 'closed');
+}
 </script>
 
 <style lang="scss" module>
