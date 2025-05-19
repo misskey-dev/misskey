@@ -602,7 +602,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
-
 						<template v-if="instance.enableUrlPreview">
 							<SearchMarker :keywords="['url', 'preview']">
 								<MkPreferenceContainer k="showUrlPreview">
