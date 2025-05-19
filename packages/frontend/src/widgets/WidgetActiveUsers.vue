@@ -17,7 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :user="user" :class="$style.avatar" indicator link preview/>
 				<div :class="$style.userInfo">
 					<div :class="$style.name">
-						<MkA :to="'/@' + user.username">{{ getUserDisplayName(user) }}</MkA>
+						<MkA :to="'/@' + user.username">
+							<MkUserName :user="user" />
+						</MkA>
 					</div>
 					<div v-if="user.name && user.name !== user.username" :class="$style.username">@{{ user.username }}</div>
 				</div>
@@ -42,6 +44,7 @@ import MkAvatar from '@/components/global/MkAvatar.vue';
 import MkA from '@/components/global/MkA.vue';
 import MkResult from '@/components/global/MkResult.vue';
 import MkTime from '@/components/global/MkTime.vue';
+import MkUserName from '@/components/global/MkUserName.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n';
@@ -85,10 +88,6 @@ const activeUsers = ref([]);
 const prevUserIds = ref(new Set());
 const connection = ref(null);
 const isLoggedIn = computed(() => $i != null);
-
-const getUserDisplayName = (user) => {
-	return user.name || user.username;
-};
 
 // 新しいユーザーが表示された時に通知音を鳴らす
 const checkForNewUsers = (users) => {
