@@ -44,7 +44,7 @@ const rolesManual = ref<Misskey.entities.Role[] | null>(null);
 const rolesConditional = ref<Misskey.entities.Role[] | null>(null);
 const rolesCommunity = ref<Misskey.entities.Role[] | null>(null);
 const canAddRoles = computed(() => {
-	return $i && ($i.isAdmin || $i.policies.canAddRoles);
+	return $i && $i.policies.canAddRoles;
 });
 
 misskeyApi('roles/list').then(res => {

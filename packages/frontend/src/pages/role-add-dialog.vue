@@ -49,13 +49,13 @@
 			<div class="_gaps_m">
 				<div class="_gaps_s">
 					<MkFoldableSection>
-						<template #header>Assigned roles</template>
+						<template #header>{{ i18n.ts.assignedRoles }}</template>
 						<div class="_gaps_s">
 							<DialogRole v-for="role in rolesAssigned" :key="role.id" :role="role" :isAssigned="true"/>
 						</div>
 					</MkFoldableSection>
 					<MkFoldableSection>
-						<template #header>Assignable roles</template>
+						<template #header>{{ i18n.ts.assignableRoles }}</template>
 						<div class="_gaps_s">
 							<DialogRole v-for="role in roles" :key="role.id" :role="role" :isAssigned="false"/>
 						</div>
@@ -105,7 +105,7 @@ const roles = computed(() => roleList);
 
 // ユーザーの権限チェックのみを使用
 const canAddRolesPermission = computed(() => {
-	return $i && ($i.isAdmin || $i.policies.canAddRoles);
+	return $i && $i.policies.canAddRoles;
 });
 
 // タブ定義を権限に応じて変更

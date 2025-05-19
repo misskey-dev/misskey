@@ -37,7 +37,7 @@ const props = defineProps<{
 
 // 権限チェック（計算プロパティ）
 const canAddRoles = computed(() => {
-	return $i && ($i.isAdmin || $i.policies.canAddRoles);
+	return $i && $i.policies.canAddRoles;
 });
 
 function roleAction(ev) {

@@ -304,7 +304,7 @@ export const navbarItemDef = reactive({
 		},
 	},
 	roleManager: {
-		title: i18n.ts.manageRole,
+		title: i18n.ts.communityRole,
 		icon: 'ti ti-tags',
 		action: (ev) => {
 			roleManager();
