@@ -86,7 +86,7 @@ async function onPaste(ev: ClipboardEvent) {
 			const ext = lio >= 0 ? pastedFile.name.slice(lio) : '';
 			const formattedName = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
 			const renamedFile = new File([pastedFile], formattedName, { type: pastedFile.type });
-			os.launchUploader([renamedFile], {}).then(driveFiles => {
+			os.launchUploader([renamedFile], { multiple: false }).then(driveFiles => {
 				file.value = driveFiles[0];
 			});
 		}
@@ -131,7 +131,7 @@ function onDrop(ev: DragEvent): void {
 	// ファイルだったら
 	if (ev.dataTransfer.files.length === 1) {
 		ev.preventDefault();
-		os.launchUploader([Array.from(ev.dataTransfer.files)[0]], {});
+		os.launchUploader([Array.from(ev.dataTransfer.files)[0]], { multiple: false });
 		return;
 	} else if (ev.dataTransfer.files.length > 1) {
 		ev.preventDefault();
@@ -177,7 +177,7 @@ function onChangeFile() {
 	if (fileEl.value == null || fileEl.value.files == null) return;
 
 	if (fileEl.value.files[0]) {
-		os.launchUploader(Array.from(fileEl.value.files), {}).then(driveFiles => {
+		os.launchUploader(Array.from(fileEl.value.files), { multiple: false }).then(driveFiles => {
 			file.value = driveFiles[0];
 		});
 	}

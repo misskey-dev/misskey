@@ -772,6 +772,7 @@ export function launchUploader(
 	files: File[],
 	options?: {
 		folderId?: string | null;
+		multiple?: boolean;
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
@@ -779,6 +780,7 @@ export function launchUploader(
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUploaderDialog.vue')), {
 			files: markRaw(files),
 			folderId: options?.folderId,
+			multiple: options?.multiple,
 		}, {
 			done: driveFiles => {
 				if (driveFiles.length === 0) return rej();

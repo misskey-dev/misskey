@@ -291,7 +291,7 @@ function changeAvatar(ev) {
 				});
 			}
 
-			const driveFile = (await os.launchUploader([originalOrCropped], {}))[0];
+			const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
 			done(driveFile);
 		},
 	}, {
@@ -339,7 +339,7 @@ function changeBanner(ev) {
 				});
 			}
 
-			const driveFile = (await os.launchUploader([originalOrCropped], {}))[0];
+			const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
 			done(driveFile);
 		},
 	}, {

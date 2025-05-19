@@ -85,7 +85,7 @@ async function setAvatar(ev) {
 		});
 	}
 
-	const driveFile = (await os.launchUploader([originalOrCropped], {}))[0];
+	const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
 
 	const i = await os.apiWithDialog('i/update', {
 		avatarId: driveFile.id,

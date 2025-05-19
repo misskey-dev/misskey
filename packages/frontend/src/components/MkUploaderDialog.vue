@@ -51,6 +51,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
+			<div v-if="props.multiple">
+				<MkButton style="margin: auto;" :iconOnly="true" rounded @click="chooseFile($event)"><i class="ti ti-plus"></i></MkButton>
+			</div>
+
 			<MkSelect
 				v-if="items.length > 0"
 				v-model="compressionLevel"
@@ -123,8 +127,9 @@ const mimeTypeMap = {
 const props = withDefaults(defineProps<{
 	files: File[];
 	folderId?: string | null;
+	multiple?: boolean;
 }>(), {
-
+	multiple: true,
 });
 
 const emit = defineEmits<{
@@ -316,22 +321,34 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 	}
 }
 
+async function chooseFile(ev: MouseEvent) {
+	const newFiles = await os.chooseFileFromPc({ multiple: true });
+
+	for (const file of newFiles) {
+		initializeFile(file);
+	}
+}
+
+function initializeFile(file: File) {
+	const id = uuid();
+	const filename = file.name ?? 'untitled';
+	const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+	items.value.push({
+		id,
+		name: prefer.s.keepOriginalFilename ? filename : id + extension,
+		progress: null,
+		thumbnail: window.URL.createObjectURL(file),
+		waiting: false,
+		uploading: false,
+		uploaded: null,
+		uploadFailed: false,
+		file: markRaw(file),
+	});
+}
+
 onMounted(() => {
 	for (const file of props.files) {
-		const id = uuid();
-		const filename = file.name ?? 'untitled';
-		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
-		items.value.push({
-			id,
-			name: prefer.s.keepOriginalFilename ? filename : id + extension,
-			progress: null,
-			thumbnail: window.URL.createObjectURL(file),
-			waiting: false,
-			uploading: false,
-			uploaded: null,
-			uploadFailed: false,
-			file: markRaw(file),
-		});
+		initializeFile(file);
 	}
 });
 </script>
