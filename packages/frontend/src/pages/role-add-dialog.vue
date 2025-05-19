@@ -12,7 +12,7 @@
 >
 	<template v-if="!props.role" #header>
 		<div :class="$style.header">
-			<span>{{ i18n.ts.roles }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></span>
+			<span>{{ i18n.ts.communityRole }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></span>
 			<XTabs :class="$style.tabs" :rootEl="dialog" :tab="tab" :tabs="headerTabs" @update:tab="key => tab = key"/>
 		</div>
 	</template>
