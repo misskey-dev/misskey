@@ -1442,6 +1442,7 @@ _settings:
   contentsUpdateFrequency: "Freqüència d'adquisició del contingut"
   contentsUpdateFrequency_description: "Com més alt sigui l'adquisició de contingut en temps real, més baixa el rendiment i més consum de dades i bateria."
   contentsUpdateFrequency_description2: "Quan s'activa el mode en temps real, el contingut s'actualitza en temps real, independentment d'aquesta configuració."
+  showUrlPreview: "Mostrar vista prèvia d'URL"
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
@@ -2830,6 +2831,12 @@ _dataSaver:
   _avatar:
     title: "Avatars animats"
     description: "Detenir l'animació dels avatars animats. Les imatges animades solen tenir un pes més gran que les imatges normals, reduint el tràfic disponible."
+  _urlPreviewThumbnail:
+    title: "Amagar les miniatures de la vista prèvia d'URL"
+    description: "Les imatges en miniatura de la vista prèvia d'URL ja no es carreguen"
+  _disableUrlPreview:
+    title: "Desactivar la vista prèvia d'URL"
+    description: "Desactiva la funció de previsualització d'URL. A diferència de les imatges en miniatura soles, això redueix la càrrega de la mateixa informació vinculada."
   _code:
     title: "Ressaltat del codi "
     description: "Quan s'utilitza codi MFM, no es llegeix fins que es copiï. En els punts destacats del codi s'han de llegir els fitxers definits per a cada llengua que resulti alt, però no es poden llegir automàticament, per la qual cosa es poden reduir les quantitats de comunicació."
