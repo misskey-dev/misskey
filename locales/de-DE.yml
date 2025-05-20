@@ -2797,9 +2797,6 @@ _dataSaver:
   _avatar:
     title: "Animierte Profilbilder deaktivieren"
     description: "Die Animation von Profilbildern wird angehalten. Da animierte Bilder eine größere Dateigröße haben können als normale Bilder, kann dies den Datenverkehr weiter reduzieren."
-  _urlPreview:
-    title: "URL-Vorschaubilder ausblenden"
-    description: "URL-Vorschaubilder werden nicht mehr geladen."
   _code:
     title: "Code-Hervorhebungen ausblenden"
     description: "Wenn Code-Hervorhebungen in MFM usw. verwendet werden, werden sie erst geladen, wenn sie angetippt werden. Die Syntaxhervorhebung erfordert das Herunterladen der Definitionsdateien für jede Programmiersprache. Es ist daher zu erwarten, dass die Deaktivierung des automatischen Ladens dieser Dateien die Menge des Datenverkehrs reduziert."
