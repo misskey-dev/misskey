@@ -2830,9 +2830,6 @@ _dataSaver:
   _avatar:
     title: "Imagem do avatar"
     description: "Parar animação de avatares. Imagens animadas podem ter um arquivo mais pesado do que imagens normais, potencialmente levando a reduções no tráfego de dados."
-  _urlPreview:
-    title: "Miniaturas na prévia de URLs"
-    description: "Miniaturas na prévia de URLs não serão mais carregadas."
   _code:
     title: "Destaque de código"
     description: "Se as notações de formatação de código forem utilizadas em MFM, elas não irão carregar até serem selecionadas. Destaque de código exige baixar arquivos de alta definição para cada linguagem de programação. Logo, desabilitar o carregamento automático desses arquivos diminui a quantidade de informação comunicada."
