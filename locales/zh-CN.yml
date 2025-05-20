@@ -2821,9 +2821,6 @@ _dataSaver:
   _avatar:
     title: "头像"
     description: "停止播放头像的动画。 由于动画图片的文件大小可能比普通图像大，这可以进一步减少数据流量。"
-  _urlPreview:
-    title: "URL预览缩略图\n"
-    description: "将不再加载 URL 预览缩略图。"
   _code:
     title: "代码高亮"
     description: "如果使用了代码高亮标记，例如在 MFM 中，则在点击之前不会加载。 代码高亮要求加载每种高亮语言的定义文件，由于这些文件不再自动加载，因此有望减少数据传输量。"
