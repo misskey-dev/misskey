@@ -2121,7 +2121,6 @@ _theme:
     buttonBg: "Fondo de botón"
     buttonHoverBg: "Fondo de botón (hover)"
     inputBorder: "Borde de los campos de entrada"
-    driveFolderBg: "Fondo de capeta del drive"
     badge: "Medalla"
     messageBg: "Fondo de chat"
     fgHighlighted: "Texto resaltado"
