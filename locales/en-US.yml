@@ -1442,6 +1442,7 @@ _settings:
   contentsUpdateFrequency: "Frequency of content retrieval"
   contentsUpdateFrequency_description: "The higher the value the more the content updates but it lowers the performance and increases the traffic and memory consumption."
   contentsUpdateFrequency_description2: "When real-time mode is on, content is updated in real time regardless of this setting."
+  showUrlPreview: "Show URL preview"
   _chat:
     showSenderName: "Show sender's name"
     sendOnEnter: "Press Enter to send"
@@ -2830,6 +2831,12 @@ _dataSaver:
   _avatar:
     title: "Avatar image"
     description: "Stop avatar image animation. Animated images can be larger in file size than normal images, potentially leading to further reductions in data traffic."
+  _urlPreviewThumbnail:
+    title: "Hide URL preview thumbnails"
+    description: "URL preview thumbnail images will no longer be loaded."
+  _disableUrlPreview:
+    title: "Disable URL preview"
+    description: "Disables the URL preview function. Unlike thumbnail images, this function reduces the loading of the linked information itself."
   _code:
     title: "Code highlighting"
     description: "If code highlighting notations are used in MFM, etc., they will not load until tapped. Syntax highlighting requires downloading the highlight definition files for each programming language. Therefore, disabling the automatic loading of these files is expected to reduce the amount of communication data."
