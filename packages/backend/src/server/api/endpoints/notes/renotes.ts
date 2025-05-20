@@ -72,10 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateBlockedHostQueryForNote(query);
-			this.queryService.generateSuspendedUserQueryForNote(query);
-			if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
-			if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
+			this.queryService.generateBaseNoteFilteringQuery(query, me);
 
 			const renotes = await query.limit(ps.limit).getMany();
 
