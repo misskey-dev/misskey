@@ -1645,7 +1645,6 @@ _theme:
     buttonBg: "Pozadí tlačítka"
     buttonHoverBg: "Pozadí tlačítka (Hover)"
     inputBorder: "Ohraničení vstupního pole"
-    driveFolderBg: "Pozadí složky disku"
     badge: "Odznak"
     messageBg: "Pozadí chatu"
     fgHighlighted: "Zvýrazněný text"
