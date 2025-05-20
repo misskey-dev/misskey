@@ -2830,9 +2830,6 @@ _dataSaver:
   _avatar:
     title: "Avatar image"
     description: "Stop avatar image animation. Animated images can be larger in file size than normal images, potentially leading to further reductions in data traffic."
-  _urlPreview:
-    title: "URL preview thumbnails"
-    description: "URL preview thumbnail images will no longer be loaded."
   _code:
     title: "Code highlighting"
     description: "If code highlighting notations are used in MFM, etc., they will not load until tapped. Syntax highlighting requires downloading the highlight definition files for each programming language. Therefore, disabling the automatic loading of these files is expected to reduce the amount of communication data."
