@@ -2007,7 +2007,6 @@ _theme:
     buttonBg: "ปุ่มพื้นหลัง"
     buttonHoverBg: "ปุ่มพื้นหลัง (โฮเวอร์)"
     inputBorder: "เส้นขอบของช่องป้อนข้อมูล"
-    driveFolderBg: "พื้นหลังโฟลเดอร์ไดรฟ์"
     badge: "ตรา"
     messageBg: "พื้นหลังแชท"
     fgHighlighted: "ข้อความที่ไฮไลต์"
