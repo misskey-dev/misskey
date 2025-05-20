@@ -31,6 +31,7 @@
   (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 - Enhance: ユーザー設定でURLプレビューを無効化できるように
 - Fix: "時計"ウィジェット(Clock)において、Transparent設定が有効でも、その背景が透過されない問題を修正
+- Fix: カラムの名前が正しくリスト/チャンネルの名前にならない問題を修正
 
 ### Server
 - Enhance: チャットルームの最大メンバー数を30人から50人に調整
