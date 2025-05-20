@@ -2667,9 +2667,6 @@ _dataSaver:
   _avatar:
     title: "Avatares animados"
     description: "Desactiva la animación de los avatares. Las imágenes animadas pueden llegar a ser de mayor tamaño que las normales, por lo que al desactivarlas puedes reducir el consumo de datos."
-  _urlPreview:
-    title: "Vista previa de URLs"
-    description: "Desactiva la carga de vistas previas de las URLs."
   _code:
     title: "Resaltar código"
     description: "Si se usa resaltado de código en MFM, etc., no se cargará hasta pulsar en ello. El resaltado de sintaxis requiere la descarga de archivos de definición para cada lenguaje de programación. Debido a esto, al deshabilitar la carga automática de estos archivos reducirás el consumo de datos."
