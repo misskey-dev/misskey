@@ -36,7 +36,9 @@
 				<MkColorInput v-model="color">
 					<template #label>{{ i18n.ts.color }}</template>
 				</MkColorInput>
+				<MkSwitch v-model="asBadge">{{ i18n.ts._role.asBadge }}</MkSwitch>
 				<MkSwitch v-model="isPublic">{{ i18n.ts._role.isPublic }}</MkSwitch>
+				<MkSwitch v-model="isExplorable">{{ i18n.ts._role.isExplorable }}</MkSwitch>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
@@ -92,7 +94,9 @@ const dialog = ref(null);
 const name = ref(props.role ? props.role.name : '');
 const description = ref(props.role ? props.role.description : '');
 const color = ref(props.role ? props.role.color : '#000000');
-const isPublic = ref(props.role ? props.role.isPublic : false);
+const isExplorable = ref(props.role ? props.role.isExplorable : true);
+const isPublic = ref(props.role ? props.role.isPublic : true);
+const asBadge = ref(props.role ? props.role.asBadge : false);
 
 const iconId = ref(props.role ? props.role.iconId : null);
 const iconUrl = ref(props.role ? props.role.iconUrl : null);
@@ -209,9 +213,11 @@ async function done() {
 	const params = {
 		name: name.value,
 		description: description.value,
-		iconUrl: iconUrl.value, // ← ここを修正
+		iconUrl: iconUrl.value,
 		color: color.value,
+		asBadge: asBadge.value,
 		isPublic: isPublic.value,
+		isExplorable: isExplorable.value,
 	};
 
 	try {

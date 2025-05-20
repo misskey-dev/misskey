@@ -44,7 +44,9 @@ export const paramDef = {
 		description: { type: 'string' },
 		color: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
+		asBadge: { type: 'boolean' },
 		isPublic: { type: 'boolean' },
+		isExplorable: { type: 'boolean' },
 	},
 	required: [
 		'roleId',
@@ -52,7 +54,9 @@ export const paramDef = {
 		'description',
 		'color',
 		'iconUrl',
+		'asBadge',
 		'isPublic',
+		'isExplorable',
 	],
 } as const;
 
@@ -86,8 +90,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				description: ps.description,
 				color: ps.color,
 				iconUrl: ps.iconUrl,
+				asBadge: ps.asBadge,
 				isPublic: ps.isPublic,
-				asBadge: ps.iconUrl != null,
+				isExplorable: ps.isExplorable,
 			});
 			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });
 			this.globalEventService.publishInternalEvent('roleUpdated', updated);
