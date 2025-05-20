@@ -285,6 +285,7 @@ export type DriveFilesFindRequest = operations['drive___files___find']['requestB
 export type DriveFilesFindResponse = operations['drive___files___find']['responses']['200']['content']['application/json'];
 export type DriveFilesFindByHashRequest = operations['drive___files___find-by-hash']['requestBody']['content']['application/json'];
 export type DriveFilesFindByHashResponse = operations['drive___files___find-by-hash']['responses']['200']['content']['application/json'];
+export type DriveFilesMoveBulkRequest = operations['drive___files___move-bulk']['requestBody']['content']['application/json'];
 export type DriveFilesShowRequest = operations['drive___files___show']['requestBody']['content']['application/json'];
 export type DriveFilesShowResponse = operations['drive___files___show']['responses']['200']['content']['application/json'];
 export type DriveFilesUpdateRequest = operations['drive___files___update']['requestBody']['content']['application/json'];

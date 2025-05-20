@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import { IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository, MiMeta } from '@/models/_.js';
@@ -718,6 +718,21 @@ export class DriveService {
 		}
 
 		return fileObj;
+	}
+
+	@bindThis
+	public async moveFiles(fileIds: MiDriveFile['id'][], folderId: MiDriveFolder['id'] | null, userId: MiUser['id']) {
+		const folder = folderId ? await this.driveFoldersRepository.findOneByOrFail({
+			id: folderId,
+			userId: userId,
+		}) : null;
+
+		await this.driveFilesRepository.update({
+			id: In(fileIds),
+			userId: userId,
+		}, {
+			folderId: folder ? folder.id : null,
+		});
 	}
 
 	@bindThis
