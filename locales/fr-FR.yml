@@ -1834,7 +1834,6 @@ _theme:
     buttonBg: "Arrière-plan du bouton"
     buttonHoverBg: "Arrière-plan du bouton (survolé)"
     inputBorder: "Cadre de la zone de texte"
-    driveFolderBg: "Arrière-plan du dossier de disque"
     badge: "Badge"
     messageBg: "Arrière plan de la discussion"
     fgHighlighted: "Texte mis en évidence"
