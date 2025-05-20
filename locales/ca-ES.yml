@@ -2830,9 +2830,6 @@ _dataSaver:
   _avatar:
     title: "Avatars animats"
     description: "Detenir l'animació dels avatars animats. Les imatges animades solen tenir un pes més gran que les imatges normals, reduint el tràfic disponible."
-  _urlPreview:
-    title: "Miniatures vista prèvia de l'URL"
-    description: "Les imatges en miniatura que serveixen com a vista prèvia de les URLs no es tornaran a carregar."
   _code:
     title: "Ressaltat del codi "
     description: "Quan s'utilitza codi MFM, no es llegeix fins que es copiï. En els punts destacats del codi s'han de llegir els fitxers definits per a cada llengua que resulti alt, però no es poden llegir automàticament, per la qual cosa es poden reduir les quantitats de comunicació."
