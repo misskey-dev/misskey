@@ -1667,7 +1667,6 @@ _theme:
     buttonBg: "Nền nút"
     buttonHoverBg: "Nền nút (Chạm)"
     inputBorder: "Đường viền khung soạn thảo"
-    driveFolderBg: "Nền thư mục Ổ đĩa"
     badge: "Huy hiệu"
     messageBg: "Nền chat"
     fgHighlighted: "Chữ nổi bật"
