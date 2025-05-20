@@ -241,7 +241,7 @@ blockedInstancesDescription: "设定要屏蔽的服务器，以换行分隔。�
 silencedInstances: "被静音的服务器"
 silencedInstancesDescription: "设置要静音的服务器，以换行分隔。被静音的服务器内所有的账户将默认处于「静音」状态，仅能发送关注请求，并且在未关注状态下无法提及本地账户。被阻止的实例不受影响。"
 mediaSilencedInstances: "已隐藏媒体文件的服务器"
-mediaSilencedInstancesDescription: "设置要隐藏媒体文件的服务器，以换行分隔。被设置为隐藏媒体文件服务器内所有账号的文件均按照「敏感内容」处理，且将无法使用自定义表情符号。被阻止的实例不受影响。"
+mediaSilencedInstancesDescription: "设置要隐藏媒体文件的服务器，以换行分隔。被设置的服务器内所有账号的文件均按照「敏感内容」处理，且将无法使用自定义表情符号。被阻止的实例不受影响。"
 federationAllowedHosts: "允许联合的服务器"
 federationAllowedHostsDescription: "设定允许联合的服务器，以换行分隔。"
 muteAndBlock: "隐藏和屏蔽"
