@@ -5781,6 +5781,10 @@ export interface Locale extends ILocale {
          * リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。
          */
         "contentsUpdateFrequency_description2": string;
+        /**
+         * URLプレビューを表示する
+         */
+        "showUrlPreview": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -10954,13 +10958,23 @@ export interface Locale extends ILocale {
              */
             "description": string;
         };
-        "_urlPreview": {
+        "_urlPreviewThumbnail": {
             /**
              * URLプレビューのサムネイルを非表示
              */
             "title": string;
             /**
              * URLプレビューのサムネイル画像が読み込まれなくなります。
+             */
+            "description": string;
+        };
+        "_disableUrlPreview": {
+            /**
+             * URLプレビューを無効化
+             */
+            "title": string;
+            /**
+             * URLプレビュー機能を無効化します。サムネイル画像だけと違い、リンク先の情報の読み込み自体を削減できます。
              */
             "description": string;
         };

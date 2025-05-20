@@ -290,9 +290,10 @@ export const PREF_DEF = {
 		default: {
 			media: false,
 			avatar: false,
-			urlPreview: false,
+			urlPreviewThumbnail: false,
+			disableUrlPreview: false,
 			code: false,
-		} as Record<string, boolean>,
+		} satisfies Record<string, boolean>,
 	},
 	hemisphere: {
 		default: hemisphere as 'N' | 'S',

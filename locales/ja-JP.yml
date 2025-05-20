@@ -1445,6 +1445,7 @@ _settings:
   contentsUpdateFrequency: "コンテンツの取得頻度"
   contentsUpdateFrequency_description: "高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。"
   contentsUpdateFrequency_description2: "リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。"
+  showUrlPreview: "URLプレビューを表示する"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -2910,9 +2911,12 @@ _dataSaver:
   _avatar:
     title: "アイコン画像のアニメーションを無効化"
     description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
-  _urlPreview:
+  _urlPreviewThumbnail:
     title: "URLプレビューのサムネイルを非表示"
     description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
+  _disableUrlPreview:
+    title: "URLプレビューを無効化"
+    description: "URLプレビュー機能を無効化します。サムネイル画像だけと違い、リンク先の情報の読み込み自体を削減できます。"
   _code:
     title: "コードハイライトを非表示"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
