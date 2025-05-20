@@ -2786,9 +2786,6 @@ _dataSaver:
   _avatar:
     title: "Immagine del profilo"
     description: "Impedire l'animazione per l'immagine del profilo. Le immagini animate possono avere dimensioni file maggiori rispetto a quelle normali, puoi ridurre ulteriormente l'utilizzo dei dati."
-  _urlPreview:
-    title: "Anteprime delle URL"
-    description: "Impedire il caricamento delle anteprime URL."
   _code:
     title: "Codice evidenziato"
     description: "Impedire che il codice sorgente sia automaticamente evidenziato. Evidenziare il codice richiede il caricamento di un file per ogni linguaggio. Puoi evidenziare soltanto il codice che intendi leggere e ridurre il traffico inutilizzato."
