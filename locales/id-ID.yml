@@ -1949,7 +1949,6 @@ _theme:
     buttonBg: "Latar belakang tombol"
     buttonHoverBg: "Latar belakang tombol (Mengambang)"
     inputBorder: "Batas bidang masukan"
-    driveFolderBg: "Latar belakang folder drive"
     badge: "Lencana"
     messageBg: "Latar belakang obrolan"
     fgHighlighted: "Teks yang disorot"
