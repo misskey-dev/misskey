@@ -1357,6 +1357,7 @@ emojiMute: "絵文字ミュート"
 emojiUnmute: "絵文字ミュート解除"
 muteX: "{x}をミュート"
 unmuteX: "{x}のミュートを解除"
+abort: "中止"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"

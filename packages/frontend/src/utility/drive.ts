@@ -16,12 +16,27 @@ import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 
+type UploadReturnType = {
+	filePromise: Promise<Misskey.entities.DriveFile>;
+	abort: () => void;
+};
+
+export class UploadAbortedError extends Error {
+	constructor() {
+		super('Upload aborted');
+	}
+}
+
 export function uploadFile(file: File | Blob, options: {
 	name?: string;
 	folderId?: string | null;
 	onProgress?: (ctx: { total: number; loaded: number; }) => void;
-} = {}): Promise<Misskey.entities.DriveFile> {
-	return new Promise((resolve, reject) => {
+} = {}): UploadReturnType {
+	const xhr = new XMLHttpRequest();
+	const abortController = new AbortController();
+	const { signal } = abortController;
+
+	const filePromise = new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
 		if ($i == null) return reject();
 
 		if ((file.size > instance.maxFileSize) || (file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
@@ -33,7 +48,10 @@ export function uploadFile(file: File | Blob, options: {
 			return reject();
 		}
 
-		const xhr = new XMLHttpRequest();
+		signal.addEventListener('abort', () => {
+			reject(new UploadAbortedError());
+		}, { once: true });
+
 		xhr.open('POST', apiUrl + '/drive/files/create', true);
 		xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
 			if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
@@ -83,7 +101,7 @@ export function uploadFile(file: File | Blob, options: {
 
 		if (options.onProgress) {
 			xhr.upload.onprogress = ev => {
-				if (ev.lengthComputable) {
+				if (ev.lengthComputable && options.onProgress != null) {
 					options.onProgress({
 						total: ev.total,
 						loaded: ev.loaded,
@@ -96,11 +114,18 @@ export function uploadFile(file: File | Blob, options: {
 		formData.append('i', $i.token);
 		formData.append('force', 'true');
 		formData.append('file', file);
-		formData.append('name', options.name ?? file.name ?? 'untitled');
+		formData.append('name', options.name ?? (file instanceof File ? file.name : 'untitled'));
 		if (options.folderId) formData.append('folderId', options.folderId);
 
 		xhr.send(formData);
 	});
+
+	const abort = () => {
+		xhr.abort();
+		abortController.abort();
+	};
+
+	return { filePromise, abort };
 }
 
 export function chooseFileFromPcAndUpload(
@@ -126,7 +151,7 @@ export function chooseDriveFile(options: {
 } = {}): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise(resolve => {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkDriveFileSelectDialog.vue')), {
-			multiple: options.multiple,
+			multiple: options.multiple ?? false,
 		}, {
 			done: files => {
 				if (files) {
@@ -204,7 +229,7 @@ export function selectFiles(src: HTMLElement | EventTarget | null, label: string
 export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFile: Misskey.entities.DriveFile, options: {
 	aspectRatio: number | null;
 }): Promise<Misskey.entities.DriveFile> {
-	return new Promise(resolve => {
+	return new Promise((resolve, reject) => {
 		const imgUrl = getProxiedImageUrl(imageDriveFile.url, undefined, true);
 		const image = new Image();
 		image.src = imgUrl;
@@ -215,13 +240,20 @@ export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFi
 			canvas.height = image.height;
 			ctx.drawImage(image, 0, 0);
 			canvas.toBlob(blob => {
+				if (blob == null) {
+					reject();
+					return;
+				}
+
 				os.cropImageFile(blob, {
 					aspectRatio: options.aspectRatio,
 				}).then(croppedImageFile => {
-					uploadFile(croppedImageFile, {
+					const { filePromise } = uploadFile(croppedImageFile, {
 						name: imageDriveFile.name,
 						folderId: imageDriveFile.folderId,
-					}).then(driveFile => {
+					});
+
+					filePromise.then(driveFile => {
 						resolve(driveFile);
 					});
 				});
