@@ -24,7 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="user.name && user.name !== user.username" :class="$style.username">@{{ user.username }}</div>
 				</div>
 				<div :class="$style.date">
-					<MkTime :time="user.lastActiveDate" small/>
+					<template v-if="!user.hideOnlineStatus">
+						<MkTime :time="user.lastActiveDate" small/>
+					</template>
+					<template v-else>
+						<span>{{ i18n.ts.private }}</span>
+					</template>
 				</div>
 			</div>
 		</div>

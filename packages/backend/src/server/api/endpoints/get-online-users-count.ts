@@ -61,6 +61,15 @@ export const meta = {
 							type: 'string',
 							optional: false, nullable: false,
 						},
+						onlineStatus: {
+							type: 'string',
+							enum: ['online', 'active', 'offline', 'unknown'],
+							optional: false, nullable: false,
+						},
+						hideOnlineStatus: {
+							type: 'boolean',
+							optional: false, nullable: false,
+						},
 					},
 				},
 			},
@@ -170,7 +179,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			// 詳細情報を取得（配列が空の場合は空文字ID指定でクエリを回避）
+			// ユーザーデータ取得時にhideOnlineStatusも取得する
 			const usersData = await this.usersRepository.find({
 				select: {
 					id: true,
@@ -180,6 +189,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					avatarBlurhash: true,
 					host: true,
 					lastActiveDate: true,
+					hideOnlineStatus: true, // この行を追加
 				},
 				where: {
 					id: In(visibleUserIds.length > 0 ? visibleUserIds : ['']),
@@ -190,11 +200,36 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				},
 			});
 
+			// オンラインステータスの判定ロジック
+			function determineOnlineStatus(user: { lastActiveDate: Date | null, hideOnlineStatus: boolean }): 'online' | 'active' | 'offline' | 'unknown' {
+				// オンラインステータスを非表示に設定している場合は常に unknown を返す
+				if (user.hideOnlineStatus) return 'unknown';
+
+				if (!user.lastActiveDate) return 'unknown';
+
+				const now = Date.now();
+				const elapsed = now - user.lastActiveDate.getTime();
+
+				if (elapsed < 5 * 60 * 1000) { // 5分以内
+					return 'online';
+				} else if (elapsed < 30 * 60 * 1000) { // 30分以内
+					return 'active';
+				} else if (elapsed < USER_ONLINE_THRESHOLD) { // 閾値以内
+					return 'offline';
+				} else {
+					return 'unknown';
+				}
+			}
+
 			// lastActiveDateをISOString形式に変換
-			const details = usersData.map(user => ({
-				...user,
-				lastActiveDate: user.lastActiveDate?.toISOString() ?? new Date().toISOString(),
-			}));
+			const details = usersData.map(user => {
+				return {
+					...user,
+					lastActiveDate: user.lastActiveDate?.toISOString() ?? new Date().toISOString(),
+					onlineStatus: determineOnlineStatus(user),
+					hideOnlineStatus: user.hideOnlineStatus,
+				};
+			});
 
 			return {
 				count,
