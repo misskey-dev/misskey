@@ -222,6 +222,7 @@ function onDragend() {
 .name {
 	display: block;
 	margin: 8px 0 0 0;
+	padding: 0 2px;
 	font-size: 82%;
 	text-align: center;
 	word-break: break-all;
