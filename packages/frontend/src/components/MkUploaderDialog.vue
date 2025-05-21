@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<div :class="[$style.overallProgress, canRetry ? $style.overallProgressError : null]" :style="{ '--op': `${overallProgress}%` }"></div>
 
-		<div :class="$style.main" class="_gaps_s">
-			<div :class="$style.items" class="_gaps_s">
+		<div class="_gaps_s _spacer">
+			<div class="_gaps_s">
 				<div
 					v-for="ctx in items"
 					:key="ctx.id"
@@ -96,7 +96,6 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile } from '@/utility/drive.js';
@@ -138,7 +137,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const items = ref([] as {
+const items = ref<{
 	id: string;
 	name: string;
 	progress: { max: number; value: number } | null;
@@ -150,7 +149,8 @@ const items = ref([] as {
 	compressedSize?: number | null;
 	compressedImage?: Blob | null;
 	file: File;
-}[]);
+	abort?: (() => void) | null;
+}[]>([]);
 
 const dialog = useTemplateRef('dialog');
 
@@ -258,6 +258,17 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				items.value.splice(items.value.indexOf(item), 1);
 			},
 		});
+	} else if (item.uploading) {
+		menu.push({
+			icon: 'ti ti-cloud-pause',
+			text: i18n.ts.abort,
+			danger: true,
+			action: () => {
+				if (item.abort != null) {
+					item.abort();
+				}
+			}
+		});
 	}
 
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
@@ -296,7 +307,7 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 
 		item.uploading = true;
 
-		const driveFile = await uploadFile(item.compressedImage ?? item.file, {
+		const { filePromise, abort } = uploadFile(item.compressedImage ?? item.file, {
 			name: item.name,
 			folderId: props.folderId,
 			onProgress: (progress) => {
@@ -308,6 +319,19 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 					item.progress.max = progress.total;
 				}
 			},
+		});
+
+		item.abort = () => {
+			item.abort = null;
+			abort();
+			item.uploading = false;
+			item.waiting = false;
+			item.uploadFailed = true;
+		};
+
+		await filePromise.then((file) => {
+			item.uploaded = file;
+			item.abort = null;
 		}).catch(err => {
 			item.uploadFailed = true;
 			item.progress = null;
@@ -316,8 +340,6 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 			item.uploading = false;
 			item.waiting = false;
 		});
-
-		item.uploaded = driveFile;
 	}
 }
 
@@ -371,13 +393,6 @@ onMounted(() => {
 	&.overallProgressError {
 		background: var(--MI_THEME-warn);
 	}
-}
-
-.main {
-	padding: 12px;
-}
-
-.items {
 }
 
 .item {

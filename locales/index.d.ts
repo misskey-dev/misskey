@@ -5449,6 +5449,10 @@ export interface Locale extends ILocale {
      * {x}のミュートを解除
      */
     "unmuteX": ParameterizedString<"x">;
+    /**
+     * 中止
+     */
+    "abort": string;
     "_chat": {
         /**
          * まだメッセージはありません
