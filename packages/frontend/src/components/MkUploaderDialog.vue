@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #footer>
 		<div class="_buttonsCenter">
-			<MkButton v-if="isUploading" rounded @click="cancel()"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
+			<MkButton v-if="isUploading" rounded @click="abortWithConfirm()"><i class="ti ti-x"></i> {{ i18n.ts.abort }}</MkButton>
 			<MkButton v-else-if="!firstUploadAttempted" primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
 
 			<MkButton v-if="canRetry" rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
@@ -98,7 +98,7 @@ import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
-import { uploadFile } from '@/utility/drive.js';
+import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 
@@ -146,6 +146,7 @@ const items = ref<{
 	uploading: boolean;
 	uploaded: Misskey.entities.DriveFile | null;
 	uploadFailed: boolean;
+	aborted: boolean;
 	compressedSize?: number | null;
 	compressedImage?: Blob | null;
 	file: File;
@@ -213,8 +214,21 @@ async function cancel() {
 	});
 	if (canceled) return;
 
+	abortAll();
 	emit('canceled');
 	dialog.value?.close();
+}
+
+async function abortWithConfirm() {
+	const { canceled } = await os.confirm({
+		type: 'question',
+		text: i18n.ts._uploader.abortConfirm,
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
+	});
+	if (canceled) return;
+
+	abortAll();
 }
 
 async function done() {
@@ -277,7 +291,20 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 async function upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
 	firstUploadAttempted.value = true;
 
+	items.value = items.value.map(item => ({
+		...item,
+		aborted: false,
+		uploadFailed: false,
+		waiting: false,
+		uploading: false,
+	}));
+
 	for (const item of items.value.filter(item => item.uploaded == null)) {
+		// アップロード処理途中で値が変わる場合（途中で全キャンセルされたりなど）もあるので、Array filterではなくここでチェック
+		if (item.aborted) {
+			continue;
+		}
+
 		item.waiting = true;
 		item.uploadFailed = false;
 
@@ -335,11 +362,27 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 		}).catch(err => {
 			item.uploadFailed = true;
 			item.progress = null;
-			throw err;
+			if (!(err instanceof UploadAbortedError)) {
+				throw err;
+			}
 		}).finally(() => {
 			item.uploading = false;
 			item.waiting = false;
 		});
+	}
+}
+
+function abortAll() {
+	for (const item of items.value) {
+		if (item.uploaded != null) {
+			continue;
+		}
+
+		if (item.abort != null) {
+			item.abort();
+		}
+		item.aborted = true;
+		item.uploadFailed = true;
 	}
 }
 
@@ -362,6 +405,7 @@ function initializeFile(file: File) {
 		thumbnail: window.URL.createObjectURL(file),
 		waiting: false,
 		uploading: false,
+		aborted: false,
 		uploaded: null,
 		uploadFailed: false,
 		file: markRaw(file),

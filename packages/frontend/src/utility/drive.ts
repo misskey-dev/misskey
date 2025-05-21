@@ -21,12 +21,20 @@ type UploadReturnType = {
 	abort: () => void;
 };
 
+export class UploadAbortedError extends Error {
+	constructor() {
+		super('Upload aborted');
+	}
+}
+
 export function uploadFile(file: File | Blob, options: {
 	name?: string;
 	folderId?: string | null;
 	onProgress?: (ctx: { total: number; loaded: number; }) => void;
 } = {}): UploadReturnType {
 	const xhr = new XMLHttpRequest();
+	const abortController = new AbortController();
+	const { signal } = abortController;
 
 	const filePromise = new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
 		if ($i == null) return reject();
@@ -39,6 +47,10 @@ export function uploadFile(file: File | Blob, options: {
 			});
 			return reject();
 		}
+
+		signal.addEventListener('abort', () => {
+			reject(new UploadAbortedError());
+		});
 
 		xhr.open('POST', apiUrl + '/drive/files/create', true);
 		xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
@@ -110,6 +122,7 @@ export function uploadFile(file: File | Blob, options: {
 
 	const abort = () => {
 		xhr.abort();
+		abortController.abort();
 	};
 
 	return { filePromise, abort };
