@@ -87,28 +87,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder>
-				<template #icon><i class="ti ti-cloud"></i></template>
-				<template #label>{{ i18n.ts.files }}</template>
-				<template v-if="filesForm.modified.value" #footer>
-					<MkFormFooter :form="filesForm"/>
-				</template>
-
-				<div class="_gaps">
-					<MkSwitch v-model="filesForm.state.cacheRemoteFiles">
-						<template #label>{{ i18n.ts.cacheRemoteFiles }}<span v-if="filesForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
-					</MkSwitch>
-
-					<template v-if="filesForm.state.cacheRemoteFiles">
-						<MkSwitch v-model="filesForm.state.cacheRemoteSensitiveFiles">
-							<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}<span v-if="filesForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
-						</MkSwitch>
-					</template>
-				</div>
-			</MkFolder>
-
-			<MkFolder>
 				<template #icon><i class="ti ti-world-cog"></i></template>
 				<template #label>ServiceWorker</template>
 				<template v-if="serviceWorkerForm.modified.value" #footer>
@@ -255,6 +233,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</MkFolder>
+
+					<MkSwitch v-model="federationForm.state.signToActivityPubGet">
+						<template #label>{{ i18n.ts._serverSettings.signToActivityPubGet }}<span v-if="federationForm.modifiedStates.signToActivityPubGet" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts._serverSettings.signToActivityPubGet_description }}</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="federationForm.state.proxyRemoteFiles">
+						<template #label>{{ i18n.ts._serverSettings.proxyRemoteFiles }}<span v-if="federationForm.modifiedStates.proxyRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts._serverSettings.proxyRemoteFiles_description }}</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="federationForm.state.allowExternalApRedirect">
+						<template #label>{{ i18n.ts._serverSettings.allowExternalApRedirect }}<span v-if="federationForm.modifiedStates.allowExternalApRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</div>
+							<div>{{ i18n.ts.needToRestartServerToApply }}</div>
+						</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="federationForm.state.cacheRemoteFiles">
+						<template #label>{{ i18n.ts.cacheRemoteFiles }}<span v-if="federationForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+					</MkSwitch>
+
+					<template v-if="federationForm.state.cacheRemoteFiles">
+						<MkSwitch v-model="federationForm.state.cacheRemoteSensitiveFiles">
+							<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}<span v-if="federationForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
+						</MkSwitch>
+					</template>
 				</div>
 			</MkFolder>
 
@@ -294,7 +302,7 @@ import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import { useForm } from '@/use/use-form.js';
+import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkRadios from '@/components/MkRadios.vue';
 
@@ -334,17 +342,6 @@ const pinnedUsersForm = useForm({
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		pinnedUsers: state.pinnedUsers.split('\n'),
-	});
-	fetchInstance(true);
-});
-
-const filesForm = useForm({
-	cacheRemoteFiles: meta.cacheRemoteFiles,
-	cacheRemoteSensitiveFiles: meta.cacheRemoteSensitiveFiles,
-}, async (state) => {
-	await os.apiWithDialog('admin/update-meta', {
-		cacheRemoteFiles: state.cacheRemoteFiles,
-		cacheRemoteSensitiveFiles: state.cacheRemoteSensitiveFiles,
 	});
 	fetchInstance(true);
 });
@@ -394,11 +391,21 @@ const federationForm = useForm({
 	federation: meta.federation,
 	federationHosts: meta.federationHosts.join('\n'),
 	deliverSuspendedSoftware: meta.deliverSuspendedSoftware,
+	signToActivityPubGet: meta.signToActivityPubGet,
+	proxyRemoteFiles: meta.proxyRemoteFiles,
+	allowExternalApRedirect: meta.allowExternalApRedirect,
+	cacheRemoteFiles: meta.cacheRemoteFiles,
+	cacheRemoteSensitiveFiles: meta.cacheRemoteSensitiveFiles,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		federation: state.federation,
 		federationHosts: state.federationHosts.split('\n'),
 		deliverSuspendedSoftware: state.deliverSuspendedSoftware,
+		signToActivityPubGet: state.signToActivityPubGet,
+		proxyRemoteFiles: state.proxyRemoteFiles,
+		allowExternalApRedirect: state.allowExternalApRedirect,
+		cacheRemoteFiles: state.cacheRemoteFiles,
+		cacheRemoteSensitiveFiles: state.cacheRemoteSensitiveFiles,
 	});
 	fetchInstance(true);
 });

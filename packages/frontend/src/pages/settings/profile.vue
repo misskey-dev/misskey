@@ -161,7 +161,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
@@ -257,54 +257,100 @@ function save() {
 }
 
 function changeAvatar(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
-		let originalOrCropped = file;
-
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.cropImageAsk,
-			okText: i18n.ts.cropYes,
-			cancelText: i18n.ts.cropNo,
-		});
-
-		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
-				aspectRatio: 1,
-			});
-		}
-
+	async function done(driveFile) {
 		const i = await os.apiWithDialog('i/update', {
-			avatarId: originalOrCropped.id,
+			avatarId: driveFile.id,
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
 		claimAchievement('profileFilled');
-	});
+	}
+
+	os.popupMenu([{
+		text: i18n.ts.avatar,
+		type: 'label',
+	}, {
+		text: i18n.ts.upload,
+		icon: 'ti ti-upload',
+		action: async () => {
+			const files = await os.chooseFileFromPc({ multiple: false });
+			const file = files[0];
+
+			let originalOrCropped = file;
+
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.ts.cropImageAsk,
+				okText: i18n.ts.cropYes,
+				cancelText: i18n.ts.cropNo,
+			});
+
+			if (!canceled) {
+				originalOrCropped = await os.cropImageFile(file, {
+					aspectRatio: 1,
+				});
+			}
+
+			const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
+			done(driveFile);
+		},
+	}, {
+		text: i18n.ts.fromDrive,
+		icon: 'ti ti-cloud',
+		action: () => {
+			chooseDriveFile({ multiple: false }).then(files => {
+				done(files[0]);
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 function changeBanner(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
-		let originalOrCropped = file;
-
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.cropImageAsk,
-			okText: i18n.ts.cropYes,
-			cancelText: i18n.ts.cropNo,
-		});
-
-		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
-				aspectRatio: 2,
-			});
-		}
-
+	async function done(driveFile) {
 		const i = await os.apiWithDialog('i/update', {
-			bannerId: originalOrCropped.id,
+			bannerId: driveFile.id,
 		});
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;
-	});
+	}
+
+	os.popupMenu([{
+		text: i18n.ts.banner,
+		type: 'label',
+	}, {
+		text: i18n.ts.upload,
+		icon: 'ti ti-upload',
+		action: async () => {
+			const files = await os.chooseFileFromPc({ multiple: false });
+			const file = files[0];
+
+			let originalOrCropped = file;
+
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.ts.cropImageAsk,
+				okText: i18n.ts.cropYes,
+				cancelText: i18n.ts.cropNo,
+			});
+
+			if (!canceled) {
+				originalOrCropped = await os.cropImageFile(file, {
+					aspectRatio: 2,
+				});
+			}
+
+			const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
+			done(driveFile);
+		},
+	}, {
+		text: i18n.ts.fromDrive,
+		icon: 'ti ti-cloud',
+		action: () => {
+			chooseDriveFile({ multiple: false }).then(files => {
+				done(files[0]);
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 const headerActions = computed(() => []);

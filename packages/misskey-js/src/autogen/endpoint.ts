@@ -282,6 +282,7 @@ import type {
 	DriveFilesFindResponse,
 	DriveFilesFindByHashRequest,
 	DriveFilesFindByHashResponse,
+	DriveFilesMoveBulkRequest,
 	DriveFilesShowRequest,
 	DriveFilesShowResponse,
 	DriveFilesUpdateRequest,
@@ -512,6 +513,8 @@ import type {
 	NotesSearchByTagResponse,
 	NotesShowRequest,
 	NotesShowResponse,
+	NotesShowPartialBulkRequest,
+	NotesShowPartialBulkResponse,
 	NotesStateRequest,
 	NotesStateResponse,
 	NotesThreadMutingCreateRequest,
@@ -821,6 +824,7 @@ export type Endpoints = {
 	'drive/files/delete': { req: DriveFilesDeleteRequest; res: EmptyResponse };
 	'drive/files/find': { req: DriveFilesFindRequest; res: DriveFilesFindResponse };
 	'drive/files/find-by-hash': { req: DriveFilesFindByHashRequest; res: DriveFilesFindByHashResponse };
+	'drive/files/move-bulk': { req: DriveFilesMoveBulkRequest; res: EmptyResponse };
 	'drive/files/show': { req: DriveFilesShowRequest; res: DriveFilesShowResponse };
 	'drive/files/update': { req: DriveFilesUpdateRequest; res: DriveFilesUpdateResponse };
 	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: EmptyResponse };
@@ -971,6 +975,7 @@ export type Endpoints = {
 	'notes/search': { req: NotesSearchRequest; res: NotesSearchResponse };
 	'notes/search-by-tag': { req: NotesSearchByTagRequest; res: NotesSearchByTagResponse };
 	'notes/show': { req: NotesShowRequest; res: NotesShowResponse };
+	'notes/show-partial-bulk': { req: NotesShowPartialBulkRequest; res: NotesShowPartialBulkResponse };
 	'notes/state': { req: NotesStateRequest; res: NotesStateResponse };
 	'notes/thread-muting/create': { req: NotesThreadMutingCreateRequest; res: EmptyResponse };
 	'notes/thread-muting/delete': { req: NotesThreadMutingDeleteRequest; res: EmptyResponse };
