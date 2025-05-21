@@ -40,6 +40,7 @@
 - Enhance: ユーザー設定でURLプレビューを無効化できるように
 - Enhance: AiScriptからtoastを表示する関数 `Mk:toast` を追加
 - Fix: "時計"ウィジェット(Clock)において、Transparent設定が有効でも、その背景が透過されない問題を修正
+- Fix: 一定時間操作がなかったら動画プレイヤーのコントロールを隠すように
 
 ### Server
 - Enhance: チャットルームの最大メンバー数を30人から50人に調整
