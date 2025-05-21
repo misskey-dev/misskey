@@ -50,7 +50,7 @@ export function uploadFile(file: File | Blob, options: {
 
 		signal.addEventListener('abort', () => {
 			reject(new UploadAbortedError());
-		});
+		}, { once: true });
 
 		xhr.open('POST', apiUrl + '/drive/files/create', true);
 		xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
