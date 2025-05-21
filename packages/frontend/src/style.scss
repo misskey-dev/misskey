@@ -92,7 +92,7 @@ html {
 
 html._themeChangingFallback_ {
 	&, * {
-		transition: background 1s ease, border 1s ease !important;
+		transition: background 0.5s ease, border 0.5s ease !important;
 	}
 }
 
@@ -102,13 +102,13 @@ html._themeChanging_ {
 
 html::view-transition-new(theme-changing) {
 	z-index: 4000001;
-	animation: themeChangingNew 1s ease;
+	animation: themeChangingNew 0.5s ease;
 	animation-fill-mode: forwards;
 }
 
 html::view-transition-old(theme-changing) {
 	z-index: 4000000;
-	animation: themeChangingOld 1s ease;
+	animation: themeChangingOld 0.5s ease;
 	animation-fill-mode: forwards;
 }
 

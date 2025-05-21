@@ -141,18 +141,17 @@ export function applyTheme(theme: Theme, persist = true) {
 			await nextTick();
 		}).finished.then(() => {
 			window.document.documentElement.classList.remove('_themeChanging_');
+			// 色計算など再度行えるようにクライアント全体に通知
 			globalEvents.emit('themeChanged');
 		});
 	} else {
 		// TODO: ViewTransition API が主要ブラウザで対応したら消す
-
 		window.document.documentElement.classList.add('_themeChangingFallback_');
 		timeout = window.setTimeout(() => {
 			window.document.documentElement.classList.remove('_themeChangingFallback_');
-
 			// 色計算など再度行えるようにクライアント全体に通知
 			globalEvents.emit('themeChanged');
-		}, 1000);
+		}, 500);
 
 		applyThemeInternal(theme, persist);
 	}
