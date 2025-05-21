@@ -11,6 +11,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -97,6 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userFollowingService: UserFollowingService,
 		private roleService: RoleService,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// オンラインユーザー総数の取得
@@ -225,6 +227,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const details = usersData.map(user => {
 				return {
 					...user,
+					// Add fallback identicon URL for null avatarUrl
+					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 					lastActiveDate: user.lastActiveDate?.toISOString() ?? new Date().toISOString(),
 					onlineStatus: determineOnlineStatus(user),
 					hideOnlineStatus: user.hideOnlineStatus,
