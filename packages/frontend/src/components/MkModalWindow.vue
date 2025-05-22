@@ -130,7 +130,7 @@ defineExpose({
 }
 
 .footer {
-	padding: 8px 16px;
+	padding: 12px 16px;
 	overflow: auto;
 	background: var(--MI_THEME-bg);
 	border-top: 1px solid var(--MI_THEME-divider);

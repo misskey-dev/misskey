@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
+	<!-- :css="prefer.s.animation" にしたいけどバグる(おそらくvueのバグ) https://github.com/misskey-dev/misskey/issues/16078 -->
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
 		:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
 		:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
 		:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
-		:css="prefer.s.animation"
 		mode="out-in"
 	>
 		<MkLoading v-if="paginator.fetching.value"/>
@@ -40,16 +40,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </component>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends PagingCtx">
 import type { PagingCtx } from '@/composables/use-pagination.js';
+import type { UnwrapRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 
+type Paginator = ReturnType<typeof usePagination<T['endpoint']>>;
+
 const props = withDefaults(defineProps<{
-	pagination: PagingCtx;
+	pagination: T;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
 	pullToRefresh?: boolean;
@@ -58,7 +61,7 @@ const props = withDefaults(defineProps<{
 	pullToRefresh: true,
 });
 
-const paginator = usePagination({
+const paginator: Paginator = usePagination({
 	ctx: props.pagination,
 });
 
@@ -69,6 +72,11 @@ function appearFetchMoreAhead() {
 function appearFetchMore() {
 	paginator.fetchOlder();
 }
+
+defineSlots<{
+	empty: () => void;
+	default: (props: { items: UnwrapRef<Paginator['items']> }) => void;
+}>();
 
 defineExpose({
 	paginator: paginator,

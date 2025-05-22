@@ -90,10 +90,47 @@ html {
 	}
 }
 
-html._themeChanging_ {
+html._themeChangingFallback_ {
 	&, * {
-		transition: background 1s ease, border 1s ease !important;
+		transition: background 0.5s ease, border 0.5s ease !important;
 	}
+}
+
+html._themeChanging_ {
+	view-transition-name: theme-changing;
+}
+
+html::view-transition-new(theme-changing) {
+	z-index: 4000001;
+	animation: themeChangingNew 0.5s ease;
+	animation-fill-mode: forwards;
+}
+
+html::view-transition-old(theme-changing) {
+	z-index: 4000000;
+	animation: themeChangingOld 0.5s ease;
+	animation-fill-mode: forwards;
+}
+
+@keyframes themeChangingNew {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes themeChangingOld {
+	0% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+
 }
 
 html,
