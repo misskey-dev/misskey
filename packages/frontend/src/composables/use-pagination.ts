@@ -35,10 +35,15 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 
 	baseId?: MisskeyEntity['id'];
 	direction?: 'newer' | 'older';
+
+	// 一部のAPIはさらに遡れる場合でもパフォーマンス上の理由でlimit以下の結果を返す場合があり、その場合はsafe、それ以外はlimitにすることを推奨
+	canFetchDetection?: 'safe' | 'limit';
 };
 
-export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I : never>(props: {
+export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extends { id: string; } = (Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I extends { id: string } ? I : { id: string } : { id: string })>(props: {
 	ctx: PagingCtx<Endpoint>;
+	autoInit?: boolean;
+	autoReInit?: boolean;
 	useShallowRef?: boolean;
 }) {
 	const items = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
@@ -49,8 +54,9 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 	const canFetchOlder = ref(false);
 	const error = ref(false);
 
-	// パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
-	watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
+	if (props.autoReInit !== false) {
+		watch(() => [props.ctx.endpoint, props.ctx.params], init, { deep: true });
+	}
 
 	function getNewestId(): string | null | undefined {
 		// 様々な要因により並び順は保証されないのでソートが必要
@@ -92,12 +98,20 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 				if (i === 3) item._shouldInsertAd_ = true;
 			}
 
-			if (res.length === 0 || props.ctx.noPaging) {
-				pushItems(res);
-				canFetchOlder.value = false;
-			} else {
-				pushItems(res);
-				canFetchOlder.value = true;
+			pushItems(res);
+
+			if (props.ctx.canFetchDetection === 'limit') {
+				if (res.length < FIRST_FETCH_LIMIT) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
+			} else if (props.ctx.canFetchDetection === 'safe' || props.ctx.canFetchDetection == null) {
+				if (res.length === 0 || props.ctx.noPaging) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
 			}
 
 			error.value = false;
@@ -130,15 +144,22 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 				if (i === 10) item._shouldInsertAd_ = true;
 			}
 
-			if (res.length === 0) {
-				canFetchOlder.value = false;
-				fetchingOlder.value = false;
-			} else {
-				pushItems(res);
-				canFetchOlder.value = true;
-				fetchingOlder.value = false;
+			pushItems(res);
+
+			if (props.ctx.canFetchDetection === 'limit') {
+				if (res.length < FIRST_FETCH_LIMIT) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
+			} else if (props.ctx.canFetchDetection === 'safe' || props.ctx.canFetchDetection == null) {
+				if (res.length === 0) {
+					canFetchOlder.value = false;
+				} else {
+					canFetchOlder.value = true;
+				}
 			}
-		}, err => {
+		}).finally(() => {
 			fetchingOlder.value = false;
 		});
 	}
@@ -232,9 +253,11 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Miss
 		}
 	}
 
-	onMounted(() => {
-		init();
-	});
+	if (props.autoInit !== false) {
+		onMounted(() => {
+			init();
+		});
+	}
 
 	return {
 		items: items as DeepReadonly<ShallowRef<T[]>>,

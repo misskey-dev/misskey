@@ -4129,6 +4129,28 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    '/drive/files/move-bulk': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * drive/files/move-bulk
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:drive*
+         */
+        post: operations['drive___files___move-bulk'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/drive/files/show': {
         parameters: {
             query?: never;
@@ -10184,6 +10206,32 @@ export type components = {
             failed: number;
             delayed: number;
         };
+        QueueMetrics: {
+            meta: {
+                count: number;
+                prevTS: number;
+                prevCount: number;
+            };
+            data: number[];
+            count: number;
+        };
+        QueueJob: {
+            id: string;
+            name: string;
+            data: Record<string, never>;
+            opts: Record<string, never>;
+            timestamp: number;
+            processedOn?: number;
+            processedBy?: string;
+            finishedOn?: number;
+            progress: Record<string, never>;
+            attempts: number;
+            delay: number;
+            failedReason: string;
+            stacktrace: string[];
+            returnValue: Record<string, never>;
+            isFailed: boolean;
+        };
         Antenna: {
             /** Format: id */
             id: string;
@@ -14967,6 +15015,9 @@ export interface operations {
                         singleUserMode: boolean;
                         /** @enum {string} */
                         ugcVisibilityForVisitor: 'all' | 'local' | 'none';
+                        proxyRemoteFiles: boolean;
+                        signToActivityPubGet: boolean;
+                        allowExternalApRedirect: boolean;
                     };
                 };
             };
@@ -15314,12 +15365,14 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK (without any results) */
-            204: {
+            /** @description OK (with results) */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    'application/json': components['schemas']['QueueJob'][];
+                };
             };
             /** @description Client error */
             400: {
@@ -15454,12 +15507,46 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK (without any results) */
-            204: {
+            /** @description OK (with results) */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    'application/json': {
+                        /** @enum {string} */
+                        name: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                        qualifiedName: string;
+                        counts: {
+                            [key: string]: number;
+                        };
+                        isPaused: boolean;
+                        metrics: {
+                            completed: components['schemas']['QueueMetrics'];
+                            failed: components['schemas']['QueueMetrics'];
+                        };
+                        db: {
+                            version: string;
+                            /** @enum {string} */
+                            mode: 'cluster' | 'standalone' | 'sentinel';
+                            runId: string;
+                            processId: string;
+                            port: number;
+                            os: string;
+                            uptime: number;
+                            memory: {
+                                total: number;
+                                used: number;
+                                fragmentationRatio: number;
+                                peak: number;
+                            };
+                            clients: {
+                                blocked: number;
+                                connected: number;
+                            };
+                        };
+                    };
+                };
             };
             /** @description Client error */
             400: {
@@ -15517,12 +15604,25 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK (without any results) */
-            204: {
+            /** @description OK (with results) */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    'application/json': {
+                        /** @enum {string} */
+                        name: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                        counts: {
+                            [key: string]: number;
+                        };
+                        isPaused: boolean;
+                        metrics: {
+                            completed: components['schemas']['QueueMetrics'];
+                            failed: components['schemas']['QueueMetrics'];
+                        };
+                    }[];
+                };
             };
             /** @description Client error */
             400: {
@@ -15730,12 +15830,14 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK (without any results) */
-            204: {
+            /** @description OK (with results) */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    'application/json': components['schemas']['QueueJob'];
+                };
             };
             /** @description Client error */
             400: {
@@ -18421,6 +18523,9 @@ export interface operations {
                     singleUserMode?: boolean;
                     /** @enum {string} */
                     ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
+                    proxyRemoteFiles?: boolean;
+                    signToActivityPubGet?: boolean;
+                    allowExternalApRedirect?: boolean;
                 };
             };
         };
@@ -25451,6 +25556,77 @@ export interface operations {
                 content: {
                     'application/json': components['schemas']['DriveFile'][];
                 };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'drive___files___move-bulk': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': {
+                    fileIds: string[];
+                    /** Format: misskey:id */
+                    folderId?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Client error */
             400: {

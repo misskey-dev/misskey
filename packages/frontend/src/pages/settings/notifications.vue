@@ -38,11 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSection>
 		<FormSection>
 			<div class="_gaps_m">
-				<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
+				<FormLink to="/settings/sounds">{{ i18n.ts.notificationSoundSettings }}</FormLink>
 			</div>
 		</FormSection>
 		<FormSection>
-			<div class="_gaps_m">
+			<div class="_gaps_s">
+				<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 				<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
 				<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
 			</div>
