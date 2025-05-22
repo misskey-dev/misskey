@@ -423,7 +423,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				const set = new Set<string>();
 				for (const v of vs) {
 					for (const type of v) {
-						set.add(type);
+						if (type.trim() === '') continue;
+						set.add(type.trim());
 					}
 				}
 				return [...set];
