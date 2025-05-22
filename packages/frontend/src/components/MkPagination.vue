@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
+	<!-- :css="prefer.s.animation" にしたいけどバグる(おそらくvueのバグ) https://github.com/misskey-dev/misskey/issues/16078 -->
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
 		:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
 		:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
 		:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
-		:css="prefer.s.animation"
 		mode="out-in"
 	>
 		<MkLoading v-if="paginator.fetching.value"/>
