@@ -212,7 +212,7 @@ export class ClientServerService {
 			instanceUrl: this.config.url,
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(meta)),
 			now: Date.now(),
-			federationDisabled: this.meta.federation === 'none',
+			federationEnabled: this.meta.federation !== 'none',
 		};
 	}
 

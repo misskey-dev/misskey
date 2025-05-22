@@ -32,7 +32,7 @@ block meta
 		meta(name='twitter:creator' content=`@${profile.twitter.screenName}`)
 
 	if !sub
-		if !federationDisabled
+		if federationEnabled
 			if !user.host
 				link(rel='alternate' href=`${config.url}/users/${user.id}` type='application/activity+json')
 			if user.uri
