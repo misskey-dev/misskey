@@ -19,7 +19,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 import { maybeMakeRelative } from '@@/js/url.js';
 

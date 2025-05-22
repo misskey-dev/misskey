@@ -66,6 +66,11 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			});
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
+		'Mk:toast': values.FN_NATIVE(async ([text]) => {
+			utils.assertString(text);
+			os.toast(text.value);
+			return values.NULL;
+		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			utils.assertString(ep);
 			if (ep.value.includes('://') || ep.value.includes('..')) {

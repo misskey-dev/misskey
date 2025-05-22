@@ -20,9 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
 					<i class="ti ti-pencil"></i>
 				</button>
-				<button v-if="isImage" v-tooltip="i18n.ts.cropImage" class="_button" :class="$style.fileQuickActionsOthersButton" @click="crop()">
-					<i class="ti ti-crop"></i>
-				</button>
 				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye"></i>
 				</button>
@@ -83,6 +80,8 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
+import { selectDriveFolder } from '@/utility/drive.js';
+import { globalEvents } from '@/events.js';
 
 const router = useRouter();
 
@@ -127,19 +126,10 @@ function postThis() {
 	});
 }
 
-function crop() {
-	if (!file.value) return;
-
-	os.cropImage(file.value, {
-		aspectRatio: NaN,
-		uploadFolder: file.value.folderId ?? null,
-	});
-}
-
 function move() {
 	if (!file.value) return;
 
-	os.selectDriveFolder(false).then(folder => {
+	selectDriveFolder(null).then(folder => {
 		misskeyApi('drive/files/update', {
 			fileId: file.value.id,
 			folderId: folder[0] ? folder[0].id : null,
@@ -210,11 +200,13 @@ async function deleteFile() {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.value.name }),
 	});
-
 	if (canceled) return;
+
 	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.value.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file.value]);
 
 	router.push('/my/drive');
 }

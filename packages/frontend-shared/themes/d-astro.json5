@@ -38,7 +38,6 @@
 		navIndicator: '@accent',
 		buttonGradateA: '@accent',
 		buttonGradateB: ':hue<-20<@accent',
-		driveFolderBg: ':alpha<0.3<@accent',
 		fgHighlighted: ':lighten<3<@fg',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',

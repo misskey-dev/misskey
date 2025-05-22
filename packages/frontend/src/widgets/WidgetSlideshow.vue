@@ -26,6 +26,7 @@ import type { GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { selectDriveFolder } from '@/utility/drive.js';
 
 const name = 'slideshow';
 
@@ -93,7 +94,7 @@ const fetch = () => {
 };
 
 const choose = () => {
-	os.selectDriveFolder(false).then(folder => {
+	selectDriveFolder(null).then(folder => {
 		if (folder[0] == null) {
 			return;
 		}

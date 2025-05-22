@@ -3,5 +3,5 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import MkDriveSelectDialog from './MkDriveSelectDialog.vue';
+import MkDriveSelectDialog from './MkDriveFileSelectDialog.vue';
 void MkDriveSelectDialog;

@@ -37,7 +37,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
@@ -51,7 +50,7 @@ const description = ref($i.description ?? '');
 watch(name, () => {
 	os.apiWithDialog('i/update', {
 		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
 		name: name.value || null,
 	}, undefined, {
 		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
@@ -65,34 +64,38 @@ watch(name, () => {
 watch(description, () => {
 	os.apiWithDialog('i/update', {
 		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
 		description: description.value || null,
 	});
 	updateCurrentAccountPartial({ description: description.value });
 });
 
-function setAvatar(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target).then(async (file) => {
-		let originalOrCropped = file;
+async function setAvatar(ev) {
+	const files = await os.chooseFileFromPc({ multiple: false });
+	const file = files[0];
 
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.cropImageAsk,
-			okText: i18n.ts.cropYes,
-			cancelText: i18n.ts.cropNo,
-		});
+	let originalOrCropped = file;
 
-		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
-				aspectRatio: 1,
-			});
-		}
-
-		const i = await os.apiWithDialog('i/update', {
-			avatarId: originalOrCropped.id,
-		});
-		updateCurrentAccountPartial({ avatarId: i.avatarId, avatarUrl: i.avatarUrl });
+	const { canceled } = await os.confirm({
+		type: 'question',
+		text: i18n.ts.cropImageAsk,
+		okText: i18n.ts.cropYes,
+		cancelText: i18n.ts.cropNo,
 	});
+
+	if (!canceled) {
+		originalOrCropped = await os.cropImageFile(file, {
+			aspectRatio: 1,
+		});
+	}
+
+	const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
+
+	const i = await os.apiWithDialog('i/update', {
+		avatarId: driveFile.id,
+	});
+	$i.avatarId = i.avatarId;
+	$i.avatarUrl = i.avatarUrl;
 }
 
 defineExpose<TutorialPageCommonExpose>({

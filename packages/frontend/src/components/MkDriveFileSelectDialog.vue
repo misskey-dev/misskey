@@ -9,43 +9,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="800"
 	:height="500"
 	:withOkButton="true"
-	:okButtonDisabled="(type === 'file') && (selected.length === 0)"
+	:okButtonDisabled="selected.length === 0"
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
 	@closed="emit('closed')"
 >
 	<template #header>
-		{{ multiple ? ((type === 'file') ? i18n.ts.selectFiles : i18n.ts.selectFolders) : ((type === 'file') ? i18n.ts.selectFile : i18n.ts.selectFolder) }}
-		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
+		{{ multiple ? i18n.ts.selectFiles : i18n.ts.selectFile }}
+		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length }})</span>
 	</template>
-	<XDrive :multiple="multiple" :select="type" @changeSelection="onChangeSelection" @selected="ok()"/>
+	<MkDrive :multiple="multiple" select="file" :initialFolder="initialFolder" @changeSelectedFiles="onChangeSelection"/>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import XDrive from '@/components/MkDrive.vue';
+import MkDrive from '@/components/MkDrive.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
-	type?: 'file' | 'folder';
+	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
 	multiple: boolean;
 }>(), {
-	type: 'file',
 });
 
 const emit = defineEmits<{
-	(ev: 'done', r?: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
+	(ev: 'done', r?: Misskey.entities.DriveFile[]): void;
 	(ev: 'closed'): void;
 }>();
 
 const dialog = useTemplateRef('dialog');
 
-const selected = ref<Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]>([]);
+const selected = ref<Misskey.entities.DriveFile[]>([]);
 
 function ok() {
 	emit('done', selected.value);
@@ -57,7 +55,7 @@ function cancel() {
 	dialog.value?.close();
 }
 
-function onChangeSelection(v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]) {
+function onChangeSelection(v: Misskey.entities.DriveFile[]) {
 	selected.value = v;
 }
 </script>
