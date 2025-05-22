@@ -102,6 +102,7 @@ async function setType() {
 		}, {
 			value: 'global' as const, text: i18n.ts._timelines.global,
 		}],
+		default: props.column.tl,
 	});
 	if (canceled) {
 		if (props.column.tl == null) {
