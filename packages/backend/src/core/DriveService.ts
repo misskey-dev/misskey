@@ -515,22 +515,34 @@ export class DriveService {
 
 		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
 
-		//#region Check drive usage
+		//#region Check drive usage and mime type
 		if (user && !isLink) {
-			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
 			const isLocalUser = this.userEntityService.isLocalUser(user);
-
 			const policies = await this.roleService.getUserPolicies(user.id);
+
+			const allowedMimeTypes = policies.uploadableFileTypes;
+			const isAllowed = allowedMimeTypes.some((mimeType) => {
+				if (mimeType === '*' || mimeType === '*/*') return true;
+				if (mimeType.endsWith('/*')) return info.type.mime.startsWith(mimeType.slice(0, -1));
+				return info.type.mime === mimeType;
+			});
+			if (!isAllowed) {
+				throw new IdentifiableError('bd71c601-f9b0-4808-9137-a330647ced9b', 'Unallowed file type.');
+			}
+
 			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
 			const maxFileSize = 1024 * 1024 * policies.maxFileSizeMb;
-			this.registerLogger.debug('drive capacity override applied');
-			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
 			if (maxFileSize < info.size) {
 				if (isLocalUser) {
 					throw new IdentifiableError('f9e4e5f3-4df4-40b5-b400-f236945f7073', 'Max file size exceeded.');
 				}
 			}
+
+			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
+
+			this.registerLogger.debug('drive capacity override applied');
+			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
 			// If usage limit exceeded
 			if (driveCapacity < usage + info.size) {
