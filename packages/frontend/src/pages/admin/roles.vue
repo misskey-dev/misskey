@@ -146,6 +146,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 					</MkFolder>
 
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.uploadableFileTypes, 'uploadableFileTypes'])">
+						<template #label>{{ i18n.ts._role._options.uploadableFileTypes }}</template>
+						<template #suffix>...</template>
+						<MkTextarea :modelValue="policies.uploadableFileTypes.join('\n')">
+						</MkTextarea>
+					</MkFolder>
+
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.alwaysMarkNsfw, 'alwaysMarkNsfw'])">
 						<template #label>{{ i18n.ts._role._options.alwaysMarkNsfw }}</template>
 						<template #suffix>{{ policies.alwaysMarkNsfw ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -312,6 +319,7 @@ import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
 const baseRoleQ = ref('');

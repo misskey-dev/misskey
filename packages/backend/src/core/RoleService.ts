@@ -65,6 +65,7 @@ export type RolePolicies = {
 	canImportMuting: boolean;
 	canImportUserLists: boolean;
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
+	uploadableFileTypes: string[];
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -101,6 +102,12 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportMuting: true,
 	canImportUserLists: true,
 	chatAvailability: 'available',
+	uploadableFileTypes: [
+		'text/plain',
+		'image/*',
+		'video/*',
+		'audio/*',
+	],
 };
 
 @Injectable()
@@ -412,6 +419,15 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
 			chatAvailability: calc('chatAvailability', aggregateChatAvailability),
+			uploadableFileTypes: calc('uploadableFileTypes', vs => {
+				const set = new Set<string>();
+				for (const v of vs) {
+					for (const type of v) {
+						set.add(type);
+					}
+				}
+				return [...set];
+			}),
 		};
 	}
 
