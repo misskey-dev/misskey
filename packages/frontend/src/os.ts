@@ -790,3 +790,5 @@ export function launchUploader(
 		});
 	});
 }
+
+export const pageFolderTeleportCount = ref(0);
