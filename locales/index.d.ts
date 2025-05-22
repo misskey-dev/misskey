@@ -11937,6 +11937,10 @@ export interface Locale extends ILocale {
          * アップロード可能な最大ファイルサイズは{x}です。
          */
         "maxFileSizeIsX": ParameterizedString<"x">;
+        /**
+         * アップロード可能なファイル種別
+         */
+        "allowedTypes": string;
     };
     "_clientPerformanceIssueTip": {
         /**
