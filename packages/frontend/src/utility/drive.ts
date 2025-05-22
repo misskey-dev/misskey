@@ -197,7 +197,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+function select(anchorElement: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		os.popupMenu([label ? {
 			text: label,
@@ -214,16 +214,16 @@ function select(src: HTMLElement | EventTarget | null, label: string | null, mul
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
 			action: () => chooseFileFromUrl().then(file => res([file])),
-		}], src);
+		}], anchorElement);
 	});
 }
 
-export function selectFile(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile> {
-	return select(src, label, false).then(files => files[0]);
+export function selectFile(anchorElement: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile> {
+	return select(anchorElement, label, false).then(files => files[0]);
 }
 
-export function selectFiles(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
-	return select(src, label, true);
+export function selectFiles(anchorElement: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
+	return select(anchorElement, label, true);
 }
 
 export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFile: Misskey.entities.DriveFile, options: {
