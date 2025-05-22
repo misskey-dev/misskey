@@ -42,6 +42,9 @@
   (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 - Enhance: ユーザー設定でURLプレビューを無効化できるように
 - Enhance: AiScriptからtoastを表示する関数 `Mk:toast` を追加
+- Enhance: シンタックスハイライトのエンジンをJavaScriptベースのものに変更
+  - フロントエンドの読み込みサイズを軽量化しました
+	- ほとんどの言語のハイライトは問題なく行えますが、互換性の問題により一部の言語が正常にハイライトできなくなる可能性があります。詳しくは https://shiki.style/references/engine-js-compat をご覧ください。
 - Fix: "時計"ウィジェット(Clock)において、Transparent設定が有効でも、その背景が透過されない問題を修正
 
 ### Server
