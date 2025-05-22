@@ -39,6 +39,21 @@ export function uploadFile(file: File | Blob, options: {
 	const filePromise = new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
 		if ($i == null) return reject();
 
+		const allowedMimeTypes = $i.policies.uploadableFileTypes;
+		const isAllowedMimeType = allowedMimeTypes.some(mimeType => {
+			if (mimeType === '*' || mimeType === '*/*') return true;
+			if (mimeType.endsWith('/*')) return file.type.startsWith(mimeType.slice(0, -1));
+			return file.type === mimeType;
+		});
+		if (!isAllowedMimeType) {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.failedToUpload,
+				text: i18n.ts.cannotUploadBecauseUnallowedFileType,
+			});
+			return reject();
+		}
+
 		if ((file.size > instance.maxFileSize) || (file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
 			os.alert({
 				type: 'error',
@@ -74,6 +89,12 @@ export function uploadFile(file: File | Blob, options: {
 							type: 'error',
 							title: i18n.ts.failedToUpload,
 							text: i18n.ts.cannotUploadBecauseNoFreeSpace,
+						});
+					} else if (res.error?.id === '4becd248-7f2c-48c4-a9f0-75edc4f9a1ea') {
+						os.alert({
+							type: 'error',
+							title: i18n.ts.failedToUpload,
+							text: i18n.ts.cannotUploadBecauseUnallowedFileType,
 						});
 					} else {
 						os.alert({

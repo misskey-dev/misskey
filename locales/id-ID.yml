@@ -1949,7 +1949,6 @@ _theme:
     buttonBg: "Latar belakang tombol"
     buttonHoverBg: "Latar belakang tombol (Mengambang)"
     inputBorder: "Batas bidang masukan"
-    driveFolderBg: "Latar belakang folder drive"
     badge: "Lencana"
     messageBg: "Latar belakang obrolan"
     fgHighlighted: "Teks yang disorot"
@@ -2530,9 +2529,6 @@ _dataSaver:
   _avatar:
     title: "Gambar avatar"
     description: "Hentikan animasi gambar avatar. Gambar animasi dapat berukuran lebih besar dari gambar biasa, berpotensi pada pengurangan lalu lintas data lebih jauh."
-  _urlPreview:
-    title: "Gambar kecil URL pratinjau"
-    description: "Gambar kecil URL pratinjau tidak akan dimuat lagi."
   _code:
     title: "Penyorotan kode"
     description: "Jika notasi penyorotan kode digunakan di MFM, dll. Fungsi tersebut tidak akan dimuat apabila tidak diketuk. Penyorotan sintaks membutuhkan pengunduhan berkas definisi penyorotan untuk setiap bahasa pemrograman. Oleh sebab itu, menonaktifkan pemuatan otomatis dari berkas ini dilakukan untuk mengurangi jumlah komunikasi data."
