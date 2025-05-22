@@ -6,6 +6,7 @@ import OpenAPIParser from '@readme/openapi-parser';
 import openapiTS, { astToString } from 'openapi-typescript';
 import type { OpenAPI3, OperationObject, PathItemObject } from 'openapi-typescript';
 import ts from 'typescript';
+import { removeNeverPropertiesFromAST } from './ast-transformer.js';
 
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
@@ -53,7 +54,11 @@ async function generateBaseTypes(
 			}
 		},
 	});
-	lines.push(astToString(generatedTypesAst));
+
+	const filteredAst = removeNeverPropertiesFromAST(generatedTypesAst);
+
+	lines.push(astToString(filteredAst));
+
 	lines.push('');
 
 	await writeFile(typeFileName, lines.join('\n'));
