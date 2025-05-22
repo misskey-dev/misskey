@@ -5,15 +5,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_popup_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_popup_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_popup_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_popup_leaveTo : ''"
 	appear @afterLeave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
-		<div v-if="user != null">
-			<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` : ''">
+		<MkError v-if="error" @retry="fetchUser()"/>
+		<div v-else-if="user != null">
+			<div :class="$style.banner" :style="user.bannerUrl ? { backgroundImage: `url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` } : ''">
 				<span v-if="$i && $i.id != user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
 			</div>
 			<svg viewBox="0 0 128 128" :class="$style.avatarBack">
@@ -60,14 +61,14 @@ import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { getUserMenu } from '@/scripts/get-user-menu.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { $i } from '@/account.js';
-import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { prefer } from '@/preferences.js';
+import { $i } from '@/i.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	showing: boolean;
@@ -85,6 +86,7 @@ const zIndex = os.claimZIndex('middle');
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const top = ref(0);
 const left = ref(0);
+const error = ref(false);
 
 function showMenu(ev: MouseEvent) {
 	if (user.value == null) return;
@@ -92,19 +94,27 @@ function showMenu(ev: MouseEvent) {
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
-onMounted(() => {
+async function fetchUser() {
 	if (typeof props.q === 'object') {
 		user.value = props.q;
+		error.value = false;
 	} else {
-		const query = props.q.startsWith('@') ?
+		const query: Omit<Misskey.entities.UsersShowRequest, 'userIds'> = props.q.startsWith('@') ?
 			Misskey.acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
 		misskeyApi('users/show', query).then(res => {
 			if (!props.showing) return;
 			user.value = res;
+			error.value = false;
+		}, () => {
+			error.value = true;
 		});
 	}
+}
+
+onMounted(() => {
+	fetchUser();
 
 	const rect = props.source.getBoundingClientRect();
 	const x = ((rect.left + (props.source.offsetWidth / 2)) - (300 / 2)) + window.scrollX;
@@ -220,7 +230,7 @@ onMounted(() => {
 
 .statusItemLabel {
 	font-size: 0.7em;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 
 .menu {

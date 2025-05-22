@@ -19,18 +19,47 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.headerRight">
 					<span :class="$style.headerRightText"><slot name="suffix"></slot></span>
-					<i v-if="opened" class="ti ti-chevron-up icon"></i>
+					<i v-if="asPage" class="ti ti-chevron-right icon"></i>
+					<i v-else-if="opened" class="ti ti-chevron-up icon"></i>
 					<i v-else class="ti ti-chevron-down icon"></i>
 				</div>
 			</button>
 		</template>
 
-		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
+		<div v-if="asPage">
+			<Teleport v-if="opened" defer :to="`#v-${pageId}-header`">
+				<slot name="label"></slot>
+			</Teleport>
+			<Teleport v-if="opened" defer :to="`#v-${pageId}-body`">
+				<MkStickyContainer>
+					<template #header>
+						<div v-if="$slots.header" :class="$style.inBodyHeader">
+							<slot name="header"></slot>
+						</div>
+					</template>
+
+					<div v-if="withSpacer" class="_spacer" :style="{ '--MI_SPACER-min': props.spacerMin + 'px', '--MI_SPACER-max': props.spacerMax + 'px' }">
+						<slot></slot>
+					</div>
+					<div v-else>
+						<slot></slot>
+					</div>
+
+					<template #footer>
+						<div v-if="$slots.footer" :class="$style.inBodyFooter">
+							<slot name="footer"></slot>
+						</div>
+					</template>
+				</MkStickyContainer>
+			</Teleport>
+		</div>
+
+		<div v-else-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
 			<Transition
-				:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-				:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-				:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-				:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+				:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
 				@enter="enter"
 				@afterEnter="afterEnter"
 				@leave="leave"
@@ -38,15 +67,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
-							<slot></slot>
-						</MkSpacer>
-						<div v-else>
-							<slot></slot>
-						</div>
-						<div v-if="$slots.footer" :class="$style.footer">
-							<slot name="footer"></slot>
-						</div>
+						<MkStickyContainer>
+							<template #header>
+								<div v-if="$slots.header" :class="$style.inBodyHeader">
+									<slot name="header"></slot>
+								</div>
+							</template>
+
+							<div v-if="withSpacer" class="_spacer" :style="{ '--MI_SPACER-min': props.spacerMin + 'px', '--MI_SPACER-max': props.spacerMax + 'px' }">
+								<slot></slot>
+							</div>
+							<div v-else>
+								<slot></slot>
+							</div>
+
+							<template #footer>
+								<div v-if="$slots.footer" :class="$style.inBodyFooter">
+									<slot name="footer"></slot>
+								</div>
+							</template>
+						</MkStickyContainer>
 					</div>
 				</KeepAlive>
 			</Transition>
@@ -56,9 +96,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, ref, shallowRef } from 'vue';
-import { defaultStore } from '@/store.js';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { prefer } from '@/preferences.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
+import { pageFolderTeleportCount, popup } from '@/os.js';
+import MkFolderPage from '@/components/MkFolderPage.vue';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
@@ -66,21 +109,27 @@ const props = withDefaults(defineProps<{
 	withSpacer?: boolean;
 	spacerMin?: number;
 	spacerMax?: number;
+	canPage?: boolean;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
 	withSpacer: true,
 	spacerMin: 14,
 	spacerMax: 22,
+	canPage: true,
 });
 
-const rootEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
+const asPage = props.canPage && deviceKind === 'smartphone' && prefer.s['experimental.enableFolderPageView'];
 const bgSame = ref(false);
-const opened = ref(props.defaultOpen);
-const openedAtLeastOnce = ref(props.defaultOpen);
+const opened = ref(asPage ? false : props.defaultOpen);
+const openedAtLeastOnce = ref(opened.value);
 
+//#region interpolate-sizeに対応していないブラウザ向け（TODO: 主要ブラウザが対応したら消す）
 function enter(el: Element) {
+	if (CSS.supports('interpolate-size', 'allow-keywords')) return;
 	if (!(el instanceof HTMLElement)) return;
+
 	const elementHeight = el.getBoundingClientRect().height;
 	el.style.height = '0';
 	el.offsetHeight; // reflow
@@ -88,12 +137,16 @@ function enter(el: Element) {
 }
 
 function afterEnter(el: Element) {
+	if (CSS.supports('interpolate-size', 'allow-keywords')) return;
 	if (!(el instanceof HTMLElement)) return;
+
 	el.style.height = '';
 }
 
 function leave(el: Element) {
+	if (CSS.supports('interpolate-size', 'allow-keywords')) return;
 	if (!(el instanceof HTMLElement)) return;
+
 	const elementHeight = el.getBoundingClientRect().height;
 	el.style.height = `${elementHeight}px`;
 	el.offsetHeight; // reflow
@@ -101,11 +154,29 @@ function leave(el: Element) {
 }
 
 function afterLeave(el: Element) {
+	if (CSS.supports('interpolate-size', 'allow-keywords')) return;
 	if (!(el instanceof HTMLElement)) return;
+
 	el.style.height = '';
 }
+//#endregion
 
-function toggle() {
+let pageId = pageFolderTeleportCount.value;
+pageFolderTeleportCount.value += 1000;
+
+async function toggle() {
+	if (asPage && !opened.value) {
+		pageId++;
+		const { dispose } = await popup(MkFolderPage, {
+			pageId,
+		}, {
+			closed: () => {
+				opened.value = false;
+				dispose();
+			},
+		});
+	}
+
 	if (!opened.value) {
 		openedAtLeastOnce.value = true;
 	}
@@ -116,7 +187,7 @@ function toggle() {
 }
 
 onMounted(() => {
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
 	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
 	bgSame.value = parentBg === myBg;
@@ -126,9 +197,21 @@ onMounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	overflow-y: clip;
-	transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
+	overflow-y: hidden; // 子要素のmarginが突き出るため clip を使ってはいけない
+	transition: opacity 0.3s, height 0.3s;
 }
+
+@supports (interpolate-size: allow-keywords) {
+	.transition_toggle_enterFrom,
+	.transition_toggle_leaveTo {
+		height: 0;
+	}
+
+	.root {
+		interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
+	}
+}
+
 .transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
 	opacity: 0;
@@ -175,7 +258,7 @@ onMounted(() => {
 }
 
 .headerLower {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 	padding-left: 4px;
 }
@@ -209,13 +292,13 @@ onMounted(() => {
 }
 
 .headerTextSub {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 }
 
 .headerRight {
 	margin-left: auto;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	white-space: nowrap;
 }
 
@@ -230,16 +313,23 @@ onMounted(() => {
 
 	&.bgSame {
 		background: var(--MI_THEME-bg);
+
+		.inBodyHeader {
+			background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+		}
 	}
 }
 
-.footer {
-	position: sticky !important;
-	z-index: 1;
-	bottom: var(--MI-stickyBottom, 0px);
-	left: 0;
+.inBodyHeader {
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.inBodyFooter {
 	padding: 12px;
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;

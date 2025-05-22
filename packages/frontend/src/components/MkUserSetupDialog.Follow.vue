@@ -39,15 +39,15 @@ import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 
-const pinnedUsers: Paging = {
+const pinnedUsers: PagingCtx = {
 	endpoint: 'pinned-users',
 	noPaging: true,
 	limit: 10,
 };
 
-const popularUsers: Paging = {
+const popularUsers: PagingCtx = {
 	endpoint: 'users',
 	limit: 10,
 	noPaging: true,

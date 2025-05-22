@@ -15,11 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else>
 			<Transition :name="$style.change" mode="default" appear>
-				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
+				<MkMarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
 					<span v-for="item in items" :key="item.link" :class="$style.item">
 						<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
-				</MarqueeText>
+				</MkMarqueeText>
 			</Transition>
 		</div>
 	</div>
@@ -31,10 +31,10 @@ import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import MarqueeText from '@/components/MkMarquee.vue';
-import type { GetFormResultType } from '@/scripts/form.js';
+import MarqueeText from '@/components/MkMarqueeText.vue';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { shuffle } from '@/scripts/shuffle.js';
+import { shuffle } from '@/utility/shuffle.js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 
@@ -108,7 +108,7 @@ const intervalClear = ref<(() => void) | undefined>();
 const key = ref(0);
 
 const tick = () => {
-	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
+	if (window.document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
 
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())

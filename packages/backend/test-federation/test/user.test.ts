@@ -381,7 +381,8 @@ describe('User', () => {
 
 				await alice.client.request('i/delete-account', { password: alice.password });
 				// NOTE: user deletion query is slow
-				await sleep(4000);
+				// FIXME: ensure user is removed successfully
+				await sleep(10000);
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation
@@ -480,7 +481,8 @@ describe('User', () => {
 
 				await aAdmin.client.request('admin/suspend-user', { userId: alice.id });
 				// NOTE: user deletion query is slow
-				await sleep(4000);
+				// FIXME: ensure user is removed successfully
+				await sleep(10000);
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation

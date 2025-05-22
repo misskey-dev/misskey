@@ -6,12 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<FormPagination ref="list" :pagination="pagination">
-		<template #empty>
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
-		</template>
+		<template #empty><MkResult type="empty"/></template>
 		<template #default="{items}">
 			<div class="_gaps">
 				<MkFolder v-for="token in items" :key="token.id" :defaultOpen="true">
@@ -54,18 +49,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import FormPagination from '@/components/MkPagination.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { infoImageUrl } from '@/instance.js';
 
-const list = ref<InstanceType<typeof FormPagination>>();
+const list = useTemplateRef('list');
 
 const pagination = {
 	endpoint: 'i/apps' as const,
@@ -78,7 +72,7 @@ const pagination = {
 
 function revoke(token) {
 	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
-		list.value?.reload();
+		list.value?.paginator.reload();
 	});
 }
 
@@ -86,7 +80,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.installedApps,
 	icon: 'ti ti-plug',
 }));

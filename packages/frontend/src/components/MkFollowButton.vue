@@ -39,13 +39,13 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -100,7 +100,7 @@ async function onClick() {
 				userId: props.user.id,
 			});
 		} else {
-			if (defaultStore.state.alwaysConfirmFollow) {
+			if (prefer.s.alwaysConfirmFollow) {
 				const { canceled } = await os.confirm({
 					type: 'question',
 					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
@@ -120,11 +120,11 @@ async function onClick() {
 			} else {
 				await misskeyApi('following/create', {
 					userId: props.user.id,
-					withReplies: defaultStore.state.defaultWithReplies,
+					withReplies: prefer.s.defaultFollowWithReplies,
 				});
 				emit('update:user', {
 					...props.user,
-					withReplies: defaultStore.state.defaultWithReplies,
+					withReplies: prefer.s.defaultFollowWithReplies,
 				});
 				hasPendingFollowRequestFromYou.value = true;
 
@@ -211,13 +211,13 @@ onBeforeUnmount(() => {
 		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--MI_THEME-accentLighten);
-			border-color: var(--MI_THEME-accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 
 		&:active {
-			background: var(--MI_THEME-accentDarken);
-			border-color: var(--MI_THEME-accentDarken);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 	}
 

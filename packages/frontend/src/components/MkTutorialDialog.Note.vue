@@ -27,7 +27,7 @@ import * as Misskey from 'misskey-js';
 import { ref, reactive } from 'vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkNote from '@/components/MkNote.vue';
 
 const props = defineProps<{
@@ -76,8 +76,6 @@ const onceReacted = ref<boolean>(false);
 function addReaction(emoji) {
 	onceReacted.value = true;
 	emit('reacted');
-	exampleNote.reactions[emoji] = 1;
-	exampleNote.myReaction = emoji;
 	doNotification(emoji);
 }
 

@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkFoldableSection v-if="notePagination">
 		<template #header>{{ i18n.ts.searchResult }}</template>
-		<MkNotes :key="`searchNotes:${key}`" :pagination="notePagination"/>
+		<MkNotesTimeline :key="`searchNotes:${key}`" :pagination="notePagination"/>
 	</MkFoldableSection>
 </div>
 </template>
@@ -113,18 +113,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, shallowRef, toRef } from 'vue';
 import type * as Misskey from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
-import { $i } from '@/account.js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
+import { $i } from '@/i.js';
 import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { apLookup } from '@/utility/lookup.js';
+import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkNotes from '@/components/MkNotes.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
@@ -143,7 +144,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const key = ref(0);
-const notePagination = ref<Paging<'notes/search'>>();
+const notePagination = ref<PagingCtx<'notes/search'>>();
 
 const searchQuery = ref(toRef(props, 'query').value);
 const hostInput = ref(toRef(props, 'host').value);
@@ -260,13 +261,7 @@ async function search() {
 			text: i18n.ts.lookupConfirm,
 		});
 		if (!confirm.canceled) {
-			const promise = misskeyApi('ap/show', {
-				uri: searchParams.value.query,
-			});
-
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-			const res = await promise;
+			const res = await apLookup(searchParams.value.query);
 
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
@@ -338,7 +333,7 @@ async function search() {
 	width: 100%;
 	height: 100%;
 	padding: 12px;
-	border: 2px dashed var(--MI_THEME-fgTransparent);
+	border: 2px dashed color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 }
 
 .userSelectButtonInner {
