@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkPagination>
 </template>
 
-<script lang="ts" setup generic="T extends PagingCtx<'notes/mentions'>">
+<script lang="ts" setup generic="T extends PagingCtx">
 import { useTemplateRef } from 'vue';
 import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkNote from '@/components/MkNote.vue';
