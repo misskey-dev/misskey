@@ -180,7 +180,7 @@ function more(ev: MouseEvent) {
 	const target = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
 	if (!target) return;
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-		src: target,
+		anchorElement: target,
 	}, {
 		closed: () => dispose(),
 	});

@@ -2161,7 +2161,6 @@ _theme:
     buttonBg: "Hintergrund von Schaltflächen"
     buttonHoverBg: "Hintergrund von Schaltflächen (Mouseover)"
     inputBorder: "Rahmen von Eingabefeldern"
-    driveFolderBg: "Hintergrund von Drive-Ordnern"
     badge: "Wappen"
     messageBg: "Hintergrund von Chats"
     fgHighlighted: "Hervorgehobener Text"
@@ -2797,9 +2796,6 @@ _dataSaver:
   _avatar:
     title: "Animierte Profilbilder deaktivieren"
     description: "Die Animation von Profilbildern wird angehalten. Da animierte Bilder eine größere Dateigröße haben können als normale Bilder, kann dies den Datenverkehr weiter reduzieren."
-  _urlPreview:
-    title: "URL-Vorschaubilder ausblenden"
-    description: "URL-Vorschaubilder werden nicht mehr geladen."
   _code:
     title: "Code-Hervorhebungen ausblenden"
     description: "Wenn Code-Hervorhebungen in MFM usw. verwendet werden, werden sie erst geladen, wenn sie angetippt werden. Die Syntaxhervorhebung erfordert das Herunterladen der Definitionsdateien für jede Programmiersprache. Es ist daher zu erwarten, dass die Deaktivierung des automatischen Ladens dieser Dateien die Menge des Datenverkehrs reduziert."
@@ -2930,10 +2926,6 @@ _customEmojisManager:
       uploadSettingDescription: "Hier kannst du das Verhalten beim Hochladen von Emojis konfigurieren."
       directoryToCategoryLabel: "Gib den Namen des Verzeichnisses in das Feld „Kategorie“ ein"
       directoryToCategoryCaption: "Wenn du ein Verzeichnis ziehst und ablegst, gib den Verzeichnisnamen in das Feld „Kategorie“ ein."
-      emojiInputAreaCaption: "Wählen Sie die Emojis aus, die Sie mit einer der folgenden Methoden speichern möchten."
-      emojiInputAreaList1: "Ziehe Bilddateien oder Verzeichnisse per Drag-and-drop in diesen Rahmen"
-      emojiInputAreaList2: "Klicke auf diesen Link, um von deinem PC aus zu wählen"
-      emojiInputAreaList3: "Klicke auf diesen Link, um vom Drive aus zu wählen"
       confirmRegisterEmojisDescription: "Füge die in der Liste aufgeführten Emojis als neue benutzerdefinierte Emojis hinzu. Bist du sicher? (Um eine Überlastung zu vermeiden, können nur {count} Emoji(s) in einem Vorgang hinzugefügt werden)"
       confirmClearEmojisDescription: "Verwerfe die Bearbeitungen und lösche die Emojis aus der Liste. Bist du sicher, dass du fortfahren möchtest?"
       confirmUploadEmojisDescription: "Lade die {count} abgelegte(n) Datei(en) in das Drive hoch. Bist du sicher, dass du fortfahren möchtest?"

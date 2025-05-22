@@ -609,10 +609,10 @@ export async function selectRole(params: ComponentProps<typeof MkRoleSelectDialo
 	});
 }
 
-export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog_TypeReferenceOnly>): Promise<string> {
+export async function pickEmoji(anchorElement: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog_TypeReferenceOnly>): Promise<string> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-			src,
+			anchorElement,
 			...opts,
 		}, {
 			done: emoji => {
@@ -639,20 +639,20 @@ export async function cropImageFile(imageFile: File | Blob, options: {
 	});
 }
 
-export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | null, options?: {
+export function popupMenu(items: MenuItem[], anchorElement?: HTMLElement | EventTarget | null, options?: {
 	align?: string;
 	width?: number;
 	onClosing?: () => void;
 }): Promise<void> {
-	if (!(src instanceof HTMLElement)) {
-		src = null;
+	if (!(anchorElement instanceof HTMLElement)) {
+		anchorElement = null;
 	}
 
-	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(window.document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(anchorElement) ?? getHTMLElementOrNull(window.document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
 			items,
-			src,
+			anchorElement,
 			width: options?.width,
 			align: options?.align,
 			returnFocusTo,
@@ -790,3 +790,5 @@ export function launchUploader(
 		});
 	});
 }
+
+export const pageFolderTeleportCount = ref(0);

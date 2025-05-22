@@ -37,9 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #footer>
 					<div class="_buttons">
 						<MkButton rounded @click="promoteAllJobs"><i class="ti ti-player-track-next"></i> Promote all jobs</MkButton>
-						<MkButton rounded @click="createJob"><i class="ti ti-plus"></i> Add job</MkButton>
-						<MkButton v-if="queueInfo.isPaused" rounded @click="resumeQueue"><i class="ti ti-player-play"></i> Resume queue</MkButton>
-						<MkButton v-else rounded danger @click="pauseQueue"><i class="ti ti-player-pause"></i> Pause queue</MkButton>
+						<!-- <MkButton rounded @click="createJob"><i class="ti ti-plus"></i> Add job</MkButton> -->
+						<!-- <MkButton v-if="queueInfo.isPaused" rounded @click="resumeQueue"><i class="ti ti-player-play"></i> Resume queue</MkButton> -->
+						<!-- <MkButton v-else rounded danger @click="pauseQueue"><i class="ti ti-player-pause"></i> Pause queue</MkButton> -->
 						<MkButton rounded danger @click="clearQueue"><i class="ti ti-trash"></i> Empty queue</MkButton>
 					</div>
 				</template>
@@ -172,12 +172,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import JSON5 from 'json5';
+import * as Misskey from 'misskey-js';
 import { debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
 import XChart from './job-queue.chart.vue';
 import XJob from './job-queue.job.vue';
-import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -185,32 +184,18 @@ import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkTabs from '@/components/MkTabs.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkCode from '@/components/MkCode.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkTl from '@/components/MkTl.vue';
 import kmg from '@/filters/kmg.js';
 import MkInput from '@/components/MkInput.vue';
 import bytes from '@/filters/bytes.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
-const QUEUE_TYPES = [
-	'system',
-	'endedPollNotification',
-	'deliver',
-	'inbox',
-	'db',
-	'relationship',
-	'objectStorage',
-	'userWebhookDeliver',
-	'systemWebhookDeliver',
-] as const;
-
-const tab: Ref<typeof QUEUE_TYPES[number] | '-'> = ref('-');
-const jobState = ref('all');
-const jobs = ref([]);
+const tab = ref<typeof Misskey.queueTypes[number] | '-'>('-');
+const jobState = ref<'all' | 'latest' | 'completed' | 'failed' | 'active' | 'delayed' | 'wait' | 'paused'>('all');
+const jobs = ref<Misskey.entities.QueueJob[]>([]);
 const jobsFetching = ref(true);
-const queueInfos = ref([]);
-const queueInfo = ref();
+const queueInfos = ref<Misskey.entities.AdminQueueQueuesResponse>([]);
+const queueInfo = ref<Misskey.entities.AdminQueueQueueStatsResponse | null>(null);
 const searchQuery = ref('');
 
 async function fetchQueues() {
@@ -230,11 +215,11 @@ async function fetchJobs() {
 		queue: tab.value,
 		state: state === 'all' ? ['completed', 'failed', 'active', 'delayed', 'wait'] : state === 'latest' ? ['completed', 'failed'] : [state],
 		search: searchQuery.value.trim() === '' ? undefined : searchQuery.value,
-	}).then(res => {
+	}).then((res: Misskey.entities.AdminQueueJobsResponse) => {
 		if (state === 'all') {
 			res.sort((a, b) => (a.processedOn ?? a.timestamp) > (b.processedOn ?? b.timestamp) ? -1 : 1);
 		} else if (state === 'latest') {
-			res.sort((a, b) => a.processedOn > b.processedOn ? -1 : 1);
+			res.sort((a, b) => a.processedOn! > b.processedOn! ? -1 : 1);
 		} else if (state === 'delayed') {
 			res.sort((a, b) => (a.processedOn ?? a.timestamp) > (b.processedOn ?? b.timestamp) ? -1 : 1);
 		}
@@ -276,6 +261,8 @@ useInterval(() => {
 });
 
 async function clearQueue() {
+	if (tab.value === '-') return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.areYouSure,
@@ -289,6 +276,8 @@ async function clearQueue() {
 }
 
 async function promoteAllJobs() {
+	if (tab.value === '-') return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.areYouSure,
@@ -302,13 +291,15 @@ async function promoteAllJobs() {
 }
 
 async function removeJobs() {
+	if (tab.value === '-' || jobState.value === 'latest') return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.areYouSure,
 	});
 	if (canceled) return;
 
-	os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: jobState.value });
+	os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: jobState.value === 'all' ? '*' : jobState.value });
 
 	fetchCurrentQueue();
 	fetchJobs();
@@ -324,16 +315,18 @@ async function refreshJob(jobId: string) {
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() =>
-	[{
-		key: '-',
-		title: i18n.ts.overview,
-		icon: 'ti ti-dashboard',
-	}].concat(QUEUE_TYPES.map((t) => ({
-		key: t,
-		title: t,
-	}))),
-);
+const headerTabs = computed<{
+	key: string;
+	title: string;
+	icon?: string;
+}[]>(() => [{
+	key: '-',
+	title: i18n.ts.jobQueue,
+	icon: 'ti ti-list-check',
+}, ...Misskey.queueTypes.map((q) => ({
+	key: q,
+	title: q,
+}))]);
 
 definePage(() => ({
 	title: i18n.ts.jobQueue,

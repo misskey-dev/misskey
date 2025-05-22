@@ -40,7 +40,7 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 	canFetchDetection?: 'safe' | 'limit';
 };
 
-export function usePagination<Endpoint extends keyof Misskey.Endpoints, T = Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I : never>(props: {
+export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extends { id: string; } = (Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I extends { id: string } ? I : { id: string } : { id: string })>(props: {
 	ctx: PagingCtx<Endpoint>;
 	autoInit?: boolean;
 	autoReInit?: boolean;

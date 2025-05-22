@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSelect>
 
 			<div>{{ i18n.tsx._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
+			<div>{{ i18n.ts._uploader.allowedTypes }}: {{ $i.policies.uploadableFileTypes.join(', ') }}</div>
 		</div>
 	</div>
 
@@ -281,7 +282,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				if (item.abort != null) {
 					item.abort();
 				}
-			}
+			},
 		});
 	}
 

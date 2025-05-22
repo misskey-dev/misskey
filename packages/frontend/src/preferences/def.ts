@@ -418,4 +418,7 @@ export const PREF_DEF = {
 	'experimental.stackingRouterView': {
 		default: false,
 	},
+	'experimental.enableFolderPageView': {
+		default: false,
+	},
 } satisfies PreferencesDefinition;

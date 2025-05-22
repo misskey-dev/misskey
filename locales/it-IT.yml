@@ -2150,7 +2150,6 @@ _theme:
     buttonBg: "Sfondo del pulsante"
     buttonHoverBg: "Sfondo del pulsante (sorvolato)"
     inputBorder: "Inquadra casella di testo"
-    driveFolderBg: "Sfondo della cartella di disco"
     badge: "Distintivo"
     messageBg: "Sfondo della chat"
     fgHighlighted: "Testo in evidenza."
@@ -2786,9 +2785,6 @@ _dataSaver:
   _avatar:
     title: "Immagine del profilo"
     description: "Impedire l'animazione per l'immagine del profilo. Le immagini animate possono avere dimensioni file maggiori rispetto a quelle normali, puoi ridurre ulteriormente l'utilizzo dei dati."
-  _urlPreview:
-    title: "Anteprime delle URL"
-    description: "Impedire il caricamento delle anteprime URL."
   _code:
     title: "Codice evidenziato"
     description: "Impedire che il codice sorgente sia automaticamente evidenziato. Evidenziare il codice richiede il caricamento di un file per ogni linguaggio. Puoi evidenziare soltanto il codice che intendi leggere e ridurre il traffico inutilizzato."
@@ -2919,10 +2915,6 @@ _customEmojisManager:
       uploadSettingDescription: "Questa schermata ti permette di scegliere il comportamento durante il caricamento delle emoji."
       directoryToCategoryLabel: "Inseriscile in una cartella omonima alla categoria"
       directoryToCategoryCaption: "Crea il campo categoria in base alla cartella."
-      emojiInputAreaCaption: "Seleziona l'emoji da registrare utilizzando uno dei metodi."
-      emojiInputAreaList1: "Trascinare una immagine o una cartella in quest'area"
-      emojiInputAreaList2: "Clicca per scegliere file dal tuo dispositivo"
-      emojiInputAreaList3: "Clicca per selezionare dal Drive"
       confirmRegisterEmojisDescription: "Registrazione delle emoji elencate come nuove emoji personalizzate. Vuoi davvero procedere? (Per evitare sovraccarichi, puoi registrare al massimo {count} emoji per volta)"
       confirmClearEmojisDescription: "Annullare le modifiche e cancella le emoji nell'elenco. Confermi?"
       confirmUploadEmojisDescription: "Caricamento sul Drive di {count} file locali. Vuoi davvero procedere?"

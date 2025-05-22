@@ -1231,7 +1231,6 @@ _theme:
     buttonBg: "Tło przycisku"
     buttonHoverBg: "Tło przycisku (po najechaniu)"
     inputBorder: "Obramowanie pola wejścia"
-    driveFolderBg: "Tło folderu na dysku"
     badge: "Odznaka"
     messageBg: "Tło czatu"
     fgHighlighted: "Wyróżniony tekst"

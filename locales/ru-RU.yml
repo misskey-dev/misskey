@@ -1748,7 +1748,6 @@ _theme:
     buttonBg: "Фон кнопки"
     buttonHoverBg: "Текст кнопки"
     inputBorder: "Рамка поля ввода"
-    driveFolderBg: "Фон папки «Диска»"
     badge: "Значок"
     messageBg: "Фон беседы"
     fgHighlighted: "Подсвеченный текст"

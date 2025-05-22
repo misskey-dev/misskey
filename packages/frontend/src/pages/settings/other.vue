@@ -99,6 +99,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableWasmEmojiSearch">
 							<template #label>Enable Hanami In-Browser Search Engine for custom emojis</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableFolderPageView">
+							<template #label>Enable folder page view</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -162,6 +165,7 @@ const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableWasmEmojiSearch = computed(hanaStore.makeGetterSetter('enableWasmEmojiSearch'));
+const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 
 watch([
 	skipNoteRender,
