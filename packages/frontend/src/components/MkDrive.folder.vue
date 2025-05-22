@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ i18n.ts.uploadFolder }}
 	</div>
 	<button v-if="selectMode" class="_button" :class="$style.checkboxWrapper" @click.prevent.stop="checkboxClicked">
-		<div :class="[$style.checkbox, { [$style.checked]: isSelected }]"></div>
+		<div :class="[$style.checkbox, { [$style.checked]: isSelected, 'ti ti-check': isSelected }]"></div>
 	</button>
 </div>
 </template>
@@ -368,16 +368,14 @@ function onContextmenu(ev: MouseEvent) {
 			border-color: var(--MI_THEME-accent);
 			background: var(--MI_THEME-accent);
 
-			&::after {
-				content: "\ea5e";
-				font-family: 'tabler-icons';
+			&::before {
 				position: absolute;
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
 				color: #fff;
 				font-size: 12px;
-				line-height: 22px;
+				line-height: 18px;
 			}
 		}
 	}

@@ -63,6 +63,12 @@
 			],
 		},
 		{
+			groupName: '[icons-subsetter] Update dependencies',
+			matchFileNames: [
+				'packages/icons-subsetter/**/package.json',
+			],
+		},
+		{
 			groupName: '[GitHub Actions] Update dependencies',
 			matchFileNames: [
 				'.github/workflows/**/*.yml',
