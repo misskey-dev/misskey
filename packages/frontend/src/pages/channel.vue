@@ -56,6 +56,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 			</div>
 		</div>
+		<div v-else-if="tab === 'followers'">
+			<ChannelFollowersList :channelId="props.channelId"/>
+		</div>
 	</div>
 	<template #footer>
 		<div :class="$style.footer">
@@ -96,6 +99,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
+import ChannelFollowersList from '@/pages/channel/followers-list.vue';
 
 const router = useRouter();
 
@@ -254,6 +258,10 @@ const headerTabs = computed(() => [{
 	key: 'featured',
 	title: i18n.ts.featured,
 	icon: 'ti ti-bolt',
+}, {
+	key: 'followers',
+	title: i18n.ts.followers,
+	icon: 'ti ti-users',
 }, {
 	key: 'search',
 	title: i18n.ts.search,

@@ -5,10 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository } from '@/models/_.js';
+import type { NotesRepository, UsersRepository, ChannelsRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
+import type { MiChannel } from '@/models/Channel.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 
@@ -20,6 +21,9 @@ export class GetterService {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
 
 		private userEntityService: UserEntityService,
 	) {
@@ -90,6 +94,20 @@ export class GetterService {
 		}
 
 		return user;
+	}
+
+	/**
+	 * Get channel for API processing
+	 */
+	@bindThis
+	public async getChannel(channelId: MiChannel['id']) {
+		const channel = await this.channelsRepository.findOneBy({ id: channelId });
+
+		if (channel == null) {
+			throw new IdentifiableError('eb1c598e-0558-4fe0-8465-286c62f55a6f', 'No such channel.');
+		}
+
+		return channel;
 	}
 }
 
