@@ -31,7 +31,11 @@ import { packedChannelSchema } from '@/models/json-schema/channel.js';
 import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
 import { packedClipSchema } from '@/models/json-schema/clip.js';
 import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
-import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
+import {
+	packedQueueCountSchema,
+	packedQueueMetricsSchema,
+	packedQueueJobSchema,
+} from '@/models/json-schema/queue.js';
 import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
 import {
 	packedEmojiDetailedAdminSchema,
@@ -67,6 +71,7 @@ import { packedChatMessageSchema, packedChatMessageLiteSchema, packedChatMessage
 import { packedChatRoomSchema } from '@/models/json-schema/chat-room.js';
 import { packedChatRoomInvitationSchema } from '@/models/json-schema/chat-room-invitation.js';
 import { packedChatRoomMembershipSchema } from '@/models/json-schema/chat-room-membership.js';
+import { packedAchievementNameSchema, packedAchievementSchema } from '@/models/json-schema/achievement.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -78,6 +83,8 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	Achievement: packedAchievementSchema,
+	AchievementName: packedAchievementNameSchema,
 	Ad: packedAdSchema,
 	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
@@ -97,6 +104,8 @@ export const refs = {
 	PageBlock: packedPageBlockSchema,
 	Channel: packedChannelSchema,
 	QueueCount: packedQueueCountSchema,
+	QueueMetrics: packedQueueMetricsSchema,
+	QueueJob: packedQueueJobSchema,
 	Antenna: packedAntennaSchema,
 	Clip: packedClipSchema,
 	FederationInstance: packedFederationInstanceSchema,

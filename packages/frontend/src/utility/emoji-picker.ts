@@ -16,7 +16,7 @@ import { prefer } from '@/preferences.js';
  * 一度表示したダイアログを連続で使用できることが望ましいシーンでの利用が想定される。
  */
 class EmojiPicker {
-	private src: Ref<HTMLElement | null> = ref(null);
+	private anchorElement: Ref<HTMLElement | null> = ref(null);
 
 	private isWindow: boolean = false;
 	private windowComponentEl: ShallowRef<InstanceType<typeof MkEmojiPickerWindow_TypeOnly> | null> = shallowRef(null);
@@ -47,7 +47,7 @@ class EmojiPicker {
 			this.isWindow = true;
 		} else {
 			await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-				src: this.src,
+				anchorElement: this.anchorElement,
 				pinnedEmojis: this.emojisRef,
 				asReactionPicker: false,
 				manualShowing: this.dialogShowing,
@@ -60,7 +60,7 @@ class EmojiPicker {
 					this.dialogShowing.value = false;
 				},
 				closed: () => {
-					this.src.value = null;
+					this.anchorElement.value = null;
 					if (this.onClosed) this.onClosed();
 				},
 			});
@@ -68,7 +68,7 @@ class EmojiPicker {
 	}
 
 	public show(opts: {
-		src: HTMLElement,
+		anchorElement: HTMLElement,
 		onChosen?: EmojiPicker['onChosen'],
 		onClosed?: EmojiPicker['onClosed'],
 	}) {
@@ -76,7 +76,7 @@ class EmojiPicker {
 			if (this.windowShowing) return;
 			this.windowShowing = true;
 			const { dispose, componentRef } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
-				src: opts.src,
+				anchorElement: opts.anchorElement,
 				pinnedEmojis: this.emojisRef,
 				asReactionPicker: false,
 			}, {
@@ -91,7 +91,7 @@ class EmojiPicker {
 			});
 			this.windowComponentEl.value = componentRef.value;
 		} else {
-			this.src.value = opts.src;
+			this.anchorElement.value = opts.anchorElement;
 			this.dialogShowing.value = true;
 			this.onChosen = opts.onChosen;
 			this.onClosed = opts.onClosed;

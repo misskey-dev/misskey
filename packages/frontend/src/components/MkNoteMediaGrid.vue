@@ -100,6 +100,7 @@ const showingFiles = ref<Set<string>>(new Set());
 	font-size: 0.8em;
 	text-align: center;
 	padding: 8px;
+	border-radius: calc(var(--MI-radius) / 2);
 	box-sizing: border-box;
 	color: #fff;
 	background: rgba(0, 0, 0, 0.5);

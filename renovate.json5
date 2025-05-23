@@ -20,6 +20,9 @@
 		'@typescript/lib-webworker',
 		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
 		'nsfwjs',
+    // https://github.com/misskey-dev/misskey/issues/15920
+    'sharp',
+		'@misskey-dev/sharp-read-bmp'
 	],
 	packageRules: [
 		{
@@ -60,6 +63,12 @@
 			],
 		},
 		{
+			groupName: '[icons-subsetter] Update dependencies',
+			matchFileNames: [
+				'packages/icons-subsetter/**/package.json',
+			],
+		},
+		{
 			groupName: '[GitHub Actions] Update dependencies',
 			matchFileNames: [
 				'.github/workflows/**/*.yml',
@@ -69,6 +78,18 @@
 			groupName: '[Node.js] Update dependencies',
 			matchFileNames: [
 				'.node-version',
+			],
+		},
+		{
+			groupName: '[Node.js] Update dependencies',
+			matchManagers: ['custom.regex'],
+			matchPackageNames: ['node'],
+		},
+		{
+			groupName: '[Node.js] Update dependencies',
+			matchDepNames: ['ghcr.io/devcontainers/features/node:1'],
+			matchFileNames: [
+				'.devcontainer/**',
 			],
 		},
 		{
@@ -82,9 +103,20 @@
 		},
 		{
 			groupName: '[devcontainer] Update dependencies',
+			matchDepNames: ['!ghcr.io/devcontainers/features/node:1'],
 			matchFileNames: [
 				'.devcontainer/**',
 			],
+		},
+	],
+	customManagers: [
+		{
+			customType: 'regex',
+			managerFilePatterns: ['/^Dockerfile$/'],
+			matchStrings: ['ARG NODE_VERSION=(?<currentValue>.*?)\\n'],
+			datasourceTemplate: 'docker',
+			depNameTemplate: 'node',
+			versioningTemplate: 'docker',
 		},
 	],
 }
