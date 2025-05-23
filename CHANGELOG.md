@@ -43,6 +43,8 @@
 - Enhance: ノートのサーバー情報のデザインを改善・パフォーマンス向上  
   (Based on https://github.com/taiyme/misskey/pull/198, https://github.com/taiyme/misskey/pull/211, https://github.com/taiyme/misskey/pull/283)
 - Enhance: ユーザー設定でURLプレビューを無効化できるように
+- Enhance: ヒントとコツを追加
+- Enhance: ヒントとコツを再表示できるように
 - Enhance: AiScriptからtoastを表示する関数 `Mk:toast` を追加
 - Enhance: シンタックスハイライトのエンジンをJavaScriptベースのものに変更
   - フロントエンドの読み込みサイズを軽量化しました

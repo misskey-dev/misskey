@@ -14,6 +14,18 @@ import { miLocalStorage } from '@/local-storage.js';
 import { Pizzax } from '@/lib/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
+export const TIPS = [
+	'drive',
+	'uploader',
+	'clips',
+	'userLists',
+	'tl.home',
+	'tl.local',
+	'tl.social',
+	'tl.global',
+	'abuses',
+] as const;
+
 /**
  * 「状態」を管理するストア(not「設定」)
  */
@@ -22,22 +34,9 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'account',
 		default: 0,
 	},
-	timelineTutorials: {
-		where: 'account',
-		default: {
-			home: false,
-			local: false,
-			social: false,
-			global: false,
-		},
-	},
-	abusesTutorial: {
-		where: 'account',
-		default: false,
-	},
-	readDriveTip: {
-		where: 'account',
-		default: false,
+	tips: {
+		where: 'device',
+		default: {} as Partial<Record<typeof TIPS[number], boolean>>, // true = 既読
 	},
 	memo: {
 		where: 'account',

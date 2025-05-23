@@ -5461,6 +5461,18 @@ export interface Locale extends ILocale {
      * 中止
      */
     "abort": string;
+    /**
+     * ヒントとコツ
+     */
+    "tip": string;
+    /**
+     * 全ての「ヒントとコツ」を再表示
+     */
+    "redisplayAllTips": string;
+    /**
+     * 全ての「ヒントとコツ」を非表示
+     */
+    "hideAllTips": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -11941,6 +11953,10 @@ export interface Locale extends ILocale {
          * アップロード可能なファイル種別
          */
         "allowedTypes": string;
+        /**
+         * ファイルはまだアップロードされていません。このダイアログで、アップロード前の確認・リネーム・圧縮・クロッピングなどが行えます。準備が出来たら、「アップロード」ボタンを押してアップロードを開始できます。
+         */
+        "tip": string;
     };
     "_clientPerformanceIssueTip": {
         /**
@@ -11971,6 +11987,18 @@ export interface Locale extends ILocale {
          * 一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。
          */
         "makeSureDisabledAddons_description": string;
+    };
+    "_clip": {
+        /**
+         * クリップは、ノートをまとめることができる機能です。
+         */
+        "tip": string;
+    };
+    "_userLists": {
+        /**
+         * 任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。
+         */
+        "tip": string;
     };
 }
 declare const locales: {

@@ -1360,6 +1360,9 @@ emojiUnmute: "絵文字ミュート解除"
 muteX: "{x}をミュート"
 unmuteX: "{x}のミュートを解除"
 abort: "中止"
+tip: "ヒントとコツ"
+redisplayAllTips: "全ての「ヒントとコツ」を再表示"
+hideAllTips: "全ての「ヒントとコツ」を非表示"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -3194,6 +3197,7 @@ _uploader:
   doneConfirm: "アップロードされていないファイルがありますが、完了しますか？"
   maxFileSizeIsX: "アップロード可能な最大ファイルサイズは{x}です。"
   allowedTypes: "アップロード可能なファイル種別"
+  tip: "ファイルはまだアップロードされていません。このダイアログで、アップロード前の確認・リネーム・圧縮・クロッピングなどが行えます。準備が出来たら、「アップロード」ボタンを押してアップロードを開始できます。"
 
 _clientPerformanceIssueTip:
   title: "バッテリー消費が多いと感じたら"
@@ -3203,3 +3207,9 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "スタイルを上書きするとパフォーマンスに影響を及ぼすことがあります。カスタムCSSや、スタイルを上書きする拡張機能が有効になっていないか確認してください。"
   makeSureDisabledAddons: "拡張機能を無効にしてください"
   makeSureDisabledAddons_description: "一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。"
+
+_clip:
+  tip: "クリップは、ノートをまとめることができる機能です。"
+
+_userLists:
+  tip: "任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。"
