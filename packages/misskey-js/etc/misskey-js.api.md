@@ -909,6 +909,12 @@ type ChannelsFollowedRequest = operations['channels___followed']['requestBody'][
 type ChannelsFollowedResponse = operations['channels___followed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsFollowersRequest = operations['channels___followers']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFollowersResponse = operations['channels___followers']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type ChannelsFollowRequest = operations['channels___follow']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1630,6 +1636,8 @@ declare namespace entities {
         ChannelsFollowRequest,
         ChannelsFollowedRequest,
         ChannelsFollowedResponse,
+        ChannelsFollowersRequest,
+        ChannelsFollowersResponse,
         ChannelsMyFavoritesResponse,
         ChannelsOwnedRequest,
         ChannelsOwnedResponse,
@@ -2017,12 +2025,16 @@ declare namespace entities {
         ReversiSurrenderRequest,
         ReversiVerifyRequest,
         ReversiVerifyResponse,
+        RolesAddRequest,
+        RolesAssignRequest,
         RolesListRequest,
         RolesListResponse,
         RolesNotesRequest,
         RolesNotesResponse,
         RolesShowRequest,
         RolesShowResponse,
+        RolesUnassignRequest,
+        RolesUpdateRequest,
         RolesUsersRequest,
         RolesUsersResponse,
         ServerInfoResponse,
@@ -3355,6 +3367,12 @@ type RoleLite = components['schemas']['RoleLite'];
 type RolePolicies = components['schemas']['RolePolicies'];
 
 // @public (undocumented)
+type RolesAddRequest = operations['roles___add']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesAssignRequest = operations['roles___assign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type RolesListRequest = operations['roles___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3371,6 +3389,12 @@ type RolesShowRequest = operations['roles___show']['requestBody']['content']['ap
 
 // @public (undocumented)
 type RolesShowResponse = operations['roles___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RolesUnassignRequest = operations['roles___unassign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesUpdateRequest = operations['roles___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type RolesUsersRequest = operations['roles___users']['requestBody']['content']['application/json'];

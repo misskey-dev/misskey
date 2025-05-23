@@ -177,6 +177,8 @@ import type {
 	ChannelsFollowRequest,
 	ChannelsFollowedRequest,
 	ChannelsFollowedResponse,
+	ChannelsFollowersRequest,
+	ChannelsFollowersResponse,
 	ChannelsMyFavoritesResponse,
 	ChannelsOwnedRequest,
 	ChannelsOwnedResponse,
@@ -564,12 +566,16 @@ import type {
 	ReversiSurrenderRequest,
 	ReversiVerifyRequest,
 	ReversiVerifyResponse,
+	RolesAddRequest,
+	RolesAssignRequest,
 	RolesListRequest,
 	RolesListResponse,
 	RolesNotesRequest,
 	RolesNotesResponse,
 	RolesShowRequest,
 	RolesShowResponse,
+	RolesUnassignRequest,
+	RolesUpdateRequest,
 	RolesUsersRequest,
 	RolesUsersResponse,
 	ServerInfoResponse,
@@ -769,6 +775,7 @@ export type Endpoints = {
 	'channels/featured': { req: EmptyRequest; res: ChannelsFeaturedResponse };
 	'channels/follow': { req: ChannelsFollowRequest; res: EmptyResponse };
 	'channels/followed': { req: ChannelsFollowedRequest; res: ChannelsFollowedResponse };
+	'channels/followers': { req: ChannelsFollowersRequest; res: ChannelsFollowersResponse };
 	'channels/my-favorites': { req: EmptyRequest; res: ChannelsMyFavoritesResponse };
 	'channels/owned': { req: ChannelsOwnedRequest; res: ChannelsOwnedResponse };
 	'channels/search': { req: ChannelsSearchRequest; res: ChannelsSearchResponse };
@@ -1023,9 +1030,13 @@ export type Endpoints = {
 	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
+	'roles/add': { req: RolesAddRequest; res: EmptyResponse };
+	'roles/assign': { req: RolesAssignRequest; res: EmptyResponse };
 	'roles/list': { req: RolesListRequest; res: RolesListResponse };
 	'roles/notes': { req: RolesNotesRequest; res: RolesNotesResponse };
 	'roles/show': { req: RolesShowRequest; res: RolesShowResponse };
+	'roles/unassign': { req: RolesUnassignRequest; res: EmptyResponse };
+	'roles/update': { req: RolesUpdateRequest; res: EmptyResponse };
 	'roles/users': { req: RolesUsersRequest; res: RolesUsersResponse };
 	'server-info': { req: EmptyRequest; res: ServerInfoResponse };
 	'stats': { req: EmptyRequest; res: StatsResponse };
