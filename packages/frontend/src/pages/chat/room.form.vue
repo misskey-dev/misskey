@@ -256,20 +256,20 @@ async function insertEmoji(ev: MouseEvent) {
 
 	let pos = textareaEl.value?.selectionStart ?? 0;
 	let posEnd = textareaEl.value?.selectionEnd ?? text.value.length;
-	emojiPicker.show(
-		target as HTMLElement,
-		emoji => {
+	emojiPicker.show({
+		anchorElement: target as HTMLElement,
+		onChosen: (emoji) => {
 			const textBefore = text.value.substring(0, pos);
 			const textAfter = text.value.substring(posEnd);
 			text.value = textBefore + emoji + textAfter;
 			pos += emoji.length;
 			posEnd += emoji.length;
 		},
-		() => {
+		onClosed: () => {
 			textareaReadOnly.value = false;
 			nextTick(() => focus());
 		},
-	);
+	});
 }
 
 onMounted(() => {

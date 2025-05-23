@@ -223,7 +223,9 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 }
 
 function previewPicker(ev: MouseEvent) {
-	emojiPicker.show(getHTMLElement(ev));
+	emojiPicker.show({
+		anchorElement: getHTMLElement(ev),
+	});
 }
 
 watch([
