@@ -202,6 +202,9 @@ export const PREF_DEF = {
 	useStickyIcons: {
 		default: true,
 	},
+	enableHighQualityImagePlaceholders: {
+		default: true,
+	},
 	showFixedPostForm: {
 		default: false,
 	},
@@ -287,9 +290,10 @@ export const PREF_DEF = {
 		default: {
 			media: false,
 			avatar: false,
-			urlPreview: false,
+			urlPreviewThumbnail: false,
+			disableUrlPreview: false,
 			code: false,
-		} as Record<string, boolean>,
+		} satisfies Record<string, boolean>,
 	},
 	hemisphere: {
 		default: hemisphere as 'N' | 'S',
@@ -341,6 +345,9 @@ export const PREF_DEF = {
 	},
 	plugins: {
 		default: [] as Plugin[],
+	},
+	mutingEmojis: {
+		default: [] as string[],
 	},
 
 	'sound.masterVolume': {
@@ -408,6 +415,9 @@ export const PREF_DEF = {
 	},
 
 	'experimental.stackingRouterView': {
+		default: false,
+	},
+	'experimental.enableFolderPageView': {
 		default: false,
 	},
 } satisfies PreferencesDefinition;

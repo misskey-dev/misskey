@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</div>
-					<div v-if="appearNote.files && appearNote.files.length > 0">
+					<div v-if="appearNote.files && appearNote.files.length > 0" style="margin-top: 8px;">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll
@@ -234,7 +234,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
@@ -410,12 +410,15 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
+let subscribeManuallyToNoteCapture: () => void = () => { };
+
 if (!props.mock) {
-	useNoteCapture({
+	const { subscribe } = useNoteCapture({
 		note: appearNote,
 		parentNote: note,
 		$note: $appearNote,
 	});
+	subscribeManuallyToNoteCapture = subscribe;
 }
 
 if (!props.mock) {
@@ -472,6 +475,8 @@ function renote(viaKeyboard = false) {
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
+
+	subscribeManuallyToNoteCapture();
 }
 
 function reply(): void {
@@ -567,6 +572,11 @@ function undoReact(): void {
 
 	misskeyApi('notes/reactions/delete', {
 		noteId: appearNote.id,
+	}).then(() => {
+		noteEvents.emit(`unreacted:${appearNote.id}`, {
+			userId: $i!.id,
+			reaction: oldReaction,
+		});
 	});
 }
 

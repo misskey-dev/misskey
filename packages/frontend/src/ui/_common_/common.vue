@@ -65,8 +65,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-on="popup.events"
 />
 
-<XUpload v-if="uploads.length > 0"/>
-
 <component
 	:is="prefer.s.animation ? TransitionGroup : 'div'"
 	tag="div"
@@ -105,7 +103,6 @@ import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
 import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
-import { uploads } from '@/utility/upload.js';
 import * as sound from '@/utility/sound.js';
 import { $i } from '@/i.js';
 import { useStream } from '@/stream.js';
@@ -116,7 +113,6 @@ import { store } from '@/store.js';
 import XNavbar from '@/ui/_common_/navbar.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
-const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 const XWidgets = defineAsyncComponent(() => import('./widgets.vue'));
 
 const drawerMenuShowing = defineModel<boolean>('drawerMenuShowing');
