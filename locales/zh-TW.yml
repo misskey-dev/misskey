@@ -1360,6 +1360,9 @@ emojiUnmute: "表情符號解除靜音"
 muteX: "將 {x} 靜音"
 unmuteX: "將 {x} 解除靜音"
 abort: "取消"
+tip: "提示與技巧"
+redisplayAllTips: "重新顯示所有「提示與技巧」"
+hideAllTips: "隱藏所有「提示與技巧」"
 _chat:
   noMessagesYet: "尚無訊息"
   newMessage: "新訊息"
@@ -3096,6 +3099,7 @@ _uploader:
   doneConfirm: "有些檔案尚未上傳，是否要完成上傳？"
   maxFileSizeIsX: "可上傳的最大檔案大小為 {x}。"
   allowedTypes: "可上傳的檔案類型"
+  tip: "檔案尚未上傳。您可以在此對話框中進行上傳前的確認、重新命名、壓縮、裁切等操作。準備完成後，請點選「上傳」按鈕開始上傳。\n"
 _clientPerformanceIssueTip:
   title: "如果覺得電池消耗過快的話"
   makeSureDisabledAdBlocker: "請將廣告阻擋器停用"
@@ -3104,3 +3108,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "覆蓋樣式可能會影響效能。請確認是否啟用了自訂 CSS 或其他會覆蓋樣式的擴充功能。\n"
   makeSureDisabledAddons: "請停用擴充功能"
   makeSureDisabledAddons_description: "部分擴充功能可能會干擾用戶端的運作並影響效能。請嘗試停用瀏覽器的擴充功能，以確認是否能改善情況"
+_clip:
+  tip: "摘錄是一項可以用來整理貼文的功能。"
+_userLists:
+  tip: "您可以建立包含任意使用者的清單。建立後的清單可以作為時間軸顯示。\n"
