@@ -26,6 +26,7 @@ export * as 'admin/ad/update' from './endpoints/admin/ad/update.js';
 export * as 'admin/announcements/create' from './endpoints/admin/announcements/create.js';
 export * as 'admin/announcements/delete' from './endpoints/admin/announcements/delete.js';
 export * as 'admin/announcements/list' from './endpoints/admin/announcements/list.js';
+export * as 'admin/announcements/reset-reads' from './endpoints/admin/announcements/reset-reads.js';
 export * as 'admin/announcements/update' from './endpoints/admin/announcements/update.js';
 export * as 'admin/avatar-decorations/create' from './endpoints/admin/avatar-decorations/create.js';
 export * as 'admin/avatar-decorations/delete' from './endpoints/admin/avatar-decorations/delete.js';
