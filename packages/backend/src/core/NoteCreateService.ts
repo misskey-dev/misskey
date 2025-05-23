@@ -1314,7 +1314,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					}
 				}
 				// チャンネル設定がtrueの場合、投稿者をフォローしているユーザーにも配信
-				else if (channel && channel.propagateToTimelines && userFollowerIds.has(following.followerId)) {
+				else if (channel && userFollowerIds.has(following.followerId)) {
 					if (shouldPush('homeTimeline')) {
 						this.fanoutTimelineService.push(`homeTimeline:${following.followerId}`, note.id, this.meta.perUserHomeTimelineCacheMax, r);
 						if (note.fileIds.length > 0) {

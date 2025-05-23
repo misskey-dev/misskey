@@ -138,9 +138,6 @@ class YamiTimelineChannel extends Channel {
 			if (note.channelId) {
 				// チャンネルをフォローしていなければ表示しない
 				if (!this.followingChannels.has(note.channelId)) return;
-
-				// propagateToTimelinesがfalseで、自分の投稿でもない場合は表示しない
-				if (note.channel && !note.channel.propagateToTimelines && !isMyNote) return;
 			}
 
 			// 【リプライの特別処理】
