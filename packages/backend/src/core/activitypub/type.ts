@@ -88,7 +88,7 @@ export function getApHrefNullable(value: string | IObject | undefined): string |
 export interface IActivity extends IObject {
 	//type: 'Activity';
 	actor: IObject | string;
-	object: IObject | string;
+	object: IObject | IObject[] | string;
 	target?: IObject | string;
 	/** LD-Signature */
 	signature?: {
