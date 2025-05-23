@@ -60,9 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onDrop"
 			@contextmenu.stop="onContextmenu"
 		>
-			<div v-if="!store.r.readDriveTip.value" style="padding: 8px;">
-				<MkInfo closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-			</div>
+			<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
 
 			<div :class="$style.folders">
 				<XFolder
@@ -135,7 +133,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
-import MkInfo from './MkInfo.vue';
 import type { MenuItem } from '@/types/menu.js';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
@@ -659,10 +656,6 @@ function showMenu(ev: MouseEvent) {
 
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getMenu(), ev);
-}
-
-function closeTip() {
-	store.set('readDriveTip', true);
 }
 
 useGlobalEvent('driveFileCreated', (file) => {

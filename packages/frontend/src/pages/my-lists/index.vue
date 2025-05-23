@@ -7,6 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
+			<MkTip k="userLists">
+				{{ i18n.ts._userLists.tip }}
+			</MkTip>
+
 			<MkResult v-if="items.length === 0" type="empty"/>
 
 			<MkButton primary rounded style="margin: 0 auto;" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createList }}</MkButton>

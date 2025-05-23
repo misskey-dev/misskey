@@ -110,6 +110,8 @@ function onClosed() {
 	right: 0;
 	width: 100%;
 	height: 100%;
+	box-sizing: border-box;
+	padding-bottom: env(safe-area-inset-bottom, 0px);
 	margin: auto;
 	background: var(--MI_THEME-bg);
 	container-type: size;
