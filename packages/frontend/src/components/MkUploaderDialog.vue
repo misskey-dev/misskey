@@ -254,6 +254,23 @@ async function done() {
 function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 	const menu: MenuItem[] = [];
 
+	menu.push({
+		icon: 'ti ti-cursor-text',
+		text: i18n.ts.rename,
+		action: async () => {
+			const { result, canceled } = await os.inputText({
+				type: 'text',
+				title: i18n.ts.rename,
+				placeholder: item.name,
+				default: item.name,
+			});
+			if (canceled) return;
+			if (result.trim() === '') return;
+
+			item.name = result;
+		},
+	});
+
 	if (CROPPING_SUPPORTED_TYPES.includes(item.file.type) && !item.waiting && !item.uploading && !item.uploaded) {
 		menu.push({
 			icon: 'ti ti-crop',
