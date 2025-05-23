@@ -39,8 +39,7 @@ export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 're
 	if (type === 'res' && schema.ref && (!schema.selfRef || includeSelfRef)) {
 		const $ref = `#/components/schemas/${schema.ref}`;
 		if (schema.nullable) {
-			res.oneOf = [{ $ref }];
-			res.oneOf.push({ type: 'null' });
+			res.oneOf = [{ $ref }, { type: 'null' }];
 		} else {
 			res.$ref = $ref;
 		}
