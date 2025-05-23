@@ -3934,7 +3934,7 @@ export type components = {
             pinnedNoteIds: string[];
             pinnedNotes: components['schemas']['Note'][];
             pinnedPageId: string | null;
-            pinnedPage: (components['schemas']['Page'] | null) & components['schemas']['Page'];
+            pinnedPage: components['schemas']['Page'] | null;
             publicReactions: boolean;
             /** @enum {string} */
             followingVisibility: 'public' | 'followers' | 'private';
@@ -4251,8 +4251,8 @@ export type components = {
              * @example xxxxxxxxxx
              */
             renoteId?: string | null;
-            reply?: (components['schemas']['Note'] | null) & components['schemas']['Note'];
-            renote?: (components['schemas']['Note'] | null) & components['schemas']['Note'];
+            reply?: components['schemas']['Note'] | null;
+            renote?: components['schemas']['Note'] | null;
             isHidden?: boolean;
             /** @enum {string} */
             visibility: 'public' | 'home' | 'followers' | 'specified';
@@ -4567,13 +4567,13 @@ export type components = {
              * @example xxxxxxxxxx
              */
             folderId: string | null;
-            folder?: (components['schemas']['DriveFolder'] | null) & components['schemas']['DriveFolder'];
+            folder?: components['schemas']['DriveFolder'] | null;
             /**
              * Format: id
              * @example xxxxxxxxxx
              */
             userId: string | null;
-            user?: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
+            user?: components['schemas']['UserLite'] | null;
         };
         DriveFolder: {
             /**
@@ -4591,7 +4591,7 @@ export type components = {
             parentId: string | null;
             foldersCount?: number;
             filesCount?: number;
-            parent?: (components['schemas']['DriveFolder'] | null) & components['schemas']['DriveFolder'];
+            parent?: components['schemas']['DriveFolder'] | null;
         };
         Following: {
             /**
@@ -4668,8 +4668,8 @@ export type components = {
             expiresAt: string | null;
             /** Format: date-time */
             createdAt: string;
-            createdBy: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
-            usedBy: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
+            createdBy: components['schemas']['UserLite'] | null;
+            usedBy: components['schemas']['UserLite'] | null;
             /** Format: date-time */
             usedAt: string | null;
             used: boolean;
@@ -4697,7 +4697,7 @@ export type components = {
             font: string;
             script: string;
             eyeCatchingImageId: string | null;
-            eyeCatchingImage: (components['schemas']['DriveFile'] | null) & components['schemas']['DriveFile'];
+            eyeCatchingImage: components['schemas']['DriveFile'] | null;
             attachedFiles: components['schemas']['DriveFile'][];
             likedCount: number;
             isLiked?: boolean;
@@ -5117,7 +5117,7 @@ export type components = {
             user2: components['schemas']['UserLite'];
             /** Format: id */
             winnerId: string | null;
-            winner: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
+            winner: components['schemas']['UserLite'] | null;
             /** Format: id */
             surrenderedUserId: string | null;
             /** Format: id */
@@ -5153,7 +5153,7 @@ export type components = {
             user2: components['schemas']['UserLite'];
             /** Format: id */
             winnerId: string | null;
-            winner: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
+            winner: components['schemas']['UserLite'] | null;
             /** Format: id */
             surrenderedUserId: string | null;
             /** Format: id */
@@ -5319,12 +5319,12 @@ export type components = {
             fromUserId: string;
             fromUser: components['schemas']['UserLite'];
             toUserId?: string | null;
-            toUser?: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
+            toUser?: components['schemas']['UserLite'] | null;
             toRoomId?: string | null;
-            toRoom?: (components['schemas']['ChatRoom'] | null) & components['schemas']['ChatRoom'];
+            toRoom?: components['schemas']['ChatRoom'] | null;
             text?: string | null;
             fileId?: string | null;
-            file?: (components['schemas']['DriveFile'] | null) & components['schemas']['DriveFile'];
+            file?: components['schemas']['DriveFile'] | null;
             isRead?: boolean;
             reactions: {
                 reaction: string;
@@ -5341,10 +5341,10 @@ export type components = {
             toRoomId?: string | null;
             text?: string | null;
             fileId?: string | null;
-            file?: (components['schemas']['DriveFile'] | null) & components['schemas']['DriveFile'];
+            file?: components['schemas']['DriveFile'] | null;
             reactions: {
                 reaction: string;
-                user?: (components['schemas']['UserLite'] | null) & components['schemas']['UserLite'];
+                user?: components['schemas']['UserLite'] | null;
             }[];
         };
         ChatMessageLiteFor1on1: {
@@ -5355,7 +5355,7 @@ export type components = {
             toUserId: string;
             text?: string | null;
             fileId?: string | null;
-            file?: (components['schemas']['DriveFile'] | null) & components['schemas']['DriveFile'];
+            file?: components['schemas']['DriveFile'] | null;
             reactions: {
                 reaction: string;
             }[];
@@ -5369,7 +5369,7 @@ export type components = {
             toRoomId: string;
             text?: string | null;
             fileId?: string | null;
-            file?: (components['schemas']['DriveFile'] | null) & components['schemas']['DriveFile'];
+            file?: components['schemas']['DriveFile'] | null;
             reactions: {
                 reaction: string;
                 user: components['schemas']['UserLite'];
@@ -5804,7 +5804,7 @@ export interface operations {
                         assigneeId: string | null;
                         reporter: components['schemas']['UserDetailedNotMe'];
                         targetUser: components['schemas']['UserDetailedNotMe'];
-                        assignee: (components['schemas']['UserDetailedNotMe'] | null) & components['schemas']['UserDetailedNotMe'];
+                        assignee: components['schemas']['UserDetailedNotMe'] | null;
                         forwarded: boolean;
                         /** @enum {string|null} */
                         resolvedAs: 'accept' | 'reject' | null;
@@ -20351,7 +20351,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': (components['schemas']['FederationInstance'] | null) & components['schemas']['FederationInstance'];
+                    'application/json': components['schemas']['FederationInstance'] | null;
                 };
             };
             /** @description OK (without any results) */
@@ -32214,7 +32214,7 @@ export interface operations {
                 content: {
                     'application/json': {
                         desynced: boolean;
-                        game?: (components['schemas']['ReversiGameDetailed'] | null) & components['schemas']['ReversiGameDetailed'];
+                        game?: components['schemas']['ReversiGameDetailed'] | null;
                     };
                 };
             };
