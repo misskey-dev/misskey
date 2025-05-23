@@ -1360,6 +1360,9 @@ emojiUnmute: "Deixar de silenciar emojis"
 muteX: "Silenciar {x}"
 unmuteX: "Deixar de silenciar {x}"
 abort: "Cancel·lar"
+tip: "Trucs i consells"
+redisplayAllTips: "Torna ha mostrat tots els trucs i consells"
+hideAllTips: "Amagar tots els trucs i consells"
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"
@@ -3096,6 +3099,7 @@ _uploader:
   doneConfirm: "Hi han fitxers no pujats, vols completar-los?"
   maxFileSizeIsX: "La mida màxima d'arxiu que es pot pujar és {x}."
   allowedTypes: "Tipus de fitxers que en podeu pujar"
+  tip: "L'arxiu encara no s'ha carregat. En aquest quadre de diàleg, pots comprovar, canviar el nom, comprimir i retallar l'arxiu abans de pujar-lo. Quan estigui llest pots iniciar la càrrega polsant el boto \"Pujar\""
 _clientPerformanceIssueTip:
   title: "Si creus que el consum de bateria és molt alt"
   makeSureDisabledAdBlocker: "Desactiva els bloquejadors de publicitat"
@@ -3104,3 +3108,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "L'anul·lació dels estils pot afectar el rendiment. Comprova que el CSS personalitzat o les extensions que reescriuen estils no estiguin activats."
   makeSureDisabledAddons: "Desactiva extensions"
   makeSureDisabledAddons_description: "Algunes extensions poden interferir en el comportament del client i afectar el rendiment. Desactiva les extensions del navegador i comprovar-ho."
+_clip:
+  tip: "Clip és una funció que permet organitzar les teves notes."
+_userLists:
+  tip: "Es poden crear llistes amb qualsevol usuari. La llista creada es pot mostrar com una línia de temps."
