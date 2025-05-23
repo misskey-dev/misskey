@@ -37,29 +37,45 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		id: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
-		fileId: { type: 'string', format: 'misskey:id' },
-		category: {
-			type: 'string',
-			nullable: true,
-			description: 'Use `null` to reset the category.',
+	allOf: [
+		{
+			anyOf: [
+				{
+					type: 'object',
+					properties: {
+						id: { type: 'string', format: 'misskey:id' },
+					},
+					required: ['id'],
+				},
+				{
+					type: 'object',
+					properties: {
+						name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
+					},
+					required: ['name'],
+				},
+			],
 		},
-		aliases: { type: 'array', items: {
-			type: 'string',
-		} },
-		license: { type: 'string', nullable: true },
-		isSensitive: { type: 'boolean' },
-		localOnly: { type: 'boolean' },
-		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-			type: 'string',
-		} },
-	},
-	anyOf: [
-		{ required: ['id'] },
-		{ required: ['name'] },
+		{
+			type: 'object',
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+				category: {
+					type: 'string',
+					nullable: true,
+					description: 'Use `null` to reset the category.',
+				},
+				aliases: { type: 'array', items: {
+					type: 'string',
+				} },
+				license: { type: 'string', nullable: true },
+				isSensitive: { type: 'boolean' },
+				localOnly: { type: 'boolean' },
+				roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
+					type: 'string',
+				} },
+			},
+		},
 	],
 } as const;
 

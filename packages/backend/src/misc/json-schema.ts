@@ -236,7 +236,7 @@ type ObjectSchemaTypeDef<p extends Schema> =
 			: never
 		: ObjType<p['properties'], NonNullable<p['required']>>
 		:
-		p['anyOf'] extends ReadonlyArray<Schema> ? never : // see CONTRIBUTING.md
+		p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
 		p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 		p['additionalProperties'] extends true ? Record<string, any> :
 		p['additionalProperties'] extends Schema ?
@@ -278,6 +278,7 @@ export type SchemaTypeDef<p extends Schema> =
 					any[]
 		) :
 			p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
+			p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 			p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
 			any;
 

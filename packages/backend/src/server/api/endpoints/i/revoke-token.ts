@@ -15,14 +15,21 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		tokenId: { type: 'string', format: 'misskey:id' },
-		token: { type: 'string', nullable: true },
-	},
 	anyOf: [
-		{ required: ['tokenId'] },
-		{ required: ['token'] },
+		{
+			type: 'object',
+			properties: {
+				tokenId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['tokenId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				token: { type: 'string', nullable: true },
+			},
+			required: ['token'],
+		},
 	],
 } as const;
 

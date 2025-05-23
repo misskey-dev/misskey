@@ -162,14 +162,21 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		url: { type: 'string' },
-	},
 	anyOf: [
-		{ required: ['fileId'] },
-		{ required: ['url'] },
+		{
+			type: 'object',
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['fileId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				url: { type: 'string' },
+			},
+			required: ['url'],
+		},
 	],
 } as const;
 

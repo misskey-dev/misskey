@@ -59,23 +59,44 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		userIds: { type: 'array', uniqueItems: true, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		username: { type: 'string' },
-		host: {
-			type: 'string',
-			nullable: true,
-			description: 'The local host is represented with `null`.',
+	allOf: [
+		{
+			anyOf: [
+				{
+					type: 'object',
+					properties: {
+						userId: { type: 'string', format: 'misskey:id' },
+					},
+					required: ['userId'],
+				},
+				{
+					type: 'object',
+					properties: {
+						userIds: { type: 'array', uniqueItems: true, items: {
+							type: 'string', format: 'misskey:id',
+						} },
+					},
+					required: ['userIds'],
+				},
+				{
+					type: 'object',
+					properties: {
+						username: { type: 'string' },
+					},
+					required: ['username'],
+				},
+			],
 		},
-	},
-	anyOf: [
-		{ required: ['userId'] },
-		{ required: ['userIds'] },
-		{ required: ['username'] },
+		{
+			type: 'object',
+			properties: {
+				host: {
+					type: 'string',
+					nullable: true,
+					description: 'The local host is represented with `null`.',
+				},
+			},
+		},
 	],
 } as const;
 
