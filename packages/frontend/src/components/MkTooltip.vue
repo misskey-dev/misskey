@@ -5,11 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_tooltip_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_tooltip_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_tooltip_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
-	appear @afterLeave="emit('closed')"
+	:enterActiveClass="prefer.s.animation ? $style.transition_tooltip_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_tooltip_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_tooltip_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_tooltip_leaveTo : ''"
+	appear :css="prefer.s.animation"
+	@afterLeave="emit('closed')"
 >
 	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
@@ -23,10 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
+import { nextTick, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as os from '@/os.js';
-import { calcPopupPosition } from '@/scripts/popup-position.js';
-import { defaultStore } from '@/store.js';
+import { calcPopupPosition } from '@/utility/popup-position.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;
@@ -51,7 +52,7 @@ const emit = defineEmits<{
 // タイミングによっては最初から showing = false な場合があり、その場合に closed 扱いにしないと永久にDOMに残ることになる
 if (!props.showing) emit('closed');
 
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 const zIndex = os.claimZIndex('high');
 
 function setPosition() {

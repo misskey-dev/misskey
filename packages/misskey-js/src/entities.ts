@@ -201,6 +201,9 @@ export type ModerationLog = {
 } | {
 	type: 'deleteGalleryPost';
 	info: ModerationLogPayloads['deleteGalleryPost'];
+} | {
+	type: 'deleteChatRoom';
+	info: ModerationLogPayloads['deleteChatRoom'];
 });
 
 export type ServerStats = {
@@ -264,11 +267,11 @@ export type SignupRequest = {
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
-}
+};
 
 export type SignupResponse = MeDetailed & {
 	token: string;
-}
+};
 
 export type SignupPendingRequest = {
 	code: string;
@@ -319,4 +322,4 @@ export type SigninWithPasskeyResponse = {
 
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
-export type PartialRolePolicyOverride = Partial<{[k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k] }}>;
+export type PartialRolePolicyOverride = Partial<{ [k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k] } }>;

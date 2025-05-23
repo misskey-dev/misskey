@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkAnimBg style="position: fixed; top: 0;"/>
+<PageWithAnimBg>
 	<div :class="$style.formContainer">
 		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
 			<div :class="$style.banner">
@@ -21,17 +20,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</form>
 	</div>
-</div>
+</PageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkAnimBg from '@/components/MkAnimBg.vue';
-import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { login } from '@/accounts.js';
 
 const submitting = ref(false);
 
@@ -64,8 +62,8 @@ function submit() {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-display: grid;
-place-content: center;
+	display: grid;
+	place-content: center;
 }
 
 .form {

@@ -52,6 +52,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFolder>
 
+	<MkSwitch v-model="role.preserveAssignmentOnMoveAccount" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.preserveAssignmentOnMoveAccount }}</template>
+		<template #caption>{{ i18n.ts._role.preserveAssignmentOnMoveAccount_description }}</template>
+	</MkSwitch>
+
 	<MkSwitch v-model="role.canEditMembersByModerator" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.canEditMembersByModerator }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfCanEditMembersByModerator }}</template>
@@ -155,6 +160,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
 					<MkRange v-model="role.policies.canPublicNote.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.chatAvailability, 'chatAvailability'])">
+				<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
+				<template #suffix>
+					<span v-if="role.policies.chatAvailability.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.chatAvailability.value === 'available' ? i18n.ts.yes : role.policies.chatAvailability.value === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.chatAvailability)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.chatAvailability.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSelect v-model="role.policies.chatAvailability.value" :disabled="role.policies.chatAvailability.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+						<option value="available">{{ i18n.ts.enabled }}</option>
+						<option value="readonly">{{ i18n.ts.readonly }}</option>
+						<option value="unavailable">{{ i18n.ts.disabled }}</option>
+					</MkSelect>
+					<MkRange v-model="role.policies.chatAvailability.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
@@ -353,6 +381,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix>MB</template>
 					</MkInput>
 					<MkRange v-model="role.policies.driveCapacityMb.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.maxFileSize, 'maxFileSizeMb'])">
+				<template #label>{{ i18n.ts._role._options.maxFileSize }}</template>
+				<template #suffix>
+					<span v-if="role.policies.maxFileSizeMb.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.maxFileSizeMb.value + 'MB' }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.maxFileSizeMb)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.maxFileSizeMb.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="role.policies.maxFileSizeMb.value" :disabled="role.policies.maxFileSizeMb.useDefault" type="number" :readonly="readonly">
+						<template #suffix>MB</template>
+					</MkInput>
+					<MkRange v-model="role.policies.maxFileSizeMb.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.uploadableFileTypes, 'uploadableFileTypes'])">
+				<template #label>{{ i18n.ts._role._options.uploadableFileTypes }}</template>
+				<template #suffix>
+					<span v-if="role.policies.uploadableFileTypes.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>...</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.uploadableFileTypes)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.uploadableFileTypes.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkTextarea :modelValue="role.policies.uploadableFileTypes.value.join('\n')" :disabled="role.policies.uploadableFileTypes.useDefault" :readonly="readonly" @update:modelValue="role.policies.uploadableFileTypes.value = $event.split('\n')">
+						<template #caption>{{ i18n.ts._role._options.uploadableFileTypes_caption }}</template>
+					</MkTextarea>
+					<MkRange v-model="role.policies.uploadableFileTypes.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
@@ -582,7 +650,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.avatarDecorationLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.avatarDecorationLimit.value" type="number" :min="0">
+					<MkInput v-model="role.policies.avatarDecorationLimit.value" type="number" :min="0" :max="16" @update:modelValue="updateAvatarDecorationLimit">
 						<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
 					</MkInput>
 					<MkRange v-model="role.policies.avatarDecorationLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
@@ -698,6 +766,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
+import { ROLE_POLICIES } from '@@/js/const.js';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
@@ -708,9 +777,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
-import { ROLE_POLICIES } from '@@/js/const.js';
 import { instance } from '@/instance.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;
@@ -732,6 +800,12 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 			value: instance.policies[ROLE_POLICY],
 		};
 	}
+}
+
+function updateAvatarDecorationLimit(value: string | number) {
+	const numValue = Number(value);
+	const limited = Math.min(16, Math.max(0, numValue));
+	role.value.policies.avatarDecorationLimit.value = limited;
 }
 
 const rolePermission = computed({

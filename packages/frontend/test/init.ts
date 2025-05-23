@@ -5,6 +5,8 @@
 
 import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
@@ -17,7 +19,7 @@ updateI18n(locales['en-US']);
 // XXX: misskey-js panics if WebSocket is not defined
 vi.stubGlobal('WebSocket', class WebSocket extends EventTarget { static CLOSING = 2; });
 
-export const defaultStoreState: Record<string, unknown> = {
+export const preferState: Record<string, unknown> = {
 
 	// なんかtestがうまいこと動かないのでここに書く
 	dataSaver: {
@@ -27,13 +29,24 @@ export const defaultStoreState: Record<string, unknown> = {
 		code: false,
 	},
 
+	mutingEmojis: [],
 };
 
-// XXX: defaultStore somehow becomes undefined in vitest?
-vi.mock('@/store.js', () => {
+export let preferReactive: Record<string, Ref<unknown>> = {};
+
+for (const key in preferState) {
+	if (preferState[key] !== undefined) {
+		preferReactive[key] = ref(preferState[key]);
+	}
+}
+
+// XXX: store somehow becomes undefined in vitest?
+vi.mock('@/preferences.js', () => {
+
 	return {
-		defaultStore: {
-			state: defaultStoreState,
+		prefer: {
+			s: preferState,
+			r: preferReactive,
 		},
 	};
 });

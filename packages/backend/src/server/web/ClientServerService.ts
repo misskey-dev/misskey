@@ -7,16 +7,12 @@ import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js';
-import { FastifyAdapter as BullBoardFastifyAdapter } from '@bull-board/fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
 import { In, IsNull } from 'typeorm';
 import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
-import fastifyCookie from '@fastify/cookie';
 import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
 import htmlSafeJsonStringify from 'htmlescape';
@@ -216,69 +212,12 @@ export class ClientServerService {
 			instanceUrl: this.config.url,
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(meta)),
 			now: Date.now(),
+			federationEnabled: this.meta.federation !== 'none',
 		};
 	}
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.register(fastifyCookie, {});
-
-		//#region Bull Dashboard
-		const bullBoardPath = '/queue';
-
-		// Authenticate
-		fastify.addHook('onRequest', async (request, reply) => {
-			if (request.routeOptions.url == null) {
-				reply.code(404).send('Not found');
-				return;
-			}
-
-			// %71ueueとかでリクエストされたら困るため
-			const url = decodeURI(request.routeOptions.url);
-			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
-				if (!url.startsWith(bullBoardPath + '/static/')) {
-					reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
-				}
-
-				const token = request.cookies.token;
-				if (token == null) {
-					reply.code(401).send('Login required');
-					return;
-				}
-				const user = await this.usersRepository.findOneBy({ token });
-				if (user == null) {
-					reply.code(403).send('No such user');
-					return;
-				}
-				const isAdministrator = await this.roleService.isAdministrator(user);
-				if (!isAdministrator) {
-					reply.code(403).send('Access denied');
-					return;
-				}
-			}
-		});
-
-		const bullBoardServerAdapter = new BullBoardFastifyAdapter();
-
-		createBullBoard({
-			queues: [
-				this.systemQueue,
-				this.endedPollNotificationQueue,
-				this.deliverQueue,
-				this.inboxQueue,
-				this.dbQueue,
-				this.relationshipQueue,
-				this.objectStorageQueue,
-				this.userWebhookDeliverQueue,
-				this.systemWebhookDeliverQueue,
-			].map(q => new BullMQAdapter(q)),
-			serverAdapter: bullBoardServerAdapter,
-		});
-
-		bullBoardServerAdapter.setBasePath(bullBoardPath);
-		(fastify.register as any)(bullBoardServerAdapter.registerPlugin(), { prefix: bullBoardPath });
-		//#endregion
-
 		fastify.register(fastifyView, {
 			root: _dirname + '/views',
 			engine: {
@@ -317,16 +256,19 @@ export class ClientServerService {
 				done();
 			});
 		} else {
+			const configUrl = new URL(this.config.url);
+			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
+
 			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:' + port,
+				upstream: urlOriginWithoutPort + ':' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
 
 			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:' + embedPort,
+				upstream: urlOriginWithoutPort + ':' + embedPort,
 				prefix: '/embed_vite',
 				rewritePrefix: '/embed_vite',
 			});
@@ -509,6 +451,7 @@ export class ClientServerService {
 				usernameLower: username.toLowerCase(),
 				host: host ?? IsNull(),
 				isSuspended: false,
+				requireSigninToViewContents: false,
 			});
 
 			return user && await this.feedService.packFeed(user);
@@ -571,7 +514,12 @@ export class ClientServerService {
 
 			vary(reply.raw, 'Accept');
 
-			if (user != null) {
+			if (
+				user != null && (
+					this.meta.ugcVisibilityForVisitor === 'all' ||
+						(this.meta.ugcVisibilityForVisitor === 'local' && user.host == null)
+				)
+			) {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 				const me = profile.fields
 					? profile.fields
@@ -585,11 +533,14 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noai');
 				}
 
-				const _user = await this.userEntityService.pack(user);
+				const _user = await this.userEntityService.pack(user, null, {
+					schema: 'UserDetailed',
+					userProfile: profile,
+				});
 
 				return await reply.view('user', {
 					user, profile, me,
-					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
+					avatarUrl: _user.avatarUrl,
 					sub: request.params.sub,
 					...await this.generateCommonPugData(this.meta),
 					clientCtx: htmlSafeJsonStringify({
@@ -632,7 +583,13 @@ export class ClientServerService {
 				relations: ['user'],
 			});
 
-			if (note && !note.user!.requireSigninToViewContents) {
+			if (
+				note &&
+				!note.user!.requireSigninToViewContents &&
+				(this.meta.ugcVisibilityForVisitor === 'all' ||
+					(this.meta.ugcVisibilityForVisitor === 'local' && note.userHost == null)
+				)
+			) {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				reply.header('Cache-Control', 'public, max-age=15');
@@ -810,6 +767,7 @@ export class ClientServerService {
 		fastify.get<{ Params: { announcementId: string; } }>('/announcements/:announcementId', async (request, reply) => {
 			const announcement = await this.announcementsRepository.findOneBy({
 				id: request.params.announcementId,
+				userId: IsNull(),
 			});
 
 			if (announcement) {
@@ -868,7 +826,7 @@ export class ClientServerService {
 			});
 
 			if (note == null) return;
-			if (note.visibility !== 'public') return;
+			if (['specified', 'followers'].includes(note.visibility)) return;
 			if (note.userHost != null) return;
 
 			const _note = await this.noteEntityService.pack(note, null, { detail: true });

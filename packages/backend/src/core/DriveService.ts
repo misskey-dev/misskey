@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import { IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository, MiMeta } from '@/models/_.js';
@@ -173,7 +173,8 @@ export class DriveService {
 				?? `${ this.meta.objectStorageUseSSL ? 'https' : 'http' }://${ this.meta.objectStorageEndpoint }${ this.meta.objectStoragePort ? `:${this.meta.objectStoragePort}` : '' }/${ this.meta.objectStorageBucket }`;
 
 			// for original
-			const key = `${this.meta.objectStoragePrefix}/${randomUUID()}${ext}`;
+			const prefix = this.meta.objectStoragePrefix ? `${this.meta.objectStoragePrefix}/` : '';
+			const key = `${prefix}${randomUUID()}${ext}`;
 			const url = `${ baseUrl }/${ key }`;
 
 			// for alts
@@ -190,7 +191,7 @@ export class DriveService {
 			];
 
 			if (alts.webpublic) {
-				webpublicKey = `${this.meta.objectStoragePrefix}/webpublic-${randomUUID()}.${alts.webpublic.ext}`;
+				webpublicKey = `${prefix}webpublic-${randomUUID()}.${alts.webpublic.ext}`;
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
@@ -198,7 +199,7 @@ export class DriveService {
 			}
 
 			if (alts.thumbnail) {
-				thumbnailKey = `${this.meta.objectStoragePrefix}/thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
+				thumbnailKey = `${prefix}thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -514,13 +515,32 @@ export class DriveService {
 
 		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
 
-		//#region Check drive usage
+		//#region Check drive usage and mime type
 		if (user && !isLink) {
-			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
 			const isLocalUser = this.userEntityService.isLocalUser(user);
-
 			const policies = await this.roleService.getUserPolicies(user.id);
+
+			const allowedMimeTypes = policies.uploadableFileTypes;
+			const isAllowed = allowedMimeTypes.some((mimeType) => {
+				if (mimeType === '*' || mimeType === '*/*') return true;
+				if (mimeType.endsWith('/*')) return info.type.mime.startsWith(mimeType.slice(0, -1));
+				return info.type.mime === mimeType;
+			});
+			if (!isAllowed) {
+				throw new IdentifiableError('bd71c601-f9b0-4808-9137-a330647ced9b', 'Unallowed file type.');
+			}
+
 			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
+			const maxFileSize = 1024 * 1024 * policies.maxFileSizeMb;
+
+			if (maxFileSize < info.size) {
+				if (isLocalUser) {
+					throw new IdentifiableError('f9e4e5f3-4df4-40b5-b400-f236945f7073', 'Max file size exceeded.');
+				}
+			}
+
+			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
+
 			this.registerLogger.debug('drive capacity override applied');
 			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
@@ -710,6 +730,21 @@ export class DriveService {
 		}
 
 		return fileObj;
+	}
+
+	@bindThis
+	public async moveFiles(fileIds: MiDriveFile['id'][], folderId: MiDriveFolder['id'] | null, userId: MiUser['id']) {
+		const folder = folderId ? await this.driveFoldersRepository.findOneByOrFail({
+			id: folderId,
+			userId: userId,
+		}) : null;
+
+		await this.driveFilesRepository.update({
+			id: In(fileIds),
+			userId: userId,
+		}, {
+			folderId: folder ? folder.id : null,
+		});
 	}
 
 	@bindThis

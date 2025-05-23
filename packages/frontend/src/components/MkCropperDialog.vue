@@ -15,49 +15,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.cropImage }}</template>
-	<template #default="{ width, height }">
-		<div class="mk-cropper-dialog" :style="`--vw: ${width}px; --vh: ${height}px;`">
-			<Transition name="fade">
-				<div v-if="loading" class="loading">
-					<MkLoading/>
-				</div>
-			</Transition>
-			<div class="container">
-				<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
+	<div class="mk-cropper-dialog" :style="`--vw: 100%; --vh: 100%;`">
+		<Transition name="fade">
+			<div v-if="loading" class="loading">
+				<MkLoading/>
 			</div>
+		</Transition>
+		<div class="container">
+			<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
 		</div>
-	</template>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
-import { apiUrl } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
-import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+
+const props = defineProps<{
+	imageFile: File | Blob;
+	aspectRatio: number | null;
+	uploadFolder?: string | null;
+}>();
 
 const emit = defineEmits<{
-	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
+	(ev: 'ok', cropped: File | Blob): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
 
-const props = defineProps<{
-	file: Misskey.entities.DriveFile;
-	aspectRatio: number;
-	uploadFolder?: string | null;
-}>();
-
-const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
-const imgEl = shallowRef<HTMLImageElement>();
+const imgUrl = URL.createObjectURL(props.imageFile);
+const dialogEl = useTemplateRef('dialogEl');
+const imgEl = useTemplateRef('imgEl');
 let cropper: Cropper | null = null;
 const loading = ref(true);
 
@@ -73,30 +67,9 @@ const ok = async () => {
 		const croppedCanvas = await croppedSection?.$toCanvas({ width: widthToRender });
 		croppedCanvas?.toBlob(blob => {
 			if (!blob) return;
-			const formData = new FormData();
-			formData.append('file', blob);
-			formData.append('name', `cropped_${props.file.name}`);
-			formData.append('isSensitive', props.file.isSensitive ? 'true' : 'false');
-			if (props.file.comment) { formData.append('comment', props.file.comment);}
-			formData.append('i', $i!.token);
-			if (props.uploadFolder) {
-				formData.append('folderId', props.uploadFolder);
-			} else if (props.uploadFolder !== null && defaultStore.state.uploadFolder) {
-				formData.append('folderId', defaultStore.state.uploadFolder);
-			}
-
-			window.fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: formData,
-			})
-				.then(response => response.json())
-				.then(f => {
-					res(f);
-				});
+			res(blob);
 		});
 	});
-
-	os.promiseDialog(promise);
 
 	const f = await promise;
 
@@ -122,12 +95,12 @@ onMounted(() => {
 	cropper = new Cropper(imgEl.value!, {
 	});
 
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 
 	const selection = cropper.getCropperSelection()!;
 	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
-	selection.aspectRatio = props.aspectRatio;
-	selection.initialAspectRatio = props.aspectRatio;
+	if (props.aspectRatio != null) selection.aspectRatio = props.aspectRatio;
+	selection.initialAspectRatio = props.aspectRatio ?? 1;
 	selection.outlined = true;
 
 	window.setTimeout(() => {

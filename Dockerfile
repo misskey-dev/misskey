@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=22.11.0-bullseye
+ARG NODE_VERSION=22.15.0-bookworm
 
 # build assets & compile TypeScript
 
@@ -14,8 +14,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
 
-RUN corepack enable
-
 WORKDIR /misskey
 
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
@@ -24,12 +22,15 @@ COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/frontend-shared/package.json", "./packages/frontend-shared/"]
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
 COPY --link ["packages/frontend-embed/package.json", "./packages/frontend-embed/"]
+COPY --link ["packages/icons-subsetter/package.json", "./packages/icons-subsetter/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 
 ARG NODE_ENV=production
+
+RUN node -e "console.log(JSON.parse(require('node:fs').readFileSync('./package.json')).packageManager)" | xargs npm install -g
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
@@ -48,8 +49,6 @@ RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
 
-RUN corepack enable
-
 WORKDIR /misskey
 
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
@@ -60,6 +59,8 @@ COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-revers
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 
 ARG NODE_ENV=production
+
+RUN node -e "console.log(JSON.parse(require('node:fs').readFileSync('./package.json')).packageManager)" | xargs npm install -g
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
@@ -73,7 +74,6 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	ffmpeg tini curl libjemalloc-dev libjemalloc2 \
 	&& ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
-	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
 	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
@@ -81,12 +81,12 @@ RUN apt-get update \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists
 
+# add package.json to add pnpm
+COPY ./package.json ./package.json
+RUN node -e "console.log(JSON.parse(require('node:fs').readFileSync('./package.json')).packageManager)" | xargs npm install -g
+
 USER misskey
 WORKDIR /misskey
-
-# add package.json to add pnpm
-COPY --chown=misskey:misskey ./package.json ./package.json
-RUN corepack install
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules

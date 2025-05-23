@@ -197,25 +197,10 @@ pnpm dev
 command.
 
 - Server-side source files and automatically builds them if they are modified. Automatically start the server process(es).
-- Vite HMR (just the `vite` command) is available. The behavior may be different from production.
 - Service Worker is watched by esbuild.
-- The front end can be viewed by accessing `http://localhost:5173`.
-- The backend listens on the port configured with `port` in .config/default.yml.
-If you have not changed it from the default, it will be "http://localhost:3000".
-If "port" in .config/default.yml is set to something other than 3000, you need to change the proxy settings in packages/frontend/vite.config.local-dev.ts.
-
-### `MK_DEV_PREFER=backend pnpm dev`
-pnpm dev has another mode with `MK_DEV_PREFER=backend`.
-
-```
-MK_DEV_PREFER=backend pnpm dev
-```
-
-- This mode is closer to the production environment than the default mode.
-- Vite runs behind the backend (the backend will proxy Vite at /vite).
+- Vite HMR (just the `vite` command) is available. The behavior may be different from production.
+- Vite runs behind the backend (the backend will proxy Vite at /vite and /embed_vite except for websocket used for HMR).
 - You can see Misskey by accessing `http://localhost:3000` (Replace `3000` with the port configured with `port` in .config/default.yml).
-- To change the port of Vite, specify with `VITE_PORT` environment variable.
-- HMR may not work in some environments such as Windows.
 
 ## Testing
 You can run non-backend tests by executing following commands:
@@ -273,6 +258,12 @@ Misskey uses Vue(v3) as its front-end framework.
 - **When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
 	- Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
 
+## Tabler Icons
+アイコンは、Production Build時に使用されていないものが削除されるようになっています。
+
+**アイコンを動的に設定する際には、 `ti-${someVal}` のような、アイコン名のみを動的に変化させる実装を行わないでください。**
+必ず `ti-xxx` のような完全なクラス名を含めるようにしてください。
+
 ## nirax
 niraxは、Misskeyで使用しているオリジナルのフロントエンドルーティングシステムです。
 **vue-routerから影響を多大に受けているので、まずはvue-routerについて学ぶことをお勧めします。**
@@ -288,7 +279,6 @@ niraxは、Misskeyで使用しているオリジナルのフロントエンド�
 	query?: Record<string, string>;
 	loginRequired?: boolean;
 	hash?: string;
-	globalCacheKey?: string;
 	children?: RouteDef[];
 }
 ```
@@ -490,6 +480,11 @@ describe('test', () => {
 例えばGoogleが自社サービスをMap、Earth、DriveではなくGoogle Map、Google Earth、Google Driveのように命名するのと同じ
 コード上でMisskeyのドメイン固有の概念には`Mi`をprefixすることで、他のドメインの同様の概念と区別できるほか、名前の衝突を防ぐ。
 ただし、文脈上Misskeyのものを指すことが明らかであり、名前の衝突の恐れがない場合は、一時的なローカル変数に限って`Mi`を省略してもよい。
+
+### Misskey.jsの型生成
+```bash
+pnpm build-misskey-js-with-types
+```
 
 ### How to resolve conflictions occurred at pnpm-lock.yaml?
 
