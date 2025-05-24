@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { onUnmounted } from 'vue';
+import { onUnmounted, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { EventEmitter } from 'eventemitter3';
 import type { Reactive } from 'vue';
@@ -188,27 +188,31 @@ export type ReactiveNoteData = {
 };
 
 export function useNoteCapture(props: {
-	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
+	note: Misskey.entities.Note;
 	parentNote: Misskey.entities.Note | null;
-	$note: Reactive<ReactiveNoteData>;
+	mock?: boolean;
 }): {
+	$note: Reactive<ReactiveNoteData>;
 	subscribe: () => void;
 } {
-	const { note, parentNote, $note } = props;
+	const { note, parentNote, mock } = props;
 
-	// Normalize reactions in-place
-	for (const name of Object.keys($note.reactions)) {
-		const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
-		if (normalizedName !== name) {
-			const count = $note.reactions[name];
-			if ($note.reactions[normalizedName] == null) {
-				$note.reactions[normalizedName] = count;
+	const $note = reactive<ReactiveNoteData>({
+		reactions: Object.entries(note.reactions).reduce((acc, [name, count]) => {
+			// Normalize reactions
+			const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
+			if (acc[normalizedName] == null) {
+				acc[normalizedName] = count;
 			} else {
-				$note.reactions[normalizedName] += count;
+				acc[normalizedName] += count;
 			}
-			delete $note.reactions[name];
-		}
-	}
+			return acc;
+		}, {} as Misskey.entities.Note['reactions']),
+		reactionCount: note.reactionCount,
+		reactionEmojis: note.reactionEmojis,
+		myReaction: note.myReaction,
+		pollChoices: note.poll?.choices ?? [],
+	});
 
 	noteEvents.on(`reacted:${note.id}`, onReacted);
 	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
@@ -273,10 +277,20 @@ export function useNoteCapture(props: {
 	}
 
 	function subscribe() {
+		if (mock) {
+			// モックモードでは購読しない
+			return;
+		}
+
 		if ($i && store.s.realtimeMode) {
-			realtimeSubscribe(props);
+			realtimeSubscribe({
+				note,
+			});
 		} else {
-			pollingSubscribe(props);
+			pollingSubscribe({
+				note,
+				$note,
+			});
 		}
 	}
 
@@ -293,6 +307,7 @@ export function useNoteCapture(props: {
 		if ((Date.now() - new Date(note.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
 			// リノートで表示されているノートでもないし、投稿からある程度経過しているので自動で購読しない
 			return {
+				$note,
 				subscribe: () => {
 					subscribe();
 				},
@@ -302,6 +317,7 @@ export function useNoteCapture(props: {
 		if ((Date.now() - new Date(parentNote.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
 			// リノートで表示されているノートだが、リノートされてからある程度経過しているので自動で購読しない
 			return {
+				$note,
 				subscribe: () => {
 					subscribe();
 				},
@@ -312,6 +328,7 @@ export function useNoteCapture(props: {
 	subscribe();
 
 	return {
+		$note,
 		subscribe: () => {
 			// すでに購読しているので何もしない
 		},
