@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template v-if="page === 0">
 				<div style="height: 100cqh; overflow: auto; text-align: center;">
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
 							<MkInfo><MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank">{{ i18n.ts._2fa.moreDetailedGuideHere }}</MkLink></MkInfo>
 
@@ -50,12 +50,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton rounded @click="cancel">{{ i18n.ts.cancel }}</MkButton>
 							<MkButton primary rounded gradate @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
 							<div>{{ i18n.ts._2fa.step3Title }}</div>
 							<MkInput v-model="token" autocomplete="one-time-code" inputmode="numeric"></MkInput>
@@ -65,12 +65,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 							<MkButton primary rounded gradate @click="tokenDone">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
 							<div style="text-align: center;">{{ i18n.ts._2fa.setupCompleted }}🎉</div>
 							<div style="text-align: center;">{{ i18n.ts._2fa.step4 }}</div>
@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_buttonsCenter" style="margin-top: 16px;">
 							<MkButton primary rounded gradate @click="allDone">{{ i18n.ts.done }}</MkButton>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 		</Transition>
@@ -106,7 +106,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
+import { hostname, port } from '@@/js/config';
+import { useTemplateRef, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -116,10 +117,10 @@ import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLink from '@/components/MkLink.vue';
-import { confetti } from '@/scripts/confetti.js';
-import { signinRequired } from '@/account.js';
+import { confetti } from '@/utility/confetti.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 defineProps<{
 	twoFactorData: {
@@ -132,7 +133,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 const page = ref(0);
 const token = ref<string | number | null>(null);
 const backupCodes = ref<string[]>();
@@ -159,9 +160,9 @@ async function tokenDone() {
 function downloadBackupCodes() {
 	if (backupCodes.value !== undefined) {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
-		const dummya = document.createElement('a');
+		const dummya = window.document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
+		dummya.download = `${$i.username}@${hostname}` + (port !== '' ? `_${port}` : '') + '-2fa-backup-codes.txt';
 		dummya.click();
 	}
 }

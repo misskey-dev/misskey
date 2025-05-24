@@ -5,9 +5,12 @@
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-import { DataSource, Logger } from 'typeorm';
+import { DataSource, Logger, type QueryRunner } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
+import { Config } from '@/config.js';
+import MisskeyLogger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
@@ -42,7 +45,6 @@ import { MiNote } from '@/models/Note.js';
 import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
 import { MiNoteThreadMuting } from '@/models/NoteThreadMuting.js';
-import { MiNoteUnread } from '@/models/NoteUnread.js';
 import { MiPage } from '@/models/Page.js';
 import { MiPageLike } from '@/models/PageLike.js';
 import { MiPasswordResetRequest } from '@/models/PasswordResetRequest.js';
@@ -76,12 +78,14 @@ import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
+import { MiChatMessage } from '@/models/ChatMessage.js';
+import { MiChatRoom } from '@/models/ChatRoom.js';
+import { MiChatRoomMembership } from '@/models/ChatRoomMembership.js';
+import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
-
-import { Config } from '@/config.js';
-import MisskeyLogger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
+import { MiChatApproval } from '@/models/ChatApproval.js';
+import { MiSystemAccount } from '@/models/SystemAccount.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -89,27 +93,77 @@ export const dbLogger = new MisskeyLogger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
+export type LoggerProps = {
+	disableQueryTruncation?: boolean;
+	enableQueryParamLogging?: boolean;
+	printReplicationMode?: boolean,
+};
+
+function highlightSql(sql: string) {
+	return highlight.highlight(sql, {
+		language: 'sql', ignoreIllegals: true,
+	});
+}
+
+function truncateSql(sql: string) {
+	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
+}
+
+function stringifyParameter(param: any) {
+	if (param instanceof Date) {
+		return param.toISOString();
+	} else {
+		return param;
+	}
+}
+
 class MyCustomLogger implements Logger {
-	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
+	constructor(private props: LoggerProps = {}) {
 	}
 
 	@bindThis
-	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+	private transformQueryLog(sql: string, opts?: {
+		prefix?: string;
+	}) {
+		let modded = opts?.prefix ? opts.prefix + sql : sql;
+		if (!this.props.disableQueryTruncation) {
+			modded = truncateSql(modded);
+		}
+
+		return highlightSql(modded);
 	}
 
 	@bindThis
-	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+	private transformParameters(parameters?: any[]) {
+		if (this.props.enableQueryParamLogging && parameters && parameters.length > 0) {
+			return parameters.map(stringifyParameter);
+		}
+
+		return undefined;
 	}
 
 	@bindThis
-	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
+			: undefined;
+		sqlLogger.info(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
+	}
+
+	@bindThis
+	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
+			: undefined;
+		sqlLogger.error(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
+	}
+
+	@bindThis
+	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
+			: undefined;
+		sqlLogger.warn(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
 	}
 
 	@bindThis
@@ -156,7 +210,6 @@ export const entities = [
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,
-	MiNoteUnread,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,
@@ -168,6 +221,7 @@ export const entities = [
 	MiEmoji,
 	MiHashtag,
 	MiSwSubscription,
+	MiSystemAccount,
 	MiAbuseUserReport,
 	MiAbuseReportNotificationRecipient,
 	MiRegistrationTicket,
@@ -196,6 +250,11 @@ export const entities = [
 	MiFlash,
 	MiFlashLike,
 	MiUserMemo,
+	MiChatMessage,
+	MiChatRoom,
+	MiChatRoomMembership,
+	MiChatRoomInvitation,
+	MiChatApproval,
 	MiBubbleGameRecord,
 	MiReversiGame,
 	...charts,
@@ -247,7 +306,13 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log
+			? new MyCustomLogger({
+				disableQueryTruncation: config.logging?.sql?.disableQueryTruncation,
+				enableQueryParamLogging: config.logging?.sql?.enableQueryParamLogging,
+				printReplicationMode: !!config.dbReplications,
+			})
+			: undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],

@@ -4,89 +4,109 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection v-if="!fetching" first>
-		<template #label>{{ i18n.ts.usageAmount }}</template>
+<SearchMarker path="/settings/drive" :label="i18n.ts.drive" :keywords="['drive']" icon="ti ti-cloud">
+	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/cloud_3d.png" color="#0059ff">
+			<SearchKeyword>{{ i18n.ts._settings.driveBanner }}</SearchKeyword>
+		</MkFeatureBanner>
 
-		<div class="_gaps_m">
-			<div>
-				<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
-			</div>
-			<FormSplit>
-				<MkKeyValue>
-					<template #key>{{ i18n.ts.capacity }}</template>
-					<template #value>{{ bytes(capacity, 1) }}</template>
-				</MkKeyValue>
-				<MkKeyValue>
-					<template #key>{{ i18n.ts.inUse }}</template>
-					<template #value>{{ bytes(usage, 1) }}</template>
-				</MkKeyValue>
-			</FormSplit>
-		</div>
-	</FormSection>
+		<SearchMarker :keywords="['capacity', 'usage']">
+			<FormSection first>
+				<template #label><SearchLabel>{{ i18n.ts.usageAmount }}</SearchLabel></template>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.statistics }}</template>
-		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
-	</FormSection>
-
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="chooseUploadFolder()">
-				<template #icon><i class="ti ti-folder"></i></template>
-				{{ i18n.ts.uploadFolder }}
-				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-			</FormLink>
-			<FormLink to="/settings/drive/cleaner">
-				<template #icon><i class="ti ti-file-shredder"></i></template>
-				{{ i18n.ts.drivecleaner }}
-			</FormLink>
-			<MkFolder>
-				<template #icon><i class="ti ti-ripple"></i></template>
-				<template #label>{{ i18n.ts.watermark }}</template>
-
-				<div>
-					<div class="_gaps">
-						<MkInfo>{{ i18n.ts.useWatermarkInfo }}</MkInfo>
-
-						<MkSwitch v-model="useWatermark">
-							<template #label>{{ i18n.ts.useWatermark }}</template>
-							<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
-						</MkSwitch>
-
-						<MkSelect v-model="clipboardWatermarkBehavior">
-							<template #label>{{ i18n.ts._watermarkEditor.clipboardUploadBehavior }}</template>
-							<option value="confirm">{{ i18n.ts.alwaysConfirm }}</option>
-							<option value="default">{{ i18n.ts.useDefaultSettings }}</option>
-						</MkSelect>
+				<div v-if="!fetching" class="_gaps_m">
+					<div>
+						<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
 					</div>
-
-					<hr/>
-
-					<FormLink @click="openWatermarkEditor">
-						<template #icon><i class="ti ti-pencil"></i></template>
-						{{ i18n.ts._watermarkEditor.title }}
-					</FormLink>
+					<FormSplit>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.capacity }}</template>
+							<template #value>{{ bytes(capacity, 1) }}</template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.inUse }}</template>
+							<template #value>{{ bytes(usage, 1) }}</template>
+						</MkKeyValue>
+					</FormSplit>
 				</div>
-			</MkFolder>
-			<MkSwitch v-model="keepOriginalUploading">
-				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
-				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="keepOriginalFilename">
-				<template #label>{{ i18n.ts.keepOriginalFilename }}</template>
-				<template #caption>{{ i18n.ts.keepOriginalFilenameDescription }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
-				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
-				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
-				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
-			</MkSwitch>
-		</div>
-	</FormSection>
-</div>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['statistics', 'usage']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.statistics }}</SearchLabel></template>
+				<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
+			</FormSection>
+		</SearchMarker>
+
+		<FormSection>
+			<div class="_gaps_m">
+				<SearchMarker :keywords="['default', 'upload', 'folder']">
+					<FormLink @click="chooseUploadFolder()">
+						<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
+						<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
+						<template #suffixIcon><i class="ti ti-folder"></i></template>
+					</FormLink>
+				</SearchMarker>
+
+				<FormLink to="/settings/drive/cleaner">
+					{{ i18n.ts.drivecleaner }}
+				</FormLink>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-ripple"></i></template>
+					<template #label>{{ i18n.ts.watermark }}</template>
+
+					<div>
+						<div class="_gaps">
+							<MkInfo>{{ i18n.ts.useWatermarkInfo }}</MkInfo>
+
+							<MkSwitch v-model="useWatermark">
+								<template #label>{{ i18n.ts.useWatermark }}</template>
+								<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
+							</MkSwitch>
+
+							<MkSelect v-model="clipboardWatermarkBehavior">
+								<template #label>{{ i18n.ts._watermarkEditor.clipboardUploadBehavior }}</template>
+								<option value="confirm">{{ i18n.ts.alwaysConfirm }}</option>
+								<option value="default">{{ i18n.ts.useDefaultSettings }}</option>
+							</MkSelect>
+						</div>
+
+						<hr/>
+
+						<FormLink @click="openWatermarkEditor">
+							<template #icon><i class="ti ti-pencil"></i></template>
+							{{ i18n.ts._watermarkEditor.title }}
+						</FormLink>
+					</div>
+				</MkFolder>
+
+				<SearchMarker :keywords="['keep', 'original', 'filename']">
+					<MkPreferenceContainer k="keepOriginalFilename">
+						<MkSwitch v-model="keepOriginalFilename">
+							<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
+							<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file']">
+					<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
+						<template #label><SearchLabel>{{ i18n.ts.alwaysMarkSensitive }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['auto', 'nsfw', 'sensitive', 'media', 'file']">
+					<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
+						<template #label><SearchLabel>{{ i18n.ts.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+						<template #caption><SearchKeyword>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchKeyword></template>
+					</MkSwitch>
+				</SearchMarker>
+			</div>
+		</FormSection>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -102,16 +122,19 @@ import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import bytes from '@/filters/bytes.js';
-import { defaultStore } from '@/store.js';
 import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { signinRequired } from '@/account.js';
-import { reloadAsk } from '@/scripts/reload-ask';
+import { ensureSignin } from '@/i.js';
+import { reloadAsk } from '@/utility/reload-ask.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { selectDriveFolder } from '@/utility/drive.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const fetching = ref(true);
 const usage = ref<number | null>(null);
@@ -132,11 +155,10 @@ const meterStyle = computed(() => {
 	};
 });
 
-const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
-const clipboardWatermarkBehavior = computed(defaultStore.makeGetterSetter('clipboardWatermarkBehavior'));
+const useWatermark = prefer.model('useWatermark');
+const clipboardWatermarkBehavior = prefer.model('clipboardWatermarkBehavior');
 
-const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
-const keepOriginalFilename = computed(defaultStore.makeGetterSetter('keepOriginalFilename'));
+const keepOriginalFilename = prefer.model('keepOriginalFilename');
 
 watch([
 	useWatermark,
@@ -151,21 +173,21 @@ misskeyApi('drive').then(info => {
 	fetching.value = false;
 });
 
-if (defaultStore.state.uploadFolder) {
+if (prefer.s.uploadFolder) {
 	misskeyApi('drive/folders/show', {
-		folderId: defaultStore.state.uploadFolder,
+		folderId: prefer.s.uploadFolder,
 	}).then(response => {
 		uploadFolder.value = response;
 	});
 }
 
 function chooseUploadFolder() {
-	os.selectDriveFolder(false).then(async folder => {
-		defaultStore.set('uploadFolder', folder[0] ? folder[0].id : null);
+	selectDriveFolder(null).then(async folder => {
+		prefer.commit('uploadFolder', folder[0] ? folder[0].id : null);
 		os.success();
-		if (defaultStore.state.uploadFolder) {
+		if (prefer.s.uploadFolder) {
 			uploadFolder.value = await misskeyApi('drive/folders/show', {
-				folderId: defaultStore.state.uploadFolder,
+				folderId: prefer.s.uploadFolder,
 			});
 		} else {
 			uploadFolder.value = null;
@@ -197,7 +219,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.drive,
 	icon: 'ti ti-cloud',
 }));

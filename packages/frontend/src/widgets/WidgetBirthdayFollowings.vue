@@ -15,8 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee" link preview></MkAvatar>
 		</div>
 		<div v-else :class="$style.bdayFFallback">
-			<img :src="infoImageUrl" class="_ghost" :class="$style.bdayFFallbackImage"/>
-			<div>{{ i18n.ts.nothing }}</div>
+			<MkResult type="empty"/>
 		</div>
 	</div>
 </MkContainer>
@@ -26,13 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const name = i18n.ts._widgets.birthdayFollowings;
 
@@ -132,13 +131,5 @@ defineExpose<WidgetComponentExpose>({
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-}
-
-.bdayFFallbackImage {
-	height: 96px;
-	width: auto;
-	max-width: 90%;
-	margin-bottom: 8px;
-	border-radius: var(--MI-radius);
 }
 </style>
