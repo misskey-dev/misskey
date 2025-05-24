@@ -418,7 +418,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
 					<MkTextarea :modelValue="role.policies.uploadableFileTypes.value.join('\n')" :disabled="role.policies.uploadableFileTypes.useDefault" :readonly="readonly" @update:modelValue="role.policies.uploadableFileTypes.value = $event.split('\n')">
-						<template #caption>{{ i18n.ts._role._options.uploadableFileTypes_caption }}</template>
+						<template #caption>
+							<div>{{ i18n.ts._role._options.uploadableFileTypes_caption }}</div>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.tsx._role._options.uploadableFileTypes_caption2({ x: 'application/octet-stream' }) }}</div>
+						</template>
 					</MkTextarea>
 					<MkRange v-model="role.policies.uploadableFileTypes.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
