@@ -469,13 +469,14 @@ export class DriveService {
 		if (user && this.meta.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
 
 		const info = await this.fileInfoService.getFileInfo(path, {
+			fileName: name,
 			skipSensitiveDetection: skipNsfwCheck,
 			sensitiveThreshold: // 感度が高いほどしきい値は低くすることになる
-			this.meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 0.1 :
-			this.meta.sensitiveMediaDetectionSensitivity === 'high' ? 0.3 :
-			this.meta.sensitiveMediaDetectionSensitivity === 'low' ? 0.7 :
-			this.meta.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0.9 :
-			0.5,
+				this.meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 0.1 :
+				this.meta.sensitiveMediaDetectionSensitivity === 'high' ? 0.3 :
+				this.meta.sensitiveMediaDetectionSensitivity === 'low' ? 0.7 :
+				this.meta.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0.9 :
+				0.5,
 			sensitiveThresholdForPorn: 0.75,
 			enableSensitiveMediaDetectionForVideos: this.meta.enableSensitiveMediaDetectionForVideos,
 		});

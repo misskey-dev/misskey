@@ -352,7 +352,7 @@ export const PREF_DEF = {
 	},
 
 	'sound.masterVolume': {
-		default: 0.3,
+		default: 0.5,
 	},
 	'sound.notUseSound': {
 		default: false,

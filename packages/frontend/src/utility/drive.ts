@@ -39,20 +39,22 @@ export function uploadFile(file: File | Blob, options: {
 	const filePromise = new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
 		if ($i == null) return reject();
 
-		const allowedMimeTypes = $i.policies.uploadableFileTypes;
-		const isAllowedMimeType = allowedMimeTypes.some(mimeType => {
-			if (mimeType === '*' || mimeType === '*/*') return true;
-			if (mimeType.endsWith('/*')) return file.type.startsWith(mimeType.slice(0, -1));
-			return file.type === mimeType;
-		});
-		if (!isAllowedMimeType) {
-			os.alert({
-				type: 'error',
-				title: i18n.ts.failedToUpload,
-				text: i18n.ts.cannotUploadBecauseUnallowedFileType,
-			});
-			return reject();
-		}
+		// こっち側で検出するMIME typeとサーバーで検出するMIME typeは異なる場合があるため、こっち側ではやらないことにする
+		// https://github.com/misskey-dev/misskey/issues/16091
+		//const allowedMimeTypes = $i.policies.uploadableFileTypes;
+		//const isAllowedMimeType = allowedMimeTypes.some(mimeType => {
+		//	if (mimeType === '*' || mimeType === '*/*') return true;
+		//	if (mimeType.endsWith('/*')) return file.type.startsWith(mimeType.slice(0, -1));
+		//	return file.type === mimeType;
+		//});
+		//if (!isAllowedMimeType) {
+		//	os.alert({
+		//		type: 'error',
+		//		title: i18n.ts.failedToUpload,
+		//		text: i18n.ts.cannotUploadBecauseUnallowedFileType,
+		//	});
+		//	return reject();
+		//}
 
 		if ((file.size > instance.maxFileSize) || (file.size > ($i.policies.maxFileSizeMb * 1024 * 1024))) {
 			os.alert({
