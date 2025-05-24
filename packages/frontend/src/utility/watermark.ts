@@ -166,7 +166,7 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 
 						if (config.repeat) {
 							// 余白をもたせた状態のウォーターマークを作成しておく（それをパターン繰り返しする）
-							const resizedWatermark = document.createElement('canvas');
+							const resizedWatermark = window.document.createElement('canvas');
 							resizedWatermark.width = width + (config.padding ? (config.padding.left ?? 0) + (config.padding.right ?? 0) : 0);
 							resizedWatermark.height = height + (config.padding ? (config.padding.top ?? 0) + (config.padding.bottom ?? 0) : 0);
 							const resizedCtx = resizedWatermark.getContext('2d')!;
@@ -295,7 +295,7 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
  * @returns ウォーターマークを適用した画像のBlob
  */
 export async function getWatermarkAppliedImage(img: Blob, config: WatermarkConfig): Promise<Blob> {
-	const canvas = document.createElement('canvas');
+	const canvas = window.document.createElement('canvas');
 	await applyWatermark(img, canvas, config);
 	return new Promise(resolve => canvas.toBlob(blob => resolve(blob!)));
 }

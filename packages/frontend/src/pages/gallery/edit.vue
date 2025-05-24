@@ -64,7 +64,7 @@ const title = ref<string | null>(null);
 const isSensitive = ref(false);
 
 function chooseFile(evt) {
-	selectFile(evt.currentTarget ?? evt.target, { multiple: true }).then(selected => {
+	selectFiles(evt.currentTarget ?? evt.target).then(selected => {
 		files.value = files.value.concat(selected);
 	});
 }

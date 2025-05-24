@@ -24,7 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkA, { type MkABehavior } from '@/components/global/MkA.vue';
+import MkA from '@/components/global/MkA.vue';
+import type { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	to?: string;
