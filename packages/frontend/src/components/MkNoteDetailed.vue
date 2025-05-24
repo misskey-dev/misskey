@@ -259,6 +259,7 @@ import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
 import { noteEvents, useNoteCapture } from '@/composables/use-note-capture.js';
+import type { ReactiveNoteData } from '@/composables/use-note-capture.js';
 import { deepClone } from '@/utility/clone.js';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import { claimAchievement } from '@/utility/achievements.js';
@@ -304,12 +305,12 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const $appearNote = reactive({
+const $appearNote = reactive<ReactiveNoteData>({
 	reactions: appearNote.reactions,
 	reactionCount: appearNote.reactionCount,
 	reactionEmojis: appearNote.reactionEmojis,
 	myReaction: appearNote.myReaction,
-	pollChoices: appearNote.poll?.choices,
+	pollChoices: appearNote.poll?.choices ?? [],
 });
 
 const rootEl = useTemplateRef('rootEl');

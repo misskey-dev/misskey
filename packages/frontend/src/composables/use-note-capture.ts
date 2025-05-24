@@ -6,13 +6,14 @@
 import { onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { EventEmitter } from 'eventemitter3';
-import type { Reactive, Ref } from 'vue';
+import type { Reactive } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
+import { name } from 'happy-dom/lib/PropertySymbol.js';
 
 export const noteEvents = new EventEmitter<{
 	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
@@ -179,22 +180,35 @@ function realtimeSubscribe(props: {
 	});
 }
 
-type ReactiveNoteData = Reactive<{
+export type ReactiveNoteData = {
 	reactions: Misskey.entities.Note['reactions'];
 	reactionCount: Misskey.entities.Note['reactionCount'];
 	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
 	myReaction: Misskey.entities.Note['myReaction'];
 	pollChoices: NonNullable<Misskey.entities.Note['poll']>['choices'];
-}>;
+};
 
 export function useNoteCapture(props: {
 	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
 	parentNote: Misskey.entities.Note | null;
-	$note: ReactiveNoteData;
+	$note: Reactive<ReactiveNoteData>;
 }): {
 	subscribe: () => void;
 } {
 	const { note, parentNote, $note } = props;
+
+	// Normalize reactions
+	if (Object.keys($note.reactions).length > 0) {
+		$note.reactions = Object.entries($note.reactions).reduce((acc, [name, count]) => {
+			const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
+			if (acc[normalizedName] == null) {
+				acc[normalizedName] = count;
+			} else {
+				acc[normalizedName] += count;
+			}
+			return acc;
+		}, {} as Misskey.entities.Note['reactions']);
+	}
 
 	noteEvents.on(`reacted:${note.id}`, onReacted);
 	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
@@ -205,7 +219,8 @@ export function useNoteCapture(props: {
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		const newReactedKey = `${ctx.userId}:${ctx.reaction}`;
+		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
+		const newReactedKey = `${ctx.userId}:${normalizedName}`;
 		if (newReactedKey === latestReactedKey) return;
 		latestReactedKey = newReactedKey;
 
@@ -213,26 +228,27 @@ export function useNoteCapture(props: {
 			$note.reactionEmojis[ctx.emoji.name] = ctx.emoji.url;
 		}
 
-		const currentCount = $note.reactions[ctx.reaction] || 0;
+		const currentCount = $note.reactions[normalizedName] || 0;
 
-		$note.reactions[ctx.reaction] = currentCount + 1;
+		$note.reactions[normalizedName] = currentCount + 1;
 		$note.reactionCount += 1;
 
 		if ($i && (ctx.userId === $i.id)) {
-			$note.myReaction = ctx.reaction;
+			$note.myReaction = normalizedName;
 		}
 	}
 
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		const newUnreactedKey = `${ctx.userId}:${ctx.reaction}`;
+		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
+		const newUnreactedKey = `${ctx.userId}:${normalizedName}`;
 		if (newUnreactedKey === latestUnreactedKey) return;
 		latestUnreactedKey = newUnreactedKey;
 
-		const currentCount = $note.reactions[ctx.reaction] || 0;
+		const currentCount = $note.reactions[normalizedName] || 0;
 
-		$note.reactions[ctx.reaction] = Math.max(0, currentCount - 1);
+		$note.reactions[normalizedName] = Math.max(0, currentCount - 1);
 		$note.reactionCount = Math.max(0, $note.reactionCount - 1);
-		if ($note.reactions[ctx.reaction] === 0) delete $note.reactions[ctx.reaction];
+		if ($note.reactions[normalizedName] === 0) delete $note.reactions[normalizedName];
 
 		if ($i && (ctx.userId === $i.id)) {
 			$note.myReaction = null;
