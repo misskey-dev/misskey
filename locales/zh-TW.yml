@@ -1987,6 +1987,7 @@ _role:
     chatAvailability: "允許聊天"
     uploadableFileTypes: "可上傳的檔案類型"
     uploadableFileTypes_caption: "請指定 MIME 類型。可以用換行區隔多個類型，也可以使用星號（*）作為萬用字元進行指定。（例如：image/*）\n"
+    uploadableFileTypes_caption2: "有些檔案可能無法判斷其類型。若要允許這類檔案，請在指定中加入 {x}。"
   _condition:
     roleAssignedTo: "手動指派角色完成"
     isLocal: "本地使用者"
