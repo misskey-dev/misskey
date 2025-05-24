@@ -111,11 +111,11 @@ import XPaddingView from '@/components/MkWatermarkEditorDialog.padding.vue';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { selectFile } from '@/scripts/select-file.js';
-import { applyWatermark, canApplyWatermark } from '@/scripts/watermark.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { selectFile } from '@/utility/select-file.js';
+import { applyWatermark, canApplyWatermark } from '@/utility/watermark.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
-import type { WatermarkUserConfig } from '@/scripts/watermark.js';
+import type { WatermarkUserConfig } from '@/utility/watermark.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -279,7 +279,7 @@ onMounted(() => {
 	watch(watermarkConfig, (watermarkConfigTo) => {
 		canvasLoading.value = true;
 		if (canvasEl.value) {
-			// @/scripts/watermark.ts の DEFAULT_ASPECT_RATIO と同じ縦横比の画像を使用すること
+			// @/utility/watermark.ts の DEFAULT_ASPECT_RATIO と同じ縦横比の画像を使用すること
 			applyWatermark('/client-assets/hill.webp', canvasEl.value, canApplyWatermark(watermarkConfigTo) ? watermarkConfigTo : null).then(() => {
 				canvasLoading.value = false;
 			});

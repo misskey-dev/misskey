@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { useId } from 'vue';
 import { i18n } from '@/i18n.js';
-import { watermarkAnchor } from '@/scripts/watermark.js';
-import type { WatermarkAnchor } from '@/scripts/watermark.js';
+import { watermarkAnchor } from '@/utility/watermark.js';
+import type { WatermarkAnchor } from '@/utility/watermark.js';
 
 const langMap = {
 	'top': i18n.ts.centerTop,
