@@ -120,7 +120,7 @@ import { formatTimeString } from '@/utility/format-time-string.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { selectFiles } from '@/utility/drive.js';
+import { selectFile } from '@/utility/drive.js';
 import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
@@ -437,7 +437,11 @@ function focus() {
 function chooseFileFrom(ev) {
 	if (props.mock) return;
 
-	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: true,
+		label: i18n.ts.attachFile,
+	}).then(files_ => {
 		for (const file of files_) {
 			files.value.push(file);
 		}

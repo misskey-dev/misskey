@@ -422,7 +422,7 @@ export const PREF_DEF = definePreferences({
 		default: null as WatermarkPreset['id'] | null,
 	},
 	defaultImageCompressionLevel: {
-		default: 2,
+		default: 2 as 0 | 1 | 2 | 3,
 	},
 
 	'sound.masterVolume': {

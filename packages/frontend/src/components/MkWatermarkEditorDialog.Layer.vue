@@ -262,10 +262,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
-import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -275,7 +274,6 @@ import MkPositionSelector from '@/components/MkPositionSelector.vue';
 import * as os from '@/os.js';
 import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { prefer } from '@/preferences.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
 
@@ -294,7 +292,14 @@ onMounted(async () => {
 });
 
 function chooseFile(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.selectFile).then((file) => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+		label: i18n.ts.selectFile,
+		features: {
+			watermark: false,
+		},
+	}).then((file) => {
 		if (!file.type.startsWith('image')) {
 			os.alert({
 				type: 'warning',
