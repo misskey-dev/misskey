@@ -582,7 +582,6 @@ function undoReact(): void {
 }
 
 function toggleReact() {
-	console.log('toggleReact', $appearNote.myReaction);
 	if ($appearNote.myReaction == null) {
 		react();
 	} else {
