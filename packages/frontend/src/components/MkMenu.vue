@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
 
 			<div v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label]">
-				<span>{{ item.text }}</span>
+				<span :title="item.text">{{ item.text }}</span>
 			</div>
 
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
 					<div :class="$style.item_content_text">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
 					<div :class="$style.item_content_text">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
@@ -116,7 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
 					<div :class="[$style.item_content_text, { [$style.switchText]: !item.icon }]">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
@@ -136,7 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
 					<div :class="$style.item_content_text" style="pointer-events: none;">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -157,7 +157,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.item_content">
 					<div :class="$style.item_content_text">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 				</div>
@@ -175,7 +175,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
 					<div :class="$style.item_content_text" style="pointer-events: none;">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -195,7 +195,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
 					<div :class="$style.item_content_text">
-						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div :class="$style.item_content_text_title" :title="item.text">{{ item.text }}</div>
 						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
 					</div>
 					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
