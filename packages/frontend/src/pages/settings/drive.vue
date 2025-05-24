@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-ripple"></i></template>
 					<template #label>{{ i18n.ts.watermark }}</template>
 
-					<div>
+					<div class="_gaps_m">
 						<div class="_gaps">
 							<MkInfo>{{ i18n.ts.useWatermarkInfo }}</MkInfo>
 

@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<g fill-rule="evenodd">
 					<rect x="21.709" y="14.787" width="120" height="80" fill="var(--MI_THEME-bg)" stop-color="#000000" stroke-dasharray="1.1384, 3.4152" stroke-width="1.1384" style="mix-blend-mode:normal" />
 					<rect x="21.709" y="14.787" width="120" height="80" fill="url(#pattern5942)" stop-color="#000000" stroke-dasharray="1.1384, 3.4152" stroke-width="1.1384" style="mix-blend-mode:normal" />
-					<rect x="47.101" y="40.105" width="69.216" height="29.364" ry="5.3019" fill="var(--MI_THEME-accentDarken)" stop-color="#000000" stroke-dasharray="1.13855, 3.41565" stroke-width="1.1386" />
+					<rect x="47.101" y="40.105" width="69.216" height="29.364" ry="5.3019" fill="var(--MI_THEME-accent)" stop-color="#000000" stroke-dasharray="1.13855, 3.41565" stroke-width="1.1386" />
 				</g>
 				<g fill="none" stroke="var(--MI_THEME-error)">
 					<path v-if="props.arrow === 'top'" d="m81.709 16.167 2e-6 22.601" marker-end="url(#Arrow3)" marker-start="url(#Arrow3)" stop-color="#000000" stroke-width="1.3038" />

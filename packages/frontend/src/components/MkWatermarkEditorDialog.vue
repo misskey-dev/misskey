@@ -109,9 +109,9 @@ import XAnchorSelector from '@/components/MkWatermarkEditorDialog.anchor.vue';
 import XPaddingView from '@/components/MkWatermarkEditorDialog.padding.vue';
 
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import { applyWatermark, canApplyWatermark } from '@/utility/watermark.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
@@ -133,7 +133,7 @@ function cancel() {
 //#endregion
 
 //#region 設定
-const watermarkConfig = ref<WatermarkUserConfig>(defaultStore.state.watermarkConfig ?? {
+const watermarkConfig = ref<WatermarkUserConfig>(prefer.s.watermarkConfig ?? {
 	opacity: 0.2,
 	repeat: true,
 	rotate: 15,
@@ -202,7 +202,7 @@ const paddingBottom = computed({
 
 function save() {
 	if (canApplyWatermark(watermarkConfig.value)) {
-		defaultStore.set('watermarkConfig', watermarkConfig.value);
+		prefer.commit('watermarkConfig', watermarkConfig.value);
 	} else {
 		os.alert({
 			type: 'warning',
@@ -251,10 +251,7 @@ const friendlyFileName = computed<string>(() => {
 });
 
 function chooseFile(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target, {
-		label: i18n.ts.selectFile,
-		dontUseWatermark: true,
-	}).then((file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.selectFile).then((file) => {
 		if (!file.type.startsWith('image')) {
 			os.alert({
 				type: 'warning',
