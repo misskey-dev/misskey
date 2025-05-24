@@ -1984,6 +1984,7 @@ _role:
     chatAvailability: "允许聊天"
     uploadableFileTypes: "可上传的文件类型"
     uploadableFileTypes_caption: "指定 MIME 类型。可用换行指定多个类型，也可以用星号（*）作为通配符。（如 image/*）"
+    uploadableFileTypes_caption2: "文件根据文件的不同，可能无法判断其类型。若要允许此类文件，请在指定中添加 {x}。"
   _condition:
     roleAssignedTo: "已分配给手动角色"
     isLocal: "是本地用户"
