@@ -25919,7 +25919,15 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': Record<string, never>[];
+          'application/json': {
+              id: string;
+              reactions: {
+                [key: string]: number;
+              };
+              reactionEmojis: {
+                [key: string]: string;
+              };
+            }[];
         };
       };
       /** @description Client error */
