@@ -174,7 +174,10 @@ function setupGrid(): GridSetting {
 			{
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
-					const file = await selectFile(cellElement);
+					const file = await selectFile({
+						anchorElement: cellElement,
+						multiple: false,
+					});
 					gridItems.value[row.index].url = file.url;
 					gridItems.value[row.index].fileId = file.id;
 

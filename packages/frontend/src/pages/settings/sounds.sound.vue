@@ -94,7 +94,9 @@ const friendlyFileName = computed<string>(() => {
 });
 
 function selectSound(ev) {
-	selectFile(ev.currentTarget ?? ev.target, {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
 		label: i18n.ts._soundSettings.driveFile,
 	}).then(async (file) => {
 		if (!file.type.startsWith('audio')) {

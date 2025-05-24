@@ -44,7 +44,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import { selectFiles } from '@/utility/drive.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -64,7 +64,10 @@ const title = ref<string | null>(null);
 const isSensitive = ref(false);
 
 function chooseFile(evt) {
-	selectFiles(evt.currentTarget ?? evt.target).then(selected => {
+	selectFile({
+		anchorElement: evt.currentTarget ?? evt.target,
+		multiple: false,
+	}).then(selected => {
 		files.value = files.value.concat(selected);
 	});
 }

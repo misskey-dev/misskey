@@ -251,7 +251,14 @@ const friendlyFileName = computed<string>(() => {
 });
 
 function chooseFile(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.selectFile).then((file) => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+		label: i18n.ts.selectFile,
+		features: {
+			watermark: false,
+		},
+	}).then((file) => {
 		if (!file.type.startsWith('image')) {
 			os.alert({
 				type: 'warning',

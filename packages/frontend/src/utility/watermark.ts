@@ -294,8 +294,14 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
  * @param config ウォーターマークの設定
  * @returns ウォーターマークを適用した画像のBlob
  */
-export async function getWatermarkAppliedImage(img: Blob, config: WatermarkConfig): Promise<Blob> {
+export async function getWatermarkAppliedImage<F extends Blob | File>(img: F, config: WatermarkConfig): Promise<F> {
 	const canvas = window.document.createElement('canvas');
 	await applyWatermark(img, canvas, config);
-	return new Promise(resolve => canvas.toBlob(blob => resolve(blob!)));
+	return new Promise(resolve => canvas.toBlob(blob => {
+		if (img instanceof File) {
+			resolve(new File([blob!], img.name) as F);
+		} else {
+			resolve(blob as F);
+		}
+	}, img.type || 'image/png'));
 }
