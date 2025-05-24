@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn, ManyToOne } from 'typeorm';
+import { MiInstance } from '@/models/Instance.js';
 import { id } from './util/id.js';
 import { MiDriveFile } from './DriveFile.js';
 
@@ -246,6 +247,16 @@ export class MiUser {
 		comment: 'The host of the User. It will be null if the origin of the user is local.',
 	})
 	public host: string | null;
+
+	@ManyToOne(() => MiInstance, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn({
+		name: 'host',
+		foreignKeyConstraintName: 'FK_user_host',
+		referencedColumnName: 'host',
+	})
+	public instance: MiInstance | null;
 
 	@Column('varchar', {
 		length: 512, nullable: true,
