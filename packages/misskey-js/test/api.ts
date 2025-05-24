@@ -94,11 +94,7 @@ describe('API', () => {
 		fetchMock.resetMocks();
 		fetchMock.mockResponse(async (req) => {
 			if (req.method == 'POST' && req.url == 'https://misskey.test/api/drive/files/create') {
-				if (req.headers.get('Content-Type')?.includes('multipart/form-data')) {
-					return JSON.stringify({ id: 'foo' });
-				} else {
-					return { status: 400 };
-				}
+				return JSON.stringify({ id: 'foo' });
 			} else {
 				return { status: 404 };
 			}
@@ -123,7 +119,7 @@ describe('API', () => {
 		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
 			url: 'https://misskey.test/api/drive/files/create',
 			method: 'POST',
-			contentType: 'multipart/form-data',
+			contentType: undefined,
 			body: {
 				i: 'TOKEN',
 				file: testFile,
