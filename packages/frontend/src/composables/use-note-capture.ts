@@ -214,15 +214,15 @@ export function useNoteCapture(props: {
 	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
 	noteEvents.on(`pollVoted:${note.id}`, onPollVoted);
 
-	let latestReactedKey: string | null = null;
-	let latestUnreactedKey: string | null = null;
+	// 操作がダブっていないかどうかを簡易的に記録するためのMap
+	const reactionUserMap = new Map<Misskey.entities.User['id'], string>();
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
 		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
-		const newReactedKey = `${ctx.userId}:${normalizedName}`;
-		if (newReactedKey === latestReactedKey) return;
-		latestReactedKey = newReactedKey;
+
+		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === normalizedName) return;
+		reactionUserMap.set(ctx.userId, normalizedName);
 
 		if (ctx.emoji && !(ctx.emoji.name in $note.reactionEmojis)) {
 			$note.reactionEmojis[ctx.emoji.name] = ctx.emoji.url;
@@ -240,9 +240,9 @@ export function useNoteCapture(props: {
 
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
 		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
-		const newUnreactedKey = `${ctx.userId}:${normalizedName}`;
-		if (newUnreactedKey === latestUnreactedKey) return;
-		latestUnreactedKey = newUnreactedKey;
+
+		if (!reactionUserMap.has(ctx.userId)) return;
+		reactionUserMap.delete(ctx.userId);
 
 		const currentCount = $note.reactions[normalizedName] || 0;
 
