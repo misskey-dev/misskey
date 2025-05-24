@@ -14,7 +14,7 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: true,
+	requireCredential: false,
 
 	allowGet: true,
 	cacheSec: 60 * 60,
