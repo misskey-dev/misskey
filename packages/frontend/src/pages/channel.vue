@@ -56,7 +56,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 			</div>
 		</div>
-		<div v-else-if="tab === 'followers'">
+		<div v-else-if="tab === 'followers'" class="_gaps">
+			<MkInfo v-if="channel.followersVisibility === 'followers'" warn>
+				{{ i18n.ts._ffVisibility.followers }}
+			</MkInfo>
+			<MkInfo v-if="channel.followersVisibility === 'private'" warn>
+				{{ i18n.ts._ffVisibility.private }}
+			</MkInfo>
 			<ChannelFollowersList :channelId="props.channelId"/>
 		</div>
 	</div>
@@ -246,27 +252,54 @@ const headerActions = computed(() => {
 	}
 });
 
-const headerTabs = computed(() => [{
-	key: 'overview',
-	title: i18n.ts.overview,
-	icon: 'ti ti-info-circle',
-}, {
-	key: 'timeline',
-	title: i18n.ts.timeline,
-	icon: 'ti ti-home',
-}, {
-	key: 'featured',
-	title: i18n.ts.featured,
-	icon: 'ti ti-bolt',
-}, {
-	key: 'followers',
-	title: i18n.ts.followers,
-	icon: 'ti ti-users',
-}, {
-	key: 'search',
-	title: i18n.ts.search,
-	icon: 'ti ti-search',
-}]);
+// Modify the headerTabs computed property to conditionally show the followers tab
+const headerTabs = computed(() => {
+	const tabs = [{
+		key: 'overview',
+		title: i18n.ts.overview,
+		icon: 'ti ti-info-circle',
+	}, {
+		key: 'timeline',
+		title: i18n.ts.timeline,
+		icon: 'ti ti-home',
+	}, {
+		key: 'featured',
+		title: i18n.ts.featured,
+		icon: 'ti ti-bolt',
+	}];
+
+	// Add followers tab based on visibility settings
+	if (channel.value) {
+		const iAmOwner = $i && $i.id === channel.value.userId;
+		const iAmFollowing = channel.value.isFollowing;
+
+		// Show followers tab if:
+		// - Visibility is public
+		// - Visibility is followers-only and user is following or is owner
+		// - Visibility is private and user is owner
+		// - User is moderator
+		if (
+			channel.value.followersVisibility === 'public' ||
+      (channel.value.followersVisibility === 'followers' && (iAmFollowing || iAmOwner)) ||
+      (channel.value.followersVisibility === 'private' && iAmOwner) ||
+      iAmModerator
+		) {
+			tabs.push({
+				key: 'followers',
+				title: i18n.ts.followers,
+				icon: 'ti ti-users',
+			});
+		}
+	}
+
+	tabs.push({
+		key: 'search',
+		title: i18n.ts.search,
+		icon: 'ti ti-search',
+	});
+
+	return tabs;
+});
 
 definePage(() => ({
 	title: channel.value ? channel.value.name : i18n.ts.channel,

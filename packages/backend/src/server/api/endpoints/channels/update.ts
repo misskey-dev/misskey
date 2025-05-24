@@ -62,6 +62,12 @@ export const paramDef = {
 		color: { type: 'string', minLength: 1, maxLength: 16 },
 		isSensitive: { type: 'boolean', nullable: true },
 		allowRenoteToExternal: { type: 'boolean', nullable: true },
+		followersVisibility: {
+			type: 'string',
+			enum: ['public', 'followers', 'private'],
+			default: 'public',
+			nullable: true,
+		},
 	},
 	required: ['channelId'],
 } as const;
@@ -117,6 +123,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				...(banner ? { bannerId: banner.id } : {}),
 				...(typeof ps.isSensitive === 'boolean' ? { isSensitive: ps.isSensitive } : {}),
 				...(typeof ps.allowRenoteToExternal === 'boolean' ? { allowRenoteToExternal: ps.allowRenoteToExternal } : {}),
+				...(ps.followersVisibility !== undefined ? { followersVisibility: ps.followersVisibility } : {}),
 			});
 
 			return await this.channelEntityService.pack(channel.id, me);

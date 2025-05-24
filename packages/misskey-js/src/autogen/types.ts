@@ -1163,7 +1163,7 @@ export type paths = {
      * channels/followers
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['channels___followers'];
   };
@@ -4601,6 +4601,8 @@ export type components = {
         color: string;
         isSensitive: boolean;
         allowRenoteToExternal: boolean;
+        /** @enum {string} */
+        followersVisibility: 'public' | 'followers' | 'private';
         userId: string | null;
       }) | null;
       localOnly?: boolean;
@@ -5103,6 +5105,8 @@ export type components = {
       notesCount: number;
       isSensitive: boolean;
       allowRenoteToExternal: boolean;
+      /** @enum {string} */
+      followersVisibility: 'public' | 'followers' | 'private';
       isFollowing?: boolean;
       isFavorited?: boolean;
       pinnedNotes?: components['schemas']['Note'][];
@@ -13114,6 +13118,11 @@ export type operations = {
           color?: string;
           isSensitive?: boolean | null;
           allowRenoteToExternal?: boolean | null;
+          /**
+           * @default public
+           * @enum {string|null}
+           */
+          followersVisibility?: 'public' | 'followers' | 'private';
         };
       };
     };
@@ -13374,7 +13383,7 @@ export type operations = {
    * channels/followers
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   channels___followers: {
     requestBody: {
@@ -13841,6 +13850,11 @@ export type operations = {
           color?: string;
           isSensitive?: boolean | null;
           allowRenoteToExternal?: boolean | null;
+          /**
+           * @default public
+           * @enum {string|null}
+           */
+          followersVisibility?: 'public' | 'followers' | 'private';
         };
       };
     };

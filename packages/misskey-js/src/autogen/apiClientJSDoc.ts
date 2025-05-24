@@ -1395,7 +1395,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'channels/followers', P extends Endpoints[E]['req']>(
       endpoint: E,

@@ -40,6 +40,7 @@ export function channel(id = 'somechannelid', name = 'Some Channel', bannerUrl: 
 		notesCount: 1,
 		isSensitive: false,
 		allowRenoteToExternal: false,
+		followersVisibility: 'public',
 	};
 }
 

@@ -98,4 +98,10 @@ export class MiChannel {
 		default: true,
 	})
 	public allowRenoteToExternal: boolean;
+
+	@Column('varchar', {
+		length: 32,
+		default: 'public',
+	})
+	public followersVisibility: 'public' | 'followers' | 'private';
 }

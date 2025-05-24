@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { ChannelFollowingsRepository, UsersRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js'; // 追加
+import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -16,7 +16,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['channels'],
 
-	requireCredential: false,
+	requireCredential: true, // Changed from false to true - require user to be logged in
 
 	res: {
 		type: 'array',
@@ -33,6 +33,11 @@ export const meta = {
 			message: 'No such channel.',
 			code: 'NO_SUCH_CHANNEL',
 			id: '998e4ab5-e0c9-4b43-b0bd-0bb5f8393cee',
+		},
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '4e9c7230-c09f-4d66-a655-dc88b282fabd',
 		},
 	},
 } as const;
@@ -58,37 +63,47 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private usersRepository: UsersRepository,
 
 		private userEntityService: UserEntityService,
-		private followingEntityService: FollowingEntityService, // 追加
+		private followingEntityService: FollowingEntityService,
 		private queryService: QueryService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			try {
-				// Ensure the channel exists
-				const channel = await this.getterService.getChannel(ps.channelId).catch(err => {
-					throw new ApiError(meta.errors.noSuchChannel);
-				});
+			const channel = await this.getterService.getChannel(ps.channelId).catch(err => {
+				throw new ApiError(meta.errors.noSuchChannel);
+			});
 
-				const query = this.queryService.makePaginationQuery(
-					this.channelFollowingsRepository.createQueryBuilder('following'),
-					ps.sinceId,
-					ps.untilId,
-				)
-					.andWhere('following.followeeId = :channelId', { channelId: ps.channelId })
-					.innerJoinAndSelect('following.follower', 'follower');
+			// Check visibility permissions
+			const iAmOwner = me && channel.userId === me.id;
+			const iAmModerator = me && me.isAdmin || me.isModerator;
+			const iAmFollowing = me && await this.channelFollowingsRepository.findOneBy({
+				followerId: me.id,
+				followeeId: channel.id,
+			});
 
-				const followers = await query
-					.limit(ps.limit)
-					.getMany();
-
-				// users/followers エンドポイントと同様の方法でフォロワー情報をパック
-				return await this.followingEntityService.packMany(followers, me, { populateFollower: true });
-			} catch (error) {
-				// Re-throw API errors, otherwise log the error
-				if (error instanceof ApiError) throw error;
-				console.error(`Error in channels/followers endpoint: ${error}`);
-				throw error;
+			// Visibility checks
+			if (channel.followersVisibility === 'private') {
+				if (!iAmOwner && !iAmModerator) {
+					throw new ApiError(meta.errors.accessDenied);
+				}
+			} else if (channel.followersVisibility === 'followers') {
+				if (!iAmFollowing && !iAmOwner && !iAmModerator) {
+					throw new ApiError(meta.errors.accessDenied);
+				}
 			}
+
+			const query = this.queryService.makePaginationQuery(
+				this.channelFollowingsRepository.createQueryBuilder('following'),
+				ps.sinceId,
+				ps.untilId,
+			)
+				.andWhere('following.followeeId = :channelId', { channelId: ps.channelId })
+				.innerJoinAndSelect('following.follower', 'follower');
+
+			const followers = await query
+				.limit(ps.limit)
+				.getMany();
+
+			return await this.followingEntityService.packMany(followers, me, { populateFollower: true });
 		});
 	}
 }

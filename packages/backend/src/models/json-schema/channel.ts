@@ -72,6 +72,11 @@ export const packedChannelSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		followersVisibility: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['public', 'followers', 'private'],
+		},
 		isFollowing: {
 			type: 'boolean',
 			optional: true, nullable: false,
