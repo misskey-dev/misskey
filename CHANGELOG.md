@@ -38,6 +38,8 @@
 - Feat: 絵文字をミュート可能にする機能
   - 絵文字（ユニコードの絵文字・カスタム絵文字）毎にミュートし、不可視化することができるようになりました
 - Feat: モバイルデバイスで折りたたまれたUIの展開表示に全画面ページを使用できるように(実験的)
+- Feat: 画像のアップロード時にウォーターマークを適用できるように  
+  (Based on https://github.com/MisskeyIO/misskey/pull/785)
 - Enhance: メモリ使用量を軽減しました
 - Enhance: 画像の高品質なプレースホルダを無効化してパフォーマンスを向上させるオプションを追加
 - Enhance: 招待されているが参加していないルームを開いたときに、招待を承認するかどうか尋ねるように
@@ -325,8 +327,6 @@
 	* β版として公開のため、旧画面も引き続き利用可能です
 
 ### Client
-- Feat: 画像のアップロード時にウォーターマークを適用できるように  
-  (Based on https://github.com/MisskeyIO/misskey/pull/785)
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
