@@ -30,6 +30,7 @@ import { launchPlugins } from '@/plugin.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
+import { initWordMuteInfo } from '@/utility/check-word-mute.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
@@ -313,6 +314,8 @@ export async function mainBoot() {
 			}
 		}
 
+		initWordMuteInfo();
+
 		if (store.s.realtimeMode) {
 			const stream = useStream();
 
@@ -354,6 +357,7 @@ export async function mainBoot() {
 			// 自分の情報が更新されたとき
 			main.on('meUpdated', i => {
 				updateCurrentAccountPartial(i);
+				initWordMuteInfo();
 			});
 
 			main.on('readAllNotifications', () => {
