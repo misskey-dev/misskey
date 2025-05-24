@@ -67,8 +67,8 @@
 		"utf-8-validate": "6.0.5"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "3.815.0",
-		"@aws-sdk/lib-storage": "3.815.0",
+		"@aws-sdk/client-s3": "3.817.0",
+		"@aws-sdk/lib-storage": "3.817.0",
 		"@discordapp/twemoji": "15.1.0",
 		"@fastify/accepts": "5.0.2",
 		"@fastify/cookie": "11.0.2",
@@ -173,7 +173,7 @@
 		"slacc": "0.0.10",
 		"strict-event-emitter-types": "2.0.0",
 		"stringz": "2.1.0",
-		"systeminformation": "5.26.1",
+		"systeminformation": "5.27.0",
 		"tinycolor2": "1.6.0",
 		"tmp": "0.2.3",
 		"tsc-alias": "1.8.16",
