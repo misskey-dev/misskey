@@ -51,7 +51,7 @@ import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { alpha } from '@/utility/color.js';
 import date from '@/filters/date.js';

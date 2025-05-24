@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ChartSrc } from '@/components/MkChart.vue';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -180,7 +180,7 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-} satisfies Paging;
+} satisfies PagingCtx;
 
 if (iAmModerator) {
 	watch(moderationNote, async () => {

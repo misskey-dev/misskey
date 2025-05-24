@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_change_leaveTo"
 			mode="default"
 		>
-			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
+			<MkMarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="item in items" :class="$style.item">
 					<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 				</span>
-			</MarqueeText>
+			</MkMarqueeText>
 		</Transition>
 	</template>
 	<template v-else-if="display === 'oneByOne'">
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MarqueeText from '@/components/MkMarquee.vue';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { useInterval } from '@@/js/use-interval.js';
 import { shuffle } from '@/utility/shuffle.js';
 

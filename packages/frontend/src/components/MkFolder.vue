@@ -19,13 +19,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.headerRight">
 					<span :class="$style.headerRightText"><slot name="suffix"></slot></span>
-					<i v-if="opened" class="ti ti-chevron-up icon"></i>
+					<i v-if="asPage" class="ti ti-chevron-right icon"></i>
+					<i v-else-if="opened" class="ti ti-chevron-up icon"></i>
 					<i v-else class="ti ti-chevron-down icon"></i>
 				</div>
 			</button>
 		</template>
 
-		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
+		<div v-if="asPage">
+			<Teleport v-if="opened" defer :to="`#v-${pageId}-header`">
+				<slot name="label"></slot>
+			</Teleport>
+			<Teleport v-if="opened" defer :to="`#v-${pageId}-body`">
+				<MkStickyContainer>
+					<template #header>
+						<div v-if="$slots.header" :class="$style.inBodyHeader">
+							<slot name="header"></slot>
+						</div>
+					</template>
+
+					<div v-if="withSpacer" class="_spacer" :style="{ '--MI_SPACER-min': props.spacerMin + 'px', '--MI_SPACER-max': props.spacerMax + 'px' }">
+						<slot></slot>
+					</div>
+					<div v-else>
+						<slot></slot>
+					</div>
+
+					<template #footer>
+						<div v-if="$slots.footer" :class="$style.inBodyFooter">
+							<slot name="footer"></slot>
+						</div>
+					</template>
+				</MkStickyContainer>
+			</Teleport>
+		</div>
+
+		<div v-else-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
 			<Transition
 				:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
 				:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
@@ -70,6 +99,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { prefer } from '@/preferences.js';
 import { getBgColor } from '@/utility/get-bg-color.js';
+import { pageFolderTeleportCount, popup } from '@/os.js';
+import MkFolderPage from '@/components/MkFolderPage.vue';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
@@ -77,18 +109,21 @@ const props = withDefaults(defineProps<{
 	withSpacer?: boolean;
 	spacerMin?: number;
 	spacerMax?: number;
+	canPage?: boolean;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
 	withSpacer: true,
 	spacerMin: 14,
 	spacerMax: 22,
+	canPage: true,
 });
 
 const rootEl = useTemplateRef('rootEl');
+const asPage = props.canPage && deviceKind === 'smartphone' && prefer.s['experimental.enableFolderPageView'];
 const bgSame = ref(false);
-const opened = ref(props.defaultOpen);
-const openedAtLeastOnce = ref(props.defaultOpen);
+const opened = ref(asPage ? false : props.defaultOpen);
+const openedAtLeastOnce = ref(opened.value);
 
 //#region interpolate-sizeに対応していないブラウザ向け（TODO: 主要ブラウザが対応したら消す）
 function enter(el: Element) {
@@ -126,7 +161,22 @@ function afterLeave(el: Element) {
 }
 //#endregion
 
-function toggle() {
+let pageId = pageFolderTeleportCount.value;
+pageFolderTeleportCount.value += 1000;
+
+async function toggle() {
+	if (asPage && !opened.value) {
+		pageId++;
+		const { dispose } = await popup(MkFolderPage, {
+			pageId,
+		}, {
+			closed: () => {
+				opened.value = false;
+				dispose();
+			},
+		});
+	}
+
 	if (!opened.value) {
 		openedAtLeastOnce.value = true;
 	}

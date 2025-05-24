@@ -15,6 +15,7 @@ import { bindThis } from '@/decorators.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { ExportedAntenna } from '@/queue/processors/ImportAntennasProcessorService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DBExportAntennasData } from '../types.js';
 import type * as Bull from 'bullmq';
@@ -86,7 +87,8 @@ export class ExportAntennasProcessorService {
 					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
-				}));
+					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
+				} satisfies Required<ExportedAntenna>));
 				if (antennas.length - 1 !== index) {
 					write(', ');
 				}

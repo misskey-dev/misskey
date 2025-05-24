@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, useTemplateRef } from 'vue';
 import { scrollInContainer } from '@@/js/scroll.js';
 import type { PageHeaderProps } from './MkPageHeader.vue';
-import { useScrollPositionKeeper } from '@/use/use-scroll-position-keeper.js';
+import { useScrollPositionKeeper } from '@/composables/use-scroll-position-keeper.js';
 import MkSwiper from '@/components/MkSwiper.vue';
 import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';

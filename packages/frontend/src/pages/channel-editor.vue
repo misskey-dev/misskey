@@ -73,7 +73,7 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';

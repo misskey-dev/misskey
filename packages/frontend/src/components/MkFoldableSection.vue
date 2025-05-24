@@ -31,9 +31,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
+import { globalEvents } from '@/events.js';
 import { getBgColor } from '@/utility/get-bg-color.js';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
@@ -83,8 +84,19 @@ function afterLeave(el: Element) {
 	el.style.height = '';
 }
 
+function updateBgColor() {
+	if (rootEl.value) {
+		parentBg.value = getBgColor(rootEl.value.parentElement);
+	}
+}
+
 onMounted(() => {
-	parentBg.value = getBgColor(rootEl.value?.parentElement);
+	updateBgColor();
+	globalEvents.on('themeChanging', updateBgColor);
+});
+
+onBeforeUnmount(() => {
+	globalEvents.off('themeChanging', updateBgColor);
 });
 </script>
 

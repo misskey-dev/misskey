@@ -5,7 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<div class="_spacer" style="--MI_SPACER-w: 700px;">
+	<div class="_spacer _gaps" style="--MI_SPACER-w: 700px;">
+		<MkTip k="clips">
+			{{ i18n.ts._clip.tip }}
+		</MkTip>
 		<div v-if="tab === 'my'" class="_gaps">
 			<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
@@ -73,15 +76,15 @@ async function create() {
 
 	clipsCache.delete();
 
-	pagingComponent.value?.reload();
+	pagingComponent.value?.paginator.reload();
 }
 
 function onClipCreated() {
-	pagingComponent.value?.reload();
+	pagingComponent.value?.paginator.reload();
 }
 
 function onClipDeleted() {
-	pagingComponent.value?.reload();
+	pagingComponent.value?.paginator.reload();
 }
 
 const headerActions = computed(() => []);

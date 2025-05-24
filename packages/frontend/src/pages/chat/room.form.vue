@@ -38,15 +38,15 @@ import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBefo
 import * as Misskey from 'misskey-js';
 //import insertTextAtCursor from 'insert-text-at-cursor';
 import { formatTimeString } from '@/utility/format-time-string.js';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile } from '@/utility/upload.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
+import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -84,8 +84,11 @@ async function onPaste(ev: ClipboardEvent) {
 			if (!pastedFile) return;
 			const lio = pastedFile.name.lastIndexOf('.');
 			const ext = lio >= 0 ? pastedFile.name.slice(lio) : '';
-			const formatted = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
-			if (formatted) upload(pastedFile, formatted);
+			const formattedName = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
+			const renamedFile = new File([pastedFile], formattedName, { type: pastedFile.type });
+			os.launchUploader([renamedFile], { multiple: false }).then(driveFiles => {
+				file.value = driveFiles[0];
+			});
 		}
 	} else {
 		if (items[0].kind === 'file') {
@@ -101,8 +104,7 @@ function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-	if (isFile || isDriveFile) {
+	if (isFile || checkDragDataType(ev, ['driveFiles'])) {
 		ev.preventDefault();
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
@@ -129,7 +131,7 @@ function onDrop(ev: DragEvent): void {
 	// ファイルだったら
 	if (ev.dataTransfer.files.length === 1) {
 		ev.preventDefault();
-		upload(ev.dataTransfer.files[0]);
+		os.launchUploader([Array.from(ev.dataTransfer.files)[0]], { multiple: false });
 		return;
 	} else if (ev.dataTransfer.files.length > 1) {
 		ev.preventDefault();
@@ -141,10 +143,12 @@ function onDrop(ev: DragEvent): void {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile !== '') {
-		file.value = JSON.parse(driveFile);
-		ev.preventDefault();
+	{
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
+			file.value = droppedData[0];
+			ev.preventDefault();
+		}
 	}
 	//#endregion
 }
@@ -172,13 +176,11 @@ function chooseFile(ev: MouseEvent) {
 function onChangeFile() {
 	if (fileEl.value == null || fileEl.value.files == null) return;
 
-	if (fileEl.value.files[0]) upload(fileEl.value.files[0]);
-}
-
-function upload(fileToUpload: File, name?: string) {
-	uploadFile(fileToUpload, prefer.s.uploadFolder, name).then(res => {
-		file.value = res;
-	});
+	if (fileEl.value.files[0]) {
+		os.launchUploader(Array.from(fileEl.value.files), { multiple: false }).then(driveFiles => {
+			file.value = driveFiles[0];
+		});
+	}
 }
 
 function send() {

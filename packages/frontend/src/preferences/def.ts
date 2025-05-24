@@ -194,12 +194,15 @@ export const PREF_DEF = {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
 	},
 	useBlurEffectForModal: {
-		default: DEFAULT_DEVICE_KIND === 'desktop',
+		default: true,
 	},
 	useBlurEffect: {
-		default: DEFAULT_DEVICE_KIND === 'desktop',
+		default: true,
 	},
 	useStickyIcons: {
+		default: true,
+	},
+	enableHighQualityImagePlaceholders: {
 		default: true,
 	},
 	showFixedPostForm: {
@@ -212,9 +215,6 @@ export const PREF_DEF = {
 		default: true,
 	},
 	useReactionPickerForContextMenu: {
-		default: false,
-	},
-	showGapBetweenNotesInTimeline: {
 		default: false,
 	},
 	instanceTicker: {
@@ -240,6 +240,12 @@ export const PREF_DEF = {
 	},
 	numberOfPageCache: {
 		default: 3,
+	},
+	pollingInterval: {
+		// 1 ... 低
+		// 2 ... 中
+		// 3 ... 高
+		default: 2,
 	},
 	showNoteActionsOnlyHover: {
 		default: false,
@@ -277,9 +283,6 @@ export const PREF_DEF = {
 	keepScreenOn: {
 		default: false,
 	},
-	disableStreamingTimeline: {
-		default: false,
-	},
 	useGroupedNotifications: {
 		default: true,
 	},
@@ -287,9 +290,10 @@ export const PREF_DEF = {
 		default: {
 			media: false,
 			avatar: false,
-			urlPreview: false,
+			urlPreviewThumbnail: false,
+			disableUrlPreview: false,
 			code: false,
-		} as Record<string, boolean>,
+		} satisfies Record<string, boolean>,
 	},
 	hemisphere: {
 		default: hemisphere as 'N' | 'S',
@@ -342,9 +346,12 @@ export const PREF_DEF = {
 	plugins: {
 		default: [] as Plugin[],
 	},
+	mutingEmojis: {
+		default: [] as string[],
+	},
 
 	'sound.masterVolume': {
-		default: 0.3,
+		default: 0.5,
 	},
 	'sound.notUseSound': {
 		default: false,
@@ -408,6 +415,9 @@ export const PREF_DEF = {
 	},
 
 	'experimental.stackingRouterView': {
+		default: false,
+	},
+	'experimental.enableFolderPageView': {
 		default: false,
 	},
 } satisfies PreferencesDefinition;

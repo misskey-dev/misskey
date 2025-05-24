@@ -10,7 +10,7 @@ import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
 class ReactionPicker {
-	private src: Ref<HTMLElement | null> = ref(null);
+	private anchorElement: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
 	private targetNote: Ref<Misskey.entities.Note | null> = ref(null);
 	private onChosen?: (reaction: string) => void;
@@ -30,7 +30,7 @@ class ReactionPicker {
 		});
 
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-			src: this.src,
+			anchorElement: this.anchorElement,
 			pinnedEmojis: reactionsRef,
 			asReactionPicker: true,
 			targetNote: this.targetNote,
@@ -43,14 +43,14 @@ class ReactionPicker {
 				this.manualShowing.value = false;
 			},
 			closed: () => {
-				this.src.value = null;
+				this.anchorElement.value = null;
 				if (this.onClosed) this.onClosed();
 			},
 		});
 	}
 
-	public show(src: HTMLElement | null, targetNote: Misskey.entities.Note | null, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {
-		this.src.value = src;
+	public show(anchorElement: HTMLElement | null, targetNote: Misskey.entities.Note | null, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {
+		this.anchorElement.value = anchorElement;
 		this.targetNote.value = targetNote;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;

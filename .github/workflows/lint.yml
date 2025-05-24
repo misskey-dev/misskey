@@ -10,6 +10,7 @@ on:
       - packages/frontend/**
       - packages/frontend-shared/**
       - packages/frontend-embed/**
+      - packages/icons-subsetter/**
       - packages/sw/**
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
@@ -22,6 +23,7 @@ on:
       - packages/frontend/**
       - packages/frontend-shared/**
       - packages/frontend-embed/**
+      - packages/icons-subsetter/**
       - packages/sw/**
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
@@ -55,6 +57,7 @@ jobs:
         - frontend
         - frontend-shared
         - frontend-embed
+        - icons-subsetter
         - sw
         - misskey-js
         - misskey-bubble-game

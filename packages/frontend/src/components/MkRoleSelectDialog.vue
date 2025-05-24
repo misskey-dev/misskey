@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<{
 
 const { initialRoleIds, infoMessage, title, publicOnly } = toRefs(props);
 
-const windowEl = ref<InstanceType<typeof MkModalWindow>>();
+const windowEl = useTemplateRef('windowEl');
 const roles = ref<Misskey.entities.Role[]>([]);
 const selectedRoleIds = ref<string[]>(initialRoleIds.value ?? []);
 const fetching = ref(false);

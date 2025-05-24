@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkFoldableSection v-if="notePagination">
 		<template #header>{{ i18n.ts.searchResult }}</template>
-		<MkNotes :key="`searchNotes:${key}`" :pagination="notePagination"/>
+		<MkNotesTimeline :key="`searchNotes:${key}`" :pagination="notePagination"/>
 	</MkFoldableSection>
 </div>
 </template>
@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, shallowRef, toRef } from 'vue';
 import type * as Misskey from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import { $i } from '@/i.js';
 import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
@@ -125,7 +125,7 @@ import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkNotes from '@/components/MkNotes.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
@@ -144,7 +144,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const key = ref(0);
-const notePagination = ref<Paging<'notes/search'>>();
+const notePagination = ref<PagingCtx<'notes/search'>>();
 
 const searchQuery = ref(toRef(props, 'query').value);
 const hostInput = ref(toRef(props, 'host').value);

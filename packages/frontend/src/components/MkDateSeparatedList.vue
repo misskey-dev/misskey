@@ -7,8 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { defineComponent, h, TransitionGroup, useCssModule } from 'vue';
-import type { PropType } from 'vue';
-import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import * as os from '@/os.js';
@@ -19,7 +17,7 @@ import { getDateText } from '@/utility/timeline-date-separate.js';
 export default defineComponent({
 	props: {
 		items: {
-			type: Array as PropType<MisskeyEntity[]>,
+			type: Array,
 			required: true,
 		},
 		direction: {
