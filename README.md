@@ -15,7 +15,8 @@
   - [karasugawasu/misskey](https://github.com/karasugawasu/misskey)からの移植
 - 選択メニュー（MkMenu）
   - 長い選択肢文字列を折り返さずに`…`で縮める
-  - ツールチップ（title属性を設定）を表示
+  - [ツールチップを表示](https://github.com/pooza/misskey/pull/371)
+    - title属性を設定しているだけ
 - 本文中のURL（MkUrl）を短縮表示
   - ホスト名とパスのみ表示
   - 長いパスの末尾に`…`を置いて縮める
