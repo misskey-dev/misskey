@@ -6,6 +6,7 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from './util/id.js';
 
+@Index('IDX_instance_host_key', { synchronize: false })
 @Entity('instance')
 export class MiInstance {
 	@PrimaryColumn(id())
