@@ -196,17 +196,18 @@ export function useNoteCapture(props: {
 } {
 	const { note, parentNote, $note } = props;
 
-	// Normalize reactions
-	if (Object.keys($note.reactions).length > 0) {
-		$note.reactions = Object.entries($note.reactions).reduce((acc, [name, count]) => {
-			const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
-			if (acc[normalizedName] == null) {
-				acc[normalizedName] = count;
+	// Normalize reactions in-place
+	for (const name of Object.keys($note.reactions)) {
+		const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
+		if (normalizedName !== name) {
+			const count = $note.reactions[name];
+			if ($note.reactions[normalizedName] == null) {
+				$note.reactions[normalizedName] = count;
 			} else {
-				acc[normalizedName] += count;
+				$note.reactions[normalizedName] += count;
 			}
-			return acc;
-		}, {} as Misskey.entities.Note['reactions']);
+			delete $note.reactions[name];
+		}
 	}
 
 	noteEvents.on(`reacted:${note.id}`, onReacted);
