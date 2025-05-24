@@ -1360,6 +1360,9 @@ emojiUnmute: "Unmute emoji"
 muteX: "Mute {x}"
 unmuteX: "Unmute {x}"
 abort: "Abort"
+tip: "Tips & Tricks"
+redisplayAllTips: "Show all “Tips & Tricks” again"
+hideAllTips: "Hide all \"Tips & Tricks\""
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"
@@ -1984,6 +1987,7 @@ _role:
     chatAvailability: "Allow Chat"
     uploadableFileTypes: "Uploadable file types"
     uploadableFileTypes_caption: "Specifies the allowed MIME/file types. Multiple MIME types can be specified by separating them with a new line, and wildcards can be specified with an asterisk (*). (e.g., image/*)"
+    uploadableFileTypes_caption2: "Some files types might fail to be detected. To allow such files, add {x} to the specification."
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"
@@ -3096,6 +3100,7 @@ _uploader:
   doneConfirm: "Some files have not been uploaded, do you want to continue anyway?"
   maxFileSizeIsX: "The maximum file size that can be uploaded is {x}"
   allowedTypes: "Uploadable file types"
+  tip: "The file has not yet been uploaded so this dialog allows you to confirm, rename, compress, and crop the file before uploading. When ready, you can start uploading by pressing the “Upload” button."
 _clientPerformanceIssueTip:
   title: "Performance tips"
   makeSureDisabledAdBlocker: "Disable your adblocker"
@@ -3104,3 +3109,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "Overriding styles can affect performance. Please make sure that custom CSS or extensions that override styles are not enabled."
   makeSureDisabledAddons: "Disable extensions"
   makeSureDisabledAddons_description: "Some extensions may interfere with client behavior and affect performance. Please disable your browser extensions and see if this improves the situation."
+_clip:
+  tip: "Clip is a feature that allows you to organize your notes."
+_userLists:
+  tip: "Lists can contain any user you specify when creating, the created list can then be displayed as a timeline showing only the specified users."
