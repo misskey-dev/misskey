@@ -66,9 +66,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			let page: MiPage | null = null;
 
-			if (ps.pageId) {
+			if ('pageId' in ps) {
 				page = await this.pagesRepository.findOneBy({ id: ps.pageId });
-			} else if (ps.name && ps.username) {
+			} else {
 				const author = await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: ps.username.toLowerCase(),

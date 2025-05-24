@@ -94,10 +94,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			// JSON schemeのanyOfの型変換がうまくいっていないらしい
-			const required = { id: ps.id, name: ps.name } as
-				| { id: MiEmoji['id']; name?: string }
-				| { id?: MiEmoji['id']; name: string };
+			const required = 'id' in ps
+				? { id: ps.id, name: 'name' in ps ? ps.name as string : undefined }
+				: { name: ps.name };
 
 			const error = await this.customEmojiService.update({
 				...required,

@@ -62,8 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, (ps, me) => {
 			return this.userSearchService.searchByUsernameAndHost({
-				username: ps.username,
-				host: ps.host,
+				username: 'username' in ps ? ps.username : undefined,
+				host: 'host' in ps ? ps.host : undefined,
 			}, {
 				limit: ps.limit,
 				detail: ps.detail,

@@ -102,12 +102,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
 
 			try {
-				if (ps.tag) {
+				if ('tag' in ps) {
 					if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');
 					query.andWhere(':tag <@ note.tags', { tag: [normalizeForSearch(ps.tag)] });
 				} else {
 					query.andWhere(new Brackets(qb => {
-						for (const tags of ps.query!) {
+						for (const tags of ps.query) {
 							qb.orWhere(new Brackets(qb => {
 								for (const tag of tags) {
 									if (!safeForSql(normalizeForSearch(tag))) throw new Error('Injection');

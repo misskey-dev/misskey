@@ -123,9 +123,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let user;
 
 			const isModerator = await this.roleService.isModerator(me);
-			ps.username = ps.username?.trim();
+			if ('username' in ps) {
+				ps.username = ps.username.trim();
+			}
 
-			if (ps.userIds) {
+			if ('userIds' in ps) {
 				if (ps.userIds.length === 0) {
 					return [];
 				}
@@ -150,7 +152,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return _users.map(u => _userMap.get(u.id)!);
 			} else {
 				// Lookup user
-				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
+				if (typeof ps.host === 'string' && 'username' in ps) {
 					if (this.serverSettings.ugcVisibilityForVisitor === 'local' && me == null) {
 						throw new ApiError(meta.errors.noSuchUser);
 					}
@@ -160,7 +162,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						throw new ApiError(meta.errors.failedToResolveRemoteUser);
 					});
 				} else {
-					const q: FindOptionsWhere<MiUser> = ps.userId != null
+					const q: FindOptionsWhere<MiUser> = 'userId' in ps
 						? { id: ps.userId }
 						: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
 
