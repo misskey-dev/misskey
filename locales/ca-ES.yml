@@ -1987,6 +1987,7 @@ _role:
     chatAvailability: "Es permet xatejar"
     uploadableFileTypes: "Tipus de fitxers que en podeu pujar"
     uploadableFileTypes_caption: "Especifica el tipus MIME. Es poden especificar diferents tipus MIME separats amb una nova línia, i es poden especificar comodins amb asteriscs (*). (Per exemple: image/*)"
+    uploadableFileTypes_caption2: "Pot que no sigui possible determinar el tipus MIME d'alguns arxius. Per permetre aquests tipus d'arxius afegeix {x} a les especificacions."
   _condition:
     roleAssignedTo: "Assignat a rols manuals"
     isLocal: "Usuari local"
