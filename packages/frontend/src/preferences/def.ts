@@ -353,9 +353,6 @@ export const PREF_DEF = {
 	useWatermark: {
 		default: false,
 	},
-	clipboardWatermarkBehavior: {
-		default: 'default' as 'default' | 'confirm',
-	},
 	watermarkConfig: {
 		accountDependent: true,
 		default: null as WatermarkConfig | null,

@@ -65,12 +65,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.useWatermark }}</template>
 								<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
 							</MkSwitch>
-
-							<MkSelect v-model="clipboardWatermarkBehavior">
-								<template #label>{{ i18n.ts._watermarkEditor.clipboardUploadBehavior }}</template>
-								<option value="confirm">{{ i18n.ts.alwaysConfirm }}</option>
-								<option value="default">{{ i18n.ts.useDefaultSettings }}</option>
-							</MkSelect>
 						</div>
 
 						<hr/>
@@ -116,7 +110,6 @@ import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -156,13 +149,11 @@ const meterStyle = computed(() => {
 });
 
 const useWatermark = prefer.model('useWatermark');
-const clipboardWatermarkBehavior = prefer.model('clipboardWatermarkBehavior');
 
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
 
 watch([
 	useWatermark,
-	clipboardWatermarkBehavior,
 ], () => {
 	reloadAsk({ unison: true, reason: i18n.ts.reloadRequiredToApplySettings });
 });
