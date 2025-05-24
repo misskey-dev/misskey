@@ -15,6 +15,7 @@ import { globalEvents } from '@/events.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 export type Theme = {
 	id: string;
@@ -127,12 +128,16 @@ function applyThemeInternal(theme: Theme, persist: boolean) {
 }
 
 let timeout: number | null = null;
+let currentTheme: Theme | null = null;
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) {
 		window.clearTimeout(timeout);
 		timeout = null;
 	}
+
+	if (deepEqual(currentTheme, theme)) return;
+	currentTheme = theme;
 
 	if (window.document.startViewTransition != null && prefer.s.animation) {
 		window.document.documentElement.classList.add('_themeChanging_');
