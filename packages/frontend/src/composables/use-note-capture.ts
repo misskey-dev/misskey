@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { onUnmounted } from 'vue';
+import { onUnmounted, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { EventEmitter } from 'eventemitter3';
-import type { Reactive, Ref } from 'vue';
+import type { Reactive } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
@@ -179,60 +179,80 @@ function realtimeSubscribe(props: {
 	});
 }
 
-type ReactiveNoteData = Reactive<{
+export type ReactiveNoteData = {
 	reactions: Misskey.entities.Note['reactions'];
 	reactionCount: Misskey.entities.Note['reactionCount'];
 	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
 	myReaction: Misskey.entities.Note['myReaction'];
 	pollChoices: NonNullable<Misskey.entities.Note['poll']>['choices'];
-}>;
+};
 
 export function useNoteCapture(props: {
-	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
+	note: Misskey.entities.Note;
 	parentNote: Misskey.entities.Note | null;
-	$note: ReactiveNoteData;
+	mock?: boolean;
 }): {
+	$note: Reactive<ReactiveNoteData>;
 	subscribe: () => void;
 } {
-	const { note, parentNote, $note } = props;
+	const { note, parentNote, mock } = props;
+
+	const $note = reactive<ReactiveNoteData>({
+		reactions: Object.entries(note.reactions).reduce((acc, [name, count]) => {
+			// Normalize reactions
+			const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
+			if (acc[normalizedName] == null) {
+				acc[normalizedName] = count;
+			} else {
+				acc[normalizedName] += count;
+			}
+			return acc;
+		}, {} as Misskey.entities.Note['reactions']),
+		reactionCount: note.reactionCount,
+		reactionEmojis: note.reactionEmojis,
+		myReaction: note.myReaction,
+		pollChoices: note.poll?.choices ?? [],
+	});
 
 	noteEvents.on(`reacted:${note.id}`, onReacted);
 	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
 	noteEvents.on(`pollVoted:${note.id}`, onPollVoted);
 
-	let latestReactedKey: string | null = null;
-	let latestUnreactedKey: string | null = null;
+	// 操作がダブっていないかどうかを簡易的に記録するためのMap
+	const reactionUserMap = new Map<Misskey.entities.User['id'], string>();
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		const newReactedKey = `${ctx.userId}:${ctx.reaction}`;
-		if (newReactedKey === latestReactedKey) return;
-		latestReactedKey = newReactedKey;
+		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
+
+		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === normalizedName) return;
+		reactionUserMap.set(ctx.userId, normalizedName);
 
 		if (ctx.emoji && !(ctx.emoji.name in $note.reactionEmojis)) {
 			$note.reactionEmojis[ctx.emoji.name] = ctx.emoji.url;
 		}
 
-		const currentCount = $note.reactions[ctx.reaction] || 0;
+		const currentCount = $note.reactions[normalizedName] || 0;
 
-		$note.reactions[ctx.reaction] = currentCount + 1;
+		$note.reactions[normalizedName] = currentCount + 1;
 		$note.reactionCount += 1;
 
 		if ($i && (ctx.userId === $i.id)) {
-			$note.myReaction = ctx.reaction;
+			$note.myReaction = normalizedName;
 		}
 	}
 
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		const newUnreactedKey = `${ctx.userId}:${ctx.reaction}`;
-		if (newUnreactedKey === latestUnreactedKey) return;
-		latestUnreactedKey = newUnreactedKey;
+		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
 
-		const currentCount = $note.reactions[ctx.reaction] || 0;
+		if (!reactionUserMap.has(ctx.userId)) return;
+		reactionUserMap.delete(ctx.userId);
 
-		$note.reactions[ctx.reaction] = Math.max(0, currentCount - 1);
+		const currentCount = $note.reactions[normalizedName] || 0;
+
+		$note.reactions[normalizedName] = Math.max(0, currentCount - 1);
 		$note.reactionCount = Math.max(0, $note.reactionCount - 1);
-		if ($note.reactions[ctx.reaction] === 0) delete $note.reactions[ctx.reaction];
+		if ($note.reactions[normalizedName] === 0) delete $note.reactions[normalizedName];
 
 		if ($i && (ctx.userId === $i.id)) {
 			$note.myReaction = null;
@@ -257,10 +277,20 @@ export function useNoteCapture(props: {
 	}
 
 	function subscribe() {
+		if (mock) {
+			// モックモードでは購読しない
+			return;
+		}
+
 		if ($i && store.s.realtimeMode) {
-			realtimeSubscribe(props);
+			realtimeSubscribe({
+				note,
+			});
 		} else {
-			pollingSubscribe(props);
+			pollingSubscribe({
+				note,
+				$note,
+			});
 		}
 	}
 
@@ -277,6 +307,7 @@ export function useNoteCapture(props: {
 		if ((Date.now() - new Date(note.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
 			// リノートで表示されているノートでもないし、投稿からある程度経過しているので自動で購読しない
 			return {
+				$note,
 				subscribe: () => {
 					subscribe();
 				},
@@ -286,6 +317,7 @@ export function useNoteCapture(props: {
 		if ((Date.now() - new Date(parentNote.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
 			// リノートで表示されているノートだが、リノートされてからある程度経過しているので自動で購読しない
 			return {
+				$note,
 				subscribe: () => {
 					subscribe();
 				},
@@ -296,6 +328,7 @@ export function useNoteCapture(props: {
 	subscribe();
 
 	return {
+		$note,
 		subscribe: () => {
 			// すでに購読しているので何もしない
 		},
