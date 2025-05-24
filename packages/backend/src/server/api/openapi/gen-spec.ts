@@ -89,7 +89,8 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 			schema.required = undefined;
 		}
 
-		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1);
+		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1)
+			|| ['allOf', 'oneOf', 'anyOf'].some(o => (Array.isArray(schema[o]) && schema[o].length >= 0));
 
 		const info = {
 			operationId: endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
