@@ -9,6 +9,7 @@ import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
+import type { WatermarkConfig } from '@/utility/watermark.js';
 import type { DeckProfile } from '@/deck.js';
 import type { PreferencesDefinition } from './manager.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
@@ -348,6 +349,16 @@ export const PREF_DEF = {
 	},
 	mutingEmojis: {
 		default: [] as string[],
+	},
+	useWatermark: {
+		default: false,
+	},
+	clipboardWatermarkBehavior: {
+		default: 'default' as 'default' | 'confirm',
+	},
+	watermarkConfig: {
+		accountDependent: true,
+		default: null as WatermarkConfig | null,
 	},
 
 	'sound.masterVolume': {
