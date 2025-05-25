@@ -18,19 +18,19 @@ describe(diffArrays, () => {
 		expect(result.removed).toHaveLength(0);
 	});
 
-	it('should remove before when added is empty', () => {
+	it('should remove before when after is empty', () => {
 		const result = diffArrays([1, 2, 3], []);
 		expect(result.added).toHaveLength(0);
 		expect(result.removed).toEqual([1, 2, 3]);
 	});
 
-	it('should deduplicate before when added is empty', () => {
+	it('should deduplicate before when after is empty', () => {
 		const result = diffArrays([1, 1, 2, 2, 3], []);
 		expect(result.added).toHaveLength(0);
 		expect(result.removed).toEqual([1, 2, 3]);
 	});
 
-	it('should remove after when before is empty', () => {
+	it('should add after when before is empty', () => {
 		const result = diffArrays([], [1, 2, 3]);
 		expect(result.added).toEqual([1, 2, 3]);
 		expect(result.removed).toHaveLength(0);
