@@ -15,6 +15,7 @@ import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import type { UploaderDialogFeatures } from '@/components/MkUploaderDialog.vue';
 
 type UploadReturnType = {
 	filePromise: Promise<Misskey.entities.DriveFile>;
@@ -154,6 +155,7 @@ export function uploadFile(file: File | Blob, options: {
 export function chooseFileFromPcAndUpload(
 	options: {
 		multiple?: boolean;
+		features?: UploaderDialogFeatures;
 		folderId?: string | null;
 	} = {},
 ): Promise<Misskey.entities.DriveFile[]> {
@@ -162,6 +164,7 @@ export function chooseFileFromPcAndUpload(
 			if (files.length === 0) return;
 			os.launchUploader(files, {
 				folderId: options.folderId,
+				features: options.features,
 			}).then(driveFiles => {
 				res(driveFiles);
 			});
@@ -220,7 +223,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(anchorElement: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+function select(anchorElement: HTMLElement | EventTarget | null, label: string | null, multiple: boolean, features?: UploaderDialogFeatures): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		os.popupMenu([label ? {
 			text: label,
@@ -228,7 +231,7 @@ function select(anchorElement: HTMLElement | EventTarget | null, label: string |
 		} : undefined, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPcAndUpload({ multiple }).then(files => res(files)),
+			action: () => chooseFileFromPcAndUpload({ multiple, features }).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
@@ -241,12 +244,19 @@ function select(anchorElement: HTMLElement | EventTarget | null, label: string |
 	});
 }
 
-export function selectFile(anchorElement: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile> {
-	return select(anchorElement, label, false).then(files => files[0]);
-}
+type SelectFileOptions<M extends boolean> = {
+	anchorElement: HTMLElement | EventTarget | null;
+	multiple: M;
+	label?: string | null;
+	features?: UploaderDialogFeatures;
+};
 
-export function selectFiles(anchorElement: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
-	return select(anchorElement, label, true);
+export async function selectFile<
+	M extends boolean,
+	MR extends M extends true ? Misskey.entities.DriveFile[] : Misskey.entities.DriveFile
+>(opts: SelectFileOptions<M>): Promise<MR> {
+	const files = await select(opts.anchorElement, opts.label ?? null, opts.multiple ?? false, opts.features);
+	return opts.multiple ? (files as MR) : (files[0]! as MR);
 }
 
 export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFile: Misskey.entities.DriveFile, options: {

@@ -92,6 +92,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModalWindow>
 </template>
 
+<script lang="ts">
+export type UploaderDialogFeatures = {
+	watermark?: boolean;
+	crop?: boolean;
+};
+</script>
+
 <script lang="ts" setup>
 import { computed, markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -107,6 +114,7 @@ import bytes from '@/filters/bytes.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
+import { canApplyWatermark, getWatermarkAppliedImage } from '@/utility/watermark.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 
@@ -119,7 +127,7 @@ const COMPRESSION_SUPPORTED_TYPES = [
 	'image/svg+xml',
 ];
 
-const CROPPING_SUPPORTED_TYPES = [
+const IMGEDIT_SUPPORTED_TYPES = [
 	'image/jpeg',
 	'image/png',
 	'image/webp',
@@ -135,8 +143,16 @@ const props = withDefaults(defineProps<{
 	files: File[];
 	folderId?: string | null;
 	multiple?: boolean;
+	features?: UploaderDialogFeatures;
 }>(), {
 	multiple: true,
+});
+
+const uploaderFeatures = computed<Required<UploaderDialogFeatures>>(() => {
+	return {
+		watermark: props.features?.watermark ?? true,
+		crop: props.features?.crop ?? true,
+	};
 });
 
 const emit = defineEmits<{
@@ -157,6 +173,7 @@ const items = ref<{
 	aborted: boolean;
 	compressedSize?: number | null;
 	compressedImage?: Blob | null;
+	applyWatermark?: boolean | null;
 	file: File;
 	abort?: (() => void) | null;
 }[]>([]);
@@ -274,19 +291,37 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		},
 	});
 
-	if (CROPPING_SUPPORTED_TYPES.includes(item.file.type) && !item.waiting && !item.uploading && !item.uploaded) {
-		menu.push({
-			icon: 'ti ti-crop',
-			text: i18n.ts.cropImage,
-			action: async () => {
-				const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
-				items.value.splice(items.value.indexOf(item), 1, {
-					...item,
-					file: markRaw(cropped),
-					thumbnail: window.URL.createObjectURL(cropped),
-				});
-			},
-		});
+	if (IMGEDIT_SUPPORTED_TYPES.includes(item.file.type) && !item.waiting && !item.uploading && !item.uploaded) {
+		if (uploaderFeatures.value.watermark) {
+			const _applyWatermark = computed({
+				get: () => item.applyWatermark ?? prefer.s.useWatermark,
+				set: (v) => {
+					item.applyWatermark = v;
+				},
+			});
+
+			menu.push({
+				icon: 'ti ti-ripple',
+				text: i18n.ts.useWatermark,
+				type: 'switch',
+				ref: _applyWatermark,
+			});
+		}
+
+		if (uploaderFeatures.value.crop) {
+			menu.push({
+				icon: 'ti ti-crop',
+				text: i18n.ts.cropImage,
+				action: async () => {
+					const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
+					items.value.splice(items.value.indexOf(item), 1, {
+						...item,
+						file: markRaw(cropped),
+						thumbnail: window.URL.createObjectURL(cropped),
+					});
+				},
+			});
+		}
 	}
 
 	if (!item.waiting && !item.uploading && !item.uploaded) {
@@ -332,6 +367,15 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 
 		item.waiting = true;
 		item.uploadFailed = false;
+
+		if (
+			item.applyWatermark === true &&
+			uploaderFeatures.value.watermark &&
+			IMGEDIT_SUPPORTED_TYPES.includes(item.file.type) &&
+			canApplyWatermark(prefer.s.watermarkConfig)
+		) {
+			item.file = await getWatermarkAppliedImage(item.file, prefer.s.watermarkConfig);
+		}
 
 		const shouldCompress = item.compressedImage == null && compressionLevel.value !== 0 && compressionSettings.value && COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) && !(await isAnimated(item.file));
 
