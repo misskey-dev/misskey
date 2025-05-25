@@ -13,88 +13,69 @@ import * as ts from 'typescript';
 export function removeNeverPropertiesFromAST(astNodes: readonly ts.Node[]): ts.Node[] {
 	const factory = ts.factory;
 
-	const typeNodeRecursiveVisitor = (node: ts.Node): ts.Node | undefined => {
-		if (ts.isTypeLiteralNode(node)) {
-			const newMembers: ts.TypeElement[] = [];
-			let hasTypeLiteralChanged = false;
+	/**
+	 * TypeLiteralNodeやInterfaceDeclarationのmembersからneverプロパティを除去し、必要なら型も再帰的に処理する共通関数
+	 */
+	function removeNeverPropertiesFromMembers(
+		members: readonly ts.TypeElement[],
+		visitType: (node: ts.Node) => ts.Node | undefined,
+	): { newMembers: ts.TypeElement[]; hasChanged: boolean } {
+		const newMembers: ts.TypeElement[] = [];
+		let hasChanged = false;
 
-			for (const member of node.members) {
-				if (ts.isPropertySignature(member)) {
-					if (member.type && member.type.kind === ts.SyntaxKind.NeverKeyword) {
-						hasTypeLiteralChanged = true;
+		for (const member of members) {
+			if (ts.isPropertySignature(member)) {
+				if (member.type && member.type.kind === ts.SyntaxKind.NeverKeyword) {
+					hasChanged = true;
+					continue;
+				}
+				let updatedPropertySignature = member;
+				if (member.type) {
+					const visitedMemberType = ts.visitNode(member.type, visitType);
+					if (visitedMemberType && visitedMemberType !== member.type) {
+						updatedPropertySignature = factory.updatePropertySignature(
+							member,
+							member.modifiers,
+							member.name,
+							member.questionToken,
+							visitedMemberType as ts.TypeNode,
+						);
+						hasChanged = true;
+					} else if (visitedMemberType === undefined) {
+						// 子の型が消された場合、このプロパティも消す
+						hasChanged = true;
 						continue;
 					}
-					let updatedPropertySignature = member;
-					if (member.type) {
-						const visitedMemberType = ts.visitNode(member.type, typeNodeRecursiveVisitor);
-						if (visitedMemberType && visitedMemberType !== member.type) {
-							updatedPropertySignature = factory.updatePropertySignature(
-								member,
-								member.modifiers,
-								member.name,
-								member.questionToken,
-								visitedMemberType as ts.TypeNode
-							);
-							hasTypeLiteralChanged = true;
-						} else if (visitedMemberType === undefined) {
-							// 子の型が消された場合、このプロパティも消す
-							hasTypeLiteralChanged = true;
-							continue;
-						}
-					}
-					newMembers.push(updatedPropertySignature);
-				} else {
-					newMembers.push(member);
 				}
+				newMembers.push(updatedPropertySignature);
+			} else {
+				newMembers.push(member);
 			}
+		}
+		return { newMembers, hasChanged };
+	}
+
+	function typeNodeRecursiveVisitor(node: ts.Node): ts.Node | undefined {
+		if (ts.isTypeLiteralNode(node)) {
+			const { newMembers, hasChanged } = removeNeverPropertiesFromMembers(node.members, typeNodeRecursiveVisitor);
 
 			if (newMembers.length === 0) {
 				// すべてのプロパティがneverで消された場合、このTypeLiteralNode自体も消す
 				return undefined;
 			}
 
-			if (hasTypeLiteralChanged) {
+			if (hasChanged) {
 				return factory.updateTypeLiteralNode(node, factory.createNodeArray(newMembers));
 			}
 			return node;
 		}
 
 		return ts.visitEachChild(node, typeNodeRecursiveVisitor, undefined);
-	};
+	}
 
-	const interfaceRecursiveVisitor = (node: ts.Node): ts.Node | undefined => {
+	function interfaceRecursiveVisitor(node: ts.Node): ts.Node | undefined {
 		if (ts.isInterfaceDeclaration(node)) {
-			const newMembers: ts.TypeElement[] = [];
-			let hasChanged = false;
-
-			for (const member of node.members) {
-				if (ts.isPropertySignature(member)) {
-					if (member.type && member.type.kind === ts.SyntaxKind.NeverKeyword) {
-						hasChanged = true;
-						continue;
-					}
-					let updatedPropertySignature = member;
-					if (member.type) {
-						const visitedMemberType = ts.visitNode(member.type, typeNodeRecursiveVisitor);
-						if (visitedMemberType && visitedMemberType !== member.type) {
-							updatedPropertySignature = factory.updatePropertySignature(
-								member,
-								member.modifiers,
-								member.name,
-								member.questionToken,
-								visitedMemberType as ts.TypeNode
-							);
-							hasChanged = true;
-						} else if (visitedMemberType === undefined) {
-							hasChanged = true;
-							continue;
-						}
-					}
-					newMembers.push(updatedPropertySignature);
-				} else {
-					newMembers.push(member);
-				}
-			}
+			const { newMembers, hasChanged } = removeNeverPropertiesFromMembers(node.members, typeNodeRecursiveVisitor);
 
 			if (newMembers.length === 0) {
 				return undefined;
@@ -107,15 +88,15 @@ export function removeNeverPropertiesFromAST(astNodes: readonly ts.Node[]): ts.N
 					node.name,
 					node.typeParameters,
 					node.heritageClauses,
-					newMembers
+					newMembers,
 				);
 			}
 			return node;
 		}
 		return ts.visitEachChild(node, interfaceRecursiveVisitor, undefined);
-	};
+	}
 
-	const topLevelVisitor = (node: ts.Node): ts.Node | undefined => {
+	function topLevelVisitor(node: ts.Node): ts.Node | undefined {
 		if (ts.isTypeAliasDeclaration(node) && node.name.escapedText === 'paths') {
 			const newType = ts.visitNode(node.type, typeNodeRecursiveVisitor);
 			if (newType && newType !== node.type) {
@@ -124,7 +105,7 @@ export function removeNeverPropertiesFromAST(astNodes: readonly ts.Node[]): ts.N
 					node.modifiers,
 					node.name,
 					node.typeParameters,
-					newType as ts.TypeNode
+					newType as ts.TypeNode,
 				);
 			} else if (newType === undefined) {
 				return undefined;
@@ -135,7 +116,7 @@ export function removeNeverPropertiesFromAST(astNodes: readonly ts.Node[]): ts.N
 			return result;
 		}
 		return ts.visitEachChild(node, topLevelVisitor, undefined);
-	};
+	}
 
 	const transformedNodes: ts.Node[] = [];
 	for (const astNode of astNodes) {
