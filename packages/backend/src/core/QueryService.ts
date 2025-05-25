@@ -310,13 +310,12 @@ export class QueryService {
 
 		q.andWhere(new Brackets(qb => {
 			qb
-				.where(new Brackets(qb => {
-					qb.where('note.renoteId IS NOT NULL');
-					qb.andWhere('note.text IS NULL');
-					qb.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
-				}))
 				.orWhere('note.renoteId IS NULL')
-				.orWhere('note.text IS NOT NULL');
+				.orWhere('note.text IS NOT NULL')
+				.orWhere('note.cw IS NOT NULL')
+				.orWhere('note.replyId IS NOT NULL')
+				.orWhere('note.fileIds != \'{}\'')
+				.orWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
 		}));
 
 		q.setParameters(mutingQuery.getParameters());
