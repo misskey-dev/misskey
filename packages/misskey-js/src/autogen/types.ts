@@ -29772,7 +29772,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': Record<string, never>[];
+                    'application/json': {
+                        id: string;
+                        reactions: {
+                            [key: string]: number;
+                        };
+                        reactionEmojis: {
+                            [key: string]: string;
+                        };
+                    }[];
                 };
             };
             /** @description Client error */

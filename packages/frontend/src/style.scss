@@ -101,25 +101,13 @@ html._themeChanging_ {
 }
 
 html::view-transition-new(theme-changing) {
-	z-index: 4000001;
-	animation: themeChangingNew 0.5s ease;
-	animation-fill-mode: forwards;
+	z-index: 4000000;
 }
 
 html::view-transition-old(theme-changing) {
-	z-index: 4000000;
+	z-index: 4000001;
 	animation: themeChangingOld 0.5s ease;
 	animation-fill-mode: forwards;
-}
-
-@keyframes themeChangingNew {
-	0% {
-		opacity: 0;
-	}
-
-	100% {
-		opacity: 1;
-	}
 }
 
 @keyframes themeChangingOld {
