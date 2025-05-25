@@ -14,6 +14,7 @@ import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { MiInstance } from '@/models/Instance.js';
 import { diffArrays } from '@/misc/diff-arrays.js';
+import type { MetasRepository } from '@/models/_.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -27,6 +28,9 @@ export class MetaService implements OnApplicationShutdown {
 
 		@Inject(DI.db)
 		private db: DataSource,
+
+		@Inject(DI.metasRepository)
+		private readonly metasRepository: MetasRepository,
 
 		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
@@ -69,35 +73,31 @@ export class MetaService implements OnApplicationShutdown {
 	public async fetch(noCache = false): Promise<MiMeta> {
 		if (!noCache && this.cache) return this.cache;
 
-		return await this.db.transaction(async transactionalEntityManager => {
-			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
-			const metas = await transactionalEntityManager.find(MiMeta, {
+		// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
+		let meta = await this.metasRepository.findOne({
+			order: {
+				id: 'DESC',
+			},
+		});
+
+		if (!meta) {
+			await this.metasRepository.createQueryBuilder('meta')
+				.insert()
+				.values({
+					id: 'x',
+				})
+				.orIgnore()
+				.execute();
+
+			meta = await this.metasRepository.findOneOrFail({
 				order: {
 					id: 'DESC',
 				},
 			});
+		}
 
-			const meta = metas[0];
-
-			if (meta) {
-				this.cache = meta;
-				return meta;
-			} else {
-				// metaが空のときfetchMetaが同時に呼ばれるとここが同時に呼ばれてしまうことがあるのでフェイルセーフなupsertを使う
-				const saved = await transactionalEntityManager
-					.upsert(
-						MiMeta,
-						{
-							id: 'x',
-						},
-						['id'],
-					)
-					.then((x) => transactionalEntityManager.findOneByOrFail(MiMeta, x.identifiers[0]));
-
-				this.cache = saved;
-				return saved;
-			}
-		});
+		this.cache = meta;
+		return meta;
 	}
 
 	@bindThis

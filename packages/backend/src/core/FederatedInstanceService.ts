@@ -5,9 +5,8 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { DataSource, QueryFailedError } from 'typeorm';
 import type { InstancesRepository } from '@/models/_.js';
-import { MiInstance } from '@/models/Instance.js';
+import type { MiInstance } from '@/models/Instance.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
@@ -24,9 +23,6 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
-
-		@Inject(DI.db)
-		private readonly db: DataSource,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -57,11 +53,11 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		const cached = await this.federatedInstanceCache.get(host);
 		if (cached) return cached;
 
-		return await this.db.transaction(async tem => {
-			let index = await tem.findOneBy(MiInstance, { host });
-
-			if (index == null) {
-				await tem.insert(MiInstance, {
+		let index = await this.instancesRepository.findOneBy({ host });
+		if (index == null) {
+			await this.instancesRepository.createQueryBuilder('instance')
+				.insert()
+				.values({
 					id: this.idService.gen(),
 					host,
 					firstRetrievedAt: new Date(),
@@ -69,14 +65,15 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 					isSilenced: this.utilityService.isSilencedHost(host),
 					isMediaSilenced: this.utilityService.isMediaSilencedHost(host),
 					isAllowListed: this.utilityService.isAllowListedHost(host),
-				});
+				})
+				.orIgnore()
+				.execute();
 
-				index = await tem.findOneByOrFail(MiInstance, { host });
-			}
+			index = await this.instancesRepository.findOneByOrFail({ host });
+		}
 
-			await this.federatedInstanceCache.set(host, index);
-			return index;
-		});
+		await this.federatedInstanceCache.set(host, index);
+		return index;
 	}
 
 	@bindThis
