@@ -37,32 +37,32 @@ export class AddInstanceBlockColumns1748105111513 {
 
 			// Blocked hosts
 			if (meta.blockedHosts.length > 0) {
-				const pattern = buildPatterns(meta.blockedHosts);
-				await queryRunner.query(`UPDATE "instance" SET "isBlocked" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ${pattern}`);
+				const patterns = buildPatterns(meta.blockedHosts);
+				await queryRunner.query(`UPDATE "instance" SET "isBlocked" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
 			}
 
 			// Silenced hosts
 			if (meta.silencedHosts.length > 0) {
-				const pattern = buildPatterns(meta.silencedHosts);
-				await queryRunner.query(`UPDATE "instance" SET "isSilenced" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ${pattern}`);
+				const patterns = buildPatterns(meta.silencedHosts);
+				await queryRunner.query(`UPDATE "instance" SET "isSilenced" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
 			}
 
 			// Media silenced hosts
 			if (meta.mediaSilencedHosts.length > 0) {
-				const pattern = buildPatterns(meta.mediaSilencedHosts);
-				await queryRunner.query(`UPDATE "instance" SET "isMediaSilenced" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ${pattern}`);
+				const patterns = buildPatterns(meta.mediaSilencedHosts);
+				await queryRunner.query(`UPDATE "instance" SET "isMediaSilenced" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
 			}
 
 			// Allow-listed hosts
 			if (meta.federationHosts.length > 0) {
-				const pattern = buildPatterns(meta.federationHosts);
-				await queryRunner.query(`UPDATE "instance" SET "isAllowListed" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ${pattern}`);
+				const patterns = buildPatterns(meta.federationHosts);
+				await queryRunner.query(`UPDATE "instance" SET "isAllowListed" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
 			}
 
 			// Bubbled hosts
 			if (meta.bubbleInstances.length > 0) {
-				const pattern = buildPatterns(meta.bubbleInstances);
-				await queryRunner.query(`UPDATE "instance" SET "isBubbled" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ${pattern}`);
+				const patterns = buildPatterns(meta.bubbleInstances);
+				await queryRunner.query(`UPDATE "instance" SET "isBubbled" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
 			}
 		}
 	}
@@ -78,12 +78,8 @@ export class AddInstanceBlockColumns1748105111513 {
 
 /**
  * @param {string[]} input
- * @returns {string}
+ * @returns {string[]}
  */
 function buildPatterns(input) {
-	const strings = input
-		.map(i => i.toLowerCase().split('').reverse().join('') + '.%')
-		.map(i => `'${i}'`)
-		.join(', ');
-	return `(array[${strings}]::text[])`;
+	return input.map(i => i.toLowerCase().split('').reverse().join('') + '.%');
 }
