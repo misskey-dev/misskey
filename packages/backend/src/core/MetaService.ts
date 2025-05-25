@@ -202,7 +202,7 @@ export class MetaService implements OnApplicationShutdown {
 				.createQueryBuilder(MiInstance, 'instance')
 				.update()
 				.set({ [field]: value })
-				.where('(lower(reverse("host")) || \'.\') LIKE ANY (:patterns)', {patterns})
+				.where('(lower(reverse("host")) || \'.\') LIKE ANY (:patterns)', { patterns })
 				.execute();
 		}
 	}
