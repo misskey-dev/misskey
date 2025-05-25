@@ -39,10 +39,13 @@ const base: MiNote = {
 	channelId: null,
 	channel: null,
 	userHost: null,
+	userInstance: null,
 	replyUserId: null,
 	replyUserHost: null,
+	replyUserInstance: null,
 	renoteUserId: null,
 	renoteUserHost: null,
+	renoteUserInstance: null,
 };
 
 describe('misc:is-renote', () => {
