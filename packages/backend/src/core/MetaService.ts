@@ -74,11 +74,13 @@ export class MetaService implements OnApplicationShutdown {
 		if (!noCache && this.cache) return this.cache;
 
 		// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
-		let meta = await this.metasRepository.findOne({
-			order: {
+		let meta = await this.metasRepository.createQueryBuilder('meta')
+			.select()
+			.orderBy({
 				id: 'DESC',
-			},
-		});
+			})
+			.limit(1)
+			.getOne();
 
 		if (!meta) {
 			await this.metasRepository.createQueryBuilder('meta')
@@ -89,11 +91,13 @@ export class MetaService implements OnApplicationShutdown {
 				.orIgnore()
 				.execute();
 
-			meta = await this.metasRepository.findOneOrFail({
-				order: {
+			meta = await this.metasRepository.createQueryBuilder('meta')
+				.select()
+				.orderBy({
 					id: 'DESC',
-				},
-			});
+				})
+				.limit(1)
+				.getOneOrFail();
 		}
 
 		this.cache = meta;
