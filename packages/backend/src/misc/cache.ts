@@ -308,8 +308,17 @@ export class MemoryKVCache<T> {
 		}
 	}
 
+	/**
+	 * Removes all entries from the cache, but does not dispose it.
+	 */
+	@bindThis
+	public clear(): void {
+		this.cache.clear();
+	}
+
 	@bindThis
 	public dispose(): void {
+		this.clear();
 		clearInterval(this.gcIntervalHandle);
 	}
 
