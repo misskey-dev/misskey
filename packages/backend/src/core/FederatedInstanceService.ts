@@ -14,7 +14,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { Serialized } from '@/types.js';
-import { diffArrays } from '@/misc/diff-arrays.js';
+import { diffArrays, diffArraysSimple } from '@/misc/diff-arrays.js';
 
 @Injectable()
 export class FederatedInstanceService implements OnApplicationShutdown {
@@ -98,11 +98,11 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 
 	private syncCache(before: Serialized<MiMeta | undefined>, after: Serialized<MiMeta>): void {
 		const changed =
-			hasDiff(before?.blockedHosts, after.blockedHosts) ||
-			hasDiff(before?.silencedHosts, after.silencedHosts) ||
-			hasDiff(before?.mediaSilencedHosts, after.mediaSilencedHosts) ||
-			hasDiff(before?.federationHosts, after.federationHosts) ||
-			hasDiff(before?.bubbleInstances, after.bubbleInstances);
+			diffArraysSimple(before?.blockedHosts, after.blockedHosts) ||
+			diffArraysSimple(before?.silencedHosts, after.silencedHosts) ||
+			diffArraysSimple(before?.mediaSilencedHosts, after.mediaSilencedHosts) ||
+			diffArraysSimple(before?.federationHosts, after.federationHosts) ||
+			diffArraysSimple(before?.bubbleInstances, after.bubbleInstances);
 
 		if (changed) {
 			// We have to clear the whole thing, otherwise subdomains won't be synced.
@@ -133,9 +133,3 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		this.dispose();
 	}
 }
-
-function hasDiff(before: string[] | null | undefined, after: string[] | null | undefined): boolean {
-	const { added, removed } = diffArrays(before, after);
-	return added.length > 0 || removed.length > 0;
-}
-
