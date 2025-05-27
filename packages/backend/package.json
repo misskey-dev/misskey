@@ -88,7 +88,7 @@
 		"@sentry/node": "9.22.0",
 		"@sentry/profiling-node": "9.22.0",
 		"@simplewebauthn/server": "13.1.1",
-		"@sinonjs/fake-timers": "11.3.1",
+		"@sinonjs/fake-timers": "14.0.0",
 		"@smithy/node-http-handler": "4.0.5",
 		"@swc/cli": "0.7.7",
 		"@swc/core": "1.11.29",
