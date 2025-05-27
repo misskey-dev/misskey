@@ -2025,14 +2025,14 @@ export type paths = {
      * federation/stats
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *No*
      */
     get: operations['federation___stats'];
     /**
      * federation/stats
      * @description No description provided.
      *
-     * **Credential required**: *Yes*
+     * **Credential required**: *No*
      */
     post: operations['federation___stats'];
   };
@@ -18338,7 +18338,7 @@ export type operations = {
    * federation/stats
    * @description No description provided.
    *
-   * **Credential required**: *Yes*
+   * **Credential required**: *No*
    */
   federation___stats: {
     requestBody: {
