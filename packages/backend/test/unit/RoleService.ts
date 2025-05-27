@@ -160,9 +160,9 @@ describe('RoleService', () => {
 
 		await Promise.all([
 			app.get(DI.metasRepository).clear(),
-			usersRepository.clear(),
-			rolesRepository.clear(),
-			roleAssignmentsRepository.clear(),
+			usersRepository.createQueryBuilder().delete().execute(),
+			rolesRepository.createQueryBuilder().delete().execute(),
+			roleAssignmentsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();

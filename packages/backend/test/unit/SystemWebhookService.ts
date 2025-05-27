@@ -101,8 +101,8 @@ describe('SystemWebhookService', () => {
 	}
 
 	async function afterEachImpl() {
-		await usersRepository.clear();
-		await systemWebhooksRepository.clear();
+		await usersRepository.createQueryBuilder().delete().execute();
+		await systemWebhooksRepository.createQueryBuilder().delete().execute();
 	}
 
 	// --------------------------------------------------------------------------------------

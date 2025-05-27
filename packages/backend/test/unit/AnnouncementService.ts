@@ -104,9 +104,9 @@ describe('AnnouncementService', () => {
 	afterEach(async () => {
 		await Promise.all([
 			app.get(DI.metasRepository).clear(),
-			usersRepository.clear(),
-			announcementsRepository.clear(),
-			announcementReadsRepository.clear(),
+			usersRepository.createQueryBuilder().delete().execute(),
+			announcementsRepository.createQueryBuilder().delete().execute(),
+			announcementReadsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();

@@ -162,10 +162,10 @@ describe('AbuseReportNotificationService', () => {
 		emailService.sendEmail.mockClear();
 		webhookService.enqueueSystemWebhook.mockClear();
 
-		await usersRepository.clear();
-		await userProfilesRepository.clear();
-		await systemWebhooksRepository.clear();
-		await abuseReportNotificationRecipientRepository.clear();
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userProfilesRepository.createQueryBuilder().delete().execute();
+		await systemWebhooksRepository.createQueryBuilder().delete().execute();
+		await abuseReportNotificationRecipientRepository.createQueryBuilder().delete().execute();
 	});
 
 	afterAll(async () => {
