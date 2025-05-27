@@ -14,6 +14,7 @@ import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntitySer
 import type {
 	AnnouncementReadsRepository,
 	AnnouncementsRepository,
+	MetasRepository,
 	MiAnnouncement,
 	MiUser,
 	UsersRepository,
@@ -33,6 +34,7 @@ const moduleMocker = new ModuleMocker(global);
 describe('AnnouncementService', () => {
 	let app: TestingModule;
 	let announcementService: AnnouncementService;
+	let metasRepository: MetasRepository;
 	let usersRepository: UsersRepository;
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
@@ -94,6 +96,7 @@ describe('AnnouncementService', () => {
 		app.enableShutdownHooks();
 
 		announcementService = app.get<AnnouncementService>(AnnouncementService);
+		metasRepository = app.get<MetasRepository>(DI.metasRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
@@ -103,7 +106,7 @@ describe('AnnouncementService', () => {
 
 	afterEach(async () => {
 		await Promise.all([
-			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
+			metasRepository.createQueryBuilder().delete().execute(),
 			usersRepository.createQueryBuilder().delete().execute(),
 			announcementsRepository.createQueryBuilder().delete().execute(),
 			announcementReadsRepository.createQueryBuilder().delete().execute(),
