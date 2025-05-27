@@ -1381,6 +1381,10 @@ scrollToClose: "Scroll to close"
 communityRole: "Community Role"
 assignedRoles: "Assigned Roles"
 assignableRoles: "Assignable Roles"
+noActiveMeeting: "No active meeting"
+startMeeting: "Start Meeting"
+meetingInProgress: "Meeting in progress"
+endMeeting: "End Meeting"
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"
@@ -2453,6 +2457,7 @@ _widgets:
   birthdayFollowings: "Today's Birthdays"
   listenBrainz: "ListenBrainz"
   chat: "Chat"
+  jitsiMeet: "Jitsi Meet"
 _cw:
   hide: "Hide"
   show: "Show content"

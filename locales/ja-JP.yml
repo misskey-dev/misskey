@@ -1400,6 +1400,10 @@ listenBrainz: "ListenBrainz"
 communityRole: "コミュニティロール"
 assignedRoles: "割り当てられたロール"
 assignableRoles: "割り当てられるロール"
+noActiveMeeting: "進行中ミーティングはありません"
+startMeeting: "ミーティングを開始"
+meetingInProgress: "ミーティングが進行中です"
+endMeeting: "ミーティングを終了"
 _chat:
   noMessagesYet: "まだメッセージはありません"
   newMessage: "新しいメッセージ"
@@ -2544,6 +2548,7 @@ _widgets:
   birthdayFollowings: "今日誕生日のユーザー"
   listenBrainz: "listenBrainz"
   chat: "チャット"
+  jitsiMeet: "Jitsi Meet"
 
 _cw:
   hide: "隠す"

@@ -5621,6 +5621,22 @@ export interface Locale extends ILocale {
      * 割り当てられるロール
      */
     "assignableRoles": string;
+    /**
+     * 進行中ミーティングはありません
+     */
+    "noActiveMeeting": string;
+    /**
+     * ミーティングを開始
+     */
+    "startMeeting": string;
+    /**
+     * ミーティングが進行中です
+     */
+    "meetingInProgress": string;
+    /**
+     * ミーティングを終了
+     */
+    "endMeeting": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -9688,6 +9704,10 @@ export interface Locale extends ILocale {
          * チャット
          */
         "chat": string;
+        /**
+         * Jitsi Meet
+         */
+        "jitsiMeet": string;
     };
     "_cw": {
         /**
