@@ -194,10 +194,10 @@ export const PREF_DEF = {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
 	},
 	useBlurEffectForModal: {
-		default: DEFAULT_DEVICE_KIND === 'desktop',
+		default: true,
 	},
 	useBlurEffect: {
-		default: DEFAULT_DEVICE_KIND === 'desktop',
+		default: true,
 	},
 	useStickyIcons: {
 		default: true,
@@ -290,9 +290,10 @@ export const PREF_DEF = {
 		default: {
 			media: false,
 			avatar: false,
-			urlPreview: false,
+			urlPreviewThumbnail: false,
+			disableUrlPreview: false,
 			code: false,
-		} as Record<string, boolean>,
+		} satisfies Record<string, boolean>,
 	},
 	hemisphere: {
 		default: hemisphere as 'N' | 'S',
@@ -350,7 +351,7 @@ export const PREF_DEF = {
 	},
 
 	'sound.masterVolume': {
-		default: 0.3,
+		default: 0.5,
 	},
 	'sound.notUseSound': {
 		default: false,
@@ -414,6 +415,9 @@ export const PREF_DEF = {
 	},
 
 	'experimental.stackingRouterView': {
+		default: false,
+	},
+	'experimental.enableFolderPageView': {
 		default: false,
 	},
 } satisfies PreferencesDefinition;

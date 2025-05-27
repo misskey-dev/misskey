@@ -298,6 +298,7 @@ uploadFromUrl: "URLアップロード"
 uploadFromUrlDescription: "アップロードしたいファイルのURL"
 uploadFromUrlRequested: "アップロードをリクエストしました"
 uploadFromUrlMayTakeTime: "アップロードが完了するまで時間がかかる場合があります。"
+uploadNFiles: "{n}個のファイルをアップロード"
 explore: "みつける"
 messageRead: "既読"
 noMoreHistory: "これより過去の履歴はありません"
@@ -578,6 +579,7 @@ newNoteRecived: "新しいノートがあります"
 newNote: "新しいノート"
 sounds: "サウンド"
 sound: "サウンド"
+notificationSoundSettings: "通知音の設定"
 listen: "聴く"
 none: "なし"
 showInPage: "ページで表示"
@@ -999,6 +1001,7 @@ failedToUpload: "アップロード失敗"
 cannotUploadBecauseInappropriate: "不適切な内容を含む可能性があると判定されたためアップロードできません。"
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 cannotUploadBecauseExceedsFileSizeLimit: "ファイルサイズの制限を超えているためアップロードできません。"
+cannotUploadBecauseUnallowedFileType: "許可されていないファイル種別のためアップロードできません。"
 beta: "ベータ"
 enableAutoSensitive: "自動センシティブ判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにセンシティブフラグを設定します。この機能をオフにしても、サーバーによっては自動で設定されることがあります。"
@@ -1356,6 +1359,10 @@ emojiMute: "絵文字ミュート"
 emojiUnmute: "絵文字ミュート解除"
 muteX: "{x}をミュート"
 unmuteX: "{x}のミュートを解除"
+abort: "中止"
+tip: "ヒントとコツ"
+redisplayAllTips: "全ての「ヒントとコツ」を再表示"
+hideAllTips: "全ての「ヒントとコツ」を非表示"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1445,6 +1452,7 @@ _settings:
   contentsUpdateFrequency: "コンテンツの取得頻度"
   contentsUpdateFrequency_description: "高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。"
   contentsUpdateFrequency_description2: "リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。"
+  showUrlPreview: "URLプレビューを表示する"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -1997,6 +2005,9 @@ _role:
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
     chatAvailability: "チャットを許可"
+    uploadableFileTypes: "アップロード可能なファイル種別"
+    uploadableFileTypes_caption: "MIMEタイプを指定します。改行で区切って複数指定できるほか、アスタリスク(*)でワイルドカード指定できます。(例: image/*)"
+    uploadableFileTypes_caption2: "ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -2236,7 +2247,6 @@ _theme:
     buttonBg: "ボタンの背景"
     buttonHoverBg: "ボタンの背景 (ホバー)"
     inputBorder: "入力ボックスの縁取り"
-    driveFolderBg: "ドライブフォルダーの背景"
     badge: "バッジ"
     messageBg: "チャットの背景"
     fgHighlighted: "強調された文字"
@@ -2910,9 +2920,12 @@ _dataSaver:
   _avatar:
     title: "アイコン画像のアニメーションを無効化"
     description: "アイコン画像のアニメーションが停止します。アニメーション画像は通常の画像よりファイルサイズが大きいことがあるので、データ通信量をさらに削減できます。"
-  _urlPreview:
+  _urlPreviewThumbnail:
     title: "URLプレビューのサムネイルを非表示"
     description: "URLプレビューのサムネイル画像が読み込まれなくなります。"
+  _disableUrlPreview:
+    title: "URLプレビューを無効化"
+    description: "URLプレビュー機能を無効化します。サムネイル画像だけと違い、リンク先の情報の読み込み自体を削減できます。"
   _code:
     title: "コードハイライトを非表示"
     description: "MFMなどでコードハイライト記法が使われている場合、タップするまで読み込まれなくなります。コードハイライトではハイライトする言語ごとにその定義ファイルを読み込む必要がありますが、それらが自動で読み込まれなくなるため、通信量の削減が見込めます。"
@@ -3054,10 +3067,6 @@ _customEmojisManager:
       uploadSettingDescription: "この画面で絵文字アップロードを行う際の動作を設定できます。"
       directoryToCategoryLabel: "ディレクトリ名を\"category\"に入力する"
       directoryToCategoryCaption: "ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を\"category\"に入力します。"
-      emojiInputAreaCaption: "いずれかの方法で登録する絵文字を選択してください。"
-      emojiInputAreaList1: "この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ"
-      emojiInputAreaList2: "このリンクをクリックしてPCから選択する"
-      emojiInputAreaList3: "このリンクをクリックしてドライブから選択する"
       confirmRegisterEmojisDescription: "リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）"
       confirmClearEmojisDescription: "編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？"
       confirmUploadEmojisDescription: "ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？"
@@ -3184,6 +3193,15 @@ _serverSetupWizard:
     text2: "今後も開発を続けられるように、よろしければぜひカンパをお願いいたします。"
     text3: "支援者向け特典もあります！"
 
+_uploader:
+  compressedToX: "{x}に圧縮"
+  savedXPercent: "{x}%節約"
+  abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"
+  doneConfirm: "アップロードされていないファイルがありますが、完了しますか？"
+  maxFileSizeIsX: "アップロード可能な最大ファイルサイズは{x}です。"
+  allowedTypes: "アップロード可能なファイル種別"
+  tip: "ファイルはまだアップロードされていません。このダイアログで、アップロード前の確認・リネーム・圧縮・クロッピングなどが行えます。準備が出来たら、「アップロード」ボタンを押してアップロードを開始できます。"
+
 _clientPerformanceIssueTip:
   title: "バッテリー消費が多いと感じたら"
   makeSureDisabledAdBlocker: "アドブロッカーを無効にしてください"
@@ -3192,3 +3210,9 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "スタイルを上書きするとパフォーマンスに影響を及ぼすことがあります。カスタムCSSや、スタイルを上書きする拡張機能が有効になっていないか確認してください。"
   makeSureDisabledAddons: "拡張機能を無効にしてください"
   makeSureDisabledAddons_description: "一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。"
+
+_clip:
+  tip: "クリップは、ノートをまとめることができる機能です。"
+
+_userLists:
+  tip: "任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。"
