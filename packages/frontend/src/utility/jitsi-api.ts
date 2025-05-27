@@ -16,18 +16,18 @@ class JitsiApiService {
 		}
 
 		return new Promise((resolve, reject) => {
-			const script = document.createElement('script');
+			const script = window.document.createElement('script');
 			script.src = `https://${this.domain}/external_api.js`;
 			script.onload = () => {
 				this.isScriptLoaded = true;
 				resolve();
 			};
 			script.onerror = () => reject(new Error('Failed to load Jitsi Meet API'));
-			document.head.appendChild(script);
+			window.document.head.appendChild(script);
 		});
 	}
 
-	async startMeeting(roomName: string, containerId: string): Promise<void> {
+	async startMeeting(roomName: string, containerId: string, displayName: string | null, avatarUrl: string | null): Promise<void> {
 		await this.loadScript();
 
 		if (!window.JitsiMeetExternalAPI) {
@@ -43,9 +43,9 @@ class JitsiApiService {
 		// コンテナの存在を確認（最大5回、200msずつ待機）
 		let container: HTMLElement | null = null;
 		for (let i = 0; i < 5; i++) {
-			container = document.getElementById(containerId);
+			container = window.document.getElementById(containerId);
 			if (container) break;
-			await new Promise(resolve => setTimeout(resolve, 200));
+			await new Promise(resolve => window.setTimeout(resolve, 200));
 		}
 
 		if (!container) {
@@ -101,6 +101,13 @@ class JitsiApiService {
 				console.log('Meeting left');
 			});
 
+			this.api.addEventListener('avatarChanged', avatarUrl, () => {
+				console.log('Avatar changed');
+			});
+
+			this.api.addEventListener('displayNameChanged', displayName, () => {
+				console.log('Display name changed');
+			});
 		} catch (error) {
 			console.error('Failed to create Jitsi meeting:', error);
 			throw error;

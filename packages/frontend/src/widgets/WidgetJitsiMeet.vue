@@ -48,6 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
@@ -77,7 +78,10 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const props = defineProps<WidgetComponentProps<WidgetProps> & {
+	name: Misskey.entities.User['name'];
+	avatarUrl: Misskey.entities.User['avatarUrl'];
+}>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
@@ -98,9 +102,14 @@ const startMeeting = async () => {
 		await nextTick();
 
 		// 少し待ってからJitsi APIを呼び出す
-		setTimeout(async () => {
+		window.setTimeout(async () => {
 			try {
-				await jitsiApi.startMeeting(widgetProps.roomName, containerId.value);
+				await jitsiApi.startMeeting(
+					widgetProps.roomName,
+					containerId.value,
+					props.name,
+					props.avatarUrl,
+				);
 			} catch (error) {
 				console.error('Failed to start meeting:', error);
 				meetingStarted.value = false;
