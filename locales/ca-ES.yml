@@ -2903,6 +2903,8 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "Configuració per a la previsualització de l'URL"
   enable: "Activa la previsualització de l'URL"
+  allowRedirect: "Permet la redirecció de la visualització prèvia "
+  allowRedirectDescription: "Estableix si es mostra o no la redirecció a la vista prèvia quan l'adreça URL introduïda té una redirecció. Si es desactiva s'estalvien recursos del servidor, però no es mostrarà el contingut de la redirecció."
   timeout: "Temps màxim per carregar la previsualització de l'URL (ms)"
   timeoutDescription: "Si l'obtenció de la previsualització triga més que el temps establert, no es generarà la vista prèvia."
   maximumContentLength: "Longitud màxima del contingut (bytes)"
