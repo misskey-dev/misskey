@@ -38,12 +38,12 @@ export function acquireApObjectLock(
 	redis: Redis.Redis,
 	uri: string,
 ): Promise<() => Promise<void>> {
-	return acquireDistributedLock(redis, `ap-object:${uri}`, 30 * 1000, 600, 100);
+	return acquireDistributedLock(redis, `ap-object:${uri}`, 30 * 1000, 50, 100);
 }
 
 export function acquireChartInsertLock(
 	redis: Redis.Redis,
 	name: string,
 ): Promise<() => Promise<void>> {
-	return acquireDistributedLock(redis, `chart-insert:${name}`, 30 * 1000, 120, 500);
+	return acquireDistributedLock(redis, `chart-insert:${name}`, 30 * 1000, 50, 500);
 }
