@@ -2975,7 +2975,7 @@ _urlPreviewSetting:
   title: "URLプレビューの設定"
   enable: "URLプレビューを有効にする"
   allowRedirect: "プレビュー先のリダイレクトを許可"
-  allowRedirectDescription: "入力されたURLがリダイレクトされる場合に、そのリダイレクト先をたどってプレビューを表示するかどうかを設定します。無効にすると、リダイレクト先の内容は表示されません。"
+  allowRedirectDescription: "入力されたURLがリダイレクトされる場合に、そのリダイレクト先をたどってプレビューを表示するかどうかを設定します。無効にするとサーバーリソースの節約になりますが、リダイレクト先の内容は表示されなくなります。"
   timeout: "プレビュー取得時のタイムアウト(ms)"
   timeoutDescription: "プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。"
   maximumContentLength: "Content-Lengthの最大値(byte)"
