@@ -71,6 +71,8 @@ describe('Chart', () => {
 		testIntersectionChart = new TestIntersectionChart(db, redisClient, logger);
 
 		clock = lolex.install({
+			// https://github.com/sinonjs/sinon/issues/2620
+			toFake: Object.keys(lolex.timers).filter((key) => !['nextTick', 'queueMicrotask'].includes(key)) as lolex.FakeMethod[],
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
 			shouldClearNativeTimers: true,
 		});
