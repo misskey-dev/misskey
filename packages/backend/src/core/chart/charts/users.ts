@@ -26,8 +26,8 @@ export default class UsersChart extends Chart<typeof schema> { // eslint-disable
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -35,7 +35,7 @@ export default class UsersChart extends Chart<typeof schema> { // eslint-disable
 		private userEntityService: UserEntityService,
 		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => acquireChartInsertLock(redisForTimelines, k), chartLoggerService.logger, name, schema);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

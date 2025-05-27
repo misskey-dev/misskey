@@ -27,8 +27,8 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
@@ -38,7 +38,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 
 		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => acquireChartInsertLock(redisForTimelines, k), chartLoggerService.logger, name, schema);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

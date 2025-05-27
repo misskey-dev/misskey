@@ -25,12 +25,12 @@ export default class TestGroupedChart extends Chart<typeof schema> { // eslint-d
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		logger: Logger,
 	) {
-		super(db, (k) => acquireChartInsertLock(redisForTimelines, k), logger, name, schema, true);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), logger, name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

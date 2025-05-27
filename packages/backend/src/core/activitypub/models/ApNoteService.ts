@@ -49,8 +49,8 @@ export class ApNoteService {
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
@@ -357,7 +357,7 @@ export class ApNoteService {
 			throw new StatusError('blocked host', 451);
 		}
 
-		const unlock = await acquireApObjectLock(this.redisForTimelines, uri);
+		const unlock = await acquireApObjectLock(this.redisClient, uri);
 
 		try {
 			//#region このサーバーに既に登録されていたらそれを返す

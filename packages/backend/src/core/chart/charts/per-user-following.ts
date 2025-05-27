@@ -26,8 +26,8 @@ export default class PerUserFollowingChart extends Chart<typeof schema> { // esl
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
@@ -35,7 +35,7 @@ export default class PerUserFollowingChart extends Chart<typeof schema> { // esl
 		private userEntityService: UserEntityService,
 		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => acquireChartInsertLock(redisForTimelines, k), chartLoggerService.logger, name, schema, true);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

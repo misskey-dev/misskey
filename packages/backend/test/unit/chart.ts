@@ -25,7 +25,7 @@ describe('Chart', () => {
 	const config = loadConfig();
 
 	let db: DataSource | undefined;
-	let redisForTimelines = {
+	let redisClient = {
 		set: () => Promise.resolve('OK'),
 		get: () => Promise.resolve(null),
 	} as unknown as jest.Mocked<Redis.Redis>;
@@ -65,10 +65,10 @@ describe('Chart', () => {
 		await db.initialize();
 
 		const logger = new Logger('chart'); // TODO: モックにする
-		testChart = new TestChart(db, redisForTimelines, logger);
-		testGroupedChart = new TestGroupedChart(db, redisForTimelines, logger);
-		testUniqueChart = new TestUniqueChart(db, redisForTimelines, logger);
-		testIntersectionChart = new TestIntersectionChart(db, redisForTimelines, logger);
+		testChart = new TestChart(db, redisClient, logger);
+		testGroupedChart = new TestGroupedChart(db, redisClient, logger);
+		testUniqueChart = new TestUniqueChart(db, redisClient, logger);
+		testIntersectionChart = new TestIntersectionChart(db, redisClient, logger);
 
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),

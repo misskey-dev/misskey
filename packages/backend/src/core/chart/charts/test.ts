@@ -25,12 +25,12 @@ export default class TestChart extends Chart<typeof schema> { // eslint-disable-
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		logger: Logger,
 	) {
-		super(db, (k) => acquireChartInsertLock(redisForTimelines, k), logger, name, schema);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
