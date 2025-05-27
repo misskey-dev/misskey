@@ -6,6 +6,8 @@
   - proxyRemoteFiles
   - disallowExternalApRedirect
     - 許可しないかどうかではなく、許可するかどうかの設定(allowExternalApRedirect)になりました
+- 動作テストで使用する最低限でのNode.jsのバージョンを20.18.1に引き上げました
+  - なお、特に必要がない限りNode.jsはv22を使用することを推奨します
 
 ### General
 - Feat: 非ログインでサーバーを閲覧された際に、サーバー内のコンテンツを非公開にすることができるようになりました
@@ -17,6 +19,7 @@
 	- 場合によってはファイル種別を正しく検出できないことがあります(特にテキストフォーマット)。その場合、ファイル種別は application/octet-stream と見做されます。
 		- したがって、それらの種別不明ファイルを許可したい場合は application/octet-stream を指定に追加してください。
 - Enhance: UIのアイコンデータの読み込みを軽量化
+- 依存関係の更新
 
 ### Client
 - Feat: ドライブのUIが強化されました
