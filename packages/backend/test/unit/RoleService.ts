@@ -19,7 +19,6 @@ import {
 	MiRole,
 	MiRoleAssignment,
 	MiUser,
-	MetasRepository,
 	RoleAssignmentsRepository,
 	RolesRepository,
 	UsersRepository,
@@ -40,7 +39,6 @@ const moduleMocker = new ModuleMocker(global);
 describe('RoleService', () => {
 	let app: TestingModule;
 	let roleService: RoleService;
-	let metasRepository: MetasRepository;
 	let usersRepository: UsersRepository;
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
@@ -147,7 +145,6 @@ describe('RoleService', () => {
 		app.enableShutdownHooks();
 
 		roleService = app.get<RoleService>(RoleService);
-		metasRepository = app.get<MetasRepository>(DI.metasRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
@@ -162,7 +159,7 @@ describe('RoleService', () => {
 		clock.uninstall();
 
 		await Promise.all([
-			metasRepository.createQueryBuilder().delete().execute(),
+			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
 			usersRepository.createQueryBuilder().delete().execute(),
 			rolesRepository.createQueryBuilder().delete().execute(),
 			roleAssignmentsRepository.createQueryBuilder().delete().execute(),
