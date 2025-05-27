@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-for="ctx in items"
 					:key="ctx.id"
 					v-panel
-					:class="[$style.item, ctx.waiting ? $style.itemWaiting : null, ctx.uploaded ? $style.itemCompleted : null, ctx.uploadFailed ? $style.itemFailed : null]"
+					:class="[$style.item, ctx.preprocessing ? $style.itemWaiting : null, ctx.uploaded ? $style.itemCompleted : null, ctx.uploadFailed ? $style.itemFailed : null]"
 					:style="{ '--p': ctx.progress != null ? `${ctx.progress.value / ctx.progress.max * 100}%` : '0%' }"
 				>
 					<div :class="$style.itemInner">
@@ -59,19 +59,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton style="margin: auto;" :iconOnly="true" rounded @click="chooseFile($event)"><i class="ti ti-plus"></i></MkButton>
 			</div>
 
-			<MkSelect
-				v-if="items.length > 0"
-				v-model="compressionLevel"
-				:items="[
-					{ value: 0, label: i18n.ts.none },
-					{ value: 1, label: i18n.ts.low },
-					{ value: 2, label: i18n.ts.middle },
-					{ value: 3, label: i18n.ts.high },
-				]"
-			>
-				<template #label>{{ i18n.ts.compress }}</template>
-			</MkSelect>
-
 			<div>{{ i18n.tsx._uploader.maxFileSizeIsX({ x: $i.policies.maxFileSizeMb + 'MB' }) }}</div>
 
 			<!-- クライアントで検出するMIME typeとサーバーで検出するMIME typeが異なる場合があり、混乱の元になるのでとりあえず隠しとく -->
@@ -93,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, markRaw, onMounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
@@ -125,6 +112,14 @@ const CROPPING_SUPPORTED_TYPES = [
 	'image/webp',
 ];
 
+const IMAGE_EDITING_SUPPORTED_TYPES = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+];
+
+const WATERMARK_SUPPORTED_TYPES = IMAGE_EDITING_SUPPORTED_TYPES;
+
 const mimeTypeMap = {
 	'image/webp': 'webp',
 	'image/jpeg': 'jpg',
@@ -148,16 +143,19 @@ const emit = defineEmits<{
 const items = ref<{
 	id: string;
 	name: string;
+	uploadName?: string;
 	progress: { max: number; value: number } | null;
 	thumbnail: string;
-	waiting: boolean;
+	preprocessing: boolean;
 	uploading: boolean;
 	uploaded: Misskey.entities.DriveFile | null;
 	uploadFailed: boolean;
 	aborted: boolean;
+	compressionLevel: 0 | 1 | 2 | 3;
 	compressedSize?: number | null;
 	compressedImage?: Blob | null;
 	file: File;
+	watermarkPresetId: string | null;
 	abort?: (() => void) | null;
 }[]>([]);
 
@@ -165,7 +163,7 @@ const dialog = useTemplateRef('dialog');
 
 const firstUploadAttempted = ref(false);
 const isUploading = computed(() => items.value.some(item => item.uploading));
-const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.waiting) && items.value.some(item => item.uploaded == null));
+const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.preprocessing) && items.value.some(item => item.uploaded == null));
 const canDone = computed(() => items.value.some(item => item.uploaded != null));
 const overallProgress = computed(() => {
 	const max = items.value.length;
@@ -178,19 +176,18 @@ const overallProgress = computed(() => {
 	return Math.round((v / max) * 100);
 });
 
-const compressionLevel = ref<0 | 1 | 2 | 3>(2);
-const compressionSettings = computed(() => {
-	if (compressionLevel.value === 1) {
+function getCompressionSettings(level: 0 | 1 | 2 | 3) {
+	if (level === 1) {
 		return {
 			maxWidth: 2000,
 			maxHeight: 2000,
 		};
-	} else if (compressionLevel.value === 2) {
+	} else if (level === 2) {
 		return {
 			maxWidth: 2000 * 0.75, // =1500
 			maxHeight: 2000 * 0.75, // =1500
 		};
-	} else if (compressionLevel.value === 3) {
+	} else if (level === 3) {
 		return {
 			maxWidth: 2000 * 0.75 * 0.75, // =1125
 			maxHeight: 2000 * 0.75 * 0.75, // =1125
@@ -198,7 +195,7 @@ const compressionSettings = computed(() => {
 	} else {
 		return null;
 	}
-});
+}
 
 watch(items, () => {
 	if (items.value.length === 0) {
@@ -274,7 +271,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		},
 	});
 
-	if (CROPPING_SUPPORTED_TYPES.includes(item.file.type) && !item.waiting && !item.uploading && !item.uploaded) {
+	if (CROPPING_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
 		menu.push({
 			icon: 'ti ti-crop',
 			text: i18n.ts.cropImage,
@@ -289,8 +286,61 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		});
 	}
 
-	if (!item.waiting && !item.uploading && !item.uploaded) {
+	if (WATERMARK_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
 		menu.push({
+			icon: 'ti ti-copyright',
+			text: i18n.ts.watermark,
+			type: 'parent',
+			children: [{
+				type: 'radioOption',
+				text: i18n.ts.none,
+				active: computed(() => item.watermarkPresetId == null),
+				action: () => item.watermarkPresetId = null,
+			}],
+		});
+	}
+
+	if (COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
+		function changeCompressionLevel(level: 0 | 1 | 2 | 3) {
+			item.compressionLevel = level;
+			preprocess(item).then(() => {
+				triggerRef(items);
+			});
+		}
+
+		menu.push({
+			icon: 'ti ti-leaf',
+			text: i18n.ts.compress,
+			type: 'parent',
+			children: [{
+				type: 'radioOption',
+				text: i18n.ts.none,
+				active: computed(() => item.compressionLevel === 0 || item.compressionLevel == null),
+				action: () => changeCompressionLevel(0),
+			}, {
+				type: 'radioOption',
+				text: i18n.ts.low,
+				active: computed(() => item.compressionLevel === 1),
+				action: () => changeCompressionLevel(1),
+			}, {
+				type: 'radioOption',
+				text: i18n.ts.medium,
+				active: computed(() => item.compressionLevel === 2),
+				action: () => changeCompressionLevel(2),
+			}, {
+				type: 'radioOption',
+				text: i18n.ts.high,
+				active: computed(() => item.compressionLevel === 3),
+				action: () => changeCompressionLevel(3),
+			},
+			],
+		});
+	}
+
+	if (!item.preprocessing && !item.uploading && !item.uploaded) {
+		menu.push({
+			type: 'divider',
+		}, {
 			icon: 'ti ti-x',
 			text: i18n.ts.remove,
 			action: () => {
@@ -299,6 +349,8 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		});
 	} else if (item.uploading) {
 		menu.push({
+			type: 'divider',
+		}, {
 			icon: 'ti ti-cloud-pause',
 			text: i18n.ts.abort,
 			danger: true,
@@ -320,7 +372,6 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 		...item,
 		aborted: false,
 		uploadFailed: false,
-		waiting: false,
 		uploading: false,
 	}));
 
@@ -330,40 +381,13 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 			continue;
 		}
 
-		item.waiting = true;
 		item.uploadFailed = false;
-
-		const shouldCompress = item.compressedImage == null && compressionLevel.value !== 0 && compressionSettings.value && COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) && !(await isAnimated(item.file));
-
-		if (shouldCompress) {
-			const config = {
-				mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
-				maxWidth: compressionSettings.value.maxWidth,
-				maxHeight: compressionSettings.value.maxHeight,
-				quality: isWebpSupported() ? 0.85 : 0.8,
-			};
-
-			try {
-				const result = await readAndCompressImage(item.file, config);
-				if (result.size < item.file.size || item.file.type === 'image/webp') {
-					// The compression may not always reduce the file size
-					// (and WebP is not browser safe yet)
-					item.compressedImage = markRaw(result);
-					item.compressedSize = result.size;
-					item.name = item.file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
-				}
-			} catch (err) {
-				console.error('Failed to resize image', err);
-			}
-		}
-
 		item.uploading = true;
 
 		const { filePromise, abort } = uploadFile(item.compressedImage ?? item.file, {
-			name: item.name,
+			name: item.uploadName ?? item.name,
 			folderId: props.folderId,
 			onProgress: (progress) => {
-				item.waiting = false;
 				if (item.progress == null) {
 					item.progress = { max: progress.total, value: progress.loaded };
 				} else {
@@ -377,7 +401,6 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 			item.abort = null;
 			abort();
 			item.uploading = false;
-			item.waiting = false;
 			item.uploadFailed = true;
 		};
 
@@ -392,7 +415,6 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 			}
 		}).finally(() => {
 			item.uploading = false;
-			item.waiting = false;
 		});
 	}
 }
@@ -419,21 +441,62 @@ async function chooseFile(ev: MouseEvent) {
 	}
 }
 
+async function preprocess(item: (typeof items)['value'][number]): Promise<void> {
+	item.preprocessing = true;
+
+	const compressionSettings = getCompressionSettings(item.compressionLevel);
+	const shouldCompress = item.compressionLevel !== 0 && compressionSettings && COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) && !(await isAnimated(item.file));
+
+	if (shouldCompress) {
+		const config = {
+			mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
+			maxWidth: compressionSettings.maxWidth,
+			maxHeight: compressionSettings.maxHeight,
+			quality: isWebpSupported() ? 0.85 : 0.8,
+		};
+
+		try {
+			const result = await readAndCompressImage(item.file, config);
+			if (result.size < item.file.size || item.file.type === 'image/webp') {
+				// The compression may not always reduce the file size
+				// (and WebP is not browser safe yet)
+				item.compressedImage = markRaw(result);
+				item.compressedSize = result.size;
+				item.uploadName = item.file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
+			}
+		} catch (err) {
+			console.error('Failed to resize image', err);
+		}
+	} else {
+		item.compressedImage = null;
+		item.compressedSize = null;
+		item.uploadName = item.name;
+	}
+
+	item.preprocessing = false;
+}
+
 function initializeFile(file: File) {
 	const id = uuid();
 	const filename = file.name ?? 'untitled';
 	const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
-	items.value.push({
+	const item = {
 		id,
 		name: prefer.s.keepOriginalFilename ? filename : id + extension,
 		progress: null,
 		thumbnail: window.URL.createObjectURL(file),
-		waiting: false,
+		preprocessing: false,
 		uploading: false,
 		aborted: false,
 		uploaded: null,
 		uploadFailed: false,
+		compressionLevel: 2 as 0 | 1 | 2 | 3,
+		watermarkPresetId: null,
 		file: markRaw(file),
+	};
+	items.value.push(item);
+	preprocess(item).then(() => {
+		triggerRef(items);
 	});
 }
 

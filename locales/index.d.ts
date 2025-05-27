@@ -12004,6 +12004,48 @@ export interface Locale extends ILocale {
          */
         "tip": string;
     };
+    /**
+     * ウォーターマーク
+     */
+    "watermark": string;
+    "_watermarkEditor": {
+        /**
+         * 画像にクレジット情報などのウォーターマークを追加することができます。
+         */
+        "tip": string;
+        /**
+         * ウォーターマークの編集
+         */
+        "title": string;
+        /**
+         * 敷き詰める
+         */
+        "repeat": string;
+        /**
+         * 不透明度
+         */
+        "opacity": string;
+        /**
+         * 大きさ
+         */
+        "scale": string;
+        /**
+         * テキスト
+         */
+        "text": string;
+        /**
+         * 位置
+         */
+        "position": string;
+        /**
+         * タイプ
+         */
+        "type": string;
+        /**
+         * 画像
+         */
+        "image": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

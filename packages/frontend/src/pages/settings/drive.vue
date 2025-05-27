@@ -53,6 +53,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts.drivecleaner }}
 				</FormLink>
 
+				<SearchMarker :keywords="['watermark', 'credit']">
+					<MkFolder>
+						<template #icon><i class="ti ti-copyright"></i></template>
+						<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
+
+						<MkButton iconOnly @click="addWatermarkPreset"><i class="ti ti-plus"></i></MkButton>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['keep', 'original', 'filename']">
 					<MkPreferenceContainer k="keepOriginalFilename">
 						<MkSwitch v-model="keepOriginalFilename">
@@ -81,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
@@ -100,6 +109,8 @@ import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { selectDriveFolder } from '@/utility/drive.js';
+import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const $i = ensureSignin();
 
@@ -149,6 +160,13 @@ function chooseUploadFolder() {
 		} else {
 			uploadFolder.value = null;
 		}
+	});
+}
+
+function addWatermarkPreset() {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
+	}, {
+		closed: () => dispose(),
 	});
 }
 

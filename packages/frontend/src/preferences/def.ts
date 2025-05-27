@@ -11,6 +11,7 @@ import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
 import type { PreferencesDefinition } from './manager.js';
+import type { WatermarkPreset } from '@/utility/watermarker.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 /** サウンド設定 */
@@ -348,6 +349,9 @@ export const PREF_DEF = {
 	},
 	mutingEmojis: {
 		default: [] as string[],
+	},
+	watermarkPresets: {
+		default: [] as WatermarkPreset[],
 	},
 
 	'sound.masterVolume': {

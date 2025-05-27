@@ -3214,3 +3214,15 @@ _clip:
 
 _userLists:
   tip: "任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。"
+
+watermark: "ウォーターマーク"
+_watermarkEditor:
+  tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  title: "ウォーターマークの編集"
+  repeat: "敷き詰める"
+  opacity: "不透明度"
+  scale: "大きさ"
+  text: "テキスト"
+  position: "位置"
+  type: "タイプ"
+  image: "画像"
