@@ -11183,6 +11183,14 @@ export interface Locale extends ILocale {
          */
         "enable": string;
         /**
+         * プレビュー先のリダイレクトを許可
+         */
+        "allowRedirect": string;
+        /**
+         * 入力されたURLがリダイレクトされる場合に、そのリダイレクト先をたどってプレビューを表示するかどうかを設定します。無効にすると、リダイレクト先の内容は表示されません。
+         */
+        "allowRedirectDescription": string;
+        /**
          * プレビュー取得時のタイムアウト(ms)
          */
         "timeout": string;
