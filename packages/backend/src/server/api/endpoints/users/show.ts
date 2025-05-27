@@ -59,23 +59,44 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		userIds: { type: 'array', uniqueItems: true, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		username: { type: 'string' },
-		host: {
-			type: 'string',
-			nullable: true,
-			description: 'The local host is represented with `null`.',
+	allOf: [
+		{
+			anyOf: [
+				{
+					type: 'object',
+					properties: {
+						userId: { type: 'string', format: 'misskey:id' },
+					},
+					required: ['userId'],
+				},
+				{
+					type: 'object',
+					properties: {
+						userIds: { type: 'array', uniqueItems: true, items: {
+							type: 'string', format: 'misskey:id',
+						} },
+					},
+					required: ['userIds'],
+				},
+				{
+					type: 'object',
+					properties: {
+						username: { type: 'string' },
+					},
+					required: ['username'],
+				},
+			],
 		},
-	},
-	anyOf: [
-		{ required: ['userId'] },
-		{ required: ['userIds'] },
-		{ required: ['username'] },
+		{
+			type: 'object',
+			properties: {
+				host: {
+					type: 'string',
+					nullable: true,
+					description: 'The local host is represented with `null`.',
+				},
+			},
+		},
 	],
 } as const;
 
@@ -102,9 +123,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let user;
 
 			const isModerator = await this.roleService.isModerator(me);
-			ps.username = ps.username?.trim();
+			if ('username' in ps) {
+				ps.username = ps.username.trim();
+			}
 
-			if (ps.userIds) {
+			if ('userIds' in ps) {
 				if (ps.userIds.length === 0) {
 					return [];
 				}
@@ -129,7 +152,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return _users.map(u => _userMap.get(u.id)!);
 			} else {
 				// Lookup user
-				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
+				if (typeof ps.host === 'string' && 'username' in ps) {
 					if (this.serverSettings.ugcVisibilityForVisitor === 'local' && me == null) {
 						throw new ApiError(meta.errors.noSuchUser);
 					}
@@ -139,7 +162,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						throw new ApiError(meta.errors.failedToResolveRemoteUser);
 					});
 				} else {
-					const q: FindOptionsWhere<MiUser> = ps.userId != null
+					const q: FindOptionsWhere<MiUser> = 'userId' in ps
 						? { id: ps.userId }
 						: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
 

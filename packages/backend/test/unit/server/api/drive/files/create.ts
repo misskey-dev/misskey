@@ -41,7 +41,7 @@ describe('/drive/files/create', () => {
 		idService = module.get(IdService);
 
 		const usersRepository = module.get<UsersRepository>(DI.usersRepository);
-		await usersRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
 		root = await usersRepository.insert({
 			id: idService.gen(),
 			username: 'root',
@@ -50,7 +50,7 @@ describe('/drive/files/create', () => {
 		}).then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 
 		const userProfilesRepository = module.get<UserProfilesRepository>(DI.userProfilesRepository);
-		await userProfilesRepository.delete({});
+		await userProfilesRepository.createQueryBuilder().delete().execute();
 		await userProfilesRepository.insert({
 			userId: root.id,
 		});
