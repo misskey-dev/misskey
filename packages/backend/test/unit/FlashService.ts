@@ -85,9 +85,9 @@ describe('FlashService', () => {
 	});
 
 	afterEach(async () => {
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
-		await flashsRepository.delete({});
+		await usersRepository.clear();
+		await userProfilesRepository.clear();
+		await flashsRepository.clear();
 	});
 
 	afterAll(async () => {

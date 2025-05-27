@@ -159,10 +159,10 @@ describe('RoleService', () => {
 		clock.uninstall();
 
 		await Promise.all([
-			app.get(DI.metasRepository).delete({}),
-			usersRepository.delete({}),
-			rolesRepository.delete({}),
-			roleAssignmentsRepository.delete({}),
+			app.get(DI.metasRepository).clear(),
+			usersRepository.clear(),
+			rolesRepository.clear(),
+			roleAssignmentsRepository.clear(),
 		]);
 
 		await app.close();

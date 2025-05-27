@@ -111,8 +111,8 @@ describe('WebhookTestService', () => {
 		userWebhookService.fetchWebhooks.mockClear();
 		systemWebhookService.fetchSystemWebhooks.mockClear();
 
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
+		await usersRepository.clear();
+		await userProfilesRepository.clear();
 	});
 
 	afterAll(async () => {
