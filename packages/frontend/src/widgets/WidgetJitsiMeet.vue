@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-jitsiMeet">
 	<template #icon><i class="ti ti-video"></i></template>
-	<template #header>{{ i18n.ts._widgets.jitsiMeet }}: {{ widgetProps.roomName }}</template>
+	<template #header>{{ i18n.ts._widgets.jitsiMeet }}</template>
 	<template #func="{ buttonStyleClass }">
 		<button class="_button" :class="buttonStyleClass" @click="toggleMeeting()">
 			<i :class="meetingStarted ? 'ti ti-video-off' : 'ti ti-video'"></i>
@@ -15,16 +15,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div :class="$style.root">
-		<MkLoading v-if="loading"/>
-		<MkResult v-else-if="!meetingStarted" type="empty" :text="i18n.ts.noActiveMeeting" :class="$style.result">
-			<div class="_gaps_s" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
-				<MkButton primary @click="startMeeting">
-					<i class="ti ti-video"></i>
-					{{ i18n.ts.startMeeting }}
-				</MkButton>
+		<!-- ルーム情報を常に表示 -->
+		<div :class="$style.roomInfo">
+			<div :class="$style.roomHeader">
+				<div :class="[$style.statusIndicator, { [$style.statusActive]: meetingStarted }]"></div>
+				<a :href="roomUrl" target="_blank" rel="noopener noreferrer" :class="$style.roomLink" @click.stop>
+					{{ widgetProps.domain }}/{{ widgetProps.roomName }}
+					<i class="ti ti-external-link" :class="$style.externalIcon"></i>
+				</a>
 			</div>
-		</MkResult>
-		<div v-else class="_gaps_s" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+		</div>
+
+		<MkLoading v-if="loading"/>
+
+		<!-- 会議未開始時の表示 -->
+		<div v-else-if="!meetingStarted" :class="$style.roomStatus">
+			<MkResult type="empty" :text="i18n.ts.noActiveMeeting" :class="$style.result">
+				<div
+					class="_gaps_s"
+					style="display: flex; flex-direction: column; justify-content: center; align-items: center"
+				>
+					<MkButton primary @click="startMeeting">
+						<i class="ti ti-video"></i>
+						{{ i18n.ts.startMeeting }}
+					</MkButton>
+				</div>
+			</MkResult>
+		</div>
+
+		<!-- 会議中の表示 -->
+		<div
+			v-else class="_gaps_s"
+			style="display: flex; flex-direction: column; justify-content: center; align-items: center"
+		>
 			<div :id="containerId" :class="$style.jitsiContainer"></div>
 			<MkButton danger @click="endMeeting">
 				<i class="ti ti-video-off"></i>
@@ -76,6 +99,11 @@ const loading = ref(false);
 const meetingStarted = ref(false);
 const containerId = ref(`jitsi-container-${Math.random().toString(36).substr(2, 9)}`);
 
+// ルームURLを生成するcomputed
+const roomUrl = computed(() => {
+	return `https://${widgetProps.domain}/${widgetProps.roomName}`;
+});
+
 const startMeeting = async () => {
 	if (!widgetProps.roomName) return;
 
@@ -92,7 +120,7 @@ const startMeeting = async () => {
 			try {
 				// $iから現在のユーザー情報を取得
 				const displayName = $i?.name || $i?.username || 'Anonymous';
-				const email = $i?.email || null; // メールアドレスのみ取得
+				const email = $i?.email || null;
 
 				console.log('Misskey user info:', {
 					displayName,
@@ -103,7 +131,7 @@ const startMeeting = async () => {
 					widgetProps.roomName,
 					containerId.value,
 					displayName,
-					email, // メールアドレスのみを渡す
+					email,
 				);
 			} catch (error) {
 				console.error('Failed to start meeting:', error);
@@ -163,117 +191,143 @@ defineExpose<WidgetComponentExpose>({
 
 <style lang="scss" module>
 .root {
-    padding: 16px;
+    padding: 12px;
 }
 
 .result {
-    text-align: center;
+	text-align: center;
 }
 
-.roomInfo {
-    font-size: 0.85em;
-    color: var(--MI_THEME-fgTransparentWeak);
-    margin-bottom: 8px;
-}
-
-.meetingHeader {
-    width: 100%;
-    padding: 8px 12px;
-    background: var(--MI_THEME-accentedBg);
-    border-radius: 6px;
+.roomStatus {
     margin-bottom: 12px;
 }
 
-.meetingInfo {
-    display: flex;
-    flex-direction: column;
+.roomInfo {
+    padding: 6px;
+    margin-bottom: 8px;
 }
 
-.meetingTitle {
-    font-weight: bold;
+.roomHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     color: var(--MI_THEME-fg);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
-.meetingStatus {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 0.9em;
+.statusIndicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--MI_THEME-fgTransparentWeak);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+
+    /* 非アクティブ時は薄いグレー */
+    &:not(.statusActive) {
+        background: var(--MI_THEME-divider);
+        opacity: 0.5;
+    }
 }
 
-.statusText {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--MI_THEME-fgTransparentWeak);
-    font-size: 0.85em;
-}
-
-.statusIcon {
-    color: #00d400;
-    font-size: 0.8em;
+.statusActive {
+    /* アクティブ時は緑色で光る効果 */
+    background: #4CAF50;
+    box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% {
+        box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 12px rgba(76, 175, 80, 0.8);
+    }
+}
+
+.roomLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--MI_THEME-accent);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background: var(--MI_THEME-panel);
+    border: 1px solid var(--MI_THEME-divider);
+
+    &:hover {
+        text-decoration: none;
+        background: var(--MI_THEME-buttonHoverBg);
+    }
+
+    &:active {
+        background: var(--MI_THEME-buttonHoverBg);
+    }
+}
+
+.externalIcon {
+    font-size: 0.75em;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.roomLink:hover .externalIcon {
+    opacity: 1;
 }
 
 .jitsiContainer {
     width: 100%;
     aspect-ratio: 4 / 3;
     height: auto;
-    min-height: 450px; /* 400px → 450px に増加 */
-    max-height: 650px; /* 600px → 650px に増加 */
+    min-height: 450px;
+    max-height: 650px;
     border-radius: 8px;
     overflow: hidden;
     background: var(--MI_THEME-panel);
     border: 1px solid var(--MI_THEME-divider);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 /* デスクトップ向けサイズ調整 */
 @media (min-width: 768px) {
-    .jitsiContainer {
-        min-height: 500px; /* 450px → 500px に増加 */
-        max-height: 750px; /* 700px → 750px に増加 */
-        aspect-ratio: 4 / 3;
-    }
+	.jitsiContainer {
+		min-height: 500px;
+		max-height: 750px;
+		aspect-ratio: 4 / 3;
+	}
 }
 
 /* タブレット向けサイズ調整 */
 @media (max-width: 767px) and (min-width: 501px) {
-    .jitsiContainer {
-        min-height: 420px; /* 380px → 420px に増加 */
-        max-height: 550px; /* 500px → 550px に増加 */
-        aspect-ratio: 4 / 3;
-    }
+	.jitsiContainer {
+		min-height: 420px;
+		max-height: 550px;
+		aspect-ratio: 4 / 3;
+	}
 }
 
 /* スマホ向けサイズ調整 */
 @media (max-width: 500px) {
     .jitsiContainer {
         aspect-ratio: 4 / 3;
-        min-height: 360px; /* 320px → 360px に増加 */
-        max-height: 450px; /* 400px → 450px に増加 */
+        min-height: 360px;
+        max-height: 450px;
     }
 
     .root {
-        padding: 12px;
+        padding: 8px;
     }
 }
 
 /* 小さなスマホ向け */
 @media (max-width: 350px) {
-    .jitsiContainer {
-        min-height: 320px; /* 280px → 320px に増加 */
-        max-height: 400px; /* 350px → 400px に増加 */
-        aspect-ratio: 4 / 3;
-    }
+	.jitsiContainer {
+		min-height: 320px;
+		max-height: 400px;
+		aspect-ratio: 4 / 3;
+	}
 }
 </style>
