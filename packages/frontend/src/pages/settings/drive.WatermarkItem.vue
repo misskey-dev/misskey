@@ -96,6 +96,7 @@ onUnmounted(() => {
 watch(() => props.preset, async () => {
 	if (renderer != null) {
 		renderer.updatePreset(props.preset);
+		await renderer.bakeTextures();
 		renderer.render();
 	}
 }, { deep: true });

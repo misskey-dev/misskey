@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:min="0"
 			:max="1"
 			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
@@ -33,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:min="0"
 			:max="1"
 			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
@@ -58,6 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:min="0"
 			:max="1"
 			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
@@ -68,6 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:min="0"
 			:max="1"
 			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>

@@ -84,12 +84,12 @@ export type WatermarkerLayer = WatermarkerTextLayer | WatermarkerImageLayer;
 
 export class Watermarker {
 	private canvas: HTMLCanvasElement | null = null;
-	public gl: WebGL2RenderingContext | null = null;
-	public renderTextureProgram!: WebGLProgram;
-	public renderInvertedTextureProgram!: WebGLProgram;
-	public renderWidth!: number;
-	public renderHeight!: number;
-	public originalImage: HTMLImageElement;
+	private gl: WebGL2RenderingContext | null = null;
+	private renderTextureProgram!: WebGLProgram;
+	private renderInvertedTextureProgram!: WebGLProgram;
+	private renderWidth!: number;
+	private renderHeight!: number;
+	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 	private preset: WatermarkPreset;
 	private originalImageTexture: WebGLTexture;
 	private resultTexture: WebGLTexture;
@@ -101,7 +101,7 @@ export class Watermarker {
 		canvas: HTMLCanvasElement;
 		width: number;
 		height: number;
-		originalImage: HTMLImageElement;
+		originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 		preset: WatermarkPreset;
 	}) {
 		this.canvas = options.canvas;
@@ -131,7 +131,7 @@ export class Watermarker {
 		this.originalImageTexture = this.createTexture();
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, options.width, options.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 
 		this.resultTexture = this.createTexture();
@@ -253,6 +253,7 @@ export class Watermarker {
 				const margin = Math.min(this.renderWidth, this.renderHeight) / 50;
 				measureCtx.font = `bold ${fontSize}px sans-serif`;
 				const textMetrics = measureCtx.measureText(layer.text);
+				measureCtx.canvas.remove();
 
 				const RESOLUTION_FACTOR = 4;
 
@@ -284,6 +285,8 @@ export class Watermarker {
 					width: textCtx.canvas.width,
 					height: textCtx.canvas.height,
 				});
+
+				textCtx.canvas.remove();
 			}
 		}
 	}
@@ -398,7 +401,7 @@ export class Watermarker {
 		}
 	}
 
-	public async render() {
+	public render() {
 		const gl = this.gl;
 		if (gl == null) {
 			throw new Error('gl is not initialized');

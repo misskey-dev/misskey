@@ -96,6 +96,7 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
+import { Watermarker } from '@/utility/watermarker.js';
 
 const $i = ensureSignin();
 
@@ -153,7 +154,7 @@ const items = ref<{
 	aborted: boolean;
 	compressionLevel: 0 | 1 | 2 | 3;
 	compressedSize?: number | null;
-	compressedImage?: Blob | null;
+	preprocessedFile?: Blob | null;
 	file: File;
 	watermarkPresetId: string | null;
 	abort?: (() => void) | null;
@@ -277,6 +278,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			text: i18n.ts.cropImage,
 			action: async () => {
 				const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
+				URL.revokeObjectURL(item.thumbnail);
 				items.value.splice(items.value.indexOf(item), 1, {
 					...item,
 					file: markRaw(cropped),
@@ -287,6 +289,13 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 	}
 
 	if (WATERMARK_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
+		function changeWatermarkPreset(presetId: string | null) {
+			item.watermarkPresetId = presetId;
+			preprocess(item).then(() => {
+				triggerRef(items);
+			});
+		}
+
 		menu.push({
 			icon: 'ti ti-copyright',
 			text: i18n.ts.watermark,
@@ -295,8 +304,15 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				type: 'radioOption',
 				text: i18n.ts.none,
 				active: computed(() => item.watermarkPresetId == null),
-				action: () => item.watermarkPresetId = null,
-			}],
+				action: () => changeWatermarkPreset(null),
+			}, {
+				type: 'divider',
+			}, ...prefer.s.watermarkPresets.map(preset => ({
+				type: 'radioOption',
+				text: preset.name,
+				active: computed(() => item.watermarkPresetId === preset.id),
+				action: () => changeWatermarkPreset(preset.id),
+			}))],
 		});
 	}
 
@@ -317,6 +333,8 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				text: i18n.ts.none,
 				active: computed(() => item.compressionLevel === 0 || item.compressionLevel == null),
 				action: () => changeCompressionLevel(0),
+			}, {
+				type: 'divider',
 			}, {
 				type: 'radioOption',
 				text: i18n.ts.low,
@@ -384,7 +402,7 @@ async function upload() { // エラーハンドリングなどを考慮してシ
 		item.uploadFailed = false;
 		item.uploading = true;
 
-		const { filePromise, abort } = uploadFile(item.compressedImage ?? item.file, {
+		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
 			name: item.uploadName ?? item.name,
 			folderId: props.folderId,
 			onProgress: (progress) => {
@@ -441,13 +459,58 @@ async function chooseFile(ev: MouseEvent) {
 	}
 }
 
+function getImageElement(file: Blob | File): Promise<HTMLImageElement> {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+
+		img.onload = () => {
+			resolve(img);
+		};
+
+		img.onerror = (error) => {
+			reject(error);
+		};
+
+		img.src = URL.createObjectURL(file);
+	});
+}
+
 async function preprocess(item: (typeof items)['value'][number]): Promise<void> {
 	item.preprocessing = true;
 
-	const compressionSettings = getCompressionSettings(item.compressionLevel);
-	const shouldCompress = item.compressionLevel !== 0 && compressionSettings && COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) && !(await isAnimated(item.file));
+	let file: Blob | File = item.file;
+	const img = await getImageElement(file);
 
-	if (shouldCompress) {
+	const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(file.type);
+	const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
+	if (needsWatermark && preset != null) {
+		const canvas = window.document.createElement('canvas');
+		const renderer = new Watermarker({
+			canvas: canvas,
+			width: img.width,
+			height: img.height,
+			preset: preset,
+			originalImage: img,
+		});
+
+		await renderer.bakeTextures();
+
+		renderer.render();
+
+		file = await new Promise<Blob>((resolve) => {
+			canvas.toBlob((blob) => {
+				if (blob == null) {
+					throw new Error('Failed to convert canvas to blob');
+				}
+				resolve(blob);
+			}, 'image/png');
+		});
+	}
+
+	const compressionSettings = getCompressionSettings(item.compressionLevel);
+	const needsCompress = item.compressionLevel !== 0 && compressionSettings && COMPRESSION_SUPPORTED_TYPES.includes(file.type) && !(await isAnimated(file));
+
+	if (needsCompress) {
 		const config = {
 			mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
 			maxWidth: compressionSettings.maxWidth,
@@ -456,24 +519,28 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 		};
 
 		try {
-			const result = await readAndCompressImage(item.file, config);
-			if (result.size < item.file.size || item.file.type === 'image/webp') {
+			const result = await readAndCompressImage(file, config);
+			if (result.size < file.size || file.type === 'image/webp') {
 				// The compression may not always reduce the file size
 				// (and WebP is not browser safe yet)
-				item.compressedImage = markRaw(result);
+				file = result;
 				item.compressedSize = result.size;
-				item.uploadName = item.file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
+				item.uploadName = file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
 			}
 		} catch (err) {
 			console.error('Failed to resize image', err);
 		}
 	} else {
-		item.compressedImage = null;
 		item.compressedSize = null;
 		item.uploadName = item.name;
 	}
 
+	URL.revokeObjectURL(item.thumbnail);
+	item.thumbnail = window.URL.createObjectURL(file);
+	item.preprocessedFile = markRaw(file);
 	item.preprocessing = false;
+
+	URL.revokeObjectURL(img.src);
 }
 
 function initializeFile(file: File) {
