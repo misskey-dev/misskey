@@ -56,6 +56,9 @@ import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
+import { ensureSignin } from '@/i.js';
+
+const $i = ensureSignin();
 
 const props = defineProps<{
 	preset: WatermarkPreset | null;
@@ -67,17 +70,17 @@ const preset = reactive(deepClone(props.preset) ?? {
 	layers: [{
 		id: uuid(),
 		type: 'text',
-		text: 'sample',
+		text: `(c) @${$i.username}`,
 		alignX: 'right',
 		alignY: 'bottom',
-		scale: 0.5,
-		opacity: 0.5,
+		scale: 0.3,
+		opacity: 0.75,
 		repeat: false,
 	}],
 } satisfies WatermarkPreset);
 
 const emit = defineEmits<{
-	(ev: 'ok'): void;
+	(ev: 'ok', preset: WatermarkPreset): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -126,6 +129,24 @@ onUnmounted(() => {
 		renderer = null;
 	}
 });
+
+async function save() {
+	const { canceled, result: name } = await os.inputText({
+		title: i18n.ts.name,
+		default: preset.name,
+	});
+	if (canceled) return;
+
+	preset.name = name || '';
+
+	dialog.value?.close();
+	if (renderer != null) {
+		renderer.destroy();
+		renderer = null;
+	}
+
+	emit('ok', preset);
+}
 </script>
 
 <style module>

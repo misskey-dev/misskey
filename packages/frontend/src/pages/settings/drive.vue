@@ -58,7 +58,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #icon><i class="ti ti-copyright"></i></template>
 						<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
 
-						<MkButton iconOnly @click="addWatermarkPreset"><i class="ti ti-plus"></i></MkButton>
+						<div class="_gaps_s">
+							<XWatermarkItem
+								v-for="(preset, i) in prefer.r.watermarkPresets.value"
+								:key="preset.id"
+								:preset="preset"
+								@updatePreset="onUpdateWatermarkPreset(preset.id, $event)"
+								@del="onDeleteWatermarkPreset(preset.id)"
+							/>
+
+							<MkButton iconOnly rounded style="margin: 0 auto;" @click="addWatermarkPreset"><i class="ti ti-plus"></i></MkButton>
+						</div>
 					</MkFolder>
 				</SearchMarker>
 
@@ -93,6 +103,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
+import XWatermarkItem from './drive.WatermarkItem.vue';
+import type { WatermarkPreset } from '@/utility/watermarker.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -166,8 +178,32 @@ function chooseUploadFolder() {
 function addWatermarkPreset() {
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
 	}, {
+		ok: (preset: WatermarkPreset) => {
+			prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
+		},
 		closed: () => dispose(),
 	});
+}
+
+function onUpdateWatermarkPreset(id: string, preset: WatermarkPreset) {
+	const index = prefer.s.watermarkPresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('watermarkPresets', [
+			...prefer.s.watermarkPresets.slice(0, index),
+			preset,
+			...prefer.s.watermarkPresets.slice(index + 1),
+		]);
+	}
+}
+
+function onDeleteWatermarkPreset(id: string) {
+	const index = prefer.s.watermarkPresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('watermarkPresets', [
+			...prefer.s.watermarkPresets.slice(0, index),
+			...prefer.s.watermarkPresets.slice(index + 1),
+		]);
+	}
 }
 
 function saveProfile() {

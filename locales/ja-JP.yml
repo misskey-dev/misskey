@@ -3221,7 +3221,7 @@ _watermarkEditor:
   title: "ウォーターマークの編集"
   repeat: "敷き詰める"
   opacity: "不透明度"
-  scale: "大きさ"
+  scale: "サイズ"
   text: "テキスト"
   position: "位置"
   type: "タイプ"

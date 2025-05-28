@@ -12026,7 +12026,7 @@ export interface Locale extends ILocale {
          */
         "opacity": string;
         /**
-         * 大きさ
+         * サイズ
          */
         "scale": string;
         /**
