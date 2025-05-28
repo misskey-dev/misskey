@@ -3234,3 +3234,8 @@ _watermarkEditor:
 
 _imageEffector:
   title: "エフェクト"
+
+  _fxs:
+    chromaticAberration: "色収差"
+    glitch: "グリッチ"
+    mirror: "ミラー"

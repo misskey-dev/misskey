@@ -6,10 +6,12 @@
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
 import { FX_glitch } from './fxs/glitch.js';
+import { FX_mirror } from './fxs/mirror.js';
 import { FX_watermarkPlacement } from './fxs/watermarkPlacement.js';
 
 type ParamTypeToPrimitive = {
 	'number': number;
+	'number:enum': number;
 	'boolean': boolean;
 	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
 	'seed': number;
@@ -26,6 +28,7 @@ export function defineImageEffectorFx<ID extends string, P extends ImageEffector
 
 export type ImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs> = {
 	id: ID;
+	name: string;
 	shader: string;
 	params: P,
 	main: (ctx: {
@@ -49,6 +52,7 @@ export const FXS = [
 	FX_watermarkPlacement,
 	FX_chromaticAberration,
 	FX_glitch,
+	FX_mirror,
 ] as const satisfies ImageEffectorFx<string, any>[];
 
 export type ImageEffectorLayerOf<

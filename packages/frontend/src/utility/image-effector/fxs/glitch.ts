@@ -5,6 +5,7 @@
 
 import seedrandom from 'seedrandom';
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import { i18n } from '@/i18n.js';
 
 const shader = `#version 300 es
 precision highp float;
@@ -38,6 +39,7 @@ void main() {
 
 export const FX_glitch = defineImageEffectorFx({
 	id: 'glitch' as const,
+	name: i18n.ts._imageEffector._fxs.glitch,
 	shader,
 	params: {
 		amount: {

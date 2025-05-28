@@ -61,7 +61,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'ok', preset: WatermarkPreset): void;
+	(ev: 'ok', image: File): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -83,7 +83,7 @@ watch(layers, async () => {
 
 function addEffect(ev: MouseEvent) {
 	os.popupMenu(FXS.filter(fx => fx.id !== 'watermarkPlacement').map((fx) => ({
-		text: fx.id,
+		text: fx.name,
 		action: () => {
 			layers.push({
 				id: uuid(),
@@ -125,6 +125,14 @@ onUnmounted(() => {
 		renderer = null;
 	}
 });
+
+function save() {
+	renderer!.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	canvasEl.value!.toBlob((blob) => {
+		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
+		dialog.value?.close();
+	}, 'image/png');
+}
 </script>
 
 <style module>

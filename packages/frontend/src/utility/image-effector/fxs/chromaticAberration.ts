@@ -4,6 +4,7 @@
  */
 
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import { i18n } from '@/i18n.js';
 
 const shader = `#version 300 es
 precision highp float;
@@ -52,6 +53,7 @@ void main() {
 
 export const FX_chromaticAberration = defineImageEffectorFx({
 	id: 'chromaticAberration' as const,
+	name: i18n.ts._imageEffector._fxs.chromaticAberration,
 	shader,
 	params: {
 		normalize: {

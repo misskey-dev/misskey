@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkFolder :defaultOpen="true">
-	<template #label>{{ fx.id }}</template>
+	<template #label>{{ fx.name }}</template>
 	<template #footer>
 		<MkButton @click="emit('del')">{{ i18n.ts.remove }}</MkButton>
 	</template>
@@ -18,6 +18,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkRange v-else-if="v.type === 'number'" v-model="layer.params[k]" continuousUpdate :min="v.min" :max="v.max" :step="v.step">
 				<template #label>{{ k }}</template>
 			</MkRange>
+			<MkRadios v-else-if="v.type === 'number:enum'" v-model="layer.params[k]">
+				<template #label>{{ k }}</template>
+				<option v-for="item in v.enum" :value="item.value">{{ item.label }}</option>
+			</MkRadios>
 			<div v-else-if="v.type === 'seed'">
 				<MkRange v-model="layer.params[k]" continuousUpdate type="number" :min="0" :max="10000" :step="1">
 					<template #label>{{ k }}</template>
@@ -37,6 +41,7 @@ import { FXS, ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';

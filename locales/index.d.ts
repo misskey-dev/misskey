@@ -12071,6 +12071,20 @@ export interface Locale extends ILocale {
          * エフェクト
          */
         "title": string;
+        "_fxs": {
+            /**
+             * 色収差
+             */
+            "chromaticAberration": string;
+            /**
+             * グリッチ
+             */
+            "glitch": string;
+            /**
+             * ミラー
+             */
+            "mirror": string;
+        };
     };
 }
 declare const locales: {

@@ -280,10 +280,14 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			action: async () => {
 				const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
 				URL.revokeObjectURL(item.thumbnail);
-				items.value.splice(items.value.indexOf(item), 1, {
+				const newItem = {
 					...item,
 					file: markRaw(cropped),
 					thumbnail: window.URL.createObjectURL(cropped),
+				};
+				items.value.splice(items.value.indexOf(item), 1, newItem);
+				preprocess(newItem).then(() => {
+					triggerRef(items);
 				});
 			},
 		});
@@ -298,9 +302,22 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkImageEffectorDialog.vue')), {
 					image: img,
 				}, {
-					ok: () => {
+					ok: (file) => {
+						URL.revokeObjectURL(item.thumbnail);
+						const newItem = {
+							...item,
+							file: markRaw(file),
+							thumbnail: window.URL.createObjectURL(file),
+						};
+						items.value.splice(items.value.indexOf(item), 1, newItem);
+						preprocess(newItem).then(() => {
+							triggerRef(items);
+						});
 					},
-					closed: () => dispose(),
+					closed: () => {
+						URL.revokeObjectURL(img.src);
+						dispose();
+					},
 				});
 			},
 		});
