@@ -7,7 +7,7 @@ import { defineImageEffectorFx } from '../ImageEffector.js';
 import { i18n } from '@/i18n.js';
 
 const shader = `#version 300 es
-precision highp float;
+precision mediump float;
 
 in vec2 in_uv;
 uniform sampler2D u_texture;
@@ -17,7 +17,6 @@ uniform int u_v;
 out vec4 out_color;
 
 void main() {
-	vec4 pixel = texture(u_texture, in_uv);
 	vec2 uv = in_uv;
 	if (u_h == -1 && in_uv.x > 0.5) {
 		uv.x = 1.0 - uv.x;

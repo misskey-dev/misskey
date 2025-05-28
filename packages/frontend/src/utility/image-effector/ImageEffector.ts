@@ -6,6 +6,7 @@
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
 import { FX_glitch } from './fxs/glitch.js';
+import { FX_invert } from './fxs/invert.js';
 import { FX_mirror } from './fxs/mirror.js';
 import { FX_watermarkPlacement } from './fxs/watermarkPlacement.js';
 
@@ -53,6 +54,7 @@ export const FXS = [
 	FX_chromaticAberration,
 	FX_glitch,
 	FX_mirror,
+	FX_invert,
 ] as const satisfies ImageEffectorFx<string, any>[];
 
 export type ImageEffectorLayerOf<
@@ -134,7 +136,7 @@ export class ImageEffector {
 				gl_Position = vec4(position, 0.0, 1.0);
 			}
 		`, `#version 300 es
-			precision highp float;
+			precision mediump float;
 
 			in vec2 in_uv;
 			uniform sampler2D u_texture;
@@ -155,7 +157,7 @@ export class ImageEffector {
 				gl_Position = vec4(position, 0.0, 1.0);
 			}
 		`, `#version 300 es
-			precision highp float;
+			precision mediump float;
 
 			in vec2 in_uv;
 			uniform sampler2D u_texture;

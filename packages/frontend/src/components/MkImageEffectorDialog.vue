@@ -26,15 +26,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div :class="$style.controls" class="_gaps">
-				<XLayer
-					v-for="(layer, i) in layers"
-					:key="layer.id"
-					v-model:layer="layers[i]"
-					@del="onLayerDelete(layer)"
-				></XLayer>
+			<div :class="$style.controls">
+				<div class="_spacer _gaps">
+					<XLayer
+						v-for="(layer, i) in layers"
+						:key="layer.id"
+						v-model:layer="layers[i]"
+						@del="onLayerDelete(layer)"
+					></XLayer>
 
-				<MkButton rounded primary @click="addEffect"><i class="ti ti-plus"></i></MkButton>
+					<MkButton rounded primary style="margin: 0 auto;" @click="addEffect"><i class="ti ti-plus"></i> {{ i18n.ts._imageEffector.addEffect }}</MkButton>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -212,7 +214,6 @@ function save() {
 }
 
 .controls {
-	padding: 24px;
 	overflow-y: scroll;
 }
 

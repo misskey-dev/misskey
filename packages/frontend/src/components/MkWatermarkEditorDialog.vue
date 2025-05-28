@@ -28,14 +28,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div :class="$style.controls" class="_gaps">
-				<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }]"></MkSelect>
+			<div :class="$style.controls">
+				<div class="_spacer _gaps">
+					<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }]"></MkSelect>
 
-				<XLayer
-					v-for="(layer, i) in preset.layers"
-					:key="layer.id"
-					v-model:layer="preset.layers[i]"
-				></XLayer>
+					<XLayer
+						v-for="(layer, i) in preset.layers"
+						:key="layer.id"
+						v-model:layer="preset.layers[i]"
+					></XLayer>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -284,7 +286,6 @@ async function save() {
 }
 
 .controls {
-	padding: 24px;
 	overflow-y: scroll;
 }
 

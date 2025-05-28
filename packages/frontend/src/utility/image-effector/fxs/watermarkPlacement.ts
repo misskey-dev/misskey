@@ -6,7 +6,7 @@
 import { defineImageEffectorFx } from '../ImageEffector.js';
 
 const shader = `#version 300 es
-precision highp float;
+precision mediump float;
 
 in vec2 in_uv;
 uniform sampler2D u_texture_src;
@@ -23,7 +23,7 @@ uniform int u_fitMode; // 0: contain, 1: cover
 out vec4 out_color;
 
 void main() {
-	vec4 pixel = texture(u_texture_src, in_uv);
+	vec4 in_color = texture(u_texture_src, in_uv);
 
 	bool contain = u_fitMode == 0;
 
@@ -49,25 +49,26 @@ void main() {
 		bool isInside = in_uv.x > x_offset - (x_scale / 2.0) && in_uv.x < x_offset + (x_scale / 2.0) &&
 										in_uv.y > y_offset - (y_scale / 2.0) && in_uv.y < y_offset + (y_scale / 2.0);
 		if (!isInside) {
-			out_color = pixel;
+			out_color = in_color;
 			return;
 		}
 	}
 
-	vec4 watermarkPixel = texture(u_texture_watermark, vec2(
+	vec4 watermark_color = texture(u_texture_watermark, vec2(
 		(in_uv.x - (x_offset - (x_scale / 2.0))) / x_scale,
 		(in_uv.y - (y_offset - (y_scale / 2.0))) / y_scale
 	));
 
-	out_color.r = mix(pixel.r, watermarkPixel.r, u_opacity * watermarkPixel.a);
-	out_color.g = mix(pixel.g, watermarkPixel.g, u_opacity * watermarkPixel.a);
-	out_color.b = mix(pixel.b, watermarkPixel.b, u_opacity * watermarkPixel.a);
-	out_color.a = pixel.a * (1.0 - u_opacity * watermarkPixel.a) + watermarkPixel.a * u_opacity;
+	out_color.r = mix(in_color.r, watermark_color.r, u_opacity * watermark_color.a);
+	out_color.g = mix(in_color.g, watermark_color.g, u_opacity * watermark_color.a);
+	out_color.b = mix(in_color.b, watermark_color.b, u_opacity * watermark_color.a);
+	out_color.a = in_color.a * (1.0 - u_opacity * watermark_color.a) + watermark_color.a * u_opacity;
 }
 `;
 
 export const FX_watermarkPlacement = defineImageEffectorFx({
 	id: 'watermarkPlacement' as const,
+	name: '(internal)',
 	shader,
 	params: {
 		cover: {

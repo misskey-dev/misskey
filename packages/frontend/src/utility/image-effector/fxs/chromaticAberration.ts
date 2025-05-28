@@ -7,7 +7,7 @@ import { defineImageEffectorFx } from '../ImageEffector.js';
 import { i18n } from '@/i18n.js';
 
 const shader = `#version 300 es
-precision highp float;
+precision mediump float;
 
 in vec2 in_uv;
 uniform sampler2D u_texture;

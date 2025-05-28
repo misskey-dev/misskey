@@ -12071,6 +12071,10 @@ export interface Locale extends ILocale {
          * エフェクト
          */
         "title": string;
+        /**
+         * エフェクトを追加
+         */
+        "addEffect": string;
         "_fxs": {
             /**
              * 色収差
@@ -12084,6 +12088,10 @@ export interface Locale extends ILocale {
              * ミラー
              */
             "mirror": string;
+            /**
+             * 色の反転
+             */
+            "invert": string;
         };
     };
 }

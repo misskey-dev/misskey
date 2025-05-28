@@ -3234,8 +3234,10 @@ _watermarkEditor:
 
 _imageEffector:
   title: "エフェクト"
+  addEffect: "エフェクトを追加"
 
   _fxs:
     chromaticAberration: "色収差"
     glitch: "グリッチ"
     mirror: "ミラー"
+    invert: "色の反転"
