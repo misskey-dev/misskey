@@ -22,13 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import type { WatermarkPreset } from '@/preferences/def.js';
+import type { WatermarkPreset } from '@/utility/watermark.js';
+import { makeImageEffectorLayers } from '@/utility/watermark.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkFolder from '@/components/MkFolder.vue';
-import { ImageEffector } from '@/utility/ImageEffector.js';
+import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
 const props = defineProps<{
 	preset: WatermarkPreset;
@@ -75,7 +76,7 @@ onMounted(() => {
 				canvas: canvasEl.value,
 				width: 1500,
 				height: 1000,
-				layers: props.preset.layers,
+				layers: makeImageEffectorLayers(props.preset.layers),
 				originalImage: sampleImage,
 			});
 
@@ -95,7 +96,7 @@ onUnmounted(() => {
 
 watch(() => props.preset, async () => {
 	if (renderer != null) {
-		renderer.updateLayers(props.preset.layers);
+		renderer.updateLayers(makeImageEffectorLayers(props.preset.layers));
 		await renderer.bakeTextures();
 		renderer.render();
 	}

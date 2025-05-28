@@ -12066,6 +12066,12 @@ export interface Locale extends ILocale {
          */
         "image": string;
     };
+    "_imageEffector": {
+        /**
+         * エフェクト
+         */
+        "title": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

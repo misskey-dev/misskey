@@ -3,94 +3,67 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getProxiedImageUrl } from './media-proxy.js';
+import { getProxiedImageUrl } from '../media-proxy.js';
+import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
+import { FX_watermarkPlacement } from './fxs/watermarkPlacement.js';
 
-const WATERMARK_PLACEMENT_SHADER = `#version 300 es
-precision highp float;
+type ParamTypeToPrimitive = {
+	'number': number;
+	'boolean': boolean;
+	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
+};
 
-in vec2 in_uv;
-uniform sampler2D u_texture_src;
-uniform sampler2D u_texture_watermark;
-uniform vec2 u_resolution_src;
-uniform vec2 u_resolution_watermark;
-uniform float u_scale;
-uniform float u_angle;
-uniform float u_opacity;
-uniform bool u_repeat;
-uniform int u_alignX; // 0: left, 1: center, 2: right
-uniform int u_alignY; // 0: top, 1: center, 2: bottom
-uniform int u_fitMode; // 0: contain, 1: cover
-out vec4 out_color;
+type ImageEffectorFxParamDefs = Record<string, {
+	type: keyof ParamTypeToPrimitive;
+	default: any;
+}>;
 
-void main() {
-	vec4 pixel = texture(u_texture_src, in_uv);
-
-	bool contain = u_fitMode == 0;
-
-	float x_ratio = u_resolution_watermark.x / u_resolution_src.x;
-	float y_ratio = u_resolution_watermark.y / u_resolution_src.y;
-
-	float aspect_ratio = contain ?
-		(min(x_ratio, y_ratio) / max(x_ratio, y_ratio)) :
-		(max(x_ratio, y_ratio) / min(x_ratio, y_ratio));
-
-	float x_scale = contain ?
-		(x_ratio > y_ratio ? 1.0 * u_scale : aspect_ratio * u_scale) :
-		(x_ratio > y_ratio ? aspect_ratio * u_scale : 1.0 * u_scale);
-
-	float y_scale = contain ?
-		(y_ratio > x_ratio ? 1.0 * u_scale : aspect_ratio * u_scale) :
-		(y_ratio > x_ratio ? aspect_ratio * u_scale : 1.0 * u_scale);
-
-	float x_offset = u_alignX == 0 ? x_scale / 2.0 : u_alignX == 2 ? 1.0 - (x_scale / 2.0) : 0.5;
-	float y_offset = u_alignY == 0 ? y_scale / 2.0 : u_alignY == 2 ? 1.0 - (y_scale / 2.0) : 0.5;
-
-	if (!u_repeat) {
-		bool isInside = in_uv.x > x_offset - (x_scale / 2.0) && in_uv.x < x_offset + (x_scale / 2.0) &&
-										in_uv.y > y_offset - (y_scale / 2.0) && in_uv.y < y_offset + (y_scale / 2.0);
-		if (!isInside) {
-			out_color = pixel;
-			return;
-		}
-	}
-
-	vec4 watermarkPixel = texture(u_texture_watermark, vec2(
-		(in_uv.x - (x_offset - (x_scale / 2.0))) / x_scale,
-		(in_uv.y - (y_offset - (y_scale / 2.0))) / y_scale
-	));
-
-	out_color.r = mix(pixel.r, watermarkPixel.r, u_opacity * watermarkPixel.a);
-	out_color.g = mix(pixel.g, watermarkPixel.g, u_opacity * watermarkPixel.a);
-	out_color.b = mix(pixel.b, watermarkPixel.b, u_opacity * watermarkPixel.a);
-	out_color.a = pixel.a * (1.0 - u_opacity * watermarkPixel.a) + watermarkPixel.a * u_opacity;
+export function defineImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs>(fx: ImageEffectorFx<ID, P>) {
+	return fx;
 }
-`;
 
-type ImageEffectorTextLayer = {
-	id: string;
-	type: 'text';
-	text: string;
-	repeat: boolean;
-	scale: number;
-	alignX: 'left' | 'center' | 'right';
-	alignY: 'top' | 'center' | 'bottom';
-	opacity: number;
+export type ImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs> = {
+	id: ID;
+	shader: string;
+	params: P,
+	main: (ctx: {
+		gl: WebGL2RenderingContext;
+		program: WebGLProgram;
+		params: {
+			[key in keyof P]: ParamTypeToPrimitive[P[key]['type']];
+		};
+		preTexture: WebGLTexture;
+		width: number;
+		height: number;
+		watermark?: {
+			texture: WebGLTexture;
+			width: number;
+			height: number;
+		};
+	}) => void;
 };
 
-type ImageEffectorImageLayer = {
+const FXS = [
+	FX_watermarkPlacement,
+	FX_chromaticAberration,
+] as const satisfies ImageEffectorFx<string, any>[];
+
+export type ImageEffectorLayerOf<
+	FXID extends (typeof FXS)[number]['id'],
+	FX extends { params: ImageEffectorFxParamDefs } = Extract<(typeof FXS)[number], { id: FXID }>,
+> = {
 	id: string;
-	type: 'image';
-	imageUrl: string | null;
-	imageId: string | null;
-	cover: boolean;
-	repeat: boolean;
-	scale: number;
-	alignX: 'left' | 'center' | 'right';
-	alignY: 'top' | 'center' | 'bottom';
-	opacity: number;
+	fxId: FXID;
+	params: {
+		[key in keyof FX['params']]: ParamTypeToPrimitive[FX['params'][key]['type']];
+	};
+
+	// for watermarkPlacement fx
+	imageUrl?: string | null;
+	text?: string | null;
 };
 
-export type ImageEffectorLayer = ImageEffectorTextLayer | ImageEffectorImageLayer;
+export type ImageEffectorLayer = ImageEffectorLayerOf<(typeof FXS)[number]['id'], Extract<(typeof FXS)[number], { id: (typeof FXS)[number]['id'] }>>;
 
 export class ImageEffector {
 	private canvas: HTMLCanvasElement | null = null;
@@ -104,8 +77,9 @@ export class ImageEffector {
 	private originalImageTexture: WebGLTexture;
 	private resultTexture: WebGLTexture;
 	private resultFrameBuffer: WebGLFramebuffer;
-	private bakedTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
+	private bakedTexturesForWatermarkFx: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 	private texturesKey: string;
+	private shaderCache: Map<string, WebGLProgram> = new Map();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -191,9 +165,9 @@ export class ImageEffector {
 
 	private calcTexturesKey() {
 		return this.layers.map(layer => {
-			if (layer.type === 'image') {
-				return layer.imageId;
-			} else if (layer.type === 'text') {
+			if (layer.fxId === 'watermarkPlacement' && layer.imageUrl != null) {
+				return layer.imageUrl;
+			} else if (layer.fxId === 'watermarkPlacement' && layer.text != null) {
 				return layer.text;
 			}
 			return '';
@@ -218,10 +192,10 @@ export class ImageEffector {
 			throw new Error('gl is not initialized');
 		}
 
-		for (const bakedTexture of this.bakedTextures.values()) {
+		for (const bakedTexture of this.bakedTexturesForWatermarkFx.values()) {
 			gl.deleteTexture(bakedTexture.texture);
 		}
-		this.bakedTextures.clear();
+		this.bakedTexturesForWatermarkFx.clear();
 	}
 
 	public async bakeTextures() {
@@ -235,7 +209,7 @@ export class ImageEffector {
 		this.disposeBakedTextures();
 
 		for (const layer of this.layers) {
-			if (layer.type === 'image') {
+			if (layer.fxId === 'watermarkPlacement' && layer.imageUrl != null) {
 				const image = await new Promise<HTMLImageElement>((resolve, reject) => {
 					const img = new Image();
 					img.onload = () => resolve(img);
@@ -249,12 +223,12 @@ export class ImageEffector {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
 				gl.bindTexture(gl.TEXTURE_2D, null);
 
-				this.bakedTextures.set(layer.id, {
+				this.bakedTexturesForWatermarkFx.set(layer.id, {
 					texture: texture,
 					width: image.width,
 					height: image.height,
 				});
-			} else if (layer.type === 'text') {
+			} else if (layer.fxId === 'watermarkPlacement' && layer.text != null) {
 				const measureCtx = window.document.createElement('canvas').getContext('2d')!;
 				measureCtx.canvas.width = this.renderWidth;
 				measureCtx.canvas.height = this.renderHeight;
@@ -289,7 +263,7 @@ export class ImageEffector {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, textCtx.canvas.width, textCtx.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, textCtx.canvas);
 				gl.bindTexture(gl.TEXTURE_2D, null);
 
-				this.bakedTextures.set(layer.id, {
+				this.bakedTexturesForWatermarkFx.set(layer.id, {
 					texture: texture,
 					width: textCtx.canvas.width,
 					height: textCtx.canvas.height,
@@ -342,18 +316,19 @@ export class ImageEffector {
 		return shaderProgram;
 	}
 
-	private renderTextOrImageLayer(layer: ImageEffectorTextLayer | ImageEffectorImageLayer) {
+	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
 		const gl = this.gl;
 		if (gl == null) {
 			throw new Error('gl is not initialized');
 		}
 
-		const watermarkTexture = this.bakedTextures.get(layer.id);
-		if (watermarkTexture == null) {
-			return;
-		}
+		const fx = FXS.find(fx => fx.id === layer.fxId);
+		if (fx == null) return;
 
-		const shaderProgram = this.initShaderProgram(`#version 300 es
+		const watermark = layer.fxId === 'watermarkPlacement' ? this.bakedTexturesForWatermarkFx.get(layer.id) : undefined;
+
+		const cachedShader = this.shaderCache.get(fx.id);
+		const shaderProgram = cachedShader ?? this.initShaderProgram(`#version 300 es
 			in vec2 position;
 			out vec2 in_uv;
 
@@ -361,56 +336,28 @@ export class ImageEffector {
 				in_uv = (position + 1.0) / 2.0;
 				gl_Position = vec4(position, 0.0, 1.0);
 			}
-		`, WATERMARK_PLACEMENT_SHADER);
+		`, fx.shader);
+		if (cachedShader == null) {
+			this.shaderCache.set(fx.id, shaderProgram);
+		}
 
 		gl.useProgram(shaderProgram);
 
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
-		const u_texture_src = gl.getUniformLocation(shaderProgram, 'u_texture_src');
-		gl.uniform1i(u_texture_src, 0);
-
-		gl.activeTexture(gl.TEXTURE1);
-		gl.bindTexture(gl.TEXTURE_2D, watermarkTexture.texture);
-		const u_texture_watermark = gl.getUniformLocation(shaderProgram, 'u_texture_watermark');
-		gl.uniform1i(u_texture_watermark, 1);
-
-		const u_resolution_src = gl.getUniformLocation(shaderProgram, 'u_resolution_src');
-		gl.uniform2fv(u_resolution_src, [this.renderWidth, this.renderHeight]);
-
-		const u_resolution_watermark = gl.getUniformLocation(shaderProgram, 'u_resolution_watermark');
-		gl.uniform2fv(u_resolution_watermark, [watermarkTexture.width, watermarkTexture.height]);
-
-		const u_scale = gl.getUniformLocation(shaderProgram, 'u_scale');
-		gl.uniform1f(u_scale, layer.scale);
-
-		const u_opacity = gl.getUniformLocation(shaderProgram, 'u_opacity');
-		gl.uniform1f(u_opacity, layer.opacity);
-
-		const u_angle = gl.getUniformLocation(shaderProgram, 'u_angle');
-		gl.uniform1f(u_angle, 0.0);
-
-		const u_repeat = gl.getUniformLocation(shaderProgram, 'u_repeat');
-		gl.uniform1i(u_repeat, layer.repeat ? 1 : 0);
-
-		const u_alignX = gl.getUniformLocation(shaderProgram, 'u_alignX');
-		gl.uniform1i(u_alignX, layer.alignX === 'left' ? 0 : layer.alignX === 'right' ? 2 : 1);
-
-		const u_alignY = gl.getUniformLocation(shaderProgram, 'u_alignY');
-		gl.uniform1i(u_alignY, layer.alignY === 'top' ? 0 : layer.alignY === 'bottom' ? 2 : 1);
-
-		const u_fitMode = gl.getUniformLocation(shaderProgram, 'u_fitMode');
-		gl.uniform1i(u_fitMode, layer.cover ? 1 : 0);
+		fx.main({
+			gl: gl,
+			program: shaderProgram,
+			params: Object.fromEntries(
+				Object.entries(fx.params).map(([key, param]) => {
+					return [key, layer.params[key] ?? param.default];
+				}),
+			) as any,
+			preTexture: preTexture,
+			width: this.renderWidth,
+			height: this.renderHeight,
+			watermark: watermark,
+		});
 
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
-	}
-
-	private renderLayer(layer: ImageEffectorLayer) {
-		if (layer.type === 'image') {
-			this.renderTextOrImageLayer(layer);
-		} else if (layer.type === 'text') {
-			this.renderTextOrImageLayer(layer);
-		}
 	}
 
 	public render() {
@@ -449,7 +396,7 @@ export class ImageEffector {
 		// --------------------
 
 		for (const layer of this.layers) {
-			this.renderLayer(layer);
+			this.renderLayer(layer, this.originalImageTexture);
 		}
 
 		// --------------------
@@ -479,6 +426,10 @@ export class ImageEffector {
 		const gl = this.gl;
 		if (gl == null) {
 			throw new Error('gl is not initialized');
+		}
+
+		for (const shader of this.shaderCache.values()) {
+			gl.deleteProgram(shader);
 		}
 
 		this.disposeBakedTextures();

@@ -3231,3 +3231,6 @@ _watermarkEditor:
   position: "位置"
   type: "タイプ"
   image: "画像"
+
+_imageEffector:
+  title: "エフェクト"

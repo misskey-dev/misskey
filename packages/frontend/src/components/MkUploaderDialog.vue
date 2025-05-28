@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, markRaw, onMounted, onUnmounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
@@ -96,7 +96,8 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { ImageEffector } from '@/utility/ImageEffector.js';
+import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import { makeImageEffectorLayers } from '@/utility/watermark.js';
 
 const $i = ensureSignin();
 
@@ -283,6 +284,23 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 					...item,
 					file: markRaw(cropped),
 					thumbnail: window.URL.createObjectURL(cropped),
+				});
+			},
+		});
+	}
+
+	if (IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
+		menu.push({
+			icon: 'ti ti-sparkles',
+			text: i18n.ts._imageEffector.title,
+			action: async () => {
+				const img = await getImageElement(item.file);
+				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkImageEffectorDialog.vue')), {
+					image: img,
+				}, {
+					ok: () => {
+					},
+					closed: () => dispose(),
 				});
 			},
 		});
@@ -490,7 +508,7 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 			canvas: canvas,
 			width: img.width,
 			height: img.height,
-			layers: preset.layers,
+			layers: makeImageEffectorLayers(preset.layers),
 			originalImage: img,
 		});
 

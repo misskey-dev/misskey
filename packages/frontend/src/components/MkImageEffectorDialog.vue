@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-copyright"></i> {{ i18n.ts._watermarkEditor.title }}</template>
+	<template #header><i class="ti ti-sparkles"></i> {{ i18n.ts._imageEffector.title }}</template>
 
 	<div :class="$style.root">
 		<div :class="$style.container">
@@ -23,19 +23,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.previewControls">
-						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
-						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
 					</div>
 				</div>
 			</div>
 			<div :class="$style.controls" class="_gaps">
-				<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }]"></MkSelect>
-
 				<XLayer
-					v-for="(layer, i) in preset.layers"
+					v-for="(layer, i) in layers"
 					:key="layer.id"
-					v-model:layer="preset.layers[i]"
+					v-model:layer="layers[i]"
 				></XLayer>
+
+				<MkButton rounded primary @click="addEffect"><i class="ti ti-plus"></i></MkButton>
 			</div>
 		</div>
 	</div>
@@ -46,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
 import { v4 as uuid } from 'uuid';
 import type { WatermarkPreset } from '@/utility/watermark.js';
-import { makeImageEffectorLayers } from '@/utility/watermark.js';
+import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -56,27 +54,10 @@ import MkInput from '@/components/MkInput.vue';
 import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
-import { ensureSignin } from '@/i.js';
-
-const $i = ensureSignin();
 
 const props = defineProps<{
-	preset?: WatermarkPreset | null;
+	image: HTMLImageElement;
 }>();
-
-const preset = reactive(deepClone(props.preset) ?? {
-	id: uuid(),
-	name: '',
-	layers: [{
-		id: uuid(),
-		type: 'text',
-		text: `(c) @${$i.username}`,
-		align: { x: 'right', y: 'bottom' },
-		scale: 0.3,
-		opacity: 0.75,
-		repeat: false,
-	}],
-} satisfies WatermarkPreset);
 
 const emit = defineEmits<{
 	(ev: 'ok', preset: WatermarkPreset): void;
@@ -91,94 +72,34 @@ function cancel() {
 	dialog.value?.close();
 }
 
-const type = ref(preset.layers[0].type);
-watch(type, () => {
-	if (type.value === 'text') {
-		preset.layers = [{
-			id: uuid(),
-			type: 'text',
-			text: `(c) @${$i.username}`,
-			align: { x: 'right', y: 'bottom' },
-			scale: 0.3,
-			opacity: 0.75,
-			repeat: false,
-		}];
-	} else if (type.value === 'image') {
-		preset.layers = [{
-			id: uuid(),
-			type: 'image',
-			imageId: null,
-			imageUrl: null,
-			align: { x: 'right', y: 'bottom' },
-			scale: 0.3,
-			opacity: 0.75,
-			repeat: false,
-		}];
-	}
-});
+const layers = reactive<ImageEffectorLayer[]>([]);
 
-watch(preset, async (newValue, oldValue) => {
+watch(layers, async () => {
 	if (renderer != null) {
-		renderer.updateLayers(makeImageEffectorLayers(preset.layers));
+		renderer.updateLayers(layers);
 	}
 }, { deep: true });
 
+function addEffect(ev: MouseEvent) {
+
+}
+
 const canvasEl = useTemplateRef('canvasEl');
-
-const sampleImage_3_2 = new Image();
-sampleImage_3_2.src = '/client-assets/sample/3-2.jpg';
-const sampleImage_3_2_loading = new Promise<void>(resolve => {
-	sampleImage_3_2.onload = () => resolve();
-});
-
-const sampleImage_2_3 = new Image();
-sampleImage_2_3.src = '/client-assets/sample/2-3.jpg';
-const sampleImage_2_3_loading = new Promise<void>(resolve => {
-	sampleImage_2_3.onload = () => resolve();
-});
-
-const sampleImageType = ref('3_2');
-watch(sampleImageType, async () => {
-	if (renderer != null) {
-		renderer.destroy();
-		renderer = null;
-		initRenderer();
-	}
-});
 
 let renderer: ImageEffector | null = null;
 
-async function initRenderer() {
-	if (canvasEl.value == null) return;
-
-	if (sampleImageType.value === '3_2') {
-		renderer = new ImageEffector({
-			canvas: canvasEl.value,
-			width: 1500,
-			height: 1000,
-			layers: makeImageEffectorLayers(preset.layers),
-			originalImage: sampleImage_3_2,
-		});
-	} else if (sampleImageType.value === '2_3') {
-		renderer = new ImageEffector({
-			canvas: canvasEl.value,
-			width: 1000,
-			height: 1500,
-			layers: makeImageEffectorLayers(preset.layers),
-			originalImage: sampleImage_2_3,
-		});
-	}
+onMounted(async () => {
+	renderer = new ImageEffector({
+		canvas: canvasEl.value,
+		width: props.image.width,
+		height: props.image.height,
+		layers: layers,
+		originalImage: props.image,
+	});
 
 	await renderer!.bakeTextures();
 
 	renderer!.render();
-}
-
-onMounted(async () => {
-	await sampleImage_3_2_loading;
-	await sampleImage_2_3_loading;
-
-	initRenderer();
 });
 
 onUnmounted(() => {
@@ -187,24 +108,6 @@ onUnmounted(() => {
 		renderer = null;
 	}
 });
-
-async function save() {
-	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.name,
-		default: preset.name,
-	});
-	if (canceled) return;
-
-	preset.name = name || '';
-
-	dialog.value?.close();
-	if (renderer != null) {
-		renderer.destroy();
-		renderer = null;
-	}
-
-	emit('ok', preset);
-}
 </script>
 
 <style module>
