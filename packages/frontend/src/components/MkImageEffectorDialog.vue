@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-for="(layer, i) in layers"
 					:key="layer.id"
 					v-model:layer="layers[i]"
+					@del="onLayerDelete(layer)"
 				></XLayer>
 
 				<MkButton rounded primary @click="addEffect"><i class="ti ti-plus"></i></MkButton>
@@ -81,7 +82,7 @@ watch(layers, async () => {
 }, { deep: true });
 
 function addEffect(ev: MouseEvent) {
-	os.popupMenu(FXS.map((fx) => ({
+	os.popupMenu(FXS.filter(fx => fx.id !== 'watermarkPlacement').map((fx) => ({
 		text: fx.id,
 		action: () => {
 			layers.push({
@@ -91,6 +92,13 @@ function addEffect(ev: MouseEvent) {
 			});
 		},
 	})), ev.currentTarget ?? ev.target);
+}
+
+function onLayerDelete(layer: ImageEffectorLayer) {
+	const index = layers.indexOf(layer);
+	if (index !== -1) {
+		layers.splice(index, 1);
+	}
 }
 
 const canvasEl = useTemplateRef('canvasEl');

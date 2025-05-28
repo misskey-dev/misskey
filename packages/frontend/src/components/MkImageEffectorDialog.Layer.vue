@@ -4,16 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" class="_gaps">
-	<div v-for="[k, v] in Object.entries(fx.params)" :key="k">
-		<MkSwitch v-if="v.type === 'boolean'" v-model="layer.params[k]">
-			<template #label>{{ k }}</template>
-		</MkSwitch>
-		<MkRange v-else-if="v.type === 'number'" v-model="layer.params[k]" continuousUpdate :min="v.min" :max="v.max" :step="v.step">
-			<template #label>{{ k }}</template>
-		</MkRange>
+<MkFolder :defaultOpen="true">
+	<template #label>{{ fx.id }}</template>
+	<template #footer>
+		<MkButton @click="emit('del')">{{ i18n.ts.remove }}</MkButton>
+	</template>
+
+	<div :class="$style.root" class="_gaps">
+		<div v-for="[k, v] in Object.entries(fx.params)" :key="k">
+			<MkSwitch v-if="v.type === 'boolean'" v-model="layer.params[k]">
+				<template #label>{{ k }}</template>
+			</MkSwitch>
+			<MkRange v-else-if="v.type === 'number'" v-model="layer.params[k]" continuousUpdate :min="v.min" :max="v.max" :step="v.step">
+				<template #label>{{ k }}</template>
+			</MkRange>
+			<div v-else-if="v.type === 'seed'">
+				<MkRange v-model="layer.params[k]" continuousUpdate type="number" :min="0" :max="10000" :step="1">
+					<template #label>{{ k }}</template>
+				</MkRange>
+			</div>
+		</div>
 	</div>
-</div>
+</MkFolder>
 </template>
 
 <script setup lang="ts">
@@ -22,7 +34,7 @@ import { v4 as uuid } from 'uuid';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
 import { FXS, ImageEffector } from '@/utility/image-effector/ImageEffector.js';
-import MkSelect from '@/components/MkSelect.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -40,6 +52,9 @@ if (fx == null) {
 	throw new Error(`Unrecognized effect: ${layer.value.fxId}`);
 }
 
+const emit = defineEmits<{
+	(e: 'del'): void;
+}>();
 </script>
 
 <style module>

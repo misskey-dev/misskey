@@ -28,24 +28,14 @@ void main() {
 	float normalisedValue = length((in_uv - 0.5) * 2.0);
 	float strength = clamp((normalisedValue - u_start) * (1.0 / (1.0 - u_start)), 0.0, 1.0);
 
-	//vec2 vector = normalize((in_uv - (size / 2.0)) / size);
-	//vec2 vector = in_uv;
 	vec2 vector = (u_normalize ? normalize(in_uv - vec2(0.5)) : in_uv - vec2(0.5));
 	vec2 velocity = vector * strength * u_amount;
-
-	//vec2 rOffset = -vector * strength * (u_amount * 1.0);
-	//vec2 gOffset = -vector * strength * (u_amount * 1.5);
-	//vec2 bOffset = -vector * strength * (u_amount * 2.0);
-
-	//vec2 rOffset = -vector * strength * (u_amount * 0.5);
-	//vec2 gOffset = -vector * strength * (u_amount * 1.0);
-	//vec2 bOffset = -vector * strength * (u_amount * 2.0);
 
 	vec2 rOffset = -vector * strength * (u_amount * r_strength);
 	vec2 gOffset = -vector * strength * (u_amount * g_strength);
 	vec2 bOffset = -vector * strength * (u_amount * b_strength);
 
-	for (int i=0; i < samples; i++) {
+	for (int i = 0; i < samples; i++) {
 		accumulator.r += texture(u_texture, in_uv + rOffset).r;
 		rOffset -= velocity / float(samples);
 
