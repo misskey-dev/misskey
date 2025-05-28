@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const IMAGE_PLACEMENT_SHADER = `#version 300 es
+const WATERMARK_PLACEMENT_SHADER = `#version 300 es
 precision highp float;
 
 in vec2 in_uv;
@@ -346,7 +346,7 @@ export class ImageEffector {
 				in_uv = (position + 1.0) / 2.0;
 				gl_Position = vec4(position, 0.0, 1.0);
 			}
-		`, IMAGE_PLACEMENT_SHADER);
+		`, WATERMARK_PLACEMENT_SHADER);
 
 		gl.useProgram(shaderProgram);
 
