@@ -12,7 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
+				<div class="highlight right" :style="{ width: ((steppedRawValue - minRatio) * 100) + '%', left: (Math.abs(Math.min(0, min)) / (max + Math.abs(Math.min(0, min)))) * 100 + '%' }">
+					<div class="shine right"></div>
+				</div>
+				<div class="highlight left" :style="{ width: ((minRatio - steppedRawValue) * 100) + '%', left: (steppedRawValue) * 100 + '%' }">
+					<div class="shine left"></div>
+				</div>
 			</div>
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
@@ -62,6 +67,9 @@ const emit = defineEmits<{
 
 const containerEl = useTemplateRef('containerEl');
 const thumbEl = useTemplateRef('thumbEl');
+
+const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
+const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
 const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
 const steppedRawValue = computed(() => {
@@ -256,10 +264,30 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				> .highlight {
 					position: absolute;
 					top: 0;
-					left: 0;
 					height: 100%;
-					background: var(--MI_THEME-accent);
-					opacity: 0.5;
+					background: color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0.5);
+					overflow: clip;
+
+					> .shine {
+						position: absolute;
+						top: 0;
+						width: 64px;
+						height: 100%;
+					}
+				}
+
+				> .highlight.right {
+					> .shine.right {
+						right: calc(#{$thumbWidth} / 2);
+						background: linear-gradient(-90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
+				}
+
+				> .highlight.left {
+					> .shine.left {
+						left: calc(#{$thumbWidth} / 2);
+						background: linear-gradient(90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
 				}
 			}
 
