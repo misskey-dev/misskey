@@ -1363,6 +1363,7 @@ abort: "中止"
 tip: "ヒントとコツ"
 redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
+defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -3216,6 +3217,7 @@ _userLists:
   tip: "任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。"
 
 watermark: "ウォーターマーク"
+defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
   tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
   title: "ウォーターマークの編集"

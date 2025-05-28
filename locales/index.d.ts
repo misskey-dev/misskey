@@ -5473,6 +5473,10 @@ export interface Locale extends ILocale {
      * 全ての「ヒントとコツ」を非表示
      */
     "hideAllTips": string;
+    /**
+     * デフォルトの画像圧縮度
+     */
+    "defaultImageCompressionLevel": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -12008,6 +12012,10 @@ export interface Locale extends ILocale {
      * ウォーターマーク
      */
     "watermark": string;
+    /**
+     * デフォルトのプリセット
+     */
+    "defaultPreset": string;
     "_watermarkEditor": {
         /**
          * 画像にクレジット情報などのウォーターマークを追加することができます。

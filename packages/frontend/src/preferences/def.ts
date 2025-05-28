@@ -351,7 +351,15 @@ export const PREF_DEF = {
 		default: [] as string[],
 	},
 	watermarkPresets: {
+		accountDependent: true,
 		default: [] as WatermarkPreset[],
+	},
+	defaultWatermarkPresetId: {
+		accountDependent: true,
+		default: null as WatermarkPreset['id'] | null,
+	},
+	defaultImageCompressionLevel: {
+		default: 2,
 	},
 
 	'sound.masterVolume': {
