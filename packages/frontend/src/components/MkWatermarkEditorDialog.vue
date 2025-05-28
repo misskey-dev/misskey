@@ -97,6 +97,32 @@ function cancel() {
 }
 
 const type = ref(preset.layers[0].type);
+watch(type, () => {
+	if (type.value === 'text') {
+		preset.layers = [{
+			id: uuid(),
+			type: type.value,
+			text: `(c) @${$i.username}`,
+			alignX: 'right',
+			alignY: 'bottom',
+			scale: 0.3,
+			opacity: 0.75,
+			repeat: false,
+		}];
+	} else if (type.value === 'image') {
+		preset.layers = [{
+			id: uuid(),
+			type: type.value,
+			imageId: null,
+			imageUrl: null,
+			alignX: 'right',
+			alignY: 'bottom',
+			scale: 0.3,
+			opacity: 0.75,
+			repeat: false,
+		}];
+	}
+});
 
 watch(preset, async (newValue, oldValue) => {
 	if (renderer != null) {

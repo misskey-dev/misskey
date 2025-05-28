@@ -68,11 +68,11 @@ type WatermarkerTextLayer = {
 	opacity: number;
 };
 
-export type WatermarkerImageLayer = {
+type WatermarkerImageLayer = {
 	id: string;
 	type: 'image';
-	imageUrl: string;
-	imageId: string;
+	imageUrl: string | null;
+	imageId: string | null;
 	repeat: boolean;
 	scale: number;
 	alignX: 'left' | 'center' | 'right';
@@ -234,10 +234,17 @@ export class Watermarker {
 					img.src = layer.imageUrl;
 				});
 
+				const texture = this.createTexture();
 				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
+				gl.bindTexture(gl.TEXTURE_2D, texture);
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
 				gl.bindTexture(gl.TEXTURE_2D, null);
+
+				this.bakedTextures.set(layer.id, {
+					texture: texture,
+					width: image.width,
+					height: image.height,
+				});
 			} else if (layer.type === 'text') {
 				const measureCtx = window.document.createElement('canvas').getContext('2d')!;
 				measureCtx.canvas.width = this.renderWidth;
@@ -323,7 +330,7 @@ export class Watermarker {
 		return shaderProgram;
 	}
 
-	private renderTextLayer(layer: WatermarkerTextLayer) {
+	private renderTextOrImageLayer(layer: WatermarkerTextLayer | WatermarkerImageLayer) {
 		const gl = this.gl;
 		if (gl == null) {
 			throw new Error('gl is not initialized');
@@ -385,9 +392,9 @@ export class Watermarker {
 
 	private renderLayer(layer: WatermarkerLayer) {
 		if (layer.type === 'image') {
-			this.renderImageLayer(layer);
+			this.renderTextOrImageLayer(layer);
 		} else if (layer.type === 'text') {
-			this.renderTextLayer(layer);
+			this.renderTextOrImageLayer(layer);
 		}
 	}
 

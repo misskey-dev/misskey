@@ -5,14 +5,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_gaps">
-	<div>
-		<MkButton inline rounded primary @click="chooseFile">{{ i18n.ts.selectFile }}</MkButton>
-	</div>
-
 	<template v-if="layer.type === 'text'">
 		<MkInput v-model="layer.text">
 			<template #label>{{ i18n.ts._watermarkEditor.text }}</template>
 		</MkInput>
+
+		<FormSlot>
+			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
+			<MkPositionSelector
+				v-model:x="layer.alignX"
+				v-model:y="layer.alignY"
+			></MkPositionSelector>
+		</FormSlot>
+
+		<MkRange
+			v-model="layer.scale"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.opacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+		</MkRange>
+
+		<MkSwitch v-model="layer.repeat">
+			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
+		</MkSwitch>
+	</template>
+	<template v-else-if="layer.type === 'image'">
+		<MkButton inline rounded primary @click="chooseFile">{{ i18n.ts.selectFile }}</MkButton>
 
 		<FormSlot>
 			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
@@ -84,14 +115,7 @@ onMounted(async () => {
 });
 
 function chooseFile(ev: MouseEvent) {
-	selectFile({
-		anchorElement: ev.currentTarget ?? ev.target,
-		multiple: false,
-		label: i18n.ts.selectFile,
-		features: {
-			watermark: false,
-		},
-	}).then((file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.selectFile).then((file) => {
 		if (!file.type.startsWith('image')) {
 			os.alert({
 				type: 'warning',
@@ -101,9 +125,8 @@ function chooseFile(ev: MouseEvent) {
 			return;
 		}
 
-		fileId.value = file.id;
-		fileUrl.value = file.url;
-		fileName.value = file.name;
+		layer.value.imageId = file.id;
+		layer.value.imageUrl = file.url;
 		driveFileError.value = false;
 	});
 }
