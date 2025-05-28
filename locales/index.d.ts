@@ -12034,6 +12034,10 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
+         * 全体に被せる
+         */
+        "cover": string;
+        /**
          * 敷き詰める
          */
         "repeat": string;

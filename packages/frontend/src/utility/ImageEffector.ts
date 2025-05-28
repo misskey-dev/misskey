@@ -19,16 +19,29 @@ uniform float u_opacity;
 uniform bool u_repeat;
 uniform int u_alignX; // 0: left, 1: center, 2: right
 uniform int u_alignY; // 0: top, 1: center, 2: bottom
+uniform int u_fitMode; // 0: contain, 1: cover
 out vec4 out_color;
 
 void main() {
 	vec4 pixel = texture(u_texture_src, in_uv);
 
+	bool contain = u_fitMode == 0;
+
 	float x_ratio = u_resolution_watermark.x / u_resolution_src.x;
 	float y_ratio = u_resolution_watermark.y / u_resolution_src.y;
-	float aspect_ratio = min(x_ratio, y_ratio) / max(x_ratio, y_ratio);
-	float x_scale = x_ratio > y_ratio ? 1.0 * u_scale : aspect_ratio * u_scale;
-	float y_scale = y_ratio > x_ratio ? 1.0 * u_scale : aspect_ratio * u_scale;
+
+	float aspect_ratio = contain ?
+		(min(x_ratio, y_ratio) / max(x_ratio, y_ratio)) :
+		(max(x_ratio, y_ratio) / min(x_ratio, y_ratio));
+
+	float x_scale = contain ?
+		(x_ratio > y_ratio ? 1.0 * u_scale : aspect_ratio * u_scale) :
+		(x_ratio > y_ratio ? aspect_ratio * u_scale : 1.0 * u_scale);
+
+	float y_scale = contain ?
+		(y_ratio > x_ratio ? 1.0 * u_scale : aspect_ratio * u_scale) :
+		(y_ratio > x_ratio ? aspect_ratio * u_scale : 1.0 * u_scale);
+
 	float x_offset = u_alignX == 0 ? x_scale / 2.0 : u_alignX == 2 ? 1.0 - (x_scale / 2.0) : 0.5;
 	float y_offset = u_alignY == 0 ? y_scale / 2.0 : u_alignY == 2 ? 1.0 - (y_scale / 2.0) : 0.5;
 
@@ -69,6 +82,7 @@ type ImageEffectorImageLayer = {
 	type: 'image';
 	imageUrl: string | null;
 	imageId: string | null;
+	cover: boolean;
 	repeat: boolean;
 	scale: number;
 	alignX: 'left' | 'center' | 'right';
@@ -226,7 +240,7 @@ export class ImageEffector {
 					const img = new Image();
 					img.onload = () => resolve(img);
 					img.onerror = reject;
-					img.src = getProxiedImageUrl(layer.imageUrl);
+					img.src = getProxiedImageUrl(layer.imageUrl); // CORS対策
 				});
 
 				const texture = this.createTexture();
@@ -384,6 +398,9 @@ export class ImageEffector {
 
 		const u_alignY = gl.getUniformLocation(shaderProgram, 'u_alignY');
 		gl.uniform1i(u_alignY, layer.alignY === 'top' ? 0 : layer.alignY === 'bottom' ? 2 : 1);
+
+		const u_fitMode = gl.getUniformLocation(shaderProgram, 'u_fitMode');
+		gl.uniform1i(u_fitMode, layer.cover ? 1 : 0);
 
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}

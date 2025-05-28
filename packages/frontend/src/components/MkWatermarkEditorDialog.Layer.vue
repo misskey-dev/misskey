@@ -80,6 +80,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="layer.repeat">
 			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
 		</MkSwitch>
+
+		<MkSwitch v-model="layer.cover">
+			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
+		</MkSwitch>
 	</template>
 </div>
 </template>
