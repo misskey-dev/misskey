@@ -7,6 +7,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
 
@@ -28,6 +30,9 @@ import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { genAidx } from '@/misc/id/aidx.js';
+
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
 const host = 'https://host1.test';
 
@@ -124,7 +129,7 @@ describe('ActivityPub', () => {
 				async downloadUrl(url: string, path: string): Promise<{ filename: string }> {
 					if (url.endsWith('.png')) {
 						fs.copyFileSync(
-							'../resources/hw.png',
+							_dirname + '/../resources/hw.png',
 							path,
 						);
 					}
