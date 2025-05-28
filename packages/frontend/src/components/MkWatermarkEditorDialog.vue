@@ -21,7 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.preview">
 				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
 				<div :class="$style.previewContainer">
-					<div class="_acrylic" :class="$style.watermarkEditorPreviewTitle">{{ i18n.ts.preview }}</div>
+					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+					<div class="_acrylic" :class="$style.previewControls">
+						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
+						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
+					</div>
 				</div>
 			</div>
 			<div :class="$style.controls" class="_gaps">
@@ -102,25 +106,60 @@ watch(preset, async (newValue, oldValue) => {
 
 const canvasEl = useTemplateRef('canvasEl');
 
-const sampleImage = new Image();
-sampleImage.src = '/client-assets/sample/3-2.jpg';
+const sampleImage_3_2 = new Image();
+sampleImage_3_2.src = '/client-assets/sample/3-2.jpg';
+const sampleImage_3_2_loading = new Promise<void>(resolve => {
+	sampleImage_3_2.onload = () => resolve();
+});
+
+const sampleImage_2_3 = new Image();
+sampleImage_2_3.src = '/client-assets/sample/2-3.jpg';
+const sampleImage_2_3_loading = new Promise<void>(resolve => {
+	sampleImage_2_3.onload = () => resolve();
+});
+
+const sampleImageType = ref('3_2');
+watch(sampleImageType, async () => {
+	if (renderer != null) {
+		renderer.destroy();
+		renderer = null;
+		initRenderer();
+	}
+});
 
 let renderer: Watermarker | null = null;
 
-onMounted(() => {
-	sampleImage.onload = async () => {
+async function initRenderer() {
+	if (canvasEl.value == null) return;
+
+	if (sampleImageType.value === '3_2') {
 		renderer = new Watermarker({
 			canvas: canvasEl.value,
 			width: 1500,
 			height: 1000,
 			preset: preset,
-			originalImage: sampleImage,
+			originalImage: sampleImage_3_2,
 		});
+	} else if (sampleImageType.value === '2_3') {
+		renderer = new Watermarker({
+			canvas: canvasEl.value,
+			width: 1000,
+			height: 1500,
+			preset: preset,
+			originalImage: sampleImage_2_3,
+		});
+	}
 
-		await renderer.bakeTextures();
+	await renderer!.bakeTextures();
 
-		renderer.render();
-	};
+	renderer!.render();
+}
+
+onMounted(async () => {
+	await sampleImage_3_2_loading;
+	await sampleImage_2_3_loading;
+
+	initRenderer();
 });
 
 onUnmounted(() => {
@@ -166,19 +205,17 @@ async function save() {
 	background-color: var(--MI_THEME-bg);
 	background-size: auto auto;
 	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
-	cursor: not-allowed;
 }
 
 .previewContainer {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	pointer-events: none;
 	user-select: none;
 	-webkit-user-drag: none;
 }
 
-.watermarkEditorPreviewTitle {
+.previewTitle {
 	position: absolute;
 	z-index: 100;
 	top: 8px;
@@ -188,7 +225,25 @@ async function save() {
 	font-size: 85%;
 }
 
-.watermarkEditorPreviewSpinner {
+.previewControls {
+	position: absolute;
+	z-index: 100;
+	bottom: 8px;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border-radius: 6px;
+}
+
+.previewControlsButton {
+	&.active {
+		color: var(--MI_THEME-accent);
+	}
+}
+
+.previewSpinner {
 	position: absolute;
 	top: 50%;
 	left: 50%;
