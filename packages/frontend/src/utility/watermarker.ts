@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const A_SHADER = `#version 300 es
+const IMAGE_ADD_SHADER = `#version 300 es
 precision highp float;
 
 in vec2 in_uv;
@@ -349,7 +349,7 @@ export class Watermarker {
 				in_uv = (position + 1.0) / 2.0;
 				gl_Position = vec4(position, 0.0, 1.0);
 			}
-		`, A_SHADER);
+		`, IMAGE_ADD_SHADER);
 
 		gl.useProgram(shaderProgram);
 
