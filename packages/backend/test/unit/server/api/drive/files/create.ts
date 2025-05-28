@@ -17,6 +17,8 @@ import { ServerModule } from '@/server/ServerModule.js';
 import { ServerService } from '@/server/ServerService.js';
 import { IdService } from '@/core/IdService.js';
 
+// TODO: uploadableFileTypes で許可されていないファイルが弾かれるかのテスト
+
 describe('/drive/files/create', () => {
 	let module: TestingModule;
 	let server: FastifyInstance;
@@ -74,6 +76,11 @@ describe('/drive/files/create', () => {
 					priority: 1,
 					// 10byte
 					value: 10 / 1024 / 1024,
+				},
+				uploadableFileTypes: {
+					useDefault: false,
+					priority: 1,
+					value: ['*/*'],
 				},
 			},
 		});
