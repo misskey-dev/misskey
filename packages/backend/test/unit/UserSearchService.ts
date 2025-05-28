@@ -7,16 +7,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { describe, jest, test } from '@jest/globals';
 import { In } from 'typeorm';
 import { UserSearchService } from '@/core/UserSearchService.js';
-import { FollowingsRepository, MiUser, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { FollowingsRepository, InstancesRepository, MiUser, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { genAidx } from '@/misc/id/aidx.js';
 
 describe('UserSearchService', () => {
 	let app: TestingModule;
 	let service: UserSearchService;
 
+	let instancesRepository: InstancesRepository;
 	let usersRepository: UsersRepository;
 	let followingsRepository: FollowingsRepository;
 	let idService: IdService;
@@ -35,6 +37,19 @@ describe('UserSearchService', () => {
 	let bobby: MiUser;
 
 	async function createUser(data: Partial<MiUser> = {}) {
+		if (data.host != null) {
+			await instancesRepository
+				.createQueryBuilder('instance')
+				.insert()
+				.values({
+					id: genAidx(Date.now()),
+					firstRetrievedAt: new Date(),
+					host: data.host,
+				})
+				.orIgnore()
+				.execute();
+		}
+
 		const user = await usersRepository
 			.insert({
 				id: idService.gen(),
@@ -104,6 +119,7 @@ describe('UserSearchService', () => {
 
 		await app.init();
 
+		instancesRepository = app.get<InstancesRepository>(DI.instancesRepository);
 		usersRepository = app.get(DI.usersRepository);
 		userProfilesRepository = app.get(DI.userProfilesRepository);
 		followingsRepository = app.get(DI.followingsRepository);
