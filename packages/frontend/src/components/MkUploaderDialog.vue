@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
@@ -362,6 +362,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			icon: 'ti ti-x',
 			text: i18n.ts.remove,
 			action: () => {
+				URL.revokeObjectURL(item.thumbnail);
 				items.value.splice(items.value.indexOf(item), 1);
 			},
 		});
@@ -570,6 +571,12 @@ function initializeFile(file: File) {
 onMounted(() => {
 	for (const file of props.files) {
 		initializeFile(file);
+	}
+});
+
+onUnmounted(() => {
+	for (const item of items.value) {
+		URL.revokeObjectURL(item.thumbnail);
 	}
 });
 </script>
