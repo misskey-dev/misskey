@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { getProxiedImageUrl } from './media-proxy.js';
+
 const WATERMARK_PLACEMENT_SHADER = `#version 300 es
 precision highp float;
 
@@ -222,10 +224,9 @@ export class ImageEffector {
 			if (layer.type === 'image') {
 				const image = await new Promise<HTMLImageElement>((resolve, reject) => {
 					const img = new Image();
-					img.crossOrigin = 'use-credentials';
 					img.onload = () => resolve(img);
 					img.onerror = reject;
-					img.src = layer.imageUrl;
+					img.src = getProxiedImageUrl(layer.imageUrl);
 				});
 
 				const texture = this.createTexture();
