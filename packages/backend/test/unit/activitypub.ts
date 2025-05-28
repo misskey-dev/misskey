@@ -121,10 +121,10 @@ describe('ActivityPub', () => {
 			imports: [GlobalModule, CoreModule],
 		})
 			.overrideProvider(DownloadService).useValue({
-				async downloadUrl(url, path): Promise<{ filename: string }> {
+				async downloadUrl(url: string, path: string): Promise<{ filename: string }> {
 					if (url.endsWith('.png')) {
 						fs.copyFileSync(
-							`${__dirname}/../resources/hw.png`,
+							'../resources/hw.png',
 							path,
 						);
 					}
