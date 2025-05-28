@@ -9,6 +9,17 @@ class JitsiApiService {
 	private domain = 'call.yami.ski';
 	private isScriptLoaded = false;
 
+	// Misskeyの絵文字を除去する関数
+	private removeEmojiFromName(name: string | null): string | null {
+		if (!name) return name;
+
+		// :英数字: 形式の絵文字を除去
+		const cleanedName = name.replace(/:[\w\d_-]+:/g, '').trim();
+
+		// 空文字列になった場合はnullを返す
+		return cleanedName || null;
+	}
+
 	async loadScript(): Promise<void> {
 		if (this.isScriptLoaded || window.JitsiMeetExternalAPI) {
 			this.isScriptLoaded = true;
@@ -27,7 +38,7 @@ class JitsiApiService {
 		});
 	}
 
-	async startMeeting(roomName: string, containerId: string, displayName: string | null, avatarUrl: string | null): Promise<void> {
+	async startMeeting(roomName: string, containerId: string, displayName: string | null, email: string | null): Promise<void> {
 		await this.loadScript();
 
 		if (!window.JitsiMeetExternalAPI) {
@@ -52,11 +63,24 @@ class JitsiApiService {
 			throw new Error(`Container with id ${containerId} not found after waiting`);
 		}
 
+		// 絵文字を除去した名前を生成
+		const cleanedDisplayName = this.removeEmojiFromName(displayName);
+
+		console.log('User settings:', {
+			originalDisplayName: displayName,
+			cleanedDisplayName: cleanedDisplayName,
+			email,
+		});
+
 		const options = {
 			roomName: roomName,
 			width: '100%',
-			height: '100%', // CSSの高さ設定に完全に任せる
+			height: '100%',
 			parentNode: container,
+			userInfo: {
+				displayName: cleanedDisplayName || 'Anonymous',
+				email: email || undefined, // Gravatarで使用されるメールアドレス
+			},
 			configOverwrite: {
 				startWithAudioMuted: true,
 				startWithVideoMuted: false,
@@ -64,28 +88,31 @@ class JitsiApiService {
 				prejoinPageEnabled: false,
 				defaultLanguage: 'ja',
 				enableLayerSuspension: true,
-				// 解像度設定を追加
-				resolution: 720, // HD解像度
+				resolution: 720,
+				// Gravatarを有効化
+				gravatar: {
+					baseUrl: 'https://www.gravatar.com/avatar/',
+					disabled: false,
+				},
+				disableThirdPartyRequests: false,
 				constraints: {
 					video: {
-						aspectRatio: 16/9,
+						aspectRatio: 16 / 9,
 						height: { ideal: 360, max: 720 },
-						width: { ideal: 640, max: 1280 }
-					}
-				}
+						width: { ideal: 640, max: 1280 },
+					},
+				},
 			},
 			interfaceConfigOverwrite: {
 				TILE_VIEW_MAX_COLUMNS: 2,
 				SHOW_JITSI_WATERMARK: false,
 				SHOW_WATERMARK_FOR_GUESTS: false,
-				// モバイル向けUI調整
 				MOBILE_APP_PROMO: false,
 				SHOW_PROMOTIONAL_CLOSE_PAGE: false,
 				TOOLBAR_BUTTONS: [
-					'microphone', 'camera', 'hangup', 'chat', 'settings'
+					'microphone', 'camera', 'hangup', 'chat', 'settings',
 				],
-				// ビデオレイアウトの調整
-				VIDEO_LAYOUT_FIT: 'nocrop', // ビデオをクロップしない
+				VIDEO_LAYOUT_FIT: 'nocrop',
 			},
 		};
 
@@ -101,13 +128,16 @@ class JitsiApiService {
 				console.log('Meeting left');
 			});
 
-			this.api.addEventListener('avatarChanged', avatarUrl, () => {
-				console.log('Avatar changed');
+			// アバター変更イベントをリッスン（デバッグ用）
+			this.api.addEventListener('avatarChanged', (event: any) => {
+				console.log('Avatar changed event:', event);
 			});
 
-			this.api.addEventListener('displayNameChanged', displayName, () => {
-				console.log('Display name changed');
+			// 参加者情報変更イベントもリッスン（デバッグ用）
+			this.api.addEventListener('displayNameChange', (event: any) => {
+				console.log('Display name changed:', event);
 			});
+
 		} catch (error) {
 			console.error('Failed to create Jitsi meeting:', error);
 			throw error;

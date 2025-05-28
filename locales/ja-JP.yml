@@ -1402,7 +1402,6 @@ assignedRoles: "割り当てられたロール"
 assignableRoles: "割り当てられるロール"
 noActiveMeeting: "進行中ミーティングはありません"
 startMeeting: "ミーティングを開始"
-meetingInProgress: "ミーティングが進行中です"
 endMeeting: "ミーティングを終了"
 _chat:
   noMessagesYet: "まだメッセージはありません"

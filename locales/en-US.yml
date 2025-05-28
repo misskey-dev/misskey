@@ -1383,7 +1383,6 @@ assignedRoles: "Assigned Roles"
 assignableRoles: "Assignable Roles"
 noActiveMeeting: "No active meeting"
 startMeeting: "Start Meeting"
-meetingInProgress: "Meeting in progress"
 endMeeting: "End Meeting"
 _chat:
   noMessagesYet: "No messages yet"

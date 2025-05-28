@@ -5630,10 +5630,6 @@ export interface Locale extends ILocale {
      */
     "startMeeting": string;
     /**
-     * ミーティングが進行中です
-     */
-    "meetingInProgress": string;
-    /**
      * ミーティングを終了
      */
     "endMeeting": string;

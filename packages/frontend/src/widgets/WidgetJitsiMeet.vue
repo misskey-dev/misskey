@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-jitsiMeet">
 	<template #icon><i class="ti ti-video"></i></template>
-	<template #header>{{ i18n.ts._widgets.jitsiMeet }}</template>
+	<template #header>{{ i18n.ts._widgets.jitsiMeet }}: {{ widgetProps.roomName }}</template>
 	<template #func="{ buttonStyleClass }">
 		<button class="_button" :class="buttonStyleClass" @click="toggleMeeting()">
 			<i :class="meetingStarted ? 'ti ti-video-off' : 'ti ti-video'"></i>
@@ -25,17 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkResult>
 		<div v-else class="_gaps_s" style="display: flex; flex-direction: column; justify-content: center; align-items: center">
-			<div :class="$style.meetingHeader">
-				<div :class="$style.meetingInfo">
-					<div :class="$style.meetingStatus">
-						<span :class="$style.meetingTitle">{{ widgetProps.roomName }}</span>
-						<span :class="$style.statusText">
-							<i class="ti ti-circle-filled" :class="$style.statusIcon"></i>
-							{{ i18n.ts.meetingInProgress }}
-						</span>
-					</div>
-				</div>
-			</div>
 			<div :id="containerId" :class="$style.jitsiContainer"></div>
 			<MkButton danger @click="endMeeting">
 				<i class="ti ti-video-off"></i>
@@ -48,7 +37,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
-import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
@@ -58,6 +46,7 @@ import MkLoading from '@/components/global/MkLoading.vue';
 import MkResult from '@/components/global/MkResult.vue';
 import { i18n } from '@/i18n.js';
 import { jitsiApi } from '@/utility/jitsi-api.js';
+import { $i } from '@/i.js';
 
 const name = i18n.ts._widgets.jitsiMeet;
 
@@ -78,10 +67,7 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps> & {
-	name: Misskey.entities.User['name'];
-	avatarUrl: Misskey.entities.User['avatarUrl'];
-}>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
@@ -102,13 +88,22 @@ const startMeeting = async () => {
 		await nextTick();
 
 		// 少し待ってからJitsi APIを呼び出す
-		window.setTimeout(async () => {
+		setTimeout(async () => {
 			try {
+				// $iから現在のユーザー情報を取得
+				const displayName = $i?.name || $i?.username || 'Anonymous';
+				const email = $i?.email || null; // メールアドレスのみ取得
+
+				console.log('Misskey user info:', {
+					displayName,
+					email,
+				});
+
 				await jitsiApi.startMeeting(
 					widgetProps.roomName,
 					containerId.value,
-					props.name,
-					props.avatarUrl,
+					displayName,
+					email, // メールアドレスのみを渡す
 				);
 			} catch (error) {
 				console.error('Failed to start meeting:', error);
