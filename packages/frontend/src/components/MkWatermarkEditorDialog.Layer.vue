@@ -87,9 +87,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted } from 'vue';
 import { v4 as uuid } from 'uuid';
-import type { WatermarkerLayer, WatermarkPreset } from '@/utility/watermarker.js';
+import type { ImageEffectorLayer } from '@/utility/ImageEffector.js';
 import { i18n } from '@/i18n.js';
-import { Watermarker } from '@/utility/watermarker.js';
+import { ImageEffector } from '@/utility/ImageEffector.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -102,7 +102,7 @@ import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 
-const layer = defineModel<WatermarkerLayer>('layer', { required: true });
+const layer = defineModel<ImageEffectorLayer>('layer', { required: true });
 
 const driveFile = ref();
 const driveFileError = ref(false);

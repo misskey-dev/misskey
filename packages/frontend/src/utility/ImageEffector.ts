@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const IMAGE_ADD_SHADER = `#version 300 es
+const IMAGE_PLACEMENT_SHADER = `#version 300 es
 precision highp float;
 
 in vec2 in_uv;
@@ -51,13 +51,7 @@ void main() {
 }
 `;
 
-export type WatermarkPreset = {
-	id: string;
-	name: string;
-	layers: WatermarkerLayer[];
-};
-
-type WatermarkerTextLayer = {
+type ImageEffectorTextLayer = {
 	id: string;
 	type: 'text';
 	text: string;
@@ -68,7 +62,7 @@ type WatermarkerTextLayer = {
 	opacity: number;
 };
 
-type WatermarkerImageLayer = {
+type ImageEffectorImageLayer = {
 	id: string;
 	type: 'image';
 	imageUrl: string | null;
@@ -80,9 +74,9 @@ type WatermarkerImageLayer = {
 	opacity: number;
 };
 
-export type WatermarkerLayer = WatermarkerTextLayer | WatermarkerImageLayer;
+export type ImageEffectorLayer = ImageEffectorTextLayer | ImageEffectorImageLayer;
 
-export class Watermarker {
+export class ImageEffector {
 	private canvas: HTMLCanvasElement | null = null;
 	private gl: WebGL2RenderingContext | null = null;
 	private renderTextureProgram!: WebGLProgram;
@@ -90,7 +84,7 @@ export class Watermarker {
 	private renderWidth!: number;
 	private renderHeight!: number;
 	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
-	private preset: WatermarkPreset;
+	private layers: ImageEffectorLayer[];
 	private originalImageTexture: WebGLTexture;
 	private resultTexture: WebGLTexture;
 	private resultFrameBuffer: WebGLFramebuffer;
@@ -102,7 +96,7 @@ export class Watermarker {
 		width: number;
 		height: number;
 		originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
-		preset: WatermarkPreset;
+		layers: ImageEffectorLayer[];
 	}) {
 		this.canvas = options.canvas;
 		this.canvas.width = options.width;
@@ -110,7 +104,7 @@ export class Watermarker {
 		this.renderWidth = options.width;
 		this.renderHeight = options.height;
 		this.originalImage = options.originalImage;
-		this.preset = options.preset;
+		this.layers = options.layers;
 		this.texturesKey = this.calcTexturesKey();
 
 		this.gl = this.canvas.getContext('webgl2', {
@@ -180,7 +174,7 @@ export class Watermarker {
 	}
 
 	private calcTexturesKey() {
-		return this.preset.layers.map(layer => {
+		return this.layers.map(layer => {
 			if (layer.type === 'image') {
 				return layer.imageId;
 			} else if (layer.type === 'text') {
@@ -224,10 +218,11 @@ export class Watermarker {
 
 		this.disposeBakedTextures();
 
-		for (const layer of this.preset.layers) {
+		for (const layer of this.layers) {
 			if (layer.type === 'image') {
 				const image = await new Promise<HTMLImageElement>((resolve, reject) => {
 					const img = new Image();
+					img.crossOrigin = 'use-credentials';
 					img.onload = () => resolve(img);
 					img.onerror = reject;
 					img.src = layer.imageUrl;
@@ -332,7 +327,7 @@ export class Watermarker {
 		return shaderProgram;
 	}
 
-	private renderTextOrImageLayer(layer: WatermarkerTextLayer | WatermarkerImageLayer) {
+	private renderTextOrImageLayer(layer: ImageEffectorTextLayer | ImageEffectorImageLayer) {
 		const gl = this.gl;
 		if (gl == null) {
 			throw new Error('gl is not initialized');
@@ -351,7 +346,7 @@ export class Watermarker {
 				in_uv = (position + 1.0) / 2.0;
 				gl_Position = vec4(position, 0.0, 1.0);
 			}
-		`, IMAGE_ADD_SHADER);
+		`, IMAGE_PLACEMENT_SHADER);
 
 		gl.useProgram(shaderProgram);
 
@@ -392,7 +387,7 @@ export class Watermarker {
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
-	private renderLayer(layer: WatermarkerLayer) {
+	private renderLayer(layer: ImageEffectorLayer) {
 		if (layer.type === 'image') {
 			this.renderTextOrImageLayer(layer);
 		} else if (layer.type === 'text') {
@@ -435,7 +430,7 @@ export class Watermarker {
 
 		// --------------------
 
-		for (const layer of this.preset.layers) {
+		for (const layer of this.layers) {
 			this.renderLayer(layer);
 		}
 
@@ -450,8 +445,8 @@ export class Watermarker {
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
-	public async updatePreset(preset: WatermarkPreset) {
-		this.preset = preset;
+	public async updateLayers(layers: ImageEffectorLayer[]) {
+		this.layers = layers;
 
 		const newTexturesKey = this.calcTexturesKey();
 		if (newTexturesKey !== this.texturesKey) {

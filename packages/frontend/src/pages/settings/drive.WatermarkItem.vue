@@ -22,13 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import type { WatermarkPreset } from '@/utility/watermarker.js';
+import type { WatermarkPreset } from '@/preferences/def.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkFolder from '@/components/MkFolder.vue';
-import { Watermarker } from '@/utility/watermarker.js';
+import { ImageEffector } from '@/utility/ImageEffector.js';
 
 const props = defineProps<{
 	preset: WatermarkPreset;
@@ -64,18 +64,18 @@ const canvasEl = useTemplateRef('canvasEl');
 const sampleImage = new Image();
 sampleImage.src = '/client-assets/sample/3-2.jpg';
 
-let renderer: Watermarker | null = null;
+let renderer: ImageEffector | null = null;
 
 onMounted(() => {
 	sampleImage.onload = async () => {
 		watch(canvasEl, async () => {
 			if (canvasEl.value == null) return;
 
-			renderer = new Watermarker({
+			renderer = new ImageEffector({
 				canvas: canvasEl.value,
 				width: 1500,
 				height: 1000,
-				preset: props.preset,
+				layers: props.preset.layers,
 				originalImage: sampleImage,
 			});
 
@@ -95,7 +95,7 @@ onUnmounted(() => {
 
 watch(() => props.preset, async () => {
 	if (renderer != null) {
-		renderer.updatePreset(props.preset);
+		renderer.updateLayers(props.preset.layers);
 		await renderer.bakeTextures();
 		renderer.render();
 	}

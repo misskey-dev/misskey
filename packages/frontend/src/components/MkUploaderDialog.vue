@@ -96,7 +96,7 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { Watermarker } from '@/utility/watermarker.js';
+import { ImageEffector } from '@/utility/ImageEffector.js';
 
 const $i = ensureSignin();
 
@@ -152,7 +152,7 @@ const items = ref<{
 	uploaded: Misskey.entities.DriveFile | null;
 	uploadFailed: boolean;
 	aborted: boolean;
-	compressionLevel: 0 | 1 | 2 | 3;
+	compressionLevel: number;
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
@@ -486,11 +486,11 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 	const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
 	if (needsWatermark && preset != null) {
 		const canvas = window.document.createElement('canvas');
-		const renderer = new Watermarker({
+		const renderer = new ImageEffector({
 			canvas: canvas,
 			width: img.width,
 			height: img.height,
-			preset: preset,
+			layers: preset.layers,
 			originalImage: img,
 		});
 

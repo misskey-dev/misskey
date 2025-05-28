@@ -11,7 +11,7 @@ import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
 import type { PreferencesDefinition } from './manager.js';
-import type { WatermarkPreset } from '@/utility/watermarker.js';
+import type { ImageEffectorLayer } from '@/utility/ImageEffector.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 /** サウンド設定 */
@@ -28,6 +28,12 @@ export type SoundStore = {
 	fileUrl: string;
 
 	volume: number;
+};
+
+export type WatermarkPreset = {
+	id: string;
+	name: string;
+	layers: ImageEffectorLayer[];
 };
 
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)

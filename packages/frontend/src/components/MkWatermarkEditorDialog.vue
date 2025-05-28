@@ -45,9 +45,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
 import { v4 as uuid } from 'uuid';
-import type { WatermarkPreset } from '@/utility/watermarker.js';
+import type { WatermarkPreset } from '@/preferences/def.js';
 import { i18n } from '@/i18n.js';
-import { Watermarker } from '@/utility/watermarker.js';
+import { ImageEffector } from '@/utility/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -121,7 +121,7 @@ watch(type, () => {
 
 watch(preset, async (newValue, oldValue) => {
 	if (renderer != null) {
-		renderer.updatePreset(preset);
+		renderer.updateLayers(preset.layers);
 	}
 }, { deep: true });
 
@@ -148,25 +148,25 @@ watch(sampleImageType, async () => {
 	}
 });
 
-let renderer: Watermarker | null = null;
+let renderer: ImageEffector | null = null;
 
 async function initRenderer() {
 	if (canvasEl.value == null) return;
 
 	if (sampleImageType.value === '3_2') {
-		renderer = new Watermarker({
+		renderer = new ImageEffector({
 			canvas: canvasEl.value,
 			width: 1500,
 			height: 1000,
-			preset: preset,
+			layers: preset.layers,
 			originalImage: sampleImage_3_2,
 		});
 	} else if (sampleImageType.value === '2_3') {
-		renderer = new Watermarker({
+		renderer = new ImageEffector({
 			canvas: canvasEl.value,
 			width: 1000,
 			height: 1500,
-			preset: preset,
+			layers: preset.layers,
 			originalImage: sampleImage_2_3,
 		});
 	}
