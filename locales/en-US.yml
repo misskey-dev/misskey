@@ -2903,6 +2903,8 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "URL preview settings"
   enable: "Enable URL preview"
+  allowRedirect: "Allow URL preview redirection"
+  allowRedirectDescription: "If a URL has a redirection set, you can enable this feature to follow the redirection and display a preview of the redirected content. Disabling this will save server resources, but redirected content will not be displayed."
   timeout: "Time out when getting preview (ms)"
   timeoutDescription: "If it takes longer than this value to get the preview, the preview won’t be generated."
   maximumContentLength: "Maximum Content-Length (bytes)"
