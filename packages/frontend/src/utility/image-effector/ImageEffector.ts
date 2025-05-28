@@ -43,7 +43,7 @@ export type ImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDef
 	}) => void;
 };
 
-const FXS = [
+export const FXS = [
 	FX_watermarkPlacement,
 	FX_chromaticAberration,
 ] as const satisfies ImageEffectorFx<string, any>[];
@@ -75,11 +75,11 @@ export class ImageEffector {
 	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 	private layers: ImageEffectorLayer[];
 	private originalImageTexture: WebGLTexture;
-	private resultTexture: WebGLTexture;
-	private resultFrameBuffer: WebGLFramebuffer;
 	private bakedTexturesForWatermarkFx: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 	private texturesKey: string;
 	private shaderCache: Map<string, WebGLProgram> = new Map();
+	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
+	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -117,9 +117,6 @@ export class ImageEffector {
 		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, options.width, options.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
-
-		this.resultTexture = this.createTexture();
-		this.resultFrameBuffer = gl.createFramebuffer()!;
 
 		this.renderTextureProgram = this.initShaderProgram(`#version 300 es
 			in vec2 position;
@@ -366,17 +363,6 @@ export class ImageEffector {
 			throw new Error('gl is not initialized');
 		}
 
-		gl.bindTexture(gl.TEXTURE_2D, this.resultTexture);
-		gl.texImage2D(
-			gl.TEXTURE_2D, 0, gl.RGBA, this.renderWidth, this.renderHeight, 0,
-			gl.RGBA, gl.UNSIGNED_BYTE, null);
-		gl.bindTexture(gl.TEXTURE_2D, null);
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, this.resultFrameBuffer);
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.resultTexture, 0);
-
-		// --------------------
-
 		{
 			gl.activeTexture(gl.TEXTURE0);
 			gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
@@ -395,8 +381,31 @@ export class ImageEffector {
 
 		// --------------------
 
+		let preTexture = this.originalImageTexture;
+
 		for (const layer of this.layers) {
-			this.renderLayer(layer, this.originalImageTexture);
+			const cachedResultTexture = this.perLayerResultTextures.get(layer.id);
+			const resultTexture = cachedResultTexture ?? this.createTexture();
+			if (cachedResultTexture == null) {
+				this.perLayerResultTextures.set(layer.id, resultTexture);
+			}
+			gl.bindTexture(gl.TEXTURE_2D, resultTexture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.renderWidth, this.renderHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+			gl.bindTexture(gl.TEXTURE_2D, null);
+
+			const cachedResultFrameBuffer = this.perLayerResultFrameBuffers.get(layer.id);
+			const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer()!;
+			if (cachedResultFrameBuffer == null) {
+				this.perLayerResultFrameBuffers.set(layer.id, resultFrameBuffer);
+			}
+			gl.bindFramebuffer(gl.FRAMEBUFFER, resultFrameBuffer);
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
+
+			this.renderLayer(layer, preTexture);
+
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+			preTexture = resultTexture;
 		}
 
 		// --------------------
@@ -405,7 +414,7 @@ export class ImageEffector {
 		gl.useProgram(this.renderInvertedTextureProgram);
 
 		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, this.resultTexture);
+		gl.bindTexture(gl.TEXTURE_2D, preTexture);
 
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
@@ -431,12 +440,21 @@ export class ImageEffector {
 		for (const shader of this.shaderCache.values()) {
 			gl.deleteProgram(shader);
 		}
+		this.shaderCache.clear();
+
+		for (const texture of this.perLayerResultTextures.values()) {
+			gl.deleteTexture(texture);
+		}
+		this.perLayerResultTextures.clear();
+
+		for (const framebuffer of this.perLayerResultFrameBuffers.values()) {
+			gl.deleteFramebuffer(framebuffer);
+		}
+		this.perLayerResultFrameBuffers.clear();
 
 		this.disposeBakedTextures();
 		gl.deleteProgram(this.renderTextureProgram);
 		gl.deleteProgram(this.renderInvertedTextureProgram);
 		gl.deleteTexture(this.originalImageTexture);
-		gl.deleteTexture(this.resultTexture);
-		gl.deleteFramebuffer(this.resultFrameBuffer);
 	}
 }

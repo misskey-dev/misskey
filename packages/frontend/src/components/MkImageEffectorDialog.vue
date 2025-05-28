@@ -46,12 +46,12 @@ import { v4 as uuid } from 'uuid';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
-import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import { FXS, ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
+import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -81,7 +81,16 @@ watch(layers, async () => {
 }, { deep: true });
 
 function addEffect(ev: MouseEvent) {
-
+	os.popupMenu(FXS.map((fx) => ({
+		text: fx.id,
+		action: () => {
+			layers.push({
+				id: uuid(),
+				fxId: fx.id,
+				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
+			});
+		},
+	})), ev.currentTarget ?? ev.target);
 }
 
 const canvasEl = useTemplateRef('canvasEl');
