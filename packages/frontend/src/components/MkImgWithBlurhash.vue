@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<SkTransitionGroup
-		:animate="props.transition != null"
+		:animate="prefer.s.animation && props.transition != null"
 		:duration="props.transition?.duration"
 		:enterActiveClass="props.transition?.enterActiveClass"
 		:leaveActiveClass="(props.transition?.leaveActiveClass ?? $style.transition_leaveActive)"
