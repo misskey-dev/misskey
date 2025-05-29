@@ -23,6 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.previewControls">
+						<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
+						<button class="_button" :class="[$style.previewControlsButton, enabled ? $style.active : null]" @click="enabled = true">After</button>
 					</div>
 				</div>
 			</div>
@@ -49,7 +51,7 @@ import { v4 as uuid } from 'uuid';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
-import { FXS, ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -57,6 +59,7 @@ import MkInput from '@/components/MkInput.vue';
 import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
+import { FXS } from '@/utility/image-effector/fxs.js';
 
 const props = defineProps<{
 	image: HTMLImageElement;
@@ -114,6 +117,7 @@ onMounted(async () => {
 		height: props.image.height,
 		layers: layers,
 		originalImage: props.image,
+		fxs: FXS,
 	});
 
 	await renderer!.bakeTextures();
@@ -135,6 +139,18 @@ function save() {
 		dialog.value?.close();
 	}, 'image/png');
 }
+
+const enabled = ref(true);
+watch(enabled, () => {
+	if (renderer != null) {
+		if (enabled.value) {
+			renderer.updateLayers(layers);
+		} else {
+			renderer.updateLayers([]);
+		}
+		renderer.render();
+	}
+});
 </script>
 
 <style module>

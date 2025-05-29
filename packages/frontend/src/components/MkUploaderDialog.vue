@@ -98,6 +98,7 @@ import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import { makeImageEffectorLayers } from '@/utility/watermark.js';
+import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
 
 const $i = ensureSignin();
 
@@ -527,6 +528,7 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 			height: img.height,
 			layers: makeImageEffectorLayers(preset.layers),
 			originalImage: img,
+			fxs: [FX_watermarkPlacement],
 		});
 
 		await renderer.bakeTextures();

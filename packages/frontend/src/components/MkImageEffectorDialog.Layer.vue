@@ -37,7 +37,7 @@ import { ref, useTemplateRef, watch, onMounted, onUnmounted } from 'vue';
 import { v4 as uuid } from 'uuid';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
-import { FXS, ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -50,6 +50,7 @@ import * as os from '@/os.js';
 import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
+import { FXS } from '@/utility/image-effector/fxs.js';
 
 const layer = defineModel<ImageEffectorLayer>('layer', { required: true });
 const fx = FXS.find((fx) => fx.id === layer.value.fxId);

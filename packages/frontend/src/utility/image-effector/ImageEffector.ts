@@ -4,11 +4,6 @@
  */
 
 import { getProxiedImageUrl } from '../media-proxy.js';
-import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
-import { FX_glitch } from './fxs/glitch.js';
-import { FX_invert } from './fxs/invert.js';
-import { FX_mirror } from './fxs/mirror.js';
-import { FX_watermarkPlacement } from './fxs/watermarkPlacement.js';
 
 type ParamTypeToPrimitive = {
 	'number': number;
@@ -49,30 +44,15 @@ export type ImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDef
 	}) => void;
 };
 
-export const FXS = [
-	FX_watermarkPlacement,
-	FX_chromaticAberration,
-	FX_glitch,
-	FX_mirror,
-	FX_invert,
-] as const satisfies ImageEffectorFx<string, any>[];
-
-export type ImageEffectorLayerOf<
-	FXID extends (typeof FXS)[number]['id'],
-	FX extends { params: ImageEffectorFxParamDefs } = Extract<(typeof FXS)[number], { id: FXID }>,
-> = {
+export type ImageEffectorLayer = {
 	id: string;
-	fxId: FXID;
-	params: {
-		[key in keyof FX['params']]: ParamTypeToPrimitive[FX['params'][key]['type']];
-	};
+	fxId: string;
+	params: Record<string, any>;
 
 	// for watermarkPlacement fx
 	imageUrl?: string | null;
 	text?: string | null;
 };
-
-export type ImageEffectorLayer = ImageEffectorLayerOf<(typeof FXS)[number]['id'], Extract<(typeof FXS)[number], { id: (typeof FXS)[number]['id'] }>>;
 
 export class ImageEffector {
 	private canvas: HTMLCanvasElement | null = null;
@@ -89,6 +69,7 @@ export class ImageEffector {
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
+	private fxs: ImageEffectorFx<string, any>[];
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -96,6 +77,7 @@ export class ImageEffector {
 		height: number;
 		originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 		layers: ImageEffectorLayer[];
+		fxs: ImageEffectorFx<string, any>[];
 	}) {
 		this.canvas = options.canvas;
 		this.canvas.width = options.width;
@@ -104,6 +86,7 @@ export class ImageEffector {
 		this.renderHeight = options.height;
 		this.originalImage = options.originalImage;
 		this.layers = options.layers;
+		this.fxs = options.fxs;
 		this.texturesKey = this.calcTexturesKey();
 
 		this.gl = this.canvas.getContext('webgl2', {
@@ -328,7 +311,7 @@ export class ImageEffector {
 			throw new Error('gl is not initialized');
 		}
 
-		const fx = FXS.find(fx => fx.id === layer.fxId);
+		const fx = this.fxs.find(fx => fx.id === layer.fxId);
 		if (fx == null) return;
 
 		const watermark = layer.fxId === 'watermarkPlacement' ? this.bakedTexturesForWatermarkFx.get(layer.id) : undefined;

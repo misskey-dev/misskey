@@ -12092,6 +12092,18 @@ export interface Locale extends ILocale {
              * 色の反転
              */
             "invert": string;
+            /**
+             * 白黒
+             */
+            "grayscale": string;
+            /**
+             * 色の圧縮
+             */
+            "colorClamp": string;
+            /**
+             * 色の圧縮(高度)
+             */
+            "colorClampAdvanced": string;
         };
     };
 }

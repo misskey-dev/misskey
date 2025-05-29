@@ -59,6 +59,7 @@ import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
+import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
 
 const $i = ensureSignin();
 
@@ -160,6 +161,7 @@ async function initRenderer() {
 			height: 1000,
 			layers: makeImageEffectorLayers(preset.layers),
 			originalImage: sampleImage_3_2,
+			fxs: [FX_watermarkPlacement],
 		});
 	} else if (sampleImageType.value === '2_3') {
 		renderer = new ImageEffector({
@@ -168,6 +170,7 @@ async function initRenderer() {
 			height: 1500,
 			layers: makeImageEffectorLayers(preset.layers),
 			originalImage: sampleImage_2_3,
+			fxs: [FX_watermarkPlacement],
 		});
 	}
 

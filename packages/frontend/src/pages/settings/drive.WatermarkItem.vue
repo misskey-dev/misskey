@@ -30,6 +30,7 @@ import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkFolder from '@/components/MkFolder.vue';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
 
 const props = defineProps<{
 	preset: WatermarkPreset;
@@ -78,6 +79,7 @@ onMounted(() => {
 				height: 1000,
 				layers: makeImageEffectorLayers(props.preset.layers),
 				originalImage: sampleImage,
+				fxs: [FX_watermarkPlacement],
 			});
 
 			await renderer.bakeTextures();

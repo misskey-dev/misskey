@@ -3241,3 +3241,6 @@ _imageEffector:
     glitch: "グリッチ"
     mirror: "ミラー"
     invert: "色の反転"
+    grayscale: "白黒"
+    colorClamp: "色の圧縮"
+    colorClampAdvanced: "色の圧縮(高度)"
