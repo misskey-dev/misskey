@@ -1001,6 +1001,7 @@ failedToUpload: "Ha fallat la pujada"
 cannotUploadBecauseInappropriate: "Aquest fitxer no es pot pujar perquè s'ha trobat que algunes parts són inapropiades."
 cannotUploadBecauseNoFreeSpace: "Ha fallat la pujada del fitxer perquè no hi ha capacitat al Disc."
 cannotUploadBecauseExceedsFileSizeLimit: "Aquest fitxer no es pot pujar perquè supera la mida permesa."
+cannotUploadBecauseUnallowedFileType: "Impossible pujar l'arxiu no és un tipus de fitxer autoritzat."
 beta: "Proves"
 enableAutoSensitive: "Marcar com a sensible automàticament "
 enableAutoSensitiveDescription: "Permet la detecció i el marcat automàtic dels mitjans sensibles fent servir aprenentatge automàtic quan sigui possible. Si aquesta opció es troba desactivada potser que estigui activada per a tota la instància. "
@@ -1359,6 +1360,9 @@ emojiUnmute: "Deixar de silenciar emojis"
 muteX: "Silenciar {x}"
 unmuteX: "Deixar de silenciar {x}"
 abort: "Cancel·lar"
+tip: "Trucs i consells"
+redisplayAllTips: "Torna ha mostrat tots els trucs i consells"
+hideAllTips: "Amagar tots els trucs i consells"
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"
@@ -1981,6 +1985,9 @@ _role:
     canImportMuting: "Autoritza la importació de silenciats"
     canImportUserLists: "Autoritza la importació de llistes d'usuaris "
     chatAvailability: "Es permet xatejar"
+    uploadableFileTypes: "Tipus de fitxers que en podeu pujar"
+    uploadableFileTypes_caption: "Especifica el tipus MIME. Es poden especificar diferents tipus MIME separats amb una nova línia, i es poden especificar comodins amb asteriscs (*). (Per exemple: image/*)"
+    uploadableFileTypes_caption2: "Pot que no sigui possible determinar el tipus MIME d'alguns arxius. Per permetre aquests tipus d'arxius afegeix {x} a les especificacions."
   _condition:
     roleAssignedTo: "Assignat a rols manuals"
     isLocal: "Usuari local"
@@ -2896,6 +2903,8 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "Configuració per a la previsualització de l'URL"
   enable: "Activa la previsualització de l'URL"
+  allowRedirect: "Permet la redirecció de la visualització prèvia "
+  allowRedirectDescription: "Estableix si es mostra o no la redirecció a la vista prèvia quan l'adreça URL introduïda té una redirecció. Si es desactiva s'estalvien recursos del servidor, però no es mostrarà el contingut de la redirecció."
   timeout: "Temps màxim per carregar la previsualització de l'URL (ms)"
   timeoutDescription: "Si l'obtenció de la previsualització triga més que el temps establert, no es generarà la vista prèvia."
   maximumContentLength: "Longitud màxima del contingut (bytes)"
@@ -3092,6 +3101,8 @@ _uploader:
   abortConfirm: "Hi ha un arxiu que no s'ha pujat, vols cancel·lar?"
   doneConfirm: "Hi han fitxers no pujats, vols completar-los?"
   maxFileSizeIsX: "La mida màxima d'arxiu que es pot pujar és {x}."
+  allowedTypes: "Tipus de fitxers que en podeu pujar"
+  tip: "L'arxiu encara no s'ha carregat. En aquest quadre de diàleg, pots comprovar, canviar el nom, comprimir i retallar l'arxiu abans de pujar-lo. Quan estigui llest pots iniciar la càrrega polsant el boto \"Pujar\""
 _clientPerformanceIssueTip:
   title: "Si creus que el consum de bateria és molt alt"
   makeSureDisabledAdBlocker: "Desactiva els bloquejadors de publicitat"
@@ -3100,3 +3111,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "L'anul·lació dels estils pot afectar el rendiment. Comprova que el CSS personalitzat o les extensions que reescriuen estils no estiguin activats."
   makeSureDisabledAddons: "Desactiva extensions"
   makeSureDisabledAddons_description: "Algunes extensions poden interferir en el comportament del client i afectar el rendiment. Desactiva les extensions del navegador i comprovar-ho."
+_clip:
+  tip: "Clip és una funció que permet organitzar les teves notes."
+_userLists:
+  tip: "Es poden crear llistes amb qualsevol usuari. La llista creada es pot mostrar com una línia de temps."

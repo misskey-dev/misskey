@@ -146,6 +146,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 
 					<template v-if="urlPreviewForm.state.urlPreviewEnabled">
+						<MkSwitch v-model="urlPreviewForm.state.urlPreviewAllowRedirect">
+							<template #label>{{ i18n.ts._urlPreviewSetting.allowRedirect }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewAllowRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts._urlPreviewSetting.allowRedirectDescription }}</template>
+						</MkSwitch>
+
 						<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
 							<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
 							<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
@@ -288,7 +293,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive } from 'vue';
+import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -301,7 +306,6 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -370,6 +374,7 @@ const adForm = useForm({
 
 const urlPreviewForm = useForm({
 	urlPreviewEnabled: meta.urlPreviewEnabled,
+	urlPreviewAllowRedirect: meta.urlPreviewAllowRedirect,
 	urlPreviewTimeout: meta.urlPreviewTimeout,
 	urlPreviewMaximumContentLength: meta.urlPreviewMaximumContentLength,
 	urlPreviewRequireContentLength: meta.urlPreviewRequireContentLength,
@@ -378,6 +383,7 @@ const urlPreviewForm = useForm({
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		urlPreviewEnabled: state.urlPreviewEnabled,
+		urlPreviewAllowRedirect: state.urlPreviewAllowRedirect,
 		urlPreviewTimeout: state.urlPreviewTimeout,
 		urlPreviewMaximumContentLength: state.urlPreviewMaximumContentLength,
 		urlPreviewRequireContentLength: state.urlPreviewRequireContentLength,
