@@ -5,14 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<TransitionGroup
-		:duration="prefer.s.animation && props.transition?.duration || undefined"
-		:enterActiveClass="prefer.s.animation && props.transition?.enterActiveClass || undefined"
-		:leaveActiveClass="prefer.s.animation && (props.transition?.leaveActiveClass ?? $style.transition_leaveActive) || undefined"
-		:enterFromClass="prefer.s.animation && props.transition?.enterFromClass || undefined"
-		:leaveToClass="prefer.s.animation && props.transition?.leaveToClass || undefined"
-		:enterToClass="prefer.s.animation && props.transition?.enterToClass || undefined"
-		:leaveFromClass="prefer.s.animation && props.transition?.leaveFromClass || undefined"
+	<SkTransitionGroup
+		:animate="props.transition != null"
+		:duration="props.transition?.duration"
+		:enterActiveClass="props.transition?.enterActiveClass"
+		:leaveActiveClass="(props.transition?.leaveActiveClass ?? $style.transition_leaveActive)"
+		:enterFromClass="props.transition?.enterFromClass"
+		:leaveToClass="props.transition?.leaveToClass"
+		:enterToClass="props.transition?.enterToClass"
+		:leaveFromClass="props.transition?.leaveFromClass"
 	>
 		<canvas
 			v-show="hide"
@@ -42,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			tabindex="-1"
 			style="-webkit-user-drag: none;"
 		/>
-	</TransitionGroup>
+	</SkTransitionGroup>
 </div>
 </template>
 
@@ -85,6 +86,7 @@ import { computed, nextTick, onMounted, onUnmounted, useTemplateRef, watch, ref 
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { prefer } from '@/preferences.js';
+import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const props = withDefaults(defineProps<{
 	transition?: {

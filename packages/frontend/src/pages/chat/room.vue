@@ -31,12 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 				</div>
 
-				<TransitionGroup
-					:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-					:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-					:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-					:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-					:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+				<SkTransitionGroup
+					:enterActiveClass="$style.transition_x_enterActive"
+					:leaveActiveClass="$style.transition_x_leaveActive"
+					:enterFromClass="$style.transition_x_enterFrom"
+					:leaveToClass="$style.transition_x_leaveTo"
+					:moveClass="$style.transition_x_move"
 					tag="div" class="_gaps"
 				>
 					<template v-for="item in timeline.toReversed()" :key="item.id">
@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span>{{ item.prevText }} <i class="ti ti-chevron-down"></i></span>
 						</div>
 					</template>
-				</TransitionGroup>
+				</SkTransitionGroup>
 			</div>
 
 			<div v-if="user && (!user.canChat || user.host !== null)">
@@ -111,6 +111,7 @@ import { useRouter } from '@/router.js';
 import { useMutationObserver } from '@/composables/use-mutation-observer.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const $i = ensureSignin();
 const router = useRouter();
