@@ -13,6 +13,7 @@ import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
 import { getDateText } from '@/utility/timeline-date-separate.js';
+import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 export default defineComponent({
 	props: {
@@ -141,14 +142,12 @@ export default defineComponent({
 			[$style['direction-up']]: props.direction === 'up',
 		};
 
-		return () => prefer.s.animation ? h(TransitionGroup, {
+		return () => h(SkTransitionGroup, {
 			class: classes,
 			name: 'list',
 			tag: 'div',
 			onBeforeLeave,
 			onLeaveCancelled,
-		}, { default: renderChildren }) : h('div', {
-			class: classes,
 		}, { default: renderChildren });
 	},
 });
