@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:myReaction="props.myReaction"
 		@reactionToggled="onMockToggleReaction"
 	/>
-	<slot v-if="hasMoreReactions" name="more"/>
+	<slot v-if="hasMoreReactions" :key="'$more'" name="more"/>
 </SkTransitionGroup>
 </template>
 
@@ -115,7 +115,7 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 	position: absolute;
 }
 
-.root {
+.root, .moreReactions {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
