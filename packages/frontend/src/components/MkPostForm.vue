@@ -68,8 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="[$style.headerRightItem, {
 					[$style.danger]: localOnly,
 					[$style.warning]: isNoteInYamiMode && !localOnly,
-					[$style.disabled]: isFederationDisabled
-				}]" :disabled="isFederationDisabled" @click="toggleLocalOnly"
+					[$style.disabled]: isFederationToggleDisabled
+				}]" :disabled="isFederationToggleDisabled" @click="toggleLocalOnly"
 			>
 				<span v-if="!localOnly && $i.policies?.canFederateNote !== false"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
 	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
 	<!-- DMの宛先表示部分を修正（自分のみ投稿の場合は非表示） -->
-	<div v-if="visibility === 'specified' && visibleUsers.length > 0" :class="$style.toSpecified">
+	<div v-if="visibility === 'specified' && (visibleUsers.length > 0 || isDmIntent)" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
 			<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
@@ -474,10 +474,13 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 	},
 });
 
+// 新しい状態変数を追加
+const isDmIntent = ref(false);
+
 // 自分のみ投稿の判定
 const isPrivatePost = computed(() => {
 	// 基本的な自分のみ投稿
-	if (visibility.value === 'specified' && visibleUsers.value.length === 0) {
+	if (visibility.value === 'specified' && visibleUsers.value.length === 0 && !isDmIntent.value) {
 		return true;
 	}
 
@@ -506,17 +509,21 @@ const displayVisibility = computed(() => {
 });
 
 // 連合ボタンの無効化条件
-const isFederationDisabled = computed(() => {
+const isFederationToggleDisabled = computed(() => {
 	return props.channel != null ||
-           visibility.value === 'specified' ||
-           $i.policies.canFederateNote === false ||
-           (isNoteInYamiMode.value && !yamiNoteFederationEnabled.value);
+    visibility.value === 'specified' ||
+    $i.policies.canFederateNote === false ||
+    (isNoteInYamiMode.value && !yamiNoteFederationEnabled.value);
 });
 
 // 自分のみ投稿の場合は強制的にlocalOnlyをtrueに
 watch([visibility, visibleUsers], () => {
 	if (isPrivatePost.value) {
 		localOnly.value = true;
+	}
+	// DMの場合で、やみノートでない場合は連合設定を解除する
+	else if (visibility.value === 'specified' && visibleUsers.value.length > 0 && !isNoteInYamiMode.value) {
+		localOnly.value = false;
 	}
 }, { deep: true, immediate: true });
 
@@ -533,6 +540,14 @@ watch(visibleUsers, () => {
 }, {
 	deep: true,
 });
+
+// 宛先が変更されたらDM意図フラグをリセット
+watch(visibleUsers, (newUsers) => {
+	// 宛先が明示的に変更されたらDM意図状態を解除
+	if (newUsers.length > 0) {
+		isDmIntent.value = false;
+	}
+}, { deep: true });
 
 if (props.mention) {
 	text.value = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
@@ -739,6 +754,7 @@ function setVisibility() {
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
 		isNoteInYamiMode: isNoteInYamiMode.value,
+		isDmIntent: isDmIntent.value,
 		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
@@ -749,6 +765,9 @@ function setVisibility() {
 		},
 		changeVisibleUsers: users => {
 			visibleUsers.value = users;
+		},
+		changeDmIntent: intent => {
+			isDmIntent.value = intent;
 		},
 		closed: () => dispose(),
 	});
@@ -765,6 +784,12 @@ async function toggleLocalOnly() {
 	// 自分のみ投稿の場合は連合なし固定
 	if (isPrivatePost.value) {
 		localOnly.value = true;
+		return;
+	}
+
+	// 普通のDM（宛先あり）の場合は連合あり固定
+	if (visibility.value === 'specified' && visibleUsers.value.length > 0) {
+		localOnly.value = false;
 		return;
 	}
 
@@ -879,6 +904,10 @@ function pushVisibleUser(user: Misskey.entities.UserDetailed) {
 function addVisibleUser() {
 	os.selectUser().then(user => {
 		pushVisibleUser(user);
+		// 宛先が追加されたらDMなので、やみノートでない限り連合ありに戻す
+		if (localOnly.value && !isNoteInYamiMode.value) {
+			localOnly.value = false;
+		}
 
 		if (!text.value.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
 			text.value = `@${Misskey.acct.toString(user)} ${text.value}`;
@@ -888,6 +917,10 @@ function addVisibleUser() {
 
 function removeVisibleUser(user) {
 	visibleUsers.value = erase(user, visibleUsers.value);
+	// 宛先を全て削除したらプライベートノートになるが、ユーザーがDMを意図していることを考慮
+	if (visibleUsers.value.length === 0) {
+		isDmIntent.value = true; // 宛先を削除してもDM意図を維持
+	}
 }
 
 function clear() {

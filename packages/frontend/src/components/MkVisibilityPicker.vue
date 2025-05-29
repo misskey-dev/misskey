@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.itemDescription">{{ isNoteInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
-		<button key="private" class="_button" :class="[$style.item, { [$style.active]: isPrivate }]" @click="choosePrivate()">
+		<button key="private" :disabled="!localOnly" class="_button" :class="[$style.item, { [$style.active]: isPrivate }]" @click="choosePrivate()">
 			<div :class="$style.icon">
 				<i class="ti ti-eye-closed"></i>
 			</div>
@@ -68,21 +68,25 @@ const props = withDefaults(defineProps<{
 	isReplyVisibilitySpecified?: boolean;
 	isNoteInYamiMode: boolean;
 	reply?: Misskey.entities.Note;
+	isDmIntent?: boolean;
 }>(), {
 	currentVisibleUsers: () => [],
 	isNoteInYamiMode: false,
 	reply: undefined,
+	isDmIntent: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
 	(ev: 'changeVisibleUsers', users: Misskey.entities.UserLite[]): void;
+	(ev: 'changeDmIntent', intent: boolean): void;
 	(ev: 'closed'): void;
 }>();
 
 // 自分のみ投稿の判定
 const isPrivate = computed(() => {
-	if (props.currentVisibility === 'specified' && props.currentVisibleUsers.length === 0) {
+	// DMを意図して選択した場合は、宛先が空でもプライベートノートにしない
+	if (props.currentVisibility === 'specified' && props.currentVisibleUsers.length === 0 && !props.isDmIntent) {
 		return true;
 	}
 
@@ -109,6 +113,12 @@ const v = computed(() => {
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	emit('changeVisibility', visibility);
+	// DMを選択した場合はDM意図フラグを立てる
+	if (visibility === 'specified') {
+		emit('changeDmIntent', true);
+	} else {
+		emit('changeDmIntent', false);
+	}
 	if (visibility !== 'specified') {
 		emit('changeVisibleUsers', []);
 	}
@@ -119,6 +129,7 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 
 function choosePrivate(): void {
 	emit('changeVisibility', 'specified');
+	emit('changeDmIntent', false); // プライベートモードなのでDM意図はfalse
 	emit('changeVisibleUsers', []);
 	nextTick(() => {
 		if (modal.value) modal.value.close();
