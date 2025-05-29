@@ -228,7 +228,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, reactive, ref, useTemplateRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -258,9 +258,9 @@ import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
-import { noteEvents, useNoteCapture } from '@/use/use-note-capture.js';
+import { noteEvents, useNoteCapture } from '@/composables/use-note-capture.js';
 import { deepClone } from '@/utility/clone.js';
-import { useTooltip } from '@/use/use-tooltip.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
@@ -268,7 +268,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
@@ -304,12 +304,9 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const $appearNote = reactive({
-	reactions: appearNote.reactions,
-	reactionCount: appearNote.reactionCount,
-	reactionEmojis: appearNote.reactionEmojis,
-	myReaction: appearNote.myReaction,
-	pollChoices: appearNote.poll?.choices,
+const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
+	note: appearNote,
+	parentNote: note,
 });
 
 const rootEl = useTemplateRef('rootEl');
@@ -397,12 +394,6 @@ const reactionsPagination = computed(() => ({
 	},
 }));
 
-useNoteCapture({
-	note: appearNote,
-	parentNote: note,
-	$note: $appearNote,
-});
-
 useTooltip(renoteButton, async (showing) => {
 	const renotes = await misskeyApi('notes/renotes', {
 		noteId: appearNote.id,
@@ -453,6 +444,9 @@ function renote() {
 
 	const { menu } = getRenoteMenu({ note: note, renoteButton });
 	os.popupMenu(menu, renoteButton.value);
+
+	// リノート後は反応が来る可能性があるので手動で購読する
+	subscribeManuallyToNoteCapture();
 }
 
 function reply(): void {
@@ -527,6 +521,11 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 	if (!oldReaction) return;
 	misskeyApi('notes/reactions/delete', {
 		noteId: targetNote.id,
+	}).then(() => {
+		noteEvents.emit(`unreacted:${appearNote.id}`, {
+			userId: $i!.id,
+			reaction: oldReaction,
+		});
 	});
 }
 

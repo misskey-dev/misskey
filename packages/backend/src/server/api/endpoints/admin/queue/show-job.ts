@@ -5,7 +5,6 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
 
 export const meta = {
@@ -14,6 +13,11 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'read:admin:queue',
+
+	res: {
+		optional: false, nullable: false,
+		ref: 'QueueJob',
+	},
 } as const;
 
 export const paramDef = {
@@ -28,7 +32,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private moderationLogService: ModerationLogService,
 		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</div>
-					<div v-if="appearNote.files && appearNote.files.length > 0">
+					<div v-if="appearNote.files && appearNote.files.length > 0" style="margin-top: 8px;">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll
@@ -193,7 +193,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, useTemplateRef, watch, provide, shallowRef, reactive } from 'vue';
+import { computed, inject, onMounted, ref, useTemplateRef, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -227,14 +227,14 @@ import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
-import { noteEvents, useNoteCapture } from '@/use/use-note-capture.js';
+import { noteEvents, useNoteCapture } from '@/composables/use-note-capture.js';
 import { deepClone } from '@/utility/clone.js';
-import { useTooltip } from '@/use/use-tooltip.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
@@ -283,12 +283,10 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const $appearNote = reactive({
-	reactions: appearNote.reactions,
-	reactionCount: appearNote.reactionCount,
-	reactionEmojis: appearNote.reactionEmojis,
-	myReaction: appearNote.myReaction,
-	pollChoices: appearNote.poll?.choices,
+const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
+	note: appearNote,
+	parentNote: note,
+	mock: props.mock,
 });
 
 const rootEl = useTemplateRef('rootEl');
@@ -411,14 +409,6 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 });
 
 if (!props.mock) {
-	useNoteCapture({
-		note: appearNote,
-		parentNote: note,
-		$note: $appearNote,
-	});
-}
-
-if (!props.mock) {
 	useTooltip(renoteButton, async (showing) => {
 		const renotes = await misskeyApi('notes/renotes', {
 			noteId: appearNote.id,
@@ -472,6 +462,8 @@ function renote(viaKeyboard = false) {
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
+
+	subscribeManuallyToNoteCapture();
 }
 
 function reply(): void {
@@ -567,6 +559,11 @@ function undoReact(): void {
 
 	misskeyApi('notes/reactions/delete', {
 		noteId: appearNote.id,
+	}).then(() => {
+		noteEvents.emit(`unreacted:${appearNote.id}`, {
+			userId: $i!.id,
+			reaction: oldReaction,
+		});
 	});
 }
 

@@ -31,9 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkPagination>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends PagingCtx">
 import { useTemplateRef } from 'vue';
-import type { PagingCtx } from '@/use/use-pagination.js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
@@ -41,7 +41,7 @@ import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 
 const props = withDefaults(defineProps<{
-	pagination: PagingCtx;
+	pagination: T;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
 	pullToRefresh?: boolean;

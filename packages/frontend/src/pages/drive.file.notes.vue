@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import type { PagingCtx } from '@/use/use-pagination.js';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 
