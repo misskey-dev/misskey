@@ -26,10 +26,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- やみモードの場合、公開範囲に関わらず表示 -->
 		<span v-if="note.isNoteInYamiMode === true" style="margin-left: 0.5em;" :title="note.visibility === 'public' ? `${i18n.ts._visibility['public']} (${i18n.ts._yami.yamiModeShort})` : i18n.ts._yami.yamiNote"><i class="ti ti-moon"></i></span>
 		<!-- 公開範囲に応じたアイコン表示（パブリックはアイコン非表示） -->
-		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="note.isNoteInYamiMode ? `${i18n.ts._visibility[note.visibility]} (${i18n.ts._yami.yamiModeShort})` : i18n.ts._visibility[note.visibility]">
+		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="getVisibilityTooltip(note)">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
-			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			<i v-else-if="note.visibility === 'specified' && !isPrivateNote(note)" class="ti ti-mail"></i>
+			<i v-else-if="note.visibility === 'specified' && isPrivateNote(note)" class="ti ti-eye-closed"></i>
 		</span>
 		<!-- 連合なしの場合表示 -->
 		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
@@ -56,6 +57,37 @@ defineProps<{
 }>();
 
 const mock = inject(DI.mock, false);
+
+function isPrivateNote(note: Misskey.entities.Note): boolean {
+	if (note.visibility === 'specified' && (!note.visibleUserIds || note.visibleUserIds.length === 0)) {
+		return true;
+	}
+
+	if (note.visibility === 'specified' &&
+        note.visibleUserIds &&
+        note.visibleUserIds.length === 1 &&
+        note.visibleUserIds[0] === note.userId &&
+        note.reply) {
+		const replyIsPrivate = note.reply.visibility === 'specified' &&
+            (!note.reply.visibleUserIds || note.reply.visibleUserIds.length === 0);
+
+		if (replyIsPrivate) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function getVisibilityTooltip(note: Misskey.entities.Note): string {
+	const visibilityKey = isPrivateNote(note) ? 'private' : note.visibility;
+
+	if (note.isNoteInYamiMode) {
+		return `${i18n.ts._visibility[visibilityKey]} (${i18n.ts._yami.yamiModeShort})`;
+	}
+
+	return i18n.ts._visibility[visibilityKey];
+}
 </script>
 
 <style lang="scss" module>

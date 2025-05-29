@@ -37,40 +37,89 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.itemDescription">{{ isNoteInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
+		<button key="private" class="_button" :class="[$style.item, { [$style.active]: isPrivate }]" @click="choosePrivate()">
+			<div :class="$style.icon">
+				<i class="ti ti-eye-closed"></i>
+			</div>
+			<div :class="$style.body">
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.private }}</span>
+				<span :class="$style.itemDescription">{{ i18n.ts._visibility.privateDescription }}</span>
+			</div>
+		</button>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, useTemplateRef, ref } from 'vue';
+import { nextTick, useTemplateRef, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js'; // signinRequired の代わりに $i を直接インポート
+import { $i } from '@/i.js';
 
 const modal = useTemplateRef('modal');
 
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
+	currentVisibleUsers?: Misskey.entities.UserLite[];
 	isSilenced: boolean;
 	localOnly: boolean;
 	src?: HTMLElement;
 	isReplyVisibilitySpecified?: boolean;
-	isNoteInYamiMode: boolean; // Add prop for per-note YamiMode
+	isNoteInYamiMode: boolean;
+	reply?: Misskey.entities.Note;
 }>(), {
-	isNoteInYamiMode: false, // Default to false
+	currentVisibleUsers: () => [],
+	isNoteInYamiMode: false,
+	reply: undefined,
 });
 
 const emit = defineEmits<{
 	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
+	(ev: 'changeVisibleUsers', users: Misskey.entities.UserLite[]): void;
 	(ev: 'closed'): void;
 }>();
 
-const v = ref(props.currentVisibility);
+// 自分のみ投稿の判定
+const isPrivate = computed(() => {
+	if (props.currentVisibility === 'specified' && props.currentVisibleUsers.length === 0) {
+		return true;
+	}
+
+	if (props.currentVisibility === 'specified' &&
+        props.currentVisibleUsers.length === 1 &&
+        props.currentVisibleUsers[0].id === $i.id &&
+        props.reply) {
+		const replyIsPrivate = props.reply.visibility === 'specified' &&
+            (!props.reply.visibleUserIds || props.reply.visibleUserIds.length === 0);
+
+		if (replyIsPrivate) {
+			return true;
+		}
+	}
+
+	return false;
+});
+
+// 表示用のvisibility
+const v = computed(() => {
+	if (isPrivate.value) return 'private';
+	return props.currentVisibility;
+});
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
-	v.value = visibility;
 	emit('changeVisibility', visibility);
+	if (visibility !== 'specified') {
+		emit('changeVisibleUsers', []);
+	}
+	nextTick(() => {
+		if (modal.value) modal.value.close();
+	});
+}
+
+function choosePrivate(): void {
+	emit('changeVisibility', 'specified');
+	emit('changeVisibleUsers', []);
 	nextTick(() => {
 		if (modal.value) modal.value.close();
 	});

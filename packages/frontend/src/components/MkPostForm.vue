@@ -36,18 +36,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 
 				<!-- 既存の公開範囲ボタン -->
-				<button v-if="channel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
-					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+				<button
+					v-if="props.channel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility"
+					:class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility"
+				>
+					<span v-if="displayVisibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="displayVisibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="displayVisibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="displayVisibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span v-if="displayVisibility === 'private'"><i class="ti ti-eye-closed"></i></span>
 					<span :class="$style.headerRightButtonText">
-						{{ i18n.ts._visibility[visibility] }}
+						{{ i18n.ts._visibility[displayVisibility] }}
 					</span>
 				</button>
 				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
 					<span><i class="ti ti-device-tv"></i></span>
-					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+					<span :class="$style.headerRightButtonText">{{ props.channel.name }}</span>
 				</button>
 			</template>
 			<button
@@ -64,10 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="[$style.headerRightItem, {
 					[$style.danger]: localOnly,
 					[$style.warning]: isNoteInYamiMode && !localOnly,
-					[$style.disabled]: $i.policies?.canFederateNote === false || (isNoteInYamiMode && !yamiNoteFederationEnabled)
-				}]"
-				:disabled="channel != null || visibility === 'specified' || $i.policies?.canFederateNote === false || (isNoteInYamiMode && !yamiNoteFederationEnabled)"
-				@click="toggleLocalOnly"
+					[$style.disabled]: isFederationDisabled
+				}]" :disabled="isFederationDisabled" @click="toggleLocalOnly"
 			>
 				<span v-if="!localOnly && $i.policies?.canFederateNote !== false"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
@@ -86,7 +88,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
 	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
-	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
+	<!-- DMの宛先表示部分を修正（自分のみ投稿の場合は非表示） -->
+	<div v-if="visibility === 'specified' && visibleUsers.length > 0" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
 			<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
@@ -471,6 +474,52 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 	},
 });
 
+// 自分のみ投稿の判定
+const isPrivatePost = computed(() => {
+	// 基本的な自分のみ投稿
+	if (visibility.value === 'specified' && visibleUsers.value.length === 0) {
+		return true;
+	}
+
+	// 自分のみノートへの自分のリプライ
+	if (visibility.value === 'specified' &&
+        visibleUsers.value.length === 1 &&
+        visibleUsers.value[0].id === $i.id &&
+        props.reply) {
+		const replyIsPrivate = props.reply.visibility === 'specified' &&
+            (!props.reply.visibleUserIds || props.reply.visibleUserIds.length === 0);
+
+		if (replyIsPrivate) {
+			return true;
+		}
+	}
+
+	return false;
+});
+
+// 表示用の公開範囲
+const displayVisibility = computed(() => {
+	if (isPrivatePost.value) {
+		return 'private';
+	}
+	return visibility.value;
+});
+
+// 連合ボタンの無効化条件
+const isFederationDisabled = computed(() => {
+	return props.channel != null ||
+           visibility.value === 'specified' ||
+           $i.policies.canFederateNote === false ||
+           (isNoteInYamiMode.value && !yamiNoteFederationEnabled.value);
+});
+
+// 自分のみ投稿の場合は強制的にlocalOnlyをtrueに
+watch([visibility, visibleUsers], () => {
+	if (isPrivatePost.value) {
+		localOnly.value = true;
+	}
+}, { deep: true, immediate: true });
+
 watch(text, () => {
 	checkMissingMention();
 }, { immediate: true });
@@ -675,6 +724,7 @@ function upload(file: File, name?: string): void {
 	});
 }
 
+// setVisibility関数も修正
 function setVisibility() {
 	if (props.channel) {
 		visibility.value = 'public';
@@ -684,10 +734,11 @@ function setVisibility() {
 
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility.value,
+		currentVisibleUsers: visibleUsers.value,
 		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
-		isNoteInYamiMode: isNoteInYamiMode.value, // Add this prop to pass the note-specific YamiMode flag
+		isNoteInYamiMode: isNoteInYamiMode.value,
 		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
@@ -695,6 +746,9 @@ function setVisibility() {
 			if (prefer.s.rememberNoteVisibility) {
 				store.set('visibility', visibility.value);
 			}
+		},
+		changeVisibleUsers: users => {
+			visibleUsers.value = users;
 		},
 		closed: () => dispose(),
 	});
@@ -704,7 +758,13 @@ function setVisibility() {
 async function toggleLocalOnly() {
 	if (props.channel) {
 		visibility.value = 'public';
-		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
+		localOnly.value = true;
+		return;
+	}
+
+	// 自分のみ投稿の場合は連合なし固定
+	if (isPrivatePost.value) {
+		localOnly.value = true;
 		return;
 	}
 
@@ -714,7 +774,7 @@ async function toggleLocalOnly() {
 		return;
 	}
 
-	// 既存の処理
+	// 既存の処理（通常のDMは連合ありのまま）
 	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
 
 	if (!localOnly.value && neverShowInfo !== 'true') {

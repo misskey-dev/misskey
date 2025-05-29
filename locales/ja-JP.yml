@@ -2589,6 +2589,8 @@ _visibility:
   followersDescription: "自分のフォロワーのみに公開"
   specified: "ダイレクト"
   specifiedDescription: "指定したユーザーのみに公開"
+  private: "プライベート"
+  privateDescription: "自分のみに公開"
   noteFederationDisabled: "ノートの連合は管理者により無効化されています"
   enableFederation: "連合あり"
   disableFederation: "連合なし"

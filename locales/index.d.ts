@@ -9851,6 +9851,14 @@ export interface Locale extends ILocale {
          */
         "specifiedDescription": string;
         /**
+         * プライベート
+         */
+        "private": string;
+        /**
+         * 自分のみに公開
+         */
+        "privateDescription": string;
+        /**
          * ノートの連合は管理者により無効化されています
          */
         "noteFederationDisabled": string;

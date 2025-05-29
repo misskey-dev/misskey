@@ -313,6 +313,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
+		if (data.visibility === 'specified' && (!data.visibleUsers || data.visibleUsers.length === 0)) {
+			data.localOnly = true;
+		}
+
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = this.meta.sensitiveWords;
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
@@ -496,6 +500,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibility = 'public';
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
+
+		if (data.visibility === 'specified' && (!data.visibleUsers || data.visibleUsers.length === 0)) {
+			data.localOnly = true;
+		}
 
 		// 連合権限のチェック - ローカルオンリーでない場合に権限を確認
 		if (data.localOnly === false) {

@@ -2495,6 +2495,8 @@ _visibility:
   followersDescription: "Make visible to your followers only"
   specified: "Direct"
   specifiedDescription: "Make visible for specified users only"
+  private: "Private"
+  privateDescription: "Make visible to you only"
   noteFederationDisabled: "Note federation has been disabled by admin"
   disableFederation: "Defederate"
   disableFederationDescription: "Don't transmit to other instances"
