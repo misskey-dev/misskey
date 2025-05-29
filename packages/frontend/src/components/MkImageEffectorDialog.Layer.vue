@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkFolder :defaultOpen="true">
+<MkFolder :defaultOpen="true" :canPage="false">
 	<template #label>{{ fx.name }}</template>
 	<template #footer>
 		<MkButton @click="emit('del')">{{ i18n.ts.remove }}</MkButton>
