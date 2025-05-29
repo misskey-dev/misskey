@@ -12112,6 +12112,14 @@ export interface Locale extends ILocale {
              * 歪み
              */
             "distort": string;
+            /**
+             * 二値化
+             */
+            "threshold": string;
+            /**
+             * 集中線
+             */
+            "zoomLines": string;
         };
     };
 }

@@ -3246,3 +3246,5 @@ _imageEffector:
     colorClamp: "色の圧縮"
     colorClampAdvanced: "色の圧縮(高度)"
     distort: "歪み"
+    threshold: "二値化"
+    zoomLines: "集中線"
