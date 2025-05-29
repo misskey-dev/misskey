@@ -19,6 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #header>{{ i18n.ts.options }}</template>
 
 			<div class="_gaps_m">
+				<div style="display: flex; gap: 8px;">
+					<MkInput v-model="rangeStartAt" type="datetime-local"/>
+					<MkInput v-model="rangeEndAt" type="datetime-local"/>
+				</div>
+
 				<MkRadios v-model="searchScope">
 					<option v-if="instance.federation !== 'none' && noteSearchableScope === 'global'" value="all">{{ i18n.ts._search.searchScopeAll }}</option>
 					<option value="local">{{ instance.federation === 'none' ? i18n.ts._search.searchScopeAll : i18n.ts._search.searchScopeLocal }}</option>
@@ -112,10 +117,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, shallowRef, toRef } from 'vue';
+import { host as localHost } from '@@/js/config.js';
 import type * as Misskey from 'misskey-js';
 import type { PagingCtx } from '@/composables/use-pagination.js';
 import { $i } from '@/i.js';
-import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
@@ -148,6 +153,8 @@ const notePagination = ref<PagingCtx<'notes/search'>>();
 
 const searchQuery = ref(toRef(props, 'query').value);
 const hostInput = ref(toRef(props, 'host').value);
+const rangeStartAt = ref<string | null>(null);
+const rangeEndAt = ref<string | null>(null);
 
 const user = shallowRef<Misskey.entities.UserDetailed | null>(null);
 
@@ -188,11 +195,20 @@ type SearchParams = {
 	readonly query: string;
 	readonly host?: string;
 	readonly userId?: string;
+	readonly rangeStartAt?: number | null;
+	readonly rangeEndAt?: number | null;
 };
 
 const fixHostIfLocal = (target: string | null | undefined) => {
 	if (!target || target === localHost) return '.';
 	return target;
+};
+
+const searchRange = () => {
+	return {
+		rangeStartAt: rangeStartAt.value ? new Date(rangeStartAt.value).getTime() : null,
+		rangeEndAt: rangeEndAt.value ? new Date(rangeEndAt.value).getTime() : null,
+	};
 };
 
 const searchParams = computed<SearchParams | null>(() => {
@@ -205,6 +221,7 @@ const searchParams = computed<SearchParams | null>(() => {
 			query: trimmedQuery,
 			host: fixHostIfLocal(user.value.host),
 			userId: user.value.id,
+			...searchRange(),
 		};
 	}
 
@@ -219,6 +236,7 @@ const searchParams = computed<SearchParams | null>(() => {
 		return {
 			query: trimmedQuery,
 			host: fixHostIfLocal(trimmedHost),
+			...searchRange(),
 		};
 	}
 
@@ -226,11 +244,13 @@ const searchParams = computed<SearchParams | null>(() => {
 		return {
 			query: trimmedQuery,
 			host: '.',
+			...searchRange(),
 		};
 	}
 
 	return {
 		query: trimmedQuery,
+		...searchRange(),
 	};
 });
 
@@ -265,7 +285,7 @@ async function search() {
 
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} else if (res.type === 'Note') {
 				router.push(`/notes/${res.object.id}`);
 			}
