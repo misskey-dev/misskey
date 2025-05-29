@@ -266,50 +266,26 @@ export class SearchService {
 			op: 'and',
 			qs: [],
 		};
-		if (pagination.untilId || opts.rangeEndAt) {
-			let time: number;
-
-			if (pagination.untilId && opts.rangeEndAt) {
-				time = Math.min(
-					this.idService.parse(pagination.untilId).date.getTime(),
-					opts.rangeEndAt,
-				);
-			} else if (pagination.untilId) {
-				time = this.idService.parse(pagination.untilId).date.getTime();
-			} else if (opts.rangeEndAt) {
-				time = opts.rangeEndAt;
-			} else {
-				throw new Error('Either pagination.untilId or opts.rangeEndAt must be provided');
-			}
-
-			filter.qs.push({
-				op: '<',
-				k: 'createdAt',
-				v: time,
-			});
-		}
-		if (pagination.sinceId || opts.rangeStartAt) {
-			let time: number;
-
-			if (pagination.sinceId && opts.rangeStartAt) {
-				time = Math.max(
-					this.idService.parse(pagination.sinceId).date.getTime(),
-					opts.rangeStartAt,
-				);
-			} else if (pagination.sinceId) {
-				time = this.idService.parse(pagination.sinceId).date.getTime();
-			} else if (opts.rangeStartAt) {
-				time = opts.rangeStartAt;
-			} else {
-				throw new Error('Either pagination.sinceId or opts.rangeStartAt must be provided');
-			}
-
-			filter.qs.push({
-				op: '>',
-				k: 'createdAt',
-				v: time,
-			});
-		}
+		if (pagination.untilId) filter.qs.push({
+			op: '<',
+			k: 'createdAt',
+			v: this.idService.parse(pagination.untilId).date.getTime(),
+		});
+		if (opts.rangeEndAt) filter.qs.push({
+			op: '<=',
+			k: 'createdAt',
+			v: opts.rangeEndAt,
+		});
+		if (pagination.sinceId) filter.qs.push({
+			op: '>',
+			k: 'createdAt',
+			v: this.idService.parse(pagination.sinceId).date.getTime(),
+		});
+		if (opts.rangeStartAt) filter.qs.push({
+			op: '>=',
+			k: 'createdAt',
+			v: opts.rangeStartAt,
+		});
 		if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
 		if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
 		if (opts.host) {
