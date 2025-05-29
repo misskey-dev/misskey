@@ -133,6 +133,11 @@ onUnmounted(() => {
 });
 
 function save() {
+	if (layers.length === 0) {
+		cancel();
+		return;
+	}
+
 	renderer!.render(); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value!.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
