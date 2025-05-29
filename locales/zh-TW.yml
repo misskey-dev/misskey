@@ -1001,6 +1001,7 @@ failedToUpload: "上傳失敗"
 cannotUploadBecauseInappropriate: "由於判定可能包含不適當的內容，因此無法上傳。"
 cannotUploadBecauseNoFreeSpace: "由於雲端硬碟沒有可用空間，因此無法上傳。"
 cannotUploadBecauseExceedsFileSizeLimit: "由於超過了檔案大小的限制，無法上傳。"
+cannotUploadBecauseUnallowedFileType: "由於檔案類型不被允許，無法上傳。\n"
 beta: "測試版"
 enableAutoSensitive: "自動 NSFW 判定"
 enableAutoSensitiveDescription: "如果可行，它將使用機器學習技術判斷檔案是否需要標記為敏感。即使關閉此功能，也可能會依伺服器規則而自動啟用。"
@@ -1359,6 +1360,9 @@ emojiUnmute: "表情符號解除靜音"
 muteX: "將 {x} 靜音"
 unmuteX: "將 {x} 解除靜音"
 abort: "取消"
+tip: "提示與技巧"
+redisplayAllTips: "重新顯示所有「提示與技巧」"
+hideAllTips: "隱藏所有「提示與技巧」"
 _chat:
   noMessagesYet: "尚無訊息"
   newMessage: "新訊息"
@@ -1981,6 +1985,9 @@ _role:
     canImportMuting: "允許匯入靜音名單"
     canImportUserLists: "允許匯入清單"
     chatAvailability: "允許聊天"
+    uploadableFileTypes: "可上傳的檔案類型"
+    uploadableFileTypes_caption: "請指定 MIME 類型。可以用換行區隔多個類型，也可以使用星號（*）作為萬用字元進行指定。（例如：image/*）\n"
+    uploadableFileTypes_caption2: "有些檔案可能無法判斷其類型。若要允許這類檔案，請在指定中加入 {x}。"
   _condition:
     roleAssignedTo: "手動指派角色完成"
     isLocal: "本地使用者"
@@ -2896,6 +2903,8 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "URL 預覽設定"
   enable: "啟用 URL 預覽"
+  allowRedirect: "允許預覽目標的重新導向"
+  allowRedirectDescription: "設定當輸入的 URL 發生重新導向時，是否追蹤該重新導向並顯示預覽。若停用此功能，雖可節省伺服器資源，但將無法顯示重新導向後的內容。\n"
   timeout: "取得預覽的逾時時間 (ms)"
   timeoutDescription: "若取得預覽所需的時間超過這個值，則不會產生預覽。"
   maximumContentLength: "Content-Length 的最大値 (byte)"
@@ -3092,6 +3101,8 @@ _uploader:
   abortConfirm: "有些檔案尚未上傳，您要中止嗎？"
   doneConfirm: "有些檔案尚未上傳，是否要完成上傳？"
   maxFileSizeIsX: "可上傳的最大檔案大小為 {x}。"
+  allowedTypes: "可上傳的檔案類型"
+  tip: "檔案尚未上傳。您可以在此對話框中進行上傳前的確認、重新命名、壓縮、裁切等操作。準備完成後，請點選「上傳」按鈕開始上傳。\n"
 _clientPerformanceIssueTip:
   title: "如果覺得電池消耗過快的話"
   makeSureDisabledAdBlocker: "請將廣告阻擋器停用"
@@ -3100,3 +3111,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "覆蓋樣式可能會影響效能。請確認是否啟用了自訂 CSS 或其他會覆蓋樣式的擴充功能。\n"
   makeSureDisabledAddons: "請停用擴充功能"
   makeSureDisabledAddons_description: "部分擴充功能可能會干擾用戶端的運作並影響效能。請嘗試停用瀏覽器的擴充功能，以確認是否能改善情況"
+_clip:
+  tip: "摘錄是一項可以用來整理貼文的功能。"
+_userLists:
+  tip: "您可以建立包含任意使用者的清單。建立後的清單可以作為時間軸顯示。\n"
