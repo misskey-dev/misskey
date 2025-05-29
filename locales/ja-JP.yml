@@ -327,6 +327,7 @@ dark: "ダーク"
 lightThemes: "明るいテーマ"
 darkThemes: "暗いテーマ"
 syncDeviceDarkMode: "デバイスのダークモードと同期する"
+switchDarkModeManuallyWhenSyncEnabledConfirm: "「{x}」がオンになっています。同期をオフにして手動でモードを切り替えますか？"
 drive: "ドライブ"
 fileName: "ファイル名"
 selectFile: "ファイルを選択"
@@ -2557,7 +2558,7 @@ _exportOrImport:
   userLists: "リスト"
   excludeMutingUsers: "ミュートしているユーザーを除外"
   excludeInactiveUsers: "使われていないアカウントを除外"
-  withReplies: "インポートした人による返信をTLに含むようにする"
+  withReplies: "返信をTLに含むかの情報がファイルにない場合に、インポートした人による返信をTLに含むようにする"
 
 _charts:
   federation: "連合"
