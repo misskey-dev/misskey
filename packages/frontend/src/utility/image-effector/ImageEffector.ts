@@ -332,6 +332,9 @@ export class ImageEffector {
 
 		gl.useProgram(shaderProgram);
 
+		const u_resolution = gl.getUniformLocation(shaderProgram, 'u_resolution');
+		gl.uniform2fv(u_resolution, [this.renderWidth, this.renderHeight]);
+
 		fx.main({
 			gl: gl,
 			program: shaderProgram,

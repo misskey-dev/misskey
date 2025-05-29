@@ -12104,6 +12104,10 @@ export interface Locale extends ILocale {
              * 色の圧縮(高度)
              */
             "colorClampAdvanced": string;
+            /**
+             * 歪み
+             */
+            "distort": string;
         };
     };
 }
