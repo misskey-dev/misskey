@@ -348,6 +348,16 @@ export class ImageEffector {
 		this.render();
 	}
 
+	public changeResolution(width: number, height: number) {
+		this.renderWidth = width;
+		this.renderHeight = height;
+		if (this.canvas) {
+			this.canvas.width = this.renderWidth;
+			this.canvas.height = this.renderHeight;
+		}
+		this.gl.viewport(0, 0, this.renderWidth, this.renderHeight);
+	}
+
 	private getTextureKeyForParam(v: ParamTypeToPrimitive['texture']) {
 		if (v == null) return '';
 		return v.type === 'text' ? `text:${v.text}` : v.type === 'url' ? `url:${v.url}` : '';

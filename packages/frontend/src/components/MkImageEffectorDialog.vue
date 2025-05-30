@@ -112,10 +112,21 @@ let renderer: ImageEffector | null = null;
 onMounted(async () => {
 	if (canvasEl.value == null) return;
 
+	const MAX_W = 500;
+	const MAX_H = 500;
+	let w = props.image.width;
+	let h = props.image.height;
+
+	if (w > MAX_W || h > MAX_H) {
+		const scale = Math.min(MAX_W / w, MAX_H / h);
+		w *= scale;
+		h *= scale;
+	}
+
 	renderer = new ImageEffector({
 		canvas: canvasEl.value,
-		renderWidth: props.image.width,
-		renderHeight: props.image.height,
+		renderWidth: w,
+		renderHeight: h,
 		image: props.image,
 		fxs: FXS,
 	});
@@ -138,6 +149,7 @@ function save() {
 		return;
 	}
 
+	renderer!.changeResolution(props.image.width, props.image.height); // 本番レンダリングのためオリジナル画質に戻す
 	renderer!.render(); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value!.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
