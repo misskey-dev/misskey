@@ -15,14 +15,21 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		tokenId: { type: 'string', format: 'misskey:id' },
-		token: { type: 'string', nullable: true },
-	},
 	anyOf: [
-		{ required: ['tokenId'] },
-		{ required: ['token'] },
+		{
+			type: 'object',
+			properties: {
+				tokenId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['tokenId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				token: { type: 'string', nullable: true },
+			},
+			required: ['token'],
+		},
 	],
 } as const;
 
@@ -33,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private accessTokensRepository: AccessTokensRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.tokenId) {
+			if ('tokenId' in ps) {
 				const tokenExist = await this.accessTokensRepository.exists({ where: { id: ps.tokenId } });
 
 				if (tokenExist) {

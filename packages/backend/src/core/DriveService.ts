@@ -528,7 +528,7 @@ export class DriveService {
 				return info.type.mime === mimeType;
 			});
 			if (!isAllowed) {
-				throw new IdentifiableError('bd71c601-f9b0-4808-9137-a330647ced9b', 'Unallowed file type.');
+				throw new IdentifiableError('bd71c601-f9b0-4808-9137-a330647ced9b', `Unallowed file type: ${info.type.mime}`);
 			}
 
 			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;

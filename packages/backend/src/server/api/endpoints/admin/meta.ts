@@ -499,6 +499,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			urlPreviewAllowRedirect: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			urlPreviewTimeout: {
 				type: 'number',
 				optional: false, nullable: false,
@@ -709,6 +713,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notesPerOneAd: instance.notesPerOneAd,
 				summalyProxy: instance.urlPreviewSummaryProxyUrl,
 				urlPreviewEnabled: instance.urlPreviewEnabled,
+				urlPreviewAllowRedirect: instance.urlPreviewAllowRedirect,
 				urlPreviewTimeout: instance.urlPreviewTimeout,
 				urlPreviewMaximumContentLength: instance.urlPreviewMaximumContentLength,
 				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
