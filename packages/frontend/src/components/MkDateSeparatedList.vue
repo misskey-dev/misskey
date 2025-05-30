@@ -12,7 +12,6 @@ import MkTransitionGroup from '@/components/global/MkTransitionGroup.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
-import { prefer } from '@/preferences.js';
 import { getDateText } from '@/utility/timeline-date-separate.js';
 
 export default defineComponent({

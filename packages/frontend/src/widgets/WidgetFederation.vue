@@ -36,7 +36,6 @@ import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
-import { prefer } from '@/preferences.js';
 
 const name = 'federation';
 
