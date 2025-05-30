@@ -1919,6 +1919,26 @@ export interface Locale extends ILocale {
      */
     "uploadFolder": string;
     /**
+     * ウォーターマーク
+     */
+    "watermark": string;
+    /**
+     * ウォーターマークをつけますか？
+     */
+    "watermarkConfirm": string;
+    /**
+     * ウォーターマークをつける
+     */
+    "useWatermark": string;
+    /**
+     * 画像のアップロード時にデフォルトでウォーターマークをつけるようにします。
+     */
+    "useWatermarkDescription": string;
+    /**
+     * デフォルトの値にかかわらず、アップロードメニューの「ウォーターマークをつける」スイッチを操作して、一回限りの設定を適用することができます。
+     */
+    "useWatermarkInfo": string;
+    /**
      * すべての通知を既読にする
      */
     "markAsReadAllNotifications": string;
@@ -3175,13 +3195,25 @@ export interface Locale extends ILocale {
      */
     "duplicate": string;
     /**
-     * 左
+     * 上
      */
-    "left": string;
+    "top": string;
+    /**
+     * 下
+     */
+    "bottom": string;
     /**
      * 中央
      */
     "center": string;
+    /**
+     * 左
+     */
+    "left": string;
+    /**
+     * 右
+     */
+    "right": string;
     /**
      * 広い
      */
@@ -4503,17 +4535,37 @@ export interface Locale extends ILocale {
      */
     "notificationDisplay": string;
     /**
+     * 配置
+     */
+    "placement": string;
+    /**
      * 左上
      */
     "leftTop": string;
+    /**
+     * 中上
+     */
+    "centerTop": string;
     /**
      * 右上
      */
     "rightTop": string;
     /**
+     * 左中
+     */
+    "leftCenter": string;
+    /**
+     * 右中
+     */
+    "rightCenter": string;
+    /**
      * 左下
      */
     "leftBottom": string;
+    /**
+     * 中下
+     */
+    "centerBottom": string;
     /**
      * 右下
      */
@@ -4534,6 +4586,14 @@ export interface Locale extends ILocale {
      * 位置
      */
     "position": string;
+    /**
+     * 回転
+     */
+    "rotate": string;
+    /**
+     * 透明度
+     */
+    "transparency": string;
     /**
      * サーバールール
      */
@@ -5387,18 +5447,6 @@ export interface Locale extends ILocale {
      */
     "compress": string;
     /**
-     * 右
-     */
-    "right": string;
-    /**
-     * 下
-     */
-    "bottom": string;
-    /**
-     * 上
-     */
-    "top": string;
-    /**
      * 埋め込み
      */
     "embed": string;
@@ -5477,6 +5525,14 @@ export interface Locale extends ILocale {
      * 全ての「ヒントとコツ」を非表示
      */
     "hideAllTips": string;
+    /**
+     * 常に確認する
+     */
+    "alwaysConfirm": string;
+    /**
+     * デフォルトの設定を適用する
+     */
+    "useDefaultSettings": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -12015,6 +12071,56 @@ export interface Locale extends ILocale {
          * 任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。
          */
         "tip": string;
+    };
+    "_watermarkEditor": {
+        /**
+         * ウォーターマークをカスタマイズ
+         */
+        "title": string;
+        /**
+         * このファイルは対応していません
+         */
+        "driveFileTypeWarn": string;
+        /**
+         * 画像ファイルを選択してください
+         */
+        "driveFileTypeWarnDescription": string;
+        /**
+         * 設定が不十分です
+         */
+        "settingInvalidWarn": string;
+        /**
+         * プレビューが正常に表示されることを確認してから保存してください
+         */
+        "settingInvalidWarnDescription": string;
+        /**
+         * ウォーターマーク用画像のファイルサイズが大きいと、処理の際にウォーターマークを読み込む時間が長くなり、アップロードに時間がかかるようになります。あらかじめ解像度を低くしたり、ファイルを圧縮したりしておくことを推奨します。
+         */
+        "useSmallFile": string;
+        /**
+         * 描画モード
+         */
+        "repeatSetting": string;
+        /**
+         * 全体を埋め尽くす
+         */
+        "repeat": string;
+        /**
+         * 余白
+         */
+        "padding": string;
+        /**
+         * 回転した分の面積を確保する
+         */
+        "preserveBoundingRect": string;
+        /**
+         * 通常はオンで問題ありません。ウォーターマークを回転させた際に余白が不自然になった場合はオフにしてみてください。
+         */
+        "preserveBoundingRectDescription": string;
+        /**
+         * クリップボード経由でのアップロード時の動作
+         */
+        "clipboardUploadBehavior": string;
     };
 }
 declare const locales: {

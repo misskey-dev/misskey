@@ -53,6 +53,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts.drivecleaner }}
 				</FormLink>
 
+				<MkFolder>
+					<template #icon><i class="ti ti-ripple"></i></template>
+					<template #label>{{ i18n.ts.watermark }}</template>
+
+					<div class="_gaps_m">
+						<div class="_gaps">
+							<MkInfo>{{ i18n.ts.useWatermarkInfo }}</MkInfo>
+
+							<MkSwitch v-model="useWatermark">
+								<template #label>{{ i18n.ts.useWatermark }}</template>
+								<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
+							</MkSwitch>
+						</div>
+
+						<hr/>
+
+						<FormLink @click="openWatermarkEditor">
+							<template #icon><i class="ti ti-pencil"></i></template>
+							{{ i18n.ts._watermarkEditor.title }}
+						</FormLink>
+					</div>
+				</MkFolder>
+
 				<SearchMarker :keywords="['keep', 'original', 'filename']">
 					<MkPreferenceContainer k="keepOriginalFilename">
 						<MkSwitch v-model="keepOriginalFilename">
@@ -81,10 +104,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -94,8 +119,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import bytes from '@/filters/bytes.js';
 import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import { ensureSignin } from '@/i.js';
+import { reloadAsk } from '@/utility/reload-ask.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
@@ -122,7 +148,15 @@ const meterStyle = computed(() => {
 	};
 });
 
+const useWatermark = prefer.model('useWatermark');
+
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
+
+watch([
+	useWatermark,
+], () => {
+	reloadAsk({ unison: true, reason: i18n.ts.reloadRequiredToApplySettings });
+});
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
@@ -149,6 +183,12 @@ function chooseUploadFolder() {
 		} else {
 			uploadFolder.value = null;
 		}
+	});
+}
+
+function openWatermarkEditor() {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {}, {
+		closed: () => dispose(),
 	});
 }
 
