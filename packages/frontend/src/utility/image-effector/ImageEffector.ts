@@ -52,6 +52,10 @@ export type ImageEffectorLayer = {
 	params: Record<string, any>;
 };
 
+function getValue<T extends keyof ParamTypeToPrimitive>(params: Record<string, any>, k: string): ParamTypeToPrimitive[T] {
+	return params[k];
+}
+
 export class ImageEffector {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
@@ -230,16 +234,16 @@ export class ImageEffector {
 				Object.entries(fx.params).map(([key, param]) => {
 					return [key, layer.params[key] ?? param.default];
 				}),
-			) as any,
+			),
 			u: Object.fromEntries(fx.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: Object.fromEntries(
 				Object.entries(fx.params).map(([k, v]) => {
 					if (v.type !== 'texture') return [k, null];
-					const param = layer.params[k];
+					const param = getValue<typeof v.type>(layer.params, k);
 					if (param == null) return [k, null];
-					const texture = this.paramTextures.get(this.getTextureKeyForParam(param));
+					const texture = this.paramTextures.get(this.getTextureKeyForParam(param)) ?? null;
 					return [k, texture];
 				})),
 		});
@@ -315,10 +319,11 @@ export class ImageEffector {
 			const fx = this.fxs.find(fx => fx.id === layer.fxId);
 			if (fx == null) continue;
 
-			for (const [k, v] of Object.entries(layer.params)) {
+			for (const k of Object.keys(layer.params)) {
 				const paramDef = fx.params[k];
 				if (paramDef == null) continue;
 				if (paramDef.type !== 'texture') continue;
+				const v = getValue<typeof paramDef.type>(layer.params, k);
 				if (v == null) continue;
 
 				const textureKey = this.getTextureKeyForParam(v);
