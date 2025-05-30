@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</template>
 
-				<TransitionGroup
+				<MkTransitionGroup
 					tag="div"
 					:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
 					:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@dragstart="onFileDragstart(file, $event)"
 						@dragend="isDragSource = false"
 					/>
-				</TransitionGroup>
+				</MkTransitionGroup>
 			</MkStickyContainer>
 			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';

@@ -6,8 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <!-- TODO: 親からスタイルを当てにくいことや実装がトリッキーなことを鑑み廃止または使用の縮小(timeline-date-separate.tsを使う) -->
 
 <script lang="ts">
-import { defineComponent, h, TransitionGroup, useCssModule } from 'vue';
+import { defineComponent, h, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
+import MkTransitionGroup from '@/components/global/MkTransitionGroup.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
@@ -141,7 +142,7 @@ export default defineComponent({
 			[$style['direction-up']]: props.direction === 'up',
 		};
 
-		return () => h(SkTransitionGroup, {
+		return () => h(MkTransitionGroup, {
 			class: classes,
 			name: 'list',
 			tag: 'div',

@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
-		<component
-			:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.notifications]"
+		<MkTransitionGroup
+			:class="[$style.notifications]"
 			:enterActiveClass="$style.transition_x_enterActive"
 			:leaveActiveClass="$style.transition_x_leaveActive"
 			:enterFromClass="$style.transition_x_enterFrom"
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.content" :note="notification.note" :withHardMute="true"/>
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
 			</div>
-		</component>
+		</MkTransitionGroup>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else/>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup } from 'vue';
+import { onUnmounted, onMounted, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import type { notificationTypes } from '@@/js/const.js';
