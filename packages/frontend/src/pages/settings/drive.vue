@@ -90,6 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkFolder>
 							<template #icon><i class="ti ti-copyright"></i></template>
 							<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts._watermarkEditor.tip }}</template>
 
 							<div class="_gaps">
 								<div class="_gaps_s">

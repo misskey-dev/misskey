@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkFolder :defaultOpen="false">
+<MkFolder :defaultOpen="false" :canPage="false">
 	<template #icon><i class="ti ti-pencil"></i></template>
 	<template #label>{{ i18n.ts.preset }}: {{ preset.name === '' ? '(' + i18n.ts.noName + ')' : preset.name }}</template>
 	<template #footer>
