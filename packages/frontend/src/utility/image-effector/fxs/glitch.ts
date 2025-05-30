@@ -11,8 +11,8 @@ const shader = `#version 300 es
 precision mediump float;
 
 in vec2 in_uv;
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
+uniform sampler2D in_texture;
+uniform vec2 in_resolution;
 uniform int u_amount;
 uniform float u_shiftStrengths[128];
 uniform float u_shiftOrigins[128];
@@ -29,10 +29,10 @@ void main() {
 		}
 	}
 
-	float r = texture(u_texture, vec2(in_uv.x + (v * (1.0 + u_channelShift)), in_uv.y)).r;
-	float g = texture(u_texture, vec2(in_uv.x + v, in_uv.y)).g;
-	float b = texture(u_texture, vec2(in_uv.x + (v * (1.0 + (u_channelShift / 2.0))), in_uv.y)).b;
-	float a = texture(u_texture, vec2(in_uv.x + v, in_uv.y)).a;
+	float r = texture(in_texture, vec2(in_uv.x + (v * (1.0 + u_channelShift)), in_uv.y)).r;
+	float g = texture(in_texture, vec2(in_uv.x + v, in_uv.y)).g;
+	float b = texture(in_texture, vec2(in_uv.x + (v * (1.0 + (u_channelShift / 2.0))), in_uv.y)).b;
+	float a = texture(in_texture, vec2(in_uv.x + v, in_uv.y)).a;
 	out_color = vec4(r, g, b, a);
 }
 `;
@@ -41,6 +41,7 @@ export const FX_glitch = defineImageEffectorFx({
 	id: 'glitch' as const,
 	name: i18n.ts._imageEffector._fxs.glitch,
 	shader,
+	uniforms: ['amount', 'channelShift'] as const,
 	params: {
 		amount: {
 			type: 'number' as const,
@@ -75,17 +76,9 @@ export const FX_glitch = defineImageEffectorFx({
 			default: 100,
 		},
 	},
-	main: ({ gl, program, params, preTexture }) => {
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-		const u_texture = gl.getUniformLocation(program, 'u_texture');
-		gl.uniform1i(u_texture, 0);
-
-		const u_amount = gl.getUniformLocation(program, 'u_amount');
-		gl.uniform1i(u_amount, params.amount);
-
-		const u_channelShift = gl.getUniformLocation(program, 'u_channelShift');
-		gl.uniform1f(u_channelShift, params.channelShift);
+	main: ({ gl, program, u, params }) => {
+		gl.uniform1i(u.amount, params.amount);
+		gl.uniform1f(u.channelShift, params.channelShift);
 
 		const rnd = seedrandom(params.seed.toString());
 

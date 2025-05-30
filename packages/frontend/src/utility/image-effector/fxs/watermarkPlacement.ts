@@ -9,9 +9,9 @@ const shader = `#version 300 es
 precision mediump float;
 
 in vec2 in_uv;
-uniform sampler2D u_texture_src;
+uniform sampler2D in_texture;
+uniform vec2 in_resolution;
 uniform sampler2D u_texture_watermark;
-uniform vec2 u_resolution_src;
 uniform vec2 u_resolution_watermark;
 uniform float u_scale;
 uniform float u_angle;
@@ -23,12 +23,12 @@ uniform int u_fitMode; // 0: contain, 1: cover
 out vec4 out_color;
 
 void main() {
-	vec4 in_color = texture(u_texture_src, in_uv);
+	vec4 in_color = texture(in_texture, in_uv);
 
 	bool contain = u_fitMode == 0;
 
-	float x_ratio = u_resolution_watermark.x / u_resolution_src.x;
-	float y_ratio = u_resolution_watermark.y / u_resolution_src.y;
+	float x_ratio = u_resolution_watermark.x / in_resolution.x;
+	float y_ratio = u_resolution_watermark.y / in_resolution.y;
 
 	float aspect_ratio = contain ?
 		(min(x_ratio, y_ratio) / max(x_ratio, y_ratio)) :
@@ -70,6 +70,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 	id: 'watermarkPlacement' as const,
 	name: '(internal)',
 	shader,
+	uniforms: ['texture_watermark', 'resolution_watermark', 'scale', 'angle', 'opacity', 'repeat', 'alignX', 'alignY', 'fitMode'] as const,
 	params: {
 		cover: {
 			type: 'boolean' as const,
@@ -98,46 +99,22 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, program, params, preTexture, width, height, watermark }) => {
+	main: ({ gl, u, params, watermark }) => {
 		if (watermark == null) {
 			return;
 		}
 
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-		const u_texture_src = gl.getUniformLocation(program, 'u_texture_src');
-		gl.uniform1i(u_texture_src, 0);
-
 		gl.activeTexture(gl.TEXTURE1);
 		gl.bindTexture(gl.TEXTURE_2D, watermark.texture);
-		const u_texture_watermark = gl.getUniformLocation(program, 'u_texture_watermark');
-		gl.uniform1i(u_texture_watermark, 1);
+		gl.uniform1i(u.texture_watermark, 1);
 
-		const u_resolution_src = gl.getUniformLocation(program, 'u_resolution_src');
-		gl.uniform2fv(u_resolution_src, [width, height]);
-
-		const u_resolution_watermark = gl.getUniformLocation(program, 'u_resolution_watermark');
-		gl.uniform2fv(u_resolution_watermark, [watermark.width, watermark.height]);
-
-		const u_scale = gl.getUniformLocation(program, 'u_scale');
-		gl.uniform1f(u_scale, params.scale);
-
-		const u_opacity = gl.getUniformLocation(program, 'u_opacity');
-		gl.uniform1f(u_opacity, params.opacity);
-
-		const u_angle = gl.getUniformLocation(program, 'u_angle');
-		gl.uniform1f(u_angle, 0.0);
-
-		const u_repeat = gl.getUniformLocation(program, 'u_repeat');
-		gl.uniform1i(u_repeat, params.repeat ? 1 : 0);
-
-		const u_alignX = gl.getUniformLocation(program, 'u_alignX');
-		gl.uniform1i(u_alignX, params.align.x === 'left' ? 0 : params.align.x === 'right' ? 2 : 1);
-
-		const u_alignY = gl.getUniformLocation(program, 'u_alignY');
-		gl.uniform1i(u_alignY, params.align.y === 'top' ? 0 : params.align.y === 'bottom' ? 2 : 1);
-
-		const u_fitMode = gl.getUniformLocation(program, 'u_fitMode');
-		gl.uniform1i(u_fitMode, params.cover ? 1 : 0);
+		gl.uniform2fv(u.resolution_watermark, [watermark.width, watermark.height]);
+		gl.uniform1f(u.scale, params.scale);
+		gl.uniform1f(u.opacity, params.opacity);
+		gl.uniform1f(u.angle, 0.0);
+		gl.uniform1i(u.repeat, params.repeat ? 1 : 0);
+		gl.uniform1i(u.alignX, params.align.x === 'left' ? 0 : params.align.x === 'right' ? 2 : 1);
+		gl.uniform1i(u.alignY, params.align.y === 'top' ? 0 : params.align.y === 'bottom' ? 2 : 1);
+		gl.uniform1i(u.fitMode, params.cover ? 1 : 0);
 	},
 });

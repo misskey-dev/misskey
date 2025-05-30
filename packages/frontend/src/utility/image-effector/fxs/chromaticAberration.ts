@@ -10,8 +10,8 @@ const shader = `#version 300 es
 precision mediump float;
 
 in vec2 in_uv;
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
+uniform sampler2D in_texture;
+uniform vec2 in_resolution;
 out vec4 out_color;
 uniform float u_amount;
 uniform float u_start;
@@ -23,7 +23,7 @@ void main() {
 	float g_strength = 1.5;
 	float b_strength = 2.0;
 
-	vec2 size = vec2(u_resolution.x, u_resolution.y);
+	vec2 size = vec2(in_resolution.x, in_resolution.y);
 
 	vec4 accumulator = vec4(0.0);
 	float normalisedValue = length((in_uv - 0.5) * 2.0);
@@ -37,13 +37,13 @@ void main() {
 	vec2 bOffset = -vector * strength * (u_amount * b_strength);
 
 	for (int i = 0; i < samples; i++) {
-		accumulator.r += texture(u_texture, in_uv + rOffset).r;
+		accumulator.r += texture(in_texture, in_uv + rOffset).r;
 		rOffset -= velocity / float(samples);
 
-		accumulator.g += texture(u_texture, in_uv + gOffset).g;
+		accumulator.g += texture(in_texture, in_uv + gOffset).g;
 		gOffset -= velocity / float(samples);
 
-		accumulator.b += texture(u_texture, in_uv + bOffset).b;
+		accumulator.b += texture(in_texture, in_uv + bOffset).b;
 		bOffset -= velocity / float(samples);
 	}
 
@@ -55,6 +55,7 @@ export const FX_chromaticAberration = defineImageEffectorFx({
 	id: 'chromaticAberration' as const,
 	name: i18n.ts._imageEffector._fxs.chromaticAberration,
 	shader,
+	uniforms: ['amount', 'start', 'normalize'] as const,
 	params: {
 		normalize: {
 			type: 'boolean' as const,
@@ -68,16 +69,8 @@ export const FX_chromaticAberration = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, program, params, preTexture }) => {
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-		const u_texture = gl.getUniformLocation(program, 'u_texture');
-		gl.uniform1i(u_texture, 0);
-
-		const u_amount = gl.getUniformLocation(program, 'u_amount');
-		gl.uniform1f(u_amount, params.amount);
-
-		const u_normalize = gl.getUniformLocation(program, 'u_normalize');
-		gl.uniform1i(u_normalize, params.normalize ? 1 : 0);
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.amount, params.amount);
+		gl.uniform1i(u.normalize, params.normalize ? 1 : 0);
 	},
 });

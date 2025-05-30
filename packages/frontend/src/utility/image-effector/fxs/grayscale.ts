@@ -10,8 +10,8 @@ const shader = `#version 300 es
 precision mediump float;
 
 in vec2 in_uv;
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
+uniform sampler2D in_texture;
+uniform vec2 in_resolution;
 out vec4 out_color;
 
 float getBrightness(vec4 color) {
@@ -19,7 +19,7 @@ float getBrightness(vec4 color) {
 }
 
 void main() {
-	vec4 in_color = texture(u_texture, in_uv);
+	vec4 in_color = texture(in_texture, in_uv);
 	float brightness = getBrightness(in_color);
 	out_color = vec4(brightness, brightness, brightness, in_color.a);
 }
@@ -29,12 +29,9 @@ export const FX_grayscale = defineImageEffectorFx({
 	id: 'grayscale' as const,
 	name: i18n.ts._imageEffector._fxs.grayscale,
 	shader,
+	uniforms: [] as const,
 	params: {
 	},
-	main: ({ gl, program, params, preTexture }) => {
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-		const u_texture = gl.getUniformLocation(program, 'u_texture');
-		gl.uniform1i(u_texture, 0);
+	main: ({ gl, params }) => {
 	},
 });

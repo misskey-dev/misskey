@@ -18,14 +18,15 @@ type ImageEffectorFxParamDefs = Record<string, {
 	default: any;
 }>;
 
-export function defineImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs>(fx: ImageEffectorFx<ID, P>) {
+export function defineImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs, U extends string[]>(fx: ImageEffectorFx<ID, P, U>) {
 	return fx;
 }
 
-export type ImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs> = {
+export type ImageEffectorFx<ID extends string = string, P extends ImageEffectorFxParamDefs = any, U extends string[] = string[]> = {
 	id: ID;
 	name: string;
 	shader: string;
+	uniforms: U;
 	params: P,
 	main: (ctx: {
 		gl: WebGL2RenderingContext;
@@ -33,7 +34,7 @@ export type ImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDef
 		params: {
 			[key in keyof P]: ParamTypeToPrimitive[P[key]['type']];
 		};
-		preTexture: WebGLTexture;
+		u: Record<U[number], WebGLUniformLocation>;
 		width: number;
 		height: number;
 		watermark?: {
@@ -69,7 +70,7 @@ export class ImageEffector {
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
-	private fxs: ImageEffectorFx<string, any>[];
+	private fxs: ImageEffectorFx[];
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -77,7 +78,7 @@ export class ImageEffector {
 		height: number;
 		originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 		layers: ImageEffectorLayer[];
-		fxs: ImageEffectorFx<string, any>[];
+		fxs: ImageEffectorFx[];
 	}) {
 		this.canvas = options.canvas;
 		this.canvas.width = options.width;
@@ -332,8 +333,13 @@ export class ImageEffector {
 
 		gl.useProgram(shaderProgram);
 
-		const u_resolution = gl.getUniformLocation(shaderProgram, 'u_resolution');
-		gl.uniform2fv(u_resolution, [this.renderWidth, this.renderHeight]);
+		const in_resolution = gl.getUniformLocation(shaderProgram, 'in_resolution');
+		gl.uniform2fv(in_resolution, [this.renderWidth, this.renderHeight]);
+
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, preTexture);
+		const in_texture = gl.getUniformLocation(shaderProgram, 'in_texture');
+		gl.uniform1i(in_texture, 0);
 
 		fx.main({
 			gl: gl,
@@ -343,7 +349,7 @@ export class ImageEffector {
 					return [key, layer.params[key] ?? param.default];
 				}),
 			) as any,
-			preTexture: preTexture,
+			u: Object.fromEntries(fx.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
 			width: this.renderWidth,
 			height: this.renderHeight,
 			watermark: watermark,

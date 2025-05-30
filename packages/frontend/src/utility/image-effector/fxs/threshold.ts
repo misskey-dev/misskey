@@ -10,15 +10,15 @@ const shader = `#version 300 es
 precision mediump float;
 
 in vec2 in_uv;
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
+uniform sampler2D in_texture;
+uniform vec2 in_resolution;
 uniform float u_r;
 uniform float u_g;
 uniform float u_b;
 out vec4 out_color;
 
 void main() {
-	vec4 in_color = texture(u_texture, in_uv);
+	vec4 in_color = texture(in_texture, in_uv);
 	float r = in_color.r < u_r ? 0.0 : 1.0;
 	float g = in_color.g < u_g ? 0.0 : 1.0;
 	float b = in_color.b < u_b ? 0.0 : 1.0;
@@ -30,6 +30,7 @@ export const FX_threshold = defineImageEffectorFx({
 	id: 'threshold' as const,
 	name: i18n.ts._imageEffector._fxs.threshold,
 	shader,
+	uniforms: ['r', 'g', 'b'] as const,
 	params: {
 		r: {
 			type: 'number' as const,
@@ -53,19 +54,9 @@ export const FX_threshold = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, program, params, preTexture }) => {
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-		const u_texture = gl.getUniformLocation(program, 'u_texture');
-		gl.uniform1i(u_texture, 0);
-
-		const u_r = gl.getUniformLocation(program, 'u_r');
-		gl.uniform1f(u_r, params.r);
-
-		const u_g = gl.getUniformLocation(program, 'u_g');
-		gl.uniform1f(u_g, params.g);
-
-		const u_b = gl.getUniformLocation(program, 'u_b');
-		gl.uniform1f(u_b, params.b);
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.r, params.r);
+		gl.uniform1f(u.g, params.g);
+		gl.uniform1f(u.b, params.b);
 	},
 });

@@ -10,14 +10,14 @@ const shader = `#version 300 es
 precision mediump float;
 
 in vec2 in_uv;
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
+uniform sampler2D in_texture;
+uniform vec2 in_resolution;
 uniform float u_max;
 uniform float u_min;
 out vec4 out_color;
 
 void main() {
-	vec4 in_color = texture(u_texture, in_uv);
+	vec4 in_color = texture(in_texture, in_uv);
 	float r = min(max(in_color.r, u_min), u_max);
 	float g = min(max(in_color.g, u_min), u_max);
 	float b = min(max(in_color.b, u_min), u_max);
@@ -29,6 +29,7 @@ export const FX_colorClamp = defineImageEffectorFx({
 	id: 'colorClamp' as const,
 	name: i18n.ts._imageEffector._fxs.colorClamp,
 	shader,
+	uniforms: ['max', 'min'] as const,
 	params: {
 		max: {
 			type: 'number' as const,
@@ -45,16 +46,8 @@ export const FX_colorClamp = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, program, params, preTexture }) => {
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-		const u_texture = gl.getUniformLocation(program, 'u_texture');
-		gl.uniform1i(u_texture, 0);
-
-		const u_max = gl.getUniformLocation(program, 'u_max');
-		gl.uniform1f(u_max, params.max);
-
-		const u_min = gl.getUniformLocation(program, 'u_min');
-		gl.uniform1f(u_min, 1.0 + params.min);
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.max, params.max);
+		gl.uniform1f(u.min, 1.0 + params.min);
 	},
 });
