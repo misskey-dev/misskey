@@ -61,7 +61,7 @@ import { deepClone } from '@/utility/clone.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 
 const props = defineProps<{
-	image: HTMLImageElement;
+	image: ImageBitmap;
 }>();
 
 const emit = defineEmits<{

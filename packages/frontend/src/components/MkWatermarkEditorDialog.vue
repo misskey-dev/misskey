@@ -63,7 +63,7 @@ const $i = ensureSignin();
 
 const props = defineProps<{
 	preset?: WatermarkPreset | null;
-	image?: HTMLImageElement | null;
+	image?: ImageBitmap | null;
 }>();
 
 const preset = reactive(deepClone(props.preset) ?? {
@@ -168,10 +168,21 @@ async function initRenderer() {
 			image: sampleImage_2_3,
 		});
 	} else if (props.image != null) {
+		const MAX_W = 1000;
+		const MAX_H = 1000;
+		let w = props.image.width;
+		let h = props.image.height;
+
+		if (w > MAX_W || h > MAX_H) {
+			const scale = Math.min(MAX_W / w, MAX_H / h);
+			w *= scale;
+			h *= scale;
+		}
+
 		renderer = new WatermarkRenderer({
 			canvas: canvasEl.value,
-			renderWidth: props.image.width,
-			renderHeight: props.image.height,
+			renderWidth: w,
+			renderHeight: h,
 			image: props.image,
 		});
 	}

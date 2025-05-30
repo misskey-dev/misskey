@@ -39,7 +39,7 @@ export class WatermarkRenderer {
 		canvas: HTMLCanvasElement,
 		renderWidth: number,
 		renderHeight: number,
-		image: HTMLImageElement,
+		image: HTMLImageElement | ImageBitmap,
 	}) {
 		this.effector = new ImageEffector({
 			canvas: options.canvas,
