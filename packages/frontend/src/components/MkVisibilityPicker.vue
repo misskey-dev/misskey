@@ -42,8 +42,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-eye-closed"></i>
 			</div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.private }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.privateDescription }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.private }}{{ isNoteInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}</span>
+				<span :class="$style.itemDescription">{{ isNoteInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.privateDescription }}</span>
 			</div>
 		</button>
 	</div>
