@@ -112,7 +112,7 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 	position: absolute;
 }
 
-.root, .moreReactions {
+.root {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
