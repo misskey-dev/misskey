@@ -4,7 +4,6 @@
  */
 
 import { FX_watermarkPlacement } from './image-effector/fxs/watermarkPlacement.js';
-import { createTextureFromText, createTextureFromUrl } from './image-effector/utilts.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
@@ -35,7 +34,6 @@ export type WatermarkPreset = {
 export class WatermarkRenderer {
 	private effector: ImageEffector;
 	private layers: WatermarkPreset['layers'] = [];
-	private texturesKey = '';
 
 	constructor(options: {
 		canvas: HTMLCanvasElement,
@@ -52,30 +50,6 @@ export class WatermarkRenderer {
 		});
 	}
 
-	private calcTexturesKey() {
-		return this.layers.map(layer => {
-			if (layer.type === 'image' && layer.imageUrl != null) {
-				return layer.imageUrl;
-			} else if (layer.type === 'text' && layer.text != null) {
-				return layer.text;
-			}
-			return '';
-		}).join(';');
-	}
-
-	private async bakeTextures(): Promise<void> {
-		this.effector.disposeExternalTextures();
-		for (const layer of this.layers) {
-			if (layer.type === 'text' && layer.text != null) {
-				const { texture, width, height } = await createTextureFromText(this.effector.gl, layer.text);
-				this.effector.registerExternalTexture(layer.id, texture, width, height);
-			} else if (layer.type === 'image' && layer.imageUrl != null) {
-				const { texture, width, height } = await createTextureFromUrl(this.effector.gl, layer.imageUrl);
-				this.effector.registerExternalTexture(layer.id, texture, width, height);
-			}
-		}
-	}
-
 	private makeImageEffectorLayers(): ImageEffectorLayer[] {
 		return this.layers.map(layer => {
 			if (layer.type === 'text') {
@@ -88,8 +62,11 @@ export class WatermarkRenderer {
 						align: layer.align,
 						opacity: layer.opacity,
 						cover: false,
+						watermark: {
+							type: 'text',
+							text: layer.text,
+						},
 					},
-					textures: { watermark: layer.id },
 				};
 			} else {
 				return {
@@ -101,8 +78,11 @@ export class WatermarkRenderer {
 						align: layer.align,
 						opacity: layer.opacity,
 						cover: layer.cover,
+						watermark: {
+							type: 'url',
+							url: layer.imageUrl,
+						},
 					},
-					textures: { watermark: layer.id },
 				};
 			}
 		});
@@ -110,15 +90,7 @@ export class WatermarkRenderer {
 
 	public async setLayers(layers: WatermarkPreset['layers']) {
 		this.layers = layers;
-
-		const newTexturesKey = this.calcTexturesKey();
-		if (newTexturesKey !== this.texturesKey) {
-			this.texturesKey = newTexturesKey;
-			await this.bakeTextures();
-		}
-
-		this.effector.setLayers(this.makeImageEffectorLayers());
-
+		await this.effector.setLayers(this.makeImageEffectorLayers());
 		this.render();
 	}
 

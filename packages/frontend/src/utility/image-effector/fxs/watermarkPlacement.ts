@@ -98,8 +98,11 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 			max: 1.0,
 			step: 0.01,
 		},
+		watermark: {
+			type: 'texture' as const,
+			default: null,
+		},
 	},
-	textures: ['watermark'] as const,
 	main: ({ gl, u, params, textures }) => {
 		if (textures.watermark == null) {
 			return;

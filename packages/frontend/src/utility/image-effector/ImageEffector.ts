@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createTexture } from './utilts.js';
+import { getProxiedImageUrl } from '../media-proxy.js';
 
 type ParamTypeToPrimitive = {
 	'number': number;
@@ -11,7 +11,7 @@ type ParamTypeToPrimitive = {
 	'boolean': boolean;
 	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
 	'seed': number;
-	'texture': string | null;
+	'texture': { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
 };
 
 type ImageEffectorFxParamDefs = Record<string, {
@@ -19,17 +19,16 @@ type ImageEffectorFxParamDefs = Record<string, {
 	default: any;
 }>;
 
-export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[], TS extends string[]>(fx: ImageEffectorFx<ID, PS, US, TS>) {
+export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[]>(fx: ImageEffectorFx<ID, PS, US>) {
 	return fx;
 }
 
-export type ImageEffectorFx<ID extends string = string, PS extends ImageEffectorFxParamDefs = any, US extends string[] = string[], TS extends string[] = string[]> = {
+export type ImageEffectorFx<ID extends string = string, PS extends ImageEffectorFxParamDefs = ImageEffectorFxParamDefs, US extends string[] = string[]> = {
 	id: ID;
 	name: string;
 	shader: string;
 	uniforms: US;
 	params: PS,
-	textures?: TS;
 	main: (ctx: {
 		gl: WebGL2RenderingContext;
 		program: WebGLProgram;
@@ -39,7 +38,7 @@ export type ImageEffectorFx<ID extends string = string, PS extends ImageEffector
 		u: Record<US[number], WebGLUniformLocation>;
 		width: number;
 		height: number;
-		textures: Record<TS[number], {
+		textures: Record<string, {
 			texture: WebGLTexture;
 			width: number;
 			height: number;
@@ -51,13 +50,10 @@ export type ImageEffectorLayer = {
 	id: string;
 	fxId: string;
 	params: Record<string, any>;
-	textures?: Record<string, ExternalTextureId | null>;
 };
 
-type ExternalTextureId = string;
-
 export class ImageEffector {
-	public gl: WebGL2RenderingContext;
+	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
 	private renderTextureProgram!: WebGLProgram;
 	private renderInvertedTextureProgram!: WebGLProgram;
@@ -70,7 +66,7 @@ export class ImageEffector {
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
 	private fxs: ImageEffectorFx[];
-	private externalTextures: Map<ExternalTextureId, { texture: WebGLTexture; width: number; height: number; }> = new Map();
+	private paramTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -239,11 +235,12 @@ export class ImageEffector {
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: Object.fromEntries(
-				Object.entries(layer.textures ?? {}).map(([key, textureId]) => {
-					if (textureId == null) return [key, null];
-					const externalTexture = this.externalTextures.get(textureId);
-					if (externalTexture == null) return [key, null];
-					return [key, externalTexture];
+				Object.entries(fx.params).map(([k, v]) => {
+					if (v.type !== 'texture') return [k, null];
+					const param = layer.params[k];
+					if (param == null) return [k, null];
+					const texture = this.paramTextures.get(this.getTextureKeyForParam(param));
+					return [k, texture];
 				})),
 		});
 
@@ -311,18 +308,44 @@ export class ImageEffector {
 
 	public async setLayers(layers: ImageEffectorLayer[]) {
 		this.layers = layers;
+
+		const unused = new Set(this.paramTextures.keys());
+
+		for (const layer of layers) {
+			const fx = this.fxs.find(fx => fx.id === layer.fxId);
+			if (fx == null) continue;
+
+			for (const [k, v] of Object.entries(layer.params)) {
+				const paramDef = fx.params[k];
+				if (paramDef == null) continue;
+				if (paramDef.type !== 'texture') continue;
+				if (v == null) continue;
+
+				const textureKey = this.getTextureKeyForParam(v);
+				unused.delete(textureKey);
+				if (this.paramTextures.has(textureKey)) continue;
+
+				console.log(`Baking texture of <${textureKey}>...`);
+
+				const texture = v.type === 'text' ? await createTextureFromText(this.gl, v.text) : v.type === 'url' ? await createTextureFromUrl(this.gl, v.url) : null;
+				if (texture == null) continue;
+
+				this.paramTextures.set(textureKey, texture);
+			}
+		}
+
+		for (const k of unused) {
+			console.log(`Dispose unused texture <${k}>...`);
+			this.gl.deleteTexture(this.paramTextures.get(k)!.texture);
+			this.paramTextures.delete(k);
+		}
+
 		this.render();
 	}
 
-	public registerExternalTexture(id: string, texture: WebGLTexture, width: number, height: number) {
-		this.externalTextures.set(id, { texture, width, height });
-	}
-
-	public disposeExternalTextures() {
-		for (const bakedTexture of this.externalTextures.values()) {
-			this.gl.deleteTexture(bakedTexture.texture);
-		}
-		this.externalTextures.clear();
+	private getTextureKeyForParam(v: ParamTypeToPrimitive['texture']) {
+		if (v == null) return '';
+		return v.type === 'text' ? `text:${v.text}` : v.type === 'url' ? `url:${v.url}` : '';
 	}
 
 	public destroy() {
@@ -341,9 +364,89 @@ export class ImageEffector {
 		}
 		this.perLayerResultFrameBuffers.clear();
 
-		this.disposeExternalTextures();
+		for (const texture of this.paramTextures.values()) {
+			this.gl.deleteTexture(texture.texture);
+		}
+		this.paramTextures.clear();
+
 		this.gl.deleteProgram(this.renderTextureProgram);
 		this.gl.deleteProgram(this.renderInvertedTextureProgram);
 		this.gl.deleteTexture(this.originalImageTexture);
 	}
+}
+
+function createTexture(gl: WebGL2RenderingContext): WebGLTexture {
+	const texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+	return texture;
+}
+
+async function createTextureFromUrl(gl: WebGL2RenderingContext, imageUrl: string | null): Promise<{ texture: WebGLTexture, width: number, height: number } | null> {
+	if (imageUrl == null || imageUrl.trim() === '') return null;
+
+	const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+		const img = new Image();
+		img.onload = () => resolve(img);
+		img.onerror = reject;
+		img.src = getProxiedImageUrl(imageUrl); // CORS対策
+	});
+
+	const texture = createTexture(gl);
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	return {
+		texture,
+		width: image.width,
+		height: image.height,
+	};
+}
+
+async function createTextureFromText(gl: WebGL2RenderingContext, text: string | null, resolution = 2048): Promise<{ texture: WebGLTexture, width: number, height: number } | null> {
+	if (text == null || text.trim() === '') return null;
+
+	const ctx = window.document.createElement('canvas').getContext('2d')!;
+	ctx.canvas.width = resolution;
+	ctx.canvas.height = resolution / 4;
+	const fontSize = resolution / 32;
+	const margin = fontSize / 2;
+	ctx.shadowColor = '#000000';
+	ctx.shadowBlur = fontSize / 4;
+
+	//ctx.fillStyle = '#00ff00';
+	//ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+	ctx.fillStyle = '#ffffff';
+	ctx.font = `bold ${fontSize}px sans-serif`;
+	ctx.textBaseline = 'middle';
+
+	ctx.fillText(text, margin, ctx.canvas.height / 2);
+
+	const textMetrics = ctx.measureText(text);
+	const cropWidth = (Math.ceil(textMetrics.actualBoundingBoxRight + textMetrics.actualBoundingBoxLeft) + margin + margin);
+	const cropHeight = (Math.ceil(textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent) + margin + margin);
+	const data = ctx.getImageData(0, (ctx.canvas.height / 2) - (cropHeight / 2), ctx.canvas.width, ctx.canvas.height);
+
+	const texture = createTexture(gl);
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cropWidth, cropHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	const info = {
+		texture: texture,
+		width: cropWidth,
+		height: cropHeight,
+	};
+
+	ctx.canvas.remove();
+
+	return info;
 }
