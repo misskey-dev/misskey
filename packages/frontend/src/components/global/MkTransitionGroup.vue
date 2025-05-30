@@ -13,26 +13,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import type { TransitionGroupProps } from 'vue';
-import { prefer } from '@/preferences';
-
-// This is a "best guess" type.
-// If any valid :class binding produces a type error here, then please change this to match.
-type ClassBinding = string | Record<string, boolean | undefined>;
+import type { TransitionGroupProps, HTMLAttributes } from 'vue';
+import { prefer } from '@/preferences.js';
 
 // This can be an inline type, but pulling it out makes TS errors clearer.
-interface SkTransitionGroupProps extends TransitionGroupProps {
+interface MkTransitionGroupProps extends TransitionGroupProps {
 	/**
 	 * Override CSS styles for the TransitionGroup or native element.
 	 */
-	class?: undefined | ClassBinding | ClassBinding[];
+	class?: HTMLAttributes['class'];
 
 	/**
 	 * If true, will render a TransitionGroup.
 	 * If false, will render a native element.
 	 * If null or undefined (default), will respect the value of prefer.s.animation.
 	 */
-	animate?: boolean | undefined | null;
+	animate?: boolean | null;
 }
 
 const props = withDefaults(defineProps<MkTransitionGroupProps>(), {
