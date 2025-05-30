@@ -297,9 +297,8 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			icon: 'ti ti-sparkles',
 			text: i18n.ts._imageEffector.title,
 			action: async () => {
-				const imageBitmap = await window.createImageBitmap(item.file);
 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkImageEffectorDialog.vue')), {
-					image: imageBitmap,
+					image: item.file,
 				}, {
 					ok: (file) => {
 						URL.revokeObjectURL(item.thumbnail);
@@ -313,10 +312,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 							triggerRef(items);
 						});
 					},
-					closed: () => {
-						imageBitmap.close();
-						dispose();
-					},
+					closed: () => dispose(),
 				});
 			},
 		});
@@ -353,18 +349,14 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				icon: 'ti ti-plus',
 				text: i18n.ts.add,
 				action: async () => {
-					const imageBitmap = await window.createImageBitmap(item.file);
 					const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
-						image: imageBitmap,
+						image: item.file,
 					}, {
 						ok: (preset) => {
 							prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
 							changeWatermarkPreset(preset.id);
 						},
-						closed: () => {
-							imageBitmap.close();
-							dispose();
-						},
+						closed: () => dispose(),
 					});
 				},
 			}],

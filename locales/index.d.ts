@@ -12083,6 +12083,10 @@ export interface Locale extends ILocale {
          * エフェクトを追加
          */
         "addEffect": string;
+        /**
+         * 変更を破棄して終了しますか？
+         */
+        "discardChangesConfirm": string;
         "_fxs": {
             /**
              * 色収差

@@ -3237,6 +3237,7 @@ _watermarkEditor:
 _imageEffector:
   title: "エフェクト"
   addEffect: "エフェクトを追加"
+  discardChangesConfirm: "変更を破棄して終了しますか？"
 
   _fxs:
     chromaticAberration: "色収差"

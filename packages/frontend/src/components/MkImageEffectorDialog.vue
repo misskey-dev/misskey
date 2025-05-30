@@ -61,7 +61,7 @@ import { deepClone } from '@/utility/clone.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 
 const props = defineProps<{
-	image: ImageBitmap;
+	image: File;
 }>();
 
 const emit = defineEmits<{
@@ -72,7 +72,14 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-function cancel() {
+async function cancel() {
+	if (layers.length > 0) {
+		const { canceled } = await os.confirm({
+			text: i18n.ts._imageEffector.discardChangesConfirm,
+		});
+		if (canceled) return;
+	}
+
 	emit('cancel');
 	dialog.value?.close();
 }
@@ -108,14 +115,19 @@ function onLayerDelete(layer: ImageEffectorLayer) {
 const canvasEl = useTemplateRef('canvasEl');
 
 let renderer: ImageEffector | null = null;
+let imageBitmap: ImageBitmap | null = null;
 
 onMounted(async () => {
 	if (canvasEl.value == null) return;
 
+	const closeWaiting = os.waiting();
+
+	imageBitmap = await window.createImageBitmap(props.image);
+
 	const MAX_W = 500;
 	const MAX_H = 500;
-	let w = props.image.width;
-	let h = props.image.height;
+	let w = imageBitmap.width;
+	let h = imageBitmap.height;
 
 	if (w > MAX_W || h > MAX_H) {
 		const scale = Math.min(MAX_W / w, MAX_H / h);
@@ -127,13 +139,15 @@ onMounted(async () => {
 		canvas: canvasEl.value,
 		renderWidth: w,
 		renderHeight: h,
-		image: props.image,
+		image: imageBitmap,
 		fxs: FXS,
 	});
 
 	await renderer.setLayers(layers);
 
 	renderer.render();
+
+	closeWaiting();
 });
 
 onUnmounted(() => {
@@ -141,19 +155,26 @@ onUnmounted(() => {
 		renderer.destroy();
 		renderer = null;
 	}
+	if (imageBitmap != null) {
+		imageBitmap.close();
+		imageBitmap = null;
+	}
 });
 
 function save() {
-	if (layers.length === 0) {
+	if (layers.length === 0 || renderer == null || imageBitmap == null || canvasEl.value == null) {
 		cancel();
 		return;
 	}
 
-	renderer!.changeResolution(props.image.width, props.image.height); // 本番レンダリングのためオリジナル画質に戻す
-	renderer!.render(); // toBlobの直前にレンダリングしないと何故か壊れる
-	canvasEl.value!.toBlob((blob) => {
+	const closeWaiting = os.waiting();
+
+	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
+	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
+		closeWaiting();
 	}, 'image/png');
 }
 

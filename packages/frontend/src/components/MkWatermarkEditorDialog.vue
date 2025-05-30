@@ -63,7 +63,7 @@ const $i = ensureSignin();
 
 const props = defineProps<{
 	preset?: WatermarkPreset | null;
-	image?: ImageBitmap | null;
+	image?: File | null;
 }>();
 
 const preset = reactive(deepClone(props.preset) ?? {
@@ -149,6 +149,7 @@ watch(sampleImageType, async () => {
 });
 
 let renderer: WatermarkRenderer | null = null;
+let imageBitmap: ImageBitmap | null = null;
 
 async function initRenderer() {
 	if (canvasEl.value == null) return;
@@ -168,10 +169,12 @@ async function initRenderer() {
 			image: sampleImage_2_3,
 		});
 	} else if (props.image != null) {
+		imageBitmap = await window.createImageBitmap(props.image);
+
 		const MAX_W = 1000;
 		const MAX_H = 1000;
-		let w = props.image.width;
-		let h = props.image.height;
+		let w = imageBitmap.width;
+		let h = imageBitmap.height;
 
 		if (w > MAX_W || h > MAX_H) {
 			const scale = Math.min(MAX_W / w, MAX_H / h);
@@ -183,7 +186,7 @@ async function initRenderer() {
 			canvas: canvasEl.value,
 			renderWidth: w,
 			renderHeight: h,
-			image: props.image,
+			image: imageBitmap,
 		});
 	}
 
@@ -193,16 +196,24 @@ async function initRenderer() {
 }
 
 onMounted(async () => {
+	const closeWaiting = os.waiting();
+
 	await sampleImage_3_2_loading;
 	await sampleImage_2_3_loading;
 
-	initRenderer();
+	await initRenderer();
+
+	closeWaiting();
 });
 
 onUnmounted(() => {
 	if (renderer != null) {
 		renderer.destroy();
 		renderer = null;
+	}
+	if (imageBitmap != null) {
+		imageBitmap.close();
+		imageBitmap = null;
 	}
 });
 
