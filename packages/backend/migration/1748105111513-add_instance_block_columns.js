@@ -5,7 +5,7 @@
 
 /**
  * @typedef {import('typeorm').MigrationInterface} MigrationInterface
- * @typedef {{ blockedHosts: string[], silencedHosts: string[], mediaSilencedHosts: string[], federationHosts: string[], bubbleInstances: string[] }} Meta
+ * @typedef {{ blockedHosts: string[], silencedHosts: string[], mediaSilencedHosts: string[], federationHosts: string[] }} Meta
  */
 
 /**
@@ -28,7 +28,7 @@ export class AddInstanceBlockColumns1748105111513 {
 
 		// Data migration
 		/** @type {Meta[]} */
-		const metas = await queryRunner.query(`SELECT "blockedHosts", "silencedHosts", "mediaSilencedHosts", "federationHosts", "bubbleInstances" FROM "meta"`);
+		const metas = await queryRunner.query(`SELECT "blockedHosts", "silencedHosts", "mediaSilencedHosts", "federationHosts" FROM "meta"`);
 		if (metas.length > 0) {
 			/** @type {Meta} */
 			const meta = metas[0];
