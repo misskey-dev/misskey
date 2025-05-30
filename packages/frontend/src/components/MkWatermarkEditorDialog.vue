@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
+import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import { v4 as uuid } from 'uuid';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
@@ -197,6 +197,8 @@ async function initRenderer() {
 
 onMounted(async () => {
 	const closeWaiting = os.waiting();
+
+	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	await sampleImage_3_2_loading;
 	await sampleImage_2_3_loading;

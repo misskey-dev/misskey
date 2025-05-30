@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
+import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import { v4 as uuid } from 'uuid';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
@@ -122,6 +122,8 @@ onMounted(async () => {
 
 	const closeWaiting = os.waiting();
 
+	await nextTick(); // waitingがレンダリングされるまで待つ
+
 	imageBitmap = await window.createImageBitmap(props.image);
 
 	const MAX_W = 500;
@@ -161,13 +163,15 @@ onUnmounted(() => {
 	}
 });
 
-function save() {
+async function save() {
 	if (layers.length === 0 || renderer == null || imageBitmap == null || canvasEl.value == null) {
 		cancel();
 		return;
 	}
 
 	const closeWaiting = os.waiting();
+
+	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
 	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
