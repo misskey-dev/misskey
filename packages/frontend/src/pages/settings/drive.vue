@@ -135,6 +135,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								]"
 							>
 								<template #label><SearchLabel>{{ i18n.ts.defaultImageCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="i18n.ts.defaultImageCompressionLevel_description"></div></template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>

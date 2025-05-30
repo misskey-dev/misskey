@@ -5481,6 +5481,10 @@ export interface Locale extends ILocale {
      * デフォルトの画像圧縮度
      */
     "defaultImageCompressionLevel": string;
+    /**
+     * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
+     */
+    "defaultImageCompressionLevel_description": string;
     "_chat": {
         /**
          * まだメッセージはありません
