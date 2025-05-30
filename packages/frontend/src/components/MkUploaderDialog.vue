@@ -346,7 +346,28 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				text: preset.name,
 				active: computed(() => item.watermarkPresetId === preset.id),
 				action: () => changeWatermarkPreset(preset.id),
-			}))],
+			})), {
+				type: 'divider',
+			}, {
+				type: 'button',
+				icon: 'ti ti-plus',
+				text: i18n.ts.add,
+				action: async () => {
+					const img = await getImageElement(item.file);
+					const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
+						image: img,
+					}, {
+						ok: (preset) => {
+							prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
+							changeWatermarkPreset(preset.id);
+						},
+						closed: () => {
+							URL.revokeObjectURL(img.src);
+							dispose();
+						},
+					});
+				},
+			}],
 		});
 	}
 

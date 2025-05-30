@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
-					<div class="_acrylic" :class="$style.previewControls">
+					<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
 						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
 						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
 					</div>
@@ -47,6 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
 import { v4 as uuid } from 'uuid';
+import type { WatermarkPreset } from '@/utility/watermark.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -62,6 +63,7 @@ const $i = ensureSignin();
 
 const props = defineProps<{
 	preset?: WatermarkPreset | null;
+	image?: HTMLImageElement | null;
 }>();
 
 const preset = reactive(deepClone(props.preset) ?? {
@@ -137,7 +139,7 @@ const sampleImage_2_3_loading = new Promise<void>(resolve => {
 	sampleImage_2_3.onload = () => resolve();
 });
 
-const sampleImageType = ref('3_2');
+const sampleImageType = ref(props.image != null ? 'provided' : '3_2');
 watch(sampleImageType, async () => {
 	if (renderer != null) {
 		renderer.destroy();
@@ -164,6 +166,13 @@ async function initRenderer() {
 			renderWidth: 1000,
 			renderHeight: 1500,
 			image: sampleImage_2_3,
+		});
+	} else if (props.image != null) {
+		renderer = new WatermarkRenderer({
+			canvas: canvasEl.value,
+			renderWidth: props.image.width,
+			renderHeight: props.image.height,
+			image: props.image,
 		});
 	}
 
