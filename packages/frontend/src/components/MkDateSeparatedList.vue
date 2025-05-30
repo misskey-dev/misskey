@@ -13,7 +13,6 @@ import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
 import { getDateText } from '@/utility/timeline-date-separate.js';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 export default defineComponent({
 	props: {

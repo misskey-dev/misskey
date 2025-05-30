@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<SkTransitionGroup
+	<MkTransitionGroup
 		:animate="prefer.s.animation && props.transition != null"
 		:duration="props.transition?.duration"
 		:enterActiveClass="props.transition?.enterActiveClass"
@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			tabindex="-1"
 			style="-webkit-user-drag: none;"
 		/>
-	</SkTransitionGroup>
+	</MkTransitionGroup>
 </div>
 </template>
 
@@ -86,7 +86,6 @@ import { computed, nextTick, onMounted, onUnmounted, useTemplateRef, watch, ref 
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { prefer } from '@/preferences.js';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const props = withDefaults(defineProps<{
 	transition?: {

@@ -35,7 +35,7 @@ interface SkTransitionGroupProps extends TransitionGroupProps {
 	animate?: boolean | undefined | null;
 }
 
-const props = withDefaults(defineProps<SkTransitionGroupProps>(), {
+const props = withDefaults(defineProps<MkTransitionGroupProps>(), {
 	tag: 'div',
 	class: undefined,
 	animate: undefined,

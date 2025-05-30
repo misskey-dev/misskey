@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-on="popup.events"
 />
 
-<SkTransitionGroup
+<MkTransitionGroup
 	tag="div"
 	:class="[$style.notifications, {
 		[$style.notificationsPosition_leftTop]: prefer.s.notificationPosition === 'leftTop',
@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
-</SkTransitionGroup>
+</MkTransitionGroup>
 
 <XStreamIndicator/>
 
@@ -110,7 +110,6 @@ import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 import { store } from '@/store.js';
 import XNavbar from '@/ui/_common_/navbar.vue';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XWidgets = defineAsyncComponent(() => import('./widgets.vue'));

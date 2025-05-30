@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 				</div>
 
-				<SkTransitionGroup
+				<MkTransitionGroup
 					:enterActiveClass="$style.transition_x_enterActive"
 					:leaveActiveClass="$style.transition_x_leaveActive"
 					:enterFromClass="$style.transition_x_enterFrom"
@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span>{{ item.prevText }} <i class="ti ti-chevron-down"></i></span>
 						</div>
 					</template>
-				</SkTransitionGroup>
+				</MkTransitionGroup>
 			</div>
 
 			<div v-if="user && (!user.canChat || user.host !== null)">
@@ -111,7 +111,6 @@ import { useRouter } from '@/router.js';
 import { useMutationObserver } from '@/composables/use-mutation-observer.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const $i = ensureSignin();
 const router = useRouter();

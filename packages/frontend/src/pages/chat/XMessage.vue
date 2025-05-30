@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-if="isSearchResult && 'toRoom' in message && message.toRoom != null" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom.name }}</MkA>
 			<MkA v-if="isSearchResult && 'toUser' in message && message.toUser != null && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser.username }}</MkA>
 		</div>
-		<SkTransitionGroup
+		<MkTransitionGroup
 			:enterActiveClass="$style.transition_reaction_enterActive"
 			:leaveActiveClass="$style.transition_reaction_leaveActive"
 			:enterFromClass="$style.transition_reaction_enterFrom"
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:class="$style.reactionIcon"
 				/>
 			</div>
-		</SkTransitionGroup>
+		</MkTransitionGroup>
 	</div>
 </div>
 </template>
@@ -73,7 +73,6 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const $i = ensureSignin();
 

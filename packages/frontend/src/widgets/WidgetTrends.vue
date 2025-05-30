@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<SkTransitionGroup v-else tag="div" name="chart" class="tags">
+		<MkTransitionGroup v-else tag="div" name="chart" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>
-		</SkTransitionGroup>
+		</MkTransitionGroup>
 	</div>
 </MkContainer>
 </template>
@@ -35,7 +35,6 @@ import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const name = 'hashtags';
 

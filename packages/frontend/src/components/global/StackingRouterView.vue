@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SkTransitionGroup
+<MkTransitionGroup
 	:enterActiveClass="$style.transition_x_enterActive"
 	:leaveActiveClass="$style.transition_x_leaveActive"
 	:enterFromClass="$style.transition_x_enterFrom"
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-</SkTransitionGroup>
+</MkTransitionGroup>
 </template>
 
 <script lang="ts" setup>
@@ -47,7 +47,6 @@ import { prefer } from '@/preferences.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
 import { DI } from '@/di.js';
 import { deepEqual } from '@/utility/deep-equal.js';
-import SkTransitionGroup from '@/components/SkTransitionGroup.vue';
 
 const props = defineProps<{
 	router?: Router;
