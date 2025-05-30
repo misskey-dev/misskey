@@ -409,7 +409,9 @@ async function createTextureFromUrl(gl: WebGL2RenderingContext, imageUrl: string
 		img.onload = () => resolve(img);
 		img.onerror = reject;
 		img.src = getProxiedImageUrl(imageUrl); // CORS対策
-	});
+	}).catch(() => null);
+
+	if (image == null) return null;
 
 	const texture = createTexture(gl);
 	gl.activeTexture(gl.TEXTURE0);
