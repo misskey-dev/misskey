@@ -21,8 +21,6 @@ export class AddInstanceBlockColumns1748105111513 {
 		await queryRunner.query(`COMMENT ON COLUMN "instance"."isBlocked" IS 'True if this instance is blocked from federation.'`);
 		await queryRunner.query(`ALTER TABLE "instance" ADD "isAllowListed" boolean NOT NULL DEFAULT false`);
 		await queryRunner.query(`COMMENT ON COLUMN "instance"."isAllowListed" IS 'True if this instance is allow-listed.'`);
-		await queryRunner.query(`ALTER TABLE "instance" ADD "isBubbled" boolean NOT NULL DEFAULT false`);
-		await queryRunner.query(`COMMENT ON COLUMN "instance"."isBubbled" IS 'True if this instance is part of the local bubble.'`);
 		await queryRunner.query(`ALTER TABLE "instance" ADD "isSilenced" boolean NOT NULL DEFAULT false`);
 		await queryRunner.query(`COMMENT ON COLUMN "instance"."isSilenced" IS 'True if this instance is silenced.'`);
 		await queryRunner.query(`ALTER TABLE "instance" ADD "isMediaSilenced" boolean NOT NULL DEFAULT false`);
@@ -58,19 +56,12 @@ export class AddInstanceBlockColumns1748105111513 {
 				const patterns = buildPatterns(meta.federationHosts);
 				await queryRunner.query(`UPDATE "instance" SET "isAllowListed" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
 			}
-
-			// Bubbled hosts
-			if (meta.bubbleInstances.length > 0) {
-				const patterns = buildPatterns(meta.bubbleInstances);
-				await queryRunner.query(`UPDATE "instance" SET "isBubbled" = true WHERE ((lower(reverse("host")) || '.')::text) LIKE ANY ($1)`, [ patterns ]);
-			}
 		}
 	}
 
 	async down(queryRunner) {
 		await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "isMediaSilenced"`);
 		await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "isSilenced"`);
-		await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "isBubbled"`);
 		await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "isAllowListed"`);
 		await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "isBlocked"`);
 	}

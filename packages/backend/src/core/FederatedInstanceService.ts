@@ -101,8 +101,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 			diffArraysSimple(before?.blockedHosts, after.blockedHosts) ||
 			diffArraysSimple(before?.silencedHosts, after.silencedHosts) ||
 			diffArraysSimple(before?.mediaSilencedHosts, after.mediaSilencedHosts) ||
-			diffArraysSimple(before?.federationHosts, after.federationHosts) ||
-			diffArraysSimple(before?.bubbleInstances, after.bubbleInstances);
+			diffArraysSimple(before?.federationHosts, after.federationHosts);
 
 		if (changed) {
 			// We have to clear the whole thing, otherwise subdomains won't be synced.

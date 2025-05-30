@@ -115,7 +115,6 @@ describe('ActivityPub', () => {
 		serverRules: [] as string[],
 		bannedEmailDomains: [] as string[],
 		preservedUsernames: [] as string[],
-		bubbleInstances: [] as string[],
 		trustedLinkUrlPatterns: [] as string[],
 		federation: 'all',
 		federationHosts: [] as string[],

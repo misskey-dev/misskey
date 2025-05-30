@@ -132,7 +132,7 @@ export class MetaService implements OnApplicationShutdown {
 				},
 			});
 
-			// Propagate changes to blockedHosts, silencedHosts, mediaSilencedHosts, federationInstances, and bubbleInstances to the relevant instance rows
+			// Propagate changes to blockedHosts, silencedHosts, mediaSilencedHosts, and federationInstances to the relevant instance rows
 			// Do this inside the transaction to avoid potential race condition (when an instance gets registered while we're updating).
 			await this.persistBlocks(transactionalEntityManager, before ?? {}, afters[0]);
 
@@ -175,7 +175,6 @@ export class MetaService implements OnApplicationShutdown {
 		await this.persistBlock(tem, before.silencedHosts, after.silencedHosts, 'isSilenced');
 		await this.persistBlock(tem, before.mediaSilencedHosts, after.mediaSilencedHosts, 'isMediaSilenced');
 		await this.persistBlock(tem, before.federationHosts, after.federationHosts, 'isAllowListed');
-		await this.persistBlock(tem, before.bubbleInstances, after.bubbleInstances, 'isBubbled');
 	}
 
 	private async persistBlock(tem: EntityManager, before: string[] | undefined, after: string[] | undefined, field: keyof MiInstance): Promise<void> {

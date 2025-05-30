@@ -120,16 +120,6 @@ export class MiInstance {
 	public isAllowListed: boolean;
 
 	/**
-	 * True if this instance is part of the local bubble.
-	 */
-	@Column('boolean', {
-		nullable: false,
-		default: false,
-		comment: 'True if this instance is part of the local bubble.',
-	})
-	public isBubbled: boolean;
-
-	/**
 	 * True if this instance is silenced.
 	 */
 	@Column('boolean', {
