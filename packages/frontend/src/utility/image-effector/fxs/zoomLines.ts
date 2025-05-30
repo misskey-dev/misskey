@@ -69,7 +69,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 		},
 		threshold: {
 			type: 'number' as const,
-			default: 0.5,
+			default: 0.8,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,

@@ -23,14 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import type { WatermarkPreset } from '@/utility/watermark.js';
-import { makeImageEffectorLayers } from '@/utility/watermark.js';
+import { WatermarkRenderer } from '@/utility/watermark.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import MkFolder from '@/components/MkFolder.vue';
-import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
-import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
 
 const props = defineProps<{
 	preset: WatermarkPreset;
@@ -66,23 +64,21 @@ const canvasEl = useTemplateRef('canvasEl');
 const sampleImage = new Image();
 sampleImage.src = '/client-assets/sample/3-2.jpg';
 
-let renderer: ImageEffector | null = null;
+let renderer: WatermarkRenderer | null = null;
 
 onMounted(() => {
 	sampleImage.onload = async () => {
 		watch(canvasEl, async () => {
 			if (canvasEl.value == null) return;
 
-			renderer = new ImageEffector({
+			renderer = new WatermarkRenderer({
 				canvas: canvasEl.value,
-				width: 1500,
-				height: 1000,
-				layers: makeImageEffectorLayers(props.preset.layers),
-				originalImage: sampleImage,
-				fxs: [FX_watermarkPlacement],
+				renderWidth: 1500,
+				renderHeight: 1000,
+				image: sampleImage,
 			});
 
-			await renderer.bakeTextures();
+			await renderer.setLayers(props.preset.layers);
 
 			renderer.render();
 		}, { immediate: true });
@@ -98,8 +94,7 @@ onUnmounted(() => {
 
 watch(() => props.preset, async () => {
 	if (renderer != null) {
-		renderer.updateLayers(makeImageEffectorLayers(props.preset.layers));
-		await renderer.bakeTextures();
+		await renderer.setLayers(props.preset.layers);
 		renderer.render();
 	}
 }, { deep: true });

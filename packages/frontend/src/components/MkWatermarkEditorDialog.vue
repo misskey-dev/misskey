@@ -47,10 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
 import { v4 as uuid } from 'uuid';
-import type { WatermarkPreset } from '@/utility/watermark.js';
-import { makeImageEffectorLayers } from '@/utility/watermark.js';
+import { WatermarkRenderer } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
-import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -59,7 +57,6 @@ import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
-import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
 
 const $i = ensureSignin();
 
@@ -122,7 +119,7 @@ watch(type, () => {
 
 watch(preset, async (newValue, oldValue) => {
 	if (renderer != null) {
-		renderer.updateLayers(makeImageEffectorLayers(preset.layers));
+		renderer.setLayers(preset.layers);
 	}
 }, { deep: true });
 
@@ -149,32 +146,28 @@ watch(sampleImageType, async () => {
 	}
 });
 
-let renderer: ImageEffector | null = null;
+let renderer: WatermarkRenderer | null = null;
 
 async function initRenderer() {
 	if (canvasEl.value == null) return;
 
 	if (sampleImageType.value === '3_2') {
-		renderer = new ImageEffector({
+		renderer = new WatermarkRenderer({
 			canvas: canvasEl.value,
-			width: 1500,
-			height: 1000,
-			layers: makeImageEffectorLayers(preset.layers),
-			originalImage: sampleImage_3_2,
-			fxs: [FX_watermarkPlacement],
+			renderWidth: 1500,
+			renderHeight: 1000,
+			image: sampleImage_3_2,
 		});
 	} else if (sampleImageType.value === '2_3') {
-		renderer = new ImageEffector({
+		renderer = new WatermarkRenderer({
 			canvas: canvasEl.value,
-			width: 1000,
-			height: 1500,
-			layers: makeImageEffectorLayers(preset.layers),
-			originalImage: sampleImage_2_3,
-			fxs: [FX_watermarkPlacement],
+			renderWidth: 1000,
+			renderHeight: 1500,
+			image: sampleImage_2_3,
 		});
 	}
 
-	await renderer!.bakeTextures();
+	await renderer!.setLayers(preset.layers);
 
 	renderer!.render();
 }

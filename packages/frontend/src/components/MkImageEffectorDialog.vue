@@ -48,7 +48,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive } from 'vue';
 import { v4 as uuid } from 'uuid';
-import type { WatermarkPreset } from '@/utility/watermark.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
@@ -82,7 +81,7 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		renderer.updateLayers(layers);
+		renderer.setLayers(layers);
 	}
 }, { deep: true });
 
@@ -111,18 +110,19 @@ const canvasEl = useTemplateRef('canvasEl');
 let renderer: ImageEffector | null = null;
 
 onMounted(async () => {
+	if (canvasEl.value == null) return;
+
 	renderer = new ImageEffector({
 		canvas: canvasEl.value,
-		width: props.image.width,
-		height: props.image.height,
-		layers: layers,
-		originalImage: props.image,
+		renderWidth: props.image.width,
+		renderHeight: props.image.height,
+		image: props.image,
 		fxs: FXS,
 	});
 
-	await renderer!.bakeTextures();
+	await renderer.setLayers(layers);
 
-	renderer!.render();
+	renderer.render();
 });
 
 onUnmounted(() => {
@@ -149,9 +149,9 @@ const enabled = ref(true);
 watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			renderer.updateLayers(layers);
+			renderer.setLayers(layers);
 		} else {
-			renderer.updateLayers([]);
+			renderer.setLayers([]);
 		}
 		renderer.render();
 	}

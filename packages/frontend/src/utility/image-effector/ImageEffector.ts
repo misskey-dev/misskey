@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getProxiedImageUrl } from '../media-proxy.js';
+import { createTexture } from './utilts.js';
 
 type ParamTypeToPrimitive = {
 	'number': number;
@@ -11,6 +11,7 @@ type ParamTypeToPrimitive = {
 	'boolean': boolean;
 	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
 	'seed': number;
+	'texture': string | null;
 };
 
 type ImageEffectorFxParamDefs = Record<string, {
@@ -22,26 +23,27 @@ export function defineImageEffectorFx<ID extends string, P extends ImageEffector
 	return fx;
 }
 
-export type ImageEffectorFx<ID extends string = string, P extends ImageEffectorFxParamDefs = any, U extends string[] = string[]> = {
+export type ImageEffectorFx<ID extends string = string, PS extends ImageEffectorFxParamDefs = any, US extends string[] = string[], TS extends string[] = string[]> = {
 	id: ID;
 	name: string;
 	shader: string;
-	uniforms: U;
-	params: P,
+	uniforms: US;
+	params: PS,
+	textures?: TS;
 	main: (ctx: {
 		gl: WebGL2RenderingContext;
 		program: WebGLProgram;
 		params: {
-			[key in keyof P]: ParamTypeToPrimitive[P[key]['type']];
+			[key in keyof PS]: ParamTypeToPrimitive[PS[key]['type']];
 		};
-		u: Record<U[number], WebGLUniformLocation>;
+		u: Record<US[number], WebGLUniformLocation>;
 		width: number;
 		height: number;
-		watermark?: {
+		textures: Record<TS[number], {
 			texture: WebGLTexture;
 			width: number;
 			height: number;
-		};
+		} | null>;
 	}) => void;
 };
 
@@ -49,54 +51,54 @@ export type ImageEffectorLayer = {
 	id: string;
 	fxId: string;
 	params: Record<string, any>;
-
-	// for watermarkPlacement fx
-	imageUrl?: string | null;
-	text?: string | null;
+	textures?: Record<string, ExternalTextureId | null>;
 };
 
+type ExternalTextureId = string;
+
 export class ImageEffector {
+	public gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
-	private gl: WebGL2RenderingContext | null = null;
 	private renderTextureProgram!: WebGLProgram;
 	private renderInvertedTextureProgram!: WebGLProgram;
 	private renderWidth!: number;
 	private renderHeight!: number;
 	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
-	private layers: ImageEffectorLayer[];
+	private layers: ImageEffectorLayer[] = [];
 	private originalImageTexture: WebGLTexture;
-	private bakedTexturesForWatermarkFx: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
-	private texturesKey: string;
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
 	private fxs: ImageEffectorFx[];
+	private externalTextures: Map<ExternalTextureId, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
-		width: number;
-		height: number;
-		originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
-		layers: ImageEffectorLayer[];
+		renderWidth: number;
+		renderHeight: number;
+		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 		fxs: ImageEffectorFx[];
 	}) {
 		this.canvas = options.canvas;
-		this.canvas.width = options.width;
-		this.canvas.height = options.height;
-		this.renderWidth = options.width;
-		this.renderHeight = options.height;
-		this.originalImage = options.originalImage;
-		this.layers = options.layers;
+		this.renderWidth = options.renderWidth;
+		this.renderHeight = options.renderHeight;
+		this.originalImage = options.image;
 		this.fxs = options.fxs;
-		this.texturesKey = this.calcTexturesKey();
 
-		this.gl = this.canvas.getContext('webgl2', {
+		this.canvas.width = this.renderWidth;
+		this.canvas.height = this.renderHeight;
+
+		const gl = this.canvas.getContext('webgl2', {
 			preserveDrawingBuffer: false,
 			alpha: true,
 			premultipliedAlpha: false,
-		})!;
+		});
 
-		const gl = this.gl;
+		if (gl == null) {
+			throw new Error('Failed to initialize WebGL2 context');
+		}
+
+		this.gl = gl;
 
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
@@ -105,10 +107,10 @@ export class ImageEffector {
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, VERTICES, gl.STATIC_DRAW);
 
-		this.originalImageTexture = this.createTexture();
+		this.originalImageTexture = createTexture(gl);
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, options.width, options.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 
 		this.renderTextureProgram = this.initShaderProgram(`#version 300 es
@@ -153,119 +155,8 @@ export class ImageEffector {
 		`)!;
 	}
 
-	private calcTexturesKey() {
-		return this.layers.map(layer => {
-			if (layer.fxId === 'watermarkPlacement' && layer.imageUrl != null) {
-				return layer.imageUrl;
-			} else if (layer.fxId === 'watermarkPlacement' && layer.text != null) {
-				return layer.text;
-			}
-			return '';
-		}).join(';');
-	}
-
-	private createTexture(): WebGLTexture {
-		const gl = this.gl!;
-		const texture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-		gl.bindTexture(gl.TEXTURE_2D, null);
-		return texture!;
-	}
-
-	public disposeBakedTextures() {
-		const gl = this.gl;
-		if (gl == null) {
-			throw new Error('gl is not initialized');
-		}
-
-		for (const bakedTexture of this.bakedTexturesForWatermarkFx.values()) {
-			gl.deleteTexture(bakedTexture.texture);
-		}
-		this.bakedTexturesForWatermarkFx.clear();
-	}
-
-	public async bakeTextures() {
-		const gl = this.gl;
-		if (gl == null) {
-			throw new Error('gl is not initialized');
-		}
-
-		console.log('baking textures', this.texturesKey);
-
-		this.disposeBakedTextures();
-
-		for (const layer of this.layers) {
-			if (layer.fxId === 'watermarkPlacement' && layer.imageUrl != null) {
-				const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-					const img = new Image();
-					img.onload = () => resolve(img);
-					img.onerror = reject;
-					img.src = getProxiedImageUrl(layer.imageUrl); // CORS対策
-				});
-
-				const texture = this.createTexture();
-				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, texture);
-				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
-				gl.bindTexture(gl.TEXTURE_2D, null);
-
-				this.bakedTexturesForWatermarkFx.set(layer.id, {
-					texture: texture,
-					width: image.width,
-					height: image.height,
-				});
-			} else if (layer.fxId === 'watermarkPlacement' && layer.text != null) {
-				const measureCtx = window.document.createElement('canvas').getContext('2d')!;
-				measureCtx.canvas.width = this.renderWidth;
-				measureCtx.canvas.height = this.renderHeight;
-				const fontSize = Math.min(this.renderWidth, this.renderHeight) / 20;
-				const margin = Math.min(this.renderWidth, this.renderHeight) / 50;
-				measureCtx.font = `bold ${fontSize}px sans-serif`;
-				const textMetrics = measureCtx.measureText(layer.text);
-				measureCtx.canvas.remove();
-
-				const RESOLUTION_FACTOR = 4;
-
-				const textCtx = window.document.createElement('canvas').getContext('2d')!;
-				textCtx.canvas.width = (Math.ceil(textMetrics.actualBoundingBoxRight + textMetrics.actualBoundingBoxLeft) + margin + margin) * RESOLUTION_FACTOR;
-				textCtx.canvas.height = (Math.ceil(textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent) + margin + margin) * RESOLUTION_FACTOR;
-
-				//textCtx.fillStyle = '#00ff00';
-				//textCtx.fillRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
-
-				textCtx.shadowColor = '#000000';
-				textCtx.shadowBlur = 10 * RESOLUTION_FACTOR;
-
-				textCtx.fillStyle = '#ffffff';
-				textCtx.font = `bold ${fontSize * RESOLUTION_FACTOR}px sans-serif`;
-				textCtx.textBaseline = 'middle';
-				textCtx.textAlign = 'center';
-
-				textCtx.fillText(layer.text, textCtx.canvas.width / 2, textCtx.canvas.height / 2);
-
-				const texture = this.createTexture();
-				gl.activeTexture(gl.TEXTURE0);
-				gl.bindTexture(gl.TEXTURE_2D, texture);
-				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, textCtx.canvas.width, textCtx.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, textCtx.canvas);
-				gl.bindTexture(gl.TEXTURE_2D, null);
-
-				this.bakedTexturesForWatermarkFx.set(layer.id, {
-					texture: texture,
-					width: textCtx.canvas.width,
-					height: textCtx.canvas.height,
-				});
-
-				textCtx.canvas.remove();
-			}
-		}
-	}
-
 	public loadShader(type, source) {
-		const gl = this.gl!;
+		const gl = this.gl;
 
 		const shader = gl.createShader(type)!;
 
@@ -284,7 +175,7 @@ export class ImageEffector {
 	}
 
 	public initShaderProgram(vsSource, fsSource): WebGLProgram {
-		const gl = this.gl!;
+		const gl = this.gl;
 
 		const vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource)!;
 		const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource)!;
@@ -308,14 +199,9 @@ export class ImageEffector {
 
 	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
 		const gl = this.gl;
-		if (gl == null) {
-			throw new Error('gl is not initialized');
-		}
 
 		const fx = this.fxs.find(fx => fx.id === layer.fxId);
 		if (fx == null) return;
-
-		const watermark = layer.fxId === 'watermarkPlacement' ? this.bakedTexturesForWatermarkFx.get(layer.id) : undefined;
 
 		const cachedShader = this.shaderCache.get(fx.id);
 		const shaderProgram = cachedShader ?? this.initShaderProgram(`#version 300 es
@@ -352,7 +238,13 @@ export class ImageEffector {
 			u: Object.fromEntries(fx.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
 			width: this.renderWidth,
 			height: this.renderHeight,
-			watermark: watermark,
+			textures: Object.fromEntries(
+				Object.entries(layer.textures ?? {}).map(([key, textureId]) => {
+					if (textureId == null) return [key, null];
+					const externalTexture = this.externalTextures.get(textureId);
+					if (externalTexture == null) return [key, null];
+					return [key, externalTexture];
+				})),
 		});
 
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -360,9 +252,6 @@ export class ImageEffector {
 
 	public render() {
 		const gl = this.gl;
-		if (gl == null) {
-			throw new Error('gl is not initialized');
-		}
 
 		{
 			gl.activeTexture(gl.TEXTURE0);
@@ -386,7 +275,7 @@ export class ImageEffector {
 
 		for (const layer of this.layers) {
 			const cachedResultTexture = this.perLayerResultTextures.get(layer.id);
-			const resultTexture = cachedResultTexture ?? this.createTexture();
+			const resultTexture = cachedResultTexture ?? createTexture(gl);
 			if (cachedResultTexture == null) {
 				this.perLayerResultTextures.set(layer.id, resultTexture);
 			}
@@ -420,42 +309,41 @@ export class ImageEffector {
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
-	public async updateLayers(layers: ImageEffectorLayer[]) {
+	public async setLayers(layers: ImageEffectorLayer[]) {
 		this.layers = layers;
-
-		const newTexturesKey = this.calcTexturesKey();
-		if (newTexturesKey !== this.texturesKey) {
-			this.texturesKey = newTexturesKey;
-			await this.bakeTextures();
-		}
-
 		this.render();
 	}
 
-	public destroy() {
-		const gl = this.gl;
-		if (gl == null) {
-			throw new Error('gl is not initialized');
-		}
+	public registerExternalTexture(id: string, texture: WebGLTexture, width: number, height: number) {
+		this.externalTextures.set(id, { texture, width, height });
+	}
 
+	public disposeExternalTextures() {
+		for (const bakedTexture of this.externalTextures.values()) {
+			this.gl.deleteTexture(bakedTexture.texture);
+		}
+		this.externalTextures.clear();
+	}
+
+	public destroy() {
 		for (const shader of this.shaderCache.values()) {
-			gl.deleteProgram(shader);
+			this.gl.deleteProgram(shader);
 		}
 		this.shaderCache.clear();
 
 		for (const texture of this.perLayerResultTextures.values()) {
-			gl.deleteTexture(texture);
+			this.gl.deleteTexture(texture);
 		}
 		this.perLayerResultTextures.clear();
 
 		for (const framebuffer of this.perLayerResultFrameBuffers.values()) {
-			gl.deleteFramebuffer(framebuffer);
+			this.gl.deleteFramebuffer(framebuffer);
 		}
 		this.perLayerResultFrameBuffers.clear();
 
-		this.disposeBakedTextures();
-		gl.deleteProgram(this.renderTextureProgram);
-		gl.deleteProgram(this.renderInvertedTextureProgram);
-		gl.deleteTexture(this.originalImageTexture);
+		this.disposeExternalTextures();
+		this.gl.deleteProgram(this.renderTextureProgram);
+		this.gl.deleteProgram(this.renderInvertedTextureProgram);
+		this.gl.deleteTexture(this.originalImageTexture);
 	}
 }

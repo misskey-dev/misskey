@@ -96,9 +96,7 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
-import { makeImageEffectorLayers } from '@/utility/watermark.js';
-import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
+import { WatermarkRenderer } from '@/utility/watermark.js';
 
 const $i = ensureSignin();
 
@@ -522,16 +520,14 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 	const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
 	if (needsWatermark && preset != null) {
 		const canvas = window.document.createElement('canvas');
-		const renderer = new ImageEffector({
+		const renderer = new WatermarkRenderer({
 			canvas: canvas,
-			width: img.width,
-			height: img.height,
-			layers: makeImageEffectorLayers(preset.layers),
-			originalImage: img,
-			fxs: [FX_watermarkPlacement],
+			renderWidth: img.width,
+			renderHeight: img.height,
+			image: img,
 		});
 
-		await renderer.bakeTextures();
+		await renderer.setLayers(preset.layers);
 
 		renderer.render();
 
@@ -541,6 +537,7 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 					throw new Error('Failed to convert canvas to blob');
 				}
 				resolve(blob);
+				renderer.destroy();
 			}, 'image/png');
 		});
 	}

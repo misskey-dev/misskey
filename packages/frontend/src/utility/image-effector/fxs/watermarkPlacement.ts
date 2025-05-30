@@ -99,16 +99,17 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, u, params, watermark }) => {
-		if (watermark == null) {
+	textures: ['watermark'] as const,
+	main: ({ gl, u, params, textures }) => {
+		if (textures.watermark == null) {
 			return;
 		}
 
 		gl.activeTexture(gl.TEXTURE1);
-		gl.bindTexture(gl.TEXTURE_2D, watermark.texture);
+		gl.bindTexture(gl.TEXTURE_2D, textures.watermark.texture);
 		gl.uniform1i(u.texture_watermark, 1);
 
-		gl.uniform2fv(u.resolution_watermark, [watermark.width, watermark.height]);
+		gl.uniform2fv(u.resolution_watermark, [textures.watermark.width, textures.watermark.height]);
 		gl.uniform1f(u.scale, params.scale);
 		gl.uniform1f(u.opacity, params.opacity);
 		gl.uniform1f(u.angle, 0.0);
