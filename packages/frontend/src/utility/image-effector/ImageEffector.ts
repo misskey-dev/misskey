@@ -19,7 +19,7 @@ type ImageEffectorFxParamDefs = Record<string, {
 	default: any;
 }>;
 
-export function defineImageEffectorFx<ID extends string, P extends ImageEffectorFxParamDefs, U extends string[]>(fx: ImageEffectorFx<ID, P, U>) {
+export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[], TS extends string[]>(fx: ImageEffectorFx<ID, PS, US, TS>) {
 	return fx;
 }
 
