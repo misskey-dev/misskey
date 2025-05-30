@@ -297,9 +297,9 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			icon: 'ti ti-sparkles',
 			text: i18n.ts._imageEffector.title,
 			action: async () => {
-				const img = await getImageElement(item.file);
+				const imgElementCtx = await getImageElement(item.file);
 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkImageEffectorDialog.vue')), {
-					image: img,
+					image: imgElementCtx.img,
 				}, {
 					ok: (file) => {
 						URL.revokeObjectURL(item.thumbnail);
@@ -314,7 +314,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 						});
 					},
 					closed: () => {
-						URL.revokeObjectURL(img.src);
+						imgElementCtx.dispose();
 						dispose();
 					},
 				});
@@ -353,16 +353,16 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				icon: 'ti ti-plus',
 				text: i18n.ts.add,
 				action: async () => {
-					const img = await getImageElement(item.file);
+					const imgElementCtx = await getImageElement(item.file);
 					const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
-						image: img,
+						image: imgElementCtx.img,
 					}, {
 						ok: (preset) => {
 							prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
 							changeWatermarkPreset(preset.id);
 						},
 						closed: () => {
-							URL.revokeObjectURL(img.src);
+							imgElementCtx.dispose();
 							dispose();
 						},
 					});
@@ -515,12 +515,20 @@ async function chooseFile(ev: MouseEvent) {
 	}
 }
 
-function getImageElement(file: Blob | File): Promise<HTMLImageElement> {
+/**
+ * 使用後は dispose() でメモリの解放を忘れないように！！！
+ */
+function getImageElement(file: Blob | File): Promise<{ img: HTMLImageElement, dispose: () => void }> {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
 
 		img.onload = () => {
-			resolve(img);
+			resolve({
+				img: markRaw(img),
+				dispose: () => {
+					URL.revokeObjectURL(img.src);
+				},
+			});
 		};
 
 		img.onerror = (error) => {
@@ -535,7 +543,7 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 	item.preprocessing = true;
 
 	let file: Blob | File = item.file;
-	const img = await getImageElement(file);
+	const imgElementCtx = await getImageElement(file);
 
 	const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(file.type);
 	const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
@@ -543,9 +551,9 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 		const canvas = window.document.createElement('canvas');
 		const renderer = new WatermarkRenderer({
 			canvas: canvas,
-			renderWidth: img.width,
-			renderHeight: img.height,
-			image: img,
+			renderWidth: imgElementCtx.img.width,
+			renderHeight: imgElementCtx.img.height,
+			image: imgElementCtx.img,
 		});
 
 		await renderer.setLayers(preset.layers);
@@ -596,7 +604,7 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 	item.preprocessedFile = markRaw(file);
 	item.preprocessing = false;
 
-	URL.revokeObjectURL(img.src);
+	imgElementCtx.dispose();
 }
 
 function initializeFile(file: File) {
