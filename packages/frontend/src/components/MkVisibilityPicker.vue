@@ -56,6 +56,7 @@ import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
+import { isPrivateNoteInReplyChain } from '@/utility/private-note.js';
 
 const modal = useTemplateRef('modal');
 
@@ -90,16 +91,9 @@ const isPrivate = computed(() => {
 		return true;
 	}
 
-	if (props.currentVisibility === 'specified' &&
-        props.currentVisibleUsers.length === 1 &&
-        props.currentVisibleUsers[0].id === $i.id &&
-        props.reply) {
-		const replyIsPrivate = props.reply.visibility === 'specified' &&
-            (!props.reply.visibleUserIds || props.reply.visibleUserIds.length === 0);
-
-		if (replyIsPrivate) {
-			return true;
-		}
+	// リプライ先がプライベートノートチェーンの場合
+	if (props.reply && props.currentVisibility === 'specified') {
+		return isPrivateNoteInReplyChain(props.reply);
 	}
 
 	return false;

@@ -235,6 +235,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
 	}, data: Option, silent = false): Promise<MiNote> {
+		// リプライ先がプライベートノートチェーンの場合、自動的にプライベート設定を適用
+		if (data.reply) {
+			const isReplyToPrivateChain = await this.isPrivateNoteInReplyChain(data.reply);
+			if (isReplyToPrivateChain) {
+				data.visibility = 'specified';
+				data.visibleUsers = []; // 自分のみ閲覧可能に設定
+				data.localOnly = true; // 連合なし強制
+			}
+		}
+
 		if (data.isNoteInYamiMode == null) {
 			// リプライ先またはリノート元がやみノートの場合は強制的にやみノート
 			if ((data.reply && data.reply.isNoteInYamiMode) ||
@@ -1202,6 +1212,36 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	private async isPrivateNoteInReplyChain(note: MiNote): Promise<boolean> {
+		// 直接のプライベートノート
+		if (note.visibility === 'specified' && (!note.visibleUserIds || note.visibleUserIds.length === 0)) {
+			return true;
+		}
+
+		// 自分のみ宛てのノート
+		if (note.visibility === 'specified' &&
+			note.visibleUserIds &&
+			note.visibleUserIds.length === 1 &&
+			note.visibleUserIds[0] === note.userId) {
+			return true;
+		}
+
+		// リプライチェーンを再帰的にチェック
+		if (note.replyId) {
+			try {
+				const reply = await this.notesRepository.findOneBy({ id: note.replyId });
+				if (!reply) return false;
+				return await this.isPrivateNoteInReplyChain(reply);
+			} catch (err) {
+				this.logger.error(`Error checking private note in reply chain: ${err}`);
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }, notToPush?: FanoutTimelineNamePrefix[]) {
 		if (!this.meta.enableFanoutTimeline) return;
 
@@ -1385,8 +1425,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		for (const userListMembership of userListMemberships) {
 			// ダイレクトのとき、そのリストが対象外のユーザーの場合
 			if (note.visibility === 'specified' &&
-                note.userId !== userListMembership.userListUserId &&
-                !note.visibleUserIds.some(v => v === userListMembership.userListUserId)) continue;
+				note.userId !== userListMembership.userListUserId &&
+				!note.visibleUserIds.some(v => v === userListMembership.userListUserId)) continue;
 
 			if (isReply(note, userListMembership.userListUserId)) {
 				if (!userListMembership.withReplies) continue;

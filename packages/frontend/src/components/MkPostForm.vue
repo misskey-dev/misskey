@@ -187,6 +187,7 @@ import MkScheduleEditor from '@/components/MkScheduleEditor.vue';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
+import { shouldReplyBePrivate } from '@/utility/private-note.js';
 
 const $i = ensureSignin();
 
@@ -477,28 +478,31 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 // 新しい状態変数を追加
 const isDmIntent = ref(false);
 
-// 自分のみ投稿の判定
+// 自分のみ投稿の判定を改善
 const isPrivatePost = computed(() => {
 	// 基本的な自分のみ投稿
 	if (visibility.value === 'specified' && visibleUsers.value.length === 0 && !isDmIntent.value) {
 		return true;
 	}
 
-	// 自分のみノートへの自分のリプライ
+	// 自分のみノートへのリプライ
 	if (visibility.value === 'specified' &&
         visibleUsers.value.length === 1 &&
         visibleUsers.value[0].id === $i.id &&
         props.reply) {
-		const replyIsPrivate = props.reply.visibility === 'specified' &&
-            (!props.reply.visibleUserIds || props.reply.visibleUserIds.length === 0);
-
-		if (replyIsPrivate) {
-			return true;
-		}
+		return shouldReplyBePrivate(props.reply);
 	}
 
 	return false;
 });
+
+// リプライ先の変更を監視して自動的にプライベート設定を適用
+watch(() => props.reply, (newReply) => {
+	if (newReply && shouldReplyBePrivate(newReply)) {
+		visibility.value = 'specified';
+		visibleUsers.value = []; // 自分のみ閲覧可能に設定
+	}
+}, { immediate: true });
 
 // 表示用の公開範囲
 const displayVisibility = computed(() => {

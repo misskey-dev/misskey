@@ -48,6 +48,7 @@ import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { dateTimeFormat } from '@/utility/intl-const.js';
 import { DI } from '@/di.js';
+import { isPrivateNoteInReplyChain } from '@/utility/private-note.js';
 
 defineProps<{
 	note: Misskey.entities.Note & {
@@ -59,24 +60,7 @@ defineProps<{
 const mock = inject(DI.mock, false);
 
 function isPrivateNote(note: Misskey.entities.Note): boolean {
-	if (note.visibility === 'specified' && (!note.visibleUserIds || note.visibleUserIds.length === 0)) {
-		return true;
-	}
-
-	if (note.visibility === 'specified' &&
-        note.visibleUserIds &&
-        note.visibleUserIds.length === 1 &&
-        note.visibleUserIds[0] === note.userId &&
-        note.reply) {
-		const replyIsPrivate = note.reply.visibility === 'specified' &&
-            (!note.reply.visibleUserIds || note.reply.visibleUserIds.length === 0);
-
-		if (replyIsPrivate) {
-			return true;
-		}
-	}
-
-	return false;
+	return isPrivateNoteInReplyChain(note);
 }
 
 function getVisibilityTooltip(note: Misskey.entities.Note): string {
