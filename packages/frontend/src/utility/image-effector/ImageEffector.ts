@@ -59,10 +59,10 @@ function getValue<T extends keyof ParamTypeToPrimitive>(params: Record<string, a
 export class ImageEffector {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
-	private renderTextureProgram!: WebGLProgram;
-	private renderInvertedTextureProgram!: WebGLProgram;
-	private renderWidth!: number;
-	private renderHeight!: number;
+	private renderTextureProgram: WebGLProgram;
+	private renderInvertedTextureProgram: WebGLProgram;
+	private renderWidth: number;
+	private renderHeight: number;
 	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 	private layers: ImageEffectorLayer[] = [];
 	private originalImageTexture: WebGLTexture;
