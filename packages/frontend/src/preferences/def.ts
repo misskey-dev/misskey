@@ -398,9 +398,20 @@ export const PREF_DEF = {
 		accountDependent: true,
 		default: [] as WatermarkPreset[],
 		mergeStrategy: (a, b) => {
-			const sameIdExists = a.some(x => b.some(y => x.id === y.id));
-			if (sameIdExists) throw new Error();
-			return a.concat(b);
+			const mergedItems = [] as (typeof a)[];
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
 		},
 	},
 	defaultWatermarkPresetId: {
