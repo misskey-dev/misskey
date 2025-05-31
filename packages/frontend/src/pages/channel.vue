@@ -37,10 +37,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 			<MkPostForm v-if="$i && prefer.r.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
-			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
+			<MkStreamingNotesTimeline :key="channelId" src="channel" :channel="channelId"/>
 		</div>
 		<div v-else-if="tab === 'featured'">
-			<MkNotes :pagination="featuredPagination"/>
+			<MkNotesTimeline :pagination="featuredPagination"/>
 		</div>
 		<div v-else-if="tab === 'search'">
 			<div v-if="notesSearchAvailable" class="_gaps">
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 				</div>
-				<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
+				<MkNotesTimeline v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
 			</div>
 			<div v-else>
 				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
@@ -73,9 +73,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkPostForm from '@/components/MkPostForm.vue';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -83,7 +84,7 @@ import { $i, iAmModerator } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
-import MkNotes from '@/components/MkNotes.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -117,6 +118,14 @@ const featuredPagination = computed(() => ({
 		channelId: props.channelId,
 	},
 }));
+
+useInterval(() => {
+	if (channel.value == null) return;
+	miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.value.id}`, Date.now());
+}, 3000, {
+	immediate: true,
+	afterMounted: true,
+});
 
 watch(() => props.channelId, async () => {
 	channel.value = await misskeyApi('channels/show', {
