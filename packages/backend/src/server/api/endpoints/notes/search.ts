@@ -38,6 +38,8 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		query: { type: 'string' },
+		rangeStartAt: { type: 'integer', nullable: true },
+		rangeEndAt: { type: 'integer', nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
@@ -71,6 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: ps.userId,
 				channelId: ps.channelId,
 				host: ps.host,
+				rangeStartAt: ps.rangeStartAt,
+				rangeEndAt: ps.rangeEndAt,
 			}, {
 				untilId: ps.untilId,
 				sinceId: ps.sinceId,
