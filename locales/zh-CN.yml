@@ -327,6 +327,7 @@ dark: "深色"
 lightThemes: "浅色主题"
 darkThemes: "深色主题"
 syncDeviceDarkMode: "将深色模式与设备设置同步"
+switchDarkModeManuallyWhenSyncEnabledConfirm: "「{x}」已开启。要关闭同步并手动切换模式吗？"
 drive: "网盘"
 fileName: "文件名称"
 selectFile: "选择文件"
@@ -1360,6 +1361,9 @@ emojiUnmute: "解除隐藏表情符号"
 muteX: "隐藏{x}"
 unmuteX: "解除隐藏{x}"
 abort: "中止"
+tip: "提示和技巧"
+redisplayAllTips: "重新显示所有的提示和技巧"
+hideAllTips: "隐藏所有的提示和技巧"
 _chat:
   noMessagesYet: "还没有消息"
   newMessage: "新消息"
@@ -2900,6 +2904,8 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "设置 URL 预览"
   enable: "启用 URL 预览"
+  allowRedirect: "允许预览目标的重定向"
+  allowRedirectDescription: "如果输入的 URL 被重定向，可设置是否跟随重定向目标并显示预览。禁用此选项将节省服务器资源，但重定向目标的内容将不会显示。"
   timeout: "超时阈值（ms）"
   timeoutDescription: "如果获取预览所用时间超过这个值，则不生成预览。"
   maximumContentLength: "Content-Length 的最大值（byte）"
@@ -3097,6 +3103,7 @@ _uploader:
   doneConfirm: "还有未上传的文件，要完成吗？"
   maxFileSizeIsX: "可上传最大 {x} 的文件。"
   allowedTypes: "可上传的文件类型"
+  tip: "文件还没有被上传。可在此对话框中进行上传前确认、重命名、压缩、裁剪等操作。准备完成后，点击「上传」即可开始上传。"
 _clientPerformanceIssueTip:
   title: "如果觉得电池耗电过高"
   makeSureDisabledAdBlocker: "请关闭广告拦截器"
@@ -3105,3 +3112,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledCustomCss_description: "覆盖样式可能会影响性能。请确保没有启用任何自定义 CSS 或覆盖样式的扩展。"
   makeSureDisabledAddons: "请关闭扩展"
   makeSureDisabledAddons_description: "某些扩展可能会干扰客户端的运行并影响性能。尝试禁用浏览器扩展并查看是否有改善。"
+_clip:
+  tip: "便签功能可以将帖子合并在一起。"
+_userLists:
+  tip: "可创建包含任意用户的列表。已创建的列表可作为时间线查看。"
