@@ -199,12 +199,14 @@ const props = withDefaults(defineProps<PostFormProps & {
 	freezeAfterPosted?: boolean;
 	mock?: boolean;
 	isInYamiTimeline?: boolean;
+	initialDmIntent?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
 	mock: false,
 	initialLocalOnly: undefined,
 	isInYamiTimeline: false,
+	initialDmIntent: undefined,
 });
 
 provide(DI.mock, props.mock);
@@ -476,7 +478,8 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 });
 
 // 新しい状態変数を追加
-const isDmIntent = ref(false);
+const isDmIntent = ref(props.initialDmIntent ??
+  (visibility.value === 'specified' ? prefer.s.defaultIsDmIntent : false));
 
 // 自分のみ投稿の判定を改善
 const isPrivatePost = computed(() => {

@@ -469,6 +469,9 @@ export const PREF_DEF = {
 	autoRejectFollowRequest: {
 		default: false,
 	},
+	defaultIsDmIntent: {
+		default: false,
+	},
 	isNoteInYamiMode: {
 		default: false,
 	},

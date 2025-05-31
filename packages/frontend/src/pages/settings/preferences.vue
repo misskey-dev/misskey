@@ -386,23 +386,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 										</div>
 
 										<template #label><SearchLabel>{{ i18n.ts.defaultNoteVisibility }}</SearchLabel></template>
-										<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
-										<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
-										<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
-										<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+										<template v-if="defaultDisplayVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+										<template v-else-if="defaultDisplayVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
+										<template v-else-if="defaultDisplayVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
+										<template v-else-if="defaultDisplayVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+										<template v-else-if="defaultDisplayVisibility === 'private'" #suffix>{{ i18n.ts._visibility.private }}</template>
 
 										<div class="_gaps_m">
 											<MkPreferenceContainer k="defaultNoteVisibility">
-												<MkSelect v-model="defaultNoteVisibility">
+												<MkSelect v-model="defaultDisplayVisibility">
 													<option value="public">{{ i18n.ts._visibility.public }}</option>
 													<option value="home">{{ i18n.ts._visibility.home }}</option>
 													<option value="followers">{{ i18n.ts._visibility.followers }}</option>
 													<option value="specified">{{ i18n.ts._visibility.specified }}</option>
+													<option value="private">{{ i18n.ts._visibility.private }}</option>
 												</MkSelect>
 											</MkPreferenceContainer>
 
 											<MkPreferenceContainer k="defaultNoteLocalOnly">
-												<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
+												<MkSwitch
+													v-model="defaultNoteLocalOnly"
+													:disabled="defaultDisplayVisibility === 'private' || defaultDisplayVisibility === 'specified'"
+												>
+													{{ i18n.ts._visibility.disableFederation }}
+												</MkSwitch>
 											</MkPreferenceContainer>
 										</div>
 									</MkFolder>
@@ -869,7 +876,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { langs } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
 import Sortable from 'vuedraggable';
@@ -1263,6 +1270,46 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
+const defaultIsDmIntent = prefer.model('defaultIsDmIntent');
+// 表示用の公開範囲
+const defaultDisplayVisibility = computed({
+	get: () => {
+		// 'specified'の場合はDM意図によって表示を分ける
+		if (defaultNoteVisibility.value === 'specified') {
+			return defaultIsDmIntent.value ? 'specified' : 'private';
+		}
+		// それ以外はそのまま
+		return defaultNoteVisibility.value;
+	},
+	set: (value) => {
+		if (value === 'private') {
+			// privateが選択された場合
+			defaultNoteVisibility.value = 'specified'; // APIには'specified'として保存
+			defaultIsDmIntent.value = false; // DM意図はオフ
+			defaultNoteLocalOnly.value = true; // 連合なし強制
+		} else if (value === 'specified') {
+			// 特定ユーザー宛(DM)の場合
+			defaultNoteVisibility.value = 'specified';
+			defaultIsDmIntent.value = true; // DM意図はオン
+			defaultNoteLocalOnly.value = false; // 連合あり強制
+		} else {
+			// その他の公開範囲はそのまま設定
+			defaultNoteVisibility.value = value;
+			// DM意図をリセット（必要に応じて）
+			defaultIsDmIntent.value = false;
+		}
+	},
+});
+
+// コンポーネント初期化時にdefaultIsDmIntentの初期値を設定
+// (例: mounted フックなどに追加)
+
+onMounted(() => {
+	// デフォルト値が'specified'の場合、初期状態ではDMとして表示
+	if (defaultNoteVisibility.value === 'specified' && defaultIsDmIntent.value === undefined) {
+		defaultIsDmIntent.value = true;
+	}
+});
 definePage(() => ({
 	title: i18n.ts.general,
 	icon: 'ti ti-adjustments',
