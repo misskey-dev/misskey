@@ -377,14 +377,12 @@ export class PreferencesManager {
 	public async enableSync<K extends keyof PREF>(key: K): Promise<{ enabled: boolean; } | null> {
 		if (this.isSyncEnabled(key)) return Promise.resolve(null);
 
-		const record = this.getMatchedRecordOf(key);
-
-		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
-		if (existing != null && !deepEqual(existing.value, record[1])) {
+		// undefined ... cancel
+		async function resolveConflict(local: ValueOf<K>, remote: ValueOf<K>): Promise<ValueOf<K> | undefined> {
 			const merge = (PREF_DEF as PreferencesDefinition)[key].mergeStrategy;
 			let mergedValue: ValueOf<K> | undefined = undefined; // null と区別したいため
 			try {
-				if (merge != null) mergedValue = merge(record[1], existing.value);
+				if (merge != null) mergedValue = merge(local, remote);
 			} catch (err) {
 				// nop
 			}
@@ -406,22 +404,50 @@ export class PreferencesManager {
 				}],
 				default: mergedValue !== undefined ? 'merge' : 'remote',
 			});
-			if (canceled || choice == null) return { enabled: false };
+			if (canceled || choice == null) return undefined;
 
 			if (choice === 'remote') {
-				this.commit(key, existing.value);
+				return remote;
 			} else if (choice === 'local') {
-				// nop
+				return local;
 			} else if (choice === 'merge') {
-				this.commit(key, mergedValue!);
+				return mergedValue!;
 			}
 		}
 
+		const record = this.getMatchedRecordOf(key);
+
+		let newValue = record[1];
+
+		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
+		if (existing != null && !deepEqual(record[1], existing.value)) {
+			const resolvedValue = await resolveConflict(record[1], existing.value);
+			if (resolvedValue === undefined) return { enabled: false }; // canceled
+			newValue = resolvedValue;
+		}
+
+		this.commit(key, newValue);
+
+		const done = os.waiting();
+
+		try {
+			await this.storageProvider.cloudSet({ key, scope: record[0], value: newValue });
+		} catch (err) {
+			done();
+
+			os.alert({
+				type: 'error',
+				title: i18n.ts.somethingHappened,
+				text: err,
+			});
+
+			return { enabled: false };
+		}
+
+		done({ success: true });
+
 		record[2].sync = true;
 		this.save();
-
-		// awaitの必要性は無い
-		this.storageProvider.cloudSet({ key, scope: record[0], value: this.s[key] });
 
 		return { enabled: true };
 	}
