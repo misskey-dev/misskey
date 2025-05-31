@@ -104,6 +104,7 @@ export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
 	}
 }
 
+// TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すれば$iのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
 export class PreferencesManager {
 	private storageProvider: StorageProvider;
 	public profile: PreferencesProfile;
