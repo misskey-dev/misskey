@@ -22,7 +22,10 @@ import { deepEqual } from '@/utility/deep-equal.js';
 //};
 
 type PREF = typeof PREF_DEF;
-type ValueOf<K extends keyof PREF> = PREF[K]['default'];
+type DefaultValues = {
+	[K in keyof PREF]: PREF[K]['default'] extends (...args: any) => infer R ? R : PREF[K]['default'];
+};
+type ValueOf<K extends keyof PREF> = DefaultValues[K];
 
 type Scope = Partial<{
 	server: string | null; // host
@@ -84,11 +87,22 @@ export type StorageProvider = {
 	cloudSet: <K extends keyof PREF>(ctx: { key: K; scope: Scope; value: ValueOf<K>; }) => Promise<void>;
 };
 
-export type PreferencesDefinition = Record<string, {
-	default: any;
+type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => infer R ? R : Default> = {
+	default: Default;
 	accountDependent?: boolean;
 	serverDependent?: boolean;
-}>;
+	mergeStrategy?: (a: T, b: T) => T;
+};
+
+export type PreferencesDefinition = Record<string, PreferencesDefinitionRecord<any>>;
+
+export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
+	if (typeof PREF_DEF[k].default === 'function') { // factory
+		return PREF_DEF[k].default();
+	} else {
+		return PREF_DEF[k].default;
+	}
+}
 
 export class PreferencesManager {
 	private storageProvider: StorageProvider;
@@ -262,7 +276,7 @@ export class PreferencesManager {
 	public static newProfile(): PreferencesProfile {
 		const data = {} as PreferencesProfile['preferences'];
 		for (const key in PREF_DEF) {
-			data[key] = [[makeScope({}), PREF_DEF[key].default, {}]];
+			data[key] = [[makeScope({}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]];
 		}
 		return {
 			id: uuid(),
@@ -279,7 +293,7 @@ export class PreferencesManager {
 		for (const key in PREF_DEF) {
 			const records = profileLike.preferences[key];
 			if (records == null || records.length === 0) {
-				data[key] = [[makeScope({}), PREF_DEF[key].default, {}]];
+				data[key] = [[makeScope({}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]];
 				continue;
 			} else {
 				data[key] = records;
@@ -367,10 +381,20 @@ export class PreferencesManager {
 
 		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
 		if (existing != null && !deepEqual(existing.value, record[1])) {
-			const { canceled, result } = await os.select({
+			const merge = (PREF_DEF as PreferencesDefinition)[key].mergeStrategy;
+			let mergedValue: ValueOf<K> | undefined = undefined; // null と区別したいため
+			try {
+				if (merge != null) mergedValue = merge(record[1], existing.value);
+			} catch (err) {
+				// nop
+			}
+			const { canceled, result: choice } = await os.select({
 				title: i18n.ts.preferenceSyncConflictTitle,
 				text: i18n.ts.preferenceSyncConflictText,
-				items: [{
+				items: [...(mergedValue !== undefined ? [{
+					text: i18n.ts.preferenceSyncConflictChoiceMerge,
+					value: 'merge',
+				}] : []), {
 					text: i18n.ts.preferenceSyncConflictChoiceServer,
 					value: 'remote',
 				}, {
@@ -380,14 +404,16 @@ export class PreferencesManager {
 					text: i18n.ts.preferenceSyncConflictChoiceCancel,
 					value: null,
 				}],
-				default: 'remote',
+				default: mergedValue !== undefined ? 'merge' : 'remote',
 			});
-			if (canceled || result == null) return { enabled: false };
+			if (canceled || choice == null) return { enabled: false };
 
-			if (result === 'remote') {
+			if (choice === 'remote') {
 				this.commit(key, existing.value);
-			} else if (result === 'local') {
+			} else if (choice === 'local') {
 				// nop
+			} else if (choice === 'merge') {
+				this.commit(key, mergedValue!);
 			}
 		}
 
@@ -457,7 +483,7 @@ export class PreferencesManager {
 			text: i18n.ts.resetToDefaultValue,
 			danger: true,
 			action: () => {
-				this.commit(key, PREF_DEF[key].default);
+				this.commit(key, getInitialPrefValue(key));
 			},
 		}, {
 			type: 'divider',

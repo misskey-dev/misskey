@@ -69,6 +69,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { PREF_DEF } from '@/preferences/def.js';
+import { getInitialPrefValue } from '@/preferences/manager.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -106,7 +107,7 @@ async function save() {
 }
 
 function reset() {
-	items.value = PREF_DEF.menu.default.map(x => ({
+	items.value = getInitialPrefValue('menu').map(x => ({
 		id: Math.random().toString(),
 		type: x,
 	}));

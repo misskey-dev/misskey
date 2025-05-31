@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { v4 as uuid } from 'uuid';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
@@ -49,15 +50,15 @@ export const PREF_DEF = {
 	},
 	widgets: {
 		accountDependent: true,
-		default: [{
+		default: () => [{
 			name: 'calendar',
-			id: 'a', place: 'right', data: {},
+			id: uuid(), place: 'right', data: {},
 		}, {
 			name: 'notifications',
-			id: 'b', place: 'right', data: {},
+			id: uuid(), place: 'right', data: {},
 		}, {
 			name: 'trends',
-			id: 'c', place: 'right', data: {},
+			id: uuid(), place: 'right', data: {},
 		}] as {
 			name: string;
 			id: string;
@@ -76,8 +77,8 @@ export const PREF_DEF = {
 
 	emojiPalettes: {
 		serverDependent: true,
-		default: [{
-			id: 'a',
+		default: () => [{
+			id: uuid(),
 			name: '',
 			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 		}] as {
@@ -85,6 +86,11 @@ export const PREF_DEF = {
 			name: string;
 			emojis: string[];
 		}[],
+		mergeStrategy: (a, b) => {
+			const sameIdExists = a.some(x => b.some(y => x.id === y.id));
+			if (sameIdExists) throw new Error();
+			return a.concat(b);
+		},
 	},
 	emojiPaletteForReaction: {
 		serverDependent: true,
@@ -100,6 +106,11 @@ export const PREF_DEF = {
 	},
 	themes: {
 		default: [] as Theme[],
+		mergeStrategy: (a, b) => {
+			const sameIdExists = a.some(x => b.some(y => x.id === y.id));
+			if (sameIdExists) throw new Error();
+			return a.concat(b);
+		},
 	},
 	lightTheme: {
 		default: null as Theme | null,
@@ -345,9 +356,19 @@ export const PREF_DEF = {
 	},
 	plugins: {
 		default: [] as Plugin[],
+		mergeStrategy: (a, b) => {
+			const sameIdExists = a.some(x => b.some(y => x.installId === y.installId));
+			if (sameIdExists) throw new Error();
+			const sameNameExists = a.some(x => b.some(y => x.name === y.name));
+			if (sameNameExists) throw new Error();
+			return a.concat(b);
+		},
 	},
 	mutingEmojis: {
 		default: [] as string[],
+		mergeStrategy: (a, b) => {
+			return [...new Set(a.concat(b))];
+		},
 	},
 
 	'sound.masterVolume': {
