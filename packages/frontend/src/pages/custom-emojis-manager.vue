@@ -78,7 +78,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
@@ -115,7 +115,7 @@ const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
 	} else {
-		selectedEmojis.value = Array.from(emojisPaginationComponent.value?.items.values(), item => item.id);
+		selectedEmojis.value = emojisPaginationComponent.value?.paginator.items.value.map(item => item.id);
 	}
 };
 
@@ -132,7 +132,7 @@ const add = async (ev: MouseEvent) => {
 	}, {
 		done: result => {
 			if (result.created) {
-				emojisPaginationComponent.value?.prepend(result.created);
+				emojisPaginationComponent.value?.paginator.prepend(result.created);
 			}
 		},
 		closed: () => dispose(),
@@ -145,12 +145,12 @@ const edit = (emoji) => {
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisPaginationComponent.value?.updateItem(result.updated.id, (oldEmoji) => ({
+				emojisPaginationComponent.value?.paginator.updateItem(result.updated.id, (oldEmoji) => ({
 					...oldEmoji,
 					...result.updated,
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value?.removeItem(emoji.id);
+				emojisPaginationComponent.value?.paginator.removeItem(emoji.id);
 			}
 		},
 		closed: () => dispose(),
@@ -242,7 +242,7 @@ const setCategoryBulk = async () => {
 		ids: selectedEmojis.value,
 		category: result,
 	});
-	emojisPaginationComponent.value?.reload();
+	emojisPaginationComponent.value?.paginator.reload();
 };
 
 const setLicenseBulk = async () => {
@@ -254,7 +254,7 @@ const setLicenseBulk = async () => {
 		ids: selectedEmojis.value,
 		license: result,
 	});
-	emojisPaginationComponent.value?.reload();
+	emojisPaginationComponent.value?.paginator.reload();
 };
 
 const addTagBulk = async () => {
@@ -266,7 +266,7 @@ const addTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.reload();
+	emojisPaginationComponent.value?.paginator.reload();
 };
 
 const removeTagBulk = async () => {
@@ -278,7 +278,7 @@ const removeTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.reload();
+	emojisPaginationComponent.value?.paginator.reload();
 };
 
 const setTagBulk = async () => {
@@ -290,7 +290,7 @@ const setTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.reload();
+	emojisPaginationComponent.value?.paginator.reload();
 };
 
 const delBulk = async () => {
@@ -302,7 +302,7 @@ const delBulk = async () => {
 	await os.apiWithDialog('admin/emoji/delete-bulk', {
 		ids: selectedEmojis.value,
 	});
-	emojisPaginationComponent.value?.reload();
+	emojisPaginationComponent.value?.paginator.reload();
 };
 
 const headerActions = computed(() => [{

@@ -18,11 +18,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				]"
 			></MkSelect>
 
-			<MkSystemIcon v-if="iconType === 'info'" type="info" style="width: 60px;"/>
-			<MkSystemIcon v-if="iconType === 'question'" type="question" style="width: 60px;"/>
-			<MkSystemIcon v-if="iconType === 'success'" type="success" style="width: 60px;"/>
-			<MkSystemIcon v-if="iconType === 'warn'" type="warn" style="width: 60px;"/>
-			<MkSystemIcon v-if="iconType === 'error'" type="error" style="width: 60px;"/>
+			<MkSystemIcon v-if="iconType === 'info'" type="info" style="width: 150px;"/>
+			<MkSystemIcon v-if="iconType === 'question'" type="question" style="width: 150px;"/>
+			<MkSystemIcon v-if="iconType === 'success'" type="success" style="width: 150px;"/>
+			<MkSystemIcon v-if="iconType === 'warn'" type="warn" style="width: 150px;"/>
+			<MkSystemIcon v-if="iconType === 'error'" type="error" style="width: 150px;"/>
+			<MkSystemIcon v-if="iconType === 'waiting'" type="waiting" style="width: 150px;"/>
 			<MkSelect
 				v-model="iconType" :items="[
 					{ label: 'info', value: 'info' },
@@ -30,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{ label: 'success', value: 'success' },
 					{ label: 'warn', value: 'warn' },
 					{ label: 'error', value: 'error' },
+					{ label: 'waiting', value: 'waiting' },
 				]"
 			></MkSelect>
 
