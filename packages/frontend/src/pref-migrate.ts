@@ -15,7 +15,7 @@ import { i18n } from '@/i18n.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
-	os.waiting(i18n.ts.settingsMigrating);
+	os.waiting({ text: i18n.ts.settingsMigrating });
 
 	store.loaded.then(async () => {
 		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
