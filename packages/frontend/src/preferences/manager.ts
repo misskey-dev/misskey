@@ -96,6 +96,14 @@ type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => 
 
 export type PreferencesDefinition = Record<string, PreferencesDefinitionRecord<any>>;
 
+export function definePreferences<T extends Record<string, unknown>>(x: {
+	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
+}): {
+		[K in keyof T]: PreferencesDefinitionRecord<T[K]>
+	} {
+	return x;
+}
+
 export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
 	if (typeof PREF_DEF[k].default === 'function') { // factory
 		return PREF_DEF[k].default();
