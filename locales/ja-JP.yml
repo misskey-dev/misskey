@@ -3150,6 +3150,8 @@ _search:
   pleaseEnterServerHost: "サーバーのホストを入力してください"
   pleaseSelectUser: "ユーザーを選択してください"
   serverHostPlaceholder: "例: misskey.example.com"
+  postFrom: "投稿日時from"
+  postTo: "投稿日時to"
 
 _serverSetupWizard:
   installCompleted: "Misskeyのインストールが完了しました！"

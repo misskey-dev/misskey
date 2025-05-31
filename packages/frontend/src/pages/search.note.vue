@@ -20,8 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_gaps_m">
 				<div style="display: flex; gap: 8px;">
-					<MkInput v-model="rangeStartAt" type="datetime-local"/>
-					<MkInput v-model="rangeEndAt" type="datetime-local"/>
+					<MkInput v-model="rangeStartAt" type="datetime-local">
+						<template #label>{{ i18n.ts._search.postFrom }}</template>
+					</MkInput>
+					<MkInput v-model="rangeEndAt" type="datetime-local">
+						<template #label>{{ i18n.ts._search.postTo }}</template>
+					</MkInput>
 				</div>
 
 				<MkRadios v-model="searchScope">
