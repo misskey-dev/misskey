@@ -3001,3 +3001,12 @@ _search:
   pleaseEnterServerHost: "서버의 호스트를 입력해 주세요."
   pleaseSelectUser: "유저를 선택해주세요"
   serverHostPlaceholder: "예: misskey.example.com"
+_clientPerformanceIssueTip:
+  makeSureDisabledCustomCss: "커스텀 CSS를 무효로 해주십시오."
+  makeSureDisabledCustomCss_description: "스타일을 덮어쓰기하면 성능에 영향을 미칠 수 있습니다. 커스텀 CSS나 스타일을 덮어쓰기하는 확장 기능이 유효로 돼있는지 확인해주십시오."
+  makeSureDisabledAddons: "확장 기능을 무효로 해주십시오."
+  makeSureDisabledAddons_description: "일부 확장 기능은 클라이언트의 동작에 간섭해 성능에 영향을 미칠 수 있습니다. 브라우저의 확장 기능을 무효로 해 개선할지 확인해주십시오."
+_clip:
+  tip: "클립은 노트를 정리할 수 있는 기능입니다."
+_userLists:
+  tip: "임의의 유저가 포함된 리스트를 작성할 수 있습니다. 작성한 리스트는 타임라인으로 표시가 가능합니다."
