@@ -374,6 +374,11 @@ export const PREF_DEF = {
 	watermarkPresets: {
 		accountDependent: true,
 		default: [] as WatermarkPreset[],
+		mergeStrategy: (a, b) => {
+			const sameIdExists = a.some(x => b.some(y => x.id === y.id));
+			if (sameIdExists) throw new Error();
+			return a.concat(b);
+		},
 	},
 	defaultWatermarkPresetId: {
 		accountDependent: true,
