@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
 	<MkAvatar :class="$style.avatar" :user="message.fromUser!" :link="!isMe" :preview="false"/>
-	<div :class="$style.body" @contextmenu.stop="onContextmenu">
+	<div :class="[$style.body, message.file != null ? $style.fullWidth : null]" @contextmenu.stop="onContextmenu">
 		<div :class="$style.header"><MkUserName v-if="!isMe && prefer.s['chat.showSenderName'] && message.fromUser != null" :user="message.fromUser"/></div>
-		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
+		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :fullWidth="message.file != null" :accented="isMe">
 			<Mfm
 				v-if="message.text"
 				ref="text"
@@ -259,6 +259,10 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 
 .body {
 	margin: 0 12px;
+
+	&.fullWidth {
+		width: 100%;
+	}
 }
 
 .header {

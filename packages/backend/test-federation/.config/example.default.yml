@@ -17,8 +17,6 @@ proxyBypassHosts:
   - www.recaptcha.net
   - hcaptcha.com
   - challenges.cloudflare.com
-proxyRemoteFiles: true
-signToActivityPubGet: true
 allowedPrivateNetworks:
   - 127.0.0.1/32
   - 172.20.0.0/16
