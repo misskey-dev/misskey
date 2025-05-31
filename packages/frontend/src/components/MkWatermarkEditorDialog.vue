@@ -88,7 +88,12 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-function cancel() {
+async function cancel() {
+	const { canceled } = await os.confirm({
+		text: i18n.ts._watermarkEditor.quitWithoutSaveConfirm,
+	});
+	if (canceled) return;
+
 	emit('cancel');
 	dialog.value?.close();
 }

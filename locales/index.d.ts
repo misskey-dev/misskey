@@ -12042,6 +12042,10 @@ export interface Locale extends ILocale {
          */
         "tip": string;
         /**
+         * 保存せずに終了しますか？
+         */
+        "quitWithoutSaveConfirm": string;
+        /**
          * ウォーターマークの編集
          */
         "title": string;

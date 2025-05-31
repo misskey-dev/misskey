@@ -3225,6 +3225,7 @@ watermark: "ウォーターマーク"
 defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
   tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  quitWithoutSaveConfirm: "保存せずに終了しますか？"
   title: "ウォーターマークの編集"
   cover: "全体に被せる"
   repeat: "敷き詰める"
