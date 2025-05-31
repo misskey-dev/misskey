@@ -278,7 +278,7 @@ export class PreferencesManager {
 		for (const key in PREF_DEF) {
 			const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
 			if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
-				data[key] = $i ? [[makeScope({
+				data[key] = $i ? [[makeScope({}), v, {}], [makeScope({
 					server: host,
 					account: $i.id,
 				}), v, {}]] : [[makeScope({}), v, {}]];
@@ -307,7 +307,7 @@ export class PreferencesManager {
 			if (records == null || records.length === 0) {
 				const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
 				if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
-					data[key] = $i ? [[makeScope({
+					data[key] = $i ? [[makeScope({}), v, {}], [makeScope({
 						server: host,
 						account: $i.id,
 					}), v, {}]] : [[makeScope({}), v, {}]];
