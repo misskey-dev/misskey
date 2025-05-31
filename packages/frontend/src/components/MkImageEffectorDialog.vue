@@ -126,8 +126,8 @@ onMounted(async () => {
 
 	imageBitmap = await window.createImageBitmap(props.image);
 
-	const MAX_W = 500;
-	const MAX_H = 500;
+	const MAX_W = 1000;
+	const MAX_H = 1000;
 	let w = imageBitmap.width;
 	let h = imageBitmap.height;
 
