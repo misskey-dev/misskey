@@ -450,9 +450,7 @@ export class PreferencesManager {
 
 		let newValue = record[1];
 
-		console.log({ key, scope: record[0] });
 		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
-		console.log(record[1], existing?.value, deepEqual(record[1], existing?.value));
 		if (existing != null && !deepEqual(record[1], existing.value)) {
 			const resolvedValue = await resolveConflict(record[1], existing.value);
 			if (resolvedValue === undefined) return { enabled: false }; // canceled
