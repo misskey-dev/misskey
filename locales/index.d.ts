@@ -5481,6 +5481,14 @@ export interface Locale extends ILocale {
      * 全ての「ヒントとコツ」を非表示
      */
     "hideAllTips": string;
+    /**
+     * 既読をリセット
+     */
+    "resetReads": string;
+    /**
+     * 「{x}」の既読をリセットしますか？
+     */
+    "resetReadsAreYouSure": ParameterizedString<"x">;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -10702,6 +10710,14 @@ export interface Locale extends ILocale {
          * ユーザーのお知らせを削除
          */
         "deleteUserAnnouncement": string;
+        /**
+         * 全体のお知らせの既読をリセット
+         */
+        "resetReadsForGlobalAnnouncement": string;
+        /**
+         * ユーザーのお知らせの既読をリセット
+         */
+        "resetReadsForUserAnnouncement": string;
         /**
          * パスワードをリセット
          */
