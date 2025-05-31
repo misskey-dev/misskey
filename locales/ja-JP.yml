@@ -3356,6 +3356,24 @@ _search:
   pleaseSelectUser: "ユーザーを選択してください"
   serverHostPlaceholder: "例: misskey.example.com"
 
+_meilisearchReIndex:
+  title: "Meilisearch 再インデックス"
+  description: "対象期間のノートを Meilisearch に再投入します。実行中はサーバーと Meilisearch の負荷が上がるため、利用者の少ない時間帯に実行することを推奨します。"
+  advanced: "詳細設定 (期間指定)"
+  sinceDate: "開始日 (この日以降のノートのみ対象)"
+  untilDate: "終了日 (この日以前のノートのみ対象)"
+  start: "再インデックスを開始"
+  confirmTitle: "本当に実行しますか?"
+  confirmText: "対象期間のノートを全て Meilisearch に再投入します。完了まで時間がかかる場合があります。"
+  startedTitle: "ジョブを投入しました"
+  startedText: "進捗は「ジョブキュー」画面で確認できます。"
+  openJobQueue: "ジョブキューを開く"
+  alreadyRunning: "既に再インデックスが実行中です。"
+  notActive: "Meilisearch が有効になっていないため実行できません。"
+  statusIdle: "未実行"
+  statusRunning: "実行中"
+  completedNotification: "Meilisearch の再インデックスが完了しました ({fetched} 件投入 / {errors} 件失敗)"
+
 _serverSetupWizard:
   installCompleted: "Misskeyのインストールが完了しました！"
   firstCreateAccount: "まずは、管理者アカウントを作成しましょう。"

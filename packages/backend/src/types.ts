@@ -132,6 +132,9 @@ export const moderationLogTypes = [
 	'deleteGalleryPost',
 	'deleteChatRoom',
 	'updateProxyAccountDescription',
+	'reIndexNotesRequested',
+	'reIndexNotesCompleted',
+	'reIndexNotesFailed',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -391,6 +394,18 @@ export type ModerationLogPayloads = {
 	updateProxyAccountDescription: {
 		before: string | null;
 		after: string | null;
+	};
+	reIndexNotesRequested: {
+		sinceDate: number | null;
+		untilDate: number | null;
+	};
+	reIndexNotesCompleted: {
+		fetchedCount: number;
+		errorCount: number;
+		durationMs: number;
+	};
+	reIndexNotesFailed: {
+		reason: string;
 	};
 };
 
