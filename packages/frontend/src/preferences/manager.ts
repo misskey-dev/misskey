@@ -22,7 +22,10 @@ import { deepEqual } from '@/utility/deep-equal.js';
 //};
 
 type PREF = typeof PREF_DEF;
-type ValueOf<K extends keyof PREF> = PREF[K]['default'];
+type DefaultValues = {
+	[K in keyof PREF]: PREF[K]['default'] extends (...args: any) => infer R ? R : PREF[K]['default'];
+};
+type ValueOf<K extends keyof PREF> = DefaultValues[K];
 
 type Scope = Partial<{
 	server: string | null; // host
@@ -84,12 +87,25 @@ export type StorageProvider = {
 	cloudSet: <K extends keyof PREF>(ctx: { key: K; scope: Scope; value: ValueOf<K>; }) => Promise<void>;
 };
 
-export type PreferencesDefinition = Record<string, {
-	default: any;
+type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => infer R ? R : Default> = {
+	default: Default;
 	accountDependent?: boolean;
 	serverDependent?: boolean;
-}>;
+	mergeStrategy?: (a: T, b: T) => T;
+};
 
+export type PreferencesDefinition = Record<string, PreferencesDefinitionRecord<any>>;
+
+export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
+	if (typeof PREF_DEF[k].default === 'function') { // factory
+		return PREF_DEF[k].default();
+	} else {
+		return PREF_DEF[k].default;
+	}
+}
+
+// TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すれば$iのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
+// NOTE: accountDependentな設定は初期状態であってもアカウントごとのスコープでレコードを作成しておかないと、サーバー同期する際に正しく動作しなくなる
 export class PreferencesManager {
 	private storageProvider: StorageProvider;
 	public profile: PreferencesProfile;
@@ -125,11 +141,11 @@ export class PreferencesManager {
 		// TODO: 定期的にクラウドの値をフェッチ
 	}
 
-	private isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
+	private static isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
 		return (PREF_DEF as PreferencesDefinition)[key].accountDependent === true;
 	}
 
-	private isServerDependentKey<K extends keyof PREF>(key: K): boolean {
+	private static isServerDependentKey<K extends keyof PREF>(key: K): boolean {
 		return (PREF_DEF as PreferencesDefinition)[key].serverDependent === true;
 	}
 
@@ -152,7 +168,7 @@ export class PreferencesManager {
 
 		const record = this.getMatchedRecordOf(key);
 
-		if (parseScope(record[0]).account == null && this.isAccountDependentKey(key)) {
+		if (parseScope(record[0]).account == null && PreferencesManager.isAccountDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 				account: $i!.id,
@@ -161,7 +177,7 @@ export class PreferencesManager {
 			return;
 		}
 
-		if (parseScope(record[0]).server == null && this.isServerDependentKey(key)) {
+		if (parseScope(record[0]).server == null && PreferencesManager.isServerDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 			}), v, {}]);
@@ -262,7 +278,19 @@ export class PreferencesManager {
 	public static newProfile(): PreferencesProfile {
 		const data = {} as PreferencesProfile['preferences'];
 		for (const key in PREF_DEF) {
-			data[key] = [[makeScope({}), PREF_DEF[key].default, {}]];
+			const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
+			if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
+				data[key] = $i ? [[makeScope({}), v, {}], [makeScope({
+					server: host,
+					account: $i.id,
+				}), v, {}]] : [[makeScope({}), v, {}]];
+			} else if (PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF)) {
+				data[key] = [[makeScope({
+					server: host,
+				}), v, {}]];
+			} else {
+				data[key] = [[makeScope({}), v, {}]];
+			}
 		}
 		return {
 			id: uuid(),
@@ -279,18 +307,36 @@ export class PreferencesManager {
 		for (const key in PREF_DEF) {
 			const records = profileLike.preferences[key];
 			if (records == null || records.length === 0) {
-				data[key] = [[makeScope({}), PREF_DEF[key].default, {}]];
+				const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
+				if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
+					data[key] = $i ? [[makeScope({}), v, {}], [makeScope({
+						server: host,
+						account: $i.id,
+					}), v, {}]] : [[makeScope({}), v, {}]];
+				} else if (PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF)) {
+					data[key] = [[makeScope({
+						server: host,
+					}), v, {}]];
+				} else {
+					data[key] = [[makeScope({}), v, {}]];
+				}
 				continue;
 			} else {
-				data[key] = records;
-
-				// alpha段階ではmetaが無かったのでマイグレート
-				// TODO: そのうち消す
-				for (const record of data[key] as any[][]) {
-					if (record.length === 2) {
-						record.push({});
-					}
+				if ($i && PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id)) {
+					data[key] = records.concat([[makeScope({
+						server: host,
+						account: $i.id,
+					}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
+					continue;
 				}
+				if ($i && PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host)) {
+					data[key] = records.concat([[makeScope({
+						server: host,
+					}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
+					continue;
+				}
+
+				data[key] = records;
 			}
 		}
 
@@ -328,7 +374,7 @@ export class PreferencesManager {
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (this.isAccountDependentKey(key)) throw new Error('already account-dependent');
+		if (PreferencesManager.isAccountDependentKey(key)) throw new Error('already account-dependent');
 		if (this.isAccountOverrided(key)) return;
 
 		const records = this.profile.preferences[key];
@@ -342,7 +388,7 @@ export class PreferencesManager {
 
 	public clearAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (this.isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
+		if (PreferencesManager.isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
 
 		const records = this.profile.preferences[key];
 
@@ -363,14 +409,22 @@ export class PreferencesManager {
 	public async enableSync<K extends keyof PREF>(key: K): Promise<{ enabled: boolean; } | null> {
 		if (this.isSyncEnabled(key)) return Promise.resolve(null);
 
-		const record = this.getMatchedRecordOf(key);
-
-		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
-		if (existing != null && !deepEqual(existing.value, record[1])) {
-			const { canceled, result } = await os.select({
+		// undefined ... cancel
+		async function resolveConflict(local: ValueOf<K>, remote: ValueOf<K>): Promise<ValueOf<K> | undefined> {
+			const merge = (PREF_DEF as PreferencesDefinition)[key].mergeStrategy;
+			let mergedValue: ValueOf<K> | undefined = undefined; // null と区別したいため
+			try {
+				if (merge != null) mergedValue = merge(local, remote);
+			} catch (err) {
+				// nop
+			}
+			const { canceled, result: choice } = await os.select({
 				title: i18n.ts.preferenceSyncConflictTitle,
 				text: i18n.ts.preferenceSyncConflictText,
-				items: [{
+				items: [...(mergedValue !== undefined ? [{
+					text: i18n.ts.preferenceSyncConflictChoiceMerge,
+					value: 'merge',
+				}] : []), {
 					text: i18n.ts.preferenceSyncConflictChoiceServer,
 					value: 'remote',
 				}, {
@@ -380,22 +434,52 @@ export class PreferencesManager {
 					text: i18n.ts.preferenceSyncConflictChoiceCancel,
 					value: null,
 				}],
-				default: 'remote',
+				default: mergedValue !== undefined ? 'merge' : 'remote',
 			});
-			if (canceled || result == null) return { enabled: false };
+			if (canceled || choice == null) return undefined;
 
-			if (result === 'remote') {
-				this.commit(key, existing.value);
-			} else if (result === 'local') {
-				// nop
+			if (choice === 'remote') {
+				return remote;
+			} else if (choice === 'local') {
+				return local;
+			} else if (choice === 'merge') {
+				return mergedValue!;
 			}
 		}
 
+		const record = this.getMatchedRecordOf(key);
+
+		let newValue = record[1];
+
+		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
+		if (existing != null && !deepEqual(record[1], existing.value)) {
+			const resolvedValue = await resolveConflict(record[1], existing.value);
+			if (resolvedValue === undefined) return { enabled: false }; // canceled
+			newValue = resolvedValue;
+		}
+
+		this.commit(key, newValue);
+
+		const done = os.waiting();
+
+		try {
+			await this.storageProvider.cloudSet({ key, scope: record[0], value: newValue });
+		} catch (err) {
+			done();
+
+			os.alert({
+				type: 'error',
+				title: i18n.ts.somethingHappened,
+				text: err,
+			});
+
+			return { enabled: false };
+		}
+
+		done({ success: true });
+
 		record[2].sync = true;
 		this.save();
-
-		// awaitの必要性は無い
-		this.storageProvider.cloudSet({ key, scope: record[0], value: this.s[key] });
 
 		return { enabled: true };
 	}
@@ -457,7 +541,7 @@ export class PreferencesManager {
 			text: i18n.ts.resetToDefaultValue,
 			danger: true,
 			action: () => {
-				this.commit(key, PREF_DEF[key].default);
+				this.commit(key, getInitialPrefValue(key));
 			},
 		}, {
 			type: 'divider',

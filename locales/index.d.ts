@@ -5335,15 +5335,19 @@ export interface Locale extends ILocale {
      */
     "preferenceSyncConflictTitle": string;
     /**
-     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どちらの設定値で上書きしますか？
+     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どうしますか？
      */
     "preferenceSyncConflictText": string;
     /**
-     * サーバーの設定値
+     * 統合する
+     */
+    "preferenceSyncConflictChoiceMerge": string;
+    /**
+     * サーバーの設定値で上書き
      */
     "preferenceSyncConflictChoiceServer": string;
     /**
-     * デバイスの設定値
+     * デバイスの設定値で上書き
      */
     "preferenceSyncConflictChoiceDevice": string;
     /**
