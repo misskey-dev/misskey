@@ -21,6 +21,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { reloadAsk } from '@/utility/reload-ask';
 
 const props = defineProps<{
 	muted: (string[] | string)[];
@@ -88,5 +89,7 @@ async function save() {
 	emit('save', parsed);
 
 	changed.value = false;
+
+	reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 </script>
