@@ -139,11 +139,11 @@ export class PreferencesManager {
 		// TODO: 定期的にクラウドの値をフェッチ
 	}
 
-	private isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
+	private static isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
 		return (PREF_DEF as PreferencesDefinition)[key].accountDependent === true;
 	}
 
-	private isServerDependentKey<K extends keyof PREF>(key: K): boolean {
+	private static isServerDependentKey<K extends keyof PREF>(key: K): boolean {
 		return (PREF_DEF as PreferencesDefinition)[key].serverDependent === true;
 	}
 
@@ -166,7 +166,7 @@ export class PreferencesManager {
 
 		const record = this.getMatchedRecordOf(key);
 
-		if (parseScope(record[0]).account == null && this.isAccountDependentKey(key)) {
+		if (parseScope(record[0]).account == null && PreferencesManager.isAccountDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 				account: $i!.id,
@@ -175,7 +175,7 @@ export class PreferencesManager {
 			return;
 		}
 
-		if (parseScope(record[0]).server == null && this.isServerDependentKey(key)) {
+		if (parseScope(record[0]).server == null && PreferencesManager.isServerDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 			}), v, {}]);
@@ -276,7 +276,19 @@ export class PreferencesManager {
 	public static newProfile(): PreferencesProfile {
 		const data = {} as PreferencesProfile['preferences'];
 		for (const key in PREF_DEF) {
-			data[key] = [[makeScope({}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]];
+			const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
+			if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
+				data[key] = $i ? [[makeScope({
+					server: host,
+					account: $i.id,
+				}), v, {}]] : [[makeScope({}), v, {}]];
+			} else if (PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF)) {
+				data[key] = [[makeScope({
+					server: host,
+				}), v, {}]];
+			} else {
+				data[key] = [[makeScope({}), v, {}]];
+			}
 		}
 		return {
 			id: uuid(),
@@ -293,18 +305,36 @@ export class PreferencesManager {
 		for (const key in PREF_DEF) {
 			const records = profileLike.preferences[key];
 			if (records == null || records.length === 0) {
-				data[key] = [[makeScope({}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]];
+				const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
+				if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
+					data[key] = $i ? [[makeScope({
+						server: host,
+						account: $i.id,
+					}), v, {}]] : [[makeScope({}), v, {}]];
+				} else if (PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF)) {
+					data[key] = [[makeScope({
+						server: host,
+					}), v, {}]];
+				} else {
+					data[key] = [[makeScope({}), v, {}]];
+				}
 				continue;
 			} else {
-				data[key] = records;
-
-				// alpha段階ではmetaが無かったのでマイグレート
-				// TODO: そのうち消す
-				for (const record of data[key] as any[][]) {
-					if (record.length === 2) {
-						record.push({});
-					}
+				if ($i && PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id)) {
+					data[key] = records.concat([[makeScope({
+						server: host,
+						account: $i.id,
+					}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
+					continue;
 				}
+				if ($i && PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host)) {
+					data[key] = records.concat([[makeScope({
+						server: host,
+					}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
+					continue;
+				}
+
+				data[key] = records;
 			}
 		}
 
@@ -342,7 +372,7 @@ export class PreferencesManager {
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (this.isAccountDependentKey(key)) throw new Error('already account-dependent');
+		if (PreferencesManager.isAccountDependentKey(key)) throw new Error('already account-dependent');
 		if (this.isAccountOverrided(key)) return;
 
 		const records = this.profile.preferences[key];
@@ -356,7 +386,7 @@ export class PreferencesManager {
 
 	public clearAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (this.isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
+		if (PreferencesManager.isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
 
 		const records = this.profile.preferences[key];
 
