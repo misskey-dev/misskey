@@ -274,7 +274,6 @@ export class SearchService {
 			for (const note of notes) {
 				try {
 					await this.addDocument(note);
-					this.logger.debug(`-- Indexed note: ${note.id}`);
 				} catch (err) {
 					this.logger.error(`-- Failed to index note: ${note.id}`, err as Error);
 					errorNoteIds.push(note.id);
