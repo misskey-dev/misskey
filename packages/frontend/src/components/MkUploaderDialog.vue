@@ -349,7 +349,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				icon: 'ti ti-plus',
 				text: i18n.ts.add,
 				action: async () => {
-					const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
+					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
 						image: item.file,
 					}, {
 						ok: (preset) => {
