@@ -8,6 +8,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
+import { deepClone } from '@/misc/clone.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';
@@ -79,7 +80,8 @@ export default abstract class Channel {
 	}
 
 	protected async removeMutedReactions(note: Packed<'Note'>): Promise<Packed<'Note'>> {
-		return await removeMutedUsersReactions(note, this.userIdsWhoMeMuting, false);
+		const cloned = deepClone(note);
+		return await removeMutedUsersReactions(cloned, this.userIdsWhoMeMuting, false);
 	}
 
 	constructor(id: string, connection: Connection) {

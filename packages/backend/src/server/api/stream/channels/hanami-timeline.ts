@@ -117,14 +117,14 @@ class HanamiTimelineChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
-			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-				note.renote.myReaction = myRenoteReaction;
+		const reactionMutedNote = await this.removeMutedReactions(note);
+
+		if (this.user && isRenotePacked(reactionMutedNote) && !isQuotePacked(reactionMutedNote)) {
+			if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
+				reactionMutedNote.renote.myReaction = myRenoteReaction;
 			}
 		}
-
-		const reactionMutedNote = await this.removeMutedReactions(note);
 
 		this.connection.cacheNote(reactionMutedNote);
 
