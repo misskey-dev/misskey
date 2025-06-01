@@ -239,8 +239,8 @@ function chooseUploadFolder() {
 	});
 }
 
-function addWatermarkPreset() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
+async function addWatermarkPreset() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
 	}, {
 		ok: (preset: WatermarkPreset) => {
 			prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
