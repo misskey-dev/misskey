@@ -2924,6 +2924,9 @@ _captcha:
       text: "Comprueba que los ajustes son los correctos."
     _unknown:
       title: "Error en el CAPTCHA."
+      text: "Se ha producido un error inesperado."
+_bootErrors:
+  title: "Fallo al cargar"
 _search:
   searchScopeAll: "Todo"
   searchScopeLocal: "Local"
