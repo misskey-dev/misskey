@@ -194,9 +194,9 @@ export function useNoteCapture(props: {
 	parentNote: Misskey.entities.Note | null;
 	mock?: boolean;
 }): {
-	$note: Reactive<ReactiveNoteData>;
-	subscribe: () => void;
-} {
+		$note: Reactive<ReactiveNoteData>;
+		subscribe: () => void;
+	} {
 	const { note, parentNote, mock } = props;
 
 	const $note = reactive<ReactiveNoteData>({
@@ -225,8 +225,8 @@ export function useNoteCapture(props: {
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
-
+		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
+		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === normalizedName) return;
 		reactionUserMap.set(ctx.userId, normalizedName);
 
@@ -245,7 +245,8 @@ export function useNoteCapture(props: {
 	}
 
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
+		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
+		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
 
 		// 確実に一度リアクションされて取り消されている場合のみ処理をとめる（APIで初回読み込み→Streamでアップデート等の場合、reactionUserMapに情報がないため）
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === noReaction) return;

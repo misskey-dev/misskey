@@ -81,8 +81,8 @@ const pagination = {
 	noPaging: true,
 };
 
-function generateToken() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {}, {
+async function generateToken() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {}, {
 		done: async result => {
 			const { name, permissions } = result;
 			const { token } = await misskeyApi('miauth/gen-token', {

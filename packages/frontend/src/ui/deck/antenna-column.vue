@@ -72,7 +72,7 @@ async function setAntenna() {
 	if (canceled || antenna == null) return;
 
 	if (antenna === '_CREATE_') {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAntennaEditorDialog.vue')), {}, {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAntennaEditorDialog.vue').then(x => x.default), {}, {
 			created: (newAntenna: MisskeyEntities.Antenna) => {
 				antennasCache.delete();
 				updateColumn(props.column.id, {

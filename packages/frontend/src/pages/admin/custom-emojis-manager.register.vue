@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 
 		<div class="_buttonsCenter">
-			<MkButton primary rounded @click="onFileSelectClicked">{{ i18n.ts.uplaod }}</MkButton>
+			<MkButton primary rounded @click="onFileSelectClicked">{{ i18n.ts.upload }}</MkButton>
 			<MkButton primary rounded @click="onDriveSelectClicked">{{ i18n.ts.fromDrive }}</MkButton>
 		</div>
 
