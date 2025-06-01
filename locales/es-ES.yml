@@ -2844,20 +2844,86 @@ _reversi:
   opponentHasSettingsChanged: "El oponente ha cambiado su configuración"
   allowIrregularRules: "Reglas irregulares (completamente libre)"
   disallowIrregularRules: "Sin reglas irregulares "
+  showBoardLabels: "Mostrar el número de línea y de columna en el tablero de juego."
+  useAvatarAsStone: "Usar los avatares de los usuarios como fichas\n"
+_offlineScreen:
+  title: "Fuera de línea. No se puede conectar con el servidor"
+  header: "Incapaz de conectar con el servidor"
 _urlPreviewSetting:
+  title: "Configuración para la previsualización de la URL"
+  enable: "Activar la vista previa de URL"
+  allowRedirect: "Permitir la redirección de la visualización previa"
+  allowRedirectDescription: "Si una URL tiene una redirección establecida, puede activar esta función para seguir la redirección y mostrar una vista previa del contenido redirigido. Si se desactiva, se ahorrarán recursos del servidor, pero no se mostrará el contenido redirigido."
   timeout: "Timeout de la carga de vista previa de las URLs (ms)"
+  timeoutDescription: "Si se tarda más de este valor en obtener la vista previa, ésta no se generará."
   maximumContentLength: "Content-Length Máximo (bytes)"
+  maximumContentLengthDescription: "Si Content-Length es superior a este valor, no se generará la vista previa."
+  requireContentLength: "Genere la vista previa sólo si puede obtener Content-Length"
+  requireContentLengthDescription: "Si el otro servidor no devuelve Content-Length, no se generará la vista previa."
   userAgent: "User-Agent"
+  userAgentDescription: "Establece el User-Agent que se utilizará al recuperar vistas previas. Si se deja en blanco, se utilizará el User-Agent por defecto."
+  summaryProxy: "Proxy endpoints para generar vistas previas"
+  summaryProxyDescription: "La vista previa se genera usando Summaly proxy, no la genera el mismo Misskey."
+  summaryProxyDescription2: "Los siguientes parámetros se vinculan al proxy como cadena de consulta (query string). Si el proxy no los admite, los valores se ignoran."
 _mediaControls:
   pip: "Picture in Picture"
   playbackRate: "Velocidad de reproducción"
   loop: "Reproducción en bucle"
+_contextMenu:
+  title: "Menú contextual"
+  app: "Aplicación"
+  appWithShift: "Aplicación con la tecla shift"
+  native: "Interfaz nativa (del navegador web)"
+_gridComponent:
+  _error:
+    requiredValue: "Este valor es obligatorio"
+    columnTypeNotSupport: "La validación con expresión regular sólo se admite para columnas de tipo:texto."
+    patternNotMatch: "Este valor no coincide con el patrón en {pattern}"
+    notUnique: "Este valor debe ser único"
+_roleSelectDialog:
+  notSelected: "No seleccionado"
+_customEmojisManager:
+  _gridCommon:
+    copySelectionRows: "Copiar filas seleccionadas"
+    copySelectionRanges: "Copiar selección"
+    deleteSelectionRows: "Borrar las líneas seleccionadas"
+    deleteSelectionRanges: "Borrar las filas de la selección"
+    searchSettings: "Ajustes de búsqueda"
+    searchSettingCaption: "Establecer criterios de búsqueda detallados."
+    searchLimit: "Límite de resultados"
+    sortOrder: "Ordenar"
+    registrationLogs: "Log de registros "
+    registrationLogsCaption: "Los registros se mostrarán al actualizar o borrar Emojis. Desaparecerán después de actualizarlos o eliminarlos, pasar a una nueva página o recargar."
 _followRequest:
   recieved: "Petición de seguimiento recibida"
   sent: "Petición de seguimiento enviada"
 _remoteLookupErrors:
+  _federationNotAllowed:
+    description: "Es posible que se haya desactivado la comunicación con este servidor o que haya sido bloqueado.\nPonte en contacto con el administrador del servidor.."
+  _uriInvalid:
+    title: "La URI es inválida"
+    description: "Ha habido un problema con la dirección introducida. Comprueba que no hayas escrito caracteres que no pueden ser usados en la URI"
+  _requestFailed:
+    title: "Solicitud fallida."
+    description: "Ha fallado la comunicación con este servidor. Es posible que el servidor no funcione. Asegúrese también de que no ha introducido un URI no válido o inexistente."
+  _responseInvalid:
+    title: "La respuesta no es válida"
+    description: "Has podido comunicarte con este servidor, pero los datos obtenidos eran incorrectos. Si estás consultando contenidos remotos a través de un servidor de terceros, vuelve a realizar la consulta utilizando un URI que pueda obtenerse del servidor de origen."
   _noSuchObject:
     title: "No se encuentra"
+    description: "No se ha encontrado el recurso solicitado, por favor, vuelve a comprobar el URI."
+_captcha:
+  verify: "Por favor verifica el CAPTCHA"
+  testSiteKeyMessage: "Puedes comprobar la vista previa introduciendo los valores de prueba para el sitio y las claves secretas.\nPara más detalles, consulta la página siguiente.\n"
+  _error:
+    _requestFailed:
+      title: "Ha fallado la solicitud del CAPTCHA"
+      text: "Por favor, ejecútalo después de un rato o comprueba los ajustes de nuevo."
+    _verificationFailed:
+      title: "Ha fallado la validación del CAPTCHA"
+      text: "Comprueba que los ajustes son los correctos."
+    _unknown:
+      title: "Error en el CAPTCHA."
 _search:
   searchScopeAll: "Todo"
   searchScopeLocal: "Local"
