@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<MkStickyContainer>
 		<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="900">
+		<div class="_spacer" style="--MI_SPACER-w: 900px;">
 			<div class="_gaps_m">
 				<MkPagination ref="paginationComponent" :pagination="pagination">
 					<template #default="{ items }">
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 				</MkPagination>
 			</div>
-		</MkSpacer>
+		</div>
 	</MkStickyContainer>
 </div>
 </template>

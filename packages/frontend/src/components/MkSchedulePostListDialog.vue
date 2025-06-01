@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel()"
 >
 	<template #header>{{ i18n.ts.schedulePostList }}</template>
-	<MkSpacer :marginMin="14" :marginMax="16">
+	<div class="_gaps_m">
 		<MkPagination ref="paginationEl" :pagination="pagination">
 			<template #empty>
 				<MkResult type="empty"/>
@@ -19,11 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<template #default="{ items }">
 				<div class="_gaps">
-					<MkNoteSimple v-for="item in items" :key="item.id" :scheduled="true" :note="item.note" @editScheduleNote="listUpdate"/>
+					<MkNoteSimple v-for="item in items" :key="item.id" :note="item.note" :scheduleId="item.id" @editScheduleNote="listUpdate"/>
 				</div>
 			</template>
 		</MkPagination>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
@@ -50,7 +50,7 @@ const paginationEl = ref();
 const pagination: Paging = {
 	endpoint: 'notes/schedule/list',
 	limit: 10,
-	offsetMode: true,
+	noPaging: true, // offsetMode: true から変更
 };
 
 function listUpdate() {

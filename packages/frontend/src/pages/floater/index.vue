@@ -6,12 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="recent" :actions="headerActions" :tabs="headerTabs"/></template>
-	<div>
-		<MkSpacer :contentMax="1000">
-			<Transition name="fade" mode="out-in">
-				<XFloater :anchorDate="anchorDate"/>
-			</Transition>
-		</MkSpacer>
+	<div class="_spacer" style="--MI_SPACER-w: 1000px;">
+		<Transition name="fade" mode="out-in">
+			<XFloater :anchorDate="anchorDate"/>
+		</Transition>
 	</div>
 </MkStickyContainer>
 </template>

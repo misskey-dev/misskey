@@ -19,7 +19,6 @@
 	<template v-else #header>{{ i18n.ts.changes }}</template>
 
 	<div v-if="tab === 'add'">
-		<MkSpacer :marginMin="20" :marginMax="28">
 			<div class="_gaps_m">
 				<div v-if="iconUrl != null" :class="$style.imgs">
 					<div :class="$style.imgContainer">
@@ -42,31 +41,28 @@
 				<MkSwitch v-model="isPublic">{{ i18n.ts._role.isPublic }}</MkSwitch>
 				<MkSwitch v-model="isExplorable">{{ i18n.ts._role.isExplorable }}</MkSwitch>
 			</div>
-		</MkSpacer>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.role ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>
 	</div>
 
 	<div v-else-if="tab === 'manage'">
-		<MkSpacer :marginMin="20" :marginMax="28">
-			<div class="_gaps_m">
-				<div class="_gaps_s">
-					<MkFoldableSection>
-						<template #header>{{ i18n.ts.assignedRoles }}</template>
-						<div class="_gaps_s">
-							<DialogRole v-for="role in rolesAssigned" :key="role.id" :role="role" :isAssigned="true"/>
-						</div>
-					</MkFoldableSection>
-					<MkFoldableSection>
-						<template #header>{{ i18n.ts.assignableRoles }}</template>
-						<div class="_gaps_s">
-							<DialogRole v-for="role in roles" :key="role.id" :role="role" :isAssigned="false"/>
-						</div>
-					</MkFoldableSection>
-				</div>
+		<div class="_gaps_m">
+			<div class="_gaps_s">
+				<MkFoldableSection>
+					<template #header>{{ i18n.ts.assignedRoles }}</template>
+					<div class="_gaps_s">
+						<DialogRole v-for="role in rolesAssigned" :key="role.id" :role="role" :isAssigned="true"/>
+					</div>
+				</MkFoldableSection>
+				<MkFoldableSection>
+					<template #header>{{ i18n.ts.assignableRoles }}</template>
+					<div class="_gaps_s">
+						<DialogRole v-for="role in roles" :key="role.id" :role="role" :isAssigned="false"/>
+					</div>
+				</MkFoldableSection>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
 </MkModalWindow>
 </template>

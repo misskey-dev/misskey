@@ -4,30 +4,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer>
-	<MkFoldableSection>
-		<template #header>{{ i18n.ts._role.manual + " " + i18n.ts.roles }}</template>
-		<div :class="$style.roleGrid">
-			<MkRolePreview v-for="role in rolesManual" :key="role.id" :role="role" :forModeration="false"/>
-		</div>
-	</MkFoldableSection>
-	<MkFoldableSection>
-		<template #header>{{ i18n.ts._role.conditional + " " + i18n.ts.roles }}</template>
-		<div :class="$style.roleGrid">
-			<MkRolePreview v-for="role in rolesConditional" :key="role.id" :role="role" :forModeration="false"/>
-		</div>
-	</MkFoldableSection>
-	<MkFoldableSection>
-		<template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
-		<div :class="$style.roleGrid">
-			<MkRolePreview v-for="role in rolesCommunity" :key="role.id" :role="role" :forModeration="false"/>
-		</div>
-	</MkFoldableSection>
-	<!-- 権限がある場合のみ表示 -->
-	<MkButton v-if="canAddRoles" primary rounded @click="createRole">
-		<i class="ti ti-plus"></i> {{ i18n.ts._role.new }}
-	</MkButton>
-</MkSpacer>
+<div class="_gaps_m">
+    <MkFoldableSection>
+        <template #header>{{ i18n.ts._role.manual + " " + i18n.ts.roles }}</template>
+        <div :class="$style.roleGrid">
+            <MkRolePreview v-for="role in rolesManual" :key="role.id" :role="role" :forModeration="false"/>
+        </div>
+    </MkFoldableSection>
+    <MkFoldableSection>
+        <template #header>{{ i18n.ts._role.conditional + " " + i18n.ts.roles }}</template>
+        <div :class="$style.roleGrid">
+            <MkRolePreview v-for="role in rolesConditional" :key="role.id" :role="role" :forModeration="false"/>
+        </div>
+    </MkFoldableSection>
+    <MkFoldableSection>
+        <template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
+        <div :class="$style.roleGrid">
+            <MkRolePreview v-for="role in rolesCommunity" :key="role.id" :role="role" :forModeration="false"/>
+        </div>
+    </MkFoldableSection>
+    <!-- 権限がある場合のみ表示 -->
+    <MkButton v-if="canAddRoles" primary rounded @click="createRole">
+        <i class="ti ti-plus"></i> {{ i18n.ts._role.new }}
+    </MkButton>
+</div>
 </template>
 
 <script lang="ts" setup>
