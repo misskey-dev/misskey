@@ -58,7 +58,10 @@ export const PREF_DEF = {
 			name: 'notifications',
 			id: uuid(), place: 'right', data: {},
 		}, {
-			name: 'trends',
+			name: 'onlineUsers',
+			id: uuid(), place: 'right', data: {},
+		}, {
+			name: 'activeUsers',
 			id: uuid(), place: 'right', data: {},
 		}] as {
 			name: string;
