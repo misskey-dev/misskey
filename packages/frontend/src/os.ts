@@ -211,13 +211,17 @@ export async function popupAsyncWithDialog<T extends Component>(
 	props: ComponentProps<T>,
 	events: Partial<ComponentEmit<T>> = {},
 ): Promise<{ dispose: () => void }> {
-	const closeWaiting = waiting();
-
 	let component: T;
+	let closeWaiting = () => {};
+
+	const timer = window.setTimeout(() => {
+		closeWaiting = waiting();
+	}, 100); // コンポーネントがキャッシュされている場合にもwaitingが表示されて画面がちらつくのを防止するためにラグを追加
 
 	try {
 		component = await componentFetching;
 	} catch (err) {
+		window.clearTimeout(timer);
 		closeWaiting();
 		alert({
 			type: 'error',
@@ -227,6 +231,7 @@ export async function popupAsyncWithDialog<T extends Component>(
 		throw err;
 	}
 
+	window.clearTimeout(timer);
 	closeWaiting();
 
 	markRaw(component);
