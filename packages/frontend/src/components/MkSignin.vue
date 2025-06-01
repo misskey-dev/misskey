@@ -104,6 +104,9 @@ const needCaptcha = ref(false);
 const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 const password = ref('');
 
+// ユーザー名を保存するための変数
+const inputUsername = ref('');
+
 //#region Passkey Passwordless
 const credentialRequest = shallowRef<CredentialRequestOptions | null>(null);
 const passkeyContext = ref('');
@@ -158,39 +161,39 @@ function onUseTotp(): void {
 
 async function onUsernameSubmitted(username: string) {
 	waiting.value = true;
+	inputUsername.value = username; // ユーザー名を保存
 
-	userInfo.value = await misskeyApi('users/show', {
-		username,
-	}).catch(() => null);
+	try {
+		userInfo.value = await misskeyApi('users/show', {
+			username,
+			authPurpose: 'signin', // 認証目的のフラグを追加
+		});
 
-	await tryLogin({
-		username,
-	});
+		await tryLogin({ username });
+	} catch (err) {
+		// エラーの場合でもログインを試行
+		try {
+			await tryLogin({ username });
+		} catch {
+			waiting.value = false;
+		}
+	}
 }
 
 async function onPasswordSubmitted(pw: PwResponse) {
 	waiting.value = true;
 	password.value = pw.password;
 
-	if (userInfo.value == null) {
-		await os.alert({
-			type: 'error',
-			title: i18n.ts.noSuchUser,
-			text: i18n.ts.signinFailed,
-		});
-		waiting.value = false;
-		return;
-	} else {
-		await tryLogin({
-			username: userInfo.value.username,
-			password: pw.password,
-			'hcaptcha-response': pw.captcha.hCaptchaResponse,
-			'm-captcha-response': pw.captcha.mCaptchaResponse,
-			'g-recaptcha-response': pw.captcha.reCaptchaResponse,
-			'turnstile-response': pw.captcha.turnstileResponse,
-			'testcaptcha-response': pw.captcha.testcaptchaResponse,
-		});
-	}
+	// userInfo.value が null の場合でも保存したユーザー名を使用
+	await tryLogin({
+		username: userInfo.value?.username ?? inputUsername.value,
+		password: pw.password,
+		'hcaptcha-response': pw.captcha.hCaptchaResponse,
+		'm-captcha-response': pw.captcha.mCaptchaResponse,
+		'g-recaptcha-response': pw.captcha.reCaptchaResponse,
+		'turnstile-response': pw.captcha.turnstileResponse,
+		'testcaptcha-response': pw.captcha.testcaptchaResponse,
+	});
 }
 
 async function onTotpSubmitted(token: string) {
