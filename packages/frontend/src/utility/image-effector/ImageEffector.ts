@@ -387,6 +387,9 @@ export class ImageEffector {
 		this.gl.deleteProgram(this.renderTextureProgram);
 		this.gl.deleteProgram(this.renderInvertedTextureProgram);
 		this.gl.deleteTexture(this.originalImageTexture);
+
+		const loseContextExt = this.gl.getExtension('WEBGL_lose_context');
+		if (loseContextExt) loseContextExt.loseContext();
 	}
 }
 
