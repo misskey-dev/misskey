@@ -1,4 +1,4 @@
-## Unreleased
+## 2025.6.0
 
 ### General
 -
