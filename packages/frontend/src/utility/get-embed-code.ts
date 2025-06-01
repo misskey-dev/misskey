@@ -64,7 +64,7 @@ export function getEmbedCode(path: string, params?: EmbedParams): string {
  *
  * カスタマイズ機能がいらない場合（事前にパラメータを指定する場合）は getEmbedCode を直接使ってください
  */
-export function genEmbedCode(entity: EmbeddableEntity, id: string, params?: EmbedParams) {
+export async function genEmbedCode(entity: EmbeddableEntity, id: string, params?: EmbedParams) {
 	const _params = { ...params };
 
 	if (embedRouteWithScrollbar.includes(entity) && _params.maxHeight == null) {
@@ -75,7 +75,7 @@ export function genEmbedCode(entity: EmbeddableEntity, id: string, params?: Embe
 	if (window.innerWidth < MOBILE_THRESHOLD) {
 		copyToClipboard(getEmbedCode(`/embed/${entity}/${id}`, _params));
 	} else {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkEmbedCodeGenDialog.vue')), {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkEmbedCodeGenDialog.vue').then(x => x.default), {
 			entity,
 			id,
 			params: _params,
