@@ -12,7 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
+				<div class="highlight right" :style="{ width: ((steppedRawValue - minRatio) * 100) + '%', left: (Math.abs(Math.min(0, min)) / (max + Math.abs(Math.min(0, min)))) * 100 + '%' }">
+					<div class="shine right"></div>
+				</div>
+				<div class="highlight left" :style="{ width: ((minRatio - steppedRawValue) * 100) + '%', left: (steppedRawValue) * 100 + '%' }">
+					<div class="shine left"></div>
+				</div>
 			</div>
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
@@ -24,7 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@mouseenter.passive="onMouseenter"
 				@mousedown="onMousedown"
 				@touchstart="onMousedown"
-			></div>
+			>
+				<div class="thumbInner"></div>
+			</div>
 		</div>
 		<slot name="suffix"></slot>
 	</div>
@@ -62,6 +69,9 @@ const emit = defineEmits<{
 
 const containerEl = useTemplateRef('containerEl');
 const thumbEl = useTemplateRef('thumbEl');
+
+const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
+const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
 const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
 const steppedRawValue = computed(() => {
@@ -222,15 +232,17 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		}
 	}
 
-	$thumbHeight: 20px;
-	$thumbWidth: 20px;
+	$thumbHeight: 32px;
+	$thumbWidth: 32px;
+	$thumbInnerHeight: 19px;
+	$thumbInnerWidth: 19px;
 
 	> .body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
-		padding: 7px 12px;
+		padding: 0px 4px;
 		background: var(--MI_THEME-panel);
 		border: solid 1px var(--MI_THEME-panel);
 		border-radius: 6px;
@@ -256,10 +268,30 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				> .highlight {
 					position: absolute;
 					top: 0;
-					left: 0;
 					height: 100%;
-					background: var(--MI_THEME-accent);
-					opacity: 0.5;
+					background: color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0.5);
+					overflow: clip;
+
+					> .shine {
+						position: absolute;
+						top: 0;
+						width: 64px;
+						height: 100%;
+					}
+				}
+
+				> .highlight.right {
+					> .shine.right {
+						right: calc(#{$thumbInnerWidth} / 2);
+						background: linear-gradient(-90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
+				}
+
+				> .highlight.left {
+					> .shine.left {
+						left: calc(#{$thumbInnerWidth} / 2);
+						background: linear-gradient(90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
 				}
 			}
 
@@ -290,11 +322,25 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				width: $thumbWidth;
 				height: $thumbHeight;
 				cursor: grab;
-				background: var(--MI_THEME-accent);
-				border-radius: 999px;
 
 				&:hover {
-					background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+					> .thumbInner {
+						background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+					}
+				}
+
+				> .thumbInner {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					width: $thumbInnerWidth;
+					height: $thumbInnerHeight;
+					background: var(--MI_THEME-accent);
+					border-radius: 999px;
+					pointer-events: none;
 				}
 			}
 		}

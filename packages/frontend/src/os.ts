@@ -206,6 +206,52 @@ export function popup<T extends Component>(
 	};
 }
 
+export async function popupAsyncWithDialog<T extends Component>(
+	componentFetching: Promise<T>,
+	props: ComponentProps<T>,
+	events: Partial<ComponentEmit<T>> = {},
+): Promise<{ dispose: () => void }> {
+	const closeWaiting = waiting();
+
+	let component: T;
+
+	try {
+		component = await componentFetching;
+	} catch (err) {
+		closeWaiting();
+		alert({
+			type: 'error',
+			title: i18n.ts.somethingHappened,
+			text: 'CODE: ASYNC_COMP_LOAD_FAIL',
+		});
+		throw err;
+	}
+
+	closeWaiting();
+
+	markRaw(component);
+
+	const id = ++popupIdCount;
+	const dispose = () => {
+		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+		window.setTimeout(() => {
+			popups.value = popups.value.filter(p => p.id !== id);
+		}, 0);
+	};
+	const state = {
+		component,
+		props,
+		events,
+		id,
+	};
+
+	popups.value.push(state);
+
+	return {
+		dispose,
+	};
+}
+
 export function pageWindow(path: string) {
 	const { dispose } = popup(MkPageWindow, {
 		initialPath: path,
