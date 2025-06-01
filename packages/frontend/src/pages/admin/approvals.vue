@@ -40,12 +40,12 @@ const pagination = {
 		state: 'pending',
 		origin: 'local',
 	})),
-	offsetMode: true,
+	noPaging: true,
 };
 
 function deleted(id: string) {
 	if (paginationComponent.value) {
-		paginationComponent.value.items.delete(id);
+		paginationComponent.value.paginator.removeItem(id);
 	}
 }
 
