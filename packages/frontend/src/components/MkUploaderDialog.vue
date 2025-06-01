@@ -297,7 +297,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			icon: 'ti ti-sparkles',
 			text: i18n.ts._imageEffector.title,
 			action: async () => {
-				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkImageEffectorDialog.vue')), {
+				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
 					image: item.file,
 				}, {
 					ok: (file) => {
