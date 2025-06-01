@@ -4,20 +4,20 @@
  */
 
 import { nextTick } from 'vue';
+import { MFM_TAGS } from '@@/js/const.js';
 import type { Ref } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { MFM_TAGS } from '@@/js/const.js';
-import type { MenuItem } from '@/types/menu.js';
 
 /**
  * MFMの装飾のリストを表示する
  */
-export function mfmFunctionPicker(src: HTMLElement | EventTarget | null, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
+export function mfmFunctionPicker(anchorElement: HTMLElement | EventTarget | null, textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
 	os.popupMenu([{
 		text: i18n.ts.addMfmFunction,
 		type: 'label',
-	}, ...getFunctionList(textArea, textRef)], src);
+	}, ...getFunctionList(textArea, textRef)], anchorElement);
 }
 
 function getFunctionList(textArea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>): MenuItem[] {

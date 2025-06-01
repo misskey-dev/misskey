@@ -14,6 +14,7 @@ export const notesVisibilities = consts.notesVisibilities;
 export const followingVisibilities = consts.followingVisibilities;
 export const followersVisibilities = consts.followersVisibilities;
 export const moderationLogTypes = consts.moderationLogTypes;
+export const queueTypes = consts.queueTypes;
 export const reversiUpdateKeys = consts.reversiUpdateKeys;
 
 // api extractor not supported yet

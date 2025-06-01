@@ -2097,6 +2097,17 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:drive*
+     */
+    request<E extends 'drive/files/move-bulk', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
      * Show the properties of a drive file.
      * 
      * **Credential required**: *Yes* / **Permission**: *read:drive*
@@ -3820,6 +3831,17 @@ declare module '../api.js' {
      * **Credential required**: *No*
      */
     request<E extends 'notes/show', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *No*
+     */
+    request<E extends 'notes/show-partial-bulk', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

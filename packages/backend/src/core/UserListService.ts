@@ -91,7 +91,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async addMember(target: MiUser, list: MiUserList, me: MiUser) {
+	public async addMember(target: MiUser, list: MiUserList, me: MiUser, options: { withReplies?: boolean } = {}) {
 		const currentCount = await this.userListMembershipsRepository.countBy({
 			userListId: list.id,
 		});
@@ -104,6 +104,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			userId: target.id,
 			userListId: list.id,
 			userListUserId: list.userId,
+			withReplies: options.withReplies ?? false,
 		} as MiUserListMembership);
 
 		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });

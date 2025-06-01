@@ -41,8 +41,7 @@ const props = defineProps<{
 .img {
 	vertical-align: bottom;
 	height: 128px;
-	width: auto; /* 追加: アスペクト比を維持 */
-	max-width: 100%; /* 追加: 親要素からはみ出さない */
+	aspect-ratio: 1;
 	margin-bottom: 16px;
 	border-radius: 16px;
 	object-fit: contain; /* 追加: コンテンツ全体を表示 */

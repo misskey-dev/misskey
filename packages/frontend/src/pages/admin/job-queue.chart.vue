@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, useTemplateRef, watch } from 'vue';
 import { Chart } from 'chart.js';
 import { store } from '@/store.js';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { alpha } from '@/utility/color.js';
 import { initChart } from '@/utility/init-chart.js';
@@ -48,6 +48,8 @@ watch(() => props.dataSet, () => {
 });
 
 onMounted(() => {
+	if (chartEl.value == null) return;
+
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	chartInstance = new Chart(chartEl.value, {

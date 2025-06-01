@@ -75,6 +75,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { PREF_DEF } from '@/preferences/def.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { getInitialPrefValue } from '@/preferences/manager.js';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
@@ -113,7 +114,7 @@ async function updated(type: keyof typeof sounds.value, sound) {
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
-		const v = PREF_DEF[`sound.on.${sound}`].default;
+		const v = getInitialPrefValue(`sound.on.${sound}`);
 		prefer.commit(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}

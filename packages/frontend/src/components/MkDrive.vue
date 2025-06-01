@@ -4,17 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
+<MkStickyContainer style="background: var(--MI_THEME-bg);">
 	<template #header>
 		<nav :class="$style.nav">
 			<div :class="$style.navPath" @contextmenu.prevent.stop="() => {}">
 				<XNavFolder
 					:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
 					:parentFolder="folder"
-					@move="move"
-					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@click="cd(null)"
+					@upload="onUploadRequested"
 				/>
 				<template v-for="f in hierarchyFolders">
 					<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -22,10 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:folder="f"
 						:parentFolder="folder"
 						:class="[$style.navPathItem]"
-						@move="move"
-						@upload="upload"
-						@removeFile="removeFile"
-						@removeFolder="removeFolder"
+						@click="cd(f)"
+						@upload="onUploadRequested"
 					/>
 				</template>
 				<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
@@ -35,20 +31,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</nav>
 	</template>
 
-	<div
-		ref="main"
-		:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
-		@dragover.prevent.stop="onDragover"
-		@dragenter="onDragenter"
-		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop"
-		@contextmenu.stop="onContextmenu"
-	>
-		<div ref="contents">
-			<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
-			<div v-show="folders.length > 0" ref="foldersContainer" :class="$style.folders">
+	<div>
+		<div v-if="select === 'folder'">
+			<template v-if="folder == null">
+				<MkButton v-if="!isRootSelected" @click="isRootSelected = true">
+					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+				</MkButton>
+				<MkButton v-else @click="isRootSelected = false">
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+				</MkButton>
+			</template>
+			<template v-else>
+				<MkButton v-if="!selectedFolders.some(f => f.id === folder!.id)" @click="selectedFolders.push(folder)">
+					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+				</MkButton>
+				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder!.id)">
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+				</MkButton>
+			</template>
+		</div>
+
+		<div
+			ref="main"
+			:class="[$style.main, { [$style.fetching]: fetching }]"
+			@dragover.prevent.stop="onDragover"
+			@dragenter="onDragenter"
+			@dragleave="onDragleave"
+			@drop.prevent.stop="onDrop"
+			@contextmenu.stop="onContextmenu"
+		>
+			<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
+
+			<div :class="$style.folders">
 				<XFolder
-					v-for="(f, i) in folders"
+					v-for="(f, i) in foldersPaginator.items.value"
 					:key="f.id"
 					v-anim="i"
 					:class="$style.folder"
@@ -57,52 +73,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
 					@chosen="chooseFolder"
 					@unchose="unchoseFolder"
-					@move="move"
-					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@click="cd(f)"
+					@upload="onUploadRequested"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>
-				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders" @click="fetchMoreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
-			<div v-show="files.length > 0" ref="filesContainer" :class="$style.files">
-				<XFile
-					v-for="(file, i) in files"
-					:key="file.id"
-					v-anim="i"
-					:class="$style.file"
-					:file="file"
-					:folder="folder"
-					:selectMode="select === 'file'"
-					:isSelected="selectedFiles.some(x => x.id === file.id)"
-					@chosen="chooseFile"
-					@dragstart="isDragSource = true"
-					@dragend="isDragSource = false"
-				/>
-				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
-			</div>
-			<div v-if="files.length == 0 && folders.length == 0 && !fetching" :class="$style.empty">
+			<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+
+			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
+				<template #header>
+					<div :class="$style.date">
+						<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
+					</div>
+				</template>
+
+				<TransitionGroup
+					tag="div"
+					:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+					:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+					:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+					:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+					:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+					:class="$style.files"
+				>
+					<XFile
+						v-for="file in item.items" :key="file.id"
+						:class="$style.file"
+						:file="file"
+						:folder="folder"
+						:isSelected="selectedFiles.some(x => x.id === file.id)"
+						@click="onFileClick($event, file)"
+						@dragstart="onFileDragstart(file, $event)"
+						@dragend="isDragSource = false"
+					/>
+				</TransitionGroup>
+			</MkStickyContainer>
+			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+
+			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
 				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>
+		<div v-if="draghover" :class="$style.dropzone"></div>
 	</div>
-	<div v-if="draghover" :class="$style.dropzone"></div>
+
+	<template #footer>
+		<div v-if="isEditMode" :class="$style.footer">
+			<MkButton primary rounded @click="moveFilesBulk()"><i class="ti ti-folder-symlink"></i> {{ i18n.ts.move }}...</MkButton>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
-import MkInfo from './MkInfo.vue';
 import type { MenuItem } from '@/types/menu.js';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
@@ -111,14 +141,18 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile, uploads } from '@/utility/upload.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
-import { chooseFileFromPc } from '@/utility/select-file.js';
+import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { store } from '@/store.js';
+import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import { usePagination } from '@/composables/use-pagination.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
+import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder;
+	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
@@ -128,25 +162,13 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
-	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
-	(ev: 'move-root'): void;
+	(ev: 'changeSelectedFiles', v: Misskey.entities.DriveFile[]): void;
+	(ev: 'changeSelectedFolders', v: (Misskey.entities.DriveFolder | null)[]): void;
 	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
-	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
-const loadMoreFiles = useTemplateRef('loadMoreFiles');
-
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
-const files = ref<Misskey.entities.DriveFile[]>([]);
-const folders = ref<Misskey.entities.DriveFolder[]>([]);
-const moreFiles = ref(false);
-const moreFolders = ref(false);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
-const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const uploadings = uploads;
-const connection = useStream().useChannel('drive');
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -155,51 +177,87 @@ const draghover = ref(false);
 // (自分自身の階層にドロップできないようにするためのフラグ)
 const isDragSource = ref(false);
 
-const fetching = ref(true);
+const isEditMode = ref(false);
 
-const ilFilesObserver = new IntersectionObserver(
-	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
-);
+const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
+const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
+const isRootSelected = ref(false);
+
+watch(selectedFiles, () => {
+	emit('changeSelectedFiles', selectedFiles.value);
+});
+
+watch([selectedFolders, isRootSelected], () => {
+	emit('changeSelectedFolders', isRootSelected.value ? [null, ...selectedFolders.value] : selectedFolders.value);
+});
+
+const fetching = ref(true);
 
 const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
 
-watch(folder, () => emit('cd', folder.value));
-watch(sortModeSelect, () => {
-	fetch();
+const filesPaginator = usePagination({
+	ctx: {
+		endpoint: 'drive/files',
+		limit: 30,
+		canFetchDetection: 'limit',
+		params: computed(() => ({
+			folderId: folder.value ? folder.value.id : null,
+			type: props.type,
+			sort: sortModeSelect.value,
+		})),
+	},
+	autoInit: false,
+	autoReInit: false,
 });
 
+const foldersPaginator = usePagination({
+	ctx: {
+		endpoint: 'drive/folders',
+		limit: 30,
+		canFetchDetection: 'limit',
+		params: computed(() => ({
+			folderId: folder.value ? folder.value.id : null,
+		})),
+	},
+	autoInit: false,
+	autoReInit: false,
+});
+
+const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
+
+watch(folder, () => emit('cd', folder.value));
+watch(sortModeSelect, () => {
+	initialize();
+});
+
+async function initialize() {
+	fetching.value = true;
+	await Promise.all([
+		foldersPaginator.init(),
+		filesPaginator.init(),
+	]);
+	fetching.value = false;
+}
+
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
-	addFile(file, true);
-}
-
-function onStreamDriveFileUpdated(file: Misskey.entities.DriveFile) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== file.folderId) {
-		removeFile(file);
-	} else {
-		addFile(file, true);
+	if (file.folderId === (folder.value?.id ?? null)) {
+		filesPaginator.prepend(file);
 	}
 }
 
-function onStreamDriveFileDeleted(fileId: string) {
-	removeFile(fileId);
-}
+function onFileDragstart(file: Misskey.entities.DriveFile, ev: DragEvent) {
+	if (isEditMode.value) {
+		if (!selectedFiles.value.some(f => f.id === file.id)) {
+			selectedFiles.value.push(file);
+		}
 
-function onStreamDriveFolderCreated(createdFolder: Misskey.entities.DriveFolder) {
-	addFolder(createdFolder, true);
-}
-
-function onStreamDriveFolderUpdated(updatedFolder: Misskey.entities.DriveFolder) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== updatedFolder.parentId) {
-		removeFolder(updatedFolder);
-	} else {
-		addFolder(updatedFolder, true);
+		if (ev.dataTransfer) {
+			ev.dataTransfer.effectAllowed = 'move';
+			setDragData(ev, 'driveFiles', selectedFiles.value);
+		}
 	}
-}
 
-function onStreamDriveFolderDeleted(folderId: string) {
-	removeFolder(folderId);
+	isDragSource.value = true;
 }
 
 function onDragover(ev: DragEvent) {
@@ -213,9 +271,7 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
-	if (isFile || isDriveFile || isDriveFolder) {
+	if (isFile || checkDragDataType(ev, ['driveFiles', 'driveFolders'])) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -254,109 +310,123 @@ function onDrop(ev: DragEvent) {
 
 	// ドロップされてきたものがファイルだったら
 	if (ev.dataTransfer.files.length > 0) {
-		for (const file of Array.from(ev.dataTransfer.files)) {
-			upload(file, folder.value);
-		}
+		os.launchUploader(Array.from(ev.dataTransfer.files), {
+			folderId: folder.value?.id ?? null,
+		});
 		return;
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
-		if (files.value.some(f => f.id === file.id)) return;
-		removeFile(file.id);
-		misskeyApi('drive/files/update', {
-			fileId: file.id,
-			folderId: folder.value ? folder.value.id : null,
-		});
+	{
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
+			misskeyApi('drive/files/move-bulk', {
+				fileIds: droppedData.map(f => f.id),
+				folderId: folder.value ? folder.value.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFilesUpdated', droppedData.map(x => ({
+					...x,
+					folderId: folder.value ? folder.value.id : null,
+					folder: folder.value,
+				})));
+			});
+		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
-	if (driveFolder != null && driveFolder !== '') {
-		const droppedFolder = JSON.parse(driveFolder);
-
-		// 移動先が自分自身ならreject
-		if (folder.value && droppedFolder.id === folder.value.id) return false;
-		if (folders.value.some(f => f.id === droppedFolder.id)) return false;
-		removeFolder(droppedFolder.id);
-		misskeyApi('drive/folders/update', {
-			folderId: droppedFolder.id,
-			parentId: folder.value ? folder.value.id : null,
-		}).then(() => {
-			// noop
-		}).catch(err => {
-			switch (err.code) {
-				case 'RECURSIVE_NESTING':
-					claimAchievement('driveFolderCircularReference');
-					os.alert({
-						type: 'error',
-						title: i18n.ts.unableToProcess,
-						text: i18n.ts.circularReferenceFolder,
-					});
-					break;
-				default:
-					os.alert({
-						type: 'error',
-						text: i18n.ts.somethingHappened,
-					});
-			}
-		});
+	{
+		const droppedData = getDragData(ev, 'driveFolders');
+		if (droppedData != null) {
+			const droppedFolder = droppedData[0];
+			// 移動先が自分自身ならreject
+			if (folder.value && droppedFolder.id === folder.value.id) return false;
+			if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
+			misskeyApi('drive/folders/update', {
+				folderId: droppedFolder.id,
+				parentId: folder.value ? folder.value.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFoldersUpdated', [droppedFolder].map(x => ({
+					...x,
+					parentId: folder.value ? folder.value.id : null,
+					parent: folder.value,
+				})));
+			}).catch(err => {
+				switch (err.code) {
+					case 'RECURSIVE_NESTING':
+						claimAchievement('driveFolderCircularReference');
+						os.alert({
+							type: 'error',
+							title: i18n.ts.unableToProcess,
+							text: i18n.ts.circularReferenceFolder,
+						});
+						break;
+					default:
+						os.alert({
+							type: 'error',
+							text: i18n.ts.somethingHappened,
+						});
+				}
+			});
+		}
 	}
 	//#endregion
 }
 
-function urlUpload() {
-	os.inputText({
+function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder | null) {
+	os.launchUploader(files, {
+		folderId: folder?.id ?? null,
+	});
+}
+
+async function urlUpload() {
+	const { canceled, result: url } = await os.inputText({
 		title: i18n.ts.uploadFromUrl,
 		type: 'url',
 		placeholder: i18n.ts.uploadFromUrlDescription,
-	}).then(({ canceled, result: url }) => {
-		if (canceled || !url) return;
-		misskeyApi('drive/files/upload-from-url', {
-			url: url,
-			folderId: folder.value ? folder.value.id : undefined,
-		});
+	});
+	if (canceled || !url) return;
 
-		os.alert({
-			title: i18n.ts.uploadFromUrlRequested,
-			text: i18n.ts.uploadFromUrlMayTakeTime,
-		});
+	await os.apiWithDialog('drive/files/upload-from-url', {
+		url: url,
+		folderId: folder.value ? folder.value.id : undefined,
+	});
+
+	os.alert({
+		title: i18n.ts.uploadFromUrlRequested,
+		text: i18n.ts.uploadFromUrlMayTakeTime,
 	});
 }
 
-function createFolder() {
-	os.inputText({
+async function createFolder() {
+	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.createFolder,
 		placeholder: i18n.ts.folderName,
-	}).then(({ canceled, result: name }) => {
-		if (canceled || name == null) return;
-		misskeyApi('drive/folders/create', {
-			name: name,
-			parentId: folder.value ? folder.value.id : undefined,
-		}).then(createdFolder => {
-			addFolder(createdFolder, true);
-		});
 	});
+	if (canceled || name == null) return;
+
+	const createdFolder = await os.apiWithDialog('drive/folders/create', {
+		name: name,
+		parentId: folder.value ? folder.value.id : undefined,
+	});
+
+	foldersPaginator.prepend(createdFolder);
 }
 
-function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
-	os.inputText({
+async function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
+	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.renameFolder,
 		placeholder: i18n.ts.inputNewFolderName,
 		default: folderToRename.name,
-	}).then(({ canceled, result: name }) => {
-		if (canceled) return;
-		misskeyApi('drive/folders/update', {
-			folderId: folderToRename.id,
-			name: name,
-		}).then(updatedFolder => {
-			// FIXME: 画面を更新するために自分自身に移動
-			move(updatedFolder);
-		});
 	});
+	if (canceled) return;
+
+	const updatedFolder = await os.apiWithDialog('drive/folders/update', {
+		folderId: folderToRename.id,
+		name: name,
+	});
+
+	globalEvents.emit('driveFoldersUpdated', [updatedFolder]);
 }
 
 function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
@@ -364,7 +434,8 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 		folderId: folderToDelete.id,
 	}).then(() => {
 		// 削除時に親フォルダに移動
-		move(folderToDelete.parentId);
+		cd(folderToDelete.parentId);
+		globalEvents.emit('driveFoldersDeleted', [folderToDelete]);
 	}).catch(err => {
 		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
@@ -383,28 +454,38 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null, keepOriginal?: boolean) {
-	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal).then(res => {
-		addFile(res, true);
-	});
-}
+function onFileClick(ev: MouseEvent, file: Misskey.entities.DriveFile) {
+	if (ev.shiftKey) {
+		isEditMode.value = true;
+	}
 
-function chooseFile(file: Misskey.entities.DriveFile) {
-	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
-	if (props.multiple) {
-		if (isAlreadySelected) {
-			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
-		} else {
-			selectedFiles.value.push(file);
+	if (props.select === 'file' || isEditMode.value) {
+		const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
+
+		if (isEditMode.value) {
+			if (isAlreadySelected) {
+				selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
+			} else {
+				selectedFiles.value.push(file);
+			}
+			return;
 		}
-		emit('change-selection', selectedFiles.value);
+
+		if (props.multiple) {
+			if (isAlreadySelected) {
+				selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
+			} else {
+				selectedFiles.value.push(file);
+			}
+		} else {
+			if (isAlreadySelected) {
+				//emit('selected', file);
+			} else {
+				selectedFiles.value = [file];
+			}
+		}
 	} else {
-		if (isAlreadySelected) {
-			emit('selected', file);
-		} else {
-			selectedFiles.value = [file];
-			emit('change-selection', [file]);
-		}
+		os.popupMenu(getDriveFileMenu(file, folder.value), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	}
 }
 
@@ -416,23 +497,20 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 		} else {
 			selectedFolders.value.push(folderToChoose);
 		}
-		emit('change-selection', selectedFolders.value);
 	} else {
 		if (isAlreadySelected) {
-			emit('selected', folderToChoose);
+			//emit('selected', folderToChoose);
 		} else {
 			selectedFolders.value = [folderToChoose];
-			emit('change-selection', [folderToChoose]);
 		}
 	}
 }
 
 function unchoseFolder(folderToUnchose: Misskey.entities.DriveFolder) {
 	selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToUnchose.id);
-	emit('change-selection', selectedFolders.value);
 }
 
-function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
+function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
 	if (!target) {
 		goRoot();
 		return;
@@ -455,168 +533,34 @@ function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFold
 
 		if (folderToMove.parent) dive(folderToMove.parent);
 
-		emit('open-folder', folderToMove);
-		fetch();
+		initialize();
 	});
 }
 
-function addFolder(folderToAdd: Misskey.entities.DriveFolder, unshift = false) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== folderToAdd.parentId) return;
+async function moveFilesBulk() {
+	if (selectedFiles.value.length === 0) return;
 
-	if (folders.value.some(f => f.id === folderToAdd.id)) {
-		const exist = folders.value.map(f => f.id).indexOf(folderToAdd.id);
-		folders.value[exist] = folderToAdd;
-		return;
-	}
+	const toFolder = await selectDriveFolder(folder.value ? folder.value.id : null);
 
-	if (unshift) {
-		folders.value.unshift(folderToAdd);
-	} else {
-		folders.value.push(folderToAdd);
-	}
+	await os.apiWithDialog('drive/files/move-bulk', {
+		fileIds: selectedFiles.value.map(f => f.id),
+		folderId: toFolder[0] ? toFolder[0].id : null,
+	});
+
+	globalEvents.emit('driveFilesUpdated', selectedFiles.value.map(x => ({
+		...x,
+		folderId: toFolder[0] ? toFolder[0].id : null,
+		folder: toFolder[0] ?? null,
+	})));
 }
 
-function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
-	const current = folder.value ? folder.value.id : null;
-	if (current !== fileToAdd.folderId) return;
-
-	if (files.value.some(f => f.id === fileToAdd.id)) {
-		const exist = files.value.map(f => f.id).indexOf(fileToAdd.id);
-		files.value[exist] = fileToAdd;
-		return;
-	}
-
-	if (unshift) {
-		files.value.unshift(fileToAdd);
-	} else {
-		files.value.push(fileToAdd);
-	}
-}
-
-function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
-	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
-	folders.value = folders.value.filter(f => f.id !== folderIdToRemove);
-}
-
-function removeFile(file: Misskey.entities.DriveFile | string) {
-	const fileId = typeof file === 'object' ? file.id : file;
-	files.value = files.value.filter(f => f.id !== fileId);
-}
-
-function appendFile(file: Misskey.entities.DriveFile) {
-	addFile(file);
-}
-
-function appendFolder(folderToAppend: Misskey.entities.DriveFolder) {
-	addFolder(folderToAppend);
-}
-
-/*
-function prependFile(file: Misskey.entities.DriveFile) {
-	addFile(file, true);
-}
-
-function prependFolder(folderToPrepend: Misskey.entities.DriveFolder) {
-	addFolder(folderToPrepend, true);
-}
-*/
 function goRoot() {
 	// 既にrootにいるなら何もしない
 	if (folder.value == null) return;
 
 	folder.value = null;
 	hierarchyFolders.value = [];
-	emit('move-root');
-	fetch();
-}
-
-async function fetch() {
-	folders.value = [];
-	files.value = [];
-	moreFolders.value = false;
-	moreFiles.value = false;
-	fetching.value = true;
-
-	const foldersMax = 30;
-	const filesMax = 30;
-
-	const foldersPromise = misskeyApi('drive/folders', {
-		folderId: folder.value ? folder.value.id : null,
-		limit: foldersMax + 1,
-	}).then(fetchedFolders => {
-		if (fetchedFolders.length === foldersMax + 1) {
-			moreFolders.value = true;
-			fetchedFolders.pop();
-		}
-		return fetchedFolders;
-	});
-
-	const filesPromise = misskeyApi('drive/files', {
-		folderId: folder.value ? folder.value.id : null,
-		type: props.type,
-		limit: filesMax + 1,
-		sort: sortModeSelect.value,
-	}).then(fetchedFiles => {
-		if (fetchedFiles.length === filesMax + 1) {
-			moreFiles.value = true;
-			fetchedFiles.pop();
-		}
-		return fetchedFiles;
-	});
-
-	const [fetchedFolders, fetchedFiles] = await Promise.all([foldersPromise, filesPromise]);
-
-	for (const x of fetchedFolders) appendFolder(x);
-	for (const x of fetchedFiles) appendFile(x);
-
-	fetching.value = false;
-}
-
-function fetchMoreFolders() {
-	fetching.value = true;
-
-	const max = 30;
-
-	misskeyApi('drive/folders', {
-		folderId: folder.value ? folder.value.id : null,
-		type: props.type,
-		untilId: folders.value.at(-1)?.id,
-		limit: max + 1,
-	}).then(folders => {
-		if (folders.length === max + 1) {
-			moreFolders.value = true;
-			folders.pop();
-		} else {
-			moreFolders.value = false;
-		}
-		for (const x of folders) appendFolder(x);
-		fetching.value = false;
-	});
-}
-
-function fetchMoreFiles() {
-	fetching.value = true;
-
-	const max = 30;
-
-	// ファイル一覧取得
-	misskeyApi('drive/files', {
-		folderId: folder.value ? folder.value.id : null,
-		type: props.type,
-		untilId: files.value.at(-1)?.id,
-		limit: max + 1,
-		sort: sortModeSelect.value,
-	}).then(files => {
-		if (files.length === max + 1) {
-			moreFiles.value = true;
-			files.pop();
-		} else {
-			moreFiles.value = false;
-		}
-		for (const x of files) appendFile(x);
-		fetching.value = false;
-	});
+	initialize();
 }
 
 function getMenu() {
@@ -626,16 +570,13 @@ function getMenu() {
 		text: i18n.ts.addFile,
 		type: 'label',
 	}, {
-		text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
-		icon: 'ti ti-upload',
-		action: () => {
-			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: false });
-		},
-	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
 		action: () => {
-			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: true });
+			chooseFileFromPcAndUpload({
+				multiple: true,
+				folderId: folder.value?.id,
+			});
 		},
 	}, {
 		text: i18n.ts.fromUrl,
@@ -699,6 +640,11 @@ function getMenu() {
 		text: i18n.ts.createFolder,
 		icon: 'ti ti-folder-plus',
 		action: () => { createFolder(); },
+	}, { type: 'divider' }, {
+		type: 'switch',
+		text: i18n.ts.edit,
+		icon: 'ti ti-pointer',
+		ref: isEditMode,
 	});
 
 	return menu;
@@ -712,46 +658,95 @@ function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
-function closeTip() {
-	store.set('readDriveTip', true);
-}
+useGlobalEvent('driveFileCreated', (file) => {
+	if (file.folderId === (folder.value?.id ?? null)) {
+		filesPaginator.prepend(file);
+	}
+});
+
+useGlobalEvent('driveFilesUpdated', (files) => {
+	for (const f of files) {
+		if (filesPaginator.items.value.some(x => x.id === f.id)) {
+			if (f.folderId === (folder.value?.id ?? null)) {
+				filesPaginator.updateItem(f.id, () => f);
+			} else {
+				filesPaginator.removeItem(f.id);
+			}
+		} else {
+			if (f.folderId === (folder.value?.id ?? null)) {
+				filesPaginator.prepend(f);
+			}
+		}
+	}
+});
+
+useGlobalEvent('driveFilesDeleted', (files) => {
+	for (const f of files) {
+		filesPaginator.removeItem(f.id);
+	}
+});
+
+useGlobalEvent('driveFoldersUpdated', (folders) => {
+	for (const f of folders) {
+		if (foldersPaginator.items.value.some(x => x.id === f.id)) {
+			if (f.parentId === (folder.value?.id ?? null)) {
+				foldersPaginator.updateItem(f.id, () => f);
+			} else {
+				foldersPaginator.removeItem(f.id);
+			}
+		} else {
+			if (f.parentId === (folder.value?.id ?? null)) {
+				foldersPaginator.prepend(f);
+			}
+		}
+	}
+});
+
+useGlobalEvent('driveFoldersDeleted', (folders) => {
+	for (const f of folders) {
+		foldersPaginator.removeItem(f.id);
+	}
+});
+
+let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
 
 onMounted(() => {
-	if (prefer.s.enableInfiniteScroll && loadMoreFiles.value) {
-		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el);
-		});
+	if (store.s.realtimeMode) {
+		connection = useStream().useChannel('drive');
+		connection.on('fileCreated', onStreamDriveFileCreated);
 	}
 
-	connection.on('fileCreated', onStreamDriveFileCreated);
-	connection.on('fileUpdated', onStreamDriveFileUpdated);
-	connection.on('fileDeleted', onStreamDriveFileDeleted);
-	connection.on('folderCreated', onStreamDriveFolderCreated);
-	connection.on('folderUpdated', onStreamDriveFolderUpdated);
-	connection.on('folderDeleted', onStreamDriveFolderDeleted);
-
 	if (props.initialFolder) {
-		move(props.initialFolder);
+		cd(props.initialFolder);
 	} else {
-		fetch();
+		initialize();
 	}
 });
 
 onActivated(() => {
-	if (prefer.s.enableInfiniteScroll) {
-		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el);
-		});
-	}
 });
 
 onBeforeUnmount(() => {
-	connection.dispose();
-	ilFilesObserver.disconnect();
+	if (connection != null) {
+		connection.dispose();
+	}
 });
 </script>
 
 <style lang="scss" module>
+.transition_files_move,
+.transition_files_enterActive,
+.transition_files_leaveActive {
+	transition: all 0.2s ease;
+}
+.transition_files_enterFrom,
+.transition_files_leaveTo {
+	opacity: 0;
+}
+.transition_files_leaveActive {
+	position: absolute;
+}
+
 .nav {
 	display: flex;
 	width: 100%;
@@ -806,9 +801,7 @@ onBeforeUnmount(() => {
 }
 
 .main {
-	flex: 1;
-	overflow: auto;
-	padding: var(--MI-margin);
+	min-height: 100cqh;
 	user-select: none;
 
 	&.fetching {
@@ -816,30 +809,41 @@ onBeforeUnmount(() => {
 		opacity: 0.5;
 		pointer-events: none;
 	}
-
-	&.uploading {
-		height: calc(100% - 38px - 100px);
-	}
 }
 
 .folders,
 .files {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	grid-gap: 12px;
+	padding: 16px 32px;
 }
 
-.folder,
-.file {
-	flex-grow: 1;
-	width: 128px;
-	margin: 4px;
-	box-sizing: border-box;
+@container (max-width: 600px) {
+	.folders,
+	.files {
+		padding: 16px;
+	}
 }
 
-.padding {
-	flex-grow: 1;
-	pointer-events: none;
-	width: 128px + 8px;
+.date {
+	padding: 8px 16px;
+	font-size: 90%;
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.85);
+}
+
+.loadMore {
+	margin: 16px auto;
+}
+
+.footer {
+	padding: 8px 16px;
+	font-size: 90%;
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.85);
 }
 
 .empty {

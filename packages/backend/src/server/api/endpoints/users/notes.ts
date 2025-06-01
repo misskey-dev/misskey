@@ -191,12 +191,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		this.queryService.generateBlockedHostQueryForNote(query, true);
-		this.queryService.generateSuspendedUserQueryForNote(query, true);
-		if (me) {
-			this.queryService.generateMutedUserQueryForNotes(query, me, { id: ps.userId });
-			this.queryService.generateBlockedUserQueryForNotes(query, me);
-		}
+		this.queryService.generateBaseNoteFilteringQuery(query, me, {
+			excludeAuthor: true,
+			excludeUserFromMute: ps.userId,
+		});
 
 		if (!isSelf && !(me?.isInYamiMode)) {
 			query.andWhere('note.isNoteInYamiMode = FALSE');
