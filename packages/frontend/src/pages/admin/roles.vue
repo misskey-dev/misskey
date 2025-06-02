@@ -122,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSwitch>
 					</MkFolder>
 
-					<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canSearchNotes'])">
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canUseTranslator'])">
 						<template #label>{{ i18n.ts._role._options.canUseTranslator }}</template>
 						<template #suffix>{{ policies.canUseTranslator ? i18n.ts.yes : i18n.ts.no }}</template>
 						<MkSwitch v-model="policies.canUseTranslator">
@@ -144,6 +144,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput v-model="policies.maxFileSizeMb" type="number">
 							<template #suffix>MB</template>
 						</MkInput>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.uploadableFileTypes, 'uploadableFileTypes'])">
+						<template #label>{{ i18n.ts._role._options.uploadableFileTypes }}</template>
+						<template #suffix>...</template>
+						<MkTextarea :modelValue="policies.uploadableFileTypes.join('\n')" @update:modelValue="v => policies.uploadableFileTypes = v.split('\n')">
+							<template #caption>
+								<div>{{ i18n.ts._role._options.uploadableFileTypes_caption }}</div>
+								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.tsx._role._options.uploadableFileTypes_caption2({ x: 'application/octet-stream' }) }}</div>
+							</template>
+						</MkTextarea>
 					</MkFolder>
 
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.alwaysMarkNsfw, 'alwaysMarkNsfw'])">
@@ -312,6 +323,7 @@ import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
 const baseRoleQ = ref('');

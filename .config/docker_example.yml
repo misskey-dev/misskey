@@ -227,23 +227,12 @@ proxyBypassHosts:
 # Media Proxy
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: true)
-proxyRemoteFiles: true
-
-# Sign to ActivityPub GET request (default: true)
-signToActivityPubGet: true
-
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]
-
-# Disable automatic redirect for ActivityPub object lookup. (default: false)
-# This is a strong defense against potential impersonation attacks if the viewer instance has inadequate validation.
-# However it will make it impossible for other instances to lookup third-party user and notes through your URL.
-#disallowExternalApRedirect: true
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
