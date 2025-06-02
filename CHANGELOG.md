@@ -9,6 +9,8 @@
 ### Server
 -
 
+### Misskey.js
+- Fix: misskey-jsの drive/file/create でファイルアップロードができない問題を修正
 
 ## 2025.6.0
 
