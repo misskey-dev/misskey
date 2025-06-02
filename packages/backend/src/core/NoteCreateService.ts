@@ -1266,6 +1266,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// フォロワーのやみタイムラインに追加
+			// ただしDMの場合は宛先に含まれるユーザーのみに制限
 			this.followingsRepository.find({
 				where: {
 					followeeId: user.id,
@@ -1278,6 +1279,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				const followingsPipeline = this.redisForTimelines.pipeline();
 				for (const following of followings) {
+					// DMの場合は宛先チェック - visibleUserIdsに含まれていない場合はスキップ
+					if (note.visibility === 'specified' &&
+						(!note.visibleUserIds || !note.visibleUserIds.includes(following.followerId))) {
+						continue;
+					}
+
 					this.fanoutTimelineService.push(`yamiTimeline:${following.followerId}`, note.id, 300, followingsPipeline);
 					if (note.fileIds.length > 0) {
 						this.fanoutTimelineService.push(`yamiTimelineWithFiles:${following.followerId}`, note.id, 300, followingsPipeline);
@@ -1286,7 +1293,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				followingsPipeline.exec().catch(err => this.logger.error(err));
 			});
 
-			// パブリックなやみノートの場合の処理を修正
+			// パブリックなやみノートの場合の処理
 			if (note.visibility === 'public') {
 				this.fanoutTimelineService.push('yamiPublicNotes', note.id, 1000, r);
 				if (note.fileIds.length > 0) {
@@ -1295,7 +1302,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// 自分自身のプロフィールタイムラインにも追加
-			// (これは他のタイムラインとは別の表示用なので残す)
 			this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id,
 				user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
 			if (note.fileIds.length > 0) {
