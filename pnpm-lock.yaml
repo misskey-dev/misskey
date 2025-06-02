@@ -866,9 +866,6 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
-      uuid:
-        specifier: 11.1.0
-        version: 11.1.0
       v-code-diff:
         specifier: 1.13.1
         version: 1.13.1(vue@3.5.16(typescript@5.8.3))
@@ -21868,7 +21865,7 @@ snapshots:
 
   tsx@4.19.4:
     dependencies:
-      esbuild: 0.25.4
+      esbuild: 0.25.5
       get-tsconfig: 4.10.1
     optionalDependencies:
       fsevents: 2.3.3

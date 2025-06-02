@@ -5,13 +5,13 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
-import { v4 as uuid } from 'uuid';
 import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
+import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 
@@ -53,13 +53,13 @@ export const PREF_DEF = definePreferences({
 		accountDependent: true,
 		default: () => [{
 			name: 'calendar',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'notifications',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'trends',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}] as {
 			name: string;
 			id: string;
@@ -79,7 +79,7 @@ export const PREF_DEF = definePreferences({
 	emojiPalettes: {
 		serverDependent: true,
 		default: () => [{
-			id: uuid(),
+			id: genId(),
 			name: '',
 			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 		}] as {
