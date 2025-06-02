@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import isAnimated from 'is-file-animated';
 import type { MenuItem } from '@/types/menu.js';
@@ -420,7 +420,7 @@ async function chooseFile(ev: MouseEvent) {
 }
 
 function initializeFile(file: File) {
-	const id = uuid();
+	const id = genId();
 	const filename = file.name ?? 'untitled';
 	const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
 	items.value.push({
