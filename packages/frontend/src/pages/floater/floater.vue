@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkResult v-else-if="items.length === 0" type="empty"/>
 				<div v-for="item in items" :key="item.id" :class="$style.userNotes">
 					<div v-for="note in item.notes" :key="note.id">
-						<MkNote :note="note" :class="$style.note" :withHardMute="true"/>
+						<MkNote :note="note" :class="$style.note" :withHardMute="true" :ignoreInheritedHardMute="false"/>
 					</div>
 				</div>
 			</div>
