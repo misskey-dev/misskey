@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="recent" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div class="_spacer" style="--MI_SPACER-w: 1000px;">
 		<Transition name="fade" mode="out-in">
-			<XFloater :anchorDate="anchorDate"/>
+			<XFloater :key="recent" :anchorDate="anchorDate"/>
 		</Transition>
 	</div>
 </MkStickyContainer>
@@ -17,7 +17,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import XFloater from './floater.vue';
-import MkRadios from '@/components/MkRadios.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 
