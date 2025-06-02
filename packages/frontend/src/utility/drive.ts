@@ -15,6 +15,7 @@ import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { genId } from '@/utility/id.js';
 
 type UploadReturnType = {
 	filePromise: Promise<Misskey.entities.DriveFile>;
@@ -195,7 +196,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 		}).then(({ canceled, result: url }) => {
 			if (canceled) return;
 
-			const marker = Math.random().toString(); // TODO: UUIDとか使う
+			const marker = genId();
 
 			// TODO: no websocketモード対応
 			const connection = useStream().useChannel('main');
