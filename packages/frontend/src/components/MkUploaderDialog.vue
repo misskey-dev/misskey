@@ -292,11 +292,10 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		});
 	}
 
-	/*
 	if (IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
 		menu.push({
 			icon: 'ti ti-sparkles',
-			text: i18n.ts._imageEffector.title,
+			text: i18n.ts._imageEffector.title + ' (BETA)',
 			action: async () => {
 				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
 					image: item.file,
@@ -318,7 +317,6 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			},
 		});
 	}
-		*/
 
 	if (WATERMARK_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
 		function changeWatermarkPreset(presetId: string | null) {
