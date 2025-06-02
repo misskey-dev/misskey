@@ -3235,6 +3235,7 @@ _watermarkEditor:
   position: "位置"
   type: "タイプ"
   image: "画像"
+  advanced: "高度"
 
 _imageEffector:
   title: "エフェクト"

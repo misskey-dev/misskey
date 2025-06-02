@@ -12081,6 +12081,10 @@ export interface Locale extends ILocale {
          * 画像
          */
         "image": string;
+        /**
+         * 高度
+         */
+        "advanced": string;
     };
     "_imageEffector": {
         /**

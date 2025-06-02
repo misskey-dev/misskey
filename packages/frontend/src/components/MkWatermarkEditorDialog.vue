@@ -30,13 +30,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }]"></MkSelect>
+					<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }, { label: i18n.ts._watermarkEditor.advanced, value: 'advanced' }]">
+						<template #label>{{ i18n.ts._watermarkEditor.type }}</template>
+					</MkSelect>
 
-					<XLayer
-						v-for="(layer, i) in preset.layers"
-						:key="layer.id"
-						v-model:layer="preset.layers[i]"
-					></XLayer>
+					<div v-if="type === 'text' || type === 'image'">
+						<XLayer
+							v-for="(layer, i) in preset.layers"
+							:key="layer.id"
+							v-model:layer="preset.layers[i]"
+						></XLayer>
+					</div>
+					<div v-else-if="type === 'advanced'" class="_gaps_s">
+						<MkFolder v-for="(layer, i) in preset.layers" :key="layer.id" :defaultOpen="false" :canPage="false">
+							<template #label>
+								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
+								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
+							</template>
+							<template #footer>
+								<MkButton @click="removeLayer(layer)">{{ i18n.ts.remove }}</MkButton>
+							</template>
+
+							<XLayer
+								v-model:layer="preset.layers[i]"
+							></XLayer>
+						</MkFolder>
+
+						<MkButton rounded primary style="margin: 0 auto;" @click="addLayer"><i class="ti ti-plus"></i></MkButton>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -53,7 +74,7 @@ import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
@@ -61,15 +82,8 @@ import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
 
-const props = defineProps<{
-	preset?: WatermarkPreset | null;
-	image?: File | null;
-}>();
-
-const preset = reactive(deepClone(props.preset) ?? {
-	id: uuid(),
-	name: '',
-	layers: [{
+function createTextLayer(): WatermarkPreset['layers'][number] {
+	return {
 		id: uuid(),
 		type: 'text',
 		text: `(c) @${$i.username}`,
@@ -77,8 +91,33 @@ const preset = reactive(deepClone(props.preset) ?? {
 		scale: 0.3,
 		opacity: 0.75,
 		repeat: false,
-	}],
-} satisfies WatermarkPreset);
+	};
+}
+
+function createImageLayer(): WatermarkPreset['layers'][number] {
+	return {
+		id: uuid(),
+		type: 'image',
+		imageId: null,
+		imageUrl: null,
+		align: { x: 'right', y: 'bottom' },
+		scale: 0.3,
+		opacity: 0.75,
+		repeat: false,
+		cover: false,
+	};
+}
+
+const props = defineProps<{
+	preset?: WatermarkPreset | null;
+	image?: File | null;
+}>();
+
+const preset = reactive<WatermarkPreset>(deepClone(props.preset) ?? {
+	id: uuid(),
+	name: '',
+	layers: [createTextLayer()],
+});
 
 const emit = defineEmits<{
 	(ev: 'ok', preset: WatermarkPreset): void;
@@ -98,29 +137,14 @@ async function cancel() {
 	dialog.value?.close();
 }
 
-const type = ref(preset.layers[0].type);
+const type = ref(preset.layers.length > 1 ? 'advanced' : preset.layers[0].type);
 watch(type, () => {
 	if (type.value === 'text') {
-		preset.layers = [{
-			id: uuid(),
-			type: 'text',
-			text: `(c) @${$i.username}`,
-			align: { x: 'right', y: 'bottom' },
-			scale: 0.3,
-			opacity: 0.75,
-			repeat: false,
-		}];
+		preset.layers = [createTextLayer()];
 	} else if (type.value === 'image') {
-		preset.layers = [{
-			id: uuid(),
-			type: 'image',
-			imageId: null,
-			imageUrl: null,
-			align: { x: 'right', y: 'bottom' },
-			scale: 0.3,
-			opacity: 0.75,
-			repeat: false,
-		}];
+		preset.layers = [createImageLayer()];
+	} else if (type.value === 'advanced') {
+		// nop
 	}
 });
 
@@ -240,6 +264,24 @@ async function save() {
 	}
 
 	emit('ok', preset);
+}
+
+function addLayer(ev: MouseEvent) {
+	os.popupMenu([{
+		text: i18n.ts._watermarkEditor.text,
+		action: () => {
+			preset.layers.push(createTextLayer());
+		},
+	}, {
+		text: i18n.ts._watermarkEditor.image,
+		action: () => {
+			preset.layers.push(createImageLayer());
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
+function removeLayer(layer: WatermarkPreset['layers'][number]) {
+	preset.layers = preset.layers.filter(l => l.id !== layer.id);
 }
 </script>
 
