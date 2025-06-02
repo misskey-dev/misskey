@@ -98,7 +98,10 @@ export class WatermarkRenderer {
 		this.effector.render();
 	}
 
-	public destroy(): void {
-		this.effector.destroy();
+	/*
+	 * disposeCanvas = true だとloseContextを呼ぶため、コンストラクタで渡されたcanvasも再利用不可になるので注意
+	 */
+	public destroy(disposeCanvas = true): void {
+		this.effector.destroy(disposeCanvas);
 	}
 }

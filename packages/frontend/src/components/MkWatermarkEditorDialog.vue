@@ -147,7 +147,7 @@ const sampleImage_2_3_loading = new Promise<void>(resolve => {
 const sampleImageType = ref(props.image != null ? 'provided' : '3_2');
 watch(sampleImageType, async () => {
 	if (renderer != null) {
-		renderer.destroy();
+		renderer.destroy(false);
 		renderer = null;
 		initRenderer();
 	}

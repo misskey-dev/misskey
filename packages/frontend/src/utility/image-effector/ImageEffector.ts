@@ -131,7 +131,7 @@ export class ImageEffector {
 			void main() {
 				out_color = texture(u_texture, in_uv);
 			}
-		`)!;
+		`);
 
 		this.renderInvertedTextureProgram = this.initShaderProgram(`#version 300 es
 			in vec2 position;
@@ -152,45 +152,43 @@ export class ImageEffector {
 			void main() {
 				out_color = texture(u_texture, in_uv);
 			}
-		`)!;
+		`);
 	}
 
-	public loadShader(type, source) {
+	public loadShader(type: GLenum, source: string): WebGLShader {
 		const gl = this.gl;
 
-		const shader = gl.createShader(type)!;
+		const shader = gl.createShader(type);
+		if (shader == null) {
+			throw new Error('falied to create shader');
+		}
 
 		gl.shaderSource(shader, source);
 		gl.compileShader(shader);
 
 		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			alert(
-				`falied to compile shader: ${gl.getShaderInfoLog(shader)}`,
-			);
+			console.error(`falied to compile shader: ${gl.getShaderInfoLog(shader)}`);
 			gl.deleteShader(shader);
-			return null;
+			throw new Error(`falied to compile shader: ${gl.getShaderInfoLog(shader)}`);
 		}
 
 		return shader;
 	}
 
-	public initShaderProgram(vsSource, fsSource): WebGLProgram {
+	public initShaderProgram(vsSource: string, fsSource: string): WebGLProgram {
 		const gl = this.gl;
 
-		const vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource)!;
-		const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource)!;
+		const vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource);
+		const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource);
 
-		const shaderProgram = gl.createProgram()!;
+		const shaderProgram = gl.createProgram();
+
 		gl.attachShader(shaderProgram, vertexShader);
 		gl.attachShader(shaderProgram, fragmentShader);
 		gl.linkProgram(shaderProgram);
 
 		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-			alert(
-				`failed to init shader: ${gl.getProgramInfoLog(
-					shaderProgram,
-				)}`,
-			);
+			console.error(`failed to init shader: ${gl.getProgramInfoLog(shaderProgram)}`);
 			throw new Error('failed to init shader');
 		}
 
@@ -363,7 +361,10 @@ export class ImageEffector {
 		return v.type === 'text' ? `text:${v.text}` : v.type === 'url' ? `url:${v.url}` : '';
 	}
 
-	public destroy() {
+	/*
+	 * disposeCanvas = true だとloseContextを呼ぶため、コンストラクタで渡されたcanvasも再利用不可になるので注意
+	 */
+	public destroy(disposeCanvas = true) {
 		for (const shader of this.shaderCache.values()) {
 			this.gl.deleteProgram(shader);
 		}
@@ -388,8 +389,10 @@ export class ImageEffector {
 		this.gl.deleteProgram(this.renderInvertedTextureProgram);
 		this.gl.deleteTexture(this.originalImageTexture);
 
-		const loseContextExt = this.gl.getExtension('WEBGL_lose_context');
-		if (loseContextExt) loseContextExt.loseContext();
+		if (disposeCanvas) {
+			const loseContextExt = this.gl.getExtension('WEBGL_lose_context');
+			if (loseContextExt) loseContextExt.loseContext();
+		}
 	}
 }
 
