@@ -206,6 +206,57 @@ export function popup<T extends Component>(
 	};
 }
 
+export async function popupAsyncWithDialog<T extends Component>(
+	componentFetching: Promise<T>,
+	props: ComponentProps<T>,
+	events: Partial<ComponentEmit<T>> = {},
+): Promise<{ dispose: () => void }> {
+	let component: T;
+	let closeWaiting = () => {};
+
+	const timer = window.setTimeout(() => {
+		closeWaiting = waiting();
+	}, 100); // コンポーネントがキャッシュされている場合にもwaitingが表示されて画面がちらつくのを防止するためにラグを追加
+
+	try {
+		component = await componentFetching;
+	} catch (err) {
+		window.clearTimeout(timer);
+		closeWaiting();
+		alert({
+			type: 'error',
+			title: i18n.ts.somethingHappened,
+			text: 'CODE: ASYNC_COMP_LOAD_FAIL',
+		});
+		throw err;
+	}
+
+	window.clearTimeout(timer);
+	closeWaiting();
+
+	markRaw(component);
+
+	const id = ++popupIdCount;
+	const dispose = () => {
+		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+		window.setTimeout(() => {
+			popups.value = popups.value.filter(p => p.id !== id);
+		}, 0);
+	};
+	const state = {
+		component,
+		props,
+		events,
+		id,
+	};
+
+	popups.value.push(state);
+
+	return {
+		dispose,
+	};
+}
+
 export function pageWindow(path: string) {
 	const { dispose } = popup(MkPageWindow, {
 		initialPath: path,
@@ -547,14 +598,28 @@ export function success(): Promise<void> {
 	});
 }
 
-export function waiting(text?: string | null): () => void {
+export function waiting(options: { text?: string } = {}) {
 	window.document.body.setAttribute('inert', 'true');
 
 	const showing = ref(true);
+	const isSuccess = ref(false);
+
+	function done(doneOptions: { success?: boolean } = {}) {
+		if (doneOptions.success) {
+			isSuccess.value = true;
+			window.setTimeout(() => {
+				showing.value = false;
+			}, 1000);
+		} else {
+			showing.value = false;
+		}
+	}
+
+	// NOTE: dynamic importすると挙動がおかしくなる(showingの変更が伝播しない)
 	const { dispose } = popup(MkWaitingDialog, {
-		success: false,
+		success: isSuccess,
 		showing: showing,
-		text,
+		text: options.text,
 	}, {
 		closed: () => {
 			window.document.body.removeAttribute('inert');
@@ -562,9 +627,7 @@ export function waiting(text?: string | null): () => void {
 		},
 	});
 
-	return () => {
-		showing.value = false;
-	};
+	return done;
 }
 
 export function form<F extends Form>(title: string, f: F): Promise<{ canceled: true, result?: undefined } | { canceled?: false, result: GetFormResultType<F> }> {
@@ -775,9 +838,9 @@ export function launchUploader(
 		multiple?: boolean;
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
-	return new Promise((res, rej) => {
+	return new Promise(async (res, rej) => {
 		if (files.length === 0) return rej();
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUploaderDialog.vue')), {
+		const { dispose } = await popupAsyncWithDialog(import('@/components/MkUploaderDialog.vue').then(x => x.default), {
 			files: markRaw(files),
 			folderId: options?.folderId,
 			multiple: options?.multiple,
