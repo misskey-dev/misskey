@@ -292,6 +292,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		});
 	}
 
+	/*
 	if (IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
 		menu.push({
 			icon: 'ti ti-sparkles',
@@ -317,6 +318,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			},
 		});
 	}
+		*/
 
 	if (WATERMARK_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
 		function changeWatermarkPreset(presetId: string | null) {
