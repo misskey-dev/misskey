@@ -233,7 +233,7 @@ let qaEls = [Ui:C:container({
 var qn = 0
 each (let qa, qas) {
 	qn += 1
-	qa.id = Util:genId()
+	qa.id = Util:uuid()
 	qaEls.push(Ui:C:container({
 		align: 'center'
 		bgColor: '#000'
