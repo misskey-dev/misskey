@@ -94,8 +94,8 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
-			// Cache 7days
-			reply.header('Cache-Control', 'max-age=604800, immutable');
+			// Cache 1day
+			reply.header('Cache-Control', 'max-age=86400, immutable');
 
 			return summary;
 		} catch (err) {

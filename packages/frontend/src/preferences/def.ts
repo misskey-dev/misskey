@@ -5,13 +5,15 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { v4 as uuid } from 'uuid';
+import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
-import type { PreferencesDefinition } from './manager.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 /** サウンド設定 */
 export type SoundStore = {
@@ -31,7 +33,7 @@ export type SoundStore = {
 
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
-export const PREF_DEF = {
+export const PREF_DEF = definePreferences({
 	accounts: {
 		default: [] as [host: string, user: {
 			id: string;
@@ -49,15 +51,15 @@ export const PREF_DEF = {
 	},
 	widgets: {
 		accountDependent: true,
-		default: [{
+		default: () => [{
 			name: 'calendar',
-			id: 'a', place: 'right', data: {},
+			id: uuid(), place: 'right', data: {},
 		}, {
 			name: 'notifications',
-			id: 'b', place: 'right', data: {},
+			id: uuid(), place: 'right', data: {},
 		}, {
 			name: 'trends',
-			id: 'c', place: 'right', data: {},
+			id: uuid(), place: 'right', data: {},
 		}] as {
 			name: string;
 			id: string;
@@ -76,8 +78,8 @@ export const PREF_DEF = {
 
 	emojiPalettes: {
 		serverDependent: true,
-		default: [{
-			id: 'a',
+		default: () => [{
+			id: uuid(),
 			name: '',
 			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 		}] as {
@@ -85,6 +87,22 @@ export const PREF_DEF = {
 			name: string;
 			emojis: string[];
 		}[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
 	},
 	emojiPaletteForReaction: {
 		serverDependent: true,
@@ -100,6 +118,22 @@ export const PREF_DEF = {
 	},
 	themes: {
 		default: [] as Theme[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
 	},
 	lightTheme: {
 		default: null as Theme | null,
@@ -345,9 +379,19 @@ export const PREF_DEF = {
 	},
 	plugins: {
 		default: [] as Plugin[],
+		mergeStrategy: (a, b) => {
+			const sameIdExists = a.some(x => b.some(y => x.installId === y.installId));
+			if (sameIdExists) throw new Error();
+			const sameNameExists = a.some(x => b.some(y => x.name === y.name));
+			if (sameNameExists) throw new Error();
+			return a.concat(b);
+		},
 	},
 	mutingEmojis: {
 		default: [] as string[],
+		mergeStrategy: (a, b) => {
+			return [...new Set(a.concat(b))];
+		},
 	},
 
 	'sound.masterVolume': {
@@ -420,4 +464,4 @@ export const PREF_DEF = {
 	'experimental.enableFolderPageView': {
 		default: false,
 	},
-} satisfies PreferencesDefinition;
+});
