@@ -353,9 +353,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.renote) {
+			// 連合ありやみノートのリノートを禁止
+			if (data.renote.isNoteInYamiMode && !data.renote.localOnly) {
+				throw new Error('Renote of federated yami note is not allowed');
+			}
+
 			switch (data.renote.visibility) {
 				case 'public':
-					// public noteは無条件にrenote可能
+					// public noteは無条件にrenote可能（ただし連合ありやみノートは上でブロック済み）
 					break;
 				case 'home':
 					// home noteはhome以下にrenote可能
@@ -551,9 +556,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.renote) {
+			// 連合ありやみノートのリノートを禁止
+			if (data.renote.isNoteInYamiMode && !data.renote.localOnly) {
+				throw new Error('Renote of federated yami note is not allowed');
+			}
+
 			switch (data.renote.visibility) {
 				case 'public':
-					// public noteは無条件にrenote可能
+					// public noteは無条件にrenote可能（ただし連合ありやみノートは上でブロック済み）
 					break;
 				case 'home':
 					// home noteはhome以下にrenote可能

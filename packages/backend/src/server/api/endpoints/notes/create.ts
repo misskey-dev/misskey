@@ -142,6 +142,12 @@ export const meta = {
 			code: 'CONTAINS_TOO_MANY_MENTIONS',
 			id: '4de0363a-3046-481b-9b0f-feff3e211025',
 		},
+
+		cannotRenoteYamiNote: {
+			message: 'You cannot renote a federated yami note.',
+			code: 'CANNOT_RENOTE_FEDERATED_YAMI_NOTE',
+			id: '45ac1794-2c6d-4a85-b594-e9f326d7ed14',
+		},
 	},
 } as const;
 
@@ -432,6 +438,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					} else if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
 						throw new ApiError(meta.errors.containsTooManyMentions);
 					}
+				}
+				if (e instanceof Error && e.message === 'Renote of federated yami note is not allowed') {
+					throw new ApiError(meta.errors.cannotRenoteYamiNote);
 				}
 				throw e;
 			}

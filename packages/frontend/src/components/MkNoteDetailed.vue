@@ -338,7 +338,16 @@ const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renot
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i?.id);
+const canRenote = computed(() => {
+	// 連合ありやみノートの場合はリノートできない
+	if (appearNote.isNoteInYamiMode && !appearNote.localOnly) {
+		return false;
+	}
+
+	// 既存の条件
+	return ['public', 'home'].includes(appearNote.visibility) ||
+    (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
+});
 const hideReactionCount = computed(() => {
 	switch (prefer.s.hideReactionCount) {
 		case 'none': return false;

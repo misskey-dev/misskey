@@ -303,7 +303,16 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const showInstanceIcon = computed(() => prefer.s.instanceIcon);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id));
+const canRenote = computed(() => {
+  // 連合ありやみノートの場合はリノートできない
+  if (appearNote.isNoteInYamiMode && !appearNote.localOnly) {
+    return false;
+  }
+
+  // 既存の条件
+  return ['public', 'home'].includes(appearNote.visibility) ||
+    (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
+});
 const renoteCollapsed = ref(
 	prefer.s.collapseRenotes && isRenote && (
 		($i && ($i.id === note.userId || $i.id === appearNote.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
