@@ -97,12 +97,6 @@ export const paramDef = {
 				},
 			},
 		},
-		{
-			type: 'object',
-			properties: {
-				authPurpose: { type: 'string', enum: ['signin'], nullable: true },
-			},
-		},
 	],
 } as const;
 
@@ -122,14 +116,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private apiLoggerService: ApiLoggerService,
 	) {
 		super(meta, paramDef, async (ps, me, _1, _2, _3, ip) => {
-			// ログイン目的の場合は制限を適用しない
-			if (
-				this.serverSettings.ugcVisibilityForVisitor === 'none' &&
-				me == null &&
-				ps.authPurpose !== 'signin'
-			) {
-				throw new ApiError(meta.errors.noSuchUser);
-			}
+			// ログイン時にusers/showできなくなってしまう
+			//if (this.serverSettings.ugcVisibilityForVisitor === 'none' && me == null) {
+			//	throw new ApiError(meta.errors.noSuchUser);
+			//}
 
 			let user;
 
