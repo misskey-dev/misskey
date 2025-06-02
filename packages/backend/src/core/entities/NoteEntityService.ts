@@ -205,7 +205,22 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		if (hide) {
-			packedNote.visibleUserIds = undefined;
+			// DMの場合は自分に関する宛先情報のみを保持
+			if (packedNote.visibility === 'specified' && meId && packedNote.visibleUserIds?.includes(meId)) {
+				// 自分のIDのみを含む配列に置き換え
+				packedNote.visibleUserIds = [meId];
+
+				// mentionsも自分のIDのみを保持
+				if (packedNote.mentions?.includes(meId)) {
+					packedNote.mentions = [meId];
+				} else {
+					packedNote.mentions = undefined;
+				}
+			} else {
+				packedNote.visibleUserIds = undefined;
+				packedNote.mentions = undefined;
+			}
+
 			packedNote.fileIds = [];
 			packedNote.files = [];
 			packedNote.text = null;
