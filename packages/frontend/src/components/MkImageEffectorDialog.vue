@@ -35,6 +35,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:key="layer.id"
 						v-model:layer="layers[i]"
 						@del="onLayerDelete(layer)"
+						@swapUp="onLayerSwapUp(layer)"
+						@swapDown="onLayerSwapDown(layer)"
 					></XLayer>
 
 					<MkButton rounded primary style="margin: 0 auto;" @click="addEffect"><i class="ti ti-plus"></i> {{ i18n.ts._imageEffector.addEffect }}</MkButton>
@@ -103,6 +105,22 @@ function addEffect(ev: MouseEvent) {
 			});
 		},
 	})), ev.currentTarget ?? ev.target);
+}
+
+function onLayerSwapUp(layer: ImageEffectorLayer) {
+	const index = layers.indexOf(layer);
+	if (index > 0) {
+		layers.splice(index, 1);
+		layers.splice(index - 1, 0, layer);
+	}
+}
+
+function onLayerSwapDown(layer: ImageEffectorLayer) {
+	const index = layers.indexOf(layer);
+	if (index < layers.length - 1) {
+		layers.splice(index, 1);
+		layers.splice(index + 1, 0, layer);
+	}
 }
 
 function onLayerDelete(layer: ImageEffectorLayer) {

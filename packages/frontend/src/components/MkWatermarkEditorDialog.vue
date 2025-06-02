@@ -48,7 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
 							</template>
 							<template #footer>
-								<MkButton @click="removeLayer(layer)">{{ i18n.ts.remove }}</MkButton>
+								<div class="_buttons">
+									<MkButton iconOnly @click="removeLayer(layer)"><i class="ti ti-trash"></i></MkButton>
+									<MkButton iconOnly @click="swapUpLayer(layer)"><i class="ti ti-arrow-up"></i></MkButton>
+									<MkButton iconOnly @click="swapDownLayer(layer)"><i class="ti ti-arrow-down"></i></MkButton>
+								</div>
 							</template>
 
 							<XLayer
@@ -278,6 +282,24 @@ function addLayer(ev: MouseEvent) {
 			preset.layers.push(createImageLayer());
 		},
 	}], ev.currentTarget ?? ev.target);
+}
+
+function swapUpLayer(layer: WatermarkPreset['layers'][number]) {
+	const index = preset.layers.findIndex(l => l.id === layer.id);
+	if (index > 0) {
+		const tmp = preset.layers[index - 1];
+		preset.layers[index - 1] = preset.layers[index];
+		preset.layers[index] = tmp;
+	}
+}
+
+function swapDownLayer(layer: WatermarkPreset['layers'][number]) {
+	const index = preset.layers.findIndex(l => l.id === layer.id);
+	if (index < preset.layers.length - 1) {
+		const tmp = preset.layers[index + 1];
+		preset.layers[index + 1] = preset.layers[index];
+		preset.layers[index] = tmp;
+	}
 }
 
 function removeLayer(layer: WatermarkPreset['layers'][number]) {

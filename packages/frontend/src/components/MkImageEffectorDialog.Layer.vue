@@ -7,7 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkFolder :defaultOpen="true" :canPage="false">
 	<template #label>{{ fx.name }}</template>
 	<template #footer>
-		<MkButton @click="emit('del')">{{ i18n.ts.remove }}</MkButton>
+		<div class="_buttons">
+			<MkButton iconOnly @click="emit('del')"><i class="ti ti-trash"></i></MkButton>
+			<MkButton iconOnly @click="emit('swapUp')"><i class="ti ti-arrow-up"></i></MkButton>
+			<MkButton iconOnly @click="emit('swapDown')"><i class="ti ti-arrow-down"></i></MkButton>
+		</div>
 	</template>
 
 	<div :class="$style.root" class="_gaps">
@@ -60,6 +64,8 @@ if (fx == null) {
 
 const emit = defineEmits<{
 	(e: 'del'): void;
+	(e: 'swapUp'): void;
+	(e: 'swapDown'): void;
 }>();
 </script>
 
