@@ -90,7 +90,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted } from 'vue';
-import { v4 as uuid } from 'uuid';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';

@@ -49,7 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
-import { v4 as uuid } from 'uuid';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
@@ -61,6 +60,7 @@ import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	image: File;
@@ -99,7 +99,7 @@ function addEffect(ev: MouseEvent) {
 		text: fx.name,
 		action: () => {
 			layers.push({
-				id: uuid(),
+				id: genId(),
 				fxId: fx.id,
 				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
 			});

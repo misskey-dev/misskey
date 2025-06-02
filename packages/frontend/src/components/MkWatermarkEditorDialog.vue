@@ -71,7 +71,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
-import { v4 as uuid } from 'uuid';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
@@ -83,12 +82,13 @@ import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
 function createTextLayer(): WatermarkPreset['layers'][number] {
 	return {
-		id: uuid(),
+		id: genId(),
 		type: 'text',
 		text: `(c) @${$i.username}`,
 		align: { x: 'right', y: 'bottom' },
@@ -100,7 +100,7 @@ function createTextLayer(): WatermarkPreset['layers'][number] {
 
 function createImageLayer(): WatermarkPreset['layers'][number] {
 	return {
-		id: uuid(),
+		id: genId(),
 		type: 'image',
 		imageId: null,
 		imageUrl: null,
@@ -118,7 +118,7 @@ const props = defineProps<{
 }>();
 
 const preset = reactive<WatermarkPreset>(deepClone(props.preset) ?? {
-	id: uuid(),
+	id: genId(),
 	name: '',
 	layers: [createTextLayer()],
 });
