@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import XBlocks from './page-editor.blocks.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -200,7 +200,7 @@ async function add() {
 	});
 	if (canceled) return;
 
-	const id = uuid();
+	const id = genId();
 	content.value.push({ id, type });
 }
 
@@ -240,7 +240,7 @@ async function init() {
 		content.value = page.value.content;
 		eyeCatchingImageId.value = page.value.eyeCatchingImageId;
 	} else {
-		const id = uuid();
+		const id = genId();
 		content.value = [{
 			id,
 			type: 'text',
