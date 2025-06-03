@@ -174,10 +174,10 @@ function rename() {
 	});
 }
 
-function describe() {
+async function describe() {
 	if (!file.value) return;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.value.comment ?? '',
 		file: file.value,
 	}, {
