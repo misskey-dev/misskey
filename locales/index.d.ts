@@ -12168,6 +12168,10 @@ export interface Locale extends ILocale {
              * 点グリッド
              */
             "dottedGrid": string;
+            /**
+             * チェッカー
+             */
+            "checker": string;
         };
     };
 }

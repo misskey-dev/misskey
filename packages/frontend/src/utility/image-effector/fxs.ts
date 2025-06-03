@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FX_checker } from './fxs/checker.js';
 import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
 import { FX_colorClamp } from './fxs/colorClamp.js';
 import { FX_colorClampAdvanced } from './fxs/colorClampAdvanced.js';
@@ -32,4 +33,5 @@ export const FXS = [
 	FX_zoomLines,
 	FX_stripe,
 	FX_dottedGrid,
+	FX_checker,
 ] as const satisfies ImageEffectorFx<string, any>[];
