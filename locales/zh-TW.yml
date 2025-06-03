@@ -3117,3 +3117,12 @@ _clip:
   tip: "摘錄是一項可以用來整理貼文的功能。"
 _userLists:
   tip: "您可以建立包含任意使用者的清單。建立後的清單可以作為時間軸顯示。\n"
+_watermarkEditor:
+  opacity: "透明度"
+  scale: "大小"
+  text: "文字"
+  position: "位置"
+  type: "類型"
+  image: "圖片"
+  advanced: "進階"
+  angle: "角度"

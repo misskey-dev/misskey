@@ -3001,3 +3001,12 @@ _search:
   pleaseEnterServerHost: "Gib den Server-Host ein"
   pleaseSelectUser: "Benutzer auswählen"
   serverHostPlaceholder: "Beispiel: misskey.example.com"
+_watermarkEditor:
+  opacity: "Transparenz"
+  scale: "Größe"
+  text: "Text"
+  position: "Position"
+  type: "Art"
+  image: "Bilder"
+  advanced: "Fortgeschritten"
+  angle: "Winkel"

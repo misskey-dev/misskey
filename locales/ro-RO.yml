@@ -1391,3 +1391,10 @@ _search:
   searchScopeLocal: "Local"
   searchScopeUser: "Utilizator specific"
   serverHostPlaceholder: "Exemplu: misskey.example.com"
+_watermarkEditor:
+  scale: "Dimensiune"
+  text: "Text"
+  position: "Poziție"
+  type: "Tip"
+  image: "Imagini"
+  advanced: "Avansat"

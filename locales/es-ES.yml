@@ -2933,3 +2933,12 @@ _search:
   searchScopeUser: "Especificar usuario"
 _uploader:
   allowedTypes: "Tipos de archivos que se pueden cargar."
+_watermarkEditor:
+  opacity: "Opacidad"
+  scale: "Tamaño"
+  text: "Texto"
+  position: "Posición"
+  type: "Tipo"
+  image: "Imágenes"
+  advanced: "Avanzado"
+  angle: "Ángulo"
