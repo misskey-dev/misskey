@@ -27,7 +27,7 @@ export function defineImageEffectorFx<ID extends string, PS extends ImageEffecto
 export type ImageEffectorFx<ID extends string = string, PS extends ImageEffectorFxParamDefs = ImageEffectorFxParamDefs, US extends string[] = string[]> = {
 	id: ID;
 	name: string;
-	shader: string;
+	shader: string | (() => Promise<string>);
 	uniforms: US;
 	params: PS,
 	main: (ctx: {
@@ -196,22 +196,37 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		return shaderProgram;
 	}
 
-	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
+	private async renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
 		const gl = this.gl;
 
 		const fx = this.fxs.find(fx => fx.id === layer.fxId);
 		if (fx == null) return;
 
 		const cachedShader = this.shaderCache.get(fx.id);
-		const shaderProgram = cachedShader ?? this.initShaderProgram(`#version 300 es
-			in vec2 position;
-			out vec2 in_uv;
+		let shaderProgram: WebGLProgram;
 
-			void main() {
-				in_uv = (position + 1.0) / 2.0;
-				gl_Position = vec4(position, 0.0, 1.0);
+		if (cachedShader != null) {
+			shaderProgram = cachedShader;
+		} else {
+			let shaderSource: string;
+
+			if (typeof fx.shader === 'string') {
+				shaderSource = fx.shader;
+			} else {
+				shaderSource = await fx.shader();
 			}
-		`, fx.shader);
+
+			shaderProgram = this.initShaderProgram(`#version 300 es
+				in vec2 position;
+				out vec2 in_uv;
+
+				void main() {
+					in_uv = (position + 1.0) / 2.0;
+					gl_Position = vec4(position, 0.0, 1.0);
+				}
+			`, shaderSource);
+		}
+
 		if (cachedShader == null) {
 			this.shaderCache.set(fx.id, shaderProgram);
 		}
@@ -230,7 +245,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			gl: gl,
 			program: shaderProgram,
 			params: Object.fromEntries(
-				Object.entries(fx.params).map(([key, param]) => {
+				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([key, param]) => {
 					return [key, layer.params[key] ?? param.default];
 				}),
 			),
@@ -238,7 +253,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: Object.fromEntries(
-				Object.entries(fx.params).map(([k, v]) => {
+				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([k, v]) => {
 					if (v.type !== 'texture') return [k, null];
 					const param = getValue<typeof v.type>(layer.params, k);
 					if (param == null) return [k, null];
@@ -250,7 +265,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
-	public render() {
+	public async render() {
 		const gl = this.gl;
 
 		{
@@ -291,7 +306,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			gl.bindFramebuffer(gl.FRAMEBUFFER, resultFrameBuffer);
 			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 
-			this.renderLayer(layer, preTexture);
+			await this.renderLayer(layer, preTexture);
 
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 

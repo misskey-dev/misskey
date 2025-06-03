@@ -34,11 +34,11 @@ export const FXS = [
 	FX_stripe,
 	FX_polkadot,
 	FX_checker,
-] as const satisfies ImageEffectorFx<string, any>[];
+] satisfies ReadonlyArray<ImageEffectorFx<string, any, any>>;
 
 export const WATERMARK_FXS = [
 	FX_watermarkPlacement,
 	FX_stripe,
 	FX_polkadot,
 	FX_checker,
-] as const satisfies ImageEffectorFx<string, any>[];
+] satisfies ReadonlyArray<ImageEffectorFx<string, any, any>>;

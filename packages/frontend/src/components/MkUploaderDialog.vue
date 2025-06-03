@@ -560,7 +560,7 @@ async function preprocess(item: (typeof items)['value'][number]): Promise<void> 
 
 		await renderer.setLayers(preset.layers);
 
-		renderer.render();
+		await renderer.render();
 
 		file = await new Promise<Blob>((resolve) => {
 			canvas.toBlob((blob) => {
