@@ -909,7 +909,6 @@ watch([
 	reactionsDisplaySize,
 	limitWidthOfReaction,
 	mediaListWithOneImageAppearance,
-	reactionsDisplaySize,
 	limitWidthOfReaction,
 	instanceTicker,
 	squareAvatars,
