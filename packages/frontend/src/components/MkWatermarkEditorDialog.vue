@@ -46,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>
 								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
 								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
+								<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
 							</template>
 							<template #footer>
 								<div class="_buttons">
@@ -109,6 +110,18 @@ function createImageLayer(): WatermarkPreset['layers'][number] {
 		opacity: 0.75,
 		repeat: false,
 		cover: false,
+	};
+}
+
+function createStripeLayer(): WatermarkPreset['layers'][number] {
+	return {
+		id: genId(),
+		type: 'stripe',
+		angle: 0.5,
+		frequency: 10,
+		threshold: 0.1,
+		black: false,
+		opacity: 0.75,
 	};
 }
 
@@ -280,6 +293,11 @@ function addLayer(ev: MouseEvent) {
 		text: i18n.ts._watermarkEditor.image,
 		action: () => {
 			preset.layers.push(createImageLayer());
+		},
+	}, {
+		text: i18n.ts._watermarkEditor.stripe,
+		action: () => {
+			preset.layers.push(createStripeLayer());
 		},
 	}], ev.currentTarget ?? ev.target);
 }

@@ -4,6 +4,7 @@
  */
 
 import { FX_watermarkPlacement } from './image-effector/fxs/watermarkPlacement.js';
+import { FX_stripe } from './image-effector/fxs/stripe.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
@@ -28,6 +29,14 @@ export type WatermarkPreset = {
 		scale: number;
 		align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom' };
 		opacity: number;
+	} | {
+		id: string;
+		type: 'stripe';
+		angle: number;
+		frequency: number;
+		threshold: number;
+		black: boolean;
+		opacity: number;
 	})[];
 };
 
@@ -46,7 +55,7 @@ export class WatermarkRenderer {
 			renderWidth: options.renderWidth,
 			renderHeight: options.renderHeight,
 			image: options.image,
-			fxs: [FX_watermarkPlacement],
+			fxs: [FX_watermarkPlacement, FX_stripe],
 		});
 	}
 
@@ -68,7 +77,7 @@ export class WatermarkRenderer {
 						},
 					},
 				};
-			} else {
+			} else if (layer.type === 'image') {
 				return {
 					fxId: 'watermarkPlacement',
 					id: layer.id,
@@ -82,6 +91,18 @@ export class WatermarkRenderer {
 							type: 'url',
 							url: layer.imageUrl,
 						},
+					},
+				};
+			} else if (layer.type === 'stripe') {
+				return {
+					fxId: 'stripe',
+					id: layer.id,
+					params: {
+						angle: layer.angle,
+						frequency: layer.frequency,
+						threshold: layer.threshold,
+						black: layer.black,
+						opacity: layer.opacity,
 					},
 				};
 			}

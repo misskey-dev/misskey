@@ -11,6 +11,7 @@ import { FX_glitch } from './fxs/glitch.js';
 import { FX_grayscale } from './fxs/grayscale.js';
 import { FX_invert } from './fxs/invert.js';
 import { FX_mirror } from './fxs/mirror.js';
+import { FX_stripe } from './fxs/stripe.js';
 import { FX_threshold } from './fxs/threshold.js';
 import { FX_watermarkPlacement } from './fxs/watermarkPlacement.js';
 import { FX_zoomLines } from './fxs/zoomLines.js';
@@ -28,4 +29,5 @@ export const FXS = [
 	FX_distort,
 	FX_threshold,
 	FX_zoomLines,
+	FX_stripe,
 ] as const satisfies ImageEffectorFx<string, any>[];

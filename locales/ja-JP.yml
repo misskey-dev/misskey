@@ -3236,6 +3236,10 @@ _watermarkEditor:
   type: "タイプ"
   image: "画像"
   advanced: "高度"
+  stripe: "ストライプ"
+  stripeWidth: "ラインの幅"
+  stripeFrequency: "ラインの数"
+  angle: "角度"
 
 _imageEffector:
   title: "エフェクト"
@@ -3253,3 +3257,4 @@ _imageEffector:
     distort: "歪み"
     threshold: "二値化"
     zoomLines: "集中線"
+    stripe: "ストライプ"

@@ -12085,6 +12085,22 @@ export interface Locale extends ILocale {
          * 高度
          */
         "advanced": string;
+        /**
+         * ストライプ
+         */
+        "stripe": string;
+        /**
+         * ラインの幅
+         */
+        "stripeWidth": string;
+        /**
+         * ラインの数
+         */
+        "stripeFrequency": string;
+        /**
+         * 角度
+         */
+        "angle": string;
     };
     "_imageEffector": {
         /**
@@ -12140,6 +12156,10 @@ export interface Locale extends ILocale {
              * 集中線
              */
             "zoomLines": string;
+            /**
+             * ストライプ
+             */
+            "stripe": string;
         };
     };
 }

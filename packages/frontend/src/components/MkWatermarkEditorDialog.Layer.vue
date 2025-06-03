@@ -85,6 +85,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
 		</MkSwitch>
 	</template>
+	<template v-else-if="layer.type === 'stripe'">
+		<MkRange
+			v-model="layer.frequency"
+			:min="1"
+			:max="30"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.stripeFrequency }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.threshold"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.stripeWidth }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.angle"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.opacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+		</MkRange>
+	</template>
 </div>
 </template>
 
