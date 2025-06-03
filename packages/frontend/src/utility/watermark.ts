@@ -39,7 +39,7 @@ export type WatermarkPreset = {
 		angle: number;
 		frequency: number;
 		threshold: number;
-		black: boolean;
+		color: [r: number, g: number, b: number];
 		opacity: number;
 	} | {
 		id: string;
@@ -51,14 +51,14 @@ export type WatermarkPreset = {
 		minorDivisions: number;
 		minorRadius: number;
 		minorOpacity: number;
-		black: boolean;
+		color: [r: number, g: number, b: number];
 		opacity: number;
 	} | {
 		id: string;
 		type: 'checker';
 		angle: number;
 		scale: number;
-		black: boolean;
+		color: [r: number, g: number, b: number];
 		opacity: number;
 	})[];
 };
@@ -126,7 +126,7 @@ export class WatermarkRenderer {
 						angle: layer.angle,
 						frequency: layer.frequency,
 						threshold: layer.threshold,
-						black: layer.black,
+						color: layer.color,
 						opacity: layer.opacity,
 					},
 				};
@@ -142,7 +142,7 @@ export class WatermarkRenderer {
 						minorDivisions: layer.minorDivisions,
 						minorRadius: layer.minorRadius,
 						minorOpacity: layer.minorOpacity,
-						black: layer.black,
+						color: layer.color,
 						opacity: layer.opacity,
 					},
 				};
@@ -153,7 +153,7 @@ export class WatermarkRenderer {
 					params: {
 						angle: layer.angle,
 						scale: layer.scale,
-						black: layer.black,
+						color: layer.color,
 						opacity: layer.opacity,
 					},
 				};

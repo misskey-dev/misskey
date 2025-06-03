@@ -18,7 +18,7 @@ uniform sampler2D in_texture;
 uniform vec2 in_resolution;
 uniform float u_angle;
 uniform float u_scale;
-uniform bool u_black;
+uniform vec3 u_color;
 uniform float u_opacity;
 out vec4 out_color;
 
@@ -38,9 +38,9 @@ void main() {
 	float fin = max(sign(fmodResult), 0.0);
 
 	out_color = vec4(
-		mix(in_color.r, u_black ? 0.0 : 1.0, fin * u_opacity),
-		mix(in_color.g, u_black ? 0.0 : 1.0, fin * u_opacity),
-		mix(in_color.b, u_black ? 0.0 : 1.0, fin * u_opacity),
+		mix(in_color.r, u_color.r, fin * u_opacity),
+		mix(in_color.g, u_color.g, fin * u_opacity),
+		mix(in_color.b, u_color.b, fin * u_opacity),
 		in_color.a
 	);
 }
@@ -50,7 +50,7 @@ export const FX_checker = defineImageEffectorFx({
 	id: 'checker' as const,
 	name: i18n.ts._imageEffector._fxs.checker,
 	shader,
-	uniforms: ['angle', 'scale', 'black', 'opacity'] as const,
+	uniforms: ['angle', 'scale', 'color', 'opacity'] as const,
 	params: {
 		angle: {
 			type: 'number' as const,
@@ -66,9 +66,9 @@ export const FX_checker = defineImageEffectorFx({
 			max: 10.0,
 			step: 0.1,
 		},
-		black: {
-			type: 'boolean' as const,
-			default: false,
+		color: {
+			type: 'color' as const,
+			default: [1, 1, 1],
 		},
 		opacity: {
 			type: 'number' as const,
@@ -81,7 +81,7 @@ export const FX_checker = defineImageEffectorFx({
 	main: ({ gl, u, params }) => {
 		gl.uniform1f(u.angle, params.angle / 2);
 		gl.uniform1f(u.scale, params.scale * params.scale);
-		gl.uniform1i(u.black, params.black ? 1 : 0);
+		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
 		gl.uniform1f(u.opacity, params.opacity);
 	},
 });

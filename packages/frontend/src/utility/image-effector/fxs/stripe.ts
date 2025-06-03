@@ -20,7 +20,7 @@ uniform float u_angle;
 uniform float u_frequency;
 uniform float u_phase;
 uniform float u_threshold;
-uniform bool u_black;
+uniform vec3 u_color;
 uniform float u_opacity;
 out vec4 out_color;
 
@@ -40,9 +40,9 @@ void main() {
 	float value = (1.0 + sin((rotatedUV.x * u_frequency - HALF_PI) + phase)) / 2.0;
 	value = value < u_threshold ? 1.0 : 0.0;
 	out_color = vec4(
-		mix(in_color.r, u_black ? 0.0 : 1.0, value * u_opacity),
-		mix(in_color.g, u_black ? 0.0 : 1.0, value * u_opacity),
-		mix(in_color.b, u_black ? 0.0 : 1.0, value * u_opacity),
+		mix(in_color.r, u_color.r, value * u_opacity),
+		mix(in_color.g, u_color.g, value * u_opacity),
+		mix(in_color.b, u_color.b, value * u_opacity),
 		in_color.a
 	);
 }
@@ -52,7 +52,7 @@ export const FX_stripe = defineImageEffectorFx({
 	id: 'stripe' as const,
 	name: i18n.ts._imageEffector._fxs.stripe,
 	shader,
-	uniforms: ['angle', 'frequency', 'phase', 'threshold', 'black', 'opacity'] as const,
+	uniforms: ['angle', 'frequency', 'phase', 'threshold', 'color', 'opacity'] as const,
 	params: {
 		angle: {
 			type: 'number' as const,
@@ -75,9 +75,9 @@ export const FX_stripe = defineImageEffectorFx({
 			max: 1.0,
 			step: 0.01,
 		},
-		black: {
-			type: 'boolean' as const,
-			default: false,
+		color: {
+			type: 'color' as const,
+			default: [1, 1, 1],
 		},
 		opacity: {
 			type: 'number' as const,
@@ -92,7 +92,7 @@ export const FX_stripe = defineImageEffectorFx({
 		gl.uniform1f(u.frequency, params.frequency * params.frequency);
 		gl.uniform1f(u.phase, 0.0);
 		gl.uniform1f(u.threshold, params.threshold);
-		gl.uniform1i(u.black, params.black ? 1 : 0);
+		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
 		gl.uniform1f(u.opacity, params.opacity);
 	},
 });

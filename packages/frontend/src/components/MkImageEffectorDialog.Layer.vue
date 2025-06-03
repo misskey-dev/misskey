@@ -31,6 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ k }}</template>
 				</MkRange>
 			</div>
+			<MkInput v-else-if="v.type === 'color'" :modelValue="`#${(layer.params[k][0] * 255).toString(16).padStart(2, '0')}${(layer.params[k][1] * 255).toString(16).padStart(2, '0')}${(layer.params[k][2] * 255).toString(16).padStart(2, '0')}`" type="color" @update:modelValue="v => { const c = v.slice(1).match(/.{2}/g)?.map(x => parseInt(x, 16) / 255); if (c) layer.params[k] = c; }">
+				<template #label>{{ k }}</template>
+			</MkInput>
 		</div>
 	</div>
 </MkFolder>

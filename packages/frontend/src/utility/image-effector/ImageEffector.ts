@@ -12,6 +12,7 @@ type ParamTypeToPrimitive = {
 	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
 	'seed': number;
 	'texture': { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
+	'color': [r: number, g: number, b: number];
 };
 
 type ImageEffectorFxParamDefs = Record<string, {

@@ -23,7 +23,7 @@ uniform float u_major_opacity;
 uniform float u_minor_divisions;
 uniform float u_minor_radius;
 uniform float u_minor_opacity;
-uniform bool u_black;
+uniform vec3 u_color;
 out vec4 out_color;
 
 void main() {
@@ -48,9 +48,9 @@ void main() {
 		length(vec2((1.0 / u_scale) - major_modX, (1.0 / u_scale) - major_modY)) < major_threshold
 	) {
 		out_color = vec4(
-			mix(in_color.r, u_black ? 0.0 : 1.0, u_major_opacity),
-			mix(in_color.g, u_black ? 0.0 : 1.0, u_major_opacity),
-			mix(in_color.b, u_black ? 0.0 : 1.0, u_major_opacity),
+			mix(in_color.r, u_color.r, u_major_opacity),
+			mix(in_color.g, u_color.g, u_major_opacity),
+			mix(in_color.b, u_color.b, u_major_opacity),
 			in_color.a
 		);
 		return;
@@ -66,9 +66,9 @@ void main() {
 		length(vec2((1.0 / u_scale / u_minor_divisions) - minor_modX, (1.0 / u_scale / u_minor_divisions) - minor_modY)) < minor_threshold
 	) {
 		out_color = vec4(
-			mix(in_color.r, u_black ? 0.0 : 1.0, u_minor_opacity),
-			mix(in_color.g, u_black ? 0.0 : 1.0, u_minor_opacity),
-			mix(in_color.b, u_black ? 0.0 : 1.0, u_minor_opacity),
+			mix(in_color.r, u_color.r, u_minor_opacity),
+			mix(in_color.g, u_color.g, u_minor_opacity),
+			mix(in_color.b, u_color.b, u_minor_opacity),
 			in_color.a
 		);
 		return;
@@ -82,7 +82,7 @@ export const FX_polkadot = defineImageEffectorFx({
 	id: 'polkadot' as const,
 	name: i18n.ts._imageEffector._fxs.polkadot,
 	shader,
-	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'black'] as const,
+	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'color'] as const,
 	params: {
 		angle: {
 			type: 'number' as const,
@@ -133,9 +133,9 @@ export const FX_polkadot = defineImageEffectorFx({
 			max: 1.0,
 			step: 0.01,
 		},
-		black: {
-			type: 'boolean' as const,
-			default: false,
+		color: {
+			type: 'color' as const,
+			default: [1, 1, 1],
 		},
 	},
 	main: ({ gl, u, params }) => {
@@ -145,7 +145,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		gl.uniform1f(u.major_opacity, params.majorOpacity);
 		gl.uniform1f(u.minor_divisions, params.minorDivisions);
 		gl.uniform1f(u.minor_radius, params.minorRadius);
+		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
 		gl.uniform1f(u.minor_opacity, params.minorOpacity);
-		gl.uniform1i(u.black, params.black ? 1 : 0);
 	},
 });
