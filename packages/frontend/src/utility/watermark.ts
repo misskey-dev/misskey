@@ -5,6 +5,8 @@
 
 import { FX_watermarkPlacement } from './image-effector/fxs/watermarkPlacement.js';
 import { FX_stripe } from './image-effector/fxs/stripe.js';
+import { FX_dottedGrid } from './image-effector/fxs/dottedGrid.js';
+import { FX_checker } from './image-effector/fxs/checker.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
@@ -39,6 +41,25 @@ export type WatermarkPreset = {
 		threshold: number;
 		black: boolean;
 		opacity: number;
+	} | {
+		id: string;
+		type: 'dottedGrid';
+		angle: number;
+		scale: number;
+		majorRadius: number;
+		majorOpacity: number;
+		minorDivisions: number;
+		minorRadius: number;
+		minorOpacity: number;
+		black: boolean;
+		opacity: number;
+	} | {
+		id: string;
+		type: 'checker';
+		angle: number;
+		scale: number;
+		black: boolean;
+		opacity: number;
 	})[];
 };
 
@@ -57,7 +78,7 @@ export class WatermarkRenderer {
 			renderWidth: options.renderWidth,
 			renderHeight: options.renderHeight,
 			image: options.image,
-			fxs: [FX_watermarkPlacement, FX_stripe],
+			fxs: [FX_watermarkPlacement, FX_stripe, FX_dottedGrid, FX_checker],
 		});
 	}
 
@@ -105,6 +126,33 @@ export class WatermarkRenderer {
 						angle: layer.angle,
 						frequency: layer.frequency,
 						threshold: layer.threshold,
+						black: layer.black,
+						opacity: layer.opacity,
+					},
+				};
+			} else if (layer.type === 'dottedGrid') {
+				return {
+					fxId: 'dottedGrid',
+					id: layer.id,
+					params: {
+						angle: layer.angle,
+						scale: layer.scale,
+						majorRadius: layer.majorRadius,
+						majorOpacity: layer.majorOpacity,
+						minorDivisions: layer.minorDivisions,
+						minorRadius: layer.minorRadius,
+						minorOpacity: layer.minorOpacity,
+						black: layer.black,
+						opacity: layer.opacity,
+					},
+				};
+			} else if (layer.type === 'checker') {
+				return {
+					fxId: 'checker',
+					id: layer.id,
+					params: {
+						angle: layer.angle,
+						scale: layer.scale,
 						black: layer.black,
 						opacity: layer.opacity,
 					},

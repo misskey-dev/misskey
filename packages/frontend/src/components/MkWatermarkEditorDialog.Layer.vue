@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
 		</MkSwitch>
 	</template>
+
 	<template v-else-if="layer.type === 'image'">
 		<MkButton inline rounded primary @click="chooseFile">{{ i18n.ts.selectFile }}</MkButton>
 
@@ -105,6 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
 		</MkSwitch>
 	</template>
+
 	<template v-else-if="layer.type === 'stripe'">
 		<MkRange
 			v-model="layer.frequency"
@@ -147,12 +149,109 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
 		</MkRange>
 	</template>
+
+	<template v-else-if="layer.type === 'dottedGrid'">
+		<MkRange
+			v-model="layer.angle"
+			:min="-1"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.scale"
+			:min="0"
+			:max="10"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.minorRadius"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMinorRadius }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.minorDivisions"
+			:min="0"
+			:max="16"
+			:step="1"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMinorDivisions }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.majorOpacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMajorOpacity }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.minorOpacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMinorOpacity }}</template>
+		</MkRange>
+	</template>
+
+	<template v-else-if="layer.type === 'checker'">
+		<MkRange
+			v-model="layer.angle"
+			:min="-1"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.scale"
+			:min="0"
+			:max="10"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.opacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+		</MkRange>
+	</template>
 </div>
 </template>
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted } from 'vue';
-import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
