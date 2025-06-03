@@ -10332,7 +10332,7 @@ export interface Locale extends ILocale {
         "global": string;
     };
     /**
-     * 浮上した人
+     * 浮上
      */
     "floater": string;
     "_play": {

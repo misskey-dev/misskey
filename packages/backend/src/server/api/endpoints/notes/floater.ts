@@ -3,19 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Datasource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, ChannelFollowingsRepository, MiMeta } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiLocalUser } from '@/models/User.js';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -79,15 +76,82 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		});
 	}
 
-	private async getFromDb(ps: { anchorId: string | null; offset: number; limit: number; }, me: MiLocalUser) {
-		//#region Construct query
-		const updatedUsers = await this.db.query('SELECT c."userId" as user, d.m as last FROM ( SELECT DISTINCT ON (f."followeeId") f."followeeId" AS "userId" FROM "following" f JOIN "note" n ON n."userId" = f."followeeId" WHERE f."followerId" = $1 AND n."id" > $2 AND n."visibility" <> \'specified\' AND n."renoteId" IS NULL AND n."replyId" IS NULL ORDER BY f."followeeId", n."id" DESC) AS c LEFT JOIN LATERAL ( SELECT "id" AS m FROM "note" WHERE "userId" = c."userId" AND "id" <= $2 AND note."visibility" <> \'specified\' AND note."renoteId" IS NULL AND note."replyId" IS NULL ORDER BY "id" DESC LIMIT 1) AS d ON true ORDER BY d.m ASC NULLS FIRST OFFSET $3 LIMIT $4', [me.id, ps.anchorId, ps.offset, ps.limit]);
+	// getFromDb メソッドをシンプル化
+	private async getFromDb(ps: {
+		anchorId: string | null;
+		offset: number;
+		limit: number;
+	}, me: MiLocalUser) {
+		// フォローしているユーザーと、フォローしていないローカルユーザーのパブリック投稿、両方を含むクエリ
+		const updatedUsers = await this.db.query(`
+            WITH local_active_users AS (
+                -- フォローしているユーザーと最近投稿したローカルユーザーを取得
+                SELECT DISTINCT u.id AS "userId"
+                FROM "user" u
+                LEFT JOIN "following" f ON u.id = f."followeeId" AND f."followerId" = $1
+                JOIN "note" n ON u.id = n."userId"
+                WHERE
+                    -- ローカルユーザーのみ
+                    u."host" IS NULL
+                    -- anchorId以降に投稿がある
+                    AND n."id" > $2
+                    -- パブリック投稿
+                    AND n."visibility" IN ('public')
+                    -- リノート・リプライを除外
+                    AND n."renoteId" IS NULL
+                    AND n."replyId" IS NULL
+                    -- やみモードフィルタリング
+                    AND (n."isNoteInYamiMode" = FALSE OR $5 = TRUE)
+            ),
+            user_last_posts AS (
+                -- 各ユーザーの最後の投稿（anchorId以前）を取得
+                SELECT
+                    lau."userId",
+                    (
+                        SELECT "id"
+                        FROM "note"
+                        WHERE "userId" = lau."userId"
+                            AND "id" <= $2
+                            AND "visibility" IN ('public')
+                            AND "renoteId" IS NULL
+                            AND "replyId" IS NULL
+                            AND ("isNoteInYamiMode" = FALSE OR $5 = TRUE)
+                        ORDER BY "id" DESC
+                        LIMIT 1
+                    ) AS last_post_id,
+                    -- フォロー状態
+                    EXISTS (
+                        SELECT 1 FROM "following"
+                        WHERE "followerId" = $1 AND "followeeId" = lau."userId"
+                    ) AS is_following
+                FROM local_active_users lau
+            )
+            -- フォロー状態順 + 最後の投稿古い順 + オフセット + リミット
+            SELECT
+                "userId" AS user,
+                last_post_id AS last,
+                is_following
+            FROM user_last_posts
+            ORDER BY
+                -- フォロー中ユーザーを優先
+                is_following DESC,
+                -- 最後の投稿が古いか存在しない（初投稿）ユーザーを優先
+                last_post_id ASC NULLS FIRST
+            OFFSET $3
+            LIMIT $4
+        `, [me.id, ps.anchorId, ps.offset, ps.limit, me.isInYamiMode]);
 
 		return await Promise.all(updatedUsers.map(async (row) => {
 			const userId = row.user;
 			const query = this.notesRepository.createQueryBuilder('note').innerJoinAndSelect('note.user', 'user');
 
+			// 標準の可視性クエリ
 			this.queryService.generateVisibilityQuery(query, me);
+
+			// フォローしていないユーザーの場合は明示的にパブリック投稿のみに制限
+			if (!row.is_following && userId !== me.id) {
+				query.andWhere('note.visibility = :visibility', { visibility: 'public' });
+			}
 
 			// やみモード投稿のフィルタリング
 			if (!(me.isInYamiMode)) {
@@ -105,7 +169,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			query.orderBy('note.id', 'DESC');
 			query.limit(3);
 
-			return { id: userId, notes: await query.getMany(), last: row.last };
+			// isFollowing 情報を追加
+			return {
+				id: userId,
+				notes: await query.getMany(),
+				last: row.last,
+				isFollowing: row.is_following
+			};
 		}));
 	}
 }
