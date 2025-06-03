@@ -1,9 +1,10 @@
+#version 300 es
+
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-#version 300 es
 precision mediump float;
 
 const float PI = 3.141592653589793;
