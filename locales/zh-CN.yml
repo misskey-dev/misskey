@@ -3117,3 +3117,12 @@ _clip:
   tip: "便签功能可以将帖子合并在一起。"
 _userLists:
   tip: "可创建包含任意用户的列表。已创建的列表可作为时间线查看。"
+_watermarkEditor:
+  opacity: "不透明度"
+  scale: "大小"
+  text: "文本"
+  position: "位置"
+  type: "类型"
+  image: "图片"
+  advanced: "高级"
+  angle: "角度"
