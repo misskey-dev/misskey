@@ -376,9 +376,9 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				text: preset.name,
 				active: computed(() => item.watermarkPresetId === preset.id),
 				action: () => changeWatermarkPreset(preset.id),
-			})), {
-				type: 'divider',
-			}, {
+			})), ...(prefer.s.watermarkPresets.length > 0 ? [{
+				type: 'divider' as const,
+			}] : []), {
 				type: 'button',
 				icon: 'ti ti-plus',
 				text: i18n.ts.add,
