@@ -5,9 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="recent" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<div class="_spacer" style="--MI_SPACER-w: 1000px;">
-		<XFloater ref="floaterComponent" :anchor-date="anchorDate" />
-	</div>
+	<XFloater ref="floaterComponent" :anchorDate="anchorDate"/>
 </PageWithHeader>
 </template>
 
