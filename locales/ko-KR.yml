@@ -3117,3 +3117,12 @@ _clip:
   tip: "클립은 노트를 정리할 수 있는 기능입니다."
 _userLists:
   tip: "임의의 유저가 포함된 리스트를 작성할 수 있습니다. 작성한 리스트는 타임라인으로 표시가 가능합니다."
+_watermarkEditor:
+  opacity: "불투명도"
+  scale: "크기"
+  text: "텍스트"
+  position: "위치"
+  type: "종류"
+  image: "이미지"
+  advanced: "고급"
+  angle: "각도"
