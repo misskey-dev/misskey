@@ -344,7 +344,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 				unused.delete(textureKey);
 				if (this.paramTextures.has(textureKey)) continue;
 
-				console.log(`Baking texture of <${textureKey}>...`);
+				if (_DEV_) console.log(`Baking texture of <${textureKey}>...`);
 
 				const texture = v.type === 'text' ? await createTextureFromText(this.gl, v.text) : v.type === 'url' ? await createTextureFromUrl(this.gl, v.url) : null;
 				if (texture == null) continue;
@@ -354,7 +354,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 
 		for (const k of unused) {
-			console.log(`Dispose unused texture <${k}>...`);
+			if (_DEV_) console.log(`Dispose unused texture <${k}>...`);
 			this.gl.deleteTexture(this.paramTextures.get(k)!.texture);
 			this.paramTextures.delete(k);
 		}
