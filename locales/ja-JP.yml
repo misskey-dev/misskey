@@ -3242,6 +3242,11 @@ _watermarkEditor:
   angle: "角度"
   dottedGrid: "点グリッド"
   checker: "チェッカー"
+  gridMajorOpacity: "主点の不透明度"
+  gridMajorRadius: "副点の大きさ"
+  gridMinorOpacity: "副点の不透明度"
+  gridMinorRadius: "副点の大きさ"
+  gridMinorDivisions: "副点の数"
 
 _imageEffector:
   title: "エフェクト"

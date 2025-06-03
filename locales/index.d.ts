@@ -12109,6 +12109,26 @@ export interface Locale extends ILocale {
          * チェッカー
          */
         "checker": string;
+        /**
+         * 主点の不透明度
+         */
+        "gridMajorOpacity": string;
+        /**
+         * 副点の大きさ
+         */
+        "gridMajorRadius": string;
+        /**
+         * 副点の不透明度
+         */
+        "gridMinorOpacity": string;
+        /**
+         * 副点の大きさ
+         */
+        "gridMinorRadius": string;
+        /**
+         * 副点の数
+         */
+        "gridMinorDivisions": string;
     };
     "_imageEffector": {
         /**

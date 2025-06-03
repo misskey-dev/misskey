@@ -172,14 +172,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRange>
 
 		<MkRange
-			v-model="layer.minorRadius"
+			v-model="layer.majorRadius"
 			:min="0"
 			:max="1"
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMinorRadius }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMajorRadius }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.majorOpacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMajorOpacity }}</template>
 		</MkRange>
 
 		<MkRange
@@ -193,14 +204,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRange>
 
 		<MkRange
-			v-model="layer.majorOpacity"
+			v-model="layer.minorRadius"
 			:min="0"
 			:max="1"
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMajorOpacity }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.gridMinorRadius }}</template>
 		</MkRange>
 
 		<MkRange
