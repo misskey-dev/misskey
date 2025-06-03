@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.container">
 			<div :class="$style.preview">
 				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
+				<MkLoading v-if="canvasLoading" :class="$style.previewSpinner"/>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
@@ -88,6 +89,8 @@ import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
+
+const canvasLoading = ref(true);
 
 function createTextLayer(): WatermarkPreset['layers'][number] {
 	return {
@@ -232,6 +235,13 @@ let imageBitmap: ImageBitmap | null = null;
 async function initRenderer() {
 	if (canvasEl.value == null) return;
 
+	canvasLoading.value = true;
+
+	await Promise.all([
+		sampleImage_3_2_loading,
+		sampleImage_2_3_loading,
+	]);
+
 	if (sampleImageType.value === '3_2') {
 		renderer = new WatermarkRenderer({
 			canvas: canvasEl.value,
@@ -270,7 +280,9 @@ async function initRenderer() {
 
 	await renderer!.setLayers(preset.layers);
 
-	renderer!.render();
+	await renderer!.render();
+
+	canvasLoading.value = false;
 }
 
 onMounted(async () => {
