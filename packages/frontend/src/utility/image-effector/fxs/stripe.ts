@@ -26,9 +26,12 @@ out vec4 out_color;
 
 void main() {
 	vec4 in_color = texture(in_texture, in_uv);
+	float x_ratio = max(in_resolution.x / in_resolution.y, 1.0);
+	float y_ratio = max(in_resolution.y / in_resolution.x, 1.0);
+
 	float angle = u_angle * PI;
 	mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-	vec2 rotatedUV = rotationMatrix * (in_uv - 0.5);
+	vec2 rotatedUV = rotationMatrix * (vec2(in_uv.x * x_ratio, in_uv.y * y_ratio) - 0.5);
 	float phase = u_phase * TWO_PI;
 	float value = (1.0 + sin((rotatedUV.x * u_frequency - HALF_PI) + phase)) / 2.0;
 	value = value < u_threshold ? 1.0 : 0.0;
@@ -50,7 +53,7 @@ export const FX_stripe = defineImageEffectorFx({
 		angle: {
 			type: 'number' as const,
 			default: 0.5,
-			min: 0.0,
+			min: -1.0,
 			max: 1.0,
 			step: 0.01,
 		},

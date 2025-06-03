@@ -108,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkRange
 			v-model="layer.angle"
-			:min="0"
+			:min="-1"
 			:max="1"
 			:step="0.01"
 			continuousUpdate
