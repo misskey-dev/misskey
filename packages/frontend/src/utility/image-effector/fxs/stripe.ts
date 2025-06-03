@@ -29,9 +29,13 @@ void main() {
 	float x_ratio = max(in_resolution.x / in_resolution.y, 1.0);
 	float y_ratio = max(in_resolution.y / in_resolution.x, 1.0);
 
-	float angle = u_angle * PI;
-	mat2 rotationMatrix = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-	vec2 rotatedUV = rotationMatrix * (vec2(in_uv.x * x_ratio, in_uv.y * y_ratio) - 0.5);
+	float angle = -(u_angle * PI);
+	vec2 centeredUv = (in_uv - vec2(0.5, 0.5)) * vec2(x_ratio, y_ratio);
+	vec2 rotatedUV = vec2(
+		centeredUv.x * cos(angle) - centeredUv.y * sin(angle),
+		centeredUv.x * sin(angle) + centeredUv.y * cos(angle)
+	);
+
 	float phase = u_phase * TWO_PI;
 	float value = (1.0 + sin((rotatedUV.x * u_frequency - HALF_PI) + phase)) / 2.0;
 	value = value < u_threshold ? 1.0 : 0.0;

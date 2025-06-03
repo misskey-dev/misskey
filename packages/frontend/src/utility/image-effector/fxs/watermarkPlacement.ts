@@ -28,6 +28,8 @@ out vec4 out_color;
 
 void main() {
 	vec4 in_color = texture(in_texture, in_uv);
+	float in_x_ratio = max(in_resolution.x / in_resolution.y, 1.0);
+	float in_y_ratio = max(in_resolution.y / in_resolution.x, 1.0);
 
 	bool contain = u_fitMode == 0;
 
@@ -51,12 +53,11 @@ void main() {
 
 	float angle = -(u_angle * PI);
 	vec2 center = vec2(x_offset, y_offset);
-	vec2 centeredUv = in_uv - center;
-	float cosAngle = cos(angle);
-	float sinAngle = sin(angle);
+	//vec2 centeredUv = (in_uv - center) * vec2(in_x_ratio, in_y_ratio);
+	vec2 centeredUv = (in_uv - center);
 	vec2 rotatedUV = vec2(
-		centeredUv.x * cosAngle - centeredUv.y * sinAngle,
-		centeredUv.x * sinAngle + centeredUv.y * cosAngle
+		centeredUv.x * cos(angle) - centeredUv.y * sin(angle),
+		centeredUv.x * sin(angle) + centeredUv.y * cos(angle)
 	) + center;
 
 	// trim

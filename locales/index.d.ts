@@ -12101,6 +12101,10 @@ export interface Locale extends ILocale {
          * 角度
          */
         "angle": string;
+        /**
+         * 点グリッド
+         */
+        "dottedGrid": string;
     };
     "_imageEffector": {
         /**
@@ -12160,6 +12164,10 @@ export interface Locale extends ILocale {
              * ストライプ
              */
             "stripe": string;
+            /**
+             * 点グリッド
+             */
+            "dottedGrid": string;
         };
     };
 }

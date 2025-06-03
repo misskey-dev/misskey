@@ -3240,6 +3240,7 @@ _watermarkEditor:
   stripeWidth: "ラインの幅"
   stripeFrequency: "ラインの数"
   angle: "角度"
+  dottedGrid: "点グリッド"
 
 _imageEffector:
   title: "エフェクト"
@@ -3258,3 +3259,4 @@ _imageEffector:
     threshold: "二値化"
     zoomLines: "集中線"
     stripe: "ストライプ"
+    dottedGrid: "点グリッド"
