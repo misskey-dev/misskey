@@ -6,7 +6,7 @@
 let isJxlSupportedCache: boolean | undefined;
 export function isJxlSupported() {
     if (isJxlSupportedCache === undefined) {
-        const canvas = document.createElement('canvas');
+        const canvas = window.document.createElement('canvas');
         canvas.width = 1;
         canvas.height = 1;
         isJxlSupportedCache = canvas.toDataURL('image/jxl').startsWith('data:image/jxl');
