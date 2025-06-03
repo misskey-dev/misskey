@@ -263,6 +263,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import * as Misskey from 'misskey-js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -277,7 +278,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
 
-const driveFile = ref();
+const driveFile = ref<Misskey.entities.DriveFile | null>(null);
 const driveFileError = ref(false);
 onMounted(async () => {
 	if (layer.value.type === 'image' && layer.value.imageId != null) {
@@ -300,6 +301,7 @@ function chooseFile(ev: MouseEvent) {
 			watermark: false,
 		},
 	}).then((file) => {
+		if (layer.value.type !== 'image') return;
 		if (!file.type.startsWith('image')) {
 			os.alert({
 				type: 'warning',

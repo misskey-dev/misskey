@@ -77,6 +77,7 @@ const dialog = useTemplateRef('dialog');
 async function cancel() {
 	if (layers.length > 0) {
 		const { canceled } = await os.confirm({
+			type: 'warning',
 			text: i18n.ts._imageEffector.discardChangesConfirm,
 		});
 		if (canceled) return;
@@ -132,7 +133,7 @@ function onLayerDelete(layer: ImageEffectorLayer) {
 
 const canvasEl = useTemplateRef('canvasEl');
 
-let renderer: ImageEffector | null = null;
+let renderer: ImageEffector<typeof FXS> | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 onMounted(async () => {

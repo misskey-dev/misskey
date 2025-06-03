@@ -35,3 +35,10 @@ export const FXS = [
 	FX_polkadot,
 	FX_checker,
 ] as const satisfies ImageEffectorFx<string, any>[];
+
+export const WATERMARK_FXS = [
+	FX_watermarkPlacement,
+	FX_stripe,
+	FX_polkadot,
+	FX_checker,
+] as const satisfies ImageEffectorFx<string, any>[];

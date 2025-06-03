@@ -57,7 +57,7 @@ function getValue<T extends keyof ParamTypeToPrimitive>(params: Record<string, a
 	return params[k];
 }
 
-export class ImageEffector {
+export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, any>>> {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
 	private renderTextureProgram: WebGLProgram;
@@ -70,7 +70,7 @@ export class ImageEffector {
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
-	private fxs: ImageEffectorFx[];
+	private fxs: [...IEX];
 	private paramTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
 	constructor(options: {
@@ -78,7 +78,7 @@ export class ImageEffector {
 		renderWidth: number;
 		renderHeight: number;
 		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
-		fxs: ImageEffectorFx[];
+		fxs: [...IEX];
 	}) {
 		this.canvas = options.canvas;
 		this.renderWidth = options.renderWidth;

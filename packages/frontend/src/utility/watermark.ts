@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FX_watermarkPlacement } from './image-effector/fxs/watermarkPlacement.js';
-import { FX_stripe } from './image-effector/fxs/stripe.js';
-import { FX_polkadot } from './image-effector/fxs/polkadot.js';
-import { FX_checker } from './image-effector/fxs/checker.js';
+import { WATERMARK_FXS } from './image-effector/fxs.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
@@ -64,7 +61,7 @@ export type WatermarkPreset = {
 };
 
 export class WatermarkRenderer {
-	private effector: ImageEffector;
+	private effector: ImageEffector<typeof WATERMARK_FXS>;
 	private layers: WatermarkPreset['layers'] = [];
 
 	constructor(options: {
@@ -78,7 +75,7 @@ export class WatermarkRenderer {
 			renderWidth: options.renderWidth,
 			renderHeight: options.renderHeight,
 			image: options.image,
-			fxs: [FX_watermarkPlacement, FX_stripe, FX_polkadot, FX_checker],
+			fxs: WATERMARK_FXS,
 		});
 	}
 
@@ -157,6 +154,8 @@ export class WatermarkRenderer {
 						opacity: layer.opacity,
 					},
 				};
+			} else {
+				throw new Error(`Unknown layer type`);
 			}
 		});
 	}
