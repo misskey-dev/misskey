@@ -5821,6 +5821,10 @@ export interface Locale extends ILocale {
          * URLプレビューを表示する
          */
         "showUrlPreview": string;
+        /**
+         * 利用できるリアクションを先頭に表示
+         */
+        "showAvailableReactionsFirstInNote": string;
         "_chat": {
             /**
              * 送信者の名前を表示
