@@ -4,18 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="recent" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<XFloater ref="floaterComponent" :anchorDate="anchorDate"/>
+<PageWithHeader
+	v-model:tab="recent" :actions="headerActions" :tabs="headerTabs" :swipable="true"
+	:displayMyAvatar="true"
+>
+	<XFloater ref="floaterComponent" :key="recent" :anchorDate="anchorDate"/>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, provide, useTemplateRef } from 'vue';
+import { computed, ref, provide, useTemplateRef, watch } from 'vue';
 import XFloater from './floater.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import PageWithHeader from '@/components/global/PageWithHeader.vue';
 import { deviceKind } from '@/utility/device-kind.js';
+import { $i } from '@/i.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 // タブUIの表示のためにこのプロバイダーを追加
 provide('shouldOmitHeaderTitle', true);
@@ -23,8 +28,10 @@ provide('shouldOmitHeaderTitle', true);
 // フロータータイムラインのコンポーネント参照
 const floaterComponent = useTemplateRef('floaterComponent');
 
-// 最初から文字列として初期化
-const recent = ref('86400000');
+// ローカルストレージからタブ設定を読み込む、デフォルトは1日
+// miux: プレフィックスを使用して型エラーを解消
+const savedTab = miLocalStorage.getItem('miux:floaterTab') || '86400000';
+const recent = ref(savedTab);
 
 // 表示期間の設定
 const anchorDate = computed(() => {
@@ -43,6 +50,15 @@ const headerTabs = computed(() => [
 	{ key: '604800000', title: i18n.tsx.recentNDays({ n: 7 }), icon: 'ti ti-calendar-week', iconOnly: true },
 	{ key: '2592000000', title: i18n.tsx.recentNDays({ n: 30 }), icon: 'ti ti-calendar-month', iconOnly: true },
 ]);
+
+// タブ変更を監視し、ストレージに保存
+watch(recent, (newValue) => {
+	// ストレージに保存
+	miLocalStorage.setItem('miux:floaterTab', newValue);
+
+	// 注意: タブ切替時のリロードは:keyによるコンポーネント再マウントで自動的に行われるため、
+	// ここで明示的なリロード処理は不要
+});
 
 // タイムラインと同等のリロードボタンを追加したヘッダーアクション
 const headerActions = computed(() => {

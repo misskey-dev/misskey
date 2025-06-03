@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, provide } from 'vue';
+import { computed, shallowRef, provide, watch, ref, onMounted } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -52,6 +52,9 @@ const props = defineProps<{
 // MkPaginationコンポーネントへの参照
 const paginationComponent = shallowRef(null);
 
+// 強制リロードフラグ
+const forceReload = ref(0);
+
 // ページネーションの設定
 const followingPagination = computed(() => ({
 	endpoint: 'notes/floater' as const,
@@ -59,8 +62,26 @@ const followingPagination = computed(() => ({
 	offsetMode: true,
 	params: {
 		anchorDate: props.anchorDate,
+		forceReload: forceReload.value, // 無意味なパラメータだが、変更するとキャッシュが無効になる
 	},
 }));
+
+// コンポーネントマウント時に初期ロード
+onMounted(() => {
+	// コンポーネントがマウントされたら初期ロード
+	if (paginationComponent.value) {
+		paginationComponent.value.paginator?.reload();
+	}
+});
+
+// anchorDateが変更されたときにページネーションをリロード
+watch(() => props.anchorDate, (newVal, oldVal) => {
+	if (newVal !== oldVal && paginationComponent.value) {
+		// 強制的にキャッシュを無効化してリロード
+		forceReload.value++;
+		paginationComponent.value.paginator?.reload();
+	}
+}, { immediate: false });
 
 // 同じ日付かどうかを判定する関数
 function isSameDay(date1: string, date2: string): boolean {
@@ -83,7 +104,9 @@ function isToday(dateStr: string): boolean {
 // 必要に応じて外部からリロードできるように
 function reload() {
 	if (paginationComponent.value) {
-		paginationComponent.value.paginator.reload();
+		// 強制的にキャッシュを無効化してリロード
+		forceReload.value++;
+		paginationComponent.value.paginator?.reload();
 	}
 }
 
