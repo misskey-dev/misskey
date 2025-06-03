@@ -99,7 +99,7 @@ defineProps<{
 		aspect-ratio: 1;
 	}
 
-	> .thumbnail {
+	.thumbnail {
 		width: 100%;
 		height: 100%;
 	}
