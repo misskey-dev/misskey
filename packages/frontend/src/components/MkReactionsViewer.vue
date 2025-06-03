@@ -96,7 +96,7 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 		...newReactions,
 		...Object.entries(newSource)
 			.sort(([emojiA, countA], [emojiB, countB]) => {
-				if (prefer.r.prioritizeAvailableReactions) {
+				if (prefer.r.showAvailableReactionsFirstInNote) {
 					if (!canReact(emojiA) && canReact(emojiB)) return 1;
 					if (canReact(emojiA) && !canReact(emojiB)) return -1;
 					return countB - countA;

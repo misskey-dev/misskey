@@ -1365,7 +1365,6 @@ abort: "中止"
 tip: "ヒントとコツ"
 redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
-prioritizeAvailableReactions: "使用可能なリアクションを優先して表示する"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1456,7 +1455,7 @@ _settings:
   contentsUpdateFrequency_description: "高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。"
   contentsUpdateFrequency_description2: "リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。"
   showUrlPreview: "URLプレビューを表示する"
-  prioritizeAvailableReactions_description: "ノートのリアクションの並び順を、単純な降順から、「利用可能なリアクションの降順→その他のリアクションの降順」に変更します。"
+  showAvailableReactionsFirstInNote: "利用できるリアクションを先頭に表示"
 
   _chat:
     showSenderName: "送信者の名前を表示"

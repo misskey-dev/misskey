@@ -231,10 +231,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</SearchMarker>
 
 								<SearchMarker :keywords="['reaction', 'order']">
-									<MkPreferenceContainer k="prioritizeAvailableReactions">
-										<MkSwitch v-model="prioritizeAvailableReactions">
-											<template #label><SearchLabel>{{ i18n.ts.prioritizeAvailableReactions }}</SearchLabel></template>
-											<template #caption><SearchKeyword>{{ i18n.ts._settings.prioritizeAvailableReactions_description }}</SearchKeyword></template>
+									<MkPreferenceContainer k="showAvailableReactionsFirstInNote">
+										<MkSwitch v-model="showAvailableReactionsFirstInNote">
+											<template #label><SearchLabel>{{ i18n.ts._settings.showAvailableReactionsFirstInNote }}</SearchLabel></template>
 										</MkSwitch>
 									</MkPreferenceContainer>
 								</SearchMarker>
@@ -833,7 +832,7 @@ const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');
 const numberOfPageCache = prefer.model('numberOfPageCache');
 const enableInfiniteScroll = prefer.model('enableInfiniteScroll');
 const useReactionPickerForContextMenu = prefer.model('useReactionPickerForContextMenu');
-const prioritizeAvailableReactions = prefer.model('prioritizeAvailableReactions');
+const showAvailableReactionsFirstInNote = prefer.model('showAvailableReactionsFirstInNote');
 const useGroupedNotifications = prefer.model('useGroupedNotifications');
 const alwaysConfirmFollow = prefer.model('alwaysConfirmFollow');
 const confirmWhenRevealingSensitiveMedia = prefer.model('confirmWhenRevealingSensitiveMedia');

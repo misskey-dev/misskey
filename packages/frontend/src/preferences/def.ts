@@ -377,7 +377,7 @@ export const PREF_DEF = definePreferences({
 	showTitlebar: {
 		default: false,
 	},
-	prioritizeAvailableReactions: {
+	showAvailableReactionsFirstInNote: {
 		default: false,
 	},
 	plugins: {
