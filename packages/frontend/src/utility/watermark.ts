@@ -5,7 +5,7 @@
 
 import { FX_watermarkPlacement } from './image-effector/fxs/watermarkPlacement.js';
 import { FX_stripe } from './image-effector/fxs/stripe.js';
-import { FX_dottedGrid } from './image-effector/fxs/dottedGrid.js';
+import { FX_polkadot } from './image-effector/fxs/polkadot.js';
 import { FX_checker } from './image-effector/fxs/checker.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
@@ -43,7 +43,7 @@ export type WatermarkPreset = {
 		opacity: number;
 	} | {
 		id: string;
-		type: 'dottedGrid';
+		type: 'polkadot';
 		angle: number;
 		scale: number;
 		majorRadius: number;
@@ -78,7 +78,7 @@ export class WatermarkRenderer {
 			renderWidth: options.renderWidth,
 			renderHeight: options.renderHeight,
 			image: options.image,
-			fxs: [FX_watermarkPlacement, FX_stripe, FX_dottedGrid, FX_checker],
+			fxs: [FX_watermarkPlacement, FX_stripe, FX_polkadot, FX_checker],
 		});
 	}
 
@@ -130,9 +130,9 @@ export class WatermarkRenderer {
 						opacity: layer.opacity,
 					},
 				};
-			} else if (layer.type === 'dottedGrid') {
+			} else if (layer.type === 'polkadot') {
 				return {
-					fxId: 'dottedGrid',
+					fxId: 'polkadot',
 					id: layer.id,
 					params: {
 						angle: layer.angle,

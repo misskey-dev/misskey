@@ -12102,33 +12102,33 @@ export interface Locale extends ILocale {
          */
         "angle": string;
         /**
-         * 点グリッド
+         * ポルカドット
          */
-        "dottedGrid": string;
+        "polkadot": string;
         /**
          * チェッカー
          */
         "checker": string;
         /**
-         * 主点の不透明度
+         * メインドットの不透明度
          */
-        "gridMajorOpacity": string;
+        "polkadotMainDotOpacity": string;
         /**
-         * 副点の大きさ
+         * メインドットの大きさ
          */
-        "gridMajorRadius": string;
+        "polkadotMainDotRadius": string;
         /**
-         * 副点の不透明度
+         * サブドットの不透明度
          */
-        "gridMinorOpacity": string;
+        "polkadotSubDotOpacity": string;
         /**
-         * 副点の大きさ
+         * サブドットの大きさ
          */
-        "gridMinorRadius": string;
+        "polkadotSubDotRadius": string;
         /**
-         * 副点の数
+         * サブドットの数
          */
-        "gridMinorDivisions": string;
+        "polkadotSubDotDivisions": string;
     };
     "_imageEffector": {
         /**
@@ -12189,9 +12189,9 @@ export interface Locale extends ILocale {
              */
             "stripe": string;
             /**
-             * 点グリッド
+             * ポルカドット
              */
-            "dottedGrid": string;
+            "polkadot": string;
             /**
              * チェッカー
              */

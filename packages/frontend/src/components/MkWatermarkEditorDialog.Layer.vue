@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRange>
 	</template>
 
-	<template v-else-if="layer.type === 'dottedGrid'">
+	<template v-else-if="layer.type === 'polkadot'">
 		<MkRange
 			v-model="layer.angle"
 			:min="-1"
@@ -179,7 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMajorRadius }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.polkadotMainDotRadius }}</template>
 		</MkRange>
 
 		<MkRange
@@ -190,7 +190,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMajorOpacity }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.polkadotMainDotOpacity }}</template>
 		</MkRange>
 
 		<MkRange
@@ -200,7 +200,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="1"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMinorDivisions }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.polkadotSubDotDivisions }}</template>
 		</MkRange>
 
 		<MkRange
@@ -211,7 +211,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMinorRadius }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.polkadotSubDotRadius }}</template>
 		</MkRange>
 
 		<MkRange
@@ -222,7 +222,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
 		>
-			<template #label>{{ i18n.ts._watermarkEditor.gridMinorOpacity }}</template>
+			<template #label>{{ i18n.ts._watermarkEditor.polkadotSubDotOpacity }}</template>
 		</MkRange>
 	</template>
 

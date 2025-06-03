@@ -78,9 +78,9 @@ void main() {
 }
 `;
 
-export const FX_dottedGrid = defineImageEffectorFx({
-	id: 'dottedGrid' as const,
-	name: i18n.ts._imageEffector._fxs.dottedGrid,
+export const FX_polkadot = defineImageEffectorFx({
+	id: 'polkadot' as const,
+	name: i18n.ts._imageEffector._fxs.polkadot,
 	shader,
 	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'black'] as const,
 	params: {

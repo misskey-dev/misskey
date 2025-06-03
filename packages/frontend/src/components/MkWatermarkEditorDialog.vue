@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
 								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
 								<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
-								<div v-if="layer.type === 'dottedGrid'">{{ i18n.ts._watermarkEditor.dottedGrid }}</div>
+								<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
 								<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
 							</template>
 							<template #footer>
@@ -129,10 +129,10 @@ function createStripeLayer(): WatermarkPreset['layers'][number] {
 	};
 }
 
-function createDottedGridLayer(): WatermarkPreset['layers'][number] {
+function createPolkadotLayer(): WatermarkPreset['layers'][number] {
 	return {
 		id: genId(),
-		type: 'dottedGrid',
+		type: 'polkadot',
 		angle: 0.5,
 		scale: 3,
 		majorRadius: 0.1,
@@ -331,9 +331,9 @@ function addLayer(ev: MouseEvent) {
 			preset.layers.push(createStripeLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.dottedGrid,
+		text: i18n.ts._watermarkEditor.polkadot,
 		action: () => {
-			preset.layers.push(createDottedGridLayer());
+			preset.layers.push(createPolkadotLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.checker,
