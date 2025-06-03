@@ -377,6 +377,9 @@ export const PREF_DEF = definePreferences({
 	showTitlebar: {
 		default: false,
 	},
+	prioritizeAvailableReactions: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 		mergeStrategy: (a, b) => {

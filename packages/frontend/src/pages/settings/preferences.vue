@@ -229,6 +229,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 										</MkSwitch>
 									</MkPreferenceContainer>
 								</SearchMarker>
+
+								<SearchMarker :keywords="['reaction', 'order']">
+									<MkPreferenceContainer k="prioritizeAvailableReactions">
+										<MkSwitch v-model="prioritizeAvailableReactions">
+											<template #label><SearchLabel>{{ i18n.ts.prioritizeAvailableReactions }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts._settings.prioritizeAvailableReactions_description }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
 							</div>
 
 							<SearchMarker :keywords="['reaction', 'size', 'scale', 'display']">
@@ -824,6 +833,7 @@ const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');
 const numberOfPageCache = prefer.model('numberOfPageCache');
 const enableInfiniteScroll = prefer.model('enableInfiniteScroll');
 const useReactionPickerForContextMenu = prefer.model('useReactionPickerForContextMenu');
+const prioritizeAvailableReactions = prefer.model('prioritizeAvailableReactions');
 const useGroupedNotifications = prefer.model('useGroupedNotifications');
 const alwaysConfirmFollow = prefer.model('alwaysConfirmFollow');
 const confirmWhenRevealingSensitiveMedia = prefer.model('confirmWhenRevealingSensitiveMedia');

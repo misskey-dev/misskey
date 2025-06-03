@@ -5481,6 +5481,10 @@ export interface Locale extends ILocale {
      * 全ての「ヒントとコツ」を非表示
      */
     "hideAllTips": string;
+    /**
+     * 使用可能なリアクションを優先して表示する
+     */
+    "prioritizeAvailableReactions": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5821,6 +5825,10 @@ export interface Locale extends ILocale {
          * URLプレビューを表示する
          */
         "showUrlPreview": string;
+        /**
+         * ノートのリアクションの並び順を、単純な降順から、「利用可能なリアクションの降順→その他のリアクションの降順」に変更します。
+         */
+        "prioritizeAvailableReactions_description": string;
         "_chat": {
             /**
              * 送信者の名前を表示
