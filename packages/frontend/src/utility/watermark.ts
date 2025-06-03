@@ -17,6 +17,7 @@ export type WatermarkPreset = {
 		text: string;
 		repeat: boolean;
 		scale: number;
+		angle: number;
 		align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom' };
 		opacity: number;
 	} | {
@@ -27,6 +28,7 @@ export type WatermarkPreset = {
 		cover: boolean;
 		repeat: boolean;
 		scale: number;
+		angle: number;
 		align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom' };
 		opacity: number;
 	} | {
@@ -69,6 +71,7 @@ export class WatermarkRenderer {
 						repeat: layer.repeat,
 						scale: layer.scale,
 						align: layer.align,
+						angle: layer.angle,
 						opacity: layer.opacity,
 						cover: false,
 						watermark: {
@@ -85,6 +88,7 @@ export class WatermarkRenderer {
 						repeat: layer.repeat,
 						scale: layer.scale,
 						align: layer.align,
+						angle: layer.angle,
 						opacity: layer.opacity,
 						cover: layer.cover,
 						watermark: {

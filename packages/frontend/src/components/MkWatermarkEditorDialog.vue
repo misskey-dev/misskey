@@ -94,6 +94,7 @@ function createTextLayer(): WatermarkPreset['layers'][number] {
 		text: `(c) @${$i.username}`,
 		align: { x: 'right', y: 'bottom' },
 		scale: 0.3,
+		angle: 0,
 		opacity: 0.75,
 		repeat: false,
 	};
@@ -107,6 +108,7 @@ function createImageLayer(): WatermarkPreset['layers'][number] {
 		imageUrl: null,
 		align: { x: 'right', y: 'bottom' },
 		scale: 0.3,
+		angle: 0,
 		opacity: 0.75,
 		repeat: false,
 		cover: false,

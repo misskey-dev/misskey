@@ -8,6 +8,10 @@ import { defineImageEffectorFx } from '../ImageEffector.js';
 const shader = `#version 300 es
 precision mediump float;
 
+const float PI = 3.141592653589793;
+const float TWO_PI = 6.283185307179586;
+const float HALF_PI = 1.5707963267948966;
+
 in vec2 in_uv;
 uniform sampler2D in_texture;
 uniform vec2 in_resolution;
@@ -45,9 +49,20 @@ void main() {
 	float x_offset = u_alignX == 0 ? x_scale / 2.0 : u_alignX == 2 ? 1.0 - (x_scale / 2.0) : 0.5;
 	float y_offset = u_alignY == 0 ? y_scale / 2.0 : u_alignY == 2 ? 1.0 - (y_scale / 2.0) : 0.5;
 
+	float angle = -(u_angle * PI);
+	vec2 center = vec2(x_offset, y_offset);
+	vec2 centeredUv = in_uv - center;
+	float cosAngle = cos(angle);
+	float sinAngle = sin(angle);
+	vec2 rotatedUV = vec2(
+		centeredUv.x * cosAngle - centeredUv.y * sinAngle,
+		centeredUv.x * sinAngle + centeredUv.y * cosAngle
+	) + center;
+
+	// trim
 	if (!u_repeat) {
-		bool isInside = in_uv.x > x_offset - (x_scale / 2.0) && in_uv.x < x_offset + (x_scale / 2.0) &&
-										in_uv.y > y_offset - (y_scale / 2.0) && in_uv.y < y_offset + (y_scale / 2.0);
+		bool isInside = rotatedUV.x > x_offset - (x_scale / 2.0) && rotatedUV.x < x_offset + (x_scale / 2.0) &&
+										rotatedUV.y > y_offset - (y_scale / 2.0) && rotatedUV.y < y_offset + (y_scale / 2.0);
 		if (!isInside) {
 			out_color = in_color;
 			return;
@@ -55,8 +70,8 @@ void main() {
 	}
 
 	vec4 watermark_color = texture(u_texture_watermark, vec2(
-		(in_uv.x - (x_offset - (x_scale / 2.0))) / x_scale,
-		(in_uv.y - (y_offset - (y_scale / 2.0))) / y_scale
+		(rotatedUV.x - (x_offset - (x_scale / 2.0))) / x_scale,
+		(rotatedUV.y - (y_offset - (y_scale / 2.0))) / y_scale
 	));
 
 	out_color.r = mix(in_color.r, watermark_color.r, u_opacity * watermark_color.a);
@@ -87,6 +102,13 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 			max: 1.0,
 			step: 0.01,
 		},
+		angle: {
+			type: 'number' as const,
+			default: 0,
+			min: -1.0,
+			max: 1.0,
+			step: 0.01,
+		},
 		align: {
 			type: 'align' as const,
 			default: { x: 'right', y: 'bottom' },
@@ -114,8 +136,9 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 
 		gl.uniform2fv(u.resolution_watermark, [textures.watermark.width, textures.watermark.height]);
 		gl.uniform1f(u.scale, params.scale);
+
 		gl.uniform1f(u.opacity, params.opacity);
-		gl.uniform1f(u.angle, 0.0);
+		gl.uniform1f(u.angle, params.angle);
 		gl.uniform1i(u.repeat, params.repeat ? 1 : 0);
 		gl.uniform1i(u.alignX, params.align.x === 'left' ? 0 : params.align.x === 'right' ? 2 : 1);
 		gl.uniform1i(u.alignY, params.align.y === 'top' ? 0 : params.align.y === 'bottom' ? 2 : 1);

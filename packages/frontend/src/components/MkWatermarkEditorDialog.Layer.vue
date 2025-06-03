@@ -30,6 +30,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRange>
 
 		<MkRange
+			v-model="layer.angle"
+			:min="-1"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
+		</MkRange>
+
+		<MkRange
 			v-model="layer.opacity"
 			:min="0"
 			:max="1"
@@ -64,6 +74,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			continuousUpdate
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.angle"
+			:min="-1"
+			:max="1"
+			:step="0.01"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.angle }}</template>
 		</MkRange>
 
 		<MkRange
