@@ -2723,6 +2723,12 @@ _timelines:
   global: "グローバル"
 
 floater: "浮上"
+_floater:
+  userFirstPost: '{date}に{user}さんが初めて投稿しました'
+  userReturned: '{date}に{user}さんが戻ってきました'
+  userSameDay: '{date}に{user}さんが複数回投稿しました'
+  userAfterOneDay: '{date}に{user}さんが1日ぶりに投稿しました'
+  userAfterNDays: '{date}に{user}さんが{n}日ぶりに投稿しました'
 
 _play:
   new: "Playの作成"

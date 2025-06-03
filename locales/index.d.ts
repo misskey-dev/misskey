@@ -10335,6 +10335,28 @@ export interface Locale extends ILocale {
      * 浮上
      */
     "floater": string;
+    "_floater": {
+        /**
+         * {date}に{user}さんが初めて投稿しました
+         */
+        "userFirstPost": ParameterizedString<"date" | "user">;
+        /**
+         * {date}に{user}さんが戻ってきました
+         */
+        "userReturned": ParameterizedString<"date" | "user">;
+        /**
+         * {date}に{user}さんが複数回投稿しました
+         */
+        "userSameDay": ParameterizedString<"date" | "user">;
+        /**
+         * {date}に{user}さんが1日ぶりに投稿しました
+         */
+        "userAfterOneDay": ParameterizedString<"date" | "user">;
+        /**
+         * {date}に{user}さんが{n}日ぶりに投稿しました
+         */
+        "userAfterNDays": ParameterizedString<"date" | "user" | "n">;
+    };
     "_play": {
         /**
          * Playの作成

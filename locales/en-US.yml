@@ -2615,6 +2615,12 @@ _timelines:
   social: "Social"
   global: "Global"
 floater: "Recently active followed users"
+_floater:
+  userFirstPost: '{user} posted for the first time on {date}'
+  userReturned: '{user} returned on {date}'
+  userSameDay: '{user} posted multiple times on {date}'
+  userAfterOneDay: '{user} posted after 1 day on {date}'
+  userAfterNDays: '{user} posted after {n} days on {date}'
 _play:
   new: "Create Play"
   edit: "Edit Play"
