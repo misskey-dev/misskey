@@ -12050,6 +12050,14 @@ export interface Locale extends ILocale {
          */
         "quitWithoutSaveConfirm": string;
         /**
+         * このファイルは対応していません
+         */
+        "driveFileTypeWarn": string;
+        /**
+         * 画像ファイルを選択してください
+         */
+        "driveFileTypeWarnDescription": string;
+        /**
          * ウォーターマークの編集
          */
         "title": string;
