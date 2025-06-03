@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>
-				<MkButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
+				<MkButton primary @click="chooseFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
 			</div>
 
 			<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
@@ -66,7 +66,7 @@ const isSensitive = ref(false);
 function chooseFile(evt) {
 	selectFile({
 		anchorElement: evt.currentTarget ?? evt.target,
-		multiple: false,
+		multiple: true,
 	}).then(selected => {
 		files.value = files.value.concat(selected);
 	});
