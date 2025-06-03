@@ -71,6 +71,9 @@ export type EmojiSearchQuery = {
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, nextTick, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import type { GridSetting } from '@/components/grid/grid.js';
 import * as os from '@/os.js';
 import {
 	emptyStrToEmptyArray,
@@ -82,15 +85,11 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
-import { useLoading } from "@/components/hook/useLoading.js";
-
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { GridSetting } from '@/components/grid/grid.js';
+import { useLoading } from '@/composables/use-loading.js';
 
 type GridItem = {
 	checked: boolean;
@@ -109,7 +108,7 @@ type GridItem = {
 	publicUrl?: string | null;
 	originalUrl?: string | null;
 	type: string | null;
-}
+};
 
 function setupGrid(): GridSetting {
 	const $style = useCssModule();
@@ -286,7 +285,7 @@ const searchQuery = ref<EmojiSearchQuery>({
 	localOnly: null,
 	roles: [],
 	sortOrders: [],
-	limit: 25,
+	limit: 100,
 });
 let searchWindowOpening = false;
 
@@ -465,8 +464,8 @@ async function refreshCustomEmojis() {
 		aliases: emptyStrToUndefined(searchQuery.value.aliases),
 		category: emptyStrToUndefined(searchQuery.value.category),
 		license: emptyStrToUndefined(searchQuery.value.license),
-		isSensitive: searchQuery.value.sensitive ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
-		localOnly: searchQuery.value.localOnly ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
+		isSensitive: searchQuery.value.sensitive != null ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
+		localOnly: searchQuery.value.localOnly != null ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
 		updatedAtFrom: emptyStrToUndefined(searchQuery.value.updatedAtFrom),
 		updatedAtTo: emptyStrToUndefined(searchQuery.value.updatedAtTo),
 		roleIds: searchQuery.value.roles.map(it => it.id),
@@ -526,10 +525,10 @@ const headerPageMetadata = computed(() => ({
 const headerActions = computed(() => [{
 	icon: 'ti ti-search',
 	text: i18n.ts.search,
-	handler: () => {
+	handler: async () => {
 		if (searchWindowOpening) return;
 		searchWindowOpening = true;
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.search.vue')), {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.search.vue').then(x => x.default), {
 			query: searchQuery.value,
 		}, {
 			queryUpdated: (query: EmojiSearchQuery) => {
@@ -585,15 +584,15 @@ const headerActions = computed(() => [{
 }, {
 	icon: 'ti ti-notes',
 	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
-	handler: () => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.logs.vue')), {
+	handler: async () => {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.logs.vue').then(x => x.default), {
 			logs: requestLogs.value,
 		}, {
 			closed: () => {
 				dispose();
 			},
 		});
-	}
+	},
 }]);
 </script>
 

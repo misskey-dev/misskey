@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				v-for="(image, i) in images" :key="i"
 				:class="$style.img"
-				:style="`background-image: url(${thumbnail(image)})`"
+				:style="{ backgroundImage: `url(${thumbnail(image)})` }"
 			></div>
 		</div>
 	</div>
@@ -26,12 +26,12 @@ import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import { useStream } from '@/stream.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'photos';
@@ -70,7 +70,7 @@ const onDriveFileCreated = (file) => {
 };
 
 const thumbnail = (image: Misskey.entities.DriveFile): string => {
-	return defaultStore.state.disableShowingAnimatedImages
+	return prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl ?? image.url;
 };

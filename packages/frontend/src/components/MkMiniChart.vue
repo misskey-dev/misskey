@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, ref } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import tinycolor from 'tinycolor2';
 import { useInterval } from '@@/js/use-interval.js';
 
@@ -42,13 +42,13 @@ const props = defineProps<{
 
 const viewBoxX = 50;
 const viewBoxY = 50;
-const gradientId = uuid();
+const gradientId = genId();
 const polylinePoints = ref('');
 const polygonPoints = ref('');
 const headX = ref<number | null>(null);
 const headY = ref<number | null>(null);
 const clock = ref<number | null>(null);
-const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-accent'));
+const accent = tinycolor(getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-accent'));
 const color = accent.toRgbString();
 
 function draw(): void {

@@ -220,7 +220,7 @@ export class SearchService {
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
-			query.andWhere('note.text &@ :q', { q });
+			query.andWhere('note.text &@~ :q', { q });
 		} else {
 			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
 		}
@@ -234,8 +234,7 @@ export class SearchService {
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		if (me) this.queryService.generateMutedUserQuery(query, me);
-		if (me) this.queryService.generateBlockedUserQuery(query, me);
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
 
 		return query.limit(pagination.limit).getMany();
 	}
@@ -295,9 +294,20 @@ export class SearchService {
 				this.cacheService.userBlockedCache.fetch(me.id),
 			])
 			: [new Set<string>(), new Set<string>()];
-		const notes = (await this.notesRepository.findBy({
-			id: In(res.hits.map(x => x.id)),
-		})).filter(note => {
+
+		const query = this.notesRepository.createQueryBuilder('note')
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
+
+		query.where('note.id IN (:...noteIds)', { noteIds: res.hits.map(x => x.id) });
+
+		this.queryService.generateBlockedHostQueryForNote(query);
+		this.queryService.generateSuspendedUserQueryForNote(query);
+
+		const notes = (await query.getMany()).filter(note => {
 			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 			if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 			return true;

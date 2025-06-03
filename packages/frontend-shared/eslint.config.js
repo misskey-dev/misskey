@@ -35,9 +35,6 @@ export default [
 				_VERSION_: false,
 				_ENV_: false,
 				_PERF_PREFIX_: false,
-				_DATA_TRANSFER_DRIVE_FILE_: false,
-				_DATA_TRANSFER_DRIVE_FOLDER_: false,
-				_DATA_TRANSFER_DECK_COLUMN_: false,
 			},
 			parser,
 			parserOptions: {
@@ -97,5 +94,13 @@ export default [
 			}],
 			'vue/attribute-hyphenation': ['error', 'never'],
 		},
+	},
+	{
+		ignores: [
+			// TODO: Error while loading rule '@typescript-eslint/naming-convention': Cannot use 'in' operator to search for 'type' in undefined のため一時的に無効化
+			// See https://github.com/misskey-dev/misskey/pull/15311
+			'js/i18n.ts',
+			'js-built/',
+		],
 	},
 ];

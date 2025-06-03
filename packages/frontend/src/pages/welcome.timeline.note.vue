@@ -23,18 +23,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="note.files && note.files.length > 0" :class="$style.richcontent">
 			<MkMediaList :mediaList="note.files.slice(0, 4)"/>
 		</div>
-		<div v-if="note.poll">
-			<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="true"/>
-		</div>
 		<div v-if="note.reactionCount > 0" :class="$style.reactions">
-			<MkReactionsViewer :note="note" :maxNumber="16"/>
+			<!-- TODO -->
+			<!--<MkReactionsViewer :note="note" :maxNumber="16"/>-->
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onUpdated, onMounted } from 'vue';
+import { ref, useTemplateRef, onUpdated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -45,7 +43,7 @@ defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const noteTextEl = shallowRef<HTMLDivElement>();
+const noteTextEl = useTemplateRef('noteTextEl');
 const shouldCollapse = ref(false);
 const showContent = ref(false);
 

@@ -1,6 +1,5 @@
 import './autogen/apiClientJSDoc.js';
 
-import { v4 as uuid } from 'uuid';
 import { endpointReqTypes } from './autogen/endpoint.js';
 import { permissions } from './consts.js';
 import type { SwitchCaseResponseType, Endpoints } from './api.types.js';
@@ -144,7 +143,7 @@ export class APIClient {
 		if (options.callback) params.set('callback', options.callback);
 		if (options.permission) params.set('permission', options.permission.join(','));
 
-		const _sessionId = sessionId ?? uuid();
+		const _sessionId = sessionId ?? crypto.randomUUID();
 
 		return {
 			sessionId: _sessionId,
