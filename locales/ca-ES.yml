@@ -3117,3 +3117,12 @@ _clip:
   tip: "Clip és una funció que permet organitzar les teves notes."
 _userLists:
   tip: "Es poden crear llistes amb qualsevol usuari. La llista creada es pot mostrar com una línia de temps."
+_watermarkEditor:
+  opacity: "Opacitat"
+  scale: "Mida"
+  text: "Text"
+  position: "Posició "
+  type: "Tipus"
+  image: "Imatges"
+  advanced: "Avançat"
+  angle: "Angle"
