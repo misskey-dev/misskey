@@ -3125,6 +3125,7 @@ defaultPreset: "Per defecte"
 _watermarkEditor:
   tip: "A la imatge es pot afegir una marca d'aigua com informació sobre drets."
   quitWithoutSaveConfirm: "Sortir sense desar?"
+  driveFileTypeWarn: "Fitxer no suportat "
   title: "Editar la marca d'aigua "
   cover: "Cobrir-ho tot"
   repeat: "Repetir"
