@@ -119,6 +119,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
                         ORDER BY "id" DESC
                         LIMIT 1
                     ) AS last_post_id,
+                    -- 初浮上かどうかを判定する部分を追加
+                    NOT EXISTS (
+                        SELECT 1 FROM "note"
+                        WHERE "userId" = lau."userId"
+                            AND "id" < $2
+                            AND "visibility" IN ('public')
+                            AND "renoteId" IS NULL
+                            AND "replyId" IS NULL
+                            AND ("isNoteInYamiMode" = FALSE OR $5 = TRUE)
+                    ) AS is_first_public_post,
                     -- フォロー状態
                     EXISTS (
                         SELECT 1 FROM "following"
@@ -130,7 +140,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
             SELECT
                 "userId" AS user,
                 last_post_id AS last,
-                is_following
+                is_following,
+                is_first_public_post
             FROM user_last_posts
             ORDER BY
                 -- フォロー中ユーザーを優先
@@ -174,7 +185,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: userId,
 				notes: await query.getMany(),
 				last: row.last,
-				isFollowing: row.is_following
+				isFirstPublicPost: row.is_first_public_post, // 初浮上情報を追加
+				isFollowing: row.is_following,
 			};
 		}));
 	}

@@ -2616,6 +2616,7 @@ _timelines:
   global: "Global"
 floater: "Recently active followed users"
 _floater:
+  userFirstPublicPost: 'On {date}, {user} appeared for the first time'
   userFirstPost: '{user} unusually posted on {date}'
   userAfterNDays: '{user} posted after {n} days on {date}'
 _play:

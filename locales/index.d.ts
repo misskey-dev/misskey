@@ -10337,11 +10337,15 @@ export interface Locale extends ILocale {
     "floater": string;
     "_floater": {
         /**
-         * {date}に{user}さんが珍しく浮上しました
+         * {date}に{user}が初めて浮上
+         */
+        "userFirstPublicPost": ParameterizedString<"date" | "user">;
+        /**
+         * {date}に{user}珍しく浮上
          */
         "userFirstPost": ParameterizedString<"date" | "user">;
         /**
-         * {date}に{user}さんが{n}日ぶりに浮上しました
+         * {date}に{user}が{n}日ぶりに浮上
          */
         "userAfterNDays": ParameterizedString<"date" | "user" | "n">;
     };
