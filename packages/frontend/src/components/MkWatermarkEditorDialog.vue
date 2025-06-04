@@ -140,7 +140,7 @@ function createPolkadotLayer(): WatermarkPreset['layers'][number] {
 		majorOpacity: 0.75,
 		minorOpacity: 0.5,
 		minorDivisions: 4,
-		color: [0, 0, 0],
+		color: [1, 1, 1],
 		opacity: 0.75,
 	};
 }
