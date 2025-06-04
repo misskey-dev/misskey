@@ -124,7 +124,7 @@ function createStripeLayer(): WatermarkPreset['layers'][number] {
 		angle: 0.5,
 		frequency: 10,
 		threshold: 0.1,
-		color: [0, 0, 0],
+		color: [1, 1, 1],
 		opacity: 0.75,
 	};
 }
