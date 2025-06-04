@@ -205,7 +205,10 @@ async function add() {
 }
 
 function setEyeCatchingImage(img: Event) {
-	selectFile(img.currentTarget ?? img.target, null).then(file => {
+	selectFile({
+		anchorElement: img.currentTarget ?? img.target,
+		multiple: false,
+	}).then(file => {
 		eyeCatchingImageId.value = file.id;
 	});
 }

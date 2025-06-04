@@ -3227,6 +3227,8 @@ defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
   tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
+  driveFileTypeWarn: "このファイルは対応していません"
+  driveFileTypeWarnDescription: "画像ファイルを選択してください"
   title: "ウォーターマークの編集"
   cover: "全体に被せる"
   repeat: "敷き詰める"

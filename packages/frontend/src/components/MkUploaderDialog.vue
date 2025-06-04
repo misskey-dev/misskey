@@ -79,8 +79,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModalWindow>
 </template>
 
+<script lang="ts">
+export type UploaderDialogFeatures = {
+	effect?: boolean;
+	watermark?: boolean;
+	crop?: boolean;
+};
+</script>
+
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, markRaw, onMounted, onUnmounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { genId } from '@/utility/id.js';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
@@ -91,7 +99,6 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
-import MkSelect from '@/components/MkSelect.vue';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
@@ -131,8 +138,17 @@ const props = withDefaults(defineProps<{
 	files: File[];
 	folderId?: string | null;
 	multiple?: boolean;
+	features?: UploaderDialogFeatures;
 }>(), {
 	multiple: true,
+});
+
+const uploaderFeatures = computed<Required<UploaderDialogFeatures>>(() => {
+	return {
+		effect: props.features?.effect ?? true,
+		watermark: props.features?.watermark ?? true,
+		crop: props.features?.crop ?? true,
+	};
 });
 
 const emit = defineEmits<{
@@ -141,7 +157,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const items = ref<{
+type UploaderItem = {
 	id: string;
 	name: string;
 	uploadName?: string;
@@ -152,13 +168,15 @@ const items = ref<{
 	uploaded: Misskey.entities.DriveFile | null;
 	uploadFailed: boolean;
 	aborted: boolean;
-	compressionLevel: number;
+	compressionLevel: 0 | 1 | 2 | 3;
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
 	watermarkPresetId: string | null;
 	abort?: (() => void) | null;
-}[]>([]);
+};
+
+const items = ref<UploaderItem[]>([]);
 
 const dialog = useTemplateRef('dialog');
 
@@ -252,7 +270,7 @@ async function done() {
 	dialog.value?.close();
 }
 
-function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
+function showMenu(ev: MouseEvent, item: UploaderItem) {
 	const menu: MenuItem[] = [];
 
 	menu.push({
@@ -272,7 +290,13 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		},
 	});
 
-	if (CROPPING_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
+	if (
+		uploaderFeatures.value.crop &&
+		CROPPING_SUPPORTED_TYPES.includes(item.file.type) &&
+		!item.preprocessing &&
+		!item.uploading &&
+		!item.uploaded
+	) {
 		menu.push({
 			icon: 'ti ti-crop',
 			text: i18n.ts.cropImage,
@@ -292,7 +316,13 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		});
 	}
 
-	if (IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
+	if (
+		uploaderFeatures.value.effect &&
+		IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
+		!item.preprocessing &&
+		!item.uploading &&
+		!item.uploaded
+	) {
 		menu.push({
 			icon: 'ti ti-sparkles',
 			text: i18n.ts._imageEffector.title + ' (BETA)',
@@ -318,7 +348,13 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 		});
 	}
 
-	if (WATERMARK_SUPPORTED_TYPES.includes(item.file.type) && !item.preprocessing && !item.uploading && !item.uploaded) {
+	if (
+		uploaderFeatures.value.watermark &&
+		WATERMARK_SUPPORTED_TYPES.includes(item.file.type) &&
+		!item.preprocessing &&
+		!item.uploading &&
+		!item.uploaded
+	) {
 		function changeWatermarkPreset(presetId: string | null) {
 			item.watermarkPresetId = presetId;
 			preprocess(item).then(() => {
@@ -338,13 +374,13 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 			}, {
 				type: 'divider',
 			}, ...prefer.s.watermarkPresets.map(preset => ({
-				type: 'radioOption',
+				type: 'radioOption' as const,
 				text: preset.name,
 				active: computed(() => item.watermarkPresetId === preset.id),
 				action: () => changeWatermarkPreset(preset.id),
-			})), {
-				type: 'divider',
-			}, {
+			})), ...(prefer.s.watermarkPresets.length > 0 ? [{
+				type: 'divider' as const,
+			}] : []), {
 				type: 'button',
 				icon: 'ti ti-plus',
 				text: i18n.ts.add,
@@ -397,8 +433,7 @@ function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
 				text: i18n.ts.high,
 				active: computed(() => item.compressionLevel === 3),
 				action: () => changeCompressionLevel(3),
-			},
-			],
+			}],
 		});
 	}
 
@@ -590,9 +625,9 @@ function initializeFile(file: File) {
 		uploaded: null,
 		uploadFailed: false,
 		compressionLevel: prefer.s.defaultImageCompressionLevel,
-		watermarkPresetId: prefer.s.defaultWatermarkPresetId,
+		watermarkPresetId: uploaderFeatures.value.watermark ? prefer.s.defaultWatermarkPresetId : null,
 		file: markRaw(file),
-	};
+	} satisfies UploaderItem;
 	items.value.push(item);
 	preprocess(item).then(() => {
 		triggerRef(items);

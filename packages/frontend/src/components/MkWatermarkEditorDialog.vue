@@ -124,7 +124,7 @@ function createStripeLayer(): WatermarkPreset['layers'][number] {
 		angle: 0.5,
 		frequency: 10,
 		threshold: 0.1,
-		black: false,
+		color: [1, 1, 1],
 		opacity: 0.75,
 	};
 }
@@ -140,7 +140,7 @@ function createPolkadotLayer(): WatermarkPreset['layers'][number] {
 		majorOpacity: 0.75,
 		minorOpacity: 0.5,
 		minorDivisions: 4,
-		black: false,
+		color: [1, 1, 1],
 		opacity: 0.75,
 	};
 }
@@ -151,7 +151,7 @@ function createCheckerLayer(): WatermarkPreset['layers'][number] {
 		type: 'checker',
 		angle: 0.5,
 		scale: 3,
-		black: false,
+		color: [1, 1, 1],
 		opacity: 0.75,
 	};
 }
@@ -177,6 +177,7 @@ const dialog = useTemplateRef('dialog');
 
 async function cancel() {
 	const { canceled } = await os.confirm({
+		type: 'question',
 		text: i18n.ts._watermarkEditor.quitWithoutSaveConfirm,
 	});
 	if (canceled) return;

@@ -57,7 +57,7 @@ function getValue<T extends keyof ParamTypeToPrimitive>(params: Record<string, a
 	return params[k];
 }
 
-export class ImageEffector {
+export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, any>>> {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
 	private renderTextureProgram: WebGLProgram;
@@ -70,7 +70,7 @@ export class ImageEffector {
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
-	private fxs: ImageEffectorFx[];
+	private fxs: [...IEX];
 	private paramTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
 	constructor(options: {
@@ -78,7 +78,7 @@ export class ImageEffector {
 		renderWidth: number;
 		renderHeight: number;
 		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
-		fxs: ImageEffectorFx[];
+		fxs: [...IEX];
 	}) {
 		this.canvas = options.canvas;
 		this.renderWidth = options.renderWidth;
@@ -230,7 +230,7 @@ export class ImageEffector {
 			gl: gl,
 			program: shaderProgram,
 			params: Object.fromEntries(
-				Object.entries(fx.params).map(([key, param]) => {
+				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([key, param]) => {
 					return [key, layer.params[key] ?? param.default];
 				}),
 			),
@@ -238,7 +238,7 @@ export class ImageEffector {
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: Object.fromEntries(
-				Object.entries(fx.params).map(([k, v]) => {
+				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([k, v]) => {
 					if (v.type !== 'texture') return [k, null];
 					const param = getValue<typeof v.type>(layer.params, k);
 					if (param == null) return [k, null];
@@ -329,7 +329,7 @@ export class ImageEffector {
 				unused.delete(textureKey);
 				if (this.paramTextures.has(textureKey)) continue;
 
-				console.log(`Baking texture of <${textureKey}>...`);
+				if (_DEV_) console.log(`Baking texture of <${textureKey}>...`);
 
 				const texture = v.type === 'text' ? await createTextureFromText(this.gl, v.text) : v.type === 'url' ? await createTextureFromUrl(this.gl, v.url) : null;
 				if (texture == null) continue;
@@ -339,7 +339,7 @@ export class ImageEffector {
 		}
 
 		for (const k of unused) {
-			console.log(`Dispose unused texture <${k}>...`);
+			if (_DEV_) console.log(`Dispose unused texture <${k}>...`);
 			this.gl.deleteTexture(this.paramTextures.get(k)!.texture);
 			this.paramTextures.delete(k);
 		}
