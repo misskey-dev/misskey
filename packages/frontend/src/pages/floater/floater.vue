@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span>{{ getCombinedFloaterInfo(item) }}</span>
 				</div>
 
-				<!-- ノート表示（最大2つまで表示） -->
-				<template v-for="(note, i) in item.notes.slice(0, 2)" :key="note.id">
+				<!-- ノート表示（最大3つまで表示に変更） -->
+				<template v-for="(note, i) in item.notes.slice(0, 3)" :key="note.id">
 				  <!-- 日付区切り (2番目以降のノートの日付変更時のみ) -->
 				  <div
 				    v-if="i > 0 && !isSameDay(note.createdAt, item.notes[i - 1].createdAt) && !isToday(note.createdAt)"
