@@ -157,7 +157,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const items = ref<{
+type UploaderItem = {
 	id: string;
 	name: string;
 	uploadName?: string;
@@ -174,7 +174,9 @@ const items = ref<{
 	file: File;
 	watermarkPresetId: string | null;
 	abort?: (() => void) | null;
-}[]>([]);
+};
+
+const items = ref<UploaderItem[]>([]);
 
 const dialog = useTemplateRef('dialog');
 
@@ -268,7 +270,7 @@ async function done() {
 	dialog.value?.close();
 }
 
-function showMenu(ev: MouseEvent, item: typeof items.value[0]) {
+function showMenu(ev: MouseEvent, item: UploaderItem) {
 	const menu: MenuItem[] = [];
 
 	menu.push({
@@ -624,9 +626,9 @@ function initializeFile(file: File) {
 		uploaded: null,
 		uploadFailed: false,
 		compressionLevel: prefer.s.defaultImageCompressionLevel,
-		watermarkPresetId: prefer.s.defaultWatermarkPresetId,
+		watermarkPresetId: uploaderFeatures.value.watermark ? prefer.s.defaultWatermarkPresetId : null,
 		file: markRaw(file),
-	};
+	} satisfies UploaderItem;
 	items.value.push(item);
 	preprocess(item).then(() => {
 		triggerRef(items);
