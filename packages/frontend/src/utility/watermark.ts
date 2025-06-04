@@ -3,9 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { WATERMARK_FXS } from './image-effector/fxs.js';
-import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
+import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
+import { FX_stripe } from '@/utility/image-effector/fxs/stripe.js';
+import { FX_polkadot } from '@/utility/image-effector/fxs/polkadot.js';
+import { FX_checker } from '@/utility/image-effector/fxs/checker.js';
+import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+
+const WATERMARK_FXS = [
+	FX_watermarkPlacement,
+	FX_stripe,
+	FX_polkadot,
+	FX_checker,
+] as const satisfies ImageEffectorFx<string, any>[];
 
 export type WatermarkPreset = {
 	id: string;

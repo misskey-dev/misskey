@@ -230,7 +230,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			gl: gl,
 			program: shaderProgram,
 			params: Object.fromEntries(
-				Object.entries(fx.params).map(([key, param]) => {
+				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([key, param]) => {
 					return [key, layer.params[key] ?? param.default];
 				}),
 			),
@@ -238,7 +238,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: Object.fromEntries(
-				Object.entries(fx.params).map(([k, v]) => {
+				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([k, v]) => {
 					if (v.type !== 'texture') return [k, null];
 					const param = getValue<typeof v.type>(layer.params, k);
 					if (param == null) return [k, null];
