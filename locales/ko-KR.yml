@@ -3081,7 +3081,7 @@ _serverSetupWizard:
     small: "100명 이하(소규모)"
     medium: "100명 이상 1000명 이하(중간 규모)"
     large: "1000명 이상(대규모)"
-  largeScaleServerAdvice: "대규모 서버에서는 부하분산이나 데이터베이스의 레플리케이션 등 높은 인프라스트럭처 지식이 필요할 수 있습니다."
+  largeScaleServerAdvice: "대규모 서버에서는 부하분산이나 데이터베이스의 복제 등 높은 인프라스트럭처 지식이 필요할 수 있습니다."
   doYouConnectToFediverse: "Fediverse에 접속하시겠습니까?"
   doYouConnectToFediverse_description1: "분산형 서버로 구성된 네트워크(Fediverse)에 접속하면 다른 서버와 서로 콘텐츠의 주고받기를 할 수 있습니다."
   doYouConnectToFediverse_description2: "Fediverse에 접속하는 것을 '연합'이라고도 부릅니다."
