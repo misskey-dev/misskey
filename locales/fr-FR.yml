@@ -2361,6 +2361,7 @@ _search:
   searchScopeLocal: "Local"
   searchScopeUser: "Spécifier l'utilisateur·rice"
 _watermarkEditor:
+  driveFileTypeWarn: "Ce fichier n'est pas pris en charge"
   opacity: "Transparence"
   scale: "Taille"
   text: "Texte"
