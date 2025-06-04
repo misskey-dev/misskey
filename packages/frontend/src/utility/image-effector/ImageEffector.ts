@@ -196,35 +196,40 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		return shaderProgram;
 	}
 
-	private async getOrLoadShaderProgram(fx: ImageEffectorFx): Promise<WebGLProgram> {
-		let shaderProgram = this.shaderCache.get(fx.id);
-		if (shaderProgram) return shaderProgram;
-
-		let shaderSource: string;
-		if (typeof fx.shader === 'string') {
-			shaderSource = fx.shader;
-		} else {
-			shaderSource = await fx.shader();
-		}
-		shaderProgram = this.initShaderProgram(`#version 300 es
-			in vec2 position;
-			out vec2 in_uv;
-
-			void main() {
-				in_uv = (position + 1.0) / 2.0;
-				gl_Position = vec4(position, 0.0, 1.0);
-			}
-		`, shaderSource);
-		this.shaderCache.set(fx.id, shaderProgram);
-		return shaderProgram;
-	}
-
 	private async renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
 		const gl = this.gl;
+
 		const fx = this.fxs.find(fx => fx.id === layer.fxId);
 		if (fx == null) return;
 
-		const shaderProgram = await this.getOrLoadShaderProgram(fx);
+		const cachedShader = this.shaderCache.get(fx.id);
+		let shaderProgram: WebGLProgram;
+
+		if (cachedShader != null) {
+			shaderProgram = cachedShader;
+		} else {
+			let shaderSource: string;
+
+			if (typeof fx.shader === 'string') {
+				shaderSource = fx.shader;
+			} else {
+				shaderSource = await fx.shader();
+			}
+
+			shaderProgram = this.initShaderProgram(`#version 300 es
+				in vec2 position;
+				out vec2 in_uv;
+
+				void main() {
+					in_uv = (position + 1.0) / 2.0;
+					gl_Position = vec4(position, 0.0, 1.0);
+				}
+			`, shaderSource);
+		}
+
+		if (cachedShader == null) {
+			this.shaderCache.set(fx.id, shaderProgram);
+		}
 
 		gl.useProgram(shaderProgram);
 
@@ -262,13 +267,6 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 
 	public async render() {
 		const gl = this.gl;
-
-		// 全レイヤーのshaderロードを事前に完了させる
-		await Promise.all(this.layers.map(async (layer) => {
-			const fx = this.fxs.find(fx => fx.id === layer.fxId);
-			if (!fx) return;
-			await this.getOrLoadShaderProgram(fx);
-		}));
 
 		{
 			gl.activeTexture(gl.TEXTURE0);
@@ -361,7 +359,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			this.paramTextures.delete(k);
 		}
 
-		await this.render();
+		this.render();
 	}
 
 	public changeResolution(width: number, height: number) {

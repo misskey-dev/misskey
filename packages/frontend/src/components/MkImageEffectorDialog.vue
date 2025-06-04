@@ -20,7 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.container">
 			<div :class="$style.preview">
 				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
-				<MkLoading v-if="canvasLoading" :class="$style.previewSpinner"/>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.previewControls">
@@ -75,8 +74,6 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-const canvasLoading = ref(false);
-
 async function cancel() {
 	if (layers.length > 0) {
 		const { canceled } = await os.confirm({
@@ -94,9 +91,7 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		canvasLoading.value = true;
-		await renderer.setLayers(layers);
-		canvasLoading.value = false;
+		renderer.setLayers(layers);
 	}
 }, { deep: true });
 
