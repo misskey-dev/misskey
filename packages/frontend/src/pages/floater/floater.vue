@@ -176,9 +176,8 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 			params.n = diffDays.toString();
 
 			// 日付差に応じたメッセージを選択
-			if (diffDays === 0) {
-				messageKey = 'userSameDay';
-			} else if (diffDays === 1) {
+			// 注意: 中間ノートでは「複数回投稿」を使用せず、常に日数差で表示
+			if (diffDays === 1) {
 				messageKey = 'userAfterOneDay';
 			} else {
 				messageKey = 'userAfterNDays';
