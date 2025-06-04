@@ -433,8 +433,7 @@ function showMenu(ev: MouseEvent, item: UploaderItem) {
 				text: i18n.ts.high,
 				active: computed(() => item.compressionLevel === 3),
 				action: () => changeCompressionLevel(3),
-			},
-			],
+			}],
 		});
 	}
 
