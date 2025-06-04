@@ -3002,6 +3002,7 @@ _search:
   pleaseSelectUser: "Benutzer auswählen"
   serverHostPlaceholder: "Beispiel: misskey.example.com"
 _watermarkEditor:
+  driveFileTypeWarn: "Diese Datei wird nicht unterstützt"
   opacity: "Transparenz"
   scale: "Größe"
   text: "Text"

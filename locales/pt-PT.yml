@@ -3085,6 +3085,7 @@ _clientPerformanceIssueTip:
   makeSureDisabledAddons: "Desabilite extensões"
   makeSureDisabledAddons_description: "Algumas extensões podem afetar comportamentos do cliente e afetar o desempenho. Por favor, desative as extensões do seu navegador e veja se isso melhora a situação."
 _watermarkEditor:
+  driveFileTypeWarn: "Esse arquivo não é compatível"
   opacity: "Opacidade"
   scale: "Tamanho"
   text: "Texto"

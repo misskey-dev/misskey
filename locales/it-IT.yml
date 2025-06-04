@@ -3113,6 +3113,7 @@ _clip:
 _userLists:
   tip: "Puoi creare un elenco di Note create da qualsiasi profilo. L'elenco è visualizzato come una sequenza temporale."
 _watermarkEditor:
+  driveFileTypeWarn: "Formato file non supportato"
   opacity: "Opacità"
   scale: "Dimensioni"
   text: "Testo"

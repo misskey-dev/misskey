@@ -3118,6 +3118,7 @@ _clip:
 _userLists:
   tip: "Lists can contain any user you specify when creating, the created list can then be displayed as a timeline showing only the specified users."
 _watermarkEditor:
+  driveFileTypeWarn: "This file is not supported"
   opacity: "Opacity"
   scale: "Size"
   text: "Text"
