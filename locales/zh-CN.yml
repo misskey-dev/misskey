@@ -3126,6 +3126,7 @@ _watermarkEditor:
   tip: "可在图像内增加包含作者等信息的水印。"
   quitWithoutSaveConfirm: "不保存就退出吗？"
   driveFileTypeWarn: "不支持此文件"
+  driveFileTypeWarnDescription: "请选择图像文件"
   title: "编辑水印"
   cover: "覆盖全体"
   repeat: "平铺"
