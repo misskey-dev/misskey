@@ -139,7 +139,7 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 
 		// グループ内のノートが全て同じ日付かチェック
 		const allSameDay = item.notes.length > 1 &&
-      item.notes.every(n => isSameDay(n.createdAt, currentNote.createdAt));
+			item.notes.every(n => isSameDay(n.createdAt, currentNote.createdAt));
 
 		// 全て同じ日付なら単純な日付表示（浮上情報なし）
 		if (allSameDay) {
@@ -354,7 +354,7 @@ defineExpose({
 			margin-bottom: var(--MI-margin);
 
 			// 共通スタイルを変数として定義
-			$separator-padding: 8px 0;
+			$separator-padding: 6px 0;
 			$separator-color: var(--MI_THEME-fgOnX);
 			$separator-bg: var(--MI_THEME-panel);
 			$separator-border: solid 0.5px var(--MI_THEME-divider);
@@ -370,21 +370,22 @@ defineExpose({
 				border-bottom: $separator-border;
 				margin: 0;
 				background: $separator-bg;
+				opacity: 0.75;
 
 				span {
 					display: inline-block;
 					position: relative;
 					padding: 0 16px;
-					font-size: 0.9em;
-					line-height: 1.5em;
-					font-weight: 500;
+					font-size: 0.8em;
+					line-height: 1.0em;
+					font-weight: normal;
 				}
 
 				// モディファイアとして追加
 				&.floaterSeparator {
 					border-top-left-radius: $border-radius;
 					border-top-right-radius: $border-radius;
-					padding: 10px 0;
+					padding: 6px 0;
 				}
 
 				&.firstDateSeparator {
