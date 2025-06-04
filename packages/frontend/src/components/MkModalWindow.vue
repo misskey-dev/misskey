@@ -90,6 +90,14 @@ defineExpose({
 	&.asDrawer {
 		height: calc(100dvh - 30px);
 		border-radius: 0;
+
+		.body {
+			padding-bottom: env(safe-area-inset-bottom, 0px);
+		}
+
+		.footer {
+			padding-bottom: env(safe-area-inset-bottom, 12px);
+		}
 	}
 }
 
