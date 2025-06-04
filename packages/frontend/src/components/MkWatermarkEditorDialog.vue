@@ -151,7 +151,7 @@ function createCheckerLayer(): WatermarkPreset['layers'][number] {
 		type: 'checker',
 		angle: 0.5,
 		scale: 3,
-		color: [0, 0, 0],
+		color: [1, 1, 1],
 		opacity: 0.75,
 	};
 }
