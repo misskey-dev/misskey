@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
-	<div ref="rootEl" :class="$style.root" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }">
+<MkModal ref="modal" v-slot="{ type }" :preferType="deviceKind === 'smartphone' ? 'drawer' : 'dialog'" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
+	<div ref="rootEl" :class="[$style.root, type === 'drawer' ? $style.asDrawer : null]" :style="{ width: type === 'drawer' ? '' : `${width}px`, height: type === 'drawer' ? '' : `min(${height}px, 100%)` }">
 		<div :class="$style.header">
 			<button v-if="withCloseButton" :class="$style.headerButton" class="_button" data-cy-modal-window-close @click="emit('close')"><i class="ti ti-x"></i></button>
 			<span :class="$style.title">
@@ -30,6 +30,7 @@ import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	withOkButton?: boolean;
@@ -84,6 +85,11 @@ defineExpose({
 
 	@media (max-width: 500px) {
 		--root-margin: 16px;
+	}
+
+	&.asDrawer {
+		height: calc(100dvh - 30px);
+		border-radius: 0;
 	}
 }
 
