@@ -10337,7 +10337,7 @@ export interface Locale extends ILocale {
     "floater": string;
     "_floater": {
         /**
-         * {date}に{user}さんが初めて投稿しました
+         * {date}に{user}さんが珍しく浮上しました
          */
         "userFirstPost": ParameterizedString<"date" | "user">;
         /**
@@ -10349,11 +10349,11 @@ export interface Locale extends ILocale {
          */
         "userSameDay": ParameterizedString<"date" | "user">;
         /**
-         * {date}に{user}さんが1日ぶりに投稿しました
+         * {date}に{user}さんが1日ぶりに浮上しました
          */
         "userAfterOneDay": ParameterizedString<"date" | "user">;
         /**
-         * {date}に{user}さんが{n}日ぶりに投稿しました
+         * {date}に{user}さんが{n}日ぶりに浮上しました
          */
         "userAfterNDays": ParameterizedString<"date" | "user" | "n">;
     };
