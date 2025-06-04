@@ -96,7 +96,7 @@ defineExpose({
 		}
 
 		.footer {
-			padding-bottom: env(safe-area-inset-bottom, 12px);
+			padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
 		}
 	}
 }
