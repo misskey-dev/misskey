@@ -1365,6 +1365,8 @@ abort: "Abortar"
 tip: "Consejos y trucos"
 redisplayAllTips: "Volver a mostrar todos \"Trucos y consejos\""
 hideAllTips: "Ocultar todos los \"Trucos y consejos\""
+defaultImageCompressionLevel: "Nivel de compresión de la imagen por defecto"
+defaultImageCompressionLevel_description: "Baja, conserva la calidad de la imagen pero la medida del archivo es más grande. <br>Alta, reduce la medida del archivo pero también la calidad de la imagen."
 _chat:
   noMessagesYet: "Aún no hay mensajes"
   newMessage: "Mensajes nuevos"
@@ -1452,6 +1454,7 @@ _settings:
   contentsUpdateFrequency_description: "Cuanto mayor sea el valor, más se actualiza el contenido, pero disminuye el rendimiento y aumenta el tráfico y el consumo de memoria."
   contentsUpdateFrequency_description2: "Cuando el modo en tiempo real está activado, el contenido se actualiza en tiempo real independientemente de esta configuración."
   showUrlPreview: "Mostrar la vista previa de la URL"
+  showAvailableReactionsFirstInNote: "Mostrar las reacciones disponibles en la parte superior."
   _chat:
     showSenderName: "Mostrar el nombre del remitente"
     sendOnEnter: "Intro para enviar"
@@ -2627,6 +2630,7 @@ _notification:
   flushNotification: "Limpiar notificaciones"
   exportOfXCompleted: "La exportación de {x} ha sido completada."
   login: "Alguien ha iniciado sesión"
+  createToken: "Token de acceso creado"
   createTokenDescription: "Si no tienes ni idea, elimina el token de acceso a través de \"{text}\"."
   _types:
     all: "Todo"
@@ -2724,10 +2728,18 @@ _webhookSettings:
 _abuseReport:
   _notificationRecipient:
     createRecipient: "Añadir destinatario a los informes"
+    modifyRecipient: "Editar un destinatario en el informe de moderación\n"
+    recipientType: "Tipo de notificación"
     _recipientType:
       mail: "Correo"
       webhook: "Webhook"
+      _captions:
+        mail: "Enviar un correo electrónico a todos los moderadores cuando reciban un informe de moderación"
+        webhook: "Enviar una notificación al SystemWebhook cuando se reciba o se resuelva un informe de moderación"
     keywords: "Palabras Clave"
+    notifiedUser: "Usuarios a notificar"
+    notifiedWebhook: "Webhook a utilizar"
+    deleteConfirm: "¿Estás seguro de que deseas borrar el destinatario del informe de moderación?"
 _moderationLogTypes:
   createRole: "Rol creado"
   deleteRole: "Rol eliminado"
@@ -2752,9 +2764,12 @@ _moderationLogTypes:
   resetPassword: "Resetear contraseña"
   suspendRemoteInstance: "Instancia remota suspendida"
   unsuspendRemoteInstance: "Suspensión de instancia remota retirada"
+  updateRemoteInstanceNote: "Nota de moderación de una instancia remota actualizada"
   markSensitiveDriveFile: "Archivo marcado como sensible"
   unmarkSensitiveDriveFile: "Archivo marcado como no sensible"
   resolveAbuseReport: "Reporte resuelto"
+  forwardAbuseReport: "Informe reenviado"
+  updateAbuseReportNote: "Nota de moderación de un informe actualizada"
   createInvitation: "Generar invitación"
   createAd: "Anuncio creado"
   deleteAd: "Anuncio eliminado"
@@ -2764,6 +2779,18 @@ _moderationLogTypes:
   deleteAvatarDecoration: "Decoración de avatar eliminada"
   unsetUserAvatar: "Quitar decoración de avatar de este usuario"
   unsetUserBanner: "Quitar banner de este usuario"
+  createSystemWebhook: "Crear un SystemWebhook"
+  updateSystemWebhook: "Actualizar SystemWebhook "
+  deleteSystemWebhook: "Borrar SystemWebHook"
+  createAbuseReportNotificationRecipient: "Crear un destinatario para el informe de moderación"
+  updateAbuseReportNotificationRecipient: "Destinatario de los informes actualizados"
+  deleteAbuseReportNotificationRecipient: "Destinatario de los informes borrado"
+  deleteAccount: "Cuenta Borrada"
+  deletePage: "Página borrada"
+  deleteFlash: "Juego borrado"
+  deleteGalleryPost: "Publicación de la galería, eliminada"
+  deleteChatRoom: "Borrar  sala del chat"
+  updateProxyAccountDescription: "Actualizar la descripción de la cuenta proxy"
 _fileViewer:
   title: "Detalles del archivo"
   type: "Tipo de archivo"
@@ -2818,16 +2845,42 @@ _dataSaver:
   _avatar:
     title: "Avatares animados"
     description: "Desactiva la animación de los avatares. Las imágenes animadas pueden llegar a ser de mayor tamaño que las normales, por lo que al desactivarlas puedes reducir el consumo de datos."
+  _urlPreviewThumbnail:
+    title: "Ocultar las miniaturas de las vistas previas de URL"
+    description: "Las imágenes en miniatura de la vista previa de URL no se pueden cargar "
+  _disableUrlPreview:
+    title: "Desactivar la vista previa de las URL"
+    description: "Desactiva la función de previsualización de la URL. A diferencia de solo las imágenes en miniatura, esta función  reduce la carga de la propia información vinculada."
   _code:
     title: "Resaltar código"
     description: "Si se usa resaltado de código en MFM, etc., no se cargará hasta pulsar en ello. El resaltado de sintaxis requiere la descarga de archivos de definición para cada lenguaje de programación. Debido a esto, al deshabilitar la carga automática de estos archivos reducirás el consumo de datos."
 _hemisphere:
   N: "Hemisferio norte"
   S: "Hemisferio sur"
+  caption: "Usado en algunos clientes para determinar la estación del año"
 _reversi:
   reversi: "Reversi"
+  gameSettings: "Configuración del juego"
+  chooseBoard: "Elegir tablero"
+  blackOrWhite: "Negras/Blancas"
+  blackIs: "{name} juega con negras"
   rules: "Reglas"
+  thisGameIsStartedSoon: "El juego comenzará en breve"
+  waitingForOther: "Esperando el turno del adversario"
+  waitingForMe: "Esperando tu turno"
+  waitingBoth: "Prepárate"
+  ready: "Listo"
+  cancelReady: "No estoy listo"
+  opponentTurn: "Turno del oponente"
+  myTurn: "¡Tu turno!"
+  turnOf: "Le toca a {name}"
+  pastTurnOf: "Turno de {name}"
+  surrender: "Rendirse"
+  surrendered: "Te has rendido"
+  timeout: "Se acabó el tiempo"
+  drawn: "Empate"
   won: "{name} ha ganado"
+  black: "Negras"
   total: "Total"
   allGames: "Todos los juegos"
   ended: "Finalizado"
@@ -2894,11 +2947,15 @@ _customEmojisManager:
     sortOrder: "Ordenar"
     registrationLogs: "Log de registros "
     registrationLogsCaption: "Los registros se mostrarán al actualizar o borrar Emojis. Desaparecerán después de actualizarlos o eliminarlos, pasar a una nueva página o recargar."
+_selfXssPrevention:
+  description2: "Si no entiendes que estás pegando exactamente, %cdetente ahora mismo y cierra esta ventana"
+  description3: "Para más información visita esto {link}"
 _followRequest:
   recieved: "Petición de seguimiento recibida"
   sent: "Petición de seguimiento enviada"
 _remoteLookupErrors:
   _federationNotAllowed:
+    title: "Incapaz de comunicarse con este servidor."
     description: "Es posible que se haya desactivado la comunicación con este servidor o que haya sido bloqueado.\nPonte en contacto con el administrador del servidor.."
   _uriInvalid:
     title: "La URI es inválida"
@@ -2927,10 +2984,35 @@ _captcha:
       text: "Se ha producido un error inesperado."
 _bootErrors:
   title: "Fallo al cargar"
+  serverError: "Si el problema persiste después de esperar un momento y volver a cargar, póngase en contacto con el administrador del servidor con el siguiente ID de error."
+  solution: "Lo siguiente puede resolver el problema."
+  solution1: "Actualiza tu navegador web y el sistema operativo a la última versión"
+  solution2: "Desactiva el AdBlocker"
+  solution3: "Borra la memoria caché del navegador web "
+  solution4: "(Navegador Tor) configura dom.webaudio.enabled a true"
+  otherOption: "Otras opciones"
+  otherOption1: "Borra la configuración y la memoria caché del cliente"
+  otherOption2: "Iniciar el cliente simple"
+  otherOption3: "Iniciar la herramienta de reparación"
 _search:
   searchScopeAll: "Todo"
   searchScopeLocal: "Local"
+  searchScopeServer: "Especifica el servidor (Instancia)"
   searchScopeUser: "Especificar usuario"
+  pleaseEnterServerHost: "Introduce la dirección del servidor/Instancia"
+  pleaseSelectUser: "Selecciona un usuario, por favor"
+  serverHostPlaceholder: "Ejemplo: misskey.example.com"
+_serverSetupWizard:
+  installCompleted: "¡La instalación de Misskey se ha completado!"
+  firstCreateAccount: "Para comenzar, crea una cuenta de administrador"
+  accountCreated: "¡La cuenta de administrador se ha creado! "
+  serverSetting: "Configuración del servidor"
+  youCanEasilyConfigureOptimalServerSettingsWithThisWizard: "Este asistente te facilita una configuración óptima del servidor."
+  settingsYouMakeHereCanBeChangedLater: "Los ajustes que han sido cambiados a través de este asistente pueden ser modificados más tarde."
+  howWillYouUseMisskey: "¿Cómo vas a usar Misskey?"
+  _use:
+    single: "Servidor para un único usuario."
+    single_description: "Utilízalo como tu propio servidor dedicado."
 _uploader:
   allowedTypes: "Tipos de archivos que se pueden cargar."
 _watermarkEditor:
