@@ -3125,6 +3125,7 @@ defaultPreset: "預設值"
 _watermarkEditor:
   tip: "可以在圖片中以浮水印加上出處等資訊。"
   quitWithoutSaveConfirm: "不儲存就退出嗎？"
+  driveFileTypeWarn: "不支援此檔案"
   title: "編輯浮水印"
   cover: "覆蓋整體"
   repeat: "佈局"
