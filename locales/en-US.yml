@@ -2617,9 +2617,6 @@ _timelines:
 floater: "Recently active followed users"
 _floater:
   userFirstPost: '{user} unusually posted on {date}'
-  userReturned: '{user} returned on {date}'
-  userSameDay: '{user} posted multiple times on {date}'
-  userAfterOneDay: '{user} posted after 1 day on {date}'
   userAfterNDays: '{user} posted after {n} days on {date}'
 _play:
   new: "Create Play"

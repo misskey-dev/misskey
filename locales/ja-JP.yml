@@ -2725,9 +2725,6 @@ _timelines:
 floater: "浮上"
 _floater:
   userFirstPost: '{date}に{user}さんが珍しく浮上しました'
-  userReturned: '{date}に{user}さんが戻ってきました'
-  userSameDay: '{date}に{user}さんが複数回投稿しました'
-  userAfterOneDay: '{date}に{user}さんが1日ぶりに浮上しました'
   userAfterNDays: '{date}に{user}さんが{n}日ぶりに浮上しました'
 
 _play:

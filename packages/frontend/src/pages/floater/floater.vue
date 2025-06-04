@@ -6,25 +6,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 800px;">
 	<MkPagination
-		v-slot="{ items: paginationItems, fetching }" ref="paginationComponent" :pagination="followingPagination"
-		:class="$style.tl"
+		v-slot="{ items: paginationItems, fetching }" ref="paginationComponent"
+		:pagination="followingPagination" :class="$style.tl"
 	>
 		<div :class="$style.content">
 			<MkLoading v-if="fetching && paginationItems.length === 0"/>
 			<MkResult v-else-if="paginationItems.length === 0" type="empty"/>
 
 			<!-- 重複排除したアイテムを使用 -->
-			<div
-				v-for="item in getUniqueItems(paginationItems)"
-				:key="item.id"
-				:class="$style.userNotes"
-			>
+			<div v-for="item in getUniqueItems(paginationItems)" :key="item.id" :class="$style.userNotes">
 				<!-- ノート表示（最大3つまで表示に変更） -->
 				<template v-for="(note, i) in item.notes.slice(0, 3)" :key="note.id">
 					<!-- 日付区切り: 日付が変わる場合や最初のノートに表示 -->
 					<div
-						v-if="shouldShowDateSeparator(note, i, item)"
-						:class="[$style.dateSeparator,
+						v-if="shouldShowDateSeparator(note, i, item)" :class="[$style.dateSeparator,
 							i === 0 ? $style.firstDateSeparator : '',
 							isFloaterInfo(note, i, item) ? $style.floaterSeparator : '']"
 					>
@@ -114,85 +109,118 @@ function isToday(dateStr: string | Date): boolean {
 		&& date.getDate() === today.getDate();
 }
 
+// 日付区切りを表示すべきか判断する関数
+function shouldShowDateSeparator(note: any, index: number, item: FloaterItem): boolean {
+	// グループ内の全てのノートが今日の日付かチェック
+	const allToday = item.notes.every(n => isToday(n.createdAt));
+
+	// 全て今日のノートなら日付区切りを表示しない
+	if (allToday) return false;
+
+	// 最初のノートには常に表示（今日だけのグループでない場合）
+	if (index === 0) return true;
+
+	// 前のノートと日付が異なる場合に表示
+	return !isSameDay(note.createdAt, item.notes[index - 1].createdAt);
+}
+
 // 日付と浮上情報を組み合わせた表示テキストを生成する関数
-// 拡張: noteIndex, nextNoteパラメータを追加
 function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any): string {
 	// 最初のノート用のキャッシュはそのまま使用
 	if (noteIndex === 0 && item._cachedInfo) return item._cachedInfo;
 
 	try {
-		// 表示対象のノート（引数のインデックスで指定）
-		const targetNote = nextNote || item.notes[noteIndex];
-		if (!targetNote) return '';
+		// 表示対象のノート
+		const currentNote = item.notes[noteIndex];
+		if (!currentNote) return '';
 
-		// ユーザー名からカスタム絵文字を除去
-		const userName = (targetNote.user.name || targetNote.user.username).replace(/:([\w-]+):/g, '').trim();
-		const dateObj = ensureDate(targetNote.createdAt);
-		const dateStr = formatDateTimeString(dateObj, 'yyyy年M月d日');
-		const params = { user: userName, date: dateStr };
+		// 日付を取得
+		const currentDate = ensureDate(currentNote.createdAt);
 
-		let messageKey: string;
+		// グループ内のノートが全て同じ日付かチェック
+		const allSameDay = item.notes.length > 1 &&
+      item.notes.every(n => isSameDay(n.createdAt, currentNote.createdAt));
 
-		// ケース1: 最初のノート（グループの先頭）の場合
-		if (noteIndex === 0) {
-			// 初投稿の場合
-			if (!item.last) {
-				messageKey = 'userFirstPost';
-			} else if (item.notes.length >= 2) {
-				// 2番目のノートとの日付差を計算（修正: 最古ではなく直前のノートとの差）
+		// 全て同じ日付なら単純な日付表示（浮上情報なし）
+		if (allSameDay) {
+			// 今日の場合は何も表示しない
+			if (isToday(currentDate)) return '';
+
+			// 今日でない場合は単純に日付表示
+			return getDateText(currentDate);
+		}
+
+		// グループ内の全てのノートが今日の日付かチェック
+		const allToday = item.notes.every(n => isToday(n.createdAt));
+		if (allToday) return ''; // 全て今日なら何も表示しない
+
+		// 比較対象のノートを選択
+		let compareNote = nextNote;
+
+		// nextNoteが指定されていない場合（主に最初のノート）
+		if (!compareNote && noteIndex === 0) {
+			// 最初のノートの場合、適切な比較対象を探す
+			if (item.notes.length > 1) {
+				// まず2番目のノートを取得
 				const secondNote = item.notes[1];
+				const secondDate = ensureDate(secondNote.createdAt);
 
-				// 何日ぶりかを計算
-				const latestPost = dateObj;
-				const secondPost = ensureDate(secondNote.createdAt);
-				const diffDays = calculateDaysDifference(latestPost, secondPost);
-
-				if (diffDays === 0) {
-					messageKey = 'userSameDay';
-				} else if (diffDays === 1) {
-					messageKey = 'userAfterOneDay';
+				// 2番目のノートが同じ日付かチェック
+				if (isSameDay(currentDate, secondDate) && item.notes.length > 2) {
+					// 同じ日付で3番目があれば、3番目のノートを使用
+					compareNote = item.notes[2];
 				} else {
-					messageKey = 'userAfterNDays';
-					params.n = diffDays.toString();
+					// 日付が異なるか3番目がなければ2番目のノートを使用
+					compareNote = secondNote;
 				}
-			} else {
-				// ノートが1つしかない場合は「戻ってきました」
-				messageKey = 'userReturned';
 			}
+		}
 
-			// 最初のノートはキャッシュする
-			const result = formatFloaterMessage(messageKey, params);
+		// 比較対象がない場合は単純な日付表示
+		if (!compareNote) return getDateText(currentDate);
+
+		const compareDate = ensureDate(compareNote.createdAt);
+
+		// 同じ日付の場合も単純な日付表示
+		if (isSameDay(currentDate, compareDate)) {
+			// 今日の場合は何も表示しない
+			if (isToday(currentDate)) return '';
+
+			// 今日でない場合は単純に日付表示（浮上情報なし）
+			return getDateText(currentDate);
+		}
+
+		// 異なる日付の場合は浮上情報を表示
+		const userName = (currentNote.user.name || currentNote.user.username).replace(/:([\w-]+):/g, '').trim();
+		const dateStr = isToday(currentDate) ? '今日' : formatDateTimeString(currentDate, 'yyyy年M月d日');
+		const diffDays = calculateDaysDifference(compareDate, currentDate);
+
+		// 日付差が0の場合は単純な日付表示に切り替え
+		if (diffDays === 0) {
+			return getDateText(currentDate);
+		}
+
+		let messageKey = !item.last && noteIndex === 0 ? 'userFirstPost' : 'userAfterNDays';
+		const params = {
+			user: userName,
+			date: dateStr,
+			n: diffDays.toString(),
+		};
+
+		// 結果を生成
+		const result = formatFloaterMessage(messageKey, params);
+
+		// 最初のノートの場合はキャッシュする
+		if (noteIndex === 0) {
 			item._cachedInfo = result;
-			return result;
 		}
 
-		// ケース2: 中間のノートと次のノートの差分を表示
-		else if (nextNote) {
-			// 次のノートと日付差を計算
-			const nextNoteDate = ensureDate(nextNote.createdAt);
-
-			// 日付差を計算（次のノートの方が古い）
-			const diffDays = calculateDaysDifference(nextNoteDate, dateObj);
-			params.n = diffDays.toString();
-
-			// 日付差に応じたメッセージを選択
-			// 注意: 中間ノートでは「複数回投稿」を使用せず、常に日数差で表示
-			if (diffDays === 1) {
-				messageKey = 'userAfterOneDay';
-			} else {
-				messageKey = 'userAfterNDays';
-			}
-
-			return formatFloaterMessage(messageKey, params);
-		}
-
-		// ケース3: それ以外（最後のノートなど）は単純な日付表示
-		return getDateText(dateObj);
+		return result;
 	} catch (error) {
 		console.error('Error in getCombinedFloaterInfo:', error);
 		// エラー時は単純な日付表示にフォールバック
 		const fallbackDate = nextNote?.createdAt || item.notes[noteIndex]?.createdAt || new Date();
-		return getDateText(ensureDate(fallbackDate));
+		return isToday(fallbackDate) ? '' : getDateText(ensureDate(fallbackDate));
 	}
 }
 
@@ -279,21 +307,12 @@ function getUniqueItems(items: FloaterItem[]) {
 	return Array.from(userMap.values());
 }
 
-// 日付区切りを表示すべきか判断する関数
-function shouldShowDateSeparator(note: any, index: number, item: FloaterItem): boolean {
-	// 最初のノートには常に表示
-	if (index === 0) return true;
-
-	// 前のノートと日付が異なり、かつ今日でない場合に表示
-	return !isSameDay(note.createdAt, item.notes[index - 1].createdAt) && !isToday(note.createdAt);
-}
-
 // 浮上情報を表示すべきか判断する関数
 function isFloaterInfo(note: any, index: number, item: FloaterItem): boolean {
 	// 最初のノート、または日付が変わったノートで、次のノートがある場合
 	return index === 0 || (
 		index < item.notes.length - 1 &&
-    !isSameDay(note.createdAt, item.notes[index + 1].createdAt)
+		!isSameDay(note.createdAt, item.notes[index + 1].createdAt)
 	);
 }
 
@@ -313,46 +332,10 @@ function getDateInfo(note: any, index: number, item: FloaterItem): string {
 	return getDateText(ensureDate(note.createdAt));
 }
 
-// ノート間の日付差を表示する関数
-function getNoteDifferenceInfo(currentNote: any, nextNote: any): string {
-	try {
-		const currentDate = ensureDate(currentNote.createdAt);
-		const nextDate = ensureDate(nextNote.createdAt);
-
-		// ユーザー名からカスタム絵文字を除去
-		const userName = (currentNote.user.name || currentNote.user.username).replace(/:([\w-]+):/g, '').trim();
-
-		// 表示用の日付フォーマット
-		const currentDateStr = formatDateTimeString(currentDate, 'yyyy年M月d日');
-
-		// 日付差を計算（注意：次のノートの方が古い）
-		const diffDays = calculateDaysDifference(nextDate, currentDate);
-
-		const params = {
-			user: userName,
-			date: currentDateStr,
-			n: diffDays.toString(),
-		};
-
-		// 日付差に応じたメッセージを選択
-		// 「○○さんが○日ぶりに投稿しました」という形式で表示
-		let messageKey: string;
-		if (diffDays === 0) {
-			messageKey = 'userSameDay';
-		} else if (diffDays === 1) {
-			messageKey = 'userAfterOneDay';
-		} else {
-			messageKey = 'userAfterNDays';
-		}
-
-		return formatFloaterMessage(messageKey, params);
-	} catch (error) {
-		console.error('Error in getNoteDifferenceInfo:', error);
-		return getDateText(ensureDate(currentNote.createdAt));
-	}
-}
-
-// 残りのコードは変更なし
+// コンポーネントの関数を外部に公開
+defineExpose({
+	reload,
+});
 </script>
 
 <style lang="scss" module>

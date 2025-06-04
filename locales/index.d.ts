@@ -10341,18 +10341,6 @@ export interface Locale extends ILocale {
          */
         "userFirstPost": ParameterizedString<"date" | "user">;
         /**
-         * {date}に{user}さんが戻ってきました
-         */
-        "userReturned": ParameterizedString<"date" | "user">;
-        /**
-         * {date}に{user}さんが複数回投稿しました
-         */
-        "userSameDay": ParameterizedString<"date" | "user">;
-        /**
-         * {date}に{user}さんが1日ぶりに浮上しました
-         */
-        "userAfterOneDay": ParameterizedString<"date" | "user">;
-        /**
          * {date}に{user}さんが{n}日ぶりに浮上しました
          */
         "userAfterNDays": ParameterizedString<"date" | "user" | "n">;
