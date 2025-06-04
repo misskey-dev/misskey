@@ -2723,6 +2723,7 @@ _search:
   searchScopeLocal: "ท้องถิ่น"
   searchScopeUser: "ผู้ใช้เฉพาะ"
 _watermarkEditor:
+  driveFileTypeWarn: "ไม่รองรับไฟล์นี้"
   opacity: "ความทึบแสง"
   scale: "ขนาด"
   text: "ข้อความ"
