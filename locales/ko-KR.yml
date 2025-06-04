@@ -3126,6 +3126,7 @@ _watermarkEditor:
   tip: "이미지에 크레딧 정보 등의 워터마크를 추가할 수 있습니다."
   quitWithoutSaveConfirm: "보존하지 않고 종료하시겠습니까?"
   driveFileTypeWarn: "이 파이"
+  driveFileTypeWarnDescription: "이미지 파일을 선택해주십시오."
   title: "워터마크 편집"
   cover: "전체에 붙이기"
   repeat: "전면에 깔기"
