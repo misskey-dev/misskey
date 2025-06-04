@@ -2934,6 +2934,7 @@ _search:
 _uploader:
   allowedTypes: "Tipos de archivos que se pueden cargar."
 _watermarkEditor:
+  driveFileTypeWarn: "Este archivo es incompatible"
   opacity: "Opacidad"
   scale: "Tamaño"
   text: "Texto"
