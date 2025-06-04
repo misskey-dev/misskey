@@ -163,11 +163,11 @@ export class WatermarkRenderer {
 	public async setLayers(layers: WatermarkPreset['layers']) {
 		this.layers = layers;
 		await this.effector.setLayers(this.makeImageEffectorLayers());
-		await this.render();
+		this.render();
 	}
 
-	public async render(): Promise<void> {
-		await this.effector.render();
+	public render(): void {
+		this.effector.render();
 	}
 
 	/*

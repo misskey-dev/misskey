@@ -166,7 +166,7 @@ onMounted(async () => {
 
 	await renderer.setLayers(layers);
 
-	await renderer.render();
+	renderer.render();
 
 	closeWaiting();
 });
@@ -193,7 +193,7 @@ async function save() {
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
-	await renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
@@ -202,14 +202,14 @@ async function save() {
 }
 
 const enabled = ref(true);
-watch(enabled, async () => {
+watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			await renderer.setLayers(layers);
+			renderer.setLayers(layers);
 		} else {
-			await renderer.setLayers([]);
+			renderer.setLayers([]);
 		}
-		await renderer.render();
+		renderer.render();
 	}
 });
 </script>

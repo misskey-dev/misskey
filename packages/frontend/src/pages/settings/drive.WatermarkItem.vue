@@ -80,7 +80,7 @@ onMounted(() => {
 
 			await renderer.setLayers(props.preset.layers);
 
-			await renderer.render();
+			renderer.render();
 		}, { immediate: true });
 	};
 });
@@ -95,7 +95,7 @@ onUnmounted(() => {
 watch(() => props.preset, async () => {
 	if (renderer != null) {
 		await renderer.setLayers(props.preset.layers);
-		await renderer.render();
+		renderer.render();
 	}
 }, { deep: true });
 </script>
