@@ -69,6 +69,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
+	private nopProgram: WebGLProgram;
 	private fxs: [...IEX];
 	private paramTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
@@ -112,6 +113,30 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		this.nopProgram = initShaderProgram(this.gl, `#version 300 es
+			in vec2 position;
+			out vec2 in_uv;
+
+			void main() {
+				in_uv = (position + 1.0) / 2.0;
+				gl_Position = vec4(position * vec2(1.0, -1.0), 0.0, 1.0);
+			}
+		`, `#version 300 es
+			precision mediump float;
+
+			in vec2 in_uv;
+			uniform sampler2D u_texture;
+			out vec4 out_color;
+
+			void main() {
+				out_color = texture(u_texture, in_uv);
+			}
+		`);
+
+		const positionLocation = gl.getAttribLocation(this.nopProgram, 'position');
+		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(positionLocation);
 	}
 
 	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture, invert = false) {
@@ -136,10 +161,6 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 
 		gl.useProgram(shaderProgram);
-
-		const positionLocation = gl.getAttribLocation(shaderProgram, 'position');
-		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-		gl.enableVertexAttribArray(positionLocation);
 
 		const in_resolution = gl.getUniformLocation(shaderProgram, 'in_resolution');
 		gl.uniform2fv(in_resolution, [this.renderWidth, this.renderHeight]);
@@ -179,9 +200,19 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	public render() {
 		const gl = this.gl;
 
-		let preTexture = this.originalImageTexture;
+		// 入力をそのまま出力
+		if (this.layers.length === 0) {
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
 
-		// TODO: layersが0の場合にoriginalImageTextureをそのまま描画する
+			gl.useProgram(this.nopProgram);
+			gl.uniform1i(gl.getUniformLocation(this.nopProgram, 'u_texture')!, 0);
+
+			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			return;
+		}
+
+		let preTexture = this.originalImageTexture;
 
 		for (const layer of this.layers) {
 			const isLast = layer === this.layers.at(-1);
@@ -270,6 +301,8 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	 * disposeCanvas = true だとloseContextを呼ぶため、コンストラクタで渡されたcanvasも再利用不可になるので注意
 	 */
 	public destroy(disposeCanvas = true) {
+		this.gl.deleteProgram(this.nopProgram);
+
 		for (const shader of this.shaderCache.values()) {
 			this.gl.deleteProgram(shader);
 		}
