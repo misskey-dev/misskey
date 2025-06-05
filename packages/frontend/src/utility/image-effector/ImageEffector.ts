@@ -134,6 +134,8 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			}
 		`);
 
+		// レジスタ番号はシェーダープログラムに属しているわけではなく、独立の存在なので、とりあえず nopProgram を使って設定する(その後は効果が持続する)
+		// ref. https://qiita.com/emadurandal/items/5966c8374f03d4de3266
 		const positionLocation = gl.getAttribLocation(this.nopProgram, 'position');
 		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 		gl.enableVertexAttribArray(positionLocation);
