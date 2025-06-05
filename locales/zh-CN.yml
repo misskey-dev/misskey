@@ -3158,6 +3158,7 @@ _imageEffector:
     mirror: "镜像"
     invert: "反转颜色"
     grayscale: "黑白"
+    colorAdjust: "色彩校正"
     colorClamp: "颜色限制"
     colorClampAdvanced: "颜色限制（高级）"
     distort: "失真"
