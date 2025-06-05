@@ -3262,6 +3262,7 @@ _imageEffector:
     mirror: "ミラー"
     invert: "色の反転"
     grayscale: "白黒"
+    colorAdjust: "色調補正"
     colorClamp: "色の圧縮"
     colorClampAdvanced: "色の圧縮(高度)"
     distort: "歪み"

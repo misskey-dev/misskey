@@ -12177,6 +12177,10 @@ export interface Locale extends ILocale {
              */
             "grayscale": string;
             /**
+             * 色調補正
+             */
+            "colorAdjust": string;
+            /**
              * 色の圧縮
              */
             "colorClamp": string;
