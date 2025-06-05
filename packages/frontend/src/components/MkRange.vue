@@ -58,13 +58,14 @@ const props = withDefaults(defineProps<{
 	continuousUpdate?: boolean;
 }>(), {
 	step: 1,
-	textConverter: (v) => v.toString(),
+	textConverter: (v: number) => (Math.round(v * 1000) / 1000).toString(),
 	easing: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: number): void;
 	(ev: 'dragEnded', value: number): void;
+	(ev: 'thumbDoubleClicked'): void;
 }>();
 
 const containerEl = useTemplateRef('containerEl');
@@ -73,7 +74,11 @@ const thumbEl = useTemplateRef('thumbEl');
 const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
 const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
-const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
+const calcRawValue = (value: number) => {
+	return (value - props.min) / (props.max - props.min);
+};
+
+const rawValue = ref(calcRawValue(props.modelValue));
 const steppedRawValue = computed(() => {
 	if (props.step) {
 		const step = props.step / (props.max - props.min);
@@ -103,6 +108,11 @@ const calcThumbPosition = () => {
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
+watch(() => props.modelValue, (newVal) => {
+	const newRawValue = calcRawValue(newVal);
+	if (rawValue.value === newRawValue) return;
+	rawValue.value = newRawValue;
+});
 
 let ro: ResizeObserver | undefined;
 
@@ -138,7 +148,7 @@ function onMouseenter() {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl,
+		targetElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -147,6 +157,8 @@ function onMouseenter() {
 		tooltipForHoverShowing.value = false;
 	}, { once: true, passive: true });
 }
+
+let lastClickTime: number | null = null;
 
 function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
@@ -158,7 +170,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl,
+		targetElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -203,6 +215,20 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	window.addEventListener('touchmove', onDrag);
 	window.addEventListener('mouseup', onMouseup, { once: true });
 	window.addEventListener('touchend', onMouseup, { once: true });
+
+	if (lastClickTime == null) {
+		lastClickTime = Date.now();
+		return;
+	} else {
+		const now = Date.now();
+		if (now - lastClickTime < 300) { // 300ms以内のクリックはダブルクリックとみなす
+			lastClickTime = null;
+			emit('thumbDoubleClicked');
+			return;
+		} else {
+			lastClickTime = now;
+		}
+	}
 }
 </script>
 
