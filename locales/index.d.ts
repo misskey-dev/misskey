@@ -10341,9 +10341,9 @@ export interface Locale extends ILocale {
          */
         "userFirstPublicPost": ParameterizedString<"date" | "user">;
         /**
-         * {date}に{user}珍しく浮上
+         * {date}に{user}が珍しく浮上
          */
-        "userFirstPost": ParameterizedString<"date" | "user">;
+        "userRarelyAppeared": ParameterizedString<"date" | "user">;
         /**
          * {date}に{user}が{n}日ぶりに浮上
          */

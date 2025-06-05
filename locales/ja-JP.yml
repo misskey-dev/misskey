@@ -2725,7 +2725,7 @@ _timelines:
 floater: "浮上"
 _floater:
   userFirstPublicPost: '{date}に{user}が初めて浮上'
-  userFirstPost: '{date}に{user}珍しく浮上'
+  userRarelyAppeared: '{date}に{user}が珍しく浮上'
   userAfterNDays: '{date}に{user}が{n}日ぶりに浮上'
 
 _play:

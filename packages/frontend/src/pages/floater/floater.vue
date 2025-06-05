@@ -4,36 +4,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_spacer" style="--MI_SPACER-w: 800px;">
-	<MkPagination
-		v-slot="{ items: paginationItems, fetching }" ref="paginationComponent"
-		:pagination="followingPagination" :class="$style.tl"
-	>
-		<div :class="$style.content">
-			<MkLoading v-if="fetching && paginationItems.length === 0"/>
-			<MkResult v-else-if="paginationItems.length === 0" type="empty"/>
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<MkPagination v-slot="{ items: paginationItems, fetching }" ref="paginationComponent"
+			:pagination="followingPagination" :class="$style.tl">
+			<div :class="$style.content">
+				<MkLoading v-if="fetching && paginationItems.length === 0" />
+				<MkResult v-else-if="paginationItems.length === 0" type="empty" />
 
-			<!-- 重複排除したアイテムを使用 -->
-			<div v-for="item in getUniqueItems(paginationItems)" :key="item.id" :class="$style.userNotes">
-				<!-- ノート表示（最大3つまで表示に変更） -->
-				<template v-for="(note, i) in item.notes.slice(0, 3)" :key="note.id">
-					<!-- 日付区切り: 日付が変わる場合や最初のノートに表示 -->
-					<div
-						v-if="shouldShowDateSeparator(note, i, item)"
-						:class="[$style.dateSeparator,
-							i === 0 ? $style.firstDateSeparator : '',
-							item.isFirstPublicPost && i === 0 ? $style.firstPublicPostSeparator : '',
-							isFloaterInfo(note, i, item) ? $style.floaterSeparator : '']"
-					>
-						<span>{{ getDateInfo(note, i, item) }}</span>
-					</div>
+				<!-- 重複排除したアイテムを使用 -->
+				<div v-for="item in getUniqueItems(paginationItems)" :key="item.id" :class="$style.userNotes">
+					<!-- ノート表示（最大3つまで表示に変更） -->
+					<template v-for="(note, i) in item.notes.slice(0, 3)" :key="note.id">
+						<!-- 日付区切り: 日付が変わる場合や最初のノートに表示 -->
+						<div v-if="shouldShowDateSeparator(note, i, item)" :class="[$style.dateSeparator,
+						i === 0 ? $style.firstDateSeparator : '',
+						item.isFirstPublicPost && i === 0 ? $style.firstPublicPostSeparator : '',
+						shouldHighlightAppearance(note, i, item) ? $style.rarelyAppearedSeparator : '',
+						isFloaterInfo(note, i, item) ? $style.floaterSeparator : '']">
+							<span>{{ getDateInfo(note, i, item) }}</span>
+						</div>
 
-					<MkNote :note="note" :class="$style.note" :withHardMute="true" :ignoreInheritedHardMute="false"/>
-				</template>
+						<MkNote :note="note" :class="$style.note" :withHardMute="true" :ignoreInheritedHardMute="false" />
+					</template>
+				</div>
 			</div>
-		</div>
-	</MkPagination>
-</div>
+		</MkPagination>
+	</div>
 </template>
 
 <script lang="ts" setup>
@@ -51,6 +47,7 @@ provide('inTimeline', true);
 // プロパティ定義
 const props = defineProps<{
 	anchorDate: number;
+	timeRange: number; // タブの時間範囲（ミリ秒）
 }>();
 
 // 参照
@@ -196,8 +193,17 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 			}
 		}
 
-		// 比較対象がない場合は単純な日付表示
-		if (!compareNote) return getDateText(currentDate);
+		// 比較対象がない場合は「珍しく浮上」として表示
+		if (!compareNote) {
+			const userName = (currentNote.user.name || currentNote.user.username).replace(/:([\w-]+):/g, '').trim();
+			const dateStr = isToday(currentDate) ? '今日' : formatDateTimeString(currentDate, 'yyyy年M月d日');
+
+			// 比較対象がないので「珍しく浮上」
+			return formatFloaterMessage('userRarelyAppeared', {
+				user: userName,
+				date: dateStr,
+			});
+		}
 
 		const compareDate = ensureDate(compareNote.createdAt);
 
@@ -220,7 +226,10 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 			return getDateText(currentDate);
 		}
 
-		let messageKey = !item.last && noteIndex === 0 ? 'userFirstPost' : 'userAfterNDays';
+		// 日付差がある場合は「X日ぶりに浮上」
+		// (スタイルによる強調は isRarelyAppeared 関数が担当)
+		const messageKey = 'userAfterNDays';
+
 		const params = {
 			user: userName,
 			date: dateStr,
@@ -353,6 +362,37 @@ function getDateInfo(note: any, index: number, item: FloaterItem): string {
 	return getDateText(ensureDate(note.createdAt));
 }
 
+// 久々に浮上かどうかを判定する関数（スタイル適用用）
+function shouldHighlightAppearance(note: any, index: number, item: FloaterItem): boolean {
+	// 初浮上の場合は除外
+	if (item.isFirstPublicPost && index === 0) return false;
+
+	// 1. 比較対象のノートが取得できない場合（前のノートが存在しない）
+	if (index === 0 && !item.notes[1]) return true;
+
+	// 2. 比較対象を特定（最初のノートの場合は次のノートと比較）
+	const compareNote = index === 0
+		? item.notes[1]
+		: item.notes[index - 1];
+
+	if (!compareNote) return false;
+
+	// 3. 日付差を計算
+	const currentDate = ensureDate(note.createdAt);
+	const compareDate = ensureDate(compareNote.createdAt);
+
+	// 同じ日ならスキップ
+	if (isSameDay(currentDate, compareDate)) return false;
+
+	const diffDays = calculateDaysDifference(compareDate, currentDate);
+
+	// 4. タブの時間範囲との比較
+	const tabRangeDays = props.timeRange / (1000 * 60 * 60 * 24);
+
+	// タブの日数範囲の2倍以上前からの浮上なら強調表示
+	return diffDays >= tabRangeDays * 2;
+}
+
 // コンポーネントの関数を外部に公開
 defineExpose({
 	reload,
@@ -413,12 +453,21 @@ defineExpose({
 					border-top: none;
 				}
 
-				// 初浮上の場合は特別なスタイルを適用
-				&.firstPublicPostSeparator {
-					background: $separator-bg; // 通常の背景色を使用
-					color: var(--MI_THEME-accent); // 文字色だけアクセント色に
+				// 強調表示の共通スタイル
+				&.firstPublicPostSeparator,
+				&.rarelyAppearedSeparator {
+					background: $separator-bg;
 					font-weight: bold;
-					opacity: 1; // 透明度を元に戻す
+					opacity: 1;
+				}
+
+				// 個別の色指定
+				&.firstPublicPostSeparator {
+					color: var(--MI_THEME-accent); // 初浮上はアクセント色
+				}
+
+				&.rarelyAppearedSeparator {
+					color: var(--MI_THEME-warning); // 久々に浮上は警告色
 				}
 			}
 

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-model:tab="recent" :actions="headerActions" :tabs="headerTabs" :swipable="true"
 	:displayMyAvatar="true"
 >
-	<XFloater ref="floaterComponent" :key="recent" :anchorDate="anchorDate"/>
+	<XFloater ref="floaterComponent" :key="recent" :anchorDate="anchorDate" :timeRange="parseInt(recent)"/>
 </PageWithHeader>
 </template>
 
