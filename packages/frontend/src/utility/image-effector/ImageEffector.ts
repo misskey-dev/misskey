@@ -61,8 +61,6 @@ function getValue<T extends keyof ParamTypeToPrimitive>(params: Record<string, a
 export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, any>>> {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
-	private renderTextureProgram: WebGLProgram;
-	private renderInvertedTextureProgram: WebGLProgram;
 	private renderWidth: number;
 	private renderHeight: number;
 	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
@@ -114,50 +112,9 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
-
-		this.renderTextureProgram = initShaderProgram(this.gl, `#version 300 es
-			in vec2 position;
-			out vec2 in_uv;
-
-			void main() {
-				in_uv = (position + 1.0) / 2.0;
-				gl_Position = vec4(position, 0.0, 1.0);
-			}
-		`, `#version 300 es
-			precision mediump float;
-
-			in vec2 in_uv;
-			uniform sampler2D u_texture;
-			out vec4 out_color;
-
-			void main() {
-				out_color = texture(u_texture, in_uv);
-			}
-		`);
-
-		this.renderInvertedTextureProgram = initShaderProgram(this.gl, `#version 300 es
-			in vec2 position;
-			out vec2 in_uv;
-
-			void main() {
-				in_uv = (position + 1.0) / 2.0;
-				in_uv.y = 1.0 - in_uv.y;
-				gl_Position = vec4(position, 0.0, 1.0);
-			}
-		`, `#version 300 es
-			precision mediump float;
-
-			in vec2 in_uv;
-			uniform sampler2D u_texture;
-			out vec4 out_color;
-
-			void main() {
-				out_color = texture(u_texture, in_uv);
-			}
-		`);
 	}
 
-	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
+	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture, invert = false) {
 		const gl = this.gl;
 
 		const fx = this.fxs.find(fx => fx.id === layer.fxId);
@@ -166,11 +123,12 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		const cachedShader = this.shaderCache.get(fx.id);
 		const shaderProgram = cachedShader ?? initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
+			uniform bool u_invert;
 			out vec2 in_uv;
 
 			void main() {
 				in_uv = (position + 1.0) / 2.0;
-				gl_Position = vec4(position, 0.0, 1.0);
+				gl_Position = u_invert ? vec4(position * vec2(1.0, -1.0), 0.0, 1.0) : vec4(position, 0.0, 1.0);
 			}
 		`, fx.shader);
 		if (cachedShader == null) {
@@ -179,8 +137,15 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 
 		gl.useProgram(shaderProgram);
 
+		const positionLocation = gl.getAttribLocation(shaderProgram, 'position');
+		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(positionLocation);
+
 		const in_resolution = gl.getUniformLocation(shaderProgram, 'in_resolution');
 		gl.uniform2fv(in_resolution, [this.renderWidth, this.renderHeight]);
+
+		const u_invert = gl.getUniformLocation(shaderProgram, 'u_invert');
+		gl.uniform1i(u_invert, invert ? 1 : 0);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, preTexture);
@@ -214,27 +179,13 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	public render() {
 		const gl = this.gl;
 
-		{
-			gl.activeTexture(gl.TEXTURE0);
-			gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
-
-			gl.useProgram(this.renderTextureProgram);
-			const u_texture = gl.getUniformLocation(this.renderTextureProgram, 'u_texture');
-			gl.uniform1i(u_texture, 0);
-			const u_resolution = gl.getUniformLocation(this.renderTextureProgram, 'u_resolution');
-			gl.uniform2fv(u_resolution, [this.renderWidth, this.renderHeight]);
-			const positionLocation = gl.getAttribLocation(this.renderTextureProgram, 'position');
-			gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-			gl.enableVertexAttribArray(positionLocation);
-
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
-		}
-
-		// --------------------
-
 		let preTexture = this.originalImageTexture;
 
+		// TODO: layersが0の場合にoriginalImageTextureをそのまま描画する
+
 		for (const layer of this.layers) {
+			const isLast = layer === this.layers.at(-1);
+
 			const cachedResultTexture = this.perLayerResultTextures.get(layer.id);
 			const resultTexture = cachedResultTexture ?? createTexture(gl);
 			if (cachedResultTexture == null) {
@@ -244,30 +195,22 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.renderWidth, this.renderHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 			gl.bindTexture(gl.TEXTURE_2D, null);
 
-			const cachedResultFrameBuffer = this.perLayerResultFrameBuffers.get(layer.id);
-			const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer()!;
-			if (cachedResultFrameBuffer == null) {
-				this.perLayerResultFrameBuffers.set(layer.id, resultFrameBuffer);
+			if (isLast) {
+				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			} else {
+				const cachedResultFrameBuffer = this.perLayerResultFrameBuffers.get(layer.id);
+				const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer()!;
+				if (cachedResultFrameBuffer == null) {
+					this.perLayerResultFrameBuffers.set(layer.id, resultFrameBuffer);
+				}
+				gl.bindFramebuffer(gl.FRAMEBUFFER, resultFrameBuffer);
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 			}
-			gl.bindFramebuffer(gl.FRAMEBUFFER, resultFrameBuffer);
-			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 
-			this.renderLayer(layer, preTexture);
-
-			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			this.renderLayer(layer, preTexture, isLast);
 
 			preTexture = resultTexture;
 		}
-
-		// --------------------
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		gl.useProgram(this.renderInvertedTextureProgram);
-
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
 	public async setLayers(layers: ImageEffectorLayer[]) {
@@ -347,8 +290,6 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 		this.paramTextures.clear();
 
-		this.gl.deleteProgram(this.renderTextureProgram);
-		this.gl.deleteProgram(this.renderInvertedTextureProgram);
 		this.gl.deleteTexture(this.originalImageTexture);
 
 		if (disposeCanvas) {
