@@ -3,10 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Serialized } from '@/types.js';
 import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
+import { id } from './util/id.js';
+
+export const antennaSources = [
+	'all',
+	'users',
+	'users_blacklist',
+	// 'home', // TODO
+	// 'list', // NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
+] as const;
+export type AntennaSource = typeof antennaSources[number];
 
 @Entity('antenna')
 export class MiAntenna {
@@ -36,8 +46,8 @@ export class MiAntenna {
 	})
 	public name: string;
 
-	@Column('enum', { enum: ['home', 'all', 'users', 'list', 'users_blacklist'] })
-	public src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+	@Column('enum', { enum: antennaSources })
+	public src: AntennaSource;
 
 	@Column({
 		...id(),
@@ -105,6 +115,22 @@ export class MiAntenna {
 		default: false,
 	})
 	public excludeNotesInSensitiveChannel: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public useRegex: boolean;
+
+	public static deserialize(data: Serialized<MiAntenna>): MiAntenna {
+		return {
+			...data,
+			lastUsedAt: new Date(data.lastUsedAt),
+			// クエリビルダで明示的にSELECT/JOINしないかぎり設定されない値なのでnullにしておく
+			user: null,
+			// クエリビルダで明示的にSELECT/JOINしないかぎり設定されない値なのでnullにしておく
+			userList: null,
+		};
+	}
 }
 // Note for future developers: When you added a new column,
 // You should update ExportAntennaProcessorService and ImportAntennaProcessorService

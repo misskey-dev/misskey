@@ -4990,7 +4990,7 @@ export type components = {
       keywords: string[][];
       excludeKeywords: string[][];
       /** @enum {string} */
-      src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+      src: 'all' | 'users' | 'users_blacklist';
       /** Format: id */
       userListId: string | null;
       users: string[];
@@ -4998,6 +4998,7 @@ export type components = {
       caseSensitive: boolean;
       /** @default false */
       localOnly: boolean;
+      useRegex: boolean;
       /** @default false */
       excludeBots: boolean;
       /** @default false */
@@ -11837,15 +11838,14 @@ export type operations = {
         'application/json': {
           name: string;
           /** @enum {string} */
-          src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
-          /** Format: misskey:id */
-          userListId?: string | null;
+          src: 'all' | 'users' | 'users_blacklist';
           keywords: string[][];
           excludeKeywords: string[][];
           users: string[];
           caseSensitive: boolean;
           localOnly?: boolean;
           excludeBots?: boolean;
+          useRegex?: boolean;
           withReplies: boolean;
           withFile: boolean;
           excludeNotesInSensitiveChannel?: boolean;
@@ -12119,15 +12119,14 @@ export type operations = {
           antennaId: string;
           name?: string;
           /** @enum {string} */
-          src?: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
-          /** Format: misskey:id */
-          userListId?: string | null;
+          src?: 'all' | 'users' | 'users_blacklist';
           keywords?: string[][];
           excludeKeywords?: string[][];
           users?: string[];
           caseSensitive?: boolean;
           localOnly?: boolean;
           excludeBots?: boolean;
+          useRegex?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
           excludeNotesInSensitiveChannel?: boolean;
