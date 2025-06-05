@@ -41,6 +41,7 @@ import XChart from './overview.queue.chart.vue';
 import type { ApQueueDomain } from '@/pages/admin/queue.vue';
 import number from '@/filters/number.js';
 import { useStream } from '@/stream.js';
+import { genId } from '@/utility/id.js';
 
 const connection = markRaw(useStream().useChannel('queueStats'));
 
@@ -92,7 +93,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
 		length: 100,
 	});
 });

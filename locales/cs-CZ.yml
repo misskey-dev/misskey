@@ -2043,3 +2043,11 @@ _search:
   searchScopeAll: "Vše"
   searchScopeLocal: "Místní"
   searchScopeUser: "Upřesnit uživatele"
+_watermarkEditor:
+  opacity: "Průhlednost"
+  scale: "Velikost"
+  text: "Text"
+  position: "Pozice"
+  type: "Typ"
+  image: "Obrázky"
+  advanced: "Pokročilé"

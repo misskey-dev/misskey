@@ -1589,3 +1589,11 @@ _search:
   searchScopeAll: "الكل"
   searchScopeLocal: "المحلي"
   searchScopeUser: "مستخدم محدد"
+_watermarkEditor:
+  opacity: "الشفافية"
+  scale: "الحجم"
+  text: "نص"
+  position: "الموضع"
+  type: "نوع"
+  image: "صور"
+  advanced: "متقدم"

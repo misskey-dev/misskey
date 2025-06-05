@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
+					<button v-tooltip="i18n.ts.settings" class="_button config" @click="settings"><i class="ti ti-settings"></i></button>
 				</div>
 			</section>
 
@@ -142,6 +143,9 @@ import { searchCustomEmojis } from '@/hana/scripts/emoji-search.js';
 import { hanaStore } from '@/hana/store.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -504,6 +508,11 @@ function done(query?: string): boolean | void {
 	}
 }
 
+function settings() {
+	emit('esc');
+	router.push('settings/emoji-palette');
+}
+
 onMounted(() => {
 	focus();
 });
@@ -734,6 +743,15 @@ defineExpose({
 			> .body {
 				position: relative;
 				padding: $pad;
+
+				> .config {
+					position: relative;
+					padding: 0 3px;
+					width: var(--eachSize);
+					height: var(--eachSize);
+					contain: strict;
+					opacity: 0.5;
+				}
 
 				> .item {
 					position: relative;

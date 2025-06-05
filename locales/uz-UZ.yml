@@ -1097,3 +1097,8 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Barcha"
   searchScopeLocal: "Mahalliy"
+_watermarkEditor:
+  text: "Matn"
+  type: "turi"
+  image: "Rasmlar"
+  advanced: "Murakkab"

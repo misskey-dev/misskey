@@ -4,7 +4,7 @@
  */
 
 import { utils, values } from '@syuilo/aiscript';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -543,7 +543,7 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		call: C,
 	) {
 		if (id) utils.assertString(id);
-		const _id = id?.value ?? uuid();
+		const _id = id?.value ?? genId();
 		const component = ref({
 			...getOptions(def, call),
 			type,

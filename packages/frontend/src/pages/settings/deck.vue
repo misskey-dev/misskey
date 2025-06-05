@@ -114,7 +114,10 @@ watch(wallpaper, async () => {
 });
 
 function setWallpaper(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target, null).then(file => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	}).then(file => {
 		wallpaper.value = file.url;
 	});
 }

@@ -57,9 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-mood-off"></i></template>
 					<template #label>{{ i18n.ts.emojiMute }}</template>
 
-					<div class="_gaps_m">
-						<XEmojiMute/>
-					</div>
+					<XEmojiMute/>
 				</mkfolder>
 			</SearchMarker>
 

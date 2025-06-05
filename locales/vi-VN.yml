@@ -2074,3 +2074,12 @@ _search:
   searchScopeAll: "Tất cả"
   searchScopeLocal: "Máy chủ này"
   searchScopeUser: "Người dùng chỉ định"
+_watermarkEditor:
+  opacity: "Độ trong suốt"
+  scale: "Kích thước"
+  text: "Văn bản"
+  position: "Vị trí"
+  type: "Loại"
+  image: "Hình ảnh"
+  advanced: "Nâng cao"
+  angle: "Góc"

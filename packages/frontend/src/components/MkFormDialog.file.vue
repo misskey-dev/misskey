@@ -51,7 +51,10 @@ if (props.fileId) {
 }
 
 function selectButton(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target).then(async (file) => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	}).then(async (file) => {
 		if (!file) return;
 		if (props.validate && !await props.validate(file)) return;
 

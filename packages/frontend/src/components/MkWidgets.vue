@@ -51,7 +51,7 @@ export type DefaultStoredWidget = {
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, computed } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
@@ -95,7 +95,7 @@ const addWidget = () => {
 
 	emit('addWidget', {
 		name: widgetAdderSelected.value,
-		id: uuid(),
+		id: genId(),
 		data: {},
 	});
 
