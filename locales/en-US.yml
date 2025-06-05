@@ -1365,6 +1365,7 @@ abort: "Abort"
 tip: "Tips & Tricks"
 redisplayAllTips: "Show all “Tips & Tricks” again"
 hideAllTips: "Hide all \"Tips & Tricks\""
+defaultImageCompressionLevel: "Default image compression level"
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"
