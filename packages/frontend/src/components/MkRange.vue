@@ -12,10 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight right" :style="{ width: ((steppedRawValue - minRatio) * 100) + '%', left: (Math.abs(Math.min(0, min)) / (max + Math.abs(Math.min(0, min)))) * 100 + '%' }">
+				<div class="highlight right" :style="{ width: rightTrackWidth, left: rightTrackPosition }">
 					<div class="shine right"></div>
 				</div>
-				<div class="highlight left" :style="{ width: ((minRatio - steppedRawValue) * 100) + '%', left: (steppedRawValue) * 100 + '%' }">
+				<div class="highlight left" :style="{ width: leftTrackWidth, left: leftTrackPosition }">
 					<div class="shine left"></div>
 				</div>
 			</div>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
 import { isTouchUsing } from '@/utility/touch.js';
 import * as os from '@/os.js';
 
@@ -73,6 +73,19 @@ const thumbEl = useTemplateRef('thumbEl');
 
 const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
 const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
+
+const rightTrackWidth = computed(() => {
+	return Math.max(0, (steppedRawValue.value - minRatio.value) * 100) + '%';
+});
+const leftTrackWidth = computed(() => {
+	return Math.max(0, (minRatio.value - steppedRawValue.value) * 100) + '%';
+});
+const rightTrackPosition = computed(() => {
+	return (Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100 + '%';
+});
+const leftTrackPosition = computed(() => {
+	return (Math.min(minRatio.value, steppedRawValue.value) * 100) + '%';
+});
 
 const calcRawValue = (value: number) => {
 	return (value - props.min) / (props.max - props.min);
@@ -108,7 +121,7 @@ const calcThumbPosition = () => {
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
-watch(() => props.modelValue, (newVal) => {
+watch(() => props.modelValue, async (newVal) => {
 	const newRawValue = calcRawValue(newVal);
 	if (rawValue.value === newRawValue) return;
 	rawValue.value = newRawValue;
@@ -137,6 +150,12 @@ const steps = computed(() => {
 
 const tooltipForDragShowing = ref(false);
 const tooltipForHoverShowing = ref(false);
+
+onBeforeUnmount(() => {
+	// 何らかの問題で表示されっぱなしでもコンポーネントを離れたら消えるように
+	tooltipForDragShowing.value = false;
+	tooltipForHoverShowing.value = false;
+});
 
 function onMouseenter() {
 	if (isTouchUsing) return;
