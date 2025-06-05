@@ -121,7 +121,7 @@ const calcThumbPosition = () => {
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
-watch(() => props.modelValue, async (newVal) => {
+watch(() => props.modelValue, (newVal) => {
 	const newRawValue = calcRawValue(newVal);
 	if (rawValue.value === newRawValue) return;
 	rawValue.value = newRawValue;
