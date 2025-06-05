@@ -3158,6 +3158,7 @@ _imageEffector:
     mirror: "Espejo"
     invert: "Invertir colores"
     grayscale: "Blanco y negro"
+    colorAdjust: "Corrección de Color"
     colorClamp: "Compresión cromática"
     colorClampAdvanced: "Compresión cromática avanzada"
     distort: "Distorsión"
