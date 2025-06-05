@@ -4,31 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<MkPagination v-slot="{ items: paginationItems, fetching }" ref="paginationComponent"
-			:pagination="followingPagination" :class="$style.tl">
-			<div :class="$style.content">
-				<MkLoading v-if="fetching && paginationItems.length === 0" />
-				<MkResult v-else-if="paginationItems.length === 0" type="empty" />
+<div class="_spacer" style="--MI_SPACER-w: 800px;">
+	<MkPagination
+		v-slot="{ items: paginationItems, fetching }" ref="paginationComponent"
+		:pagination="followingPagination" :class="$style.tl"
+	>
+		<div :class="$style.content">
+			<MkLoading v-if="fetching && paginationItems.length === 0"/>
+			<MkResult v-else-if="paginationItems.length === 0" type="empty"/>
 
-				<!-- 重複排除したアイテムを使用 -->
-				<div v-for="item in getUniqueItems(paginationItems)" :key="item.id" :class="$style.userNotes">
-					<template v-for="(note, i) in item.notes.slice(0, displayCount)" :key="note.id">
-						<!-- 日付区切り: 日付が変わる場合や最初のノートに表示 -->
-						<div v-if="shouldShowDateSeparator(note, i, item)" :class="[$style.dateSeparator,
-						i === 0 ? $style.firstDateSeparator : '',
-						item.isFirstPublicPost && i === 0 ? $style.firstPublicPostSeparator : '',
-						shouldHighlightAppearance(note, i, item) ? $style.rarelyAppearedSeparator : '',
-						isFloaterInfo(note, i, item) ? $style.floaterSeparator : '']">
-							<span>{{ getDateInfo(note, i, item) }}</span>
-						</div>
+			<!-- 重複排除したアイテムを使用 -->
+			<div v-for="item in getUniqueItems(paginationItems)" :key="item.id" :class="$style.userNotes">
+				<template v-for="(note, i) in item.notes.slice(0, displayCount)" :key="note.id">
+					<!-- 日付区切り: 日付が変わる場合や最初のノートに表示 -->
+					<div
+						v-if="shouldShowDateSeparator(note, i, item)" :class="[$style.dateSeparator,
+							i === 0 ? $style.firstDateSeparator : '',
+							item.isFirstPublicPost && i === 0 ? $style.firstPublicPostSeparator : '',
+							shouldHighlightAppearance(note, i, item) ? $style.rarelyAppearedSeparator : '',
+							isFloaterInfo(note, i, item) ? $style.floaterSeparator : '']"
+					>
+						<span>{{ getDateInfo(note, i, item) }}</span>
+					</div>
 
-						<MkNote :note="note" :class="$style.note" :withHardMute="true" :ignoreInheritedHardMute="false" />
-					</template>
-				</div>
+					<MkNote :note="note" :class="$style.note" :withHardMute="true" :ignoreInheritedHardMute="false"/>
+				</template>
 			</div>
-		</MkPagination>
-	</div>
+		</div>
+	</MkPagination>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -281,16 +285,16 @@ interface FloaterItem {
 }
 
 // 日付計算を専門にする関数
-function calculateDaysDifference(date1: Date, date2: Date): number {
+function calculateDaysDifference(olderDate: Date, newerDate: Date): number {
 	// 日付部分のみを比較（時間は無視）
-	const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
-	const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+	const d1 = new Date(olderDate.getFullYear(), olderDate.getMonth(), olderDate.getDate());
+	const d2 = new Date(newerDate.getFullYear(), newerDate.getMonth(), newerDate.getDate());
 
-	// ミリ秒差分を日数に変換
-	const diffTime = Math.abs(d1.getTime() - d2.getTime());
+	// ミリ秒差分を日数に変換（方向性を保持）
+	const diffTime = d2.getTime() - d1.getTime();
 	const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-	return diffDays;
+	return diffDays > 0 ? diffDays : 0; // 負の値は0に変換
 }
 
 // 文字列置換を一元化
@@ -349,7 +353,45 @@ function isFloaterInfo(note: any, index: number, item: FloaterItem): boolean {
 
 // 日付情報またはユーザー浮上情報を取得する関数
 function getDateInfo(note: any, index: number, item: FloaterItem): string {
-	// 最初のノートには常に浮上情報を表示
+	// 初浮上の場合は初浮上表示
+	if (item.isFirstPublicPost && index === 0) {
+		const userName = (note.user.name || note.user.username).replace(/:([\w-]+):/g, '').trim();
+		const dateStr = isToday(note.createdAt) ? '今日' : formatDateTimeString(note.createdAt, 'yyyy年M月d日');
+		return formatFloaterMessage('userFirstPublicPost', {
+			user: userName,
+			date: dateStr,
+		});
+	}
+
+	// 日付差がある場合は「X日ぶりに浮上」表示
+	if (shouldShowDaysSinceLastAppearance(note, index, item)) {
+		// 比較対象を特定
+		let compareNote;
+		if (index === 0) {
+			compareNote = item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
+		} else {
+			compareNote = item.notes[index - 1];
+		}
+
+		if (compareNote) {
+			const currentDate = ensureDate(note.createdAt);
+			const compareDate = ensureDate(compareNote.createdAt);
+			const diffDays = calculateDaysDifference(compareDate, currentDate);
+
+			if (diffDays > 0) {
+				const userName = (note.user.name || note.user.username).replace(/:([\w-]+):/g, '').trim();
+				const dateStr = isToday(currentDate) ? '今日' : formatDateTimeString(currentDate, 'yyyy年M月d日');
+
+				return formatFloaterMessage('userAfterNDays', {
+					user: userName,
+					date: dateStr,
+					n: diffDays.toString(),
+				});
+			}
+		}
+	}
+
+	// 最初のノートの場合
 	if (index === 0) {
 		return getCombinedFloaterInfo(item, 0);
 	}
@@ -363,39 +405,54 @@ function getDateInfo(note: any, index: number, item: FloaterItem): string {
 	return getDateText(ensureDate(note.createdAt));
 }
 
-// 久々に浮上かどうかを判定する関数（スタイル適用用）
-function shouldHighlightAppearance(note: any, index: number, item: FloaterItem): boolean {
+// 日付差がある場合に「X日ぶりに浮上」を表示すべきか判断する関数
+function shouldShowDaysSinceLastAppearance(note: any, index: number, item: FloaterItem): boolean {
 	// 初浮上の場合は除外
 	if (item.isFirstPublicPost && index === 0) return false;
 
-	// 1. 比較対象のノートが取得できない場合（前のノートが存在しない）
-	if (index === 0 && item.notes.length <= 1) return true;
-
-	// 2. 比較対象を特定
+	// 比較対象を特定
 	let compareNote;
-
 	if (index === 0) {
-		// 最初のノートの場合
-		// バックエンドが日付差のあるノートまで動的に取得するため
-		// 最後のノートは日付の異なるノートになっている可能性が高い
-		compareNote = item.notes[item.notes.length - 1];
+		compareNote = item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
 	} else {
-		// 中間ノートの場合は前のノートと比較
 		compareNote = item.notes[index - 1];
 	}
 
 	if (!compareNote) return false;
 
-	// 3. 日付差を計算
+	// 日付差を計算
 	const currentDate = ensureDate(note.createdAt);
 	const compareDate = ensureDate(compareNote.createdAt);
 
 	// 同じ日ならスキップ
 	if (isSameDay(currentDate, compareDate)) return false;
 
+	// 比較対象の日付が現在の日付より古いことを確認
+	if (compareDate >= currentDate) return false;
+
+	// 日付差があれば表示すべき
+	return calculateDaysDifference(compareDate, currentDate) > 0;
+}
+
+// スタイルでハイライト表示すべきか判断する関数（特に長期間の浮上）
+function shouldHighlightAppearance(note: any, index: number, item: FloaterItem): boolean {
+	// 基本的な条件をチェック
+	if (!shouldShowDaysSinceLastAppearance(note, index, item)) return false;
+
+	// 比較対象を特定
+	let compareNote;
+	if (index === 0) {
+		compareNote = item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
+	} else {
+		compareNote = item.notes[index - 1];
+	}
+
+	// 日付差を計算
+	const currentDate = ensureDate(note.createdAt);
+	const compareDate = ensureDate(compareNote.createdAt);
 	const diffDays = calculateDaysDifference(compareDate, currentDate);
 
-	// 4. タブの時間範囲との比較
+	// タブの時間範囲との比較
 	const tabRangeDays = props.timeRange / (1000 * 60 * 60 * 24);
 
 	// タブの日数範囲の2倍以上前からの浮上なら強調表示
@@ -476,7 +533,7 @@ defineExpose({
 				}
 
 				&.rarelyAppearedSeparator {
-					color: var(--MI_THEME-warning); // 久々に浮上は警告色
+					color: var(--MI_THEME-warn); // 久々に浮上は警告色
 				}
 			}
 
