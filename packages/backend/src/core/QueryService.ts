@@ -310,49 +310,41 @@ export class QueryService {
 
 		q.andWhere(new Brackets(qb => {
 			qb
-				.where(new Brackets(qb => {
-					qb.where('note.renoteId IS NOT NULL');
-					qb.andWhere('note.text IS NULL');
-					qb.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
-				}))
 				.orWhere('note.renoteId IS NULL')
-				.orWhere('note.text IS NOT NULL');
+				.orWhere('note.text IS NOT NULL')
+				.orWhere('note.cw IS NOT NULL')
+				.orWhere('note.replyId IS NOT NULL')
+				.orWhere('note.fileIds != \'{}\'')
+				.orWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
 		}));
 
 		q.setParameters(mutingQuery.getParameters());
 	}
 
 	@bindThis
-	public generateBlockedHostQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean): void {
-		let nonBlockedHostQuery: (part: string) => string;
-		if (this.meta.blockedHosts.length === 0) {
-			nonBlockedHostQuery = () => '1=1';
-		} else {
-			nonBlockedHostQuery = (match: string) => `${match} NOT ILIKE ALL(ARRAY[:...blocked])`;
-			q.setParameters({ blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) });
+	public generateBlockedHostQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean, allowSilenced = true): void {
+		function checkFor(key: 'user' | 'replyUser' | 'renoteUser') {
+			q.leftJoin(`note.${key}Instance`, `${key}Instance`);
+			q.andWhere(new Brackets(qb => {
+				qb.orWhere(`note.${key}Id IS NULL`) // no corresponding user
+					.orWhere(`note.${key}Host IS NULL`) // local
+					.orWhere(`${key}Instance.isBlocked = false`); // not blocked
+
+				if (!allowSilenced) {
+					qb.orWhere(`${key}Instance.isSilenced = false`); // not silenced
+				}
+
+				if (excludeAuthor) {
+					qb.orWhere(`note.userId = note.${key}Id`); // author
+				}
+			}));
 		}
 
-		if (excludeAuthor) {
-			const instanceSuspension = (user: string) => new Brackets(qb => qb
-				.where(`note.${user}Id IS NULL`) // no corresponding user
-				.orWhere(`note.userId = note.${user}Id`)
-				.orWhere(`note.${user}Host IS NULL`) // local
-				.orWhere(nonBlockedHostQuery(`note.${user}Host`)));
-
-			q
-				.andWhere(instanceSuspension('replyUser'))
-				.andWhere(instanceSuspension('renoteUser'));
-		} else {
-			const instanceSuspension = (user: string) => new Brackets(qb => qb
-				.where(`note.${user}Id IS NULL`) // no corresponding user
-				.orWhere(`note.${user}Host IS NULL`) // local
-				.orWhere(nonBlockedHostQuery(`note.${user}Host`)));
-
-			q
-				.andWhere(instanceSuspension('user'))
-				.andWhere(instanceSuspension('replyUser'))
-				.andWhere(instanceSuspension('renoteUser'));
+		if (!excludeAuthor) {
+			checkFor('user');
 		}
+		checkFor('replyUser');
+		checkFor('renoteUser');
 	}
 
 	// Requirements: user replyUser renoteUser must be joined

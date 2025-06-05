@@ -5,6 +5,7 @@
 
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { noteVisibilities } from '@/types.js';
+import { MiInstance } from '@/models/Instance.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
@@ -214,6 +215,16 @@ export class MiNote {
 	})
 	public userHost: string | null;
 
+	@ManyToOne(() => MiInstance, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn({
+		name: 'userHost',
+		foreignKeyConstraintName: 'FK_note_userHost',
+		referencedColumnName: 'host',
+	})
+	public userInstance: MiInstance | null;
+
 	@Column({
 		...id(),
 		nullable: true,
@@ -227,6 +238,16 @@ export class MiNote {
 	})
 	public replyUserHost: string | null;
 
+	@ManyToOne(() => MiInstance, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn({
+		name: 'replyUserHost',
+		foreignKeyConstraintName: 'FK_note_replyUserHost',
+		referencedColumnName: 'host',
+	})
+	public replyUserInstance: MiInstance | null;
+
 	@Column({
 		...id(),
 		nullable: true,
@@ -239,6 +260,17 @@ export class MiNote {
 		comment: '[Denormalized]',
 	})
 	public renoteUserHost: string | null;
+
+	@ManyToOne(() => MiInstance, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn({
+		name: 'renoteUserHost',
+		foreignKeyConstraintName: 'FK_note_renoteUserHost',
+		referencedColumnName: 'host',
+	})
+	public renoteUserInstance: MiInstance | null;
+	//#endregion
 
 	constructor(data: Partial<MiNote>) {
 		if (data == null) return;
