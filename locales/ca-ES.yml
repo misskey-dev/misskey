@@ -3158,6 +3158,7 @@ _imageEffector:
     mirror: "Mirall"
     invert: "Inversió cromàtica "
     grayscale: "Monocrom "
+    colorAdjust: "Correcció de color"
     colorClamp: "Compressió cromàtica "
     colorClampAdvanced: "Compressió de cromàtica avançada "
     distort: "Distorsió "
