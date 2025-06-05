@@ -3147,7 +3147,7 @@ _watermarkEditor:
   polkadotMainDotRadius: "Tamaño del círculo principal."
   polkadotSubDotOpacity: "Opacidad del círculo secundario"
   polkadotSubDotRadius: "Tamaño del círculo secundario."
-  polkadotSubDotDivisions: "Nombre del círculo secundario"
+  polkadotSubDotDivisions: "Número de subpuntos."
 _imageEffector:
   title: "Efecto"
   addEffect: "Añadir Efecto"
