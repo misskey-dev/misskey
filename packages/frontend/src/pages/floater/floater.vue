@@ -13,8 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<!-- 重複排除したアイテムを使用 -->
 				<div v-for="item in getUniqueItems(paginationItems)" :key="item.id" :class="$style.userNotes">
-					<!-- ノート表示（最大3つまで表示に変更） -->
-					<template v-for="(note, i) in item.notes.slice(0, 3)" :key="note.id">
+					<template v-for="(note, i) in item.notes.slice(0, displayCount)" :key="note.id">
 						<!-- 日付区切り: 日付が変わる場合や最初のノートに表示 -->
 						<div v-if="shouldShowDateSeparator(note, i, item)" :class="[$style.dateSeparator,
 						i === 0 ? $style.firstDateSeparator : '',
@@ -48,11 +47,15 @@ provide('inTimeline', true);
 const props = defineProps<{
 	anchorDate: number;
 	timeRange: number; // タブの時間範囲（ミリ秒）
+	displayNoteCount?: number; // 表示するノート数
 }>();
 
 // 参照
 const paginationComponent = shallowRef(null);
 const forceReload = ref(0);
+
+// デフォルト値の設定
+const displayCount = computed(() => props.displayNoteCount || 3);
 
 // ページネーション設定
 const followingPagination = computed(() => ({
@@ -62,6 +65,8 @@ const followingPagination = computed(() => ({
 	params: {
 		anchorDate: props.anchorDate,
 		forceReload: forceReload.value,
+		noteLimit: 0, // 0=日付差があるまで動的に取得
+		maxNoteLimit: 10, // 最大10件まで取得
 	},
 }));
 
@@ -154,42 +159,38 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 
 		// 日付を取得
 		const currentDate = ensureDate(currentNote.createdAt);
-		// グループ内のノートが全て同じ日付かチェック
-		const allSameDay = item.notes.length > 1 &&
-			item.notes.every(n => isSameDay(n.createdAt, currentNote.createdAt));
 
-		// 全て同じ日付なら単純な日付表示（浮上情報なし）（初浮上を除く）
-		if (allSameDay && !(item.isFirstPublicPost && noteIndex === 0)) {
-			// 今日の場合は何も表示しない
-			if (isToday(currentDate)) return '';
-
-			// 今日でない場合は単純に日付表示
-			return getDateText(currentDate);
+		// 全てのノートが今日の日付かどうかチェック
+		const allToday = item.notes.every(n => isToday(n.createdAt));
+		if (allToday && !(item.isFirstPublicPost && noteIndex === 0)) {
+			return ''; // 全て今日なら何も表示しない（初浮上を除く）
 		}
 
-		// グループ内の全てのノートが今日の日付かチェック（初浮上を除く）
-		const allToday = item.notes.every(n => isToday(n.createdAt));
-		if (allToday && !(item.isFirstPublicPost && noteIndex === 0)) return ''; // 全て今日なら何も表示しない
+		// 日付差がないケースを早期リターン
+		if (item.notes.length > 1 && noteIndex === 0) {
+			const firstNote = item.notes[0];
+			const lastNote = item.notes[item.notes.length - 1];
 
-		// 比較対象のノートを選択
+			if (isSameDay(firstNote.createdAt, lastNote.createdAt)) {
+				// 同じ日付で今日でない場合は単純日付表示
+				if (!isToday(currentDate)) {
+					return getDateText(currentDate);
+				}
+				return ''; // 同じ日付で今日の場合は何も表示しない
+			}
+			// 日付差がある場合は後続処理に進む（浮上情報表示）
+		}
+
+		// 比較対象のノートを選択（ここから浮上情報の処理）
 		let compareNote = nextNote;
 
 		// nextNoteが指定されていない場合（主に最初のノート）
 		if (!compareNote && noteIndex === 0) {
-			// 最初のノートの場合、適切な比較対象を探す
+			// 最初のノートの場合、最後のノート（バックエンドが日付差のあるノートを含めている）を使用
 			if (item.notes.length > 1) {
-				// まず2番目のノートを取得
-				const secondNote = item.notes[1];
-				const secondDate = ensureDate(secondNote.createdAt);
-
-				// 2番目のノートが同じ日付かチェック
-				if (isSameDay(currentDate, secondDate) && item.notes.length > 2) {
-					// 同じ日付で3番目があれば、3番目のノートを使用
-					compareNote = item.notes[2];
-				} else {
-					// 日付が異なるか3番目がなければ2番目のノートを使用
-					compareNote = secondNote;
-				}
+				// バックエンドが日付差のあるノートまで動的に取得するモードでは、
+				// 日付の異なるノートも含まれている可能性が高い
+				compareNote = item.notes[item.notes.length - 1];
 			}
 		}
 
@@ -368,12 +369,20 @@ function shouldHighlightAppearance(note: any, index: number, item: FloaterItem):
 	if (item.isFirstPublicPost && index === 0) return false;
 
 	// 1. 比較対象のノートが取得できない場合（前のノートが存在しない）
-	if (index === 0 && !item.notes[1]) return true;
+	if (index === 0 && item.notes.length <= 1) return true;
 
-	// 2. 比較対象を特定（最初のノートの場合は次のノートと比較）
-	const compareNote = index === 0
-		? item.notes[1]
-		: item.notes[index - 1];
+	// 2. 比較対象を特定
+	let compareNote;
+
+	if (index === 0) {
+		// 最初のノートの場合
+		// バックエンドが日付差のあるノートまで動的に取得するため
+		// 最後のノートは日付の異なるノートになっている可能性が高い
+		compareNote = item.notes[item.notes.length - 1];
+	} else {
+		// 中間ノートの場合は前のノートと比較
+		compareNote = item.notes[index - 1];
+	}
 
 	if (!compareNote) return false;
 

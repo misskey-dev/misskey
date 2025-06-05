@@ -31,10 +31,13 @@ export const meta = {
 	},
 } as const;
 
+// クエリパラメータに noteLimit と maxNoteLimit を追加
 export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		noteLimit: { type: 'integer', minimum: 0, maximum: 20, default: 0 }, // 0=日付差があるまで取得
+		maxNoteLimit: { type: 'integer', minimum: 1, maximum: 20, default: 10 }, // 最大取得数
 		anchorId: { type: 'string', format: 'misskey:id' },
 		anchorDate: { type: 'integer' },
 		offset: { type: 'integer', minimum: 0, default: 0 },
@@ -63,6 +66,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				anchorId,
 				offset: ps.offset,
 				limit: ps.limit,
+				noteLimit: ps.noteLimit, // 追加
+				maxNoteLimit: ps.maxNoteLimit, // 追加
 			}, me);
 
 			process.nextTick(() => {
@@ -81,6 +86,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		anchorId: string | null;
 		offset: number;
 		limit: number;
+		noteLimit?: number; // 追加
+		maxNoteLimit?: number; // 追加
 	}, me: MiLocalUser) {
 		// フォローしているユーザーと、フォローしていないローカルユーザーのパブリック投稿、両方を含むクエリ
 		const updatedUsers = await this.db.query(`
@@ -178,16 +185,59 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			query.andWhere('note.userId = :userId', { userId });
 			query.andWhere('note.id > :anchorId', { anchorId: ps.anchorId });
 			query.orderBy('note.id', 'DESC');
-			query.limit(3);
 
-			// isFollowing 情報を追加
-			return {
-				id: userId,
-				notes: await query.getMany(),
-				last: row.last,
-				isFirstPublicPost: row.is_first_public_post, // 初浮上情報を追加
-				isFollowing: row.is_following,
-			};
+			// クエリ実行前の処理
+			if (ps.noteLimit === 0) {
+				// 日付差があるまで取得（最大数制限あり）
+				query.limit(ps.maxNoteLimit);
+
+				const notes = await query.getMany();
+				const processedNotes = [];
+
+				if (notes.length > 0) {
+					// 最初のノートは必ず含める
+					processedNotes.push(notes[0]);
+					const firstDate = new Date(notes[0].createdAt);
+
+					// 最初のノートと日付が異なるノートを探す
+					for (let i = 1; i < notes.length; i++) {
+						const currentDate = new Date(notes[i].createdAt);
+
+						// 日付が同じなら追加
+						if (firstDate.getFullYear() === currentDate.getFullYear() &&
+							firstDate.getMonth() === currentDate.getMonth() &&
+							firstDate.getDate() === currentDate.getDate()) {
+							// 表示用の上限数までは追加
+							if (i < 3) {
+								processedNotes.push(notes[i]);
+							}
+						} else {
+							// 日付が異なるノートを発見したら追加して終了
+							processedNotes.push(notes[i]);
+							break;
+						}
+					}
+				}
+
+				return {
+					id: userId,
+					notes: processedNotes,
+					last: row.last,
+					isFirstPublicPost: row.is_first_public_post,
+					isFollowing: row.is_following,
+				};
+			} else {
+				// 通常モード（指定された数のノートを取得）
+				query.limit(ps.noteLimit);
+
+				return {
+					id: userId,
+					notes: await query.getMany(),
+					last: row.last,
+					isFirstPublicPost: row.is_first_public_post,
+					isFollowing: row.is_following,
+				};
+			}
 		}));
 	}
 }

@@ -4,12 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader
-	v-model:tab="recent" :actions="headerActions" :tabs="headerTabs" :swipable="true"
-	:displayMyAvatar="true"
->
-	<XFloater ref="floaterComponent" :key="recent" :anchorDate="anchorDate" :timeRange="parseInt(recent)"/>
-</PageWithHeader>
+	<PageWithHeader v-model:tab="recent" :actions="headerActions" :tabs="headerTabs" :swipable="true"
+		:displayMyAvatar="true">
+		<XFloater ref="floaterComponent" :key="recent" :anchorDate="anchorDate" :timeRange="parseInt(recent)"
+			:displayNoteCount="3" />
+	</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
