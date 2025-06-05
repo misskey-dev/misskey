@@ -89,32 +89,76 @@ watch(() => props.anchorDate, (newVal, oldVal) => {
 	}
 }, { immediate: false });
 
-// 日付変換ヘルパー関数の追加
-function ensureDate(date: string | Date): Date {
-	if (date instanceof Date) return date;
+// 日付変換ヘルパー関数の改善
+function ensureDate(date: string | Date | null | undefined): Date {
+	// null/undefined チェックを追加
+	if (date == null) return new Date();
+
+	if (date instanceof Date) {
+		// Invalid Date チェック
+		if (isNaN(date.getTime())) {
+			console.error('Invalid Date object:', date);
+			return new Date();
+		}
+		return date;
+	}
+
 	try {
-		return new Date(date);
+		const parsedDate = new Date(date);
+
+		// Invalid Date チェック
+		if (isNaN(parsedDate.getTime())) {
+			console.error('Invalid date format:', date);
+			return new Date();
+		}
+
+		return parsedDate;
 	} catch (e) {
-		console.error('Invalid date:', date);
+		console.error('Error parsing date:', date, e);
 		return new Date();
 	}
 }
 
 // 日付判定関数
-function isSameDay(date1: string | Date, date2: string | Date): boolean {
-	const d1 = ensureDate(date1);
-	const d2 = ensureDate(date2);
-	return d1.getFullYear() === d2.getFullYear()
-		&& d1.getMonth() === d2.getMonth()
-		&& d1.getDate() === d2.getDate();
+function isSameDay(date1: string | Date | null | undefined, date2: string | Date | null | undefined): boolean {
+	try {
+		// 両方の日付が有効か確認
+		if (date1 == null || date2 == null) return false;
+
+		const d1 = ensureDate(date1);
+		const d2 = ensureDate(date2);
+
+		return d1.getFullYear() === d2.getFullYear()
+      && d1.getMonth() === d2.getMonth()
+      && d1.getDate() === d2.getDate();
+	} catch (e) {
+		console.error('Error in isSameDay:', e);
+		return false;
+	}
 }
 
+// 日付が今日かどうかを判定する関数
 function isToday(dateStr: string | Date): boolean {
-	const date = ensureDate(dateStr);
-	const today = new Date();
-	return date.getFullYear() === today.getFullYear()
-		&& date.getMonth() === today.getMonth()
-		&& date.getDate() === today.getDate();
+	try {
+		const date = ensureDate(dateStr);
+		const today = new Date();
+		return date.getFullYear() === today.getFullYear()
+			&& date.getMonth() === today.getMonth()
+			&& date.getDate() === today.getDate();
+	} catch (e) {
+		console.error('Error in isToday:', e, { dateStr });
+		return false;
+	}
+}
+
+// 日付表示用の文字列を生成
+function getDisplayDateString(date: string | Date): string {
+	try {
+		return isToday(date) ? '今日' : formatDateTimeString(ensureDate(date), 'yyyy年M月d日');
+	} catch (e) {
+		console.error('Error in getDisplayDateString:', e, { date });
+		return '日付不明';
+	}
 }
 
 // 日付区切りを表示すべきか判断する関数
@@ -147,13 +191,9 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 
 		// 初浮上の場合の特別なメッセージ
 		if (item.isFirstPublicPost && noteIndex === 0) {
-			const userName = (currentNote.user.name || currentNote.user.username).replace(/:([\w-]+):/g, '').trim();
-			const dateStr = isToday(currentNote.createdAt) ? '今日' : formatDateTimeString(currentNote.createdAt, 'yyyy年M月d日');
-
-			// 初浮上メッセージを生成
 			const result = formatFloaterMessage('userFirstPublicPost', {
-				user: userName,
-				date: dateStr,
+				user: formatUserName(currentNote.user),
+				date: getDisplayDateString(currentNote.createdAt),
 			});
 
 			// キャッシュする
@@ -187,21 +227,14 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 
 		// 比較対象のノートを選択（ここから浮上情報の処理）
 		let compareNote = nextNote;
-
-		// nextNoteが指定されていない場合（主に最初のノート）
-		if (!compareNote && noteIndex === 0) {
-			// 最初のノートの場合、最後のノート（バックエンドが日付差のあるノートを含めている）を使用
-			if (item.notes.length > 1) {
-				// バックエンドが日付差のあるノートまで動的に取得するモードでは、
-				// 日付の異なるノートも含まれている可能性が高い
-				compareNote = item.notes[item.notes.length - 1];
-			}
+		if (!compareNote) {
+			compareNote = getCompareNote(currentNote, noteIndex, item);
 		}
 
 		// 比較対象がない場合は「珍しく浮上」として表示
 		if (!compareNote) {
-			const userName = (currentNote.user.name || currentNote.user.username).replace(/:([\w-]+):/g, '').trim();
-			const dateStr = isToday(currentDate) ? '今日' : formatDateTimeString(currentDate, 'yyyy年M月d日');
+			const userName = formatUserName(currentNote.user);
+			const dateStr = getDisplayDateString(currentDate);
 
 			// 比較対象がないので「珍しく浮上」
 			return formatFloaterMessage('userRarelyAppeared', {
@@ -222,9 +255,9 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 		}
 
 		// 異なる日付の場合は浮上情報を表示
-		const userName = (currentNote.user.name || currentNote.user.username).replace(/:([\w-]+):/g, '').trim();
-		const dateStr = isToday(currentDate) ? '今日' : formatDateTimeString(currentDate, 'yyyy年M月d日');
-		const diffDays = calculateDaysDifference(compareDate, currentDate);
+		const userName = formatUserName(currentNote.user);
+		const dateStr = getDisplayDateString(currentDate);
+		const diffDays = getNoteDaysDifference(currentNote, compareNote);
 
 		// 日付差が0の場合は単純な日付表示に切り替え
 		if (diffDays === 0) {
@@ -355,43 +388,27 @@ function isFloaterInfo(note: any, index: number, item: FloaterItem): boolean {
 function getDateInfo(note: any, index: number, item: FloaterItem): string {
 	// 初浮上の場合は初浮上表示
 	if (item.isFirstPublicPost && index === 0) {
-		const userName = (note.user.name || note.user.username).replace(/:([\w-]+):/g, '').trim();
-		const dateStr = isToday(note.createdAt) ? '今日' : formatDateTimeString(note.createdAt, 'yyyy年M月d日');
 		return formatFloaterMessage('userFirstPublicPost', {
-			user: userName,
-			date: dateStr,
+			user: formatUserName(note.user),
+			date: getDisplayDateString(note.createdAt),
 		});
 	}
 
 	// 日付差がある場合は「X日ぶりに浮上」表示
 	if (shouldShowDaysSinceLastAppearance(note, index, item)) {
-		// 比較対象を特定
-		let compareNote;
-		if (index === 0) {
-			compareNote = item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
-		} else {
-			compareNote = item.notes[index - 1];
-		}
+		const compareNote = getCompareNote(note, index, item);
+		const diffDays = getNoteDaysDifference(note, compareNote);
 
-		if (compareNote) {
-			const currentDate = ensureDate(note.createdAt);
-			const compareDate = ensureDate(compareNote.createdAt);
-			const diffDays = calculateDaysDifference(compareDate, currentDate);
-
-			if (diffDays > 0) {
-				const userName = (note.user.name || note.user.username).replace(/:([\w-]+):/g, '').trim();
-				const dateStr = isToday(currentDate) ? '今日' : formatDateTimeString(currentDate, 'yyyy年M月d日');
-
-				return formatFloaterMessage('userAfterNDays', {
-					user: userName,
-					date: dateStr,
-					n: diffDays.toString(),
-				});
-			}
+		if (diffDays > 0) {
+			return formatFloaterMessage('userAfterNDays', {
+				user: formatUserName(note.user),
+				date: getDisplayDateString(note.createdAt),
+				n: diffDays.toString(),
+			});
 		}
 	}
 
-	// 最初のノートの場合
+	// 他の処理は変更なし
 	if (index === 0) {
 		return getCombinedFloaterInfo(item, 0);
 	}
@@ -410,28 +427,8 @@ function shouldShowDaysSinceLastAppearance(note: any, index: number, item: Float
 	// 初浮上の場合は除外
 	if (item.isFirstPublicPost && index === 0) return false;
 
-	// 比較対象を特定
-	let compareNote;
-	if (index === 0) {
-		compareNote = item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
-	} else {
-		compareNote = item.notes[index - 1];
-	}
-
-	if (!compareNote) return false;
-
-	// 日付差を計算
-	const currentDate = ensureDate(note.createdAt);
-	const compareDate = ensureDate(compareNote.createdAt);
-
-	// 同じ日ならスキップ
-	if (isSameDay(currentDate, compareDate)) return false;
-
-	// 比較対象の日付が現在の日付より古いことを確認
-	if (compareDate >= currentDate) return false;
-
-	// 日付差があれば表示すべき
-	return calculateDaysDifference(compareDate, currentDate) > 0;
+	const compareNote = getCompareNote(note, index, item);
+	return getNoteDaysDifference(note, compareNote) > 0;
 }
 
 // スタイルでハイライト表示すべきか判断する関数（特に長期間の浮上）
@@ -439,24 +436,51 @@ function shouldHighlightAppearance(note: any, index: number, item: FloaterItem):
 	// 基本的な条件をチェック
 	if (!shouldShowDaysSinceLastAppearance(note, index, item)) return false;
 
-	// 比較対象を特定
-	let compareNote;
-	if (index === 0) {
-		compareNote = item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
-	} else {
-		compareNote = item.notes[index - 1];
-	}
-
-	// 日付差を計算
-	const currentDate = ensureDate(note.createdAt);
-	const compareDate = ensureDate(compareNote.createdAt);
-	const diffDays = calculateDaysDifference(compareDate, currentDate);
+	const compareNote = getCompareNote(note, index, item);
+	const diffDays = getNoteDaysDifference(note, compareNote);
 
 	// タブの時間範囲との比較
 	const tabRangeDays = props.timeRange / (1000 * 60 * 60 * 24);
 
 	// タブの日数範囲の2倍以上前からの浮上なら強調表示
 	return diffDays >= tabRangeDays * 2;
+}
+
+// ユーザー名のフォーマット（絵文字除去など）を一元化
+function formatUserName(user: any): string {
+	return (user.name || user.username).replace(/:([\w-]+):/g, '').trim();
+}
+
+// 比較対象のノートを取得する関数
+function getCompareNote(note: any, index: number, item: FloaterItem): any {
+	if (index === 0) {
+		return item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
+	} else {
+		return item.notes[index - 1];
+	}
+}
+
+// 2つのノートの日付差を計算する関数
+function getNoteDaysDifference(note: any, compareNote: any): number {
+	try {
+		if (!note || !compareNote || !note.createdAt || !compareNote.createdAt) {
+			return 0;
+		}
+
+		const currentDate = ensureDate(note.createdAt);
+		const compareDate = ensureDate(compareNote.createdAt);
+
+		// 同じ日ならスキップ
+		if (isSameDay(currentDate, compareDate)) return 0;
+
+		// 比較対象の日付が現在の日付より古いことを確認
+		if (compareDate >= currentDate) return 0;
+
+		return calculateDaysDifference(compareDate, currentDate);
+	} catch (e) {
+		console.error('Error in getNoteDaysDifference:', e, { note, compareNote });
+		return 0;
+	}
 }
 
 // コンポーネントの関数を外部に公開
