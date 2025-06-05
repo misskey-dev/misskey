@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { deepClone } from '@/misc/clone.js';
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
 
 export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 'res', includeSelfRef: boolean): any {
 	// optional, nullable, refはスキーマ定義に含まれないので分離しておく
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { optional, nullable, ref, selfRef, ...res }: any = schema;
+	const { optional, nullable, ref, selfRef, ..._res }: any = schema;
+	const res = deepClone(_res);
 
 	if (schema.type === 'object' && schema.properties) {
 		if (type === 'res') {
@@ -36,14 +38,13 @@ export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 're
 
 	if (type === 'res' && schema.ref && (!schema.selfRef || includeSelfRef)) {
 		const $ref = `#/components/schemas/${schema.ref}`;
-		if (schema.nullable || schema.optional) {
-			res.allOf = [{ $ref }];
+		if (schema.nullable) {
+			res.oneOf = [{ $ref }, { type: 'null' }];
 		} else {
 			res.$ref = $ref;
 		}
-	}
-
-	if (schema.nullable) {
+		delete res.type;
+	} else if (schema.nullable) {
 		if (Array.isArray(schema.type) && !schema.type.includes('null')) {
 			res.type.push('null');
 		} else if (typeof schema.type === 'string') {

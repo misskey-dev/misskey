@@ -9,9 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="label"></slot>
 	</div>
 	<div v-adaptive-border class="body">
+		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
+				<div class="highlight right" :style="{ width: ((steppedRawValue - minRatio) * 100) + '%', left: (Math.abs(Math.min(0, min)) / (max + Math.abs(Math.min(0, min)))) * 100 + '%' }">
+					<div class="shine right"></div>
+				</div>
+				<div class="highlight left" :style="{ width: ((minRatio - steppedRawValue) * 100) + '%', left: (steppedRawValue) * 100 + '%' }">
+					<div class="shine left"></div>
+				</div>
 			</div>
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
@@ -23,8 +29,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@mouseenter.passive="onMouseenter"
 				@mousedown="onMousedown"
 				@touchstart="onMousedown"
-			></div>
+			>
+				<div class="thumbInner"></div>
+			</div>
 		</div>
+		<slot name="suffix"></slot>
 	</div>
 	<div class="caption">
 		<slot name="caption"></slot>
@@ -33,8 +42,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { isTouchUsing } from '@/scripts/touch.js';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { isTouchUsing } from '@/utility/touch.js';
 import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
@@ -58,8 +67,11 @@ const emit = defineEmits<{
 	(ev: 'dragEnded', value: number): void;
 }>();
 
-const containerEl = shallowRef<HTMLElement>();
-const thumbEl = shallowRef<HTMLElement>();
+const containerEl = useTemplateRef('containerEl');
+const thumbEl = useTemplateRef('thumbEl');
+
+const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
+const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
 const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
 const steppedRawValue = computed(() => {
@@ -151,20 +163,21 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		closed: () => dispose(),
 	});
 
-	const style = document.createElement('style');
-	style.appendChild(document.createTextNode('* { cursor: grabbing !important; } body * { pointer-events: none !important; }'));
-	document.head.appendChild(style);
+	const style = window.document.createElement('style');
+	style.appendChild(window.document.createTextNode('* { cursor: grabbing !important; } body * { pointer-events: none !important; }'));
+	window.document.head.appendChild(style);
 
 	const thumbWidth = getThumbWidth();
 
 	const onDrag = (ev: MouseEvent | TouchEvent) => {
 		ev.preventDefault();
+		let beforeValue = finalValue.value;
 		const containerRect = containerEl.value!.getBoundingClientRect();
 		const pointerX = 'touches' in ev && ev.touches.length > 0 ? ev.touches[0].clientX : 'clientX' in ev ? ev.clientX : 0;
 		const pointerPositionOnContainer = pointerX - (containerRect.left + (thumbWidth / 2));
 		rawValue.value = Math.min(1, Math.max(0, pointerPositionOnContainer / (containerEl.value!.offsetWidth - thumbWidth)));
 
-		if (props.continuousUpdate) {
+		if (props.continuousUpdate && beforeValue !== finalValue.value) {
 			emit('update:modelValue', finalValue.value);
 		}
 	};
@@ -172,7 +185,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	let beforeValue = finalValue.value;
 
 	const onMouseup = () => {
-		document.head.removeChild(style);
+		window.document.head.removeChild(style);
 		tooltipForDragShowing.value = false;
 		window.removeEventListener('mousemove', onDrag);
 		window.removeEventListener('touchmove', onDrag);
@@ -212,23 +225,30 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	> .caption {
 		font-size: 0.85em;
 		padding: 8px 0 0 0;
-		color: var(--MI_THEME-fgTransparentWeak);
+		color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 		&:empty {
 			display: none;
 		}
 	}
 
-	$thumbHeight: 20px;
-	$thumbWidth: 20px;
+	$thumbHeight: 32px;
+	$thumbWidth: 32px;
+	$thumbInnerHeight: 19px;
+	$thumbInnerWidth: 19px;
 
 	> .body {
-		padding: 7px 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 0px 4px;
 		background: var(--MI_THEME-panel);
 		border: solid 1px var(--MI_THEME-panel);
 		border-radius: 6px;
 
 		> .container {
+			flex: 1;
 			position: relative;
 			height: $thumbHeight;
 
@@ -248,10 +268,30 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				> .highlight {
 					position: absolute;
 					top: 0;
-					left: 0;
 					height: 100%;
-					background: var(--MI_THEME-accent);
-					opacity: 0.5;
+					background: color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0.5);
+					overflow: clip;
+
+					> .shine {
+						position: absolute;
+						top: 0;
+						width: 64px;
+						height: 100%;
+					}
+				}
+
+				> .highlight.right {
+					> .shine.right {
+						right: calc(#{$thumbInnerWidth} / 2);
+						background: linear-gradient(-90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
+				}
+
+				> .highlight.left {
+					> .shine.left {
+						left: calc(#{$thumbInnerWidth} / 2);
+						background: linear-gradient(90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
 				}
 			}
 
@@ -282,11 +322,25 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				width: $thumbWidth;
 				height: $thumbHeight;
 				cursor: grab;
-				background: var(--MI_THEME-accent);
-				border-radius: 999px;
 
 				&:hover {
-					background: var(--MI_THEME-accentLighten);
+					> .thumbInner {
+						background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+					}
+				}
+
+				> .thumbInner {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					width: $thumbInnerWidth;
+					height: $thumbInnerHeight;
+					background: var(--MI_THEME-accent);
+					border-radius: 999px;
+					pointer-events: none;
 				}
 			}
 		}

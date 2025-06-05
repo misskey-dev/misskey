@@ -14,15 +14,7 @@ export const meta = {
 	res: {
 		type: 'array',
 		items: {
-			type: 'object',
-			properties: {
-				name: {
-					type: 'string',
-				},
-				unlockedAt: {
-					type: 'number',
-				},
-			},
+			ref: 'Achievement',
 		},
 	},
 } as const;
