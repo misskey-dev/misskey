@@ -4,6 +4,7 @@
  */
 
 import { getProxiedImageUrl } from '../media-proxy.js';
+import { initShaderProgram } from '../webgl.js';
 
 type ParamTypeToPrimitive = {
 	'number': number;
@@ -114,7 +115,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 
-		this.renderTextureProgram = this.initShaderProgram(`#version 300 es
+		this.renderTextureProgram = initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
 			out vec2 in_uv;
 
@@ -134,7 +135,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			}
 		`);
 
-		this.renderInvertedTextureProgram = this.initShaderProgram(`#version 300 es
+		this.renderInvertedTextureProgram = initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
 			out vec2 in_uv;
 
@@ -156,46 +157,6 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		`);
 	}
 
-	public loadShader(type: GLenum, source: string): WebGLShader {
-		const gl = this.gl;
-
-		const shader = gl.createShader(type);
-		if (shader == null) {
-			throw new Error('falied to create shader');
-		}
-
-		gl.shaderSource(shader, source);
-		gl.compileShader(shader);
-
-		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			console.error(`falied to compile shader: ${gl.getShaderInfoLog(shader)}`);
-			gl.deleteShader(shader);
-			throw new Error(`falied to compile shader: ${gl.getShaderInfoLog(shader)}`);
-		}
-
-		return shader;
-	}
-
-	public initShaderProgram(vsSource: string, fsSource: string): WebGLProgram {
-		const gl = this.gl;
-
-		const vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource);
-		const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource);
-
-		const shaderProgram = gl.createProgram();
-
-		gl.attachShader(shaderProgram, vertexShader);
-		gl.attachShader(shaderProgram, fragmentShader);
-		gl.linkProgram(shaderProgram);
-
-		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-			console.error(`failed to init shader: ${gl.getProgramInfoLog(shaderProgram)}`);
-			throw new Error('failed to init shader');
-		}
-
-		return shaderProgram;
-	}
-
 	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
 		const gl = this.gl;
 
@@ -203,7 +164,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		if (fx == null) return;
 
 		const cachedShader = this.shaderCache.get(fx.id);
-		const shaderProgram = cachedShader ?? this.initShaderProgram(`#version 300 es
+		const shaderProgram = cachedShader ?? initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
 			out vec2 in_uv;
 
