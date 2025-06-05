@@ -521,9 +521,21 @@ class APIClient {
         fetch?: APIClient['fetch'] | null | undefined;
     });
     // (undocumented)
+    authWithMiAuth(sessionId: string, setToken?: boolean): Promise<MiAuthCheckResponse>;
+    // (undocumented)
     credential: string | null | undefined;
     // (undocumented)
     fetch: FetchLike;
+    // (undocumented)
+    getMiAuthURL(options: {
+        name?: string;
+        icon?: string;
+        callback?: string;
+        permission?: typeof permissions_2[number][];
+    }, sessionId?: string): {
+        sessionId: string;
+        url: string;
+    };
     // (undocumented)
     origin: string;
 }
@@ -1463,6 +1475,7 @@ declare namespace entities {
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
+        MiAuthCheckResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -2759,6 +2772,12 @@ type MetaRequest = operations['meta']['requestBody']['content']['application/jso
 type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type MiAuthCheckResponse = {
+    token: string;
+    user: UserDetailedNotMe;
+};
+
+// @public (undocumented)
 type MiauthGenTokenRequest = operations['miauth___gen-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3748,6 +3767,7 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 
 // Warnings were encountered during analysis:
 //
+// src/api.ts:135:3 - (ae-forgotten-export) The symbol "permissions_2" needs to be exported by the entry point index.d.ts
 // src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:218:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
