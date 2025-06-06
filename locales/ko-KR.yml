@@ -3158,6 +3158,7 @@ _imageEffector:
     mirror: "미러"
     invert: "색 반전"
     grayscale: "흑백"
+    colorAdjust: "색조 보정"
     colorClamp: "색 압축"
     colorClampAdvanced: "색 압축(고급)"
     distort: "뒤틀림"
