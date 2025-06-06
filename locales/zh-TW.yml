@@ -3158,6 +3158,7 @@ _imageEffector:
     mirror: "鏡像"
     invert: "反轉色彩"
     grayscale: "黑白"
+    colorAdjust: "色彩校正"
     colorClamp: "壓縮色彩"
     colorClampAdvanced: "壓縮色彩（進階）"
     distort: "變形"
