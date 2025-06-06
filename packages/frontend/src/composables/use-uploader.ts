@@ -157,7 +157,7 @@ export function useUploader(options: {
 			!item.uploaded
 		) {
 			menu.push({
-				icon: 'ti ti-cursor-text',
+				icon: 'ti ti-forms',
 				text: i18n.ts.rename,
 				action: async () => {
 					const { result, canceled } = await os.inputText({
@@ -363,6 +363,7 @@ export function useUploader(options: {
 			}, {
 				icon: 'ti ti-x',
 				text: i18n.ts.remove,
+				danger: true,
 				action: () => {
 					removeItem(item);
 				},
