@@ -26,6 +26,14 @@ export const TIPS = [
 	'abuses',
 ] as const;
 
+export function hideAllTips() {
+	const v = {};
+	for (const k of TIPS) {
+		v[k] = true;
+	}
+	store.set('tips', v);
+}
+
 /**
  * 「状態」を管理するストア(not「設定」)
  */
