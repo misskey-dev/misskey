@@ -39,8 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #footer>
 		<div class="_buttonsCenter">
-			<MkButton v-if="isUploading" rounded @click="abortWithConfirm()"><i class="ti ti-x"></i> {{ i18n.ts.abort }}</MkButton>
-			<MkButton v-else-if="!firstUploadAttempted" primary rounded @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
+			<MkButton v-if="uploader.uploading.value" rounded @click="abortWithConfirm()"><i class="ti ti-x"></i> {{ i18n.ts.abort }}</MkButton>
+			<MkButton v-else-if="!firstUploadAttempted" primary rounded :disabled="!uploader.readyForUpload.value" @click="upload()"><i class="ti ti-upload"></i> {{ i18n.ts.upload }}</MkButton>
 
 			<MkButton v-if="canRetry" rounded @click="upload()"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
 			<MkButton v-if="canDone" rounded @click="done()"><i class="ti ti-arrow-right"></i> {{ i18n.ts.done }}</MkButton>
@@ -93,7 +93,6 @@ onMounted(() => {
 const items = uploader.items;
 
 const firstUploadAttempted = ref(false);
-const isUploading = computed(() => items.value.some(item => item.uploading));
 const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.preprocessing) && items.value.some(item => item.uploaded == null));
 const canDone = computed(() => items.value.some(item => item.uploaded != null));
 const overallProgress = computed(() => {

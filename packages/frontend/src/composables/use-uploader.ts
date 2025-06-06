@@ -505,6 +505,7 @@ export function useUploader(options: {
 		upload,
 		showMenu,
 		uploading: computed(() => items.value.some(item => item.uploading)),
+		readyForUpload: computed(() => items.value.length > 0 && !items.value.some(item => item.uploading || item.preprocessing)),
 	};
 }
 
