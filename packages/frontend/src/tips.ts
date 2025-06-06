@@ -8,6 +8,7 @@ import { store } from '@/store.js';
 export const TIPS = [
 	'drive',
 	'uploader',
+	'postFormUploader',
 	'clips',
 	'userLists',
 	'tl.home',
