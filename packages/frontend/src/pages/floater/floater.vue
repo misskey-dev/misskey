@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div
 						v-if="shouldShowDateSeparator(note, i, item)" :class="[$style.dateSeparator,
 							i === 0 ? $style.firstDateSeparator : '',
-							item.isFirstPublicPost && i === 0 ? $style.firstPublicPostSeparator : '',
+							item.isFirstPublicPost && isOldestNote(note, item) ? $style.firstPublicPostSeparator : '',
 							shouldHighlightAppearance(note, i, item) ? $style.rarelyAppearedSeparator : '',
 							isFloaterInfo(note, i, item) ? $style.floaterSeparator : '']"
 					>
@@ -129,8 +129,8 @@ function isSameDay(date1: string | Date | null | undefined, date2: string | Date
 		const d2 = ensureDate(date2);
 
 		return d1.getFullYear() === d2.getFullYear()
-      && d1.getMonth() === d2.getMonth()
-      && d1.getDate() === d2.getDate();
+			&& d1.getMonth() === d2.getMonth()
+			&& d1.getDate() === d2.getDate();
 	} catch (e) {
 		console.error('Error in isSameDay:', e);
 		return false;
@@ -164,16 +164,18 @@ function getDisplayDateString(date: string | Date): string {
 // 日付区切りを表示すべきか判断する関数
 function shouldShowDateSeparator(note: any, index: number, item: FloaterItem): boolean {
 	// 初浮上の場合は常に表示
-	if (item.isFirstPublicPost && index === 0) return true;
+	if (item.isFirstPublicPost && isOldestNote(note, item)) return true;
 
 	// グループ内の全てのノートが今日の日付かチェック
 	const allToday = item.notes.every(n => isToday(n.createdAt));
 
 	// 全て今日のノートなら日付区切りを表示しない（初浮上を除く）
-	if (allToday && !(item.isFirstPublicPost && index === 0)) return false;
+	// ここを修正: index === 0 から isNewestNote へ
+	if (allToday && !(item.isFirstPublicPost && isOldestNote(note, item))) return false;
 
 	// 最初のノートには常に表示（今日だけのグループでない場合）
-	if (index === 0) return true;
+	// ここを修正: 「最初のノート」を「最新のノート」という意図に合わせる
+	if (isNewestNote(note, item)) return true;
 
 	// 前のノートと日付が異なる場合に表示
 	return !isSameDay(note.createdAt, item.notes[index - 1].createdAt);
@@ -182,7 +184,9 @@ function shouldShowDateSeparator(note: any, index: number, item: FloaterItem): b
 // 日付と浮上情報を組み合わせた表示テキストを生成する関数
 function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any): string {
 	// 最初のノート用のキャッシュはそのまま使用
-	if (noteIndex === 0 && item._cachedInfo) return item._cachedInfo;
+	// ここを修正: 「最初のノート」を「最新のノート」という意図を明確に
+	const currentNote = item.notes[noteIndex];
+	if (isNewestNote(currentNote, item) && item._cachedInfo) return item._cachedInfo;
 
 	try {
 		// 表示対象のノート
@@ -190,7 +194,7 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 		if (!currentNote) return '';
 
 		// 初浮上の場合の特別なメッセージ
-		if (item.isFirstPublicPost && noteIndex === 0) {
+		if (item.isFirstPublicPost && isOldestNote(currentNote, item)) {
 			const result = formatFloaterMessage('userFirstPublicPost', {
 				user: formatUserName(currentNote.user),
 				date: getDisplayDateString(currentNote.createdAt),
@@ -206,16 +210,18 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 
 		// 全てのノートが今日の日付かどうかチェック
 		const allToday = item.notes.every(n => isToday(n.createdAt));
-		if (allToday && !(item.isFirstPublicPost && noteIndex === 0)) {
+		// ここを修正: 最新のノートと初浮上の判定をより明確に
+		if (allToday && !(item.isFirstPublicPost && isOldestNote(currentNote, item))) {
 			return ''; // 全て今日なら何も表示しない（初浮上を除く）
 		}
 
 		// 日付差がないケースを早期リターン
-		if (item.notes.length > 1 && noteIndex === 0) {
-			const firstNote = item.notes[0];
-			const lastNote = item.notes[item.notes.length - 1];
+		if (item.notes.length > 1 && isNewestNote(currentNote, item)) {
+			const chronoNotes = getChronologicalNotes(item);
+			const oldestNote = chronoNotes[0];
+			const newestNote = chronoNotes[chronoNotes.length - 1];
 
-			if (isSameDay(firstNote.createdAt, lastNote.createdAt)) {
+			if (isSameDay(oldestNote.createdAt, newestNote.createdAt)) {
 				// 同じ日付で今日でない場合は単純日付表示
 				if (!isToday(currentDate)) {
 					return getDateText(currentDate);
@@ -278,7 +284,8 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 		const result = formatFloaterMessage(messageKey, params);
 
 		// 最初のノートの場合はキャッシュする
-		if (noteIndex === 0) {
+		// ここを修正: 最新のノートの場合のみキャッシュ
+		if (isNewestNote(currentNote, item)) {
 			item._cachedInfo = result;
 		}
 
@@ -315,6 +322,7 @@ interface FloaterItem {
 	}>;
 	_cachedInfo?: string; // キャッシュ用
 	isFirstPublicPost?: boolean; // 初浮上かどうか
+	_sortedNotes?: any[]; // ソート済みノートのキャッシュ用
 }
 
 // 日付計算を専門にする関数
@@ -337,6 +345,14 @@ function formatFloaterMessage(messageKey: string, params: Record<string, string>
 		message = message.replace(`{${key}}`, value);
 	});
 	return message;
+}
+
+// 古い順にソートしたノート配列を取得（キャッシュ付き）
+function getChronologicalNotes(item: FloaterItem): any[] {
+	item._sortedNotes ??= [...item.notes].sort((a, b) =>
+		new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+	);
+	return item._sortedNotes;
 }
 
 // ユーザーIDで重複排除する関数
@@ -384,10 +400,27 @@ function isFloaterInfo(note: any, index: number, item: FloaterItem): boolean {
 	);
 }
 
+// 最も新しいノートかどうか判定する関数
+function isNewestNote(note: any, item: FloaterItem): boolean {
+	const chronoNotes = getChronologicalNotes(item);
+	return note.id === chronoNotes[chronoNotes.length - 1].id;
+}
+
+function isOldestNote(note: any, item: FloaterItem): boolean {
+	if (!item.notes.length) return false;
+
+	// 全ノートをソートして最も古いものを取得
+	const oldestNote = [...item.notes].sort((a, b) =>
+		new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+	)[0];
+
+	return note.id === oldestNote.id;
+}
+
 // 日付情報またはユーザー浮上情報を取得する関数
 function getDateInfo(note: any, index: number, item: FloaterItem): string {
-	// 初浮上の場合は初浮上表示
-	if (item.isFirstPublicPost && index === 0) {
+	// 初浮上の場合は初浮上表示（最も古いノートのみ）
+	if (item.isFirstPublicPost && isOldestNote(note, item)) {
 		return formatFloaterMessage('userFirstPublicPost', {
 			user: formatUserName(note.user),
 			date: getDisplayDateString(note.createdAt),
@@ -409,7 +442,8 @@ function getDateInfo(note: any, index: number, item: FloaterItem): string {
 	}
 
 	// 他の処理は変更なし
-	if (index === 0) {
+	// ここを修正: 最初のノートの場合を最新のノートの場合に変更
+	if (isNewestNote(note, item)) {
 		return getCombinedFloaterInfo(item, 0);
 	}
 
@@ -425,7 +459,7 @@ function getDateInfo(note: any, index: number, item: FloaterItem): string {
 // 日付差がある場合に「X日ぶりに浮上」を表示すべきか判断する関数
 function shouldShowDaysSinceLastAppearance(note: any, index: number, item: FloaterItem): boolean {
 	// 初浮上の場合は除外
-	if (item.isFirstPublicPost && index === 0) return false;
+	if (item.isFirstPublicPost && isOldestNote(note, item)) return false;
 
 	const compareNote = getCompareNote(note, index, item);
 	return getNoteDaysDifference(note, compareNote) > 0;
@@ -453,11 +487,20 @@ function formatUserName(user: any): string {
 
 // 比較対象のノートを取得する関数
 function getCompareNote(note: any, index: number, item: FloaterItem): any {
-	if (index === 0) {
-		return item.notes.length > 1 ? item.notes[item.notes.length - 1] : null;
-	} else {
-		return item.notes[index - 1];
+	if (item.isFirstPublicPost) {
+		// 最も古いノートなら比較対象なし
+		if (isOldestNote(note, item)) return null;
+
+		const chronologicalNotes = getChronologicalNotes(item);
+		const currentIndex = chronologicalNotes.findIndex(n => n.id === note.id);
+
+		return currentIndex > 0 ? chronologicalNotes[currentIndex - 1] : null;
 	}
+
+	// 通常処理（既存コード）
+	return index === 0
+		? (item.notes.length > 1 ? item.notes[item.notes.length - 1] : null)
+		: item.notes[index - 1];
 }
 
 // 2つのノートの日付差を計算する関数
