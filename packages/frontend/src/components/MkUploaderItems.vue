@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-panel
 		:class="[$style.item, { [$style.itemWaiting]: item.preprocessing, [$style.itemCompleted]: item.uploaded, [$style.itemFailed]: item.uploadFailed }]"
 		:style="{ '--p': item.progress != null ? `${item.progress.value / item.progress.max * 100}%` : '0%' }"
+		@contextmenu.prevent.stop="onContextmenu(item, $event)"
 	>
 		<div :class="$style.itemInner">
 			<div :class="$style.itemActionWrapper">
@@ -38,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { isLink } from '@@/js/is-link.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -49,7 +51,15 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'showMenu', item: UploaderItem, event: MouseEvent): void;
+	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: MouseEvent): void;
 }>();
+
+function onContextmenu(item: UploaderItem, ev: MouseEvent) {
+	if (ev.target && isLink(ev.target as HTMLElement)) return;
+	if (window.getSelection()?.toString() !== '') return;
+
+	emit('showMenuViaContextmenu', item, ev);
+}
 </script>
 
 <style lang="scss" module>

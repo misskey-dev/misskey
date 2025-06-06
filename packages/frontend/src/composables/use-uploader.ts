@@ -142,7 +142,7 @@ export function useUploader(options: {
 		items.value.splice(items.value.indexOf(item), 1);
 	}
 
-	function showMenu(ev: MouseEvent, item: UploaderItem) {
+	function getMenu(item: UploaderItem): MenuItem[] {
 		const menu: MenuItem[] = [];
 
 		menu.push({
@@ -354,7 +354,7 @@ export function useUploader(options: {
 			});
 		}
 
-		os.popupMenu(menu, ev.currentTarget ?? ev.target);
+		return menu;
 	}
 
 	async function upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
@@ -503,7 +503,7 @@ export function useUploader(options: {
 		removeItem,
 		abortAll,
 		upload,
-		showMenu,
+		getMenu,
 		uploading: computed(() => items.value.some(item => item.uploading)),
 		readyForUpload: computed(() => items.value.length > 0 && !items.value.some(item => item.uploading || item.preprocessing)),
 	};

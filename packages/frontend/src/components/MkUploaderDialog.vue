@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts._uploader.tip }}
 			</MkTip>
 
-			<MkUploaderItems :items="items" @showMenu="(item, ev) => uploader.showMenu(ev, item)"/>
+			<MkUploaderItems :items="items" @showMenu="(item, ev) => showPerItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerItemMenuViaContextmenu(item, ev)"/>
 
 			<div v-if="props.multiple">
 				<MkButton style="margin: auto;" :iconOnly="true" rounded @click="chooseFile($event)"><i class="ti ti-plus"></i></MkButton>
@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { UploaderFeatures } from '@/composables/use-uploader.js';
+import type { UploaderFeatures, UploaderItem } from '@/composables/use-uploader.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -168,6 +168,16 @@ async function done() {
 async function chooseFile(ev: MouseEvent) {
 	const newFiles = await os.chooseFileFromPc({ multiple: true });
 	uploader.addFiles(newFiles);
+}
+
+function showPerItemMenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+}
+
+function showPerItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.contextMenu(menu, ev);
 }
 </script>
 
