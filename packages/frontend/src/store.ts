@@ -17,6 +17,7 @@ import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 export const TIPS = [
 	'drive',
 	'uploader',
+	'postFormUploader',
 	'clips',
 	'userLists',
 	'tl.home',
