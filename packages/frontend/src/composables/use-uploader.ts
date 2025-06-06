@@ -67,6 +67,7 @@ export type UploaderItem = {
 	preprocessedFile?: Blob | null;
 	file: File;
 	watermarkPresetId: string | null;
+	isSensitive?: boolean;
 	abort?: (() => void) | null;
 };
 
@@ -170,6 +171,15 @@ export function useUploader(options: {
 
 					item.name = result;
 				},
+			}, {
+				type: 'switch',
+				text: i18n.ts.sensitive,
+				ref: computed({
+					get: () => item.isSensitive ?? false,
+					set: (value) => item.isSensitive = value,
+				}),
+			}, {
+				type: 'divider',
 			});
 		}
 
@@ -381,6 +391,7 @@ export function useUploader(options: {
 		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
 			name: item.uploadName ?? item.name,
 			folderId: options.folderId,
+			isSensitive: item.isSensitive ?? false,
 			onProgress: (progress) => {
 				if (item.progress == null) {
 					item.progress = { max: progress.total, value: progress.loaded };
