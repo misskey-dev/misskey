@@ -30,6 +30,7 @@ import { launchPlugins } from '@/plugin.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
+import { syncEmojiMuteWithServer } from '@/utility/emoji-mute.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
@@ -64,6 +65,8 @@ export async function mainBoot() {
 
 	reactionPicker.init();
 	emojiPicker.init();
+
+	syncEmojiMuteWithServer();
 
 	if (isClientUpdated && $i) {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
