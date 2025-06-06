@@ -72,13 +72,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
+	<div v-if="uploader.items.value.length > 0" style="padding: 12px;">
+		<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => uploader.showMenu(ev, item)"/>
+	</div>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
+			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
+			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
@@ -105,6 +109,7 @@ import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
+import MkUploaderItems from './MkUploaderItems.vue';
 import type { ShallowRef } from 'vue';
 import type { PostFormProps } from '@/types/post-form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -138,6 +143,7 @@ import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+import { useUploader } from '@/composables/use-uploader.js';
 
 const $i = ensureSignin();
 
@@ -201,6 +207,12 @@ const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
 const postFormActions = getPluginHandlers('post_form_action');
 
+const uploader = useUploader({
+	multiple: props.multiple,
+	folderId: props.folderId,
+	features: props.features,
+});
+
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
@@ -258,10 +270,11 @@ const cwTextLength = computed((): number => {
 const maxCwTextLength = 100;
 
 const canPost = computed((): boolean => {
-	return !props.mock && !posting.value && !posted.value &&
+	return !props.mock && !posting.value && !posted.value && !uploader.uploading.value &&
 		(
 			1 <= textLength.value ||
 			1 <= files.value.length ||
+			1 <= uploader.items.value.length ||
 			poll.value != null ||
 			renoteTargetNote.value != null ||
 			quoteId.value != null
@@ -434,17 +447,12 @@ function focus() {
 	}
 }
 
-function chooseFileFrom(ev) {
+function chooseFileFromPc(ev: MouseEvent) {
 	if (props.mock) return;
 
-	selectFile({
-		anchorElement: ev.currentTarget ?? ev.target,
-		multiple: true,
-		label: i18n.ts.attachFile,
-	}).then(files_ => {
-		for (const file of files_) {
-			files.value.push(file);
-		}
+	os.chooseFileFromPc({ multiple: true }).then(files => {
+		if (files.length === 0) return;
+		uploader.addFiles(files);
 	});
 }
 
@@ -797,6 +805,15 @@ function isAnnoying(text: string): boolean {
 		text.includes('$[position');
 }
 
+async function uploadFiles() {
+	await uploader.upload();
+
+	for (const uploadedItem of uploader.items.value.filter(x => x.uploaded != null)) {
+		files.value.push(uploadedItem.uploaded!);
+		uploader.removeItem(uploadedItem);
+	}
+}
+
 async function post(ev?: MouseEvent) {
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
@@ -838,6 +855,10 @@ async function post(ev?: MouseEvent) {
 		if (result === 'home') {
 			visibility.value = 'home';
 		}
+	}
+
+	if (uploader.items.value.some(x => x.uploaded == null)) {
+		await uploadFiles();
 	}
 
 	let postData = {
