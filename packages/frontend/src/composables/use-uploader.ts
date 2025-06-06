@@ -174,6 +174,7 @@ export function useUploader(options: {
 			}, {
 				type: 'switch',
 				text: i18n.ts.sensitive,
+				icon: 'ti ti-eye-exclamation',
 				ref: computed({
 					get: () => item.isSensitive ?? false,
 					set: (value) => item.isSensitive = value,
