@@ -2522,6 +2522,7 @@ _visibility:
   disableFederationDescription: "他サーバーへの配信を行いません"
 
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "アップロードされていないファイルがありますが、破棄してフォームを閉じますか？"
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."

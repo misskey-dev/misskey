@@ -214,6 +214,11 @@ const uploader = useUploader({
 	features: props.features,
 });
 
+uploader.events.on('itemUploaded', ctx => {
+	files.value.push(ctx.item.uploaded!);
+	uploader.removeItem(ctx.item);
+});
+
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
@@ -1151,8 +1156,23 @@ onMounted(() => {
 	});
 });
 
+async function canClose() {
+	if (!uploader.allItemsUploaded.value) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts._postForm.quitInspiteOfThereAreUnuploadedFilesConfirm,
+			okText: i18n.ts.yes,
+			cancelText: i18n.ts.no,
+		});
+		if (canceled) return false;
+	}
+
+	return true;
+}
+
 defineExpose({
 	clear,
+	canClose,
 });
 </script>
 

@@ -6,6 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import isAnimated from 'is-file-animated';
+import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { genId } from '@/utility/id.js';
@@ -97,6 +98,10 @@ export function useUploader(options: {
 } = {}) {
 	const $i = ensureSignin();
 
+	const events = new EventEmitter<{
+		'itemUploaded': (ctx: { item: UploaderItem; }) => void;
+	}>();
+
 	const uploaderFeatures = computed<Required<UploaderFeatures>>(() => {
 		return {
 			effect: options.features?.effect ?? true,
@@ -145,22 +150,28 @@ export function useUploader(options: {
 	function getMenu(item: UploaderItem): MenuItem[] {
 		const menu: MenuItem[] = [];
 
-		menu.push({
-			icon: 'ti ti-cursor-text',
-			text: i18n.ts.rename,
-			action: async () => {
-				const { result, canceled } = await os.inputText({
-					type: 'text',
-					title: i18n.ts.rename,
-					placeholder: item.name,
-					default: item.name,
-				});
-				if (canceled) return;
-				if (result.trim() === '') return;
+		if (
+			!item.preprocessing &&
+			!item.uploading &&
+			!item.uploaded
+		) {
+			menu.push({
+				icon: 'ti ti-cursor-text',
+				text: i18n.ts.rename,
+				action: async () => {
+					const { result, canceled } = await os.inputText({
+						type: 'text',
+						title: i18n.ts.rename,
+						placeholder: item.name,
+						default: item.name,
+					});
+					if (canceled) return;
+					if (result.trim() === '') return;
 
-				item.name = result;
-			},
-		});
+					item.name = result;
+				},
+			});
+		}
 
 		if (
 			uploaderFeatures.value.crop &&
@@ -333,6 +344,12 @@ export function useUploader(options: {
 			menu.push({
 				type: 'divider',
 			}, {
+				icon: 'ti ti-upload',
+				text: i18n.ts.upload,
+				action: () => {
+					uploadOne(item);
+				},
+			}, {
 				icon: 'ti ti-x',
 				text: i18n.ts.remove,
 				action: () => {
@@ -357,6 +374,45 @@ export function useUploader(options: {
 		return menu;
 	}
 
+	async function uploadOne(item: UploaderItem): Promise<void> {
+		item.uploadFailed = false;
+		item.uploading = true;
+
+		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
+			name: item.uploadName ?? item.name,
+			folderId: options.folderId,
+			onProgress: (progress) => {
+				if (item.progress == null) {
+					item.progress = { max: progress.total, value: progress.loaded };
+				} else {
+					item.progress.value = progress.loaded;
+					item.progress.max = progress.total;
+				}
+			},
+		});
+
+		item.abort = () => {
+			item.abort = null;
+			abort();
+			item.uploading = false;
+			item.uploadFailed = true;
+		};
+
+		await filePromise.then((file) => {
+			item.uploaded = file;
+			item.abort = null;
+			events.emit('itemUploaded', { item });
+		}).catch(err => {
+			item.uploadFailed = true;
+			item.progress = null;
+			if (!(err instanceof UploadAbortedError)) {
+				throw err;
+			}
+		}).finally(() => {
+			item.uploading = false;
+		});
+	}
+
 	async function upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
 		items.value = items.value.map(item => ({
 			...item,
@@ -371,41 +427,7 @@ export function useUploader(options: {
 				continue;
 			}
 
-			item.uploadFailed = false;
-			item.uploading = true;
-
-			const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
-				name: item.uploadName ?? item.name,
-				folderId: options.folderId,
-				onProgress: (progress) => {
-					if (item.progress == null) {
-						item.progress = { max: progress.total, value: progress.loaded };
-					} else {
-						item.progress.value = progress.loaded;
-						item.progress.max = progress.total;
-					}
-				},
-			});
-
-			item.abort = () => {
-				item.abort = null;
-				abort();
-				item.uploading = false;
-				item.uploadFailed = true;
-			};
-
-			await filePromise.then((file) => {
-				item.uploaded = file;
-				item.abort = null;
-			}).catch(err => {
-				item.uploadFailed = true;
-				item.progress = null;
-				if (!(err instanceof UploadAbortedError)) {
-					throw err;
-				}
-			}).finally(() => {
-				item.uploading = false;
-			});
+			await uploadOne(item);
 		}
 	}
 
@@ -505,7 +527,9 @@ export function useUploader(options: {
 		upload,
 		getMenu,
 		uploading: computed(() => items.value.some(item => item.uploading)),
-		readyForUpload: computed(() => items.value.length > 0 && !items.value.some(item => item.uploading || item.preprocessing)),
+		readyForUpload: computed(() => items.value.length > 0 && items.value.some(item => item.uploaded == null) && !items.value.some(item => item.uploading || item.preprocessing)),
+		allItemsUploaded: computed(() => items.value.every(item => item.uploaded != null)),
+		events,
 	};
 }
 

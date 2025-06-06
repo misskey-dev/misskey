@@ -93,7 +93,7 @@ onMounted(() => {
 const items = uploader.items;
 
 const firstUploadAttempted = ref(false);
-const canRetry = computed(() => firstUploadAttempted.value && !items.value.some(item => item.uploading || item.preprocessing) && items.value.some(item => item.uploaded == null));
+const canRetry = computed(() => firstUploadAttempted.value && uploader.readyForUpload.value);
 const canDone = computed(() => items.value.some(item => item.uploaded != null));
 const overallProgress = computed(() => {
 	const max = items.value.length;
@@ -151,7 +151,7 @@ async function abortWithConfirm() {
 }
 
 async function done() {
-	if (items.value.some(item => item.uploaded == null)) {
+	if (!uploader.allItemsUploaded.value) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.ts._uploader.doneConfirm,

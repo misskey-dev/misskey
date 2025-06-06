@@ -9585,6 +9585,10 @@ export interface Locale extends ILocale {
     };
     "_postForm": {
         /**
+         * アップロードされていないファイルがありますが、破棄してフォームを閉じますか？
+         */
+        "quitInspiteOfThereAreUnuploadedFilesConfirm": string;
+        /**
          * このノートに返信...
          */
         "replyPlaceholder": string;

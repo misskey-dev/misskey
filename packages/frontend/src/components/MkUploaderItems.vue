@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.itemActionWrapper">
 				<MkButton :iconOnly="true" rounded @click="emit('showMenu', item, $event)"><i class="ti ti-dots"></i></MkButton>
 			</div>
-			<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ item.thumbnail })` }"></div>
+			<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ item.thumbnail })` }" @click="onThumbnailClick(item, $event)"></div>
 			<div :class="$style.itemBody">
 				<div><MkCondensedLine :minScale="2 / 3">{{ item.name }}</MkCondensedLine></div>
 				<div :class="$style.itemInfo">
@@ -59,6 +59,10 @@ function onContextmenu(item: UploaderItem, ev: MouseEvent) {
 	if (window.getSelection()?.toString() !== '') return;
 
 	emit('showMenuViaContextmenu', item, ev);
+}
+
+function onThumbnailClick(item: UploaderItem, ev: MouseEvent) {
+	// TODO: preview when item is image
 }
 </script>
 
