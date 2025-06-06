@@ -90,10 +90,10 @@ export type UploaderDialogFeatures = {
 <script lang="ts" setup>
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { genId } from '@/utility/id.js';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import isAnimated from 'is-file-animated';
 import type { MenuItem } from '@/types/menu.js';
+import { genId } from '@/utility/id.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -365,6 +365,7 @@ function showMenu(ev: MouseEvent, item: UploaderItem) {
 		menu.push({
 			icon: 'ti ti-copyright',
 			text: i18n.ts.watermark,
+			caption: computed(() => item.watermarkPresetId == null ? null : prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId)?.name),
 			type: 'parent',
 			children: [{
 				type: 'radioOption',
@@ -409,7 +410,21 @@ function showMenu(ev: MouseEvent, item: UploaderItem) {
 
 		menu.push({
 			icon: 'ti ti-leaf',
-			text: i18n.ts.compress,
+			text: computed(() => {
+				let text = i18n.ts.compress;
+
+				if (item.compressionLevel === 0 || item.compressionLevel == null) {
+					text += `: ${i18n.ts.none}`;
+				} else if (item.compressionLevel === 1) {
+					text += `: ${i18n.ts.low}`;
+				} else if (item.compressionLevel === 2) {
+					text += `: ${i18n.ts.medium}`;
+				} else if (item.compressionLevel === 3) {
+					text += `: ${i18n.ts.high}`;
+				}
+
+				return text;
+			}),
 			type: 'parent',
 			children: [{
 				type: 'radioOption',
