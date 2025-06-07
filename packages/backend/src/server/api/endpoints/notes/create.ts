@@ -350,8 +350,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
 					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
-				} else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
-					throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
+				} else if (reply.visibility === 'specified') {
+					// 以前はここで明示的なDM設定を要求していた
+					// else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
+					//   throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
+					// }
+
+					// DMへの返信は常に自動的にDM設定にする
+					ps.visibility = 'specified';
+
+					// DMは連合ありに設定（Misskey本家の仕様に合わせる）
+					ps.localOnly = false;
+
+					// 宛先ユーザーの設定
+					if (!ps.visibleUserIds || ps.visibleUserIds.length === 0) {
+						ps.visibleUserIds = [reply.userId];
+					} else if (!ps.visibleUserIds.includes(reply.userId)) {
+						ps.visibleUserIds.push(reply.userId);
+					}
 				}
 
 				// Check blocking

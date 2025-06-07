@@ -207,12 +207,17 @@ export class NoteEntityService implements OnModuleInit {
 		if (hide) {
 			// DMの場合は自分に関する宛先情報のみを保持
 			if (packedNote.visibility === 'specified' && meId && packedNote.visibleUserIds?.includes(meId)) {
-				// 自分のIDのみを含む配列に置き換え
-				packedNote.visibleUserIds = [meId];
+				// 自分のIDと送信者のIDを含む配列に置き換え
+				packedNote.visibleUserIds = [meId, packedNote.userId];
 
-				// mentionsも自分のIDのみを保持
-				if (packedNote.mentions?.includes(meId)) {
-					packedNote.mentions = [meId];
+				// mentionsも適切に保持
+				if (packedNote.mentions) {
+					const relevantMentions = [meId];
+					// 送信者へのメンションも維持
+					if (packedNote.mentions.includes(packedNote.userId)) {
+						relevantMentions.push(packedNote.userId);
+					}
+					packedNote.mentions = relevantMentions;
 				} else {
 					packedNote.mentions = undefined;
 				}
