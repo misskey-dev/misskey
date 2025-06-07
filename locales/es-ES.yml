@@ -2465,6 +2465,8 @@ _visibility:
   disableFederation: "No federado"
   disableFederationDescription: "No enviar a otras instancias"
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "Hay archivos que no se han cargado, ¿deseas descartarlos y cerrar el formulario?"
+  uploaderTip: "El archivo aún no se ha cargado. Desde el menú Archivo, puedes cambiar el nombre, recortar imágenes, poner marcas de agua y comprimir o no el archivo. Los archivos se cargan automáticamente al publicar una nota."
   replyPlaceholder: "Responder a esta nota"
   quotePlaceholder: "Citar esta nota"
   channelPlaceholder: "Publicar en el canal"
