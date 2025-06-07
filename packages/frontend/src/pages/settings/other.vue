@@ -128,6 +128,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
+		<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+
+		<hr>
+
 		<FormSlot>
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
 			<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
@@ -157,7 +161,7 @@ import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
-import { store, TIPS } from '@/store.js';
+import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 
 const $i = ensureSignin();
 
@@ -201,17 +205,17 @@ function migrate() {
 }
 
 function resetAllTips() {
-	store.set('tips', {});
+	_resetAllTips();
 	os.success();
 }
 
 function hideAllTips() {
-	const v = {};
-	for (const k of TIPS) {
-		v[k] = true;
-	}
-	store.set('tips', v);
+	_hideAllTips();
 	os.success();
+}
+
+function readAllChatMessages() {
+	os.apiWithDialog('chat/read-all', {});
 }
 
 const headerActions = computed(() => []);

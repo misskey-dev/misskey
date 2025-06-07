@@ -81,9 +81,15 @@ export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
+		// The console is shared with backend, so clearing the console will also clear the backend log.
+		clearScreen: false,
+
 		server: {
-			host,
+			// The backend allows access from any addresses, so vite also allows access from any addresses.
+			host: '0.0.0.0',
+			allowedHosts: host ? [host] : undefined,
 			port: 5173,
+			strictPort: true,
 			hmr: {
 				// バックエンド経由での起動時、Viteは5173経由でアセットを参照していると思い込んでいるが実際は3000から配信される
 				// そのため、バックエンドのWSサーバーにHMRのWSリクエストが吸収されてしまい、正しくHMRが機能しない

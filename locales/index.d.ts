@@ -1327,6 +1327,10 @@ export interface Locale extends ILocale {
      */
     "syncDeviceDarkMode": string;
     /**
+     * 「{x}」がオンになっています。同期をオフにして手動でモードを切り替えますか？
+     */
+    "switchDarkModeManuallyWhenSyncEnabledConfirm": ParameterizedString<"x">;
+    /**
      * ドライブ
      */
     "drive": string;
@@ -5331,15 +5335,19 @@ export interface Locale extends ILocale {
      */
     "preferenceSyncConflictTitle": string;
     /**
-     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どちらの設定値で上書きしますか？
+     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どうしますか？
      */
     "preferenceSyncConflictText": string;
     /**
-     * サーバーの設定値
+     * 統合する
+     */
+    "preferenceSyncConflictChoiceMerge": string;
+    /**
+     * サーバーの設定値で上書き
      */
     "preferenceSyncConflictChoiceServer": string;
     /**
-     * デバイスの設定値
+     * デバイスの設定値で上書き
      */
     "preferenceSyncConflictChoiceDevice": string;
     /**
@@ -5473,6 +5481,14 @@ export interface Locale extends ILocale {
      * 全ての「ヒントとコツ」を非表示
      */
     "hideAllTips": string;
+    /**
+     * デフォルトの画像圧縮度
+     */
+    "defaultImageCompressionLevel": string;
+    /**
+     * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
+     */
+    "defaultImageCompressionLevel_description": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5813,6 +5829,10 @@ export interface Locale extends ILocale {
          * URLプレビューを表示する
          */
         "showUrlPreview": string;
+        /**
+         * 利用できるリアクションを先頭に表示
+         */
+        "showAvailableReactionsFirstInNote": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -9565,6 +9585,14 @@ export interface Locale extends ILocale {
     };
     "_postForm": {
         /**
+         * アップロードされていないファイルがありますが、破棄してフォームを閉じますか？
+         */
+        "quitInspiteOfThereAreUnuploadedFilesConfirm": string;
+        /**
+         * ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。
+         */
+        "uploaderTip": string;
+        /**
          * このノートに返信...
          */
         "replyPlaceholder": string;
@@ -9707,7 +9735,7 @@ export interface Locale extends ILocale {
          */
         "excludeInactiveUsers": string;
         /**
-         * インポートした人による返信をTLに含むようにする
+         * 返信をTLに含むかの情報がファイルにない場合に、インポートした人による返信をTLに含むようにする
          */
         "withReplies": string;
     };
@@ -11233,6 +11261,14 @@ export interface Locale extends ILocale {
          */
         "enable": string;
         /**
+         * プレビュー先のリダイレクトを許可
+         */
+        "allowRedirect": string;
+        /**
+         * 入力されたURLがリダイレクトされる場合に、そのリダイレクト先をたどってプレビューを表示するかどうかを設定します。無効にするとサーバーリソースの節約になりますが、リダイレクト先の内容は表示されなくなります。
+         */
+        "allowRedirectDescription": string;
+        /**
          * プレビュー取得時のタイムアウト(ms)
          */
         "timeout": string;
@@ -12003,6 +12039,188 @@ export interface Locale extends ILocale {
          * 任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。
          */
         "tip": string;
+    };
+    /**
+     * ウォーターマーク
+     */
+    "watermark": string;
+    /**
+     * デフォルトのプリセット
+     */
+    "defaultPreset": string;
+    "_watermarkEditor": {
+        /**
+         * 画像にクレジット情報などのウォーターマークを追加することができます。
+         */
+        "tip": string;
+        /**
+         * 保存せずに終了しますか？
+         */
+        "quitWithoutSaveConfirm": string;
+        /**
+         * このファイルは対応していません
+         */
+        "driveFileTypeWarn": string;
+        /**
+         * 画像ファイルを選択してください
+         */
+        "driveFileTypeWarnDescription": string;
+        /**
+         * ウォーターマークの編集
+         */
+        "title": string;
+        /**
+         * 全体に被せる
+         */
+        "cover": string;
+        /**
+         * 敷き詰める
+         */
+        "repeat": string;
+        /**
+         * 不透明度
+         */
+        "opacity": string;
+        /**
+         * サイズ
+         */
+        "scale": string;
+        /**
+         * テキスト
+         */
+        "text": string;
+        /**
+         * 位置
+         */
+        "position": string;
+        /**
+         * タイプ
+         */
+        "type": string;
+        /**
+         * 画像
+         */
+        "image": string;
+        /**
+         * 高度
+         */
+        "advanced": string;
+        /**
+         * ストライプ
+         */
+        "stripe": string;
+        /**
+         * ラインの幅
+         */
+        "stripeWidth": string;
+        /**
+         * ラインの数
+         */
+        "stripeFrequency": string;
+        /**
+         * 角度
+         */
+        "angle": string;
+        /**
+         * ポルカドット
+         */
+        "polkadot": string;
+        /**
+         * チェッカー
+         */
+        "checker": string;
+        /**
+         * メインドットの不透明度
+         */
+        "polkadotMainDotOpacity": string;
+        /**
+         * メインドットの大きさ
+         */
+        "polkadotMainDotRadius": string;
+        /**
+         * サブドットの不透明度
+         */
+        "polkadotSubDotOpacity": string;
+        /**
+         * サブドットの大きさ
+         */
+        "polkadotSubDotRadius": string;
+        /**
+         * サブドットの数
+         */
+        "polkadotSubDotDivisions": string;
+    };
+    "_imageEffector": {
+        /**
+         * エフェクト
+         */
+        "title": string;
+        /**
+         * エフェクトを追加
+         */
+        "addEffect": string;
+        /**
+         * 変更を破棄して終了しますか？
+         */
+        "discardChangesConfirm": string;
+        "_fxs": {
+            /**
+             * 色収差
+             */
+            "chromaticAberration": string;
+            /**
+             * グリッチ
+             */
+            "glitch": string;
+            /**
+             * ミラー
+             */
+            "mirror": string;
+            /**
+             * 色の反転
+             */
+            "invert": string;
+            /**
+             * 白黒
+             */
+            "grayscale": string;
+            /**
+             * 色調補正
+             */
+            "colorAdjust": string;
+            /**
+             * 色の圧縮
+             */
+            "colorClamp": string;
+            /**
+             * 色の圧縮(高度)
+             */
+            "colorClampAdvanced": string;
+            /**
+             * 歪み
+             */
+            "distort": string;
+            /**
+             * 二値化
+             */
+            "threshold": string;
+            /**
+             * 集中線
+             */
+            "zoomLines": string;
+            /**
+             * ストライプ
+             */
+            "stripe": string;
+            /**
+             * ポルカドット
+             */
+            "polkadot": string;
+            /**
+             * チェッカー
+             */
+            "checker": string;
+        };
     };
 }
 declare const locales: {

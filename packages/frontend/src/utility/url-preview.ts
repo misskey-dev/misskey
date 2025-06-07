@@ -15,7 +15,7 @@ export function transformPlayerUrl(url: string): string {
 
 	const urlParams = new URLSearchParams(urlObj.search);
 
-	if (urlObj.hostname === 'player.twitch.tv') {
+	if (urlObj.hostname === 'player.twitch.tv' || urlObj.hostname === 'clips.twitch.tv') {
 		// TwitchはCSPの制約あり
 		// https://dev.twitch.tv/docs/embed/video-and-clips/
 		urlParams.set('parent', hostname);

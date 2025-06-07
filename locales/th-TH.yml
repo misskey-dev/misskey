@@ -2722,3 +2722,13 @@ _search:
   searchScopeAll: "ทั้งหมด"
   searchScopeLocal: "ท้องถิ่น"
   searchScopeUser: "ผู้ใช้เฉพาะ"
+_watermarkEditor:
+  driveFileTypeWarn: "ไม่รองรับไฟล์นี้"
+  opacity: "ความทึบแสง"
+  scale: "ขนาด"
+  text: "ข้อความ"
+  position: "ตำแหน่ง"
+  type: "รูปแบบ"
+  image: "รูปภาพ"
+  advanced: "ขั้นสูง"
+  angle: "แองเกิล"
