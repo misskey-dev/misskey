@@ -17,6 +17,8 @@
 - Feat: 全てのチャットメッセージを既読にするAPIを追加(chat/read-all)
 - Fix: アカウント削除が正常に行われないことがあった問題を修正
 
+### Misskey.js
+- Fix: misskey-jsの drive/file/create でファイルアップロードができない問題を修正
 
 ## 2025.6.0
 
