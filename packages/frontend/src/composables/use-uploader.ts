@@ -24,7 +24,14 @@ export type UploaderFeatures = {
 	crop?: boolean;
 };
 
-const COMPRESSION_SUPPORTED_TYPES = [
+const THUMBNAIL_SUPPORTED_TYPES = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/svg+xml',
+];
+
+const IMAGE_COMPRESSION_SUPPORTED_TYPES = [
 	'image/jpeg',
 	'image/png',
 	'image/webp',
@@ -45,6 +52,13 @@ const IMAGE_EDITING_SUPPORTED_TYPES = [
 
 const WATERMARK_SUPPORTED_TYPES = IMAGE_EDITING_SUPPORTED_TYPES;
 
+const IMAGE_PREPROCESS_NEEDED_TYPES = [
+	...WATERMARK_SUPPORTED_TYPES,
+	...IMAGE_COMPRESSION_SUPPORTED_TYPES,
+	...CROPPING_SUPPORTED_TYPES,
+	...IMAGE_EDITING_SUPPORTED_TYPES,
+];
+
 const mimeTypeMap = {
 	'image/webp': 'webp',
 	'image/jpeg': 'jpg',
@@ -56,7 +70,7 @@ export type UploaderItem = {
 	name: string;
 	uploadName?: string;
 	progress: { max: number; value: number } | null;
-	thumbnail: string;
+	thumbnail: string | null;
 	preprocessing: boolean;
 	uploading: boolean;
 	uploaded: Misskey.entities.DriveFile | null;
@@ -121,7 +135,7 @@ export function useUploader(options: {
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
 			progress: null,
-			thumbnail: window.URL.createObjectURL(file),
+			thumbnail: THUMBNAIL_SUPPORTED_TYPES.includes(file.type) ? window.URL.createObjectURL(file) : null,
 			preprocessing: false,
 			uploading: false,
 			aborted: false,
@@ -144,7 +158,7 @@ export function useUploader(options: {
 	}
 
 	function removeItem(item: UploaderItem) {
-		URL.revokeObjectURL(item.thumbnail);
+		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 		items.value.splice(items.value.indexOf(item), 1);
 	}
 
@@ -196,7 +210,7 @@ export function useUploader(options: {
 				text: i18n.ts.cropImage,
 				action: async () => {
 					const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
-					URL.revokeObjectURL(item.thumbnail);
+					if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 					items.value.splice(items.value.indexOf(item), 1, {
 						...item,
 						file: markRaw(cropped),
@@ -225,7 +239,7 @@ export function useUploader(options: {
 						image: item.file,
 					}, {
 						ok: (file) => {
-							URL.revokeObjectURL(item.thumbnail);
+							if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 							items.value.splice(items.value.indexOf(item), 1, {
 								...item,
 								file: markRaw(file),
@@ -295,7 +309,7 @@ export function useUploader(options: {
 		}
 
 		if (
-			COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) &&
+			IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
@@ -461,10 +475,25 @@ export function useUploader(options: {
 	async function preprocess(item: UploaderItem): Promise<void> {
 		item.preprocessing = true;
 
-		let file: Blob | File = item.file;
-		const imageBitmap = await window.createImageBitmap(file);
+		try {
+			if (IMAGE_PREPROCESS_NEEDED_TYPES.includes(item.file.type)) {
+				await preprocessForImage(item);
+			}
+		} catch (err) {
+			console.error('Failed to preprocess image', err);
 
-		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(file.type);
+			// nop
+		}
+
+		item.preprocessing = false;
+	}
+
+	async function preprocessForImage(item: UploaderItem): Promise<void> {
+		const imageBitmap = await window.createImageBitmap(item.file);
+
+		let preprocessedFile: Blob | File = item.file;
+
+		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type);
 		const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
 		if (needsWatermark && preset != null) {
 			const canvas = window.document.createElement('canvas');
@@ -479,7 +508,7 @@ export function useUploader(options: {
 
 			renderer.render();
 
-			file = await new Promise<Blob>((resolve) => {
+			preprocessedFile = await new Promise<Blob>((resolve) => {
 				canvas.toBlob((blob) => {
 					if (blob == null) {
 						throw new Error('Failed to convert canvas to blob');
@@ -491,7 +520,7 @@ export function useUploader(options: {
 		}
 
 		const compressionSettings = getCompressionSettings(item.compressionLevel);
-		const needsCompress = item.compressionLevel !== 0 && compressionSettings && COMPRESSION_SUPPORTED_TYPES.includes(file.type) && !(await isAnimated(file));
+		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
 
 		if (needsCompress) {
 			const config = {
@@ -502,13 +531,13 @@ export function useUploader(options: {
 			};
 
 			try {
-				const result = await readAndCompressImage(file, config);
-				if (result.size < file.size || file.type === 'image/webp') {
-				// The compression may not always reduce the file size
-				// (and WebP is not browser safe yet)
-					file = result;
+				const result = await readAndCompressImage(preprocessedFile, config);
+				if (result.size < preprocessedFile.size || preprocessedFile.type === 'image/webp') {
+					// The compression may not always reduce the file size
+					// (and WebP is not browser safe yet)
+					preprocessedFile = result;
 					item.compressedSize = result.size;
-					item.uploadName = file.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
+					item.uploadName = preprocessedFile.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
 				}
 			} catch (err) {
 				console.error('Failed to resize image', err);
@@ -518,17 +547,16 @@ export function useUploader(options: {
 			item.uploadName = item.name;
 		}
 
-		URL.revokeObjectURL(item.thumbnail);
-		item.thumbnail = window.URL.createObjectURL(file);
-		item.preprocessedFile = markRaw(file);
-		item.preprocessing = false;
-
 		imageBitmap.close();
+
+		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+		item.thumbnail = THUMBNAIL_SUPPORTED_TYPES.includes(preprocessedFile.type) ? window.URL.createObjectURL(preprocessedFile) : null;
+		item.preprocessedFile = markRaw(preprocessedFile);
 	}
 
 	onUnmounted(() => {
 		for (const item of items.value) {
-			URL.revokeObjectURL(item.thumbnail);
+			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 		}
 	});
 
