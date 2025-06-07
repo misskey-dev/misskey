@@ -5,18 +5,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
+	<Sortable
+		:modelValue="props.modelValue"
+		:class="$style.files"
+		itemKey="id"
+		:animation="150"
+		:delay="100"
+		:delayOnTouchOnly="true"
+		:disabled="props.draggable === false"
+		@update:modelValue="v => emit('update:modelValue', v)"
+	>
 		<template #item="{ element }">
 			<div
 				:class="$style.file"
 				role="button"
 				tabindex="0"
-				@click="showFileMenu(element, $event)"
+				@click="handleClick(element, $event)"
 				@keydown.space.enter="showFileMenu(element, $event)"
 				@contextmenu.prevent="showFileMenu(element, $event)"
 			>
-				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
-				<div v-if="element.isSensitive" :class="$style.sensitive">
+				<MkDriveFileThumbnail v-if="element.type === 'driveFile'" :data-id="element.id" :class="$style.thumbnail" :file="element.file" fit="cover"/>
+				<template v-if="element.type === 'uploaderItem'">
+					<img v-if="element.file.thumbnail" :src="element.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
+					<div v-else :class="[$style.thumbnail, $style.uploaderThumbnailIcon]" v-panel>
+						<i :class="[$style.icon, getFileTypeIcon(getFileType(element.file.file.type))]"></i>
+					</div>
+					<div v-if="element.file.isSensitive" :class="$style.sensitive">
+						<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
+					</div>
+					<div :class="[$style.uploadProgressWrapper, { uploading: element.file.uploading }]">
+						<svg :class="$style.uploadProgressSvg" viewBox="0 0 64 64">
+							<circle
+								:class="$style.uploadProgressFg"
+								cx="32" cy="32" r="16"
+								:stroke-dasharray="progressDashArray(element.file)"
+							/>
+						</svg>
+						<div :class="$style.uploadAbortButton">
+							<!-- 実際のボタン機能はhandleClick -->
+							<i class="ti ti-x"></i>
+						</div>
+					</div>
+				</template>
+				<div v-if="element.type === 'driveFile' && element.file.isSensitive" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
@@ -32,11 +63,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
+<script lang="ts">
+import type { UploaderItem } from '@/composables/use-uploader.js';
+
+export type Attach = {
+	id: string;
+	type: 'driveFile';
+	file: Misskey.entities.DriveFile;
+} | {
+	id: string;
+	type: 'uploaderItem';
+	file: UploaderItem;
+};
+</script>
+
 <script lang="ts" setup>
 import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
-import { copyToClipboard } from '@/utility/copy-to-clipboard';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { getFileType, getFileTypeIcon } from '@/utility/file-type.js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -48,29 +94,30 @@ import { globalEvents } from '@/events.js';
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
-	modelValue: Misskey.entities.DriveFile[];
-	detachMediaFn?: (id: string) => void;
+	draggable?: boolean;
+	modelValue: Attach[];
 }>();
 
 const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;
+	(ev: 'update:modelValue', value: Attach[]): void;
 	(ev: 'detach', id: string): void;
-	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
-	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
+	(ev: 'uploaderItemAborted', id: string): void;
+	(ev: 'changeDriveFileSensitivity', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
+	(ev: 'changeDriveFileName', file: Misskey.entities.DriveFile, newName: string): void;
+	(ev: 'showUploaderMenu', uploaderItem: UploaderItem, event: MouseEvent | KeyboardEvent): void;
 }>();
 
-let menuShowing = false;
+function progressDashArray(item: UploaderItem): string {
+	const progress = item.progress ? item.progress.value / item.progress.max : 0;
+	return `${progress * 100} ${100 - progress * 100}`;
+}
 
 function detachMedia(id: string) {
 	if (mock) return;
 
-	if (props.detachMediaFn) {
-		props.detachMediaFn(id);
-	} else {
-		emit('detach', id);
-	}
+	emit('detach', id);
 }
 
 async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
@@ -91,9 +138,9 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
-function toggleSensitive(file) {
+function toggleDriveFileSensitivity(file: Misskey.entities.DriveFile) {
 	if (mock) {
-		emit('changeSensitive', file, !file.isSensitive);
+		emit('changeDriveFileSensitivity', file, !file.isSensitive);
 		return;
 	}
 
@@ -101,11 +148,11 @@ function toggleSensitive(file) {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).then(() => {
-		emit('changeSensitive', file, !file.isSensitive);
+		emit('changeDriveFileSensitivity', file, !file.isSensitive);
 	});
 }
 
-async function rename(file) {
+async function renameDriveFile(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
@@ -118,12 +165,12 @@ async function rename(file) {
 		fileId: file.id,
 		name: result,
 	}).then(() => {
-		emit('changeName', file, result);
+		emit('changeDriveFileName', file, result);
 		file.name = result;
 	});
 }
 
-async function describe(file: Misskey.entities.DriveFile) {
+async function describeDriveFile(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
@@ -143,66 +190,82 @@ async function describe(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
-	if (menuShowing) return;
+function handleClick(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
+	if (ev instanceof MouseEvent && ev.button !== 0) return; // 左クリック以外は無視
 
-	const isImage = file.type.startsWith('image/');
+	if (attach.type === 'driveFile' || (attach.type === 'uploaderItem' && !attach.file.uploading)) {
+		showFileMenu(attach, ev);
+	} else {
+		if (attach.file.abort) {
+			attach.file.abort();
+		}
+		attach.file.aborted = true;
+		attach.file.uploadFailed = true;
+		emit('uploaderItemAborted', attach.file.id);
+	}
+}
 
-	const menuItems: MenuItem[] = [];
+function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
+	if (attach.type === 'driveFile') {
+		const file = attach.file;
+		const isImage = file.type.startsWith('image/');
 
-	menuItems.push({
-		text: i18n.ts.renameFile,
-		icon: 'ti ti-forms',
-		action: () => { rename(file); },
-	}, {
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
-		action: () => { toggleSensitive(file); },
-	}, {
-		text: i18n.ts.describeFile,
-		icon: 'ti ti-text-caption',
-		action: () => { describe(file); },
-	});
-
-	if (isImage) {
+		const menuItems: MenuItem[] = [];
 		menuItems.push({
-			text: i18n.ts.preview,
-			icon: 'ti ti-photo-search',
-			action: async () => {
-				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImgPreviewDialog.vue').then(x => x.default), {
-					file: file,
-				}, {
-					closed: () => dispose(),
-				});
-			},
+			text: i18n.ts.renameFile,
+			icon: 'ti ti-forms',
+			action: () => { renameDriveFile(file); },
+		}, {
+			text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
+			action: () => { toggleDriveFileSensitivity(file); },
+		}, {
+			text: i18n.ts.describeFile,
+			icon: 'ti ti-text-caption',
+			action: () => { describeDriveFile(file); },
 		});
-	}
 
-	menuItems.push({
-		type: 'divider',
-	}, {
-		text: i18n.ts.attachCancel,
-		icon: 'ti ti-circle-x',
-		action: () => { detachMedia(file.id); },
-	}, {
-		text: i18n.ts.deleteFile,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => { detachAndDeleteMedia(file); },
-	});
+		if (isImage) {
+			menuItems.push({
+				text: i18n.ts.preview,
+				icon: 'ti ti-photo-search',
+				action: async () => {
+					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImgPreviewDialog.vue').then(x => x.default), {
+						file: file,
+					}, {
+						closed: () => dispose(),
+					});
+				},
+			});
+		}
 
-	if (prefer.s.devMode) {
-		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(file.id);
-			},
+		menuItems.push({
+			type: 'divider',
+		}, {
+			text: i18n.ts.attachCancel,
+			icon: 'ti ti-circle-x',
+			action: () => { detachMedia(file.id); },
+		}, {
+			text: i18n.ts.deleteFile,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => { detachAndDeleteMedia(file); },
 		});
-	}
 
-	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
-	menuShowing = true;
+		if (prefer.s.devMode) {
+			menuItems.push({ type: 'divider' }, {
+				icon: 'ti ti-hash',
+				text: i18n.ts.copyFileId,
+				action: () => {
+					copyToClipboard(file.id);
+				},
+			});
+		}
+
+		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+	} else if (attach.type === 'uploaderItem') {
+		emit('showUploaderMenu', attach.file, ev);
+	}
 }
 </script>
 
@@ -238,6 +301,26 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 	color: var(--MI_THEME-fg);
 }
 
+.uploaderThumbnail {
+	object-fit: cover;
+	object-position: center;
+	border-radius: 8px;
+}
+
+.uploaderThumbnailIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+}
+
+.icon {
+	pointer-events: none;
+	margin: auto;
+	font-size: 32px;
+	color: #777;
+}
+
 .sensitive {
 	display: flex;
 	position: absolute;
@@ -261,6 +344,90 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 
 	&.exceeded {
 		color: var(--MI_THEME-error);
+	}
+}
+
+.uploadProgressWrapper {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.75);
+		mask-image: linear-gradient(#000, #000), url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIC8+PC9zdmc+");
+		mask-position: center;
+		mask-repeat: no-repeat;
+		mask-size: 100% 100%, 90px 90px;
+		mask-composite: exclude;
+		transition: mask-size 0.2s ease;
+	}
+}
+
+.uploadProgressSvg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 32px;
+	height: 32px;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.uploadProgressFg {
+	fill: none;
+	stroke-width: 32;
+	stroke: rgba(0, 0, 0, 0.75);
+	stroke-dashoffset: 25;
+	transition: stroke-dasharray 0.2s ease;
+}
+
+.uploadAbortButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 16px;
+	line-height: 32px;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.75);
+	color: #fff;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.uploadProgressWrapper:global(.uploading) {
+	backdrop-filter: brightness(1.5);
+
+	&::before {
+		mask-size: 100% 100%, 36px 36px;
+	}
+
+	.uploadProgressSvg {
+		opacity: 1;
+	}
+}
+
+.file:hover .uploadProgressWrapper:global(.uploading) {
+	.uploadProgressSvg {
+		opacity: 0;
+	}
+
+	.uploadAbortButton {
+		opacity: 1;
 	}
 }
 </style>

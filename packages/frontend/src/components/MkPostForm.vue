@@ -71,22 +71,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
-	<div v-if="uploader.items.value.length > 0" style="padding: 12px;">
-		<MkTip k="postFormUploader">
-			{{ i18n.ts._postForm.uploaderTip }}
-		</MkTip>
-		<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => showPerUploadItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerUploadItemMenuViaContextmenu(item, ev)"/>
-	</div>
+	<XPostFormAttaches
+		v-model="attaches"
+		:draggable="!posting && !posted"
+		@detach="detachAttaches"
+		@uploaderItemAborted="handleUploaderItemAbort"
+		@changeDriveFileSensitivity="updateFileSensitive"
+		@changeDriveFileName="updateFileName"
+		@showUploaderMenu="handleShowUploaderMenu"
+	/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
-			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
@@ -110,7 +110,7 @@ import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
-import MkUploaderItems from './MkUploaderItems.vue';
+import type { Attach } from './MkPostFormAttaches.vue';
 import type { ShallowRef } from 'vue';
 import type { PostFormProps } from '@/types/post-form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -127,7 +127,7 @@ import { formatTimeString } from '@/utility/format-time-string.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { chooseDriveFile } from '@/utility/drive.js';
+import { chooseDriveFile, chooseFileFromUrl } from '@/utility/drive.js';
 import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
@@ -213,11 +213,6 @@ const uploader = useUploader({
 	multiple: true,
 });
 
-uploader.events.on('itemUploaded', ctx => {
-	files.value.push(ctx.item.uploaded!);
-	uploader.removeItem(ctx.item);
-});
-
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
@@ -274,26 +269,34 @@ const cwTextLength = computed((): number => {
 
 const maxCwTextLength = 100;
 
+/**
+ * Computes whether the post data meets the required conditions for submission or enabling the post button.
+ *
+ * @param cond - Specifies the context in which the condition is being checked ('button' for UI button state, 'req' for request validation).
+ */
+function computePostDataCondition(cond: 'button' | 'req') {
+	return !uploader.uploading.value && (
+		1 <= textLength.value ||
+		1 <= files.value.length ||
+		(cond === 'button' ? (1 <= uploader.items.value.length) : false) ||
+		poll.value != null ||
+		renoteTargetNote.value != null ||
+		quoteId.value != null
+	) &&
+	(textLength.value <= maxTextLength.value) &&
+	(
+		useCw.value ?
+			(
+				cw.value != null && cw.value.trim() !== '' &&
+				cwTextLength.value <= maxCwTextLength
+			) : true
+	) &&
+	(files.value.length <= 16) &&
+	(!poll.value || poll.value.choices.length >= 2);
+}
+
 const canPost = computed((): boolean => {
-	return !props.mock && !posting.value && !posted.value && !uploader.uploading.value && (uploader.items.value.length === 0 || uploader.readyForUpload.value) &&
-		(
-			1 <= textLength.value ||
-			1 <= files.value.length ||
-			1 <= uploader.items.value.length ||
-			poll.value != null ||
-			renoteTargetNote.value != null ||
-			quoteId.value != null
-		) &&
-		(textLength.value <= maxTextLength.value) &&
-		(
-			useCw.value ?
-				(
-					cw.value != null && cw.value.trim() !== '' &&
-					cwTextLength.value <= maxCwTextLength
-				) : true
-		) &&
-		(files.value.length <= 16) &&
-		(!poll.value || poll.value.choices.length >= 2);
+	return !props.mock && !posting.value && !posted.value && !uploader.uploading.value && (uploader.items.value.length === 0 || uploader.readyForUpload.value) && computePostDataCondition('button');
 });
 
 const withHashtags = computed(store.makeGetterSetter('postFormWithHashtags'));
@@ -452,6 +455,29 @@ function focus() {
 	}
 }
 
+function chooseFileFrom(ev: MouseEvent) {
+	const anchorElement = ev.currentTarget ?? ev.target;
+	os.popupMenu([{
+		text: i18n.ts.attachFile,
+		type: 'label',
+	}, {
+		text: i18n.ts.upload,
+		icon: 'ti ti-upload',
+		action: () => chooseFileFromPc(ev),
+	}, {
+		text: i18n.ts.fromDrive,
+		icon: 'ti ti-cloud',
+		action: () => chooseFileFromDrive(ev),
+	}, {
+		text: i18n.ts.fromUrl,
+		icon: 'ti ti-link',
+		action: () => chooseFileFromUrl().then(file => {
+			attachOrder.set(file.id, files.value.length);
+			files.value.push(file);
+		}),
+	}], anchorElement);
+}
+
 function chooseFileFromPc(ev: MouseEvent) {
 	if (props.mock) return;
 
@@ -469,19 +495,83 @@ function chooseFileFromDrive(ev: MouseEvent) {
 	});
 }
 
-function detachFile(id) {
-	files.value = files.value.filter(x => x.id !== id);
+uploader.events.on('itemUploaded', ({ item }) => {
+	if (!item.uploaded) return;
+	const attachesOrder = attaches.value.findIndex(f => f.id === item.id);
+	const attachOrderOrder = attachOrder.get(item.id);
+	if (attachesOrder >= 0 || attachOrderOrder != null) {
+		const index = attachesOrder >= 0 ? attachOrderOrder ?? attachesOrder : attachOrderOrder ?? attaches.value.length;
+		attachOrder.delete(item.id);
+		attachOrder.set(item.uploaded.id, index);
+	}
+	files.value.push(item.uploaded);
+	uploader.removeItem(item);
+});
+
+function detachAttaches(id: string) {
+	const attach = attaches.value.find(a => a.id === id);
+	if (!attach) return;
+	attachOrder.delete(attach.id);
+	if (attach.type === 'driveFile') {
+		files.value = files.value.filter(f => f.id !== attach.id);
+	} else if (attach.type === 'uploaderItem') {
+		uploader.removeItem(attach.file);
+	}
 }
 
-function updateFileSensitive(file, sensitive) {
+function handleUploaderItemAbort(id: string) {
+	if (props.mock) return;
+	const item = uploader.items.value.find(i => i.id === id);
+	if (!item) return;
+	if (posting.value && attaches.value.length > 1) {
+		// このアップロードが止まってもファイルがなくならない場合はアイテムを削除して投稿を続行
+		detachAttaches(id);
+	}
+}
+
+function updateFileSensitive(file: Misskey.entities.DriveFile, sensitive: boolean) {
 	if (props.mock) {
 		emit('fileChangeSensitive', file.id, sensitive);
 	}
 	files.value[files.value.findIndex(x => x.id === file.id)].isSensitive = sensitive;
 }
 
-function updateFileName(file, name) {
+function updateFileName(file: Misskey.entities.DriveFile, name: string) {
 	files.value[files.value.findIndex(x => x.id === file.id)].name = name;
+}
+
+const attachOrder = new Map<string, number>();
+
+const attaches = computed<Attach[]>({
+	get: () => {
+		const _attaches = [
+			...files.value.map(f => ({ id: f.id, type: 'driveFile' as const, file: f })),
+			...uploader.items.value.filter(i => i.uploaded == null).map(i => ({ id: i.id, type: 'uploaderItem' as const, file: i })),
+		];
+		_attaches.forEach((a, i) => {
+			if (!attachOrder.has(a.id)) {
+				attachOrder.set(a.id, i);
+			}
+		});
+		return _attaches.sort((a, b) => {
+			const aOrder = attachOrder.get(a.id) ?? 0;
+			const bOrder = attachOrder.get(b.id) ?? 0;
+			return aOrder - bOrder;
+		});
+	},
+	set: (newAttaches: Attach[]) => {
+		attachOrder.clear();
+		newAttaches.forEach((a, i) => {
+			attachOrder.set(a.id, i);
+		});
+		files.value = newAttaches.filter(a => a.type === 'driveFile').map(a => a.file);
+		uploader.items.value = newAttaches.filter(a => a.type === 'uploaderItem').map(a => a.file);
+	},
+});
+
+function handleShowUploaderMenu(item: UploaderItem, ev: MouseEvent | KeyboardEvent) {
+	if (props.mock) return;
+	os.popupMenu(uploader.getMenu(item), ev.currentTarget ?? ev.target);
 }
 
 function setVisibility() {
@@ -875,13 +965,21 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
+	// ここからは投稿の中身を触らせない
+	posting.value = true;
+
 	if (uploader.items.value.some(x => x.uploaded == null)) {
 		await uploadFiles();
 	}
 
 	let postData = {
 		text: text.value === '' ? null : text.value,
-		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
+		fileIds: files.value.length > 0 ? files.value.map(f => f.id).sort((a, b) => {
+			// itemUploadedイベントではfilesの順番を入れ替えないため、ここでもソートして確実に順番を整える
+			const aOrder = attachOrder.get(a) ?? 0;
+			const bOrder = attachOrder.get(b) ?? 0;
+			return aOrder - bOrder;
+		}) : undefined,
 		replyId: props.reply ? props.reply.id : undefined,
 		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
@@ -920,6 +1018,13 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
+	// アップロードキャンセルでファイルの総数が変わるなどのコンディション変化が
+	// あるため、canPostを再評価する
+	if (!computePostDataCondition('req')) {
+		posting.value = false;
+		return;
+	}
+
 	let token: string | undefined = undefined;
 
 	if (postAccount.value) {
@@ -927,7 +1032,6 @@ async function post(ev?: MouseEvent) {
 		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
 	}
 
-	posting.value = true;
 	misskeyApi('notes/create', postData, token).then((res) => {
 		if (props.freezeAfterPosted) {
 			posted.value = true;
