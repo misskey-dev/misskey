@@ -82,18 +82,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-else-if="step === 1" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
-						<div><b>{{ i18n.ts._serverSetupWizard.donationRequest }}</b></div>
-						<div>{{ i18n.ts._serverSetupWizard._donationRequest.text1 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text2 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text3 }}</div>
-					</div>
-					<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
-					<div class="_buttonsCenter">
-						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
-							{{ i18n.ts.next }}
-						</MkButton>
-					</div>
-				</div>
-				<div v-else-if="step === 2" class="_gaps_m">
-					<div style="text-align: center;" class="_gaps_s">
 						<div style="font-size: 120%;"><b>{{ i18n.ts._serverSetupWizard.serverSetting }}</b></div>
 						<div>{{ i18n.ts._serverSetupWizard.youCanEasilyConfigureOptimalServerSettingsWithThisWizard }}</div>
 						<div>{{ i18n.ts._serverSetupWizard.settingsYouMakeHereCanBeChangedLater }}</div>
@@ -105,11 +93,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts._serverSetupWizard.skipSettings }}
 					</MkButton>
 				</div>
-				<div v-else-if="step === 3" class="_gaps_m">
+				<div v-else-if="step === 2" class="_gaps_m">
 					<div style="text-align: center;" class="_gaps_s">
 						<div><b>{{ i18n.ts._serverSetupWizard.settingsCompleted }}</b></div>
 						<div>{{ i18n.ts._serverSetupWizard.settingsCompleted_description }}</div>
 						<div>{{ i18n.ts._serverSetupWizard.settingsCompleted_description2 }}</div>
+					</div>
+					<div class="_gaps_s" :class="$style.donation">
+						<div><b>{{ i18n.ts._serverSetupWizard.donationRequest }}</b></div>
+						<div>{{ i18n.ts._serverSetupWizard._donationRequest.text1 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text2 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text3 }}</div>
+						<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
 					</div>
 					<div class="_buttonsCenter">
 						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="finish">
@@ -231,5 +224,12 @@ function finish() {
 	font-size: 70%;
 	font-weight: normal;
 	opacity: 0.7;
+}
+
+.donation {
+	background: var(--MI_THEME-accentedBg);
+	border-radius: 12px;
+	padding: 16px;
+	text-align: center;
 }
 </style>

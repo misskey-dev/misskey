@@ -72,7 +72,6 @@
 		"tsc-alias": "1.8.16",
 		"tsconfig-paths": "4.2.0",
 		"typescript": "5.8.3",
-		"uuid": "11.1.0",
 		"v-code-diff": "1.13.1",
 		"vite": "6.3.5",
 		"vue": "3.5.16",

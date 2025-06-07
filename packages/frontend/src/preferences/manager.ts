@@ -4,11 +4,11 @@
  */
 
 import { computed, onUnmounted, ref, watch } from 'vue';
-import { v4 as uuid } from 'uuid';
 import { host, version } from '@@/js/config.js';
 import { PREF_DEF } from './def.js';
 import type { Ref, WritableComputedRef } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
+import { genId } from '@/utility/id.js';
 import { $i } from '@/i.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
@@ -301,7 +301,7 @@ export class PreferencesManager {
 			}
 		}
 		return {
-			id: uuid(),
+			id: genId(),
 			version: version,
 			type: 'main',
 			modifiedAt: Date.now(),

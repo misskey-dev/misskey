@@ -3112,3 +3112,13 @@ _clip:
   tip: "Le clip sono una funzionalità che consente di raggruppare le Note."
 _userLists:
   tip: "Puoi creare un elenco di Note create da qualsiasi profilo. L'elenco è visualizzato come una sequenza temporale."
+_watermarkEditor:
+  driveFileTypeWarn: "Formato file non supportato"
+  opacity: "Opacità"
+  scale: "Dimensioni"
+  text: "Testo"
+  position: "Posizione"
+  type: "Tipo"
+  image: "Immagini"
+  advanced: "Avanzato"
+  angle: "Angolo"

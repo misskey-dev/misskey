@@ -4,33 +4,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.emojis">
-	<div v-for="emoji in emojis" :key="`emojiMute-${emoji}`" :class="$style.emoji" @click="onEmojiClick($event, emoji)">
-		<MkCustomEmoji
-			v-if="emoji.startsWith(':')"
-			:name="customEmojiName(emoji)"
-			:host="customEmojiHost(emoji)"
-			:normal="true"
-			:menu="false"
-			:menuReaction="false"
-			:ignoreMuted="true"
-		/>
-		<MkEmoji
-			v-else
-			:emoji="emoji"
-			:menu="false"
-			:menuReaction="false"
-			:ignoreMuted="true"
-		></MkEmoji>
+<div class="_gaps_m">
+	<div :class="$style.emojis">
+		<div v-for="emoji in emojis" :key="`emojiMute-${emoji}`" :class="$style.emoji" @click="onEmojiClick($event, emoji)">
+			<MkCustomEmoji
+				v-if="emoji.startsWith(':')"
+				:name="customEmojiName(emoji)"
+				:host="customEmojiHost(emoji)"
+				:normal="true"
+				:menu="false"
+				:menuReaction="false"
+				:ignoreMuted="true"
+			/>
+			<MkEmoji
+				v-else
+				:emoji="emoji"
+				:menu="false"
+				:menuReaction="false"
+				:ignoreMuted="true"
+			></MkEmoji>
+		</div>
 	</div>
-</div>
 
-<MkButton primary inline @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+	<MkButton primary inline @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+
+	<hr>
+
+	<SearchMarker :keywords="['sync', 'devices']">
+		<MkSwitch :modelValue="syncEnabled" @update:modelValue="changeSyncEnabled">
+			<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+		</MkSwitch>
+	</SearchMarker>
+</div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import type { MenuItem } from '@/types/menu';
 import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -79,7 +91,23 @@ function unmute(emoji: string) {
 		unmuteEmoji(emoji);
 	});
 }
+
+const syncEnabled = ref(prefer.isSyncEnabled('mutingEmojis'));
+
+function changeSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('mutingEmojis').then((res) => {
+			if (res == null) return;
+			if (res.enabled) syncEnabled.value = true;
+		});
+	} else {
+		prefer.disableSync('mutingEmojis');
+		syncEnabled.value = false;
+	}
+}
+
 </script>
+
 <style module>
 .emojis {
 	display: flex;

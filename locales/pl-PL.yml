@@ -1584,3 +1584,10 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Wszystkie"
   searchScopeLocal: "Lokalne"
+_watermarkEditor:
+  opacity: "Przezroczystość"
+  scale: "Rozmiar"
+  text: "Tekst"
+  type: "Typ"
+  image: "Zdjęcia"
+  advanced: "Zaawansowane"
