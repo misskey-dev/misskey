@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<template #item="{ element }">
 			<div
-				:class="$style.file"
+				:class="[$style.file, { [$style.dragEnabled]: props.draggable !== false }]"
 				role="button"
 				tabindex="0"
 				@click="handleClick(element, $event)"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkDriveFileThumbnail v-if="element.type === 'driveFile'" :data-id="element.id" :class="$style.thumbnail" :file="element.file" fit="cover"/>
 				<template v-if="element.type === 'uploaderItem'">
 					<img v-if="element.file.thumbnail" :src="element.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
-					<div v-else :class="[$style.thumbnail, $style.uploaderThumbnailIcon]" v-panel>
+					<div v-else v-panel :class="[$style.thumbnail, $style.uploaderThumbnailIcon]">
 						<i :class="[$style.icon, getFileTypeIcon(getFileType(element.file.file.type))]"></i>
 					</div>
 					<div v-if="element.file.isSensitive" :class="$style.sensitive">
@@ -287,10 +287,13 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	margin-right: 4px;
 	border-radius: 8px;
 	overflow: hidden;
-	cursor: move;
 
 	&:focus-visible {
 		outline-offset: 4px;
+	}
+
+	&.dragEnabled {
+		cursor: move;
 	}
 }
 
@@ -405,6 +408,7 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	color: #fff;
 	opacity: 0;
 	transition: opacity 0.2s ease;
+	cursor: pointer;
 }
 
 .uploadProgressWrapper:global(.uploading) {
