@@ -285,7 +285,7 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	width: 64px;
 	height: 64px;
 	margin-right: 4px;
-	border-radius: 4px;
+	border-radius: 8px;
 	overflow: hidden;
 	cursor: move;
 
@@ -304,14 +304,12 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 .uploaderThumbnail {
 	object-fit: cover;
 	object-position: center;
-	border-radius: 8px;
 }
 
 .uploaderThumbnailIcon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 8px;
 }
 
 .icon {
