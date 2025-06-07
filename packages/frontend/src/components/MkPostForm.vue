@@ -1043,6 +1043,7 @@ async function post(ev?: MouseEvent) {
 
 		nextTick(() => {
 			deleteDraft();
+			attachOrder.clear();
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).map(x => x.type === 'hashtag' && x.props.hashtag).filter(x => x) as string[];
