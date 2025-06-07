@@ -25,13 +25,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@contextmenu.prevent="showFileMenu(element, $event)"
 			>
 				<MkDriveFileThumbnail v-if="element.type === 'driveFile'" :data-id="element.id" :class="$style.thumbnail" :file="element.file" fit="cover"/>
-				<template v-if="element.type === 'uploaderItem'">
+				<template v-else-if="element.type === 'uploaderItem'">
 					<img v-if="element.file.thumbnail" :src="element.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
 					<div v-else v-panel :class="[$style.thumbnail, $style.uploaderThumbnailIcon]">
 						<i :class="[$style.icon, getFileTypeIcon(getFileType(element.file.file.type))]"></i>
-					</div>
-					<div v-if="element.file.isSensitive" :class="$style.sensitive">
-						<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 					</div>
 					<div :class="[$style.uploadProgressWrapper, { uploading: element.file.uploading }]">
 						<svg :class="$style.uploadProgressSvg" viewBox="0 0 64 64">
@@ -47,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</template>
-				<div v-if="element.type === 'driveFile' && element.file.isSensitive" :class="$style.sensitive">
+				<div v-if="(element.type === 'driveFile' && element.file.isSensitive) || (element.type === 'uploaderItem' && element.file.isSensitive)" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
