@@ -482,9 +482,19 @@ export class ActivityPubServerService {
 					return true;
 				},
 				dbFallback: async (untilId, sinceId, limit) => {
-					return await this.getUserNotesFromDb(sinceId, untilId, limit, user.id);
+					return await this.getUserNotesFromDb({
+						untilId,
+						sinceId,
+						limit,
+						userId: user.id,
+					});
 				},
-			}) : await this.getUserNotesFromDb(sinceId ?? null, untilId ?? null, limit, user.id);
+			}) : await this.getUserNotesFromDb({
+				untilId: untilId ?? null,
+				sinceId: sinceId ?? null,
+				limit,
+				userId: user.id,
+			});
 
 			if (sinceId) notes.reverse();
 
@@ -523,16 +533,21 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private async getUserNotesFromDb(untilId: string | null, sinceId: string | null, limit: number, userId: MiUser['id']) {
-		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
-			.andWhere('note.userId = :userId', { userId })
+	private async getUserNotesFromDb(ps: {
+		untilId: string | null,
+		sinceId: string | null,
+		limit: number,
+		userId: MiUser['id'],
+	}) {
+		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			.andWhere('note.userId = :userId', { userId: ps.userId })
 			.andWhere(new Brackets(qb => {
 				qb
 					.where('note.visibility = \'public\'')
 					.orWhere('note.visibility = \'home\'');
 			}))
 			.andWhere('note.localOnly = FALSE')
-			.limit(limit)
+			.limit(ps.limit)
 			.getMany();
 	}
 
