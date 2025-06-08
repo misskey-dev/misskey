@@ -2465,6 +2465,8 @@ _visibility:
   disableFederation: "Sense federar"
   disableFederationDescription: "No enviar a altres servidors"
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "Hi ha arxius que no s'han carregat, vols descartar-los i tancar el formulari?"
+  uploaderTip: "L'arxiu encara no s'ha carregat. Des del menú arxiu pots canviar el nom, retallar imatges, posar marques d'aigua i comprimir o no l'arxiu. Els arxius es carreguen automàticament quan públiques una nota."
   replyPlaceholder: "Contestar..."
   quotePlaceholder: "Citar..."
   channelPlaceholder: "Publicar a un canal..."
