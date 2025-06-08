@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="$i.policies?.canYamiNote"
 					v-tooltip="parentIsYamiNote
 						? i18n.ts._yami.parentIsYamiNote
-						: props.fixed
+						: props.fixed && (props.isInYamiTimeline || props.isInNormalTimeline)
 							? (isNoteInYamiMode ? i18n.ts._yami.fixedYamiNote : i18n.ts._yami.fixedNormalNote)
 							: (isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote)"
 					:class="['_button', $style.headerRightItem, { [$style.headerRightItemActive]: isNoteInYamiMode || parentIsYamiNote }]"
-					:disabled="parentIsYamiNote || props.fixed"
+					:disabled="parentIsYamiNote || (props.fixed && (props.isInYamiTimeline || props.isInNormalTimeline))"
 					@click="toggleYamiMode"
 				>
 					<i class="ti" :class="isNoteInYamiMode || parentIsYamiNote ? 'ti-moon' : 'ti-users-group'"></i>
@@ -200,6 +200,7 @@ const props = withDefaults(defineProps<PostFormProps & {
 	freezeAfterPosted?: boolean;
 	mock?: boolean;
 	isInYamiTimeline?: boolean;
+	isInNormalTimeline?: boolean;
 	initialDmIntent?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
@@ -207,6 +208,7 @@ const props = withDefaults(defineProps<PostFormProps & {
 	mock: false,
 	initialLocalOnly: undefined,
 	isInYamiTimeline: false,
+	isInNormalTimeline: false,
 	initialDmIntent: undefined,
 });
 
@@ -270,9 +272,10 @@ const localOnly = ref(
 
 // 固定フォームの場合はタイムラインタイプを監視して即時反映
 watch(
-	() => props.isInYamiTimeline,
-	(isInYamiTimeline) => {
-		if (props.fixed) {
+	[() => props.isInYamiTimeline, () => props.isInNormalTimeline],
+	([isInYamiTimeline, isInNormalTimeline]) => {
+		// タイムラインに埋め込まれている場合のみ強制適用（ウィジェットは除外）
+		if (props.fixed && (isInYamiTimeline || isInNormalTimeline)) {
 			isNoteInYamiMode.value = !!isInYamiTimeline;
 		}
 	},
