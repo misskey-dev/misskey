@@ -6,6 +6,7 @@
 import { defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
+import type { UploaderFeatures } from '@/composables/use-uploader.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
@@ -16,7 +17,6 @@ import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { genId } from '@/utility/id.js';
-import type { UploaderDialogFeatures } from '@/components/MkUploaderDialog.vue';
 
 type UploadReturnType = {
 	filePromise: Promise<Misskey.entities.DriveFile>;
@@ -32,6 +32,7 @@ export class UploadAbortedError extends Error {
 export function uploadFile(file: File | Blob, options: {
 	name?: string;
 	folderId?: string | null;
+	isSensitive?: boolean;
 	onProgress?: (ctx: { total: number; loaded: number; }) => void;
 } = {}): UploadReturnType {
 	const xhr = new XMLHttpRequest();
@@ -140,6 +141,7 @@ export function uploadFile(file: File | Blob, options: {
 		formData.append('force', 'true');
 		formData.append('file', file);
 		formData.append('name', options.name ?? (file instanceof File ? file.name : 'untitled'));
+		formData.append('isSensitive', options.isSensitive ? 'true' : 'false');
 		if (options.folderId) formData.append('folderId', options.folderId);
 
 		xhr.send(formData);
@@ -156,7 +158,7 @@ export function uploadFile(file: File | Blob, options: {
 export function chooseFileFromPcAndUpload(
 	options: {
 		multiple?: boolean;
-		features?: UploaderDialogFeatures;
+		features?: UploaderFeatures;
 		folderId?: string | null;
 	} = {},
 ): Promise<Misskey.entities.DriveFile[]> {
@@ -254,7 +256,7 @@ type SelectFileOptions<M extends boolean> = {
 
 export async function selectFile<
 	M extends boolean,
-	MR extends M extends true ? Misskey.entities.DriveFile[] : Misskey.entities.DriveFile
+	MR extends M extends true ? Misskey.entities.DriveFile[] : Misskey.entities.DriveFile,
 >(opts: SelectFileOptions<M>): Promise<MR> {
 	const files = await select(opts.anchorElement, opts.label ?? null, opts.multiple ?? false, opts.features);
 	return opts.multiple ? (files as MR) : (files[0]! as MR);

@@ -5,6 +5,7 @@
 
 import { FX_checker } from './fxs/checker.js';
 import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
+import { FX_colorAdjust } from './fxs/colorAdjust.js';
 import { FX_colorClamp } from './fxs/colorClamp.js';
 import { FX_colorClampAdvanced } from './fxs/colorClampAdvanced.js';
 import { FX_distort } from './fxs/distort.js';
@@ -26,6 +27,7 @@ export const FXS = [
 	FX_mirror,
 	FX_invert,
 	FX_grayscale,
+	FX_colorAdjust,
 	FX_colorClamp,
 	FX_colorClampAdvanced,
 	FX_distort,

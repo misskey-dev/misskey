@@ -12,10 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight right" :style="{ width: ((steppedRawValue - minRatio) * 100) + '%', left: (Math.abs(Math.min(0, min)) / (max + Math.abs(Math.min(0, min)))) * 100 + '%' }">
+				<div class="highlight right" :style="{ width: rightTrackWidth, left: rightTrackPosition }">
 					<div class="shine right"></div>
 				</div>
-				<div class="highlight left" :style="{ width: ((minRatio - steppedRawValue) * 100) + '%', left: (steppedRawValue) * 100 + '%' }">
+				<div class="highlight left" :style="{ width: leftTrackWidth, left: leftTrackPosition }">
 					<div class="shine left"></div>
 				</div>
 			</div>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
 import { isTouchUsing } from '@/utility/touch.js';
 import * as os from '@/os.js';
 
@@ -58,13 +58,14 @@ const props = withDefaults(defineProps<{
 	continuousUpdate?: boolean;
 }>(), {
 	step: 1,
-	textConverter: (v) => v.toString(),
+	textConverter: (v: number) => (Math.round(v * 1000) / 1000).toString(),
 	easing: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: number): void;
 	(ev: 'dragEnded', value: number): void;
+	(ev: 'thumbDoubleClicked'): void;
 }>();
 
 const containerEl = useTemplateRef('containerEl');
@@ -73,7 +74,24 @@ const thumbEl = useTemplateRef('thumbEl');
 const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
 const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
-const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
+const rightTrackWidth = computed(() => {
+	return Math.max(0, (steppedRawValue.value - minRatio.value) * 100) + '%';
+});
+const leftTrackWidth = computed(() => {
+	return Math.max(0, (minRatio.value - steppedRawValue.value) * 100) + '%';
+});
+const rightTrackPosition = computed(() => {
+	return (Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100 + '%';
+});
+const leftTrackPosition = computed(() => {
+	return (Math.min(minRatio.value, steppedRawValue.value) * 100) + '%';
+});
+
+const calcRawValue = (value: number) => {
+	return (value - props.min) / (props.max - props.min);
+};
+
+const rawValue = ref(calcRawValue(props.modelValue));
 const steppedRawValue = computed(() => {
 	if (props.step) {
 		const step = props.step / (props.max - props.min);
@@ -103,6 +121,11 @@ const calcThumbPosition = () => {
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
+watch(() => props.modelValue, (newVal) => {
+	const newRawValue = calcRawValue(newVal);
+	if (rawValue.value === newRawValue) return;
+	rawValue.value = newRawValue;
+});
 
 let ro: ResizeObserver | undefined;
 
@@ -128,6 +151,12 @@ const steps = computed(() => {
 const tooltipForDragShowing = ref(false);
 const tooltipForHoverShowing = ref(false);
 
+onBeforeUnmount(() => {
+	// 何らかの問題で表示されっぱなしでもコンポーネントを離れたら消えるように
+	tooltipForDragShowing.value = false;
+	tooltipForHoverShowing.value = false;
+});
+
 function onMouseenter() {
 	if (isTouchUsing) return;
 
@@ -138,7 +167,7 @@ function onMouseenter() {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl,
+		targetElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -147,6 +176,8 @@ function onMouseenter() {
 		tooltipForHoverShowing.value = false;
 	}, { once: true, passive: true });
 }
+
+let lastClickTime: number | null = null;
 
 function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
@@ -158,7 +189,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl,
+		targetElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -203,6 +234,20 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	window.addEventListener('touchmove', onDrag);
 	window.addEventListener('mouseup', onMouseup, { once: true });
 	window.addEventListener('touchend', onMouseup, { once: true });
+
+	if (lastClickTime == null) {
+		lastClickTime = Date.now();
+		return;
+	} else {
+		const now = Date.now();
+		if (now - lastClickTime < 300) { // 300ms以内のクリックはダブルクリックとみなす
+			lastClickTime = null;
+			emit('thumbDoubleClicked');
+			return;
+		} else {
+			lastClickTime = now;
+		}
+	}
 }
 </script>
 

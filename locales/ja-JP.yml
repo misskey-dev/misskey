@@ -2560,6 +2560,8 @@ _visibility:
   disableFederationDescription: "他サーバーへの配信を行いません"
 
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "アップロードされていないファイルがありますが、破棄してフォームを閉じますか？"
+  uploaderTip: "ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。"
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
@@ -3301,6 +3303,7 @@ _imageEffector:
     mirror: "ミラー"
     invert: "色の反転"
     grayscale: "白黒"
+    colorAdjust: "色調補正"
     colorClamp: "色の圧縮"
     colorClampAdvanced: "色の圧縮(高度)"
     distort: "歪み"

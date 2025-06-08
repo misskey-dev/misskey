@@ -9728,6 +9728,14 @@ export interface Locale extends ILocale {
     };
     "_postForm": {
         /**
+         * アップロードされていないファイルがありますが、破棄してフォームを閉じますか？
+         */
+        "quitInspiteOfThereAreUnuploadedFilesConfirm": string;
+        /**
+         * ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。
+         */
+        "uploaderTip": string;
+        /**
          * このノートに返信...
          */
         "replyPlaceholder": string;
@@ -12323,6 +12331,10 @@ export interface Locale extends ILocale {
              * 白黒
              */
             "grayscale": string;
+            /**
+             * 色調補正
+             */
+            "colorAdjust": string;
             /**
              * 色の圧縮
              */

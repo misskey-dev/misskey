@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModal
 	ref="modal"
 	:preferType="'dialog'"
-	@click="modal?.close()"
+	@click="_close()"
 	@closed="onModalClosed()"
-	@esc="modal?.close()"
+	@esc="_close()"
 >
 	<MkPostForm
 		ref="form"
@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		freezeAfterPosted
 		@posting="onPosting"
 		@postError="onPostError"
-		@cancel="modal?.close()"
-		@esc="modal?.close()"
+		@cancel="_close()"
+		@esc="_close()"
 	/>
 </MkModal>
 </template>
@@ -45,6 +45,7 @@ const emit = defineEmits<{
 }>();
 
 const modal = useTemplateRef('modal');
+const form = useTemplateRef('form');
 
 function onPosting() {
 	modal.value?.close({
@@ -54,6 +55,12 @@ function onPosting() {
 
 function onPostError() {
 	os.post();
+}
+
+async function _close() {
+	const canClose = await form.value?.canClose();
+	if (!canClose) return;
+	modal.value?.close();
 }
 
 function onModalClosed() {
