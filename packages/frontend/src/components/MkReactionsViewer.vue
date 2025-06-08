@@ -32,12 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
 import { TransitionGroup } from 'vue';
+import { isSupportedEmoji } from '@@/js/emojilist.js';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-import { isSupportedEmoji } from '@@/js/emojilist.js';
 import { DI } from '@/di.js';
+import { isMuted } from '@/utility/emoji-mute.js';
 
 const props = withDefaults(defineProps<{
 	noteId: Misskey.entities.Note['id'];
@@ -80,6 +81,12 @@ function canReact(reaction: string) {
 }
 
 watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
+	const processed: Record<string, number> = {};
+	for (const [r, c] of Object.entries(newSource)) {
+		const key = isMuted(r) ? '❤️' : r;
+		processed[key] = (processed[key] ?? 0) + c;
+	}
+	newSource = processed;
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
