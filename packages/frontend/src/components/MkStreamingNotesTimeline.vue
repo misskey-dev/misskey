@@ -287,6 +287,12 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 		};
+	} else if (props.src === 'hanami') {
+		endpoint = 'notes/hanami-timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withFiles: props.onlyFiles ? true : undefined,
+		};
 	} else if (props.src === 'local') {
 		endpoint = 'notes/local-timeline';
 		query = {
