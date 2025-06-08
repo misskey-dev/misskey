@@ -2465,6 +2465,8 @@ _visibility:
   disableFederation: "연합에 보내지 않기"
   disableFederationDescription: "다른 서버로 보내지 않습니다"
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "업로드되지 않은 파일이 있습니다만, 없애고 폼을 닫겠습니까?"
+  uploaderTip: "파일이 아직 업로드돼있지 않습니다. 파일 메뉴에서 이름 바꾸기나 이미지의 자르기, 워터마크 넣기, 압축의 유무 등을 설정할 수 있습니다. 파일은 노트 게시 시 자동으로 업로드됩니다."
   replyPlaceholder: "이 노트에 답글..."
   quotePlaceholder: "이 노트를 인용..."
   channelPlaceholder: "채널에 게시하기..."
