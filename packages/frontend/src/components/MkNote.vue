@@ -268,17 +268,15 @@ let note = deepClone(props.note);
 // plugin
 const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
 if (noteViewInterruptors.length > 0) {
-	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note);
-		for (const interruptor of noteViewInterruptors) {
-			try {
-				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-			} catch (err) {
-				console.error(err);
-			}
+	let result: Misskey.entities.Note | null = deepClone(note);
+	for (const interruptor of noteViewInterruptors) {
+		try {
+			result = await interruptor.handler(result!) as Misskey.entities.Note | null;
+		} catch (err) {
+			console.error(err);
 		}
-		note = result as Misskey.entities.Note;
-	});
+	}
+	note = result as Misskey.entities.Note;
 }
 
 const isRenote = Misskey.note.isPureRenote(note);
