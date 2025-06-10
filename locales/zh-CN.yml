@@ -1644,7 +1644,7 @@ _serverSettings:
   allowExternalApRedirect: "允许通过 ActivityPub 重定向查询"
   allowExternalApRedirect_description: "启用时，将允许其它服务器通过此服务器查询第三方内容，但有可能导致内容欺骗。"
   userGeneratedContentsVisibilityForVisitor: "用户生成内容对非用户的可见性"
-  userGeneratedContentsVisibilityForVisitor_description: "这对于防止诸如难以审核的不适当的远程内容通过您自己的服务器无意中在互联网上公开等问题很有用。"
+  userGeneratedContentsVisibilityForVisitor_description: "对于防止难以审核的不适当的远程内容等，通过自己的服务器无意中在互联网上公开等问题很有用。"
   userGeneratedContentsVisibilityForVisitor_description2: "包含服务器接收到的远程内容在内，无条件将服务器上的所有内容公开在互联网上存在风险。特别是对去中心化的特性不是很了解的访问者有可能将远程服务器上的内容误认为是在此服务器内生成的，需要特别留意。"
   _userGeneratedContentsVisibilityForVisitor:
     all: "全部公开"
@@ -2465,6 +2465,8 @@ _visibility:
   disableFederation: "不参与联合"
   disableFederationDescription: "不发送到其他服务器"
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "还有未上传的文件，要丢弃并关闭窗口吗？"
+  uploaderTip: "文件还未上传。可以在文件菜单中进行重命名、裁剪、添加水印、设置是否压缩等操作。文件将在发帖时自动上传。"
   replyPlaceholder: "回复这个帖子..."
   quotePlaceholder: "引用这个帖子..."
   channelPlaceholder: "发布到频道…"
@@ -3126,6 +3128,7 @@ _watermarkEditor:
   tip: "可在图像内增加包含作者等信息的水印。"
   quitWithoutSaveConfirm: "不保存就退出吗？"
   driveFileTypeWarn: "不支持此文件"
+  driveFileTypeWarnDescription: "请选择图像文件"
   title: "编辑水印"
   cover: "覆盖全体"
   repeat: "平铺"
@@ -3157,6 +3160,7 @@ _imageEffector:
     mirror: "镜像"
     invert: "反转颜色"
     grayscale: "黑白"
+    colorAdjust: "色彩校正"
     colorClamp: "颜色限制"
     colorClampAdvanced: "颜色限制（高级）"
     distort: "失真"
