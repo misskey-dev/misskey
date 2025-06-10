@@ -1400,6 +1400,24 @@ abort: "Abort"
 tip: "Tips & Tricks"
 redisplayAllTips: "Show all “Tips & Tricks” again"
 hideAllTips: "Hide all \"Tips & Tricks\""
+mentalHealth: "Mental Health"
+mentalHealthDescription: “Setting up for a numbers-free experience”
+hidePersonalStats: “hide stats of me”
+hidePersonalStatsDescription: “Hide profile stats for yourself”
+hideNotesCountMyself: “Hide notes count of me”
+hideNotesCountMyselfDescription: “You can use it without worrying about the number of posts”
+hideFollowingCountMyself: “hide following count of me”
+hideFollowingCountMyselfDescription: “You can use this without worrying about the number of followers.”
+hideFollowersCountMyself: “hide follower count of me”
+hideFollowersCountMyselfDescription: “You can use this without worrying about the number of followers.”
+hideOthersStats: “hide others' stats”
+hideOthersStatsDescription: “hide others' profile stats”
+hideNotesCountOthers: “hide others' notes count”
+hideNotesCountOthersDescription: “Hide other people's notes count”
+hideFollowingCountOthers: “hide following count of others”
+hideFollowingCountOthersDescription: “You will not be bothered by the number of followers of others.”
+hideFollowersCountOthers: “hide the number of followers of others”
+hideFollowersCountOthersDescription: “You will not care about the number of followers of others.”
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"

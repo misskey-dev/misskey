@@ -20,13 +20,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.status">
 		<div v-if="isNotesVisibilityForMe(user)" :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
+			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p>
+			<span v-if="shouldHideNotesCount(user)" :class="$style.statusItemValue">-</span>
+			<span v-else :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
 		</div>
 		<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
+			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p>
+			<span v-if="shouldHideFollowingCount(user)" :class="$style.statusItemValue">-</span>
+			<span v-else :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
 		</div>
 		<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
+			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p>
+			<span v-if="shouldHideFollowersCount(user)" :class="$style.statusItemValue">-</span>
+			<span v-else :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</div>
 	</div>
 	<MkFollowButton v-if="user.id != $i?.id" :class="$style.follow" :user="user" mini/>
@@ -43,6 +49,7 @@ import { $i } from '@/i.js';
 import { isNotesVisibilityForMe, isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { prefer } from '@/preferences.js';
+import { shouldHideNotesCount, shouldHideFollowingCount, shouldHideFollowersCount } from '@/utility/shouldHideCount.js';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

@@ -797,6 +797,81 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker v-slot="slotProps" :keywords="['mental', 'health', 'wellbeing', 'digital', 'statistics', 'count', 'hide']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+					<template #label><SearchLabel>{{ i18n.ts.mentalHealth }}</SearchLabel></template>
+					<template #icon><SearchIcon><i class="ti ti-heart"></i></SearchIcon></template>
+
+					<div class="_gaps_m">
+						<MkInfo>{{ i18n.ts.mentalHealthDescription }}</MkInfo>
+
+						<div class="_gaps_s">
+							<!-- 自分の統計を非表示 -->
+							<SearchMarker :keywords="['statistics', 'count', 'hide', 'notes', 'following', 'followers']">
+								<MkFolder>
+									<template #label><SearchLabel>{{ i18n.ts.hidePersonalStats }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.hidePersonalStatsDescription }}</SearchKeyword></template>
+
+									<div class="_gaps_s">
+										<MkPreferenceContainer k="hideNotesCountMyself">
+											<MkSwitch v-model="hideNotesCountMyself">
+												<template #label><SearchLabel>{{ i18n.ts.hideNotesCountMyself }}</SearchLabel></template>
+												<template #caption>{{ i18n.ts.hideNotesCountMyselfDescription }}</template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+
+										<MkPreferenceContainer k="hideFollowingCountMyself">
+											<MkSwitch v-model="hideFollowingCountMyself">
+												<template #label><SearchLabel>{{ i18n.ts.hideFollowingCountMyself }}</SearchLabel></template>
+												<template #caption>{{ i18n.ts.hideFollowingCountMyselfDescription }}</template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+
+										<MkPreferenceContainer k="hideFollowersCountMyself">
+											<MkSwitch v-model="hideFollowersCountMyself">
+												<template #label><SearchLabel>{{ i18n.ts.hideFollowersCountMyself }}</SearchLabel></template>
+												<template #caption>{{ i18n.ts.hideFollowersCountMyselfDescription }}</template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+									</div>
+								</MkFolder>
+							</SearchMarker>
+
+							<!-- 他人の統計を非表示 -->
+							<SearchMarker :keywords="['statistics', 'count', 'hide', 'notes', 'following', 'followers', 'others']">
+								<MkFolder>
+									<template #label><SearchLabel>{{ i18n.ts.hideOthersStats }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.hideOthersStatsDescription }}</SearchKeyword></template>
+
+									<div class="_gaps_s">
+										<MkPreferenceContainer k="hideNotesCountOthers">
+											<MkSwitch v-model="hideNotesCountOthers">
+												<template #label><SearchLabel>{{ i18n.ts.hideNotesCountOthers }}</SearchLabel></template>
+												<template #caption>{{ i18n.ts.hideNotesCountOthersDescription }}</template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+
+										<MkPreferenceContainer k="hideFollowingCountOthers">
+											<MkSwitch v-model="hideFollowingCountOthers">
+												<template #label><SearchLabel>{{ i18n.ts.hideFollowingCountOthers }}</SearchLabel></template>
+												<template #caption>{{ i18n.ts.hideFollowingCountOthersDescription }}</template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+
+										<MkPreferenceContainer k="hideFollowersCountOthers">
+											<MkSwitch v-model="hideFollowersCountOthers">
+												<template #label><SearchLabel>{{ i18n.ts.hideFollowersCountOthers }}</SearchLabel></template>
+												<template #caption>{{ i18n.ts.hideFollowersCountOthersDescription }}</template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+									</div>
+								</MkFolder>
+							</SearchMarker>
+						</div>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker v-slot="slotProps" :keywords="['other']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
@@ -1054,6 +1129,12 @@ const reactionChecksMuting = prefer.model('reactionChecksMuting');
 const isNoteInYamiMode = prefer.model('isNoteInYamiMode');
 const defaultIsNoteInYamiMode = prefer.model('defaultIsNoteInYamiMode');
 const searchEngine = prefer.model('searchEngine');
+const hideNotesCountMyself = prefer.model('hideNotesCountMyself');
+const hideFollowingCountMyself = prefer.model('hideFollowingCountMyself');
+const hideFollowersCountMyself = prefer.model('hideFollowersCountMyself');
+const hideNotesCountOthers = prefer.model('hideNotesCountOthers');
+const hideFollowingCountOthers = prefer.model('hideFollowingCountOthers');
+const hideFollowersCountOthers = prefer.model('hideFollowersCountOthers');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);

@@ -5697,6 +5697,78 @@ export interface Locale extends ILocale {
      * 全ての「ヒントとコツ」を非表示
      */
     "hideAllTips": string;
+    /**
+     * メンタルヘルス
+     */
+    "mentalHealth": string;
+    /**
+     * 数字に囚われない体験のための設定
+     */
+    "mentalHealthDescription": string;
+    /**
+     * 自分の統計を非表示
+     */
+    "hidePersonalStats": string;
+    /**
+     * 自分のプロフィール統計を非表示にします
+     */
+    "hidePersonalStatsDescription": string;
+    /**
+     * 自分にノート数を非表示
+     */
+    "hideNotesCountMyself": string;
+    /**
+     * 投稿数を気にせず使えます
+     */
+    "hideNotesCountMyselfDescription": string;
+    /**
+     * 自分にフォロー数を非表示
+     */
+    "hideFollowingCountMyself": string;
+    /**
+     * フォロー数を気にせず使えます
+     */
+    "hideFollowingCountMyselfDescription": string;
+    /**
+     * 自分にフォロワー数を非表示
+     */
+    "hideFollowersCountMyself": string;
+    /**
+     * フォロワー数を気にせず使えます
+     */
+    "hideFollowersCountMyselfDescription": string;
+    /**
+     * 他人の統計を非表示
+     */
+    "hideOthersStats": string;
+    /**
+     * 他人のプロフィールの統計情報を非表示にします
+     */
+    "hideOthersStatsDescription": string;
+    /**
+     * 他人のノート数を非表示
+     */
+    "hideNotesCountOthers": string;
+    /**
+     * 他人のノート数が気にならなくなります
+     */
+    "hideNotesCountOthersDescription": string;
+    /**
+     * 他人のフォロー数を非表示
+     */
+    "hideFollowingCountOthers": string;
+    /**
+     * 他人のフォロー数が気にならなくなります
+     */
+    "hideFollowingCountOthersDescription": string;
+    /**
+     * 他人のフォロワー数を非表示
+     */
+    "hideFollowersCountOthers": string;
+    /**
+     * 他人のフォロワー数が気にならなくなります
+     */
+    "hideFollowersCountOthersDescription": string;
     "_chat": {
         /**
          * まだメッセージはありません

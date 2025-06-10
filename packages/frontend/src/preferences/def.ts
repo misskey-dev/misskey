@@ -565,4 +565,22 @@ export const PREF_DEF = definePreferences({
 	hideOnlineStatus: {
 		default: false,
 	},
+	hideNotesCountMyself: {
+		default: true,
+	},
+	hideFollowingCountMyself: {
+		default: true,
+	},
+	hideFollowersCountMyself: {
+		default: true,
+	},
+	hideNotesCountOthers: {
+		default: true,
+	},
+	hideFollowingCountOthers: {
+		default: true,
+	},
+	hideFollowersCountOthers: {
+		default: true,
+	},
 });

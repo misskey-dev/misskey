@@ -34,15 +34,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.status">
 				<div v-if="isNotesVisibilityForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
-					<div>{{ number(user.notesCount) }}</div>
+					<div v-if="shouldHideNotesCount(user)">-</div>
+					<div v-else>{{ number(user.notesCount) }}</div>
 				</div>
 				<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
-					<div>{{ number(user.followingCount) }}</div>
+					<div v-if="shouldHideFollowingCount(user)">-</div>
+					<div v-else>{{ number(user.followingCount) }}</div>
 				</div>
 				<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
-					<div>{{ number(user.followersCount) }}</div>
+					<div v-if="shouldHideFollowersCount(user)">-</div>
+					<div v-else>{{ number(user.followersCount) }}</div>
 				</div>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
@@ -69,6 +72,7 @@ import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { isNotesVisibilityForMe, isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { shouldHideNotesCount, shouldHideFollowingCount, shouldHideFollowersCount } from '@/utility/shouldHideCount.js';
 
 const props = defineProps<{
 	showing: boolean;
