@@ -300,8 +300,8 @@ const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : nul
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
 const isLong = shouldCollapsed(appearNote, urls.value ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
-const muted = ref(checkMute(appearNote, $i?.mutedWords));
-const hardMuted = ref(props.withHardMute && checkMute(appearNote, $i?.hardMutedWords, true));
+const muted = ref(checkMute(appearNote, 'soft'));
+const hardMuted = ref(props.withHardMute && checkMute(appearNote, 'hard', true));
 const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
@@ -320,20 +320,18 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 }));
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
+function checkMute(noteToCheck: Misskey.entities.Note, type: 'soft' | 'hard', checkOnly: true): boolean;
+function checkMute(noteToCheck: Misskey.entities.Note, type: 'soft' | 'hard', checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
 */
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
-	if (mutedWords != null) {
-		const result = checkWordMute(noteToCheck, $i, mutedWords);
-		if (Array.isArray(result)) return result;
+function checkMute(noteToCheck: Misskey.entities.Note, type: 'soft' | 'hard', checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
+	const result = checkWordMute(noteToCheck, $i, type);
+	if (Array.isArray(result)) return result;
 
-		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-		if (Array.isArray(replyResult)) return replyResult;
+	const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, type);
+	if (Array.isArray(replyResult)) return replyResult;
 
-		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-		if (Array.isArray(renoteResult)) return renoteResult;
-	}
+	const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, type);
+	if (Array.isArray(renoteResult)) return renoteResult;
 
 	if (checkOnly) return false;
 

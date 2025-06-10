@@ -2,42 +2,103 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import * as Misskey from 'misskey-js';
+import * as AhoCorasick from 'modern-ahocorasick';
+import { shallowRef } from 'vue';
+import type * as Misskey from 'misskey-js';
+import { $i } from '@/i.js';
 
-export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.UserLite | null | undefined, mutedWords: Array<string | string[]>): Array<string | string[]> | false {
-	// 自分自身
-	if (me && (note.userId === me.id)) return false;
+type WordMuteInfo = false | {
+	normals: string[];
+	and: string[][];
+	regex: Array<{ original: string; regex: RegExp }>;
+	ahoCorasick: AhoCorasick.default;
+};
 
-	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+type WordMuteGroup = {
+	soft: WordMuteInfo;
+	hard: WordMuteInfo;
+};
 
-		if (text === '') return false;
+const builtWordMutes = shallowRef<WordMuteGroup | undefined>(undefined);
 
-		const matched = mutedWords.filter(filter => {
-			if (Array.isArray(filter)) {
-				// Clean up
-				const filteredFilter = filter.filter(keyword => keyword !== '');
-				if (filteredFilter.length === 0) return false;
+export function createWordMuteInfo(mutedWords: Array<string | string[]>) : WordMuteInfo {
+	if (mutedWords.length <= 0) return false;
+	const normalTexts: string[] = [];
+	const andTexts: string[][] = [];
+	const regexTexts: Array<{ original: string; regex: RegExp }> = [];
 
-				return filteredFilter.every(keyword => text.includes(keyword));
+	for (const filter of mutedWords) {
+		if (Array.isArray(filter)) {
+			if (filter.length === 1) {
+				normalTexts.push(filter[0]);
 			} else {
-				// represents RegExp
-				const regexp = filter.match(/^\/(.+)\/(.*)$/);
-
-				// This should never happen due to input sanitisation.
-				if (!regexp) return false;
-
-				try {
-					return new RegExp(regexp[1], regexp[2]).test(text);
-				} catch (err) {
-					// This should never happen due to input sanitisation.
-					return false;
-				}
+				andTexts.push(filter);
 			}
-		});
-
-		if (matched.length > 0) return matched;
+		} else if (filter.startsWith('/') && filter.endsWith('/')) {
+			const regExp = filter.match(/^\/(.+)\/(.*)$/);
+			if (!regExp) continue;
+			try {
+				regexTexts.push({ original: filter, regex: new RegExp(filter.slice(1, -1)) });
+			} catch {
+				// 無効な正規表現はスキップ
+			}
+		} else {
+			normalTexts.push(filter);
+		}
 	}
 
-	return false;
+	const ac = new AhoCorasick.default(normalTexts);
+
+	return {
+		normals: normalTexts,
+		and: andTexts,
+		regex: regexTexts,
+		ahoCorasick: ac,
+	};
+}
+
+export function setWordMuteInfo(mutedWords: Array<string | string[]>, hardMutedWords: Array<string | string[]>): void {
+	const soft = createWordMuteInfo(mutedWords);
+	const hard = createWordMuteInfo(hardMutedWords);
+
+	builtWordMutes.value = { soft, hard };
+}
+
+function getWordMuteInfo(): WordMuteGroup | undefined {
+	return builtWordMutes.value;
+}
+
+export function initWordMuteInfo(): void {
+	const mutedWords = $i?.mutedWords ?? [];
+	const hardMutedWords = $i?.hardMutedWords ?? [];
+
+	setWordMuteInfo(mutedWords, hardMutedWords);
+}
+
+export function checkWordMute(
+	note: Misskey.entities.Note,
+	me: Misskey.entities.UserLite | null | undefined,
+	type: 'soft' | 'hard',
+): Array<string | string[]> | false {
+	// 自分自身の投稿は対象外
+	if (me && (note.userId === me.id)) return false;
+
+	const wordMuteInfo = getWordMuteInfo()?.[type];
+
+	if (wordMuteInfo == null || wordMuteInfo === false) return false;
+
+	const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+	if (text === '') return false;
+
+	const normalMatches = wordMuteInfo.ahoCorasick.search(text);
+
+	// andTexts
+	const andMatches = wordMuteInfo.and.filter(texts => texts.filter(keyword => keyword !== '').every(keyword => text.includes(keyword)));
+
+	// RegExp
+	const regexMatches = wordMuteInfo.regex.filter(({ regex }) => regex.test(text));
+
+	const matched: Array<string | string[]> = normalMatches.map(match	=> match[1]).concat(andMatches, regexMatches.map(({ original }) => original));
+
+	return matched.length > 0 ? matched : false;
 }

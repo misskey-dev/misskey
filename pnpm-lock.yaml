@@ -824,6 +824,9 @@ importers:
       misskey-reversi:
         specifier: workspace:*
         version: link:../misskey-reversi
+      modern-ahocorasick:
+        specifier: 2.0.3
+        version: 2.0.3
       photoswipe:
         specifier: 5.4.4
         version: 5.4.4
@@ -8397,6 +8400,9 @@ packages:
   mock-socket@9.3.1:
     resolution: {integrity: sha512-qxBgB7Qa2sEQgHFjj0dSigq7fX4k6Saisd5Nelwp2q8mlbAFh5dHV9JTTlF8viYJLSSWgMCZFUom8PJcMNBoJw==}
     engines: {node: '>= 8'}
+
+  modern-ahocorasick@2.0.3:
+    resolution: {integrity: sha512-3vsbnf5DmpsaE8Ye892HecJU7kaT2svsIBXNhne1J080WlU9RKjTtE5PgX+OCc2huqGqGYO+rVEsJlJJuQj+Qw==}
 
   module-details-from-path@1.0.3:
     resolution: {integrity: sha512-ySViT69/76t8VhE1xXHK6Ch4NcDd26gx0MzKXLO+F7NOtnqH68d9zF94nT8ZWSxXh8ELOERsnJO/sWt1xZYw5A==}
@@ -19986,6 +19992,8 @@ snapshots:
       obliterator: 2.0.4
 
   mock-socket@9.3.1: {}
+
+  modern-ahocorasick@2.0.3: {}
 
   module-details-from-path@1.0.3: {}
 
