@@ -5,17 +5,17 @@
 
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import { prefer } from '@/preferences.js';
+import { nicknameState } from '@/utility/edit-nickname.js';
 
 export const acct = (user: Misskey.Acct) => {
 	return Misskey.acct.toString(user);
 };
 
 export const userName = (user: Misskey.entities.User) => {
-	if (!prefer.s.nicknameEnabled) {
+	if (!nicknameState.enabled.value) {
 		return user.name || user.username;
 	}
-	return prefer.s.nicknameMap?.[user.id] || user.name || user.username;
+	return nicknameState.map.value[user.id] || user.name || user.username;
 };
 
 export const userPage = (user: Misskey.Acct, path?: string, absolute = false) => {
