@@ -503,7 +503,7 @@ export const PREF_DEF = definePreferences({
 		default: 'self' as 'none' | 'self' | 'others' | 'all',
 	},
 	customFont: {
-		default: null as null | string,
+		default: 'kosugi-maru' as null | string,
 	},
 	instanceIcon: {
 		default: true,
