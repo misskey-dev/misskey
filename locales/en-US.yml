@@ -1418,6 +1418,11 @@ hideFollowingCountOthers: “hide following count of others”
 hideFollowingCountOthersDescription: “You will not be bothered by the number of followers of others.”
 hideFollowersCountOthers: “hide the number of followers of others”
 hideFollowersCountOthersDescription: “You will not care about the number of followers of others.”
+hideTimelines: "Hide timelines"
+hideTimelinesDescription: "You can hide the local, social, and global timelines."
+hideLocalTimeLine: "Hide local timeline"
+hideSocialTimeLine: "Hide social timeline"
+hideGlobalTimeLine: "Hide global timeline"
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"

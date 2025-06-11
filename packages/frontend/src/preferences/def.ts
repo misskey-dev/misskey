@@ -583,4 +583,13 @@ export const PREF_DEF = definePreferences({
 	hideFollowersCountOthers: {
 		default: true,
 	},
+	hideLocalTimeLine: {
+		default: false,
+	},
+	hideSocialTimeLine: {
+		default: false,
+	},
+	hideGlobalTimeLine: {
+		default: false,
+	},
 });

@@ -5,6 +5,7 @@
 
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
+import { prefer } from '@/preferences.js';
 
 export const basicTimelineTypes = [
 	'home',
@@ -36,6 +37,11 @@ export function basicTimelineIconClass(timeline: BasicTimelineType): string {
 }
 
 export function isAvailableBasicTimeline(timeline: BasicTimelineType | undefined | null): boolean {
+	// ユーザー設定による非表示
+	if (timeline === 'local' && prefer.s.hideLocalTimeLine) return false;
+	if (timeline === 'social' && prefer.s.hideSocialTimeLine) return false;
+	if (timeline === 'global' && prefer.s.hideGlobalTimeLine) return false;
+
 	switch (timeline) {
 		case 'home':
 			return $i != null;

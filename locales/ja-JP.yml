@@ -1437,6 +1437,11 @@ hideFollowingCountOthers: "他人のフォロー数を非表示"
 hideFollowingCountOthersDescription: "他人のフォロー数が気にならなくなります"
 hideFollowersCountOthers: "他人のフォロワー数を非表示"
 hideFollowersCountOthersDescription: "他人のフォロワー数が気にならなくなります"
+hideTimelines: "タイムラインを非表示"
+hideTimelinesDescription: "任意のタイムラインを非表示にします"
+hideLocalTimeLine: "ローカルタイムラインを非表示にする"
+hideSocialTimeLine: "ソーシャルタイムラインを非表示にする"
+hideGlobalTimeLine: "グローバルタイムラインを非表示にする"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"

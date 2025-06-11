@@ -5769,6 +5769,26 @@ export interface Locale extends ILocale {
      * 他人のフォロワー数が気にならなくなります
      */
     "hideFollowersCountOthersDescription": string;
+    /**
+     * タイムラインを非表示
+     */
+    "hideTimelines": string;
+    /**
+     * 任意のタイムラインを非表示にします
+     */
+    "hideTimelinesDescription": string;
+    /**
+     * ローカルタイムラインを非表示にする
+     */
+    "hideLocalTimeLine": string;
+    /**
+     * ソーシャルタイムラインを非表示にする
+     */
+    "hideSocialTimeLine": string;
+    /**
+     * グローバルタイムラインを非表示にする
+     */
+    "hideGlobalTimeLine": string;
     "_chat": {
         /**
          * まだメッセージはありません

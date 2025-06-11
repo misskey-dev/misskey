@@ -868,6 +868,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkFolder>
 							</SearchMarker>
 						</div>
+
+						<div class="_gaps_s">
+							<SearchMarker :keywords="['timeline', 'local', 'social', 'global', 'ltl', 'stl', 'gtl', 'hide']">
+								<MkFolder>
+									<template #label><SearchLabel>{{ i18n.ts.hideTimelines }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.hideTimelinesDescription }}</SearchKeyword></template>
+
+									<div class="_gaps_s">
+										<MkPreferenceContainer k="hideLocalTimeLine">
+											<MkSwitch v-model="hideLocalTimeLine">
+												<template #label><SearchLabel>{{ i18n.ts.hideLocalTimeLine }}</SearchLabel></template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+
+										<MkPreferenceContainer k="hideSocialTimeLine">
+											<MkSwitch v-model="hideSocialTimeLine">
+												<template #label><SearchLabel>{{ i18n.ts.hideSocialTimeLine }}</SearchLabel></template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+
+										<MkPreferenceContainer k="hideGlobalTimeLine">
+											<MkSwitch v-model="hideGlobalTimeLine">
+												<template #label><SearchLabel>{{ i18n.ts.hideGlobalTimeLine }}</SearchLabel></template>
+											</MkSwitch>
+										</MkPreferenceContainer>
+									</div>
+								</MkFolder>
+							</SearchMarker>
+						</div>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -1135,6 +1164,9 @@ const hideFollowersCountMyself = prefer.model('hideFollowersCountMyself');
 const hideNotesCountOthers = prefer.model('hideNotesCountOthers');
 const hideFollowingCountOthers = prefer.model('hideFollowingCountOthers');
 const hideFollowersCountOthers = prefer.model('hideFollowersCountOthers');
+const hideLocalTimeLine = prefer.model('hideLocalTimeLine');
+const hideSocialTimeLine = prefer.model('hideSocialTimeLine');
+const hideGlobalTimeLine = prefer.model('hideGlobalTimeLine');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
