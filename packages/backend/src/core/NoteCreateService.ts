@@ -280,13 +280,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.renote) {
 			switch (data.renote.visibility) {
 				case 'public':
-					// public noteは無条件にrenote可能
-					break;
 				case 'home':
-					// home noteはhome以下にrenote可能
-					if (data.visibility === 'public') {
-						data.visibility = 'home';
-					}
+					// notes with public audience can have any visibility
 					break;
 				case 'followers':
 					// 他人のfollowers noteはreject
