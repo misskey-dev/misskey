@@ -1,5 +1,8 @@
 ## 2025.6.1
 
+### Note
+- Misskey Webプラグインのnote_view_interruptorは不具合の影響により現在一時的に無効化されています。
+
 ### General
 -
 
