@@ -23,7 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div class="fade"></div>
 							<div class="title">
 								<div class="name">
-									<MkUserName :user="user" :nowrap="true" @click="editNickname(user)"/>
+									<MkUserName :user="user" :nowrap="true"/>
+									<button v-if="nicknameState.enabled.value" class="_button nickname-button" @click="editNickname(user)">
+										<i class="ti ti-edit"/> {{ i18n.ts.editNickname }}
+									</button>
 								</div>
 								<div class="bottom">
 									<span class="username"><MkAcct :user="user" :detail="true"/></span>
@@ -43,7 +46,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<MkAvatar class="avatar" :user="user" indicator/>
 						<div class="title">
-							<MkUserName :user="user" :nowrap="false" class="name" @click="editNickname(user)"/>
+							<MkUserName :user="user" :nowrap="false" class="name"/>
+							<button v-if="nicknameState.enabled.value" class="_button nickname-button" @click="editNickname(user)">
+								<i class="ti ti-edit"/> {{ i18n.ts.editNickname }}
+							</button>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
@@ -224,7 +230,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { shouldHideNotesCount, shouldHideFollowingCount, shouldHideFollowersCount } from '@/utility/shouldHideCount.js';
-import { editNickname } from '@/utility/edit-nickname.js';
+import { editNickname, nicknameState } from '@/utility/edit-nickname.js';
 
 const emit = defineEmits<{
 	(ev: 'showMoreFiles'): void;
@@ -489,12 +495,14 @@ onUnmounted(() => {
 								-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 								backdrop-filter: var(--MI-blur, blur(8px));
 								background: rgba(0, 0, 0, 0.2);
-								color: #ccc;
-								font-size: 0.7em;
-								line-height: 1;
-								width: 1.8em;
-								height: 1.8em;
-								border-radius: 100%;
+								color: #fff;
+								border-radius: 24px;
+								padding: 4px 8px;
+								font-size: 0.5em; /* 親要素に対して相対的に小さく */
+								line-height: normal; /* 親の line-height をリセット */
+								font-weight: normal; /* 親の font-weight をリセット */
+								filter: none; /* 親の drop-shadow を解除 */
+								align-self: center; /* 縦方向の中央揃え */
 							}
 						}
 
