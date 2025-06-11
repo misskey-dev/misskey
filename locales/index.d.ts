@@ -5789,6 +5789,22 @@ export interface Locale extends ILocale {
      * グローバルタイムラインを非表示にする
      */
     "hideGlobalTimeLine": string;
+    /**
+     * ニックネームを編集
+     */
+    "editNickname": string;
+    /**
+     * ニックネーム機能を有効にする
+     */
+    "nicknameEnabled": string;
+    /**
+     * 他のユーザーに表示される独自のニックネームを設定できるようにします。
+     */
+    "nicknameEnabledDescription": string;
+    /**
+     * ニックネーム設定
+     */
+    "nicknameMap": string;
     "_chat": {
         /**
          * まだメッセージはありません

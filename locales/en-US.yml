@@ -1423,6 +1423,10 @@ hideTimelinesDescription: "You can hide the local, social, and global timelines.
 hideLocalTimeLine: "Hide local timeline"
 hideSocialTimeLine: "Hide social timeline"
 hideGlobalTimeLine: "Hide global timeline"
+editNickname: "Edit nickname"
+nicknameEnabled: "Enable nickname feature"
+nicknameEnabledDescription: "Allow setting custom nicknames for other users that only you can see."
+nicknameMap: "Nickname settings"
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"

@@ -683,6 +683,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSelect>
 							</MkPreferenceContainer>
 						</div>
+
+						<SearchMarker :keywords="['nickname', 'custom', 'user', 'name']">
+							<MkPreferenceContainer k="nicknameEnabled">
+								<MkSwitch v-model="nicknameEnabled">
+									<template #label><SearchLabel>{{ i18n.ts.nicknameEnabled }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.nicknameEnabledDescription }}</SearchKeyword></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -1167,6 +1176,7 @@ const hideFollowersCountOthers = prefer.model('hideFollowersCountOthers');
 const hideLocalTimeLine = prefer.model('hideLocalTimeLine');
 const hideSocialTimeLine = prefer.model('hideSocialTimeLine');
 const hideGlobalTimeLine = prefer.model('hideGlobalTimeLine');
+const nicknameEnabled = prefer.model('nicknameEnabled');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);

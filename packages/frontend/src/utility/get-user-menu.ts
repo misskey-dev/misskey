@@ -20,6 +20,7 @@ import { mainRouter } from '@/router.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { editNickname } from '@/utility/edit-nickname.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -224,6 +225,12 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-pencil',
 			text: i18n.ts.editMemo,
 			action: editMemo,
+		}, {
+			icon: 'ti ti-edit',
+			text: i18n.ts.editNickname,
+			action: () => {
+				editNickname(user);
+			},
 		}, {
 			type: 'parent',
 			icon: 'ti ti-list',

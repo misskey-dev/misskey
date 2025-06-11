@@ -592,4 +592,10 @@ export const PREF_DEF = definePreferences({
 	hideGlobalTimeLine: {
 		default: false,
 	},
+	nicknameEnabled: {
+		default: true,
+	},
+	nicknameMap: {
+		default: {} as Record<string, string>,
+	},
 });

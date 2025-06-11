@@ -1442,7 +1442,10 @@ hideTimelinesDescription: "任意のタイムラインを非表示にします"
 hideLocalTimeLine: "ローカルタイムラインを非表示にする"
 hideSocialTimeLine: "ソーシャルタイムラインを非表示にする"
 hideGlobalTimeLine: "グローバルタイムラインを非表示にする"
-
+editNickname: "ニックネームを編集"
+nicknameEnabled: "ニックネーム機能を有効にする"
+nicknameEnabledDescription: "他のユーザーに表示される独自のニックネームを設定できるようにします。"
+nicknameMap: "ニックネーム設定"
 _chat:
   noMessagesYet: "まだメッセージはありません"
   newMessage: "新しいメッセージ"
