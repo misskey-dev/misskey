@@ -1,4 +1,3 @@
-import { watch } from 'vue';
 import { prefer } from '@/preferences.js';
 
 export const fontList = {
@@ -109,8 +108,3 @@ export function applyFont(fontname: null | string) {
 if (prefer.s.customFont) {
 	applyFont(prefer.s.customFont);
 }
-
-// Set up watcher to change font when the setting changes
-watch(() => prefer.s.customFont, (font) => {
-	applyFont(font);
-}, { immediate: false });

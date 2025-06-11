@@ -1170,7 +1170,7 @@ const hideGlobalTimeLine = prefer.model('hideGlobalTimeLine');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
-const customFont = ref(prefer.s.customFont);
+const customFont = prefer.model('customFont');
 const customFontList = computed(() => {
 	// browser-default があれば削除したリストを返す
 	const list = { ...fontList };
