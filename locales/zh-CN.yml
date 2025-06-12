@@ -2143,7 +2143,7 @@ _wordMute:
   muteWordsDescription: "AND 条件用空格分隔，OR 条件用换行符分隔。"
   muteWordsDescription2: "正则表达式用斜线包裹"
 _instanceMute:
-  instanceMuteDescription: "隐藏服务器中的所有帖子和转帖，包括这些服务器上的用户回复。"
+  instanceMuteDescription: "隐藏服务器中所有的帖子和转帖，包括这些服务器上用户的回复。"
   instanceMuteDescription2: "一行一个"
   title: "下面实例中的帖子将被隐藏。"
   heading: "已隐藏的服务器"
