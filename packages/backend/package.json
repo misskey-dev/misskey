@@ -236,6 +236,7 @@
 		"fkill": "9.0.0",
 		"jest": "30.0.0",
 		"jest-mock": "30.0.0",
+		"jest-util": "30.0.0",
 		"nodemon": "3.1.10",
 		"pid-port": "1.0.2",
 		"simple-oauth2": "5.1.0",

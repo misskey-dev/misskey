@@ -136,7 +136,7 @@ module.exports = {
 	// runner: "jest-runner",
 
 	// The paths to modules that run some code to configure or set up the testing environment before each test
-	// setupFiles: [],
+	setupFiles: ["<rootDir>/test/jest.setup.ts"],
 
 	// A list of paths to modules that run some code to configure or set up the testing framework before each test
 	// setupFilesAfterEnv: [],
@@ -151,9 +151,7 @@ module.exports = {
 	testEnvironment: "node",
 
 	// Options that will be passed to the testEnvironment
-	testEnvironmentOptions: {
-		globalsCleanup: 'soft', // Soft cleanup mode to avoid issues with global variables in tests
-	},
+	// testEnvironmentOptions: {},
 
 	// Adds a location field to test results
 	// testLocationInResults: false,
