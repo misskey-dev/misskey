@@ -2,6 +2,8 @@
 
 ### Note
 - Misskey Webプラグインのnote_view_interruptorは不具合の影響により現在一時的に無効化されています。
+- Node.jsの最小バージョンを20.18.1に引き上げました
+  - なお、特に必要がない限りNode.jsはv22を使用することを推奨します
 
 ### Client
 - Feat: 画像にウォーターマークを付与できるようになりました
@@ -40,8 +42,6 @@
   - proxyRemoteFiles
   - disallowExternalApRedirect
     - 許可しないかどうかではなく、許可するかどうかの設定(allowExternalApRedirect)になりました
-- 動作テストで使用する最低限でのNode.jsのバージョンを20.18.1に引き上げました
-  - なお、特に必要がない限りNode.jsはv22を使用することを推奨します
 
 ### General
 - Feat: 非ログインでサーバーを閲覧された際に、サーバー内のコンテンツを非公開にすることができるようになりました
