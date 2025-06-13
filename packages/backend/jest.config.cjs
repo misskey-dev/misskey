@@ -151,7 +151,9 @@ module.exports = {
 	testEnvironment: "node",
 
 	// Options that will be passed to the testEnvironment
-	// testEnvironmentOptions: {},
+	testEnvironmentOptions: {
+		globalsCleanupMode: 'soft', // Soft cleanup mode to avoid issues with global variables in tests
+	},
 
 	// Adds a location field to test results
 	// testLocationInResults: false,
