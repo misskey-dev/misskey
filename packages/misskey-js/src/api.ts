@@ -106,7 +106,7 @@ export class APIClient {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
 				body: payload,
-				headers: {
+				headers: mediaType === 'multipart/form-data' ? {} : {
 					'Content-Type': mediaType,
 				},
 				credentials: 'omit',

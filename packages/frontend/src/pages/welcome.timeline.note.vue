@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkMediaList :mediaList="note.files.slice(0, 4)"/>
 		</div>
 		<div v-if="note.reactionCount > 0" :class="$style.reactions">
-			<!-- TODO -->
-			<!--<MkReactionsViewer :note="note" :maxNumber="16"/>-->
+			<MkReactionsViewer :noteId="note.id" :reactions="note.reactions" :reactionEmojis="note.reactionEmojis" :myReaction="note.myReaction" :maxNumber="16"/>
 		</div>
 	</div>
 </div>
