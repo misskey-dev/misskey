@@ -152,7 +152,7 @@ module.exports = {
 
 	// Options that will be passed to the testEnvironment
 	testEnvironmentOptions: {
-		globalsCleanupMode: 'soft', // Soft cleanup mode to avoid issues with global variables in tests
+		globalsCleanup: 'soft', // Soft cleanup mode to avoid issues with global variables in tests
 	},
 
 	// Adds a location field to test results
