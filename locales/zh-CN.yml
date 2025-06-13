@@ -1631,7 +1631,7 @@ _serverSettings:
   inquiryUrl: "联络地址"
   inquiryUrlDescription: "用来指定诸如向服务运营商咨询的论坛地址，或记载了运营商联系方式之类的网页地址。"
   openRegistration: "开放注册"
-  openRegistrationWarning: "开放注册有风险。建议仅当能够持续监控服务器并在出现问题时能够立即响应时才打开它。"
+  openRegistrationWarning: "开放注册有风险。建议仅当能够持续监控服务器，并在出现问题时能够立即响应时才打开它。"
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "若在一段时间内没有检测到管理活动，为防止垃圾信息，此设定将自动关闭。"
   deliverSuspendedSoftware: "停止投递的软件"
   deliverSuspendedSoftwareDescription: "可因安全漏洞之类的原因，停止向指定的服务器及服务器版本送信。版本信息由服务器提供，不保证可靠性。可使用 semver 范围来指定版本，但指定 >= 2024.3.1 将不包括如 2024.3.1-custom.0 等自定义版本，因此建议像 >= 2024.3.1-0 这样指定 prerelease 版本。"
@@ -2143,7 +2143,7 @@ _wordMute:
   muteWordsDescription: "AND 条件用空格分隔，OR 条件用换行符分隔。"
   muteWordsDescription2: "正则表达式用斜线包裹"
 _instanceMute:
-  instanceMuteDescription: "隐藏服务器中的所有帖子和转帖，包括这些服务器上的用户回复。"
+  instanceMuteDescription: "隐藏服务器中所有的帖子和转帖，包括这些服务器上用户的回复。"
   instanceMuteDescription2: "一行一个"
   title: "下面实例中的帖子将被隐藏。"
   heading: "已隐藏的服务器"
@@ -2493,7 +2493,7 @@ _profile:
   avatarDecorationMax: "最多可添加 {max} 个挂件"
   followedMessage: "被关注时显示的消息"
   followedMessageDescription: "可以设置被关注时向对方显示的短消息。"
-  followedMessageDescriptionForLockedAccount: "需要批准才能关注的情况下，消息是在请求被批准后显示。"
+  followedMessageDescriptionForLockedAccount: "需要批准才能关注的情况下，消息会在请求被批准后显示。"
 _exportOrImport:
   allNotes: "所有帖子"
   favoritedNotes: "收藏的帖子"
