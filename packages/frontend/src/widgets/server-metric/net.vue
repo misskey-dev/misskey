@@ -52,6 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import bytes from '@/filters/bytes.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
@@ -76,7 +77,7 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
 		length: 50,
 	});
 });

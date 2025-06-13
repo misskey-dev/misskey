@@ -1625,3 +1625,10 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Всі"
   searchScopeLocal: "Локальна"
+_watermarkEditor:
+  opacity: "Непрозорість"
+  scale: "Розмір"
+  text: "Текст"
+  type: "Тип"
+  image: "Зображення"
+  advanced: "Розширені"

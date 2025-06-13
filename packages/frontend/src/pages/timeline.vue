@@ -226,6 +226,7 @@ const headerActions = computed(() => {
 
 				menuItems.push({
 					type: 'switch',
+					icon: 'ti ti-repeat',
 					text: i18n.ts.showRenotes,
 					ref: withRenotes,
 				});
@@ -233,6 +234,7 @@ const headerActions = computed(() => {
 				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
 					menuItems.push({
 						type: 'switch',
+						icon: 'ti ti-messages',
 						text: i18n.ts.showRepliesToOthersInTimeline,
 						ref: withReplies,
 						disabled: onlyFiles,
@@ -241,10 +243,12 @@ const headerActions = computed(() => {
 
 				menuItems.push({
 					type: 'switch',
+					icon: 'ti ti-eye-exclamation',
 					text: i18n.ts.withSensitive,
 					ref: withSensitive,
 				}, {
 					type: 'switch',
+					icon: 'ti ti-photo',
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
