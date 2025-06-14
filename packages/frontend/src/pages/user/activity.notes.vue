@@ -21,7 +21,7 @@ import gradient from 'chartjs-plugin-gradient';
 import type { ChartDataset } from 'chart.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { initChart } from '@/utility/init-chart.js';
 import { chartLegend } from '@/utility/chart-legend.js';

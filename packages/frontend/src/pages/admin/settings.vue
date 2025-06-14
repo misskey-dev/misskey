@@ -87,28 +87,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder>
-				<template #icon><i class="ti ti-cloud"></i></template>
-				<template #label>{{ i18n.ts.files }}</template>
-				<template v-if="filesForm.modified.value" #footer>
-					<MkFormFooter :form="filesForm"/>
-				</template>
-
-				<div class="_gaps">
-					<MkSwitch v-model="filesForm.state.cacheRemoteFiles">
-						<template #label>{{ i18n.ts.cacheRemoteFiles }}<span v-if="filesForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
-					</MkSwitch>
-
-					<template v-if="filesForm.state.cacheRemoteFiles">
-						<MkSwitch v-model="filesForm.state.cacheRemoteSensitiveFiles">
-							<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}<span v-if="filesForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
-						</MkSwitch>
-					</template>
-				</div>
-			</MkFolder>
-
-			<MkFolder>
 				<template #icon><i class="ti ti-world-cog"></i></template>
 				<template #label>ServiceWorker</template>
 				<template v-if="serviceWorkerForm.modified.value" #footer>
@@ -168,6 +146,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 
 					<template v-if="urlPreviewForm.state.urlPreviewEnabled">
+						<MkSwitch v-model="urlPreviewForm.state.urlPreviewAllowRedirect">
+							<template #label>{{ i18n.ts._urlPreviewSetting.allowRedirect }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewAllowRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts._urlPreviewSetting.allowRedirectDescription }}</template>
+						</MkSwitch>
+
 						<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
 							<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
 							<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
@@ -230,6 +213,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.federationAllowedHosts }}<span v-if="federationForm.modifiedStates.federationHosts" class="_modified">{{ i18n.ts.modified }}</span></template>
 						<template #caption>{{ i18n.ts.federationAllowedHostsDescription }}</template>
 					</MkTextarea>
+
+					<MkFolder>
+						<template #icon><i class="ti ti-list"></i></template>
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.deliverSuspendedSoftware }}</SearchLabel></template>
+						<template #footer>
+							<div class="_buttons">
+								<MkButton @click="federationForm.state.deliverSuspendedSoftware.push({software: '', versionRange: ''})"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+							</div>
+						</template>
+
+						<div :class="$style.metadataRoot" class="_gaps_s">
+							<MkInfo>{{ i18n.ts._serverSettings.deliverSuspendedSoftwareDescription }}</MkInfo>
+							<div v-for="(element, index) in federationForm.state.deliverSuspendedSoftware" :key="index" v-panel :class="$style.fieldDragItem">
+								<button class="_button" :class="$style.dragItemRemove" @click="federationForm.state.deliverSuspendedSoftware.splice(index, 1)"><i class="ti ti-x"></i></button>
+								<div :class="$style.dragItemForm">
+									<FormSplit :minWidth="200">
+										<MkInput v-model="element.software" small :placeholder="i18n.ts.softwareName">
+										</MkInput>
+										<MkInput v-model="element.versionRange" small :placeholder="i18n.ts.version">
+										</MkInput>
+									</FormSplit>
+								</div>
+							</div>
+						</div>
+					</MkFolder>
+
+					<MkSwitch v-model="federationForm.state.signToActivityPubGet">
+						<template #label>{{ i18n.ts._serverSettings.signToActivityPubGet }}<span v-if="federationForm.modifiedStates.signToActivityPubGet" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts._serverSettings.signToActivityPubGet_description }}</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="federationForm.state.proxyRemoteFiles">
+						<template #label>{{ i18n.ts._serverSettings.proxyRemoteFiles }}<span v-if="federationForm.modifiedStates.proxyRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts._serverSettings.proxyRemoteFiles_description }}</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="federationForm.state.allowExternalApRedirect">
+						<template #label>{{ i18n.ts._serverSettings.allowExternalApRedirect }}<span v-if="federationForm.modifiedStates.allowExternalApRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</div>
+							<div>{{ i18n.ts.needToRestartServerToApply }}</div>
+						</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="federationForm.state.cacheRemoteFiles">
+						<template #label>{{ i18n.ts.cacheRemoteFiles }}<span v-if="federationForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+					</MkSwitch>
+
+					<template v-if="federationForm.state.cacheRemoteFiles">
+						<MkSwitch v-model="federationForm.state.cacheRemoteSensitiveFiles">
+							<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}<span v-if="federationForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
+						</MkSwitch>
+					</template>
 				</div>
 			</MkFolder>
 
@@ -255,7 +293,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive } from 'vue';
+import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -268,8 +306,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import { useForm } from '@/use/use-form.js';
+import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkRadios from '@/components/MkRadios.vue';
 
@@ -313,17 +350,6 @@ const pinnedUsersForm = useForm({
 	fetchInstance(true);
 });
 
-const filesForm = useForm({
-	cacheRemoteFiles: meta.cacheRemoteFiles,
-	cacheRemoteSensitiveFiles: meta.cacheRemoteSensitiveFiles,
-}, async (state) => {
-	await os.apiWithDialog('admin/update-meta', {
-		cacheRemoteFiles: state.cacheRemoteFiles,
-		cacheRemoteSensitiveFiles: state.cacheRemoteSensitiveFiles,
-	});
-	fetchInstance(true);
-});
-
 const serviceWorkerForm = useForm({
 	enableServiceWorker: meta.enableServiceWorker,
 	swPublicKey: meta.swPublickey ?? '',
@@ -348,6 +374,7 @@ const adForm = useForm({
 
 const urlPreviewForm = useForm({
 	urlPreviewEnabled: meta.urlPreviewEnabled,
+	urlPreviewAllowRedirect: meta.urlPreviewAllowRedirect,
 	urlPreviewTimeout: meta.urlPreviewTimeout,
 	urlPreviewMaximumContentLength: meta.urlPreviewMaximumContentLength,
 	urlPreviewRequireContentLength: meta.urlPreviewRequireContentLength,
@@ -356,6 +383,7 @@ const urlPreviewForm = useForm({
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		urlPreviewEnabled: state.urlPreviewEnabled,
+		urlPreviewAllowRedirect: state.urlPreviewAllowRedirect,
 		urlPreviewTimeout: state.urlPreviewTimeout,
 		urlPreviewMaximumContentLength: state.urlPreviewMaximumContentLength,
 		urlPreviewRequireContentLength: state.urlPreviewRequireContentLength,
@@ -368,10 +396,22 @@ const urlPreviewForm = useForm({
 const federationForm = useForm({
 	federation: meta.federation,
 	federationHosts: meta.federationHosts.join('\n'),
+	deliverSuspendedSoftware: meta.deliverSuspendedSoftware,
+	signToActivityPubGet: meta.signToActivityPubGet,
+	proxyRemoteFiles: meta.proxyRemoteFiles,
+	allowExternalApRedirect: meta.allowExternalApRedirect,
+	cacheRemoteFiles: meta.cacheRemoteFiles,
+	cacheRemoteSensitiveFiles: meta.cacheRemoteSensitiveFiles,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		federation: state.federation,
 		federationHosts: state.federationHosts.split('\n'),
+		deliverSuspendedSoftware: state.deliverSuspendedSoftware,
+		signToActivityPubGet: state.signToActivityPubGet,
+		proxyRemoteFiles: state.proxyRemoteFiles,
+		allowExternalApRedirect: state.allowExternalApRedirect,
+		cacheRemoteFiles: state.cacheRemoteFiles,
+		cacheRemoteSensitiveFiles: state.cacheRemoteSensitiveFiles,
 	});
 	fetchInstance(true);
 });
@@ -397,5 +437,54 @@ definePage(() => ({
 .subCaption {
 	font-size: 0.85em;
 	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+}
+
+.metadataRoot {
+	container-type: inline-size;
+}
+
+.fieldDragItem {
+	display: flex;
+	padding: 10px;
+	align-items: flex-end;
+	border-radius: 6px;
+
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
+		align-items: center;
+	}
+}
+
+.dragItemHandle {
+	cursor: grab;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px 0 0;
+	opacity: 0.5;
+	flex-shrink: 0;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.dragItemRemove {
+	@extend .dragItemHandle;
+
+	color: #ff2a2a;
+	opacity: 1;
+	cursor: pointer;
+
+	&:hover, &:focus {
+		opacity: .7;
+	}
+
+	&:active {
+		cursor: pointer;
+	}
+}
+
+.dragItemForm {
+	flex-grow: 1;
 }
 </style>

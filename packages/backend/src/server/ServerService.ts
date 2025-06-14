@@ -7,7 +7,7 @@ import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import Fastify, { FastifyInstance } from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
@@ -73,7 +73,7 @@ export class ServerService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async launch() {
+	public async launch(): Promise<void> {
 		const fastify = Fastify({
 			trustProxy: true,
 			logger: false,
@@ -108,7 +108,7 @@ export class ServerService implements OnApplicationShutdown {
 		// this will break lookup that involve copying a URL from a third-party server, like trying to lookup http://charlie.example.com/@alice@alice.com
 		//
 		// this is not required by standard but protect us from peers that did not validate final URL.
-		if (this.config.disallowExternalApRedirect) {
+		if (!this.meta.allowExternalApRedirect) {
 			const maybeApLookupRegex = /application\/activity\+json|application\/ld\+json.+activitystreams/i;
 			fastify.addHook('onSend', (request, reply, _, done) => {
 				const location = reply.getHeader('location');
@@ -301,13 +301,19 @@ export class ServerService implements OnApplicationShutdown {
 		}
 
 		await fastify.ready();
-		return fastify;
 	}
 
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
 		await this.#fastify.close();
+	}
+
+	/**
+	 * Get the Fastify instance for testing.
+	 */
+	public get fastify(): FastifyInstance {
+		return this.#fastify;
 	}
 
 	@bindThis
