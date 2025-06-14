@@ -48,22 +48,43 @@ export class UtilityService {
 		return regexp.test(email);
 	}
 
+	public isBlockedHost(host: string | null): boolean;
+	public isBlockedHost(blockedHosts: string[], host: string | null): boolean;
 	@bindThis
-	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
+	public isBlockedHost(blockedHostsOrHost: string[] | string | null, host?: string | null): boolean {
+		const blockedHosts = Array.isArray(blockedHostsOrHost) ? blockedHostsOrHost : this.meta.blockedHosts;
+		host = Array.isArray(blockedHostsOrHost) ? host : blockedHostsOrHost;
+
 		if (host == null) return false;
 		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
+	public isSilencedHost(host: string | null): boolean;
+	public isSilencedHost(silencedHosts: string[], host: string | null): boolean;
 	@bindThis
-	public isSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
-		if (!silencedHosts || host == null) return false;
+	public isSilencedHost(silencedHostsOrHost: string[] | string | null, host?: string | null): boolean {
+		const silencedHosts = Array.isArray(silencedHostsOrHost) ? silencedHostsOrHost : this.meta.silencedHosts;
+		host = Array.isArray(silencedHostsOrHost) ? host : silencedHostsOrHost;
+
+		if (host == null) return false;
 		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
+	public isMediaSilencedHost(host: string | null): boolean;
+	public isMediaSilencedHost(silencedHosts: string[], host: string | null): boolean;
 	@bindThis
-	public isMediaSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
-		if (!silencedHosts || host == null) return false;
-		return silencedHosts.some(x => host.toLowerCase() === x);
+	public isMediaSilencedHost(mediaSilencedHostsOrHost: string[] | string | null, host?: string | null): boolean {
+		const mediaSilencedHosts = Array.isArray(mediaSilencedHostsOrHost) ? mediaSilencedHostsOrHost : this.meta.mediaSilencedHosts;
+		host = Array.isArray(mediaSilencedHostsOrHost) ? host : mediaSilencedHostsOrHost;
+
+		if (host == null) return false;
+		return mediaSilencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
+	public isAllowListedHost(host: string | null): boolean {
+		if (host == null) return false;
+		return this.meta.federationHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
 	@bindThis
