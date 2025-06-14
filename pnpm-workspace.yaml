@@ -13,6 +13,7 @@ onlyBuiltDependencies:
   - '@nestjs/core'
   - '@parcel/watcher'
   - '@sentry/profiling-node'
+  - '@sentry-internal/node-cpu-profiler'
   - '@swc/core'
   - '@tensorflow/tfjs-node'
   - bufferutil
