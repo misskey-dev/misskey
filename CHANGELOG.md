@@ -2,6 +2,7 @@
 
 ### Note
 - Misskey Webプラグインのnote_view_interruptorは不具合の影響により現在一時的に無効化されています。
+- Misskey Web投稿フォームのプレビュー切り替えは「...」メニュー内に配置されました
 
 ### Client
 - Feat: 画像にウォーターマークを付与できるようになりました
