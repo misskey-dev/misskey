@@ -5,6 +5,6 @@
 
 import { protectProperties } from 'jest-util';
 
-protectProperties(globalThis.ReadableStreamDefaultReader);
-protectProperties(globalThis.ReadableStreamBYOBReader);
-protectProperties(globalThis.WritableStreamDefaultWriter);
+protectProperties(ReadableStreamDefaultReader);
+protectProperties(ReadableStreamBYOBReader);
+protectProperties(WritableStreamDefaultWriter);
