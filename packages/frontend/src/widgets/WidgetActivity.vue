@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
+import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -77,7 +77,7 @@ const toggleView = () => {
 	save();
 };
 
-misskeyApiGet('charts/user/notes', {
+misskeyApi('charts/user/notes', {
 	userId: $i.id,
 	span: 'day',
 	limit: 7 * 21,
