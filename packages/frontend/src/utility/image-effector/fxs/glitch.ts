@@ -52,17 +52,19 @@ export const FX_glitch = defineImageEffectorFx({
 		},
 		strength: {
 			type: 'number' as const,
-			default: 5,
-			min: -100,
-			max: 100,
+			default: 0.05,
+			min: -1,
+			max: 1,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		size: {
 			type: 'number' as const,
-			default: 20,
+			default: 0.2,
 			min: 0,
-			max: 100,
+			max: 1,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		channelShift: {
 			type: 'number' as const,
@@ -88,10 +90,10 @@ export const FX_glitch = defineImageEffectorFx({
 			gl.uniform1f(o, rnd());
 
 			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
-			gl.uniform1f(s, (1 - (rnd() * 2)) * (params.strength / 100));
+			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
 
 			const h = gl.getUniformLocation(program, `u_shiftHeights[${i.toString()}]`);
-			gl.uniform1f(h, rnd() * (params.size / 100));
+			gl.uniform1f(h, rnd() * params.size);
 		}
 	},
 });
