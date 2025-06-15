@@ -34,6 +34,6 @@ export const FXS = [
 	FX_chromaticAberration,
 	FX_tearing,
 	FX_blockNoise,
-	FX_stripe,    // Primarily used for watermark
-	FX_polkadot,  // Primarily used for watermark
+	FX_stripe, // Primarily used for watermark
+	FX_polkadot, // Primarily used for watermark
 ] as const satisfies ImageEffectorFx<string, any>[];
