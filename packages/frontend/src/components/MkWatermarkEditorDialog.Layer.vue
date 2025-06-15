@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkImageEffectorFxForm
 		v-else-if="fx != null"
 		v-model="layer"
-		:fx="fx"
+		:paramDefs="fx.params"
 	/>
 </div>
 </template>

@@ -16,13 +16,63 @@ type ParamTypeToPrimitive = {
 	'color': [r: number, g: number, b: number];
 };
 
-type ImageEffectorFxParamDefs = Record<string, {
+interface CommonParamDef {
 	type: keyof ParamTypeToPrimitive;
-	default: any;
 	label?: string;
 	caption?: string;
-	toViewValue?: (v: any) => string;
-}>;
+	default: any;
+}
+
+interface NumberParamDef extends CommonParamDef {
+	type: 'number';
+	default: number;
+	min: number;
+	max: number;
+	step?: number;
+	toViewValue?: (v: number) => string;
+};
+
+interface NumberEnumParamDef extends CommonParamDef {
+	type: 'number:enum';
+	enum: {
+		value: number;
+		label?: string;
+		icon?: string;
+	}[];
+	default: number;
+};
+
+interface BooleanParamDef extends CommonParamDef {
+	type: 'boolean';
+	default: boolean;
+};
+
+interface AlignParamDef extends CommonParamDef {
+	type: 'align';
+	default: {
+		x: 'left' | 'center' | 'right';
+		y: 'top' | 'center' | 'bottom';
+	};
+};
+
+interface SeedParamDef extends CommonParamDef {
+	type: 'seed';
+	default: number;
+};
+
+interface TextureParamDef extends CommonParamDef {
+	type: 'texture';
+	default: { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
+};
+
+interface ColorParamDef extends CommonParamDef {
+	type: 'color';
+	default: [r: number, g: number, b: number];
+};
+
+type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | ColorParamDef;
+
+export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
 
 export type ParamDefToPremitiveRecord<PS extends ImageEffectorFxParamDefs> = {
 	[key in keyof PS]: PS[key]['type'] extends keyof ParamTypeToPrimitive ? ParamTypeToPrimitive[PS[key]['type']] : never;

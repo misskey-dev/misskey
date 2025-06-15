@@ -5,35 +5,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div v-for="[k, v] in Object.entries(fx.params)" :key="k">
+	<div v-for="v, k in paramDefs" :key="k">
 		<MkSwitch
 			v-if="v.type === 'boolean'"
 			v-model="params[k]">
-			<template #label>{{ fx.params[k].label ?? k }}</template>
-			<template v-if="fx.params[k].caption != null" #caption>{{ fx.params[k].caption }}</template>
+			<template #label>{{ v.label ?? k }}</template>
+			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 		</MkSwitch>
-			<MkRange
-				v-else-if="v.type === 'number'"
-				v-model="params[k]"
-				continuousUpdate
-				:min="v.min"
-				:max="v.max"
-				:step="v.step"
-				:textConverter="fx.params[k].toViewValue"
-				@thumbDoubleClicked="() => {
-					if (fx.params[k].default != null) {
-						params[k] = fx.params[k].default;
-					} else {
-						params[k] = v.min;
-					}
-				}"
-			>
-				<template #label>{{ fx.params[k].label ?? k }}</template>
-				<template v-if="fx.params[k].caption != null" #caption>{{ fx.params[k].caption }}</template>
-			</MkRange>
+		<MkRange
+			v-else-if="v.type === 'number'"
+			v-model="params[k]"
+			continuousUpdate
+			:min="v.min"
+			:max="v.max"
+			:step="v.step"
+			:textConverter="v.toViewValue"
+			@thumbDoubleClicked="() => {
+				params[k] = v.default;
+			}"
+		>
+			<template #label>{{ v.label ?? k }}</template>
+			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
+		</MkRange>
 		<MkRadios v-else-if="v.type === 'number:enum'" v-model="params[k]">
-			<template #label>{{ fx.params[k].label ?? k }}</template>
-			<template v-if="fx.params[k].caption != null" #caption>{{ fx.params[k].caption }}</template>
+			<template #label>{{ v.label ?? k }}</template>
+			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 			<option v-for="item in v.enum" :value="item.value">
 				<i v-if="item.icon" :class="item.icon"></i>
 				<template v-else>{{ item.label }}</template>
@@ -41,13 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRadios>
 		<div v-else-if="v.type === 'seed'">
 			<MkRange v-model="params[k]" continuousUpdate type="number" :min="0" :max="10000" :step="1">
-				<template #label>{{ fx.params[k].label ?? k }}</template>
-				<template v-if="fx.params[k].caption != null" #caption>{{ fx.params[k].caption }}</template>
+				<template #label>{{ v.label ?? k }}</template>
+				<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 			</MkRange>
 		</div>
 		<MkInput v-else-if="v.type === 'color'" :modelValue="getHex(params[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params[k] = c; }">
-			<template #label>{{ fx.params[k].label ?? k }}</template>
-			<template v-if="fx.params[k].caption != null" #caption>{{ fx.params[k].caption }}</template>
+			<template #label>{{ v.label ?? k }}</template>
+			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 		</MkInput>
 	</div>
 	<div v-if="Object.keys(fx.params).length === 0" :class="$style.nothingToConfigure">
@@ -62,10 +58,10 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
-import type { FXS } from '@/utility/image-effector/fxs.js';
+import type { ImageEffectorFxParamDefs } from '@/utility/image-effector/ImageEffector.js';
 
 defineProps<{
-	fx: typeof FXS[number];
+	paramDefs: ImageEffectorFxParamDefs;
 }>();
 
 const params = defineModel<Record<string, any>>({ required: true });
