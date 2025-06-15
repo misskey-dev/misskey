@@ -54,6 +54,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 	uniforms: ['amount', 'channelShift'] as const,
 	params: {
 		amount: {
+			label: i18n.ts._imageEffector._fxProps.amount,
 			type: 'number' as const,
 			default: 50,
 			min: 1,
@@ -61,6 +62,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 			step: 1,
 		},
 		strength: {
+			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number' as const,
 			default: 0.05,
 			min: -1,
@@ -69,6 +71,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		width: {
+			label: i18n.ts.width,
 			type: 'number' as const,
 			default: 0.05,
 			min: 0.01,
@@ -77,6 +80,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		height: {
+			label: i18n.ts.height,
 			type: 'number' as const,
 			default: 0.01,
 			min: 0.01,
@@ -85,6 +89,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		channelShift: {
+			label: i18n.ts._imageEffector._fxProps.glitchChannelShift,
 			type: 'number' as const,
 			default: 0,
 			min: 0,
@@ -93,6 +98,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		seed: {
+			label: i18n.ts._imageEffector._fxProps.seed,
 			type: 'seed' as const,
 			default: 100,
 		},
