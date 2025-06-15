@@ -89,6 +89,29 @@ export class WatermarkRenderer {
 		});
 	}
 
+	public static getLayerDef(type: WatermarkPreset['layers'][number]['type']): ImageEffectorFx | null {
+		let fxId: typeof WATERMARK_FXS[number]['id'];
+		switch (type) {
+			case 'text':
+			case 'image':
+				fxId = 'watermarkPlacement';
+				break;
+			case 'stripe':
+				fxId = 'stripe';
+				break;
+			case 'polkadot':
+				fxId = 'polkadot';
+				break;
+			case 'checker':
+				fxId = 'checker';
+				break;
+			default:
+				throw new Error(`Unknown layer type: ${type}`);
+		}
+
+		return WATERMARK_FXS.find(fx => fx.id === fxId) ?? null;
+	}
+
 	private makeImageEffectorLayers(): ImageEffectorLayer[] {
 		return this.layers.map(layer => {
 			if (layer.type === 'text') {

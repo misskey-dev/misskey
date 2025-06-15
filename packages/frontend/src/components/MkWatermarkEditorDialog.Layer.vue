@@ -108,9 +108,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<MkImageEffectorFxForm
-		v-else-if="fx != null"
+		v-else-if="layerParamDefs != null"
 		v-model="layer"
-		:paramDefs="fx.params"
+		:paramDefs="layerParamDefs"
 	/>
 </div>
 </template>
@@ -118,7 +118,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import { WATERMARK_FXS } from '@/utility/watermark.js';
+import { WatermarkRenderer } from '@/utility/watermark.js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import type { ImageEffectorFx } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
@@ -134,7 +134,11 @@ import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
-const fx = computed(() => WATERMARK_FXS.find((fx) => fx.id !== 'watermarkPlacement' && fx.id === layer.value.type) as Exclude<typeof WATERMARK_FXS[number], ImageEffectorFx<"watermarkPlacement", any, any>> ?? null);
+const layerParamDefs = computed(() => {
+	const def = WatermarkRenderer.getLayerDef(layer.value.type);
+	if (def == null || def.id === 'watermarkPlacement') return null;
+	return def.params;
+});
 
 const driveFile = ref<Misskey.entities.DriveFile | null>(null);
 const driveFileError = ref(false);
