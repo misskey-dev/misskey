@@ -4,6 +4,7 @@
  */
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { MiInstance } from '@/models/Instance.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
@@ -66,6 +67,16 @@ export class MiFollowing {
 	})
 	public followerHost: string | null;
 
+	@ManyToOne(() => MiInstance, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn({
+		name: 'followerHost',
+		foreignKeyConstraintName: 'FK_following_followerHost',
+		referencedColumnName: 'host',
+	})
+	public followerInstance: MiInstance | null;
+
 	@Column('varchar', {
 		length: 512, nullable: true,
 		comment: '[Denormalized]',
@@ -84,6 +95,16 @@ export class MiFollowing {
 		comment: '[Denormalized]',
 	})
 	public followeeHost: string | null;
+
+	@ManyToOne(() => MiInstance, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn({
+		name: 'followeeHost',
+		foreignKeyConstraintName: 'FK_following_followeeHost',
+		referencedColumnName: 'host',
+	})
+	public followeeInstance: MiInstance | null;
 
 	@Column('varchar', {
 		length: 512, nullable: true,
