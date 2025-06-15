@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 		</MkInput>
 	</div>
-	<div v-if="Object.keys(fx.params).length === 0" :class="$style.nothingToConfigure">
+	<div v-if="Object.keys(paramDefs).length === 0" :class="$style.nothingToConfigure">
 		{{ i18n.ts._imageEffector.nothingToConfigure }}
 	</div>
 </div>
