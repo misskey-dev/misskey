@@ -2465,6 +2465,8 @@ _visibility:
   disableFederation: "Defederate"
   disableFederationDescription: "Don't transmit to other instances"
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "There are files that have not been uploaded, do you want to discard them and close the form?"
+  uploaderTip: "The file has not yet been uploaded. From the file menu, you can rename, crop images, watermark and compress or uncompress the file. Files are automatically uploaded when you publish a note."
   replyPlaceholder: "Reply to this note..."
   quotePlaceholder: "Quote this note..."
   channelPlaceholder: "Post to a channel..."
@@ -3167,3 +3169,5 @@ _imageEffector:
     stripe: "Stripes"
     polkadot: "Polkadot"
     checker: "Checker"
+    blockNoise: "Block Noise"
+    tearing: "Tearing"

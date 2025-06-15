@@ -3169,3 +3169,5 @@ _imageEffector:
     stripe: "Bandes"
     polkadot: "Lunars"
     checker: "Escacs"
+    blockNoise: "Bloqueig de soroll"
+    tearing: "Trencament d'imatge "

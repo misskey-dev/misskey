@@ -3107,7 +3107,7 @@ _uploader:
   savedXPercent: "{x}% 절약"
   abortConfirm: "업로드되지 않은 파일이 있습니다만, 그만 두시겠습니까?"
   doneConfirm: "업로드되지 않은 파일이 있습니다만, 완료하시겠습니까?"
-  maxFileSizeIsX: "업오드 가능한 최대 파일 크기는 {x}입니다."
+  maxFileSizeIsX: "업로드 가능한 최대 파일 크기는 {x}입니다."
   allowedTypes: "업로드 가능한 파일 유형"
   tip: "파일은 아직 업로드되지 않았습니다. 이 다이얼로그에서 업로드 전의 확인, 이름 바꾸기, 압축, 자르기 등을 하실 수 있습니다. 준비가 되셨다면 '업로드' 버튼을 클릭해 업로드를 시작하실 수 있습니다."
 _clientPerformanceIssueTip:
@@ -3169,3 +3169,5 @@ _imageEffector:
     stripe: "줄무늬"
     polkadot: "물방울 무늬"
     checker: "체크 무늬"
+    blockNoise: "노이즈 방지"
+    tearing: "티어링"
