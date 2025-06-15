@@ -28,6 +28,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
+import { $i } from '@/i.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -90,7 +91,19 @@ type TrackMetadata = {
 const props = defineProps<WidgetComponentProps<WidgetProps>>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
-const { widgetProps, configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
+const { widgetProps, configure, save } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
+
+// ウィジット初期化時にユーザープロフィールのListenBrainzIDを設定
+onMounted(() => {
+	if (widgetProps.userId === null && $i && $i.listenbrainz) {
+		widgetProps.userId = $i.listenbrainz;
+		save();
+	}
+
+	if (widgetProps.refreshIntervalSec > 0) {
+		intervalId = window.setInterval(fetchPlayingNow, widgetProps.refreshIntervalSec * 1000);
+	}
+});
 
 const playingNow = ref(false);
 const trackMetadata = ref<TrackMetadata | null>(null);
