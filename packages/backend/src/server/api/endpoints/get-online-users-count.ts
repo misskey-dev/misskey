@@ -12,6 +12,7 @@ import { DI } from '@/di-symbols.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -53,6 +54,42 @@ export const meta = {
 						avatarBlurhash: {
 							type: 'string',
 							optional: true, nullable: true,
+						},
+						avatarDecorations: {
+							type: 'array',
+							nullable: false, optional: false,
+							items: {
+								type: 'object',
+								nullable: false, optional: false,
+								properties: {
+									id: {
+										type: 'string',
+										nullable: false, optional: false,
+										format: 'id',
+									},
+									angle: {
+										type: 'number',
+										nullable: false, optional: true,
+									},
+									flipH: {
+										type: 'boolean',
+										nullable: false, optional: true,
+									},
+									url: {
+										type: 'string',
+										format: 'url',
+										nullable: false, optional: false,
+									},
+									offsetX: {
+										type: 'number',
+										nullable: false, optional: true,
+									},
+									offsetY: {
+										type: 'number',
+										nullable: false, optional: true,
+									},
+								},
+							},
 						},
 						host: {
 							type: 'string',
@@ -99,6 +136,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userFollowingService: UserFollowingService,
 		private roleService: RoleService,
 		private userEntityService: UserEntityService,
+
+		// 以下を追加
+		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// オンラインユーザー総数の取得
@@ -189,6 +229,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					name: true,
 					avatarUrl: true,
 					avatarBlurhash: true,
+					avatarDecorations: true,
 					host: true,
 					lastActiveDate: true,
 					hideOnlineStatus: true, // この行を追加
@@ -223,12 +264,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			// すべてのアバターデコレーションを取得
+			const allDecorations = await this.avatarDecorationService.getAll();
+			const decorationMap = new Map(allDecorations.map(d => [d.id, d]));
+
 			// lastActiveDateをISOString形式に変換
 			const details = usersData.map(user => {
 				return {
 					...user,
-					// Add fallback identicon URL for null avatarUrl
 					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
+					avatarDecorations: user.avatarDecorations.map(d => {
+						const decoration = decorationMap.get(d.id);
+						return {
+							...d,
+							url: decoration?.url, // URL を追加
+						};
+					}),
 					lastActiveDate: user.lastActiveDate?.toISOString() ?? new Date().toISOString(),
 					onlineStatus: determineOnlineStatus(user),
 					hideOnlineStatus: user.hideOnlineStatus,
