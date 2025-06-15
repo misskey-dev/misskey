@@ -74,10 +74,6 @@ type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanPara
 
 export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
 
-export type ParamDefToPremitiveRecord<PS extends ImageEffectorFxParamDefs> = {
-	[key in keyof PS]: PS[key]['type'] extends keyof ParamTypeToPrimitive ? ParamTypeToPrimitive[PS[key]['type']] : never;
-};
-
 export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[]>(fx: ImageEffectorFx<ID, PS, US>) {
 	return fx;
 }

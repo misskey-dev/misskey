@@ -48,6 +48,7 @@ void main() {
 }
 `;
 
+// Primarily used for watermark
 export const FX_stripe = defineImageEffectorFx({
 	id: 'stripe' as const,
 	name: i18n.ts._imageEffector._fxs.stripe,
@@ -64,7 +65,7 @@ export const FX_stripe = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
 		frequency: {
-			label: i18n.ts._imageEffector._fxProps.stripeFrequency,
+			label: i18n.ts._watermarkEditor.stripeFrequency,
 			type: 'number' as const,
 			default: 10.0,
 			min: 1.0,
@@ -72,7 +73,7 @@ export const FX_stripe = defineImageEffectorFx({
 			step: 0.1,
 		},
 		threshold: {
-			label: i18n.ts._imageEffector._fxProps.stripeWidth,
+			label: i18n.ts._watermarkEditor.stripeWidth,
 			type: 'number' as const,
 			default: 0.1,
 			min: 0.0,

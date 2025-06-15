@@ -78,6 +78,7 @@ void main() {
 }
 `;
 
+// Primarily used for watermark
 export const FX_polkadot = defineImageEffectorFx({
 	id: 'polkadot' as const,
 	name: i18n.ts._imageEffector._fxs.polkadot,
@@ -102,7 +103,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.1,
 		},
 		majorRadius: {
-			label: i18n.ts._imageEffector._fxProps.polkadotMainDotRadius,
+			label: i18n.ts._watermarkEditor.polkadotMainDotRadius,
 			type: 'number' as const,
 			default: 0.1,
 			min: 0.0,
@@ -110,7 +111,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		majorOpacity: {
-			label: i18n.ts._imageEffector._fxProps.polkadotMainDotOpacity,
+			label: i18n.ts._watermarkEditor.polkadotMainDotOpacity,
 			type: 'number' as const,
 			default: 0.75,
 			min: 0.0,
@@ -119,7 +120,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		minorDivisions: {
-			label: i18n.ts._imageEffector._fxProps.polkadotSubDotDivisions,
+			label: i18n.ts._watermarkEditor.polkadotSubDotDivisions,
 			type: 'number' as const,
 			default: 4,
 			min: 0,
@@ -127,7 +128,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 1,
 		},
 		minorRadius: {
-			label: i18n.ts._imageEffector._fxProps.polkadotSubDotRadius,
+			label: i18n.ts._watermarkEditor.polkadotSubDotRadius,
 			type: 'number' as const,
 			default: 0.25,
 			min: 0.0,
@@ -135,7 +136,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		minorOpacity: {
-			label: i18n.ts._imageEffector._fxProps.polkadotSubDotOpacity,
+			label: i18n.ts._watermarkEditor.polkadotSubDotOpacity,
 			type: 'number' as const,
 			default: 0.5,
 			min: 0.0,

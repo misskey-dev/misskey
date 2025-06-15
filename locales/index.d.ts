@@ -12114,6 +12114,14 @@ export interface Locale extends ILocale {
          */
         "stripe": string;
         /**
+         * ラインの幅
+         */
+        "stripeWidth": string;
+        /**
+         * ラインの数
+         */
+        "stripeFrequency": string;
+        /**
          * ポルカドット
          */
         "polkadot": string;
@@ -12121,6 +12129,26 @@ export interface Locale extends ILocale {
          * チェッカー
          */
         "checker": string;
+        /**
+         * メインドットの不透明度
+         */
+        "polkadotMainDotOpacity": string;
+        /**
+         * メインドットの大きさ
+         */
+        "polkadotMainDotRadius": string;
+        /**
+         * サブドットの不透明度
+         */
+        "polkadotSubDotOpacity": string;
+        /**
+         * サブドットの大きさ
+         */
+        "polkadotSubDotRadius": string;
+        /**
+         * サブドットの数
+         */
+        "polkadotSubDotDivisions": string;
     };
     "_imageEffector": {
         /**
@@ -12298,34 +12326,6 @@ export interface Locale extends ILocale {
              * 青色成分
              */
             "blueComponent": string;
-            /**
-             * メインドットの不透明度
-             */
-            "polkadotMainDotOpacity": string;
-            /**
-             * メインドットの大きさ
-             */
-            "polkadotMainDotRadius": string;
-            /**
-             * サブドットの不透明度
-             */
-            "polkadotSubDotOpacity": string;
-            /**
-             * サブドットの大きさ
-             */
-            "polkadotSubDotRadius": string;
-            /**
-             * サブドットの数
-             */
-            "polkadotSubDotDivisions": string;
-            /**
-             * ラインの幅
-             */
-            "stripeWidth": string;
-            /**
-             * ラインの数
-             */
-            "stripeFrequency": string;
             /**
              * しきい値
              */
