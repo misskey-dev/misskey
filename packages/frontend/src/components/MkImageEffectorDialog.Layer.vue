@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</template>
 
-	<MkImageEffectorFxForm :fx="fx" v-model="layer.params" />
+	<MkImageEffectorFxForm v-model="layer.params" :fx="fx" />
 </MkFolder>
 </template>
 

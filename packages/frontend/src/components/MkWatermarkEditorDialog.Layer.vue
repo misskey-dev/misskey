@@ -109,8 +109,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkImageEffectorFxForm
 		v-else-if="fx != null"
-		:fx="fx"
 		v-model="layer"
+		:fx="fx"
 	/>
 </div>
 </template>
@@ -120,6 +120,7 @@ import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { WATERMARK_FXS } from '@/utility/watermark.js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { ImageEffectorFx } from '@/utility/image-effector/ImageEffector.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -133,7 +134,7 @@ import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
-const fx = computed(() => WATERMARK_FXS.find((fx) => fx.id === layer.value.type) ?? null);
+const fx = computed(() => WATERMARK_FXS.find((fx) => fx.id !== 'watermarkPlacement' && fx.id === layer.value.type) as Exclude<typeof WATERMARK_FXS[number], ImageEffectorFx<"watermarkPlacement", any, any>> ?? null);
 
 const driveFile = ref<Misskey.entities.DriveFile | null>(null);
 const driveFileError = ref(false);
