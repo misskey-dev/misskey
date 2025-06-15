@@ -58,10 +58,12 @@ export const FX_chromaticAberration = defineImageEffectorFx({
 	uniforms: ['amount', 'start', 'normalize'] as const,
 	params: {
 		normalize: {
+			label: i18n.ts._imageEffector._fxProps.normalize,
 			type: 'boolean' as const,
 			default: false,
 		},
 		amount: {
+			label: i18n.ts._imageEffector._fxProps.amount,
 			type: 'number' as const,
 			default: 0.1,
 			min: 0.0,

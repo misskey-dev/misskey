@@ -12106,21 +12106,13 @@ export interface Locale extends ILocale {
          */
         "advanced": string;
         /**
-         * ストライプ
-         */
-        "stripe": string;
-        /**
-         * ラインの幅
-         */
-        "stripeWidth": string;
-        /**
-         * ラインの数
-         */
-        "stripeFrequency": string;
-        /**
          * 角度
          */
         "angle": string;
+        /**
+         * ストライプ
+         */
+        "stripe": string;
         /**
          * ポルカドット
          */
@@ -12129,26 +12121,6 @@ export interface Locale extends ILocale {
          * チェッカー
          */
         "checker": string;
-        /**
-         * メインドットの不透明度
-         */
-        "polkadotMainDotOpacity": string;
-        /**
-         * メインドットの大きさ
-         */
-        "polkadotMainDotRadius": string;
-        /**
-         * サブドットの不透明度
-         */
-        "polkadotSubDotOpacity": string;
-        /**
-         * サブドットの大きさ
-         */
-        "polkadotSubDotRadius": string;
-        /**
-         * サブドットの数
-         */
-        "polkadotSubDotDivisions": string;
     };
     "_imageEffector": {
         /**
@@ -12163,6 +12135,10 @@ export interface Locale extends ILocale {
          * 変更を破棄して終了しますか？
          */
         "discardChangesConfirm": string;
+        /**
+         * 設定項目はありません
+         */
+        "nothingToConfigure": string;
         "_fxs": {
             /**
              * 色収差
@@ -12220,6 +12196,160 @@ export interface Locale extends ILocale {
              * チェッカー
              */
             "checker": string;
+        };
+        "_fxProps": {
+            /**
+             * 角度
+             */
+            "angle": string;
+            /**
+             * サイズ
+             */
+            "scale": string;
+            /**
+             * サイズ
+             */
+            "size": string;
+            /**
+             * 色
+             */
+            "color": string;
+            /**
+             * 不透明度
+             */
+            "opacity": string;
+            /**
+             * 正規化
+             */
+            "normalize": string;
+            /**
+             * 量
+             */
+            "amount": string;
+            /**
+             * 明るさ
+             */
+            "lightness": string;
+            /**
+             * コントラスト
+             */
+            "contrast": string;
+            /**
+             * 色相
+             */
+            "hue": string;
+            /**
+             * 輝度
+             */
+            "brightness": string;
+            /**
+             * 彩度
+             */
+            "saturation": string;
+            /**
+             * 最大値
+             */
+            "max": string;
+            /**
+             * 最小値
+             */
+            "min": string;
+            /**
+             * 方向
+             */
+            "direction": string;
+            /**
+             * 位相
+             */
+            "phase": string;
+            /**
+             * 頻度
+             */
+            "frequency": string;
+            /**
+             * 強さ
+             */
+            "strength": string;
+            /**
+             * ズレ
+             */
+            "glitchChannelShift": string;
+            /**
+             * シード値
+             */
+            "seed": string;
+            /**
+             * 赤色成分
+             */
+            "redComponent": string;
+            /**
+             * 緑色成分
+             */
+            "greenComponent": string;
+            /**
+             * 青色成分
+             */
+            "blueComponent": string;
+            /**
+             * メインドットの不透明度
+             */
+            "polkadotMainDotOpacity": string;
+            /**
+             * メインドットの大きさ
+             */
+            "polkadotMainDotRadius": string;
+            /**
+             * サブドットの不透明度
+             */
+            "polkadotSubDotOpacity": string;
+            /**
+             * サブドットの大きさ
+             */
+            "polkadotSubDotRadius": string;
+            /**
+             * サブドットの数
+             */
+            "polkadotSubDotDivisions": string;
+            /**
+             * ラインの幅
+             */
+            "stripeWidth": string;
+            /**
+             * ラインの数
+             */
+            "stripeFrequency": string;
+            /**
+             * しきい値
+             */
+            "threshold": string;
+            /**
+             * 中心X
+             */
+            "centerX": string;
+            /**
+             * 中心Y
+             */
+            "centerY": string;
+            /**
+             * ぼかし効果
+             */
+            "zoomLinesBlurEffect": string;
+            /**
+             * ぼかし効果と集中線の幅の設定は併用できません。
+             */
+            "zoomLinesBlurEffectDescription": string;
+            /**
+             * 集中線の幅
+             */
+            "zoomLinesThreshold": string;
+            /**
+             * 中心径
+             */
+            "zoomLinesMaskSize": string;
+            /**
+             * 黒色にする
+             */
+            "zoomLinesBlack": string;
         };
     };
 }

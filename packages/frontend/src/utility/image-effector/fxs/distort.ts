@@ -40,11 +40,16 @@ export const FX_distort = defineImageEffectorFx({
 	uniforms: ['phase', 'frequency', 'strength', 'direction'] as const,
 	params: {
 		direction: {
+			label: i18n.ts._imageEffector._fxProps.direction,
 			type: 'number:enum' as const,
-			enum: [{ value: 0, label: 'v' }, { value: 1, label: 'h' }],
+			enum: [
+				{ value: 0, label: i18n.ts.horizontal },
+				{ value: 1, label: i18n.ts.vertical },
+			],
 			default: 1,
 		},
 		phase: {
+			label: i18n.ts._imageEffector._fxProps.phase,
 			type: 'number' as const,
 			default: 0.0,
 			min: -1.0,
@@ -52,6 +57,7 @@ export const FX_distort = defineImageEffectorFx({
 			step: 0.01,
 		},
 		frequency: {
+			label: i18n.ts._imageEffector._fxProps.frequency,
 			type: 'number' as const,
 			default: 30,
 			min: 0,
@@ -59,6 +65,7 @@ export const FX_distort = defineImageEffectorFx({
 			step: 0.1,
 		},
 		strength: {
+			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number' as const,
 			default: 0.05,
 			min: 0,

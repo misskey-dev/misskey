@@ -43,6 +43,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 	uniforms: ['pos', 'frequency', 'thresholdEnabled', 'threshold', 'maskSize', 'black'] as const,
 	params: {
 		x: {
+			label: i18n.ts._imageEffector._fxProps.centerX,
 			type: 'number' as const,
 			default: 0.0,
 			min: -1.0,
@@ -50,6 +51,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 			step: 0.01,
 		},
 		y: {
+			label: i18n.ts._imageEffector._fxProps.centerY,
 			type: 'number' as const,
 			default: 0.0,
 			min: -1.0,
@@ -57,17 +59,21 @@ export const FX_zoomLines = defineImageEffectorFx({
 			step: 0.01,
 		},
 		frequency: {
+			label: i18n.ts._imageEffector._fxProps.frequency,
 			type: 'number' as const,
 			default: 30.0,
 			min: 1.0,
 			max: 200.0,
 			step: 0.1,
 		},
-		thresholdEnabled: {
+		blurEffect: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesBlurEffect,
+			caption: i18n.ts._imageEffector._fxProps.zoomLinesBlurEffectDescription,
 			type: 'boolean' as const,
-			default: true,
+			default: false,
 		},
 		threshold: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesThreshold,
 			type: 'number' as const,
 			default: 0.2,
 			min: 0.0,
@@ -75,6 +81,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 			step: 0.01,
 		},
 		maskSize: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesMaskSize,
 			type: 'number' as const,
 			default: 0.5,
 			min: 0.0,
@@ -82,6 +89,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 			step: 0.01,
 		},
 		black: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesBlack,
 			type: 'boolean' as const,
 			default: false,
 		},
@@ -89,7 +97,8 @@ export const FX_zoomLines = defineImageEffectorFx({
 	main: ({ gl, u, params }) => {
 		gl.uniform2f(u.pos, (1.0 + params.x) / 2.0, (1.0 + params.y) / 2.0);
 		gl.uniform1f(u.frequency, params.frequency);
-		gl.uniform1i(u.thresholdEnabled, params.thresholdEnabled ? 1 : 0);
+		// thresholdの調整が有効な間はblurEffectが利用できない
+		gl.uniform1i(u.thresholdEnabled, params.blurEffect ? 0 : 1);
 		gl.uniform1f(u.threshold, params.threshold);
 		gl.uniform1f(u.maskSize, params.maskSize);
 		gl.uniform1i(u.black, params.black ? 1 : 0);

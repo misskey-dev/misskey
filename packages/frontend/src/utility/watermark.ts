@@ -7,10 +7,10 @@ import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPla
 import { FX_stripe } from '@/utility/image-effector/fxs/stripe.js';
 import { FX_polkadot } from '@/utility/image-effector/fxs/polkadot.js';
 import { FX_checker } from '@/utility/image-effector/fxs/checker.js';
-import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
+import type { ImageEffectorFx, ImageEffectorLayer, ParamDefToPremitiveRecord } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
-const WATERMARK_FXS = [
+export const WATERMARK_FXS = [
 	FX_watermarkPlacement,
 	FX_stripe,
 	FX_polkadot,
@@ -40,34 +40,16 @@ export type WatermarkPreset = {
 		angle: number;
 		align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom' };
 		opacity: number;
-	} | {
+	} | ({
 		id: string;
 		type: 'stripe';
-		angle: number;
-		frequency: number;
-		threshold: number;
-		color: [r: number, g: number, b: number];
-		opacity: number;
-	} | {
+	} & ParamDefToPremitiveRecord<typeof FX_stripe.params>) | ({
 		id: string;
 		type: 'polkadot';
-		angle: number;
-		scale: number;
-		majorRadius: number;
-		majorOpacity: number;
-		minorDivisions: number;
-		minorRadius: number;
-		minorOpacity: number;
-		color: [r: number, g: number, b: number];
-		opacity: number;
-	} | {
+	} & ParamDefToPremitiveRecord<typeof FX_polkadot.params>) | ({
 		id: string;
 		type: 'checker';
-		angle: number;
-		scale: number;
-		color: [r: number, g: number, b: number];
-		opacity: number;
-	})[];
+	} & ParamDefToPremitiveRecord<typeof FX_checker.params>))[];
 };
 
 export class WatermarkRenderer {
@@ -150,7 +132,6 @@ export class WatermarkRenderer {
 						minorRadius: layer.minorRadius,
 						minorOpacity: layer.minorOpacity,
 						color: layer.color,
-						opacity: layer.opacity,
 					},
 				};
 			} else if (layer.type === 'checker') {

@@ -53,6 +53,7 @@ export const FX_checker = defineImageEffectorFx({
 	uniforms: ['angle', 'scale', 'color', 'opacity'] as const,
 	params: {
 		angle: {
+			label: i18n.ts._imageEffector._fxProps.angle,
 			type: 'number' as const,
 			default: 0,
 			min: -1.0,
@@ -60,6 +61,7 @@ export const FX_checker = defineImageEffectorFx({
 			step: 0.01,
 		},
 		scale: {
+			label: i18n.ts._imageEffector._fxProps.scale,
 			type: 'number' as const,
 			default: 3.0,
 			min: 1.0,
@@ -67,10 +69,12 @@ export const FX_checker = defineImageEffectorFx({
 			step: 0.1,
 		},
 		color: {
+			label: i18n.ts._imageEffector._fxProps.color,
 			type: 'color' as const,
 			default: [1, 1, 1],
 		},
 		opacity: {
+			label: i18n.ts._imageEffector._fxProps.opacity,
 			type: 'number' as const,
 			default: 0.5,
 			min: 0.0,

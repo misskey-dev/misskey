@@ -85,6 +85,7 @@ export const FX_polkadot = defineImageEffectorFx({
 	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'color'] as const,
 	params: {
 		angle: {
+			label: i18n.ts._imageEffector._fxProps.angle,
 			type: 'number' as const,
 			default: 0,
 			min: -1.0,
@@ -92,6 +93,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		scale: {
+			label: i18n.ts._imageEffector._fxProps.scale,
 			type: 'number' as const,
 			default: 3.0,
 			min: 1.0,
@@ -99,6 +101,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.1,
 		},
 		majorRadius: {
+			label: i18n.ts._imageEffector._fxProps.polkadotMainDotRadius,
 			type: 'number' as const,
 			default: 0.1,
 			min: 0.0,
@@ -106,6 +109,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		majorOpacity: {
+			label: i18n.ts._imageEffector._fxProps.polkadotMainDotOpacity,
 			type: 'number' as const,
 			default: 0.75,
 			min: 0.0,
@@ -113,6 +117,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		minorDivisions: {
+			label: i18n.ts._imageEffector._fxProps.polkadotSubDotDivisions,
 			type: 'number' as const,
 			default: 4,
 			min: 0,
@@ -120,6 +125,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 1,
 		},
 		minorRadius: {
+			label: i18n.ts._imageEffector._fxProps.polkadotSubDotRadius,
 			type: 'number' as const,
 			default: 0.25,
 			min: 0.0,
@@ -127,6 +133,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		minorOpacity: {
+			label: i18n.ts._imageEffector._fxProps.polkadotSubDotOpacity,
 			type: 'number' as const,
 			default: 0.5,
 			min: 0.0,
@@ -134,6 +141,7 @@ export const FX_polkadot = defineImageEffectorFx({
 			step: 0.01,
 		},
 		color: {
+			label: i18n.ts._imageEffector._fxProps.color,
 			type: 'color' as const,
 			default: [1, 1, 1],
 		},
