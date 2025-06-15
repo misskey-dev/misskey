@@ -49,7 +49,7 @@ void main() {
 
 export const FX_blockNoise = defineImageEffectorFx({
 	id: 'blockNoise' as const,
-	name: i18n.ts._imageEffector._fxs.blockNoise,
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
 	shader,
 	uniforms: ['amount', 'channelShift'] as const,
 	params: {

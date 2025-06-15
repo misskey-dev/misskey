@@ -37,9 +37,9 @@ void main() {
 }
 `;
 
-export const FX_glitch = defineImageEffectorFx({
-	id: 'glitch' as const,
-	name: i18n.ts._imageEffector._fxs.glitch,
+export const FX_tearing = defineImageEffectorFx({
+	id: 'tearing' as const,
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
 	shader,
 	uniforms: ['amount', 'channelShift'] as const,
 	params: {

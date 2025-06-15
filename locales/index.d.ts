@@ -12224,6 +12224,10 @@ export interface Locale extends ILocale {
              * ブロックノイズ
              */
             "blockNoise": string;
+            /**
+             * ティアリング
+             */
+            "tearing": string;
         };
     };
 }
