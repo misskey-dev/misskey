@@ -41,13 +41,23 @@ export const FX_mirror = defineImageEffectorFx({
 	uniforms: ['h', 'v'] as const,
 	params: {
 		h: {
+			label: i18n.ts.horizontal,
 			type: 'number:enum' as const,
-			enum: [{ value: -1, label: '<-' }, { value: 0, label: '|' }, { value: 1, label: '->' }],
+			enum: [
+				{ value: -1, icon: 'ti ti-arrow-bar-right' },
+				{ value: 0, icon: 'ti ti-minus-vertical' },
+				{ value: 1, icon: 'ti ti-arrow-bar-left' }
+			],
 			default: -1,
 		},
 		v: {
+			label: i18n.ts.vertical,
 			type: 'number:enum' as const,
-			enum: [{ value: -1, label: '^' }, { value: 0, label: '-' }, { value: 1, label: 'v' }],
+			enum: [
+				{ value: -1, icon: 'ti ti-arrow-bar-down' },
+				{ value: 0, icon: 'ti ti-minus' },
+				{ value: 1, icon: 'ti ti-arrow-bar-up' }
+			],
 			default: 0,
 		},
 	},
