@@ -3254,6 +3254,7 @@ _imageEffector:
 
   _fxs:
     chromaticAberration: "色収差"
+    glitch: "グリッチ"
     mirror: "ミラー"
     invert: "色の反転"
     grayscale: "白黒"

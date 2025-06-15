@@ -12145,6 +12145,10 @@ export interface Locale extends ILocale {
              */
             "chromaticAberration": string;
             /**
+             * グリッチ
+             */
+            "glitch": string;
+            /**
              * ミラー
              */
             "mirror": string;
