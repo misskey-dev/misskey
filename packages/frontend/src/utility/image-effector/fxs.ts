@@ -18,6 +18,7 @@ import { FX_stripe } from './fxs/stripe.js';
 import { FX_threshold } from './fxs/threshold.js';
 import { FX_watermarkPlacement } from './fxs/watermarkPlacement.js';
 import { FX_zoomLines } from './fxs/zoomLines.js';
+import { FX_blockNoise } from './fxs/blockNoise.js';
 import type { ImageEffectorFx } from './ImageEffector.js';
 
 export const FXS = [
@@ -36,4 +37,5 @@ export const FXS = [
 	FX_stripe,
 	FX_polkadot,
 	FX_checker,
+	FX_blockNoise,
 ] as const satisfies ImageEffectorFx<string, any>[];
