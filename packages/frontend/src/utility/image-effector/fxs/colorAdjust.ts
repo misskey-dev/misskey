@@ -72,7 +72,7 @@ void main() {
 	vec3 color = in_color.rgb;
 
 	color = color * u_brightness;
-	color += vec3(clamp(u_lightness, 0.0, 2.0) - 1.0);
+	color += vec3(u_lightness);
 	color = (color - 0.5) * u_contrast + 0.5;
 
 	vec3 hsl = rgb2hsl(color);
@@ -92,45 +92,50 @@ export const FX_colorAdjust = defineImageEffectorFx({
 	params: {
 		lightness: {
 			type: 'number' as const,
-			default: 100,
-			min: 0,
-			max: 200,
-			step: 1,
+			default: 0,
+			min: -1,
+			max: 1,
+			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		contrast: {
 			type: 'number' as const,
-			default: 100,
+			default: 1,
 			min: 0,
-			max: 200,
-			step: 1,
+			max: 4,
+			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		hue: {
 			type: 'number' as const,
 			default: 0,
-			min: -360,
-			max: 360,
-			step: 1,
+			min: -1,
+			max: 1,
+			step: 0.01,
+			toViewValue: v => Math.round(v * 180) + '°',
 		},
 		brightness: {
 			type: 'number' as const,
-			default: 100,
+			default: 1,
 			min: 0,
-			max: 200,
-			step: 1,
+			max: 4,
+			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		saturation: {
 			type: 'number' as const,
-			default: 100,
+			default: 1,
 			min: 0,
-			max: 200,
-			step: 1,
+			max: 4,
+			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
 	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.brightness, params.brightness / 100);
-		gl.uniform1f(u.contrast, params.contrast / 100);
-		gl.uniform1f(u.hue, params.hue / 360);
-		gl.uniform1f(u.lightness, params.lightness / 100);
-		gl.uniform1f(u.saturation, params.saturation / 100);
+		gl.uniform1f(u.brightness, params.brightness);
+		gl.uniform1f(u.contrast, params.contrast);
+		gl.uniform1f(u.hue, params.hue / 2);
+		gl.uniform1f(u.lightness, params.lightness);
+		gl.uniform1f(u.saturation, params.saturation);
 	},
 });
