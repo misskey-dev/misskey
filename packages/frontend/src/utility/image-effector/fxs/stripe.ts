@@ -60,6 +60,7 @@ export const FX_stripe = defineImageEffectorFx({
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 90) + '°',
 		},
 		frequency: {
 			type: 'number' as const,
@@ -74,6 +75,7 @@ export const FX_stripe = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		color: {
 			type: 'color' as const,
@@ -85,6 +87,7 @@ export const FX_stripe = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
 	main: ({ gl, u, params }) => {

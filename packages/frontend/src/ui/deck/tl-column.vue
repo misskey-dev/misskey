@@ -26,6 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:withReplies="withReplies"
 		:withSensitive="withSensitive"
 		:onlyFiles="onlyFiles"
+		:sound="true"
+		:customSound="soundSetting"
 	/>
 </XColumn>
 </template>

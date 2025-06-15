@@ -15,16 +15,26 @@ uniform sampler2D in_texture;
 uniform vec2 in_resolution;
 uniform int u_amount;
 uniform float u_shiftStrengths[128];
-uniform float u_shiftOrigins[128];
-uniform float u_shiftHeights[128];
+uniform vec2 u_shiftOrigins[128];
+uniform vec2 u_shiftSizes[128];
 uniform float u_channelShift;
 out vec4 out_color;
 
 void main() {
+	// TODO: ピクセル毎に計算する必要はないのでuniformにする
+	float aspect_ratio = min(in_resolution.x, in_resolution.y) / max(in_resolution.x, in_resolution.y);
+	float aspect_ratio_x = in_resolution.x > in_resolution.y ? 1.0 : aspect_ratio;
+	float aspect_ratio_y = in_resolution.x < in_resolution.y ? 1.0 : aspect_ratio;
+
 	float v = 0.0;
 
 	for (int i = 0; i < u_amount; i++) {
-		if (in_uv.y > (u_shiftOrigins[i] - u_shiftHeights[i]) && in_uv.y < (u_shiftOrigins[i] + u_shiftHeights[i])) {
+		if (
+			in_uv.x * aspect_ratio_x > ((u_shiftOrigins[i].x * aspect_ratio_x) - u_shiftSizes[i].x) &&
+			in_uv.x * aspect_ratio_x < ((u_shiftOrigins[i].x * aspect_ratio_x) + u_shiftSizes[i].x) &&
+			in_uv.y * aspect_ratio_y > ((u_shiftOrigins[i].y * aspect_ratio_y) - u_shiftSizes[i].y) &&
+			in_uv.y * aspect_ratio_y < ((u_shiftOrigins[i].y * aspect_ratio_y) + u_shiftSizes[i].y)
+		) {
 			v += u_shiftStrengths[i];
 		}
 	}
@@ -37,39 +47,50 @@ void main() {
 }
 `;
 
-export const FX_glitch = defineImageEffectorFx({
-	id: 'glitch' as const,
-	name: i18n.ts._imageEffector._fxs.glitch,
+export const FX_blockNoise = defineImageEffectorFx({
+	id: 'blockNoise' as const,
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
 	shader,
 	uniforms: ['amount', 'channelShift'] as const,
 	params: {
 		amount: {
 			type: 'number' as const,
-			default: 3,
+			default: 50,
 			min: 1,
 			max: 100,
 			step: 1,
 		},
 		strength: {
 			type: 'number' as const,
-			default: 5,
-			min: -100,
-			max: 100,
+			default: 0.05,
+			min: -1,
+			max: 1,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
-		size: {
+		width: {
 			type: 'number' as const,
-			default: 20,
-			min: 0,
-			max: 100,
+			default: 0.05,
+			min: 0.01,
+			max: 1,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
+		},
+		height: {
+			type: 'number' as const,
+			default: 0.01,
+			min: 0.01,
+			max: 1,
+			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		channelShift: {
 			type: 'number' as const,
-			default: 0.5,
+			default: 0,
 			min: 0,
 			max: 10,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		seed: {
 			type: 'seed' as const,
@@ -80,17 +101,19 @@ export const FX_glitch = defineImageEffectorFx({
 		gl.uniform1i(u.amount, params.amount);
 		gl.uniform1f(u.channelShift, params.channelShift);
 
+		const margin = 0;
+
 		const rnd = seedrandom(params.seed.toString());
 
 		for (let i = 0; i < params.amount; i++) {
 			const o = gl.getUniformLocation(program, `u_shiftOrigins[${i.toString()}]`);
-			gl.uniform1f(o, rnd());
+			gl.uniform2f(o, (rnd() * (1 + (margin * 2))) - margin, (rnd() * (1 + (margin * 2))) - margin);
 
 			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
-			gl.uniform1f(s, (1 - (rnd() * 2)) * (params.strength / 100));
+			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
 
-			const h = gl.getUniformLocation(program, `u_shiftHeights[${i.toString()}]`);
-			gl.uniform1f(h, rnd() * (params.size / 100));
+			const sizes = gl.getUniformLocation(program, `u_shiftSizes[${i.toString()}]`);
+			gl.uniform2f(sizes, params.width, params.height);
 		}
 	},
 });
