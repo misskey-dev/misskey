@@ -37,9 +37,9 @@ void main() {
 }
 `;
 
-export const FX_glitch = defineImageEffectorFx({
-	id: 'glitch' as const,
-	name: i18n.ts._imageEffector._fxs.glitch,
+export const FX_tearing = defineImageEffectorFx({
+	id: 'tearing' as const,
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
 	shader,
 	uniforms: ['amount', 'channelShift'] as const,
 	params: {
@@ -54,18 +54,20 @@ export const FX_glitch = defineImageEffectorFx({
 		strength: {
 			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number' as const,
-			default: 5,
-			min: -100,
-			max: 100,
+			default: 0.05,
+			min: -1,
+			max: 1,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		size: {
 			label: i18n.ts._imageEffector._fxProps.size,
 			type: 'number' as const,
-			default: 20,
+			default: 0.2,
 			min: 0,
-			max: 100,
+			max: 1,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		channelShift: {
 			label: i18n.ts._imageEffector._fxProps.glitchChannelShift,
@@ -74,6 +76,7 @@ export const FX_glitch = defineImageEffectorFx({
 			min: 0,
 			max: 10,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		seed: {
 			label: i18n.ts._imageEffector._fxProps.seed,
@@ -92,10 +95,10 @@ export const FX_glitch = defineImageEffectorFx({
 			gl.uniform1f(o, rnd());
 
 			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
-			gl.uniform1f(s, (1 - (rnd() * 2)) * (params.strength / 100));
+			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
 
 			const h = gl.getUniformLocation(program, `u_shiftHeights[${i.toString()}]`);
-			gl.uniform1f(h, rnd() * (params.size / 100));
+			gl.uniform1f(h, rnd() * params.size);
 		}
 	},
 });

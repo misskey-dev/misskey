@@ -42,6 +42,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		rMin: {
 			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.redComponent})`,
@@ -50,6 +51,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
@@ -58,6 +60,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMin: {
 			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
@@ -66,6 +69,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
@@ -74,6 +78,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMin: {
 			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
@@ -82,6 +87,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
 	main: ({ gl, u, params }) => {

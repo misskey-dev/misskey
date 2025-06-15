@@ -1,11 +1,12 @@
 ## 2025.6.1
 
 ### Note
-- Misskey Webプラグインのnote_view_interruptorは不具合の影響により現在一時的に無効化されています。
+- AiScript Misskey拡張API（Misskey Webプラグイン）の[note_view_interruptor](https://misskey-hub.net/ja/docs/for-developers/plugin/plugin-api-reference/#pluginregister_note_view_interruptorfn)は不具合の影響により現在一時的に無効化されています。
 - Misskey Web投稿フォームのプレビュー切り替えは「...」メニュー内に配置されました
 
 ### Client
 - Feat: 画像にウォーターマークを付与できるようになりました
+- Feat: 画像の加工ができるようになりました(実験的)
 - Enhance: ノートのリアクション一覧で、押せるリアクションを優先して表示できるようにするオプションを追加
 - Enhance: 全てのチャットメッセージを既読にできるように(設定→その他)
 - Enhance: ミュートした絵文字をデバイス間で同期できるように
