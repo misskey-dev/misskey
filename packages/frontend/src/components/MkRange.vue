@@ -12,7 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
+				<div class="highlight right" :style="{ width: rightTrackWidth, left: rightTrackPosition }">
+					<div class="shine right"></div>
+				</div>
+				<div class="highlight left" :style="{ width: leftTrackWidth, left: leftTrackPosition }">
+					<div class="shine left"></div>
+				</div>
 			</div>
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
@@ -24,7 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@mouseenter.passive="onMouseenter"
 				@mousedown="onMousedown"
 				@touchstart="onMousedown"
-			></div>
+			>
+				<div class="thumbInner"></div>
+			</div>
 		</div>
 		<slot name="suffix"></slot>
 	</div>
@@ -35,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
 import { isTouchUsing } from '@/utility/touch.js';
 import * as os from '@/os.js';
 
@@ -51,19 +58,40 @@ const props = withDefaults(defineProps<{
 	continuousUpdate?: boolean;
 }>(), {
 	step: 1,
-	textConverter: (v) => v.toString(),
+	textConverter: (v: number) => (Math.round(v * 1000) / 1000).toString(),
 	easing: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: number): void;
 	(ev: 'dragEnded', value: number): void;
+	(ev: 'thumbDoubleClicked'): void;
 }>();
 
 const containerEl = useTemplateRef('containerEl');
 const thumbEl = useTemplateRef('thumbEl');
 
-const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
+const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math.min(0, props.min))));
+const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
+
+const rightTrackWidth = computed(() => {
+	return Math.max(0, (steppedRawValue.value - minRatio.value) * 100) + '%';
+});
+const leftTrackWidth = computed(() => {
+	return Math.max(0, (minRatio.value - steppedRawValue.value) * 100) + '%';
+});
+const rightTrackPosition = computed(() => {
+	return (Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100 + '%';
+});
+const leftTrackPosition = computed(() => {
+	return (Math.min(minRatio.value, steppedRawValue.value) * 100) + '%';
+});
+
+const calcRawValue = (value: number) => {
+	return (value - props.min) / (props.max - props.min);
+};
+
+const rawValue = ref(calcRawValue(props.modelValue));
 const steppedRawValue = computed(() => {
 	if (props.step) {
 		const step = props.step / (props.max - props.min);
@@ -93,6 +121,11 @@ const calcThumbPosition = () => {
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
+watch(() => props.modelValue, (newVal) => {
+	const newRawValue = calcRawValue(newVal);
+	if (rawValue.value === newRawValue) return;
+	rawValue.value = newRawValue;
+});
 
 let ro: ResizeObserver | undefined;
 
@@ -118,6 +151,12 @@ const steps = computed(() => {
 const tooltipForDragShowing = ref(false);
 const tooltipForHoverShowing = ref(false);
 
+onBeforeUnmount(() => {
+	// 何らかの問題で表示されっぱなしでもコンポーネントを離れたら消えるように
+	tooltipForDragShowing.value = false;
+	tooltipForHoverShowing.value = false;
+});
+
 function onMouseenter() {
 	if (isTouchUsing) return;
 
@@ -128,7 +167,7 @@ function onMouseenter() {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl,
+		targetElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -137,6 +176,8 @@ function onMouseenter() {
 		tooltipForHoverShowing.value = false;
 	}, { once: true, passive: true });
 }
+
+let lastClickTime: number | null = null;
 
 function onMousedown(ev: MouseEvent | TouchEvent) {
 	ev.preventDefault();
@@ -148,7 +189,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl,
+		targetElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -193,6 +234,20 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	window.addEventListener('touchmove', onDrag);
 	window.addEventListener('mouseup', onMouseup, { once: true });
 	window.addEventListener('touchend', onMouseup, { once: true });
+
+	if (lastClickTime == null) {
+		lastClickTime = Date.now();
+		return;
+	} else {
+		const now = Date.now();
+		if (now - lastClickTime < 300) { // 300ms以内のクリックはダブルクリックとみなす
+			lastClickTime = null;
+			emit('thumbDoubleClicked');
+			return;
+		} else {
+			lastClickTime = now;
+		}
+	}
 }
 </script>
 
@@ -222,15 +277,17 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		}
 	}
 
-	$thumbHeight: 20px;
-	$thumbWidth: 20px;
+	$thumbHeight: 32px;
+	$thumbWidth: 32px;
+	$thumbInnerHeight: 19px;
+	$thumbInnerWidth: 19px;
 
 	> .body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
-		padding: 7px 12px;
+		padding: 0px 4px;
 		background: var(--MI_THEME-panel);
 		border: solid 1px var(--MI_THEME-panel);
 		border-radius: 6px;
@@ -256,10 +313,30 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				> .highlight {
 					position: absolute;
 					top: 0;
-					left: 0;
 					height: 100%;
-					background: var(--MI_THEME-accent);
-					opacity: 0.5;
+					background: color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0.5);
+					overflow: clip;
+
+					> .shine {
+						position: absolute;
+						top: 0;
+						width: 64px;
+						height: 100%;
+					}
+				}
+
+				> .highlight.right {
+					> .shine.right {
+						right: calc(#{$thumbInnerWidth} / 2);
+						background: linear-gradient(-90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
+				}
+
+				> .highlight.left {
+					> .shine.left {
+						left: calc(#{$thumbInnerWidth} / 2);
+						background: linear-gradient(90deg, var(--MI_THEME-buttonGradateB), color(from var(--MI_THEME-buttonGradateA) srgb r g b / 0));
+					}
 				}
 			}
 
@@ -290,11 +367,25 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				width: $thumbWidth;
 				height: $thumbHeight;
 				cursor: grab;
-				background: var(--MI_THEME-accent);
-				border-radius: 999px;
 
 				&:hover {
-					background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+					> .thumbInner {
+						background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+					}
+				}
+
+				> .thumbInner {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					width: $thumbInnerWidth;
+					height: $thumbInnerHeight;
+					background: var(--MI_THEME-accent);
+					border-radius: 999px;
+					pointer-events: none;
 				}
 			}
 		}

@@ -332,6 +332,16 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async readAllChatMessages(
+		readerId: MiUser['id'],
+	): Promise<void> {
+		const redisPipeline = this.redisClient.pipeline();
+		// TODO: newUserChatMessageExists とか newRoomChatMessageExists も消したい(けどキーの列挙が必要になって面倒)
+		redisPipeline.del(`newChatMessagesExists:${readerId}`);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
 	public findMessageById(messageId: MiChatMessage['id']) {
 		return this.chatMessagesRepository.findOneBy({ id: messageId });
 	}

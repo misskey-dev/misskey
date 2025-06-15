@@ -2848,3 +2848,13 @@ _search:
   searchScopeAll: "みんな"
   searchScopeLocal: "ローカル"
   searchScopeUser: "ユーザー指定"
+_watermarkEditor:
+  driveFileTypeWarn: "このファイルは対応しとらへん"
+  opacity: "不透明度"
+  scale: "大きさ"
+  text: "テキスト"
+  position: "位置"
+  type: "タイプ"
+  image: "画像"
+  advanced: "高度"
+  angle: "角度"

@@ -48,6 +48,10 @@ export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
 		?? char;
 }
 
+export function isSupportedEmoji(char: string): boolean {
+	return unicodeEmojisMap.has(colorizeEmoji(char)) || unicodeEmojisMap.has(char);
+}
+
 export function getEmojiName(char: string): string {
 	// Colorize it because emojilist.json assumes that
 	const idx = _indexByChar.get(colorizeEmoji(char)) ?? _indexByChar.get(char);

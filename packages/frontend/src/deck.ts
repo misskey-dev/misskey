@@ -5,11 +5,11 @@
 
 import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
-import { v4 as uuid } from 'uuid';
 import { i18n } from './i18n.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
 import type { MenuItem } from '@/types/menu.js';
+import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
@@ -103,7 +103,7 @@ function addProfile(name: string) {
 	if (prefer.s['deck.profiles'].find(p => p.name === name)) return;
 
 	const newProfile: DeckProfile = {
-		id: uuid(),
+		id: genId(),
 		name,
 		columns: [],
 		layout: [],

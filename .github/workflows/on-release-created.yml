@@ -26,6 +26,8 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
+          # see https://docs.github.com/actions/use-cases-and-examples/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
+          registry-url: 'https://registry.npmjs.org'
       - name: Publish package
         run: |
           pnpm i --frozen-lockfile

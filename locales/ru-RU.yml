@@ -2191,3 +2191,12 @@ _search:
   searchScopeAll: "Все"
   searchScopeLocal: "Местная"
   searchScopeUser: "Указанный пользователь"
+_watermarkEditor:
+  opacity: "Непрозрачность"
+  scale: "Размер"
+  text: "Текст"
+  position: "Позиция"
+  type: "Тип"
+  image: "Изображения"
+  advanced: "Для продвинутых"
+  angle: "Угол"
