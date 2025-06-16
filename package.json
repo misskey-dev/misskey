@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2025.6.1-nayami-1.9.3",
+	"version": "2025.6.2-nayami-1.9.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
