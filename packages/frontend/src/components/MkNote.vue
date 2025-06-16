@@ -150,10 +150,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 				<!-- いいね機能 -->
 				<button ref="likeButton" :class="$style.footerButton" class="_button" @click="toggleLikeReact()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-star" style="color: var(--love);"></i>
-					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-star" style="color: var(--MI_THEME-love);"></i>
+					<i v-else-if="$appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 					<i v-else class="ti ti-star"></i>
-					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
+					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && $appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number($appearNote.reactionCount) }}</p>
 				</button>
 				<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
 					<i class="ti ti-paperclip"></i>
@@ -498,19 +498,49 @@ function reply(): void {
 // 本家を追従する際にconflictを減らすため
 function toggleLikeReact(): void {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (appearNote.myReaction == null) {
+	if ($appearNote.myReaction == null) {
 		reactLike();
 	} else {
 		undoReact();
 	}
 }
 
-function reactLike(): void {
+async function reactLike(): Promise<void> {
+	// sound.playMisskeySfx('reaction');
+	// misskeyApi('notes/reactions/create', {
+	// 	noteId: appearNote.id,
+	// 	reaction: '⭐️',
+	// }).then(() => {
+	// 	noteEvents.emit(`reacted:${appearNote.id}`, {
+	// 		userId: $i!.id,
+	// 		reaction: '⭐️',
+	// 	});
+	// }{
+	blur();
+
 	sound.playMisskeySfx('reaction');
+
+	if (props.mock) {
+		emit('reaction', '⭐️');
+		$appearNote.reactions['⭐️'] = 1;
+		$appearNote.reactionCount++;
+		$appearNote.myReaction = '⭐️';
+		return;
+	}
+
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.id,
 		reaction: '⭐️',
+	}).then(() => {
+		noteEvents.emit(`reacted:${appearNote.id}`, {
+			userId: $i!.id,
+			reaction: '⭐️',
+		});
 	});
+
+	if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+		claimAchievement('reactWithoutRead');
+	}
 }
 
 function react(): void {

@@ -168,10 +168,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 			<!-- いいね機能 -->
 			<button ref="likeButton" :class="$style.noteFooterButton" class="_button" @click="toggleLikeReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-star" style="color: var(--love);"></i>
-				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && $appearNote.myReaction != null" class="ti ti-star" style="color: var(--MI_THEME-love);"></i>
+				<i v-else-if="$appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 				<i v-else class="ti ti-star"></i>
-				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
+				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && $appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number($appearNote.reactionCount) }}</p>
 			</button>
 			<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
 				<i class="ti ti-paperclip"></i>
@@ -281,6 +281,7 @@ import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
+import appear from '@/directives/appear';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -522,8 +523,12 @@ function react(): void {
 	}
 }
 
+// fixed by rockcutter: $appearNote の myReaction を参照する
+// function undoReact(targetNote: Misskey.entities.Note): void {
+// const oldReaction = targetNote.myReaction;
 function undoReact(targetNote: Misskey.entities.Note): void {
-	const oldReaction = targetNote.myReaction;
+	const oldReaction = $appearNote.myReaction;
+	console.log('undoReact', targetNote.id, oldReaction);
 	if (!oldReaction) return;
 	misskeyApi('notes/reactions/delete', {
 		noteId: targetNote.id,
@@ -536,7 +541,8 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 }
 
 function toggleReact() {
-	if (appearNote.myReaction == null) {
+	// fixed by rockcutter: $ をつけた
+	if ($appearNote.myReaction == null) {
 		react();
 	} else {
 		undoReact(appearNote);
@@ -547,19 +553,30 @@ function toggleReact() {
 // 本家を追従する際にconflictを減らすため
 function toggleLikeReact(): void {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (appearNote.value.myReaction == null) {
+	if ($appearNote.myReaction == null) {
 		reactLike();
 	} else {
-		undoReact(appearNote.value);
+		undoReact(appearNote);
 	}
 }
 
 function reactLike(): void {
+	blur();
+
 	sound.playMisskeySfx('reaction');
+
 	misskeyApi('notes/reactions/create', {
-		noteId: appearNote.value.id,
+		noteId: appearNote.id,
 		reaction: '⭐️',
+	}).then(() => {
+		noteEvents.emit(`reacted:${appearNote.id}`, {
+			userId: $i!.id,
+			reaction: '⭐️',
+		});
 	});
+	if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+		claimAchievement('reactWithoutRead');
+	}
 }
 
 function onContextmenu(ev: MouseEvent): void {
