@@ -3169,3 +3169,5 @@ _imageEffector:
     stripe: "條紋"
     polkadot: "波卡圓點"
     checker: "棋盤格"
+    blockNoise: "阻擋雜訊"
+    tearing: "撕裂"
