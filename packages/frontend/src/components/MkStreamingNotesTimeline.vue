@@ -62,6 +62,7 @@ import { useInterval } from '@@/js/use-interval.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { PagingCtx } from '@/composables/use-pagination.js';
+import type { SoundStore } from '@/preferences/def.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
@@ -83,6 +84,7 @@ const props = withDefaults(defineProps<{
 	channel?: string;
 	role?: string;
 	sound?: boolean;
+	customSound?: SoundStore | null;
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	withSensitive?: boolean;
@@ -92,6 +94,8 @@ const props = withDefaults(defineProps<{
 	withReplies: false,
 	withSensitive: true,
 	onlyFiles: false,
+	sound: false,
+	customSound: null,
 });
 
 provide('inTimeline', true);
@@ -190,7 +194,11 @@ function prepend(note: Misskey.entities.Note) {
 	}
 
 	if (props.sound) {
-		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+		if (props.customSound) {
+			sound.playMisskeySfxFile(props.customSound);
+		} else {
+			sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+		}
 	}
 }
 
@@ -420,7 +428,7 @@ defineExpose({
 	background: var(--MI_THEME-panel);
 }
 
-.note {
+.note:not(:empty) {
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 

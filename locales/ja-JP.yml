@@ -1365,6 +1365,8 @@ abort: "中止"
 tip: "ヒントとコツ"
 redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
+defaultImageCompressionLevel: "デフォルトの画像圧縮度"
+defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1455,6 +1457,7 @@ _settings:
   contentsUpdateFrequency_description: "高いほどリアルタイムにコンテンツが更新されますが、パフォーマンスが低下し、通信量とバッテリーの消費が多くなります。"
   contentsUpdateFrequency_description2: "リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。"
   showUrlPreview: "URLプレビューを表示する"
+  showAvailableReactionsFirstInNote: "利用できるリアクションを先頭に表示"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -2519,6 +2522,8 @@ _visibility:
   disableFederationDescription: "他サーバーへの配信を行いません"
 
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "アップロードされていないファイルがありますが、破棄してフォームを閉じますか？"
+  uploaderTip: "ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。"
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
@@ -3218,3 +3223,55 @@ _clip:
 
 _userLists:
   tip: "任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。"
+
+watermark: "ウォーターマーク"
+defaultPreset: "デフォルトのプリセット"
+_watermarkEditor:
+  tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  quitWithoutSaveConfirm: "保存せずに終了しますか？"
+  driveFileTypeWarn: "このファイルは対応していません"
+  driveFileTypeWarnDescription: "画像ファイルを選択してください"
+  title: "ウォーターマークの編集"
+  cover: "全体に被せる"
+  repeat: "敷き詰める"
+  opacity: "不透明度"
+  scale: "サイズ"
+  text: "テキスト"
+  position: "位置"
+  type: "タイプ"
+  image: "画像"
+  advanced: "高度"
+  stripe: "ストライプ"
+  stripeWidth: "ラインの幅"
+  stripeFrequency: "ラインの数"
+  angle: "角度"
+  polkadot: "ポルカドット"
+  checker: "チェッカー"
+  polkadotMainDotOpacity: "メインドットの不透明度"
+  polkadotMainDotRadius: "メインドットの大きさ"
+  polkadotSubDotOpacity: "サブドットの不透明度"
+  polkadotSubDotRadius: "サブドットの大きさ"
+  polkadotSubDotDivisions: "サブドットの数"
+
+_imageEffector:
+  title: "エフェクト"
+  addEffect: "エフェクトを追加"
+  discardChangesConfirm: "変更を破棄して終了しますか？"
+
+  _fxs:
+    chromaticAberration: "色収差"
+    glitch: "グリッチ"
+    mirror: "ミラー"
+    invert: "色の反転"
+    grayscale: "白黒"
+    colorAdjust: "色調補正"
+    colorClamp: "色の圧縮"
+    colorClampAdvanced: "色の圧縮(高度)"
+    distort: "歪み"
+    threshold: "二値化"
+    zoomLines: "集中線"
+    stripe: "ストライプ"
+    polkadot: "ポルカドット"
+    checker: "チェッカー"
+    blockNoise: "ブロックノイズ"
+    tearing: "ティアリング"
