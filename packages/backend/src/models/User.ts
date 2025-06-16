@@ -32,22 +32,22 @@ export class MiUser {
 	public lastActiveDate: Date | null;
 
 	@Column('boolean', {
-		default: false,
+		default: true, // false から true に変更
 	})
 	public hideOnlineStatus: boolean;
 
 	@Column('jsonb', {
 		default: {
-			type: 'mutualFollow', // デフォルトは相互フォロー
+			type: 'mutualFollow',
 		},
 	})
 	public activeStatusVisibility: {
 		type: 'all' | 'following' | 'followers' | 'mutualFollow' | 'followingOrFollower' | 'list' | 'never',
-		userListId?: string, // typeがlistの場合に使用
+		userListId?: string,
 	} & Record<string, any>;
 
 	@Column('boolean', {
-		default: false,
+		default: true, // false から true に変更
 	})
 	public hideSearchResult: boolean;
 
@@ -186,7 +186,7 @@ export class MiUser {
 	public isSuspended: boolean;
 
 	@Column('boolean', {
-		default: false,
+		default: true, // false から true に変更
 		comment: 'Whether the User is locked.',
 	})
 	public isLocked: boolean;
@@ -211,7 +211,7 @@ export class MiUser {
 
 	@Index()
 	@Column('boolean', {
-		default: true,
+		default: false, // true から false に変更
 		comment: 'Whether the User is explorable.',
 	})
 	public isExplorable: boolean;
@@ -222,7 +222,7 @@ export class MiUser {
 	public isHibernated: boolean;
 
 	@Column('boolean', {
-		default: false,
+		default: true, // false から true に変更
 	})
 	public requireSigninToViewContents: boolean;
 
