@@ -3169,3 +3169,5 @@ _imageEffector:
     stripe: "Rayas"
     polkadot: "Lunares"
     checker: "Corrector"
+    blockNoise: "Bloquear Ruido"
+    tearing: "Rasgado de Imagen (Tearing)"
