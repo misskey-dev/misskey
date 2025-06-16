@@ -91,6 +91,7 @@ export const FX_colorAdjust = defineImageEffectorFx({
 	uniforms: ['lightness', 'contrast', 'hue', 'brightness', 'saturation'] as const,
 	params: {
 		lightness: {
+			label: i18n.ts._imageEffector._fxProps.lightness,
 			type: 'number' as const,
 			default: 0,
 			min: -1,
@@ -99,6 +100,7 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		contrast: {
+			label: i18n.ts._imageEffector._fxProps.contrast,
 			type: 'number' as const,
 			default: 1,
 			min: 0,
@@ -107,6 +109,7 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		hue: {
+			label: i18n.ts._imageEffector._fxProps.hue,
 			type: 'number' as const,
 			default: 0,
 			min: -1,
@@ -115,6 +118,7 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 180) + '°',
 		},
 		brightness: {
+			label: i18n.ts._imageEffector._fxProps.brightness,
 			type: 'number' as const,
 			default: 1,
 			min: 0,
@@ -123,6 +127,7 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		saturation: {
+			label: i18n.ts._imageEffector._fxProps.saturation,
 			type: 'number' as const,
 			default: 1,
 			min: 0,

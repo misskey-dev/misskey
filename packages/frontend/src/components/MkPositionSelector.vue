@@ -44,6 +44,11 @@ const y = defineModel<string>('y', { default: 'center' });
 	height: 32px;
 	background: var(--MI_THEME-panel);
 	border-radius: 4px;
+	transition: background 0.1s ease;
+
+	&:not(.active):hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
 
 	&.active {
 		background: var(--MI_THEME-accentedBg);
