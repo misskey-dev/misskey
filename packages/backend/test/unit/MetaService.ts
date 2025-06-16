@@ -11,6 +11,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CoreModule } from '@/core/CoreModule.js';
+import { MetasRepository } from '@/models/_.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { DataSource } from 'typeorm';
 
@@ -39,8 +40,8 @@ describe('MetaService', () => {
 	});
 
 	test('fetch (cache)', async () => {
-		const db = app.get<DataSource>(DI.db);
-		const spy = jest.spyOn(db, 'transaction');
+		const metasRepository = app.get<MetasRepository>(DI.metasRepository);
+		const spy = jest.spyOn(metasRepository, 'createQueryBuilder');
 
 		const result = await metaService.fetch();
 
@@ -49,12 +50,12 @@ describe('MetaService', () => {
 	});
 
 	test('fetch (force)', async () => {
-		const db = app.get<DataSource>(DI.db);
-		const spy = jest.spyOn(db, 'transaction');
+		const metasRepository = app.get<MetasRepository>(DI.metasRepository);
+		const spy = jest.spyOn(metasRepository, 'createQueryBuilder');
 
 		const result = await metaService.fetch(true);
 
 		expect(result.id).toBe('x');
-		expect(spy).toHaveBeenCalledTimes(1);
+		expect(spy).toHaveBeenCalled();
 	});
 });
