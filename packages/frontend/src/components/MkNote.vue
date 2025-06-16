@@ -259,21 +259,21 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 
 let note = deepClone(props.note);
 
-// plugin
-const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
-if (noteViewInterruptors.length > 0) {
-	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note);
-		for (const interruptor of noteViewInterruptors) {
-			try {
-				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-			} catch (err) {
-				console.error(err);
-			}
-		}
-		note = result as Misskey.entities.Note;
-	});
-}
+// コンポーネント初期化に非同期的な処理を行うとTransitionのレンダリングがバグるため同期的に実行できるメソッドが実装されるのを待つ必要がある
+// https://github.com/aiscript-dev/aiscript/issues/937
+//// plugin
+//const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+//if (noteViewInterruptors.length > 0) {
+//	let result: Misskey.entities.Note | null = deepClone(note);
+//	for (const interruptor of noteViewInterruptors) {
+//		try {
+//			result = await interruptor.handler(result!) as Misskey.entities.Note | null;
+//		} catch (err) {
+//			console.error(err);
+//		}
+//	}
+//	note = result as Misskey.entities.Note;
+//}
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
@@ -304,13 +304,13 @@ const translating = ref(false);
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const showInstanceIcon = computed(() => prefer.s.instanceIcon);
 const canRenote = computed(() => {
-  // 連合ありやみノートの場合はリノートできない
-  if (appearNote.isNoteInYamiMode && !appearNote.localOnly) {
-    return false;
-  }
+	// 連合ありやみノートの場合はリノートできない
+	if (appearNote.isNoteInYamiMode && !appearNote.localOnly) {
+		return false;
+	}
 
-  // 既存の条件
-  return ['public', 'home'].includes(appearNote.visibility) ||
+	// 既存の条件
+	return ['public', 'home'].includes(appearNote.visibility) ||
     (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
 });
 const renoteCollapsed = ref(
@@ -325,21 +325,28 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${appearNote.id}`,
 }));
 
-/* Overload FunctionにLintが対応していないのでコメントアウト
+/* eslint-disable no-redeclare */
+/** checkOnlyでは純粋なワードミュート結果をbooleanで返却する */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
-*/
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
-	if (mutedWords == null) return false;
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly?: false): Array<string | string[]> | false | 'sensitiveMute';
 
-	const result = checkWordMute(noteToCheck, $i, mutedWords);
-	if (Array.isArray(result)) return result;
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | boolean | 'sensitiveMute' {
+	if (mutedWords != null) {
+		const result = checkWordMute(noteToCheck, $i, mutedWords);
+		if (Array.isArray(result)) {
+			return checkOnly ? (result.length > 0) : result;
+		}
 
-	const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-	if (Array.isArray(replyResult)) return replyResult;
+		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
+		if (Array.isArray(replyResult)) {
+			return checkOnly ? (replyResult.length > 0) : replyResult;
+		}
 
-	const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-	if (Array.isArray(renoteResult)) return renoteResult;
+		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
+		if (Array.isArray(renoteResult)) {
+			return checkOnly ? (renoteResult.length > 0) : renoteResult;
+		}
+	}
 
 	if (checkOnly) return false;
 
@@ -349,6 +356,7 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	return false;
 }
+/* eslint-enable no-redeclare */
 
 const keymap = {
 	'r': () => {
@@ -421,7 +429,7 @@ if (!props.mock) {
 
 		const users = renotes.map(x => x.user);
 
-		if (users.length < 1) return;
+		if (users.length < 1 || renoteButton.value == null) return;
 
 		const { dispose } = os.popup(MkUsersTooltip, {
 			showing,

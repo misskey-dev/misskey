@@ -282,18 +282,25 @@ const headerActions = computed(() => {
 			icon: 'ti ti-dots',
 			text: i18n.ts.options,
 			handler: (ev) => {
-				const menuItems: MenuItem[] = [
-					...filterItems.value,
-					{
-						type: 'switch',
-						text: i18n.ts.showRenotes,
-						ref: withRenotes,
-					},
-				];
+				const menuItems: MenuItem[] = [];
+
+				// フィルター項目があれば追加
+				if (filterItems.value.length > 0) {
+					menuItems.push(...filterItems.value);
+				}
+
+				// リノートの表示切り替え（アイコン付き）
+				menuItems.push({
+					type: 'switch',
+					icon: 'ti ti-repeat',
+					text: i18n.ts.showRenotes,
+					ref: withRenotes,
+				});
 
 				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
 					menuItems.push({
 						type: 'switch',
+						icon: 'ti ti-messages',
 						text: i18n.ts.showRepliesToOthersInTimeline,
 						ref: withReplies,
 						disabled: withFiles,
@@ -302,10 +309,12 @@ const headerActions = computed(() => {
 
 				menuItems.push({
 					type: 'switch',
+					icon: 'ti ti-eye-exclamation',
 					text: i18n.ts.withSensitive,
 					ref: withSensitive,
 				}, {
 					type: 'switch',
+					icon: 'ti ti-photo',
 					text: i18n.ts.fileAttachedOnly,
 					ref: withFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,

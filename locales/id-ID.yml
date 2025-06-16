@@ -2608,3 +2608,13 @@ _search:
   searchScopeAll: "Semua"
   searchScopeLocal: "Lokal"
   searchScopeUser: "Pengguna spesifik"
+_watermarkEditor:
+  driveFileTypeWarn: "Berkas ini tidak didukung"
+  opacity: "Opasitas"
+  scale: "Ukuran"
+  text: "Teks"
+  position: "Posisi"
+  type: "Tipe"
+  image: "Gambar"
+  advanced: "Tingkat lanjut"
+  angle: "Sudut"

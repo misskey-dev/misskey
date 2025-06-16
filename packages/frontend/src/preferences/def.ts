@@ -5,13 +5,14 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
-import { v4 as uuid } from 'uuid';
 import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
+import type { WatermarkPreset } from '@/utility/watermark.js';
+import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 
@@ -53,16 +54,16 @@ export const PREF_DEF = definePreferences({
 		accountDependent: true,
 		default: () => [{
 			name: 'calendar',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'notifications',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'onlineUsers',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'activeUsers',
-			id: uuid(), place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}] as {
 			name: string;
 			id: string;
@@ -82,7 +83,7 @@ export const PREF_DEF = definePreferences({
 	emojiPalettes: {
 		serverDependent: true,
 		default: () => [{
-			id: uuid(),
+			id: genId(),
 			name: '',
 			emojis: ['👍', '💙', '💜', '🥺', '😇', '😢', '😭', '🤔', '😮', '🍮'],
 		}] as {
@@ -380,6 +381,9 @@ export const PREF_DEF = definePreferences({
 	showTitlebar: {
 		default: false,
 	},
+	showAvailableReactionsFirstInNote: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 		mergeStrategy: (a, b) => {
@@ -395,6 +399,33 @@ export const PREF_DEF = definePreferences({
 		mergeStrategy: (a, b) => {
 			return [...new Set(a.concat(b))];
 		},
+	},
+	watermarkPresets: {
+		accountDependent: true,
+		default: [] as WatermarkPreset[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
+	},
+	defaultWatermarkPresetId: {
+		accountDependent: true,
+		default: null as WatermarkPreset['id'] | null,
+	},
+	defaultImageCompressionLevel: {
+		default: 2 as 0 | 1 | 2 | 3,
 	},
 
 	'sound.masterVolume': {

@@ -35,7 +35,6 @@ describe('Before setup instance', () => {
 		cy.intercept('POST', '/api/admin/update-meta').as('update-meta');
 
 		cy.get('[data-cy-next]').click();
-		cy.get('[data-cy-next]').click();
 		cy.get('[data-cy-server-name] input').type('Testskey');
 		cy.get('[data-cy-server-setup-wizard-apply]').click();
 
