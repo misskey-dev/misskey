@@ -67,7 +67,7 @@ async function setChannel() {
 		items: channels.map(x => ({
 			value: x, text: x.name,
 		})),
-		default: props.column.channelId,
+		default: channels.find(x => x.id === props.column.channelId),
 	});
 	if (canceled || chosenChannel == null) return;
 	updateColumn(props.column.id, {
