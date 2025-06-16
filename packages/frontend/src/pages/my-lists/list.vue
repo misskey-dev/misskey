@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -80,7 +80,7 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-const paginationEl = ref<InstanceType<typeof MkPagination>>();
+const paginationEl = useTemplateRef('paginationEl');
 const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
@@ -109,7 +109,7 @@ function addUser() {
 			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
-			paginationEl.value?.reload();
+			paginationEl.value?.paginator.reload();
 		});
 	});
 }
@@ -125,7 +125,7 @@ async function removeUser(item, ev) {
 				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
-				paginationEl.value?.removeItem(item.id);
+				paginationEl.value?.paginator.removeItem(item.id);
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -147,7 +147,7 @@ async function showMembershipMenu(item, ev) {
 			userId: item.userId,
 			withReplies,
 		}).then(() => {
-			paginationEl.value!.updateItem(item.id, (old) => ({
+			paginationEl.value!.paginator.updateItem(item.id, (old) => ({
 				...old,
 				withReplies,
 			}));
