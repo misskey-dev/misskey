@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
@@ -87,10 +87,10 @@ const props = defineProps<{
 const viewBoxX = ref<number>(50);
 const viewBoxY = ref<number>(30);
 const stats = ref<Misskey.entities.ServerStats[]>([]);
-const cpuGradientId = uuid();
-const cpuMaskId = uuid();
-const memGradientId = uuid();
-const memMaskId = uuid();
+const cpuGradientId = genId();
+const cpuMaskId = genId();
+const memGradientId = genId();
+const memMaskId = genId();
 const cpuPolylinePoints = ref<string>('');
 const memPolylinePoints = ref<string>('');
 const cpuPolygonPoints = ref<string>('');
@@ -106,7 +106,7 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
 		length: 50,
 	});
 });

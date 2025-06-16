@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -71,7 +71,7 @@ const paginationPast = {
 	},
 };
 
-const paginationEl = ref<InstanceType<typeof MkPagination>>();
+const paginationEl = useTemplateRef('paginationEl');
 
 const tab = ref('current');
 
@@ -86,10 +86,10 @@ async function read(target) {
 	}
 
 	if (!paginationEl.value) return;
-	paginationEl.value.updateItem(target.id, a => {
-		a.isRead = true;
-		return a;
-	});
+	paginationEl.value.paginator.updateItem(target.id, a => ({
+		...a,
+		isRead: true,
+	}));
 	misskeyApi('i/read-announcement', { announcementId: target.id });
 	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),

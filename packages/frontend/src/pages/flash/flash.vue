@@ -238,12 +238,12 @@ async function run() {
 	}
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!flash.value) return;
 
 	const pageUrl = `${url}/play/${flash.value.id}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: flash.value.user,
 		initialComment: `Play: ${pageUrl}\n-----\n`,
 	}, {
