@@ -498,17 +498,17 @@ function reply(): void {
 // 本家を追従する際にconflictを減らすため
 function toggleLikeReact(): void {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (appearNote.value.myReaction == null) {
+	if (appearNote.myReaction == null) {
 		reactLike();
 	} else {
-		undoReact(appearNote.value);
+		undoReact();
 	}
 }
 
 function reactLike(): void {
 	sound.playMisskeySfx('reaction');
 	misskeyApi('notes/reactions/create', {
-		noteId: appearNote.value.id,
+		noteId: appearNote.id,
 		reaction: '⭐️',
 	});
 }
