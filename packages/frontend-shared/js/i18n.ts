@@ -72,7 +72,7 @@ export class I18n<T extends ILocale> {
 
 					console.error(`Unexpected locale key: ${String(p)}`);
 
-					return p;
+					return new Proxy({} as any, new Handler<TTarget[keyof TTarget] & ILocale>());
 				}
 			}
 
@@ -141,7 +141,7 @@ export class I18n<T extends ILocale> {
 
 					console.error(`Unexpected locale key: ${String(p)}`);
 
-					return p;
+					return new Proxy((() => p) as any, new Handler<TTarget[keyof TTarget] & ILocale>());
 				}
 			}
 
