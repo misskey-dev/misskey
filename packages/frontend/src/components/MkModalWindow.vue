@@ -4,15 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
-	<div ref="rootEl" :class="$style.root" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }">
+<MkModal ref="modal" v-slot="{ type }" :preferType="deviceKind === 'smartphone' ? 'drawer' : 'dialog'" @click="onBgClick" @closed="emit('closed')" @esc="emit('esc')">
+	<div ref="rootEl" :class="[$style.root, type === 'drawer' ? $style.asDrawer : null]" :style="{ width: type === 'drawer' ? '' : `${width}px`, height: type === 'drawer' ? '' : `min(${height}px, 100%)` }">
 		<div :class="$style.header">
-			<button v-if="withOkButton && withCloseButton" :class="$style.headerButton" class="_button" @click="emit('close')"><i class="ti ti-x"></i></button>
+			<button v-if="withCloseButton" :class="$style.headerButton" class="_button" data-cy-modal-window-close @click="emit('close')"><i class="ti ti-x"></i></button>
 			<span :class="$style.title">
 				<slot name="header"></slot>
 			</span>
-			<button v-if="!withOkButton && withCloseButton" :class="$style.headerButton" class="_button" data-cy-modal-window-close @click="emit('close')"><i class="ti ti-x"></i></button>
-			<button v-if="withOkButton" :class="$style.headerButton" class="_button" :disabled="okButtonDisabled" @click="emit('ok')"><i class="ti ti-check"></i></button>
+			<div v-if="withOkButton" style="padding: 0 16px; place-content: center;">
+				<MkButton primary gradate small rounded :disabled="okButtonDisabled" @click="emit('ok')">{{ i18n.ts.done }} <i class="ti ti-check"></i></MkButton>
+			</div>
 		</div>
 		<div :class="$style.body">
 			<slot></slot>
@@ -26,7 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
-import MkModal from './MkModal.vue';
+import MkModal from '@/components/MkModal.vue';
+import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	withOkButton?: boolean;
@@ -81,6 +85,19 @@ defineExpose({
 
 	@media (max-width: 500px) {
 		--root-margin: 16px;
+	}
+
+	&.asDrawer {
+		height: calc(100dvh - 30px);
+		border-radius: 0;
+
+		.body {
+			padding-bottom: env(safe-area-inset-bottom, 0px);
+		}
+
+		.footer {
+			padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import * as Misskey from 'misskey-js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { store } from '@/store.js';
@@ -135,7 +135,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		throw new Error('Plugin already installed');
 	}
 
-	const installId = uuid();
+	const installId = genId();
 
 	const plugin = {
 		...realMeta,
