@@ -23,6 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ widgetProps.domain }}/{{ widgetProps.roomName }}
 					<i class="ti ti-external-link" :class="$style.externalIcon"></i>
 				</a>
+				<!-- ランダムルーム名生成ボタン - アイコンのみ -->
+				<button
+					class="_button" :class="$style.randomRoomButton" :disabled="meetingStarted"
+					@click="generateRandomRoomName()"
+				>
+					<i class="ti ti-refresh"></i>
+				</button>
 			</div>
 		</div>
 
@@ -78,21 +85,81 @@ import { jitsiApi } from '@/utility/jitsi-api.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
+// ランダムルーム名生成のための単語リスト
+const _ADJECTIVE_ = [
+	'Thrilled', 'Amazing', 'Brilliant', 'Curious', 'Delightful', 'Exciting', 'Fantastic',
+	'Gorgeous', 'Helpful', 'Incredible', 'Jolly', 'Kind', 'Lucky', 'Magnificent',
+	'Notable', 'Optimistic', 'Peaceful', 'Quick', 'Remarkable', 'Stunning',
+];
+
+const _PLURALNOUN_ = [
+	'Adventures', 'Blessings', 'Celebrations', 'Densities', 'Energies',
+	'Festivities', 'Gatherings', 'Harmonies', 'Innovations', 'Journeys',
+	'Kindnesses', 'Landscapes', 'Memories', 'Networks', 'Opportunities',
+];
+
+const _VERB_ = [
+	'Achieve', 'Broadcast', 'Create', 'Discover', 'Embrace',
+	'Flourish', 'Generate', 'Harmonize', 'Inspire', 'Journey',
+	'Kindle', 'Launch', 'Motivate', 'Navigate', 'Observe',
+];
+
+const _ADVERB_ = [
+	'Actively', 'Boldly', 'Clearly', 'Deeply', 'Efficiently',
+	'Freely', 'Greatly', 'Happily', 'Instantly', 'Joyfully',
+	'Kindly', 'Lively', 'Magically', 'Naturally', 'Openly',
+	'Perfectly', 'Quickly', 'Remarkably', 'Seldom', 'Truly',
+];
+
 const name = i18n.ts._widgets.jitsiMeet;
 
 const widgetPropsDef = {
+	// 基本設定
 	showHeader: {
 		type: 'boolean' as const,
 		default: true,
 	},
 	roomName: {
 		type: 'string' as const,
-		default: 'default-room',
+		default: '', // 空文字に変更して、マウント時に自動生成できるようにする
 	},
 	domain: {
 		type: 'string' as const,
 		default: 'call.yami.ski',
 	},
+
+	// 音声・ビデオ設定
+	startWithAudioMuted: {
+		type: 'boolean' as const,
+		default: false, // 音声はデフォルトで有効
+	},
+	startWithVideoMuted: {
+		type: 'boolean' as const,
+		default: true, // ビデオはデフォルトで無効
+	},
+	startAudioOnly: {
+		type: 'boolean' as const,
+		default: false, // オーディオのみモード
+	},
+
+	// 表示設定
+	skipPrejoinPage: {
+		type: 'boolean' as const,
+		default: true, // 参加前画面をスキップ
+	},
+
+	// 品質設定
+	resolution: {
+		type: 'enum' as const,
+		default: '720' as const,
+		enum: [
+			{ value: '360', label: '低画質 (省データ通信)' },
+			{ value: '540', label: '標準画質' },
+			{ value: '720', label: '高画質' },
+		],
+	},
+
+	// 共有設定
 	autoShareOnStart: {
 		type: 'boolean' as const,
 		default: false,
@@ -128,6 +195,33 @@ const loading = ref(false);
 const meetingStarted = ref(false);
 const containerId = ref(`jitsi-container-${Math.random().toString(36).substr(2, 9)}`);
 
+// ランダムルーム名を生成する関数
+const generateRandomRoomName = () => {
+	// ランダム要素を選択するヘルパー関数
+	const getRandomElement = (arr) => {
+		const randomIndex = Math.floor(Math.random() * arr.length);
+		return arr[randomIndex];
+	};
+
+	// 4つの単語カテゴリから単語を選び、結合してルーム名を作成
+	const roomName =
+		getRandomElement(_ADJECTIVE_) +
+		getRandomElement(_PLURALNOUN_) +
+		getRandomElement(_VERB_) +
+		getRandomElement(_ADVERB_);
+
+	// 生成したルーム名をウィジェットに設定して保存
+	widgetProps.roomName = roomName;
+	save();
+
+	// 会議が進行中の場合は終了
+	if (meetingStarted.value) {
+		endMeeting();
+	}
+
+	return roomName;
+};
+
 // ルームURLを生成するcomputed
 const roomUrl = computed(() => {
 	return `https://${widgetProps.domain}/${widgetProps.roomName}`;
@@ -135,11 +229,41 @@ const roomUrl = computed(() => {
 
 // フォーマット済みのノートテキストを生成するcomputed
 const formattedNote = computed(() => {
+	// 基本的なパラメータのみを残す
+	const params = {};
+
+	// 基本設定
+	params['config.prejoinConfig.enabled'] = !widgetProps.skipPrejoinPage;
+	params['config.startAudioOnly'] = widgetProps.startAudioOnly;
+
+	// 音声・ビデオ設定
+	params['config.startWithAudioMuted'] = widgetProps.startWithAudioMuted;
+	params['config.startWithVideoMuted'] = widgetProps.startWithVideoMuted;
+
+	// 品質設定
+	if (widgetProps.resolution) {
+		params['config.resolution'] = parseInt(widgetProps.resolution);
+	}
+
+	// シンプルな基本機能のデフォルト設定を追加
+	params['config.disableInitialGUM'] = false; // 常にメディア権限をリクエスト
+	params['config.notifications'] = []; // 通知は常に無効化
+	params['config.disableTileEnlargement'] = true; // タイル拡大機能は無効化
+
+	// パラメータを平坦化して連結
+	const flattenedParams = Object.entries(params).map(([key, value]) => {
+		let paramValue = typeof value === 'string' ? `"${value}"` : JSON.stringify(value);
+		return `${key}=${paramValue}`;
+	}).join('&');
+
+	// 最終的なURLを生成
+	const optimizedUrl = `${roomUrl.value}#${flattenedParams}`;
+
 	return widgetProps.noteFormat
 		.replace('{startMeeting}', `📞 ${i18n.ts.startMeeting}`)
 		.replace('{roomName}', widgetProps.roomName)
 		.replace('{domain}', widgetProps.domain)
-		.replace('{url}', roomUrl.value);
+		.replace('{url}', optimizedUrl);
 });
 
 // ノートを投稿する関数
@@ -159,32 +283,39 @@ const startMeeting = async () => {
 
 	loading.value = true;
 	try {
-		// まずmeetingStartedをtrueにしてDOMをレンダリング
 		meetingStarted.value = true;
-
-		// nextTickでDOMの更新を待つ
 		await nextTick();
 
-		// 少し待ってからJitsi APIを呼び出す
 		setTimeout(async () => {
 			try {
-				// $iから現在のユーザー情報を取得
 				const displayName = $i?.name || $i?.username || 'Anonymous';
 				const email = $i?.email || null;
-
-				console.log('Misskey user info:', {
-					displayName,
-					email,
-				});
 
 				await jitsiApi.startMeeting(
 					widgetProps.roomName,
 					containerId.value,
 					displayName,
 					email,
+					{
+						// 音声・ビデオ設定
+						startWithAudioMuted: widgetProps.startWithAudioMuted,
+						startWithVideoMuted: widgetProps.startWithVideoMuted,
+						startAudioOnly: widgetProps.startAudioOnly,
+
+						// 基本設定
+						skipPrejoinPage: widgetProps.skipPrejoinPage,
+
+						// 品質設定
+						resolution: parseInt(widgetProps.resolution),
+
+						// デフォルト値で固定する設定
+						requestAudioPermission: true,
+						requestVideoPermission: true,
+						customBackgroundColor: '#966BFF',
+						disableNotifications: true,
+					},
 				);
 
-				// 自動投稿が有効な場合、ミーティング開始後にノートを投稿
 				if (widgetProps.autoShareOnStart) {
 					await postNote();
 				}
@@ -221,21 +352,17 @@ watch(() => widgetProps.roomName, () => {
 });
 
 // 設定の変更を監視して保存する
-watch(() => widgetProps.visibility, () => {
-  save();
-});
+watch(() => widgetProps.visibility, () => save());
+watch(() => widgetProps.localOnly, () => save());
+watch(() => widgetProps.noteFormat, () => save());
+watch(() => widgetProps.autoShareOnStart, () => save());
 
-watch(() => widgetProps.localOnly, () => {
-  save();
-});
-
-watch(() => widgetProps.noteFormat, () => {
-  save();
-});
-
-watch(() => widgetProps.autoShareOnStart, () => {
-  save();
-});
+// 残している設定の監視
+watch(() => widgetProps.startAudioOnly, () => save());
+watch(() => widgetProps.startWithAudioMuted, () => save());
+watch(() => widgetProps.startWithVideoMuted, () => save());
+watch(() => widgetProps.skipPrejoinPage, () => save());
+watch(() => widgetProps.resolution, () => save());
 
 onUnmounted(() => {
 	jitsiApi.dispose();
@@ -247,6 +374,11 @@ onMounted(() => {
 		props: props,
 		name: name,
 	});
+
+	// ルーム名が空または'default-room'の場合、初期ルーム名をランダム生成
+	if (!widgetProps.roomName || widgetProps.roomName === 'default-room') {
+		generateRandomRoomName();
+	}
 });
 
 // 反応性を保持するため、computedを使用
@@ -263,143 +395,116 @@ defineExpose<WidgetComponentExpose>({
 
 <style lang="scss" module>
 .root {
-    padding: 12px;
-}
-
-.result {
-	text-align: center;
-}
-
-.roomStatus {
-    margin-bottom: 12px;
+	padding: 12px;
 }
 
 .roomInfo {
-    padding: 6px;
-    margin-bottom: 8px;
+	margin-bottom: 16px;
+	padding: 12px;
+	background: var(--MI_THEME-panelHighlight);
+	border-radius: 8px;
 }
 
 .roomHeader {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--MI_THEME-fg);
+	display: flex;
+	align-items: center;
 }
 
 .statusIndicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--MI_THEME-fgTransparentWeak);
-    transition: all 0.3s ease;
-    flex-shrink: 0;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--MI_THEME-fg);
+	opacity: 0.3;
+	margin-right: 8px;
+	flex-shrink: 0;
+	display: block;
+	min-width: 12px;
+	min-height: 12px;
+	aspect-ratio: 1 / 1;
+	line-height: 0;
 
-    /* 非アクティブ時は薄いグレー */
-    &:not(.statusActive) {
-        background: var(--MI_THEME-divider);
-        opacity: 0.5;
-    }
-}
-
-.statusActive {
-    /* アクティブ時は緑色で光る効果 */
-    background: #4CAF50;
-    box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
-    }
-    50% {
-        box-shadow: 0 0 12px rgba(76, 175, 80, 0.8);
-    }
+	&.statusActive {
+		background-color: var(--MI_THEME-accent);
+		opacity: 1;
+		box-shadow: 0 0 8px var(--MI_THEME-accent);
+	}
 }
 
 .roomLink {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--MI_THEME-accent);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    background: var(--MI_THEME-panel);
-    border: 1px solid var(--MI_THEME-divider);
+	display: flex;
+	align-items: center;
+	color: var(--MI_THEME-accent);
+	text-decoration: none;
+	font-weight: bold;
+	word-break: break-all;
 
-    &:hover {
-        text-decoration: none;
-        background: var(--MI_THEME-buttonHoverBg);
-    }
+	&:hover {
+		text-decoration: underline;
+	}
 
-    &:active {
-        background: var(--MI_THEME-buttonHoverBg);
-    }
+	.externalIcon {
+		margin-left: 4px;
+		font-size: 0.9em;
+	}
 }
 
-.externalIcon {
-    font-size: 0.75em;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+.randomRoomButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 8px;
+	padding: 4px;
+	background: var(--MI_THEME-buttonBg);
+	color: var(--MI_THEME-accent);
+	border-radius: 4px;
+	border: none;
+	cursor: pointer;
+	transition: background 0.2s ease, opacity 0.2s ease;
+
+	&:hover:not(:disabled) {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	&:active:not(:disabled) {
+		background: var(--MI_THEME-buttonHoverBg);
+		transform: translateY(1px);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
 }
 
-.roomLink:hover .externalIcon {
-    opacity: 1;
+.roomStatus {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	margin-top: 16px;
+}
+
+.result {
+	padding: 24px;
 }
 
 .jitsiContainer {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    height: auto;
-    min-height: 450px;
-    max-height: 650px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--MI_THEME-panel);
-    border: 1px solid var(--MI_THEME-divider);
-    margin-bottom: 8px;
-}
+	width: 100%;
+	min-height: 400px;
+	/* 最小高さを設定 */
+	height: 60vh;
+	/* ビューポート高さの60%を使用 */
+	max-height: 600px;
+	/* 大きすぎないように制限 */
+	border-radius: 8px;
+	overflow: hidden;
 
-/* デスクトップ向けサイズ調整 */
-@media (min-width: 768px) {
-	.jitsiContainer {
-		min-height: 500px;
-		max-height: 750px;
-		aspect-ratio: 4 / 3;
-	}
-}
-
-/* タブレット向けサイズ調整 */
-@media (max-width: 767px) and (min-width: 501px) {
-	.jitsiContainer {
-		min-height: 420px;
-		max-height: 550px;
-		aspect-ratio: 4 / 3;
-	}
-}
-
-/* スマホ向けサイズ調整 */
-@media (max-width: 500px) {
-    .jitsiContainer {
-        aspect-ratio: 4 / 3;
-        min-height: 360px;
-        max-height: 450px;
-    }
-
-    .root {
-        padding: 8px;
-    }
-}
-
-/* 小さなスマホ向け */
-@media (max-width: 350px) {
-	.jitsiContainer {
-		min-height: 320px;
-		max-height: 400px;
-		aspect-ratio: 4 / 3;
+	/* スマホ向けの調整 */
+	@media (max-width: 500px) {
+		height: 70vh;
+		/* モバイルではより大きな比率を使用 */
+		min-height: 300px;
+		/* モバイルでの最小高さ */
 	}
 }
 </style>
