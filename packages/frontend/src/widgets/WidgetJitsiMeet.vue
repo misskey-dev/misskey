@@ -171,7 +171,7 @@ const widgetPropsDef = {
 	},
 	visibility: {
 		type: 'enum' as const,
-		default: 'home' as const,
+		default: 'followers' as const,
 		enum: [
 			{ label: 'Public', value: 'public' },
 			{ label: 'Home', value: 'home' },
@@ -180,7 +180,7 @@ const widgetPropsDef = {
 	},
 	localOnly: {
 		type: 'boolean' as const,
-		default: false,
+		default: true,
 	},
 };
 

@@ -53,9 +53,6 @@ export const PREF_DEF = definePreferences({
 	widgets: {
 		accountDependent: true,
 		default: () => [{
-			name: 'calendar',
-			id: genId(), place: 'right', data: {},
-		}, {
 			name: 'notifications',
 			id: genId(), place: 'right', data: {},
 		}, {
@@ -63,6 +60,9 @@ export const PREF_DEF = definePreferences({
 			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'activeUsers',
+			id: genId(), place: 'right', data: {},
+		}, {
+			name: 'jitsiMeet',
 			id: genId(), place: 'right', data: {},
 		}] as {
 			name: string;
