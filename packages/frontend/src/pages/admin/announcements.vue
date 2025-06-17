@@ -97,6 +97,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { genId } from '@/utility/id.js';
 
 const announcementsStatus = ref<'active' | 'archived'>('active');
 
@@ -117,7 +118,7 @@ watch(announcementsStatus, (to) => {
 
 function add() {
 	announcements.value.unshift({
-		_id: Math.random().toString(36),
+		_id: genId(),
 		id: null,
 		title: 'New announcement',
 		text: '',

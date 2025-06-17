@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import JSON5 from 'json5';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
@@ -192,7 +192,7 @@ async function saveAs() {
 	});
 	if (canceled) return;
 
-	theme.value.id = uuid();
+	theme.value.id = genId();
 	theme.value.name = name;
 	theme.value.author = `@${$i.username}@${toUnicode(host)}`;
 	if (description.value) theme.value.desc = description.value;

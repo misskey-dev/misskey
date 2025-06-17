@@ -39,53 +39,122 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</SearchMarker>
 
-		<FormSection>
-			<div class="_gaps_m">
-				<SearchMarker :keywords="['default', 'upload', 'folder']">
-					<FormLink @click="chooseUploadFolder()">
-						<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
-						<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-						<template #suffixIcon><i class="ti ti-folder"></i></template>
+		<SearchMarker :keywords="['general']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.general }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<SearchMarker :keywords="['default', 'upload', 'folder']">
+						<FormLink @click="chooseUploadFolder()">
+							<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
+							<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
+							<template #suffixIcon><i class="ti ti-folder"></i></template>
+						</FormLink>
+					</SearchMarker>
+
+					<FormLink to="/settings/drive/cleaner">
+						{{ i18n.ts.drivecleaner }}
 					</FormLink>
-				</SearchMarker>
 
-				<FormLink to="/settings/drive/cleaner">
-					{{ i18n.ts.drivecleaner }}
-				</FormLink>
+					<SearchMarker :keywords="['keep', 'original', 'filename']">
+						<MkPreferenceContainer k="keepOriginalFilename">
+							<MkSwitch v-model="keepOriginalFilename">
+								<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
+								<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
+							</MkSwitch>
+						</MkPreferenceContainer>
+					</SearchMarker>
 
-				<SearchMarker :keywords="['keep', 'original', 'filename']">
-					<MkPreferenceContainer k="keepOriginalFilename">
-						<MkSwitch v-model="keepOriginalFilename">
-							<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
-							<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
+					<SearchMarker :keywords="['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file']">
+						<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
+							<template #label><SearchLabel>{{ i18n.ts.alwaysMarkSensitive }}</SearchLabel></template>
 						</MkSwitch>
-					</MkPreferenceContainer>
-				</SearchMarker>
+					</SearchMarker>
 
-				<SearchMarker :keywords="['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file']">
-					<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
-						<template #label><SearchLabel>{{ i18n.ts.alwaysMarkSensitive }}</SearchLabel></template>
-					</MkSwitch>
-				</SearchMarker>
+					<SearchMarker :keywords="['auto', 'nsfw', 'sensitive', 'media', 'file']">
+						<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
+							<template #label><SearchLabel>{{ i18n.ts.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+							<template #caption><SearchKeyword>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchKeyword></template>
+						</MkSwitch>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
 
-				<SearchMarker :keywords="['auto', 'nsfw', 'sensitive', 'media', 'file']">
-					<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
-						<template #label><SearchLabel>{{ i18n.ts.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-						<template #caption><SearchKeyword>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchKeyword></template>
-					</MkSwitch>
-				</SearchMarker>
-			</div>
-		</FormSection>
+		<SearchMarker :keywords="['image']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.image }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<SearchMarker :keywords="['watermark', 'credit']">
+						<MkFolder>
+							<template #icon><i class="ti ti-copyright"></i></template>
+							<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts._watermarkEditor.tip }}</template>
+
+							<div class="_gaps">
+								<div class="_gaps_s">
+									<XWatermarkItem
+										v-for="(preset, i) in prefer.r.watermarkPresets.value"
+										:key="preset.id"
+										:preset="preset"
+										@updatePreset="onUpdateWatermarkPreset(preset.id, $event)"
+										@del="onDeleteWatermarkPreset(preset.id)"
+									/>
+
+									<MkButton iconOnly rounded style="margin: 0 auto;" @click="addWatermarkPreset"><i class="ti ti-plus"></i></MkButton>
+
+									<SearchMarker :keywords="['sync', 'watermark', 'preset', 'devices']">
+										<MkSwitch :modelValue="watermarkPresetsSyncEnabled" @update:modelValue="changeWatermarkPresetsSyncEnabled">
+											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+										</MkSwitch>
+									</SearchMarker>
+								</div>
+
+								<hr>
+
+								<SearchMarker :keywords="['default', 'watermark', 'preset']">
+									<MkPreferenceContainer k="defaultWatermarkPresetId">
+										<MkSelect v-model="defaultWatermarkPresetId" :items="[{ label: i18n.ts.none, value: null }, ...prefer.r.watermarkPresets.value.map(p => ({ label: p.name || i18n.ts.noName, value: p.id }))]">
+											<template #label><SearchLabel>{{ i18n.ts.defaultPreset }}</SearchLabel></template>
+										</MkSelect>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</div>
+						</MkFolder>
+					</SearchMarker>
+
+					<SearchMarker :keywords="['default', 'image', 'compression']">
+						<MkPreferenceContainer k="defaultImageCompressionLevel">
+							<MkSelect
+								v-model="defaultImageCompressionLevel" :items="[
+									{ label: i18n.ts.none, value: 0 },
+									{ label: i18n.ts.low, value: 1 },
+									{ label: i18n.ts.medium, value: 2 },
+									{ label: i18n.ts.high, value: 3 },
+								]"
+							>
+								<template #label><SearchLabel>{{ i18n.ts.defaultImageCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="i18n.ts.defaultImageCompressionLevel_description"></div></template>
+							</MkSelect>
+						</MkPreferenceContainer>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
+import XWatermarkItem from './drive.WatermarkItem.vue';
+import type { WatermarkPreset } from '@/utility/watermark.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -100,6 +169,8 @@ import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { selectDriveFolder } from '@/utility/drive.js';
+import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const $i = ensureSignin();
 
@@ -123,6 +194,22 @@ const meterStyle = computed(() => {
 });
 
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
+const defaultWatermarkPresetId = prefer.model('defaultWatermarkPresetId');
+const defaultImageCompressionLevel = prefer.model('defaultImageCompressionLevel');
+
+const watermarkPresetsSyncEnabled = ref(prefer.isSyncEnabled('watermarkPresets'));
+
+function changeWatermarkPresetsSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('watermarkPresets').then((res) => {
+			if (res == null) return;
+			if (res.enabled) watermarkPresetsSyncEnabled.value = true;
+		});
+	} else {
+		prefer.disableSync('watermarkPresets');
+		watermarkPresetsSyncEnabled.value = false;
+	}
+}
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
@@ -150,6 +237,41 @@ function chooseUploadFolder() {
 			uploadFolder.value = null;
 		}
 	});
+}
+
+async function addWatermarkPreset() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
+	}, {
+		ok: (preset: WatermarkPreset) => {
+			prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
+		},
+		closed: () => dispose(),
+	});
+}
+
+function onUpdateWatermarkPreset(id: string, preset: WatermarkPreset) {
+	const index = prefer.s.watermarkPresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('watermarkPresets', [
+			...prefer.s.watermarkPresets.slice(0, index),
+			preset,
+			...prefer.s.watermarkPresets.slice(index + 1),
+		]);
+	}
+}
+
+function onDeleteWatermarkPreset(id: string) {
+	const index = prefer.s.watermarkPresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('watermarkPresets', [
+			...prefer.s.watermarkPresets.slice(0, index),
+			...prefer.s.watermarkPresets.slice(index + 1),
+		]);
+
+		if (prefer.s.defaultWatermarkPresetId === id) {
+			prefer.commit('defaultWatermarkPresetId', null);
+		}
+	}
 }
 
 function saveProfile() {

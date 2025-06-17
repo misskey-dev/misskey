@@ -460,3 +460,5 @@ _moderationLogTypes:
   resetPassword: "Şifre sıfırlama"
 _search:
   searchScopeAll: "Tümü"
+_watermarkEditor:
+  image: "Görseller"
