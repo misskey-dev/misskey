@@ -171,6 +171,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
@@ -199,12 +200,12 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = ref($i.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
+const fields = ref($i.fields.map(field => ({ id: genId(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
 
 function addField() {
 	fields.value.push({
-		id: Math.random().toString(),
+		id: genId(),
 		name: '',
 		value: '',
 	});
