@@ -49,10 +49,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			style="display: flex; flex-direction: column; justify-content: center; align-items: center"
 		>
 			<div :id="containerId" :class="$style.jitsiContainer"></div>
-			<MkButton danger @click="endMeeting">
-				<i class="ti ti-video-off"></i>
-				{{ i18n.ts.endMeeting }}
-			</MkButton>
+			<div style="display: flex; justify-content: center; gap: 8px; margin-top: 8px; width: 100%;">
+				<MkButton danger @click="endMeeting">
+					<i class="ti ti-video-off"></i>
+					{{ i18n.ts.endMeeting }}
+				</MkButton>
+				<MkButton primary @click="postNote">
+					<i class="ti ti-share"></i>
+					{{ i18n.ts.share }}
+				</MkButton>
+			</div>
 		</div>
 	</div>
 </MkContainer>
@@ -70,6 +76,7 @@ import MkResult from '@/components/global/MkResult.vue';
 import { i18n } from '@/i18n.js';
 import { jitsiApi } from '@/utility/jitsi-api.js';
 import { $i } from '@/i.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const name = i18n.ts._widgets.jitsiMeet;
 
@@ -86,6 +93,28 @@ const widgetPropsDef = {
 		type: 'string' as const,
 		default: 'call.yami.ski',
 	},
+	autoShareOnStart: {
+		type: 'boolean' as const,
+		default: false,
+	},
+	noteFormat: {
+		type: 'string' as const,
+		multiline: true,
+		default: '{startMeeting}\n\n会議ルーム: {roomName}\nリンク: {url}\n\n#JitsiMeet',
+	},
+	visibility: {
+		type: 'enum' as const,
+		default: 'home' as const,
+		enum: [
+			{ label: 'Public', value: 'public' },
+			{ label: 'Home', value: 'home' },
+			{ label: 'Followers', value: 'followers' },
+		],
+	},
+	localOnly: {
+		type: 'boolean' as const,
+		default: false,
+	},
 };
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
@@ -93,7 +122,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 const props = defineProps<WidgetComponentProps<WidgetProps>>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
-const { widgetProps, configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
+const { widgetProps, configure, save } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
 
 const loading = ref(false);
 const meetingStarted = ref(false);
@@ -103,6 +132,27 @@ const containerId = ref(`jitsi-container-${Math.random().toString(36).substr(2, 
 const roomUrl = computed(() => {
 	return `https://${widgetProps.domain}/${widgetProps.roomName}`;
 });
+
+// フォーマット済みのノートテキストを生成するcomputed
+const formattedNote = computed(() => {
+	return widgetProps.noteFormat
+		.replace('{startMeeting}', `📞 ${i18n.ts.startMeeting}`)
+		.replace('{roomName}', widgetProps.roomName)
+		.replace('{domain}', widgetProps.domain)
+		.replace('{url}', roomUrl.value);
+});
+
+// ノートを投稿する関数
+const postNote = async () => {
+	if (!meetingStarted.value) return;
+
+	const note = formattedNote.value;
+	await misskeyApi('notes/create', {
+		text: note,
+		visibility: widgetProps.visibility,
+		localOnly: widgetProps.localOnly,
+	});
+};
 
 const startMeeting = async () => {
 	if (!widgetProps.roomName) return;
@@ -133,6 +183,11 @@ const startMeeting = async () => {
 					displayName,
 					email,
 				);
+
+				// 自動投稿が有効な場合、ミーティング開始後にノートを投稿
+				if (widgetProps.autoShareOnStart) {
+					await postNote();
+				}
 			} catch (error) {
 				console.error('Failed to start meeting:', error);
 				meetingStarted.value = false;
@@ -163,6 +218,23 @@ watch(() => widgetProps.roomName, () => {
 	if (meetingStarted.value) {
 		endMeeting();
 	}
+});
+
+// 設定の変更を監視して保存する
+watch(() => widgetProps.visibility, () => {
+  save();
+});
+
+watch(() => widgetProps.localOnly, () => {
+  save();
+});
+
+watch(() => widgetProps.noteFormat, () => {
+  save();
+});
+
+watch(() => widgetProps.autoShareOnStart, () => {
+  save();
 });
 
 onUnmounted(() => {
