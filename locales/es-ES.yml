@@ -1382,7 +1382,7 @@ _chat:
   noInvitations: "No hay invitación."
   history: "Historial"
   noHistory: "No hay datos en el historial"
-  noRooms: "Sala no encontrada"
+  noRooms: "No te has unido a ninguna sala "
   inviteUser: "Invitar  usuarios"
   sentInvitations: "Invitaciones enviadas"
   join: "Unirse"
