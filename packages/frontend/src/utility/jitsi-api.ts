@@ -6,7 +6,7 @@ declare global {
 
 class JitsiApiService {
 	private api: any = null;
-	private domain = 'call.yami.ski';
+	private domain = 'meet.yami.ski';
 	private isScriptLoaded = false;
 
 	// Misskeyの絵文字を除去する関数
