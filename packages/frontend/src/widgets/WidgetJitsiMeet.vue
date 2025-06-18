@@ -425,9 +425,9 @@ defineExpose<WidgetComponentExpose>({
 	line-height: 0;
 
 	&.statusActive {
-		background-color: var(--MI_THEME-accent);
+		background-color: rgb(46, 204, 113);
 		opacity: 1;
-		box-shadow: 0 0 8px var(--MI_THEME-accent);
+		box-shadow: 0 0 8px rgb(46, 204, 113);
 	}
 }
 
