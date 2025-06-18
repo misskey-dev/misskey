@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.roomInfo">
 			<div :class="$style.roomHeader">
 				<div :class="[$style.statusIndicator, { [$style.statusActive]: meetingStarted }]"></div>
-				<a :href="roomUrl" target="_blank" rel="noopener noreferrer" :class="$style.roomLink" @click.stop>
+				<a :href="optimizedUrl" target="_blank" rel="noopener noreferrer" :class="$style.roomLink">
 					{{ widgetProps.domain }}/{{ widgetProps.roomName }}
 					<i class="ti ti-external-link" :class="$style.externalIcon"></i>
 				</a>
@@ -222,14 +222,14 @@ const generateRandomRoomName = () => {
 	return roomName;
 };
 
-// ルームURLを生成するcomputed
+// Room URL without parameters (for display only)
 const roomUrl = computed(() => {
 	return `https://${widgetProps.domain}/${widgetProps.roomName}`;
 });
 
-// フォーマット済みのノートテキストを生成するcomputed
-const formattedNote = computed(() => {
-	// 基本的なパラメータのみを残す
+// Optimized URL with parameters (for actual linking)
+const optimizedUrl = computed(() => {
+	// Basic parameters
 	const params = {};
 
 	// 基本設定
@@ -245,28 +245,31 @@ const formattedNote = computed(() => {
 		params['config.resolution'] = parseInt(widgetProps.resolution);
 	}
 
-	// シンプルな基本機能のデフォルト設定を追加
-	params['config.disableInitialGUM'] = false; // 常にメディア権限をリクエスト
-	params['config.notifications'] = []; // 通知は常に無効化
-	params['config.disableTileEnlargement'] = true; // タイル拡大機能は無効化
+	// Default basic functionality settings
+	params['config.disableInitialGUM'] = false;
+	params['config.notifications'] = [];
+	params['config.disableTileEnlargement'] = true;
 
-	// パラメータを平坦化して連結
+	// Flatten parameters and join
 	const flattenedParams = Object.entries(params).map(([key, value]) => {
 		let paramValue = typeof value === 'string' ? `"${value}"` : JSON.stringify(value);
 		return `${key}=${paramValue}`;
 	}).join('&');
 
-	// 最終的なURLを生成
-	const optimizedUrl = `${roomUrl.value}#${flattenedParams}`;
+	// Return final URL with parameters
+	return `${roomUrl.value}#${flattenedParams}`;
+});
 
+// Add the formattedNote computed property
+const formattedNote = computed(() => {
 	return widgetProps.noteFormat
 		.replace('{startMeeting}', `📞 ${i18n.ts.startMeeting}`)
 		.replace('{roomName}', widgetProps.roomName)
 		.replace('{domain}', widgetProps.domain)
-		.replace('{url}', optimizedUrl);
+		.replace('{url}', optimizedUrl.value);
 });
 
-// ノートを投稿する関数
+// Now postNote can reference formattedNote
 const postNote = async () => {
 	if (!meetingStarted.value) return;
 
