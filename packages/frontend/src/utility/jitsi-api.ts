@@ -6,8 +6,7 @@ declare global {
 
 class JitsiApiService {
 	private api: any = null;
-	private domain = 'meet.yami.ski';
-	private isScriptLoaded = false;
+	private isScriptLoaded: Record<string, boolean> = {};
 
 	// Misskeyの絵文字を除去する関数
 	private removeEmojiFromName(name: string | null): string | null {
@@ -20,25 +19,27 @@ class JitsiApiService {
 		return cleanedName || null;
 	}
 
-	async loadScript(): Promise<void> {
-		if (this.isScriptLoaded || window.JitsiMeetExternalAPI) {
-			this.isScriptLoaded = true;
+	async loadScript(domain: string): Promise<void> {
+		if (this.isScriptLoaded[domain] ||
+			(window.JitsiMeetExternalAPI && this.api?.getIFrame()?.src.includes(domain))) {
+			this.isScriptLoaded[domain] = true;
 			return;
 		}
 
 		return new Promise((resolve, reject) => {
 			const script = window.document.createElement('script');
-			script.src = `https://${this.domain}/external_api.js`;
+			script.src = `https://${domain}/external_api.js`;
 			script.onload = () => {
-				this.isScriptLoaded = true;
+				this.isScriptLoaded[domain] = true;
 				resolve();
 			};
-			script.onerror = () => reject(new Error('Failed to load Jitsi Meet API'));
+			script.onerror = () => reject(new Error(`Failed to load Jitsi Meet API from ${domain}`));
 			window.document.head.appendChild(script);
 		});
 	}
 
 	async startMeeting(
+		domain: string,
 		roomName: string,
 		containerId: string,
 		displayName: string | null,
@@ -69,7 +70,7 @@ class JitsiApiService {
 			enableLayerSuspension?: boolean;
 		},
 	): Promise<void> {
-		await this.loadScript();
+		await this.loadScript(domain);
 
 		if (!window.JitsiMeetExternalAPI) {
 			throw new Error('JitsiMeetExternalAPI is not available');
@@ -176,10 +177,10 @@ class JitsiApiService {
 		};
 
 		try {
-			this.api = new window.JitsiMeetExternalAPI(this.domain, options);
-			console.log('Jitsi Meet API initialized');
+			this.api = new window.JitsiMeetExternalAPI(domain, options);
+			console.log('Jitsi Meet API initialized with domain:', domain);
 		} catch (error) {
-			console.error('Failed to initialize Jitsi Meet API:', error);
+			console.error(`Failed to initialize Jitsi Meet API for domain ${domain}:`, error);
 			throw error;
 		}
 	}

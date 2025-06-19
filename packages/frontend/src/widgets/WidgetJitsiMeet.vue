@@ -295,7 +295,8 @@ const startMeeting = async () => {
 				const email = $i?.email || null;
 
 				await jitsiApi.startMeeting(
-					widgetProps.roomName,
+					widgetProps.domain, // ← 1番目: ドメイン
+					widgetProps.roomName, // ← 2番目: ルーム名
 					containerId.value,
 					displayName,
 					email,
