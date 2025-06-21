@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.roomHeader">
 				<div :class="[$style.statusIndicator, { [$style.statusActive]: meetingStarted }]"></div>
 				<a :href="optimizedUrl" target="_blank" rel="noopener noreferrer" :class="$style.roomLink">
-					{{ widgetProps.domain }}/{{ widgetProps.roomName }}
+					{{ widgetProps.roomName }}
 					<i class="ti ti-external-link" :class="$style.externalIcon"></i>
 				</a>
 				<!-- ランダムルーム名生成ボタン - アイコンのみ -->
