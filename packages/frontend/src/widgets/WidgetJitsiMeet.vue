@@ -125,7 +125,7 @@ const widgetPropsDef = {
 	},
 	domain: {
 		type: 'string' as const,
-		default: 'meet.yami.ski',
+		default: 'calls.disroot.org',
 	},
 
 	// 音声・ビデオ設定

@@ -570,7 +570,7 @@ export const PREF_DEF = definePreferences({
 		default: true,
 	},
 	searchEngine: {
-		default: 'https://search.yami.ski/search?',
+		default: 'https://search.disroot.org/search?',
 	},
 	// アカウントトークン（複数アカウント管理に必要）
 	accountTokens: {

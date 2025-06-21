@@ -1019,7 +1019,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<option value="https://search.yahoo.com/search?">Yahoo! Search (search.yahoo.com)</option>
 									<option value="https://www.ecosia.org/search?">Ecosia (ecosia.org)</option>
 									<option value="https://www.startpage.com/do/search?">Startpage (startpage.com)</option>
-									<option value="https://search.yami.ski/search?">SearX (search.yami.ski)</option>
+									<option value="https://search.disroot.org/search?">SearXNG (search.disroot.org)</option>
 								</MkSelect>
 							</MkPreferenceContainer>
 						</SearchMarker>

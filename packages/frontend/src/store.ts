@@ -543,7 +543,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	searchEngine: {
 		where: 'device',
-		default: 'https://search.yami.ski/search?',
+		default: 'https://search.disroot.org/search?',
 	},
 	reactionChecksMuting: {
 		where: 'device',
