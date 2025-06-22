@@ -270,7 +270,7 @@ export const ACHIEVEMENT_BADGES = {
 		frame: 'bronze',
 	},
 	'markedAsYamiModeUser': {
-		img: '/fluent-emoji/1f338.png',
+		img: '/fluent-emoji/1f312.png',
 		bg: 'linear-gradient(0deg, rgb(255,205,231), rgb(234,202,255))',
 		frame: 'gold',
 	},
