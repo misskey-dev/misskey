@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.buttons">
 			<MkButton inline success @click="approveAccount()">{{ i18n.ts.approveAccount }}</MkButton>
-			<MkButton inline danger @click="deleteAccount()">{{ i18n.ts.denyAccount }}</MkButton>
+			<MkButton inline danger @click="rejectAccount()">{{ i18n.ts.rejectAccount }}</MkButton>
 		</div>
 	</div>
 </MkFolder>
@@ -66,14 +66,14 @@ const emits = defineEmits<{
 	(event: 'deleted', value: string): void;
 }>();
 
-async function deleteAccount() {
+async function rejectAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAccountConfirm,
+		text: i18n.ts.rejectAccountConfirm,
 	});
 	if (confirm.canceled) return;
 
-	await os.apiWithDialog('admin/delete-account', {
+	await os.apiWithDialog('admin/reject-user', {
 		userId: props.user.id,
 	});
 	emits('deleted', props.user.id);

@@ -315,6 +315,14 @@ function onSigninApiError(err?: any): void {
 			});
 			break;
 		}
+		case '8c4ef3ce-12a9-4f04-a515-3bf20590c321': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.registerHasBeenRejected,
+			});
+			break;
+		}
 		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
 			os.alert({
 				type: 'error',

@@ -35,7 +35,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'] },
-		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended', 'pending', 'approved'], default: 'all' },
+		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended', 'pending', 'approved', 'rejected'], default: 'all' },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		username: { type: 'string', nullable: true, default: null },
 		hostname: {
@@ -65,7 +65,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 				case 'suspended': query.where('user.isSuspended = TRUE'); break;
 				case 'approved': query.where('user.approved = TRUE'); break;
-				case 'pending': query.where('user.approved = FALSE'); break;
+				case 'pending': query.where('user.approved = FALSE AND user.rejected = FALSE'); break;
+				case 'rejected': query.where('user.rejected = TRUE'); break;
 				case 'admin': {
 					const adminIds = await this.roleService.getAdministratorIds();
 					if (adminIds.length === 0) return [];

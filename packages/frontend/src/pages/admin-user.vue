@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
-							<span v-if="!approved" class="silenced">{{ i18n.ts.notApproved }}</span>
+							<span v-if="rejected" class="rejected">{{ i18n.ts.rejected }}</span>
+							<span v-if="!approved && !rejected" class="silenced">{{ i18n.ts.notApproved }}</span>
 							<span v-if="approved && !user.host" class="moderator">{{ i18n.ts.approved }}</span>
 							<span v-if="suspended" class="suspended">Suspended</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
@@ -55,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkKeyValue v-if="info" oneline>
 						<template #key>{{ i18n.ts.registerReason }}</template>
 						<!-- <template #value><span class="_monospace">{{ info.signupReason }}</span></template> -->
-						<template v-slot:value><div :class="$style.reason_box">{{ info.signupReason }}</div></template>
+						<template #value><div :class="$style.reason_box">{{ info.signupReason }}</div></template>
 					</MkKeyValue>
 				</div>
 
@@ -261,6 +262,7 @@ const moderator = ref(false);
 const silenced = ref(false);
 const approved = ref(false);
 const suspended = ref(false);
+const rejected = ref(false);
 const isSystem = ref(false);
 const moderationNote = ref('');
 const filesPagination = {
@@ -298,6 +300,7 @@ function createFetcher() {
 		silenced.value = info.value.isSilenced;
 		approved.value = info.value.approved;
 		suspended.value = info.value.isSuspended;
+		rejected.value = info.value.rejected;
 		moderationNote.value = info.value.moderationNote;
 		isSystem.value = user.value.host == null && user.value.username.includes('.');
 
@@ -603,7 +606,7 @@ definePage(() => ({
 				display: none;
 			}
 
-			> .suspended, > .silenced, > .moderator {
+			> .suspended, > .silenced, > .moderator, > .rejected {
 				display: inline-block;
 				border: solid 1px;
 				border-radius: 6px;
@@ -624,6 +627,11 @@ definePage(() => ({
 			> .moderator {
 				color: var(--MI_THEME-success);
 				border-color: var(--MI_THEME-success);
+			}
+
+			> .rejected {
+				color: var(--MI_THEME-error);
+				border-color: var(--MI_THEME-error);
 			}
 		}
 	}

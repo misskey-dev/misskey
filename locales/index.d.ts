@@ -3847,6 +3847,10 @@ export interface Locale extends ILocale {
      */
     "deleteAccountConfirm": string;
     /**
+     * このアカウントの登録を拒否しますか？
+     */
+    "rejectAccountConfirm": string;
+    /**
      * パスワードが間違っています。
      */
     "incorrectPassword": string;
@@ -4051,9 +4055,9 @@ export interface Locale extends ILocale {
      */
     "approveAccount": string;
     /**
-     * 拒否してアカウント削除
+     * 拒否する
      */
-    "denyAccount": string;
+    "rejectAccount": string;
     /**
      * 承認済み
      */
@@ -4062,6 +4066,10 @@ export interface Locale extends ILocale {
      * 未承認
      */
     "notApproved": string;
+    /**
+     * 拒否済み
+     */
+    "rejected": string;
     /**
      * 承認状況
      */
@@ -4474,6 +4482,10 @@ export interface Locale extends ILocale {
      * サーバーへの登録はまだ承認されていません。しばらくしてから再度お試しください。登録時にメールアドレスを記入した場合は、登録が承認されたらメールでお知らせします。
      */
     "registerHasNotBeenApprovedYet": string;
+    /**
+     * サーバーへの登録は拒否されました。登録時にメールアドレスを記入した場合は、登録が拒否されたらメールでお知らせします。
+     */
+    "registerHasBeenRejected": string;
     /**
      * サーバーへの登録が承認されたかどうかの通知を行うために、併せてアカウント登録にメールアドレスを必須にすることを強く推奨します。
      */
@@ -11330,6 +11342,10 @@ export interface Locale extends ILocale {
          * 承認済み
          */
         "approve": string;
+        /**
+         * 拒否済み
+         */
+        "reject": string;
         /**
          * 凍結
          */

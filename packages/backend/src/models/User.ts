@@ -312,6 +312,11 @@ export class MiUser {
 	})
 	public approved: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public rejected: boolean;
+
 	@Column('varchar', {
 		length: 1000, nullable: true,
 	})

@@ -157,6 +157,19 @@ export class SigninApiService {
 			return;
 		}
 
+		// 承認待ちチェックの直前または直後に追加
+		if (user.rejected === true) {
+			reply.code(403);
+			return {
+				error: {
+					message: 'Your registration has been rejected.',
+					code: 'REGISTRATION_REJECTED',
+					id: '8c4ef3ce-12a9-4f04-a515-3bf20590c321',
+				},
+			};
+		}
+
+		// 既存の承認待ちチェック
 		if (user.approved === false && instance.approvalRequiredForSignup) {
 			reply.code(403);
 			return {

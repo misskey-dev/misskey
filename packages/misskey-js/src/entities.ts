@@ -56,6 +56,9 @@ export type ModerationLog = {
 	type: 'approve';
 	info: ModerationLogPayloads['approve'];
 } | {
+	type: 'reject';
+	info: ModerationLogPayloads['reject'];
+} | {
 	type: 'suspend';
 	info: ModerationLogPayloads['suspend'];
 } | {
