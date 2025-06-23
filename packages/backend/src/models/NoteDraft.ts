@@ -104,7 +104,7 @@ export class MiNoteDraft {
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
-	public hashtag: string;
+	public hashtag: string | null;
 
 	@Index()
 	@Column({

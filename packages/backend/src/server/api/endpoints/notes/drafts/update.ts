@@ -5,17 +5,11 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { In } from 'typeorm';
-import { Inject } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDraftService } from '@/core/NoteDraftService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import type { MiNote, MiChannel, MiDriveFile, UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
-import { isRenote, isQuote } from '@/misc/is-renote.js';
-import type { MiUser } from '@/models/User.js';
-import { DI } from '@/di-symbols.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -76,9 +70,9 @@ export const meta = {
 			id: '3ac74a84-8fd5-4bb0-870f-01804f82ce15',
 		},
 
-		cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility: {
+		cannotReplyToSpecifiedNoteWithExtendedVisibility: {
 			message: 'You cannot reply to a specified visibility note with extended visibility.',
-			code: 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY',
+			code: 'CANNOT_REPLY_TO_SPECIFIED_NOTE_WITH_EXTENDED_VISIBILITY',
 			id: 'ed940410-535c-4d5e-bfa3-af798671e93c',
 		},
 
@@ -134,6 +128,36 @@ export const meta = {
 			message: 'Access denied.',
 			code: 'ACCESS_DENIED',
 			id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
+		},
+
+		noSuchRenote: {
+			message: 'No such renote.',
+			code: 'NO_SUCH_RENOTE',
+			id: '64929870-2540-4d11-af41-3b484d78c956',
+		},
+
+		cannotRenote: {
+			message: 'Cannot renote.',
+			code: 'CANNOT_RENOTE',
+			id: '76cc5583-5a14-4ad3-8717-0298507e32db',
+		},
+
+		cannotRenoteToExternal: {
+			message: 'Cannot Renote to External.',
+			code: 'CANNOT_RENOTE_TO_EXTERNAL',
+			id: 'ed1952ac-2d26-4957-8b30-2deda76bedf7',
+		},
+
+		noSuchReply: {
+			message: 'No such reply.',
+			code: 'NO_SUCH_REPLY',
+			id: 'c4721841-22fc-4bb7-ad3d-897ef1d375b5',
+		},
+
+		cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility: {
+			message: 'You cannot reply to a specified visibility note with extended visibility.',
+			code: 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY',
+			id: '215dbc76-336c-4d2a-9605-95766ba7dab0',
 		},
 	},
 
@@ -198,157 +222,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
-
-		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
-
-		private noteEntityService: NoteEntityService,
 		private noteDraftService: NoteDraftService,
 		private noteDraftEntityService: NoteDraftEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const draft = await this.noteDraftService.get(me, ps.draftId);
-
-			if (draft == null) {
-				throw new ApiError(meta.errors.noSuchNoteDraft);
-			}
-
-			if (draft.userId !== me.id) {
-				throw new ApiError(meta.errors.accessDenied);
-			}
-
-			// TODO: ノートendpointのバリデーションとServiceとして共通化
-			let visibleUsers: MiUser[] = [];
-			if (ps.visibleUserIds) {
-				visibleUsers = await this.usersRepository.findBy({
-					id: In(ps.visibleUserIds),
-				});
-			}
-
-			let files: MiDriveFile[] = [];
-			const fileIds = ps.fileIds ?? null;
-			if (fileIds != null) {
-				files = await this.driveFilesRepository.createQueryBuilder('file')
-					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
-						userId: me.id,
-						fileIds,
-					})
-					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
-					.setParameters({ fileIds })
-					.getMany();
-
-				if (files.length !== fileIds.length) {
-					throw new ApiError(meta.errors.noSuchFile);
-				}
-			}
-
-			let renote: MiNote | null = null;
-			if (ps.renoteId != null) {
-				// Fetch renote to note
-				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
-
-				if (renote == null) {
-					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (isRenote(renote) && !isQuote(renote)) {
-					throw new ApiError(meta.errors.cannotReRenote);
-				}
-
-				// Check blocking
-				if (renote.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exists({
-						where: {
-							blockerId: renote.userId,
-							blockeeId: me.id,
-						},
-					});
-					if (blockExist) {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					}
-				}
-
-				if (renote.visibility === 'followers' && renote.userId !== me.id) {
-					// 他人のfollowers noteはreject
-					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-				} else if (renote.visibility === 'specified') {
-					// specified / direct noteはreject
-					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-				}
-
-				if (renote.channelId && renote.channelId !== ps.channelId) {
-					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
-					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
-					const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
-					if (renoteChannel == null) {
-						// リノートしたいノートが書き込まれているチャンネルが無い
-						throw new ApiError(meta.errors.noSuchChannel);
-					} else if (!renoteChannel.allowRenoteToExternal) {
-						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
-						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
-					}
-				}
-			}
-
-			let reply: MiNote | null = null;
-			if (ps.replyId != null) {
-				// Fetch reply
-				reply = await this.notesRepository.findOneBy({ id: ps.replyId });
-
-				if (reply == null) {
-					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (isRenote(reply) && !isQuote(reply)) {
-					throw new ApiError(meta.errors.cannotReplyToPureRenote);
-				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
-					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
-				} else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
-					throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
-				}
-
-				// Check blocking
-				if (reply.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exists({
-						where: {
-							blockerId: reply.userId,
-							blockeeId: me.id,
-						},
-					});
-					if (blockExist) {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					}
-				}
-			}
-
-			if (ps.poll) {
-				if (typeof ps.poll.expiresAt === 'number') {
-					if (ps.poll.expiresAt < Date.now()) {
-						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
-					}
-				} else if (typeof ps.poll.expiredAfter === 'number') {
-					ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
-				}
-			}
-
-			let channel: MiChannel | null = null;
-			if (ps.channelId != null) {
-				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
-
-				if (channel == null) {
-					throw new ApiError(meta.errors.noSuchChannel);
-				}
-			}
-
-			await this.noteDraftService.update(me, draft.id, {
-				files: files,
+			const draft = await this.noteDraftService.update(me, ps.draftId, {
+				fileIds: ps.fileIds,
 				poll: ps.poll ? {
 					choices: ps.poll.choices,
 					multiple: ps.poll.multiple ?? false,
@@ -356,15 +235,61 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					expiredAfter: ps.poll.expiredAfter ?? null,
 				} : undefined,
 				text: ps.text ?? null,
-				reply,
-				renote,
+				replyId: ps.replyId ?? undefined,
+				renoteId: ps.renoteId ?? undefined,
 				cw: ps.cw ?? null,
 				...(ps.hashtag ? { hashtag: ps.hashtag } : {}),
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
-				visibleUsers,
-				channel,
+				visibleUserIds: ps.visibleUserIds ?? [],
+				channelId: ps.channelId ?? undefined,
+			}).catch((err) => {
+				if (err instanceof IdentifiableError) {
+					switch (err.id) {
+						case '49cd6b9d-848e-41ee-b0b9-adaca711a6b1':
+							throw new ApiError(meta.errors.noSuchNoteDraft);
+						case '04da457d-b083-4055-9082-955525eda5a5':
+							throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+						case 'b6992544-63e7-67f0-fa7f-32444b1b5306':
+							throw new ApiError(meta.errors.noSuchFile);
+						case '64929870-2540-4d11-af41-3b484d78c956':
+							throw new ApiError(meta.errors.noSuchRenote);
+						case '76cc5583-5a14-4ad3-8717-0298507e32db':
+							throw new ApiError(meta.errors.cannotRenote);
+						case '075ca298-e6e7-485a-b570-51a128bb5168':
+							throw new ApiError(meta.errors.youHaveBeenBlocked);
+						case '81eb8188-aea1-4e35-9a8f-3334a3be9855':
+							throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+						case '6815399a-6f13-4069-b60d-ed5156249d12':
+							throw new ApiError(meta.errors.noSuchChannel);
+						case 'ed1952ac-2d26-4957-8b30-2deda76bedf7':
+							throw new ApiError(meta.errors.cannotRenoteToExternal);
+						case 'c4721841-22fc-4bb7-ad3d-897ef1d375b5':
+							throw new ApiError(meta.errors.noSuchReply);
+						case 'e6c10b57-2c09-4da3-bd4d-eda05d51d140':
+							throw new ApiError(meta.errors.cannotReplyToPureRenote);
+						case '593c323c-6b6a-4501-a25c-2f36bd2a93d6':
+							throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
+						case '215dbc76-336c-4d2a-9605-95766ba7dab0':
+							throw new ApiError(meta.errors.cannotReplyToSpecifiedNoteWithExtendedVisibility);
+						case 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4':
+							throw new ApiError(meta.errors.noSuchRenoteTarget);
+						case 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a':
+							throw new ApiError(meta.errors.cannotReRenote);
+						case '749ee0f6-d3da-459a-bf02-282e2da4292c':
+							throw new ApiError(meta.errors.noSuchReplyTarget);
+						case '33510210-8452-094c-6227-4a6c05d99f00':
+							throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+						case 'aa6e01d3-a85c-669d-758a-76aab43af334':
+							throw new ApiError(meta.errors.containsProhibitedWords);
+						case '4de0363a-3046-481b-9b0f-feff3e211025':
+							throw new ApiError(meta.errors.containsTooManyMentions);
+						default:
+							throw err;
+					}
+				}
+				throw err;
 			});
 
 			const updatedDraft = await this.noteDraftEntityService.pack(draft, me);
