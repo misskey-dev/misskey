@@ -4,7 +4,7 @@ import locales from '../../../locales/index.js';
 const localesDir = path.resolve(__dirname, '../../../locales')
 
 /**
- * 外部ファイルを監視し、必要に応じてサーバを再起動するViteプラグイン
+ * 外部ファイルを監視し、必要に応じてwebSocketでメッセージを送るViteプラグイン
  * @returns {import('vite').Plugin}
  */
 export default function pluginWatchLocales() {
