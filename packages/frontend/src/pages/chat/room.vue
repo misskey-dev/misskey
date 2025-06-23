@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer v-if="tab === 'chat'" :contentMax="700">
+	<div v-if="tab === 'chat'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<div v-if="initializing">
 				<MkLoading/>
@@ -56,19 +56,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ $i.policies.chatAvailability === 'readonly' ? i18n.ts._chat.chatIsReadOnlyForThisAccountOrServer : i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 		</div>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'search'" :contentMax="700">
+	<div v-else-if="tab === 'search'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XSearch :userId="userId" :roomId="roomId"/>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'members'" :contentMax="700">
+	<div v-else-if="tab === 'members'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'info'" :contentMax="700">
+	<div v-else-if="tab === 'info'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XInfo v-if="room != null" :room="room"/>
-	</MkSpacer>
+	</div>
 
 	<template #footer>
 		<div v-if="tab === 'chat'" :class="$style.footer">
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</button>
 					</div>
 				</Transition>
-				<XForm v-if="!initializing" :user="user" :room="room" :class="$style.form"/>
+				<XForm v-if="initialized" :user="user" :room="room" :class="$style.form"/>
 			</div>
 		</div>
 	</template>
@@ -108,7 +108,7 @@ import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
-import { useMutationObserver } from '@/use/use-mutation-observer.js';
+import { useMutationObserver } from '@/composables/use-mutation-observer.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 
@@ -127,7 +127,8 @@ export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'from
 	})[];
 };
 
-const initializing = ref(true);
+const initializing = ref(false);
+const initialized = ref(false);
 const moreFetching = ref(false);
 const messages = ref<NormalizedChatMessage[]>([]);
 const canFetchMore = ref(false);
@@ -171,7 +172,10 @@ function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.en
 async function initialize() {
 	const LIMIT = 20;
 
+	if (initializing.value) return;
+
 	initializing.value = true;
+	initialized.value = false;
 
 	if (props.userId) {
 		const [u, m] = await Promise.all([
@@ -194,13 +198,44 @@ async function initialize() {
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
 	} else {
-		const [r, m] = await Promise.all([
+		const [rResult, mResult] = await Promise.allSettled([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
 			misskeyApi('chat/messages/room-timeline', { roomId: props.roomId, limit: LIMIT }),
 		]);
 
-		room.value = r as Misskey.entities.ChatRoomsShowResponse;
-		messages.value = (m as Misskey.entities.ChatMessagesRoomTimelineResponse).map(x => normalizeMessage(x));
+		if (rResult.status === 'rejected') {
+			os.alert({
+				type: 'error',
+				text: i18n.ts.somethingHappened,
+			});
+			initializing.value = false;
+			return;
+		}
+
+		const r = rResult.value as Misskey.entities.ChatRoomsShowResponse;
+
+		if (r.invitationExists) {
+			const confirm = await os.confirm({
+				type: 'question',
+				title: r.name,
+				text: i18n.ts._chat.youAreNotAMemberOfThisRoomButInvited + '\n' + i18n.ts._chat.doYouAcceptInvitation,
+			});
+			if (confirm.canceled) {
+				initializing.value = false;
+				router.push('/chat');
+				return;
+			} else {
+				await os.apiWithDialog('chat/rooms/join', { roomId: r.id });
+				initializing.value = false;
+				initialize();
+				return;
+			}
+		}
+
+		const m = mResult.status === 'fulfilled' ? mResult.value as Misskey.entities.ChatMessagesRoomTimelineResponse : [];
+
+		room.value = r;
+		messages.value = m.map(x => normalizeMessage(x));
 
 		if (messages.value.length === LIMIT) {
 			canFetchMore.value = true;
@@ -217,6 +252,7 @@ async function initialize() {
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
 
+	initialized.value = true;
 	initializing.value = false;
 }
 
@@ -319,6 +355,12 @@ onMounted(() => {
 	initialize();
 });
 
+onActivated(() => {
+	if (!initialized.value) {
+		initialize();
+	}
+});
+
 onBeforeUnmount(() => {
 	connection.value?.dispose();
 	window.document.removeEventListener('visibilitychange', onVisibilitychange);
@@ -410,7 +452,7 @@ const headerActions = computed<PageHeaderItem[]>(() => [{
 }]);
 
 definePage(computed(() => {
-	if (!initializing.value) {
+	if (initialized.value) {
 		if (user.value) {
 			return {
 				userName: user.value,

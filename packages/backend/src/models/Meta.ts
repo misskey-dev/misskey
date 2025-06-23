@@ -619,6 +619,11 @@ export class MiMeta {
 	})
 	public urlPreviewEnabled: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public urlPreviewAllowRedirect: boolean;
+
 	@Column('integer', {
 		default: 10000,
 	})
@@ -660,8 +665,44 @@ export class MiMeta {
 	public federationHosts: string[];
 
 	@Column('varchar', {
+		length: 128,
+		default: 'local',
+	})
+	public ugcVisibilityForVisitor: 'all' | 'local' | 'none';
+
+	@Column('varchar', {
 		length: 64,
 		nullable: true,
 	})
 	public googleAnalyticsMeasurementId: string | null;
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public deliverSuspendedSoftware: SoftwareSuspension[];
+
+	@Column('boolean', {
+		default: false,
+	})
+	public singleUserMode: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public proxyRemoteFiles: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public signToActivityPubGet: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public allowExternalApRedirect: boolean;
 }
+
+export type SoftwareSuspension = {
+	software: string,
+	versionRange: string,
+};

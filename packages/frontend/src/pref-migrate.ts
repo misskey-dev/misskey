@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { v4 as uuid } from 'uuid';
 import type { DeckProfile } from '@/deck.js';
+import { genId } from '@/utility/id.js';
 import { ColdDeviceStorage, store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -15,7 +15,7 @@ import { i18n } from '@/i18n.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
-	os.waiting(i18n.ts.settingsMigrating);
+	os.waiting({ text: i18n.ts.settingsMigrating });
 
 	store.loaded.then(async () => {
 		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
@@ -42,7 +42,7 @@ export function migrateOldSettings() {
 					key: key,
 				});
 				profiles.push({
-					id: uuid(),
+					id: genId(),
 					name: key,
 					columns: deck.columns,
 					layout: deck.layout,
@@ -93,7 +93,6 @@ export function migrateOldSettings() {
 		prefer.commit('showFixedPostFormInChannel', store.s.showFixedPostFormInChannel);
 		prefer.commit('enableInfiniteScroll', store.s.enableInfiniteScroll);
 		prefer.commit('useReactionPickerForContextMenu', store.s.useReactionPickerForContextMenu);
-		prefer.commit('showGapBetweenNotesInTimeline', store.s.showGapBetweenNotesInTimeline);
 		prefer.commit('instanceTicker', store.s.instanceTicker);
 		prefer.commit('emojiPickerScale', store.s.emojiPickerScale);
 		prefer.commit('emojiPickerWidth', store.s.emojiPickerWidth);
@@ -115,7 +114,6 @@ export function migrateOldSettings() {
 		prefer.commit('notificationStackAxis', store.s.notificationStackAxis);
 		prefer.commit('enableCondensedLine', store.s.enableCondensedLine);
 		prefer.commit('keepScreenOn', store.s.keepScreenOn);
-		prefer.commit('disableStreamingTimeline', store.s.disableStreamingTimeline);
 		prefer.commit('useGroupedNotifications', store.s.useGroupedNotifications);
 		prefer.commit('dataSaver', store.s.dataSaver);
 		prefer.commit('enableSeasonalScreenEffect', store.s.enableSeasonalScreenEffect);

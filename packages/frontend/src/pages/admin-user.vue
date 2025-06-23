@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
@@ -206,7 +206,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkObjectView>
 			</div>
 		</FormSuspense>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -477,16 +477,16 @@ function toggleRoleItem(role) {
 	}
 }
 
-function createAnnouncement() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+async function createAnnouncement() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkUserAnnouncementEditDialog.vue').then(x => x.default), {
 		user: user.value,
 	}, {
 		closed: () => dispose(),
 	});
 }
 
-function editAnnouncement(announcement) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+async function editAnnouncement(announcement) {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkUserAnnouncementEditDialog.vue').then(x => x.default), {
 		user: user.value,
 		announcement,
 	}, {

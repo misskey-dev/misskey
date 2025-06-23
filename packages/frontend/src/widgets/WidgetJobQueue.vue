@@ -60,6 +60,7 @@ import kmg from '@/filters/kmg.js';
 import * as sound from '@/utility/sound.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
+import { genId } from '@/utility/id.js';
 
 const name = 'jobQueue';
 
@@ -144,7 +145,7 @@ connection.on('stats', onStats);
 connection.on('statsLog', onStatsLog);
 
 connection.send('requestLog', {
-	id: Math.random().toString().substring(2, 10),
+	id: genId(),
 	length: 1,
 });
 

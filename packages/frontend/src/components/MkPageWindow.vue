@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div :class="$style.root">
+	<div :class="$style.root" class="_forceShrinkSpacer">
 		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :key="reloadCount" :router="windowRouter"/>
 		<RouterView v-else :key="reloadCount" :router="windowRouter"/>
 	</div>
@@ -125,7 +125,6 @@ provideMetadataReceiver((metadataGetter) => {
 provideReactiveMetadata(pageMetadata);
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
-provide(DI.forceSpacerMin, true);
 
 const contextmenu = computed(() => ([{
 	icon: 'ti ti-player-eject',

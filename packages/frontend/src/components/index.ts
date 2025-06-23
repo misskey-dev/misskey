@@ -22,9 +22,11 @@ import MkLoading from './global/MkLoading.vue';
 import MkError from './global/MkError.vue';
 import MkAd from './global/MkAd.vue';
 import MkPageHeader from './global/MkPageHeader.vue';
-import MkSpacer from './global/MkSpacer.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
+import MkResult from './global/MkResult.vue';
+import MkSystemIcon from './global/MkSystemIcon.vue';
+import MkTip from './global/MkTip.vue';
 import PageWithHeader from './global/PageWithHeader.vue';
 import PageWithAnimBg from './global/PageWithAnimBg.vue';
 import SearchMarker from './global/SearchMarker.vue';
@@ -60,9 +62,11 @@ export const components = {
 	MkError: MkError,
 	MkAd: MkAd,
 	MkPageHeader: MkPageHeader,
-	MkSpacer: MkSpacer,
 	MkStickyContainer: MkStickyContainer,
 	MkLazy: MkLazy,
+	MkResult: MkResult,
+	MkSystemIcon: MkSystemIcon,
+	MkTip: MkTip,
 	PageWithHeader: PageWithHeader,
 	PageWithAnimBg: PageWithAnimBg,
 	SearchMarker: SearchMarker,
@@ -92,9 +96,11 @@ declare module '@vue/runtime-core' {
 		MkError: typeof MkError;
 		MkAd: typeof MkAd;
 		MkPageHeader: typeof MkPageHeader;
-		MkSpacer: typeof MkSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
+		MkResult: typeof MkResult;
+		MkSystemIcon: typeof MkSystemIcon;
+		MkTip: typeof MkTip;
 		PageWithHeader: typeof PageWithHeader;
 		PageWithAnimBg: typeof PageWithAnimBg;
 		SearchMarker: typeof SearchMarker;
