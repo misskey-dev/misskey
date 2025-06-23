@@ -21,7 +21,7 @@ export default function pluginWatchLocales() {
 				if (localeYmlPaths.includes(filePath)) {
 					server.ws.send({
 						type: 'custom',
-						event: 'language-update',
+						event: 'locale-update',
 						data: filePath.match(/([^\/]+)\.yml$/)?.[1] || null,
 					})
 				}

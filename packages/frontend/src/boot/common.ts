@@ -100,8 +100,8 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 
 	if (import.meta.hot) {
-		import.meta.hot.on('language-update', async (updatedLang: string) => {
-			console.info(`Language updated: ${updatedLang}`);
+		import.meta.hot.on('locale-update', async (updatedLang: string) => {
+			console.info(`Locale updated: ${updatedLang}`);
 			if (updatedLang === lang) {
 				await new Promise(resolve => {
 					window.setTimeout(resolve, 500);
