@@ -138,7 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 					<template v-if="narrow">
 						<MkLazy>
-							<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
+							<XFiles :key="user.id" :user="user" @showMore="emit('showMoreFiles')"/>
 						</MkLazy>
 						<MkLazy>
 							<XActivity :key="user.id" :user="user"/>
@@ -152,7 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-				<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
+				<XFiles :key="user.id" :user="user" @showMore="emit('showMoreFiles')"/>
 				<XActivity :key="user.id" :user="user"/>
 			</div>
 		</div>
@@ -217,7 +217,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'unfoldFiles'): void;
+	(ev: 'showMoreFiles'): void;
 }>();
 
 const router = useRouter();

@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import XCommon from './_common_/common.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XNavbarH from '@/ui/_common_/navbar-h.vue';
@@ -169,7 +169,7 @@ const addColumn = async (ev) => {
 
 	addColumnToStore({
 		type: column,
-		id: uuid(),
+		id: genId(),
 		name: null,
 		width: 330,
 		soundSetting: { type: null, volume: 1 },

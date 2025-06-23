@@ -175,6 +175,7 @@ export * as 'drive/files/find' from './endpoints/drive/files/find.js';
 export * as 'drive/files/find-by-hash' from './endpoints/drive/files/find-by-hash.js';
 export * as 'drive/files/show' from './endpoints/drive/files/show.js';
 export * as 'drive/files/update' from './endpoints/drive/files/update.js';
+export * as 'drive/files/move-bulk' from './endpoints/drive/files/move-bulk.js';
 export * as 'drive/files/upload-from-url' from './endpoints/drive/files/upload-from-url.js';
 export * as 'drive/folders' from './endpoints/drive/folders.js';
 export * as 'drive/folders/create' from './endpoints/drive/folders/create.js';
@@ -432,4 +433,5 @@ export * as 'chat/rooms/invitations/ignore' from './endpoints/chat/rooms/invitat
 export * as 'chat/rooms/invitations/inbox' from './endpoints/chat/rooms/invitations/inbox.js';
 export * as 'chat/rooms/invitations/outbox' from './endpoints/chat/rooms/invitations/outbox.js';
 export * as 'chat/history' from './endpoints/chat/history.js';
+export * as 'chat/read-all' from './endpoints/chat/read-all.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';

@@ -193,7 +193,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, useTemplateRef, watch, provide, shallowRef, reactive } from 'vue';
+import { computed, inject, onMounted, ref, useTemplateRef, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -234,7 +234,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
@@ -265,30 +265,28 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 
 let note = deepClone(props.note);
 
-// plugin
-const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
-if (noteViewInterruptors.length > 0) {
-	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note);
-		for (const interruptor of noteViewInterruptors) {
-			try {
-				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-			} catch (err) {
-				console.error(err);
-			}
-		}
-		note = result as Misskey.entities.Note;
-	});
-}
+// コンポーネント初期化に非同期的な処理を行うとTransitionのレンダリングがバグるため同期的に実行できるメソッドが実装されるのを待つ必要がある
+// https://github.com/aiscript-dev/aiscript/issues/937
+//// plugin
+//const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+//if (noteViewInterruptors.length > 0) {
+//	let result: Misskey.entities.Note | null = deepClone(note);
+//	for (const interruptor of noteViewInterruptors) {
+//		try {
+//			result = await interruptor.handler(result!) as Misskey.entities.Note | null;
+//		} catch (err) {
+//			console.error(err);
+//		}
+//	}
+//	note = result as Misskey.entities.Note;
+//}
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const $appearNote = reactive({
-	reactions: appearNote.reactions,
-	reactionCount: appearNote.reactionCount,
-	reactionEmojis: appearNote.reactionEmojis,
-	myReaction: appearNote.myReaction,
-	pollChoices: appearNote.poll?.choices,
+const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
+	note: appearNote,
+	parentNote: note,
+	mock: props.mock,
 });
 
 const rootEl = useTemplateRef('rootEl');
@@ -323,20 +321,27 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${appearNote.id}`,
 }));
 
-/* Overload FunctionにLintが対応していないのでコメントアウト
+/* eslint-disable no-redeclare */
+/** checkOnlyでは純粋なワードミュート結果をbooleanで返却する */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
-*/
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly?: false): Array<string | string[]> | false | 'sensitiveMute';
+
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | boolean | 'sensitiveMute' {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, $i, mutedWords);
-		if (Array.isArray(result)) return result;
+		if (Array.isArray(result)) {
+			return checkOnly ? (result.length > 0) : result;
+		}
 
 		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-		if (Array.isArray(replyResult)) return replyResult;
+		if (Array.isArray(replyResult)) {
+			return checkOnly ? (replyResult.length > 0) : replyResult;
+		}
 
 		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-		if (Array.isArray(renoteResult)) return renoteResult;
+		if (Array.isArray(renoteResult)) {
+			return checkOnly ? (renoteResult.length > 0) : renoteResult;
+		}
 	}
 
 	if (checkOnly) return false;
@@ -347,6 +352,7 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	return false;
 }
+/* eslint-enable no-redeclare */
 
 const keymap = {
 	'r': () => {
@@ -410,17 +416,6 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
-let subscribeManuallyToNoteCapture: () => void = () => { };
-
-if (!props.mock) {
-	const { subscribe } = useNoteCapture({
-		note: appearNote,
-		parentNote: note,
-		$note: $appearNote,
-	});
-	subscribeManuallyToNoteCapture = subscribe;
-}
-
 if (!props.mock) {
 	useTooltip(renoteButton, async (showing) => {
 		const renotes = await misskeyApi('notes/renotes', {
@@ -430,7 +425,7 @@ if (!props.mock) {
 
 		const users = renotes.map(x => x.user);
 
-		if (users.length < 1) return;
+		if (users.length < 1 || renoteButton.value == null) return;
 
 		const { dispose } = os.popup(MkUsersTooltip, {
 			showing,

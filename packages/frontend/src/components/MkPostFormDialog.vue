@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		autofocus
 		freezeAfterPosted
 		@posted="onPosted"
-		@cancel="modal?.close()"
-		@esc="modal?.close()"
+		@cancel="_close()"
+		@esc="_close()"
 	/>
 </MkModal>
 </template>
@@ -49,6 +49,12 @@ function onPosted() {
 	modal.value?.close({
 		useSendAnimation: true,
 	});
+}
+
+async function _close() {
+	const canClose = await form.value?.canClose();
+	if (!canClose) return;
+	modal.value?.close();
 }
 
 function onEsc(ev: KeyboardEvent) {

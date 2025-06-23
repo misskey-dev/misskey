@@ -1302,7 +1302,6 @@ _theme:
     buttonBg: "Фон кнопки"
     buttonHoverBg: "Фон кнопки (при наведенні)"
     inputBorder: "Край поля вводу"
-    driveFolderBg: "Фон папки на диску"
     badge: "Значок"
     messageBg: "Фон переписки"
     fgHighlighted: "Виділений текст"
@@ -1626,3 +1625,10 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Всі"
   searchScopeLocal: "Локальна"
+_watermarkEditor:
+  opacity: "Непрозорість"
+  scale: "Розмір"
+  text: "Текст"
+  type: "Тип"
+  image: "Зображення"
+  advanced: "Розширені"

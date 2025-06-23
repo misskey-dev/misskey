@@ -1215,6 +1215,10 @@ export interface Locale extends ILocale {
      */
     "uploadFromUrlMayTakeTime": string;
     /**
+     * {n}個のファイルをアップロード
+     */
+    "uploadNFiles": ParameterizedString<"n">;
+    /**
      * みつける
      */
     "explore": string;
@@ -1326,6 +1330,10 @@ export interface Locale extends ILocale {
      * デバイスのダークモードと同期する
      */
     "syncDeviceDarkMode": string;
+    /**
+     * 「{x}」がオンになっています。同期をオフにして手動でモードを切り替えますか？
+     */
+    "switchDarkModeManuallyWhenSyncEnabledConfirm": ParameterizedString<"x">;
     /**
      * ドライブ
      */
@@ -2334,6 +2342,10 @@ export interface Locale extends ILocale {
      * サウンド
      */
     "sound": string;
+    /**
+     * 通知音の設定
+     */
+    "notificationSoundSettings": string;
     /**
      * 聴く
      */
@@ -4019,6 +4031,10 @@ export interface Locale extends ILocale {
      */
     "cannotUploadBecauseExceedsFileSizeLimit": string;
     /**
+     * 許可されていないファイル種別のためアップロードできません。
+     */
+    "cannotUploadBecauseUnallowedFileType": string;
+    /**
      * ベータ
      */
     "beta": string;
@@ -5327,15 +5343,19 @@ export interface Locale extends ILocale {
      */
     "preferenceSyncConflictTitle": string;
     /**
-     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どちらの設定値で上書きしますか？
+     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どうしますか？
      */
     "preferenceSyncConflictText": string;
     /**
-     * サーバーの設定値
+     * 統合する
+     */
+    "preferenceSyncConflictChoiceMerge": string;
+    /**
+     * サーバーの設定値で上書き
      */
     "preferenceSyncConflictChoiceServer": string;
     /**
-     * デバイスの設定値
+     * デバイスの設定値で上書き
      */
     "preferenceSyncConflictChoiceDevice": string;
     /**
@@ -5453,6 +5473,30 @@ export interface Locale extends ILocale {
      * {x}のミュートを解除
      */
     "unmuteX": ParameterizedString<"x">;
+    /**
+     * 中止
+     */
+    "abort": string;
+    /**
+     * ヒントとコツ
+     */
+    "tip": string;
+    /**
+     * 全ての「ヒントとコツ」を再表示
+     */
+    "redisplayAllTips": string;
+    /**
+     * 全ての「ヒントとコツ」を非表示
+     */
+    "hideAllTips": string;
+    /**
+     * デフォルトの画像圧縮度
+     */
+    "defaultImageCompressionLevel": string;
+    /**
+     * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
+     */
+    "defaultImageCompressionLevel_description": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5789,6 +5833,14 @@ export interface Locale extends ILocale {
          * リアルタイムモードがオンのときは、この設定に関わらずリアルタイムでコンテンツが更新されます。
          */
         "contentsUpdateFrequency_description2": string;
+        /**
+         * URLプレビューを表示する
+         */
+        "showUrlPreview": string;
+        /**
+         * 利用できるリアクションを先頭に表示
+         */
+        "showAvailableReactionsFirstInNote": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -7722,6 +7774,18 @@ export interface Locale extends ILocale {
              */
             "chatAvailability": string;
             /**
+             * アップロード可能なファイル種別
+             */
+            "uploadableFileTypes": string;
+            /**
+             * MIMEタイプを指定します。改行で区切って複数指定できるほか、アスタリスク(*)でワイルドカード指定できます。(例: image/*)
+             */
+            "uploadableFileTypes_caption": string;
+            /**
+             * ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。
+             */
+            "uploadableFileTypes_caption2": ParameterizedString<"x">;
+            /**
              * サーバーサイドのノートの下書きの作成可能数
              */
             "noteDraftLimit": string;
@@ -8543,10 +8607,6 @@ export interface Locale extends ILocale {
              * 入力ボックスの縁取り
              */
             "inputBorder": string;
-            /**
-             * ドライブフォルダーの背景
-             */
-            "driveFolderBg": string;
             /**
              * バッジ
              */
@@ -9537,6 +9597,14 @@ export interface Locale extends ILocale {
     };
     "_postForm": {
         /**
+         * アップロードされていないファイルがありますが、破棄してフォームを閉じますか？
+         */
+        "quitInspiteOfThereAreUnuploadedFilesConfirm": string;
+        /**
+         * ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。
+         */
+        "uploaderTip": string;
+        /**
          * このノートに返信...
          */
         "replyPlaceholder": string;
@@ -9679,7 +9747,7 @@ export interface Locale extends ILocale {
          */
         "excludeInactiveUsers": string;
         /**
-         * インポートした人による返信をTLに含むようにする
+         * 返信をTLに含むかの情報がファイルにない場合に、インポートした人による返信をTLに含むようにする
          */
         "withReplies": string;
     };
@@ -10966,13 +11034,23 @@ export interface Locale extends ILocale {
              */
             "description": string;
         };
-        "_urlPreview": {
+        "_urlPreviewThumbnail": {
             /**
              * URLプレビューのサムネイルを非表示
              */
             "title": string;
             /**
              * URLプレビューのサムネイル画像が読み込まれなくなります。
+             */
+            "description": string;
+        };
+        "_disableUrlPreview": {
+            /**
+             * URLプレビューを無効化
+             */
+            "title": string;
+            /**
+             * URLプレビュー機能を無効化します。サムネイル画像だけと違い、リンク先の情報の読み込み自体を削減できます。
              */
             "description": string;
         };
@@ -11194,6 +11272,14 @@ export interface Locale extends ILocale {
          * URLプレビューを有効にする
          */
         "enable": string;
+        /**
+         * プレビュー先のリダイレクトを許可
+         */
+        "allowRedirect": string;
+        /**
+         * 入力されたURLがリダイレクトされる場合に、そのリダイレクト先をたどってプレビューを表示するかどうかを設定します。無効にするとサーバーリソースの節約になりますが、リダイレクト先の内容は表示されなくなります。
+         */
+        "allowRedirectDescription": string;
         /**
          * プレビュー取得時のタイムアウト(ms)
          */
@@ -11461,22 +11547,6 @@ export interface Locale extends ILocale {
                  * ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。
                  */
                 "directoryToCategoryCaption": string;
-                /**
-                 * いずれかの方法で登録する絵文字を選択してください。
-                 */
-                "emojiInputAreaCaption": string;
-                /**
-                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
-                 */
-                "emojiInputAreaList1": string;
-                /**
-                 * このリンクをクリックしてPCから選択する
-                 */
-                "emojiInputAreaList2": string;
-                /**
-                 * このリンクをクリックしてドライブから選択する
-                 */
-                "emojiInputAreaList3": string;
                 /**
                  * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
                  */
@@ -11908,6 +11978,268 @@ export interface Locale extends ILocale {
              * 支援者向け特典もあります！
              */
             "text3": string;
+        };
+    };
+    "_uploader": {
+        /**
+         * {x}に圧縮
+         */
+        "compressedToX": ParameterizedString<"x">;
+        /**
+         * {x}%節約
+         */
+        "savedXPercent": ParameterizedString<"x">;
+        /**
+         * アップロードされていないファイルがありますが、中止しますか？
+         */
+        "abortConfirm": string;
+        /**
+         * アップロードされていないファイルがありますが、完了しますか？
+         */
+        "doneConfirm": string;
+        /**
+         * アップロード可能な最大ファイルサイズは{x}です。
+         */
+        "maxFileSizeIsX": ParameterizedString<"x">;
+        /**
+         * アップロード可能なファイル種別
+         */
+        "allowedTypes": string;
+        /**
+         * ファイルはまだアップロードされていません。このダイアログで、アップロード前の確認・リネーム・圧縮・クロッピングなどが行えます。準備が出来たら、「アップロード」ボタンを押してアップロードを開始できます。
+         */
+        "tip": string;
+    };
+    "_clientPerformanceIssueTip": {
+        /**
+         * バッテリー消費が多いと感じたら
+         */
+        "title": string;
+        /**
+         * アドブロッカーを無効にしてください
+         */
+        "makeSureDisabledAdBlocker": string;
+        /**
+         * アドブロッカーはパフォーマンスに影響を及ぼすことがあります。OSの機能やブラウザの機能・アドオンなどでアドブロッカーが有効になっていないか確認してください。
+         */
+        "makeSureDisabledAdBlocker_description": string;
+        /**
+         * カスタムCSSを無効にしてください
+         */
+        "makeSureDisabledCustomCss": string;
+        /**
+         * スタイルを上書きするとパフォーマンスに影響を及ぼすことがあります。カスタムCSSや、スタイルを上書きする拡張機能が有効になっていないか確認してください。
+         */
+        "makeSureDisabledCustomCss_description": string;
+        /**
+         * 拡張機能を無効にしてください
+         */
+        "makeSureDisabledAddons": string;
+        /**
+         * 一部の拡張機能はクライアントの動作に干渉しパフォーマンスに影響を及ぼすことがあります。ブラウザの拡張機能を無効にして改善するか確認してください。
+         */
+        "makeSureDisabledAddons_description": string;
+    };
+    "_clip": {
+        /**
+         * クリップは、ノートをまとめることができる機能です。
+         */
+        "tip": string;
+    };
+    "_userLists": {
+        /**
+         * 任意のユーザーが含まれるリストを作成できます。作成したリストはタイムラインとして表示可能です。
+         */
+        "tip": string;
+    };
+    /**
+     * ウォーターマーク
+     */
+    "watermark": string;
+    /**
+     * デフォルトのプリセット
+     */
+    "defaultPreset": string;
+    "_watermarkEditor": {
+        /**
+         * 画像にクレジット情報などのウォーターマークを追加することができます。
+         */
+        "tip": string;
+        /**
+         * 保存せずに終了しますか？
+         */
+        "quitWithoutSaveConfirm": string;
+        /**
+         * このファイルは対応していません
+         */
+        "driveFileTypeWarn": string;
+        /**
+         * 画像ファイルを選択してください
+         */
+        "driveFileTypeWarnDescription": string;
+        /**
+         * ウォーターマークの編集
+         */
+        "title": string;
+        /**
+         * 全体に被せる
+         */
+        "cover": string;
+        /**
+         * 敷き詰める
+         */
+        "repeat": string;
+        /**
+         * 不透明度
+         */
+        "opacity": string;
+        /**
+         * サイズ
+         */
+        "scale": string;
+        /**
+         * テキスト
+         */
+        "text": string;
+        /**
+         * 位置
+         */
+        "position": string;
+        /**
+         * タイプ
+         */
+        "type": string;
+        /**
+         * 画像
+         */
+        "image": string;
+        /**
+         * 高度
+         */
+        "advanced": string;
+        /**
+         * ストライプ
+         */
+        "stripe": string;
+        /**
+         * ラインの幅
+         */
+        "stripeWidth": string;
+        /**
+         * ラインの数
+         */
+        "stripeFrequency": string;
+        /**
+         * 角度
+         */
+        "angle": string;
+        /**
+         * ポルカドット
+         */
+        "polkadot": string;
+        /**
+         * チェッカー
+         */
+        "checker": string;
+        /**
+         * メインドットの不透明度
+         */
+        "polkadotMainDotOpacity": string;
+        /**
+         * メインドットの大きさ
+         */
+        "polkadotMainDotRadius": string;
+        /**
+         * サブドットの不透明度
+         */
+        "polkadotSubDotOpacity": string;
+        /**
+         * サブドットの大きさ
+         */
+        "polkadotSubDotRadius": string;
+        /**
+         * サブドットの数
+         */
+        "polkadotSubDotDivisions": string;
+    };
+    "_imageEffector": {
+        /**
+         * エフェクト
+         */
+        "title": string;
+        /**
+         * エフェクトを追加
+         */
+        "addEffect": string;
+        /**
+         * 変更を破棄して終了しますか？
+         */
+        "discardChangesConfirm": string;
+        "_fxs": {
+            /**
+             * 色収差
+             */
+            "chromaticAberration": string;
+            /**
+             * グリッチ
+             */
+            "glitch": string;
+            /**
+             * ミラー
+             */
+            "mirror": string;
+            /**
+             * 色の反転
+             */
+            "invert": string;
+            /**
+             * 白黒
+             */
+            "grayscale": string;
+            /**
+             * 色調補正
+             */
+            "colorAdjust": string;
+            /**
+             * 色の圧縮
+             */
+            "colorClamp": string;
+            /**
+             * 色の圧縮(高度)
+             */
+            "colorClampAdvanced": string;
+            /**
+             * 歪み
+             */
+            "distort": string;
+            /**
+             * 二値化
+             */
+            "threshold": string;
+            /**
+             * 集中線
+             */
+            "zoomLines": string;
+            /**
+             * ストライプ
+             */
+            "stripe": string;
+            /**
+             * ポルカドット
+             */
+            "polkadot": string;
+            /**
+             * チェッカー
+             */
+            "checker": string;
+            /**
+             * ブロックノイズ
+             */
+            "blockNoise": string;
+            /**
+             * ティアリング
+             */
+            "tearing": string;
         };
     };
     "_drafts": {

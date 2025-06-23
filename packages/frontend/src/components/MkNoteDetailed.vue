@@ -228,7 +228,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, reactive, ref, useTemplateRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -268,7 +268,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
@@ -286,30 +286,26 @@ const inChannel = inject('inChannel', null);
 
 let note = deepClone(props.note);
 
-// plugin
-const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
-if (noteViewInterruptors.length > 0) {
-	onMounted(async () => {
-		let result: Misskey.entities.Note | null = deepClone(note);
-		for (const interruptor of noteViewInterruptors) {
-			try {
-				result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-			} catch (err) {
-				console.error(err);
-			}
-		}
-		note = result as Misskey.entities.Note;
-	});
-}
+// コンポーネント初期化に非同期的な処理を行うとTransitionのレンダリングがバグるため同期的に実行できるメソッドが実装されるのを待つ必要がある
+//// plugin
+//const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+//if (noteViewInterruptors.length > 0) {
+//	let result: Misskey.entities.Note | null = deepClone(note);
+//	for (const interruptor of noteViewInterruptors) {
+//		try {
+//			result = await interruptor.handler(result!) as Misskey.entities.Note | null;
+//		} catch (err) {
+//			console.error(err);
+//		}
+//	}
+//	note = result as Misskey.entities.Note;
+//}
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const $appearNote = reactive({
-	reactions: appearNote.reactions,
-	reactionCount: appearNote.reactionCount,
-	reactionEmojis: appearNote.reactionEmojis,
-	myReaction: appearNote.myReaction,
-	pollChoices: appearNote.poll?.choices,
+const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
+	note: appearNote,
+	parentNote: note,
 });
 
 const rootEl = useTemplateRef('rootEl');
@@ -396,12 +392,6 @@ const reactionsPagination = computed(() => ({
 		type: reactionTabType.value,
 	},
 }));
-
-const { subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
-	note: appearNote,
-	parentNote: note,
-	$note: $appearNote,
-});
 
 useTooltip(renoteButton, async (showing) => {
 	const renotes = await misskeyApi('notes/renotes', {

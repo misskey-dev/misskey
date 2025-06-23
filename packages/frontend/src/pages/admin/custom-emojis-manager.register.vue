@@ -35,20 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XRegisterLogs :logs="requestLogs"/>
 		</MkFolder>
 
-		<div
-			:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
-			@dragover.prevent="isDragOver = true"
-			@dragleave.prevent="isDragOver = false"
-			@drop.prevent.stop="onDrop"
-		>
-			<div style="margin-top: 1em">
-				{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaCaption }}
-			</div>
-			<ul>
-				<li>{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList1 }}</li>
-				<li><a @click.prevent="onFileSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList2 }}</a></li>
-				<li><a @click.prevent="onDriveSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList3 }}</a></li>
-			</ul>
+		<div class="_buttonsCenter">
+			<MkButton primary rounded @click="onFileSelectClicked">{{ i18n.ts.upload }}</MkButton>
+			<MkButton primary rounded @click="onDriveSelectClicked">{{ i18n.ts.fromDrive }}</MkButton>
 		</div>
 
 		<div v-if="gridItems.length > 0" :class="$style.gridArea">
@@ -94,8 +83,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
-import { chooseFileFromDrive, chooseFileFromPc } from '@/utility/select-file.js';
-import { uploadFile } from '@/utility/upload.js';
+import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
@@ -311,75 +299,21 @@ async function onClearClicked() {
 	}
 }
 
-async function onDrop(ev: DragEvent) {
-	isDragOver.value = false;
-
-	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
-	const confirm = await os.confirm({
-		type: 'info',
-		text: i18n.tsx._customEmojisManager._local._register.confirmUploadEmojisDescription({ count: droppedFiles.length }),
-	});
-	if (confirm.canceled) {
-		return;
-	}
-
-	const uploadedItems = Array.of<{ droppedFile: DroppedFile, driveFile: Misskey.entities.DriveFile }>();
-	try {
-		uploadedItems.push(
-			...await os.promiseDialog(
-				Promise.all(
-					droppedFiles.map(async (it) => ({
-						droppedFile: it,
-						driveFile: await uploadFile(
-							it.file,
-							selectedFolderId.value,
-							it.file.name.replace(/\.[^.]+$/, ''),
-							true,
-						),
-					}),
-					),
-				),
-				() => {
-				},
-				() => {
-				},
-			),
-		);
-	} catch (err) {
-		// ダイアログは共通部品側で出ているはずなので何もしない
-		return;
-	}
-
-	const items = uploadedItems.map(({ droppedFile, driveFile }) => {
-		const item = fromDriveFile(driveFile);
-		if (directoryToCategory.value) {
-			item.category = droppedFile.path
-				.replace(/^\//, '')
-				.replace(/\/[^/]+$/, '')
-				.replace(droppedFile.file.name, '');
-		}
-		return item;
-	});
-
-	gridItems.value.push(...items);
-}
-
 async function onFileSelectClicked() {
-	const driveFiles = await chooseFileFromPc(
-		true,
-		{
-			uploadFolder: selectedFolderId.value,
-			keepOriginal: true,
-			// 拡張子は消す
-			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
-		},
-	);
+	const driveFiles = await chooseFileFromPcAndUpload({
+		multiple: true,
+		folderId: selectedFolderId.value,
+		// 拡張子は消す
+		nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+	});
 
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
 async function onDriveSelectClicked() {
-	const driveFiles = await chooseFileFromDrive(true);
+	const driveFiles = await chooseDriveFile({
+		multiple: true,
+	});
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
 }
 
@@ -434,23 +368,6 @@ onMounted(async () => {
 <style module lang="scss">
 .violationRow {
 	background-color: var(--MI_THEME-infoWarnBg);
-}
-
-.uploadBox {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: auto;
-	border: 0.5px dotted var(--MI_THEME-accentedBg);
-	border-radius: var(--MI-radius);
-	background-color: var(--MI_THEME-accentedBg);
-	box-sizing: border-box;
-
-	&.dragOver {
-		cursor: copy;
-	}
 }
 
 .gridArea {
