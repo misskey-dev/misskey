@@ -73,7 +73,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.draftActions">
 						<MkButton
-							v-tooltip="i18n.ts._drafts.delete"
 							short
 							:class="$style.itemButton"
 							@click.stop="deleteDraft(draft)"
