@@ -167,10 +167,6 @@ export interface Locale extends ILocale {
      */
     "save": string;
     /**
-     * 保存しない
-     */
-    "dontSave": string;
-    /**
      * ユーザー
      */
     "users": string;
@@ -12252,9 +12248,9 @@ export interface Locale extends ILocale {
          */
         "cannotCreateDraftAnymore": string;
         /**
-         * サーバーに下書きを保存するには、下書きを削除する必要があります。ここで「保存しない」を選択しても、下書きは端末内に保存されます。
+         * リノートの下書きは作成できません。
          */
-        "cannotCreateDraftAnymoreDescription": string;
+        "cannotCreateDraftOfRenote": string;
         /**
          * 下書きを削除
          */

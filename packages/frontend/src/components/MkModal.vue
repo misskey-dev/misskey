@@ -90,7 +90,7 @@ const emit = defineEmits<{
 	(ev: 'opening'): void;
 	(ev: 'opened'): void;
 	(ev: 'click'): void;
-	(ev: 'esc', event: KeyboardEvent): void;
+	(ev: 'esc'): void;
 	(ev: 'close'): void;
 	(ev: 'closed'): void;
 }>();
@@ -166,7 +166,7 @@ if (type.value === 'drawer') {
 const keymap = {
 	'esc': {
 		allowRepeat: true,
-		callback: (ev) => emit('esc', ev),
+		callback: () => emit('esc'),
 	},
 } as const satisfies Keymap;
 

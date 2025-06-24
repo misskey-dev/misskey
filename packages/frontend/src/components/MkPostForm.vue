@@ -302,6 +302,7 @@ const canPost = computed((): boolean => {
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
+// cannot save pure renote as draft
 const canSaveAsServerDraft = computed((): boolean => {
 	return canPost.value && (textLength.value > 0 || files.value.length > 0 || poll.value != null);
 });
@@ -1039,37 +1040,6 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
-async function handleSavingServerDraft(ev?: Event) {
-	const draftCount = await misskeyApi('notes/drafts/count');
-	const isOver = draftCount >= $i.policies.noteDraftLimit;
-	if (canSaveAsServerDraft.value && !isOver) {
-		return await saveServerDraft(true);
-	} else if (canSaveAsServerDraft.value) {
-		ev?.stopPropagation();
-
-		const { canceled, result } = await os.actions({
-			type: 'question',
-			title: i18n.ts._drafts.cannotCreateDraftAnymore,
-			text: i18n.ts._drafts.cannotCreateDraftAnymoreDescription,
-			actions: [{
-				value: 'discard' as const,
-				text: i18n.ts.dontSave,
-			}, {
-				value: 'cancel' as const,
-				text: i18n.ts.cancel,
-			}],
-		});
-
-		if (canceled || result === 'cancel') {
-			return { canClosePostForm: false };
-		} else {
-			return { canClosePostForm: true };
-		}
-	} else {
-		return { canClosePostForm: true };
-	}
-}
-
 function cancel() {
 	emit('cancel');
 }
@@ -1236,6 +1206,12 @@ function showDraftMenu(ev: MouseEvent) {
 		text: i18n.ts._drafts.save,
 		icon: 'ti ti-cloud-upload',
 		action: async () => {
+			if (!canSaveAsServerDraft.value) {
+				return os.alert({
+					type: 'error',
+					text: i18n.ts._drafts.cannotCreateDraftOfRenote,
+				});
+			}
 			saveServerDraft();
 		},
 	}, {
