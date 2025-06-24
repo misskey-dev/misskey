@@ -16,9 +16,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 	@esc="cancel()"
 >
-	<template #header>{{ i18n.ts._drafts.select }}</template>
+	<template #header>
+		{{ i18n.ts._drafts.select }} ({{ currentDraftsCount }}/{{ $i?.policies.noteDraftLimit }})
+	</template>
 	<div :class="$style.drafts" class="_gaps">
-		<!-- TODO: 下書きの保存可能数の残り表示 -->
 		<MkPagination ref="pagingEl" :pagination="paging">
 			<template #empty>
 				<MkResult type="empty" :text="i18n.ts._drafts.noDrafts"/>
@@ -99,6 +100,8 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { $i } from '@/i.js';
+import { misskeyApi } from '@/utility/misskey-api';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.NoteDraft): void;
@@ -112,6 +115,11 @@ const paging = {
 } satisfies PagingCtx;
 
 const pagingComponent = useTemplateRef('pagingEl');
+
+const currentDraftsCount = ref(0);
+misskeyApi('notes/drafts/count').then((count) => {
+	currentDraftsCount.value = count;
+});
 
 const selected = ref<Misskey.entities.NoteDraft | null>(null);
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
