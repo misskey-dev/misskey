@@ -57,6 +57,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		emojis: [],
 		score: 0,
 		host: null,
+		instance: null,
 		inbox: null,
 		sharedInbox: null,
 		featured: null,
@@ -101,10 +102,13 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		channelId: null,
 		channel: null,
 		userHost: null,
+		userInstance: null,
 		replyUserId: null,
 		replyUserHost: null,
+		replyUserInstance: null,
 		renoteUserId: null,
 		renoteUserHost: null,
+		renoteUserInstance: null,
 		...override,
 	};
 }
@@ -426,6 +430,7 @@ export class WebhookTestService {
 			emojis: await this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: 'active',
 			badgeRoles: [],
+			instance: undefined,
 			...override,
 		};
 	}

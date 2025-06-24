@@ -6,6 +6,7 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from './util/id.js';
 
+@Index('IDX_instance_host_key', { synchronize: false })
 @Entity('instance')
 export class MiInstance {
 	@PrimaryColumn(id())
@@ -97,6 +98,46 @@ export class MiInstance {
 		enum: ['none', 'manuallySuspended', 'goneSuspended', 'autoSuspendedForNotResponding'],
 	})
 	public suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding';
+
+	/**
+	 * True if this instance is blocked from federation.
+	 */
+	@Column('boolean', {
+		nullable: false,
+		default: false,
+		comment: 'True if this instance is blocked from federation.',
+	})
+	public isBlocked: boolean;
+
+	/**
+	 * True if this instance is allow-listed.
+	 */
+	@Column('boolean', {
+		nullable: false,
+		default: false,
+		comment: 'True if this instance is allow-listed.',
+	})
+	public isAllowListed: boolean;
+
+	/**
+	 * True if this instance is silenced.
+	 */
+	@Column('boolean', {
+		nullable: false,
+		default: false,
+		comment: 'True if this instance is silenced.',
+	})
+	public isSilenced: boolean;
+
+	/**
+	 * True if this instance is media-silenced.
+	 */
+	@Column('boolean', {
+		nullable: false,
+		default: false,
+		comment: 'True if this instance is media-silenced.',
+	})
+	public isMediaSilenced: boolean;
 
 	@Column('varchar', {
 		length: 64, nullable: true,

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { MiMeta } from '@/models/Meta.js';
@@ -12,6 +12,9 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { MiInstance } from '@/models/Instance.js';
+import { diffArrays } from '@/misc/diff-arrays.js';
+import type { MetasRepository } from '@/models/_.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -25,6 +28,9 @@ export class MetaService implements OnApplicationShutdown {
 
 		@Inject(DI.db)
 		private db: DataSource,
+
+		@Inject(DI.metasRepository)
+		private readonly metasRepository: MetasRepository,
 
 		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
@@ -67,35 +73,35 @@ export class MetaService implements OnApplicationShutdown {
 	public async fetch(noCache = false): Promise<MiMeta> {
 		if (!noCache && this.cache) return this.cache;
 
-		return await this.db.transaction(async transactionalEntityManager => {
-			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
-			const metas = await transactionalEntityManager.find(MiMeta, {
-				order: {
+		// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
+		let meta = await this.metasRepository.createQueryBuilder('meta')
+			.select()
+			.orderBy({
+				id: 'DESC',
+			})
+			.limit(1)
+			.getOne();
+
+		if (!meta) {
+			await this.metasRepository.createQueryBuilder('meta')
+				.insert()
+				.values({
+					id: 'x',
+				})
+				.orIgnore()
+				.execute();
+
+			meta = await this.metasRepository.createQueryBuilder('meta')
+				.select()
+				.orderBy({
 					id: 'DESC',
-				},
-			});
+				})
+				.limit(1)
+				.getOneOrFail();
+		}
 
-			const meta = metas[0];
-
-			if (meta) {
-				this.cache = meta;
-				return meta;
-			} else {
-				// metaが空のときfetchMetaが同時に呼ばれるとここが同時に呼ばれてしまうことがあるのでフェイルセーフなupsertを使う
-				const saved = await transactionalEntityManager
-					.upsert(
-						MiMeta,
-						{
-							id: 'x',
-						},
-						['id'],
-					)
-					.then((x) => transactionalEntityManager.findOneByOrFail(MiMeta, x.identifiers[0]));
-
-				this.cache = saved;
-				return saved;
-			}
-		});
+		this.cache = meta;
+		return meta;
 	}
 
 	@bindThis
@@ -103,7 +109,7 @@ export class MetaService implements OnApplicationShutdown {
 		let before: MiMeta | undefined;
 
 		const updated = await this.db.transaction(async transactionalEntityManager => {
-			const metas = await transactionalEntityManager.find(MiMeta, {
+			const metas: (MiMeta | undefined)[] = await transactionalEntityManager.find(MiMeta, {
 				order: {
 					id: 'DESC',
 				},
@@ -125,6 +131,10 @@ export class MetaService implements OnApplicationShutdown {
 					id: 'DESC',
 				},
 			});
+
+			// Propagate changes to blockedHosts, silencedHosts, mediaSilencedHosts, and federationInstances to the relevant instance rows
+			// Do this inside the transaction to avoid potential race condition (when an instance gets registered while we're updating).
+			await this.persistBlocks(transactionalEntityManager, before ?? {}, afters[0]);
 
 			return afters[0];
 		});
@@ -159,4 +169,48 @@ export class MetaService implements OnApplicationShutdown {
 	public onApplicationShutdown(signal?: string | undefined): void {
 		this.dispose();
 	}
+
+	private async persistBlocks(tem: EntityManager, before: Partial<MiMeta>, after: Partial<MiMeta>): Promise<void> {
+		await this.persistBlock(tem, before.blockedHosts, after.blockedHosts, 'isBlocked');
+		await this.persistBlock(tem, before.silencedHosts, after.silencedHosts, 'isSilenced');
+		await this.persistBlock(tem, before.mediaSilencedHosts, after.mediaSilencedHosts, 'isMediaSilenced');
+		await this.persistBlock(tem, before.federationHosts, after.federationHosts, 'isAllowListed');
+	}
+
+	private async persistBlock(tem: EntityManager, before: string[] | undefined, after: string[] | undefined, field: keyof MiInstance): Promise<void> {
+		const { added, removed } = diffArrays(before, after);
+
+		if (removed.length > 0) {
+			await this.updateInstancesByHost(tem, field, false, removed);
+		}
+
+		if (added.length > 0) {
+			await this.updateInstancesByHost(tem, field, true, added);
+		}
+	}
+
+	private async updateInstancesByHost(tem: EntityManager, field: keyof MiInstance, value: boolean, hosts: string[]): Promise<void> {
+		// Use non-array queries when possible, as they are indexed and can be much faster.
+		if (hosts.length === 1) {
+			const pattern = genHostPattern(hosts[0]);
+			await tem
+				.createQueryBuilder(MiInstance, 'instance')
+				.update()
+				.set({ [field]: value })
+				.where('(lower(reverse("host")) || \'.\') LIKE :pattern', { pattern })
+				.execute();
+		} else if (hosts.length > 1) {
+			const patterns = hosts.map(host => genHostPattern(host));
+			await tem
+				.createQueryBuilder(MiInstance, 'instance')
+				.update()
+				.set({ [field]: value })
+				.where('(lower(reverse("host")) || \'.\') LIKE ANY (:patterns)', { patterns })
+				.execute();
+		}
+	}
+}
+
+function genHostPattern(host: string): string {
+	return host.toLowerCase().split('').reverse().join('') + '.%';
 }

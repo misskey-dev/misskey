@@ -15,6 +15,7 @@ import type { MockFunctionMetadata } from 'jest-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import {
+	InstancesRepository,
 	MiMeta,
 	MiRole,
 	MiRoleAssignment,
@@ -39,6 +40,7 @@ const moduleMocker = new ModuleMocker(global);
 describe('RoleService', () => {
 	let app: TestingModule;
 	let roleService: RoleService;
+	let instancesRepository: InstancesRepository;
 	let usersRepository: UsersRepository;
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
@@ -47,6 +49,19 @@ describe('RoleService', () => {
 	let clock: lolex.InstalledClock;
 
 	async function createUser(data: Partial<MiUser> = {}) {
+		if (data.host != null) {
+			await instancesRepository
+				.createQueryBuilder('instance')
+				.insert()
+				.values({
+					id: genAidx(Date.now()),
+					firstRetrievedAt: new Date(),
+					host: data.host,
+				})
+				.orIgnore()
+				.execute();
+		}
+
 		const un = secureRndstr(16);
 		const x = await usersRepository.insert({
 			id: genAidx(Date.now()),
@@ -145,6 +160,7 @@ describe('RoleService', () => {
 		app.enableShutdownHooks();
 
 		roleService = app.get<RoleService>(RoleService);
+		instancesRepository = app.get<InstancesRepository>(DI.instancesRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);

@@ -5,21 +5,24 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { InstancesRepository } from '@/models/_.js';
+import type { InstancesRepository, MiMeta } from '@/models/_.js';
 import type { MiInstance } from '@/models/Instance.js';
-import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { Serialized } from '@/types.js';
+import { diffArrays, diffArraysSimple } from '@/misc/diff-arrays.js';
 
 @Injectable()
 export class FederatedInstanceService implements OnApplicationShutdown {
-	public federatedInstanceCache: RedisKVCache<MiInstance | null>;
+	private readonly federatedInstanceCache: MemoryKVCache<MiInstance | null>;
 
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -27,54 +30,45 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		private utilityService: UtilityService,
 		private idService: IdService,
 	) {
-		this.federatedInstanceCache = new RedisKVCache<MiInstance | null>(this.redisClient, 'federatedInstance', {
-			lifetime: 1000 * 60 * 30, // 30m
-			memoryCacheLifetime: 1000 * 60 * 3, // 3m
-			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
-			toRedisConverter: (value) => JSON.stringify(value),
-			fromRedisConverter: (value) => {
-				const parsed = JSON.parse(value);
-				if (parsed == null) return null;
-				return {
-					...parsed,
-					firstRetrievedAt: new Date(parsed.firstRetrievedAt),
-					latestRequestReceivedAt: parsed.latestRequestReceivedAt ? new Date(parsed.latestRequestReceivedAt) : null,
-					infoUpdatedAt: parsed.infoUpdatedAt ? new Date(parsed.infoUpdatedAt) : null,
-					notRespondingSince: parsed.notRespondingSince ? new Date(parsed.notRespondingSince) : null,
-				};
-			},
-		});
+		this.federatedInstanceCache = new MemoryKVCache(1000 * 60 * 3); // 3m
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
 	public async fetchOrRegister(host: string): Promise<MiInstance> {
 		host = this.utilityService.toPuny(host);
 
-		const cached = await this.federatedInstanceCache.get(host);
+		const cached = this.federatedInstanceCache.get(host);
 		if (cached) return cached;
 
-		const index = await this.instancesRepository.findOneBy({ host });
-
+		let index = await this.instancesRepository.findOneBy({ host });
 		if (index == null) {
-			const i = await this.instancesRepository.insertOne({
-				id: this.idService.gen(),
-				host,
-				firstRetrievedAt: new Date(),
-			});
+			await this.instancesRepository.createQueryBuilder('instance')
+				.insert()
+				.values({
+					id: this.idService.gen(),
+					host,
+					firstRetrievedAt: new Date(),
+					isBlocked: this.utilityService.isBlockedHost(host),
+					isSilenced: this.utilityService.isSilencedHost(host),
+					isMediaSilenced: this.utilityService.isMediaSilencedHost(host),
+					isAllowListed: this.utilityService.isAllowListedHost(host),
+				})
+				.orIgnore()
+				.execute();
 
-			this.federatedInstanceCache.set(host, i);
-			return i;
-		} else {
-			this.federatedInstanceCache.set(host, index);
-			return index;
+			index = await this.instancesRepository.findOneByOrFail({ host });
 		}
+
+		this.federatedInstanceCache.set(host, index);
+		return index;
 	}
 
 	@bindThis
 	public async fetch(host: string): Promise<MiInstance | null> {
 		host = this.utilityService.toPuny(host);
 
-		const cached = await this.federatedInstanceCache.get(host);
+		const cached = this.federatedInstanceCache.get(host);
 		if (cached !== undefined) return cached;
 
 		const index = await this.instancesRepository.findOneBy({ host });
@@ -102,8 +96,34 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		this.federatedInstanceCache.set(result.host, result);
 	}
 
+	private syncCache(before: Serialized<MiMeta | undefined>, after: Serialized<MiMeta>): void {
+		const changed =
+			diffArraysSimple(before?.blockedHosts, after.blockedHosts) ||
+			diffArraysSimple(before?.silencedHosts, after.silencedHosts) ||
+			diffArraysSimple(before?.mediaSilencedHosts, after.mediaSilencedHosts) ||
+			diffArraysSimple(before?.federationHosts, after.federationHosts);
+
+		if (changed) {
+			// We have to clear the whole thing, otherwise subdomains won't be synced.
+			this.federatedInstanceCache.clear();
+		}
+	}
+
+	@bindThis
+	private async onMessage(_: string, data: string): Promise<void> {
+		const obj = JSON.parse(data);
+
+		if (obj.channel === 'internal') {
+			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+			if (type === 'metaUpdated') {
+				this.syncCache(body.before, body.after);
+			}
+		}
+	}
+
 	@bindThis
 	public dispose(): void {
+		this.redisForSub.off('message', this.onMessage);
 		this.federatedInstanceCache.dispose();
 	}
 

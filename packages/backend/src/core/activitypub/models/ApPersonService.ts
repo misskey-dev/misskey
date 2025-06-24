@@ -364,6 +364,9 @@ export class ApPersonService implements OnModuleInit {
 			});
 		//#endregion
 
+		// Register the instance first, to avoid FK errors
+		await this.federatedInstanceService.fetchOrRegister(host);
+
 		try {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {

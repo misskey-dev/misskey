@@ -586,6 +586,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 					lastActiveDate: parsed.user1.lastActiveDate != null ? new Date(parsed.user1.lastActiveDate) : null,
 					lastFetchedAt: parsed.user1.lastFetchedAt != null ? new Date(parsed.user1.lastFetchedAt) : null,
 					movedAt: parsed.user1.movedAt != null ? new Date(parsed.user1.movedAt) : null,
+					instance: null,
 				} : null,
 				user2: parsed.user2 != null ? {
 					...parsed.user2,
@@ -595,6 +596,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 					lastActiveDate: parsed.user2.lastActiveDate != null ? new Date(parsed.user2.lastActiveDate) : null,
 					lastFetchedAt: parsed.user2.lastFetchedAt != null ? new Date(parsed.user2.lastFetchedAt) : null,
 					movedAt: parsed.user2.movedAt != null ? new Date(parsed.user2.movedAt) : null,
+					instance: null,
 				} : null,
 			};
 		} else {
