@@ -3289,3 +3289,5 @@ _drafts:
   replyTo: "{user}への返信"
   quoteOf: "{user}のノートへの引用"
   postTo: "{channel}への投稿"
+  save: "下書きへ保存"
+  restore: "下書きから復元"

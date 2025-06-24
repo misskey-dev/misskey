@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
 				<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
 			</button>
+			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draft" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-pencil-minus"></i></button>
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(targetChannel != null && fixed)">
@@ -90,7 +91,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draft" class="_button" :class="$style.footerButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-pencil-minus"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 		</div>
@@ -1071,18 +1071,8 @@ async function handleSavingServerDraft(ev?: Event) {
 	}
 }
 
-async function esc(ev: Event) {
-	const { canClosePostForm } = await handleSavingServerDraft(ev);
-	if (canClosePostForm) {
-		emit('esc');
-	}
-}
-
-async function cancel() {
-	const { canClosePostForm } = await handleSavingServerDraft();
-	if (canClosePostForm) {
-		emit('cancel');
-	}
+function cancel() {
+	emit('cancel');
 }
 
 function insertMention() {
@@ -1190,52 +1180,70 @@ function getNoteDraftDialog(): Promise<Misskey.entities.NoteDraft | null> {
 	});
 }
 
-function showDraftMenu() {
-	getNoteDraftDialog().then(draft => {
-		if (draft == null) return;
+function showDraftMenu(ev: MouseEvent) {
+	function showDraftSelectDialog() {
+		getNoteDraftDialog().then(draft => {
+			if (draft == null) return;
 
-		text.value = draft.text ?? '';
-		useCw.value = draft.cw != null;
-		cw.value = draft.cw ?? null;
-		visibility.value = draft.visibility;
-		localOnly.value = draft.localOnly ?? false;
-		files.value = draft.files ?? [];
-		hashtags.value = draft.hashtag ?? '';
-		if (draft.hashtag) withHashtags.value = true;
-		if (draft.poll) {
+			text.value = draft.text ?? '';
+			useCw.value = draft.cw != null;
+			cw.value = draft.cw ?? null;
+			visibility.value = draft.visibility;
+			localOnly.value = draft.localOnly ?? false;
+			files.value = draft.files ?? [];
+			hashtags.value = draft.hashtag ?? '';
+			if (draft.hashtag) withHashtags.value = true;
+			if (draft.poll) {
 			// 投票を一時的に空にしないと反映されないため
-			poll.value = null;
-			nextTick(() => {
-				poll.value = {
-					choices: draft.poll!.choices,
-					multiple: draft.poll!.multiple,
-					expiresAt: draft.poll!.expiresAt ? (new Date(draft.poll!.expiresAt)).getTime() : null,
-					expiredAfter: null,
-				};
-			});
-		}
-		if (draft.visibleUserIds) {
-			misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
-				users.forEach(u => pushVisibleUser(u));
-			});
-		}
-		quoteId.value = draft.renoteId ?? null;
-		renoteTargetNote.value = draft.renote;
-		replyTargetNote.value = draft.reply;
-		reactionAcceptance.value = draft.reactionAcceptance;
-		if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
-
-		visibleUsers.value = [];
-		draft.visibleUserIds?.forEach(uid => {
-			if (!visibleUsers.value.some(u => u.id === uid)) {
-				misskeyApi('users/show', { userId: uid }).then(user => {
-					pushVisibleUser(user);
+				poll.value = null;
+				nextTick(() => {
+					poll.value = {
+						choices: draft.poll!.choices,
+						multiple: draft.poll!.multiple,
+						expiresAt: draft.poll!.expiresAt ? (new Date(draft.poll!.expiresAt)).getTime() : null,
+						expiredAfter: null,
+					};
 				});
 			}
-		});
+			if (draft.visibleUserIds) {
+				misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
+					users.forEach(u => pushVisibleUser(u));
+				});
+			}
+			quoteId.value = draft.renoteId ?? null;
+			renoteTargetNote.value = draft.renote;
+			replyTargetNote.value = draft.reply;
+			reactionAcceptance.value = draft.reactionAcceptance;
+			if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
 
-		serverDraftId.value = draft.id;
-	});
+			visibleUsers.value = [];
+			draft.visibleUserIds?.forEach(uid => {
+				if (!visibleUsers.value.some(u => u.id === uid)) {
+					misskeyApi('users/show', { userId: uid }).then(user => {
+						pushVisibleUser(user);
+					});
+				}
+			});
+
+			serverDraftId.value = draft.id;
+		});
+	}
+
+	os.popupMenu([{
+		type: 'button',
+		text: i18n.ts._drafts.save,
+		icon: 'ti ti-cloud-upload',
+		action: async () => {
+			saveServerDraft();
+		},
+	}, {
+		type: 'button',
+		text: i18n.ts._drafts.restore,
+		icon: 'ti ti-cloud-download',
+		action: () => {
+			showDraftSelectDialog();
+		},
+	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 onMounted(() => {
@@ -1323,8 +1331,6 @@ async function canClose() {
 defineExpose({
 	clear,
 	canClose,
-	onEsc: esc,
-	onCancel: cancel,
 });
 </script>
 
@@ -1352,27 +1358,38 @@ defineExpose({
 
 .headerLeft {
 	display: flex;
-	flex: 0 1 100px;
+	flex: 1;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 6px;
+	padding-left: 12px;
 }
 
 .cancel {
-	padding: 0;
-	font-size: 1em;
-	height: 100%;
-	flex: 0 1 50px;
+	padding: 8px;
 }
 
 .account {
-	height: 100%;
-	display: inline-flex;
-	vertical-align: bottom;
-	flex: 0 1 50px;
 }
 
 .avatar {
 	width: 28px;
 	height: 28px;
 	margin: auto;
+}
+
+.draftButton {
+	padding: 8px;
+	font-size: 90%;
+	border-radius: 6px;
+
+	&:hover {
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+	}
+
+	&:disabled {
+		background: none;
+	}
 }
 
 .headerRight {

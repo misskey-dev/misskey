@@ -12279,6 +12279,14 @@ export interface Locale extends ILocale {
          * {channel}への投稿
          */
         "postTo": ParameterizedString<"channel">;
+        /**
+         * 下書きへ保存
+         */
+        "save": string;
+        /**
+         * 下書きから復元
+         */
+        "restore": string;
     };
 }
 declare const locales: {

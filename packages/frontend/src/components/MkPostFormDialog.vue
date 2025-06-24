@@ -58,15 +58,11 @@ async function _close() {
 }
 
 function onEsc(ev: KeyboardEvent) {
-	// PostForm側で下書き保存確認を行う
-	// 実際のclose処理はPostForm側のesc emitから
-	form.value?.onEsc(ev);
+	_close();
 }
 
 function onBgClick() {
-	// PostForm側で下書き保存確認を行う
-	// 実際のclose処理はPostForm側のcancel emitから
-	form.value?.onCancel();
+	_close();
 }
 
 function onModalClosed() {
