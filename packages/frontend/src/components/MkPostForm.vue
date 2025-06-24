@@ -213,6 +213,7 @@ const targetChannel = shallowRef(props.channel);
 
 const serverDraftId = ref<string | null>(null);
 const postFormActions = getPluginHandlers('post_form_action');
+const draftSelectorOpening = ref(false);
 
 const uploader = useUploader({
 	multiple: true,
@@ -656,7 +657,7 @@ function onKeydown(ev: KeyboardEvent) {
 
 	// justEndedComposition.value is for Safari, which keyDown occurs after compositionend.
 	// ev.isComposing is for another browsers.
-	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) esc(ev);
+	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) emit('esc');
 }
 
 function onKeyup(ev: KeyboardEvent) {
@@ -824,7 +825,7 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function saveServerDraft(clearLocal = false): Promise<{ canClosePostForm: boolean }> {
+async function saveServerDraft(clearLocal = false) {
 	return await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
 		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
 		text: text.value,
@@ -846,9 +847,7 @@ async function saveServerDraft(clearLocal = false): Promise<{ canClosePostForm: 
 			clear();
 			deleteDraft();
 		}
-		return { canClosePostForm: true };
 	}).catch((err) => {
-		return { canClosePostForm: false };
 	});
 }
 
@@ -1182,6 +1181,7 @@ function getNoteDraftDialog(): Promise<Misskey.entities.NoteDraft | null> {
 
 function showDraftMenu(ev: MouseEvent) {
 	function showDraftSelectDialog() {
+		draftSelectorOpening.value = true;
 		getNoteDraftDialog().then(draft => {
 			if (draft == null) return;
 
@@ -1226,6 +1226,8 @@ function showDraftMenu(ev: MouseEvent) {
 			});
 
 			serverDraftId.value = draft.id;
+		}).then(() => {
+			draftSelectorOpening.value = false;
 		});
 	}
 
@@ -1323,6 +1325,9 @@ async function canClose() {
 			cancelText: i18n.ts.no,
 		});
 		if (canceled) return false;
+	}
+	if (draftSelectorOpening.value) {
+		return false;
 	}
 
 	return true;

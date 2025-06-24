@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel()"
 	@ok="ok()"
 	@closed="emit('closed')"
+	@esc="cancel()"
 >
 	<template #header>{{ i18n.ts._drafts.select }}</template>
 	<div :class="$style.drafts" class="_gaps">
