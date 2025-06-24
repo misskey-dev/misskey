@@ -142,8 +142,6 @@ export class NoteDraftService {
 
 	@bindThis
 	public async getDraft(me: MiLocalUser, draftId: MiNoteDraft['id']): Promise<MiNoteDraft> {
-		// Errorは仮置きで置換が簡単になるようにしておく
-
 		const draft = await this.noteDraftsRepository.findOneBy({
 			id: draftId,
 			userId: me.id,
