@@ -3171,3 +3171,5 @@ _imageEffector:
     checker: "체크 무늬"
     blockNoise: "노이즈 방지"
     tearing: "티어링"
+_drafts:
+  restore: "복원"
