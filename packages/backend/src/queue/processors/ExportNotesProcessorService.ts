@@ -89,7 +89,7 @@ class NoteStream extends ReadableStream<Record<string, unknown>> {
 				}
 
 				const total = await notesRepository.countBy({ userId });
-				job.updateProgress(exportedNotesCount / total);
+				job.updateProgress(exportedNotesCount / total * 100);
 			},
 		});
 	}

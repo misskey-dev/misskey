@@ -102,7 +102,7 @@ export class ExportMutingProcessorService {
 					muterId: user.id,
 				});
 
-				job.updateProgress(exportedCount / total);
+				job.updateProgress(exportedCount / total * 100);
 			}
 
 			stream.end();

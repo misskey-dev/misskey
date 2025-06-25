@@ -113,7 +113,7 @@ export class ExportFavoritesProcessorService {
 					userId: user.id,
 				});
 
-				job.updateProgress(exportedFavoritesCount / total);
+				job.updateProgress(exportedFavoritesCount / total * 100);
 			}
 
 			await write(']');

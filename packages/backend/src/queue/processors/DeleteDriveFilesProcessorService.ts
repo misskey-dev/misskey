@@ -71,7 +71,7 @@ export class DeleteDriveFilesProcessorService {
 				userId: user.id,
 			});
 
-			job.updateProgress(deletedCount / total);
+			job.updateProgress(deletedCount / total * 100);
 		}
 
 		this.logger.succ(`All drive files (${deletedCount}) of ${user.id} has been deleted.`);

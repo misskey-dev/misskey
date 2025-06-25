@@ -130,7 +130,7 @@ export class ExportClipsProcessorService {
 				userId: user.id,
 			});
 
-			job.updateProgress(exportedClipsCount / total);
+			job.updateProgress(exportedClipsCount / total * 100);
 		}
 	}
 
