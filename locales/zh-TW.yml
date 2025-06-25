@@ -3171,3 +3171,5 @@ _imageEffector:
     checker: "棋盤格"
     blockNoise: "阻擋雜訊"
     tearing: "撕裂"
+_drafts:
+  restore: "還原"
