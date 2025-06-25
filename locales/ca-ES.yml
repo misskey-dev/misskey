@@ -3172,3 +3172,5 @@ _imageEffector:
     checker: "Escacs"
     blockNoise: "Bloqueig de soroll"
     tearing: "Trencament d'imatge "
+_drafts:
+  restore: "Restaurar "
