@@ -1133,77 +1133,67 @@ function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent)
 	os.contextMenu(menu, ev);
 }
 
-function getNoteDraftDialog(): Promise<Misskey.entities.NoteDraft | null> {
-	return new Promise((resolve) => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftSelectDialog.vue')), {}, {
-			ok: async (res: Misskey.entities.NoteDraft) => {
-				resolve(res);
-			},
-			cancel: () => {
-				resolve(null);
-			},
-			closed: () => {
-				dispose();
-			},
-		});
-	});
-}
-
 function showDraftMenu(ev: MouseEvent) {
-	function showDraftSelectDialog() {
+	function showDraftsDialog() {
 		draftSelectorOpening.value = true;
-		getNoteDraftDialog().then(draft => {
-			if (draft == null) return;
 
-			text.value = draft.text ?? '';
-			useCw.value = draft.cw != null;
-			cw.value = draft.cw ?? null;
-			visibility.value = draft.visibility;
-			localOnly.value = draft.localOnly ?? false;
-			files.value = draft.files ?? [];
-			hashtags.value = draft.hashtag ?? '';
-			if (draft.hashtag) withHashtags.value = true;
-			if (draft.poll) {
-			// 投票を一時的に空にしないと反映されないため
-				poll.value = null;
-				nextTick(() => {
-					poll.value = {
-						choices: draft.poll!.choices,
-						multiple: draft.poll!.multiple,
-						expiresAt: draft.poll!.expiresAt ? (new Date(draft.poll!.expiresAt)).getTime() : null,
-						expiredAfter: null,
-					};
-				});
-			}
-			if (draft.visibleUserIds) {
-				misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
-					users.forEach(u => pushVisibleUser(u));
-				});
-			}
-			quoteId.value = draft.renoteId ?? null;
-			renoteTargetNote.value = draft.renote;
-			replyTargetNote.value = draft.reply;
-			reactionAcceptance.value = draft.reactionAcceptance;
-			if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
-
-			visibleUsers.value = [];
-			draft.visibleUserIds?.forEach(uid => {
-				if (!visibleUsers.value.some(u => u.id === uid)) {
-					misskeyApi('users/show', { userId: uid }).then(user => {
-						pushVisibleUser(user);
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {}, {
+			restore: async (draft: Misskey.entities.NoteDraft) => {
+				text.value = draft.text ?? '';
+				useCw.value = draft.cw != null;
+				cw.value = draft.cw ?? null;
+				visibility.value = draft.visibility;
+				localOnly.value = draft.localOnly ?? false;
+				files.value = draft.files ?? [];
+				hashtags.value = draft.hashtag ?? '';
+				if (draft.hashtag) withHashtags.value = true;
+				if (draft.poll) {
+					// 投票を一時的に空にしないと反映されないため
+					poll.value = null;
+					nextTick(() => {
+						poll.value = {
+							choices: draft.poll!.choices,
+							multiple: draft.poll!.multiple,
+							expiresAt: draft.poll!.expiresAt ? (new Date(draft.poll!.expiresAt)).getTime() : null,
+							expiredAfter: null,
+						};
 					});
 				}
-			});
+				if (draft.visibleUserIds) {
+					misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
+						users.forEach(u => pushVisibleUser(u));
+					});
+				}
+				quoteId.value = draft.renoteId ?? null;
+				renoteTargetNote.value = draft.renote;
+				replyTargetNote.value = draft.reply;
+				reactionAcceptance.value = draft.reactionAcceptance;
+				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
 
-			serverDraftId.value = draft.id;
-		}).then(() => {
-			draftSelectorOpening.value = false;
+				visibleUsers.value = [];
+				draft.visibleUserIds?.forEach(uid => {
+					if (!visibleUsers.value.some(u => u.id === uid)) {
+						misskeyApi('users/show', { userId: uid }).then(user => {
+							pushVisibleUser(user);
+						});
+					}
+				});
+
+				serverDraftId.value = draft.id;
+			},
+			cancel: () => {
+
+			},
+			closed: () => {
+				draftSelectorOpening.value = false;
+				dispose();
+			},
 		});
 	}
 
 	os.popupMenu([{
 		type: 'button',
-		text: i18n.ts._drafts.save,
+		text: i18n.ts._drafts.saveToDraft,
 		icon: 'ti ti-cloud-upload',
 		action: async () => {
 			if (!canSaveAsServerDraft.value) {
@@ -1216,10 +1206,10 @@ function showDraftMenu(ev: MouseEvent) {
 		},
 	}, {
 		type: 'button',
-		text: i18n.ts._drafts.restore,
+		text: i18n.ts._drafts.listDrafts,
 		icon: 'ti ti-cloud-download',
 		action: () => {
-			showDraftSelectDialog();
+			showDraftsDialog();
 		},
 	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }

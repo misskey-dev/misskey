@@ -12242,6 +12242,10 @@ export interface Locale extends ILocale {
             "tearing": string;
         };
     };
+    /**
+     * 下書き
+     */
+    "drafts": string;
     "_drafts": {
         /**
          * 下書きを選択
@@ -12282,11 +12286,19 @@ export interface Locale extends ILocale {
         /**
          * 下書きへ保存
          */
-        "save": string;
+        "saveToDraft": string;
         /**
          * 下書きから復元
          */
+        "restoreFromDraft": string;
+        /**
+         * 復元
+         */
         "restore": string;
+        /**
+         * 下書き一覧
+         */
+        "listDrafts": string;
     };
 }
 declare const locales: {
