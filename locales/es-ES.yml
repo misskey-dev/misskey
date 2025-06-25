@@ -3171,3 +3171,5 @@ _imageEffector:
     checker: "Corrector"
     blockNoise: "Bloquear Ruido"
     tearing: "Rasgado de Imagen (Tearing)"
+_drafts:
+  restore: "Restaurar"
