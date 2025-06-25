@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts.manage }}</template>
 
-						<MkPagination :pagination="pagination">
+						<MkPagination :pagination="pagination" withControl>
 							<template #default="{items}">
 								<div class="_gaps">
 									<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`">

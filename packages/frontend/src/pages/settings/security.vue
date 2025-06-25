@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<FormSection>
 			<template #label>{{ i18n.ts.signinHistory }}</template>
-			<MkPagination :pagination="pagination" disableAutoLoad>
+			<MkPagination :pagination="pagination" disableAutoLoad withControl>
 				<template #default="{items}">
 					<div>
 						<div v-for="item in items" :key="item.id" v-panel class="timnmucd">

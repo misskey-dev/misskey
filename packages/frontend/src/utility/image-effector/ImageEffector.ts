@@ -19,6 +19,8 @@ type ParamTypeToPrimitive = {
 type ImageEffectorFxParamDefs = Record<string, {
 	type: keyof ParamTypeToPrimitive;
 	default: any;
+	label?: string;
+	toViewValue?: (v: any) => string;
 }>;
 
 export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[]>(fx: ImageEffectorFx<ID, PS, US>) {
