@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div>
-			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
+			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" withControl>
 				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/list/${ list.id }`">
 					<div>{{ list.name }}</div>
 					<MkAvatars :userIds="list.userIds"/>

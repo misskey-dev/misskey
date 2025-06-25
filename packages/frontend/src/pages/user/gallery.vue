@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 700px;">
-	<MkPagination v-slot="{items}" :pagination="pagination">
+	<MkPagination v-slot="{items}" :pagination="pagination" withControl>
 		<div :class="$style.root">
 			<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 		</div>

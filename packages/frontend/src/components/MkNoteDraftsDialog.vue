@@ -17,14 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>
 		{{ i18n.ts.drafts }} ({{ currentDraftsCount }}/{{ $i?.policies.noteDraftLimit }})
 	</template>
-	<div :class="$style.drafts" class="_gaps">
-		<MkPagination ref="pagingEl" :pagination="paging">
+	<div class="_spacer">
+		<MkPagination ref="pagingEl" :pagination="paging" withControl>
 			<template #empty>
 				<MkResult type="empty" :text="i18n.ts._drafts.noDrafts"/>
 			</template>
 
 			<template #default="{ items }">
-				<div class="_spacer _gaps_s">
+				<div class="_gaps_s">
 					<div
 						v-for="draft in (items as unknown as Misskey.entities.NoteDraft[])"
 						:key="draft.id"
@@ -157,12 +157,6 @@ async function deleteDraft(draft: Misskey.entities.NoteDraft) {
 </script>
 
 <style lang="scss" module>
-.drafts {
-	overflow-x: hidden;
-	overflow-x: clip;
-	overflow-y: auto;
-}
-
 .draft {
 	padding: 16px;
 	gap: 16px;
