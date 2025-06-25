@@ -3094,3 +3094,5 @@ _watermarkEditor:
   image: "imagem"
   advanced: "Avançado"
   angle: "Ângulo"
+_drafts:
+  restore: "Redefinir"
