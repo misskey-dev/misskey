@@ -43,6 +43,10 @@ export class DeleteDriveFilesProcessorService {
 		let deletedCount = 0;
 		let cursor: MiDriveFile['id'] | null = null;
 
+		const total = await this.driveFilesRepository.countBy({
+			userId: user.id,
+		});
+
 		while (true) {
 			const files = await this.driveFilesRepository.find({
 				where: {
@@ -66,10 +70,6 @@ export class DeleteDriveFilesProcessorService {
 				await this.driveService.deleteFileSync(file);
 				deletedCount++;
 			}
-
-			const total = await this.driveFilesRepository.countBy({
-				userId: user.id,
-			});
 
 			job.updateProgress(deletedCount / total * 100);
 		}
