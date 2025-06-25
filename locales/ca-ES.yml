@@ -2152,6 +2152,7 @@ _theme:
   install: "Instal·lar un tema"
   manage: "Gestionar els temes "
   code: "Codi del tema"
+  copyThemeCode: "Copiar el codi del tema"
   description: "Descripció"
   installed: "{name} Instal·lat "
   installedThemes: "Temes instal·lats "
