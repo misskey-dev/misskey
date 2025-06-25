@@ -3156,3 +3156,5 @@ _imageEffector:
     colorClampAdvanced: "Farbkomprimierung (erweitert)"
     distort: "Verzerrung"
     stripe: "Streifen"
+_drafts:
+  restore: "Wiederherstellen"
