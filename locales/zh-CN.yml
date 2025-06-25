@@ -3172,3 +3172,5 @@ _imageEffector:
     checker: "检查"
     blockNoise: "块状噪点"
     tearing: "撕裂"
+_drafts:
+  restore: "恢复"
