@@ -2195,6 +2195,7 @@ _theme:
   install: "テーマのインストール"
   manage: "テーマの管理"
   code: "テーマコード"
+  copyThemeCode: "テーマコードをコピー"
   description: "説明"
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"

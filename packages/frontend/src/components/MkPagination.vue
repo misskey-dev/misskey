@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
+<component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()" @contextmenu.prevent.stop="onContextmenu">
 	<!-- :css="prefer.s.animation" にしたいけどバグる(おそらくvueのバグ) https://github.com/misskey-dev/misskey/issues/16078 -->
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup generic="T extends PagingCtx">
+import { isLink } from '@@/js/is-link.js';
 import type { PagingCtx } from '@/composables/use-pagination.js';
 import type { UnwrapRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
@@ -48,6 +49,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import * as os from '@/os.js';
 
 type Paginator = ReturnType<typeof usePagination<T['endpoint']>>;
 
@@ -71,6 +73,19 @@ function appearFetchMoreAhead() {
 
 function appearFetchMore() {
 	paginator.fetchOlder();
+}
+
+function onContextmenu(ev: MouseEvent) {
+	if (ev.target && isLink(ev.target as HTMLElement)) return;
+	if (window.getSelection()?.toString() !== '') return;
+
+	os.contextMenu([{
+		icon: 'ti ti-refresh',
+		text: i18n.ts.reload,
+		action: () => {
+			paginator.reload();
+		},
+	}], ev);
 }
 
 defineSlots<{

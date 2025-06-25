@@ -8375,6 +8375,10 @@ export interface Locale extends ILocale {
          */
         "code": string;
         /**
+         * テーマコードをコピー
+         */
+        "copyThemeCode": string;
+        /**
          * 説明
          */
         "description": string;
