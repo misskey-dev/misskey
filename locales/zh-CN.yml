@@ -2152,6 +2152,7 @@ _theme:
   install: "安装主题"
   manage: "主题管理"
   code: "主题代码"
+  copyThemeCode: "复制主题代码"
   description: "描述"
   installed: "{name} 已安装"
   installedThemes: "已安装的主题"
