@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: ノートの下書き機能
 
 ### Client
 - Enhance: 設定の自動バックアップをオンにした直後に自動バックアップするように
