@@ -110,7 +110,7 @@ const emit = defineEmits<{
 }>();
 
 const paging = {
-	endpoint: 'notes/drafts',
+	endpoint: 'notes/drafts/list',
 	limit: 10,
 } satisfies PagingCtx;
 

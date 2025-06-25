@@ -307,7 +307,7 @@ export * as 'notes/clips' from './endpoints/notes/clips.js';
 export * as 'notes/conversation' from './endpoints/notes/conversation.js';
 export * as 'notes/create' from './endpoints/notes/create.js';
 export * as 'notes/delete' from './endpoints/notes/delete.js';
-export * as 'notes/drafts' from './endpoints/notes/drafts/list.js';
+export * as 'notes/drafts/list' from './endpoints/notes/drafts/list.js';
 export * as 'notes/drafts/create' from './endpoints/notes/drafts/create.js';
 export * as 'notes/drafts/delete' from './endpoints/notes/drafts/delete.js';
 export * as 'notes/drafts/update' from './endpoints/notes/drafts/update.js';
