@@ -82,6 +82,7 @@ export type UploaderItem = {
 	file: File;
 	watermarkPresetId: string | null;
 	isSensitive?: boolean;
+	caption?: string | null;
 	abort?: (() => void) | null;
 };
 
@@ -193,6 +194,21 @@ export function useUploader(options: {
 					get: () => item.isSensitive ?? false,
 					set: (value) => item.isSensitive = value,
 				}),
+			}, {
+				text: i18n.ts.describeFile,
+				icon: 'ti ti-text-caption',
+				action: async () => {
+					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
+						default: item.caption ?? null,
+					}, {
+						done: caption => {
+							if (caption != null) {
+								item.caption = caption.trim().length === 0 ? null : caption;
+							}
+						},
+						closed: () => dispose(),
+					});
+				},
 			}, {
 				type: 'divider',
 			});
@@ -408,6 +424,7 @@ export function useUploader(options: {
 			name: item.uploadName ?? item.name,
 			folderId: options.folderId,
 			isSensitive: item.isSensitive ?? false,
+			caption: item.caption ?? null,
 			onProgress: (progress) => {
 				if (item.progress == null) {
 					item.progress = { max: progress.total, value: progress.loaded };
