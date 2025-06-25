@@ -213,7 +213,6 @@ const targetChannel = shallowRef(props.channel);
 
 const serverDraftId = ref<string | null>(null);
 const postFormActions = getPluginHandlers('post_form_action');
-const draftSelectorOpening = ref(false);
 
 const uploader = useUploader({
 	multiple: true,
@@ -1135,8 +1134,6 @@ function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent)
 
 function showDraftMenu(ev: MouseEvent) {
 	function showDraftsDialog() {
-		draftSelectorOpening.value = true;
-
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {}, {
 			restore: async (draft: Misskey.entities.NoteDraft) => {
 				text.value = draft.text ?? '';
@@ -1185,7 +1182,6 @@ function showDraftMenu(ev: MouseEvent) {
 
 			},
 			closed: () => {
-				draftSelectorOpening.value = false;
 				dispose();
 			},
 		});
@@ -1291,9 +1287,6 @@ async function canClose() {
 			cancelText: i18n.ts.no,
 		});
 		if (canceled) return false;
-	}
-	if (draftSelectorOpening.value) {
-		return false;
 	}
 
 	return true;
