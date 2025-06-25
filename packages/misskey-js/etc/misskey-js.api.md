@@ -1953,12 +1953,12 @@ declare namespace entities {
         NotesCreateRequest,
         NotesCreateResponse,
         NotesDeleteRequest,
-        NotesDraftsRequest,
-        NotesDraftsResponse,
         NotesDraftsCountResponse,
         NotesDraftsCreateRequest,
         NotesDraftsCreateResponse,
         NotesDraftsDeleteRequest,
+        NotesDraftsListRequest,
+        NotesDraftsListResponse,
         NotesDraftsUpdateRequest,
         NotesDraftsUpdateResponse,
         NotesFavoritesCreateRequest,
@@ -3020,10 +3020,10 @@ type NotesDraftsCreateResponse = operations['notes___drafts___create']['response
 type NotesDraftsDeleteRequest = operations['notes___drafts___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotesDraftsRequest = operations['notes___drafts']['requestBody']['content']['application/json'];
+type NotesDraftsListRequest = operations['notes___drafts___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotesDraftsResponse = operations['notes___drafts']['responses']['200']['content']['application/json'];
+type NotesDraftsListResponse = operations['notes___drafts___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesDraftsUpdateRequest = operations['notes___drafts___update']['requestBody']['content']['application/json'];
