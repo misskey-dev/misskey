@@ -3171,3 +3171,5 @@ _imageEffector:
     checker: "Checker"
     blockNoise: "Block Noise"
     tearing: "Tearing"
+_drafts:
+  restore: "Restore"
