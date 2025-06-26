@@ -3169,3 +3169,5 @@ _imageEffector:
     stripe: "条纹"
     polkadot: "波点"
     checker: "检查"
+    blockNoise: "块状噪点"
+    tearing: "撕裂"

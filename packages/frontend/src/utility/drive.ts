@@ -33,6 +33,7 @@ export function uploadFile(file: File | Blob, options: {
 	name?: string;
 	folderId?: string | null;
 	isSensitive?: boolean;
+	caption?: string | null;
 	onProgress?: (ctx: { total: number; loaded: number; }) => void;
 } = {}): UploadReturnType {
 	const xhr = new XMLHttpRequest();
@@ -142,6 +143,7 @@ export function uploadFile(file: File | Blob, options: {
 		formData.append('file', file);
 		formData.append('name', options.name ?? (file instanceof File ? file.name : 'untitled'));
 		formData.append('isSensitive', options.isSensitive ? 'true' : 'false');
+		if (options.caption != null) formData.append('comment', options.caption);
 		if (options.folderId) formData.append('folderId', options.folderId);
 
 		xhr.send(formData);

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note">
 				<div v-if="showNext" class="_margin">
-					<MkNotesTimeline :pullToRefresh="false" class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
+					<MkNotesTimeline :withControl="false" :pullToRefresh="false" class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
 				</div>
 
 				<div class="_margin">
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<div v-if="showPrev" class="_margin">
-					<MkNotesTimeline :pullToRefresh="false" class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true"/>
+					<MkNotesTimeline :withControl="false" :pullToRefresh="false" class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true"/>
 				</div>
 			</div>
 			<MkError v-else-if="error" @retry="fetchNote()"/>
@@ -81,8 +81,8 @@ const error = ref();
 const prevUserPagination: PagingCtx = {
 	endpoint: 'users/notes',
 	limit: 10,
-	baseId: props.noteId,
-	direction: 'older',
+	initialId: props.noteId,
+	initialDirection: 'older',
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
@@ -91,8 +91,8 @@ const prevUserPagination: PagingCtx = {
 const nextUserPagination: PagingCtx = {
 	endpoint: 'users/notes',
 	limit: 10,
-	baseId: props.noteId,
-	direction: 'newer',
+	initialId: props.noteId,
+	initialDirection: 'newer',
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
@@ -101,19 +101,20 @@ const nextUserPagination: PagingCtx = {
 const prevChannelPagination: PagingCtx = {
 	endpoint: 'channels/timeline',
 	limit: 10,
+	initialId: props.noteId,
+	initialDirection: 'older',
 	params: computed(() => note.value ? ({
 		channelId: note.value.channelId,
-		untilId: note.value.id,
 	}) : undefined),
 };
 
 const nextChannelPagination: PagingCtx = {
-	reversed: true,
 	endpoint: 'channels/timeline',
 	limit: 10,
+	initialId: props.noteId,
+	initialDirection: 'newer',
 	params: computed(() => note.value ? ({
 		channelId: note.value.channelId,
-		sinceId: note.value.id,
 	}) : undefined),
 };
 

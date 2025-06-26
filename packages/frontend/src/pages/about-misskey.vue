@@ -280,6 +280,9 @@ const patronsWithIcon = [{
 }, {
 	name: '新井　治',
 	icon: 'https://assets.misskey-hub.net/patrons/d160876f20394674a17963a0e609600a.jpg',
+}, {
+	name: 'しきいし',
+	icon: 'https://assets.misskey-hub.net/patrons/77dd5387db41427ba9cbdc8849e76402.jpg',
 }];
 
 const patrons = [
