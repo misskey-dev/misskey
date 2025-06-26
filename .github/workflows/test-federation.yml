@@ -51,7 +51,6 @@ jobs:
           key: ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
           restore-keys: |
             ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
-            ${{ runner.os }}-ffmpeg-
       - name: Install FFmpeg
         if: ${{ steps.cache-ffmpeg.outputs.cache-hit != 'true' || github.event.inputs.force_ffmpeg_cache_update }}
         run: |
