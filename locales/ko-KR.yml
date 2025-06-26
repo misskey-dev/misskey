@@ -3109,6 +3109,7 @@ _serverSetupWizard:
     text2: "앞으로도 계속해서 개발을 할 수 있도록 괜찮으시다면 부디 기부를 부탁드립니다."
     text3: "지원자 대상 특전도 있습니다!"
 _uploader:
+  editImage: "이미지 편집"
   compressedToX: "{x}로 압축"
   savedXPercent: "{x}% 절약"
   abortConfirm: "업로드되지 않은 파일이 있습니다만, 그만 두시겠습니까?"
