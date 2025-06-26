@@ -113,6 +113,7 @@ export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
 }
 
 // TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すれば$iのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
+//       と思ったけど操作アカウントが存在しない場合も考慮する現在の設計の方が汎用的かつ堅牢かもしれない
 // NOTE: accountDependentな設定は初期状態であってもアカウントごとのスコープでレコードを作成しておかないと、サーバー同期する際に正しく動作しなくなる
 export class PreferencesManager {
 	private storageProvider: StorageProvider;
