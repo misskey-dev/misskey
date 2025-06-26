@@ -23,7 +23,7 @@ import { MfmService, type Appender } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta } from '@/models/_.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta, MiChatMessage } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { IdService } from '@/core/IdService.js';
@@ -499,6 +499,37 @@ export class ApRendererService {
 			sensitive: note.cw != null || files.some(file => file.isSensitive),
 			tag,
 			...asPoll,
+		};
+	}
+
+	@bindThis
+	public async renderChatMessage(message: MiChatMessage, dive = true): Promise<IPost> {
+		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
+			if (ids.length === 0) return [];
+			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
+			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
+		};
+
+		const attributedTo = this.userEntityService.genLocalUserUri(message.fromUserId);
+
+		const files = await getPromisedFiles([message.fileId]);
+
+		const emojis = await this.getEmojis(message.emojis);
+		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
+
+		const tag = [
+			...apemojis,
+		];
+
+		return {
+			id: `${this.config.url}/chat-messages/${message.id}`,
+			type: 'Misskey:ChatMessage',
+			attributedTo,
+			text: message.text,
+			published: this.idService.parse(note.id).date.toISOString(),
+			to: message.toUserId,
+			attachment: files.map(x => this.renderDocument(x)),
+			tag,
 		};
 	}
 
