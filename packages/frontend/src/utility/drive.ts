@@ -228,7 +228,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(anchorElement: HTMLElement | EventTarget | null, label: string | null, multiple: boolean, features?: UploaderDialogFeatures): Promise<Misskey.entities.DriveFile[]> {
+function select(anchorElement: HTMLElement | EventTarget | null, label: string | null, multiple: boolean, features?: UploaderFeatures): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		os.popupMenu([label ? {
 			text: label,
@@ -253,7 +253,7 @@ type SelectFileOptions<M extends boolean> = {
 	anchorElement: HTMLElement | EventTarget | null;
 	multiple: M;
 	label?: string | null;
-	features?: UploaderDialogFeatures;
+	features?: UploaderFeatures;
 };
 
 export async function selectFile<
