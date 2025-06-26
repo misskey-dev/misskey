@@ -3109,6 +3109,7 @@ _serverSetupWizard:
     text2: "Si ho desitges, agrairíem molt la teva donació per poder seguir desenvolupant el projecte."
     text3: "També hi ha privilegis especials per als donants!"
 _uploader:
+  editImage: "Edició d'imatges"
   compressedToX: "Comprimit a {x}"
   savedXPercent: "{x}% d'estalvi "
   abortConfirm: "Hi ha un arxiu que no s'ha pujat, vols cancel·lar?"
