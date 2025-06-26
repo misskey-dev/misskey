@@ -23,7 +23,8 @@ on:
       force_ffmpeg_cache_update:
         description: 'Force update ffmpeg cache'
         required: false
-        default: 'false'
+        default: false
+        type: boolean
 
 jobs:
   unit:
@@ -70,7 +71,7 @@ jobs:
           ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
           ${{ runner.os }}-ffmpeg-
     - name: Install FFmpeg
-      if: steps.cache-ffmpeg.outputs.cache-hit != 'true' || github.event.inputs.force_ffmpeg_cache_update == 'true'
+      if: steps.cache-ffmpeg.outputs.cache-hit != 'true' || github.event.inputs.force_ffmpeg_cache_update
       run: |
         for i in {1..3}; do
           echo "Attempt $i: Installing FFmpeg..."
