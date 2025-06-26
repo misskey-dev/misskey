@@ -458,8 +458,33 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async chatMessage(actor: MiRemoteUser, activity: IChatMessage): Promise<string> {
-		const targetUri = getApId(activity.object);
+	private async chatMessage(resolver: Resolver, actor: MiRemoteUser, message: IObject): Promise<string> {
+		const uri = getApId(message);
+
+		if (typeof message === 'object') {
+			if (actor.uri !== message.attributedTo) {
+				return 'skip: actor.uri !== message.attributedTo';
+			}
+
+			if (typeof message.id === 'string') {
+				if (this.utilityService.extractDbHost(actor.uri) !== this.utilityService.extractDbHost(message.id)) {
+					return 'skip: host in actor.uri !== message.id';
+				}
+			} else {
+				return 'skip: message.id is not a string';
+			}
+		}
+
+		try {
+			await this.chatService.createMessageViaAp(message, actor, resolver);
+			return 'ok';
+		} catch (err) {
+			if (err instanceof StatusError && !err.isRetryable) {
+				return `skip ${err.statusCode}`;
+			} else {
+				throw err;
+			}
+		}
 	}
 
 	@bindThis
