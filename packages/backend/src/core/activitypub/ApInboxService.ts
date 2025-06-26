@@ -458,6 +458,11 @@ export class ApInboxService {
 	}
 
 	@bindThis
+	private async chatMessage(actor: MiRemoteUser, activity: IChatMessage): Promise<string> {
+		const targetUri = getApId(activity.object);
+	}
+
+	@bindThis
 	private async delete(actor: MiRemoteUser, activity: IDelete): Promise<string> {
 		if (actor.uri !== activity.actor) {
 			return 'invalid actor';
