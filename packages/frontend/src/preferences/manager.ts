@@ -112,6 +112,14 @@ export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
 	}
 }
 
+function isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
+	return (PREF_DEF as PreferencesDefinition)[key].accountDependent === true;
+}
+
+function isServerDependentKey<K extends keyof PREF>(key: K): boolean {
+	return (PREF_DEF as PreferencesDefinition)[key].serverDependent === true;
+}
+
 // TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すれば$iのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
 //       と思ったけど操作アカウントが存在しない場合も考慮する現在の設計の方が汎用的かつ堅牢かもしれない
 // NOTE: accountDependentな設定は初期状態であってもアカウントごとのスコープでレコードを作成しておかないと、サーバー同期する際に正しく動作しなくなる
@@ -150,14 +158,6 @@ export class PreferencesManager {
 		// TODO: 定期的にクラウドの値をフェッチ
 	}
 
-	private static isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
-		return (PREF_DEF as PreferencesDefinition)[key].accountDependent === true;
-	}
-
-	private static isServerDependentKey<K extends keyof PREF>(key: K): boolean {
-		return (PREF_DEF as PreferencesDefinition)[key].serverDependent === true;
-	}
-
 	private rewriteRawState<K extends keyof PREF>(key: K, value: ValueOf<K>) {
 		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
 		this.r[key].value = this.s[key] = v;
@@ -178,7 +178,7 @@ export class PreferencesManager {
 
 		const record = this.getMatchedRecordOf(key);
 
-		if (parseScope(record[0]).account == null && PreferencesManager.isAccountDependentKey(key)) {
+		if (parseScope(record[0]).account == null && isAccountDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 				account: $i!.id,
@@ -187,7 +187,7 @@ export class PreferencesManager {
 			return;
 		}
 
-		if (parseScope(record[0]).server == null && PreferencesManager.isServerDependentKey(key)) {
+		if (parseScope(record[0]).server == null && isServerDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 			}), v, {}]);
@@ -289,12 +289,12 @@ export class PreferencesManager {
 		const data = {} as PreferencesProfile['preferences'];
 		for (const key in PREF_DEF) {
 			const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
-			if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
+			if (isAccountDependentKey(key as keyof typeof PREF_DEF)) {
 				data[key] = $i ? [[makeScope({}), v, {}], [makeScope({
 					server: host,
 					account: $i.id,
 				}), v, {}]] : [[makeScope({}), v, {}]];
-			} else if (PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF)) {
+			} else if (isServerDependentKey(key as keyof typeof PREF_DEF)) {
 				data[key] = [[makeScope({
 					server: host,
 				}), v, {}]];
@@ -318,12 +318,12 @@ export class PreferencesManager {
 			const records = profileLike.preferences[key];
 			if (records == null || records.length === 0) {
 				const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
-				if (PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF)) {
+				if (isAccountDependentKey(key as keyof typeof PREF_DEF)) {
 					data[key] = $i ? [[makeScope({}), v, {}], [makeScope({
 						server: host,
 						account: $i.id,
 					}), v, {}]] : [[makeScope({}), v, {}]];
-				} else if (PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF)) {
+				} else if (isServerDependentKey(key as keyof typeof PREF_DEF)) {
 					data[key] = [[makeScope({
 						server: host,
 					}), v, {}]];
@@ -332,14 +332,14 @@ export class PreferencesManager {
 				}
 				continue;
 			} else {
-				if ($i && PreferencesManager.isAccountDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id)) {
+				if ($i && isAccountDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id)) {
 					data[key] = records.concat([[makeScope({
 						server: host,
 						account: $i.id,
 					}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
 					continue;
 				}
-				if ($i && PreferencesManager.isServerDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host)) {
+				if ($i && isServerDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host)) {
 					data[key] = records.concat([[makeScope({
 						server: host,
 					}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
@@ -374,17 +374,22 @@ export class PreferencesManager {
 		if (serverOverrideRecord) return serverOverrideRecord;
 
 		const record = records.find(([scope, v]) => parseScope(scope).account == null);
-		return record!;
+
+		if (record == null) { // 設計上あり得ないけどTSに怒られるため
+			throw new Error(`no record found for key: ${key}`);
+		}
+
+		return record;
 	}
 
 	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
 		if ($i == null) return false;
-		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id) ?? false;
+		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id);
 	}
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (PreferencesManager.isAccountDependentKey(key)) throw new Error('already account-dependent');
+		if (isAccountDependentKey(key)) throw new Error('already account-dependent');
 		if (this.isAccountOverrided(key)) return;
 
 		const records = this.profile.preferences[key];
@@ -398,7 +403,7 @@ export class PreferencesManager {
 
 	public clearAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (PreferencesManager.isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
+		if (isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
 
 		const records = this.profile.preferences[key];
 
