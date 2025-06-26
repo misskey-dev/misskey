@@ -504,15 +504,9 @@ export class ApRendererService {
 
 	@bindThis
 	public async renderChatMessage(message: MiChatMessage, dive = true): Promise<IPost> {
-		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
-			if (ids.length === 0) return [];
-			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
-		};
-
 		const attributedTo = this.userEntityService.genLocalUserUri(message.fromUserId);
 
-		const files = await getPromisedFiles([message.fileId]);
+		const file = message.fileId ? await this.driveFilesRepository.findOneBy({ id: message.fileId }) : null;
 
 		const emojis = await this.getEmojis(message.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
@@ -526,9 +520,9 @@ export class ApRendererService {
 			type: 'Misskey:ChatMessage',
 			attributedTo,
 			text: message.text,
-			published: this.idService.parse(note.id).date.toISOString(),
+			published: this.idService.parse(message.id).date.toISOString(),
 			to: message.toUserId,
-			attachment: files.map(x => this.renderDocument(x)),
+			attachment: file ? [this.renderDocument(file)] : [],
 			tag,
 		};
 	}
