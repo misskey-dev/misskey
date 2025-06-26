@@ -19,9 +19,8 @@ import { ensureSignin } from '@/i.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
 
 export type UploaderFeatures = {
-	effect?: boolean;
+	imageEditing?: boolean;
 	watermark?: boolean;
-	crop?: boolean;
 };
 
 const THUMBNAIL_SUPPORTED_TYPES = [
@@ -38,12 +37,6 @@ const IMAGE_COMPRESSION_SUPPORTED_TYPES = [
 	'image/svg+xml',
 ];
 
-const CROPPING_SUPPORTED_TYPES = [
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-];
-
 const IMAGE_EDITING_SUPPORTED_TYPES = [
 	'image/jpeg',
 	'image/png',
@@ -55,7 +48,6 @@ const WATERMARK_SUPPORTED_TYPES = IMAGE_EDITING_SUPPORTED_TYPES;
 const IMAGE_PREPROCESS_NEEDED_TYPES = [
 	...WATERMARK_SUPPORTED_TYPES,
 	...IMAGE_COMPRESSION_SUPPORTED_TYPES,
-	...CROPPING_SUPPORTED_TYPES,
 	...IMAGE_EDITING_SUPPORTED_TYPES,
 ];
 
@@ -112,17 +104,14 @@ export function useUploader(options: {
 	multiple?: boolean;
 	features?: UploaderFeatures;
 } = {}) {
-	const $i = ensureSignin();
-
 	const events = new EventEmitter<{
 		'itemUploaded': (ctx: { item: UploaderItem; }) => void;
 	}>();
 
 	const uploaderFeatures = computed<Required<UploaderFeatures>>(() => {
 		return {
-			effect: options.features?.effect ?? true,
+			imageEditing: options.features?.imageEditing ?? true,
 			watermark: options.features?.watermark ?? true,
-			crop: options.features?.crop ?? true,
 		};
 	});
 
@@ -215,60 +204,61 @@ export function useUploader(options: {
 		}
 
 		if (
-			uploaderFeatures.value.crop &&
-			CROPPING_SUPPORTED_TYPES.includes(item.file.type) &&
-			!item.preprocessing &&
-			!item.uploading &&
-			!item.uploaded
-		) {
-			menu.push({
-				icon: 'ti ti-crop',
-				text: i18n.ts.cropImage,
-				action: async () => {
-					const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
-					if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-					items.value.splice(items.value.indexOf(item), 1, {
-						...item,
-						file: markRaw(cropped),
-						thumbnail: window.URL.createObjectURL(cropped),
-					});
-					const reactiveItem = items.value.find(x => x.id === item.id)!;
-					preprocess(reactiveItem).then(() => {
-						triggerRef(items);
-					});
-				},
-			});
-		}
-
-		if (
-			uploaderFeatures.value.effect &&
+			uploaderFeatures.value.imageEditing &&
 			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
 		) {
 			menu.push({
-				icon: 'ti ti-sparkles',
-				text: i18n.ts._imageEffector.title + ' (BETA)',
-				action: async () => {
-					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
-						image: item.file,
-					}, {
-						ok: (file) => {
-							if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-							items.value.splice(items.value.indexOf(item), 1, {
-								...item,
-								file: markRaw(file),
-								thumbnail: window.URL.createObjectURL(file),
-							});
-							const reactiveItem = items.value.find(x => x.id === item.id)!;
-							preprocess(reactiveItem).then(() => {
-								triggerRef(items);
-							});
-						},
-						closed: () => dispose(),
-					});
-				},
+				type: 'parent',
+				icon: 'ti ti-photo-edit',
+				text: i18n.ts._uploader.editImage,
+				children: [{
+					icon: 'ti ti-crop',
+					text: i18n.ts.cropImage,
+					action: async () => {
+						const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
+						if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+						items.value.splice(items.value.indexOf(item), 1, {
+							...item,
+							file: markRaw(cropped),
+							thumbnail: window.URL.createObjectURL(cropped),
+						});
+						const reactiveItem = items.value.find(x => x.id === item.id)!;
+						preprocess(reactiveItem).then(() => {
+							triggerRef(items);
+						});
+					},
+				}, /*{
+					icon: 'ti ti-resize',
+					text: i18n.ts.resize,
+					action: async () => {
+						// TODO
+					},
+				},*/ {
+					icon: 'ti ti-sparkles',
+					text: i18n.ts._imageEffector.title + ' (BETA)',
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
+							image: item.file,
+						}, {
+							ok: (file) => {
+								if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+								items.value.splice(items.value.indexOf(item), 1, {
+									...item,
+									file: markRaw(file),
+									thumbnail: window.URL.createObjectURL(file),
+								});
+								const reactiveItem = items.value.find(x => x.id === item.id)!;
+								preprocess(reactiveItem).then(() => {
+									triggerRef(items);
+								});
+							},
+							closed: () => dispose(),
+						});
+					},
+				}],
 			});
 		}
 
