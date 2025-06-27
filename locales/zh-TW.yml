@@ -3109,6 +3109,7 @@ _serverSetupWizard:
     text2: "為了能夠繼續開發，若您願意的話，請考慮進行捐款。\n"
     text3: "也有提供支援者專屬的特典！\n"
 _uploader:
+  editImage: "編輯圖片"
   compressedToX: "壓縮為 {x}"
   savedXPercent: "節省了 {x}%"
   abortConfirm: "有些檔案尚未上傳，您要中止嗎？"
