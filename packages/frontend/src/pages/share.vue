@@ -59,19 +59,23 @@ const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
 
 async function init() {
 	let noteText = '';
-	if (title.value) noteText += `[ ${title.value} ]\n`;
+	if (title.value) {
+		noteText += `[ ${title.value} ]\n`;
 
-	//#region add text to note text
-	const duplicateTextRegex = new RegExp(`^${RegExp.escape(title.value)}(\\s|\\s+|\\s*\\n)`);
-	if (text?.search(duplicateTextRegex)) {
-		// For the Google app https://github.com/misskey-dev/misskey/issues/16224
-		noteText += text.replace(duplicateTextRegex, '');
-	} else if (text && title.value === text) {
-		// Nothing to do
+		//#region add text to note text
+		const duplicateTextRegex = new RegExp(`^${RegExp.escape(title.value)}\\s+`, 'u');
+		if (text?.search(duplicateTextRegex)) {
+			// For the Google app https://github.com/misskey-dev/misskey/issues/16224
+			noteText += text.replace(duplicateTextRegex, '');
+		} else if (text && title.value === text) {
+			// Nothing to do
+		} else if (text) {
+			noteText += `${text}\n`;
+		}
+		//#endregion
 	} else if (text) {
 		noteText += `${text}\n`;
 	}
-	//#endregion
 
 	if (url) {
 		try {
