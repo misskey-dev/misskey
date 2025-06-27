@@ -86,7 +86,7 @@ $height: 2ex;
 
 	// text-shadowは重いから使うな
 	color: #fff;
-	-webkit-text-stroke: #000 .25em;
+	-webkit-text-stroke: rgba(0, 0, 0, .8) .225em;
 	paint-order: stroke fill;
 }
 </style>
