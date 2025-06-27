@@ -482,8 +482,9 @@ export class PreferencesManager {
 			os.alert({
 				type: 'error',
 				title: i18n.ts.somethingHappened,
-				text: err,
 			});
+
+			console.error(err);
 
 			return { enabled: false };
 		}
