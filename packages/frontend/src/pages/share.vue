@@ -63,7 +63,7 @@ async function init() {
 		noteText += `[ ${title.value} ]\n`;
 
 		//#region add text to note text
-		const duplicateTextRegex = new RegExp(`^${RegExp.escape(title.value)}\\s+`, 'u');
+		const duplicateTextRegex = new RegExp(`^${RegExp.escape(title.value)}\\s*`, 'u');
 		if (text?.search(duplicateTextRegex)) {
 			// For the Google app https://github.com/misskey-dev/misskey/issues/16224
 			noteText += text.replace(duplicateTextRegex, '');
