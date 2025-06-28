@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
-			<MkPaginationControl v-model:order="order" v-model:date="date" canFilter @reload="paginator.reload()">
+			<MkPaginationControl v-model:order="order" v-model:date="date" v-model:q="q" canSearch canFilter @reload="paginator.reload()">
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
 					<option :value="null">{{ i18n.ts.all }}</option>
@@ -20,7 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPaginationControl>
 
 			<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
-				<MkTl :events="timeline" groupBy="d">
+				<MkLoading v-if="paginator.fetching.value"/>
+
+				<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
+
+				<MkTl v-else :events="timeline" groupBy="d">
 					<template #left="{ event }">
 						<div>
 							<MkAvatar :user="event.user" style="width: 26px; height: 26px;"/>
@@ -59,6 +63,7 @@ const order = ref<'newest' | 'oldest'>('newest');
 const date = ref<number | null>(null);
 const type = ref<string | null>(null);
 const moderatorId = ref('');
+const q = ref<string | null>(null);
 
 const paginator = usePagination({
 	ctx: {
@@ -68,6 +73,7 @@ const paginator = usePagination({
 		params: computed(() => ({
 			type: type.value,
 			userId: moderatorId.value === '' ? null : moderatorId.value,
+			search: q.value,
 		})),
 	},
 });
