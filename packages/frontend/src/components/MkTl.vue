@@ -64,42 +64,42 @@ type TlItem<T> = ({
 });
 
 const items = computed<TlItem<T>[]>(() => {
-		const results: TlItem<T>[] = [];
-		for (let i = 0; i < events.value.length; i++) {
-			const item = events.value[i];
+	const results: TlItem<T>[] = [];
+	for (let i = 0; i < events.value.length; i++) {
+		const item = events.value[i];
 
-			const date = new Date(item.timestamp);
-			const nextDate = events.value[i + 1] ? new Date(events.value[i + 1].timestamp) : null;
+		const date = new Date(item.timestamp);
+		const nextDate = events.value[i + 1] ? new Date(events.value[i + 1].timestamp) : null;
 
-			results.push({
-				id: item.id,
-				type: 'event',
-				timestamp: item.timestamp,
-				delta: i === events.value.length - 1 ? 0 : item.timestamp - events.value[i + 1].timestamp,
-				data: item.data,
-			});
+		results.push({
+			id: item.id,
+			type: 'event',
+			timestamp: item.timestamp,
+			delta: i === events.value.length - 1 ? 0 : item.timestamp - events.value[i + 1].timestamp,
+			data: item.data,
+		});
 
-			if (
-				i !== events.value.length - 1 &&
+		if (
+			i !== events.value.length - 1 &&
 				nextDate != null && (
-					date.getFullYear() !== nextDate.getFullYear() ||
+				date.getFullYear() !== nextDate.getFullYear() ||
 					date.getMonth() !== nextDate.getMonth() ||
 					date.getDate() !== nextDate.getDate() ||
 					date.getHours() !== nextDate.getHours()
-				)
-			) {
-				results.push({
-					id: `date-${item.id}`,
-					type: 'date',
-					prev: date,
-					prevText: getDateText(date),
-					next: nextDate,
-					nextText: getDateText(nextDate),
-				});
-			}
+			)
+		) {
+			results.push({
+				id: `date-${item.id}`,
+				type: 'date',
+				prev: date,
+				prevText: getDateText(date),
+				next: nextDate,
+				nextText: getDateText(nextDate),
+			});
 		}
-		return results;
-	});
+	}
+	return results;
+});
 </script>
 
 <style lang="scss" module>
