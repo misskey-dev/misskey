@@ -277,6 +277,14 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		reload();
 	}
 
+	function updateCtxPartial(ctx: Partial<PagingCtx<Endpoint>>) {
+		props.ctx = {
+			...props.ctx,
+			...ctx,
+		};
+		reload();
+	}
+
 	if (props.autoInit !== false) {
 		onMounted(() => {
 			init();
@@ -303,5 +311,6 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		releaseQueue,
 		error,
 		updateCtx,
+		updateCtxPartial,
 	};
 }

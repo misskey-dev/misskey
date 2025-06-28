@@ -6,25 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()" @contextmenu.prevent.stop="onContextmenu">
 	<div>
-		<div v-if="props.withControl" :class="$style.controls">
-			<div :class="$style.control">
-				<MkSelect v-model="order" :class="$style.order" :items="[{ label: i18n.ts._order.newest, value: 'newest' }, { label: i18n.ts._order.oldest, value: 'oldest' }]">
-					<template #prefix><i class="ti ti-arrows-sort"></i></template>
-				</MkSelect>
-				<!-- TODO -->
-				<!-- <MkButton v-tooltip="i18n.ts.search" iconOnly transparent rounded @click="setSearchQuery"><i class="ti ti-search"></i></MkButton> -->
-				<MkButton v-tooltip="i18n.ts.dateAndTime" iconOnly transparent rounded :active="date != null" @click="date = date == null ? Date.now() : null"><i class="ti ti-calendar-clock"></i></MkButton>
-				<MkButton v-tooltip="i18n.ts.reload" iconOnly transparent rounded @click="paginator.reload()"><i class="ti ti-refresh"></i></MkButton>
-			</div>
-
-			<MkInput
-				v-if="date != null"
-				type="date"
-				:modelValue="formatDateTimeString(new Date(date), 'yyyy-MM-dd')"
-				@update:modelValue="date = new Date($event).getTime()"
-			>
-			</MkInput>
-		</div>
+		<MkPaginationControl v-if="props.withControl" v-model:order="order" v-model:date="date" style="margin-bottom: 10px" @reload="paginator.reload()"/>
 
 		<!-- :css="prefer.s.animation" にしたいけどバグる(おそらくvueのバグ) https://github.com/misskey-dev/misskey/issues/16078 -->
 		<Transition
@@ -72,10 +54,8 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkInput from '@/components/MkInput.vue';
+import MkPaginationControl from '@/components/MkPaginationControl.vue';
 import * as os from '@/os.js';
-import { formatDateTimeString } from '@/utility/format-time-string.js';
 
 type Paginator = ReturnType<typeof usePagination<T['endpoint']>>;
 
@@ -139,24 +119,6 @@ defineExpose({
 .transition_fade_enterFrom,
 .transition_fade_leaveTo {
 	opacity: 0;
-}
-
-.controls {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	margin-bottom: 10px;
-}
-
-.control {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-}
-
-.order {
-	flex: 1;
-	margin-right: 6px;
 }
 
 .more {
