@@ -32,9 +32,12 @@ export type TlEvent<E = any> = {
 <script lang="ts" setup generic="T extends unknown">
 import { computed } from 'vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	events: TlEvent<T>[];
-}>();
+	groupBy?: 'd' | 'h';
+}>(), {
+	groupBy: 'd',
+});
 
 const events = computed(() => {
 	return props.events.toSorted((a, b) => b.timestamp - a.timestamp);
@@ -65,6 +68,7 @@ type TlItem<T> = ({
 
 const items = computed<TlItem<T>[]>(() => {
 	const results: TlItem<T>[] = [];
+
 	for (let i = 0; i < events.value.length; i++) {
 		const item = events.value[i];
 
@@ -79,25 +83,37 @@ const items = computed<TlItem<T>[]>(() => {
 			data: item.data,
 		});
 
-		if (
-			i !== events.value.length - 1 &&
-				nextDate != null && (
-				date.getFullYear() !== nextDate.getFullYear() ||
+		if (i !== events.value.length - 1 && nextDate != null) {
+			let needsSeparator = false;
+
+			if (props.groupBy === 'd') {
+				needsSeparator = (
+					date.getFullYear() !== nextDate.getFullYear() ||
+					date.getMonth() !== nextDate.getMonth() ||
+					date.getDate() !== nextDate.getDate()
+				);
+			} else if (props.groupBy === 'h') {
+				needsSeparator = (
+					date.getFullYear() !== nextDate.getFullYear() ||
 					date.getMonth() !== nextDate.getMonth() ||
 					date.getDate() !== nextDate.getDate() ||
 					date.getHours() !== nextDate.getHours()
-			)
-		) {
-			results.push({
-				id: `date-${item.id}`,
-				type: 'date',
-				prev: date,
-				prevText: getDateText(date),
-				next: nextDate,
-				nextText: getDateText(nextDate),
-			});
+				);
+			}
+
+			if (needsSeparator) {
+				results.push({
+					id: `date-${item.id}`,
+					type: 'date',
+					prev: date,
+					prevText: getDateText(date),
+					next: nextDate,
+					nextText: getDateText(nextDate),
+				});
+			}
 		}
 	}
+
 	return results;
 });
 </script>

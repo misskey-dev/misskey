@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'timeline'">
-		<MkTl :events="timeline">
+		<MkTl :events="timeline" groupBy="h">
 			<template #left="{ event }">
 				<div>
 					<template v-if="event.type === 'finished'">
@@ -162,6 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import JSON5 from 'json5';
+import type { TlEvent } from '@/components/MkTl.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -172,7 +173,6 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTl from '@/components/MkTl.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import type { TlEvent } from '@/components/MkTl.vue';
 
 function msSMH(v: number | null) {
 	if (v == null) return 'N/A';
