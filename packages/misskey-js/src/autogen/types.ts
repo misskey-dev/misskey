@@ -11327,6 +11327,7 @@ export interface operations {
                     type?: string | null;
                     /** Format: misskey:id */
                     userId?: string | null;
+                    search?: string | null;
                 };
             };
         };
