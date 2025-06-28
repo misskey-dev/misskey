@@ -34,6 +34,7 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 	offsetMode?: boolean;
 
 	initialId?: MisskeyEntity['id'];
+	initialDate?: number | null;
 	initialDirection?: 'newer' | 'older';
 
 	// 配列内の要素をどのような順序で並べるか
@@ -89,14 +90,18 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 			...params,
 			limit: props.ctx.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
-			...(props.ctx.initialDirection === 'newer' ? {
-				sinceId: props.ctx.initialId ?? '0',
-			} : props.ctx.initialId && props.ctx.initialDirection === 'older' ? {
+			...((props.ctx.initialId == null && props.ctx.initialDate == null) && props.ctx.initialDirection === 'newer' ? {
+				sinceId: '0',
+			} : props.ctx.initialDirection === 'newer' ? {
+				sinceId: props.ctx.initialId,
+				sinceDate: props.ctx.initialDate,
+			} : (props.ctx.initialId || props.ctx.initialDate) && props.ctx.initialDirection === 'older' ? {
 				untilId: props.ctx.initialId,
+				untilDate: props.ctx.initialDate,
 			} : {}),
 		}).then(res => {
 			// 逆順で返ってくるので
-			if (props.ctx.initialId && props.ctx.initialDirection === 'newer') {
+			if ((props.ctx.initialId || props.ctx.initialDate) && props.ctx.initialDirection === 'newer') {
 				res.reverse();
 			}
 
