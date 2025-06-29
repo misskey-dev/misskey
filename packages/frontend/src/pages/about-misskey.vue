@@ -283,6 +283,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'しきいし',
 	icon: 'https://assets.misskey-hub.net/patrons/77dd5387db41427ba9cbdc8849e76402.jpg',
+}, {
+	name: '井上千二十四',
+	icon: 'https://assets.misskey-hub.net/patrons/193afa1f039b4c339866039c3dcd74bf.jpg',
 }];
 
 const patrons = [
@@ -395,6 +398,7 @@ const patrons = [
 	'ruru',
 	'みりめい',
 	'東雲 琥珀',
+	'ほとラズ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));

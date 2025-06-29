@@ -3208,6 +3208,7 @@ _serverSetupWizard:
     text3: "支援者向け特典もあります！"
 
 _uploader:
+  editImage: "画像の編集"
   compressedToX: "{x}に圧縮"
   savedXPercent: "{x}%節約"
   abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"
