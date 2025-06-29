@@ -181,7 +181,7 @@ export class Paginator<
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
-			limit: FIRST_FETCH_LIMIT,
+			limit: this.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
 			...((this.initialId == null && this.initialDate == null) && this.initialDirection === 'newer' ? {
 				sinceId: '0',
