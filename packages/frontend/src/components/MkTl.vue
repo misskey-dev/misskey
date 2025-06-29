@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.left">
 			<slot v-if="item.type === 'event'" name="left" :event="item.data" :timestamp="item.timestamp" :delta="item.delta"></slot>
 		</div>
-		<div :class="[$style.center, item.type === 'date' ? $style.date : '']">
+		<div :class="[$style.center, item.type === 'date' ? $style.date : '', i === 0 ? $style.first : '', i === items.length - 1 ? $style.last : '']">
 			<div :class="$style.centerLine"></div>
 			<div :class="$style.centerPoint"></div>
 		</div>
@@ -141,6 +141,22 @@ const items = computed<TlItem<T>[]>(() => {
 			height: 7px;
 			background: var(--MI_THEME-bg);
 			border-radius: 50%;
+		}
+	}
+
+	&.first {
+		.centerLine {
+			height: 50%;
+			top: auto;
+			bottom: 0;
+		}
+	}
+
+	&.last {
+		.centerLine {
+			height: 50%;
+			top: 0;
+			bottom: auto;
 		}
 	}
 }

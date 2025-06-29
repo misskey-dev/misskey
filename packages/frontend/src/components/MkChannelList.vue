@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination :pagination="pagination">
+<MkPagination :paginator="paginator">
 	<template #empty><MkResult type="empty"/></template>
 
 	<template #default="{ items }">
@@ -14,13 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import type { Paginator } from '@/utility/paginator.js';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	pagination: PagingCtx;
+	paginator: Paginator;
 	noGap?: boolean;
 	extractor?: (item: any) => any;
 }>(), {

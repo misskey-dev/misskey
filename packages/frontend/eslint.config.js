@@ -153,6 +153,9 @@ export default [
 				autofix: true,
 			}],
 			'vue/attribute-hyphenation': ['error', 'never'],
+			'vue/no-mutating-props': ['error', {
+				shallowOnly: true,
+			}],
 		},
 	},
 ];

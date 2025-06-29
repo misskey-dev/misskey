@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkPagination v-slot="{ items }" :pagination="pagination">
+	<MkPagination v-slot="{ items }" :paginator="paginator">
 		<div :class="[$style.fileList, { [$style.grid]: viewMode === 'grid', [$style.list]: viewMode === 'list', '_gaps_s': viewMode === 'list' }]">
 			<MkA
 				v-for="file in items"
@@ -40,15 +40,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
+import type { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 
 defineProps<{
-	pagination: PagingCtx<'admin/drive/files'>;
+	paginator: Paginator<'admin/drive/files'>;
 	viewMode: 'grid' | 'list';
 }>();
 </script>

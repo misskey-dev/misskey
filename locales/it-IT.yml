@@ -3169,3 +3169,5 @@ _imageEffector:
     stripe: "Strisce"
     polkadot: "A pallini"
     checker: "revisore"
+_drafts:
+  restore: "Ripristina"

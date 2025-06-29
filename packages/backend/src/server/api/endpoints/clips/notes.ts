@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository, ClipsRepository, ClipNotesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -13,6 +14,7 @@ import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -48,6 +50,9 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+		search: { type: 'string', minLength: 1, maxLength: 100, nullable: true },
 	},
 	required: ['clipId'],
 } as const;
@@ -91,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
 			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
 
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.innerJoin(this.clipNotesRepository.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
@@ -108,6 +113,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateBlockedUserQueryForNotes(query, me);
 				this.queryService.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote' });
 				this.queryService.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+			}
+
+			if (ps.search != null) {
+				for (const word of ps.search!.trim().split(' ')) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.text ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });
+						qb.orWhere('note.cw ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });
+					}));
+				}
 			}
 
 			const notes = (await query.limit(ps.limit).getMany()).filter(note => {
