@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-repeat-off"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</SearchLabel></template>
 
-					<MkPagination :pagination="renoteMutingPagination">
+					<MkPagination :pagination="renoteMutingPagination" withControl>
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-eye-off"></i></template>
 					<template #label>{{ i18n.ts.mutedUsers }}</template>
 
-					<MkPagination :pagination="mutingPagination">
+					<MkPagination :pagination="mutingPagination" withControl>
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-ban"></i></template>
 					<template #label>{{ i18n.ts.blockedUsers }}</template>
 
-					<MkPagination :pagination="blockingPagination">
+					<MkPagination :pagination="blockingPagination" withControl>
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">

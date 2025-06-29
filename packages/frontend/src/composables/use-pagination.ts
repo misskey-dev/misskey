@@ -33,8 +33,14 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 
 	offsetMode?: boolean;
 
-	baseId?: MisskeyEntity['id'];
-	direction?: 'newer' | 'older';
+	initialId?: MisskeyEntity['id'];
+	initialDirection?: 'newer' | 'older';
+
+	// 配列内の要素をどのような順序で並べるか
+	// newest: 新しいものが先頭 (default)
+	// oldest: 古いものが先頭
+	// NOTE: このようなプロパティを用意してこっち側で並びを管理せずに、Setで持っておき参照者側が好きに並び変えるような設計の方がすっきりしそうなものの、Vueのレンダリングのたびに並び替え処理が発生することになったりしそうでパフォーマンス上の懸念がある
+	order?: 'newest' | 'oldest';
 
 	// 一部のAPIはさらに遡れる場合でもパフォーマンス上の理由でlimit以下の結果を返す場合があり、その場合はsafe、それ以外はlimitにすることを推奨
 	canFetchDetection?: 'safe' | 'limit';
@@ -51,6 +57,7 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 	const queuedAheadItemsCount = ref(0);
 	const fetching = ref(true);
 	const fetchingOlder = ref(false);
+	const fetchingNewer = ref(false);
 	const canFetchOlder = ref(false);
 	const error = ref(false);
 
@@ -82,14 +89,14 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 			...params,
 			limit: props.ctx.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
-			...(props.ctx.baseId && props.ctx.direction === 'newer' ? {
-				sinceId: props.ctx.baseId,
-			} : props.ctx.baseId && props.ctx.direction === 'older' ? {
-				untilId: props.ctx.baseId,
+			...(props.ctx.initialDirection === 'newer' ? {
+				sinceId: props.ctx.initialId ?? '0',
+			} : props.ctx.initialId && props.ctx.initialDirection === 'older' ? {
+				untilId: props.ctx.initialId,
 			} : {}),
 		}).then(res => {
 			// 逆順で返ってくるので
-			if (props.ctx.baseId && props.ctx.direction === 'newer') {
+			if (props.ctx.initialId && props.ctx.initialDirection === 'newer') {
 				res.reverse();
 			}
 
@@ -167,6 +174,7 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 	async function fetchNewer(options: {
 		toQueue?: boolean;
 	} = {}): Promise<void> {
+		fetchingNewer.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<T[]>(props.ctx.endpoint, {
 			...params,
@@ -186,8 +194,14 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 				}
 				queuedAheadItemsCount.value = aheadQueue.length;
 			} else {
-				unshiftItems(res.toReversed());
+				if (props.ctx.order === 'oldest') {
+					pushItems(res);
+				} else {
+					unshiftItems(res.toReversed());
+				}
 			}
+		}).finally(() => {
+			fetchingNewer.value = false;
 		});
 	}
 
@@ -253,6 +267,11 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		}
 	}
 
+	function updateCtx(ctx: PagingCtx<Endpoint>) {
+		props.ctx = ctx;
+		reload();
+	}
+
 	if (props.autoInit !== false) {
 		onMounted(() => {
 			init();
@@ -264,6 +283,7 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		queuedAheadItemsCount,
 		fetching,
 		fetchingOlder,
+		fetchingNewer,
 		canFetchOlder,
 		init,
 		reload,
@@ -277,5 +297,6 @@ export function usePagination<Endpoint extends keyof Misskey.Endpoints, T extend
 		enqueue,
 		releaseQueue,
 		error,
+		updateCtx,
 	};
 }

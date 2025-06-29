@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
 
-					<MkPagination ref="paginationEl" :pagination="membershipsPagination">
+					<MkPagination ref="paginationEl" :pagination="membershipsPagination" withControl>
 						<template #default="{ items }">
 							<div class="_gaps_s">
 								<div v-for="item in items" :key="item.id">
