@@ -23,20 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	/>
 	<img
 		v-else-if="isThumbnailAvailable"
-		:src="file.thumbnailUrl"
+		:src="file.thumbnailUrl!"
 		:alt="file.name"
 		:title="file.name"
 		:class="$style.thumbnail"
 		:style="{ objectFit: fit }"
 	/>
-	<i v-else-if="is === 'image'" class="ti ti-photo" :class="$style.icon"></i>
-	<i v-else-if="is === 'video'" class="ti ti-video" :class="$style.icon"></i>
-	<i v-else-if="is === 'audio' || is === 'midi'" class="ti ti-file-music" :class="$style.icon"></i>
-	<i v-else-if="is === 'csv'" class="ti ti-file-text" :class="$style.icon"></i>
-	<i v-else-if="is === 'pdf'" class="ti ti-file-text" :class="$style.icon"></i>
-	<i v-else-if="is === 'textfile'" class="ti ti-file-text" :class="$style.icon"></i>
-	<i v-else-if="is === 'archive'" class="ti ti-file-zip" :class="$style.icon"></i>
-	<i v-else class="ti ti-file" :class="$style.icon"></i>
+	<i v-else :class="[$style.icon, fileIcon]"></i>
 
 	<i v-if="isThumbnailAvailable && is === 'video'" class="ti ti-video" :class="$style.iconSub"></i>
 </div>
@@ -46,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import { getFileType, getFileTypeIcon } from '@/utility/file-type.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
@@ -56,27 +50,8 @@ const props = defineProps<{
 	large?: boolean;
 }>();
 
-const is = computed(() => {
-	if (props.file.type.startsWith('image/')) return 'image';
-	if (props.file.type.startsWith('video/')) return 'video';
-	if (props.file.type === 'audio/midi') return 'midi';
-	if (props.file.type.startsWith('audio/')) return 'audio';
-	if (props.file.type.endsWith('/csv')) return 'csv';
-	if (props.file.type.endsWith('/pdf')) return 'pdf';
-	if (props.file.type.startsWith('text/')) return 'textfile';
-	if ([
-		'application/zip',
-		'application/x-cpio',
-		'application/x-bzip',
-		'application/x-bzip2',
-		'application/java-archive',
-		'application/x-rar-compressed',
-		'application/x-tar',
-		'application/gzip',
-		'application/x-7z-compressed',
-	].some(archiveType => archiveType === props.file.type)) return 'archive';
-	return 'unknown';
-});
+const is = computed(() => getFileType(props.file.type));
+const fileIcon = computed(() => getFileTypeIcon(is.value));
 
 const isThumbnailAvailable = computed(() => {
 	return props.file.thumbnailUrl
