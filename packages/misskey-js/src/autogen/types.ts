@@ -18274,6 +18274,7 @@ export interface operations {
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
+                    search?: string | null;
                 };
             };
         };

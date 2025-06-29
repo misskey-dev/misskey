@@ -4,11 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository, ClipsRepository, ClipNotesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -46,6 +48,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		search: { type: 'string', minLength: 1, maxLength: 100, nullable: true },
 	},
 	required: ['clipId'],
 } as const;
@@ -95,6 +98,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.queryService.generateBlockedUserQueryForNotes(query, me);
 				this.queryService.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote' });
 				this.queryService.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+			}
+
+			if (ps.search != null) {
+				for (const word of ps.search!.trim().split(' ')) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.text ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });
+						qb.orWhere('note.cw ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });
+					}));
+				}
 			}
 
 			const notes = await query
