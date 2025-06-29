@@ -31,11 +31,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkPagination>
 </template>
 
-<script lang="ts">
-import * as Misskey from 'misskey-js';
-</script>
-
 <script lang="ts" setup generic="T extends IPaginator<Misskey.entities.Note>">
+import * as Misskey from 'misskey-js';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
