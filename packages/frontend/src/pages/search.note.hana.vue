@@ -118,7 +118,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<MkStickyContainer v-if="notePagination">
+	<MkStickyContainer v-if="paginator">
 		<template #header>
 			<div ref="searchResultStickyContainer" :class="$style.searchResultStickyRoot">
 				<div :class="$style.searchResultStickyContainer">
@@ -136,22 +136,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-if="searchMode === 'v1' && onlyWithFiles && showAsGrid"
 				v-slot="{ items }"
 				:key="`searchNotes:${key}:grid`"
-				:pagination="notePagination"
+				:paginatior="paginator"
 			>
 				<div :class="$style.stream">
-					<MkNoteMediaGrid v-for="note in items" :note="note" square/>
+					<MkNoteMediaGrid v-for="note in items" :key="note.id" :note="note" square/>
 				</div>
 			</MkPagination>
-			<MkNotesTimeline v-else :key="`searchNotes:${key}:note`" :pagination="notePagination"/>
+			<MkNotesTimeline v-else :key="`searchNotes:${key}:note`" :paginatior="paginator"/>
 		</div>
 	</MkStickyContainer>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef, useTemplateRef, toRef } from 'vue';
+import { computed, ref, shallowRef, useTemplateRef, toRef, markRaw } from 'vue';
 import type * as Misskey from 'misskey-js';
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import { Paginator } from '@/utility/paginator.js';
 import { $i } from '@/i.js';
 import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
@@ -189,7 +189,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const key = ref(0);
-const notePagination = ref<PagingCtx>();
+const paginator = shallowRef<Paginator<'notes/search' | 'notes/hanamisearch-v1'> | null>(null);
 
 const searchQuery = ref(toRef(props, 'query').value);
 const hostInput = ref(toRef(props, 'host').value);
@@ -359,22 +359,20 @@ async function search() {
 	}
 
 	if ($i?.policies.canSearchWithHanamiSearchV1 === true && searchMode.value === 'v1') {
-		notePagination.value = {
-			endpoint: 'notes/hanamisearch-v1',
+		paginator.value = markRaw(new Paginator('notes/hanamisearch-v1', {
 			limit: 10,
 			params: {
 				...searchParams.value,
 				onlyWithFiles: onlyWithFiles.value,
 			},
-		};
+		}));
 	} else {
-		notePagination.value = {
-			endpoint: 'notes/search',
+		paginator.value = markRaw(new Paginator('notes/search', {
 			limit: 10,
 			params: {
 				...searchParams.value,
 			},
-		};
+		}));
 	}
 
 	key.value++;
