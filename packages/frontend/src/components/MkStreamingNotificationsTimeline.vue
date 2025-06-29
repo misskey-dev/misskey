@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup } from 'vue';
+import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import type { notificationTypes } from '@@/js/const.js';
@@ -53,8 +53,8 @@ import { i18n } from '@/i18n.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
-import { usePagination } from '@/composables/use-pagination.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -62,21 +62,17 @@ const props = defineProps<{
 
 const rootEl = useTemplateRef('rootEl');
 
-const paginator = usePagination({
-	ctx: prefer.s.useGroupedNotifications ? {
-		endpoint: 'i/notifications-grouped' as const,
-		limit: 20,
-		params: computed(() => ({
-			excludeTypes: props.excludeTypes ?? undefined,
-		})),
-	} : {
-		endpoint: 'i/notifications' as const,
-		limit: 20,
-		params: computed(() => ({
-			excludeTypes: props.excludeTypes ?? undefined,
-		})),
-	},
-});
+const paginator = prefer.s.useGroupedNotifications ? markRaw(new Paginator('i/notifications-grouped', {
+	limit: 20,
+	computedParams: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+})) : markRaw(new Paginator('i/notifications', {
+	limit: 20,
+	computedParams: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+}));
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
 const POLLING_INTERVAL =
@@ -116,6 +112,14 @@ function reload() {
 let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | null = null;
 
 onMounted(() => {
+	paginator.init();
+
+	if (paginator.computedParams) {
+		watch(paginator.computedParams, () => {
+			paginator.reload();
+		}, { immediate: false, deep: true });
+	}
+
 	if (store.s.realtimeMode) {
 		connection = useStream().useChannel('main');
 		connection.on('notification', onNotification);

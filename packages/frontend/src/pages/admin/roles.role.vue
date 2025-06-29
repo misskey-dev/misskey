@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps">
 					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-					<MkPagination :pagination="usersPagination">
+					<MkPagination :paginator="usersPaginator">
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, markRaw, reactive, ref } from 'vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -66,6 +66,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -73,13 +74,12 @@ const props = defineProps<{
 	id?: string;
 }>();
 
-const usersPagination = {
-	endpoint: 'admin/roles/users' as const,
+const usersPaginator = markRaw(new Paginator('admin/roles/users', {
 	limit: 20,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		roleId: props.id,
 	})),
-};
+}));
 
 const expandedItems = ref([]);
 

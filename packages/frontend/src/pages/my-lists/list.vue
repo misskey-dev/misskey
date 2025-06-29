@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
 
-					<MkPagination ref="paginationEl" :pagination="membershipsPagination">
+					<MkPagination :paginator="membershipsPaginator" withControl>
 						<template #default="{ items }">
 							<div class="_gaps_s">
 								<div v-for="item in items" :key="item.id">
@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { computed, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -69,6 +69,7 @@ import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const $i = ensureSignin();
 
@@ -80,17 +81,15 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-const paginationEl = useTemplateRef('paginationEl');
 const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
-const membershipsPagination = {
-	endpoint: 'users/lists/get-memberships' as const,
+const membershipsPaginator = markRaw(new Paginator('users/lists/get-memberships', {
 	limit: 30,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		listId: props.listId,
 	})),
-};
+}));
 
 function fetchList() {
 	misskeyApi('users/lists/show', {
@@ -109,7 +108,7 @@ function addUser() {
 			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
-			paginationEl.value?.paginator.reload();
+			membershipsPaginator.reload();
 		});
 	});
 }
@@ -125,7 +124,7 @@ async function removeUser(item, ev) {
 				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
-				paginationEl.value?.paginator.removeItem(item.id);
+				membershipsPaginator.removeItem(item.id);
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -147,7 +146,7 @@ async function showMembershipMenu(item, ev) {
 			userId: item.userId,
 			withReplies,
 		}).then(() => {
-			paginationEl.value!.paginator.updateItem(item.id, (old) => ({
+			membershipsPaginator.updateItem(item.id, (old) => ({
 				...old,
 				withReplies,
 			}));

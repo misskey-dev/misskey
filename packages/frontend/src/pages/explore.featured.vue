@@ -9,30 +9,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>
-	<MkNotesTimeline v-if="tab === 'notes'" :pagination="paginationForNotes"/>
-	<MkNotesTimeline v-else-if="tab === 'polls'" :pagination="paginationForPolls"/>
+	<MkNotesTimeline v-if="tab === 'notes'" :paginator="paginatorForNotes"/>
+	<MkNotesTimeline v-else-if="tab === 'polls'" :paginator="paginatorForPolls"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { markRaw, ref } from 'vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const paginationForNotes = {
-	endpoint: 'notes/featured' as const,
+const paginatorForNotes = markRaw(new Paginator('notes/featured', {
 	limit: 10,
-};
+}));
 
-const paginationForPolls = {
-	endpoint: 'notes/polls/recommendation' as const,
+const paginatorForPolls = markRaw(new Paginator('notes/polls/recommendation', {
 	limit: 10,
 	offsetMode: true,
 	params: {
 		excludeChannels: true,
 	},
-};
+}));
 
 const tab = ref('notes');
 </script>

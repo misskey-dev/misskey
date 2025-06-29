@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps">
 			<MkInfo v-if="$i && $i.hasUnreadAnnouncement && tab === 'current'" warn>{{ i18n.ts.youHaveUnreadAnnouncements }}</MkInfo>
-			<MkPagination ref="paginationEl" :key="tab" v-slot="{items}" :pagination="tab === 'current' ? paginationCurrent : paginationPast" class="_gaps">
+			<MkPagination v-slot="{items}" :paginator="paginator" class="_gaps">
 				<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
 					<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
 					<div :class="$style.header">
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from 'vue';
+import { ref, computed, markRaw } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -54,24 +54,14 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const paginationCurrent = {
-	endpoint: 'announcements' as const,
+const paginator = markRaw(new Paginator('announcements', {
 	limit: 10,
-	params: {
-		isActive: true,
-	},
-};
-
-const paginationPast = {
-	endpoint: 'announcements' as const,
-	limit: 10,
-	params: {
-		isActive: false,
-	},
-};
-
-const paginationEl = useTemplateRef('paginationEl');
+	computedParams: computed(() => ({
+		isActive: tab.value === 'current',
+	})),
+}));
 
 const tab = ref('current');
 
@@ -85,8 +75,7 @@ async function read(target) {
 		if (confirm.canceled) return;
 	}
 
-	if (!paginationEl.value) return;
-	paginationEl.value.paginator.updateItem(target.id, a => ({
+	paginator.updateItem(target.id, a => ({
 		...a,
 		isRead: true,
 	}));

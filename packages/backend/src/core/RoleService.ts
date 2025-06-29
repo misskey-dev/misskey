@@ -66,6 +66,7 @@ export type RolePolicies = {
 	canImportUserLists: boolean;
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
 	uploadableFileTypes: string[];
+	noteDraftLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -109,6 +110,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 		'video/*',
 		'audio/*',
 	],
+	noteDraftLimit: 10,
 };
 
 @Injectable()
@@ -430,6 +432,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				}
 				return [...set];
 			}),
+			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
 		};
 	}
 

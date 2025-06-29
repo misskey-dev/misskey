@@ -309,6 +309,10 @@ export const packedRolePoliciesSchema = {
 			optional: false, nullable: false,
 			enum: ['available', 'readonly', 'unavailable'],
 		},
+		noteDraftLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 
