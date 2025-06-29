@@ -14,6 +14,9 @@
 - Fix: ファイルがドライブの既定アップロード先に指定したフォルダにアップロードされない問題を修正
 
 ### Server
+- Feat: サーバーがCDNを利用している場合、タイムラインのリアルタイム更新時にCDNのキャッシュを併用できるように（上級者向け）
+  - この機能はCDNの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDNを正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
+  - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 - Enhance: sinceId/untilIdが指定可能なエンドポイントにおいて、sinceDate/untilDateも指定可能に
 - Fix: ジョブキューのProgressの値を正しく計算する
 
@@ -50,9 +53,6 @@
 
 ### Server
 - Feat: 全てのチャットメッセージを既読にするAPIを追加(chat/read-all)
-- Feat: サーバーがCDNを利用している場合、タイムラインのリアルタイム更新時にCDNのキャッシュを併用できるように（上級者向け）
-  - この機能はCDNの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDNを正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
-  - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 - Fix: アカウント削除が正常に行われないことがあった問題を修正
 - Fix: outboxのページネーションが正しく行われない問題を修正
 
