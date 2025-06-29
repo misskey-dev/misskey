@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSelect v-model="order" :class="$style.order" :items="[{ label: i18n.ts._order.newest, value: 'newest' }, { label: i18n.ts._order.oldest, value: 'oldest' }]">
 			<template #prefix><i class="ti ti-arrows-sort"></i></template>
 		</MkSelect>
-		<MkButton v-if="canSearch" v-tooltip="i18n.ts.search" iconOnly transparent rounded :active="searchOpened" @click="searchOpened = !searchOpened"><i class="ti ti-search"></i></MkButton>
+		<MkButton v-if="paginator.canSearch" v-tooltip="i18n.ts.search" iconOnly transparent rounded :active="searchOpened" @click="searchOpened = !searchOpened"><i class="ti ti-search"></i></MkButton>
 		<MkButton v-if="canFilter" v-tooltip="i18n.ts.filter" iconOnly transparent rounded :active="filterOpened" @click="filterOpened = !filterOpened"><i class="ti ti-filter"></i></MkButton>
 		<MkButton v-tooltip="i18n.ts.dateAndTime" iconOnly transparent rounded :active="date != null" @click="date = date == null ? Date.now() : null"><i class="ti ti-calendar-clock"></i></MkButton>
-		<MkButton v-tooltip="i18n.ts.reload" iconOnly transparent rounded @click="emit('reload')"><i class="ti ti-refresh"></i></MkButton>
+		<MkButton v-tooltip="i18n.ts.reload" iconOnly transparent rounded @click="paginator.reload()"><i class="ti ti-refresh"></i></MkButton>
 	</div>
 
 	<MkInput
@@ -37,9 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup generic="T extends PagingCtx">
+<script lang="ts" setup generic="T extends Paginator">
 import { ref, watch } from 'vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import type { Paginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -47,32 +47,35 @@ import MkInput from '@/components/MkInput.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
 
 const props = withDefaults(defineProps<{
-	canSearch?: boolean;
+	paginator: T;
 	canFilter?: boolean;
 	filterOpened?: boolean;
 }>(), {
-	canSearch: false,
 	canFilter: false,
 	filterOpened: false,
 });
 
-const emit = defineEmits<{
-	(ev: 'reload'): void;
-}>();
-
 const searchOpened = ref(false);
 const filterOpened = ref(props.filterOpened);
 
-const order = defineModel<'newest' | 'oldest'>('order', {
-	default: 'newest',
+const order = ref<'newest' | 'oldest'>('newest');
+const date = ref<number | null>(null);
+const q = ref<string | null>(null);
+
+watch(order, () => {
+	props.paginator.order.value = order.value;
+	props.paginator.initialDirection = order.value === 'oldest' ? 'newer' : 'older';
+	props.paginator.reload();
 });
 
-const date = defineModel<number | null>('date', {
-	default: null,
+watch(date, () => {
+	props.paginator.initialDate = date.value;
+	props.paginator.reload();
 });
 
-const q = defineModel<string | null>('q', {
-	default: null,
+watch(q, () => {
+	props.paginator.searchQuery.value = q.value;
+	props.paginator.reload();
 });
 </script>
 

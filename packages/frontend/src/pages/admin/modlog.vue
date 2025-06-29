@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
-			<MkPaginationControl v-model:order="order" v-model:date="date" v-model:q="q" canSearch canFilter @reload="paginator.reload()">
+			<MkPaginationControl :paginator="paginator" canFilter>
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
 					<option :value="null">{{ i18n.ts.all }}</option>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, useTemplateRef, ref, watch } from 'vue';
+import { computed, ref, markRaw, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XModLog from './modlog.ModLog.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -54,37 +54,25 @@ import MkTl from '@/components/MkTl.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
-import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPaginationControl from '@/components/MkPaginationControl.vue';
+import { Paginator } from '@/utility/paginator.js';
 
-const order = ref<'newest' | 'oldest'>('newest');
-const date = ref<number | null>(null);
 const type = ref<string | null>(null);
 const moderatorId = ref('');
-const q = ref<string | null>(null);
 
-const paginator = usePagination({
-	ctx: {
-		endpoint: 'admin/show-moderation-logs',
-		limit: 20,
-		canFetchDetection: 'limit',
-		params: computed(() => ({
-			type: type.value,
-			userId: moderatorId.value === '' ? null : moderatorId.value,
-			search: q.value,
-		})),
-	},
-});
+const paginator = markRaw(new Paginator('admin/show-moderation-logs', {
+	limit: 20,
+	canFetchDetection: 'limit',
+	canSearch: true,
+	computedParams: computed(() => ({
+		type: type.value,
+		userId: moderatorId.value === '' ? null : moderatorId.value,
+	})),
+}));
 
-watch([order, date], () => {
-	paginator.updateCtxPartial({
-		order: order.value,
-		initialDirection: order.value === 'oldest' ? 'newer' : 'older',
-		initialDate: date.value,
-	});
-}, { immediate: false });
+paginator.init();
 
 const timeline = computed(() => {
 	return paginator.items.value.map(x => ({
@@ -95,7 +83,7 @@ const timeline = computed(() => {
 });
 
 function fetchMore() {
-	if (order.value === 'oldest') {
+	if (paginator.order.value === 'oldest') {
 		paginator.fetchNewer();
 	} else {
 		paginator.fetchOlder();
