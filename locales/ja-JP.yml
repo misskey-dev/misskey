@@ -1313,6 +1313,7 @@ availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
+draft: "下書き"
 confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
@@ -1369,6 +1370,10 @@ defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
 enableStreamNotesCdnCache: "リアルタイム更新時のノート取得にCDNキャッシュを併用する"
 enableStreamNotesCdnCacheDescription: "（上級者向け）サーバーでCDNを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。"
+
+_order:
+  newest: "新しい順"
+  oldest: "古い順"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -2015,6 +2020,7 @@ _role:
     uploadableFileTypes: "アップロード可能なファイル種別"
     uploadableFileTypes_caption: "MIMEタイプを指定します。改行で区切って複数指定できるほか、アスタリスク(*)でワイルドカード指定できます。(例: image/*)"
     uploadableFileTypes_caption2: "ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。"
+    noteDraftLimit: "サーバーサイドのノートの下書きの作成可能数"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -2195,6 +2201,7 @@ _theme:
   install: "テーマのインストール"
   manage: "テーマの管理"
   code: "テーマコード"
+  copyThemeCode: "テーマコードをコピー"
   description: "説明"
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"
@@ -2524,6 +2531,8 @@ _visibility:
   disableFederationDescription: "他サーバーへの配信を行いません"
 
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "アップロードされていないファイルがありますが、破棄してフォームを閉じますか？"
+  uploaderTip: "ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。"
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
@@ -3201,6 +3210,7 @@ _serverSetupWizard:
     text3: "支援者向け特典もあります！"
 
 _uploader:
+  editImage: "画像の編集"
   compressedToX: "{x}に圧縮"
   savedXPercent: "{x}%節約"
   abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"
@@ -3264,6 +3274,7 @@ _imageEffector:
     mirror: "ミラー"
     invert: "色の反転"
     grayscale: "白黒"
+    colorAdjust: "色調補正"
     colorClamp: "色の圧縮"
     colorClampAdvanced: "色の圧縮(高度)"
     distort: "歪み"
@@ -3272,3 +3283,21 @@ _imageEffector:
     stripe: "ストライプ"
     polkadot: "ポルカドット"
     checker: "チェッカー"
+    blockNoise: "ブロックノイズ"
+    tearing: "ティアリング"
+
+drafts: "下書き"
+_drafts:
+  select: "下書きを選択"
+  cannotCreateDraftAnymore: "下書きの作成可能数を超えています。"
+  cannotCreateDraftOfRenote: "リノートの下書きは作成できません。"
+  delete: "下書きを削除"
+  deleteAreYouSure: "下書きを削除しますか？"
+  noDrafts: "下書きはありません"
+  replyTo: "{user}への返信"
+  quoteOf: "{user}のノートへの引用"
+  postTo: "{channel}への投稿"
+  saveToDraft: "下書きへ保存"
+  restoreFromDraft: "下書きから復元"
+  restore: "復元"
+  listDrafts: "下書き一覧"

@@ -37,6 +37,7 @@ export const FX_colorClamp = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		min: {
 			type: 'number' as const,
@@ -44,6 +45,7 @@ export const FX_colorClamp = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
 	main: ({ gl, u, params }) => {

@@ -4,6 +4,7 @@
  */
 
 import { getProxiedImageUrl } from '../media-proxy.js';
+import { initShaderProgram } from '../webgl.js';
 
 type ParamTypeToPrimitive = {
 	'number': number;
@@ -18,6 +19,8 @@ type ParamTypeToPrimitive = {
 type ImageEffectorFxParamDefs = Record<string, {
 	type: keyof ParamTypeToPrimitive;
 	default: any;
+	label?: string;
+	toViewValue?: (v: any) => string;
 }>;
 
 export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[]>(fx: ImageEffectorFx<ID, PS, US>) {
@@ -60,8 +63,6 @@ function getValue<T extends keyof ParamTypeToPrimitive>(params: Record<string, a
 export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, any>>> {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
-	private renderTextureProgram: WebGLProgram;
-	private renderInvertedTextureProgram: WebGLProgram;
 	private renderWidth: number;
 	private renderHeight: number;
 	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
@@ -70,6 +71,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
+	private nopProgram: WebGLProgram;
 	private fxs: [...IEX];
 	private paramTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
@@ -114,13 +116,13 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 
-		this.renderTextureProgram = this.initShaderProgram(`#version 300 es
+		this.nopProgram = initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
 			out vec2 in_uv;
 
 			void main() {
 				in_uv = (position + 1.0) / 2.0;
-				gl_Position = vec4(position, 0.0, 1.0);
+				gl_Position = vec4(position * vec2(1.0, -1.0), 0.0, 1.0);
 			}
 		`, `#version 300 es
 			precision mediump float;
@@ -134,82 +136,28 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			}
 		`);
 
-		this.renderInvertedTextureProgram = this.initShaderProgram(`#version 300 es
-			in vec2 position;
-			out vec2 in_uv;
-
-			void main() {
-				in_uv = (position + 1.0) / 2.0;
-				in_uv.y = 1.0 - in_uv.y;
-				gl_Position = vec4(position, 0.0, 1.0);
-			}
-		`, `#version 300 es
-			precision mediump float;
-
-			in vec2 in_uv;
-			uniform sampler2D u_texture;
-			out vec4 out_color;
-
-			void main() {
-				out_color = texture(u_texture, in_uv);
-			}
-		`);
+		// レジスタ番号はシェーダープログラムに属しているわけではなく、独立の存在なので、とりあえず nopProgram を使って設定する(その後は効果が持続する)
+		// ref. https://qiita.com/emadurandal/items/5966c8374f03d4de3266
+		const positionLocation = gl.getAttribLocation(this.nopProgram, 'position');
+		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(positionLocation);
 	}
 
-	public loadShader(type: GLenum, source: string): WebGLShader {
-		const gl = this.gl;
-
-		const shader = gl.createShader(type);
-		if (shader == null) {
-			throw new Error('falied to create shader');
-		}
-
-		gl.shaderSource(shader, source);
-		gl.compileShader(shader);
-
-		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			console.error(`falied to compile shader: ${gl.getShaderInfoLog(shader)}`);
-			gl.deleteShader(shader);
-			throw new Error(`falied to compile shader: ${gl.getShaderInfoLog(shader)}`);
-		}
-
-		return shader;
-	}
-
-	public initShaderProgram(vsSource: string, fsSource: string): WebGLProgram {
-		const gl = this.gl;
-
-		const vertexShader = this.loadShader(gl.VERTEX_SHADER, vsSource);
-		const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fsSource);
-
-		const shaderProgram = gl.createProgram();
-
-		gl.attachShader(shaderProgram, vertexShader);
-		gl.attachShader(shaderProgram, fragmentShader);
-		gl.linkProgram(shaderProgram);
-
-		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-			console.error(`failed to init shader: ${gl.getProgramInfoLog(shaderProgram)}`);
-			throw new Error('failed to init shader');
-		}
-
-		return shaderProgram;
-	}
-
-	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture) {
+	private renderLayer(layer: ImageEffectorLayer, preTexture: WebGLTexture, invert = false) {
 		const gl = this.gl;
 
 		const fx = this.fxs.find(fx => fx.id === layer.fxId);
 		if (fx == null) return;
 
 		const cachedShader = this.shaderCache.get(fx.id);
-		const shaderProgram = cachedShader ?? this.initShaderProgram(`#version 300 es
+		const shaderProgram = cachedShader ?? initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
+			uniform bool u_invert;
 			out vec2 in_uv;
 
 			void main() {
 				in_uv = (position + 1.0) / 2.0;
-				gl_Position = vec4(position, 0.0, 1.0);
+				gl_Position = u_invert ? vec4(position * vec2(1.0, -1.0), 0.0, 1.0) : vec4(position, 0.0, 1.0);
 			}
 		`, fx.shader);
 		if (cachedShader == null) {
@@ -220,6 +168,9 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 
 		const in_resolution = gl.getUniformLocation(shaderProgram, 'in_resolution');
 		gl.uniform2fv(in_resolution, [this.renderWidth, this.renderHeight]);
+
+		const u_invert = gl.getUniformLocation(shaderProgram, 'u_invert');
+		gl.uniform1i(u_invert, invert ? 1 : 0);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, preTexture);
@@ -253,27 +204,23 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	public render() {
 		const gl = this.gl;
 
-		{
+		// 入力をそのまま出力
+		if (this.layers.length === 0) {
 			gl.activeTexture(gl.TEXTURE0);
 			gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
 
-			gl.useProgram(this.renderTextureProgram);
-			const u_texture = gl.getUniformLocation(this.renderTextureProgram, 'u_texture');
-			gl.uniform1i(u_texture, 0);
-			const u_resolution = gl.getUniformLocation(this.renderTextureProgram, 'u_resolution');
-			gl.uniform2fv(u_resolution, [this.renderWidth, this.renderHeight]);
-			const positionLocation = gl.getAttribLocation(this.renderTextureProgram, 'position');
-			gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-			gl.enableVertexAttribArray(positionLocation);
+			gl.useProgram(this.nopProgram);
+			gl.uniform1i(gl.getUniformLocation(this.nopProgram, 'u_texture')!, 0);
 
 			gl.drawArrays(gl.TRIANGLES, 0, 6);
+			return;
 		}
-
-		// --------------------
 
 		let preTexture = this.originalImageTexture;
 
 		for (const layer of this.layers) {
+			const isLast = layer === this.layers.at(-1);
+
 			const cachedResultTexture = this.perLayerResultTextures.get(layer.id);
 			const resultTexture = cachedResultTexture ?? createTexture(gl);
 			if (cachedResultTexture == null) {
@@ -283,30 +230,22 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.renderWidth, this.renderHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 			gl.bindTexture(gl.TEXTURE_2D, null);
 
-			const cachedResultFrameBuffer = this.perLayerResultFrameBuffers.get(layer.id);
-			const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer()!;
-			if (cachedResultFrameBuffer == null) {
-				this.perLayerResultFrameBuffers.set(layer.id, resultFrameBuffer);
+			if (isLast) {
+				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			} else {
+				const cachedResultFrameBuffer = this.perLayerResultFrameBuffers.get(layer.id);
+				const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer()!;
+				if (cachedResultFrameBuffer == null) {
+					this.perLayerResultFrameBuffers.set(layer.id, resultFrameBuffer);
+				}
+				gl.bindFramebuffer(gl.FRAMEBUFFER, resultFrameBuffer);
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 			}
-			gl.bindFramebuffer(gl.FRAMEBUFFER, resultFrameBuffer);
-			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 
-			this.renderLayer(layer, preTexture);
-
-			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+			this.renderLayer(layer, preTexture, isLast);
 
 			preTexture = resultTexture;
 		}
-
-		// --------------------
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		gl.useProgram(this.renderInvertedTextureProgram);
-
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, preTexture);
-
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
 	public async setLayers(layers: ImageEffectorLayer[]) {
@@ -366,6 +305,8 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	 * disposeCanvas = true だとloseContextを呼ぶため、コンストラクタで渡されたcanvasも再利用不可になるので注意
 	 */
 	public destroy(disposeCanvas = true) {
+		this.gl.deleteProgram(this.nopProgram);
+
 		for (const shader of this.shaderCache.values()) {
 			this.gl.deleteProgram(shader);
 		}
@@ -386,8 +327,6 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 		this.paramTextures.clear();
 
-		this.gl.deleteProgram(this.renderTextureProgram);
-		this.gl.deleteProgram(this.renderInvertedTextureProgram);
 		this.gl.deleteTexture(this.originalImageTexture);
 
 		if (disposeCanvas) {

@@ -22,6 +22,12 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 			if (!el) return;
 			if (!ready) return;
 
+			if (el.scrollTop < 100) {
+				// 上部にいるときはanchorを参照するとズレの原因になるし位置復元するメリットも乏しいため設定しない
+				anchorId = null;
+				return;
+			}
+
 			const scrollContainerRect = el.getBoundingClientRect();
 			const viewPosition = scrollContainerRect.height / 2;
 

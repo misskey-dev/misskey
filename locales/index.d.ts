@@ -5271,6 +5271,10 @@ export interface Locale extends ILocale {
      */
     "federationDisabled": string;
     /**
+     * 下書き
+     */
+    "draft": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -5497,6 +5501,16 @@ export interface Locale extends ILocale {
      * （上級者向け）サーバーでCDNを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。
      */
     "enableStreamNotesCdnCacheDescription": string;
+    "_order": {
+        /**
+         * 新しい順
+         */
+        "newest": string;
+        /**
+         * 古い順
+         */
+        "oldest": string;
+    };
     "_chat": {
         /**
          * まだメッセージはありません
@@ -7785,6 +7799,10 @@ export interface Locale extends ILocale {
              * ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。
              */
             "uploadableFileTypes_caption2": ParameterizedString<"x">;
+            /**
+             * サーバーサイドのノートの下書きの作成可能数
+             */
+            "noteDraftLimit": string;
         };
         "_condition": {
             /**
@@ -8374,6 +8392,10 @@ export interface Locale extends ILocale {
          * テーマコード
          */
         "code": string;
+        /**
+         * テーマコードをコピー
+         */
+        "copyThemeCode": string;
         /**
          * 説明
          */
@@ -9592,6 +9614,14 @@ export interface Locale extends ILocale {
         "disableFederationDescription": string;
     };
     "_postForm": {
+        /**
+         * アップロードされていないファイルがありますが、破棄してフォームを閉じますか？
+         */
+        "quitInspiteOfThereAreUnuploadedFilesConfirm": string;
+        /**
+         * ファイルはまだアップロードされていません。ファイルのメニューから、リネームや画像のクロップ、ウォーターマークの付与、圧縮の有無などを設定できます。ファイルはノート投稿時に自動でアップロードされます。
+         */
+        "uploaderTip": string;
         /**
          * このノートに返信...
          */
@@ -11970,6 +12000,10 @@ export interface Locale extends ILocale {
     };
     "_uploader": {
         /**
+         * 画像の編集
+         */
+        "editImage": string;
+        /**
          * {x}に圧縮
          */
         "compressedToX": ParameterizedString<"x">;
@@ -12185,6 +12219,10 @@ export interface Locale extends ILocale {
              */
             "grayscale": string;
             /**
+             * 色調補正
+             */
+            "colorAdjust": string;
+            /**
              * 色の圧縮
              */
             "colorClamp": string;
@@ -12216,7 +12254,73 @@ export interface Locale extends ILocale {
              * チェッカー
              */
             "checker": string;
+            /**
+             * ブロックノイズ
+             */
+            "blockNoise": string;
+            /**
+             * ティアリング
+             */
+            "tearing": string;
         };
+    };
+    /**
+     * 下書き
+     */
+    "drafts": string;
+    "_drafts": {
+        /**
+         * 下書きを選択
+         */
+        "select": string;
+        /**
+         * 下書きの作成可能数を超えています。
+         */
+        "cannotCreateDraftAnymore": string;
+        /**
+         * リノートの下書きは作成できません。
+         */
+        "cannotCreateDraftOfRenote": string;
+        /**
+         * 下書きを削除
+         */
+        "delete": string;
+        /**
+         * 下書きを削除しますか？
+         */
+        "deleteAreYouSure": string;
+        /**
+         * 下書きはありません
+         */
+        "noDrafts": string;
+        /**
+         * {user}への返信
+         */
+        "replyTo": ParameterizedString<"user">;
+        /**
+         * {user}のノートへの引用
+         */
+        "quoteOf": ParameterizedString<"user">;
+        /**
+         * {channel}への投稿
+         */
+        "postTo": ParameterizedString<"channel">;
+        /**
+         * 下書きへ保存
+         */
+        "saveToDraft": string;
+        /**
+         * 下書きから復元
+         */
+        "restoreFromDraft": string;
+        /**
+         * 復元
+         */
+        "restore": string;
+        /**
+         * 下書き一覧
+         */
+        "listDrafts": string;
     };
 }
 declare const locales: {

@@ -157,6 +157,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							timestamp: job.finishedOn ?? job.processedOn ?? job.timestamp,
 							data: job,
 						}))"
+						groupBy="h"
 						class="_monospace"
 					>
 						<template #right="{ event: job }">
