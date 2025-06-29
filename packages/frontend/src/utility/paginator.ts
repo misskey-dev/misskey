@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, shallowRef, triggerRef } from 'vue';
+import { readonly, ref, shallowRef, triggerRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ComputedRef, DeepReadonly, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -17,14 +17,55 @@ export type MisskeyEntity = {
 	id: string;
 	createdAt: string;
 	_shouldInsertAd_?: boolean;
-	[x: string]: any;
 };
 
-export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.Endpoints, T extends { id: string; } = (Misskey.Endpoints[Endpoint]['res'] extends (infer I)[] ? I extends { id: string } ? I : { id: string } : { id: string })> {
-	/**
-	 * 外部から直接操作しないでください
-	 */
-	public items: ShallowRef<T[]> | Ref<T[]>;
+type FilterByEpRes<E extends Record<string, any>> = {
+	[K in keyof E]: E[K]['res'] extends Array<{ id: string }> ? K : never
+}[keyof E];
+export type PaginatorCompatibleEndpointPaths = FilterByEpRes<Misskey.Endpoints>;
+export type PaginatorCompatibleEndpoints = {
+	[K in PaginatorCompatibleEndpointPaths]: Misskey.Endpoints[K];
+};
+
+export interface IPaginator<T extends unknown = unknown> {
+	items: DeepReadonly<ShallowRef<(T & MisskeyEntity)[]> | Ref<(T & MisskeyEntity)[]>>;
+	queuedAheadItemsCount: Ref<number>;
+	fetching: Ref<boolean>;
+	fetchingOlder: Ref<boolean>;
+	fetchingNewer: Ref<boolean>;
+	canFetchOlder: Ref<boolean>;
+	canSearch: boolean;
+	error: Ref<boolean>;
+	computedParams: ComputedRef<Misskey.Endpoints[PaginatorCompatibleEndpointPaths]['req'] | null | undefined> | null;
+	initialId: MisskeyEntity['id'] | null;
+	initialDate: number | null;
+	initialDirection: 'newer' | 'older';
+	noPaging: boolean;
+	searchQuery: Ref<null | string>;
+	order: Ref<'newest' | 'oldest'>;
+
+	init(): Promise<void>;
+	reload(): Promise<void>;
+	fetchOlder(): Promise<void>;
+	fetchNewer(options?: { toQueue?: boolean }): Promise<void>;
+	trim(trigger?: boolean): void;
+	unshiftItems(newItems: (T & MisskeyEntity)[]): void;
+	pushItems(oldItems: (T & MisskeyEntity)[]): void;
+	prepend(item: T & MisskeyEntity): void;
+	enqueue(item: T & MisskeyEntity): void;
+	releaseQueue(): void;
+	removeItem(id: string): void;
+	updateItem(id: string, updator: (item: T & MisskeyEntity) => T & MisskeyEntity): void;
+}
+
+export class Paginator<
+	Endpoint extends PaginatorCompatibleEndpointPaths,
+	R extends PaginatorCompatibleEndpoints[Endpoint] = PaginatorCompatibleEndpoints[Endpoint],
+	T extends R['res'][number] & MisskeyEntity = R['res'][number] & MisskeyEntity,
+	SRef extends boolean = false,
+> implements IPaginator {
+	private _items: SRef extends true ? ShallowRef<T[]> : Ref<T[]>;
+	public items: DeepReadonly<SRef extends true ? ShallowRef<T[]> : Ref<T[]>>;
 
 	public queuedAheadItemsCount = ref(0);
 	public fetching = ref(true);
@@ -35,18 +76,18 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 	public error = ref(false);
 	private endpoint: Endpoint;
 	private limit: number;
-	private params: Misskey.Endpoints[Endpoint]['req'] | (() => Misskey.Endpoints[Endpoint]['req']);
-	public computedParams: ComputedRef<Misskey.Endpoints[Endpoint]['req']> | null;
+	private params: R['req'] | (() => R['req']);
+	public computedParams: ComputedRef<R['req'] | null | undefined> | null;
 	public initialId: MisskeyEntity['id'] | null = null;
 	public initialDate: number | null = null;
 	public initialDirection: 'newer' | 'older';
 	private offsetMode: boolean;
 	public noPaging: boolean;
 	public searchQuery = ref<null | string>('');
-	private searchParamName: string;
+	private searchParamName: keyof R['req'] | 'search';
 	private canFetchDetection: 'safe' | 'limit' | null = null;
 	private aheadQueue: T[] = [];
-	private useShallowRef: boolean;
+	private useShallowRef: SRef;
 
 	// 配列内の要素をどのような順序で並べるか
 	// newest: 新しいものが先頭 (default)
@@ -56,8 +97,8 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 
 	constructor(endpoint: Endpoint, props: {
 		limit?: number;
-		params?: Misskey.Endpoints[Endpoint]['req'] | (() => Misskey.Endpoints[Endpoint]['req']);
-		computedParams?: ComputedRef<Misskey.Endpoints[Endpoint]['req']>;
+		params?: R['req'] | (() => R['req']);
+		computedParams?: ComputedRef<R['req'] | null | undefined>;
 
 		/**
 		 * 検索APIのような、ページング不可なエンドポイントを利用する場合
@@ -75,14 +116,20 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 		// 一部のAPIはさらに遡れる場合でもパフォーマンス上の理由でlimit以下の結果を返す場合があり、その場合はsafe、それ以外はlimitにすることを推奨
 		canFetchDetection?: 'safe' | 'limit';
 
-		useShallowRef?: boolean;
+		useShallowRef?: SRef;
 
 		canSearch?: boolean;
-		searchParamName?: keyof Misskey.Endpoints[Endpoint]['req'];
+		searchParamName?: keyof R['req'];
 	}) {
 		this.endpoint = endpoint;
-		this.useShallowRef = props.useShallowRef ?? false;
-		this.items = this.useShallowRef ? shallowRef([] as T[]) : ref([] as T[]);
+		this.useShallowRef = (props.useShallowRef ?? false) as SRef;
+		if (this.useShallowRef) {
+			this._items = shallowRef<T[]>([]);
+		} else {
+			this._items = ref<T[]>([]) as Ref<T[]>;
+		}
+		this.items = readonly(this._items);
+
 		this.limit = props.limit ?? FIRST_FETCH_LIMIT;
 		this.params = props.params ?? {};
 		this.computedParams = props.computedParams ?? null;
@@ -116,25 +163,25 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 		if (this.aheadQueue.length > 0) {
 			return this.aheadQueue.map(x => x.id).sort().at(-1);
 		}
-		return this.items.value.map(x => x.id).sort().at(-1);
+		return this._items.value.map(x => x.id).sort().at(-1);
 	}
 
 	private getOldestId(): string | null | undefined {
 		// 様々な要因により並び順は保証されないのでソートが必要
-		return this.items.value.map(x => x.id).sort().at(0);
+		return this._items.value.map(x => x.id).sort().at(0);
 	}
 
 	public async init(): Promise<void> {
-		this.items.value = [];
+		this._items.value = [];
 		this.aheadQueue = [];
 		this.queuedAheadItemsCount.value = 0;
 		this.fetching.value = true;
 
-		await misskeyApi<T[]>(this.endpoint, {
+		const data: R['req'] = (() => ({
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
-			limit: this.limit ?? FIRST_FETCH_LIMIT,
+			limit: FIRST_FETCH_LIMIT,
 			allowPartial: true,
 			...((this.initialId == null && this.initialDate == null) && this.initialDirection === 'newer' ? {
 				sinceId: '0',
@@ -145,39 +192,46 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 				untilId: this.initialId ?? undefined,
 				untilDate: this.initialDate ?? undefined,
 			} : {}),
-		}).then(res => {
-			// 逆順で返ってくるので
-			if ((this.initialId || this.initialDate) && this.initialDirection === 'newer') {
-				res.reverse();
-			}
+		}))();
 
-			for (let i = 0; i < res.length; i++) {
-				const item = res[i];
-				if (i === 3) item._shouldInsertAd_ = true;
-			}
-
-			this.pushItems(res);
-
-			if (this.canFetchDetection === 'limit') {
-				if (res.length < FIRST_FETCH_LIMIT) {
-					this.canFetchOlder.value = false;
-				} else {
-					this.canFetchOlder.value = true;
-				}
-			} else if (this.canFetchDetection === 'safe' || this.canFetchDetection == null) {
-				if (res.length === 0 || this.noPaging) {
-					this.canFetchOlder.value = false;
-				} else {
-					this.canFetchOlder.value = true;
-				}
-			}
-
-			this.error.value = false;
-			this.fetching.value = false;
-		}, err => {
+		const apiRes = (await misskeyApi(this.endpoint, data).catch(err => {
 			this.error.value = true;
 			this.fetching.value = false;
-		});
+			return null;
+		})) as T[] | null;
+
+		if (apiRes == null) {
+			return;
+		}
+
+		// 逆順で返ってくるので
+		if ((this.initialId || this.initialDate) && this.initialDirection === 'newer') {
+			apiRes.reverse();
+		}
+
+		for (let i = 0; i < apiRes.length; i++) {
+			const item = apiRes[i];
+			if (i === 3) item._shouldInsertAd_ = true;
+		}
+
+		this.pushItems(apiRes);
+
+		if (this.canFetchDetection === 'limit') {
+			if (apiRes.length < FIRST_FETCH_LIMIT) {
+				this.canFetchOlder.value = false;
+			} else {
+				this.canFetchOlder.value = true;
+			}
+		} else if (this.canFetchDetection === 'safe' || this.canFetchDetection == null) {
+			if (apiRes.length === 0 || this.noPaging) {
+				this.canFetchOlder.value = false;
+			} else {
+				this.canFetchOlder.value = true;
+			}
+		}
+
+		this.error.value = false;
+		this.fetching.value = false;
 	}
 
 	public reload(): Promise<void> {
@@ -185,103 +239,117 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 	}
 
 	public async fetchOlder(): Promise<void> {
-		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this.items.value.length === 0) return;
+		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this._items.value.length === 0) return;
 		this.fetchingOlder.value = true;
-		await misskeyApi<T[]>(this.endpoint, {
+
+		const data: R['req'] = (() => ({
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: SECOND_FETCH_LIMIT,
 			...(this.offsetMode ? {
-				offset: this.items.value.length,
+				offset: this._items.value.length,
 			} : {
 				untilId: this.getOldestId(),
 			}),
-		}).then(res => {
-			for (let i = 0; i < res.length; i++) {
-				const item = res[i];
-				if (i === 10) item._shouldInsertAd_ = true;
-			}
+		}))();
 
-			this.pushItems(res);
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+			return null;
+		})) as T[] | null;
 
-			if (this.canFetchDetection === 'limit') {
-				if (res.length < FIRST_FETCH_LIMIT) {
-					this.canFetchOlder.value = false;
-				} else {
-					this.canFetchOlder.value = true;
-				}
-			} else if (this.canFetchDetection === 'safe' || this.canFetchDetection == null) {
-				if (res.length === 0) {
-					this.canFetchOlder.value = false;
-				} else {
-					this.canFetchOlder.value = true;
-				}
+		this.fetchingOlder.value = false;
+
+		if (apiRes == null) {
+			return;
+		}
+
+		for (let i = 0; i < apiRes.length; i++) {
+			const item = apiRes[i];
+			if (i === 10) item._shouldInsertAd_ = true;
+		}
+
+		this.pushItems(apiRes);
+
+		if (this.canFetchDetection === 'limit') {
+			if (apiRes.length < FIRST_FETCH_LIMIT) {
+				this.canFetchOlder.value = false;
+			} else {
+				this.canFetchOlder.value = true;
 			}
-		}).finally(() => {
-			this.fetchingOlder.value = false;
-		});
+		} else if (this.canFetchDetection === 'safe' || this.canFetchDetection == null) {
+			if (apiRes.length === 0) {
+				this.canFetchOlder.value = false;
+			} else {
+				this.canFetchOlder.value = true;
+			}
+		}
 	}
 
 	public async fetchNewer(options: {
 		toQueue?: boolean;
 	} = {}): Promise<void> {
 		this.fetchingNewer.value = true;
-		await misskeyApi<T[]>(this.endpoint, {
+
+		const data: R['req'] = (() => ({
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: SECOND_FETCH_LIMIT,
 			...(this.offsetMode ? {
-				offset: this.items.value.length,
+				offset: this._items.value.length,
 			} : {
 				sinceId: this.getNewestId(),
 			}),
-		}).then(res => {
-			if (res.length === 0) return; // これやらないと余計なre-renderが走る
+		}))();
 
-			if (options.toQueue) {
-				this.aheadQueue.unshift(...res.toReversed());
-				if (this.aheadQueue.length > MAX_QUEUE_ITEMS) {
-					this.aheadQueue = this.aheadQueue.slice(0, MAX_QUEUE_ITEMS);
-				}
-				this.queuedAheadItemsCount.value = this.aheadQueue.length;
-			} else {
-				if (this.order.value === 'oldest') {
-					this.pushItems(res);
-				} else {
-					this.unshiftItems(res.toReversed());
-				}
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+			return null;
+		})) as T[] | null;
+
+		this.fetchingNewer.value = false;
+
+		if (apiRes == null || apiRes.length === 0) return; // これやらないと余計なre-renderが走る
+
+		if (options.toQueue) {
+			this.aheadQueue.unshift(...apiRes.toReversed());
+			if (this.aheadQueue.length > MAX_QUEUE_ITEMS) {
+				this.aheadQueue = this.aheadQueue.slice(0, MAX_QUEUE_ITEMS);
 			}
-		}).finally(() => {
-			this.fetchingNewer.value = false;
-		});
+			this.queuedAheadItemsCount.value = this.aheadQueue.length;
+		} else {
+			if (this.order.value === 'oldest') {
+				this.pushItems(apiRes);
+			} else {
+				this.unshiftItems(apiRes.toReversed());
+			}
+		}
 	}
 
 	public trim(trigger = true): void {
-		if (this.items.value.length >= MAX_ITEMS) this.canFetchOlder.value = true;
-		this.items.value = this.items.value.slice(0, MAX_ITEMS);
-		if (this.useShallowRef && trigger) triggerRef(this.items);
+		if (this._items.value.length >= MAX_ITEMS) this.canFetchOlder.value = true;
+		this._items.value = this._items.value.slice(0, MAX_ITEMS);
+		if (this.useShallowRef && trigger) triggerRef(this._items);
 	}
 
 	public unshiftItems(newItems: T[]): void {
 		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
-		this.items.value.unshift(...newItems.filter(x => !this.items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
+		this._items.value.unshift(...newItems.filter(x => !this._items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
 		this.trim(false);
-		if (this.useShallowRef) triggerRef(this.items);
+		if (this.useShallowRef) triggerRef(this._items);
 	}
 
 	public pushItems(oldItems: T[]): void {
 		if (oldItems.length === 0) return; // これやらないと余計なre-renderが走る
-		this.items.value.push(...oldItems);
-		if (this.useShallowRef) triggerRef(this.items);
+		this._items.value.push(...oldItems);
+		if (this.useShallowRef) triggerRef(this._items);
 	}
 
 	public prepend(item: T): void {
-		if (this.items.value.some(x => x.id === item.id)) return;
-		this.items.value.unshift(item);
+		if (this._items.value.some(x => x.id === item.id)) return;
+		this._items.value.unshift(item);
 		this.trim(false);
-		if (this.useShallowRef) triggerRef(this.items);
+		if (this.useShallowRef) triggerRef(this._items);
 	}
 
 	public enqueue(item: T): void {
@@ -302,21 +370,21 @@ export class Paginator<Endpoint extends keyof Misskey.Endpoints = keyof Misskey.
 	public removeItem(id: string): void {
 		// TODO: queueからも消す
 
-		const index = this.items.value.findIndex(x => x.id === id);
+		const index = this._items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
-			this.items.value.splice(index, 1);
-			if (this.useShallowRef) triggerRef(this.items);
+			this._items.value.splice(index, 1);
+			if (this.useShallowRef) triggerRef(this._items);
 		}
 	}
 
 	public updateItem(id: string, updator: (item: T) => T): void {
 		// TODO: queueのも更新
 
-		const index = this.items.value.findIndex(x => x.id === id);
+		const index = this._items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
-			const item = this.items.value[index]!;
-			this.items.value[index] = updator(item);
-			if (this.useShallowRef) triggerRef(this.items);
+			const item = this._items.value[index]!;
+			this._items.value[index] = updator(item);
+			if (this.useShallowRef) triggerRef(this._items);
 		}
 	}
 }
