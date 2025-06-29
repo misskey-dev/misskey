@@ -47,7 +47,6 @@
 		inputBorder: 'rgba(255, 255, 255, 0.1)',
 		panelBorder: '" solid 1px var(--MI_THEME-divider)',
 		navIndicator: '@indicator',
-		driveFolderBg: ':alpha<0.3<@accent',
 		fgHighlighted: ':lighten<3<@fg',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',

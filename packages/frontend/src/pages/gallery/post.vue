@@ -153,12 +153,12 @@ function edit() {
 	router.push(`/gallery/${post.value.id}/edit`);
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!post.value) return;
 
 	const pageUrl = `${url}/gallery/${post.value.id}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: post.value.user,
 		initialComment: `Post: ${pageUrl}\n-----\n`,
 	}, {

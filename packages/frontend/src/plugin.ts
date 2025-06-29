@@ -6,7 +6,7 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import * as Misskey from 'misskey-js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { store } from '@/store.js';
@@ -95,8 +95,8 @@ export async function authorizePlugin(plugin: Plugin) {
 	if (plugin.permissions == null || plugin.permissions.length === 0) return;
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) return;
 
-	const token = await new Promise<string>((res, rej) => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
+	const token = await new Promise<string>(async (res, rej) => {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: plugin.name,
@@ -135,7 +135,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		throw new Error('Plugin already installed');
 	}
 
-	const installId = uuid();
+	const installId = genId();
 
 	const plugin = {
 		...realMeta,

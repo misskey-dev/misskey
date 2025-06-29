@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name || roleName || i18n.ts._deck._columns.roleTimeline }}</span>
 	</template>
 
-	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" @note="onNote"/>
+	<MkStreamingNotesTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId"/>
 </XColumn>
 </template>
 
@@ -20,12 +20,11 @@ import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { updateColumn } from '@/deck.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/utility/sound.js';
 
 const props = defineProps<{
 	column: Column;
@@ -66,10 +65,6 @@ async function setRole() {
 	updateColumn(props.column.id, {
 		roleId: role.id,
 	});
-}
-
-function onNote() {
-	sound.playMisskeySfxFile(soundSetting.value);
 }
 
 const menu: MenuItem[] = [{

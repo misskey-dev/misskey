@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	:class="[$style.root, { [$style.draghover]: draghover }]"
-	@click="onClick"
 	@dragover.prevent.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -22,6 +21,8 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { globalEvents } from '@/events.js';
+import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 
 const props = defineProps<{
 	folder?: Misskey.entities.DriveFolder;
@@ -29,26 +30,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'move', v?: Misskey.entities.DriveFolder): void;
-	(ev: 'upload', file: File, folder?: Misskey.entities.DriveFolder | null): void;
-	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
-	(ev: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
+	(ev: 'upload', files: File[], folder?: Misskey.entities.DriveFolder | null): void;
 }>();
 
-const hover = ref(false);
 const draghover = ref(false);
-
-function onClick() {
-	emit('move', props.folder);
-}
-
-function onMouseover() {
-	hover.value = true;
-}
-
-function onMouseout() {
-	hover.value = false;
-}
 
 function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
@@ -59,10 +44,7 @@ function onDragover(ev: DragEvent) {
 	}
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
-
-	if (isFile || isDriveFile || isDriveFolder) {
+	if (isFile || checkDragDataType(ev, ['driveFiles', 'driveFolders'])) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
@@ -101,35 +83,46 @@ function onDrop(ev: DragEvent) {
 
 	// ファイルだったら
 	if (ev.dataTransfer.files.length > 0) {
-		for (const file of Array.from(ev.dataTransfer.files)) {
-			emit('upload', file, props.folder);
-		}
+		emit('upload', Array.from(ev.dataTransfer.files), props.folder);
 		return;
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
-		emit('removeFile', file.id);
-		misskeyApi('drive/files/update', {
-			fileId: file.id,
-			folderId: props.folder ? props.folder.id : null,
-		});
+	{
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
+			misskeyApi('drive/files/move-bulk', {
+				fileIds: droppedData.map(f => f.id),
+				folderId: props.folder ? props.folder.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFilesUpdated', droppedData.map(x => ({
+					...x,
+					folderId: props.folder ? props.folder.id : null,
+					folder: props.folder ?? null,
+				})));
+			});
+		}
 	}
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
-	if (driveFolder != null && driveFolder !== '') {
-		const folder = JSON.parse(driveFolder);
-		// 移動先が自分自身ならreject
-		if (props.folder && folder.id === props.folder.id) return;
-		emit('removeFolder', folder.id);
-		misskeyApi('drive/folders/update', {
-			folderId: folder.id,
-			parentId: props.folder ? props.folder.id : null,
-		});
+	{
+		const droppedData = getDragData(ev, 'driveFolders');
+		if (droppedData != null) {
+			const droppedFolder = droppedData[0];
+			// 移動先が自分自身ならreject
+			if (props.folder && droppedFolder.id === props.folder.id) return;
+			misskeyApi('drive/folders/update', {
+				folderId: droppedFolder.id,
+				parentId: props.folder ? props.folder.id : null,
+			}).then(() => {
+				globalEvents.emit('driveFoldersUpdated', [droppedFolder].map(x => ({
+					...x,
+					parentId: props.folder ? props.folder.id : null,
+					parent: props.folder ?? null,
+				})));
+			});
+		}
 	}
 	//#endregion
 }

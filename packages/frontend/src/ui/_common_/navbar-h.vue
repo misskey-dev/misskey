@@ -71,9 +71,9 @@ const otherNavItemIndicated = computed<boolean>(() => {
 	return false;
 });
 
-function more(ev: MouseEvent) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-		src: ev.currentTarget ?? ev.target,
+async function more(ev: MouseEvent) {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLaunchPad.vue').then(x => x.default), {
+		anchorElement: ev.currentTarget ?? ev.target,
 		anchor: { x: 'center', y: 'bottom' },
 	}, {
 		closed: () => dispose(),

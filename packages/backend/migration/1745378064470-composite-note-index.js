@@ -14,7 +14,7 @@ export class CompositeNoteIndex1745378064470 {
 
 		if (concurrently) {
 			const hasValidIndex = await queryRunner.query(`SELECT indisvalid FROM pg_index INNER JOIN pg_class ON pg_index.indexrelid = pg_class.oid WHERE pg_class.relname = 'IDX_724b311e6f883751f261ebe378'`);
-			if (!hasValidIndex || hasValidIndex[0].indisvalid !== true) {
+			if (hasValidIndex.length === 0 || hasValidIndex[0].indisvalid !== true) {
 				await queryRunner.query(`DROP INDEX IF EXISTS "IDX_724b311e6f883751f261ebe378"`);
 				await queryRunner.query(`CREATE INDEX CONCURRENTLY "IDX_724b311e6f883751f261ebe378" ON "note" ("userId", "id" DESC)`);
 			}

@@ -38,7 +38,7 @@ export class SnowfallEffect {
 	`;
 
 	private FRAGMENT_SOURCE = `#version 300 es
-		precision highp float;
+		precision mediump float;
 
 		in vec4 v_color;
 		in float v_rotation;

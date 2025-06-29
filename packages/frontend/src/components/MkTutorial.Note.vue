@@ -33,6 +33,7 @@ import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/i.js';
 import MkNote from '@/components/MkNote.vue';
+import { genId } from '@/utility/id.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const props = defineProps<{
@@ -99,7 +100,7 @@ function doNotification(emoji: string): void {
 	if (!$i || !emoji) return;
 
 	const notification: Misskey.entities.Notification = {
-		id: Math.random().toString(),
+		id: genId(),
 		createdAt: new Date().toUTCString(),
 		type: 'reaction',
 		reaction: emoji,

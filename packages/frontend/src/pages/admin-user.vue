@@ -477,16 +477,16 @@ function toggleRoleItem(role) {
 	}
 }
 
-function createAnnouncement() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+async function createAnnouncement() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkUserAnnouncementEditDialog.vue').then(x => x.default), {
 		user: user.value,
 	}, {
 		closed: () => dispose(),
 	});
 }
 
-function editAnnouncement(announcement) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+async function editAnnouncement(announcement) {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkUserAnnouncementEditDialog.vue').then(x => x.default), {
 		user: user.value,
 		announcement,
 	}, {

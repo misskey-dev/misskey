@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_change_leaveTo"
 			mode="default"
 		>
-			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
+			<MkMarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="note in notes" :key="note.id" :class="$style.item">
 					<img :class="$style.avatar" :src="note.user.avatarUrl" decoding="async"/>
 					<MkA :class="$style.text" :to="notePage(note)">
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkA>
 					<span :class="$style.divider"></span>
 				</span>
-			</MarqueeText>
+			</MkMarqueeText>
 		</Transition>
 	</template>
 	<template v-else-if="display === 'oneByOne'">
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MarqueeText from '@/components/MkMarquee.vue';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useInterval } from '@@/js/use-interval.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';

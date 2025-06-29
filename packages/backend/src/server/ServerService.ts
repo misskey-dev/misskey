@@ -108,7 +108,7 @@ export class ServerService implements OnApplicationShutdown {
 		// this will break lookup that involve copying a URL from a third-party server, like trying to lookup http://charlie.example.com/@alice@alice.com
 		//
 		// this is not required by standard but protect us from peers that did not validate final URL.
-		if (this.config.disallowExternalApRedirect) {
+		if (!this.meta.allowExternalApRedirect) {
 			const maybeApLookupRegex = /application\/activity\+json|application\/ld\+json.+activitystreams/i;
 			fastify.addHook('onSend', (request, reply, _, done) => {
 				const location = reply.getHeader('location');
@@ -133,8 +133,8 @@ export class ServerService implements OnApplicationShutdown {
 				reply.header('content-type', 'text/plain; charset=utf-8');
 				reply.header('link', `<${encodeURI(location)}>; rel="canonical"`);
 				done(null, [
-					"Refusing to relay remote ActivityPub object lookup.",
-					"",
+					'Refusing to relay remote ActivityPub object lookup.',
+					'',
 					`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
 				].join('\n'));
 			});

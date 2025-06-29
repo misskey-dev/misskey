@@ -25,7 +25,7 @@ import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import isChromatic from 'chromatic';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { store } from '@/store.js';
 import { alpha } from '@/utility/color.js';

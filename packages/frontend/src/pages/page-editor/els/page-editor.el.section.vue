@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -73,7 +73,7 @@ async function add() {
 	});
 	if (canceled) return;
 
-	const id = uuid();
+	const id = genId();
 	children.value.push({ id, type });
 }
 

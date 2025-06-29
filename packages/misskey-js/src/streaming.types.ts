@@ -77,6 +77,17 @@ export type Channels = {
 		};
 		receives: null;
 	};
+	hanamiTimeline: {
+		params: {
+			withRenotes?: boolean;
+			withReplies?: boolean;
+			withFiles?: boolean;
+		};
+		events: {
+			note: (payload: Note) => void;
+		};
+		receives: null;
+	};
 	localTimeline: {
 		params: {
 			withRenotes?: boolean;

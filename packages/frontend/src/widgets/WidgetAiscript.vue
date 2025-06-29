@@ -29,6 +29,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import { genId } from '@/utility/id.js';
 
 const name = 'aiscript';
 
@@ -73,7 +74,7 @@ const run = async () => {
 		in: aiScriptReadline,
 		out: (value) => {
 			logs.value.push({
-				id: Math.random().toString(),
+				id: genId(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
 				print: true,
 			});
@@ -81,7 +82,7 @@ const run = async () => {
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
-					id: Math.random().toString(),
+					id: genId(),
 					text: utils.valToString(params.val, true),
 					print: false,
 				}); break;

@@ -99,6 +99,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableWasmEmojiSearch">
 							<template #label>Enable Hanami In-Browser Search Engine for custom emojis</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableFolderPageView">
+							<template #label>Enable folder page view</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -120,6 +123,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<hr>
 
 		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
+
+		<hr>
+
+		<MkButton @click="resetAllTips"><i class="ti ti-bulb"></i> {{ i18n.ts.redisplayAllTips }}</MkButton>
+		<MkButton @click="hideAllTips"><i class="ti ti-bulb-off"></i> {{ i18n.ts.hideAllTips }}</MkButton>
+
+		<hr>
+
+		<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
 
 		<hr>
 
@@ -153,6 +165,7 @@ import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
+import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 
 const $i = ensureSignin();
 
@@ -162,6 +175,7 @@ const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableWasmEmojiSearch = computed(hanaStore.makeGetterSetter('enableWasmEmojiSearch'));
+const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 
 watch([
 	skipNoteRender,
@@ -196,6 +210,20 @@ async function deleteAccount() {
 
 function migrate() {
 	migrateOldSettings();
+}
+
+function resetAllTips() {
+	_resetAllTips();
+	os.success();
+}
+
+function hideAllTips() {
+	_hideAllTips();
+	os.success();
+}
+
+function readAllChatMessages() {
+	os.apiWithDialog('chat/read-all', {});
 }
 
 const headerActions = computed(() => []);

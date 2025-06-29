@@ -40,6 +40,7 @@ import type {
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
 import { MiNote } from '@/models/Note.js';
+import type { Packed } from '@/misc/json-schema.js';
 
 export const QUEUE_TYPES = [
 	'system',
@@ -823,13 +824,13 @@ export class QueueService {
 	}
 
 	@bindThis
-	private packJobData(job: Bull.Job) {
+	private packJobData(job: Bull.Job): Packed<'QueueJob'> {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const stacktrace = job.stacktrace ? job.stacktrace.filter(Boolean) : [];
 		stacktrace.reverse();
 
 		return {
-			id: job.id,
+			id: job.id!,
 			name: job.name,
 			data: job.data,
 			opts: job.opts,

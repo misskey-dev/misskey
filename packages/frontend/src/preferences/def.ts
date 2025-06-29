@@ -6,13 +6,16 @@
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
 import { isTouchUsing } from '@/utility/touch.js';
+import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
-import type { PreferencesDefinition } from './manager.js';
+import type { WatermarkPreset } from '@/utility/watermark.js';
+import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 /** サウンド設定 */
 export type SoundStore = {
@@ -32,7 +35,7 @@ export type SoundStore = {
 
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
-export const PREF_DEF = {
+export const PREF_DEF = definePreferences({
 	accounts: {
 		default: [] as [host: string, user: {
 			id: string;
@@ -50,15 +53,15 @@ export const PREF_DEF = {
 	},
 	widgets: {
 		accountDependent: true,
-		default: [{
+		default: () => [{
 			name: 'calendar',
-			id: 'a', place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'notifications',
-			id: 'b', place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}, {
 			name: 'trends',
-			id: 'c', place: 'right', data: {},
+			id: genId(), place: 'right', data: {},
 		}] as {
 			name: string;
 			id: string;
@@ -77,8 +80,8 @@ export const PREF_DEF = {
 
 	emojiPalettes: {
 		serverDependent: true,
-		default: [{
-			id: 'a',
+		default: () => [{
+			id: genId(),
 			name: '',
 			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 		}] as {
@@ -86,6 +89,22 @@ export const PREF_DEF = {
 			name: string;
 			emojis: string[];
 		}[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
 	},
 	emojiPaletteForReaction: {
 		serverDependent: true,
@@ -101,6 +120,22 @@ export const PREF_DEF = {
 	},
 	themes: {
 		default: [] as Theme[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
 	},
 	lightTheme: {
 		default: null as Theme | null,
@@ -200,6 +235,9 @@ export const PREF_DEF = {
 	useStickyIcons: {
 		default: true,
 	},
+	enableHighQualityImagePlaceholders: {
+		default: true,
+	},
 	showFixedPostForm: {
 		default: false,
 	},
@@ -210,9 +248,6 @@ export const PREF_DEF = {
 		default: true,
 	},
 	useReactionPickerForContextMenu: {
-		default: false,
-	},
-	showGapBetweenNotesInTimeline: {
 		default: false,
 	},
 	instanceTicker: {
@@ -238,6 +273,12 @@ export const PREF_DEF = {
 	},
 	numberOfPageCache: {
 		default: 3,
+	},
+	pollingInterval: {
+		// 1 ... 低
+		// 2 ... 中
+		// 3 ... 高
+		default: 2,
 	},
 	showNoteActionsOnlyHover: {
 		default: false,
@@ -275,9 +316,6 @@ export const PREF_DEF = {
 	keepScreenOn: {
 		default: false,
 	},
-	disableStreamingTimeline: {
-		default: false,
-	},
 	useGroupedNotifications: {
 		default: true,
 	},
@@ -285,9 +323,10 @@ export const PREF_DEF = {
 		default: {
 			media: false,
 			avatar: false,
-			urlPreview: false,
+			urlPreviewThumbnail: false,
+			disableUrlPreview: false,
 			code: false,
-		} as Record<string, boolean>,
+		} satisfies Record<string, boolean>,
 	},
 	hemisphere: {
 		default: hemisphere as 'N' | 'S',
@@ -296,7 +335,7 @@ export const PREF_DEF = {
 		default: false,
 	},
 	enableHorizontalSwipe: {
-		default: true,
+		default: false,
 	},
 	enablePullToRefresh: {
 		default: isTouchUsing,
@@ -340,12 +379,55 @@ export const PREF_DEF = {
 	showTitlebar: {
 		default: false,
 	},
+	showAvailableReactionsFirstInNote: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
+		mergeStrategy: (a, b) => {
+			const sameIdExists = a.some(x => b.some(y => x.installId === y.installId));
+			if (sameIdExists) throw new Error();
+			const sameNameExists = a.some(x => b.some(y => x.name === y.name));
+			if (sameNameExists) throw new Error();
+			return a.concat(b);
+		},
+	},
+	mutingEmojis: {
+		default: [] as string[],
+		mergeStrategy: (a, b) => {
+			return [...new Set(a.concat(b))];
+		},
+	},
+	watermarkPresets: {
+		accountDependent: true,
+		default: [] as WatermarkPreset[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
+	},
+	defaultWatermarkPresetId: {
+		accountDependent: true,
+		default: null as WatermarkPreset['id'] | null,
+	},
+	defaultImageCompressionLevel: {
+		default: 2 as 0 | 1 | 2 | 3,
 	},
 
 	'sound.masterVolume': {
-		default: 0.3,
+		default: 0.5,
 	},
 	'sound.notUseSound': {
 		default: false,
@@ -411,4 +493,7 @@ export const PREF_DEF = {
 	'experimental.stackingRouterView': {
 		default: false,
 	},
-} satisfies PreferencesDefinition;
+	'experimental.enableFolderPageView': {
+		default: false,
+	},
+});

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { defineAsyncComponent } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbedParams, EmbeddableEntity } from '@@/js/embed-page.js';
@@ -44,7 +44,7 @@ export function normalizeEmbedParams(params: EmbedParams): Record<string, string
  * 埋め込みコードを生成（iframe IDの発番もやる）
  */
 export function getEmbedCode(path: string, params?: EmbedParams): string {
-	const iframeId = 'v1_' + uuid(); // 将来embed.jsのバージョンが上がったとき用にv1_を付けておく
+	const iframeId = 'v1_' + genId(); // 将来embed.jsのバージョンが上がったとき用にv1_を付けておく
 
 	let paramString = '';
 	if (params) {
@@ -64,7 +64,7 @@ export function getEmbedCode(path: string, params?: EmbedParams): string {
  *
  * カスタマイズ機能がいらない場合（事前にパラメータを指定する場合）は getEmbedCode を直接使ってください
  */
-export function genEmbedCode(entity: EmbeddableEntity, id: string, params?: EmbedParams) {
+export async function genEmbedCode(entity: EmbeddableEntity, id: string, params?: EmbedParams) {
 	const _params = { ...params };
 
 	if (embedRouteWithScrollbar.includes(entity) && _params.maxHeight == null) {
@@ -75,7 +75,7 @@ export function genEmbedCode(entity: EmbeddableEntity, id: string, params?: Embe
 	if (window.innerWidth < MOBILE_THRESHOLD) {
 		copyToClipboard(getEmbedCode(`/embed/${entity}/${id}`, _params));
 	} else {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkEmbedCodeGenDialog.vue')), {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkEmbedCodeGenDialog.vue').then(x => x.default), {
 			entity,
 			id,
 			params: _params,

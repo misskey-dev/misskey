@@ -224,7 +224,6 @@ noUsers: "Kullanıcı yok"
 editProfile: "Profili düzenle"
 noteDeleteConfirm: "Bu notu silmek istediğinizden emin misiniz?"
 pinLimitExceeded: "Daha fazla not sabitlenemez"
-intro: "Misskey yüklemesi tamamlandı! Lütfen yönetici hesabını oluşturun."
 done: "Tamamlandı"
 preview: "Önizleme"
 default: "Varsayılan"
@@ -461,3 +460,5 @@ _moderationLogTypes:
   resetPassword: "Şifre sıfırlama"
 _search:
   searchScopeAll: "Tümü"
+_watermarkEditor:
+  image: "Görseller"

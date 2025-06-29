@@ -13,8 +13,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		controlsShowing && $style.active,
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
-	@mouseover="onMouseOver"
-	@mouseleave="onMouseLeave"
+	@mouseover.passive="onMouseOver"
+	@mousemove.passive="onMouseMove"
+	@mouseleave.passive="onMouseLeave"
 	@contextmenu.stop
 	@keydown.stop
 >
@@ -309,7 +310,7 @@ const controlsShowing = computed(() => {
 	return false;
 });
 const isFullscreen = ref(false);
-let controlStateTimer: string | number;
+let controlStateTimer: number | null = null;
 
 // MediaControl: Common State
 const oncePlayed = ref(false);
@@ -342,9 +343,26 @@ function onMouseOver() {
 		window.clearTimeout(controlStateTimer);
 	}
 	isHoverring.value = true;
+
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 3000);
+}
+
+function onMouseMove() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
+	isHoverring.value = true;
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 3000);
 }
 
 function onMouseLeave() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
 	controlStateTimer = window.setTimeout(() => {
 		isHoverring.value = false;
 	}, 100);
@@ -508,6 +526,10 @@ onDeactivated(() => {
 	if (mediaTickFrameId) {
 		window.cancelAnimationFrame(mediaTickFrameId);
 		mediaTickFrameId = null;
+	}
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+		controlStateTimer = null;
 	}
 });
 </script>

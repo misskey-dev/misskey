@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
+					<button v-tooltip="i18n.ts.settings" class="_button config" @click="settings"><i class="ti ti-settings"></i></button>
 				</div>
 			</section>
 
@@ -91,8 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).map(e => `:${e.name}:`))"
-				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host }))).map(e => `:${e.name}:`))"
+				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host }))).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -102,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="(emojiCharByCategory.get(category) ?? []).filter(c => !isMuted(c))" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -142,6 +143,10 @@ import { searchCustomEmojis } from '@/hana/scripts/emoji-search.js';
 import { hanaStore } from '@/hana/store.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
+import { isMuted, makeEmojiMuteKey } from '@/utility/emoji-mute.js';
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -172,10 +177,10 @@ const {
 const recentlyUsedEmojis = store.r.recentlyUsedEmojis;
 
 const recentlyUsedEmojisDef = computed(() => {
-	return recentlyUsedEmojis.value.map(getDef);
+	return recentlyUsedEmojis.value.filter(e => !isMuted(e)).map(getDef);
 });
 const pinnedEmojisDef = computed(() => {
-	return pinned.value?.map(getDef);
+	return pinned.value?.filter(e => !isMuted(e)).map(getDef);
 });
 
 const pinned = computed(() => props.pinnedEmojis);
@@ -381,8 +386,8 @@ watch(q, async () => {
 		}
 	}
 
-	searchResultCustom.value = await _searchCustom();
-	searchResultUnicode.value = Array.from(searchUnicode());
+	searchResultCustom.value = (await _searchCustom()).filter(e => !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host })));
+	searchResultUnicode.value = Array.from(searchUnicode()).filter(e => !isMuted(e.char));
 });
 
 function canReact(emoji: Misskey.entities.EmojiSimple | UnicodeEmojiDef | string): boolean {
@@ -502,6 +507,11 @@ function done(query?: string): boolean | void {
 		chosen(searchResultUnicode.value[0]);
 		return true;
 	}
+}
+
+function settings() {
+	emit('esc');
+	router.push('settings/emoji-palette');
 }
 
 onMounted(() => {
@@ -734,6 +744,15 @@ defineExpose({
 			> .body {
 				position: relative;
 				padding: $pad;
+
+				> .config {
+					position: relative;
+					padding: 0 3px;
+					width: var(--eachSize);
+					height: var(--eachSize);
+					contain: strict;
+					opacity: 0.5;
+				}
 
 				> .item {
 					position: relative;

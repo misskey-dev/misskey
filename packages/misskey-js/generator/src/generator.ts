@@ -1,9 +1,12 @@
 import assert from 'assert';
 import { mkdir, readFile, writeFile } from 'fs/promises';
-import { OpenAPIV3_1 } from 'openapi-types';
+import type { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
-import openapiTS, { OpenAPI3, OperationObject, PathItemObject } from 'openapi-typescript';
+import openapiTS, { astToString } from 'openapi-typescript';
+import type { OpenAPI3, OperationObject, PathItemObject } from 'openapi-typescript';
+import ts from 'typescript';
+import { removeNeverPropertiesFromAST } from './ast-transformer.js';
 
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
@@ -28,13 +31,6 @@ async function generateBaseTypes(
 		assert('post' in item);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		openApi.paths![key] = {
-			...('get' in item ? {
-				get: {
-					...item.get,
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					operationId: ((item as PathItemObject).get as OperationObject).operationId!.replaceAll('get___', ''),
-				},
-			} : {}),
 			post: {
 				...item.post,
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -43,15 +39,26 @@ async function generateBaseTypes(
 		};
 	}
 
-	const generatedTypes = await openapiTS(openApi, {
+	const tsNullNode = ts.factory.createLiteralTypeNode(ts.factory.createNull());
+	const tsBlobNode = ts.factory.createTypeReferenceNode(ts.factory.createIdentifier('Blob'));
+
+	const generatedTypesAst = await openapiTS(openApi, {
 		exportType: true,
 		transform(schemaObject) {
 			if ('format' in schemaObject && schemaObject.format === 'binary') {
-				return schemaObject.nullable ? 'Blob | null' : 'Blob';
+				if (schemaObject.nullable) {
+					return ts.factory.createUnionTypeNode([tsBlobNode, tsNullNode]);
+				} else {
+					return tsBlobNode;
+				}
 			}
 		},
 	});
-	lines.push(generatedTypes);
+
+	const filteredAst = removeNeverPropertiesFromAST(generatedTypesAst);
+
+	lines.push(astToString(filteredAst));
+
 	lines.push('');
 
 	await writeFile(typeFileName, lines.join('\n'));

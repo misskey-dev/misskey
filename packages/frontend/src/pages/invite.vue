@@ -6,13 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader>
 	<div v-if="!instance.disableRegistration || !($i && ($i.isAdmin || $i.policies.canInvite))" class="_spacer" style="--MI_SPACER-w: 1200px;">
-		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
-			<div :class="$style.text">
-				<i class="ti ti-alert-triangle"></i>
-				{{ i18n.ts.nothing }}
-			</div>
-		</div>
+		<MkResult type="empty"/>
 	</div>
 	<div v-else class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps_m" style="text-align: center;">
@@ -35,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/composables/use-pagination.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -43,7 +37,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
-import { serverErrorImageUrl, instance } from '@/instance.js';
+import { instance } from '@/instance.js';
 import { $i } from '@/i.js';
 
 const pagingComponent = useTemplateRef('pagingComponent');
@@ -51,7 +45,7 @@ const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
-const pagination: Paging = {
+const pagination: PagingCtx = {
 	endpoint: 'invite/list' as const,
 	limit: 10,
 };
@@ -74,13 +68,13 @@ async function create() {
 		text: ticket.code,
 	});
 
-	pagingComponent.value?.prepend(ticket);
+	pagingComponent.value?.paginator.prepend(ticket);
 	update();
 }
 
 function deleted(id: string) {
 	if (pagingComponent.value) {
-		pagingComponent.value.items.delete(id);
+		pagingComponent.value.paginator.removeItem(id);
 	}
 	update();
 }
@@ -96,23 +90,3 @@ definePage(() => ({
 	icon: 'ti ti-user-plus',
 }));
 </script>
-
-<style lang="scss" module>
-.root {
-	padding: 32px;
-	text-align: center;
-	align-items: center;
-}
-
-.text {
-	margin: 0 0 8px 0;
-}
-
-.img {
-	vertical-align: bottom;
-	width: 128px;
-	height: 128px;
-	margin-bottom: 16px;
-	border-radius: 16px;
-}
-</style>

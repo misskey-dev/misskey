@@ -7,27 +7,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XColumn :column="column" :isStacked="isStacked" :refresher="() => reloadTimeline()">
 	<template #header><i class="ti ti-at" style="margin-right: 8px;"></i>{{ column.name || i18n.ts._deck._columns.mentions }}</template>
 
-	<MkNotes ref="tlComponent" :pagination="pagination"/>
+	<MkNotesTimeline ref="tlComponent" :pagination="pagination"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
-import MkNotes from '@/components/MkNotes.vue';
-import { i18n } from '../../i18n.js';
+import { i18n } from '@/i18n.js';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 
 defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const tlComponent = ref<InstanceType<typeof MkNotes>>();
+const tlComponent = useTemplateRef('tlComponent');
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		tlComponent.value?.pagingComponent?.reload().then(() => {
+		tlComponent.value?.reload().then(() => {
 			res();
 		});
 	});

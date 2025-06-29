@@ -67,7 +67,7 @@ function menu(ev) {
 }
 
 const edit = async (emoji) => {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/pages/emoji-edit-dialog.vue').then(x => x.default), {
 		emoji: emoji,
 	}, {
 		closed: () => dispose(),
