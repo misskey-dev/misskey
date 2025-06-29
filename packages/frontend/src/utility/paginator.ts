@@ -177,7 +177,7 @@ export class Paginator<
 		this.queuedAheadItemsCount.value = 0;
 		this.fetching.value = true;
 
-		const data: R['req'] = (() => ({
+		const data: R['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
@@ -192,7 +192,7 @@ export class Paginator<
 				untilId: this.initialId ?? undefined,
 				untilDate: this.initialDate ?? undefined,
 			} : {}),
-		}))();
+		};
 
 		const apiRes = (await misskeyApi(this.endpoint, data).catch(err => {
 			this.error.value = true;
@@ -242,7 +242,7 @@ export class Paginator<
 		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this._items.value.length === 0) return;
 		this.fetchingOlder.value = true;
 
-		const data: R['req'] = (() => ({
+		const data: R['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
@@ -252,7 +252,7 @@ export class Paginator<
 			} : {
 				untilId: this.getOldestId(),
 			}),
-		}))();
+		};
 
 		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
 			return null;
@@ -291,7 +291,7 @@ export class Paginator<
 	} = {}): Promise<void> {
 		this.fetchingNewer.value = true;
 
-		const data: R['req'] = (() => ({
+		const data: R['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
@@ -301,7 +301,7 @@ export class Paginator<
 			} : {
 				sinceId: this.getNewestId(),
 			}),
-		}))();
+		};
 
 		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
 			return null;
