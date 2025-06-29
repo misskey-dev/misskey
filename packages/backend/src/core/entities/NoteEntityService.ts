@@ -102,15 +102,22 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
+	private shouldHideByTime(beforePreference: number | null | undefined, createdAt: string, now = Date.now()): boolean {
+		if (beforePreference == null) return false;
+
+		const createdAtTime = new Date(createdAt).getTime();
+		if (beforePreference <= 0) {
+			return now - createdAtTime > 0 - (beforePreference * 1000);
+		} else {
+			return createdAtTime < beforePreference * 1000;
+		}
+	}
+
+	@bindThis
 	private treatVisibility(packedNote: Packed<'Note'>): Packed<'Note'>['visibility'] {
 		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
 			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
-			if ((followersOnlyBefore != null)
-				&& (
-					(followersOnlyBefore <= 0 && (Date.now() - new Date(packedNote.createdAt).getTime() > 0 - (followersOnlyBefore * 1000)))
-					|| (followersOnlyBefore > 0 && (new Date(packedNote.createdAt).getTime() < followersOnlyBefore * 1000))
-				)
-			) {
+			if (followersOnlyBefore != null && this.shouldHideByTime(followersOnlyBefore, packedNote.createdAt)) {
 				packedNote.visibility = 'followers';
 			}
 		}
@@ -130,12 +137,7 @@ export class NoteEntityService implements OnModuleInit {
 
 		if (!hide) {
 			const hiddenBefore = packedNote.user.makeNotesHiddenBefore;
-			if ((hiddenBefore != null)
-				&& (
-					(hiddenBefore <= 0 && (Date.now() - new Date(packedNote.createdAt).getTime() > 0 - (hiddenBefore * 1000)))
-					|| (hiddenBefore > 0 && (new Date(packedNote.createdAt).getTime() < hiddenBefore * 1000))
-				)
-			) {
+			if (hiddenBefore != null && this.shouldHideByTime(hiddenBefore, packedNote.createdAt)) {
 				hide = true;
 			}
 		}
@@ -331,10 +333,12 @@ export class NoteEntityService implements OnModuleInit {
 	/** CDNなどにキャッシュしても問題ないノートかどうか */
 	@bindThis
 	public canCache(note: MiNote | Packed<'Note'>): boolean {
+		const now = Date.now();
+		const createdAt = 'createdAt' in note ? note.createdAt : this.idService.parse(note.id).date.toISOString();
 		return (
 			(note.visibility === 'public' || note.visibility === 'home') &&
-			note.user?.makeNotesFollowersOnlyBefore == null &&
-			note.user?.makeNotesHiddenBefore == null &&
+			!this.shouldHideByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now) &&
+			!this.shouldHideByTime(note.user?.makeNotesHiddenBefore, createdAt, now) &&
 			(note.user?.requireSigninToViewContents === false || note.user?.requireSigninToViewContents == null)
 		);
 	}
