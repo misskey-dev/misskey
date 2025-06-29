@@ -96,7 +96,7 @@ watch(layers, async () => {
 }, { deep: true });
 
 function addEffect(ev: MouseEvent) {
-	os.popupMenu(FXS.filter(fx => fx.id !== 'watermarkPlacement').map((fx) => ({
+	os.popupMenu(FXS.map((fx) => ({
 		text: fx.name,
 		action: () => {
 			layers.push({

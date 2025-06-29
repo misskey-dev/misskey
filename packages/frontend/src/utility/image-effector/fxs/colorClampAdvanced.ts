@@ -41,6 +41,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		rMin: {
 			type: 'number' as const,
@@ -48,6 +49,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMax: {
 			type: 'number' as const,
@@ -55,6 +57,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMin: {
 			type: 'number' as const,
@@ -62,6 +65,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMax: {
 			type: 'number' as const,
@@ -69,6 +73,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMin: {
 			type: 'number' as const,
@@ -76,6 +81,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
+			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
 	main: ({ gl, u, params }) => {
