@@ -352,6 +352,10 @@ function disconnectChannel() {
 	if (connection2) connection2.dispose();
 }
 
+if (store.s.realtimeMode) {
+	connectChannel();
+}
+
 watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], () => {
 	if (store.s.realtimeMode) {
 		disconnectChannel();
