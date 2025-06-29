@@ -5358,6 +5358,7 @@ export type components = {
             } | null;
             mediaProxy: string;
             enableUrlPreview: boolean;
+            enableStreamNotesCdnCache: boolean;
             backgroundImageUrl: string | null;
             impressumUrl: string | null;
             logoImageUrl: string | null;
@@ -9303,6 +9304,7 @@ export interface operations {
                         perUserHomeTimelineCacheMax: number;
                         perUserListTimelineCacheMax: number;
                         enableReactionsBuffering: boolean;
+                        enableStreamNotesCdnCache: boolean;
                         notesPerOneAd: number;
                         backgroundImageUrl: string | null;
                         deeplAuthKey: string | null;
@@ -12553,6 +12555,7 @@ export interface operations {
                     perUserHomeTimelineCacheMax?: number;
                     perUserListTimelineCacheMax?: number;
                     enableReactionsBuffering?: boolean;
+                    enableStreamNotesCdnCache?: boolean;
                     notesPerOneAd?: number;
                     silencedHosts?: string[] | null;
                     mediaSilencedHosts?: string[] | null;

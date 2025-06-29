@@ -1368,6 +1368,8 @@ redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
 defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
+enableStreamNotesCdnCache: "リアルタイム更新時のノート取得にCDNキャッシュを併用する"
+enableStreamNotesCdnCacheDescription: "（上級者向け）サーバーでCDNを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。"
 
 _order:
   newest: "新しい順"
