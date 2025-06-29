@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 1100px;">
 	<div :class="$style.root">
-		<MkPagination v-slot="{items}" :pagination="pagination">
+		<MkPagination v-slot="{items}" :pagination="pagination" withControl>
 			<div :class="$style.stream">
 				<MkNoteMediaGrid v-for="note in items" :note="note" square/>
 			</div>

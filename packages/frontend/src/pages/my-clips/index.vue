@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="tab === 'my'" class="_gaps">
 			<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
-			<MkPagination v-slot="{ items }" ref="pagingComponent" :pagination="pagination" class="_gaps">
+			<MkPagination v-slot="{ items }" ref="pagingComponent" :pagination="pagination" class="_gaps" withControl>
 				<MkClipPreview v-for="item in items" :key="item.id" :clip="item" :noUserInfo="true"/>
 			</MkPagination>
 		</div>
