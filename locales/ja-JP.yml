@@ -1376,10 +1376,6 @@ alwaysUseAbsoluteTime: "常に絶対時刻で表示する"
 prohibitSkippingInitialTutorial: "チュートリアルをスキップできないようにする"
 prohibitSkippingInitialTutorialDescription: "新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。"
 
-_order:
-  newest: "新しい順"
-  oldest: "古い順"
-
 _chat:
   noMessagesYet: "まだメッセージはありません"
   newMessage: "新しいメッセージ"
