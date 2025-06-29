@@ -27,7 +27,7 @@ export type PaginatorCompatibleEndpoints = {
 	[K in PaginatorCompatibleEndpointPaths]: Misskey.Endpoints[K];
 };
 
-export interface IPaginator<T extends unknown = unknown> {
+export interface IPaginator<T = unknown> {
 	items: DeepReadonly<ShallowRef<(T & MisskeyEntity)[]> | Ref<(T & MisskeyEntity)[]>>;
 	queuedAheadItemsCount: Ref<number>;
 	fetching: Ref<boolean>;
