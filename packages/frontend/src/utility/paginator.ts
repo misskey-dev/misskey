@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readonly, ref, shallowRef, triggerRef } from 'vue';
+import { ref, shallowRef, triggerRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { ComputedRef, DeepReadonly, Ref, ShallowRef } from 'vue';
+import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAX_ITEMS = 30;
@@ -28,7 +28,10 @@ export type PaginatorCompatibleEndpoints = {
 };
 
 export interface IPaginator<T = unknown> {
-	items: DeepReadonly<ShallowRef<(T & MisskeyEntity)[]> | Ref<(T & MisskeyEntity)[]>>;
+	/**
+	 * 外部から直接操作しないでください
+	 */
+	items: Ref<T[]> | ShallowRef<T[]>;
 	queuedAheadItemsCount: Ref<number>;
 	fetching: Ref<boolean>;
 	fetchingOlder: Ref<boolean>;
@@ -64,8 +67,10 @@ export class Paginator<
 	T extends R['res'][number] & MisskeyEntity = R['res'][number] & MisskeyEntity,
 	SRef extends boolean = false,
 > implements IPaginator {
-	private _items: SRef extends true ? ShallowRef<T[]> : Ref<T[]>;
-	public items: DeepReadonly<SRef extends true ? ShallowRef<T[]> : Ref<T[]>>;
+	/**
+	 * 外部から直接操作しないでください
+	 */
+	public items: SRef extends true ? ShallowRef<T[]> : Ref<T[]>;
 
 	public queuedAheadItemsCount = ref(0);
 	public fetching = ref(true);
@@ -124,11 +129,10 @@ export class Paginator<
 		this.endpoint = endpoint;
 		this.useShallowRef = (props.useShallowRef ?? false) as SRef;
 		if (this.useShallowRef) {
-			this._items = shallowRef<T[]>([]);
+			this.items = shallowRef<T[]>([]);
 		} else {
-			this._items = ref<T[]>([]) as Ref<T[]>;
+			this.items = ref<T[]>([]) as Ref<T[]>;
 		}
-		this.items = readonly(this._items);
 
 		this.limit = props.limit ?? FIRST_FETCH_LIMIT;
 		this.params = props.params ?? {};
@@ -163,16 +167,16 @@ export class Paginator<
 		if (this.aheadQueue.length > 0) {
 			return this.aheadQueue.map(x => x.id).sort().at(-1);
 		}
-		return this._items.value.map(x => x.id).sort().at(-1);
+		return this.items.value.map(x => x.id).sort().at(-1);
 	}
 
 	private getOldestId(): string | null | undefined {
 		// 様々な要因により並び順は保証されないのでソートが必要
-		return this._items.value.map(x => x.id).sort().at(0);
+		return this.items.value.map(x => x.id).sort().at(0);
 	}
 
 	public async init(): Promise<void> {
-		this._items.value = [];
+		this.items.value = [];
 		this.aheadQueue = [];
 		this.queuedAheadItemsCount.value = 0;
 		this.fetching.value = true;
@@ -239,7 +243,7 @@ export class Paginator<
 	}
 
 	public async fetchOlder(): Promise<void> {
-		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this._items.value.length === 0) return;
+		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this.items.value.length === 0) return;
 		this.fetchingOlder.value = true;
 
 		const data: R['req'] = {
@@ -248,7 +252,7 @@ export class Paginator<
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: SECOND_FETCH_LIMIT,
 			...(this.offsetMode ? {
-				offset: this._items.value.length,
+				offset: this.items.value.length,
 			} : {
 				untilId: this.getOldestId(),
 			}),
@@ -297,7 +301,7 @@ export class Paginator<
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: SECOND_FETCH_LIMIT,
 			...(this.offsetMode ? {
-				offset: this._items.value.length,
+				offset: this.items.value.length,
 			} : {
 				sinceId: this.getNewestId(),
 			}),
@@ -327,29 +331,29 @@ export class Paginator<
 	}
 
 	public trim(trigger = true): void {
-		if (this._items.value.length >= MAX_ITEMS) this.canFetchOlder.value = true;
-		this._items.value = this._items.value.slice(0, MAX_ITEMS);
-		if (this.useShallowRef && trigger) triggerRef(this._items);
+		if (this.items.value.length >= MAX_ITEMS) this.canFetchOlder.value = true;
+		this.items.value = this.items.value.slice(0, MAX_ITEMS);
+		if (this.useShallowRef && trigger) triggerRef(this.items);
 	}
 
 	public unshiftItems(newItems: T[]): void {
 		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
-		this._items.value.unshift(...newItems.filter(x => !this._items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
+		this.items.value.unshift(...newItems.filter(x => !this.items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
 		this.trim(false);
-		if (this.useShallowRef) triggerRef(this._items);
+		if (this.useShallowRef) triggerRef(this.items);
 	}
 
 	public pushItems(oldItems: T[]): void {
 		if (oldItems.length === 0) return; // これやらないと余計なre-renderが走る
-		this._items.value.push(...oldItems);
-		if (this.useShallowRef) triggerRef(this._items);
+		this.items.value.push(...oldItems);
+		if (this.useShallowRef) triggerRef(this.items);
 	}
 
 	public prepend(item: T): void {
-		if (this._items.value.some(x => x.id === item.id)) return;
-		this._items.value.unshift(item);
+		if (this.items.value.some(x => x.id === item.id)) return;
+		this.items.value.unshift(item);
 		this.trim(false);
-		if (this.useShallowRef) triggerRef(this._items);
+		if (this.useShallowRef) triggerRef(this.items);
 	}
 
 	public enqueue(item: T): void {
@@ -370,21 +374,21 @@ export class Paginator<
 	public removeItem(id: string): void {
 		// TODO: queueからも消す
 
-		const index = this._items.value.findIndex(x => x.id === id);
+		const index = this.items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
-			this._items.value.splice(index, 1);
-			if (this.useShallowRef) triggerRef(this._items);
+			this.items.value.splice(index, 1);
+			if (this.useShallowRef) triggerRef(this.items);
 		}
 	}
 
 	public updateItem(id: string, updator: (item: T) => T): void {
 		// TODO: queueのも更新
 
-		const index = this._items.value.findIndex(x => x.id === id);
+		const index = this.items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
-			const item = this._items.value[index]!;
-			this._items.value[index] = updator(item);
-			if (this.useShallowRef) triggerRef(this._items);
+			const item = this.items.value[index]!;
+			this.items.value[index] = updator(item);
+			if (this.useShallowRef) triggerRef(this.items);
 		}
 	}
 }
