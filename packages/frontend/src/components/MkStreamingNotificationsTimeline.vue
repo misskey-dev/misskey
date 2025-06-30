@@ -109,7 +109,7 @@ function reload() {
 	return paginator.reload();
 }
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['main']> | null = null;
 
 onMounted(() => {
 	paginator.init();

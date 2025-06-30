@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :paginator="pinnedUsersPaginator">
 			<template #default="{ items }">
 				<div :class="$style.users">
-					<XUser v-for="item in (items as Misskey.entities.UserDetailed[])" :key="item.id" :user="item"/>
+					<XUser v-for="item in items" :key="item.id" :user="item"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination :paginator="popularUsersPaginator">
 			<template #default="{ items }">
 				<div :class="$style.users">
-					<XUser v-for="item in (items as Misskey.entities.UserDetailed[])" :key="item.id" :user="item"/>
+					<XUser v-for="item in items" :key="item.id" :user="item"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -34,7 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';

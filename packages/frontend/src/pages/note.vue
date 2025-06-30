@@ -100,7 +100,7 @@ const prevChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
 	initialId: props.noteId,
 	initialDirection: 'older',
-	computedParams: computed(() => note.value ? ({
+	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
 	}) : undefined),
 }));
@@ -109,7 +109,7 @@ const nextChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
 	initialId: props.noteId,
 	initialDirection: 'newer',
-	computedParams: computed(() => note.value ? ({
+	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
 	}) : undefined),
 }));

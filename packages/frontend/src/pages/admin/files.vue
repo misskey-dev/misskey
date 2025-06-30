@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="local">{{ i18n.ts.local }}</option>
 					<option value="remote">{{ i18n.ts.remote }}</option>
 				</MkSelect>
-				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="paginator.computedParams.value.origin === 'local'">
+				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="paginator.computedParams?.value?.origin === 'local'">
 					<template #label>{{ i18n.ts.host }}</template>
 				</MkInput>
 			</div>
@@ -44,7 +44,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
 
-const origin = ref<Misskey.entities.AdminDriveFilesRequest['origin']>('local');
+const origin = ref<NonNullable<Misskey.entities.AdminDriveFilesRequest['origin']>>('local');
 const type = ref<string | null>(null);
 const searchHost = ref('');
 const userId = ref('');

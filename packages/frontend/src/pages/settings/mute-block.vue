@@ -208,9 +208,9 @@ const blockingPaginator = markRaw(new Paginator('blocking/list', {
 	limit: 10,
 }));
 
-const expandedRenoteMuteItems = ref([]);
-const expandedMuteItems = ref([]);
-const expandedBlockItems = ref([]);
+const expandedRenoteMuteItems = ref<string[]>([]);
+const expandedMuteItems = ref<string[]>([]);
+const expandedBlockItems = ref<string[]>([]);
 
 const showSoftWordMutedWord = prefer.model('showSoftWordMutedWord');
 
@@ -253,7 +253,7 @@ async function unblock(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function toggleRenoteMuteItem(item) {
+async function toggleRenoteMuteItem(item: { id: string }) {
 	if (expandedRenoteMuteItems.value.includes(item.id)) {
 		expandedRenoteMuteItems.value = expandedRenoteMuteItems.value.filter(x => x !== item.id);
 	} else {
@@ -261,7 +261,7 @@ async function toggleRenoteMuteItem(item) {
 	}
 }
 
-async function toggleMuteItem(item) {
+async function toggleMuteItem(item: { id: string }) {
 	if (expandedMuteItems.value.includes(item.id)) {
 		expandedMuteItems.value = expandedMuteItems.value.filter(x => x !== item.id);
 	} else {
@@ -269,7 +269,7 @@ async function toggleMuteItem(item) {
 	}
 }
 
-async function toggleBlockItem(item) {
+async function toggleBlockItem(item: { id: string }) {
 	if (expandedBlockItems.value.includes(item.id)) {
 		expandedBlockItems.value = expandedBlockItems.value.filter(x => x !== item.id);
 	} else {
