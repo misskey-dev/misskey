@@ -58,7 +58,7 @@ export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 	enqueue(item: _T): void;
 	releaseQueue(): void;
 	removeItem(id: string): void;
-	updateItem(id: string, updator: (item: _T) => _T): void;
+	updateItem(id: string, updater: (item: _T) => _T): void;
 }
 
 export class Paginator<
@@ -381,13 +381,13 @@ export class Paginator<
 		}
 	}
 
-	public updateItem(id: string, updator: (item: T) => T): void {
+	public updateItem(id: string, updater: (item: T) => T): void {
 		// TODO: queueのも更新
 
 		const index = this.items.value.findIndex(x => x.id === id);
 		if (index !== -1) {
 			const item = this.items.value[index]!;
-			this.items.value[index] = updator(item);
+			this.items.value[index] = updater(item);
 			if (this.useShallowRef) triggerRef(this.items);
 		}
 	}
