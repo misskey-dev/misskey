@@ -25,7 +25,7 @@ import { i18n } from '@/i18n.js';
 const props = withDefaults(defineProps<{
 	paginator: IPaginator;
 	noGap?: boolean;
-	extractor?: (item: any) => Misskey.entities.User;
+	extractor?: (item: any) => Misskey.entities.UserDetailed;
 }>(), {
 	extractor: (item) => item,
 });

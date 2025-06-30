@@ -27,11 +27,11 @@ export type PaginatorCompatibleEndpoints = {
 	[K in PaginatorCompatibleEndpointPaths]: Misskey.Endpoints[K];
 };
 
-export interface IPaginator<T = unknown> {
+export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 	/**
 	 * 外部から直接操作しないでください
 	 */
-	items: Ref<T[]> | ShallowRef<T[]>;
+	items: Ref<_T[]> | ShallowRef<_T[]>;
 	queuedAheadItemsCount: Ref<number>;
 	fetching: Ref<boolean>;
 	fetchingOlder: Ref<boolean>;
@@ -52,13 +52,13 @@ export interface IPaginator<T = unknown> {
 	fetchOlder(): Promise<void>;
 	fetchNewer(options?: { toQueue?: boolean }): Promise<void>;
 	trim(trigger?: boolean): void;
-	unshiftItems(newItems: (T & MisskeyEntity)[]): void;
-	pushItems(oldItems: (T & MisskeyEntity)[]): void;
-	prepend(item: T & MisskeyEntity): void;
-	enqueue(item: T & MisskeyEntity): void;
+	unshiftItems(newItems: (_T)[]): void;
+	pushItems(oldItems: (_T)[]): void;
+	prepend(item: _T): void;
+	enqueue(item: _T): void;
 	releaseQueue(): void;
 	removeItem(id: string): void;
-	updateItem(id: string, updator: (item: T & MisskeyEntity) => T & MisskeyEntity): void;
+	updateItem(id: string, updator: (item: _T) => _T): void;
 }
 
 export class Paginator<
