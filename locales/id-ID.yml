@@ -1040,7 +1040,7 @@ disableFederationConfirmWarn: "Mematikan federasi tidak membuat kiriman menjadi 
 disableFederationOk: "Matikan federasi"
 invitationRequiredToRegister: "Instansi ini dalam mode undangan-saja. Kamu harus memasukkan kode undangan yang valid untuk mendaftar."
 emailNotSupported: "Instansi ini tidak mendukung mengirim surel"
-postToTheChannel: "Catat ke kanal"
+postToTheChannel: "Buat Catatan ke Kanal"
 cannotBeChangedLater: "Hal ini nantinya tidak dapat diubah lagi."
 reactionAcceptance: "Penerimaan reaksi"
 likeOnly: "Hanya suka"
