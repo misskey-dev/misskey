@@ -2400,7 +2400,7 @@ _deck:
     main: "Utama"
     widgets: "Widget"
     notifications: "Notifikasi"
-    tl: "Lini masa"
+    tl: "Beranda"
     antenna: "Antena"
     list: "Daftar"
     channel: "Kanal"
