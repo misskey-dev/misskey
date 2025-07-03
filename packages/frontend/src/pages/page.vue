@@ -135,9 +135,9 @@ const page = ref<Misskey.entities.Page | null>(null);
 const error = ref<any>(null);
 const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 	limit: 6,
-	computedParams: computed(() => ({
+	computedParams: computed(() => page.value ? ({
 		userId: page.value.user.id,
-	})),
+	}) : undefined),
 }));
 const path = computed(() => props.username + '/' + props.pageName);
 

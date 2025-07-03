@@ -45,7 +45,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import type { notificationTypes } from '@@/js/const.js';
+import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
@@ -92,6 +94,49 @@ if (!store.s.realtimeMode) {
 	});
 }
 
+function isTop() {
+	if (scrollContainer == null) return true;
+	if (rootEl.value == null) return true;
+	const scrollTop = scrollContainer.scrollTop;
+	const tlTop = rootEl.value.offsetTop - scrollContainer.offsetTop;
+	return scrollTop <= tlTop;
+}
+
+function releaseQueue() {
+	paginator.releaseQueue();
+	scrollToTop(rootEl.value!);
+}
+
+let scrollContainer: HTMLElement | null = null;
+
+function onScrollContainerScroll() {
+	if (isTop()) {
+		paginator.releaseQueue();
+	}
+}
+
+watch(rootEl, (el) => {
+	if (el && scrollContainer == null) {
+		scrollContainer = getScrollContainer(el);
+		if (scrollContainer == null) return;
+		scrollContainer.addEventListener('scroll', onScrollContainerScroll, { passive: true }); // ほんとはscrollendにしたいけどiosが非対応
+	}
+}, { immediate: true });
+
+const visibility = useDocumentVisibility();
+let isPausingUpdate = false;
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		isPausingUpdate = true;
+	} else { // 'visible'
+		isPausingUpdate = false;
+		if (isTop()) {
+			releaseQueue();
+		}
+	}
+});
+
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
 	if (isMuted || window.document.visibilityState === 'visible') {
@@ -101,7 +146,11 @@ function onNotification(notification) {
 	}
 
 	if (!isMuted) {
-		paginator.prepend(notification);
+		if (isTop() && !isPausingUpdate) {
+			paginator.prepend(notification);
+		} else {
+			paginator.enqueue(notification);
+		}
 	}
 }
 
@@ -109,7 +158,7 @@ function reload() {
 	return paginator.reload();
 }
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['main']> | null = null;
 
 onMounted(() => {
 	paginator.init();

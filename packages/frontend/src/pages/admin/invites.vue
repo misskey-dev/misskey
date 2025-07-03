@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination :paginator="paginator">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in items" :key="item.id" :invite="(item as any)" :onDeleted="deleted" moderator/>
+						<MkInviteCode v-for="item in items" :key="item.id" :invite="item" :onDeleted="deleted" moderator/>
 					</div>
 				</template>
 			</MkPagination>
@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref, useTemplateRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -68,8 +69,8 @@ import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
 
-const type = ref('all');
-const sort = ref('+createdAt');
+const type = ref<NonNullable<Misskey.entities.AdminInviteListRequest['type']>>('all');
+const sort = ref<NonNullable<Misskey.entities.AdminInviteListRequest['sort']>>('+createdAt');
 
 const paginator = markRaw(new Paginator('admin/invite/list', {
 	limit: 10,
