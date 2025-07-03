@@ -63,8 +63,8 @@ export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 
 export class Paginator<
 	Endpoint extends PaginatorCompatibleEndpointPaths,
-	R extends PaginatorCompatibleEndpoints[Endpoint] = PaginatorCompatibleEndpoints[Endpoint],
-	T extends R['res'][number] & MisskeyEntity = R['res'][number] & MisskeyEntity,
+	E extends PaginatorCompatibleEndpoints[Endpoint] = PaginatorCompatibleEndpoints[Endpoint],
+	T extends E['res'][number] & MisskeyEntity = E['res'][number] & MisskeyEntity,
 	SRef extends boolean = false,
 > implements IPaginator {
 	/**
@@ -81,15 +81,15 @@ export class Paginator<
 	public error = ref(false);
 	private endpoint: Endpoint;
 	private limit: number;
-	private params: R['req'] | (() => R['req']);
-	public computedParams: ComputedRef<R['req'] | null | undefined> | null;
+	private params: E['req'] | (() => E['req']);
+	public computedParams: ComputedRef<E['req'] | null | undefined> | null;
 	public initialId: MisskeyEntity['id'] | null = null;
 	public initialDate: number | null = null;
 	public initialDirection: 'newer' | 'older';
 	private offsetMode: boolean;
 	public noPaging: boolean;
 	public searchQuery = ref<null | string>('');
-	private searchParamName: keyof R['req'] | 'search';
+	private searchParamName: keyof E['req'] | 'search';
 	private canFetchDetection: 'safe' | 'limit' | null = null;
 	private aheadQueue: T[] = [];
 	private useShallowRef: SRef;
@@ -102,8 +102,8 @@ export class Paginator<
 
 	constructor(endpoint: Endpoint, props: {
 		limit?: number;
-		params?: R['req'] | (() => R['req']);
-		computedParams?: ComputedRef<R['req'] | null | undefined>;
+		params?: E['req'] | (() => E['req']);
+		computedParams?: ComputedRef<E['req'] | null | undefined>;
 
 		/**
 		 * 検索APIのような、ページング不可なエンドポイントを利用する場合
@@ -124,7 +124,7 @@ export class Paginator<
 		useShallowRef?: SRef;
 
 		canSearch?: boolean;
-		searchParamName?: keyof R['req'];
+		searchParamName?: keyof E['req'];
 	}) {
 		this.endpoint = endpoint;
 		this.useShallowRef = (props.useShallowRef ?? false) as SRef;
@@ -181,7 +181,7 @@ export class Paginator<
 		this.queuedAheadItemsCount.value = 0;
 		this.fetching.value = true;
 
-		const data: R['req'] = {
+		const data: E['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
@@ -246,7 +246,7 @@ export class Paginator<
 		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this.items.value.length === 0) return;
 		this.fetchingOlder.value = true;
 
-		const data: R['req'] = {
+		const data: E['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
@@ -295,7 +295,7 @@ export class Paginator<
 	} = {}): Promise<void> {
 		this.fetchingNewer.value = true;
 
-		const data: R['req'] = {
+		const data: E['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
 			...(this.computedParams ? this.computedParams.value : {}),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
