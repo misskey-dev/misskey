@@ -3182,7 +3182,6 @@ drafts: "草稿"
 _drafts:
   select: "选择草稿"
   cannotCreateDraftAnymore: "已超过可创建的草稿数量。"
-  cannotCreateDraftOfRenote: "无法创建转帖草稿。"
   delete: "删除草稿"
   deleteAreYouSure: "要删除草稿吗？"
   noDrafts: "没有草稿"
