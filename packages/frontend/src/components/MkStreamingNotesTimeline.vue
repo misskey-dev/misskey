@@ -239,7 +239,7 @@ watch(visibility, () => {
 		}, BACKGROUND_PAUSE_WAIT_SEC * 1000);
 	} else { // 'visible'
 		if (timerForSetPause) {
-			clearTimeout(timerForSetPause);
+			window.clearTimeout(timerForSetPause);
 			timerForSetPause = null;
 		} else {
 			isPausingUpdate = false;
