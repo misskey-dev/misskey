@@ -753,7 +753,7 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 		transform: translateY(-50%);
 	}
 	to {
-		transform: translateY(-60%);
+		transform: translateY(-30%);
 	}
 }
 </style>
