@@ -14,7 +14,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { miLocalStorage } from './local-storage';
 
 export type Plugin = {
 	installId: string;
