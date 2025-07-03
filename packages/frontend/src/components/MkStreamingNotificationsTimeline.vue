@@ -58,8 +58,6 @@ import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
 
-const BACKGROUND_PAUSE_WAIT_SEC = 10;
-
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
 }>();
@@ -127,23 +125,14 @@ watch(rootEl, (el) => {
 
 const visibility = useDocumentVisibility();
 let isPausingUpdate = false;
-let timerForSetPause: number | null = null;
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
-		timerForSetPause = window.setTimeout(() => {
-			isPausingUpdate = true;
-			timerForSetPause = null;
-		}, BACKGROUND_PAUSE_WAIT_SEC * 1000);
+		isPausingUpdate = true;
 	} else { // 'visible'
-		if (timerForSetPause) {
-			window.clearTimeout(timerForSetPause);
-			timerForSetPause = null;
-		} else {
-			isPausingUpdate = false;
-			if (isTop()) {
-				releaseQueue();
-			}
+		isPausingUpdate = false;
+		if (isTop()) {
+			releaseQueue();
 		}
 	}
 });
