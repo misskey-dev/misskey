@@ -376,7 +376,7 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 					background-position: center;
 					view-timeline-name: --bannerParallax;
 					view-timeline-inset: var(--bannerParallaxInset, auto);
-    			view-timeline-axis: block;
+					view-timeline-axis: block;
 
 					> .banner {
 						position: absolute;
