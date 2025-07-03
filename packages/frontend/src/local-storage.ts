@@ -33,6 +33,7 @@ export type Keys = (
 	'preferences' |
 	'latestPreferencesUpdate' |
 	'hidePreferencesRestoreSuggestion' |
+	'isSafeMode' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

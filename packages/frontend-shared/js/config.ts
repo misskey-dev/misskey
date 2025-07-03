@@ -23,6 +23,7 @@ export const version = _VERSION_;
 export const instanceName = (siteName === 'Misskey' || siteName == null) ? host : siteName;
 export const ui = localStorage.getItem('ui');
 export const debug = localStorage.getItem('debug') === 'true';
+export const isSafeMode = localStorage.getItem('isSafeMode') === 'true';
 
 export function updateLocale(newLocale: Locale): void {
 	locale = newLocale;
