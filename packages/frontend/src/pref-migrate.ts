@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { v4 as uuid } from 'uuid';
 import type { DeckProfile } from '@/deck.js';
+import { genId } from '@/utility/id.js';
 import { ColdDeviceStorage, store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -15,7 +15,7 @@ import { i18n } from '@/i18n.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
-	os.waiting(i18n.ts.settingsMigrating);
+	os.waiting({ text: i18n.ts.settingsMigrating });
 
 	store.loaded.then(async () => {
 		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
@@ -42,7 +42,7 @@ export function migrateOldSettings() {
 					key: key,
 				});
 				profiles.push({
-					id: uuid(),
+					id: genId(),
 					name: key,
 					columns: deck.columns,
 					layout: deck.layout,

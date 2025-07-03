@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<MkNotesTimeline ref="tlComponent" class="" :pagination="pagination"/>
+		<MkNotesTimeline :paginator="paginator"/>
 	</div>
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
@@ -28,20 +28,18 @@ import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	tag: string;
 }>();
 
-const pagination = {
-	endpoint: 'notes/search-by-tag' as const,
+const paginator = markRaw(new Paginator('notes/search-by-tag', {
 	limit: 10,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		tag: props.tag,
 	})),
-};
-
-const tlComponent = useTemplateRef('tlComponent');
+}));
 
 async function post() {
 	store.set('postFormHashtags', props.tag);
@@ -49,7 +47,7 @@ async function post() {
 	await os.post();
 	store.set('postFormHashtags', '');
 	store.set('postFormWithHashtags', false);
-	tlComponent.value?.reload();
+	paginator.reload();
 }
 
 const headerActions = computed(() => [{

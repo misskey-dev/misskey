@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
-				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
+				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong></div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
 		</div>
@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -146,10 +146,10 @@ import { prefer } from '@/preferences.js';
 import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
-import { usePagination } from '@/composables/use-pagination.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -185,7 +185,7 @@ const isRootSelected = ref(false);
 
 watch(selectedFiles, () => {
 	emit('changeSelectedFiles', selectedFiles.value);
-});
+}, { deep: true });
 
 watch([selectedFolders, isRootSelected], () => {
 	emit('changeSelectedFolders', isRootSelected.value ? [null, ...selectedFolders.value] : selectedFolders.value);
@@ -195,33 +195,23 @@ const fetching = ref(true);
 
 const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
 
-const filesPaginator = usePagination({
-	ctx: {
-		endpoint: 'drive/files',
-		limit: 30,
-		canFetchDetection: 'limit',
-		params: computed(() => ({
-			folderId: folder.value ? folder.value.id : null,
-			type: props.type,
-			sort: sortModeSelect.value,
-		})),
-	},
-	autoInit: false,
-	autoReInit: false,
-});
+const filesPaginator = markRaw(new Paginator('drive/files', {
+	limit: 30,
+	canFetchDetection: 'limit',
+	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
+		folderId: folder.value ? folder.value.id : null,
+		type: props.type,
+		sort: sortModeSelect.value,
+	}),
+}));
 
-const foldersPaginator = usePagination({
-	ctx: {
-		endpoint: 'drive/folders',
-		limit: 30,
-		canFetchDetection: 'limit',
-		params: computed(() => ({
-			folderId: folder.value ? folder.value.id : null,
-		})),
-	},
-	autoInit: false,
-	autoReInit: false,
-});
+const foldersPaginator = markRaw(new Paginator('drive/folders', {
+	limit: 30,
+	canFetchDetection: 'limit',
+	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
+		folderId: folder.value ? folder.value.id : null,
+	}),
+}));
 
 const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
 

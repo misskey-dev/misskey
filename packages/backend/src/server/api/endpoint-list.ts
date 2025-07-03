@@ -307,6 +307,11 @@ export * as 'notes/clips' from './endpoints/notes/clips.js';
 export * as 'notes/conversation' from './endpoints/notes/conversation.js';
 export * as 'notes/create' from './endpoints/notes/create.js';
 export * as 'notes/delete' from './endpoints/notes/delete.js';
+export * as 'notes/drafts/list' from './endpoints/notes/drafts/list.js';
+export * as 'notes/drafts/create' from './endpoints/notes/drafts/create.js';
+export * as 'notes/drafts/delete' from './endpoints/notes/drafts/delete.js';
+export * as 'notes/drafts/update' from './endpoints/notes/drafts/update.js';
+export * as 'notes/drafts/count' from './endpoints/notes/drafts/count.js';
 export * as 'notes/favorites/create' from './endpoints/notes/favorites/create.js';
 export * as 'notes/favorites/delete' from './endpoints/notes/favorites/delete.js';
 export * as 'notes/featured' from './endpoints/notes/featured.js';
@@ -428,4 +433,5 @@ export * as 'chat/rooms/invitations/ignore' from './endpoints/chat/rooms/invitat
 export * as 'chat/rooms/invitations/inbox' from './endpoints/chat/rooms/invitations/inbox.js';
 export * as 'chat/rooms/invitations/outbox' from './endpoints/chat/rooms/invitations/outbox.js';
 export * as 'chat/history' from './endpoints/chat/history.js';
+export * as 'chat/read-all' from './endpoints/chat/read-all.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';

@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 	<template #suffix>
 		<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
-		<span v-if="job.progress != null && typeof job.progress === 'number' && job.progress > 0" style="margin-left: 1em;">{{ Math.floor(job.progress * 100) }}%</span>
+		<span v-if="job.progress != null && typeof job.progress === 'number' && job.progress > 0" style="margin-left: 1em;">{{ Math.floor(job.progress) }}%</span>
 		<span v-if="job.opts.attempts != null && job.opts.attempts > 0 && job.attempts > 1" style="margin-left: 1em; color: var(--MI_THEME-warn); font-variant-numeric: diagonal-fractions;">{{ job.attempts }}/{{ job.opts.attempts }}</span>
 		<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
 		<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'timeline'">
-		<MkTl :events="timeline">
+		<MkTl :events="timeline" groupBy="h">
 			<template #left="{ event }">
 				<div>
 					<template v-if="event.type === 'finished'">
@@ -162,6 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import JSON5 from 'json5';
+import type { TlEvent } from '@/components/MkTl.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -172,7 +173,6 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTl from '@/components/MkTl.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import type { TlEvent } from '@/components/MkTl.vue';
 
 function msSMH(v: number | null) {
 	if (v == null) return 'N/A';

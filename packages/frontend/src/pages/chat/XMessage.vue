@@ -181,9 +181,9 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 		menu.push({
 			text: i18n.ts.reportAbuse,
 			icon: 'ti ti-exclamation-circle',
-			action: () => {
+			action: async () => {
 				const localUrl = `${url}/chat/messages/${props.message.id}`;
-				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 					user: props.message.fromUser!,
 					initialComment: `${localUrl}\n-----\n`,
 				}, {
