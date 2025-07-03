@@ -3182,7 +3182,6 @@ drafts: "Borrador"
 _drafts:
   select: "Seleccionar borradores"
   cannotCreateDraftAnymore: "Se ha superado el número de borradores que se pueden crear."
-  cannotCreateDraftOfRenote: "No se pueden crear borradores de renotas."
   delete: "Eliminar borrador"
   deleteAreYouSure: "¿Quieres borrar el borrador?"
   noDrafts: "No hay borradores disponibles."
