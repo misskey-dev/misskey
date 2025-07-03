@@ -10,7 +10,7 @@ import { FX_checker } from '@/utility/image-effector/fxs/checker.js';
 import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
-const WATERMARK_FXS = [
+export const WATERMARK_FXS = [
 	FX_watermarkPlacement,
 	FX_stripe,
 	FX_polkadot,
@@ -89,6 +89,29 @@ export class WatermarkRenderer {
 		});
 	}
 
+	public static getLayerDef(type: WatermarkPreset['layers'][number]['type']): ImageEffectorFx | null {
+		let fxId: typeof WATERMARK_FXS[number]['id'];
+		switch (type) {
+			case 'text':
+			case 'image':
+				fxId = 'watermarkPlacement';
+				break;
+			case 'stripe':
+				fxId = 'stripe';
+				break;
+			case 'polkadot':
+				fxId = 'polkadot';
+				break;
+			case 'checker':
+				fxId = 'checker';
+				break;
+			default:
+				throw new Error(`Unknown layer type: ${type}`);
+		}
+
+		return WATERMARK_FXS.find(fx => fx.id === fxId) ?? null;
+	}
+
 	private makeImageEffectorLayers(): ImageEffectorLayer[] {
 		return this.layers.map(layer => {
 			if (layer.type === 'text') {
@@ -150,7 +173,6 @@ export class WatermarkRenderer {
 						minorRadius: layer.minorRadius,
 						minorOpacity: layer.minorOpacity,
 						color: layer.color,
-						opacity: layer.opacity,
 					},
 				};
 			} else if (layer.type === 'checker') {

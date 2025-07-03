@@ -32,6 +32,7 @@ export const FX_colorClamp = defineImageEffectorFx({
 	uniforms: ['max', 'min'] as const,
 	params: {
 		max: {
+			label: i18n.ts._imageEffector._fxProps.max,
 			type: 'number' as const,
 			default: 1.0,
 			min: 0.0,
@@ -40,6 +41,7 @@ export const FX_colorClamp = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		min: {
+			label: i18n.ts._imageEffector._fxProps.min,
 			type: 'number' as const,
 			default: -1.0,
 			min: -1.0,

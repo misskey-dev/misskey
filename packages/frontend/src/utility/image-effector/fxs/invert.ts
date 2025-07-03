@@ -33,14 +33,17 @@ export const FX_invert = defineImageEffectorFx({
 	uniforms: ['r', 'g', 'b'] as const,
 	params: {
 		r: {
+			label: i18n.ts._imageEffector._fxProps.redComponent,
 			type: 'boolean' as const,
 			default: true,
 		},
 		g: {
+			label: i18n.ts._imageEffector._fxProps.greenComponent,
 			type: 'boolean' as const,
 			default: true,
 		},
 		b: {
+			label: i18n.ts._imageEffector._fxProps.blueComponent,
 			type: 'boolean' as const,
 			default: true,
 		},
