@@ -16,6 +16,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { UserKeypairService } from './UserKeypairService.js';
+import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
 export class RelayService {

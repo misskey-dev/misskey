@@ -16,7 +16,6 @@ import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import Logger from '@/logger.js';
-import { UtilityService } from '@/core/UtilityService.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -68,12 +67,6 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey[] | null>(1000 * 60 * 60 * 12); // 12h
 		this.logger = this.apLoggerService.logger.createSubLogger('db-resolver');
 		this.redisForSub.on('message', this.onMessage);
-	}
-
-	private punyHost(url: string): string {
-		const urlObj = new URL(url);
-		const host = `${this.utilityService.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
-		return host;
 	}
 
 	@bindThis
@@ -170,7 +163,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	} |
 	null> {
 		if (keyId) {
-			if (this.punyHost(uri) !== this.punyHost(keyId)) {
+			if (this.utilityService.punyHost(uri) !== this.utilityService.punyHost(keyId)) {
 				/**
 				 * keyIdはURL形式かつkeyIdのホストはuriのホストと一致するはず
 				 * （ApPersonService.validateActorに由来）
