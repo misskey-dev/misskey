@@ -208,6 +208,7 @@ export * as 'flash/my-likes' from './endpoints/flash/my-likes.js';
 export * as 'flash/show' from './endpoints/flash/show.js';
 export * as 'flash/unlike' from './endpoints/flash/unlike.js';
 export * as 'flash/update' from './endpoints/flash/update.js';
+export * as 'flash/search' from './endpoints/flash/search.js';
 export * as 'following/create' from './endpoints/following/create.js';
 export * as 'following/delete' from './endpoints/following/delete.js';
 export * as 'following/invalidate' from './endpoints/following/invalidate.js';

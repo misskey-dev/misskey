@@ -59,6 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
@@ -224,6 +225,20 @@ onUnmounted(() => {
 	}
 });
 
+const visibility = useDocumentVisibility();
+let isPausingUpdate = false;
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		isPausingUpdate = true;
+	} else { // 'visible'
+		isPausingUpdate = false;
+		if (isTop()) {
+			releaseQueue();
+		}
+	}
+});
+
 let adInsertionCounter = 0;
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
@@ -237,7 +252,7 @@ if (!store.s.realtimeMode) {
 	// TODO: 先頭のノートの作成日時が1日以上前であれば流速が遅いTLと見做してインターバルを通常より延ばす
 	useInterval(async () => {
 		paginator.fetchNewer({
-			toQueue: !isTop(),
+			toQueue: !isTop() || isPausingUpdate,
 		});
 	}, POLLING_INTERVAL, {
 		immediate: false,
@@ -246,7 +261,7 @@ if (!store.s.realtimeMode) {
 
 	useGlobalEvent('notePosted', (note) => {
 		paginator.fetchNewer({
-			toQueue: !isTop(),
+			toQueue: !isTop() || isPausingUpdate,
 		});
 	});
 }
@@ -257,7 +272,7 @@ useGlobalEvent('noteDeleted', (noteId) => {
 
 function releaseQueue() {
 	paginator.releaseQueue();
-	scrollToTop(rootEl.value);
+	scrollToTop(rootEl.value!);
 }
 
 function prepend(note: Misskey.entities.Note & MisskeyEntity) {
@@ -267,7 +282,7 @@ function prepend(note: Misskey.entities.Note & MisskeyEntity) {
 		note._shouldInsertAd_ = true;
 	}
 
-	if (isTop()) {
+	if (isTop() && !isPausingUpdate) {
 		paginator.prepend(note);
 	} else {
 		paginator.enqueue(note);

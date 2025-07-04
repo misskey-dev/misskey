@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.search != null) {
-				for (const word of ps.search!.trim().split(' ')) {
+				for (const word of ps.search.trim().split(' ')) {
 					query.andWhere(new Brackets(qb => {
 						qb.orWhere('note.text ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });
 						qb.orWhere('note.cw ILIKE :search', { search: `%${sqlLikeEscape(word)}%` });
