@@ -127,7 +127,11 @@ export class ActivityPubServerService {
 
 		let signature: ReturnType<typeof parseRequestSignature>;
 
-		const verifyDigest = await verifyDigestHeader(request.raw, request.rawBody || '', true);
+		const verifyDigest = await verifyDigestHeader(
+			request.raw,
+			typeof request.rawBody === 'string' ? request.rawBody : (request.rawBody ? request.rawBody.toString('utf8') : ''),
+			true
+		);
 		if (verifyDigest !== true) {
 			this.inboxLogger.warn('digest verification failed');
 			reply.code(401);
