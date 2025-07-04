@@ -155,6 +155,13 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 export async function uninstallPlugin(plugin: Plugin) {
 	abortPlugin(plugin);
 	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
+
+	Object.keys(window.localStorage).forEach(key => {
+		if (key.startsWith('aiscript:plugins:' + plugin.installId)) {
+			window.localStorage.removeItem(key);
+		}
+	});
+
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) {
 		await os.apiWithDialog('i/revoke-token', {
 			token: store.s.pluginTokens[plugin.installId],
