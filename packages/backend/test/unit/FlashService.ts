@@ -10,6 +10,7 @@ import { IdService } from '@/core/IdService.js';
 import { FlashLikesRepository, FlashsRepository, MiFlash, MiUser, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
+import { CoreModule } from '@/core/CoreModule.js';
 
 describe('FlashService', () => {
 	let app: TestingModule;
@@ -66,6 +67,7 @@ describe('FlashService', () => {
 		app = await Test.createTestingModule({
 			imports: [
 				GlobalModule,
+				CoreModule,
 			],
 			providers: [
 				FlashService,
