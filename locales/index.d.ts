@@ -12270,9 +12270,9 @@ export interface Locale extends ILocale {
          */
         "cannotCreateDraftAnymore": string;
         /**
-         * リノートの下書きは作成できません。
+         * この内容では下書きを作成できません。
          */
-        "cannotCreateDraftOfRenote": string;
+        "cannotCreateDraft": string;
         /**
          * 下書きを削除
          */

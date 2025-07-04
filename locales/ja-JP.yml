@@ -3288,7 +3288,7 @@ drafts: "下書き"
 _drafts:
   select: "下書きを選択"
   cannotCreateDraftAnymore: "下書きの作成可能数を超えています。"
-  cannotCreateDraftOfRenote: "リノートの下書きは作成できません。"
+  cannotCreateDraft: "この内容では下書きを作成できません。"
   delete: "下書きを削除"
   deleteAreYouSure: "下書きを削除しますか？"
   noDrafts: "下書きはありません"

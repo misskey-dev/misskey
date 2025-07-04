@@ -59,6 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
@@ -75,6 +76,7 @@ import { i18n } from '@/i18n.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
+import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -101,12 +103,12 @@ provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
-let paginator: Paginator;
+let paginator: IPaginator<Misskey.entities.Note>;
 
 if (props.src === 'antenna') {
 	paginator = markRaw(new Paginator('antennas/notes', {
 		computedParams: computed(() => ({
-			antennaId: props.antenna,
+			antennaId: props.antenna!,
 		})),
 		useShallowRef: true,
 	}));
@@ -160,21 +162,21 @@ if (props.src === 'antenna') {
 		computedParams: computed(() => ({
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			listId: props.list,
+			listId: props.list!,
 		})),
 		useShallowRef: true,
 	}));
 } else if (props.src === 'channel') {
 	paginator = markRaw(new Paginator('channels/timeline', {
 		computedParams: computed(() => ({
-			channelId: props.channel,
+			channelId: props.channel!,
 		})),
 		useShallowRef: true,
 	}));
 } else if (props.src === 'role') {
 	paginator = markRaw(new Paginator('roles/notes', {
 		computedParams: computed(() => ({
-			roleId: props.role,
+			roleId: props.role!,
 		})),
 		useShallowRef: true,
 	}));
@@ -223,6 +225,20 @@ onUnmounted(() => {
 	}
 });
 
+const visibility = useDocumentVisibility();
+let isPausingUpdate = false;
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		isPausingUpdate = true;
+	} else { // 'visible'
+		isPausingUpdate = false;
+		if (isTop()) {
+			releaseQueue();
+		}
+	}
+});
+
 let adInsertionCounter = 0;
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
@@ -236,7 +252,7 @@ if (!store.s.realtimeMode) {
 	// TODO: 先頭のノートの作成日時が1日以上前であれば流速が遅いTLと見做してインターバルを通常より延ばす
 	useInterval(async () => {
 		paginator.fetchNewer({
-			toQueue: !isTop(),
+			toQueue: !isTop() || isPausingUpdate,
 		});
 	}, POLLING_INTERVAL, {
 		immediate: false,
@@ -245,7 +261,7 @@ if (!store.s.realtimeMode) {
 
 	useGlobalEvent('notePosted', (note) => {
 		paginator.fetchNewer({
-			toQueue: !isTop(),
+			toQueue: !isTop() || isPausingUpdate,
 		});
 	});
 }
@@ -256,17 +272,17 @@ useGlobalEvent('noteDeleted', (noteId) => {
 
 function releaseQueue() {
 	paginator.releaseQueue();
-	scrollToTop(rootEl.value);
+	scrollToTop(rootEl.value!);
 }
 
-function prepend(note: Misskey.entities.Note) {
+function prepend(note: Misskey.entities.Note & MisskeyEntity) {
 	adInsertionCounter++;
 
 	if (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 
-	if (isTop()) {
+	if (isTop() && !isPausingUpdate) {
 		paginator.prepend(note);
 	} else {
 		paginator.enqueue(note);
@@ -281,12 +297,13 @@ function prepend(note: Misskey.entities.Note) {
 	}
 }
 
-let connection: Misskey.ChannelConnection | null = null;
-let connection2: Misskey.ChannelConnection | null = null;
+let connection: Misskey.IChannelConnection | null = null;
+let connection2: Misskey.IChannelConnection | null = null;
 
 const stream = store.s.realtimeMode ? useStream() : null;
 
 function connectChannel() {
+	if (stream == null) return;
 	if (props.src === 'antenna') {
 		if (props.antenna == null) return;
 		connection = stream.useChannel('antenna', {

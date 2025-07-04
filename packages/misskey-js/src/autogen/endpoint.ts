@@ -340,6 +340,8 @@ import type {
 	FlashMyResponse,
 	FlashMyLikesRequest,
 	FlashMyLikesResponse,
+	FlashSearchRequest,
+	FlashSearchResponse,
 	FlashShowRequest,
 	FlashShowResponse,
 	FlashUnlikeRequest,
@@ -869,6 +871,7 @@ export type Endpoints = {
 	'flash/like': { req: FlashLikeRequest; res: EmptyResponse };
 	'flash/my': { req: FlashMyRequest; res: FlashMyResponse };
 	'flash/my-likes': { req: FlashMyLikesRequest; res: FlashMyLikesResponse };
+	'flash/search': { req: FlashSearchRequest; res: FlashSearchResponse };
 	'flash/show': { req: FlashShowRequest; res: FlashShowResponse };
 	'flash/unlike': { req: FlashUnlikeRequest; res: EmptyResponse };
 	'flash/update': { req: FlashUpdateRequest; res: EmptyResponse };
