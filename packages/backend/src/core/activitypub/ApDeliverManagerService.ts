@@ -275,9 +275,11 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToUsers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, targets: MiRemoteUser[]): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
+			this.userKeypairService,
 			this.followingsRepository,
 			this.queueService,
+			this.accountUpdateService,
+			this.logger,
 			actor,
 			activity,
 		);
