@@ -85,8 +85,8 @@ $height: 2ex;
 	overflow: visible;
 
 	// text-shadowは重いから使うな
-	color: #fff;
-	-webkit-text-stroke: rgba(0, 0, 0, .8) .225em;
+	color: var(--MI_THEME-fg);
+	-webkit-text-stroke: var(--MI_THEME-bg) .225em;
 	paint-order: stroke fill;
 }
 </style>
