@@ -86,7 +86,7 @@ $height: 2ex;
 
 	// text-shadowは重いから使うな
 	color: var(--MI_THEME-fg);
-	-webkit-text-stroke: var(--MI_THEME-bg) .225em;
+	-webkit-text-stroke: var(--MI_THEME-panel) .225em;
 	paint-order: stroke fill;
 }
 </style>
