@@ -5,34 +5,22 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
+import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FlashService } from '@/core/FlashService.js';
 
 export const meta = {
-	tags: ['account', 'flash'],
+	tags: ['flash'],
 
-	requireCredential: true,
-
-	kind: 'read:flash-likes',
+	requireCredential: false,
 
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
 		items: {
 			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				flash: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'Flash',
-				},
-			},
+			optional: false, nullable: false,
+			ref: 'Flash',
 		},
 	},
 } as const;
@@ -40,33 +28,32 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		query: { type: 'string', minLength: 1, maxLength: 100 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
-		search: { type: 'string', minLength: 1, maxLength: 100, nullable: true },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
 	},
-	required: [],
+	required: ['query'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private flashLikeEntityService: FlashLikeEntityService,
 		private flashService: FlashService,
+		private flashEntityService: FlashEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const likes = await this.flashService.myLikes(me.id, {
+			const result = await this.flashService.search(ps.query, {
 				sinceId: ps.sinceId,
 				untilId: ps.untilId,
 				sinceDate: ps.sinceDate,
 				untilDate: ps.untilDate,
 				limit: ps.limit,
-				search: ps.search,
 			});
 
-			return this.flashLikeEntityService.packMany(likes, me);
+			return await this.flashEntityService.packMany(result, me);
 		});
 	}
 }
