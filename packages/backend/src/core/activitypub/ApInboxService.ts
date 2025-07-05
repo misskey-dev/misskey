@@ -127,16 +127,8 @@ export class ApInboxService {
 			result = await this.performOneActivity(actor, activity, resolver);
 		}
 
-		// ついでにリモートユーザーの情報が古かったら更新しておく
-		if (actor.uri) {
-			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				setImmediate(() => {
-					// 同一ユーザーの情報を再度処理するので、使用済みのresolverを再利用してはいけない
-					this.apPersonService.updatePerson(actor.uri);
-				});
-			}
-		}
-		return result;
+		// ついでにリモートユーザーの情報が古かったら更新しておく?
+		// → No, この関数が呼び出される前に署名検証で更新されているはず
 	}
 
 	@bindThis
