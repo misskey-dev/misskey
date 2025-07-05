@@ -46,8 +46,8 @@ import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, mark
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
-import type { notificationTypes } from '@@/js/const.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
+import type { notificationTypes } from '@@/js/const.js';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
@@ -235,7 +235,6 @@ defineExpose({
 	align-items: center;
 	justify-content: center;
 	gap: 1em;
-	opacity: 0.75;
 	padding: 8px 8px;
 	margin: 0 auto;
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
