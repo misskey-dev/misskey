@@ -3182,6 +3182,5 @@ drafts: "Rascunhos"
 _drafts:
   select: "Selecionar Rascunho"
   cannotCreateDraftAnymore: "O número máximo de rascunhos foi excedido."
-  cannotCreateDraftOfRenote: "Você não pode criar o rascunho de uma repostagem."
   delete: "Excluir Rascunho"
   restore: "Redefinir"

@@ -3182,7 +3182,7 @@ drafts: "草稿\n"
 _drafts:
   select: "選擇草槁"
   cannotCreateDraftAnymore: "已超出可建立的草稿數量上限。\n"
-  cannotCreateDraftOfRenote: "無法建立轉發的草稿。\n"
+  cannotCreateDraft: "無法以此內容建立草稿。\n"
   delete: "刪除草稿"
   deleteAreYouSure: "確定要刪除草稿嗎？\n"
   noDrafts: "沒有草稿。\n"
