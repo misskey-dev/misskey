@@ -21,6 +21,7 @@
 
 ### Server
 - Enhance: sinceId/untilIdが指定可能なエンドポイントにおいて、sinceDate/untilDateも指定可能に
+- Enhance: メールの送信者としてサーバー名を表示するように (サーバー名が設定されている場合)
 - Fix: ジョブキューのProgressの値を正しく計算する
 
 
