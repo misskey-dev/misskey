@@ -1368,6 +1368,10 @@ redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
 defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
+safeModeEnabled: "セーフモードが有効です"
+pluginsAreDisabledBecauseSafeMode: "セーフモードが有効なため、プラグインはすべて無効化されています。"
+customCssIsDisabledBecauseSafeMode: "セーフモードが有効なため、カスタムCSSは適用されていません。"
+themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。"
 
 _order:
   newest: "新しい順"
@@ -3154,6 +3158,7 @@ _bootErrors:
   otherOption1: "クライアント設定とキャッシュを削除"
   otherOption2: "簡易クライアントを起動"
   otherOption3: "修復ツールを起動"
+  otherOption4: "Misskeyをセーフモードで起動"
 
 _search:
   searchScopeAll: "全て"
