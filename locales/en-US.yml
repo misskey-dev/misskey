@@ -3182,7 +3182,6 @@ drafts: "Drafts"
 _drafts:
   select: "Select Draft"
   cannotCreateDraftAnymore: "The number of drafts that can be created has been exceeded."
-  cannotCreateDraftOfRenote: "You cannot create a draft of a renote."
   delete: "Delete Draft"
   deleteAreYouSure: "Delete draft?"
   noDrafts: "No drafts"
