@@ -67,7 +67,7 @@ const router = useRouter();
 const tab = ref('featured');
 
 const searchQuery = ref('');
-const searchPaginator = shallowRef<IPaginator | null>(null);
+const searchPaginator = shallowRef<Paginator<'flash/search'> | null>(null);
 const searchKey = ref(0);
 
 const featuredFlashsPaginator = markRaw(new Paginator('flash/featured', {

@@ -5077,7 +5077,7 @@ export type components = {
             script: string;
             /** @enum {string} */
             visibility: 'private' | 'public';
-            likedCount: number | null;
+            likedCount: number;
             isLiked?: boolean;
         };
         Signin: {
