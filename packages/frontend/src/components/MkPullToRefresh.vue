@@ -56,10 +56,12 @@ const emit = defineEmits<{
 }>();
 
 function getScreenY(event: TouchEvent | MouseEvent | PointerEvent): number {
-	if (event.touches && event.touches[0] && event.touches[0].screenY != null) {
+	if (('touches' in event) && event.touches[0] && event.touches[0].screenY != null) {
 		return event.touches[0].screenY;
-	} else {
+	} else if ('screenY' in event) {
 		return event.screenY;
+	} else {
+		return 0; // TSを黙らせるため
 	}
 }
 

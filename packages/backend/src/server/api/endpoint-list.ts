@@ -168,6 +168,7 @@ export * as 'clips/update' from './endpoints/clips/update.js';
 export * as 'drive' from './endpoints/drive.js';
 export * as 'drive/files' from './endpoints/drive/files.js';
 export * as 'drive/files/attached-notes' from './endpoints/drive/files/attached-notes.js';
+export * as 'drive/files/attached-chat-messages' from './endpoints/drive/files/attached-chat-messages.js';
 export * as 'drive/files/check-existence' from './endpoints/drive/files/check-existence.js';
 export * as 'drive/files/create' from './endpoints/drive/files/create.js';
 export * as 'drive/files/delete' from './endpoints/drive/files/delete.js';

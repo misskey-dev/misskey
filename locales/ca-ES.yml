@@ -3182,7 +3182,7 @@ drafts: "Esborrany "
 _drafts:
   select: "Seleccionar esborrany"
   cannotCreateDraftAnymore: "S'ha sobrepassat el nombre màxim d'esborranys que es poden crear."
-  cannotCreateDraftOfRenote: "No es poden crear esborranys de remotes."
+  cannotCreateDraft: "Amb aquest contingut no es poden crear esborranys."
   delete: "Esborrar esborranys"
   deleteAreYouSure: "Vols esborrar els esborranys?"
   noDrafts: "No hi ha esborranys"

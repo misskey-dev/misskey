@@ -14,12 +14,13 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import type { FormWithDefault } from '@/utility/form.js';
 
 export type Plugin = {
 	installId: string;
 	name: string;
 	active: boolean;
-	config?: Record<string, { default: any }>;
+	config?: FormWithDefault;
 	configData: Record<string, any>;
 	src: string | null;
 	version: string;
@@ -240,7 +241,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	pluginLogs.value.set(plugin.installId, []);
 
 	function systemLog(message: string, isError = false): void {
-		pluginLogs.value.get(plugin.installId)?.push({
+		pluginLogs.value.get(plugin!.installId)?.push({
 			at: Date.now(),
 			isSystem: true,
 			message,
