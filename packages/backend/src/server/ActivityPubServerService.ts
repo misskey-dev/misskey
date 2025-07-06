@@ -115,6 +115,7 @@ export class ActivityPubServerService {
 	@bindThis
 	private async inbox(request: FastifyRequest, reply: FastifyReply) {
 		if (this.meta.federation === 'none') {
+			this.inboxLogger.debug('federation is disabled');
 			reply.code(403);
 			return;
 		}
@@ -148,17 +149,18 @@ export class ActivityPubServerService {
 					delay: 300_000,
 				},
 			});
-		} catch (err) {
-			this.inboxLogger.warn('signature header parsing failed', { err });
 
+			this.inboxLogger.debug('signature header parsed', { signature, body: request.body });
+		} catch (err) {
 			if (typeof request.body === 'object' && 'signature' in request.body) {
 				// LD SignatureがあればOK
 				this.queueService.inbox(request.body as IActivity, null);
+				this.inboxLogger.debug('LD Signature found in request body', { err, body: request.body });
 				reply.code(202);
 				return;
 			}
 
-			this.inboxLogger.warn('signature header parsing failed and LD signature not found');
+			this.inboxLogger.warn('signature header parsing failed and LD signature not found', { err });
 			reply.code(401);
 			return;
 		}
