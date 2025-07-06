@@ -101,7 +101,7 @@ export async function getNoteClipMenu(props: {
 			const { canceled, result } = await os.form(i18n.ts.createNewClip, {
 				name: {
 					type: 'string',
-					default: null,
+					default: null as string | null,
 					label: i18n.ts.name,
 				},
 				description: {
