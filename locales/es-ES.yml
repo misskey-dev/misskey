@@ -2806,6 +2806,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "Subido el"
   attachedNotes: "Notas adjuntas"
+  usage: "Utilizado"
   thisPageCanBeSeenFromTheAuthor: "Esta página solo puede ser vista por el autor."
 _externalResourceInstaller:
   title: "Instalar desde sitio externo"
