@@ -11038,6 +11038,10 @@ export interface Locale extends ILocale {
          */
         "attachedNotes": string;
         /**
+         * 利用
+         */
+        "usage": string;
+        /**
          * このページは、このファイルをアップロードしたユーザーしか閲覧できません。
          */
         "thisPageCanBeSeenFromTheAuthor": string;

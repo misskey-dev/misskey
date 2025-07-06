@@ -197,7 +197,7 @@ async function initialize() {
 		connection.value.on('deleted', onDeleted);
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
-	} else {
+	} else if (props.roomId) {
 		const [rResult, mResult] = await Promise.allSettled([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
 			misskeyApi('chat/messages/room-timeline', { roomId: props.roomId, limit: LIMIT }),
