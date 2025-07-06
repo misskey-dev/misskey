@@ -109,11 +109,13 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
-		const { canceled, result } = await os.form(clip.value!.name, {
+		if (!clip.value) return;
+
+		const { canceled, result } = await os.form(clip.value.name, {
 			name: {
 				type: 'string',
 				label: i18n.ts.name,
-				default: clip.value!.name,
+				default: clip.value.name,
 			},
 			description: {
 				type: 'string',
@@ -121,12 +123,12 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 				multiline: true,
 				treatAsMfm: true,
 				label: i18n.ts.description,
-				default: clip.value!.description,
+				default: clip.value.description,
 			},
 			isPublic: {
 				type: 'boolean',
 				label: i18n.ts.public,
-				default: clip.value!.isPublic,
+				default: clip.value.isPublic,
 			},
 		});
 
