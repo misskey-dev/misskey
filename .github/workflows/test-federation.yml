@@ -99,11 +99,51 @@ jobs:
         run: |
           cd packages/backend/test-federation
           docker compose run --no-deps tester
-      - name: Log
+      - name: 'Redis Log'
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs -t
+          docker compose logs -t redis.test
+      - name: 'Setup Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t setup
+      - name: 'DB A Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t db.a.test
+      - name: 'DB B Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t db.b.test
+      - name: 'Daemon Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t daemon
+      - name: 'Misskey A Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t misskey.a.test
+      - name: 'Misskey B Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t misskey.b.test
+      - name: 'Nginx A Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t a.test
+      - name: 'Nginx B Log'
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs -t b.test
       - name: Stop servers
         if: always()
         run: |
