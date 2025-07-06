@@ -6,7 +6,7 @@
 import { reactive, watch } from 'vue';
 import type { Reactive } from 'vue';
 import { throttle } from 'throttle-debounce';
-import type { Form, GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -29,7 +29,7 @@ export type WidgetComponentExpose = {
 	configure: () => void;
 };
 
-export const useWidgetPropsManager = <F extends Form & Record<string, { default: any; }>>(
+export const useWidgetPropsManager = <F extends FormWithDefault>(
 	name: string,
 	propsDef: F,
 	props: Readonly<WidgetComponentProps<GetFormResultType<F>>>,

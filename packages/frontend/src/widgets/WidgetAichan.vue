@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
-import type { Form, GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
 const name = 'ai';
 
@@ -22,7 +22,7 @@ const widgetPropsDef = {
 		type: 'boolean',
 		default: false,
 	},
-} satisfies Form;
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
