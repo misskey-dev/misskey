@@ -109,7 +109,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
-		if (!clip.value) return;
+		if (clip.value == null) return;
 
 		const { canceled, result } = await os.form(clip.value.name, {
 			name: {
@@ -182,7 +182,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	text: i18n.ts.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
-		if (!clip.value) return;
+		if (clip.value == null) return;
 
 		const { canceled } = await os.confirm({
 			type: 'warning',
