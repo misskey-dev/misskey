@@ -160,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="archived">{{ i18n.ts.archived }}</option>
 				</MkSelect>
 
-				<MkPagination :pagination="announcementsPagination">
+				<MkPagination :paginator="announcementsPaginator">
 					<template #default="{ items }">
 						<div class="_gaps_s">
 							<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
@@ -179,7 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-else-if="tab === 'drive'" class="_gaps">
-				<MkFileListForAdmin :pagination="filesPagination" viewMode="grid"/>
+				<MkFileListForAdmin :paginator="filesPaginator" viewMode="grid"/>
 			</div>
 
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
@@ -211,7 +211,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, watch, ref } from 'vue';
+import { computed, defineAsyncComponent, watch, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import MkChart from '@/components/MkChart.vue';
@@ -235,6 +235,7 @@ import { i18n } from '@/i18n.js';
 import { iAmAdmin, $i, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
 	userId: string;
@@ -255,24 +256,22 @@ const silenced = ref(false);
 const suspended = ref(false);
 const isSystem = ref(false);
 const moderationNote = ref('');
-const filesPagination = {
-	endpoint: 'admin/drive/files' as const,
+const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: props.userId,
 	})),
-};
+}));
 
 const announcementsStatus = ref<'active' | 'archived'>('active');
 
-const announcementsPagination = {
-	endpoint: 'admin/announcements/list' as const,
+const announcementsPaginator = markRaw(new Paginator('admin/announcements/list', {
 	limit: 10,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: props.userId,
 		status: announcementsStatus.value,
 	})),
-};
+}));
 const expandedRoles = ref([]);
 
 function createFetcher() {

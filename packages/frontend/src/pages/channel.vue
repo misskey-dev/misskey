@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkStreamingNotesTimeline :key="channelId" src="channel" :channel="channelId"/>
 		</div>
 		<div v-else-if="tab === 'featured'">
-			<MkNotesTimeline :pagination="featuredPagination"/>
+			<MkNotesTimeline :paginator="featuredPaginator"/>
 		</div>
 		<div v-else-if="tab === 'search'">
 			<div v-if="notesSearchAvailable" class="_gaps">
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 				</div>
-				<MkNotesTimeline v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
+				<MkNotesTimeline v-if="searchPaginator" :key="searchKey" :paginator="searchPaginator"/>
 			</div>
 			<div v-else>
 				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, markRaw, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -97,6 +97,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -109,14 +110,13 @@ const tab = ref('overview');
 const channel = ref<Misskey.entities.Channel | null>(null);
 const favorited = ref(false);
 const searchQuery = ref('');
-const searchPagination = ref();
+const searchPaginator = shallowRef();
 const searchKey = ref('');
-const featuredPagination = computed(() => ({
-	endpoint: 'notes/featured' as const,
+const featuredPaginator = markRaw(new Paginator('channels/featured', {
 	limit: 10,
-	params: {
+	computedParams: computed(() => ({
 		channelId: props.channelId,
-	},
+	})),
 }));
 
 useInterval(() => {
@@ -190,14 +190,13 @@ async function search() {
 
 	if (query == null) return;
 
-	searchPagination.value = {
-		endpoint: 'notes/search',
+	searchPaginator.value = markRaw(new Paginator('notes/search', {
 		limit: 10,
 		params: {
 			query: query,
 			channelId: channel.value.id,
 		},
-	};
+	}));
 
 	searchKey.value = query;
 }

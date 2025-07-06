@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="instance" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div v-if="tab === 'overview'" class="_gaps_m">
 			<div :class="$style.faviconAndName">
-				<img :src="faviconUrl" alt="" :class="$style.icon"/>
+				<img v-if="faviconUrl" :src="faviconUrl" alt="" :class="$style.icon"/>
 				<span :class="$style.name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
 			</div>
 			<div style="display: flex; flex-direction: column; gap: 1em;">
@@ -115,7 +115,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-else-if="tab === 'users'" class="_gaps_m">
-			<MkPagination v-slot="{ items }" :pagination="usersPagination">
+			<MkPagination v-slot="{ items }" :paginator="usersPaginator">
 				<div :class="$style.users">
 					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'unknown'}`" :to="`/admin/user/${user.id}`">
 						<MkUserCardMini :user="user"/>
@@ -132,10 +132,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ChartSrc } from '@/components/MkChart.vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -156,6 +155,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { dateString } from '@/filters/date.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	host: string;
@@ -173,8 +173,7 @@ const isMediaSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
 const moderationNote = ref('');
 
-const usersPagination = {
-	endpoint: iAmModerator ? 'admin/show-users' : 'users',
+const usersPaginator = iAmModerator ? markRaw(new Paginator('admin/show-users', {
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
@@ -182,7 +181,15 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-} satisfies PagingCtx<'admin/show-users' | 'users'>;
+})) : markRaw(new Paginator('users', {
+	limit: 10,
+	params: {
+		sort: '+updatedAt',
+		state: 'all',
+		hostname: props.host,
+	},
+	offsetMode: true,
+}));
 
 if (iAmModerator) {
 	watch(moderationNote, async () => {

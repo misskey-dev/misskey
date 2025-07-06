@@ -44,6 +44,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		markAsRead: { type: 'boolean', default: true },
 		// 後方互換のため、廃止された通知タイプも受け付ける
 		includeTypes: { type: 'array', items: {
@@ -59,17 +61,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private idService: IdService,
 		private notificationEntityService: NotificationEntityService,
 		private notificationService: NotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : undefined);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : undefined);
+
 			// includeTypes が空の場合はクエリしない
 			if (ps.includeTypes && ps.includeTypes.length === 0) {
 				return [];
@@ -83,8 +82,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 
 			const notifications = await this.notificationService.getNotifications(me.id, {
-				sinceId: ps.sinceId,
-				untilId: ps.untilId,
+				sinceId: sinceId,
+				untilId: untilId,
 				limit: ps.limit,
 				includeTypes,
 				excludeTypes,

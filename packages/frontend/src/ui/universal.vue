@@ -126,7 +126,6 @@ const onContextmenu = (ev) => {
 </script>
 
 <style lang="scss" module>
-$ui-font-size: 1em; // TODO: どこかに集約したい
 $widgets-hide-threshold: 1090px;
 
 .root {

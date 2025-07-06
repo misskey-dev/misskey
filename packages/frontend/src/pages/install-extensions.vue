@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_s">
 						<MkKeyValue>
 							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
-							<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
+							<template #value><MkUrl v-if="url" :url="url" :showUrlPreview="false"></MkUrl></template>
 						</MkKeyValue>
 						<MkKeyValue>
 							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
@@ -151,7 +151,7 @@ async function fetch() {
 		case 'theme':
 			try {
 				const metaRaw = parseThemeCode(res.data);
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 				const { id, props, desc: description, ...meta } = metaRaw;
 				data.value = {
 					type: 'theme',

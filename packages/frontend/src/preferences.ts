@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
+import type { StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
@@ -12,23 +12,18 @@ import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { TAB_ID } from '@/tab-id.js';
 
-function createPrefManager(storageProvider: StorageProvider) {
-	let profile: PreferencesProfile;
-
-	const savedProfileRaw = miLocalStorage.getItem('preferences');
-	if (savedProfileRaw == null) {
-		profile = PreferencesManager.newProfile();
-		miLocalStorage.setItem('preferences', JSON.stringify(profile));
-	} else {
-		profile = PreferencesManager.normalizeProfile(JSON.parse(savedProfileRaw));
-	}
-
-	return new PreferencesManager(profile, storageProvider);
-}
-
 const syncGroup = 'default';
 
-const storageProvider: StorageProvider = {
+const io: StorageProvider = {
+	load: () => {
+		const savedProfileRaw = miLocalStorage.getItem('preferences');
+		if (savedProfileRaw == null) {
+			return null;
+		} else {
+			return JSON.parse(savedProfileRaw);
+		}
+	},
+
 	save: (ctx) => {
 		miLocalStorage.setItem('preferences', JSON.stringify(ctx.profile));
 		miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
@@ -88,7 +83,7 @@ const storageProvider: StorageProvider = {
 
 	cloudGetBulk: async (ctx) => {
 		// TODO: 値の取得を1つのリクエストで済ませたい(バックエンド側でAPIの新設が必要)
-		const fetchings = ctx.needs.map(need => storageProvider.cloudGet(need).then(res => [need.key, res] as const));
+		const fetchings = ctx.needs.map(need => io.cloudGet(need).then(res => [need.key, res] as const));
 		const cloudDatas = await Promise.all(fetchings);
 
 		const res = {} as Partial<Record<string, any>>;
@@ -102,7 +97,7 @@ const storageProvider: StorageProvider = {
 	},
 };
 
-export const prefer = createPrefManager(storageProvider);
+export const prefer = new PreferencesManager(io, $i);
 
 let latestSyncedAt = Date.now();
 
@@ -116,7 +111,7 @@ function syncBetweenTabs() {
 	if (latestTab === TAB_ID) return;
 	if (latestAt <= latestSyncedAt) return;
 
-	prefer.rewriteProfile(PreferencesManager.normalizeProfile(JSON.parse(miLocalStorage.getItem('preferences')!)));
+	prefer.reloadProfile();
 
 	latestSyncedAt = Date.now();
 

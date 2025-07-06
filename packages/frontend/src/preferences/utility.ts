@@ -35,6 +35,8 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 			}
 
 			store.set('enablePreferencesAutoCloudBackup', true);
+
+			cloudBackup();
 		} else {
 			store.set('enablePreferencesAutoCloudBackup', false);
 		}

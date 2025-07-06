@@ -14,10 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline primary rounded :disabled="currentInviteLimit !== null && currentInviteLimit <= 0" @click="create"><i class="ti ti-user-plus"></i> {{ i18n.ts.createInviteCode }}</MkButton>
 			<div v-if="currentInviteLimit !== null">{{ i18n.tsx.createLimitRemaining({ limit: currentInviteLimit }) }}</div>
 
-			<MkPagination ref="pagingComponent" :pagination="pagination">
+			<MkPagination :paginator="paginator">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in (items as Misskey.entities.InviteCode[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
+						<MkInviteCode v-for="item in items" :key="item.id" :invite="item" :onDeleted="deleted"/>
 					</div>
 				</template>
 			</MkPagination>
@@ -27,9 +27,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -39,16 +38,15 @@ import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/i.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const pagingComponent = useTemplateRef('pagingComponent');
 const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
-const pagination: PagingCtx = {
-	endpoint: 'invite/list' as const,
+const paginator = markRaw(new Paginator('invite/list', {
 	limit: 10,
-};
+}));
 
 const resetCycle = computed<null | string>(() => {
 	if (!inviteLimitCycle) return null;
@@ -68,14 +66,12 @@ async function create() {
 		text: ticket.code,
 	});
 
-	pagingComponent.value?.paginator.prepend(ticket);
+	paginator.prepend(ticket);
 	update();
 }
 
 function deleted(id: string) {
-	if (pagingComponent.value) {
-		pagingComponent.value.paginator.removeItem(id);
-	}
+	paginator.removeItem(id);
 	update();
 }
 

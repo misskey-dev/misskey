@@ -74,6 +74,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 	},
 	required: [],
 } as const;
@@ -89,7 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private emojiEntityService: EmojiEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
 
 			if (ps.host == null) {
 				q.andWhere('emoji.host IS NOT NULL');
