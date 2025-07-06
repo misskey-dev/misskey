@@ -255,6 +255,9 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
 					return 'note contains too many mentions';
 				}
+				if (e.id === '09d79f9e-64f1-4316-9cfa-e75c4d091574') { // Instance is blocked
+					return 'skip: blocked instance';
+				}
 			}
 			throw e;
 		}
