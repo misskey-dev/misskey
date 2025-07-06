@@ -2806,6 +2806,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "업로드 날짜"
   attachedNotes: "첨부된 노트"
+  usage: "이용"
   thisPageCanBeSeenFromTheAuthor: "이 페이지는 파일 소유자만 열람할 수 있습니다"
 _externalResourceInstaller:
   title: "외부 사이트로부터 설치"
