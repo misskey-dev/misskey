@@ -76,7 +76,8 @@ watch(() => props.clipId, async () => {
 	clip.value = await misskeyApi('clips/show', {
 		clipId: props.clipId,
 	});
-	favorited.value = clip.value.isFavorited;
+
+	favorited.value = clip.value!.isFavorited ?? false;
 }, {
 	immediate: true,
 });
@@ -108,11 +109,11 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
-		const { canceled, result } = await os.form(clip.value.name, {
+		const { canceled, result } = await os.form(clip.value!.name, {
 			name: {
 				type: 'string',
 				label: i18n.ts.name,
-				default: clip.value.name,
+				default: clip.value!.name,
 			},
 			description: {
 				type: 'string',
@@ -120,18 +121,19 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 				multiline: true,
 				treatAsMfm: true,
 				label: i18n.ts.description,
-				default: clip.value.description,
+				default: clip.value!.description,
 			},
 			isPublic: {
 				type: 'boolean',
 				label: i18n.ts.public,
-				default: clip.value.isPublic,
+				default: clip.value!.isPublic,
 			},
 		});
+
 		if (canceled) return;
 
 		os.apiWithDialog('clips/update', {
-			clipId: clip.value.id,
+			clipId: clip.value!.id,
 			...result,
 		});
 
@@ -180,12 +182,12 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	handler: async (): Promise<void> => {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),
+			text: i18n.tsx.deleteAreYouSure({ x: clip.value!.name }),
 		});
 		if (canceled) return;
 
 		await os.apiWithDialog('clips/delete', {
-			clipId: clip.value.id,
+			clipId: clip.value!.id,
 		});
 
 		clipsCache.delete();
