@@ -26,8 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 
 			<XForm
-				:def="def"
 				v-model="model[key].value"
+				:def="def"
 				:disabled="withUseDefault && model[key].useDefault"
 				:readonly="readonly"
 			/>
@@ -73,8 +73,8 @@ const props = withDefaults(defineProps<{
 type RolePolicyEditorValueItem = {
 	value: GetRolePolicyEditorValuesType<typeof rolePolicyEditorDef[keyof typeof rolePolicyEditorDef]>;
 } & (
-	(UD extends true ? { useDefault: boolean } : {}) &
-	(WP extends true ? { priority: 0 | 1 | 2 } : {})
+	(UD extends true ? { useDefault: boolean } : never) &
+	(WP extends true ? { priority: 0 | 1 | 2 } : never)
 );
 
 type RolePolicyEditorValue = {

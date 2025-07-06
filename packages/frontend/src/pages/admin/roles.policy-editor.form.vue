@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ def.inputLabel }}</template>
 	<template #caption>
 		<span v-if="typeof def.inputCaption === 'string'">{{ def.inputCaption }}</span>
-		<component v-else :is="def.inputCaption" />
+		<component :is="def.inputCaption" v-else />
 	</template>
 </MkInput>
 <MkTextarea
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ def.inputLabel }}</template>
 	<template #caption>
 		<span v-if="typeof def.inputCaption === 'string'">{{ def.inputCaption }}</span>
-		<component v-else :is="def.inputCaption" />
+		<component :is="def.inputCaption" v-else />
 	</template>
 </MkTextarea>
 <MkInput
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ def.inputLabel }}</template>
 	<template #caption>
 		<span v-if="typeof def.inputCaption === 'string'">{{ def.inputCaption }}</span>
-		<component v-else :is="def.inputCaption" />
+		<component :is="def.inputCaption" v-else />
 	</template>
 	<template #prefix>{{ def.inputPrefix }}</template>
 	<template #suffix>{{ def.inputSuffix }}</template>
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ def.inputLabel }}</template>
 	<template #caption>
 		<span v-if="typeof def.inputCaption === 'string'">{{ def.inputCaption }}</span>
-		<component v-else :is="def.inputCaption" />
+		<component :is="def.inputCaption" v-else />
 	</template>
 	<template #prefix>{{ def.inputPrefix }}</template>
 	<template #suffix>{{ def.inputSuffix }}</template>
@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ def.inputLabel }}</template>
 	<template #caption>
 		<span v-if="typeof def.inputCaption === 'string'">{{ def.inputCaption }}</span>
-		<component v-else :is="def.inputCaption" />
+		<component :is="def.inputCaption" v-else />
 	</template>
 	<option v-for="option in def.enum" :key="option.value" :value="option.value">{{ option.label }}</option>
 </MkSelect>
@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ def.inputLabel ?? i18n.ts.enable }}</template>
 	<template #caption>
 		<span v-if="typeof def.inputCaption === 'string'">{{ def.inputCaption }}</span>
-		<component v-else :is="def.inputCaption" />
+		<component :is="def.inputCaption" v-else />
 	</template>
 </MkSwitch>
 </template>

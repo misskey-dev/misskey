@@ -16,7 +16,7 @@ interface RolePolicyEditorItemBase<T = unknown> {
 
 export type RolePolicyEditorItemBaseFolderSuffixGetter = {
 	folderSuffix: (value: boolean | number | string) => string;
-}
+};
 
 interface RolePolicyEditorItemBoolean extends RolePolicyEditorItemBase<boolean> {
 	type: 'boolean';
