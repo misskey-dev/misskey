@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items }">
 		<div :class="$style.root">
-			<MkUserInfo v-for="item in items" :key="item.id" class="user" :user="extractor(item)"/>
+			<MkUserInfo v-for="item in items" :key="item.id" :user="extractor(item)"/>
 		</div>
 	</template>
 </MkPagination>

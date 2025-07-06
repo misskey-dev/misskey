@@ -2885,6 +2885,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "追加日"
   attachedNotes: "添付されているノート"
+  usage: "利用"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
 
 _externalResourceInstaller:
