@@ -45,27 +45,6 @@ html {
 	&, * {
 		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 		scrollbar-width: thin;
-
-		&::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-
-		&::-webkit-scrollbar-track {
-			background: inherit;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background: var(--MI_THEME-scrollbarHandle);
-
-			&:hover {
-				background: var(--MI_THEME-scrollbarHandleHover);
-			}
-
-			&:active {
-				background: var(--MI_THEME-accent);
-			}
-		}
 	}
 
 	&.f-1 {
