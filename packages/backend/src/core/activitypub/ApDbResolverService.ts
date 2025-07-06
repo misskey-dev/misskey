@@ -184,18 +184,19 @@ export class ApDbResolverService implements OnApplicationShutdown {
 				 * We could also compare the equality of keyId without the hash and uri, but since setting a keyId like `uri#*-key`
 				 * is not a strict rule, we decide to allow for some flexibility
 				 */
-				this.logger.warn(`actor uri and keyId are not matched uri=${uri} keyId=${keyId}`);
+				this.logger.warn(`getAuthUserFromApId: actor uri and keyId are not matched uri=${uri} keyId=${keyId}`);
 				return null;
 			}
 		}
 
 		const user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
+		this.logger.debug(`getAuthUserFromApId: user resolved uri=${uri} userId=${user.id} keyId=${keyId}`);
 		if (user.isDeleted) return { user: null, key: null };
 
 		const keys = await this.getPublicKeyByUserId(user.id);
 
 		if (keys == null || !Array.isArray(keys) || keys.length === 0) {
-			this.logger.warn(`No key found uri=${uri} userId=${user.id} keys=${JSON.stringify(keys)}`);
+			this.logger.warn(`getAuthUserFromApId:No key found uri=${uri} userId=${user.id} keys=${JSON.stringify(keys)}`);
 			return { user, key: null };
 		}
 
@@ -216,18 +217,28 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 				return false;
 			});
-			return { user, key: mainKey ?? keys[0] };
+			if (mainKey) {
+				this.logger.debug(`getAuthUserFromApId: keyId not specified, use main key uri=${uri} userId=${user.id} keyId=${mainKey.keyId}`);
+				return { user, key: mainKey };
+			}
+			this.logger.warn(`getAuthUserFromApId: keyId not specified, No main key found, use the first key of ${keys.length} key(s) uri=${uri} userId=${user.id} key=${keys[0].keyId}`);
+			return { user, key: keys[0] };
 		}
 
 		const exactKey = keys.find(x => x.keyId === keyId);
-		if (exactKey) return { user, key: exactKey };
+		if (exactKey) {
+			this.logger.debug(`getAuthUserFromApId: key found uri=${uri} userId=${user.id} keyId=${keyId}`);
+			return { user, key: exactKey };
+		}
 
 		/**
 		 * keyIdで見つからない場合、まずはキャッシュを更新して再取得
 		 * If not found with keyId, update cache and reacquire
 		 */
+		this.logger.debug(`getAuthUserFromApId: key not found, refreshing cache uri=${uri} userId=${user.id} keyId=${keyId}`);
 		const cacheRaw = this.publicKeyByUserIdCache.getRaw(user.id);
 		if (cacheRaw && Date.now() - cacheRaw.date > 1000 * 60 * 5) {
+			this.logger.debug(`getAuthUserFromApId: Cache is old, refreshing user public keys uri=${uri} userId=${user.id} keyId=${keyId}`);
 			const exactKey = await this.refreshAndFindKey(user.id, keyId);
 			if (exactKey) return { user, key: exactKey };
 		}
@@ -237,14 +248,20 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		 * Reacquisition with weakened update limit at lastFetchedAt
 		 */
 		if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 5) {
-			this.logger.info(`Fetching user to find public key uri=${uri} userId=${user.id} keyId=${keyId}`);
+			this.logger.info(`getAuthUserFromApId: Renewing remote user uri=${uri} userId=${user.id} keyId=${keyId}`);
 			const renewed = await this.apPersonService.fetchPersonWithRenewal(uri, 0);
-			if (renewed == null || renewed.isDeleted) return null;
+			if (renewed == null) {
+				this.logger.warn(`getAuthUserFromApId: User not found uri=${uri} userId=${user.id} keyId=${keyId}`);
+				return null;
+			} else if (renewed.isDeleted) {
+				this.logger.warn(`getAuthUserFromApId: User is deleted uri=${uri} userId=${user.id} keyId=${keyId}`);
+				return null;
+			}
 
 			return { user, key: await this.refreshAndFindKey(user.id, keyId) };
 		}
 
-		this.logger.warn(`No key found uri=${uri} userId=${user.id} keyId=${keyId}`);
+		this.logger.warn(`getAuthUserFromApId: No key found uri=${uri} userId=${user.id} keyId=${keyId}`);
 		return { user, key: null };
 	}
 
