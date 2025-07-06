@@ -70,12 +70,16 @@ const props = withDefaults(defineProps<{
 	readonly: false,
 });
 
+type RemoveNever<T> = {
+	[P in keyof T as T[P] extends never ? never : P]: T[P];
+};
+
 type RolePolicyEditorValueItem = {
 	value: GetRolePolicyEditorValuesType<typeof rolePolicyEditorDef[keyof typeof rolePolicyEditorDef]>;
-} | (
-	(UD extends true ? { useDefault: boolean } : Record<string, never>) |
-	(WP extends true ? { priority: 0 | 1 | 2 } : Record<string, never>)
-);
+} & RemoveNever<
+	(UD extends true ? { useDefault: boolean } : { useDefault: never })
+	& (WP extends true ? { priority: 0 | 1 | 2 } : { priority: never })
+>;
 
 type RolePolicyEditorValue = {
 	[K in keyof typeof rolePolicyEditorDef]: RolePolicyEditorValueItem;
