@@ -103,7 +103,7 @@ jobs:
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs
+          docker compose logs -t
       - name: Stop servers
         if: always()
         run: |
