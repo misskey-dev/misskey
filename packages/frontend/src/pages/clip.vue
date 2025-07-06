@@ -135,7 +135,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 		if (canceled) return;
 
 		os.apiWithDialog('clips/update', {
-			clipId: clip.value!.id,
+			clipId: clip.value.id,
 			...result,
 		});
 
@@ -182,14 +182,16 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	text: i18n.ts.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
+		if (!clip.value) return;
+
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.tsx.deleteAreYouSure({ x: clip.value!.name }),
+			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),
 		});
 		if (canceled) return;
 
 		await os.apiWithDialog('clips/delete', {
-			clipId: clip.value!.id,
+			clipId: clip.value.id,
 		});
 
 		clipsCache.delete();
