@@ -22,11 +22,6 @@
 	}
 }
 
-::selection {
-	color: var(--MI_THEME-fgOnAccent);
-	background-color: var(--MI_THEME-accent);
-}
-
 html {
 	overflow: auto;
 	overflow-wrap: break-word;
@@ -87,6 +82,11 @@ html::view-transition-old(theme-changing) {
 	z-index: 4000001;
 	animation: themeChangingOld 0.5s ease;
 	animation-fill-mode: forwards;
+}
+
+html::selection {
+	color: var(--MI_THEME-fgOnAccent);
+	background-color: var(--MI_THEME-accent);
 }
 
 @keyframes themeChangingOld {
