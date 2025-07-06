@@ -121,23 +121,23 @@ type NonNullableIfRequired<T, Item extends FormItem> =
 	Item extends { required: false } ? T | null | undefined : NonNullable<T>;
 
 type GetItemType<Item extends FormItem> =
-	Item['type'] extends 'string'
-		? NonNullableIfRequired<InferDefault<Extract<Item, StringFormItem>, string>, Item>
-	: Item['type'] extends 'number'
-		? NonNullableIfRequired<InferDefault<Extract<Item, NumberFormItem>, number>, Item>
-	: Item['type'] extends 'boolean'
+	Item extends StringFormItem
+		? NonNullableIfRequired<InferDefault<Item, string>, Item>
+	: Item extends NumberFormItem
+		? NonNullableIfRequired<InferDefault<Item, number>, Item>
+	: Item extends BooleanFormItem
 		? boolean
-	: Item['type'] extends 'radio'
-		? GetRadioItemType<Extract<Item, RadioFormItem>>
-	: Item['type'] extends 'range'
-		? NonNullableIfRequired<InferDefault<Extract<Item, RangeFormItem>, number>, Item>
-	: Item['type'] extends 'enum'
-		? GetEnumItemType<Extract<Item, EnumFormItem>>
-	: Item['type'] extends 'array'
-		? NonNullableIfRequired<InferDefault<Extract<Item, ArrayFormItem>, unknown[]>, Item>
-	: Item['type'] extends 'object'
-		? NonNullableIfRequired<InferDefault<Extract<Item, ObjectFormItem>, Record<string, unknown>>, Item>
-	: Item['type'] extends 'drive-file'
+	: Item extends RadioFormItem
+		? GetRadioItemType<Item>
+	: Item extends RangeFormItem
+		? NonNullableIfRequired<InferDefault<RangeFormItem, number>, Item>
+	: Item extends EnumFormItem
+		? GetEnumItemType<Item>
+	: Item extends ArrayFormItem
+		? NonNullableIfRequired<InferDefault<ArrayFormItem, unknown[]>, Item>
+	: Item extends ObjectFormItem
+		? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
+	: Item extends DriveFileFormItem
 		? Misskey.entities.DriveFile | undefined
 	: never;
 
