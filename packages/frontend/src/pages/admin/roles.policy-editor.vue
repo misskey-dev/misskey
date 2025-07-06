@@ -72,9 +72,9 @@ const props = withDefaults(defineProps<{
 
 type RolePolicyEditorValueItem = {
 	value: GetRolePolicyEditorValuesType<typeof rolePolicyEditorDef[keyof typeof rolePolicyEditorDef]>;
-} & (
-	(UD extends true ? { useDefault: boolean } : never) &
-	(WP extends true ? { priority: 0 | 1 | 2 } : never)
+} | (
+	(UD extends true ? { useDefault: boolean } : Record<string, never>) |
+	(WP extends true ? { priority: 0 | 1 | 2 } : Record<string, never>)
 );
 
 type RolePolicyEditorValue = {
