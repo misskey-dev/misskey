@@ -128,7 +128,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+		<MkButton v-if="$i.policies.chatAvailability !== 'unavailable'" @click="readAllChatMessages">Read all chat messages</MkButton>
 
 		<hr>
 
