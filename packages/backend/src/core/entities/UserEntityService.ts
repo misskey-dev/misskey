@@ -69,6 +69,10 @@ function isRemoteUser(user: MiUser | { host: MiUser['host'] }): boolean {
 	return !isLocalUser(user);
 }
 
+function isSuspendedEither(user: MiUser): boolean {
+	return user.isSuspended || user.isRemoteSuspended;
+}
+
 export type UserRelation = {
 	id: MiUser['id']
 	following: MiFollowing | null,
@@ -163,6 +167,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public isLocalUser = isLocalUser;
 	public isRemoteUser = isRemoteUser;
+	public isSuspendedEither = isSuspendedEither;
 
 	@bindThis
 	public async getRelation(me: MiUser['id'], target: MiUser['id']): Promise<UserRelation> {
@@ -537,7 +542,7 @@ export class UserEntityService implements OnModuleInit {
 				bannerBlurhash: user.bannerId == null ? null : user.bannerBlurhash,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
-				isSuspended: user.isSuspended,
+				isSuspended: this.isSuspendedEither(user),
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,

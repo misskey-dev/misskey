@@ -254,7 +254,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				}
 				// サスペンド済みユーザである
 				case 'isSuspended': {
-					return user.isSuspended;
+					return this.userEntityService.isSuspendedEither(user);
 				}
 				// 鍵アカウントユーザである
 				case 'isLocked': {

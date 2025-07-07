@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
 							<span v-if="suspended" class="suspended">Suspended</span>
+							<span v-if="remoteSuspended" class="suspended">Suspended in Remote</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
 						</span>
@@ -254,6 +255,7 @@ const ap = ref<any>(null);
 const moderator = ref(false);
 const silenced = ref(false);
 const suspended = ref(false);
+const remoteSuspended = ref(false);
 const isSystem = ref(false);
 const moderationNote = ref('');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
@@ -288,6 +290,7 @@ function createFetcher() {
 		moderator.value = info.value.isModerator;
 		silenced.value = info.value.isSilenced;
 		suspended.value = info.value.isSuspended;
+		remoteSuspended.value = info.value.isRemoteSuspended;
 		moderationNote.value = info.value.moderationNote;
 		isSystem.value = user.value.host == null && user.value.username.includes('.');
 
