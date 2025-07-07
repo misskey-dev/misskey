@@ -32,7 +32,7 @@ import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import MarqueeText from '@/components/MkMarqueeText.vue';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { shuffle } from '@/utility/shuffle.js';
 import { url as base } from '@@/js/config.js';
@@ -42,41 +42,41 @@ const name = 'rssTicker';
 
 const widgetPropsDef = {
 	url: {
-		type: 'string' as const,
+		type: 'string',
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 	},
 	shuffle: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	refreshIntervalSec: {
-		type: 'number' as const,
+		type: 'number',
 		default: 60,
 	},
 	maxEntries: {
-		type: 'number' as const,
+		type: 'number',
 		default: 15,
 	},
 	duration: {
-		type: 'range' as const,
+		type: 'range',
 		default: 70,
 		step: 1,
 		min: 5,
 		max: 200,
 	},
 	reverse: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

@@ -64,6 +64,7 @@ async function create() {
 			default: false,
 		},
 	});
+
 	if (canceled) return;
 
 	os.apiWithDialog('clips/create', result);

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="label">
 		<slot name="label"></slot>
 	</div>
-	<div v-adaptive-border class="body">
+	<div v-adaptive-border class="body" :class="{ 'disabled': disabled }">
 		<slot name="prefix"></slot>
 		<div ref="containerEl" class="container">
 			<div class="track">
@@ -180,6 +180,8 @@ function onMouseenter() {
 let lastClickTime: number | null = null;
 
 function onMousedown(ev: MouseEvent | TouchEvent) {
+	if (props.disabled) return; // Prevent interaction if disabled
+
 	ev.preventDefault();
 
 	tooltipForDragShowing.value = true;
@@ -291,6 +293,11 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		background: var(--MI_THEME-panel);
 		border: solid 1px var(--MI_THEME-panel);
 		border-radius: 6px;
+
+		&.disabled {
+			pointer-events: none;
+			opacity: 0.6;
+		}
 
 		> .container {
 			flex: 1;
