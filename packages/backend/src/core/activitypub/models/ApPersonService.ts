@@ -393,6 +393,7 @@ export class ApPersonService implements OnModuleInit {
 					makeNotesFollowersOnlyBefore: (person as any).makeNotesFollowersOnlyBefore ?? null,
 					makeNotesHiddenBefore: (person as any).makeNotesHiddenBefore ?? null,
 					emojis,
+					isRemoteSuspended: person.suspended === true,
 				})) as MiRemoteUser;
 
 				let _description: string | null = null;
@@ -570,6 +571,7 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
+			isRemoteSuspended: person.suspended === true,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
