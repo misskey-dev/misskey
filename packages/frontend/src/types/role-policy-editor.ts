@@ -5,24 +5,24 @@
 import type { Component } from 'vue';
 import type { ROLE_POLICIES } from '@@/js/const.js';
 
-interface RolePolicyEditorItemBase<T = unknown> {
+interface RolePolicyDefItemBase<T extends unknown = any> {
 	searchTerms?: string[];
 	type: string;
-	folderLabel: string;
-	folderSuffix?: string | ((value: T) => string);
+	displayLabel: string;
+	displayValue?: string | ((value: T, full?: boolean) => string);
 	inputLabel?: string;
 	inputCaption?: string | Component;
 }
 
-export type RolePolicyEditorItemBaseFolderSuffixGetter = {
-	folderSuffix: (value: boolean | number | string) => string;
+export type RolePolicyDefItemBaseDisplayValueGetter = {
+	displayValue: (value: boolean | number | string, full?: boolean) => string;
 };
 
-interface RolePolicyEditorItemBoolean extends RolePolicyEditorItemBase<boolean> {
+interface RolePolicyDefItemBoolean extends RolePolicyDefItemBase<boolean> {
 	type: 'boolean';
 }
 
-interface RolePolicyEditorItemNumber extends RolePolicyEditorItemBase<number> {
+interface RolePolicyDefItemNumber extends RolePolicyDefItemBase<number> {
 	type: 'number';
 	min?: number;
 	max?: number;
@@ -30,7 +30,7 @@ interface RolePolicyEditorItemNumber extends RolePolicyEditorItemBase<number> {
 	inputSuffix?: string;
 }
 
-interface RolePolicyEditorItemRange extends RolePolicyEditorItemBase<number> {
+interface RolePolicyDefItemRange extends RolePolicyDefItemBase<number> {
 	type: 'range';
 	min: number;
 	max: number;
@@ -40,12 +40,12 @@ interface RolePolicyEditorItemRange extends RolePolicyEditorItemBase<number> {
 	inputSuffix?: string;
 }
 
-interface RolePolicyEditorItemString extends RolePolicyEditorItemBase<string> {
+interface RolePolicyDefItemString extends RolePolicyDefItemBase<string> {
 	type: 'string';
 	multiline?: boolean;
 }
 
-interface RolePolicyEditorItemEnum extends RolePolicyEditorItemBase<string> {
+interface RolePolicyDefItemEnum extends RolePolicyDefItemBase<string> {
 	type: 'enum';
 	enum: {
 		label: string;
@@ -53,30 +53,30 @@ interface RolePolicyEditorItemEnum extends RolePolicyEditorItemBase<string> {
 	}[];
 }
 
-export type RolePolicyEditorItem =
-	RolePolicyEditorItemBoolean |
-	RolePolicyEditorItemNumber |
-	RolePolicyEditorItemRange |
-	RolePolicyEditorItemString |
-	RolePolicyEditorItemEnum;
+export type RolePolicyDefItem =
+	RolePolicyDefItemBoolean |
+	RolePolicyDefItemNumber |
+	RolePolicyDefItemRange |
+	RolePolicyDefItemString |
+	RolePolicyDefItemEnum;
 
-export type RolePolicyEditorDef = Record<typeof ROLE_POLICIES[number], RolePolicyEditorItem>;
+export type RolePolicyDef = Record<typeof ROLE_POLICIES[number], RolePolicyDefItem>;
 
-export type GetRolePolicyEditorValuesType<T extends RolePolicyEditorItem> =
-	T extends RolePolicyEditorItemBoolean ? boolean :
-	T extends RolePolicyEditorItemNumber ? number :
-	T extends RolePolicyEditorItemRange ? number :
-	T extends RolePolicyEditorItemString ? string :
-	T extends RolePolicyEditorItemEnum ? T['enum'][number]['value'] :
+export type GetRolePolicyEditorValuesType<T extends RolePolicyDefItem> =
+	T extends RolePolicyDefItemBoolean ? boolean :
+	T extends RolePolicyDefItemNumber ? number :
+	T extends RolePolicyDefItemRange ? number :
+	T extends RolePolicyDefItemString ? string :
+	T extends RolePolicyDefItemEnum ? T['enum'][number]['value'] :
 	never;
 
-export type RolePolicyValueRecord<T extends Record<string, RolePolicyEditorItem>> = {
+export type RolePolicyValueRecord<T extends Record<string, RolePolicyDefItem>> = {
 	[K in keyof T]: {
 		value: GetRolePolicyEditorValuesType<T[K]>;
 	};
 };
 
-export type RolePolicySettingsRecord<T extends Record<string, RolePolicyEditorItem>> = {
+export type RolePolicySettingsRecord<T extends Record<string, RolePolicyDefItem>> = {
 	[K in keyof T]: {
 		value: GetRolePolicyEditorValuesType<T[K]>;
 		useDefault: boolean;

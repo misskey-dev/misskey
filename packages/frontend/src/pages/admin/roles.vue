@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type { RolePolicyRecord, RolePolicyValueRecord } from './roles.policy-editor.def.js';
+import type { RolePolicyRecord, RolePolicyValueRecord } from '@/utility/role-policy.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import XPolicyEditor from './roles.policy-editor.vue';

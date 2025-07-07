@@ -90,8 +90,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkSwitch>
 </template>
 
-<script lang="ts" setup generic="D extends RolePolicyEditorItem">
-import type { RolePolicyEditorItem, GetRolePolicyEditorValuesType } from '@/types/role-policy-editor.js';
+<script lang="ts" setup generic="D extends RolePolicyDefItem">
+import type { RolePolicyDefItem, GetRolePolicyEditorValuesType } from '@/types/role-policy-editor.js';
 import { i18n } from '@/i18n.js';
 
 import MkInput from '@/components/MkInput.vue';
@@ -108,7 +108,7 @@ const props = defineProps<{
 
 const model = defineModel<GetRolePolicyEditorValuesType<D>>({ required: true });
 
-function assertModelType<T extends RolePolicyEditorItem['type']>(m: unknown, type: T): m is GetRolePolicyEditorValuesType<Extract<RolePolicyEditorItem, { type: T }>> {
+function assertModelType<T extends RolePolicyDefItem['type']>(m: unknown, type: T): m is GetRolePolicyEditorValuesType<Extract<RolePolicyDefItem, { type: T }>> {
   return props.def.type === type;
 }
 </script>
