@@ -5,7 +5,7 @@
 import type { Component } from 'vue';
 import type { ROLE_POLICIES } from '@@/js/const.js';
 
-interface RolePolicyDefItemBase<T extends unknown = any> {
+interface RolePolicyDefItemBase<T = any> {
 	searchTerms?: string[];
 	type: string;
 	displayLabel: string;
