@@ -18,6 +18,7 @@ import { extractApHashtagObjects } from '@/core/activitypub/models/tag.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
+import { withRetry } from '@/misc/retry.js';
 import type * as Bull from 'bullmq';
 import type { DbNoteImportToDbJobData, DbNoteImportJobData, DbNoteWithParentImportToDbJobData } from '../types.js';
 
@@ -185,8 +186,15 @@ export class ImportNotesProcessorService {
 
 			try {
 				await fsp.writeFile(destPath, '', 'binary');
-				await this.downloadUrl(file.url, destPath);
-			} catch (e) { // TODO: 何度か再試行
+				await withRetry(
+					() => this.downloadUrl(file.url, destPath),
+					{
+						maxAttempts: 3,
+						delayMs: 2000,
+						logger: this.logger,
+					}
+				);
+			} catch (e) {
 				if (e instanceof Error || typeof e === 'string') {
 					this.logger.error(e);
 				}
@@ -215,8 +223,15 @@ export class ImportNotesProcessorService {
 
 			try {
 				await fsp.writeFile(destPath, '', 'binary');
-				await this.downloadUrl(file.url, destPath);
-			} catch (e) { // TODO: 何度か再試行
+				await withRetry(
+					() => this.downloadUrl(file.url, destPath),
+					{
+						maxAttempts: 3,
+						delayMs: 2000,
+						logger: this.logger,
+					}
+				);
+			} catch (e) {
 				if (e instanceof Error || typeof e === 'string') {
 					this.logger.error(e);
 				}
@@ -248,8 +263,15 @@ export class ImportNotesProcessorService {
 
 			try {
 				await fsp.writeFile(destPath, '', 'binary');
-				await this.downloadUrl(file.url, destPath);
-			} catch (e) { // TODO: 何度か再試行
+				await withRetry(
+					() => this.downloadUrl(file.url, destPath),
+					{
+						maxAttempts: 3,
+						delayMs: 2000,
+						logger: this.logger,
+					}
+				);
+			} catch (e) {
 				if (e instanceof Error || typeof e === 'string') {
 					this.logger.error(e);
 				}
@@ -306,8 +328,15 @@ export class ImportNotesProcessorService {
 
 			try {
 				await fsp.writeFile(path, '', 'utf-8');
-				await this.downloadUrl(file.url, path);
-			} catch (e) { // TODO: 何度か再試行
+				await withRetry(
+					() => this.downloadUrl(file.url, path),
+					{
+						maxAttempts: 3,
+						delayMs: 2000,
+						logger: this.logger,
+					}
+				);
+			} catch (e) {
 				if (e instanceof Error || typeof e === 'string') {
 					this.logger.error(e);
 				}
@@ -358,8 +387,15 @@ export class ImportNotesProcessorService {
 
 				if (!exists) {
 					try {
-						await this.downloadUrl(file.url, filePath);
-					} catch (e) { // TODO: 何度か再試行
+						await withRetry(
+							() => this.downloadUrl(file.url, filePath),
+							{
+								maxAttempts: 3,
+								delayMs: 2000,
+								logger: this.logger,
+							}
+						);
+					} catch (e) {
 						this.logger.error(e instanceof Error ? e : new Error(e as string));
 					}
 					const driveFile = await this.driveService.addFile({

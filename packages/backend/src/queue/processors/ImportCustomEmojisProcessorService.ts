@@ -16,6 +16,7 @@ import { DriveService } from '@/core/DriveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
+import { withRetry } from '@/misc/retry.js';
 import type * as Bull from 'bullmq';
 import type { DbUserImportJobData } from '../types.js';
 
@@ -58,8 +59,15 @@ export class ImportCustomEmojisProcessorService {
 
 		try {
 			fs.writeFileSync(destPath, '', 'binary');
-			await this.downloadService.downloadUrl(file.url, destPath);
-		} catch (e) { // TODO: 何度か再試行
+			await withRetry(
+				() => this.downloadService.downloadUrl(file.url, destPath),
+				{
+					maxAttempts: 3,
+					delayMs: 2000,
+					logger: this.logger,
+				}
+			);
+		} catch (e) {
 			if (e instanceof Error || typeof e === 'string') {
 				this.logger.error(e);
 			}

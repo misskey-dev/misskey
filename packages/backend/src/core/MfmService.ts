@@ -464,7 +464,7 @@ export class MfmService {
 				const el = doc.createElement('span');
 				const nodes = node.props.text.split(/\r\n|\r|\n/).map(x => doc.createTextNode(x));
 
-				for (const x of intersperse<FIXME | 'br'>('br', nodes)) {
+				for (const x of intersperse<Text | 'br'>('br', nodes)) {
 					el.appendChild(x === 'br' ? doc.createElement('br') : x);
 				}
 

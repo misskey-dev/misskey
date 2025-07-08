@@ -72,6 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (!role.canEditMembersByModerator && !(await this.roleService.isAdministrator(me))) {
+				// ここでisAdministratorはrootUserIdまたはAdminロールを持つユーザーを正しく判定する
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

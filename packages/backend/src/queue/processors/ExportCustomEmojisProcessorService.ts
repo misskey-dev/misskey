@@ -19,6 +19,7 @@ import { DownloadService } from '@/core/DownloadService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
+import { withRetry } from '@/misc/retry.js';
 import type * as Bull from 'bullmq';
 
 @Injectable()
@@ -98,9 +99,16 @@ export class ExportCustomEmojisProcessorService {
 			let downloaded = false;
 
 			try {
-				await this.downloadService.downloadUrl(emoji.originalUrl, emojiPath);
+				await withRetry(
+					() => this.downloadService.downloadUrl(emoji.originalUrl, emojiPath),
+					{
+						maxAttempts: 3,
+						delayMs: 2000,
+						logger: this.logger,
+					}
+				);
 				downloaded = true;
-			} catch (e) { // TODO: 何度か再試行
+			} catch (e) {
 				this.logger.error(e instanceof Error ? e : new Error(e as string));
 			}
 
