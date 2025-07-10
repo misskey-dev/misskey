@@ -571,18 +571,17 @@ export class UserEntityService implements OnModuleInit {
 				followingVisibility: profile!.followingVisibility,
 				chatScope: user.chatScope,
 				canChat: this.roleService.getUserPolicies(user.id).then(r => r.chatAvailability === 'available'),
-				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic && role.permissionGroup !== 'Community').sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic && !role.isCommunity).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
 					id: role.id,
 					name: role.name,
 					color: role.color,
 					iconUrl: role.iconUrl,
 					description: role.description,
-					permissionGroup: role.permissionGroup,
 					isModerator: role.isModerator,
 					isAdministrator: role.isAdministrator,
 					displayOrder: role.displayOrder,
 				}))),
-				communityRoles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.permissionGroup === 'Community').sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
+				communityRoles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isCommunity).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
 					id: role.id,
 					name: role.name,
 					color: role.color,

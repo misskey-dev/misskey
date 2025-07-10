@@ -279,9 +279,10 @@ describe('API', () => {
 			description: '',
 			displayOrder: 0,
 			iconUrl: '',
-			isAdministrator: false,permissionGroup: 'MainModerator',
-			isExplorable: false,
+			isAdministrator: false,
 			isModerator: false,
+			isCommunity: false,
+			isExplorable: false,
 			isPublic: false,
 			policies: {
 				ltlAvailable: {

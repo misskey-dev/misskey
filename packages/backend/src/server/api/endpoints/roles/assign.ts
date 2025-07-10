@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
-			if (role.permissionGroup !== 'Community') {
+			if (!role.isCommunity) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 			if (!role.isPublic) {

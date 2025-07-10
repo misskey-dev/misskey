@@ -490,13 +490,13 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async isModerator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin');
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
 	}
 
 	@bindThis
 	public async isAdministrator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.permissionGroup === 'Admin');
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
 	}
 
 	@bindThis
@@ -526,8 +526,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
 		const moderatorRoles = includeAdmins
-			? roles.filter(r => r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin')
-			: roles.filter(r => r.permissionGroup === 'MainModerator');
+			? roles.filter(r => r.isModerator || r.isAdministrator)
+			: roles.filter(r => r.isModerator);
 
 		const assigns = moderatorRoles.length > 0
 			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
@@ -569,7 +569,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async getAdministratorIds(): Promise<MiUser['id'][]> {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const administratorRoles = roles.filter(r => r.permissionGroup === 'Admin');
+		const administratorRoles = roles.filter(r => r.isAdministrator);
 		const assigns = administratorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
 			roleId: In(administratorRoles.map(r => r.id)),
 		}) : [];
@@ -707,7 +707,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			target: values.target,
 			condFormula: values.condFormula,
 			isPublic: values.isPublic,
-			permissionGroup: values.permissionGroup,
+			isAdministrator: values.isAdministrator,
+			isModerator: values.isModerator,
+			isCommunity: values.isCommunity,
 			isExplorable: values.isExplorable,
 			asBadge: values.asBadge,
 			preserveAssignmentOnMoveAccount: values.preserveAssignmentOnMoveAccount,

@@ -203,8 +203,6 @@ export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueActivedLessThan
 );
 
-export type RolePermissionGroupValue = 'Admin' | 'MainModerator' | 'Normal' | 'Community';
-
 @Entity('role')
 export class MiRole {
 	@PrimaryColumn(id())
@@ -265,18 +263,12 @@ export class MiRole {
 	@Column('boolean', {
 		default: false,
 	})
-	public isModerator: boolean; // 後方互換
+	public isModerator: boolean;
 
 	@Column('boolean', {
 		default: false,
 	})
-	public isAdministrator: boolean; // 後方互換
-
-	@Column('enum', {
-		enum: ['Admin', 'MainModerator', 'Normal', 'Community'],
-		default: 'Normal',
-	})
-	public permissionGroup: RolePermissionGroupValue;
+	public isAdministrator: boolean;
 
 	@Column('boolean', {
 		default: false,
@@ -308,11 +300,9 @@ export class MiRole {
 		value: any;
 	}>;
 
-	@Column({
-		...id(),
-		nullable: true,
-		comment: 'The owner ID.',
-		default: null,
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether this role was created by community users (not admins)',
 	})
-	public userId: MiUser['id'] | null; // nullはCommunity外
+	public isCommunity: boolean;
 }

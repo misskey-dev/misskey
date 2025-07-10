@@ -50,6 +50,7 @@ if (props.id) {
 	data.value = {
 		name: 'New Role',
 		description: '',
+		isCommunity: false,
 		isAdministrator: false,
 		isModerator: false,
 		color: null,

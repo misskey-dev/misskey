@@ -58,10 +58,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const roles = ps.assignedOnly
-				? await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.permissionGroup === 'Community'))
+				? await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.isCommunity))
 				: await this.rolesRepository.findBy({
 					...(ps.communityOnly || ps.communityPublicOnly ? {
-						permissionGroup: 'Community',
+						isCommunity: true,
 						...(ps.communityPublicOnly ? {
 							isPublic: true,
 						} : {}),

@@ -89,11 +89,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				asBadge: ps.asBadge,
 				isPublic: ps.isPublic,
 				isExplorable: ps.isExplorable,
-				permissionGroup: 'Community',
+				isCommunity: true,
+				isAdministrator: false,
+				isModerator: false,
 				canEditMembersByModerator: true,
 				displayOrder: 0,
 				policies: {},
-				userId: me.id,
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.globalEventService.publishInternalEvent('roleCreated', created);

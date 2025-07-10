@@ -346,6 +346,7 @@ export function role(params: {
 	color?: string | null,
 	iconUrl?: string | null,
 	description?: string,
+	isCommunity?: boolean,
 	isModerator?: boolean,
 	isAdministrator?: boolean,
 	displayOrder?: number,

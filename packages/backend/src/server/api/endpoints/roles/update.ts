@@ -76,11 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
-			if (role.permissionGroup !== 'Community') {
+			if (!role.isCommunity) {
 				throw new ApiError(meta.errors.accessDenied);
-			}
-			if (role.userId != null && role.userId !== me.id) {
-				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
 			}
 
 			const date = new Date();

@@ -33,10 +33,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSelect v-model="rolePermission" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
-		<option value="Normal">{{ i18n.ts.normalUser }}</option>
-		<option value="MainModerator">{{ i18n.ts.moderator }}</option>
-		<option value="Admin">{{ i18n.ts.administrator }}</option>
-		<option value="Community">{{ i18n.ts.community }}</option>
+		<option value="normal">{{ i18n.ts.normalUser }}</option>
+		<option value="moderator">{{ i18n.ts.moderator }}</option>
+		<option value="administrator">{{ i18n.ts.administrator }}</option>
+		<option value="community">{{ i18n.ts.community }}</option>
 	</MkSelect>
 
 	<MkSelect v-model="role.target" :readonly="readonly">
@@ -1092,9 +1092,16 @@ function updateAvatarDecorationLimit(value: string | number) {
 }
 
 const rolePermission = computed({
-	get: () => role.value.permissionGroup,
+	get: () => {
+		if (role.value.isCommunity) return 'community';
+		if (role.value.isAdministrator) return 'administrator';
+		if (role.value.isModerator) return 'moderator';
+		return 'normal';
+	},
 	set: (val) => {
-		role.value.permissionGroup = val;
+		role.value.isCommunity = val === 'community';
+		role.value.isAdministrator = val === 'administrator';
+		role.value.isModerator = val === 'moderator';
 	},
 });
 
@@ -1120,7 +1127,9 @@ const save = throttle(100, () => {
 		displayOrder: role.value.displayOrder,
 		target: role.value.target,
 		condFormula: role.value.condFormula,
-		permissionGroup: role.value.permissionGroup,
+		isModerator: role.value.isModerator,
+		isAdministrator: role.value.isAdministrator,
+		isCommunity: role.value.isCommunity,
 		isPublic: role.value.isPublic,
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,

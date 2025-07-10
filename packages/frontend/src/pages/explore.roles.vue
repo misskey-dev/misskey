@@ -48,10 +48,10 @@ const canAddRoles = computed(() => {
 });
 
 misskeyApi('roles/list').then(res => {
-	const roles = res.sort((a, b) => b.displayOrder - a.displayOrder);
-	rolesManual.value = roles.filter(x => x.target === 'manual' && x.permissionGroup !== 'Community');
-	rolesConditional.value = roles.filter(x => x.target === 'conditional' && x.permissionGroup !== 'Community');
-	rolesCommunity.value = roles.filter(x => x.permissionGroup === 'Community');
+  const roles = res.sort((a, b) => b.displayOrder - a.displayOrder);
+  rolesManual.value = roles.filter(x => x.target === 'manual' && !x.isCommunity);
+  rolesConditional.value = roles.filter(x => x.target === 'conditional' && !x.isCommunity);
+  rolesCommunity.value = roles.filter(x => x.isCommunity);
 });
 
 function createRole() {
@@ -71,10 +71,9 @@ function createRole() {
 </script>
 
 <style lang="scss" module>
-	.roleGrid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		grid-gap: var(--margin);
-	}
+.roleGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	grid-gap: var(--margin);
+}
 </style>
-

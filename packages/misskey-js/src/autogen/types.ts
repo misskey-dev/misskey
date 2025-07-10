@@ -1474,7 +1474,8 @@ export type paths = {
          * admin/reject-user
          * @description No description provided.
          *
-         *     **Credential required**: *Yes*
+         *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+         *     **Credential required**: *Yes* / **Permission**: *write:admin:reject-account*
          */
         post: operations['admin___reject-user'];
         delete?: never;
@@ -16969,8 +16970,10 @@ export interface operations {
                     target: 'manual' | 'conditional';
                     condFormula: Record<string, never>;
                     isPublic: boolean;
-                    /** @enum {string} */
-                    permissionGroup: 'Admin' | 'MainModerator' | 'Normal' | 'Community';
+                    isModerator: boolean;
+                    isAdministrator: boolean;
+                    /** @default false */
+                    isCommunity: boolean;
                     /** @default false */
                     isExplorable?: boolean;
                     asBadge: boolean;
@@ -17337,8 +17340,9 @@ export interface operations {
                     target?: 'manual' | 'conditional';
                     condFormula?: Record<string, never>;
                     isPublic?: boolean;
-                    /** @enum {string} */
-                    permissionGroup?: 'Admin' | 'MainModerator' | 'Normal' | 'Community';
+                    isCommunity?: boolean;
+                    isModerator?: boolean;
+                    isAdministrator?: boolean;
                     isExplorable?: boolean;
                     asBadge?: boolean;
                     preserveAssignmentOnMoveAccount?: boolean;
