@@ -106,6 +106,32 @@ function getCompressionSettings(level: 0 | 1 | 2 | 3) {
 	}
 }
 
+// tar.gzなど、拡張子内にドットを2つまで許容するものはここに追加
+const specialExtensions = [
+	'gz',
+	'bz2',
+	'xz',
+	'zst',
+	'lz',
+	'lz4',
+	'sz',
+	'z',
+	'zstd',
+] as const;
+
+function getExtension(filename: string): string {
+	const parts = filename.split('.');
+
+	if (parts.length <= 1) return '';
+
+	for (const ext of specialExtensions) {
+		if (parts[parts.length - 1] === ext && parts.length > 2) {
+			return '.' + parts[parts.length - 2] + '.' + parts[parts.length - 1];
+		}
+	}
+	return '.' + parts.pop();
+}
+
 export function useUploader(options: {
 	folderId?: string | null;
 	multiple?: boolean;
@@ -130,7 +156,7 @@ export function useUploader(options: {
 	function initializeFile(file: File) {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
-		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+		const extension = getExtension(filename);
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
