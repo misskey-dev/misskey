@@ -158,6 +158,7 @@ import { userPage } from '@/filters/user.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
@@ -273,7 +274,7 @@ function putStone(pos: number) {
 		playbackRate: 1,
 	});
 
-	const id = Math.random().toString(36).slice(2);
+	const id = genId();
 	props.connection!.send('putStone', {
 		pos: pos,
 		id,
