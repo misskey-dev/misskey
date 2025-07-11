@@ -17,7 +17,6 @@ import { instanceName as localInstanceName } from '@@/js/config.js';
 import type { CSSProperties } from 'vue';
 import { instance as localInstance } from '@/instance.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
-import { getTickerColors } from '@/components/MkInstanceTicker.impl.js';
 
 const props = defineProps<{
 	host: string | null;
