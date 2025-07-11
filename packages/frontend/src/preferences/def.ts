@@ -351,6 +351,12 @@ export const PREF_DEF = definePreferences({
 	useNativeUiForVideoAudioPlayer: {
 		default: false,
 	},
+	// For historical reasons and serialization problems, imageCompressionMode and imageResizeSize
+	// will represent one value together.
+	// The 'Compress' or 'CompressLossy' part of imageCompressionMode will represent whether the image will be compressed losslessly or lossy for lossless images.
+	// The 'resize' or 'noResize' part of imageCompressionMode and imageResizeSize will represent the target size of the image.
+	//   If imageCompressionMode starts with 'noResize', the target size will be positive infinity, iow no resizing will be done.
+	//   If imageCompressionMode starts with 'resize', the target size will be imageResize
 	imageCompressionMode: {
 		default: 'noResizeCompress' as 'resizeCompress' | 'noResizeCompress' | 'resizeCompressLossy' | 'noResizeCompressLossy',
 	},
@@ -433,9 +439,12 @@ export const PREF_DEF = definePreferences({
 		accountDependent: true,
 		default: null as WatermarkPreset['id'] | null,
 	},
+	// This fork does not use defaultImageCompressionLevel, use imageCompressionMode and imageResizeSize instead
+	/*
 	defaultImageCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},
+	 */
 
 	'sound.masterVolume': {
 		default: 0.5,

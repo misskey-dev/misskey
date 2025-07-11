@@ -17,6 +17,7 @@ import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
+import { imageCompressionTargetSizes } from '@/utility/image-compression';
 
 export type UploaderFeatures = {
 	effect?: boolean;
@@ -76,7 +77,14 @@ export type UploaderItem = {
 	uploaded: Misskey.entities.DriveFile | null;
 	uploadFailed: boolean;
 	aborted: boolean;
-	compressionLevel: 0 | 1 | 2 | 3;
+	// image file information
+	isLosslessFile?: boolean; // 入力画像ファイルがロスレスかどうか
+	// lossyWhenResize: recompress lossy when resizing the image
+	// lossy: always recompress the image lossy
+	// compress: always recompress the image losslessly
+	compressMode: 'lossyWhenResize' | 'lossy' | 'lossless';
+	imageResizeSize: number;
+	//compressionLevel: 0 | 1 | 2 | 3;
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
@@ -104,6 +112,37 @@ function getCompressionSettings(level: 0 | 1 | 2 | 3) {
 	} else {
 		return null;
 	}
+}
+
+const isLosslessMap: { [P in typeof IMAGE_COMPRESSION_SUPPORTED_TYPES[number]]: boolean } = {
+	'image/jpeg': false,
+	'image/png': true,
+	'image/webp': false,
+	'image/svg+xml': false,
+} as const;
+
+async function isLosslessWebp(file: Blob): Promise<boolean> {
+	// file header
+	//   'RIFF': u32 @ 0x00
+	//   file size: u32 @ 0x04
+	//   'WEBP': u32 @ 0x08
+	// for simple lossless
+	//   'VP8L': u32 @ 0x0C
+	// so read 16 bytes and check those three magic numbers
+	const buffer = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+
+	const header = 'RIFF\x00\x00\x00\x00WEBPVP8L';
+	for (let i = 0; i < header.length; i++) {
+		const code = header.charCodeAt(i);
+		if (code === 0) continue;
+		if (buffer[i] !== code) return false;
+	}
+	return true;
+}
+
+async function isLossLess(file: Blob): Promise<boolean> {
+	if (file.type === 'image/webp' && await isLosslessWebp(file)) return true;
+	return isLosslessMap[file.type] ?? false;
 }
 
 // tar.gzなど、拡張子内にドットを2つまで許容するものはここに追加
@@ -153,10 +192,11 @@ export function useUploader(options: {
 
 	const items = ref<UploaderItem[]>([]);
 
-	function initializeFile(file: File) {
+	async function initializeFile(file: File) {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
 		const extension = getExtension(filename);
+		const isLosslessFile = await isLossLess(file);
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
@@ -167,7 +207,12 @@ export function useUploader(options: {
 			aborted: false,
 			uploaded: null,
 			uploadFailed: false,
-			compressionLevel: prefer.s.defaultImageCompressionLevel,
+			isLosslessFile,
+			compressMode: isLosslessFile
+				? (prefer.s.imageCompressionMode.endsWith('CompressLossy') ? 'lossy' : 'lossless')
+				: 'lossyWhenResize', // for lossy images, we only compress when resizing
+			imageResizeSize: prefer.s.imageCompressionMode.startsWith('resize') ? prefer.s.imageResizeSize : Number.POSITIVE_INFINITY,
+			//compressionLevel: prefer.s.defaultImageCompressionLevel,
 			watermarkPresetId: uploaderFeatures.value.watermark ? prefer.s.defaultWatermarkPresetId : null,
 			file: markRaw(file),
 		});
@@ -340,6 +385,61 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
+			// this fork uses imageCompressionMode and imageResizeSize instead of compressionLevel
+			function changeImageResizeSize(size: number) {
+				item.imageResizeSize = size;
+				preprocess(item).then(() => {
+					triggerRef(items);
+				});
+			}
+
+			// for lossless images, we can choose lossy or lossless compression
+			// for lossy images, we don't provide way to recompress without resizing, for now
+			if (item.isLosslessFile) {
+				const imageCompressionLossy = computed({
+					get: () => item.compressMode === 'lossy',
+					set: (value) => {
+						item.compressMode = value ? 'lossy' : 'lossless';
+						preprocess(item).then(() => {
+							triggerRef(items);
+						});
+					},
+				});
+
+				menu.push({
+					type: 'switch',
+					text: i18n.ts._imageCompressionMode.compressLossy,
+					icon: 'ti ti-eye-exclamation',
+					ref: imageCompressionLossy,
+				});
+			}
+
+			menu.push({
+				icon: 'ti ti-leaf',
+				text: computed(() => {
+					if (item.imageResizeSize === Number.POSITIVE_INFINITY) {
+						return i18n.ts._imageCompressionMode.imageResizeTargetUnlimited;
+					} else {
+						return i18n.tsx._imageCompressionMode.imageResizeTargetSized({ size: item.imageResizeSize });
+					}
+				}),
+				type: 'parent',
+				children: [{
+					type: 'radioOption',
+					text: i18n.ts._imageCompressionMode.unlimitedResolution,
+					active: computed(() => item.imageResizeSize === Number.POSITIVE_INFINITY),
+					action: () => changeImageResizeSize(Number.POSITIVE_INFINITY),
+				}, {
+					type: 'divider',
+				}, ...imageCompressionTargetSizes.map((size) => ({
+					type: 'radioOption',
+					text: `${size}x${size}`,
+					active: computed(() => item.imageResizeSize === size),
+					action: () => changeImageResizeSize(size),
+				} satisfies MenuItem))],
+			});
+
+			/*
 			function changeCompressionLevel(level: 0 | 1 | 2 | 3) {
 				item.compressionLevel = level;
 				preprocess(item).then(() => {
@@ -389,6 +489,7 @@ export function useUploader(options: {
 					action: () => changeCompressionLevel(3),
 				}],
 			});
+			 */
 		}
 
 		if (!item.preprocessing && !item.uploading && !item.uploaded) {
@@ -545,15 +646,30 @@ export function useUploader(options: {
 			});
 		}
 
-		const compressionSettings = getCompressionSettings(item.compressionLevel);
-		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
+		const needsCompress = IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile)) && (
+			item.compressMode !== 'lossyWhenResize' // Compression is requested
+			|| item.imageResizeSize < Number.POSITIVE_INFINITY // Resize is requested
+		);
 
 		if (needsCompress) {
+			const compressLossy = item.compressMode === 'lossy' || item.compressMode === 'lossyWhenResize';
+			const { compressedFormat, compressedQuality } = isWebpSupported()
+				? {
+					compressedFormat: 'image/webp',
+					compressedQuality: compressLossy ? 0.85 : 1.0,
+				} : compressLossy ? {
+					compressedFormat: 'image/jpeg',
+					compressedQuality: 0.8,
+				} : {
+					compressedFormat: 'image/png',
+					compressedQuality: 1.0,
+				};
+
 			const config = {
-				mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
-				maxWidth: compressionSettings.maxWidth,
-				maxHeight: compressionSettings.maxHeight,
-				quality: isWebpSupported() ? 0.85 : 0.8,
+				mimeType: compressedFormat,
+				maxWidth: item.imageResizeSize,
+				maxHeight: item.imageResizeSize,
+				quality: compressedQuality,
 			};
 
 			try {

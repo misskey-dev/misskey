@@ -2833,18 +2833,19 @@ _abuseReport:
     deleteConfirm: "通知先を削除しますか？"
 
 _imageCompressionMode:
-  title: "画像の圧縮形式"
-  description: "オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。"
-  imageResize: "画像を縮小する"
-  imageResizeDescription: "縮小する場合は設定値以下になるように縮小されます。縮小処理でファイルサイズが大きくなってしまう場合は元の画像が利用されます。"
-  imageCompressionLossy: "画像を常に非可逆圧縮する"
-  imageCompressionLossyDescription: "非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。"
-  _imageResizeSize:
-    title: "画像縮小時の解像度"
-    max2048: "2048x2048"
-    max2560: "2560x2560"
-    max4096: "4096x4096"
-    max8192: "8192x8192"
+  # settings page
+  title: "画像圧縮のデフォルト設定"
+  description: "アップロードする画像の圧縮方法のデフォルト設定を選択します。"
+  maxImageResolution: "画像の解像度"
+  maxImageResolutionDescription: "アップロードする画像の最大解像度を選択します。もし画像の解像度が設定値を超える場合、この設定に従って縮小されます。"
+  compressImageLossy: "画像を常に非可逆圧縮する"
+  compressImageLossyDescription: "可逆圧縮の画像を非可逆圧縮するかどうかを選択します。非可逆圧縮はファイルサイズを小さくできますが、画質が劣化します。"
+  # upload dialog
+  imageResizeTargetSized: "画像の大きさ: {size}x{size} 以下"
+  imageResizeTargetUnlimited: "画像の大きさ: 無制限"
+  compressLossy: "非可逆圧縮を使用する"
+  # commonly used in resolution selector
+  unlimitedResolution: "無制限"
 
 _moderationLogTypes:
   createRole: "ロールを作成"

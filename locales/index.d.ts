@@ -10695,51 +10695,45 @@ export interface Locale extends ILocale {
     };
     "_imageCompressionMode": {
         /**
-         * 画像の圧縮形式
+         * 画像圧縮のデフォルト設定
          */
         "title": string;
         /**
-         * オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。
+         * アップロードする画像の圧縮方法のデフォルト設定を選択します。
          */
         "description": string;
         /**
-         * 画像を縮小する
+         * 画像の解像度
          */
-        "imageResize": string;
+        "maxImageResolution": string;
         /**
-         * 縮小する場合は設定値以下になるように縮小されます。縮小処理でファイルサイズが大きくなってしまう場合は元の画像が利用されます。
+         * アップロードする画像の最大解像度を選択します。もし画像の解像度が設定値を超える場合、この設定に従って縮小されます。
          */
-        "imageResizeDescription": string;
+        "maxImageResolutionDescription": string;
         /**
          * 画像を常に非可逆圧縮する
          */
-        "imageCompressionLossy": string;
+        "compressImageLossy": string;
         /**
-         * 非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。
+         * 可逆圧縮の画像を非可逆圧縮するかどうかを選択します。非可逆圧縮はファイルサイズを小さくできますが、画質が劣化します。
          */
-        "imageCompressionLossyDescription": string;
-        "_imageResizeSize": {
-            /**
-             * 画像縮小時の解像度
-             */
-            "title": string;
-            /**
-             * 2048x2048
-             */
-            "max2048": string;
-            /**
-             * 2560x2560
-             */
-            "max2560": string;
-            /**
-             * 4096x4096
-             */
-            "max4096": string;
-            /**
-             * 8192x8192
-             */
-            "max8192": string;
-        };
+        "compressImageLossyDescription": string;
+        /**
+         * 画像の大きさ: {size}x{size} 以下
+         */
+        "imageResizeTargetSized": ParameterizedString<"size" | "size">;
+        /**
+         * 画像の大きさ: 無制限
+         */
+        "imageResizeTargetUnlimited": string;
+        /**
+         * 非可逆圧縮を使用する
+         */
+        "compressLossy": string;
+        /**
+         * 無制限
+         */
+        "unlimitedResolution": string;
     };
     "_moderationLogTypes": {
         /**
