@@ -1,3 +1,12 @@
+## Unreleased
+
+### General
+
+### Client
+- Fix: Pull to refreshが有効なときに横スクロールができない問題を修正
+
+### Server
+
 ## 2025.5.0-kinel.1
 
 ### Client
