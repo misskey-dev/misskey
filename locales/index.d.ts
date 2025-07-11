@@ -8244,9 +8244,9 @@ export interface Locale extends ILocale {
              */
             "canViewCharts": string;
             /**
-             * コミュニティーロールの追加
+             * コミュニティーロールの編集
              */
-            "canAddRoles": string;
+            "canEditCommunityRoles": string;
             /**
              * アップロード可能なファイル種別
              */

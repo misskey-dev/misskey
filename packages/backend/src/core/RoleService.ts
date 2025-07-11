@@ -78,7 +78,7 @@ export type RolePolicies = {
 	canUseBlockedNotification: boolean;
 	canUseUnBlockedNotification: boolean;
 	canViewCharts: boolean;
-	canAddRoles: boolean;
+	canEditCommunityRoles: boolean;
 	uploadableFileTypes: string[];
 };
 
@@ -129,7 +129,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canUseBlockedNotification: false,
 	canUseUnBlockedNotification: false,
 	canViewCharts: false,
-	canAddRoles: false,
+	canEditCommunityRoles: false,
 	uploadableFileTypes: [
 		'text/plain',
 		'application/json',
@@ -473,7 +473,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canUseBlockedNotification: calc('canUseBlockedNotification', vs => vs.some(v => v === true)),
 			canUseUnBlockedNotification: calc('canUseUnBlockedNotification', vs => vs.some(v => v === true)),
 			canViewCharts: calc('canViewCharts', vs => vs.some(v => v === true)),
-			canAddRoles: calc('canAddRoles', vs => vs.some(v => v === true)),
+			canEditCommunityRoles: calc('canEditCommunityRoles', vs => vs.some(v => v === true)),
 			uploadableFileTypes: calc('uploadableFileTypes', vs => {
 				const set = new Set<string>();
 				for (const v of vs) {

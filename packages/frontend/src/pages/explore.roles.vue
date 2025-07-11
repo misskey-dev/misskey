@@ -5,28 +5,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-    <MkFoldableSection>
-        <template #header>{{ i18n.ts._role.manual + " " + i18n.ts.roles }}</template>
-        <div :class="$style.roleGrid">
-            <MkRolePreview v-for="role in rolesManual" :key="role.id" :role="role" :forModeration="false"/>
-        </div>
-    </MkFoldableSection>
-    <MkFoldableSection>
-        <template #header>{{ i18n.ts._role.conditional + " " + i18n.ts.roles }}</template>
-        <div :class="$style.roleGrid">
-            <MkRolePreview v-for="role in rolesConditional" :key="role.id" :role="role" :forModeration="false"/>
-        </div>
-    </MkFoldableSection>
-    <MkFoldableSection>
-        <template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
-        <div :class="$style.roleGrid">
-            <MkRolePreview v-for="role in rolesCommunity" :key="role.id" :role="role" :forModeration="false"/>
-        </div>
-    </MkFoldableSection>
-    <!-- 権限がある場合のみ表示 -->
-    <MkButton v-if="canAddRoles" primary rounded @click="createRole">
-        <i class="ti ti-plus"></i> {{ i18n.ts._role.new }}
-    </MkButton>
+	<MkFoldableSection>
+		<template #header>{{ i18n.ts._role.manual + " " + i18n.ts.roles }}</template>
+		<div :class="$style.roleGrid">
+			<MkRolePreview v-for="role in rolesManual" :key="role.id" :role="role" :forModeration="false"/>
+		</div>
+	</MkFoldableSection>
+	<MkFoldableSection>
+		<template #header>{{ i18n.ts._role.conditional + " " + i18n.ts.roles }}</template>
+		<div :class="$style.roleGrid">
+			<MkRolePreview v-for="role in rolesConditional" :key="role.id" :role="role" :forModeration="false"/>
+		</div>
+	</MkFoldableSection>
+	<MkFoldableSection>
+		<template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
+		<div :class="$style.roleGrid">
+			<MkRolePreview v-for="role in rolesCommunity" :key="role.id" :role="role" :forModeration="false"/>
+		</div>
+	</MkFoldableSection>
+	<!-- 権限がある場合のみ表示 -->
+	<MkButton v-if="canEditCommunityRoles" primary rounded @click="createRole">
+		<i class="ti ti-plus"></i> {{ i18n.ts._role.new }}
+	</MkButton>
 </div>
 </template>
 
@@ -43,20 +43,20 @@ import { $i } from '@/i.js';
 const rolesManual = ref<Misskey.entities.Role[] | null>(null);
 const rolesConditional = ref<Misskey.entities.Role[] | null>(null);
 const rolesCommunity = ref<Misskey.entities.Role[] | null>(null);
-const canAddRoles = computed(() => {
-	return $i && $i.policies.canAddRoles;
+const canEditCommunityRoles = computed(() => {
+	return $i && $i.policies.canEditCommunityRoles;
 });
 
 misskeyApi('roles/list').then(res => {
-  const roles = res.sort((a, b) => b.displayOrder - a.displayOrder);
-  rolesManual.value = roles.filter(x => x.target === 'manual' && !x.isCommunity);
-  rolesConditional.value = roles.filter(x => x.target === 'conditional' && !x.isCommunity);
-  rolesCommunity.value = roles.filter(x => x.isCommunity);
+	const roles = res.sort((a, b) => b.displayOrder - a.displayOrder);
+	rolesManual.value = roles.filter(x => x.target === 'manual' && !x.isCommunity);
+	rolesConditional.value = roles.filter(x => x.target === 'conditional' && !x.isCommunity);
+	rolesCommunity.value = roles.filter(x => x.isCommunity);
 });
 
 function createRole() {
-	// 権限チェック - 権限がない場合は実行しない
-	if (!canAddRoles.value) {
+	// 権限チェック - 編集権限がない場合は実行しない
+	if (!canEditCommunityRoles.value) {
 		os.alert({
 			type: 'error',
 			title: i18n.ts.error,

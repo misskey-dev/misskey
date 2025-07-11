@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.name.trim().length === 0) throw new ApiError(meta.errors.emptyName);
 
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
-			if (!policies.canAddRoles) {
+			if (!policies.canEditCommunityRoles) {
 				throw new ApiError(meta.errors.notAllowed);
 			}
 

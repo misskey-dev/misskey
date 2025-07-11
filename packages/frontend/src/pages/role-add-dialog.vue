@@ -4,12 +4,7 @@
  */
 
 <template>
-<MkModalWindow
-	ref="dialog"
-	:width="400"
-	@close="dialog.close()"
-	@closed="$emit('closed')"
->
+<MkModalWindow ref="dialog" :width="400" @close="dialog.close()" @closed="$emit('closed')">
 	<template v-if="!props.role" #header>
 		<div :class="$style.header">
 			<span>{{ i18n.ts.communityRole }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></span>
@@ -19,30 +14,33 @@
 	<template v-else #header>{{ i18n.ts.changes }}</template>
 
 	<div v-if="tab === 'add'">
-			<div class="_gaps_m">
-				<div v-if="iconUrl != null" :class="$style.imgs">
-					<div :class="$style.imgContainer">
-						<img :src="iconUrl" :class="$style.img"/>
-					</div>
+		<div class="_gaps_m">
+			<div v-if="iconUrl != null" :class="$style.imgs">
+				<div :class="$style.imgContainer">
+					<img :src="iconUrl" :class="$style.img"/>
 				</div>
-				<MkInput v-model="name">
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkTextarea v-model="description">
-					<template #label>{{ i18n.ts.description }}</template>
-				</MkTextarea>
-				<MkColorInput v-model="color">
-					<template #label>{{ i18n.ts.color }}</template>
-				</MkColorInput>
-				<MkInput v-model="iconUrl" type="url">
-					<template #label>{{ i18n.ts._role.iconUrl }}</template>
-				</MkInput>
-				<MkSwitch v-model="asBadge">{{ i18n.ts._role.asBadge }}</MkSwitch>
-				<MkSwitch v-model="isPublic">{{ i18n.ts._role.isPublic }}</MkSwitch>
-				<MkSwitch v-model="isExplorable">{{ i18n.ts._role.isExplorable }}</MkSwitch>
 			</div>
+			<MkInput v-model="name">
+				<template #label>{{ i18n.ts.name }}</template>
+			</MkInput>
+			<MkTextarea v-model="description">
+				<template #label>{{ i18n.ts.description }}</template>
+			</MkTextarea>
+			<MkColorInput v-model="color">
+				<template #label>{{ i18n.ts.color }}</template>
+			</MkColorInput>
+			<MkInput v-model="iconUrl" type="url">
+				<template #label>{{ i18n.ts._role.iconUrl }}</template>
+			</MkInput>
+			<MkSwitch v-model="asBadge">{{ i18n.ts._role.asBadge }}</MkSwitch>
+			<MkSwitch v-model="isPublic">{{ i18n.ts._role.isPublic }}</MkSwitch>
+			<MkSwitch v-model="isExplorable">{{ i18n.ts._role.isExplorable }}</MkSwitch>
+		</div>
 		<div :class="$style.footer">
-			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.role ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" @click="done">
+				<i class="ti ti-check"></i> {{ props.role ?
+					i18n.ts.update : i18n.ts.create }}
+			</MkButton>
 		</div>
 	</div>
 
@@ -96,27 +94,38 @@ const isPublic = ref(props.role ? props.role.isPublic : true);
 const asBadge = ref(props.role ? props.role.asBadge : false);
 const iconUrl = ref(props.role ? props.role.iconUrl : null); // iconUrl 変数を追加
 
-let assignedList = [];
-let roleList = [];
+const assignedList = ref([]); // 修正: リアクティブにする
+const roleList = ref([]); // 修正: リアクティブにする
 
-const rolesAssigned = computed(() => assignedList);
-const roles = computed(() => roleList);
+const rolesAssigned = computed(() => assignedList.value);
+const roles = computed(() => roleList.value);
 
-// ユーザーの権限チェックのみを使用
-const canAddRolesPermission = computed(() => {
-	return $i && $i.policies.canAddRoles;
+// ユーザーの権限チェック - 編集権限のみをチェック
+const canEditCommunityRoles = computed(() => {
+	return $i && $i.policies.canEditCommunityRoles;
 });
 
 // タブ定義を権限に応じて変更
 const headerTabs = computed(() => {
 	const tabs = [];
 
-	// 編集モードか権限がある場合は add タブを表示
-	if (props.role || canAddRolesPermission.value) {
-		tabs.push({
-			key: 'add',
-			title: i18n.ts.add,
-		});
+	// 編集タブは編集権限または所有者のみ表示
+	if (props.role) {
+		// 編集モード: 編集権限または所有者のみ編集タブを表示
+		if (canEditCommunityRoles.value || props.role.isOwner) {
+			tabs.push({
+				key: 'add',
+				title: i18n.ts.add,
+			});
+		}
+	} else {
+		// 新規作成モード: 編集権限のみで新規作成タブを表示
+		if (canEditCommunityRoles.value) {
+			tabs.push({
+				key: 'add',
+				title: i18n.ts.add,
+			});
+		}
 	}
 
 	// 「管理」タブは常に表示
@@ -128,35 +137,44 @@ const headerTabs = computed(() => {
 	return tabs;
 });
 
-// 初期タブを権限に応じて設定（編集時は必ず'add'タブ）
-const tab = ref(props.role ? 'add' : (canAddRolesPermission.value ? 'add' : 'manage'));
+// 初期タブを権限に応じて設定
+const getInitialTab = () => {
+	if (props.role) {
+		// 編集モード: 編集権限または所有者の場合は'add'タブ、それ以外は'manage'タブ
+		return (canEditCommunityRoles.value || props.role.isOwner) ? 'add' : 'manage';
+	} else {
+		// 新規作成モード: 編集権限がある場合は'add'タブ、それ以外は'manage'タブ
+		return canEditCommunityRoles.value ? 'add' : 'manage';
+	}
+};
+
+const tab = ref(getInitialTab());
 
 // タブの状態を監視し、権限に応じて調整
-watch(() => canAddRolesPermission.value, (hasPermission) => {
-	// 編集モードか権限がある場合は add タブを表示
-	if (props.role || hasPermission) {
-		if (!headerTabs.value.some(tab => tab.key === 'add')) {
-			// 権限が付与されたら動的にタブを追加
-			headerTabs.value.unshift({
-				key: 'add',
-				title: i18n.ts.add,
-			});
-			// 権限が付与されたので初期タブも変更
-			if (!props.role) tab.value = 'add';
+watch(() => canEditCommunityRoles.value, (hasEditPermission) => {
+	if (props.role) {
+		// 編集モード: 編集権限がない場合かつ所有者でもない場合は管理タブのみ
+		if (!hasEditPermission && !props.role.isOwner) {
+			tab.value = 'manage';
 		}
 	} else {
-		// 管理タブのみ表示
-		tab.value = 'manage';
+		// 新規作成モード: 編集権限がない場合は管理タブのみ
+		if (!hasEditPermission) {
+			tab.value = 'manage';
+		}
 	}
 }, { immediate: true });
 
 onMounted(async () => {
-	assignedList = await misskeyApi('roles/list', {
+	assignedList.value = await misskeyApi('roles/list', {
 		assignedOnly: true,
 	});
-	roleList = await misskeyApi('roles/list', {
+
+	roleList.value = await misskeyApi('roles/list', {
 		communityPublicOnly: true,
-	}).then(v => v.filter(r => !assignedList.some(ra => r.id === ra.id)));
+	}).then(v => v.filter(r =>
+		!assignedList.value.some(ra => r.id === ra.id),
+	));
 });
 
 const emit = defineEmits<{
@@ -211,120 +229,122 @@ async function done() {
 }
 </script>
 
-	<style lang="scss" module>
+<style lang="scss" module>
+.header {
+	display: flex;
+	gap: 10px;
+}
 
-	.header {
-		display: flex;
-		gap: 10px;
+.imgs {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.imgContainer {
+	padding: 8px;
+	border-radius: 6px;
+}
+
+.img {
+	display: block;
+	height: 64px;
+	width: 64px;
+	object-fit: contain;
+}
+
+.roleItem {
+	display: flex;
+}
+
+.role {
+	flex: 1;
+}
+
+.roleUnassign {
+	width: 32px;
+	height: 32px;
+	margin-left: 8px;
+	align-self: center;
+}
+
+.footer {
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	padding: 12px;
+	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+}
+
+// profile.vueからの流用
+.metadataRoot {
+	container-type: inline-size;
+}
+
+.metadataMargin {
+	margin-bottom: 1.5em;
+}
+
+.aliaseDragItem {
+	display: flex;
+	padding-bottom: .75em;
+	align-items: flex-end;
+	border-bottom: solid 0.5px var(--divider);
+
+	&:last-child {
+		border-bottom: 0;
 	}
 
-	.imgs {
-		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
-		justify-content: center;
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
+		align-items: center;
+	}
+}
+
+.dragItemHandle {
+	cursor: grab;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px 0 0;
+	opacity: 0.5;
+	flex-shrink: 0;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.dragItemRemove {
+	@extend .dragItemHandle;
+
+	color: #ff2a2a;
+	opacity: 1;
+	cursor: pointer;
+
+	&:hover,
+	&:focus {
+		opacity: .7;
 	}
 
-	.imgContainer {
-		padding: 8px;
-		border-radius: 6px;
-	}
-
-	.img {
-		display: block;
-		height: 64px;
-		width: 64px;
-		object-fit: contain;
-	}
-
-	.roleItem {
-		display: flex;
-	}
-
-	.role {
-		flex: 1;
-	}
-
-	.roleUnassign {
-		width: 32px;
-		height: 32px;
-		margin-left: 8px;
-		align-self: center;
-	}
-
-	.footer {
-		position: sticky;
-		bottom: 0;
-		left: 0;
-		padding: 12px;
-		border-top: solid 0.5px var(--divider);
-		-webkit-backdrop-filter: var(--blur, blur(15px));
-		backdrop-filter: var(--blur, blur(15px));
-	}
-
-	// profile.vueからの流用
-	.metadataRoot {
-		container-type: inline-size;
-	}
-
-	.metadataMargin {
-		margin-bottom: 1.5em;
-	}
-
-	.aliaseDragItem {
-		display: flex;
-		padding-bottom: .75em;
-		align-items: flex-end;
-		border-bottom: solid 0.5px var(--divider);
-
-		&:last-child {
-			border-bottom: 0;
-		}
-
-		/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
-		@container (max-width: 452px) {
-			align-items: center;
-		}
-	}
-
-	.dragItemHandle {
-		cursor: grab;
-		width: 32px;
-		height: 32px;
-		margin: 0 8px 0 0;
-		opacity: 0.5;
-		flex-shrink: 0;
-
-		&:active {
-			cursor: grabbing;
-		}
-	}
-
-	.dragItemRemove {
-		@extend .dragItemHandle;
-
-		color: #ff2a2a;
-		opacity: 1;
+	&:active {
 		cursor: pointer;
+	}
+}
 
-		&:hover, &:focus {
-			opacity: .7;
-		}
-		&:active {
-			cursor: pointer;
-		}
-	}
+.dragItemForm {
+	flex-grow: 1;
+}
 
-	.dragItemForm {
-		flex-grow: 1;
-	}
+.tabs:first-child {
+	margin-left: auto;
+	padding: 0 12px;
+}
 
-	.tabs:first-child {
-		margin-left: auto;
-		padding: 0 12px;
-	}
-	.tabs {
-		pointer-events: auto;
-		margin-right: auto;
-	}
-	</style>
+.tabs {
+	pointer-events: auto;
+	margin-right: auto;
+}
+</style>

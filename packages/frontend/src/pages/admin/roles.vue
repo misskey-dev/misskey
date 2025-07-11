@@ -388,10 +388,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSwitch>
 					</MkFolder>
 
-					<MkFolder v-if="matchQuery([i18n.ts._role._options.canAddRoles, 'canAddRoles'])">
-						<template #label>{{ i18n.ts._role._options.canAddRoles }}</template>
-						<template #suffix>{{ policies.canAddRoles ? i18n.ts.yes : i18n.ts.no }}</template>
-						<MkSwitch v-model="policies.canAddRoles">
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canEditCommunityRoles, 'canEditCommunityRoles'])">
+						<template #label>{{ i18n.ts._role._options.canEditCommunityRoles }}</template>
+						<template #suffix>{{ policies.canEditCommunityRoles ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canEditCommunityRoles">
 							<template #label>{{ i18n.ts.enable }}</template>
 						</MkSwitch>
 					</MkFolder>

@@ -57,19 +57,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const roles = ps.assignedOnly
-				? await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.isCommunity))
-				: await this.rolesRepository.findBy({
-					...(ps.communityOnly || ps.communityPublicOnly ? {
-						isCommunity: true,
-						...(ps.communityPublicOnly ? {
-							isPublic: true,
-						} : {}),
-					} : {
-						isExplorable: true,
-						isPublic: true,
-					}),
+			let roles;
+
+			if (ps.assignedOnly) {
+				const userRoles = await this.roleService.getUserRoles(me.id);
+				roles = userRoles.filter(role => role.isCommunity);
+			} else if (ps.communityPublicOnly) {
+				roles = await this.rolesRepository.findBy({
+					isCommunity: true,
+					isPublic: true,
 				});
+			} else if (ps.communityOnly) {
+				roles = await this.rolesRepository.findBy({
+					isCommunity: true,
+				});
+			} else {
+				roles = await this.rolesRepository.findBy({
+					isExplorable: true,
+					isPublic: true,
+				});
+			}
+
 			return await this.roleEntityService.packMany(roles, me);
 		});
 	}

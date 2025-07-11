@@ -130,7 +130,7 @@ export const ROLE_POLICIES = [
 	'canUseBlockedNotification',
 	'canUseUnBlockedNotification',
 	'canViewCharts',
-	'canAddRoles',
+	'canEditCommunityRoles',
 	'uploadableFileTypes',
 ] as const;
 

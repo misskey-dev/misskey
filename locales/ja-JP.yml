@@ -2132,7 +2132,7 @@ _role:
     scheduleNoteMax: "予約投稿の最大数"
     chatAvailability: "チャットを許可"
     canViewCharts: 'インスタンス統計を閲覧'
-    canAddRoles: "コミュニティーロールの追加"
+    canEditCommunityRoles: "コミュニティーロールの編集"
     uploadableFileTypes: "アップロード可能なファイル種別"
     uploadableFileTypes_caption: "MIMEタイプを指定します。改行で区切って複数指定できるほか、アスタリスク(*)でワイルドカード指定できます。(例: image/*)"
     uploadableFileTypes_caption2: "ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。"

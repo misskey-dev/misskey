@@ -36,8 +36,8 @@ const props = defineProps<{
 }>();
 
 // 権限チェック（計算プロパティ）
-const canAddRoles = computed(() => {
-	return $i && $i.policies.canAddRoles;
+const canEditCommunityRoles = computed(() => {
+	return $i && $i.policies.canEditCommunityRoles;
 });
 
 function roleAction(ev) {
@@ -72,7 +72,7 @@ function roleAction(ev) {
 	];
 
 	// 権限があるか所有者の場合のみ編集ボタンを表示
-	if ((canAddRoles.value || props.role.isOwner)) {
+	if ((canEditCommunityRoles.value || props.role.isOwner)) {
 		menuItems.push({
 			text: i18n.ts.edit,
 			icon: 'ti ti-edit',
@@ -87,8 +87,8 @@ function roleAction(ev) {
 
 // 編集用関数（createRoleではなく）
 function editRole(role) {
-	// 権限チェック - 権限がない場合は実行しない
-	if (!canAddRoles.value && !role.isOwner) {
+	// 権限チェック - 編集権限がない場合かつ所有者でもない場合は実行しない
+	if (!canEditCommunityRoles.value && !role.isOwner) {
 		os.alert({
 			type: 'error',
 			title: i18n.ts.error,
