@@ -147,7 +147,6 @@ const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = useStream().useChannel('drive');
-const keepOriginal = ref<boolean>(prefer.s.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -384,8 +383,8 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null) {
-	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal.value).then(res => {
+function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null, keepOriginal?: boolean) {
+	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal).then(res => {
 		addFile(res, true);
 	});
 }
@@ -624,16 +623,20 @@ function getMenu() {
 	const menu: MenuItem[] = [];
 
 	menu.push({
-		type: 'switch',
-		text: i18n.ts.keepOriginalUploading,
-		ref: keepOriginal,
-	}, { type: 'divider' }, {
 		text: i18n.ts.addFile,
 		type: 'label',
 	}, {
+		text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
+		icon: 'ti ti-upload',
+		action: () => {
+			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: false });
+		},
+	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
-		action: () => { chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: keepOriginal.value }); },
+		action: () => {
+			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: true });
+		},
 	}, {
 		text: i18n.ts.fromUrl,
 		icon: 'ti ti-link',
