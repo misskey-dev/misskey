@@ -164,7 +164,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
@@ -233,7 +233,10 @@ const exportAntennas = () => {
 };
 
 const importFollowing = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-following', {
 		fileId: file.id,
 		withReplies: withReplies.value,
@@ -241,22 +244,34 @@ const importFollowing = async (ev) => {
 };
 
 const importUserLists = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const importMuting = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const importBlocking = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const importAntennas = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-antennas', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 

@@ -49,7 +49,6 @@
 		panelBorder: '" solid 1px var(--MI_THEME-divider)',
 		navIndicator: '@indicator',
 		buttonHoverBg: '#0000001a',
-		driveFolderBg: ':alpha<0.3<@accent',
 		fgHighlighted: ':lighten<3<@fg',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',
