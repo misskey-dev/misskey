@@ -34,10 +34,8 @@ export const meta = {
 				on: {
 					type: 'array',
 					items: {
-						oneOf: [
-							{ type: 'string', enum: webhookEventTypes },
-							{ type: 'string', pattern: '^note@[a-zA-Z0-9]{1,20}$' },
-						],
+						type: 'string',
+						enum: webhookEventTypes,
 					},
 				},
 				url: { type: 'string' },

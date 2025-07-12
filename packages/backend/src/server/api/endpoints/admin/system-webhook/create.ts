@@ -37,8 +37,10 @@ export const paramDef = {
 		on: {
 			type: 'array',
 			items: {
-				type: 'string',
-				enum: systemWebhookEventTypes,
+				oneOf: [
+					{ type: 'string', enum: systemWebhookEventTypes },
+					{ type: 'string', pattern: '^note@[a-zA-Z0-9]{1,20}$' },
+				],
 			},
 		},
 		url: {
@@ -72,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				{
 					isActive: ps.isActive,
 					name: ps.name,
-					on: ps.on,
+					on: ps.on as never,
 					url: ps.url,
 					secret: ps.secret,
 				},

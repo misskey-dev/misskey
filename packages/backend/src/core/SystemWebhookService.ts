@@ -46,6 +46,7 @@ export type SystemWebhookPayload<T extends SystemWebhookEventType> =
 	T extends 'userCreated' ? Packed<'UserLite'> :
 	T extends 'inactiveModeratorsWarning' ? InactiveModeratorsWarningPayload :
 	T extends 'inactiveModeratorsInvitationOnlyChanged' ? Record<string, never> :
+	T extends `note@${string}` ? { note: Packed<'Note'> } :
 		never;
 
 @Injectable()

@@ -60,6 +60,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { SpamFilterService } from '@/core/SpamFilterService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -225,6 +226,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private loggerService: LoggerService,
 		private spamFilterService: SpamFilterService,
+		private systemWebhookService: SystemWebhookService,
 	) {
 		this.updateNotesCountQueue = new CollapsedQueue(process.env.NODE_ENV !== 'test' ? 60 * 1000 * 5 : 0, this.collapseNotesCount, this.performUpdateNotesCount);
 		this.logger = this.loggerService.getLogger('note:create');
@@ -619,7 +621,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
-			this.webhookService.enqueueAdminWebhook(`note@${user.username}`, { note: noteObj });
+			this.systemWebhookService.enqueueSystemWebhook(`note@${user.username}`, { note: noteObj });
 
 			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
 

@@ -67,6 +67,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.inactiveModeratorsInvitationOnlyChanged)" @click="test('inactiveModeratorsInvitationOnlyChanged')"><i class="ti ti-send"></i></MkButton>
 							</div>
+
+							<!-- Nirila's user's note events -->
+							<template v-for="ev of Object.keys(events)" :key="ev">
+								<div v-if="ev.startsWith('note@')" :class="$style.switchBox">
+									<MkSwitch v-model="events[ev]">
+										<template v-if="getUserMention(ev.substring(5))" #label>User: <Mfm :text="getUserMention(ev.substring(5))!" :linkNavigationBehavior="'window'"/></template>
+										<template v-else #label>User: {{ ev.substring(5) }}</template>
+									</MkSwitch>
+									<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events[ev])" @click="test(ev)"><i class="ti ti-send"></i></MkButton>
+								</div>
+							</template>
+							<div :class="$style.switchBox">
+								<MkButton @click="addUser">Add User</MkButton>
+							</div>
 						</div>
 
 						<div v-show="mode === 'edit'" :class="$style.description">
@@ -247,6 +261,7 @@ onMounted(async () => {
 					for (const ev of Object.keys(events.value)) {
 						events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
 					}
+					res.on.filter(ev => ev.startsWith('note@')).forEach(ev => events.value[ev] = true);
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (ex: any) {
 					const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
@@ -263,6 +278,30 @@ onMounted(async () => {
 		}
 	});
 });
+
+// nirila extension helpers
+const progressSymbol = Symbol('progress');
+const userInfoCache = ref<Partial<Record<string, Misskey.entities.UserLite | typeof progressSymbol>>>({});
+
+function addUser() {
+	os.selectUser().then(value => {
+		events.value[`note@${value.id}`] = true;
+		userInfoCache[value.id] = value;
+	});
+}
+
+function getUserMention(id: string): string | undefined {
+	if (userInfoCache.value[id] != null && userInfoCache.value[id] !== progressSymbol) {
+		const user = userInfoCache.value[id];
+		return user.host == null ? `@${user.username}` : `@${user.username}@${user.host}`;
+	}
+	if (userInfoCache.value[id] === progressSymbol) {
+		return undefined; // still loading
+	}
+	userInfoCache.value[id] = progressSymbol; // mark as loading
+	misskeyApi('users/show', { userId: id }).then(user => { userInfoCache.value[id] = user; });
+	return undefined;
+}
 </script>
 
 <style module lang="scss">

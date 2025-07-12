@@ -23,9 +23,6 @@ export type UserWebhookPayload<T extends WebhookEventTypes> =
 	} :
 	T extends 'followed' ? {
 		user: Packed<'UserLite'>,
-	} :
-	T extends `note@${string}` ? {
-		note: Packed<'Note'>,
 	} : never;
 
 @Injectable()
@@ -92,20 +89,6 @@ export class UserWebhookService implements OnApplicationShutdown {
 	) {
 		const webhooks = await this.getActiveWebhooks()
 			.then(webhooks => webhooks.filter(webhook => webhook.userId === userId && webhook.on.includes(type)));
-		return Promise.all(
-			webhooks.map(webhook => {
-				return this.queueService.userWebhookDeliver(webhook, type, content);
-			}),
-		);
-	}
-
-	@bindThis
-	public async enqueueAdminWebhook<T extends WebhookEventTypes>(
-		type: T,
-		content: UserWebhookPayload<T>,
-	) {
-		const webhooks = await this.getActiveWebhooks()
-			.then(webhooks => webhooks.filter(webhook => webhook.on.includes(type)));
 		return Promise.all(
 			webhooks.map(webhook => {
 				return this.queueService.userWebhookDeliver(webhook, type, content);

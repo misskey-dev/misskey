@@ -40,8 +40,10 @@ export const paramDef = {
 			format: 'misskey:id',
 		},
 		type: {
-			type: 'string',
-			enum: systemWebhookEventTypes,
+			oneOf: [
+				{ type: 'string', enum: systemWebhookEventTypes },
+				{ type: 'string', pattern: '^note@[a-zA-Z0-9]{1,20}$' },
+			],
 		},
 		override: {
 			type: 'object',
@@ -63,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			try {
 				await this.webhookTestService.testSystemWebhook({
 					webhookId: ps.webhookId,
-					type: ps.type,
+					type: ps.type as never,
 					override: ps.override,
 				});
 			} catch (e) {

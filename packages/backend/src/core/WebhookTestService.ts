@@ -243,14 +243,6 @@ export class WebhookTestService {
 			case 'reaction':
 				return;
 			default: {
-				function isNoteType(type: string): type is `note@${string}` {
-					return params.type.startsWith('note@');
-				}
-
-				if (isNoteType(params.type)) {
-					send<`note@${string}`>(params.type, { note: await this.toPackedNote(dummyNote1) });
-					return;
-				}
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const _exhaustiveAssertion: never = params.type;
 				return;
@@ -334,6 +326,19 @@ export class WebhookTestService {
 				break;
 			}
 			default: {
+				function isNoteType(type: string): type is `note@${string}` {
+					return type.startsWith('note@');
+				}
+
+				if (isNoteType(params.type)) {
+					send<`note@${string}`>(params.type, {
+						note: await this.toPackedNote(generateDummyNote({
+							userId: dummyUser1.id,
+							user: dummyUser1,
+						})),
+					});
+					return;
+				}
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const _exhaustiveAssertion: never = params.type;
 				return;
