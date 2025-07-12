@@ -2806,6 +2806,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "업로드 날짜"
   attachedNotes: "첨부된 노트"
+  usage: "이용"
   thisPageCanBeSeenFromTheAuthor: "이 페이지는 파일 소유자만 열람할 수 있습니다"
 _externalResourceInstaller:
   title: "외부 사이트로부터 설치"
@@ -3182,6 +3183,7 @@ drafts: "초안"
 _drafts:
   select: "초안 선택"
   cannotCreateDraftAnymore: "초안 작성 가능 수를 초과했습니다."
+  cannotCreateDraft: "이 내용으로는 초안을 작성할 수 없습니다. "
   delete: "초안 삭제\n"
   deleteAreYouSure: "초안을 삭제하시겠습니까?"
   noDrafts: "초안 없음\n"
