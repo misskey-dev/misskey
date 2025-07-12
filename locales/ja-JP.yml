@@ -466,7 +466,7 @@ lastUsed: "最後の使用"
 lastUsedAt: "最後の使用: {t}"
 unregister: "登録を解除"
 passwordLessLogin: "パスワードレスログイン"
-passwordLessLoginDescription: "パスワードを使用せず、セキュリティキーやパスキーなどのみでログインします"
+passwordLessLoginDescription: "パスワードを使用せず、パスキーのみでログインします"
 resetPassword: "パスワードをリセット"
 newPasswordIs: "新しいパスワードは「{password}」です"
 reduceUiAnimation: "UIのアニメーションを減らす"
@@ -1874,7 +1874,7 @@ _achievements:
     _cookieClicked:
       title: "クッキーをクリックするゲーム"
       description: "クッキーをクリックした"
-      flavor: "ソフト間違ってない？"
+      flavor: "Cookie Clickerは抜ける"
     _brainDiver:
       title: "Brain Diver"
       description: "Brain Diverへのリンクを投稿した"
@@ -1892,6 +1892,10 @@ _achievements:
       title: "ダブル🤯"
       description: "バブルゲームで最も大きいモノを2つ同時に出した"
       flavor: "これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて"
+    _testAchievement:
+      title: "実績テスト"
+      description: "これは実績のテストです"
+      flavor: "イースターエッグ　YAJU＆U 野獣先輩"
 
 _role:
   new: "ロールの作成"

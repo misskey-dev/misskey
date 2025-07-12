@@ -1883,7 +1883,7 @@ export interface Locale extends ILocale {
      */
     "passwordLessLogin": string;
     /**
-     * パスワードを使用せず、セキュリティキーやパスキーなどのみでログインします
+     * パスワードを使用せず、パスキーのみでログインします
      */
     "passwordLessLoginDescription": string;
     /**
@@ -7245,7 +7245,7 @@ export interface Locale extends ILocale {
                  */
                 "description": string;
                 /**
-                 * ソフト間違ってない？
+                 * Cookie Clickerは抜ける
                  */
                 "flavor": string;
             };
@@ -7304,6 +7304,20 @@ export interface Locale extends ILocale {
                 "description": string;
                 /**
                  * これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて
+                 */
+                "flavor": string;
+            };
+            "_testAchievement": {
+                /**
+                 * 実績テスト
+                 */
+                "title": string;
+                /**
+                 * これは実績のテストです
+                 */
+                "description": string;
+                /**
+                 * イースターエッグ　YAJU＆U 野獣先輩
                  */
                 "flavor": string;
             };
