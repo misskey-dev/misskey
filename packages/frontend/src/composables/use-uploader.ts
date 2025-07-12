@@ -649,6 +649,7 @@ export function useUploader(options: {
 		const needsCompress = IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile)) && (
 			item.compressMode !== 'lossyWhenResize' // Compression is requested
 			|| item.imageResizeSize < Number.POSITIVE_INFINITY // Resize is requested
+			|| needsWatermark && preset != null // Watermarking is done
 		);
 
 		if (needsCompress) {
