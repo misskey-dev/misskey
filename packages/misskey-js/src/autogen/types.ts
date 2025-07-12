@@ -5345,7 +5345,7 @@ export type components = {
             latestSentAt: string | null;
             latestStatus: number | null;
             name: string;
-            on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
+            on: (('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged') | string)[];
             url: string;
             secret: string;
         };
@@ -11845,7 +11845,7 @@ export interface operations {
                 'application/json': {
                     isActive: boolean;
                     name: string;
-                    on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
+                    on: (('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged') | string)[];
                     url: string;
                     secret: string;
                 };
@@ -11976,7 +11976,7 @@ export interface operations {
             content: {
                 'application/json': {
                     isActive?: boolean;
-                    on?: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
+                    on?: (('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged') | string)[];
                 };
             };
         };
@@ -12109,8 +12109,7 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     webhookId: string;
-                    /** @enum {string} */
-                    type: 'abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged';
+                    type: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged') | string;
                     override?: {
                         url?: string;
                         secret?: string;
@@ -12189,7 +12188,7 @@ export interface operations {
                     id: string;
                     isActive: boolean;
                     name: string;
-                    on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
+                    on: (('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged') | string)[];
                     url: string;
                     secret: string;
                 };
@@ -27207,7 +27206,7 @@ export interface operations {
                     url: string;
                     /** @default  */
                     secret?: string;
-                    on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
+                    on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
                 };
             };
         };
@@ -27224,7 +27223,7 @@ export interface operations {
                         /** Format: misskey:id */
                         userId: string;
                         name: string;
-                        on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
+                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
                         url: string;
                         secret: string;
                         active: boolean;
@@ -27358,7 +27357,7 @@ export interface operations {
                         /** Format: misskey:id */
                         userId: string;
                         name: string;
-                        on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
+                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
                         url: string;
                         secret: string;
                         active: boolean;
@@ -27437,7 +27436,7 @@ export interface operations {
                         /** Format: misskey:id */
                         userId: string;
                         name: string;
-                        on: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
+                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
                         url: string;
                         secret: string;
                         active: boolean;
@@ -27581,7 +27580,7 @@ export interface operations {
                     name?: string;
                     url?: string;
                     secret?: string | null;
-                    on?: (('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction') | string)[];
+                    on?: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
                     active?: boolean;
                 };
             };

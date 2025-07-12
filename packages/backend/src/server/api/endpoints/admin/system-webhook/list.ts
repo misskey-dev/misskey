@@ -35,8 +35,10 @@ export const paramDef = {
 		on: {
 			type: 'array',
 			items: {
-				type: 'string',
-				enum: systemWebhookEventTypes,
+				oneOf: [
+					{ type: 'string', enum: systemWebhookEventTypes },
+					{ type: 'string', pattern: '^note@[a-zA-Z0-9]{1,20}$' },
+				],
 			},
 		},
 	},
@@ -52,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps) => {
 			const webhooks = await this.systemWebhookService.fetchSystemWebhooks({
 				isActive: ps.isActive,
-				on: ps.on,
+				on: ps.on as never,
 			});
 			return this.systemWebhookEntityService.packMany(webhooks);
 		});

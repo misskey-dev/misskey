@@ -29,11 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
 			<MkSwitch v-model="event_reaction" :disabled="true">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
 			<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
-
-			<MkTextarea v-if="$i?.isAdmin" v-model="users">
-				<template #label>{{ i18n.ts._webhookSettings._events.usersLabel }}</template>
-				<template #caption>{{ i18n.ts._webhookSettings._events.usersCaption }}</template>
-			</MkTextarea>
 		</div>
 	</FormSection>
 
@@ -52,8 +47,6 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i } from '@/i.js';
-import MkTextarea from '@/components/MkTextarea.vue';
 
 const name = ref('');
 const url = ref('');
@@ -66,10 +59,9 @@ const event_reply = ref(true);
 const event_renote = ref(true);
 const event_reaction = ref(true);
 const event_mention = ref(true);
-const users = ref('');
 
 async function create(): Promise<void> {
-	const events: string[] = [];
+	const events = [];
 	if (event_follow.value) events.push('follow');
 	if (event_followed.value) events.push('followed');
 	if (event_note.value) events.push('note');
@@ -77,7 +69,6 @@ async function create(): Promise<void> {
 	if (event_renote.value) events.push('renote');
 	if (event_reaction.value) events.push('reaction');
 	if (event_mention.value) events.push('mention');
-	if (users.value !== '') events.push(...users.value.split('\n').filter(x => x).map(x => `note@${x}`));
 
 	os.apiWithDialog('i/webhooks/create', {
 		name: name.value,

@@ -37,9 +37,18 @@ export const packedSystemWebhookSchema = {
 		on: {
 			type: 'array',
 			items: {
-				type: 'string',
-				optional: false, nullable: false,
-				enum: systemWebhookEventTypes,
+				anyOf: [
+					{
+						type: 'string',
+						optional: false, nullable: false,
+						enum: systemWebhookEventTypes,
+					},
+					{
+						type: 'string',
+						optional: false, nullable: false,
+						pattern: '^note@[a-zA-Z0-9]{1,20}$', // note@<noteId>
+					},
+				],
 			},
 		},
 		url: {
