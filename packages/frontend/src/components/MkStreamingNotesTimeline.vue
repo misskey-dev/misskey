@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass="$style.transition_x_move"
 			tag="div"
 		>
-			<template v-for="(note, i) in paginator.items.value" :key="note.id">
+			<template v-for="(note, i) in interruptNotes(paginator.items.value as never[])" :key="note.id">
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, note.createdAt)" :data-scroll-anchor="note.id">
 					<div :class="$style.date">
 						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).prevText }}</span>
@@ -77,6 +77,7 @@ import { i18n } from '@/i18n.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
+import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -98,6 +99,8 @@ const props = withDefaults(defineProps<{
 	sound: false,
 	customSound: null,
 });
+
+const interruptNotes = useInterruptNotes('');
 
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));

@@ -131,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="contents _gaps">
 					<div v-if="user.pinnedNotes.length > 0" class="_gaps">
-						<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
+						<MkNote v-for="note in interruptNotes(user.pinnedNotes)" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
 					</div>
 					<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 					<template v-if="narrow">
@@ -186,6 +186,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -219,6 +220,7 @@ const emit = defineEmits<{
 }>();
 
 const router = useRouter();
+const interruptNotes = useInterruptNotes('');
 
 const user = ref(props.user);
 const parallaxAnimationId = ref<null | number>(null);
