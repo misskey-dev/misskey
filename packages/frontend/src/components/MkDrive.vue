@@ -379,25 +379,6 @@ function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder |
 	});
 }
 
-async function urlUpload() {
-	const { canceled, result: url } = await os.inputText({
-		title: i18n.ts.uploadFromUrl,
-		type: 'url',
-		placeholder: i18n.ts.uploadFromUrlDescription,
-	});
-	if (canceled || !url) return;
-
-	await os.apiWithDialog('drive/files/upload-from-url', {
-		url: url,
-		folderId: folder.value ? folder.value.id : undefined,
-	});
-
-	os.alert({
-		title: i18n.ts.uploadFromUrlRequested,
-		text: i18n.ts.uploadFromUrlMayTakeTime,
-	});
-}
-
 async function createFolder() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.createFolder,
@@ -578,11 +559,8 @@ function getMenu() {
 				folderId: folder.value?.id,
 			});
 		},
-	}, {
-		text: i18n.ts.fromUrl,
-		icon: 'ti ti-link',
-		action: () => { urlUpload(); },
-	}, { type: 'divider' }, {
+	},
+	{ type: 'divider' }, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
 	});

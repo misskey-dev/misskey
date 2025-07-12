@@ -192,40 +192,6 @@ export function chooseDriveFile(options: {
 	});
 }
 
-export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
-	return new Promise((res, rej) => {
-		os.inputText({
-			title: i18n.ts.uploadFromUrl,
-			type: 'url',
-			placeholder: i18n.ts.uploadFromUrlDescription,
-		}).then(({ canceled, result: url }) => {
-			if (canceled || url == null) return;
-
-			const marker = genId();
-
-			// TODO: no websocketモード対応
-			const connection = useStream().useChannel('main');
-			connection.on('urlUploadFinished', urlResponse => {
-				if (urlResponse.marker === marker) {
-					res(urlResponse.file);
-					connection.dispose();
-				}
-			});
-
-			misskeyApi('drive/files/upload-from-url', {
-				url: url,
-				folderId: prefer.s.uploadFolder,
-				marker,
-			});
-
-			os.alert({
-				title: i18n.ts.uploadFromUrlRequested,
-				text: i18n.ts.uploadFromUrlMayTakeTime,
-			});
-		});
-	});
-}
-
 function select(anchorElement: HTMLElement | EventTarget | null, label: string | null, multiple: boolean, features?: UploaderDialogFeatures): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		os.popupMenu([label ? {
@@ -239,10 +205,6 @@ function select(anchorElement: HTMLElement | EventTarget | null, label: string |
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
 			action: () => chooseDriveFile({ multiple }).then(files => res(files)),
-		}, {
-			text: i18n.ts.fromUrl,
-			icon: 'ti ti-link',
-			action: () => chooseFileFromUrl().then(file => res([file])),
 		}], anchorElement);
 	});
 }
