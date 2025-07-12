@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]">
-			<template v-for="(note, i) in notes" :key="note.id">
+			<template v-for="(note, i) in interruptNotes(notes)" :key="note.id">
 				<div v-if="i > 0 && isSeparatorNeeded(pagingComponent.paginator.items.value[i -1].createdAt, note.createdAt)" :data-scroll-anchor="note.id">
 					<div :class="$style.date">
 						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(pagingComponent.paginator.items.value[i -1].createdAt, note.createdAt).prevText }}</span>
@@ -31,7 +31,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkPagination>
 </template>
 
-<script lang="ts" setup generic="T extends PagingCtx">
+<script lang="ts">
+import * as Misskey from 'misskey-js';
+
+type NoteEndpoints = keyof Misskey.Endpoints extends infer DEDistribuive ?
+	DEDistribuive extends keyof Misskey.Endpoints ?
+		Misskey.Endpoints[DEDistribuive]['res'] extends Misskey.entities.Note[]
+			? DEDistribuive
+			: never
+		: never
+	: never;
+</script>
+
+<script lang="ts" setup generic="E extends NoteEndpoints, T extends PagingCtx<E>">
 import { useTemplateRef } from 'vue';
 import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkNote from '@/components/MkNote.vue';
@@ -39,6 +51,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 const props = withDefaults(defineProps<{
 	pagination: T;
@@ -48,6 +61,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 	pullToRefresh: true,
 });
+
+const interruptNotes = useInterruptNotes('');
 
 const pagingComponent = useTemplateRef('pagingComponent');
 

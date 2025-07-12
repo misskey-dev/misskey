@@ -4,6 +4,7 @@
 
 ### Client
 - Enhance: ノートの検索画面が本家 misskey と同じデザインになりました
+- Enhance: `note_view_interruptor` の動作が復旧しました
 - Fix: Pull to refreshが有効なときに横スクロールができない問題を修正
 
 ### Server
