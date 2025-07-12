@@ -34,7 +34,7 @@ describe('FileInfoService', () => {
 		delete fi.sensitive;
 		delete fi.blurhash;
 		delete fi.porn;
-
+		
 		return fi;
 	}
 

@@ -57,7 +57,6 @@ const toggle = () => {
 	display: flex;
 	transition: all 0.2s ease;
 	user-select: none;
-	align-items: center;
 
 	&:hover {
 		> .button {
