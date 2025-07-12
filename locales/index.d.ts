@@ -10703,7 +10703,7 @@ export interface Locale extends ILocale {
          */
         "description": string;
         /**
-         * 画像の解像度
+         * 画像の最大解像度
          */
         "maxImageResolution": string;
         /**
@@ -10715,11 +10715,11 @@ export interface Locale extends ILocale {
          */
         "compressImageLossy": string;
         /**
-         * 可逆圧縮の画像を非可逆圧縮するかどうかを選択します。非可逆圧縮はファイルサイズを小さくできますが、画質が劣化します。
+         * 非可逆圧縮するかどうかを選択します。非可逆圧縮はファイルサイズを小さくできますが、画質が劣化します。
          */
         "compressImageLossyDescription": string;
         /**
-         * 画像の大きさ: {size}x{size} 以下
+         * 解像度: {size}x{size} 以下
          */
         "imageResizeTargetSized": ParameterizedString<"size" | "size">;
         /**
