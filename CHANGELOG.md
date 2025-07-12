@@ -3,6 +3,7 @@
 ### General
 
 ### Client
+- Enhance: ノートの検索画面が本家 misskey と同じデザインになりました
 - Fix: Pull to refreshが有効なときに横スクロールができない問題を修正
 
 ### Server
