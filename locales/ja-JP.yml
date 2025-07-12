@@ -2836,12 +2836,12 @@ _imageCompressionMode:
   # settings page
   title: "画像圧縮のデフォルト設定"
   description: "アップロードする画像の圧縮方法のデフォルト設定を選択します。"
-  maxImageResolution: "画像の解像度"
+  maxImageResolution: "画像の最大解像度"
   maxImageResolutionDescription: "アップロードする画像の最大解像度を選択します。もし画像の解像度が設定値を超える場合、この設定に従って縮小されます。"
   compressImageLossy: "画像を常に非可逆圧縮する"
-  compressImageLossyDescription: "可逆圧縮の画像を非可逆圧縮するかどうかを選択します。非可逆圧縮はファイルサイズを小さくできますが、画質が劣化します。"
+  compressImageLossyDescription: "非可逆圧縮するかどうかを選択します。非可逆圧縮はファイルサイズを小さくできますが、画質が劣化します。"
   # upload dialog
-  imageResizeTargetSized: "画像の大きさ: {size}x{size} 以下"
+  imageResizeTargetSized: "解像度: {size}x{size} 以下"
   imageResizeTargetUnlimited: "画像の大きさ: 無制限"
   compressLossy: "非可逆圧縮を使用する"
   # commonly used in resolution selector
