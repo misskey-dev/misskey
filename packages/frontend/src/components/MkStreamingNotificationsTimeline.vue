@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass="$style.transition_x_move"
 			tag="div"
 		>
-			<div v-for="(notification, i) in paginator.items.value" :key="notification.id" :data-scroll-anchor="notification.id" :class="$style.item">
+			<div v-for="(notification, i) in interruptNotes(paginator.items.value)" :key="notification.id" :data-scroll-anchor="notification.id" :class="$style.item">
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, notification.createdAt)" :class="$style.date">
 					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt).prevText }}</span>
 					<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
@@ -55,12 +55,15 @@ import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
 }>();
 
 const rootEl = useTemplateRef('rootEl');
+
+const interruptNotes = useInterruptNotes<Misskey.entities.Notification, 'note'>('note');
 
 const paginator = usePagination({
 	ctx: prefer.s.useGroupedNotifications ? {
