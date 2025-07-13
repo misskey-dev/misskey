@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref } from 'vue';
+import { shallowRef, triggerRef } from 'vue';
 import type { DeepReadonly } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { getPluginHandlers } from '@/plugin';
@@ -40,12 +40,12 @@ export function useInterruptNotes<TElement extends NoteInObject<K>, K extends st
 	// proceedElements に interrupter 処理中の要素を保持することで毎回最初から処理し直すのを防ぐ
 	// null は interrupter によって削除された要素を表す。processingSymbol は処理中の要素を表す。
 	// この Record のキーは TElement の id。
-	const proceedElements = ref<Partial<Record<string, null | TElement | typeof processingSymbol>>>({});
+	const proceedElements = shallowRef(new Map<DeepReadonly<TElement>, null | TElement | typeof processingSymbol>());
 
-	const processNoteAsync = async (element: TElement): Promise<TElement | null> => {
+	const processNoteAsync = async (element: DeepReadonly<TElement>): Promise<TElement | null> => {
 		const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
 
-		let result: TElement | null = deepClone(element);
+		let result: TElement | null = deepClone(element as TElement);
 		let resultNote: Misskey.entities.Note | null | undefined = tryGetNote(result, key);
 		if (resultNote != null) {
 			for (const interruptor of noteViewInterruptors) {
@@ -67,21 +67,25 @@ export function useInterruptNotes<TElement extends NoteInObject<K>, K extends st
 
 	return (elements) => {
 		// proceedElements には elements の中にある要素のみを保持する
-		for (const id of Object.keys(proceedElements.value)) {
-			if (!elements.some(n => n.id === id)) {
-				delete proceedElements.value[id];
+		for (const original of proceedElements.value.keys()) {
+			if (!elements.some(n => n === original)) {
+				proceedElements.value.delete(original);
 			}
 		}
 
 		const result: TElement[] = [];
 
 		for (const element of elements) {
-			if (!(element.id in proceedElements.value)) {
-				proceedElements.value[element.id] = processingSymbol;
-				processNoteAsync(element).then(proceed => proceedElements.value[element.id] = proceed);
+			if (!proceedElements.value.has(element)) {
+				proceedElements.value.set(element, processingSymbol);
+				triggerRef(proceedElements);
+				processNoteAsync(element).then(proceed => {
+					proceedElements.value.set(element, proceed);
+					triggerRef(proceedElements);
+				});
 			}
-			const proceedElement = proceedElements.value[element.id];
-			if (proceedElement !== processingSymbol && proceedElement !== null) {
+			const proceedElement = proceedElements.value.get(element);
+			if (proceedElement !== processingSymbol && proceedElement != null) {
 				result.push(proceedElement);
 			}
 		}
