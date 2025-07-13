@@ -1,3 +1,8 @@
+## Unreleased
+
+### Client
+- Fix: `note_view_interruptor` が TL をリロードしても再適用されない問題を修正
+
 ## 2025.6.3-kinel.1
 
 ### Client
