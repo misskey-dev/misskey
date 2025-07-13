@@ -340,6 +340,14 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		});
 	}
 
+	public replaceUrl(fullPath: string) {
+		if (fullPath === this.currentFullPath) return;
+		this.currentFullPath = fullPath
+		this.emit('replace', {
+			fullPath: fullPath,
+		});
+	}
+
 	public useListener<E extends keyof RouterEvents, L = RouterEvents[E]>(event: E, listener: L) {
 		this.addListener(event, listener);
 
