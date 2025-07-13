@@ -9,9 +9,8 @@ import { MiUser } from './User.js';
 
 @Entity('following')
 @Index(['followerId', 'followeeId'], { unique: true })
-@Index(['followeeId', 'followerHost', 'isFollowerHibernated'])
-@Index(['followeeId', 'followerHost', 'isFollowerSuspended'])
-@Index(['followerId', 'isFollowerSuspended'])
+@Index(['followerId', 'followeeId', 'isFollowerSuspended'])
+@Index(['followeeId', 'followerHost', 'isFollowerSuspended', 'isFollowerHibernated'])
 export class MiFollowing {
 	@PrimaryColumn(id())
 	public id: string;
