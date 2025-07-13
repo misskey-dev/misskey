@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "Especifica los tipos MIME/archivos permitidos. Se pueden especificar varios tipos MIME separándolos con una nueva línea, y se pueden especificar comodines con un asterisco (*). (por ejemplo, image/*)"
     uploadableFileTypes_caption2: "Es posible que no se detecten algunos tipos de archivos. Para permitir estos archivos, añade {x} a la especificación."
     noteDraftLimit: "Número de posibles borradores de notas del servidor"
+    watermarkAvailable: "Disponibilidad de la función de marca de agua"
   _condition:
     roleAssignedTo: "Asignado a roles manuales"
     isLocal: "Usuario local"
