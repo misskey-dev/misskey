@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['watermark', 'credit']">
-						<MkFolder>
+						<MkFolder v-if="$i.policies.watermarkAvailable">
 							<template #icon><i class="ti ti-copyright"></i></template>
 							<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
 							<template #caption>{{ i18n.ts._watermarkEditor.tip }}</template>
