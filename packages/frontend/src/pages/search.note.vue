@@ -301,15 +301,15 @@ async function search() {
 
 	const url = new URL(router.getCurrentFullPath(), window.location.origin);
 	const urlQueries = {
-		type: "note",
+		type: 'note',
 		q: searchParams.value.query,
 		userId: searchParams.value.userId,
-		host: searchParams.value.host
-	}
+		host: searchParams.value.host,
+	};
 	Object.entries(urlQueries).forEach(([key, value]) => {
 		if ( value ) url.searchParams.set(key, value);
-	})
-	router.replaceUrl(url.pathname + url.search)
+	});
+	router.replaceUrl(url.pathname + url.search);
 
 	paginator.value = markRaw(new Paginator('notes/search', {
 		limit: 10,

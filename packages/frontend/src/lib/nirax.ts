@@ -342,7 +342,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 
 	public replaceUrl(fullPath: string) {
 		if (fullPath === this.currentFullPath) return;
-		this.currentFullPath = fullPath
+		this.currentFullPath = fullPath;
 		this.emit('replace', {
 			fullPath: fullPath,
 		});

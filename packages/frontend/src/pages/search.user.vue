@@ -114,14 +114,14 @@ async function search() {
 
 	const url = new URL(router.getCurrentFullPath(), window.location.origin);
 	const urlQueries = {
-		type: "user",
+		type: 'user',
 		q: query,
-		origin: instance.federation === 'none' ? 'local' : searchOrigin.value
-	}
+		origin: instance.federation === 'none' ? 'local' : searchOrigin.value,
+	};
 	Object.entries(urlQueries).forEach(([key, value]) => {
 		if ( value ) url.searchParams.set(key, value);
-	})
-	router.replaceUrl(url.pathname + url.search)
+	});
+	router.replaceUrl(url.pathname + url.search);
 
 	paginator.value = markRaw(new Paginator('users/search', {
 		limit: 10,
