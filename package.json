@@ -83,6 +83,9 @@
 	"pnpm": {
 		"overrides": {
 			"@aiscript-dev/aiscript-languageserver": "-"
+		},
+		"patchedDependencies": {
+			"typeorm": "patches/typeorm.patch"
 		}
 	}
 }

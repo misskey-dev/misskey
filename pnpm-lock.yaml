@@ -9,6 +9,11 @@ overrides:
   lodash: 4.17.21
   '@aiscript-dev/aiscript-languageserver': '-'
 
+patchedDependencies:
+  typeorm:
+    hash: 2677b97a423e157945c154e64183d3ae2eb44dfa9cb0e5ce731a7612f507bb56
+    path: patches/typeorm.patch
+
 importers:
 
   .:
@@ -422,7 +427,7 @@ importers:
         version: 4.2.0
       typeorm:
         specifier: 0.3.24
-        version: 0.3.24(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2)
+        version: 0.3.24(patch_hash=2677b97a423e157945c154e64183d3ae2eb44dfa9cb0e5ce731a7612f507bb56)(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -10783,6 +10788,9 @@ packages:
   vue-component-type-helpers@2.2.10:
     resolution: {integrity: sha512-iDUO7uQK+Sab2tYuiP9D1oLujCWlhHELHMgV/cB13cuGbG4qwkLHvtfWb6FzvxrIOPDnU0oHsz2MlQjhYDeaHA==}
 
+  vue-component-type-helpers@3.0.1:
+    resolution: {integrity: sha512-j23mCB5iEbGsyIhnVdXdWUOg+UdwmVxpKnYYf2j+4ppCt5VSFXKjwu9YFt0QYxUaf5G99PuHsVfRScjHCRSsGQ==}
+
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
     engines: {node: '>=12'}
@@ -14445,7 +14453,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.16(typescript@5.8.3)
-      vue-component-type-helpers: 2.2.10
+      vue-component-type-helpers: 3.0.1
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.28.0)(typescript@5.8.3)':
     dependencies:
@@ -21835,7 +21843,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@0.3.24(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2):
+  typeorm@0.3.24(patch_hash=2677b97a423e157945c154e64183d3ae2eb44dfa9cb0e5ce731a7612f507bb56)(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 3.17.0
@@ -22156,6 +22164,8 @@ snapshots:
   vue-component-type-helpers@2.0.16: {}
 
   vue-component-type-helpers@2.2.10: {}
+
+  vue-component-type-helpers@3.0.1: {}
 
   vue-demi@0.14.7(vue@3.5.16(typescript@5.8.3)):
     dependencies:

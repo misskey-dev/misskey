@@ -60,6 +60,7 @@ export class MiAbuseReportNotificationRecipient {
 	@Column({
 		...id(),
 		nullable: true,
+		default: null,
 	})
 	public userId: MiUser['id'] | null;
 
@@ -88,6 +89,7 @@ export class MiAbuseReportNotificationRecipient {
 	@Column({
 		...id(),
 		nullable: true,
+		default: null,
 	})
 	public systemWebhookId: string | null;
 
