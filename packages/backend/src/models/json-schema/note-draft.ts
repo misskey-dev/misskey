@@ -51,11 +51,13 @@ export const packedNoteDraftSchema = {
 			type: 'object',
 			optional: true, nullable: true,
 			ref: 'Note',
+			description: 'The reply target note contents if exists. If the reply target has been deleted since the draft was created, this will be null while replyId is not null.',
 		},
 		renote: {
 			type: 'object',
 			optional: true, nullable: true,
 			ref: 'Note',
+			description: 'The renote target note contents if exists. If the renote target has been deleted since the draft was created, this will be null while renoteId is not null.',
 		},
 		visibility: {
 			type: 'string',
