@@ -25,7 +25,6 @@ describe('Timelines', () => {
 	beforeAll(async () => {
 		redisForTimelines = new Redis(loadConfig().redisForTimelines);
 		root = await signup({ username: 'root' });
-		//console.log(await api('admin/update-meta', { enableFanoutTimeline }, root));
 	}, 1000 * 60 * 2);
 
 	describe.each([
@@ -37,7 +36,7 @@ describe('Timelines', () => {
 		}
 
 		beforeAll(async () => {
-			console.log(await api('admin/update-meta', { enableFanoutTimeline }, root));
+			await api('admin/update-meta', { enableFanoutTimeline }, root);
 		}, 1000 * 60 * 2);
 
 		describe('Home TL', () => {
