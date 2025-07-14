@@ -52,6 +52,7 @@ import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	modelValue: string | number | null;
@@ -87,7 +88,7 @@ const emit = defineEmits<{
 
 const { modelValue, type, autofocus } = toRefs(props);
 const v = ref(modelValue.value);
-const id = Math.random().toString(); // TODO: uuid?
+const id = genId();
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);

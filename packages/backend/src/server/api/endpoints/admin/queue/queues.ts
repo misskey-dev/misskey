@@ -5,7 +5,6 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
 
 export const meta = {
@@ -14,6 +13,47 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'read:admin:queue',
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			properties: {
+				name: {
+					type: 'string',
+					optional: false, nullable: false,
+					enum: QUEUE_TYPES,
+				},
+				counts: {
+					type: 'object',
+					optional: false, nullable: false,
+					additionalProperties: {
+						type: 'number',
+					},
+				},
+				isPaused: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				metrics: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						completed: {
+							optional: false, nullable: false,
+							ref: 'QueueMetrics',
+						},
+						failed: {
+							optional: false, nullable: false,
+							ref: 'QueueMetrics',
+						},
+					},
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {

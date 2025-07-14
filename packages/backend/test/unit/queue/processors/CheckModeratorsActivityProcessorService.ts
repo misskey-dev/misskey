@@ -157,8 +157,8 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 	afterEach(async () => {
 		clock.uninstall();
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userProfilesRepository.createQueryBuilder().delete().execute();
 		roleService.getModerators.mockReset();
 		announcementService.create.mockReset();
 		emailService.sendEmail.mockReset();

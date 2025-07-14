@@ -1017,7 +1017,6 @@ _theme:
     buttonBg: "বাটনের পটভূমি"
     buttonHoverBg: "বাটনের পটভূমি (হভার)"
     inputBorder: "ইনপুট ফিল্ডের বর্ডার"
-    driveFolderBg: "ড্রাইভ ফোল্ডারের পটভূমি"
     badge: "ব্যাজ"
     messageBg: "চ্যাটের পটভূমি"
     fgHighlighted: "হাইলাইট করা পাঠ্য"
@@ -1350,3 +1349,9 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "সবগুলো"
   searchScopeLocal: "স্থানীয়"
+_watermarkEditor:
+  opacity: "অস্বচ্ছতা"
+  scale: "আকার"
+  text: "লেখা"
+  image: "ছবি"
+  advanced: "উন্নত"
