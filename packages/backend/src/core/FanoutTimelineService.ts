@@ -8,6 +8,7 @@ import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { MiUser } from '@/models/User.js';
 
 export type FanoutTimelineName = (
 	// home timeline
@@ -111,5 +112,18 @@ export class FanoutTimelineService {
 	@bindThis
 	public purge(name: FanoutTimelineName) {
 		return this.redisForTimelines.del('list:' + name);
+	}
+
+	@bindThis
+	public purgeByUserIds(userIds: MiUser['id'][]) {
+		return Promise.all(userIds.flatMap(userId => [
+			this.purge(`homeTimeline:${userId}`),
+			this.purge(`homeTimelineWithFiles:${userId}`),
+			this.purge(`localTimelineWithReplyTo:${userId}`),
+			this.purge(`userTimeline:${userId}`),
+			this.purge(`userTimelineWithFiles:${userId}`),
+			this.purge(`userTimelineWithReplies:${userId}`),
+			this.purge(`userTimelineWithChannel:${userId}`),
+		]));
 	}
 }
