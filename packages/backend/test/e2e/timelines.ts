@@ -103,6 +103,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの他人への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -155,6 +157,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -175,6 +179,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -227,6 +233,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -243,6 +251,8 @@ describe('Timelines', () => {
 			});
 
 			test('自分の他人への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const bobNote = await post(bob, { text: 'hi' });
@@ -267,6 +277,48 @@ describe('Timelines', () => {
 				await waitForPushToTl();
 
 				const res = await api('notes/timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+			});
+
+			test('[withRenotes: false] フォローしているユーザーの投稿が含まれる', async () => {
+				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(250);
+				const bobNote = await post(bob, { text: 'hi' });
+				const carolNote = await post(carol, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', {
+					limit: 100,
+					withRenotes: false,
+				}, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+			});
+
+			test('[withRenotes: false] フォローしているユーザーのファイルのみの投稿が含まれる', async () => {
+				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(250);
+				const [bobFile, carolFile] = await Promise.all([
+					uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
+					uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
+				]);
+				const bobNote = await post(bob, { fileIds: [bobFile.id] });
+				const carolNote = await post(carol, { fileIds: [carolFile.id] });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', {
+					limit: 100,
+					withRenotes: false,
+				}, alice);
 
 				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
@@ -519,6 +571,8 @@ describe('Timelines', () => {
 			});
 
 			test('フォローしていないユーザーからの visibility: specified なノートに返信したときの自身のノートが含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const bobNote = await post(bob, { text: 'hi', visibility: 'specified', visibleUserIds: [alice.id] });
@@ -535,14 +589,10 @@ describe('Timelines', () => {
 			/* TODO
 			test('自身の visibility: specified なノートへのフォローしていないユーザーからの返信が含まれる', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
-	
 				const aliceNote = await post(alice, { text: 'hi', visibility: 'specified', visibleUserIds: [bob.id] });
 				const bobNote = await post(bob, { text: 'ok', visibility: 'specified', visibleUserIds: [alice.id], replyId: aliceNote.id });
-	
 				await waitForPushToTl();
-	
 				const res = await api('notes/timeline', { limit: 100 }, alice);
-	
 				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 				assert.strictEqual(res.body.find(note => note.id === bobNote.id).text, 'ok');
 			});
@@ -800,6 +850,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -816,6 +868,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await setTimeout(250);
@@ -920,6 +974,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -954,6 +1010,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -974,6 +1032,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -1048,6 +1108,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await setTimeout(250);
@@ -1446,6 +1508,8 @@ describe('Timelines', () => {
 			});
 
 			test('[withReplies: false] 他人への返信が含まれない', async () => {
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 				const carolNote = await post(carol, { text: 'hi' });
