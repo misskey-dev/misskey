@@ -54,8 +54,9 @@ export const store = markRaw(new Pizzax('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
+			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}` | `channel:${string}`,
 			userList: null as Misskey.entities.UserList | null,
+			channel: null as Misskey.entities.Channel | null,
 			filter: {
 				withReplies: true,
 				withRenotes: true,
@@ -268,6 +269,10 @@ export const store = markRaw(new Pizzax('base', {
 	pinnedUserLists: {
 		where: 'deviceAccount',
 		default: [] as Misskey.entities.UserList[],
+	},
+	pinnedChannels: {
+		where: 'deviceAccount',
+		default: [] as Misskey.entities.Channel[],
 	},
 	serverDisconnectedBehavior: {
 		where: 'device',

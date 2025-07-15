@@ -76,6 +76,7 @@ export function migrateOldSettings() {
 		prefer.commit('menu', [...store.s.menu, 'chat']);
 		prefer.commit('statusbars', store.s.statusbars);
 		prefer.commit('pinnedUserLists', store.s.pinnedUserLists);
+		prefer.commit('pinnedChannels', store.s.pinnedChannels);
 		prefer.commit('serverDisconnectedBehavior', store.s.serverDisconnectedBehavior);
 		prefer.commit('nsfw', store.s.nsfw);
 		prefer.commit('highlightSensitiveMedia', store.s.highlightSensitiveMedia);

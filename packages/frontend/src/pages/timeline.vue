@@ -9,13 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTip v-if="isBasicTimeline(src)" :k="`tl.${src}`" style="margin-bottom: var(--MI-margin);">
 			{{ i18n.ts._timelineDescription[src] }}
 		</MkTip>
-		<MkPostForm v-if="prefer.r.showFixedPostForm.value" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);" :isInYamiTimeline="src === 'yami'" :isInNormalTimeline="src !== 'yami'"/>
+		<MkPostForm v-if="shouldShowFixedPostForm" :channel="currentChannel" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);" :isInYamiTimeline="src === 'yami'" :isInNormalTimeline="src !== 'yami'"/>
 		<MkStreamingNotesTimeline
 			ref="tlComponent"
 			:key="src + withRenotes + withReplies + withHashtags + withFiles + localOnly + remoteOnly + withSensitive"
 			:class="$style.tl"
 			:src="src.split(':')[0]"
-			:list="src.split(':')[1]"
+			:list="src.startsWith('list:') ? src.split(':')[1] : undefined"
+			:channel="src.startsWith('channel:') ? src.split(':')[1] : undefined"
 			:withRenotes="withRenotes"
 			:withReplies="withReplies"
 			:withHashtags="withHashtags"
@@ -28,6 +29,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:sound="true"
 		/>
 	</div>
+	<template v-if="src.startsWith('channel:') && !prefer.r.showFixedPostFormInChannel.value" #footer>
+		<div :class="$style.footer">
+			<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
+				<div class="_buttonsCenter">
+					<MkButton inline rounded primary gradate @click="openPostForm()"><i class="ti ti-pencil"></i> {{ i18n.ts.postToTheChannel }}</MkButton>
+				</div>
+			</div>
+		</div>
+	</template>
 </PageWithHeader>
 </template>
 
@@ -49,12 +59,13 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import MkButton from '@/components/MkButton.vue';
 
 provide('shouldOmitHeaderTitle', true);
 
 const tlComponent = useTemplateRef('tlComponent');
 
-type TimelinePageSrc = BasicTimelineType | `list:${string}`;
+type TimelinePageSrc = BasicTimelineType | `list:${string}` | `channel:${string}`;
 
 const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
 const src = computed<TimelinePageSrc>({
@@ -73,6 +84,34 @@ const localOnly = computed<boolean>({
 const remoteOnly = computed<boolean>({
 	get: () => store.r.tl.value.filter.remoteOnly,
 	set: (x) => saveTlFilter('remoteOnly', x),
+});
+
+// 固定投稿フォームの表示制御
+const shouldShowFixedPostForm = computed(() => {
+	const isChannelTimeline = src.value.startsWith('channel:');
+
+	if (isChannelTimeline) {
+		// チャンネルタイムラインの場合、showFixedPostFormInChannelの設定を使用
+		return prefer.r.showFixedPostFormInChannel.value;
+	} else {
+		// その他のタイムラインの場合、showFixedPostFormの設定を使用
+		return prefer.r.showFixedPostForm.value;
+	}
+});
+
+// チャンネル情報を取得
+const currentChannel = computed(() => {
+	if (src.value.startsWith('channel:')) {
+		const channelId = src.value.substring('channel:'.length);
+		// まずピン止めチャンネルから探す
+		const pinnedChannel = prefer.r.pinnedChannels.value.find(c => c.id === channelId);
+		if (pinnedChannel) {
+			return pinnedChannel;
+		}
+		// ピン止めチャンネルになければstoreから取得
+		return store.r.tl.value.channel;
+	}
+	return null;
 });
 
 // computed内での無限ループを防ぐためのフラグ
@@ -165,6 +204,14 @@ onMounted(() => {
 	}
 });
 
+function openPostForm() {
+	if (currentChannel.value) {
+		os.post({
+			channel: currentChannel.value,
+		});
+	}
+}
+
 async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
 	const items: MenuItem[] = [
@@ -235,6 +282,11 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
 		out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
+	}
+
+	if (newSrc.startsWith('channel:')) {
+		const id = newSrc.substring('channel:'.length);
+		out.channel = prefer.r.pinnedChannels.value.find(c => c.id === id) ?? null;
 	}
 
 	store.set('tl', out);
@@ -383,6 +435,11 @@ const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => (
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: true,
+}))), ...(prefer.r.pinnedChannels.value.map(c => ({
+	key: 'channel:' + c.id,
+	title: c.name,
+	icon: 'ti ti-device-tv',
+	iconOnly: true,
 }))), ...availableBasicTimelines().map(tl => ({
 	key: tl,
 	title: i18n.ts._timelines[tl],
@@ -446,5 +503,12 @@ definePage(() => ({
 	background: var(--MI_THEME-bg);
 	border-radius: var(--MI-radius);
 	overflow: clip;
+}
+
+.footer {
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

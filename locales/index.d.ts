@@ -4999,6 +4999,10 @@ export interface Locale extends ILocale {
      */
     "pinnedList": string;
     /**
+     * ピン留めされたチャンネル
+     */
+    "pinnedChannel": string;
+    /**
      * デバイスの画面を常にオンにする
      */
     "keepScreenOn": string;

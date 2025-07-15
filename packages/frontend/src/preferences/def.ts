@@ -46,6 +46,10 @@ export const PREF_DEF = definePreferences({
 		accountDependent: true,
 		default: [] as Misskey.entities.UserList[],
 	},
+	pinnedChannels: {
+		accountDependent: true,
+		default: [] as Misskey.entities.Channel[],
+	},
 	uploadFolder: {
 		accountDependent: true,
 		default: null as string | null,
