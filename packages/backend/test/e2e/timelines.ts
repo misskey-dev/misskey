@@ -282,6 +282,48 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
 			});
 
+			test('[withRenotes: false] フォローしているユーザーの投稿が含まれる', async () => {
+				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(250);
+				const bobNote = await post(bob, { text: 'hi' });
+				const carolNote = await post(carol, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', {
+					limit: 100,
+					withRenotes: false,
+				}, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+			});
+
+			test('[withRenotes: false] フォローしているユーザーのファイルのみの投稿が含まれる', async () => {
+				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(250);
+				const [bobFile, carolFile] = await Promise.all([
+					uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
+					uploadUrl(carol, 'https://raw.githubusercontent.com/misskey-dev/assets/main/public/icon.png'),
+				]);
+				const bobNote = await post(bob, { fileIds: [bobFile.id] });
+				const carolNote = await post(carol, { fileIds: [carolFile.id] });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/timeline', {
+					limit: 100,
+					withRenotes: false,
+				}, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+			});
+
 			test('[withRenotes: false] フォローしているユーザーの他人の投稿のリノートが含まれない', async () => {
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
