@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
+import { setTimeout } from 'node:timers/promises';
 import type { TestingModule } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
@@ -25,10 +25,6 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
-
-export async function sleep(ms = 250): Promise<void> {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 describe('UserSuspendService', () => {
 	let app: TestingModule;
@@ -169,7 +165,7 @@ describe('UserSuspendService', () => {
 			await createFollowing(user, followee2);
 
 			await userSuspendService.suspend(user, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// フォロー関係が論理削除されているかチェック
 			const followings = await followingsRepository.find({
@@ -187,10 +183,10 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.suspend(user, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// 内部イベントが発行されているかチェック（非同期処理のため少し待つ）
-			await new Promise(resolve => setTimeout(resolve, 100));
+			await setTimeout(100);
 
 			expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
 				'userChangeSuspendedState',
@@ -205,7 +201,7 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.unsuspend(user, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// ユーザーの凍結が解除されているかチェック
 			const unsuspendedUser = await usersRepository.findOneBy({ id: user.id });
@@ -230,7 +226,7 @@ describe('UserSuspendService', () => {
 			await createFollowing(user, followee2, { isFollowerSuspended: true });
 
 			await userSuspendService.unsuspend(user, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// フォロー関係が復元されているかチェック
 			const followings = await followingsRepository.find({
@@ -248,10 +244,10 @@ describe('UserSuspendService', () => {
 			const moderator = await createUser();
 
 			await userSuspendService.unsuspend(user, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// 内部イベントが発行されているかチェック（非同期処理のため少し待つ）
-			await new Promise(resolve => setTimeout(resolve, 100));
+			await setTimeout(100);
 
 			expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
 				'userChangeSuspendedState',
@@ -282,7 +278,7 @@ describe('UserSuspendService', () => {
 
 			// 凍結
 			await userSuspendService.suspend(user, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// 凍結後の状態確認
 			followings = await followingsRepository.find({
@@ -296,7 +292,7 @@ describe('UserSuspendService', () => {
 			// 凍結解除
 			const suspendedUser = await usersRepository.findOneByOrFail({ id: user.id });
 			await userSuspendService.unsuspend(suspendedUser, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// 凍結解除後の状態確認
 			followings = await followingsRepository.find({
@@ -320,7 +316,7 @@ describe('UserSuspendService', () => {
 			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Delete' } as any);
 
 			await userSuspendService.suspend(localUser, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// ActivityPub配信が呼ばれているかチェック
 			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
@@ -339,7 +335,7 @@ describe('UserSuspendService', () => {
 			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Undo' } as any);
 
 			await userSuspendService.unsuspend(localUser, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// ActivityPub配信が呼ばれているかチェック
 			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
@@ -355,7 +351,7 @@ describe('UserSuspendService', () => {
 			userEntityService.isLocalUser.mockReturnValue(false);
 
 			await userSuspendService.suspend(remoteUser, moderator);
-			await sleep();
+			await setTimeout(250);
 
 			// ActivityPub配信が呼ばれていないことをチェック
 			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(remoteUser);
