@@ -18,6 +18,7 @@ WORKDIR /misskey
 
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
+COPY --link ["patches", "./patches"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/frontend-shared/package.json", "./packages/frontend-shared/"]
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
@@ -53,6 +54,7 @@ WORKDIR /misskey
 
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
+COPY --link ["patches", "./patches"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]

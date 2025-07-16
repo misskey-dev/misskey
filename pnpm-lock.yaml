@@ -9,6 +9,11 @@ overrides:
   lodash: 4.17.21
   '@aiscript-dev/aiscript-languageserver': '-'
 
+patchedDependencies:
+  typeorm:
+    hash: 2677b97a423e157945c154e64183d3ae2eb44dfa9cb0e5ce731a7612f507bb56
+    path: patches/typeorm.patch
+
 importers:
 
   .:
@@ -422,7 +427,7 @@ importers:
         version: 4.2.0
       typeorm:
         specifier: 0.3.24
-        version: 0.3.24(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2)
+        version: 0.3.24(patch_hash=2677b97a423e157945c154e64183d3ae2eb44dfa9cb0e5ce731a7612f507bb56)(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -21835,7 +21840,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@0.3.24(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2):
+  typeorm@0.3.24(patch_hash=2677b97a423e157945c154e64183d3ae2eb44dfa9cb0e5ce731a7612f507bb56)(ioredis@5.6.1)(pg@8.16.0)(reflect-metadata@0.2.2):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 3.17.0
