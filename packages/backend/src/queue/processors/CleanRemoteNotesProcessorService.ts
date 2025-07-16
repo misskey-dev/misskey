@@ -64,6 +64,7 @@ export class CleanRemoteNotesProcessorService {
 
 			if (elapsed >= maxDuration) {
 				this.logger.info(`Reached maximum duration of ${maxDuration}ms, stopping...`);
+				job.log('Reached maximum duration, stopping garbage collection.');
 				job.updateProgress(100);
 				break;
 			}
