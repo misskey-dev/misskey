@@ -24,8 +24,9 @@ export class MiNoteDraft {
 	})
 	public replyId: MiNote['id'] | null;
 
+	// There is a possibility that replyId is not null but reply is null when the reply note is deleted.
 	@ManyToOne(type => MiNote, {
-		onDelete: 'CASCADE',
+		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
 	public reply: MiNote | null;
@@ -38,8 +39,9 @@ export class MiNoteDraft {
 	})
 	public renoteId: MiNote['id'] | null;
 
+	// There is a possibility that renoteId is not null but renote is null when the renote note is deleted.
 	@ManyToOne(type => MiNote, {
-		onDelete: 'CASCADE',
+		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
 	public renote: MiNote | null;
@@ -114,8 +116,10 @@ export class MiNoteDraft {
 	})
 	public channelId: MiChannel['id'] | null;
 
+	// There is a possibility that channelId is not null but channel is null when the channel is deleted.
+	// (deleting channel is not implemented so it's not happening now but may happen in the future)
 	@ManyToOne(type => MiChannel, {
-		onDelete: 'CASCADE',
+		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
 	public channel: MiChannel | null;
