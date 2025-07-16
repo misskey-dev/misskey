@@ -19,7 +19,6 @@ function genHost() {
 
 let redisForTimelines: Redis;
 let root: SignupResponse;
-let roleAdmin: Role;
 
 describe('Timelines', () => {
 	beforeAll(async () => {
