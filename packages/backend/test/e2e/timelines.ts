@@ -9,8 +9,8 @@
 import * as assert from 'assert';
 import { setTimeout } from 'node:timers/promises';
 import { Redis } from 'ioredis';
-import { SignupResponse, Role, Note } from 'misskey-js/entities.js';
-import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, role } from '../utils.js';
+import { SignupResponse, Note, UserList } from 'misskey-js/entities.js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl } from '../utils.js';
 import { loadConfig } from '@/config.js';
 
 function genHost() {
@@ -667,12 +667,12 @@ describe('Timelines', () => {
 					carolNote = await post(carol, { text: 'kon\'nichiwa' });
 
 					await waitForPushToTl();
+
+					await api('admin/suspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
 				});
 
 				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
-					await api('admin/suspend-user', { userId: carol.id }, root);
-					await setTimeout(100);
-
 					const res = await api('notes/timeline', { limit: 100 }, alice);
 					assert.strictEqual(res.body.length, 2);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
@@ -709,12 +709,12 @@ describe('Timelines', () => {
 					carolNote = await post(carol, { text: 'kon\'nichiwa' });
 
 					await waitForPushToTl();
+
+					await api('admin/suspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
 				});
 
 				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
-					await api('admin/suspend-user', { userId: carol.id }, root);
-					await setTimeout(100);
-
 					const res = await api('notes/timeline', { limit: 100 }, alice);
 					assert.strictEqual(res.body.length, 2);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
@@ -1253,14 +1253,14 @@ describe('Timelines', () => {
 					await api('following/create', { userId: elle.id }, alice);
 
 					await waitForPushToTl();
-				});
 
-				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
 					await api('admin/suspend-user', { userId: carol.id }, root);
 					await api('admin/suspend-user', { userId: dave.id }, root);
 					await api('admin/suspend-user', { userId: elle.id }, root);
 					await setTimeout(250);
+				});
 
+				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
 					const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
 
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
@@ -1531,26 +1531,47 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
 			});
 
-			test('凍結: 凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
-				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-				const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
-				await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
-				await api('users/lists/push', { listId: list.id, userId: carol.id }, alice);
-				const aliceNote = await post(alice, { text: 'hi' });
-				const bobNote = await post(bob, { text: 'yo' });
-				const carolNote = await post(carol, { text: 'kon\'nichiwa' });
+			describe('凍結', () => {
+				let alice: SignupResponse, bob: SignupResponse, carol: SignupResponse;
+				let aliceNote: Note, bobNote: Note, carolNote: Note;
+				let list: UserList;
 
-				await waitForPushToTl();
+				beforeAll(async () => {
+					[alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
-				await api('admin/suspend-user', { userId: carol.id }, root);
+					list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
+					await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
+					await api('users/lists/push', { listId: list.id, userId: carol.id }, alice);
 
-				await setTimeout(250);
+					aliceNote = await post(alice, { text: 'hi' });
+					bobNote = await post(bob, { text: 'yo' });
+					carolNote = await post(carol, { text: 'kon\'nichiwa' });
 
-				const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
-				assert.strictEqual(res.body.length, 1);
-				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-				assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+					await waitForPushToTl();
+
+					await api('admin/suspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
+				});
+
+				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
+					const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
+
+					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), false);
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+				});
+
+				test('凍結解除後に凍結されていたユーザーのノートは見えるようになる', async () => {
+					await api('admin/unsuspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
+
+					const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
+
+					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), false);
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+				});
 			});
 		});
 

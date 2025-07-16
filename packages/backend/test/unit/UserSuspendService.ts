@@ -25,6 +25,11 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { randomString } from '../utils.js';
+
+function genHost() {
+	return randomString() + '.example.com';
+}
 
 describe('UserSuspendService', () => {
 	let app: TestingModule;
@@ -356,6 +361,55 @@ describe('UserSuspendService', () => {
 			// ActivityPub配信が呼ばれていないことをチェック
 			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(remoteUser);
 			expect(apRendererService.renderDelete).not.toHaveBeenCalled();
+			expect(queueService.deliver).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('remote user suspension', () => {
+		test('should suspend remote user without AP delivery', async () => {
+			const remoteUser = await createUser({ host: genHost() });
+			const moderator = await createUser();
+
+			await userSuspendService.suspend(remoteUser, moderator);
+			await setTimeout(250);
+
+			// ユーザーが凍結されているかチェック
+			const suspendedUser = await usersRepository.findOneBy({ id: remoteUser.id });
+			expect(suspendedUser?.isSuspended).toBe(true);
+
+			// モデレーションログが記録されているかチェック
+			expect(moderationLogService.log).toHaveBeenCalledWith(moderator, 'suspend', {
+				userId: remoteUser.id,
+				userUsername: remoteUser.username,
+				userHost: remoteUser.host,
+			});
+
+			// ActivityPub配信が呼ばれていないことを確認
+			expect(queueService.deliver).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('remote user unsuspension', () => {
+		test('should unsuspend remote user without AP delivery', async () => {
+			const remoteUser = await createUser({ host: genHost(), isSuspended: true });
+			const moderator = await createUser();
+
+			await userSuspendService.unsuspend(remoteUser, moderator);
+
+			await setTimeout(250);
+
+			// ユーザーの凍結が解除されているかチェック
+			const unsuspendedUser = await usersRepository.findOneBy({ id: remoteUser.id });
+			expect(unsuspendedUser?.isSuspended).toBe(false);
+
+			// モデレーションログが記録されているかチェック
+			expect(moderationLogService.log).toHaveBeenCalledWith(moderator, 'unsuspend', {
+				userId: remoteUser.id,
+				userUsername: remoteUser.username,
+				userHost: remoteUser.host,
+			});
+
+			// ActivityPub配信が呼ばれていないことを確認
 			expect(queueService.deliver).not.toHaveBeenCalled();
 		});
 	});
