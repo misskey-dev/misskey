@@ -1367,7 +1367,7 @@ tip: "Tips & Tricks"
 redisplayAllTips: "Show all “Tips & Tricks” again"
 hideAllTips: "Hide all \"Tips & Tricks\""
 defaultImageCompressionLevel: "Default image compression level"
-defaultImageCompressionLevel_description: "High, reduces the file size but also the image quality. <br>High, reduces the file size but also the image quality."
+defaultImageCompressionLevel_description: "Lower level preserves image quality but increases file size.<br>Higher level reduce file size, but reduce image quality."
 _order:
   newest: "Newest First"
   oldest: "Oldest First"
