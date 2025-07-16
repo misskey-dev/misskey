@@ -138,6 +138,7 @@ const shouldDisableSubmitting = computed((): boolean => {
 		instance.enableTurnstile && !turnstileResponse.value ||
 		instance.enableTestcaptcha && !testcaptchaResponse.value ||
 		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
+		instance.disableRegistration && invitationCode.value === '' ||
 		usernameState.value !== 'ok' ||
 		passwordRetypeState.value !== 'match';
 });
