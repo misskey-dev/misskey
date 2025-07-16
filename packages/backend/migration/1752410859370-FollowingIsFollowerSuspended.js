@@ -2,7 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-module.exports = class FollowingIsFollowerSuspended1752410859370 {
+
+export class FollowingIsFollowerSuspended1752410859370 {
     name = 'FollowingIsFollowerSuspended1752410859370'
 
     async up(queryRunner) {
