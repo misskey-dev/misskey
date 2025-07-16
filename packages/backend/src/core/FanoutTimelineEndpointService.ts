@@ -147,8 +147,6 @@ export class FanoutTimelineEndpointService {
 			{
 				const parentFilter = filter;
 				filter = (note) => {
-					console.log(JSON.stringify(note, null, 2));
-
 					if (!ps.ignoreAuthorFromUserSuspension) {
 						if (note.user!.isSuspended) return false;
 					}
