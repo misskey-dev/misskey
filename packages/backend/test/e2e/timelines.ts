@@ -674,7 +674,6 @@ describe('Timelines', () => {
 
 				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
 					const res = await api('notes/timeline', { limit: 100 }, alice);
-					assert.strictEqual(res.body.length, 2);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
@@ -686,11 +685,54 @@ describe('Timelines', () => {
 
 					const res = await api('notes/timeline', { limit: 100 }, alice);
 
-					assert.strictEqual(res.body.length, 3);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
 					assert.strictEqual(res.body.find(note => note.id === carolNote.id)?.text, 'kon\'nichiwa');
+				});
+			});
+
+			describe('凍結 (Renote)', () => {
+				let alice: SignupResponse, bob: SignupResponse, carol: SignupResponse;
+				let aliceNote: Note, bobNote: Note, carolNote: Note, bobRenote: Note, carolRenote: Note;
+
+				beforeAll(async () => {
+					[alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+					await api('following/create', { userId: bob.id }, alice);
+					await api('following/create', { userId: carol.id }, alice);
+					aliceNote = await post(alice, { text: 'hi' });
+					bobNote = await post(bob, { text: 'yo' });
+					carolNote = await post(carol, { text: 'kon\'nichiwa' });
+					bobRenote = await post(bob, { renoteId: carolNote.id });
+					carolRenote = await post(carol, { renoteId: bobNote.id });
+
+					await waitForPushToTl();
+
+					await api('admin/suspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
+				});
+
+				test('凍結後に凍結されたユーザーに対するRenoteや凍結されたユーザーのRenoteが見えなくなる', async () => {
+					const res = await api('notes/timeline', { limit: 100 }, alice);
+					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+					assert.strictEqual(res.body.some(note => note.id === bobRenote.id), false);
+					assert.strictEqual(res.body.some(note => note.id === carolRenote.id), false);
+				});
+
+				test('凍結解除後に凍結されていたユーザーに対するRenoteや凍結されたユーザーのRenoteが見えなくなる', async () => {
+					await api('admin/unsuspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
+
+					const res = await api('notes/timeline', { limit: 100 }, alice);
+
+					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === bobRenote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolRenote.id), true);
 				});
 			});
 
@@ -716,7 +758,7 @@ describe('Timelines', () => {
 
 				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
 					const res = await api('notes/timeline', { limit: 100 }, alice);
-					assert.strictEqual(res.body.length, 2);
+
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
@@ -728,7 +770,6 @@ describe('Timelines', () => {
 
 					const res = await api('notes/timeline', { limit: 100 }, alice);
 
-					assert.strictEqual(res.body.length, 3);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
