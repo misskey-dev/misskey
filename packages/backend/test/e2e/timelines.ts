@@ -653,7 +653,7 @@ describe('Timelines', () => {
 				assert.strictEqual(await redisForTimelines.exists(`list:homeTimeline:${bob.id}`), 0);
 			});
 
-			describe('凍結', async () => {
+			describe('凍結', () => {
 				let alice: SignupResponse, bob: SignupResponse, carol: SignupResponse;
 				let aliceNote: Note, bobNote: Note, carolNote: Note;
 
@@ -930,7 +930,7 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
 			}, 1000 * 10);
 
-			describe('凍結', async () => {
+			describe('凍結', () => {
 				let alice: SignupResponse, bob: SignupResponse, carol: SignupResponse;
 				let aliceNote: Note, bobNote: Note, carolNote: Note;
 
@@ -1188,7 +1188,7 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
 			}, 1000 * 10);
 
-			describe('凍結', async () => {
+			describe('凍結', () => {
 				/*
 				 * bob = 未フォローのローカルユーザー (凍結対象でない)
 				 * carol = 未フォローのローカルユーザー (凍結対象)
