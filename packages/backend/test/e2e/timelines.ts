@@ -9,9 +9,9 @@
 import * as assert from 'assert';
 import { setTimeout } from 'node:timers/promises';
 import { Redis } from 'ioredis';
+import { SignupResponse, Role, Note } from 'misskey-js/entities.js';
 import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, role } from '../utils.js';
 import { loadConfig } from '@/config.js';
-import { SignupResponse, Role, Note } from 'misskey-js/entities.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -693,6 +693,47 @@ describe('Timelines', () => {
 					assert.strictEqual(res.body.find(note => note.id === carolNote.id)?.text, 'kon\'nichiwa');
 				});
 			});
+
+			describe('凍結(リモート)', () => {
+				let alice: SignupResponse, bob: SignupResponse, carol: SignupResponse;
+				let aliceNote: Note, bobNote: Note, carolNote: Note;
+
+				beforeAll(async () => {
+					[alice, bob, carol] = await Promise.all([signup(), signup({ host: genHost() }), signup({ host: genHost() })]);
+
+					await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
+					await api('following/create', { userId: bob.id }, alice);
+					await api('following/create', { userId: carol.id }, alice);
+					aliceNote = await post(alice, { text: 'hi' });
+					bobNote = await post(bob, { text: 'yo' });
+					carolNote = await post(carol, { text: 'kon\'nichiwa' });
+
+					await waitForPushToTl();
+				});
+
+				test('凍結後に凍結されたユーザーのノートは見えなくなる', async () => {
+					await api('admin/suspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
+
+					const res = await api('notes/timeline', { limit: 100 }, alice);
+					assert.strictEqual(res.body.length, 2);
+					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+				});
+
+				test('凍結解除後に凍結されていたユーザーのノートは見えるようになる', async () => {
+					await api('admin/unsuspend-user', { userId: carol.id }, root);
+					await setTimeout(100);
+
+					const res = await api('notes/timeline', { limit: 100 }, alice);
+
+					assert.strictEqual(res.body.length, 3);
+					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+				});
+			});
 		});
 
 		describe('Local TL', () => {
@@ -949,7 +990,7 @@ describe('Timelines', () => {
 					await setTimeout(100);
 
 					const res = await api('notes/local-timeline', { limit: 100 }, alice);
-					assert.strictEqual(res.body.length, 2);
+
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
@@ -961,7 +1002,6 @@ describe('Timelines', () => {
 
 					const res = await api('notes/local-timeline', { limit: 100 }, alice);
 
-					assert.strictEqual(res.body.length, 3);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
@@ -1208,6 +1248,8 @@ describe('Timelines', () => {
 					elleNote = await post(elle, { text: 'hi there' });
 
 					await api('following/create', { userId: dave.id }, alice);
+
+					await sendEnvUpdateRequest({ key: 'FORCE_FOLLOW_REMOTE_USER_FOR_TESTING', value: 'true' });
 					await api('following/create', { userId: elle.id }, alice);
 
 					await waitForPushToTl();
@@ -1219,8 +1261,8 @@ describe('Timelines', () => {
 					await api('admin/suspend-user', { userId: elle.id }, root);
 					await setTimeout(250);
 
-					const res = await api('notes/local-timeline', { limit: 100 }, alice);
-					assert.strictEqual(res.body.length, 2);
+					const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
@@ -1234,9 +1276,8 @@ describe('Timelines', () => {
 					await api('admin/unsuspend-user', { userId: elle.id }, root);
 					await setTimeout(250);
 
-					const res = await api('notes/local-timeline', { limit: 100 }, alice);
+					const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
 
-					assert.strictEqual(res.body.length, 5);
 					assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 					assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);

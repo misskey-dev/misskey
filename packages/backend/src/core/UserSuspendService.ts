@@ -50,7 +50,7 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postSuspend(user).catch((e: any) => {});
-			await this.unFollowAll(user).catch((e: any) => {});
+			await this.suspendFollowings(user).catch((e: any) => {});
 		})();
 	}
 
@@ -140,7 +140,7 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	private async unFollowAll(follower: MiUser) {
+	private async suspendFollowings(follower: MiUser) {
 		await this.followingsRepository.update(
 			{
 				followerId: follower.id,
