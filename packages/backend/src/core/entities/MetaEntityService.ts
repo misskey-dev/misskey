@@ -159,6 +159,7 @@ export class MetaEntityService {
 			features: {
 				localTimeline: instance.policies.ltlAvailable,
 				globalTimeline: instance.policies.gtlAvailable,
+				vmimiRelayTimeline: instance.policies.vrtlAvailable,
 				registration: !instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				hcaptcha: instance.enableHcaptcha,

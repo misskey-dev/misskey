@@ -367,7 +367,7 @@ export class MiMeta {
 
 	@Column('varchar', {
 		length: 1024,
-		default: 'https://github.com/misskey-dev/misskey',
+		default: 'https://github.com/anatawa12/misskey/tree/vmimi-relay-timeline-releases?tab=readme-ov-file#vmimi-relay-timeline',
 		nullable: true,
 	})
 	public repositoryUrl: string | null;
@@ -573,6 +573,11 @@ export class MiMeta {
 		length: 1024, array: true, default: ['admin', 'administrator', 'root', 'system', 'maintainer', 'host', 'mod', 'moderator', 'owner', 'superuser', 'staff', 'auth', 'i', 'me', 'everyone', 'all', 'mention', 'mentions', 'example', 'user', 'users', 'account', 'accounts', 'official', 'help', 'helps', 'support', 'supports', 'info', 'information', 'informations', 'announce', 'announces', 'announcement', 'announcements', 'notice', 'notification', 'notifications', 'dev', 'developer', 'developers', 'tech', 'misskey'],
 	})
 	public preservedUsernames: string[];
+
+	@Column('integer', {
+		default: 300,
+	})
+	public vmimiRelayTimelineCacheMax: number;
 
 	@Column('boolean', {
 		default: true,

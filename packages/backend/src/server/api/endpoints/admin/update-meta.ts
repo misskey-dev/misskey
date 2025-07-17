@@ -145,6 +145,7 @@ export const paramDef = {
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
 		enableFanoutTimelineDbFallback: { type: 'boolean' },
+		vmimiRelayTimelineCacheMax: { type: 'integer' },
 		perLocalUserUserTimelineCacheMax: { type: 'integer' },
 		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
 		perUserHomeTimelineCacheMax: { type: 'integer' },
@@ -635,6 +636,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
 				set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
+			}
+
+			if (ps.vmimiRelayTimelineCacheMax !== undefined) {
+				set.vmimiRelayTimelineCacheMax = ps.vmimiRelayTimelineCacheMax;
 			}
 
 			if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {

@@ -45,6 +45,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { VmimiRelayTimelineService } from '@/core/VmimiRelayTimelineService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { SearchService } from '@/core/SearchService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
@@ -192,6 +193,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 
+		private vmimiRelayTimelineService: VmimiRelayTimelineService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
@@ -922,6 +924,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 						this.fanoutTimelineService.push(`localTimelineWithReplyTo:${note.replyUserId}`, note.id, 300 / 10, r);
 					}
 				}
+				if (note.visibility === 'public' && this.vmimiRelayTimelineService.isRelayedInstance(note.userHost) && !note.localOnly) {
+					this.fanoutTimelineService.push('vmimiRelayTimelineWithReplies', note.id, this.meta.vmimiRelayTimelineCacheMax, r);
+					if (note.replyUserHost == null) {
+						this.fanoutTimelineService.push(`vmimiRelayTimelineWithReplyTo:${note.replyUserId}`, note.id, this.meta.vmimiRelayTimelineCacheMax / 10, r);
+					}
+				}
 			} else {
 				this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, note.userHost == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
 				if (note.fileIds.length > 0) {
@@ -932,6 +940,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 					this.fanoutTimelineService.push('localTimeline', note.id, 1000, r);
 					if (note.fileIds.length > 0) {
 						this.fanoutTimelineService.push('localTimelineWithFiles', note.id, 500, r);
+					}
+				}
+				if (note.visibility === 'public' && this.vmimiRelayTimelineService.isRelayedInstance(note.userHost) && !note.localOnly) {
+					this.fanoutTimelineService.push('vmimiRelayTimeline', note.id, this.meta.vmimiRelayTimelineCacheMax, r);
+					if (note.fileIds.length > 0) {
+						this.fanoutTimelineService.push('vmimiRelayTimelineWithFiles', note.id, this.meta.vmimiRelayTimelineCacheMax / 2, r);
 					}
 				}
 			}

@@ -168,6 +168,10 @@ export const packedRolePoliciesSchema = {
 	type: 'object',
 	optional: false, nullable: false,
 	properties: {
+		vrtlAvailable: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		gtlAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,

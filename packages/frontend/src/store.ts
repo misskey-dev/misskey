@@ -54,14 +54,12 @@ export const store = markRaw(new Pizzax('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
-			userList: null as Misskey.entities.UserList | null,
-			filter: {
-				withReplies: true,
-				withRenotes: true,
-				withSensitive: true,
-				onlyFiles: false,
-			},
+			home: false,
+			local: false,
+			social: false,
+			global: false,
+			'vmimi-relay': false,
+			'vmimi-relay-social': false,
 		},
 	},
 	darkMode: {
@@ -201,6 +199,29 @@ export const store = markRaw(new Pizzax('base', {
 			black: boolean;
 			props: Record<string, any>;
 		}[],
+	},
+	widgets: {
+		where: 'account',
+		default: [] as {
+			name: string;
+			id: string;
+			place: string | null;
+			data: Record<string, any>;
+		}[],
+	},
+	tl: {
+		where: 'deviceAccount',
+		default: {
+			src: 'home' as 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'vmimi-relay-social' | `list:${string}`,
+			userList: null as Misskey.entities.UserList | null,
+			filter: {
+				withReplies: true,
+				withRenotes: true,
+				withSensitive: true,
+				onlyFiles: false,
+				withLocalOnly: true,
+			},
+		},
 	},
 	pinnedUserLists: {
 		where: 'deviceAccount',

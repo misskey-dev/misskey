@@ -715,6 +715,30 @@ export type Channels = {
         };
         receives: null;
     };
+    vmimiRelayTimeline: {
+        params: {
+            withRenotes?: boolean;
+            withFiles?: boolean;
+            withReplies?: boolean;
+            withLocalOnly?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    vmimiRelayHybridTimeline: {
+        params: {
+            withRenotes?: boolean;
+            withReplies?: boolean;
+            withFiles?: boolean;
+            withLocalOnly?: boolean;
+        };
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
     userList: {
         params: {
             listId: string;
@@ -1977,6 +2001,10 @@ declare namespace entities {
         NotesFeaturedResponse,
         NotesGlobalTimelineRequest,
         NotesGlobalTimelineResponse,
+        NotesVmimiRelayTimelineRequest,
+        NotesVmimiRelayTimelineResponse,
+        NotesVmimiRelayHybridTimelineRequest,
+        NotesVmimiRelayHybridTimelineResponse,
         NotesHybridTimelineRequest,
         NotesHybridTimelineResponse,
         NotesLocalTimelineRequest,
@@ -3180,6 +3208,18 @@ type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['re
 type NotesUserListTimelineResponse = operations['notes___user-list-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesVmimiRelayHybridTimelineRequest = operations['notes___vmimi-relay-hybrid-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayHybridTimelineResponse = operations['notes___vmimi-relay-hybrid-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayTimelineRequest = operations['notes___vmimi-relay-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayTimelineResponse = operations['notes___vmimi-relay-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
 
 // @public (undocumented)
@@ -3801,10 +3841,9 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:54:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:218:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:244:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:254:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

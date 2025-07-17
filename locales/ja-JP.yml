@@ -1216,6 +1216,7 @@ showRepliesToOthersInTimeline: "TLに他の人への返信を含める"
 hideRepliesToOthersInTimeline: "TLに他の人への返信を含めない"
 showRepliesToOthersInTimelineAll: "TLに現在フォロー中の人全員の返信を含めるようにする"
 hideRepliesToOthersInTimelineAll: "TLに現在フォロー中の人全員の返信を含めないようにする"
+showLocalOnlyInTimeline: "TLに連合なし投稿を含める"
 confirmShowRepliesAll: "この操作は元に戻せません。本当にTLに現在フォロー中の人全員の返信を含めるようにしますか？"
 confirmHideRepliesAll: "この操作は元に戻せません。本当にTLに現在フォロー中の人全員の返信を含めないようにしますか？"
 externalServices: "外部サービス"
@@ -1632,6 +1633,8 @@ _timelineDescription:
   local: "ローカルタイムラインでは、このサーバーにいるユーザー全員の投稿を見られます。"
   social: "ソーシャルタイムラインには、ホームタイムラインとローカルタイムラインの投稿が両方表示されます。"
   global: "グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。"
+  vmimi-relay: "ぶいみみリレータイムラインでは、バーチャルケモミミリレーサーバーに参加しているサーバーのユーザー全員の投稿を見られます。"
+  vmimi-relay-social: "ぶいみみソーシャルタイムラインには、ホームタイムラインとぶいみみリレータイムラインの投稿が両方表示されます。"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
@@ -1983,6 +1986,7 @@ _role:
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
+    vrtlAvailable: "ぶいみみリレータイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
     canInvite: "サーバー招待コードの発行"
@@ -2606,6 +2610,8 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
+  vmimi-relay: "ぶいみみリレー"
+  vmimi-relay-social: "ぶいみみソーシャル"
 
 _play:
   new: "Playの作成"

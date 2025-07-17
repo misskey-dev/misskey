@@ -4,26 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :swipable="true" :displayMyAvatar="true">
-	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<MkTip v-if="isBasicTimeline(src)" :k="`tl.${src}`" style="margin-bottom: var(--MI-margin);">
-			{{ i18n.ts._timelineDescription[src] }}
-		</MkTip>
-		<MkPostForm v-if="prefer.r.showFixedPostForm.value" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);"/>
-		<MkStreamingNotesTimeline
-			ref="tlComponent"
-			:key="src + withRenotes + withReplies + onlyFiles + withSensitive"
-			:class="$style.tl"
-			:src="src.split(':')[0]"
-			:list="src.split(':')[1]"
-			:withRenotes="withRenotes"
-			:withReplies="withReplies"
-			:withSensitive="withSensitive"
-			:onlyFiles="onlyFiles"
-			:sound="true"
-		/>
-	</div>
-</PageWithHeader>
+<MkStickyContainer>
+	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
+	<MkSpacer :contentMax="800">
+		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
+			<div :key="src" ref="rootEl">
+				<MkInfo v-if="isBasicTimeline(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
+					{{ i18n.ts._timelineDescription[src] }}
+				</MkInfo>
+				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--MI-margin);"/>
+				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+				<div :class="$style.tl">
+					<MkTimeline
+						ref="tlComponent"
+						:key="src + withRenotes + withReplies + onlyFiles + withLocalOnly + withSensitive"
+						:src="src.split(':')[0]"
+						:list="src.split(':')[1]"
+						:withRenotes="withRenotes"
+						:withReplies="withReplies"
+						:withSensitive="withSensitive"
+						:onlyFiles="onlyFiles"
+						:withLocalOnly="withLocalOnly"
+						:sound="true"
+						@queue="queueUpdated"
+					/>
+				</div>
+			</div>
+		</MkHorizontalSwipe>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -42,8 +51,8 @@ import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.j
 import { deviceKind } from '@/utility/device-kind.js';
 import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import { prefer } from '@/preferences.js';
+import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, hasWithLocalOnly } from '@/timelines.js';
+import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -60,6 +69,10 @@ const withRenotes = computed<boolean>({
 	get: () => store.r.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
 });
+const withLocalOnly = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withLocalOnly,
+	set: (x) => saveTlFilter('withLocalOnly', x),
+});
 
 // computed内での無限ループを防ぐためのフラグ
 const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
@@ -71,7 +84,7 @@ const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
 const withReplies = computed<boolean>({
 	get: () => {
 		if (!$i) return false;
-		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
+		if (['local', 'social', 'vmimi-relay', 'vmimi-relay-social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
 			return store.r.tl.value.filter.withReplies;
@@ -81,7 +94,7 @@ const withReplies = computed<boolean>({
 });
 const onlyFiles = computed<boolean>({
 	get: () => {
-		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
+		if (['local', 'social', 'vmimi-relay', 'vmimi-relay-social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
 			return store.r.tl.value.filter.onlyFiles;
@@ -253,6 +266,14 @@ const headerActions = computed(() => {
 					ref: onlyFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
 				});
+
+				if (isBasicTimeline(src.value) && hasWithLocalOnly(src.value)) {
+					menuItems.push({
+						type: 'switch',
+						text: i18n.ts.showLocalOnlyInTimeline,
+						ref: withLocalOnly,
+					});
+				}
 
 				os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 			},
