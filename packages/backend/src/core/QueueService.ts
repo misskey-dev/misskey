@@ -17,6 +17,7 @@ import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
 import type {
 	DbJobData,
@@ -39,7 +40,6 @@ import type {
 } from './QueueModule.js';
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
-import type { Packed } from '@/misc/json-schema.js';
 
 export const QUEUE_TYPES = [
 	'system',
@@ -122,6 +122,14 @@ export class QueueService {
 		}, {
 			// 毎時30分に起動
 			repeat: { pattern: '30 * * * *' },
+			removeOnComplete: 10,
+			removeOnFail: 30,
+		});
+
+		this.systemQueue.add('cleanRemoteNotes', {
+		}, {
+			// 毎日午前4時に起動(最も人の少ない時間帯)
+			repeat: { pattern: '0 4 * * *' },
 			removeOnComplete: 10,
 			removeOnFail: 30,
 		});
