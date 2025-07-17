@@ -10,6 +10,7 @@ import { DI } from '@/di-symbols.js';
 import type { MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 
@@ -21,6 +22,7 @@ export class CleanRemoteNotesProcessorService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private idService: IdService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean-remote-notes');
@@ -29,13 +31,20 @@ export class CleanRemoteNotesProcessorService {
 	@bindThis
 	public async process(job: Bull.Job<Record<string, unknown>>): Promise<{
 		deletedCount: number;
+		oldest: number | null;
+		newest: number | null;
 	}> {
 		this.logger.info('garbage collecting remote notes...');
 
 		const maxDuration = 1000 * 60 * 60; // 1 hour
 		const startAt = Date.now();
 
-		let deletedCount = 0;
+		const stats = {
+			deletedCount: 0,
+			oldest: null as number | null,
+			newest: null as number | null,
+		};
+
 		let cursor: MiNote['id'] | null = null;
 
 		while (true) {
@@ -58,11 +67,21 @@ export class CleanRemoteNotesProcessorService {
 				break;
 			}
 
+			for (const note of notes) {
+				const t = this.idService.parse(note.id).date.getTime();
+				if (stats.oldest === null || t < stats.oldest) {
+					stats.oldest = t;
+				}
+				if (stats.newest === null || t > stats.newest) {
+					stats.newest = t;
+				}
+			}
+
 			await this.notesRepository.delete(notes.map(note => note.id));
 
 			cursor = notes.at(-1)?.id ?? null;
 
-			deletedCount += notes.length;
+			stats.deletedCount += notes.length;
 
 			const elapsed = Date.now() - startAt;
 
@@ -80,6 +99,10 @@ export class CleanRemoteNotesProcessorService {
 
 		this.logger.succ('garbage collection of remote notes completed.');
 
-		return { deletedCount };
+		return {
+			deletedCount: stats.deletedCount,
+			oldest: stats.oldest,
+			newest: stats.newest,
+		};
 	}
 }
