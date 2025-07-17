@@ -26,6 +26,9 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { randomString } from '../utils.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { RelayService } from '@/core/RelayService.js';
+import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -42,6 +45,8 @@ describe('UserSuspendService', () => {
 	let globalEventService: jest.Mocked<GlobalEventService>;
 	let apRendererService: jest.Mocked<ApRendererService>;
 	let moderationLogService: jest.Mocked<ModerationLogService>;
+	let apDeliverManagerService: jest.Mocked<ApDeliverManagerService>;
+	let relayService: jest.Mocked<RelayService>;
 
 	async function createUser(data: Partial<MiUser> = {}): Promise<MiUser> {
 		const user = {
@@ -84,6 +89,7 @@ describe('UserSuspendService', () => {
 			imports: [GlobalModule],
 			providers: [
 				UserSuspendService,
+				ApDeliverManagerService,
 				{
 					provide: UserEntityService,
 					useFactory: () => ({
@@ -94,6 +100,7 @@ describe('UserSuspendService', () => {
 				{
 					provide: QueueService,
 					useFactory: () => ({
+						deliverMany: jest.fn(),
 						deliver: jest.fn(),
 					}),
 				},
@@ -104,17 +111,35 @@ describe('UserSuspendService', () => {
 					}),
 				},
 				{
-					provide: ApRendererService,
-					useFactory: () => ({
-						addContext: jest.fn(),
-						renderDelete: jest.fn(),
-						renderUndo: jest.fn(),
-					}),
-				},
-				{
 					provide: ModerationLogService,
 					useFactory: () => ({
 						log: jest.fn(),
+					}),
+				},
+				{
+					provide: RelayService,
+					useFactory: () => ({
+						deliverToRelays: jest.fn(),
+					}),
+				},
+				{
+					provide: ApRendererService,
+					useFactory: () => ({
+						renderDelete: jest.fn(),
+						renderUndo: jest.fn(),
+						renderPerson: jest.fn(),
+						renderUpdate: jest.fn(),
+						addContext: jest.fn(),
+					}),
+				},
+				{
+					provide: ApLoggerService,
+					useFactory: () => ({
+						logger: {
+							createSubLogger: jest.fn().mockReturnValue({
+								info: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn(),
+							}),
+						},
 					}),
 				},
 			],
@@ -131,6 +156,8 @@ describe('UserSuspendService', () => {
 		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
 		apRendererService = app.get<ApRendererService>(ApRendererService) as jest.Mocked<ApRendererService>;
 		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
+		apDeliverManagerService = app.get<ApDeliverManagerService>(ApDeliverManagerService) as jest.Mocked<ApDeliverManagerService>;
+		relayService = app.get<RelayService>(RelayService) as jest.Mocked<RelayService>;
 
 		// Reset mocks
 		jest.clearAllMocks();
