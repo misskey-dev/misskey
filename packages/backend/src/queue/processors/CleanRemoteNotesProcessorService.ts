@@ -58,6 +58,7 @@ export class CleanRemoteNotesProcessorService {
 				},
 				take: 50,
 				order: {
+					// 古い順
 					id: 1,
 				},
 			});
@@ -70,6 +71,10 @@ export class CleanRemoteNotesProcessorService {
 			await this.notesRepository.delete(notes.map(note => note.id));
 
 			for (const note of notes) {
+				if (cursor === null || note.id > cursor) {
+					cursor = note.id;
+				}
+
 				const t = this.idService.parse(note.id).date.getTime();
 				if (stats.oldest === null || t < stats.oldest) {
 					stats.oldest = t;
@@ -78,8 +83,6 @@ export class CleanRemoteNotesProcessorService {
 					stats.newest = t;
 				}
 			}
-
-			cursor = notes.at(-1)?.id ?? null;
 
 			stats.deletedCount += notes.length;
 
