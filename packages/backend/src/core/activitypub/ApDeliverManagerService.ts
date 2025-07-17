@@ -9,10 +9,12 @@ import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import type Logger from '@/logger.js';
+import { ApLoggerService } from './ApLoggerService.js';
 
 interface IRecipe {
 	type: string;
@@ -27,11 +29,18 @@ interface IDirectRecipe extends IRecipe {
 	to: MiRemoteUser;
 }
 
+interface IAllKnowingSharedInboxRecipe extends IRecipe {
+	type: 'AllKnowingSharedInbox';
+}
+
 const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 	recipe.type === 'Followers';
 
 const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
+
+const isAllKnowingSharedInbox = (recipe: IRecipe): recipe is IAllKnowingSharedInboxRecipe =>
+	recipe.type === 'AllKnowingSharedInbox';
 
 class DeliverManager {
 	private actor: ThinUser;
@@ -40,16 +49,15 @@ class DeliverManager {
 
 	/**
 	 * Constructor
-	 * @param userEntityService
 	 * @param followingsRepository
 	 * @param queueService
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
 	constructor(
-		private userEntityService: UserEntityService,
 		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
+		private logger: Logger,
 
 		actor: { id: MiUser['id']; host: null; },
 		activity: IActivity | null,
@@ -92,6 +100,18 @@ class DeliverManager {
 	}
 
 	/**
+	 * Add recipe for all-knowing shared inbox deliver
+	 */
+	@bindThis
+	public addAllKnowingSharedInboxRecipe(): void {
+		const deliver: IAllKnowingSharedInboxRecipe = {
+			type: 'AllKnowingSharedInbox',
+		};
+
+		this.addRecipe(deliver);
+	}
+
+	/**
 	 * Add recipe
 	 * @param recipe Recipe
 	 */
@@ -104,10 +124,29 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute(): Promise<void> {
+	public async execute(opts: { ignoreSuspend?: boolean } = {}): Promise<void> {
+		//#region collect inboxes by recipes
 		// The value flags whether it is shared or not.
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
+
+		if (this.recipes.some(r => isAllKnowingSharedInbox(r))) {
+			// all-knowing shared inbox
+			const followings = await this.followingsRepository.createQueryBuilder('f')
+				.select([
+					'f.followerSharedInbox',
+					'f.followeeSharedInbox',
+				])
+				.where('f.followerSharedInbox IS NOT NULL')
+				.orWhere('f.followeeSharedInbox IS NOT NULL')
+				.distinct()
+				.getRawMany<{ f_followerSharedInbox: string | null; f_followeeSharedInbox: string | null; }>();
+
+			for (const following of followings) {
+				if (following.f_followeeSharedInbox) inboxes.set(following.f_followeeSharedInbox, true);
+				if (following.f_followerSharedInbox) inboxes.set(following.f_followerSharedInbox, true);
+			}
+		}
 
 		// build inbox list
 		// Process follower recipes first to avoid duplication when processing direct recipes later.
@@ -119,6 +158,7 @@ class DeliverManager {
 				where: {
 					followeeId: this.actor.id,
 					followerHost: Not(IsNull()),
+					isFollowerSuspended: opts.ignoreSuspend ? undefined : false,
 				},
 				select: {
 					followerSharedInbox: true,
@@ -142,34 +182,40 @@ class DeliverManager {
 
 			inboxes.set(recipe.to.inbox, false);
 		}
+		//#endregion
 
 		// deliver
 		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		this.logger.info(`Deliver queues dispatched: inboxes=${inboxes.size} actorId=${this.actor.id} activityId=${this.activity?.id}`);
 	}
 }
 
 @Injectable()
 export class ApDeliverManagerService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private userEntityService: UserEntityService,
 		private queueService: QueueService,
+		private apLoggerService: ApLoggerService,
 	) {
+		this.logger = this.apLoggerService.logger.createSubLogger('deliver-manager');
 	}
 
 	/**
 	 * Deliver activity to followers
 	 * @param actor
 	 * @param activity Activity
+	 * @param forceMainKey Force to use main (rsa) key
 	 */
 	@bindThis
 	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
+			this.logger,
 			actor,
 			activity,
 		);
@@ -186,9 +232,9 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToUser(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, to: MiRemoteUser): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
+			this.logger,
 			actor,
 			activity,
 		);
@@ -205,9 +251,9 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToUsers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, targets: MiRemoteUser[]): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
+			this.logger,
 			actor,
 			activity,
 		);
@@ -218,10 +264,9 @@ export class ApDeliverManagerService {
 	@bindThis
 	public createDeliverManager(actor: { id: MiUser['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
-
+			this.logger,
 			actor,
 			activity,
 		);

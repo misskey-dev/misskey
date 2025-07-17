@@ -50,7 +50,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('following.followeeHost = :host', { host: ps.host });
+				.andWhere('following.followeeHost = :host', { host: ps.host })
+				.andWhere('following.isFollowerSuspended = false');
 
 			const followings = await query
 				.limit(ps.limit)

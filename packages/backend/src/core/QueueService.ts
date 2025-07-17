@@ -173,6 +173,9 @@ export class QueueService {
 	@bindThis
 	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
 		if (content == null) return null;
+		inboxes.delete(null as unknown as string); // remove null inboxes
+		if (inboxes.size === 0) return null;
+
 		const contentBody = JSON.stringify(content);
 		const digest = ApRequestCreator.createDigest(contentBody);
 

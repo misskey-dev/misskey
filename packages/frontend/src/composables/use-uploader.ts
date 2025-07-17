@@ -104,6 +104,8 @@ export function useUploader(options: {
 	multiple?: boolean;
 	features?: UploaderFeatures;
 } = {}) {
+	const $i = ensureSignin();
+
 	const events = new EventEmitter<{
 		'itemUploaded': (ctx: { item: UploaderItem; }) => void;
 	}>();
@@ -132,7 +134,7 @@ export function useUploader(options: {
 			uploaded: null,
 			uploadFailed: false,
 			compressionLevel: prefer.s.defaultImageCompressionLevel,
-			watermarkPresetId: uploaderFeatures.value.watermark ? prefer.s.defaultWatermarkPresetId : null,
+			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
 			file: markRaw(file),
 		});
 		const reactiveItem = items.value.at(-1)!;
@@ -264,6 +266,7 @@ export function useUploader(options: {
 
 		if (
 			uploaderFeatures.value.watermark &&
+			$i.policies.watermarkAvailable &&
 			WATERMARK_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
@@ -500,7 +503,7 @@ export function useUploader(options: {
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type);
+		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
 		const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
 		if (needsWatermark && preset != null) {
 			const canvas = window.document.createElement('canvas');

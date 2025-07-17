@@ -12,11 +12,13 @@ import { MiNote } from './Note.js';
 import type { MiDriveFile } from './DriveFile.js';
 
 @Entity('note_draft')
+@Index('IDX_NOTE_DRAFT_FILE_IDS', { synchronize: false }) // GIN for fileIds in production
+@Index('IDX_NOTE_DRAFT_VISIBLE_USER_IDS', { synchronize: false }) // GIN for visibleUserIds in production
 export class MiNoteDraft {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Index()
+	@Index('IDX_NOTE_DRAFT_REPLY_ID')
 	@Column({
 		...id(),
 		nullable: true,
@@ -24,13 +26,14 @@ export class MiNoteDraft {
 	})
 	public replyId: MiNote['id'] | null;
 
+	// There is a possibility that replyId is not null but reply is null when the reply note is deleted.
 	@ManyToOne(type => MiNote, {
-		onDelete: 'CASCADE',
+		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
 	public reply: MiNote | null;
 
-	@Index()
+	@Index('IDX_NOTE_DRAFT_RENOTE_ID')
 	@Column({
 		...id(),
 		nullable: true,
@@ -38,8 +41,9 @@ export class MiNoteDraft {
 	})
 	public renoteId: MiNote['id'] | null;
 
+	// There is a possibility that renoteId is not null but renote is null when the renote note is deleted.
 	@ManyToOne(type => MiNote, {
-		onDelete: 'CASCADE',
+		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
 	public renote: MiNote | null;
@@ -55,7 +59,7 @@ export class MiNoteDraft {
 	})
 	public cw: string | null;
 
-	@Index()
+	@Index('IDX_NOTE_DRAFT_USER_ID')
 	@Column({
 		...id(),
 		comment: 'The ID of author.',
@@ -106,7 +110,7 @@ export class MiNoteDraft {
 	})
 	public hashtag: string | null;
 
-	@Index()
+	@Index('IDX_NOTE_DRAFT_CHANNEL_ID')
 	@Column({
 		...id(),
 		nullable: true,
@@ -114,8 +118,10 @@ export class MiNoteDraft {
 	})
 	public channelId: MiChannel['id'] | null;
 
+	// There is a possibility that channelId is not null but channel is null when the channel is deleted.
+	// (deleting channel is not implemented so it's not happening now but may happen in the future)
 	@ManyToOne(type => MiChannel, {
-		onDelete: 'CASCADE',
+		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
 	public channel: MiChannel | null;
