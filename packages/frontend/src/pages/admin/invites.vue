@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-if="!noExpirationDate" v-model="expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expirationDate }}</template>
 					</MkInput>
-					<MkInput v-model="createCount" type="number" min="1">
+					<MkInput v-model="createCount" type="number" :min="1">
 						<template #label>{{ i18n.ts.createCount }}</template>
 					</MkInput>
 					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
@@ -41,10 +41,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="-usedAt">{{ i18n.ts.usedAt }} ({{ i18n.ts.descendingOrder }})</option>
 				</MkSelect>
 			</div>
-			<MkPagination ref="pagingComponent" :pagination="pagination">
+			<MkPagination :paginator="paginator">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in items" :key="item.id" :invite="(item as any)" :onDeleted="deleted" moderator/>
+						<MkInviteCode v-for="item in items" :key="item.id" :invite="item" :onDeleted="deleted" moderator/>
 					</div>
 				</template>
 			</MkPagination>
@@ -54,8 +54,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from 'vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import * as Misskey from 'misskey-js';
+import { computed, markRaw, ref, useTemplateRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -67,21 +67,19 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const pagingComponent = useTemplateRef('pagingComponent');
+const type = ref<NonNullable<Misskey.entities.AdminInviteListRequest['type']>>('all');
+const sort = ref<NonNullable<Misskey.entities.AdminInviteListRequest['sort']>>('+createdAt');
 
-const type = ref('all');
-const sort = ref('+createdAt');
-
-const pagination: PagingCtx = {
-	endpoint: 'admin/invite/list' as const,
+const paginator = markRaw(new Paginator('admin/invite/list', {
 	limit: 10,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		type: type.value,
 		sort: sort.value,
 	})),
 	offsetMode: true,
-};
+}));
 
 const expiresAt = ref('');
 const noExpirationDate = ref(true);
@@ -100,13 +98,11 @@ async function createWithOptions() {
 		text: tickets.map(x => x.code).join('\n'),
 	});
 
-	tickets.forEach(ticket => pagingComponent.value?.paginator.prepend(ticket));
+	tickets.forEach(ticket => paginator.prepend(ticket));
 }
 
 function deleted(id: string) {
-	if (pagingComponent.value) {
-		pagingComponent.value.paginator.removeItem(id);
-	}
+	paginator.removeItem(id);
 }
 
 const headerActions = computed(() => []);

@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-if="v.type === 'boolean'"
 				v-model="layer.params[k]"
 			>
-				<template #label>{{ k }}</template>
+				<template #label>{{ fx.params[k].label ?? k }}</template>
 			</MkSwitch>
 			<MkRange
 				v-else-if="v.type === 'number'"
@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:min="v.min"
 				:max="v.max"
 				:step="v.step"
+				:textConverter="fx.params[k].toViewValue"
 				@thumbDoubleClicked="() => {
 					if (fx.params[k].default != null) {
 						layer.params[k] = fx.params[k].default;
@@ -37,13 +38,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					}
 				}"
 			>
-				<template #label>{{ k }}</template>
+				<template #label>{{ fx.params[k].label ?? k }}</template>
 			</MkRange>
 			<MkRadios
 				v-else-if="v.type === 'number:enum'"
 				v-model="layer.params[k]"
 			>
-				<template #label>{{ k }}</template>
+				<template #label>{{ fx.params[k].label ?? k }}</template>
 				<option v-for="item in v.enum" :value="item.value">{{ item.label }}</option>
 			</MkRadios>
 			<div v-else-if="v.type === 'seed'">
@@ -55,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:max="10000"
 					:step="1"
 				>
-					<template #label>{{ k }}</template>
+					<template #label>{{ fx.params[k].label ?? k }}</template>
 				</MkRange>
 			</div>
 			<MkInput
@@ -64,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				type="color"
 				@update:modelValue="v => { const c = getRgb(v); if (c != null) layer.params[k] = c; }"
 			>
-				<template #label>{{ k }}</template>
+				<template #label>{{ fx.params[k].label ?? k }}</template>
 			</MkInput>
 		</div>
 	</div>
