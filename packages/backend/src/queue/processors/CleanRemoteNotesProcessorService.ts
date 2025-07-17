@@ -27,7 +27,9 @@ export class CleanRemoteNotesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<Record<string, unknown>>): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>): Promise<{
+		deletedCount: number;
+	}> {
 		this.logger.info('garbage collecting remote notes...');
 
 		const maxDuration = 1000 * 60 * 60; // 1 hour
@@ -76,6 +78,6 @@ export class CleanRemoteNotesProcessorService {
 
 		this.logger.succ('garbage collection of remote notes completed.');
 
-		// TODO: 実行結果をDBに保存する
+		return { deletedCount };
 	}
 }
