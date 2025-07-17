@@ -2,16 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-/**
- * @typedef {import('typeorm').MigrationInterface} MigrationInterface
- */
-
-/**
- * @class
- * @implements {MigrationInterface}
- */
-module.exports = class RemoteSuspend1751848750315 {
+export class RemoteSuspend1751848750315 {
     name = 'RemoteSuspend1751848750315'
 
     async up(queryRunner) {
