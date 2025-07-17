@@ -137,7 +137,7 @@ export class UserSuspendService {
 			// ユーザーが削除されている場合は何もしないでおく
 			return;
 		}
-		if (follower.isSuspended || follower.isRemoteSuspended) {
+		if (this.userEntityService.isSuspendedEither(follower)) {
 			// フォロー関係を復元しない
 			return;
 		}
