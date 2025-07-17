@@ -400,7 +400,7 @@ describe('UserSuspendService', () => {
 		});
 	});
 
-	describe('remote user suspension', () => {
+	describe('suspension for remote user', () => {
 		test('should suspend remote user without AP delivery', async () => {
 			const remoteUser = await createUser({ host: genHost() });
 			const moderator = await createUser();
@@ -422,9 +422,7 @@ describe('UserSuspendService', () => {
 			// ActivityPub配信が呼ばれていないことを確認
 			expect(queueService.deliver).not.toHaveBeenCalled();
 		});
-	});
 
-	describe('remote user unsuspension', () => {
 		test('should unsuspend remote user without AP delivery', async () => {
 			const remoteUser = await createUser({ host: genHost(), isSuspended: true });
 			const moderator = await createUser();
@@ -446,6 +444,38 @@ describe('UserSuspendService', () => {
 
 			// ActivityPub配信が呼ばれていないことを確認
 			expect(queueService.deliver).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('suspension from remote', () => {
+		test('should suspend remote user and post suspend event', async () => {
+			const remoteUser = { id: secureRndstr(16), host: genHost() };
+			await userSuspendService.suspendFromRemote(remoteUser);
+
+			// ユーザーがリモート凍結されているかチェック
+			const suspendedUser = await usersRepository.findOneBy({ id: remoteUser.id });
+			expect(suspendedUser?.isRemoteSuspended).toBe(true);
+
+			// イベントが発行されているかチェック
+			expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
+				'userChangeSuspendedState',
+				{ id: remoteUser.id, isRemoteSuspended: true },
+			);
+		});
+
+		test('should unsuspend remote user and post unsuspend event', async () => {
+			const remoteUser = { id: secureRndstr(16), host: genHost() };
+			await userSuspendService.unsuspendFromRemote(remoteUser);
+
+			// ユーザーのリモート凍結が解除されているかチェック
+			const unsuspendedUser = await usersRepository.findOneBy({ id: remoteUser.id });
+			expect(unsuspendedUser?.isRemoteSuspended).toBe(false);
+
+			// イベントが発行されているかチェック
+			expect(globalEventService.publishInternalEvent).toHaveBeenCalledWith(
+				'userChangeSuspendedState',
+				{ id: remoteUser.id, isRemoteSuspended: false },
+			);
 		});
 	});
 });

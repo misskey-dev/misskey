@@ -48,6 +48,7 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -74,6 +75,7 @@ export class ApPersonService implements OnModuleInit {
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
+	private userSuspendService: UserSuspendService;
 	private logger: Logger;
 
 	constructor(
@@ -126,6 +128,7 @@ export class ApPersonService implements OnModuleInit {
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
+		this.userSuspendService = this.moduleRef.get('UserSuspendService');
 		this.logger = this.apLoggerService.logger;
 	}
 
@@ -599,6 +602,17 @@ export class ApPersonService implements OnModuleInit {
 		if (!(await this.usersRepository.update({ id: exist.id, isDeleted: false }, updates)).affected) {
 			return 'skip';
 		}
+
+		//#region suspend
+		if (exist.isRemoteSuspended === false && person.suspended === true) {
+			// リモートサーバーでアカウントが凍結された
+			this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
+		}
+		if (exist.isRemoteSuspended === true && person.suspended === false) {
+			// リモートサーバーでアカウントが解凍された
+			this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
+		}
+		//#endregion
 
 		if (person.publicKey) {
 			await this.userPublickeysRepository.update({ userId: exist.id }, {
