@@ -42,7 +42,9 @@ export class CleanRemoteNotesProcessorService {
 			const notes = await this.notesRepository.find({
 				where: {
 					userHost: Not(IsNull()),
-					// TODO: お気に入りされてないか、クリップに入ってないかなどの判定
+					clippedCount: 0,
+					renoteCount: 0,
+					// TODO: お気に入りされてないかなどの判定
 					...(cursor ? { id: MoreThan(cursor) } : {}),
 				},
 				take: 50,
