@@ -67,6 +67,8 @@ export class CleanRemoteNotesProcessorService {
 				break;
 			}
 
+			await this.notesRepository.delete(notes.map(note => note.id));
+
 			for (const note of notes) {
 				const t = this.idService.parse(note.id).date.getTime();
 				if (stats.oldest === null || t < stats.oldest) {
@@ -76,8 +78,6 @@ export class CleanRemoteNotesProcessorService {
 					stats.newest = t;
 				}
 			}
-
-			await this.notesRepository.delete(notes.map(note => note.id));
 
 			cursor = notes.at(-1)?.id ?? null;
 
