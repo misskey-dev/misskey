@@ -22,14 +22,14 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.15.31",
-		"@typescript-eslint/eslint-plugin": "8.34.0",
-		"@typescript-eslint/parser": "8.34.0",
+		"@types/node": "22.16.4",
+		"@typescript-eslint/eslint-plugin": "8.37.0",
+		"@typescript-eslint/parser": "8.37.0",
 		"execa": "9.6.0",
 		"nodemon": "3.1.10",
 		"typescript": "5.8.3",
-		"esbuild": "0.25.5",
-		"glob": "11.0.2"
+		"esbuild": "0.25.6",
+		"glob": "11.0.3"
 	},
 	"files": [
 		"built"
