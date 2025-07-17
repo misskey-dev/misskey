@@ -50,7 +50,7 @@ export class CleanRemoteNotesProcessorService {
 		let cursor: MiNote['id'] | null = null;
 
 		while (true) {
-			const notes = await this.notesRepository.find({
+			const notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
 				where: {
 					id: cursor ? And(MoreThan(cursor), LessThan(maxId)) : LessThan(maxId),
 					userHost: Not(IsNull()),
@@ -63,6 +63,7 @@ export class CleanRemoteNotesProcessorService {
 					// 古い順
 					id: 1,
 				},
+				select: ['id'],
 			});
 
 			if (notes.length === 0) {
