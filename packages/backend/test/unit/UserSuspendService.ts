@@ -57,6 +57,7 @@ describe('UserSuspendService', () => {
 			usernameLower: secureRndstr(16).toLowerCase(),
 			host: null,
 			isSuspended: false,
+			isRemoteSuspended: false,
 			...data,
 		} as MiUser;
 
