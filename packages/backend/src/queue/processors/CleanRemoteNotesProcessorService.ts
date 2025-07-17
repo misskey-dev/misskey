@@ -5,7 +5,7 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan, Not } from 'typeorm';
+import { And, IsNull, LessThan, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -39,6 +39,8 @@ export class CleanRemoteNotesProcessorService {
 		const maxDuration = 1000 * 60 * 60; // 1 hour
 		const startAt = Date.now();
 
+		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30 days ago
+
 		const stats = {
 			deletedCount: 0,
 			oldest: null as number | null,
@@ -50,11 +52,11 @@ export class CleanRemoteNotesProcessorService {
 		while (true) {
 			const notes = await this.notesRepository.find({
 				where: {
+					id: cursor ? And(MoreThan(cursor), LessThan(maxId)) : LessThan(maxId),
 					userHost: Not(IsNull()),
 					clippedCount: 0,
 					renoteCount: 0,
 					// TODO: お気に入りされてないかなどの判定
-					...(cursor ? { id: MoreThan(cursor) } : {}),
 				},
 				take: 50,
 				order: {
