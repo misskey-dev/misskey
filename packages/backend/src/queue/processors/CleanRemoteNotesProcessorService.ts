@@ -97,7 +97,7 @@ export class CleanRemoteNotesProcessorService {
 
 			job.updateProgress((elapsed / maxDuration) * 100);
 
-			await setTimeout(1000 * 5); // Sleep for 5s to avoid overwhelming the db
+			await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
 		}
 
 		this.logger.succ('garbage collection of remote notes completed.');
