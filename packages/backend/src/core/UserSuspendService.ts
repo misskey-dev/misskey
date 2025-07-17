@@ -13,7 +13,6 @@ import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
