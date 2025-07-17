@@ -86,6 +86,7 @@ export class UserSuspendService {
 			const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
+			manager.addFollowersRecipe();
 			manager.execute();
 		}
 	}
@@ -98,6 +99,7 @@ export class UserSuspendService {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user), user));
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
+			manager.addFollowersRecipe();
 			manager.execute();
 		}
 	}
