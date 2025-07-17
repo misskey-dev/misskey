@@ -40,6 +40,7 @@ export class CleanRemoteNotesProcessorService {
 		const startAt = Date.now();
 
 		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30 days ago
+		const MAX_NOTE_COUNT_PER_QUERY = 50;
 
 		const stats = {
 			deletedCount: 0,
@@ -58,7 +59,7 @@ export class CleanRemoteNotesProcessorService {
 					renoteCount: 0,
 					// TODO: お気に入りされてないかなどの判定
 				},
-				take: 50,
+				take: MAX_NOTE_COUNT_PER_QUERY,
 				order: {
 					// 古い順
 					id: 1,
