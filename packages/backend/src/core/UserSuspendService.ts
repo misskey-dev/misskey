@@ -4,14 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Not, IsNull } from 'typeorm';
 import type { FollowingsRepository, FollowRequestsRepository, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
@@ -29,9 +27,7 @@ export class UserSuspendService {
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
-		private accountUpadateService: AccountUpdateService,
-		private apRendererService: ApRendererService,
-		private apDeliverManagerService: ApDeliverManagerService,
+		private accountUpdateService: AccountUpdateService,
 		private moderationLogService: ModerationLogService,
 	) {
 	}
@@ -84,12 +80,7 @@ export class UserSuspendService {
 		});
 
 		if (this.userEntityService.isLocalUser(user)) {
-			this.accountUpadateService.publishToFollowers(user.id);
-			const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
-			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
-			manager.addAllKnowingSharedInboxRecipe();
-			manager.addFollowersRecipe();
-			manager.execute();
+			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 
@@ -98,12 +89,7 @@ export class UserSuspendService {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 
 		if (this.userEntityService.isLocalUser(user)) {
-			this.accountUpadateService.publishToFollowers(user.id);
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user), user));
-			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
-			manager.addAllKnowingSharedInboxRecipe();
-			manager.addFollowersRecipe();
-			manager.execute();
+			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 

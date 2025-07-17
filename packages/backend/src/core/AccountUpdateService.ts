@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
@@ -26,16 +26,43 @@ export class AccountUpdateService {
 	) {
 	}
 
+	private async createUpdatePersonActivity(user: MiLocalUser) {
+		return this.apRendererService.addContext(
+			this.apRendererService.renderUpdate(
+				await this.apRendererService.renderPerson(user), user
+			)
+		);
+	}
+
 	@bindThis
 	public async publishToFollowers(userId: MiUser['id']) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 
-		// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
+		// 投稿者がローカルユーザーならUpdateを配信
 		if (this.userEntityService.isLocalUser(user)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderPerson(user), user));
+			const content = await this.createUpdatePersonActivity(user);
 			this.apDeliverManagerService.deliverToFollowers(user, content);
 			this.relayService.deliverToRelays(user, content);
+		}
+	}
+
+	@bindThis
+	async publishToFollowersAndSharedInboxAndRelays(userId: MiUser['id']) {
+		const user = await this.usersRepository.findOneBy({ id: userId });
+		if (user == null) throw new Error('user not found');
+
+		// 投稿者がローカルユーザーならUpdateを配信
+		if (this.userEntityService.isLocalUser(user)) {
+			const content = await this.createUpdatePersonActivity(user);
+			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
+			manager.addAllKnowingSharedInboxRecipe();
+			manager.addFollowersRecipe();
+
+			await Promise.allSettled([
+				manager.execute(),
+				this.relayService.deliverToRelays(user, content),
+			]);
 		}
 	}
 }

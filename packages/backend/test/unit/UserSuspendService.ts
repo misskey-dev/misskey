@@ -26,6 +26,10 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { randomString } from '../utils.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { RelayService } from '@/core/RelayService.js';
+import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -42,6 +46,9 @@ describe('UserSuspendService', () => {
 	let globalEventService: jest.Mocked<GlobalEventService>;
 	let apRendererService: jest.Mocked<ApRendererService>;
 	let moderationLogService: jest.Mocked<ModerationLogService>;
+	let accountUpdateService: jest.Mocked<AccountUpdateService>;
+	let apDeliverManagerService: jest.Mocked<ApDeliverManagerService>;
+	let relayService: jest.Mocked<RelayService>;
 
 	async function createUser(data: Partial<MiUser> = {}): Promise<MiUser> {
 		const user = {
@@ -84,6 +91,8 @@ describe('UserSuspendService', () => {
 			imports: [GlobalModule],
 			providers: [
 				UserSuspendService,
+				AccountUpdateService,
+				ApDeliverManagerService,
 				{
 					provide: UserEntityService,
 					useFactory: () => ({
@@ -94,6 +103,7 @@ describe('UserSuspendService', () => {
 				{
 					provide: QueueService,
 					useFactory: () => ({
+						deliverMany: jest.fn(),
 						deliver: jest.fn(),
 					}),
 				},
@@ -104,17 +114,35 @@ describe('UserSuspendService', () => {
 					}),
 				},
 				{
-					provide: ApRendererService,
-					useFactory: () => ({
-						addContext: jest.fn(),
-						renderDelete: jest.fn(),
-						renderUndo: jest.fn(),
-					}),
-				},
-				{
 					provide: ModerationLogService,
 					useFactory: () => ({
 						log: jest.fn(),
+					}),
+				},
+				{
+					provide: RelayService,
+					useFactory: () => ({
+						deliverToRelays: jest.fn(),
+					}),
+				},
+				{
+					provide: ApRendererService,
+					useFactory: () => ({
+						renderDelete: jest.fn(),
+						renderUndo: jest.fn(),
+						renderPerson: jest.fn(),
+						renderUpdate: jest.fn(),
+						addContext: jest.fn(),
+					}),
+				},
+				{
+					provide: ApLoggerService,
+					useFactory: () => ({
+						logger: {
+							createSubLogger: jest.fn().mockReturnValue({
+								info: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn(),
+							}),
+						},
 					}),
 				},
 			],
@@ -131,6 +159,9 @@ describe('UserSuspendService', () => {
 		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
 		apRendererService = app.get<ApRendererService>(ApRendererService) as jest.Mocked<ApRendererService>;
 		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
+		accountUpdateService = app.get<AccountUpdateService>(AccountUpdateService) as jest.Mocked<AccountUpdateService>;
+		apDeliverManagerService = app.get<ApDeliverManagerService>(ApDeliverManagerService) as jest.Mocked<ApDeliverManagerService>;
+		relayService = app.get<RelayService>(RelayService) as jest.Mocked<RelayService>;
 
 		// Reset mocks
 		jest.clearAllMocks();
@@ -311,42 +342,46 @@ describe('UserSuspendService', () => {
 	});
 
 	describe('ActivityPub delivery', () => {
-		test('should deliver Delete activity on suspend of local user', async () => {
+		test('should deliver Update Person activity on suspend of local user', async () => {
 			const localUser = await createUser({ host: null });
 			const moderator = await createUser();
 
 			userEntityService.isLocalUser.mockReturnValue(true);
 			userEntityService.genLocalUserUri.mockReturnValue(`https://example.com/users/${localUser.id}`);
-			apRendererService.renderDelete.mockReturnValue({ type: 'Delete' } as any);
-			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Delete' } as any);
+			apRendererService.renderUpdate.mockReturnValue({ type: 'Update' } as any);
+			apRendererService.renderPerson.mockReturnValue({ type: 'Person' } as any);
+			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Update' } as any);
 
 			await userSuspendService.suspend(localUser, moderator);
 			await setTimeout(250);
 
 			// ActivityPub配信が呼ばれているかチェック
 			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
-			expect(apRendererService.renderDelete).toHaveBeenCalled();
+			expect(apRendererService.renderUpdate).toHaveBeenCalled();
+			expect(apRendererService.renderPerson).toHaveBeenCalled();
 			expect(apRendererService.addContext).toHaveBeenCalled();
+			expect(queueService.deliverMany).toHaveBeenCalled();
 		});
 
-		test('should deliver Undo Delete activity on unsuspend of local user', async () => {
+		test('should deliver Update Person activity on unsuspend of local user', async () => {
 			const localUser = await createUser({ host: null, isSuspended: true });
 			const moderator = await createUser();
 
 			userEntityService.isLocalUser.mockReturnValue(true);
 			userEntityService.genLocalUserUri.mockReturnValue(`https://example.com/users/${localUser.id}`);
-			apRendererService.renderDelete.mockReturnValue({ type: 'Delete' } as any);
-			apRendererService.renderUndo.mockReturnValue({ type: 'Undo' } as any);
-			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Undo' } as any);
+			apRendererService.renderUpdate.mockReturnValue({ type: 'Update' } as any);
+			apRendererService.renderPerson.mockReturnValue({ type: 'Person' } as any);
+			apRendererService.addContext.mockReturnValue({ '@context': '...', type: 'Update' } as any);
 
-			await userSuspendService.unsuspend(localUser, moderator);
+			await userSuspendService.suspend(localUser, moderator);
 			await setTimeout(250);
 
 			// ActivityPub配信が呼ばれているかチェック
 			expect(userEntityService.isLocalUser).toHaveBeenCalledWith(localUser);
-			expect(apRendererService.renderDelete).toHaveBeenCalled();
-			expect(apRendererService.renderUndo).toHaveBeenCalled();
+			expect(apRendererService.renderUpdate).toHaveBeenCalled();
+			expect(apRendererService.renderPerson).toHaveBeenCalled();
 			expect(apRendererService.addContext).toHaveBeenCalled();
+			expect(queueService.deliverMany).toHaveBeenCalled();
 		});
 
 		test('should not deliver any activity on suspend of remote user', async () => {
