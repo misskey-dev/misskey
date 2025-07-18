@@ -4,7 +4,7 @@
  */
 
 import { createHighlighterCore } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
@@ -71,7 +71,7 @@ async function initHighlighter() {
 
 	const jsLangInfo = bundledLanguagesInfo.find(t => t.id === 'javascript');
 	const highlighter = await createHighlighterCore({
-		engine: createJavaScriptRegexEngine({ forgiving: true }),
+		engine: createOnigurumaEngine(() => import('shiki/onig.wasm?init')),
 		themes,
 		langs: [
 			...(jsLangInfo ? [async () => await jsLangInfo.import()] : []),
