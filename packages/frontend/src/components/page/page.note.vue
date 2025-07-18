@@ -5,10 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<template v-for="appearNote in interruptNotes(note == null ? [] : [note])" :key="appearNote.id">
-		<MkNote v-if="!block.detailed" :key="appearNote.id + ':normal'" :note="appearNote"/>
-		<MkNoteDetailed v-if="block.detailed" :key="appearNote.id + ':detail'" :note="appearNote"/>
-	</template>
+	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" :note="note"/>
+	<MkNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" :note="note"/>
 </div>
 </template>
 
@@ -18,14 +16,11 @@ import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 const props = defineProps<{
 	block: Misskey.entities.PageBlock,
 	page: Misskey.entities.Page,
 }>();
-
-const interruptNotes = useInterruptNotes('');
 
 const note = ref<Misskey.entities.Note | null>(null);
 

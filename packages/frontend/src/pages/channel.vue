@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFoldableSection>
 				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
 				<div v-if="channel.pinnedNotes && channel.pinnedNotes.length > 0" class="_gaps">
-					<MkNote v-for="note in interruptPinnedNotes(channel.pinnedNotes)" :key="note.id" class="_panel" :note="note"/>
+					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
 				</div>
 			</MkFoldableSection>
 		</div>
@@ -97,15 +97,12 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
-import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 const router = useRouter();
 
 const props = defineProps<{
 	channelId: string;
 }>();
-
-const interruptPinnedNotes = useInterruptNotes('');
 
 const tab = ref('overview');
 

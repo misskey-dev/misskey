@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div class="_margin _gaps_s">
 						<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-						<MkNoteDetailed v-for="appearNote in interruptNotes([note])" :key="appearNote.id" :note="appearNote" :initialTab="initialTab" :class="$style.note"/>
+						<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
 					</div>
 					<div v-if="clips && clips.length > 0" class="_margin">
 						<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
@@ -63,7 +63,6 @@ import { pleaseLogin } from '@/utility/please-login.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { serverContext, assertServerContext } from '@/server-context.js';
 import { $i } from '@/i.js';
-import { useInterruptNotes } from '@/composables/use-interrupt-notes';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_NOTE = !$i && assertServerContext(serverContext, 'note') ? serverContext.note : null;
@@ -78,8 +77,6 @@ const clips = ref<Misskey.entities.Clip[]>();
 const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
 const error = ref();
-
-const interruptNotes = useInterruptNotes('');
 
 const prevUserPagination: PagingCtx = {
 	endpoint: 'users/notes',

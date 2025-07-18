@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
 
 			<template #default="{ items }">
-				<MkDateSeparatedList v-slot="{ item }" :items="interruptNotes(items)" :direction="'down'" :noGap="false" :ad="false">
+				<MkDateSeparatedList v-slot="{ item }" :items="items" :direction="'down'" :noGap="false" :ad="false">
 					<MkNote :key="item.id" :note="item.note" :class="$style.note"/>
 				</MkDateSeparatedList>
 			</template>
@@ -20,15 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { useInterruptNotes } from '@/composables/use-interrupt-notes';
-
-const interruptNotes = useInterruptNotes<Misskey.entities.NoteFavorite, 'note'>('note');
 
 const pagination = {
 	endpoint: 'i/favorites' as const,
