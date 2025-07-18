@@ -5,55 +5,59 @@
 
 import * as Misskey from 'misskey-js';
 
-type EnumItem = string | {
+export type EnumItem = string | {
 	label: string;
-	value: string;
+	value: unknown;
 };
 
 type Hidden = boolean | ((v: any) => boolean);
 
-export type FormItem = {
+interface FormItemBase {
 	label?: string;
+	hidden?: Hidden;
+}
+
+export interface StringFormItem extends FormItemBase {
 	type: 'string';
 	default?: string | null;
 	description?: string;
 	required?: boolean;
-	hidden?: Hidden;
 	multiline?: boolean;
 	treatAsMfm?: boolean;
-} | {
-	label?: string;
+}
+
+export interface NumberFormItem extends FormItemBase {
 	type: 'number';
 	default?: number | null;
 	description?: string;
 	required?: boolean;
-	hidden?: Hidden;
 	step?: number;
-} | {
-	label?: string;
+}
+
+export interface BooleanFormItem extends FormItemBase {
 	type: 'boolean';
 	default?: boolean | null;
 	description?: string;
-	hidden?: Hidden;
-} | {
-	label?: string;
+}
+
+export interface EnumFormItem extends FormItemBase {
 	type: 'enum';
 	default?: string | null;
 	required?: boolean;
-	hidden?: Hidden;
 	enum: EnumItem[];
-} | {
-	label?: string;
+}
+
+export interface RadioFormItem extends FormItemBase {
 	type: 'radio';
 	default?: unknown | null;
 	required?: boolean;
-	hidden?: Hidden;
 	options: {
 		label: string;
 		value: unknown;
 	}[];
-} | {
-	label?: string;
+}
+
+export interface RangeFormItem extends FormItemBase {
 	type: 'range';
 	default?: number | null;
 	description?: string;
@@ -62,42 +66,80 @@ export type FormItem = {
 	min: number;
 	max: number;
 	textConverter?: (value: number) => string;
-	hidden?: Hidden;
-} | {
-	label?: string;
+}
+
+export interface ObjectFormItem extends FormItemBase {
 	type: 'object';
 	default?: Record<string, unknown> | null;
-	hidden: Hidden;
-} | {
-	label?: string;
+}
+
+export interface ArrayFormItem extends FormItemBase {
 	type: 'array';
 	default?: unknown[] | null;
-	hidden: Hidden;
-} | {
+}
+
+export interface ButtonFormItem extends FormItemBase {
 	type: 'button';
 	content?: string;
-	hidden?: Hidden;
 	action: (ev: MouseEvent, v: any) => void;
-} | {
+}
+
+export interface DriveFileFormItem extends FormItemBase {
 	type: 'drive-file';
 	defaultFileId?: string | null;
-	hidden?: Hidden;
 	validate?: (v: Misskey.entities.DriveFile) => Promise<boolean>;
-};
+}
+
+export type FormItem =
+	StringFormItem |
+	NumberFormItem |
+	BooleanFormItem |
+	EnumFormItem |
+	RadioFormItem |
+	RangeFormItem |
+	ObjectFormItem |
+	ArrayFormItem |
+	ButtonFormItem |
+	DriveFileFormItem;
 
 export type Form = Record<string, FormItem>;
 
+export type FormItemWithDefault = FormItem & {
+	default: unknown;
+};
+
+export type FormWithDefault = Record<string, FormItemWithDefault>;
+
+type GetRadioItemType<Item extends RadioFormItem = RadioFormItem> = Item['options'][number]['value'];
+type GetEnumItemType<Item extends EnumFormItem, E = Item['enum'][number]> = E extends { value: unknown } ? E['value'] : E;
+
+type InferDefault<T, Fallback> = T extends { default: infer D }
+	? D extends undefined ? Fallback : D
+	: Fallback;
+
+type NonNullableIfRequired<T, Item extends FormItem> =
+	Item extends { required: false } ? T | null | undefined : NonNullable<T>;
+
 type GetItemType<Item extends FormItem> =
-	Item['type'] extends 'string' ? string :
-	Item['type'] extends 'number' ? number :
-	Item['type'] extends 'boolean' ? boolean :
-	Item['type'] extends 'radio' ? unknown :
-	Item['type'] extends 'range' ? number :
-	Item['type'] extends 'enum' ? string :
-	Item['type'] extends 'array' ? unknown[] :
-	Item['type'] extends 'object' ? Record<string, unknown> :
-	Item['type'] extends 'drive-file' ? Misskey.entities.DriveFile | undefined :
-	never;
+	Item extends StringFormItem
+		? NonNullableIfRequired<InferDefault<Item, string>, Item>
+	: Item extends NumberFormItem
+		? NonNullableIfRequired<InferDefault<Item, number>, Item>
+	: Item extends BooleanFormItem
+		? boolean
+	: Item extends RadioFormItem
+		? GetRadioItemType<Item>
+	: Item extends RangeFormItem
+		? NonNullableIfRequired<InferDefault<RangeFormItem, number>, Item>
+	: Item extends EnumFormItem
+		? GetEnumItemType<Item>
+	: Item extends ArrayFormItem
+		? NonNullableIfRequired<InferDefault<ArrayFormItem, unknown[]>, Item>
+	: Item extends ObjectFormItem
+		? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
+	: Item extends DriveFileFormItem
+		? Misskey.entities.DriveFile | undefined
+	: never;
 
 export type GetFormResultType<F extends Form> = {
 	[P in keyof F]: GetItemType<F[P]>;

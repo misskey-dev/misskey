@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
@@ -43,76 +43,92 @@ const name = 'clock';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
 	size: {
-		type: 'radio' as const,
+		type: 'radio',
 		default: 'medium',
 		options: [{
-			value: 'small', label: i18n.ts.small,
+			value: 'small' as const,
+			label: i18n.ts.small,
 		}, {
-			value: 'medium', label: i18n.ts.medium,
+			value: 'medium' as const,
+			label: i18n.ts.medium,
 		}, {
-			value: 'large', label: i18n.ts.large,
+			value: 'large' as const,
+			label: i18n.ts.large,
 		}],
 	},
 	thickness: {
-		type: 'radio' as const,
+		type: 'radio',
 		default: 0.2,
 		options: [{
-			value: 0.1, label: 'thin',
+			value: 0.1 as const,
+			label: 'thin',
 		}, {
-			value: 0.2, label: 'medium',
+			value: 0.2 as const,
+			label: 'medium',
 		}, {
-			value: 0.3, label: 'thick',
+			value: 0.3 as const,
+			label: 'thick',
 		}],
 	},
 	graduations: {
-		type: 'radio' as const,
+		type: 'radio',
 		default: 'numbers',
 		options: [{
-			value: 'none', label: 'None',
+			value: 'none' as const,
+			label: 'None',
 		}, {
-			value: 'dots', label: 'Dots',
+			value: 'dots' as const,
+			label: 'Dots',
 		}, {
-			value: 'numbers', label: 'Numbers',
+			value: 'numbers' as const,
+			label: 'Numbers',
 		}],
 	},
 	fadeGraduations: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	sAnimation: {
-		type: 'radio' as const,
+		type: 'radio',
 		default: 'elastic',
 		options: [{
-			value: 'none', label: 'None',
+			value: 'none' as const,
+			label: 'None',
 		}, {
-			value: 'elastic', label: 'Elastic',
+			value: 'elastic' as const,
+			label: 'Elastic',
 		}, {
-			value: 'easeOut', label: 'Ease out',
+			value: 'easeOut' as const,
+			label: 'Ease out',
 		}],
 	},
 	twentyFour: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
 	label: {
-		type: 'radio' as const,
+		type: 'radio',
 		default: 'none',
 		options: [{
-			value: 'none', label: 'None',
+			value: 'none' as const,
+			label: 'None',
 		}, {
-			value: 'time', label: 'Time',
+			value: 'time' as const,
+			label: 'Time',
 		}, {
-			value: 'tz', label: 'TZ',
+			value: 'tz' as const,
+			label: 'TZ',
 		}, {
-			value: 'timeAndTz', label: 'Time + TZ',
+			value: 'timeAndTz' as const,
+			label: 'Time + TZ',
 		}],
 	},
 	timezone: {
-		type: 'enum' as const,
+		type: 'enum',
 		default: null,
 		enum: [...timezones.map((tz) => ({
 			label: tz.name,
@@ -122,7 +138,7 @@ const widgetPropsDef = {
 			value: null,
 		}],
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

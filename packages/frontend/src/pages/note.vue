@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note">
 				<div v-if="showNext" class="_margin">
-					<MkNotesTimeline :pullToRefresh="false" class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
+					<MkNotesTimeline :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true"/>
 				</div>
 
 				<div class="_margin">
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<div v-if="showPrev" class="_margin">
-					<MkNotesTimeline :pullToRefresh="false" class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true"/>
+					<MkNotesTimeline :withControl="false" :pullToRefresh="false" class="" :paginator="showPrev === 'channel' ? prevChannelPaginator : prevUserPaginator" :noGap="true"/>
 				</div>
 			</div>
 			<MkError v-else-if="error" @retry="fetchNote()"/>
@@ -45,10 +45,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
@@ -63,6 +62,7 @@ import { pleaseLogin } from '@/utility/please-login.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { serverContext, assertServerContext } from '@/server-context.js';
 import { $i } from '@/i.js';
+import { Paginator } from '@/utility/paginator.js';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_NOTE = !$i && assertServerContext(serverContext, 'note') ? serverContext.note : null;
@@ -78,44 +78,41 @@ const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
 const error = ref();
 
-const prevUserPagination: PagingCtx = {
-	endpoint: 'users/notes',
+const prevUserPaginator = markRaw(new Paginator('users/notes', {
 	limit: 10,
-	baseId: props.noteId,
-	direction: 'older',
-	params: computed(() => note.value ? ({
+	initialId: props.noteId,
+	initialDirection: 'older',
+	computedParams: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
-};
+}));
 
-const nextUserPagination: PagingCtx = {
-	endpoint: 'users/notes',
+const nextUserPaginator = markRaw(new Paginator('users/notes', {
 	limit: 10,
-	baseId: props.noteId,
-	direction: 'newer',
-	params: computed(() => note.value ? ({
+	initialId: props.noteId,
+	initialDirection: 'newer',
+	computedParams: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
-};
+}));
 
-const prevChannelPagination: PagingCtx = {
-	endpoint: 'channels/timeline',
+const prevChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
-	params: computed(() => note.value ? ({
+	initialId: props.noteId,
+	initialDirection: 'older',
+	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
-		untilId: note.value.id,
 	}) : undefined),
-};
+}));
 
-const nextChannelPagination: PagingCtx = {
-	reversed: true,
-	endpoint: 'channels/timeline',
+const nextChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
-	params: computed(() => note.value ? ({
+	initialId: props.noteId,
+	initialDirection: 'newer',
+	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
-		sinceId: note.value.id,
 	}) : undefined),
-};
+}));
 
 function fetchNote() {
 	showPrev.value = false;
