@@ -67,13 +67,13 @@ function getScreenY(event: TouchEvent | MouseEvent | PointerEvent): number {
 function lockDownScroll() {
 	if (scrollEl == null) return;
 	scrollEl.style.touchAction = 'pan-x pan-down pinch-zoom';
-	scrollEl.style.overscrollBehavior = 'auto none';
+	scrollEl.style.overscrollBehavior = 'none';
 }
 
 function unlockDownScroll() {
 	if (scrollEl == null) return;
 	scrollEl.style.touchAction = 'auto';
-	scrollEl.style.overscrollBehavior = 'auto contain';
+	scrollEl.style.overscrollBehavior = 'contain';
 }
 
 function moveStartByMouse(event: MouseEvent) {
