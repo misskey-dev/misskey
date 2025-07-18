@@ -1367,7 +1367,7 @@ tip: "Tips & Tricks"
 redisplayAllTips: "Show all “Tips & Tricks” again"
 hideAllTips: "Hide all \"Tips & Tricks\""
 defaultImageCompressionLevel: "Default image compression level"
-defaultImageCompressionLevel_description: "High, reduces the file size but also the image quality. <br>High, reduces the file size but also the image quality."
+defaultImageCompressionLevel_description: "Lower level preserves image quality but increases file size.<br>Higher level reduce file size, but reduce image quality."
 _order:
   newest: "Newest First"
   oldest: "Oldest First"
@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "Specifies the allowed MIME/file types. Multiple MIME types can be specified by separating them with a new line, and wildcards can be specified with an asterisk (*). (e.g., image/*)"
     uploadableFileTypes_caption2: "Some files types might fail to be detected. To allow such files, add {x} to the specification."
     noteDraftLimit: "Number of possible drafts of server notes"
+    watermarkAvailable: "Availability of watermark function"
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"
