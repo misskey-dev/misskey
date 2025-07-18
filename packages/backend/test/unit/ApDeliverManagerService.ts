@@ -17,7 +17,7 @@ import { FollowingsRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 
-describe.skip('ApDeliverManagerService', () => {
+describe('ApDeliverManagerService', () => {
 	let service: ApDeliverManagerService;
 	let followingsRepository: jest.Mocked<FollowingsRepository>;
 	let queueService: jest.Mocked<QueueService>;
@@ -330,7 +330,7 @@ describe.skip('ApDeliverManagerService', () => {
 	});
 });
 
-describe.skip('ApDeliverManagerService (SQL)', () => {
+describe('ApDeliverManagerService (SQL)', () => {
 	// followerにデータを挿入して、SQLの動作を確認します
 	let app: TestingModule;
 	let service: ApDeliverManagerService;
