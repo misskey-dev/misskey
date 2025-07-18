@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-repeat-off"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</SearchLabel></template>
 
-					<MkPagination :pagination="renoteMutingPagination">
+					<MkPagination :paginator="renoteMutingPaginator" withControl>
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-eye-off"></i></template>
 					<template #label>{{ i18n.ts.mutedUsers }}</template>
 
-					<MkPagination :pagination="mutingPagination">
+					<MkPagination :paginator="mutingPaginator" withControl>
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><i class="ti ti-ban"></i></template>
 					<template #label>{{ i18n.ts.blockedUsers }}</template>
 
-					<MkPagination :pagination="blockingPagination">
+					<MkPagination :paginator="blockingPaginator" withControl>
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
@@ -174,7 +174,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, markRaw } from 'vue';
 import XEmojiMute from './mute-block.emoji-mute.vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
@@ -192,27 +192,25 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const $i = ensureSignin();
 
-const renoteMutingPagination = {
-	endpoint: 'renote-mute/list' as const,
+const renoteMutingPaginator = markRaw(new Paginator('renote-mute/list', {
 	limit: 10,
-};
+}));
 
-const mutingPagination = {
-	endpoint: 'mute/list' as const,
+const mutingPaginator = markRaw(new Paginator('mute/list', {
 	limit: 10,
-};
+}));
 
-const blockingPagination = {
-	endpoint: 'blocking/list' as const,
+const blockingPaginator = markRaw(new Paginator('blocking/list', {
 	limit: 10,
-};
+}));
 
-const expandedRenoteMuteItems = ref([]);
-const expandedMuteItems = ref([]);
-const expandedBlockItems = ref([]);
+const expandedRenoteMuteItems = ref<string[]>([]);
+const expandedMuteItems = ref<string[]>([]);
+const expandedBlockItems = ref<string[]>([]);
 
 const showSoftWordMutedWord = prefer.model('showSoftWordMutedWord');
 
@@ -255,7 +253,7 @@ async function unblock(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function toggleRenoteMuteItem(item) {
+async function toggleRenoteMuteItem(item: { id: string }) {
 	if (expandedRenoteMuteItems.value.includes(item.id)) {
 		expandedRenoteMuteItems.value = expandedRenoteMuteItems.value.filter(x => x !== item.id);
 	} else {
@@ -263,7 +261,7 @@ async function toggleRenoteMuteItem(item) {
 	}
 }
 
-async function toggleMuteItem(item) {
+async function toggleMuteItem(item: { id: string }) {
 	if (expandedMuteItems.value.includes(item.id)) {
 		expandedMuteItems.value = expandedMuteItems.value.filter(x => x !== item.id);
 	} else {
@@ -271,7 +269,7 @@ async function toggleMuteItem(item) {
 	}
 }
 
-async function toggleBlockItem(item) {
+async function toggleBlockItem(item: { id: string }) {
 	if (expandedBlockItems.value.includes(item.id)) {
 		expandedBlockItems.value = expandedBlockItems.value.filter(x => x !== item.id);
 	} else {

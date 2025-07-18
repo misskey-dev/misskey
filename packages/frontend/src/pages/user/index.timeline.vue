@@ -13,16 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<option value="files">{{ i18n.ts.withFiles }}</option>
 		</MkTab>
 	</template>
-	<MkNotesTimeline :key="tab" :noGap="true" :pagination="pagination" :pullToRefresh="false" :class="$style.tl"/>
+	<MkNotesTimeline v-if="tab === 'featured'" :noGap="true" :paginator="featuredPaginator" :pullToRefresh="false" :class="$style.tl"/>
+	<MkNotesTimeline v-else :noGap="true" :paginator="notesPaginator" :pullToRefresh="false" :class="$style.tl"/>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, provide } from 'vue';
+import { ref, computed, provide, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n.js';
+import { Paginator } from '@/utility/paginator.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
@@ -33,24 +35,24 @@ const props = defineProps<{
 const tab = ref<string>('all');
 provide<boolean>('collapseSensitiveChannel', prefer.s.collapseSensitiveChannel);
 
-const pagination = computed(() => tab.value === 'featured' ? {
-	endpoint: 'users/featured-notes' as const,
+const featuredPaginator = markRaw(new Paginator('users/featured-notes', {
 	limit: 10,
 	params: {
 		userId: props.user.id,
 	},
-} : {
-	endpoint: 'users/notes' as const,
+}));
+
+const notesPaginator = markRaw(new Paginator('users/notes', {
 	limit: 10,
-	params: {
+	computedParams: computed(() => ({
 		userId: props.user.id,
 		withRenotes: tab.value === 'all',
 		withReplies: tab.value === 'all',
 		withChannelNotes: tab.value === 'all',
 		withFiles: tab.value === 'files',
 		includeSensitiveChannel: $i != null,
-	},
-});
+	})),
+}));
 </script>
 
 <style lang="scss" module>

@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { Interpreter, Parser } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
@@ -25,19 +25,19 @@ const name = 'button';
 
 const widgetPropsDef = {
 	label: {
-		type: 'string' as const,
+		type: 'string',
 		default: 'BUTTON',
 	},
 	colored: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	script: {
-		type: 'string' as const,
+		type: 'string',
 		multiline: true,
 		default: 'Mk:dialog("hello" "world")',
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -81,7 +81,7 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: err,
+			text: err instanceof Error ? err.message : String(err),
 		});
 	}
 };

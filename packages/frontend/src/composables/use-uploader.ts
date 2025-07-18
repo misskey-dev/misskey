@@ -20,9 +20,8 @@ import { WatermarkRenderer } from '@/utility/watermark.js';
 import { imageCompressionTargetSizes } from '@/utility/image-compression';
 
 export type UploaderFeatures = {
-	effect?: boolean;
+	imageEditing?: boolean;
 	watermark?: boolean;
-	crop?: boolean;
 };
 
 const THUMBNAIL_SUPPORTED_TYPES = [
@@ -39,12 +38,6 @@ const IMAGE_COMPRESSION_SUPPORTED_TYPES = [
 	'image/svg+xml',
 ];
 
-const CROPPING_SUPPORTED_TYPES = [
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-];
-
 const IMAGE_EDITING_SUPPORTED_TYPES = [
 	'image/jpeg',
 	'image/png',
@@ -56,7 +49,6 @@ const WATERMARK_SUPPORTED_TYPES = IMAGE_EDITING_SUPPORTED_TYPES;
 const IMAGE_PREPROCESS_NEEDED_TYPES = [
 	...WATERMARK_SUPPORTED_TYPES,
 	...IMAGE_COMPRESSION_SUPPORTED_TYPES,
-	...CROPPING_SUPPORTED_TYPES,
 	...IMAGE_EDITING_SUPPORTED_TYPES,
 ];
 
@@ -90,6 +82,7 @@ export type UploaderItem = {
 	file: File;
 	watermarkPresetId: string | null;
 	isSensitive?: boolean;
+	caption?: string | null;
 	abort?: (() => void) | null;
 };
 
@@ -184,9 +177,8 @@ export function useUploader(options: {
 
 	const uploaderFeatures = computed<Required<UploaderFeatures>>(() => {
 		return {
-			effect: options.features?.effect ?? true,
+			imageEditing: options.features?.imageEditing ?? true,
 			watermark: options.features?.watermark ?? true,
-			crop: options.features?.crop ?? true,
 		};
 	});
 
@@ -213,7 +205,7 @@ export function useUploader(options: {
 				: 'lossyWhenResize', // for lossy images, we only compress when resizing
 			imageResizeSize: prefer.s.imageCompressionMode.startsWith('resize') ? prefer.s.imageResizeSize : Number.POSITIVE_INFINITY,
 			//compressionLevel: prefer.s.defaultImageCompressionLevel,
-			watermarkPresetId: uploaderFeatures.value.watermark ? prefer.s.defaultWatermarkPresetId : null,
+			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
 			file: markRaw(file),
 		});
 		const reactiveItem = items.value.at(-1)!;
@@ -265,70 +257,87 @@ export function useUploader(options: {
 					set: (value) => item.isSensitive = value,
 				}),
 			}, {
+				text: i18n.ts.describeFile,
+				icon: 'ti ti-text-caption',
+				action: async () => {
+					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
+						default: item.caption ?? null,
+					}, {
+						done: caption => {
+							if (caption != null) {
+								item.caption = caption.trim().length === 0 ? null : caption;
+							}
+						},
+						closed: () => dispose(),
+					});
+				},
+			}, {
 				type: 'divider',
 			});
 		}
 
 		if (
-			uploaderFeatures.value.crop &&
-			CROPPING_SUPPORTED_TYPES.includes(item.file.type) &&
-			!item.preprocessing &&
-			!item.uploading &&
-			!item.uploaded
-		) {
-			menu.push({
-				icon: 'ti ti-crop',
-				text: i18n.ts.cropImage,
-				action: async () => {
-					const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
-					if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-					items.value.splice(items.value.indexOf(item), 1, {
-						...item,
-						file: markRaw(cropped),
-						thumbnail: window.URL.createObjectURL(cropped),
-					});
-					const reactiveItem = items.value.find(x => x.id === item.id)!;
-					preprocess(reactiveItem).then(() => {
-						triggerRef(items);
-					});
-				},
-			});
-		}
-
-		if (
-			uploaderFeatures.value.effect &&
+			uploaderFeatures.value.imageEditing &&
 			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
 		) {
 			menu.push({
-				icon: 'ti ti-sparkles',
-				text: i18n.ts._imageEffector.title + ' (BETA)',
-				action: async () => {
-					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
-						image: item.file,
-					}, {
-						ok: (file) => {
-							if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-							items.value.splice(items.value.indexOf(item), 1, {
-								...item,
-								file: markRaw(file),
-								thumbnail: window.URL.createObjectURL(file),
-							});
-							const reactiveItem = items.value.find(x => x.id === item.id)!;
-							preprocess(reactiveItem).then(() => {
-								triggerRef(items);
-							});
-						},
-						closed: () => dispose(),
-					});
-				},
+				type: 'parent',
+				icon: 'ti ti-photo-edit',
+				text: i18n.ts._uploader.editImage,
+				children: [{
+					icon: 'ti ti-crop',
+					text: i18n.ts.cropImage,
+					action: async () => {
+						const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
+						if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+						items.value.splice(items.value.indexOf(item), 1, {
+							...item,
+							file: markRaw(cropped),
+							thumbnail: window.URL.createObjectURL(cropped),
+						});
+						const reactiveItem = items.value.find(x => x.id === item.id)!;
+						preprocess(reactiveItem).then(() => {
+							triggerRef(items);
+						});
+					},
+				}, /*{
+					icon: 'ti ti-resize',
+					text: i18n.ts.resize,
+					action: async () => {
+						// TODO
+					},
+				},*/ {
+					icon: 'ti ti-sparkles',
+					text: i18n.ts._imageEffector.title + ' (BETA)',
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
+							image: item.file,
+						}, {
+							ok: (file) => {
+								if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+								items.value.splice(items.value.indexOf(item), 1, {
+									...item,
+									file: markRaw(file),
+									thumbnail: window.URL.createObjectURL(file),
+								});
+								const reactiveItem = items.value.find(x => x.id === item.id)!;
+								preprocess(reactiveItem).then(() => {
+									triggerRef(items);
+								});
+							},
+							closed: () => dispose(),
+						});
+					},
+				}],
 			});
 		}
 
 		if (
 			uploaderFeatures.value.watermark &&
+			$i.policies.watermarkAvailable &&
 			WATERMARK_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
@@ -533,8 +542,9 @@ export function useUploader(options: {
 
 		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
 			name: item.uploadName ?? item.name,
-			folderId: options.folderId,
+			folderId: options.folderId === undefined ? prefer.s.uploadFolder : options.folderId,
 			isSensitive: item.isSensitive ?? false,
+			caption: item.caption ?? null,
 			onProgress: (progress) => {
 				if (item.progress == null) {
 					item.progress = { max: progress.total, value: progress.loaded };
@@ -620,7 +630,7 @@ export function useUploader(options: {
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type);
+		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
 		const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
 		if (needsWatermark && preset != null) {
 			const canvas = window.document.createElement('canvas');

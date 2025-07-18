@@ -14,12 +14,13 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import type { FormWithDefault } from '@/utility/form.js';
 
 export type Plugin = {
 	installId: string;
 	name: string;
 	active: boolean;
-	config?: Record<string, { default: any }>;
+	config?: FormWithDefault;
 	configData: Record<string, any>;
 	src: string | null;
 	version: string;
@@ -155,6 +156,13 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 export async function uninstallPlugin(plugin: Plugin) {
 	abortPlugin(plugin);
 	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
+
+	Object.keys(window.localStorage).forEach(key => {
+		if (key.startsWith('aiscript:plugins:' + plugin.installId)) {
+			window.localStorage.removeItem(key);
+		}
+	});
+
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) {
 		await os.apiWithDialog('i/revoke-token', {
 			token: store.s.pluginTokens[plugin.installId],
@@ -233,7 +241,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	pluginLogs.value.set(plugin.installId, []);
 
 	function systemLog(message: string, isError = false): void {
-		pluginLogs.value.get(plugin.installId)?.push({
+		pluginLogs.value.get(plugin!.installId)?.push({
 			at: Date.now(),
 			isSystem: true,
 			message,

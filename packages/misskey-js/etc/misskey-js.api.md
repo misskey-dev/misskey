@@ -1260,6 +1260,12 @@ type DateString = string;
 type DriveFile = components['schemas']['DriveFile'];
 
 // @public (undocumented)
+type DriveFilesAttachedChatMessagesRequest = operations['drive___files___attached-chat-messages']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesAttachedChatMessagesResponse = operations['drive___files___attached-chat-messages']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type DriveFilesAttachedNotesRequest = operations['drive___files___attached-notes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1776,6 +1782,8 @@ declare namespace entities {
         DriveResponse,
         DriveFilesRequest,
         DriveFilesResponse,
+        DriveFilesAttachedChatMessagesRequest,
+        DriveFilesAttachedChatMessagesResponse,
         DriveFilesAttachedNotesRequest,
         DriveFilesAttachedNotesResponse,
         DriveFilesCheckExistenceRequest,
@@ -1841,6 +1849,8 @@ declare namespace entities {
         FlashMyResponse,
         FlashMyLikesRequest,
         FlashMyLikesResponse,
+        FlashSearchRequest,
+        FlashSearchResponse,
         FlashShowRequest,
         FlashShowResponse,
         FlashUnlikeRequest,
@@ -1989,6 +1999,14 @@ declare namespace entities {
         NotesCreateRequest,
         NotesCreateResponse,
         NotesDeleteRequest,
+        NotesDraftsCountResponse,
+        NotesDraftsCreateRequest,
+        NotesDraftsCreateResponse,
+        NotesDraftsDeleteRequest,
+        NotesDraftsListRequest,
+        NotesDraftsListResponse,
+        NotesDraftsUpdateRequest,
+        NotesDraftsUpdateResponse,
         NotesFavoritesCreateRequest,
         NotesFavoritesDeleteRequest,
         NotesFeaturedRequest,
@@ -2158,6 +2176,7 @@ declare namespace entities {
         Announcement,
         App,
         Note,
+        NoteDraft,
         NoteReaction,
         NoteFavorite,
         Notification_2 as Notification,
@@ -2316,6 +2335,12 @@ type FlashMyRequest = operations['flash___my']['requestBody']['content']['applic
 
 // @public (undocumented)
 type FlashMyResponse = operations['flash___my']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FlashSearchRequest = operations['flash___search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashSearchResponse = operations['flash___search']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type FlashShowRequest = operations['flash___show']['requestBody']['content']['application/json'];
@@ -3006,6 +3031,9 @@ declare namespace note {
 export { note }
 
 // @public (undocumented)
+type NoteDraft = components['schemas']['NoteDraft'];
+
+// @public (undocumented)
 type NoteFavorite = components['schemas']['NoteFavorite'];
 
 // @public (undocumented)
@@ -3037,6 +3065,30 @@ type NotesCreateResponse = operations['notes___create']['responses']['200']['con
 
 // @public (undocumented)
 type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCountResponse = operations['notes___drafts___count']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCreateRequest = operations['notes___drafts___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCreateResponse = operations['notes___drafts___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsDeleteRequest = operations['notes___drafts___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsListRequest = operations['notes___drafts___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsListResponse = operations['notes___drafts___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsUpdateRequest = operations['notes___drafts___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsUpdateResponse = operations['notes___drafts___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesFavoritesCreateRequest = operations['notes___favorites___create']['requestBody']['content']['application/json'];
