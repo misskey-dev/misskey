@@ -533,7 +533,7 @@ export function useUploader(options: {
 
 		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
 			name: item.uploadName ?? item.name,
-			folderId: options.folderId === undefined ? prefer.s.uploadFolder : options.folderId,
+			folderId: options.folderId,
 			isSensitive: item.isSensitive ?? false,
 			onProgress: (progress) => {
 				if (item.progress == null) {
