@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkContainer :max-height="300" :foldable="true" class="other">
 						<template #icon><i class="ti ti-clock"></i></template>
 						<template #header>{{ i18n.ts.recentPosts }}</template>
-						<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
+						<MkPagination v-slot="{items}" :paginator="otherPostsPaginator">
 							<div class="sdrarzaf">
 								<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 							</div>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -80,6 +80,7 @@ import { $i } from '@/i.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -89,13 +90,12 @@ const props = defineProps<{
 
 const post = ref<Misskey.entities.GalleryPost | null>(null);
 const error = ref<any>(null);
-const otherPostsPagination = {
-	endpoint: 'users/gallery/posts' as const,
+const otherPostsPaginator = markRaw(new Paginator('users/gallery/posts', {
 	limit: 6,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: post.value.user.id,
 	})),
-};
+}));
 
 function fetchPost() {
 	post.value = null;
