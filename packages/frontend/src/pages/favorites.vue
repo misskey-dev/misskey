@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
 
 			<template #default="{ items }">
-				<MkNote v-for="item in items" :key="item.id" :note="item.note" :class="$style.note"/>
+				<MkNote v-for="item in interruptNotes(items)" :key="item.id" :note="item.note" :class="$style.note"/>
 			</template>
 		</MkPagination>
 	</div>
@@ -18,12 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
+import { useInterruptNotes } from '@/composables/use-interrupt-notes';
+
+const interruptNotes = useInterruptNotes<Misskey.entities.NoteFavorite, 'note'>('note');
 
 const paginator = markRaw(new Paginator('i/favorites', {
 	limit: 10,
