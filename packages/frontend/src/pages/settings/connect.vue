@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts.manage }}</template>
 
-						<MkPagination :pagination="pagination">
+						<MkPagination :paginator="paginator" withControl>
 							<template #default="{items}">
 								<div class="_gaps">
 									<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`">
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, defineAsyncComponent } from 'vue';
+import { computed, ref, defineAsyncComponent, markRaw } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
@@ -72,14 +72,14 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const isDesktop = ref(window.innerWidth >= 1100);
 
-const pagination = {
-	endpoint: 'i/webhooks/list' as const,
+const paginator = markRaw(new Paginator('i/webhooks/list', {
 	limit: 100,
 	noPaging: true,
-};
+}));
 
 async function generateToken() {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {}, {

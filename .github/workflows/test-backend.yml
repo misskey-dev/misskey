@@ -18,6 +18,14 @@ on:
       - packages/misskey-js/**
       - .github/workflows/test-backend.yml
       - .github/misskey/test.yml
+  workflow_dispatch:
+    inputs:
+      force_ffmpeg_cache_update:
+        description: 'Force update ffmpeg cache'
+        required: false
+        default: false
+        type: boolean
+
 jobs:
   unit:
     name: Unit tests (backend)
@@ -47,7 +55,22 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
+    - name: Get current date
+      id: current-date
+      run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+    - name: Setup and Restore ffmpeg/ffprobe Cache
+      id: cache-ffmpeg
+      uses: actions/cache@v4
+      with:
+        path: |
+          /usr/local/bin/ffmpeg
+          /usr/local/bin/ffprobe
+        # daily cache
+        key: ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
+        restore-keys: |
+          ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
     - name: Install FFmpeg
+      if: steps.cache-ffmpeg.outputs.cache-hit != 'true' || github.event.inputs.force_ffmpeg_cache_update == true
       run: |
         for i in {1..3}; do
           echo "Attempt $i: Installing FFmpeg..."
@@ -129,3 +152,47 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/backend/coverage/coverage-final.json
+
+  migration:
+    name: Migration tests (backend)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version-file:
+          - .node-version
+          #- .github/min.node-version
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          submodules: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.1.0
+      - name: Get current date
+        id: current-date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Use Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version-file: ${{ matrix.node-version-file }}
+          cache: 'pnpm'
+      - run: pnpm i --frozen-lockfile
+      - name: Check pnpm-lock.yaml
+        run: git diff --exit-code pnpm-lock.yaml
+      - name: Copy Configure
+        run: cp .github/misskey/test.yml .config
+      - name: Build
+        run: pnpm build
+      - name: Run migrations
+        run: MISSKEY_CONFIG_YML=test.yml pnpm --filter backend migrate
+      - name: Check no migrations are remaining
+        run: MISSKEY_CONFIG_YML=test.yml pnpm --filter backend check-migrations

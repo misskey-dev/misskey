@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 					<MkButton inline danger @click="delBulk">Delete</MkButton>
 				</div>
-				<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
+				<MkPagination ref="emojisPaginationComponent" :paginator="paginator">
 					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
 				</FormSplit>
-				<MkPagination :pagination="remotePagination">
+				<MkPagination :paginator="remotePaginator">
 					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, useTemplateRef } from 'vue';
+import { computed, defineAsyncComponent, markRaw, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -84,8 +84,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-
-const emojisPaginationComponent = useTemplateRef('emojisPaginationComponent');
+import { Paginator } from '@/utility/paginator.js';
 
 const tab = ref('local');
 const query = ref<string | null>(null);
@@ -94,28 +93,26 @@ const host = ref<string | null>(null);
 const selectMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 
-const pagination = {
-	endpoint: 'admin/emoji/list' as const,
+const paginator = markRaw(new Paginator('admin/emoji/list', {
 	limit: 30,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		query: (query.value && query.value !== '') ? query.value : null,
 	})),
-};
+}));
 
-const remotePagination = {
-	endpoint: 'admin/emoji/list-remote' as const,
+const remotePaginator = markRaw(new Paginator('admin/emoji/list-remote', {
 	limit: 30,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		query: (queryRemote.value && queryRemote.value !== '') ? queryRemote.value : null,
 		host: (host.value && host.value !== '') ? host.value : null,
 	})),
-};
+}));
 
 const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
 	} else {
-		selectedEmojis.value = emojisPaginationComponent.value?.paginator.items.value.map(item => item.id);
+		selectedEmojis.value = paginator.items.value.map(item => item.id);
 	}
 };
 
@@ -132,7 +129,7 @@ const add = async (ev: MouseEvent) => {
 	}, {
 		done: result => {
 			if (result.created) {
-				emojisPaginationComponent.value?.paginator.prepend(result.created);
+				paginator.prepend(result.created);
 			}
 		},
 		closed: () => dispose(),
@@ -145,12 +142,12 @@ const edit = async (emoji) => {
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisPaginationComponent.value?.paginator.updateItem(result.updated.id, (oldEmoji) => ({
+				paginator.updateItem(result.updated.id, (oldEmoji) => ({
 					...oldEmoji,
 					...result.updated,
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value?.paginator.removeItem(emoji.id);
+				paginator.removeItem(emoji.id);
 			}
 		},
 		closed: () => dispose(),
@@ -245,7 +242,7 @@ const setCategoryBulk = async () => {
 		ids: selectedEmojis.value,
 		category: result,
 	});
-	emojisPaginationComponent.value?.paginator.reload();
+	paginator.reload();
 };
 
 const setLicenseBulk = async () => {
@@ -257,7 +254,7 @@ const setLicenseBulk = async () => {
 		ids: selectedEmojis.value,
 		license: result,
 	});
-	emojisPaginationComponent.value?.paginator.reload();
+	paginator.reload();
 };
 
 const addTagBulk = async () => {
@@ -269,7 +266,7 @@ const addTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.paginator.reload();
+	paginator.reload();
 };
 
 const removeTagBulk = async () => {
@@ -281,7 +278,7 @@ const removeTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.paginator.reload();
+	paginator.reload();
 };
 
 const setTagBulk = async () => {
@@ -293,7 +290,7 @@ const setTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.paginator.reload();
+	paginator.reload();
 };
 
 const delBulk = async () => {
@@ -305,7 +302,7 @@ const delBulk = async () => {
 	await os.apiWithDialog('admin/emoji/delete-bulk', {
 		ids: selectedEmojis.value,
 	});
-	emojisPaginationComponent.value?.paginator.reload();
+	paginator.reload();
 };
 
 const headerActions = computed(() => [{

@@ -1303,7 +1303,7 @@ messageToFollower: "フォロワーへのメッセージ"
 target: "対象"
 testCaptchaWarning: "CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>"
 prohibitedWordsForNameOfUser: "禁止ワード（ユーザーの名前）"
-prohibitedWordsForNameOfUserDescription: "このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。"
+prohibitedWordsForNameOfUserDescription: "このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。ユーザー名(username)に対しても全て小文字に置き換えて検査します。"
 yourNameContainsProhibitedWords: "変更しようとした名前に禁止された文字列が含まれています"
 yourNameContainsProhibitedWordsDescription: "名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。"
 thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示にはログインが必要と設定されています"
@@ -1313,6 +1313,7 @@ availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
+draft: "下書き"
 confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
@@ -1367,6 +1368,10 @@ redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
 defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
+
+_order:
+  newest: "新しい順"
+  oldest: "古い順"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -2013,6 +2018,8 @@ _role:
     uploadableFileTypes: "アップロード可能なファイル種別"
     uploadableFileTypes_caption: "MIMEタイプを指定します。改行で区切って複数指定できるほか、アスタリスク(*)でワイルドカード指定できます。(例: image/*)"
     uploadableFileTypes_caption2: "ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。"
+    noteDraftLimit: "サーバーサイドのノートの下書きの作成可能数"
+    watermarkAvailable: "ウォーターマーク機能の使用可否"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -2193,6 +2200,7 @@ _theme:
   install: "テーマのインストール"
   manage: "テーマの管理"
   code: "テーマコード"
+  copyThemeCode: "テーマコードをコピー"
   description: "説明"
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"
@@ -2878,6 +2886,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "追加日"
   attachedNotes: "添付されているノート"
+  usage: "利用"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
 
 _externalResourceInstaller:
@@ -3201,6 +3210,7 @@ _serverSetupWizard:
     text3: "支援者向け特典もあります！"
 
 _uploader:
+  editImage: "画像の編集"
   compressedToX: "{x}に圧縮"
   savedXPercent: "{x}%節約"
   abortConfirm: "アップロードされていないファイルがありますが、中止しますか？"
@@ -3275,3 +3285,19 @@ _imageEffector:
     checker: "チェッカー"
     blockNoise: "ブロックノイズ"
     tearing: "ティアリング"
+
+drafts: "下書き"
+_drafts:
+  select: "下書きを選択"
+  cannotCreateDraftAnymore: "下書きの作成可能数を超えています。"
+  cannotCreateDraft: "この内容では下書きを作成できません。"
+  delete: "下書きを削除"
+  deleteAreYouSure: "下書きを削除しますか？"
+  noDrafts: "下書きはありません"
+  replyTo: "{user}への返信"
+  quoteOf: "{user}のノートへの引用"
+  postTo: "{channel}への投稿"
+  saveToDraft: "下書きへ保存"
+  restoreFromDraft: "下書きから復元"
+  restore: "復元"
+  listDrafts: "下書き一覧"
