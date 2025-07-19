@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 	<template #header>
 		<button class="_button" @click="choose">
-			<span>{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : i18n.ts._timelines[widgetProps.src] }}</span>
+			<span>{{ headerTitle }}</span>
 			<i :class="menuOpened ? 'ti ti-chevron-up' : 'ti ti-chevron-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>
@@ -25,51 +25,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
 	<div v-else>
-		<MkStreamingNotesTimeline :key="widgetProps.src === 'list' ? `list:${widgetProps.list.id}` : widgetProps.src === 'antenna' ? `antenna:${widgetProps.antenna.id}` : widgetProps.src" :src="widgetProps.src" :list="widgetProps.list ? widgetProps.list.id : null" :antenna="widgetProps.antenna ? widgetProps.antenna.id : null"/>
+		<MkStreamingNotesTimeline
+			:key="widgetProps.src === 'list' ? `list:${widgetProps.list?.id}` : widgetProps.src === 'antenna' ? `antenna:${widgetProps.antenna?.id}` : widgetProps.src"
+			:src="widgetProps.src"
+			:list="widgetProps.list ? widgetProps.list.id : undefined"
+			:antenna="widgetProps.antenna ? widgetProps.antenna.id : undefined"
+		/>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { i18n } from '@/i18n.js';
-import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
 import type { MenuItem } from '@/types/menu.js';
 
 const name = 'timeline';
 
+type TlSrc = typeof basicTimelineTypes[number] | 'list' | 'antenna';
+
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	height: {
-		type: 'number' as const,
+		type: 'number',
 		default: 300,
 	},
 	src: {
-		type: 'string' as const,
-		default: 'home',
+		type: 'string',
+		default: 'home' as TlSrc,
 		hidden: true,
 	},
 	antenna: {
-		type: 'object' as const,
-		default: null,
+		type: 'object',
+		default: null as Misskey.entities.Antenna | null,
 		hidden: true,
 	},
 	list: {
-		type: 'object' as const,
-		default: null,
+		type: 'object',
+		default: null as Misskey.entities.UserList | null,
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -84,12 +92,22 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 const menuOpened = ref(false);
 
-const setSrc = (src) => {
+const headerTitle = computed<string>(() => {
+	if (widgetProps.src === 'list' && widgetProps.list != null) {
+		return widgetProps.list.name;
+	} else if (widgetProps.src === 'antenna' && widgetProps.antenna != null) {
+		return widgetProps.antenna.name;
+	} else {
+		return i18n.ts._timelines[widgetProps.src];
+	}
+});
+
+const setSrc = (src: TlSrc) => {
 	widgetProps.src = src;
 	save();
 };
 
-const choose = async (ev) => {
+const choose = async (ev: MouseEvent) => {
 	menuOpened.value = true;
 	const [antennas, lists] = await Promise.all([
 		misskeyApi('antennas/list'),
