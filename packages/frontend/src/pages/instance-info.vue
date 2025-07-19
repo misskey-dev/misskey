@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<div v-if="instance" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div v-if="tab === 'overview'" class="_gaps_m">
-			<div class="fnfelxur">
-				<img :src="faviconUrl" alt="" class="icon"/>
-				<span class="name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
+			<div :class="$style.faviconAndName">
+				<img v-if="faviconUrl" :src="faviconUrl" alt="" :class="$style.icon"/>
+				<span :class="$style.name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
 			</div>
 			<div style="display: flex; flex-direction: column; gap: 1em;">
 				<MkKeyValue :copy="host" oneline>
@@ -90,8 +90,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</div>
 		<div v-else-if="tab === 'chart'" class="_gaps_m">
-			<div class="cmhjzshl">
-				<div class="selects">
+			<div>
+				<div :class="$style.selects">
 					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
 						<option value="instance-requests">{{ i18n.ts._instanceCharts.requests }}</option>
 						<option value="instance-users">{{ i18n.ts._instanceCharts.users }}</option>
@@ -106,19 +106,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="instance-drive-files-total">{{ i18n.ts._instanceCharts.filesTotal }}</option>
 					</MkSelect>
 				</div>
-				<div class="charts">
-					<div class="label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
-					<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
-					<div class="label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
-					<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
+				<div>
+					<div :class="$style.label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
+					<MkChart :src="chartSrc" span="hour" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
+					<div :class="$style.label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
+					<MkChart :src="chartSrc" span="day" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
 				</div>
 			</div>
 		</div>
 		<div v-else-if="tab === 'users'" class="_gaps_m">
-			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
-				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/admin/user/${user.id}`">
-					<MkUserCardMini :user="user"/>
-				</MkA>
+			<MkPagination v-slot="{ items }" :paginator="usersPaginator">
+				<div :class="$style.users">
+					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'unknown'}`" :to="`/admin/user/${user.id}`">
+						<MkUserCardMini :user="user"/>
+					</MkA>
+				</div>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'raw'" class="_gaps_m">
@@ -130,10 +132,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ChartSrc } from '@/components/MkChart.vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -154,6 +155,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { dateString } from '@/filters/date.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	host: string;
@@ -171,8 +173,7 @@ const isMediaSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
 const moderationNote = ref('');
 
-const usersPagination = {
-	endpoint: iAmModerator ? 'admin/show-users' : 'users',
+const usersPaginator = iAmModerator ? markRaw(new Paginator('admin/show-users', {
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
@@ -180,7 +181,15 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-} satisfies PagingCtx;
+})) : markRaw(new Paginator('users', {
+	limit: 10,
+	params: {
+		sort: '+updatedAt',
+		state: 'all',
+		hostname: props.host,
+	},
+	offsetMode: true,
+}));
 
 if (iAmModerator) {
 	watch(moderationNote, async () => {
@@ -281,7 +290,7 @@ const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
-}, {
+}, ...(iAmModerator ? [{
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'ti ti-chart-line',
@@ -289,7 +298,7 @@ const headerTabs = computed(() => [{
 	key: 'users',
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
-}, {
+}] : []), {
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',
@@ -301,34 +310,31 @@ definePage(() => ({
 }));
 </script>
 
-<style lang="scss" scoped>
-.fnfelxur {
+<style lang="scss" module>
+.faviconAndName {
 	display: flex;
 	align-items: center;
-
-	> .icon {
-		display: block;
-		margin: 0 16px 0 0;
-		height: 64px;
-		border-radius: 8px;
-	}
-
-	> .name {
-		word-break: break-all;
-	}
 }
-
-.cmhjzshl {
-	> .selects {
-		display: flex;
-		margin: 0 0 16px 0;
-	}
-
-	> .charts {
-		> .label {
-			margin-bottom: 12px;
-			font-weight: bold;
-		}
-	}
+.icon {
+	display: block;
+	margin: 0 16px 0 0;
+	height: 64px;
+	border-radius: 8px;
+}
+.name {
+	word-break: break-all;
+}
+.selects {
+	display: flex;
+	margin: 0 0 16px 0;
+}
+.label {
+	margin-bottom: 12px;
+	font-weight: bold;
+}
+.users {
+	display: grid;
+	grid-template-columns: repeat(auto-fill,minmax(270px,1fr));
+	grid-gap: 12px;
 }
 </style>

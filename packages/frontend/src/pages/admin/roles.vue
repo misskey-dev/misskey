@@ -149,7 +149,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.uploadableFileTypes, 'uploadableFileTypes'])">
 						<template #label>{{ i18n.ts._role._options.uploadableFileTypes }}</template>
 						<template #suffix>...</template>
-						<MkTextarea :modelValue="policies.uploadableFileTypes.join('\n')">
+						<MkTextarea :modelValue="policies.uploadableFileTypes.join('\n')" @update:modelValue="v => policies.uploadableFileTypes = v.split('\n')">
+							<template #caption>
+								<div>{{ i18n.ts._role._options.uploadableFileTypes_caption }}</div>
+								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.tsx._role._options.uploadableFileTypes_caption2({ x: 'application/octet-stream' }) }}</div>
+							</template>
 						</MkTextarea>
 					</MkFolder>
 
@@ -277,6 +281,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._role._options.canImportUserLists }}</template>
 						<template #suffix>{{ policies.canImportUserLists ? i18n.ts.yes : i18n.ts.no }}</template>
 						<MkSwitch v-model="policies.canImportUserLists">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.noteDraftLimit, 'noteDraftLimit'])">
+						<template #label>{{ i18n.ts._role._options.noteDraftLimit }}</template>
+						<template #suffix>{{ policies.noteDraftLimit }}</template>
+						<MkInput v-model="policies.noteDraftLimit" type="number" :min="0">
+						</MkInput>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.watermarkAvailable, 'watermarkAvailable'])">
+						<template #label>{{ i18n.ts._role._options.watermarkAvailable }}</template>
+						<template #suffix>{{ policies.watermarkAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.watermarkAvailable">
 							<template #label>{{ i18n.ts.enable }}</template>
 						</MkSwitch>
 					</MkFolder>

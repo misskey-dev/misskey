@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import XPalette from './emoji-palette.palette.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -171,7 +171,7 @@ function addPalette() {
 	prefer.commit('emojiPalettes', [
 		...prefer.s.emojiPalettes,
 		{
-			id: uuid(),
+			id: genId(),
 			name: '',
 			emojis: [],
 		},

@@ -72,6 +72,7 @@ import { packedChatRoomSchema } from '@/models/json-schema/chat-room.js';
 import { packedChatRoomInvitationSchema } from '@/models/json-schema/chat-room-invitation.js';
 import { packedChatRoomMembershipSchema } from '@/models/json-schema/chat-room-membership.js';
 import { packedAchievementNameSchema, packedAchievementSchema } from '@/models/json-schema/achievement.js';
+import { packedNoteDraftSchema } from '@/models/json-schema/note-draft.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -89,6 +90,7 @@ export const refs = {
 	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
+	NoteDraft: packedNoteDraftSchema,
 	NoteReaction: packedNoteReactionSchema,
 	NoteFavorite: packedNoteFavoriteSchema,
 	Notification: packedNotificationSchema,
@@ -218,7 +220,17 @@ type NullOrUndefined<p extends Schema, T> =
 // https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 // Get intersection from union
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
-type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
+
+type ArrayToIntersection<T extends ReadonlyArray<Schema>> =
+	T extends readonly [infer Head, ...infer Tail]
+		? Head extends Schema
+			? Tail extends ReadonlyArray<Schema>
+				? Tail extends []
+					? SchemaType<Head>
+					: SchemaType<Head> & ArrayToIntersection<Tail>
+				: never
+			: never
+		: never;
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // To get union, we use `Foo extends any ? Hoge<Foo> : never`
@@ -236,8 +248,8 @@ type ObjectSchemaTypeDef<p extends Schema> =
 			: never
 		: ObjType<p['properties'], NonNullable<p['required']>>
 		:
-		p['anyOf'] extends ReadonlyArray<Schema> ? never : // see CONTRIBUTING.md
-		p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
+		p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> :
+		p['allOf'] extends ReadonlyArray<Schema> ? ArrayToIntersection<p['allOf']> :
 		p['additionalProperties'] extends true ? Record<string, any> :
 		p['additionalProperties'] extends Schema ?
 			p['additionalProperties'] extends infer AdditionalProperties ?
@@ -277,7 +289,8 @@ export type SchemaTypeDef<p extends Schema> =
 					p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
 					any[]
 		) :
-			p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
+			p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> :
+			p['allOf'] extends ReadonlyArray<Schema> ? ArrayToIntersection<p['allOf']> :
 			p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
 			any;
 

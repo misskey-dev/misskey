@@ -64,6 +64,7 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async getFileInfo(path: string, opts: {
+		fileName?: string | null;
 		skipSensitiveDetection: boolean;
 		sensitiveThreshold?: number;
 		sensitiveThresholdForPorn?: number;
@@ -75,6 +76,26 @@ export class FileInfoService {
 		const md5 = await this.calcHash(path);
 
 		let type = await this.detectType(path);
+
+		if (type.mime === TYPE_OCTET_STREAM.mime && opts.fileName != null) {
+			const ext = opts.fileName.split('.').pop();
+			if (ext === 'txt') {
+				type = {
+					mime: 'text/plain',
+					ext: 'txt',
+				};
+			} else if (ext === 'csv') {
+				type = {
+					mime: 'text/csv',
+					ext: 'csv',
+				};
+			} else if (ext === 'json') {
+				type = {
+					mime: 'application/json',
+					ext: 'json',
+				};
+			}
+		}
 
 		// image dimensions
 		let width: number | undefined;
@@ -438,12 +459,12 @@ export class FileInfoService {
 	 */
 	@bindThis
 	private async detectImageSize(path: string): Promise<{
-	width: number;
-	height: number;
-	wUnits: string;
-	hUnits: string;
-	orientation?: number;
-}> {
+		width: number;
+		height: number;
+		wUnits: string;
+		hUnits: string;
+		orientation?: number;
+	}> {
 		const readable = fs.createReadStream(path);
 		const imageSize = await probeImageSize(readable);
 		readable.destroy();

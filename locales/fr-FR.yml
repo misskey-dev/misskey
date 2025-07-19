@@ -2360,3 +2360,13 @@ _search:
   searchScopeAll: "Tous"
   searchScopeLocal: "Local"
   searchScopeUser: "Spécifier l'utilisateur·rice"
+_watermarkEditor:
+  driveFileTypeWarn: "Ce fichier n'est pas pris en charge"
+  opacity: "Transparence"
+  scale: "Taille"
+  text: "Texte"
+  position: "Position"
+  type: "Type"
+  image: "Images"
+  advanced: "Avancé"
+  angle: "Angle"

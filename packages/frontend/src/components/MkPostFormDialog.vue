@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModal
 	ref="modal"
 	:preferType="'dialog'"
-	@click="modal?.close()"
+	@click="onBgClick()"
 	@close="onModalClose()"
 	@closed="onModalClosed()"
-	@esc="modal?.close()"
+	@esc="onEsc"
 >
 	<MkPostForm
 		ref="form"
@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		autofocus
 		freezeAfterPosted
 		@posted="onPosted"
-		@cancel="modal?.close()"
-		@esc="modal?.close()"
+		@cancel="_close()"
+		@esc="_close()"
 	/>
 </MkModal>
 </template>
@@ -45,6 +45,7 @@ const emit = defineEmits<{
 }>();
 
 const modal = useTemplateRef('modal');
+const form = useTemplateRef('form');
 
 function onPosted() {
 	modal.value?.close({
@@ -54,6 +55,20 @@ function onPosted() {
 
 function onModalClose() {
 	emojiPicker.closeWindow();
+}
+
+async function _close() {
+	const canClose = await form.value?.canClose();
+	if (!canClose) return;
+	modal.value?.close();
+}
+
+function onEsc() {
+	_close();
+}
+
+function onBgClick() {
+	_close();
 }
 
 function onModalClosed() {
