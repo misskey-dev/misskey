@@ -106,6 +106,9 @@ provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
+const minimize = instance.enableStreamNotesCdnCache;
+const queueOnMinimize: ((Misskey.entities.StreamNote | Misskey.entities.Note) & { _shouldInsertAd_?: boolean; })[] = [];
+
 let paginator: IPaginator<Misskey.entities.Note>;
 
 if (props.src === 'antenna') {
@@ -273,16 +276,7 @@ useGlobalEvent('noteDeleted', (noteId) => {
 	paginator.removeItem(noteId);
 });
 
-function releaseQueue() {
-	paginator.releaseQueue();
-	scrollToTop(rootEl.value!);
-}
-
-async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote) {
-	adInsertionCounter++;
-
-	let note: Misskey.entities.Note & MisskeyEntity;
-
+async function getFullNote(data: Misskey.entities.Note | Misskey.entities.StreamNote): Promise<Misskey.entities.Note & MisskeyEntity | null> {
 	if (Misskey.note.isStreamNote(data)) {
 		let fullNote: Misskey.entities.Note | null = null;
 
@@ -291,7 +285,7 @@ async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote
 				method: 'GET',
 				credentials: 'omit',
 			});
-			if (!res.ok) return;
+			if (!res.ok) return null;
 			fullNote = (await res.json().catch(() => null)) as Misskey.entities.Note | null;
 		}
 
@@ -302,40 +296,78 @@ async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote
 			}).catch(() => null);
 		}
 
-		if (fullNote == null) return;
+		if (fullNote == null) return null;
 
 		if (data._allowCached_) {
 			const { _allowCached_, ..._data } = data;
-			note = deepMerge(_data as any, fullNote);
+			return deepMerge(_data as any, fullNote);
 		} else {
-			note = fullNote;
+			return fullNote;
 		}
 	} else {
-		note = data;
+		return data;
 	}
+}
 
-	if (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0) {
-		note._shouldInsertAd_ = true;
-	}
+async function releaseQueue() {
+	if (minimize) {
+		if (queueOnMinimize.length === 0) return;
+		if (queueOnMinimize.length >= 10) {
+			paginator.clearItems();
+		}
 
-	if (isTop() && !isPausingUpdate) {
-		paginator.prepend(note);
+		const notes = await Promise.allSettled(queueOnMinimize.map(getFullNote));
+
+		for (const note of notes) {
+			if (note.status !== 'fulfilled' || note.value == null) continue;
+			await prepend(note.value, false);
+		}
 	} else {
-		paginator.enqueue(note);
+		paginator.releaseQueue();
 	}
 
-	if (props.sound) {
+	scrollToTop(rootEl.value!);
+}
+
+async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote, withSound = true) {
+	adInsertionCounter++;
+	const shouldInsertAd = (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0);
+	let note: Misskey.entities.Note & MisskeyEntity | null = null;
+
+	if (minimize && isPausingUpdate) {
+		queueOnMinimize.push({
+			...data,
+			_shouldInsertAd_: shouldInsertAd,
+		});
+
+		if (queueOnMinimize.length > 10) {
+			queueOnMinimize.shift();
+		}
+	} else {
+		note = await getFullNote(data);
+
+		if (note == null) return;
+
+		note._shouldInsertAd_ = shouldInsertAd;
+
+		if (isTop() && !isPausingUpdate) {
+			paginator.prepend(note);
+		} else {
+			paginator.enqueue(note);
+		}
+	}
+
+	if (withSound && props.sound) {
 		if (props.customSound) {
 			sound.playMisskeySfxFile(props.customSound);
 		} else {
-			sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+			sound.playMisskeySfx($i && (note?.userId === $i.id) ? 'noteMy' : 'note');
 		}
 	}
 }
 
 let connection: Misskey.IChannelConnection | null = null;
 let connection2: Misskey.IChannelConnection | null = null;
-const minimize = instance.enableStreamNotesCdnCache;
 
 const stream = store.s.realtimeMode ? useStream() : null;
 
