@@ -137,7 +137,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	if (deepEqual(currentTheme, theme)) return;
-	currentTheme = theme;
+	currentTheme = deepClone(theme);
 
 	if (window.document.startViewTransition != null && prefer.s.animation) {
 		window.document.documentElement.classList.add('_themeChanging_');
