@@ -278,17 +278,15 @@ function releaseQueue() {
 	scrollToTop(rootEl.value!);
 }
 
-async function prepend(data: (Misskey.entities.Note | Misskey.entities.StreamNote) & MisskeyEntity) {
+async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote) {
 	adInsertionCounter++;
 
-	let note: (Misskey.entities.Note | Misskey.entities.StreamNote) & MisskeyEntity;
+	let note: Misskey.entities.Note & MisskeyEntity;
 
 	if (Misskey.note.isStreamNote(data)) {
 		let fullNote: Misskey.entities.Note | null = null;
 
-		const { _allowCached_, ..._data } = data;
-
-		if (_allowCached_) {
+		if (data._allowCached_) {
 			const res = await window.fetch(`/notes/${data.id}.json`, {
 				method: 'GET',
 				credentials: 'omit',
@@ -306,7 +304,12 @@ async function prepend(data: (Misskey.entities.Note | Misskey.entities.StreamNot
 
 		if (fullNote == null) return;
 
-		note = deepMerge(_data, fullNote);
+		if (data._allowCached_) {
+			const { _allowCached_, ..._data } = data;
+			note = deepMerge(_data as any, fullNote);
+		} else {
+			note = fullNote;
+		}
 	} else {
 		note = data;
 	}

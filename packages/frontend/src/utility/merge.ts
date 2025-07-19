@@ -22,6 +22,10 @@ export function deepMerge<X extends Record<PropertyKey, unknown>>(value: DeepPar
 	if (isPureObject(value) && isPureObject(def)) {
 		const result = deepClone(value as Cloneable) as X;
 		for (const [k, v] of Object.entries(def) as [keyof X, X[keyof X]][]) {
+			if (k === '__proto__' || k === 'constructor' || k === 'prototype') {
+				continue; // skip unsafe properties
+			}
+
 			if (!Object.hasOwn(value, k) || value[k] === undefined) {
 				result[k] = v;
 			} else if (isPureObject(v) && isPureObject(result[k])) {
