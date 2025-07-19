@@ -56,13 +56,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
-import type { MisskeyEntity } from '@/utility/paginator.js';
 import type { SoundStore } from '@/preferences/def.js';
 import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
@@ -75,9 +74,8 @@ import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deepMerge } from '@/utility/merge.js';
 import MkNote from '@/components/MkNote.vue';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { globalEvents, useGlobalEvent } from '@/events.js';
+import { useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -107,7 +105,7 @@ provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
 const minimize = instance.enableStreamNotesCdnCache;
-const queueOnMinimize: ((Misskey.entities.StreamNote | Misskey.entities.Note) & { _shouldInsertAd_?: boolean; })[] = [];
+let queueOnMinimize: ((Misskey.entities.StreamNote | Misskey.entities.Note) & { _shouldInsertAd_?: boolean; })[] = [];
 
 let paginator: IPaginator<Misskey.entities.Note>;
 
@@ -317,6 +315,7 @@ async function releaseQueue() {
 		}
 
 		const notes = await Promise.allSettled(queueOnMinimize.map(getFullNote));
+		queueOnMinimize = [];
 
 		for (const note of notes) {
 			if (note.status !== 'fulfilled' || note.value == null) continue;
