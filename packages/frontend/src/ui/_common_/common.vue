@@ -154,7 +154,9 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 
 function exitSafeMode() {
 	miLocalStorage.removeItem('isSafeMode');
-	unisonReload();
+	const url = new URL(window.location.href);
+	url.searchParams.delete('safemode');
+	unisonReload(url.toString());
 }
 
 if ($i) {
