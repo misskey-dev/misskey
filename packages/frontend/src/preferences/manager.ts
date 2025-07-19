@@ -13,6 +13,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deepEqual } from '@/utility/deep-equal.js';
+import { deepClone } from '@/utility/clone.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
@@ -227,14 +228,14 @@ export class PreferencesManager {
 	}
 
 	private rewriteRawState<K extends keyof PREF>(key: K, value: ValueOf<K>) {
-		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
+		const v = deepClone(value); // deep copy 兼 vueのプロキシ解除
 		this.r[key].value = this.s[key] = v;
 	}
 
 	// TODO: desync対策 cloudの値のfetchが正常に完了していない状態でcommitすると多分値が上書きされる
 	public commit<K extends keyof PREF>(key: K, value: ValueOf<K>) {
 		const currentAccount = this.currentAccount; // TSを黙らせるため
-		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
+		const v = deepClone(value); // deep copy 兼 vueのプロキシ解除
 
 		if (deepEqual(this.s[key], v)) {
 			if (_DEV_) console.log('(skip) prefer:commit', key, v);

@@ -12,6 +12,7 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
+import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
@@ -47,10 +48,10 @@ async function addAccount(host: string, user: Misskey.entities.User, token: Acco
 }
 
 export async function removeAccount(host: string, id: AccountWithToken['id']) {
-	const tokens = JSON.parse(JSON.stringify(store.s.accountTokens));
+	const tokens = deepClone(store.s.accountTokens);
 	delete tokens[host + '/' + id];
 	store.set('accountTokens', tokens);
-	const accountInfos = JSON.parse(JSON.stringify(store.s.accountInfos));
+	const accountInfos = deepClone(store.s.accountInfos);
 	delete accountInfos[host + '/' + id];
 	store.set('accountInfos', accountInfos);
 
@@ -335,8 +336,7 @@ export function getAccountWithSignupDialog(): Promise<{ id: string, token: strin
 	return new Promise((resolve) => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
 			done: async (res: Misskey.entities.SignupResponse) => {
-				const user = JSON.parse(JSON.stringify(res));
-				delete user.token;
+				const { token, ...user } = deepClone(res);
 				await addAccount(host, user, res.token);
 				resolve({ id: res.id, token: res.token });
 			},
