@@ -94,13 +94,13 @@
 	}
 	//#endregion
 
-	const isSafeMode = localStorage.getItem('isSafeMode') === 'true';
+	let isSafeMode = (localStorage.getItem('isSafeMode') === 'true');
 
 	if (!isSafeMode) {
 		const urlParams = new URLSearchParams(window.location.search);
 
 		if (urlParams.has('safemode') && urlParams.get('safemode') === 'true') {
-			localStorage.setItem('safeMode', 'true');
+			localStorage.setItem('isSafeMode', 'true');
 			isSafeMode = true;
 		}
 	}
