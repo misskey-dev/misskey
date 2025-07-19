@@ -5231,7 +5231,7 @@ export interface Locale extends ILocale {
      */
     "prohibitedWordsForNameOfUser": string;
     /**
-     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。
+     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。ユーザー名(username)に対しても全て小文字に置き換えて検査します。
      */
     "prohibitedWordsForNameOfUserDescription": string;
     /**
@@ -7803,6 +7803,10 @@ export interface Locale extends ILocale {
              * サーバーサイドのノートの下書きの作成可能数
              */
             "noteDraftLimit": string;
+            /**
+             * ウォーターマーク機能の使用可否
+             */
+            "watermarkAvailable": string;
         };
         "_condition": {
             /**
@@ -10899,6 +10903,10 @@ export interface Locale extends ILocale {
          */
         "attachedNotes": string;
         /**
+         * 利用
+         */
+        "usage": string;
+        /**
          * このページは、このファイルをアップロードしたユーザーしか閲覧できません。
          */
         "thisPageCanBeSeenFromTheAuthor": string;
@@ -12278,9 +12286,9 @@ export interface Locale extends ILocale {
          */
         "cannotCreateDraftAnymore": string;
         /**
-         * リノートの下書きは作成できません。
+         * この内容では下書きを作成できません。
          */
-        "cannotCreateDraftOfRenote": string;
+        "cannotCreateDraft": string;
         /**
          * 下書きを削除
          */

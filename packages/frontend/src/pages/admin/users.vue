@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #prefix>@</template>
 					<template #label>{{ i18n.ts.username }}</template>
 				</MkInput>
-				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="paginator.computedParams.value.origin === 'local'">
+				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="paginator.computedParams?.value?.origin === 'local'">
 					<template #prefix>@</template>
 					<template #label>{{ i18n.ts.host }}</template>
 				</MkInput>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkPagination v-slot="{items}" :paginator="paginator">
 				<div :class="$style.users">
-					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
+					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'Unknown'}`" :class="$style.user" :to="`/admin/user/${user.id}`">
 						<MkUserCardMini :user="user"/>
 					</MkA>
 				</div>
