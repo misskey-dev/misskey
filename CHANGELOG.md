@@ -7,8 +7,8 @@
 -
 
 ### Server
-- Feat: サーバーがCDNを利用している場合、タイムラインのリアルタイム更新時にCDNのキャッシュを併用できるように（上級者向け）
-  - この機能はCDNの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDNを正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
+- Feat: サーバーがCDN等を利用している場合、タイムラインのリアルタイム更新時にCDN等のキャッシュを併用できるように（上級者向け）
+  - この機能はCDNやレスポンスのキャッシュ機能を持つリバースプロキシなどの外部ソフトウェアの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDN等を正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
   - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 
 
