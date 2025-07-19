@@ -7,7 +7,9 @@
 -
 
 ### Server
--
+- Feat: サーバーがCDNを利用している場合、タイムラインのリアルタイム更新時にCDNのキャッシュを併用できるように（上級者向け）
+  - この機能はCDNの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDNを正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
+  - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 
 
 ## 2025.7.0
@@ -41,9 +43,6 @@
 - Fix: Pull to refreshが有効なときに横スクロールができない問題を修正
 
 ### Server
-- Feat: サーバーがCDNを利用している場合、タイムラインのリアルタイム更新時にCDNのキャッシュを併用できるように（上級者向け）
-  - この機能はCDNの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDNを正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
-  - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 - Enhance: sinceId/untilIdが指定可能なエンドポイントにおいて、sinceDate/untilDateも指定可能に
 - Enhance: メールの送信者としてサーバー名を表示するように (サーバー名が設定されている場合)
 - Fix: ジョブキューのProgressの値を正しく計算する
