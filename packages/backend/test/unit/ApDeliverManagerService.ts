@@ -91,6 +91,10 @@ describe('ApDeliverManagerService', () => {
 		apLoggerService = module.get(ApLoggerService);
 	});
 
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	describe('deliverToFollowers', () => {
 		it('should deliver activity to all followers', async () => {
 			const mockFollowings = [
