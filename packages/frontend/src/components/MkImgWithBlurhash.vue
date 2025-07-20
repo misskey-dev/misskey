@@ -54,7 +54,9 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	// テスト環境で Web Worker インスタンスは作成できない
-	if (import.meta.env.MODE === 'test') {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-expect-error
+	if (import.meta.env.MODE === 'test' || window.Cypress != null) {
 		const canvas = window.document.createElement('canvas');
 		canvas.width = 64;
 		canvas.height = 64;
