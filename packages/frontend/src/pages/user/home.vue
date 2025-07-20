@@ -385,7 +385,6 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 						background-color: #4c5e6d;
 						background-repeat: repeat-y;
 						background-position: center;
-						box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
 						will-change: transform;
 						animation: bannerParallaxKeyframes linear both;
 						animation-timeline: --bannerParallax;
