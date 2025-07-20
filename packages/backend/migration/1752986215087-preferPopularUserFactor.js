@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export class PreferPopularUserFactor1720879227657 {
-	name = 'PreferPopularUserFactor1720879227657'
+export class PreferPopularUserFactor1752986215087 {
+	name = 'PreferPopularUserFactor1752986215087'
 
 	async up(queryRunner) {
 		await queryRunner.query(`CREATE TYPE "meta_preferPopularUserFactor_enum" AS ENUM('follower', 'pv', 'none')`)
