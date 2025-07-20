@@ -59,7 +59,7 @@ export class MiMeta {
 	public maintainerEmail: string | null;
 
 	@Column('boolean', {
-		default: false,
+		default: true,
 	})
 	public disableRegistration: boolean;
 
@@ -570,7 +570,7 @@ export class MiMeta {
 	public bannedEmailDomains: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
+		length: 1024, array: true, default: ['admin', 'administrator', 'root', 'system', 'maintainer', 'host', 'mod', 'moderator', 'owner', 'superuser', 'staff', 'auth', 'i', 'me', 'everyone', 'all', 'mention', 'mentions', 'example', 'user', 'users', 'account', 'accounts', 'official', 'help', 'helps', 'support', 'supports', 'info', 'information', 'informations', 'announce', 'announces', 'announcement', 'announcements', 'notice', 'notification', 'notifications', 'dev', 'developer', 'developers', 'tech', 'misskey'],
 	})
 	public preservedUsernames: string[];
 
@@ -635,7 +635,7 @@ export class MiMeta {
 	public urlPreviewMaximumContentLength: number;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public urlPreviewRequireContentLength: boolean;
 
@@ -648,6 +648,7 @@ export class MiMeta {
 	@Column('varchar', {
 		length: 1024,
 		nullable: true,
+		default: null,
 	})
 	public urlPreviewUserAgent: string | null;
 

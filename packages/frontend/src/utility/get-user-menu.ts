@@ -132,6 +132,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		const userDetailed = await misskeyApi('users/show', {
 			userId: user.id,
 		});
+
 		const { canceled, result } = await os.form(i18n.ts.editMemo, {
 			memo: {
 				type: 'string',
@@ -141,6 +142,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				default: userDetailed.memo,
 			},
 		});
+
 		if (canceled) return;
 
 		os.apiWithDialog('users/update-memo', {

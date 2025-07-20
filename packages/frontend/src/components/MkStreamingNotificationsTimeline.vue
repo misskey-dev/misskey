@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
 			</div>
 		</component>
-		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
+		<button v-show="paginator.canFetchOlder.value" key="_more_" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else/>
 		</button>
@@ -42,9 +42,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup } from 'vue';
+import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
+import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { notificationTypes } from '@@/js/const.js';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
@@ -53,8 +55,8 @@ import { i18n } from '@/i18n.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
-import { usePagination } from '@/composables/use-pagination.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -62,21 +64,17 @@ const props = defineProps<{
 
 const rootEl = useTemplateRef('rootEl');
 
-const paginator = usePagination({
-	ctx: prefer.s.useGroupedNotifications ? {
-		endpoint: 'i/notifications-grouped' as const,
-		limit: 20,
-		params: computed(() => ({
-			excludeTypes: props.excludeTypes ?? undefined,
-		})),
-	} : {
-		endpoint: 'i/notifications' as const,
-		limit: 20,
-		params: computed(() => ({
-			excludeTypes: props.excludeTypes ?? undefined,
-		})),
-	},
-});
+const paginator = prefer.s.useGroupedNotifications ? markRaw(new Paginator('i/notifications-grouped', {
+	limit: 20,
+	computedParams: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+})) : markRaw(new Paginator('i/notifications', {
+	limit: 20,
+	computedParams: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+}));
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
 const POLLING_INTERVAL =
@@ -96,6 +94,49 @@ if (!store.s.realtimeMode) {
 	});
 }
 
+function isTop() {
+	if (scrollContainer == null) return true;
+	if (rootEl.value == null) return true;
+	const scrollTop = scrollContainer.scrollTop;
+	const tlTop = rootEl.value.offsetTop - scrollContainer.offsetTop;
+	return scrollTop <= tlTop;
+}
+
+function releaseQueue() {
+	paginator.releaseQueue();
+	scrollToTop(rootEl.value!);
+}
+
+let scrollContainer: HTMLElement | null = null;
+
+function onScrollContainerScroll() {
+	if (isTop()) {
+		paginator.releaseQueue();
+	}
+}
+
+watch(rootEl, (el) => {
+	if (el && scrollContainer == null) {
+		scrollContainer = getScrollContainer(el);
+		if (scrollContainer == null) return;
+		scrollContainer.addEventListener('scroll', onScrollContainerScroll, { passive: true }); // ほんとはscrollendにしたいけどiosが非対応
+	}
+}, { immediate: true });
+
+const visibility = useDocumentVisibility();
+let isPausingUpdate = false;
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		isPausingUpdate = true;
+	} else { // 'visible'
+		isPausingUpdate = false;
+		if (isTop()) {
+			releaseQueue();
+		}
+	}
+});
+
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
 	if (isMuted || window.document.visibilityState === 'visible') {
@@ -105,7 +146,11 @@ function onNotification(notification) {
 	}
 
 	if (!isMuted) {
-		paginator.prepend(notification);
+		if (isTop() && !isPausingUpdate) {
+			paginator.prepend(notification);
+		} else {
+			paginator.enqueue(notification);
+		}
 	}
 }
 
@@ -113,9 +158,17 @@ function reload() {
 	return paginator.reload();
 }
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['main']> | null = null;
 
 onMounted(() => {
+	paginator.init();
+
+	if (paginator.computedParams) {
+		watch(paginator.computedParams, () => {
+			paginator.reload();
+		}, { immediate: false, deep: true });
+	}
+
 	if (store.s.realtimeMode) {
 		connection = useStream().useChannel('main');
 		connection.on('notification', onNotification);
@@ -182,7 +235,6 @@ defineExpose({
 	align-items: center;
 	justify-content: center;
 	gap: 1em;
-	opacity: 0.75;
 	padding: 8px 8px;
 	margin: 0 auto;
 	border-bottom: solid 0.5px var(--MI_THEME-divider);

@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Mfm v-if="note.text" :text="note.text" :author="note.user"/>
 			<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 		</div>
-		<div v-if="note.files && note.files.length > 0" :class="$style.richcontent">
+		<div v-if="note.files && note.files.length > 0 && (note.cw == null || showContent)" :class="$style.richcontent">
 			<MkMediaList :mediaList="note.files.slice(0, 4)"/>
 		</div>
 		<div v-if="note.reactionCount > 0" :class="$style.reactions">

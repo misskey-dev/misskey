@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.bdayFRoot">
 		<MkLoading v-if="fetching"/>
 		<div v-else-if="users.length > 0" :class="$style.bdayFGrid">
-			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee" link preview></MkAvatar>
+			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee!" link preview></MkAvatar>
 		</div>
 		<div v-else :class="$style.bdayFFallback">
 			<MkResult type="empty"/>
@@ -27,7 +27,7 @@ import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -37,10 +37,10 @@ const name = i18n.ts._widgets.birthdayFollowings;
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

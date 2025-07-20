@@ -22,11 +22,6 @@
 	}
 }
 
-::selection {
-	color: var(--MI_THEME-fgOnAccent);
-	background-color: var(--MI_THEME-accent);
-}
-
 html {
 	overflow: auto;
 	overflow-wrap: break-word;
@@ -45,27 +40,6 @@ html {
 	&, * {
 		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 		scrollbar-width: thin;
-
-		&::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-
-		&::-webkit-scrollbar-track {
-			background: inherit;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background: var(--MI_THEME-scrollbarHandle);
-
-			&:hover {
-				background: var(--MI_THEME-scrollbarHandleHover);
-			}
-
-			&:active {
-				background: var(--MI_THEME-accent);
-			}
-		}
 	}
 
 	&.f-1 {
@@ -108,6 +82,11 @@ html::view-transition-old(theme-changing) {
 	z-index: 4000001;
 	animation: themeChangingOld 0.5s ease;
 	animation-fill-mode: forwards;
+}
+
+html::selection {
+	color: var(--MI_THEME-fgOnAccent);
+	background-color: var(--MI_THEME-accent);
 }
 
 @keyframes themeChangingOld {

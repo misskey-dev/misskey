@@ -80,7 +80,7 @@ import * as Misskey from 'misskey-js';
 import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
+	connection: Misskey.IChannelConnection<Misskey.Channels['serverStats']>,
 	meta: Misskey.entities.ServerInfoResponse
 }>();
 

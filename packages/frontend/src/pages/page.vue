@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+					<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
 						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -122,6 +122,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -132,13 +133,12 @@ const props = defineProps<{
 
 const page = ref<Misskey.entities.Page | null>(null);
 const error = ref<any>(null);
-const otherPostsPagination = {
-	endpoint: 'users/pages' as const,
+const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 	limit: 6,
-	params: computed(() => ({
+	computedParams: computed(() => page.value ? ({
 		userId: page.value.user.id,
-	})),
-};
+	}) : undefined),
+}));
 const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {

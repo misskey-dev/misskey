@@ -28,7 +28,7 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -40,15 +40,15 @@ const name = 'userList';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	listId: {
-		type: 'string' as const,
-		default: null,
+		type: 'string',
+		default: null as string | null,
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -61,7 +61,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-const list = ref<Misskey.entities.UserList>();
+const list = ref<Misskey.entities.UserList | null>(null);
 const users = ref<Misskey.entities.UserDetailed[]>([]);
 const fetching = ref(true);
 
@@ -74,7 +74,7 @@ async function chooseList() {
 		})),
 		default: widgetProps.listId,
 	});
-	if (canceled) return;
+	if (canceled || list == null) return;
 
 	widgetProps.listId = list.id;
 	save();
@@ -92,7 +92,7 @@ const fetch = () => {
 	}).then(_list => {
 		list.value = _list;
 		misskeyApi('users/show', {
-			userIds: list.value.userIds,
+			userIds: list.value.userIds ?? [],
 		}).then(_users => {
 			users.value = _users;
 			fetching.value = false;

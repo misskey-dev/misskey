@@ -78,6 +78,10 @@ export class ExportFavoritesProcessorService {
 			let exportedFavoritesCount = 0;
 			let cursor: MiNoteFavorite['id'] | null = null;
 
+			const total = await this.noteFavoritesRepository.countBy({
+				userId: user.id,
+			});
+
 			while (true) {
 				const favorites = await this.noteFavoritesRepository.find({
 					where: {
@@ -109,11 +113,7 @@ export class ExportFavoritesProcessorService {
 					exportedFavoritesCount++;
 				}
 
-				const total = await this.noteFavoritesRepository.countBy({
-					userId: user.id,
-				});
-
-				job.updateProgress(exportedFavoritesCount / total);
+				job.updateProgress(exportedFavoritesCount / total * 100);
 			}
 
 			await write(']');

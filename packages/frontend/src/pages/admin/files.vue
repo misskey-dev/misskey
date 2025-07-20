@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="local">{{ i18n.ts.local }}</option>
 					<option value="remote">{{ i18n.ts.remote }}</option>
 				</MkSelect>
-				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
+				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="paginator.computedParams?.value?.origin === 'local'">
 					<template #label>{{ i18n.ts.host }}</template>
 				</MkInput>
 			</div>
@@ -26,14 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>MIME type</template>
 				</MkInput>
 			</div>
-			<MkFileListForAdmin :pagination="pagination" :viewMode="viewMode"/>
+			<MkFileListForAdmin :paginator="paginator" :viewMode="viewMode"/>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -42,23 +42,22 @@ import * as os from '@/os.js';
 import { lookupFile } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const origin = ref<Misskey.entities.AdminDriveFilesRequest['origin']>('local');
+const origin = ref<NonNullable<Misskey.entities.AdminDriveFilesRequest['origin']>>('local');
 const type = ref<string | null>(null);
 const searchHost = ref('');
 const userId = ref('');
 const viewMode = ref<'grid' | 'list'>('grid');
-const pagination = {
-	endpoint: 'admin/drive/files' as const,
+const paginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		type: (type.value && type.value !== '') ? type.value : null,
 		userId: (userId.value && userId.value !== '') ? userId.value : null,
 		origin: origin.value,
 		hostname: (searchHost.value && searchHost.value !== '') ? searchHost.value : null,
 	})),
-} satisfies PagingCtx<'admin/drive/files'>;
+}));
 
 function clear() {
 	os.confirm({

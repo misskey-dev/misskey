@@ -110,6 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<!--
 							<SearchMarker :keywords="['auto', 'load', 'auto', 'more', 'scroll']">
 								<MkPreferenceContainer k="enableInfiniteScroll">
 									<MkSwitch v-model="enableInfiniteScroll">
@@ -117,6 +118,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
+							-->
 						</div>
 
 						<SearchMarker :keywords="['emoji', 'style', 'native', 'system', 'fluent', 'twemoji']">

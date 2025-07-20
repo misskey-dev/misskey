@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
 					<div class="_gaps_s">
 						<MkInfo>
-							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name }) }}
+							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? host }) }}
 						</MkInfo>
 						<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
 							<template #icon><i class="ti ti-code"></i></template>
@@ -134,7 +134,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
-import { version } from '@@/js/config.js';
+import { host, version } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -280,6 +280,12 @@ const patronsWithIcon = [{
 }, {
 	name: '新井　治',
 	icon: 'https://assets.misskey-hub.net/patrons/d160876f20394674a17963a0e609600a.jpg',
+}, {
+	name: 'しきいし',
+	icon: 'https://assets.misskey-hub.net/patrons/77dd5387db41427ba9cbdc8849e76402.jpg',
+}, {
+	name: '井上千二十四',
+	icon: 'https://assets.misskey-hub.net/patrons/193afa1f039b4c339866039c3dcd74bf.jpg',
 }];
 
 const patrons = [
@@ -392,6 +398,7 @@ const patrons = [
 	'ruru',
 	'みりめい',
 	'東雲 琥珀',
+	'ほとラズ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
@@ -407,6 +414,7 @@ const easterEggEngine = ref<{ stop: () => void } | null>(null);
 const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
+	if (containerEl.value == null) return;
 	const emojis = prefer.s.emojiPalettes[0].emojis;
 	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
@@ -424,6 +432,7 @@ function iconLoaded() {
 }
 
 function gravity() {
+	if (containerEl.value == null) return;
 	if (!easterEggReady) return;
 	easterEggReady = false;
 	easterEggEngine.value = physics(containerEl.value);

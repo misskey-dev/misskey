@@ -4,7 +4,7 @@
  */
 
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities } from '@/types.js';
+import { noteVisibilities, noteReactionAcceptances } from '@/types.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
@@ -20,7 +20,8 @@ import type { MiDriveFile } from './DriveFile.js';
 // You should not use `@Index({ concurrent: true })` decorator because database initialization for test will fail
 // because it will always run CREATE INDEX in transaction based on decorators.
 // Not appending `{ concurrent: true }` to `@Index` will not cause any problem in production,
-@Index(['userId', 'id'])
+
+@Index(['userId', 'id']) // Note: this index is ("userId", "id" DESC) in production, but not in test.
 @Entity('note')
 export class MiNote {
 	@PrimaryColumn(id())
@@ -96,7 +97,7 @@ export class MiNote {
 	@Column('varchar', {
 		length: 64, nullable: true,
 	})
-	public reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+	public reactionAcceptance: typeof noteReactionAcceptances[number];
 
 	@Column('smallint', {
 		default: 0,

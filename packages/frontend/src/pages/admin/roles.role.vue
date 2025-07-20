@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps">
 					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-					<MkPagination :pagination="usersPagination">
+					<MkPagination :paginator="usersPaginator">
 						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
-								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
+								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItems.includes(item.id) }]">
 									<div :class="$style.userItemMain">
 										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
 											<MkUserCardMini :user="item.user"/>
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, markRaw, reactive, ref } from 'vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -66,6 +66,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -73,15 +74,14 @@ const props = defineProps<{
 	id?: string;
 }>();
 
-const usersPagination = {
-	endpoint: 'admin/roles/users' as const,
+const usersPaginator = markRaw(new Paginator('admin/roles/users', {
 	limit: 20,
-	params: computed(() => ({
+	computedParams: computed(() => props.id ? ({
 		roleId: props.id,
-	})),
-};
+	}) : undefined),
+}));
 
-const expandedItems = ref([]);
+const expandedItems = ref<string[]>([]);
 
 const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
@@ -199,7 +199,7 @@ definePage(() => ({
 	transition: transform 0.1s ease-out;
 }
 
-.userItem.userItemOpend {
+.userItem.userItemOpened {
 	.chevron {
 		transform: rotateX(180deg);
 	}

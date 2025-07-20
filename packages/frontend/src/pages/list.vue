@@ -62,24 +62,29 @@ function fetchList(): void {
 }
 
 function like() {
+	if (list.value == null) return;
 	os.apiWithDialog('users/lists/favorite', {
 		listId: list.value.id,
 	}).then(() => {
+		if (list.value == null) return;
 		list.value.isLiked = true;
 		list.value.likedCount++;
 	});
 }
 
 function unlike() {
+	if (list.value == null) return;
 	os.apiWithDialog('users/lists/unfavorite', {
 		listId: list.value.id,
 	}).then(() => {
+		if (list.value == null) return;
 		list.value.isLiked = false;
 		list.value.likedCount--;
 	});
 }
 
 async function create() {
+	if (list.value == null) return;
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.enterListName,
 	});

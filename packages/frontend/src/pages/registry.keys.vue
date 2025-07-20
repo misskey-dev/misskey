@@ -79,7 +79,9 @@ async function createKey() {
 			default: scope.value.join('/'),
 		},
 	});
+
 	if (canceled) return;
+
 	os.apiWithDialog('i/registry/set', {
 		scope: result.scope.split('/'),
 		key: result.key,

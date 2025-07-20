@@ -56,7 +56,9 @@ async function createKey() {
 			label: i18n.ts._registry.scope,
 		},
 	});
+
 	if (canceled) return;
+
 	os.apiWithDialog('i/registry/set', {
 		scope: result.scope.split('/'),
 		key: result.key,
