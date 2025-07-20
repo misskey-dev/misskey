@@ -45,8 +45,6 @@ describe('UserSuspendService', () => {
 	let globalEventService: jest.Mocked<GlobalEventService>;
 	let apRendererService: jest.Mocked<ApRendererService>;
 	let moderationLogService: jest.Mocked<ModerationLogService>;
-	let apDeliverManagerService: jest.Mocked<ApDeliverManagerService>;
-	let relayService: jest.Mocked<RelayService>;
 
 	async function createUser(data: Partial<MiUser> = {}): Promise<MiUser> {
 		const user = {
@@ -84,7 +82,7 @@ describe('UserSuspendService', () => {
 		return following;
 	}
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		app = await Test.createTestingModule({
 			imports: [GlobalModule],
 			providers: [
@@ -156,15 +154,10 @@ describe('UserSuspendService', () => {
 		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
 		apRendererService = app.get<ApRendererService>(ApRendererService) as jest.Mocked<ApRendererService>;
 		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
-		apDeliverManagerService = app.get<ApDeliverManagerService>(ApDeliverManagerService) as jest.Mocked<ApDeliverManagerService>;
-		relayService = app.get<RelayService>(RelayService) as jest.Mocked<RelayService>;
-
-		// Reset mocks
-		jest.clearAllMocks();
 	});
 
-	afterEach(async () => {
-		await app.close();
+	beforeEach(() => {
+		jest.clearAllMocks();
 	});
 
 	describe('suspend', () => {
