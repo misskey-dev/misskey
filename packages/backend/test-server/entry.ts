@@ -78,9 +78,9 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		process.env = JSON.parse(originEnv);
 
 		await serverService.dispose();
+		console.log('ServerService application closed.');
 		await app.close();
-
-		console.log('Nest application closed.');
+		console.log('MainModule application closed.');
 
 		await killTestServer();
 
