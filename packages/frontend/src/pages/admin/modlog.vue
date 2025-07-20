@@ -4,62 +4,99 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="900">
-		<div>
-			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
+		<div class="_gaps">
+			<MkPaginationControl :paginator="paginator" canFilter>
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
 					<option :value="null">{{ i18n.ts.all }}</option>
 					<option v-for="t in Misskey.moderationLogTypes" :key="t" :value="t">{{ i18n.ts._moderationLogTypes[t] ?? t }}</option>
 				</MkSelect>
+
 				<MkInput v-model="moderatorId" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.moderator }}(ID)</template>
 				</MkInput>
-			</div>
+			</MkPaginationControl>
 
-			<MkPagination v-slot="{items}" ref="logs" :pagination="pagination" style="margin-top: var(--margin);">
-				<div class="_gaps_s">
-					<XModLog v-for="item in items" :key="item.id" :log="item"/>
-				</div>
-			</MkPagination>
+			<component :is="prefer.s.enablePullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()">
+				<MkLoading v-if="paginator.fetching.value"/>
+
+				<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
+
+				<MkTl v-else :events="timeline" groupBy="d">
+					<template #left="{ event }">
+						<div>
+							<MkAvatar :user="event.user" style="width: 26px; height: 26px;"/>
+						</div>
+					</template>
+					<template #right="{ event, timestamp, delta }">
+						<div style="margin: 4px 0;">
+							<XModLog :key="event.id" :log="event"/>
+						</div>
+					</template>
+				</MkTl>
+			</component>
+
+			<MkButton primary rounded style="margin: 0 auto;" @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref } from 'vue';
+import { computed, ref, markRaw, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import XHeader from './_header_.vue';
 import XModLog from './modlog.ModLog.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkTl from '@/components/MkTl.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-
-const logs = shallowRef<InstanceType<typeof MkPagination>>();
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkPaginationControl from '@/components/MkPaginationControl.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const type = ref<string | null>(null);
 const moderatorId = ref('');
 
-const pagination = {
-	endpoint: 'admin/show-moderation-logs' as const,
-	limit: 30,
-	params: computed(() => ({
+const paginator = markRaw(new Paginator('admin/show-moderation-logs', {
+	limit: 20,
+	canFetchDetection: 'limit',
+	canSearch: true,
+	computedParams: computed(() => ({
 		type: type.value,
 		userId: moderatorId.value === '' ? null : moderatorId.value,
 	})),
-};
+}));
+
+paginator.init();
+
+const timeline = computed(() => {
+	return paginator.items.value.map(x => ({
+		id: x.id,
+		timestamp: x.createdAt,
+		data: x,
+	}));
+});
+
+function fetchMore() {
+	if (paginator.order.value === 'oldest') {
+		paginator.fetchNewer();
+	} else {
+		paginator.fetchOlder();
+	}
+}
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.moderationLogs,
 	icon: 'ti ti-list-search',
 }));
 </script>
+

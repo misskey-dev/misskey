@@ -4,10 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div style="overflow: clip;">
-		<MkSpacer :contentMax="600" :marginMin="20">
+		<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
 			<div class="_gaps_m znqjceqz">
 				<div v-panel class="about">
 					<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
@@ -49,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
 					<div class="_gaps_s">
 						<MkInfo>
-							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name }) }}
+							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? host }) }}
 						</MkInfo>
 						<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
 							<template #icon><i class="ti ti-code"></i></template>
@@ -109,6 +108,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>
 							<a style="display: inline-block;" class="pepabo" title="GMO Pepabo" href="https://pepabo.com/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/gmo_pepabo.svg" alt="GMO Pepabo"></a>
 						</div>
+						<div>
+							<a style="display: inline-block;" class="purpledotdigital" title="Purple Dot Digital" href="https://purpledotdigital.com/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/purple-dot-digital.jpg" alt="Purple Dot Digital"></a>
+						</div>
 					</div>
 				</FormSection>
 				<FormSection>
@@ -125,26 +127,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, ref, shallowRef, computed } from 'vue';
-import { version } from '@@/js/config.js';
+import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
+import { host, version } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { physics } from '@/scripts/physics.js';
+import { physics } from '@/utility/physics.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { $i } from '@/account.js';
+import { definePage } from '@/page.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
@@ -266,6 +268,24 @@ const patronsWithIcon = [{
 }, {
 	name: 'なっかあ',
 	icon: 'https://assets.misskey-hub.net/patrons/c2f5f3e394e74a64912284a2f4ca710e.jpg',
+}, {
+	name: '如月ユカ',
+	icon: 'https://assets.misskey-hub.net/patrons/f24a042076a041b6811a2f124eb620ca.jpg',
+}, {
+	name: 'Yatoigawa',
+	icon: 'https://assets.misskey-hub.net/patrons/505e3568885a4a488431a8f22b4553d0.jpg',
+}, {
+	name: '秋瀬カヲル',
+	icon: 'https://assets.misskey-hub.net/patrons/0f22aeb866484f4fa51db6721e3f9847.jpg',
+}, {
+	name: '新井　治',
+	icon: 'https://assets.misskey-hub.net/patrons/d160876f20394674a17963a0e609600a.jpg',
+}, {
+	name: 'しきいし',
+	icon: 'https://assets.misskey-hub.net/patrons/77dd5387db41427ba9cbdc8849e76402.jpg',
+}, {
+	name: '井上千二十四',
+	icon: 'https://assets.misskey-hub.net/patrons/193afa1f039b4c339866039c3dcd74bf.jpg',
 }];
 
 const patrons = [
@@ -371,6 +391,14 @@ const patrons = [
 	'塩キャベツ',
 	'はとぽぷさん',
 	'100の人 (エスパー・イーシア)',
+	'ケモナーのケシン',
+	'こまつぶり',
+	'まゆつな空高',
+	'asata',
+	'ruru',
+	'みりめい',
+	'東雲 琥珀',
+	'ほとラズ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
@@ -383,10 +411,11 @@ const easterEggEmojis = ref<{
 	emoji: string
 }[]>([]);
 const easterEggEngine = ref<{ stop: () => void } | null>(null);
-const containerEl = shallowRef<HTMLElement>();
+const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
-	const emojis = defaultStore.state.reactions;
+	if (containerEl.value == null) return;
+	const emojis = prefer.s.emojiPalettes[0].emojis;
 	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
 		easterEggEmojis.value.push({
@@ -403,6 +432,7 @@ function iconLoaded() {
 }
 
 function gravity() {
+	if (containerEl.value == null) return;
 	if (!easterEggReady) return;
 	easterEggReady = false;
 	easterEggEngine.value = physics(containerEl.value);
@@ -430,7 +460,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.aboutMisskey,
 	icon: null,
 }));
@@ -440,7 +470,7 @@ definePageMetadata(() => ({
 .znqjceqz {
 	> .about {
 		position: relative;
-		border-radius: var(--radius);
+		border-radius: var(--MI-radius);
 
 		> .treasure {
 			position: absolute;
@@ -528,17 +558,17 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	padding: 12px;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 	border-radius: 6px;
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 
 	&.active {
-		color: var(--accent);
-		background: var(--buttonHoverBg);
+		color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 }
 
@@ -561,7 +591,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	padding: 12px;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 	border-radius: 6px;
 }
 

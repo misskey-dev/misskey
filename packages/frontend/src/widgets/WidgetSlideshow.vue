@@ -17,28 +17,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { selectDriveFolder } from '@/utility/drive.js';
 
 const name = 'slideshow';
 
 const widgetPropsDef = {
 	height: {
-		type: 'number' as const,
+		type: 'number',
 		default: 300,
 	},
 	folderId: {
-		type: 'string' as const,
-		default: null,
+		type: 'string',
+		default: null as string | null,
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -53,11 +55,11 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
-const slideA = shallowRef<HTMLElement>();
-const slideB = shallowRef<HTMLElement>();
+const slideA = useTemplateRef('slideA');
+const slideB = useTemplateRef('slideB');
 
 const change = () => {
-	if (images.value.length === 0) return;
+	if (images.value.length === 0 || slideA.value == null || slideB.value == null) return;
 
 	const index = Math.floor(Math.random() * images.value.length);
 	const img = `url(${ images.value[index].url })`;
@@ -71,11 +73,12 @@ const change = () => {
 
 		slideA.value.style.backgroundImage = img;
 
-		slideB.value.classList.remove('anime');
+		slideB.value!.classList.remove('anime');
 	}, 1000);
 };
 
 const fetch = () => {
+	if (slideA.value == null || slideB.value == null) return;
 	fetching.value = true;
 
 	misskeyApi('drive/files', {
@@ -85,14 +88,14 @@ const fetch = () => {
 	}).then(res => {
 		images.value = res;
 		fetching.value = false;
-		slideA.value.style.backgroundImage = '';
-		slideB.value.style.backgroundImage = '';
+		slideA.value!.style.backgroundImage = '';
+		slideB.value!.style.backgroundImage = '';
 		change();
 	});
 };
 
 const choose = () => {
-	os.selectDriveFolder(false).then(folder => {
+	selectDriveFolder(null).then(folder => {
 		if (folder[0] == null) {
 			return;
 		}

@@ -11,11 +11,14 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import { assertActivityMatchesUrl, FetchAllowSoftFailMask as FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import type { IObject } from './type.js';
 
 type Request = {
 	url: string;
@@ -145,6 +148,7 @@ export class ApRequestService {
 		private userKeypairService: UserKeypairService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
+		private utilityService: UtilityService,
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
@@ -181,7 +185,7 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id'] }, allowSoftfail: FetchAllowSoftFailMask = FetchAllowSoftFailMask.Strict, followAlternate?: boolean): Promise<unknown> {
 		const _followAlternate = followAlternate ?? true;
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
@@ -205,9 +209,13 @@ export class ApRequestService {
 		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
 		const contentType = res.headers.get('content-type');
 
-		if ((contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' && _followAlternate === true) {
+		if (
+			res.ok &&
+			(contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' &&
+			_followAlternate === true
+		) {
 			const html = await res.text();
-			const window = new Window({
+			const { window, happyDOM } = new Window({
 				settings: {
 					disableJavaScriptEvaluation: true,
 					disableJavaScriptFileLoading: true,
@@ -234,20 +242,24 @@ export class ApRequestService {
 				const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
 				if (alternate) {
 					const href = alternate.getAttribute('href');
-					if (href) {
-						return await this.signedGet(href, user, false);
+					if (href && this.utilityService.punyHost(url) === this.utilityService.punyHost(href)) {
+						return await this.signedGet(href, user, allowSoftfail, false);
 					}
 				}
 			} catch (e) {
 				// something went wrong parsing the HTML, ignore the whole thing
 			} finally {
-				window.close();
+				happyDOM.close().catch(err => {});
 			}
 		}
 		//#endregion
 
 		validateContentTypeSetAsActivityPub(res);
+		const finalUrl = res.url; // redirects may have been involved
+		const activity = await res.json() as IObject;
 
-		return await res.json();
+		assertActivityMatchesUrl(url, activity, finalUrl, allowSoftfail);
+
+		return activity;
 	}
 }

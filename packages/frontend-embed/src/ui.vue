@@ -18,11 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		:class="$style.routerViewContainer"
 	>
-		<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
-		<EmUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
-		<EmClipPage v-else-if="page === 'clips'" :clipId="contentId"/>
-		<EmTagPage v-else-if="page === 'tags'" :tag="contentId"/>
-		<XNotFound v-else/>
+		<Suspense :timeout="0">
+			<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
+			<EmUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
+			<EmClipPage v-else-if="page === 'clips'" :clipId="contentId"/>
+			<EmTagPage v-else-if="page === 'tags'" :tag="contentId"/>
+			<XNotFound v-else/>
+			<template #fallback>
+				<EmLoading/>
+			</template>
+		</Suspense>
 	</div>
 </div>
 </template>
@@ -37,9 +42,18 @@ import EmUserTimelinePage from '@/pages/user-timeline.vue';
 import EmClipPage from '@/pages/clip.vue';
 import EmTagPage from '@/pages/tag.vue';
 import XNotFound from '@/pages/not-found.vue';
+import EmLoading from '@/components/EmLoading.vue';
+
+function safeURIDecode(str: string): string {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
 
 const page = location.pathname.split('/')[2];
-const contentId = location.pathname.split('/')[3];
+const contentId = safeURIDecode(location.pathname.split('/')[3]);
 if (_DEV_) console.log(page, contentId);
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
@@ -74,14 +88,14 @@ onUnmounted(() => {
 <style lang="scss" module>
 .rootForEmbedPage {
 	box-sizing: border-box;
-	border: 1px solid var(--divider);
-	background-color: var(--bg);
+	border: 1px solid var(--MI_THEME-divider);
+	background-color: var(--MI_THEME-bg);
 	overflow: hidden;
 	position: relative;
 	height: auto;
 
 	&.rounded {
-		border-radius: var(--radius);
+		border-radius: var(--MI-radius);
 	}
 
 	&.noBorder {

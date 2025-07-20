@@ -4,30 +4,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" @click="modal?.close()" @closed="onModalClosed()" @esc="modal?.close()">
-	<MkPostForm ref="form" :class="$style.form" v-bind="props" autofocus freezeAfterPosted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
+<MkModal
+	ref="modal"
+	:preferType="'dialog'"
+	@click="onBgClick()"
+	@closed="onModalClosed()"
+	@esc="onEsc"
+>
+	<MkPostForm
+		ref="form"
+		:class="$style.form"
+		v-bind="props"
+		autofocus
+		freezeAfterPosted
+		@posted="onPosted"
+		@cancel="_close()"
+		@esc="_close()"
+	/>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import { useTemplateRef } from 'vue';
+import type { PostFormProps } from '@/types/post-form.js';
 import MkModal from '@/components/MkModal.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 
-const props = withDefaults(defineProps<{
-	reply?: Misskey.entities.Note;
-	renote?: Misskey.entities.Note;
-	channel?: any; // TODO
-	mention?: Misskey.entities.User;
-	specified?: Misskey.entities.UserDetailed;
-	initialText?: string;
-	initialCw?: string;
-	initialVisibility?: (typeof Misskey.noteVisibilities)[number];
-	initialFiles?: Misskey.entities.DriveFile[];
-	initialLocalOnly?: boolean;
-	initialVisibleUsers?: Misskey.entities.UserDetailed[];
-	initialNote?: Misskey.entities.Note;
+const props = withDefaults(defineProps<PostFormProps & {
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
@@ -39,13 +42,27 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
-const form = shallowRef<InstanceType<typeof MkPostForm>>();
+const modal = useTemplateRef('modal');
+const form = useTemplateRef('form');
 
 function onPosted() {
 	modal.value?.close({
 		useSendAnimation: true,
 	});
+}
+
+async function _close() {
+	const canClose = await form.value?.canClose();
+	if (!canClose) return;
+	modal.value?.close();
+}
+
+function onEsc(ev: KeyboardEvent) {
+	_close();
+}
+
+function onBgClick() {
+	_close();
 }
 
 function onModalClosed() {

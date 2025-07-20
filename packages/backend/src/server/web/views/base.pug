@@ -2,6 +2,7 @@ block vars
 
 block loadClientEntry
 	- const entry = config.frontendEntry;
+	- const baseUrl = config.url;
 
 doctype html
 
@@ -32,7 +33,7 @@ html
 		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='apple-touch-icon' href= appleTouchIcon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
-		link(rel='search' type='application/opensearchdescription+xml' title=(title || "Misskey") href=`${url}/opensearch.xml`)
+		link(rel='search' type='application/opensearchdescription+xml' title=(title || "Misskey") href=`${baseUrl}/opensearch.xml`)
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
@@ -72,6 +73,9 @@ html
 
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson
+
+		script(type='application/json' id='misskey_clientCtx' data-generated-at=now)
+			!= clientCtx
 
 		script
 			include ../boot.js

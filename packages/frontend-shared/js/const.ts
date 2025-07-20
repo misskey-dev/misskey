@@ -66,7 +66,12 @@ export const notificationTypes = [
 	'receiveFollowRequest',
 	'followRequestAccepted',
 	'roleAssigned',
+	'chatRoomInvitationReceived',
 	'achievementEarned',
+	'exportCompleted',
+	'login',
+	'createToken',
+	'test',
 	'app',
 ] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
@@ -86,6 +91,7 @@ export const ROLE_POLICIES = [
 	'canUseTranslator',
 	'canHideAds',
 	'driveCapacityMb',
+	'maxFileSizeMb',
 	'alwaysMarkNsfw',
 	'canUpdateBioMedia',
 	'pinLimit',
@@ -98,17 +104,16 @@ export const ROLE_POLICIES = [
 	'userEachUserListsLimit',
 	'rateLimitFactor',
 	'avatarDecorationLimit',
+	'canImportAntennas',
+	'canImportBlocking',
+	'canImportFollowing',
+	'canImportMuting',
+	'canImportUserLists',
+	'chatAvailability',
+	'uploadableFileTypes',
+	'noteDraftLimit',
+	'watermarkAvailable',
 ] as const;
-
-// なんか動かない
-//export const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
-//export const CURRENT_STICKY_BOTTOM = Symbol('CURRENT_STICKY_BOTTOM');
-export const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
-export const CURRENT_STICKY_BOTTOM = 'CURRENT_STICKY_BOTTOM';
-
-export const DEFAULT_SERVER_ERROR_IMAGE_URL = 'https://xn--931a.moe/assets/error.jpg';
-export const DEFAULT_NOT_FOUND_IMAGE_URL = 'https://xn--931a.moe/assets/not-found.jpg';
-export const DEFAULT_INFO_IMAGE_URL = 'https://xn--931a.moe/assets/info.jpg';
 
 export const MFM_TAGS = ['tada', 'jelly', 'twitch', 'shake', 'spin', 'jump', 'bounce', 'flip', 'x2', 'x3', 'x4', 'scale', 'position', 'fg', 'bg', 'border', 'font', 'blur', 'rainbow', 'sparkle', 'rotate', 'ruby', 'unixtime'];
 export const MFM_PARAMS: Record<typeof MFM_TAGS[number], string[]> = {

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-adaptive-bg class="_panel" style="position: relative;">
-	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
+	<div :class="$style.banner" :style="user.bannerUrl ? { backgroundImage: `url(${user.bannerUrl})` } : ''"></div>
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.title">
 		<div :class="$style.name"><MkUserName :user="user" :nowrap="false"/></div>
@@ -29,7 +29,7 @@ import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -61,7 +61,7 @@ async function follow() {
 	z-index: 2;
 	width: 58px;
 	height: 58px;
-	border: solid 4px var(--panel);
+	border: solid 4px var(--MI_THEME-panel);
 }
 
 .title {
@@ -82,7 +82,7 @@ async function follow() {
 	margin: 0;
 	line-height: 16px;
 	font-size: 0.8em;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	opacity: 0.7;
 }
 
@@ -99,7 +99,7 @@ async function follow() {
 }
 
 .footer {
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 	padding: 16px;
 }
 </style>

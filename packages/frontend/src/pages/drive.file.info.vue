@@ -20,9 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
 					<i class="ti ti-pencil"></i>
 				</button>
-				<button v-if="isImage" v-tooltip="i18n.ts.cropImage" class="_button" :class="$style.fileQuickActionsOthersButton" @click="crop()">
-					<i class="ti ti-crop"></i>
-				</button>
 				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
 					<i class="ti ti-eye"></i>
 				</button>
@@ -45,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkKeyValue>
 			</button>
 			<button class="_button" :class="$style.kvEditBtn" @click="describe()">
-				<MkKeyValue>
+				<MkKeyValue :class="$style.multiline">
 					<template #key>{{ i18n.ts.description }}</template>
 					<template #value>{{ file.comment ? file.comment : `(${i18n.ts.none})` }}<i class="ti ti-pencil" :class="$style.kvEditIcon"></i></template>
 				</MkKeyValue>
@@ -68,10 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 		</div>
 	</div>
-	<div v-else class="_fullinfo">
-		<img :src="infoImageUrl" class="_ghost"/>
-		<div>{{ i18n.ts.nothing }}</div>
-	</div>
+	<MkResult v-else type="empty"/>
 </div>
 </template>
 
@@ -82,11 +76,12 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import bytes from '@/filters/bytes.js';
-import { infoImageUrl } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
+import { selectDriveFolder } from '@/utility/drive.js';
+import { globalEvents } from '@/events.js';
 
 const router = useRouter();
 
@@ -131,19 +126,10 @@ function postThis() {
 	});
 }
 
-function crop() {
-	if (!file.value) return;
-
-	os.cropImage(file.value, {
-		aspectRatio: NaN,
-		uploadFolder: file.value.folderId ?? null,
-	});
-}
-
 function move() {
 	if (!file.value) return;
 
-	os.selectDriveFolder(false).then(folder => {
+	selectDriveFolder(null).then(folder => {
 		misskeyApi('drive/files/update', {
 			fileId: file.value.id,
 			folderId: folder[0] ? folder[0].id : null,
@@ -188,10 +174,10 @@ function rename() {
 	});
 }
 
-function describe() {
+async function describe() {
 	if (!file.value) return;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.value.comment ?? '',
 		file: file.value,
 	}, {
@@ -214,11 +200,13 @@ async function deleteFile() {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.value.name }),
 	});
-
 	if (canceled) return;
+
 	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.value.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file.value]);
 
 	router.push('/my/drive');
 }
@@ -231,8 +219,8 @@ onMounted(async () => {
 <style lang="scss" module>
 
 .filePreviewRoot {
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 	// MkMediaList 内の上部マージン 4px
 	padding: calc(1rem - 4px) 1rem 1rem;
 }
@@ -262,8 +250,8 @@ onMounted(async () => {
 
 		&:hover,
 		&:focus-visible {
-			background-color: var(--accentedBg);
-			color: var(--accent);
+			background-color: var(--MI_THEME-accentedBg);
+			color: var(--MI_THEME-accent);
 			text-decoration: none;
 			outline: none;
 		}
@@ -285,7 +273,7 @@ onMounted(async () => {
 	align-items: center;
 	min-width: 0;
 	font-weight: 700;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	font-size: .8rem;
 
 	>.fileNameEditIcon {
@@ -299,12 +287,12 @@ onMounted(async () => {
 	}
 
 	&:hover {
-		background-color: var(--accentedBg);
+		background-color: var(--MI_THEME-accentedBg);
 
 		>.fileName,
 		>.fileNameEditIcon {
 			visibility: visible;
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 		}
 	}
 }
@@ -313,12 +301,16 @@ onMounted(async () => {
 	padding: .5rem 1rem;
 }
 
+.multiline {
+	white-space: pre-wrap;
+}
+
 .kvEditBtn {
 	text-align: start;
 	display: block;
 	width: 100%;
 	padding: .5rem 1rem;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	.kvEditIcon {
 		display: inline-block;
@@ -328,11 +320,11 @@ onMounted(async () => {
 	}
 
 	&:hover {
-		color: var(--accent);
-		background-color: var(--accentedBg);
+		color: var(--MI_THEME-accent);
+		background-color: var(--MI_THEME-accentedBg);
 
 		.kvEditIcon {
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 			visibility: visible;
 		}
 	}

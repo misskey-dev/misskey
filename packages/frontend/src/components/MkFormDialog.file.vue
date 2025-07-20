@@ -15,8 +15,8 @@ import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
-import { selectFile } from '@/scripts/select-file.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { selectFile } from '@/utility/drive.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	fileId?: string | null;
@@ -51,7 +51,10 @@ if (props.fileId) {
 }
 
 function selectButton(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target).then(async (file) => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	}).then(async (file) => {
 		if (!file) return;
 		if (props.validate && !await props.validate(file)) return;
 
@@ -66,6 +69,6 @@ function selectButton(ev: MouseEvent) {
 <style module>
 .fileNotSelected {
 	font-weight: 700;
-	color: var(--infoWarnFg);
+	color: var(--MI_THEME-infoWarnFg);
 }
 </style>

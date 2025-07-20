@@ -13,8 +13,7 @@ import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type Logger from '@/logger.js';
-import type { UserIpsRepository } from '@/models/_.js';
-import { MetaService } from '@/core/MetaService.js';
+import type { MiMeta, UserIpsRepository } from '@/models/_.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -40,13 +39,15 @@ export class ApiCallService implements OnApplicationShutdown {
 	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
 
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.config)
 		private config: Config,
 
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 
-		private metaService: MetaService,
 		private authenticateService: AuthenticateService,
 		private rateLimiterService: RateLimiterService,
 		private roleService: RoleService,
@@ -64,15 +65,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		let statusCode = err.httpStatusCode;
 		if (err.httpStatusCode === 401) {
 			reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
-		} else if (err.kind === 'client') {
-			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
-			statusCode = statusCode ?? 400;
-		} else if (err.kind === 'permission') {
-			// (ROLE_PERMISSION_DENIEDは関係ない)
-			if (err.code === 'PERMISSION_DENIED') {
-				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
-			}
-			statusCode = statusCode ?? 403;
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
 			const info: unknown = err.info;
 			const unixEpochInSeconds = Date.now();
@@ -83,6 +75,15 @@ export class ApiCallService implements OnApplicationShutdown {
 			} else {
 				this.logger.warn(`rate limit information has unexpected type ${typeof(err.info?.reset)}`);
 			}
+		} else if (err.kind === 'client') {
+			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
+			statusCode = statusCode ?? 400;
+		} else if (err.kind === 'permission') {
+			// (ROLE_PERMISSION_DENIEDは関係ない)
+			if (err.code === 'PERMISSION_DENIED') {
+				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
+			}
+			statusCode = statusCode ?? 403;
 		} else if (!statusCode) {
 			statusCode = 500;
 		}
@@ -265,9 +266,8 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async logIp(request: FastifyRequest, user: MiLocalUser) {
-		const meta = await this.metaService.fetch();
-		if (!meta.enableIpLogging) return;
+	private logIp(request: FastifyRequest, user: MiLocalUser) {
+		if (!this.meta.enableIpLogging) return;
 		const ip = request.ip;
 		const ips = this.userIpHistories.get(user.id);
 		if (ips == null || !ips.has(ip)) {
@@ -326,19 +326,15 @@ export class ApiCallService implements OnApplicationShutdown {
 
 			if (factor > 0) {
 				// Rate limit
-				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
-					if ('info' in err) {
-						// errはLimiter.LimiterInfoであることが期待される
-						throw new ApiError({
-							message: 'Rate limit exceeded. Please try again later.',
-							code: 'RATE_LIMIT_EXCEEDED',
-							id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
-							httpStatusCode: 429,
-						}, err.info);
-					} else {
-						throw new TypeError('information must be a rate-limiter information.');
-					}
-				});
+				const rateLimit = await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor);
+				if (rateLimit != null) {
+					throw new ApiError({
+						message: 'Rate limit exceeded. Please try again later.',
+						code: 'RATE_LIMIT_EXCEEDED',
+						id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+						httpStatusCode: 429,
+					}, rateLimit.info);
+				}
 			}
 		}
 
@@ -371,7 +367,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
 				throw new ApiError({
@@ -391,10 +387,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+		if (ep.meta.requiredRolePolicy != null && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			const policies = await this.roleService.getUserPolicies(user!.id);
-			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
+			if (!policies[ep.meta.requiredRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
 					code: 'ROLE_PERMISSION_DENIED',

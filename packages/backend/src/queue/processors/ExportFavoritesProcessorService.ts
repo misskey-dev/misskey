@@ -16,6 +16,7 @@ import type { MiPoll } from '@/models/Poll.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
@@ -37,6 +38,7 @@ export class ExportFavoritesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,
+		private notificationService: NotificationService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-favorites');
 	}
@@ -76,6 +78,10 @@ export class ExportFavoritesProcessorService {
 			let exportedFavoritesCount = 0;
 			let cursor: MiNoteFavorite['id'] | null = null;
 
+			const total = await this.noteFavoritesRepository.countBy({
+				userId: user.id,
+			});
+
 			while (true) {
 				const favorites = await this.noteFavoritesRepository.find({
 					where: {
@@ -107,11 +113,7 @@ export class ExportFavoritesProcessorService {
 					exportedFavoritesCount++;
 				}
 
-				const total = await this.noteFavoritesRepository.countBy({
-					userId: user.id,
-				});
-
-				job.updateProgress(exportedFavoritesCount / total);
+				job.updateProgress(exportedFavoritesCount / total * 100);
 			}
 
 			await write(']');
@@ -123,6 +125,11 @@ export class ExportFavoritesProcessorService {
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'json' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
+
+			this.notificationService.createNotification(user.id, 'exportCompleted', {
+				exportedEntity: 'favorite',
+				fileId: driveFile.id,
+			});
 		} finally {
 			cleanup();
 		}

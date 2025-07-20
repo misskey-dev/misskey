@@ -60,12 +60,12 @@ function remove() {
 .cpjygsrt {
 	position: relative;
 	overflow: hidden;
-	background: var(--panel);
-	border: solid 2px var(--X12);
+	background: var(--MI_THEME-panel);
+	border: solid 2px light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 	border-radius: 8px;
 
 	&:hover {
-		border: solid 2px var(--X13);
+		border: solid 2px light-dark(rgba(0, 0, 0, 0.15), rgba(255, 255, 255, 0.15));
 	}
 
 	&.warn {

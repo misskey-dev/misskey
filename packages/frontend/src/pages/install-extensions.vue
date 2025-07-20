@@ -4,80 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="500">
+<PageWithAnimBg>
+	<div class="_spacer" style="--MI_SPACER-w: 550px; --MI_SPACER-max: 50px;">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
-		<div v-else-if="uiPhase === 'confirm' && data" class="_gaps_m" :class="$style.extInstallerRoot">
-			<div :class="$style.extInstallerIconWrapper">
-				<i v-if="data.type === 'plugin'" class="ti ti-plug"></i>
-				<i v-else-if="data.type === 'theme'" class="ti ti-palette"></i>
-				<i v-else class="ti ti-download"></i>
-			</div>
-			<h2 :class="$style.extInstallerTitle">{{ i18n.ts._externalResourceInstaller[`_${data.type}`].title }}</h2>
-			<div :class="$style.extInstallerNormDesc">{{ i18n.ts._externalResourceInstaller.checkVendorBeforeInstall }}</div>
-			<MkInfo v-if="data.type === 'plugin'" :warn="true">{{ i18n.ts._plugin.installWarn }}</MkInfo>
-			<FormSection>
-				<template #label>{{ i18n.ts._externalResourceInstaller[`_${data.type}`].metaTitle }}</template>
-				<div class="_gaps_s">
-					<FormSplit>
+		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
+			<template #additionalInfo>
+				<FormSection>
+					<div class="_gaps_s">
 						<MkKeyValue>
-							<template #key>{{ i18n.ts.name }}</template>
-							<template #value>{{ data.meta?.name }}</template>
+							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
+							<template #value><MkUrl v-if="url" :url="url" :showUrlPreview="false"></MkUrl></template>
 						</MkKeyValue>
 						<MkKeyValue>
-							<template #key>{{ i18n.ts.author }}</template>
-							<template #value>{{ data.meta?.author }}</template>
+							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
+							<template #value>
+								<!-- この画面が出ている時点でハッシュの検証には成功している -->
+								<i class="ti ti-check" style="color: var(--MI_THEME-accent)"></i>
+							</template>
 						</MkKeyValue>
-					</FormSplit>
-					<MkKeyValue v-if="data.type === 'plugin'">
-						<template #key>{{ i18n.ts.description }}</template>
-						<template #value>{{ data.meta?.description }}</template>
-					</MkKeyValue>
-					<MkKeyValue v-if="data.type === 'plugin'">
-						<template #key>{{ i18n.ts.version }}</template>
-						<template #value>{{ data.meta?.version }}</template>
-					</MkKeyValue>
-					<MkKeyValue v-if="data.type === 'plugin'">
-						<template #key>{{ i18n.ts.permission }}</template>
-						<template #value>
-							<ul :class="$style.extInstallerKVList">
-								<li v-for="permission in data.meta?.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
-							</ul>
-						</template>
-					</MkKeyValue>
-					<MkKeyValue v-if="data.type === 'theme' && data.meta?.base">
-						<template #key>{{ i18n.ts._externalResourceInstaller._meta.base }}</template>
-						<template #value>{{ i18n.ts[data.meta.base] }}</template>
-					</MkKeyValue>
-					<MkFolder>
-						<template #icon><i class="ti ti-code"></i></template>
-						<template #label>{{ i18n.ts._plugin.viewSource }}</template>
-
-						<MkCode :code="data.raw ?? ''"/>
-					</MkFolder>
-				</div>
-			</FormSection>
-			<FormSection>
-				<template #label>{{ i18n.ts._externalResourceInstaller._vendorInfo.title }}</template>
-				<div class="_gaps_s">
-					<MkKeyValue>
-						<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
-						<template #value><MkUrl :url="url ?? ''" :showUrlPreview="false"></MkUrl></template>
-					</MkKeyValue>
-					<MkKeyValue>
-						<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
-						<template #value>
-							<!--この画面が出ている時点でハッシュの検証には成功している-->
-							<i class="ti ti-check" style="color: var(--accent)"></i>
-						</template>
-					</MkKeyValue>
-				</div>
-			</FormSection>
-			<div class="_buttonsCenter">
-				<MkButton primary @click="install()"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
-			</div>
-		</div>
+					</div>
+				</FormSection>
+			</template>
+		</MkExtensionInstaller>
 		<div v-else-if="uiPhase === 'error'" class="_gaps_m" :class="[$style.extInstallerRoot, $style.error]">
 			<div :class="$style.extInstallerIconWrapper">
 				<i class="ti ti-circle-x"></i>
@@ -85,32 +33,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
 			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
 			<div class="_buttonsCenter">
-				<MkButton @click="goBack()">{{ i18n.ts.goBack }}</MkButton>
-				<MkButton @click="goToMisskey()">{{ i18n.ts.goToMisskey }}</MkButton>
+				<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
 			</div>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onActivated, onDeactivated, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
+import type { Extension } from '@/components/MkExtensionInstaller.vue';
+import type { AiScriptPluginMeta } from '@/plugin.js';
 import MkLoading from '@/components/global/MkLoading.vue';
+import MkExtensionInstaller from '@/components/MkExtensionInstaller.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormSection from '@/components/form/section.vue';
-import FormSplit from '@/components/form/split.vue';
-import MkCode from '@/components/MkCode.vue';
-import MkUrl from '@/components/global/MkUrl.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
+import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { AiScriptPluginMeta, parsePluginMeta, installPlugin } from '@/scripts/install-plugin.js';
-import { parseThemeCode, installTheme } from '@/scripts/install-theme.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { parsePluginMeta, installPlugin } from '@/plugin.js';
+import { parseThemeCode, installTheme } from '@/theme.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{
@@ -124,31 +70,14 @@ const errorKV = ref<{
 const url = ref<string | null>(null);
 const hash = ref<string | null>(null);
 
-const data = ref<{
-	type: 'plugin' | 'theme';
-	raw: string;
-	meta?: {
-		// Plugin & Theme Common
-		name: string;
-		author: string;
+const data = ref<Extension | null>(null);
 
-		// Plugin
-		description?: string;
-		version?: string;
-		permissions?: string[];
-		config?: Record<string, any>;
-
-		// Theme
-		base?: 'light' | 'dark';
-	};
-} | null>(null);
-
-function goBack(): void {
-	history.back();
-}
-
-function goToMisskey(): void {
-	location.href = '/';
+function close_(): void {
+	if (window.history.length === 1) {
+		window.close();
+	} else {
+		window.history.back();
+	}
 }
 
 async function fetch() {
@@ -222,12 +151,12 @@ async function fetch() {
 		case 'theme':
 			try {
 				const metaRaw = parseThemeCode(res.data);
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 				const { id, props, desc: description, ...meta } = metaRaw;
 				data.value = {
 					type: 'theme',
 					meta: {
-						description,
+						// description, // 使用されていない
 						...meta,
 					},
 					raw: res.data,
@@ -275,9 +204,9 @@ async function install() {
 			try {
 				await installPlugin(data.value.raw, data.value.meta as AiScriptPluginMeta);
 				os.success();
-				nextTick(() => {
-					unisonReload('/');
-				});
+				window.setTimeout(() => {
+					close_();
+				}, 3000);
 			} catch (err) {
 				errorKV.value = {
 					title: i18n.ts._externalResourceInstaller._errors._pluginInstallFailed.title,
@@ -291,28 +220,18 @@ async function install() {
 			if (!data.value.meta) return;
 			await installTheme(data.value.raw);
 			os.success();
-			nextTick(() => {
-				location.href = '/settings/theme';
-			});
+			window.setTimeout(() => {
+				close_();
+			}, 3000);
 	}
 }
 
-onActivated(() => {
-	const urlParams = new URLSearchParams(window.location.search);
-	url.value = urlParams.get('url');
-	hash.value = urlParams.get('hash');
-	fetch();
-});
+const urlParams = new URLSearchParams(window.location.search);
+url.value = urlParams.get('url');
+hash.value = urlParams.get('hash');
+fetch();
 
-onDeactivated(() => {
-	uiPhase.value = 'fetching';
-});
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
-
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,
 	icon: 'ti ti-download',
 }));
@@ -320,8 +239,8 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .extInstallerRoot {
-	border-radius: var(--radius);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	background: var(--MI_THEME-panel);
 	padding: 1.5rem;
 }
 
@@ -335,8 +254,8 @@ definePageMetadata(() => ({
 	margin-left: auto;
 	margin-right: auto;
 
-	background-color: var(--accentedBg);
-	color: var(--accent);
+	background-color: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 }
 
 .error .extInstallerIconWrapper {
@@ -352,10 +271,5 @@ definePageMetadata(() => ({
 
 .extInstallerNormDesc {
 	text-align: center;
-}
-
-.extInstallerKVList {
-	margin-top: 0;
-	margin-bottom: 0;
 }
 </style>

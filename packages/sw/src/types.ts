@@ -23,6 +23,7 @@ type PushNotificationDataSourceMap = {
 		note: Misskey.entities.Note;
 	};
 	readAllNotifications: undefined;
+	newChatMessage: Misskey.entities.ChatMessage;
 };
 
 export type PushNotificationData<K extends keyof PushNotificationDataSourceMap> = {
@@ -50,4 +51,5 @@ export type BadgeNames =
 	| 'quote'
 	| 'repeat'
 	| 'user-plus'
-	| 'users';
+	| 'users'
+	| 'login-2';

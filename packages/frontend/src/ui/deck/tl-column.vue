@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i v-if="column.tl != null" :class="basicTimelineIconClass(column.tl)"/>
-		<span style="margin-left: 8px;">{{ column.name }}</span>
+		<span style="margin-left: 8px;">{{ column.name || (column.tl ? i18n.ts._timelines[column.tl] : null) || i18n.ts._deck._columns.tl }}</span>
 	</template>
 
 	<div v-if="!isAvailableBasicTimeline(column.tl)" :class="$style.disabled">
@@ -17,43 +17,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</p>
 		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
-	<MkTimeline
+	<MkStreamingNotesTimeline
 		v-else-if="column.tl"
 		ref="timeline"
 		:key="column.tl + withRenotes + withReplies + onlyFiles"
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
+		:withSensitive="withSensitive"
 		:onlyFiles="onlyFiles"
-		@note="onNote"
+		:sound="true"
+		:customSound="soundSetting"
 	/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed } from 'vue';
+import { onMounted, watch, ref, useTemplateRef, computed } from 'vue';
 import XColumn from './column.vue';
-import { removeColumn, updateColumn, Column } from './deck-store.js';
+import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import type { SoundStore } from '@/preferences/def.js';
+import { removeColumn, updateColumn } from '@/deck.js';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import { instance } from '@/instance.js';
-import { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = useTemplateRef('timeline');
 
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
+const withSensitive = ref(props.column.withSensitive ?? true);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
 
 watch(withRenotes, v => {
@@ -65,6 +67,12 @@ watch(withRenotes, v => {
 watch(withReplies, v => {
 	updateColumn(props.column.id, {
 		withReplies: v,
+	});
+});
+
+watch(withSensitive, v => {
+	updateColumn(props.column.id, {
+		withSensitive: v,
 	});
 });
 
@@ -109,33 +117,45 @@ async function setType() {
 	});
 }
 
-function onNote() {
-	sound.playMisskeySfxFile(soundSetting.value);
-}
+const menu = computed<MenuItem[]>(() => {
+	const menuItems: MenuItem[] = [];
 
-const menu = computed<MenuItem[]>(() => [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.timeline,
-	action: setType,
-}, {
-	icon: 'ti ti-bell',
-	text: i18n.ts._deck.newNoteNotificationSettings,
-	action: () => soundSettingsButton(soundSetting),
-}, {
-	type: 'switch',
-	text: i18n.ts.showRenotes,
-	ref: withRenotes,
-}, hasWithReplies(props.column.tl) ? {
-	type: 'switch',
-	text: i18n.ts.showRepliesToOthersInTimeline,
-	ref: withReplies,
-	disabled: onlyFiles,
-} : undefined, {
-	type: 'switch',
-	text: i18n.ts.fileAttachedOnly,
-	ref: onlyFiles,
-	disabled: hasWithReplies(props.column.tl) ? withReplies : false,
-}]);
+	menuItems.push({
+		icon: 'ti ti-pencil',
+		text: i18n.ts.timeline,
+		action: setType,
+	}, {
+		icon: 'ti ti-bell',
+		text: i18n.ts._deck.newNoteNotificationSettings,
+		action: () => soundSettingsButton(soundSetting),
+	}, {
+		type: 'switch',
+		text: i18n.ts.showRenotes,
+		ref: withRenotes,
+	});
+
+	if (hasWithReplies(props.column.tl)) {
+		menuItems.push({
+			type: 'switch',
+			text: i18n.ts.showRepliesToOthersInTimeline,
+			ref: withReplies,
+			disabled: onlyFiles,
+		});
+	}
+
+	menuItems.push({
+		type: 'switch',
+		text: i18n.ts.fileAttachedOnly,
+		ref: onlyFiles,
+		disabled: hasWithReplies(props.column.tl) ? withReplies : false,
+	}, {
+		type: 'switch',
+		text: i18n.ts.withSensitive,
+		ref: withSensitive,
+	});
+
+	return menuItems;
+});
 </script>
 
 <style lang="scss" module>

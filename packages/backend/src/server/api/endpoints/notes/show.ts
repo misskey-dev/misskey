@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
+import { MiMeta } from '@/models/Meta.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -26,6 +28,12 @@ export const meta = {
 			code: 'NO_SUCH_NOTE',
 			id: '24fcbfc6-2e37-42b6-8388-c29b3861a08d',
 		},
+
+		signinRequired: {
+			message: 'Signin required.',
+			code: 'SIGNIN_REQUIRED',
+			id: '8e75455b-738c-471d-9f80-62693f33372e',
+		},
 	},
 } as const;
 
@@ -40,14 +48,29 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+			const note = await this.getterService.getNoteWithUser(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
+
+			if (note.user!.requireSigninToViewContents && me == null) {
+				throw new ApiError(meta.errors.signinRequired);
+			}
+
+			if (this.serverSettings.ugcVisibilityForVisitor === 'none' && me == null) {
+				throw new ApiError(meta.errors.signinRequired);
+			}
+
+			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.userHost != null && me == null) {
+				throw new ApiError(meta.errors.signinRequired);
+			}
 
 			return await this.noteEntityService.pack(note, me, {
 				detail: true,

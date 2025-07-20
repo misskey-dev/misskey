@@ -99,10 +99,10 @@ if (!invalid && props.origin === null && (props.mode === 'relative' || props.mod
 
 <style lang="scss" module>
 .old1 {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .old1.old2 {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 </style>

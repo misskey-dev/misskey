@@ -9,7 +9,6 @@ import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -36,6 +35,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		visibility: { type: 'string' },
 	},
 	required: [],
@@ -52,14 +53,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere(new Brackets(qb => {
 					qb // このmeIdAsListパラメータはqueryServiceのgenerateVisibilityQueryでセットされる
 						.where(':meIdAsList <@ note.mentions')
@@ -74,9 +74,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateBaseNoteFilteringQuery(query, me);
 			this.queryService.generateMutedNoteThreadQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
 
 			if (ps.visibility) {
 				query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
@@ -88,8 +87,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const mentions = await query.limit(ps.limit).getMany();
-
-			this.noteReadService.read(me.id, mentions);
 
 			return await this.noteEntityService.packMany(mentions, me);
 		});

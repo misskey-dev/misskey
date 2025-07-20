@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
+			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: prefer.s.animation }]"
 			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
 				<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
 				<div
-					v-if="!t.iconOnly || (!defaultStore.reactiveState.animation.value && t.key === tab)"
+					v-if="!t.iconOnly || (!prefer.s.animation && t.key === tab)"
 					:class="$style.tabTitle"
 				>
 					{{ t.title }}
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		ref="tabHighlightEl"
-		:class="[$style.tabHighlight, { [$style.animate]: defaultStore.reactiveState.animation.value }]"
+		:class="[$style.tabHighlight, { [$style.animate]: prefer.s.animation }]"
 	></div>
 </div>
 </template>
@@ -41,20 +41,20 @@ export type Tab = {
 	onClick?: (ev: MouseEvent) => void;
 } & (
 	| {
-			iconOnly?: false;
-			title: string;
-			icon?: string;
-		}
+		iconOnly?: false;
+		title: string;
+		icon?: string;
+	}
 	| {
-			iconOnly: true;
-			icon: string;
-		}
+		iconOnly: true;
+		icon: string;
+	}
 );
 </script>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
-import { defaultStore } from '@/store.js';
+import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
@@ -69,9 +69,9 @@ const emit = defineEmits<{
 	(ev: 'tabClick', key: string);
 }>();
 
-const el = shallowRef<HTMLElement | null>(null);
+const el = useTemplateRef('el');
+const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
-const tabHighlightEl = shallowRef<HTMLElement | null>(null);
 
 function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
@@ -120,38 +120,39 @@ function onTabWheel(ev: WheelEvent) {
 
 let entering = false;
 
-async function enter(element: Element) {
+async function enter(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	entering = true;
-	const el = element as HTMLElement;
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
-	el.offsetWidth; // force reflow
-	el.style.width = elementWidth + 'px';
+	el.offsetWidth; // reflow
+	el.style.width = `${elementWidth}px`;
 	el.style.paddingLeft = '';
 	nextTick(() => {
 		entering = false;
 	});
 
-	setTimeout(renderTab, 170);
+	window.setTimeout(renderTab, 170);
 }
 
-function afterEnter(element: Element) {
-	//el.style.width = '';
+function afterEnter(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
+	// element.style.width = '';
 }
 
-async function leave(element: Element) {
-	const el = element as HTMLElement;
+async function leave(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	const elementWidth = el.getBoundingClientRect().width;
-	el.style.width = elementWidth + 'px';
+	el.style.width = `${elementWidth}px`;
 	el.style.paddingLeft = '';
-	el.offsetWidth; // force reflow
+	el.offsetWidth; // reflow
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
 }
 
-function afterLeave(element: Element) {
-	const el = element as HTMLElement;
+function afterLeave(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	el.style.width = '';
 }
 
@@ -169,7 +170,7 @@ onMounted(() => {
 
 	if (props.rootEl) {
 		ro2 = new ResizeObserver((entries, observer) => {
-			if (document.body.contains(el.value as HTMLElement)) {
+			if (window.document.body.contains(el.value as HTMLElement)) {
 				nextTick(() => renderTab());
 			}
 		});
@@ -193,10 +194,6 @@ onUnmounted(() => {
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: none;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
 }
 
 .tabsInner {
@@ -247,7 +244,7 @@ onUnmounted(() => {
 	position: absolute;
 	bottom: 0;
 	height: 3px;
-	background: var(--accent);
+	background: var(--MI_THEME-accent);
 	border-radius: 999px;
 	transition: none;
 	pointer-events: none;

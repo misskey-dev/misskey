@@ -103,6 +103,14 @@ redis:
 #  #prefix: example-prefix
 #  #db: 1
 
+#redisForReactions:
+#  host: redis
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
@@ -144,6 +152,11 @@ id: 'aidx'
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #sentryForFrontend:
+#  vueIntegration:
+#    tracingOptions:
+#      trackComponents: true
+#  browserTracingIntegration:
+#  replayIntegration:
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
@@ -188,12 +201,6 @@ proxyBypassHosts:
 
 # Media Proxy
 #mediaProxy: https://example.com/proxy
-
-# Proxy remote files (default: true)
-proxyRemoteFiles: true
-
-# Sign to ActivityPub GET request (default: true)
-signToActivityPubGet: true
 
 allowedPrivateNetworks: [
   '127.0.0.1/32'

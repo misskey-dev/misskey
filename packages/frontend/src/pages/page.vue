@@ -4,14 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<Transition
-			:enterActiveClass="defaultStore.state.animation ? $style.fadeEnterActive : ''"
-			:leaveActiveClass="defaultStore.state.animation ? $style.fadeLeaveActive : ''"
-			:enterFromClass="defaultStore.state.animation ? $style.fadeEnterFrom : ''"
-			:leaveToClass="defaultStore.state.animation ? $style.fadeLeaveTo : ''"
+			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
+			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
+			:enterFromClass="prefer.s.animation ? $style.fadeEnterFrom : ''"
+			:leaveToClass="prefer.s.animation ? $style.fadeLeaveTo : ''"
 			mode="out-in"
 		>
 			<div v-if="page" :key="page.id" class="_gaps">
@@ -81,11 +80,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock-edit"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 					</div>
 				</div>
-				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+					<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
 						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
@@ -93,18 +92,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetchPage()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import type { MenuItem } from '@/types/menu.js';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { url } from '@@/js/config.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -112,16 +112,17 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pageViewInterruptors, defaultStore } from '@/store.js';
-import { deepClone } from '@/scripts/clone.js';
-import { $i } from '@/account.js';
-import { isSupportShare } from '@/scripts/navigator.js';
+import { definePage } from '@/page.js';
+import { deepClone } from '@/utility/clone.js';
+import { $i } from '@/i.js';
+import { isSupportShare } from '@/utility/navigator.js';
 import { instance } from '@/instance.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { useRouter } from '@/router/supplier.js';
-import { MenuItem } from '@/types/menu';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { useRouter } from '@/router.js';
+import { prefer } from '@/preferences.js';
+import { getPluginHandlers } from '@/plugin.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -132,13 +133,12 @@ const props = defineProps<{
 
 const page = ref<Misskey.entities.Page | null>(null);
 const error = ref<any>(null);
-const otherPostsPagination = {
-	endpoint: 'users/pages' as const,
+const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 	limit: 6,
-	params: computed(() => ({
+	computedParams: computed(() => page.value ? ({
 		userId: page.value.user.id,
-	})),
-};
+	}) : undefined),
+}));
 const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
@@ -150,6 +150,7 @@ function fetchPage() {
 		page.value = _page;
 
 		// plugin
+		const pageViewInterruptors = getPluginHandlers('page_view_interruptor');
 		if (pageViewInterruptors.length > 0) {
 			let result = deepClone(_page);
 			for (const interruptor of pageViewInterruptors) {
@@ -165,25 +166,29 @@ function fetchPage() {
 function share(ev: MouseEvent) {
 	if (!page.value) return;
 
-	os.popupMenu([
-		{
-			text: i18n.ts.shareWithNote,
-			icon: 'ti ti-pencil',
-			action: shareWithNote,
-		},
-		...(isSupportShare() ? [{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
+		text: i18n.ts.shareWithNote,
+		icon: 'ti ti-pencil',
+		action: shareWithNote,
+	});
+
+	if (isSupportShare()) {
+		menuItems.push({
 			text: i18n.ts.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
-		}] : []),
-	], ev.currentTarget ?? ev.target);
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function copyLink() {
 	if (!page.value) return;
 
 	copyToClipboard(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
-	os.success();
 }
 
 function shareWithNote() {
@@ -240,12 +245,12 @@ function pin(pin) {
 	});
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!page.value) return;
 
 	const pageUrl = `${url}/@${props.username}/pages/${props.pageName}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: page.value.user,
 		initialComment: `Page: ${pageUrl}\n-----\n`,
 	}, {
@@ -256,51 +261,55 @@ function reportAbuse() {
 function showMenu(ev: MouseEvent) {
 	if (!page.value) return;
 
-	const menu: MenuItem[] = [
-		...($i && $i.id === page.value.userId ? [
-			{
-				icon: 'ti ti-code',
-				text: i18n.ts._pages.viewSource,
-				action: () => router.push(`/@${props.username}/pages/${props.pageName}/view-source`),
-			},
-			...($i.pinnedPageId === page.value.id ? [{
+	const menuItems: MenuItem[] = [];
+
+	if ($i && $i.id === page.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-pencil',
+			text: i18n.ts.edit,
+			action: () => router.push(`/pages/edit/${page.value.id}`),
+		});
+
+		if ($i.pinnedPageId === page.value.id) {
+			menuItems.push({
 				icon: 'ti ti-pinned-off',
 				text: i18n.ts.unpin,
 				action: () => pin(false),
-			}] : [{
+			});
+		} else {
+			menuItems.push({
 				icon: 'ti ti-pin',
 				text: i18n.ts.pin,
 				action: () => pin(true),
-			}]),
-		] : []),
-		...($i && $i.id !== page.value.userId ? [
-			{
-				icon: 'ti ti-exclamation-circle',
-				text: i18n.ts.reportAbuse,
-				action: reportAbuse,
-			},
-			...($i.isModerator || $i.isAdmin ? [
-				{
-					type: 'divider' as const,
-				},
-				{
-					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
-					danger: true,
-					action: () => os.confirm({
-						type: 'warning',
-						text: i18n.ts.deleteConfirm,
-					}).then(({ canceled }) => {
-						if (canceled || !page.value) return;
+			});
+		}
+	} else if ($i && $i.id !== page.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
 
-						os.apiWithDialog('pages/delete', { pageId: page.value.id });
-					}),
-				},
-			] : []),
-		] : []),
-	];
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !page.value) return;
 
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+					os.apiWithDialog('pages/delete', { pageId: page.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 watch(() => path.value, fetchPage, { immediate: true });
@@ -309,7 +318,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
 	...page.value ? {
 		avatar: page.value.user,
@@ -344,24 +353,24 @@ definePageMetadata(() => ({
 
 	&:hover,
 	&:focus-visible {
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		text-decoration: none;
 		outline: none;
 	}
 }
 
 .pageMain {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	padding: 2rem;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	box-sizing: border-box;
 }
 
 .pageBanner {
 	width: calc(100% + 4rem);
 	margin: -2rem -2rem 1.5rem;
-	border-radius: var(--radius) var(--radius) 0 0;
+	border-radius: var(--MI-radius) var(--MI-radius) 0 0;
 	overflow: hidden;
 	position: relative;
 
@@ -386,7 +395,7 @@ definePageMetadata(() => ({
 		}
 
 		.pageBannerBgFallback2 {
-			background-color: var(--accentedBg);
+			background-color: var(--MI_THEME-accentedBg);
 		}
 
 		&::after {
@@ -396,7 +405,7 @@ definePageMetadata(() => ({
 			bottom: 0;
 			width: 100%;
 			height: 100px;
-			background: linear-gradient(0deg, var(--panel), transparent);
+			background: linear-gradient(0deg, var(--MI_THEME-panel), transparent);
 		}
 	}
 
@@ -420,7 +429,7 @@ definePageMetadata(() => ({
 		h1 {
 			font-size: 2rem;
 			font-weight: 700;
-			color: var(--fg);
+			color: var(--MI_THEME-fg);
 			margin: 0;
 		}
 
@@ -445,7 +454,7 @@ definePageMetadata(() => ({
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
-			gap: var(--marginHalf);
+			gap: var(--MI-marginHalf);
 			margin-left: auto;
 		}
 	}
@@ -459,14 +468,14 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 	padding-top: 1.5rem;
 	margin-bottom: 1.5rem;
 
 	> .other {
 		margin-left: auto;
 		display: flex;
-		gap: var(--marginHalf);
+		gap: var(--MI-marginHalf);
 	}
 }
 
@@ -474,7 +483,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 	padding-top: 1.5rem;
 	margin-bottom: 1.5rem;
 
@@ -513,14 +522,14 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: var(--marginHalf);
+	gap: var(--MI-marginHalf);
 }
 
 .relatedPagesRoot {
-	padding: var(--margin);
+	padding: var(--MI-margin);
 }
 
 .relatedPagesItem > article {
-	background-color: var(--panelHighlight) !important;
+	background-color: var(--MI_THEME-panelHighlight) !important;
 }
 </style>

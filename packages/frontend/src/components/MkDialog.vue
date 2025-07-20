@@ -11,22 +11,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div
 			v-else-if="!input && !select"
-			:class="[$style.icon, {
-				[$style.type_success]: type === 'success',
-				[$style.type_error]: type === 'error',
-				[$style.type_warning]: type === 'warning',
-				[$style.type_info]: type === 'info',
-			}]"
+			:class="[$style.icon]"
 		>
-			<i v-if="type === 'success'" :class="$style.iconInner" class="ti ti-check"></i>
-			<i v-else-if="type === 'error'" :class="$style.iconInner" class="ti ti-circle-x"></i>
-			<i v-else-if="type === 'warning'" :class="$style.iconInner" class="ti ti-alert-triangle"></i>
-			<i v-else-if="type === 'info'" :class="$style.iconInner" class="ti ti-info-circle"></i>
-			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
+			<MkSystemIcon v-if="type === 'success'" :class="$style.iconInner" style="width: 45px;" type="success"/>
+			<MkSystemIcon v-else-if="type === 'error'" :class="$style.iconInner" style="width: 45px;" type="error"/>
+			<MkSystemIcon v-else-if="type === 'warning'" :class="$style.iconInner" style="width: 45px;" type="warn"/>
+			<MkSystemIcon v-else-if="type === 'info'" :class="$style.iconInner" style="width: 45px;" type="info"/>
+			<MkSystemIcon v-else-if="type === 'question'" :class="$style.iconInner" style="width: 45px;" type="question"/>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
-		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
-		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
+		<header v-if="title" :class="$style.title" class="_selectable"><Mfm :text="title"/></header>
+		<div v-if="text" :class="$style.text" class="_selectable"><Mfm :text="text"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
@@ -45,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
-			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
+			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason != null" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
@@ -56,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed } from 'vue';
+import { ref, useTemplateRef, computed } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -98,7 +93,7 @@ const props = withDefaults(defineProps<{
 		text: string;
 		primary?: boolean,
 		danger?: boolean,
-		callback: (...args: any[]) => void;
+		callback: (...args: unknown[]) => void;
 	}[];
 	showOkButton?: boolean;
 	showCancelButton?: boolean;
@@ -117,7 +112,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 
 const inputValue = ref<string | number | null>(props.input?.default ?? null);
 const selectedValue = ref(props.select?.default ?? null);
@@ -142,6 +137,7 @@ const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'character
 // overload function を使いたいので lint エラーを無視する
 function done(canceled: true): void;
 function done(canceled: false, result: Result): void; // eslint-disable-line no-redeclare
+
 function done(canceled: boolean, result?: Result): void { // eslint-disable-line no-redeclare
 	emit('done', { canceled, result } as { canceled: true } | { canceled: false, result: Result });
 	modal.value?.close();
@@ -184,7 +180,7 @@ function onInputKeydown(evt: KeyboardEvent) {
 	max-width: 480px;
 	box-sizing: border-box;
 	text-align: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 16px;
 }
 
@@ -199,22 +195,6 @@ function onInputKeydown(evt: KeyboardEvent) {
 .iconInner {
 	display: block;
 	margin: 0 auto;
-}
-
-.type_info {
-	color: #55c4dd;
-}
-
-.type_success {
-	color: var(--success);
-}
-
-.type_error {
-	color: var(--error);
-}
-
-.type_warning {
-	color: var(--warn);
 }
 
 .title {

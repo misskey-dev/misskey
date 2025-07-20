@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="{ [$style.done]: closed || isVoted }">
 	<ul :class="$style.choices">
-		<li v-for="(choice, i) in poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
+		<li v-for="(choice, i) in choices" :key="i" :class="$style.choice" @click="vote(i)">
 			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span :class="$style.fg">
-				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
-				<Mfm :text="choice.text" :plain="true"/>
+				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--MI_THEME-accent);"></i></template>
+				<Mfm :text="choice.text" :plain="true" :author="author" :emojiUrls="emojiUrls"/>
 				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.tsx._poll.votesCount({ n: choice.votes }) }})</span>
 			</span>
 		</li>
@@ -29,26 +29,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
-import { sum } from '@/scripts/array.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { host } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import { sum } from '@/utility/array.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	noteId: string;
-	poll: NonNullable<Misskey.entities.Note['poll']>;
+	multiple: NonNullable<Misskey.entities.Note['poll']>['multiple'];
+	expiresAt: NonNullable<Misskey.entities.Note['poll']>['expiresAt'];
+	choices: NonNullable<Misskey.entities.Note['poll']>['choices'];
 	readOnly?: boolean;
+	emojiUrls?: Record<string, string>;
+	author?: Misskey.entities.UserLite;
 }>();
 
 const remaining = ref(-1);
 
-const total = computed(() => sum(props.poll.choices.map(x => x.votes)));
+const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
-const isVoted = computed(() => !props.poll.multiple && props.poll.choices.some(c => c.isVoted));
+const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
 const timer = computed(() => i18n.tsx._poll[
 	remaining.value >= 86400 ? 'remainingDays' :
 	remaining.value >= 3600 ? 'remainingHours' :
@@ -68,9 +72,9 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 }));
 
 // 期限付きアンケート
-if (props.poll.expiresAt) {
+if (props.expiresAt) {
 	const tick = () => {
-		remaining.value = Math.floor(Math.max(new Date(props.poll.expiresAt!).getTime() - Date.now(), 0) / 1000);
+		remaining.value = Math.floor(Math.max(new Date(props.expiresAt!).getTime() - Date.now(), 0) / 1000);
 		if (remaining.value === 0) {
 			showResult.value = true;
 		}
@@ -85,11 +89,11 @@ if (props.poll.expiresAt) {
 const vote = async (id) => {
 	if (props.readOnly || closed.value || isVoted.value) return;
 
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.tsx.voteConfirm({ choice: props.poll.choices[id].text }),
+		text: i18n.tsx.voteConfirm({ choice: props.choices[id].text }),
 	});
 	if (canceled) return;
 
@@ -97,7 +101,7 @@ const vote = async (id) => {
 		noteId: props.noteId,
 		choice: id,
 	});
-	if (!showResult.value) showResult.value = !props.poll.multiple;
+	if (!showResult.value) showResult.value = !props.multiple;
 };
 </script>
 
@@ -114,8 +118,8 @@ const vote = async (id) => {
 	position: relative;
 	margin: 4px 0;
 	padding: 4px;
-	//border: solid 0.5px var(--divider);
-	background: var(--accentedBg);
+	//border: solid 0.5px var(--MI_THEME-divider);
+	background: var(--MI_THEME-accentedBg);
 	border-radius: 4px;
 	overflow: clip;
 	cursor: pointer;
@@ -126,8 +130,8 @@ const vote = async (id) => {
 	top: 0;
 	left: 0;
 	height: 100%;
-	background: var(--accent);
-	background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
+	background: var(--MI_THEME-accent);
+	background: linear-gradient(90deg,var(--MI_THEME-buttonGradateA),var(--MI_THEME-buttonGradateB));
 	transition: width 1s ease;
 }
 
@@ -135,12 +139,12 @@ const vote = async (id) => {
 	position: relative;
 	display: inline-block;
 	padding: 3px 5px;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 3px;
 }
 
 .info {
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .done {

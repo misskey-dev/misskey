@@ -38,14 +38,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, shallowRef, inject } from 'vue';
+import { computed, inject, useTemplateRef } from 'vue';
 import { scrollToTop } from '@@/js/scroll.js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { i18n } from '@/i18n.js';
-import { serverMetadata } from '@/server-metadata.js';
 import { url, instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import { DI } from '@/di.js';
@@ -54,6 +53,8 @@ import { defaultEmbedParams } from '@@/js/embed-page.js';
 const props = defineProps<{
 	tag: string;
 }>();
+
+const serverMetadata = inject(DI.serverMetadata)!;
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
@@ -64,7 +65,7 @@ const pagination = computed(() => ({
 	},
 } as Paging));
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 
 function top(ev: MouseEvent) {
 	const target = ev.target as HTMLElement | null;
@@ -82,7 +83,7 @@ function top(ev: MouseEvent) {
 	display: flex;
 	min-width: 0;
 	align-items: center;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	overflow: hidden;
 
 	.headerClipIconRoot {
@@ -92,8 +93,8 @@ function top(ev: MouseEvent) {
 		line-height: 32px;
 		font-size: 14px;
 		text-align: center;
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		border-radius: 50%;
 	}
 

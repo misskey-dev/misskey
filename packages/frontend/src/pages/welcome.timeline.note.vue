@@ -20,21 +20,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Mfm v-if="note.text" :text="note.text" :author="note.user"/>
 			<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 		</div>
-		<div v-if="note.files && note.files.length > 0" :class="$style.richcontent">
+		<div v-if="note.files && note.files.length > 0 && (note.cw == null || showContent)" :class="$style.richcontent">
 			<MkMediaList :mediaList="note.files.slice(0, 4)"/>
 		</div>
-		<div v-if="note.poll">
-			<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="true"/>
-		</div>
 		<div v-if="note.reactionCount > 0" :class="$style.reactions">
-			<MkReactionsViewer :note="note" :maxNumber="16"/>
+			<MkReactionsViewer :noteId="note.id" :reactions="note.reactions" :reactionEmojis="note.reactionEmojis" :myReaction="note.myReaction" :maxNumber="16"/>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onUpdated, onMounted } from 'vue';
+import { ref, useTemplateRef, onUpdated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -45,7 +42,7 @@ defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const noteTextEl = shallowRef<HTMLDivElement>();
+const noteTextEl = useTemplateRef('noteTextEl');
 const shouldCollapse = ref(false);
 const showContent = ref(false);
 
@@ -84,7 +81,7 @@ onUpdated(() => {
 		left: 0;
 		width: 100%;
 		height: 64px;
-		background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+		background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
 	}
 }
 
@@ -100,7 +97,7 @@ onUpdated(() => {
 	margin: 8px -16px -8px;
 	padding: 8px 16px 0;
 	width: calc(100% + 32px);
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 }
 
 .richcontent {

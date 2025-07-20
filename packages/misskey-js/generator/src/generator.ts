@@ -1,8 +1,12 @@
-import { mkdir, writeFile } from 'fs/promises';
-import { OpenAPIV3_1 } from 'openapi-types';
+import assert from 'assert';
+import { mkdir, readFile, writeFile } from 'fs/promises';
+import type { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
-import openapiTS from 'openapi-typescript';
+import openapiTS, { astToString } from 'openapi-typescript';
+import type { OpenAPI3, OperationObject, PathItemObject } from 'openapi-typescript';
+import ts from 'typescript';
+import { removeNeverPropertiesFromAST } from './ast-transformer.js';
 
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
@@ -20,15 +24,41 @@ async function generateBaseTypes(
 	}
 	lines.push('');
 
-	const generatedTypes = await openapiTS(openApiJsonPath, {
+	// NOTE: Align `operationId` of GET and POST to avoid duplication of type definitions
+	const openApi = JSON.parse(await readFile(openApiJsonPath, 'utf8')) as OpenAPI3;
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	for (const [key, item] of Object.entries(openApi.paths!)) {
+		assert('post' in item);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		openApi.paths![key] = {
+			post: {
+				...item.post,
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				operationId: ((item as PathItemObject).post as OperationObject).operationId!.replaceAll('post___', ''),
+			},
+		};
+	}
+
+	const tsNullNode = ts.factory.createLiteralTypeNode(ts.factory.createNull());
+	const tsBlobNode = ts.factory.createTypeReferenceNode(ts.factory.createIdentifier('Blob'));
+
+	const generatedTypesAst = await openapiTS(openApi, {
 		exportType: true,
 		transform(schemaObject) {
 			if ('format' in schemaObject && schemaObject.format === 'binary') {
-				return schemaObject.nullable ? 'Blob | null' : 'Blob';
+				if (schemaObject.nullable) {
+					return ts.factory.createUnionTypeNode([tsBlobNode, tsNullNode]);
+				} else {
+					return tsBlobNode;
+				}
 			}
 		},
 	});
-	lines.push(generatedTypes);
+
+	const filteredAst = removeNeverPropertiesFromAST(generatedTypesAst);
+
+	lines.push(astToString(filteredAst));
+
 	lines.push('');
 
 	await writeFile(typeFileName, lines.join('\n'));
@@ -78,7 +108,7 @@ async function generateEndpoints(
 	for (const operation of postPathItems) {
 		const path = operation._path_;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const operationId = operation.operationId!;
+		const operationId = operation.operationId!.replaceAll('get___', '').replaceAll('post___', '');
 		const endpoint = new Endpoint(path);
 		endpoints.push(endpoint);
 
@@ -150,7 +180,7 @@ async function generateEndpoints(
 	endpointOutputLine.push(
 		...endpoints.map(it => '\t' + it.toLine()),
 	);
-	endpointOutputLine.push('}');
+	endpointOutputLine.push('};');
 	endpointOutputLine.push('');
 
 	function generateEndpointReqMediaTypesType() {
@@ -195,7 +225,7 @@ async function generateApiClientJSDoc(
 
 	for (const operation of postPathItems) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const operationId = operation.operationId!;
+		const operationId = operation.operationId!.replaceAll('get___', '').replaceAll('post___', '');
 
 		if (operation.description) {
 			endpoints.push({

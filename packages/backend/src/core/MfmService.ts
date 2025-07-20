@@ -6,7 +6,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import * as parse5 from 'parse5';
-import { Window, XMLSerializer } from 'happy-dom';
+import { type Document, type HTMLParagraphElement, Window, XMLSerializer } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
@@ -22,6 +22,8 @@ type ChildNode = DefaultTreeAdapterMap['childNode'];
 
 const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
 const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
+
+export type Appender = (document: Document, body: HTMLParagraphElement) => void;
 
 @Injectable()
 export class MfmService {
@@ -171,6 +173,39 @@ export class MfmService {
 					break;
 				}
 
+				case 'ruby': {
+					let ruby: [string, string][] = [];
+					for (const child of node.childNodes) {
+						if (child.nodeName === 'rp') {
+							continue;
+						}
+						if (treeAdapter.isTextNode(child) && !/\s|\[|\]/.test(child.value)) {
+							ruby.push([child.value, '']);
+							continue;
+						}
+						if (child.nodeName === 'rt' && ruby.length > 0) {
+							const rt = getText(child);
+							if (/\s|\[|\]/.test(rt)) {
+								// If any space is included in rt, it is treated as a normal text
+								ruby = [];
+								appendChildren(node.childNodes);
+								break;
+							} else {
+								ruby.at(-1)![1] = rt;
+								continue;
+							}
+						}
+						// If any other element is included in ruby, it is treated as a normal text
+						ruby = [];
+						appendChildren(node.childNodes);
+						break;
+					}
+					for (const [base, rt] of ruby) {
+						text += `$[ruby ${base} ${rt}]`;
+					}
+					break;
+				}
+
 				// block code (<pre><code>)
 				case 'pre': {
 					if (node.childNodes.length === 1 && node.childNodes[0].nodeName === 'code') {
@@ -234,12 +269,12 @@ export class MfmService {
 	}
 
 	@bindThis
-	public toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
+	public toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = [], additionalAppenders: Appender[] = []) {
 		if (nodes == null) {
 			return null;
 		}
 
-		const { window } = new Window();
+		const { happyDOM, window } = new Window();
 
 		const doc = window.document;
 
@@ -406,8 +441,10 @@ export class MfmService {
 			mention: (node) => {
 				const a = doc.createElement('a');
 				const { username, host, acct } = node.props;
-				const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
-				a.setAttribute('href', remoteUserInfo ? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri) : `${this.config.url}/${acct}`);
+				const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username.toLowerCase() === username.toLowerCase() && remoteUser.host?.toLowerCase() === host?.toLowerCase());
+				a.setAttribute('href', remoteUserInfo
+					? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri)
+					: `${this.config.url}/${acct.endsWith(`@${this.config.url}`) ? acct.substring(0, acct.length - this.config.url.length - 1) : acct}`);
 				a.className = 'u-url mention';
 				a.textContent = acct;
 				return a;
@@ -457,6 +494,15 @@ export class MfmService {
 
 		appendChildren(nodes, body);
 
-		return new XMLSerializer().serializeToString(body);
+		for (const additionalAppender of additionalAppenders) {
+			additionalAppender(doc, body);
+		}
+
+		// Remove the unnecessary namespace
+		const serialized = new XMLSerializer().serializeToString(body).replace(/^\s*<p xmlns=\"http:\/\/www.w3.org\/1999\/xhtml\">/, '<p>');
+
+		happyDOM.close().catch(err => {});
+
+		return serialized;
 	}
 }

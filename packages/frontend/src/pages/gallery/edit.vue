@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<FormSuspense :p="init" class="_gaps">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
@@ -21,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>
-				<MkButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
+				<MkButton primary @click="chooseFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
 			</div>
 
 			<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
@@ -33,8 +32,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</FormSuspense>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -45,12 +44,12 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import { selectFiles } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -64,8 +63,11 @@ const description = ref<string | null>(null);
 const title = ref<string | null>(null);
 const isSensitive = ref(false);
 
-function selectFile(evt) {
-	selectFiles(evt.currentTarget ?? evt.target, null).then(selected => {
+function chooseFile(evt) {
+	selectFile({
+		anchorElement: evt.currentTarget ?? evt.target,
+		multiple: true,
+	}).then(selected => {
 		files.value = files.value.concat(selected);
 	});
 }
@@ -122,7 +124,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.postId ? i18n.ts.edit : i18n.ts.postToGallery,
 	icon: 'ti ti-pencil',
 }));
@@ -141,7 +143,7 @@ definePageMetadata(() => ({
 		top: 8px;
 		left: 9px;
 		padding: 8px;
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 	}
 
 	> .remove {
@@ -149,7 +151,7 @@ definePageMetadata(() => ({
 		top: 8px;
 		right: 9px;
 		padding: 8px;
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 	}
 }
 </style>

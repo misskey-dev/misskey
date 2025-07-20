@@ -12,12 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:okButtonDisabled="false"
 	:canClose="false"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
 			<div v-if="information">
 				<MkInfo warn>{{ information }}</MkInfo>
@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
+import { useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
@@ -55,7 +55,7 @@ import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin } from '@/account.js';
+import { iAmAdmin } from '@/i.js';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;
@@ -77,10 +77,10 @@ const emit = defineEmits<{
 const defaultPermissions = Misskey.permissions.filter(p => !p.startsWith('read:admin') && !p.startsWith('write:admin'));
 const adminPermissions = Misskey.permissions.filter(p => p.startsWith('read:admin') || p.startsWith('write:admin'));
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 const name = ref(props.initialName);
-const permissionSwitches = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
-const permissionSwitchesForAdmin = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
+const permissionSwitches = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
+const permissionSwitchesForAdmin = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {
@@ -136,15 +136,15 @@ function enableAll(): void {
 .adminPermissions {
 	margin: 8px -6px 0;
 	padding: 24px 6px 6px;
-	border: 2px solid var(--error);
-	border-radius: calc(var(--radius) / 2);
+	border: 2px solid var(--MI_THEME-error);
+	border-radius: calc(var(--MI-radius) / 2);
 }
 
 .adminPermissionsHeader {
 	margin: -34px 0 6px 12px;
 	padding: 0 4px;
 	width: fit-content;
-	color: var(--error);
-	background: var(--panel);
+	color: var(--MI_THEME-error);
+	background: var(--MI_THEME-panel);
 }
 </style>

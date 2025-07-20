@@ -29,7 +29,7 @@ export class MiUserProfile {
 	})
 	public location: string | null;
 
-	@Index()
+	// Note: There's index named IDX_de22cd2b445eee31ae51cdbe99 for SUBSTR("birthday", 6, 5)
 	@Column('char', {
 		length: 10, nullable: true,
 		comment: 'The birthday (YYYY-MM-DD) of the User.',
@@ -41,6 +41,14 @@ export class MiUserProfile {
 		comment: 'The description (bio) of the User.',
 	})
 	public description: string | null;
+
+	// フォローされた際のメッセージ
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
+	public followedMessage: string | null;
+
+	// TODO: 鍵アカウントの場合の、フォローリクエスト受信時のメッセージも設定できるようにする
 
 	@Column('jsonb', {
 		default: [],
@@ -266,7 +274,7 @@ export class MiUserProfile {
 		default: [],
 	})
 	public achievements: {
-		name: string;
+		name: typeof ACHIEVEMENT_TYPES[number];
 		unlockedAt: number;
 	}[];
 
@@ -287,3 +295,84 @@ export class MiUserProfile {
 		}
 	}
 }
+
+export const ACHIEVEMENT_TYPES = [
+	'notes1',
+	'notes10',
+	'notes100',
+	'notes500',
+	'notes1000',
+	'notes5000',
+	'notes10000',
+	'notes20000',
+	'notes30000',
+	'notes40000',
+	'notes50000',
+	'notes60000',
+	'notes70000',
+	'notes80000',
+	'notes90000',
+	'notes100000',
+	'login3',
+	'login7',
+	'login15',
+	'login30',
+	'login60',
+	'login100',
+	'login200',
+	'login300',
+	'login400',
+	'login500',
+	'login600',
+	'login700',
+	'login800',
+	'login900',
+	'login1000',
+	'passedSinceAccountCreated1',
+	'passedSinceAccountCreated2',
+	'passedSinceAccountCreated3',
+	'loggedInOnBirthday',
+	'loggedInOnNewYearsDay',
+	'noteClipped1',
+	'noteFavorited1',
+	'myNoteFavorited1',
+	'profileFilled',
+	'markedAsCat',
+	'following1',
+	'following10',
+	'following50',
+	'following100',
+	'following300',
+	'followers1',
+	'followers10',
+	'followers50',
+	'followers100',
+	'followers300',
+	'followers500',
+	'followers1000',
+	'collectAchievements30',
+	'viewAchievements3min',
+	'iLoveMisskey',
+	'foundTreasure',
+	'client30min',
+	'client60min',
+	'noteDeletedWithin1min',
+	'postedAtLateNight',
+	'postedAt0min0sec',
+	'selfQuote',
+	'htl20npm',
+	'viewInstanceChart',
+	'outputHelloWorldOnScratchpad',
+	'open3windows',
+	'driveFolderCircularReference',
+	'reactWithoutRead',
+	'clickedClickHere',
+	'justPlainLucky',
+	'setNameToSyuilo',
+	'cookieClicked',
+	'brainDiver',
+	'smashTestNotificationButton',
+	'tutorialCompleted',
+	'bubbleGameExplodingHead',
+	'bubbleGameDoubleExplodingHead',
+] as const;

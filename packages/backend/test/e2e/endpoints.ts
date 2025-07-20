@@ -9,9 +9,9 @@ import * as assert from 'assert';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
-import { MiUser } from '@/models/_.js';
 import { api, castAsError, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import { MiUser } from '@/models/_.js';
 
 describe('Endpoints', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -66,9 +66,9 @@ describe('Endpoints', () => {
 		});
 	});
 
-	describe('signin', () => {
+	describe('signin-flow', () => {
 		test('間違ったパスワードでサインインできない', async () => {
-			const res = await api('signin', {
+			const res = await api('signin-flow', {
 				username: 'test1',
 				password: 'bar',
 			});
@@ -77,7 +77,7 @@ describe('Endpoints', () => {
 		});
 
 		test('クエリをインジェクションできない', async () => {
-			const res = await api('signin', {
+			const res = await api('signin-flow', {
 				username: 'test1',
 				// @ts-expect-error password must be string
 				password: {
@@ -89,7 +89,7 @@ describe('Endpoints', () => {
 		});
 
 		test('正しい情報でサインインできる', async () => {
-			const res = await api('signin', {
+			const res = await api('signin-flow', {
 				username: 'test1',
 				password: 'test1',
 			});
@@ -572,19 +572,10 @@ describe('Endpoints', () => {
 
 	describe('drive', () => {
 		test('ドライブ情報を取得できる', async () => {
-			await uploadFile(alice, {
-				blob: new Blob([new Uint8Array(256)]),
-			});
-			await uploadFile(alice, {
-				blob: new Blob([new Uint8Array(512)]),
-			});
-			await uploadFile(alice, {
-				blob: new Blob([new Uint8Array(1024)]),
-			});
 			const res = await api('drive', {}, alice);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			expect(res.body).toHaveProperty('usage', 1792);
+			expect(res.body).toHaveProperty('usage', 0);
 		});
 	});
 

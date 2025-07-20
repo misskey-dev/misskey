@@ -23,6 +23,7 @@ describe('Before setup instance', () => {
 
 		cy.intercept('POST', '/api/admin/accounts/create').as('signup');
 
+		cy.get('[data-cy-admin-initial-password] input').type('example_password_please_change_this_or_you_will_get_hacked');
 		cy.get('[data-cy-admin-username] input').type('admin');
 		cy.get('[data-cy-admin-password] input').type('admin1234');
 		cy.get('[data-cy-admin-ok]').click();
@@ -30,6 +31,14 @@ describe('Before setup instance', () => {
 		// なぜか動かない
 		//cy.wait('@signup').should('have.property', 'response.statusCode');
 		cy.wait('@signup');
+
+		cy.intercept('POST', '/api/admin/update-meta').as('update-meta');
+
+		cy.get('[data-cy-next]').click();
+		cy.get('[data-cy-server-name] input').type('Testskey');
+		cy.get('[data-cy-server-setup-wizard-apply]').click();
+
+		cy.wait('@update-meta');
   });
 });
 
@@ -69,6 +78,8 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup-password] input').type('alice1234');
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
 		cy.get('[data-cy-signup-password-retype] input').type('alice1234');
+		cy.get('[data-cy-signup-submit]').should('be.disabled');
+		cy.get('[data-cy-signup-invitation-code] input').type('test-invitation-code');
 		cy.get('[data-cy-signup-submit]').should('not.be.disabled');
 		cy.get('[data-cy-signup-submit]').click();
 
@@ -119,11 +130,16 @@ describe('After user signup', () => {
 	it('signin', () => {
 		cy.visitHome();
 
-		cy.intercept('POST', '/api/signin').as('signin');
+		cy.intercept('POST', '/api/signin-flow').as('signin');
 
 		cy.get('[data-cy-signin]').click();
-		cy.get('[data-cy-signin-username] input').type('alice');
-		// Enterキーでサインインできるかの確認も兼ねる
+
+		cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });
+		// Enterキーで続行できるかの確認も兼ねる
+		cy.get('[data-cy-signin-username] input').type('alice{enter}');
+
+		cy.get('[data-cy-signin-page-password]').should('be.visible', { timeout: 10000 });
+		// Enterキーで続行できるかの確認も兼ねる
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		cy.wait('@signin');
@@ -138,8 +154,9 @@ describe('After user signup', () => {
 		cy.visitHome();
 
 		cy.get('[data-cy-signin]').click();
-		cy.get('[data-cy-signin-username] input').type('alice');
-		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
+
+		cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });
+		cy.get('[data-cy-signin-username] input').type('alice{enter}');
 
 		// TODO: cypressにブラウザの言語指定できる機能が実装され次第英語のみテストするようにする
 		cy.contains(/アカウントが凍結されています|This account has been suspended due to/gi);
@@ -226,7 +243,7 @@ describe('After user setup', () => {
 		cy.get('[data-cy-post-form-text]').type('Hello, Misskey!');
 		cy.get('[data-cy-open-post-form-submit]').click();
 
-		cy.contains('Hello, Misskey!');
+		cy.contains('Hello, Misskey!', { timeout: 15000 });
   });
 
 	it('open note form with hotkey', () => {

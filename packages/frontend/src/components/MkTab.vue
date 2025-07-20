@@ -47,13 +47,13 @@ export default defineComponent({
 		}
 
 		&.active {
-			color: var(--accent);
-			background: var(--accentedBg);
+			color: var(--MI_THEME-accent);
+			background: var(--MI_THEME-accentedBg);
 		}
 
 		&:not(.active):hover {
-			color: var(--fgHighlighted);
-			background: var(--panelHighlight);
+			color: var(--MI_THEME-fgHighlighted);
+			background: var(--MI_THEME-panelHighlight);
 		}
 
 		&:not(:first-child) {
