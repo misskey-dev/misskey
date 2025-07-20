@@ -152,7 +152,7 @@ async function assertDirectError(response: Response, status: number, error: stri
 	assert.strictEqual(data.error, error);
 }
 
-describe.skip('OAuth', () => {
+describe('OAuth', () => {
 	let fastify: FastifyInstance;
 
 	let alice: misskey.entities.SignupResponse;
@@ -183,7 +183,9 @@ describe.skip('OAuth', () => {
 	});
 
 	afterAll(async () => {
+		console.log('closing fastify...');
 		await fastify.close();
+		console.log('fastify closed.');
 	});
 
 	test('Full flow', async () => {
