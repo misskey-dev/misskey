@@ -154,7 +154,11 @@ async function save() {
 
 		pageId.value = created.id;
 		currentName.value = name.value.trim();
-		mainRouter.replace(`/pages/edit/${pageId.value}`);
+		mainRouter.replace('/pages/edit/:initPageId', {
+			params: {
+				initPageId: pageId.value,
+			},
+		});
 	}
 }
 

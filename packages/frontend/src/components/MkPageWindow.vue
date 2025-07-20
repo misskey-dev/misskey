@@ -151,7 +151,7 @@ const contextmenu = computed(() => ([{
 
 function back() {
 	history.value.pop();
-	windowRouter.replace(history.value.at(-1)!.path);
+	windowRouter.replaceByPath(history.value.at(-1)!.path);
 }
 
 function reload() {
