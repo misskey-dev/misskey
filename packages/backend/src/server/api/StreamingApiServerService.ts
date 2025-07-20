@@ -174,9 +174,11 @@ export class StreamingApiServerService {
 		if (this.#cleanConnectionsIntervalId) {
 			clearInterval(this.#cleanConnectionsIntervalId);
 			this.#cleanConnectionsIntervalId = null;
+			console.log('Clean connections interval cleared.');
 		}
 		return new Promise((resolve) => {
 			this.#wss.close(() => resolve());
+			console.log('WebSocket server closed.');
 		});
 	}
 }
