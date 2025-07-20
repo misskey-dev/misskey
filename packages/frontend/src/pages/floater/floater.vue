@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_spacer" style="--MI_SPACER-w: 800px;">
 	<MkPagination
 		v-slot="{ items: paginationItems, fetching }" ref="paginationComponent"
-		:pagination="followingPagination" :class="$style.tl"
+		:paginator="followingPaginator" :class="$style.tl"
 	>
 		<div :class="$style.content">
 			<MkLoading v-if="fetching && paginationItems.length === 0"/>
@@ -44,6 +44,7 @@ import MkResult from '@/components/global/MkResult.vue';
 import { getDateText } from '@/utility/timeline-date-separate.js';
 import { i18n } from '@/i18n.js';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { Paginator } from '@/utility/paginator.js';
 
 provide('inTimeline', true);
 
@@ -61,33 +62,36 @@ const forceReload = ref(0);
 // デフォルト値の設定
 const displayCount = computed(() => props.displayNoteCount || 3);
 
-// ページネーション設定
-const followingPagination = computed(() => ({
-	endpoint: 'notes/floater' as const,
+// Paginatorインスタンスを作成
+const followingPaginator = new Paginator('notes/floater', {
 	limit: 10,
 	offsetMode: true,
-	params: {
+	params: () => ({
 		anchorDate: props.anchorDate,
 		forceReload: forceReload.value,
 		noteLimit: 0, // 0=日付差があるまで動的に取得
 		maxNoteLimit: 10, // 最大10件まで取得
-	},
-}));
+	}),
+});
 
 // 初期ロード
 onMounted(() => {
-	if (paginationComponent.value) {
-		paginationComponent.value.paginator?.reload();
-	}
+	followingPaginator.init();
 });
 
 // anchorDate変更時の再ロード
 watch(() => props.anchorDate, (newVal, oldVal) => {
-	if (newVal !== oldVal && paginationComponent.value) {
+	if (newVal !== oldVal) {
 		forceReload.value++;
-		paginationComponent.value.paginator?.reload();
+		followingPaginator.reload();
 	}
 }, { immediate: false });
+
+// リロード関数
+function reload() {
+	forceReload.value++;
+	followingPaginator.reload();
+}
 
 // 日付変換ヘルパー関数の改善
 function ensureDate(date: string | Date | null | undefined): Date {
@@ -295,14 +299,6 @@ function getCombinedFloaterInfo(item: FloaterItem, noteIndex = 0, nextNote?: any
 		// エラー時は単純な日付表示にフォールバック
 		const fallbackDate = nextNote?.createdAt || item.notes[noteIndex]?.createdAt || new Date();
 		return isToday(fallbackDate) ? '' : getDateText(ensureDate(fallbackDate));
-	}
-}
-
-// リロード関数
-function reload() {
-	if (paginationComponent.value) {
-		forceReload.value++;
-		paginationComponent.value.paginator?.reload();
 	}
 }
 
