@@ -79,7 +79,7 @@ describe('UserSuspendService', () => {
 		return following;
 	}
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		app = await Test.createTestingModule({
 			imports: [GlobalModule],
 			providers: [
@@ -131,13 +131,10 @@ describe('UserSuspendService', () => {
 		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
 		apRendererService = app.get<ApRendererService>(ApRendererService) as jest.Mocked<ApRendererService>;
 		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
-
-		// Reset mocks
-		jest.clearAllMocks();
 	});
 
-	afterEach(async () => {
-		await app.close();
+	beforeEach(() => {
+		jest.clearAllMocks();
 	});
 
 	describe('suspend', () => {
