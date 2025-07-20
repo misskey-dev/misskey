@@ -8,6 +8,7 @@ import { id } from './util/id.js';
 
 @Entity('emoji')
 @Index(['name', 'host'], { unique: true })
+@Index('IDX_EMOJI_ROLE_IDS', { synchronize: false }) // GIN for roleIdsThatCanBeUsedThisEmojiAsReaction in production
 export class MiEmoji {
 	@PrimaryColumn(id())
 	public id: string;
@@ -32,6 +33,7 @@ export class MiEmoji {
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
+	@Index('IDX_EMOJI_CATEGORY')
 	public category: string | null;
 
 	@Column('varchar', {

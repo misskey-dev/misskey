@@ -20,7 +20,8 @@ import type { MiDriveFile } from './DriveFile.js';
 // You should not use `@Index({ concurrent: true })` decorator because database initialization for test will fail
 // because it will always run CREATE INDEX in transaction based on decorators.
 // Not appending `{ concurrent: true }` to `@Index` will not cause any problem in production,
-@Index(['userId', 'id'])
+
+@Index(['userId', 'id']) // Note: this index is ("userId", "id" DESC) in production, but not in test.
 @Entity('note')
 export class MiNote {
 	@PrimaryColumn(id())
