@@ -53,7 +53,7 @@ describe('ApDeliverManagerService', () => {
 		},
 	};
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				ApDeliverManagerService,
@@ -91,7 +91,7 @@ describe('ApDeliverManagerService', () => {
 		apLoggerService = module.get(ApLoggerService);
 	});
 
-	afterEach(() => {
+	beforeEach(() => {
 		jest.clearAllMocks();
 	});
 

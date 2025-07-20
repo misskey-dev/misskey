@@ -208,7 +208,6 @@ export class ApDeliverManagerService {
 	 * Deliver activity to followers
 	 * @param actor
 	 * @param activity Activity
-	 * @param forceMainKey Force to use main (rsa) key
 	 */
 	@bindThis
 	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
