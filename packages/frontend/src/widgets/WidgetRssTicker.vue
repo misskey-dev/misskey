@@ -15,11 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else>
 			<Transition :name="$style.change" mode="default" appear>
-				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
+				<MkMarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
 					<span v-for="item in items" :key="item.link" :class="$style.item">
 						<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
-				</MarqueeText>
+				</MkMarqueeText>
 			</Transition>
 		</div>
 	</div>
@@ -29,11 +29,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import MarqueeText from '@/components/MkMarquee.vue';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import MarqueeText from '@/components/MkMarqueeText.vue';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { shuffle } from '@/scripts/shuffle.js';
+import { shuffle } from '@/utility/shuffle.js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 
@@ -41,41 +42,41 @@ const name = 'rssTicker';
 
 const widgetPropsDef = {
 	url: {
-		type: 'string' as const,
+		type: 'string',
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 	},
 	shuffle: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	refreshIntervalSec: {
-		type: 'number' as const,
+		type: 'number',
 		default: 60,
 	},
 	maxEntries: {
-		type: 'number' as const,
+		type: 'number',
 		default: 15,
 	},
 	duration: {
-		type: 'range' as const,
+		type: 'range',
 		default: 70,
 		step: 1,
 		min: 5,
 		max: 200,
 	},
 	reverse: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: false,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -99,7 +100,7 @@ const items = computed(() => {
 const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
-	url.searchParams.set('url', encodeURIComponent(widgetProps.url));
+	url.searchParams.set('url', widgetProps.url);
 	return url;
 });
 const intervalClear = ref<(() => void) | undefined>();
@@ -107,7 +108,7 @@ const intervalClear = ref<(() => void) | undefined>();
 const key = ref(0);
 
 const tick = () => {
-	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
+	if (window.document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
 
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())

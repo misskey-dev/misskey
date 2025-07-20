@@ -35,9 +35,6 @@ export default [
 				_VERSION_: false,
 				_ENV_: false,
 				_PERF_PREFIX_: false,
-				_DATA_TRANSFER_DRIVE_FILE_: false,
-				_DATA_TRANSFER_DRIVE_FOLDER_: false,
-				_DATA_TRANSFER_DECK_COLUMN_: false,
 			},
 			parser,
 			parserOptions: {
@@ -49,9 +46,11 @@ export default [
 			},
 		},
 		rules: {
+			'@typescript-eslint/no-unused-vars': 'off',
 			'@typescript-eslint/no-empty-interface': ['error', {
 				allowSingleExtends: true,
 			}],
+			'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 			// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
 			// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
 			'id-denylist': ['error', 'window', 'e'],
@@ -96,5 +95,13 @@ export default [
 			}],
 			'vue/attribute-hyphenation': ['error', 'never'],
 		},
+	},
+	{
+		ignores: [
+			// TODO: Error while loading rule '@typescript-eslint/naming-convention': Cannot use 'in' operator to search for 'type' in undefined のため一時的に無効化
+			// See https://github.com/misskey-dev/misskey/pull/15311
+			'js/i18n.ts',
+			'js-built/',
+		],
 	},
 ];

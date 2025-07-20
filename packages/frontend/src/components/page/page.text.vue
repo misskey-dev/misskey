@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 
 const MkUrlPreview = defineAsyncComponent(() => import('@/components/MkUrlPreview.vue'));
 

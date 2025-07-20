@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSelect v-model="statusbar.type" placeholder="Please select">
 		<template #label>{{ i18n.ts.type }}</template>
 		<option value="rss">RSS</option>
-		<option value="federation">Federation</option>
+		<option v-if="instance.federation !== 'none'" value="federation">Federation</option>
 		<option value="userList">User list timeline</option>
 	</MkSelect>
 
@@ -94,16 +94,17 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
+import { instance } from '@/instance.js';
+import { deepClone } from '@/utility/clone.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	_id: string;
 	userLists: Misskey.entities.UserList[] | null;
 }>();
 
-const statusbar = reactive(deepClone(defaultStore.state.statusbars.find(x => x.id === props._id)));
+const statusbar = reactive(deepClone(prefer.s.statusbars.find(x => x.id === props._id)));
 
 watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {
@@ -133,13 +134,13 @@ watch(() => statusbar.type, () => {
 watch(statusbar, save);
 
 async function save() {
-	const i = defaultStore.state.statusbars.findIndex(x => x.id === props._id);
-	const statusbars = deepClone(defaultStore.state.statusbars);
+	const i = prefer.s.statusbars.findIndex(x => x.id === props._id);
+	const statusbars = deepClone(prefer.s.statusbars);
 	statusbars[i] = deepClone(statusbar);
-	defaultStore.set('statusbars', statusbars);
+	prefer.commit('statusbars', statusbars);
 }
 
 function del() {
-	defaultStore.set('statusbars', defaultStore.state.statusbars.filter(x => x.id !== props._id));
+	prefer.commit('statusbars', prefer.s.statusbars.filter(x => x.id !== props._id));
 }
 </script>

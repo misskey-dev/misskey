@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkPostForm
 			v-if="state === 'writing'"
 			fixed
@@ -25,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
 			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -37,9 +36,9 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { postMessageToParentWindow } from '@/scripts/post-message.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
+import { postMessageToParentWindow } from '@/utility/post-message.js';
 import { i18n } from '@/i18n.js';
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -60,10 +59,21 @@ const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
 
 async function init() {
 	let noteText = '';
-	if (title.value) noteText += `[ ${title.value} ]\n`;
-	// Googleニュース対策
-	if (text?.startsWith(`${title.value}.\n`)) noteText += text.replace(`${title.value}.\n`, '');
-	else if (text && title.value !== text) noteText += `${text}\n`;
+	if (title.value) {
+		noteText += `[ ${title.value} ]\n`;
+
+		//#region add text to note text
+		if (text?.startsWith(title.value)) {
+			// For the Google app https://github.com/misskey-dev/misskey/issues/16224
+			noteText += text.replace(title.value, '').trimStart();
+		} else if (text) {
+			noteText += `${text}\n`;
+		}
+		//#endregion
+	} else if (text) {
+		noteText += `${text}\n`;
+	}
+
 	if (url) {
 		try {
 			// Normalize the URL to URL-encoded and puny-coded from with the URL constructor.
@@ -182,12 +192,12 @@ function close(): void {
 
 	// 閉じなければ100ms後タイムラインに
 	window.setTimeout(() => {
-		location.href = '/';
+		window.location.href = '/';
 	}, 100);
 }
 
 function goToMisskey(): void {
-	location.href = '/';
+	window.location.href = '/';
 }
 
 function onPosted(): void {
@@ -199,7 +209,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.share,
 	icon: 'ti ti-share',
 }));

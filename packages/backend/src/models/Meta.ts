@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
@@ -14,6 +14,18 @@ export class MiMeta {
 		length: 32,
 	})
 	public id: string;
+
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public rootUserId: MiUser['id'] | null;
+
+	@ManyToOne(type => MiUser, {
+		onDelete: 'SET NULL',
+		nullable: true,
+	})
+	public rootUser: MiUser | null;
 
 	@Column('varchar', {
 		length: 1024, nullable: true,
@@ -47,7 +59,7 @@ export class MiMeta {
 	public maintainerEmail: string | null;
 
 	@Column('boolean', {
-		default: false,
+		default: true,
 	})
 	public disableRegistration: boolean;
 
@@ -171,18 +183,6 @@ export class MiMeta {
 		default: true,
 	})
 	public cacheRemoteSensitiveFiles: boolean;
-
-	@Column({
-		...id(),
-		nullable: true,
-	})
-	public proxyAccountId: MiUser['id'] | null;
-
-	@ManyToOne(type => MiUser, {
-		onDelete: 'SET NULL',
-	})
-	@JoinColumn()
-	public proxyAccount: MiUser | null;
 
 	@Column('boolean', {
 		default: false,
@@ -570,7 +570,7 @@ export class MiMeta {
 	public bannedEmailDomains: string[];
 
 	@Column('varchar', {
-		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
+		length: 1024, array: true, default: ['admin', 'administrator', 'root', 'system', 'maintainer', 'host', 'mod', 'moderator', 'owner', 'superuser', 'staff', 'auth', 'i', 'me', 'everyone', 'all', 'mention', 'mentions', 'example', 'user', 'users', 'account', 'accounts', 'official', 'help', 'helps', 'support', 'supports', 'info', 'information', 'informations', 'announce', 'announces', 'announcement', 'announcements', 'notice', 'notification', 'notifications', 'dev', 'developer', 'developers', 'tech', 'misskey'],
 	})
 	public preservedUsernames: string[];
 
@@ -619,6 +619,11 @@ export class MiMeta {
 	})
 	public urlPreviewEnabled: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public urlPreviewAllowRedirect: boolean;
+
 	@Column('integer', {
 		default: 10000,
 	})
@@ -630,7 +635,7 @@ export class MiMeta {
 	public urlPreviewMaximumContentLength: number;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public urlPreviewRequireContentLength: boolean;
 
@@ -643,6 +648,7 @@ export class MiMeta {
 	@Column('varchar', {
 		length: 1024,
 		nullable: true,
+		default: null,
 	})
 	public urlPreviewUserAgent: string | null;
 
@@ -658,4 +664,46 @@ export class MiMeta {
 		default: '{}',
 	})
 	public federationHosts: string[];
+
+	@Column('varchar', {
+		length: 128,
+		default: 'local',
+	})
+	public ugcVisibilityForVisitor: 'all' | 'local' | 'none';
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true,
+	})
+	public googleAnalyticsMeasurementId: string | null;
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public deliverSuspendedSoftware: SoftwareSuspension[];
+
+	@Column('boolean', {
+		default: false,
+	})
+	public singleUserMode: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public proxyRemoteFiles: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public signToActivityPubGet: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public allowExternalApRedirect: boolean;
 }
+
+export type SoftwareSuspension = {
+	software: string,
+	versionRange: string,
+};

@@ -1,11 +1,16 @@
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
+import * as yaml from 'js-yaml';
+import { promises as fsp } from 'fs';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
+
+const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
+const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -61,8 +66,21 @@ export function getConfig(): UserConfig {
 	return {
 		base: '/embed_vite/',
 
+		// The console is shared with backend, so clearing the console will also clear the backend log.
+		clearScreen: false,
+
 		server: {
+			// The backend allows access from any addresses, so vite also allows access from any addresses.
+			host: '0.0.0.0',
+			allowedHosts: host ? [host] : undefined,
 			port: 5174,
+			strictPort: true,
+			hmr: {
+				// バックエンド経由での起動時、Viteは5174経由でアセットを参照していると思い込んでいるが実際は3000から配信される
+				// そのため、バックエンドのWSサーバーにHMRのWSリクエストが吸収されてしまい、正しくHMRが機能しない
+				// クライアント側のWSポートをViteサーバーのポートに強制させることで、正しくHMRが機能するようになる
+				clientPort: 5174,
+			},
 		},
 
 		plugins: [

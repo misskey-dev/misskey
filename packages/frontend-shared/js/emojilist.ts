@@ -9,10 +9,10 @@ export type UnicodeEmojiDef = {
 	name: string;
 	char: string;
 	category: typeof unicodeEmojiCategories[number];
-}
+};
 
 // initial converted from https://github.com/muan/emojilib/commit/242fe68be86ed6536843b83f7e32f376468b38fb
-import _emojilist from './emojilist.json';
+import _emojilist from './emojilist.json' with { type: 'json' };
 
 export const emojilist: UnicodeEmojiDef[] = _emojilist.map(x => ({
 	name: x[1] as string,
@@ -46,6 +46,10 @@ export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
 		?? unicodeEmojisMap.get(char)
 		// それでも見つからない場合はそのまま返す（絵文字情報がjsonに無い場合、このフォールバックが無いとレンダリングに失敗する）
 		?? char;
+}
+
+export function isSupportedEmoji(char: string): boolean {
+	return unicodeEmojisMap.has(colorizeEmoji(char)) || unicodeEmojisMap.has(char);
 }
 
 export function getEmojiName(char: string): string {

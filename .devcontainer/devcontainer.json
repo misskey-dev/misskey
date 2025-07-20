@@ -5,9 +5,11 @@
 	"workspaceFolder": "/workspace",
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "22.11.0"
+			"version": "22.15.0"
 		},
-		"ghcr.io/devcontainers-contrib/features/corepack:1": {}
+		"ghcr.io/devcontainers-extra/features/pnpm:2": {
+			"version": "10.10.0"
+		}
 	},
 	"forwardPorts": [3000],
 	"postCreateCommand": "/bin/bash .devcontainer/init.sh",

@@ -5,10 +5,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <img
-	v-if="errored && fallbackToImage"
+	v-if="shouldMute"
+	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
+	src="/client-assets/unknown.png"
+	:title="alt"
+	draggable="false"
+	style="-webkit-user-drag: none;"
+	@click="onClick"
+/>
+<img
+	v-else-if="errored && fallbackToImage"
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
 	src="/client-assets/dummy.png"
 	:title="alt"
+	draggable="false"
+	style="-webkit-user-drag: none;"
 />
 <span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
@@ -18,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:alt="alt"
 	:title="alt"
 	decoding="async"
+	draggable="false"
 	@error="errored = true"
 	@load="errored = false"
 	@click="onClick"
@@ -27,16 +39,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, inject, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import * as sound from '@/scripts/sound.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
+import { makeEmojiMuteKey, mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkEmojiMuted } from '@/utility/emoji-mute';
 
 const props = defineProps<{
 	name: string;
@@ -48,12 +61,16 @@ const props = defineProps<{
 	menu?: boolean;
 	menuReaction?: boolean;
 	fallbackToImage?: boolean;
+	ignoreMuted?: boolean;
 }>();
 
-const react = inject<((name: string) => void) | null>('react', null);
+const react = inject(DI.mfmEmojiReactCallback);
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
+const emojiCodeToMute = makeEmojiMuteKey(props);
+const isMuted = checkEmojiMuted(emojiCodeToMute);
+const shouldMute = computed(() => !props.ignoreMuted && isMuted.value);
 
 const rawUrl = computed(() => {
 	if (props.url) {
@@ -77,7 +94,7 @@ const url = computed(() => {
 				false,
 				true,
 			);
-	return defaultStore.reactiveState.disableShowingAnimatedImages.value
+	return prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(proxied)
 		: proxied;
 });
@@ -92,14 +109,17 @@ function onClick(ev: MouseEvent) {
 		menuItems.push({
 			type: 'label',
 			text: `:${props.name}:`,
-		}, {
-			text: i18n.ts.copy,
-			icon: 'ti ti-copy',
-			action: () => {
-				copyToClipboard(`:${props.name}:`);
-				os.success();
-			},
 		});
+
+		if (isLocal.value) {
+			menuItems.push({
+				text: i18n.ts.copy,
+				icon: 'ti ti-copy',
+				action: () => {
+					copyToClipboard(`:${props.name}:`);
+				},
+			});
+		}
 
 		if (props.menuReaction && react) {
 			menuItems.push({
@@ -107,26 +127,47 @@ function onClick(ev: MouseEvent) {
 				icon: 'ti ti-plus',
 				action: () => {
 					react(`:${props.name}:`);
-					sound.playMisskeySfx('reaction');
 				},
 			});
 		}
 
-		menuItems.push({
-			text: i18n.ts.info,
-			icon: 'ti ti-info-circle',
-			action: async () => {
-				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
-					emoji: await misskeyApiGet('emoji', {
-						name: customEmojiName.value,
-					}),
-				}, {
-					closed: () => dispose(),
-				});
-			},
-		});
+		if (isLocal.value) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				text: i18n.ts.info,
+				icon: 'ti ti-info-circle',
+				action: async () => {
+					const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
+						emoji: await misskeyApiGet('emoji', {
+							name: customEmojiName.value,
+						}),
+					}, {
+						closed: () => dispose(),
+					});
+				},
+			});
+		}
 
-		if ($i?.isModerator ?? $i?.isAdmin) {
+		if (isMuted.value) {
+			menuItems.push({
+				text: i18n.ts.emojiUnmute,
+				icon: 'ti ti-mood-smile',
+				action: async () => {
+					await unmute();
+				},
+			});
+		} else {
+			menuItems.push({
+				text: i18n.ts.emojiMute,
+				icon: 'ti ti-mood-off',
+				action: async () => {
+					await mute();
+				},
+			});
+		}
+
+		if (($i?.isModerator ?? $i?.isAdmin) && isLocal.value) {
 			menuItems.push({
 				text: i18n.ts.edit,
 				icon: 'ti ti-pencil',
@@ -144,10 +185,40 @@ async function edit(name: string) {
 	const emoji = await misskeyApi('emoji', {
 		name: name,
 	});
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/pages/emoji-edit-dialog.vue').then(x => x.default), {
 		emoji: emoji,
 	}, {
 		closed: () => dispose(),
+	});
+}
+
+function mute() {
+	const titleEmojiName = isLocal.value
+		? `:${customEmojiName.value}:`
+		: emojiCodeToMute;
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.muteX({ x: titleEmojiName }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		muteEmoji(emojiCodeToMute);
+	});
+}
+
+function unmute() {
+	const titleEmojiName = isLocal.value
+		? `:${customEmojiName.value}:`
+		: emojiCodeToMute;
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.unmuteX({ x: titleEmojiName }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		unmuteEmoji(emojiCodeToMute);
 	});
 }
 
@@ -157,6 +228,7 @@ async function edit(name: string) {
 .root {
 	height: 2em;
 	vertical-align: middle;
+	-webkit-user-drag: none;
 	transition: transform 0.2s ease;
 
 	&:hover {
