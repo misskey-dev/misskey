@@ -442,7 +442,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 			return;
 		}
 		if (this.navHook) {
-			const cancel = this.navHook(fullPath, flag);
+			const cancel = this.navHook(fullPath, flag ?? undefined);
 			if (cancel) return;
 		}
 		const res = this.navigate(fullPath);
@@ -458,7 +458,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		}
 	}
 
-	/** どうしても必要な場合に使用（パスが確定している場合は `Router.replace` を使用すること） */
+	/** どうしても必要な場合に使用（パスが確定している場合は `Nirax.replace` を使用すること） */
 	public replaceByPath(fullPath: string) {
 		const res = this.navigate(fullPath);
 		this.emit('replace', {
