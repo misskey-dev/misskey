@@ -399,7 +399,7 @@ export default abstract class Chart<T extends Schema> {
 				date: date,
 				...(group ? { group: group } : {}),
 				...columns,
-			}) as unknown as RawRecord<T>;
+			}) as RawRecord<T>;
 
 			this.logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 
