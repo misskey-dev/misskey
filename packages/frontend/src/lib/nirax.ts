@@ -5,7 +5,7 @@
 
 // NIRAX --- A lightweight router
 
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
+import { onBeforeUnmount, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import type { Component, ShallowRef } from 'vue';
 
@@ -58,7 +58,7 @@ export type RouterEvents = {
 		beforeFullPath: string;
 		fullPath: string;
 		route: RouteDef | null;
-		props: Map<string, string> | null;
+		props: Map<string, string | boolean> | null;
 	}) => void;
 	same: () => void;
 };
@@ -112,7 +112,12 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 	private notFoundPageComponent: Component;
 	private redirectCount = 0;
 
-	public navHook: ((fullPath: string, flag?: RouterFlag) => boolean) | null = null;
+	/**
+	 * ナビゲーションフック
+	 *
+	 * `true`でナビゲーションをキャンセル、`false`またはResolvedオブジェクトでナビゲーションを続行
+	 */
+	public navHook: ((fullPath: string, flag?: RouterFlag) => boolean | PathResolvedResult) | null = null;
 
 	constructor(routes: DEF, currentFullPath: Nirax<DEF>['currentFullPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
@@ -282,7 +287,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 			}
 		}
 
-		if (res.route.loginRequired && !this.isLoggedIn) {
+		if (res.route.loginRequired && !this.isLoggedIn && 'component' in res.route) {
 			res.route.component = this.notFoundPageComponent;
 			res.props.set('showLoginPopup', true);
 		}
@@ -316,11 +321,20 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 			this.emit('same');
 			return;
 		}
+
+		let res: PathResolvedResult | null = null;
 		if (this.navHook) {
-			const cancel = this.navHook(fullPath, flag);
-			if (cancel) return;
+			const hookRes = this.navHook(fullPath, flag);
+			if (hookRes === true) return;
+			if (hookRes !== false) {
+				res = hookRes;
+			}
 		}
-		const res = this.navigate(fullPath);
+
+		if (res == null) {
+			res = this.navigate(fullPath);
+		}
+
 		if (res.route.path === '/:(*)') {
 			window.location.href = fullPath;
 		} else {
@@ -340,7 +354,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		});
 	}
 
-	public useListener<E extends keyof RouterEvents, L = RouterEvents[E]>(event: E, listener: L) {
+	public useListener<E extends keyof RouterEvents>(event: E, listener: EventEmitter.EventListener<RouterEvents, E>) {
 		this.addListener(event, listener);
 
 		onBeforeUnmount(() => {
