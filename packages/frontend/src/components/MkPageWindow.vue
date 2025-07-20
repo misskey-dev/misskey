@@ -163,7 +163,7 @@ function close() {
 }
 
 function expand() {
-	mainRouter.push(windowRouter.getCurrentFullPath(), 'forcePage');
+	mainRouter.pushByPath(windowRouter.getCurrentFullPath(), 'forcePage');
 	windowEl.value?.close();
 }
 
