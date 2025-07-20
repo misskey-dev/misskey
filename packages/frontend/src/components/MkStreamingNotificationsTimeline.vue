@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
 			</div>
 		</component>
-		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
+		<button v-show="paginator.canFetchOlder.value" key="_more_" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else/>
 		</button>
@@ -46,8 +46,8 @@ import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, mark
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
-import type { notificationTypes } from '@@/js/const.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
+import type { notificationTypes } from '@@/js/const.js';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
@@ -235,7 +235,6 @@ defineExpose({
 	align-items: center;
 	justify-content: center;
 	gap: 1em;
-	opacity: 0.75;
 	padding: 8px 8px;
 	margin: 0 auto;
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
