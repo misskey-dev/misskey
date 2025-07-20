@@ -42,7 +42,7 @@ type TempColumnsForUnique<S extends Schema> = {
 	[K in keyof S as `${typeof UNIQUE_TEMP_COLUMN_PREFIX}${KeyToColumnName<string & K>}`]: S[K]['uniqueIncrement'] extends true ? string[] : never;
 };
 
-type RawRecord<S extends Schema> = {
+type RawRecordBase = {
 	id: number;
 
 	/**
@@ -54,7 +54,9 @@ type RawRecord<S extends Schema> = {
 	 * 集計日時のUnixタイムスタンプ(秒)
 	 */
 	date: number;
-} & TempColumnsForUnique<S> & Columns<S>;
+};
+
+type RawRecord<S extends Schema> = RawRecordBase & TempColumnsForUnique<S> & Columns<S>;
 
 const camelToSnake = (str: string): string => {
 	return str.replace(/([A-Z])/g, s => '_' + s.charAt(0).toLowerCase());
@@ -150,8 +152,8 @@ export default abstract class Chart<T extends Schema> {
 	// ↓にしたいけどfindOneとかで型エラーになる
 	//private repositoryForHour: MiAndOrmRepository<RawRecord<T>>;
 	//private repositoryForDay: MiAndOrmRepository<RawRecord<T>>;
-	protected repositoryForHour: MiAndOrmRepository<{ id: number; group?: string | null; date: number; }>;
-	protected repositoryForDay: MiAndOrmRepository<{ id: number; group?: string | null; date: number; }>;
+	protected repositoryForHour: MiAndOrmRepository<RawRecordBase>;
+	protected repositoryForDay: MiAndOrmRepository<RawRecordBase>;
 	/**
 	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
 	 */
@@ -277,8 +279,8 @@ export default abstract class Chart<T extends Schema> {
 		this.logger = logger;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour).extend(miRepository);
-		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day).extend(miRepository);
+		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour).extend(miRepository as MiRepository<RawRecordBase>);
+		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day).extend(miRepository as MiRepository<RawRecordBase>);
 	}
 
 	@bindThis
@@ -397,7 +399,7 @@ export default abstract class Chart<T extends Schema> {
 				date: date,
 				...(group ? { group: group } : {}),
 				...columns,
-			}) as RawRecord<T>;
+			}) as unknown as RawRecord<T>;
 
 			this.logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 
