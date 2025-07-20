@@ -114,6 +114,15 @@ windowRouter.addListener('change', ctx => {
 	});
 });
 
+windowRouter.navHook = (path) => {
+	const res = windowRouter.resolve(path);
+	if (res?.route.path === '/:(*)') {
+		window.open(path, '_blank', 'noopener');
+		return true;
+	}
+	return res ?? false;
+};
+
 windowRouter.init();
 
 provide(DI.router, windowRouter);

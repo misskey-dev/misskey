@@ -123,11 +123,16 @@ const columnComponents = {
 	chat: XChatColumn,
 };
 
-mainRouter.navHook = (path, flag): boolean => {
+mainRouter.navHook = (path, flag) => {
 	if (flag === 'forcePage') return false;
 	const noMainColumn = !columns.value.some(x => x.type === 'main');
 	if (prefer.s['deck.navWindow'] || noMainColumn) {
-		os.pageWindow(path);
+		const res = mainRouter.resolve(path);
+		if (res?.route.path === '/:(*)') {
+			window.open(path, '_blank', 'noopener');
+		} else {
+			os.pageWindow(path);
+		}
 		return true;
 	}
 	return false;
