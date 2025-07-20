@@ -75,15 +75,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder>
 				<template #icon><i class="ti ti-user-star"></i></template>
-				<template #label>{{ i18n.ts.pinnedUsers }}</template>
-				<template v-if="pinnedUsersForm.modified.value" #footer>
-					<MkFormFooter :form="pinnedUsersForm"/>
+				<template #label>{{ i18n.ts.explore }}</template>
+				<template v-if="explorePageForm.modified.value" #footer>
+					<MkFormFooter :form="explorePageForm"/>
 				</template>
 
-				<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
-					<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
+				<MkTextarea v-model="explorePageForm.state.pinnedUsers">
+					<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="explorePageForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
 					<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
 				</MkTextarea>
+
+				<MkRadios v-model="explorePageForm.state.preferPopularUserFactor">
+					<template #label>{{ i18n.ts.preferPopularUserFactor }}<span v-if="explorePageForm.modifiedStates.preferPopularUserFactor" class="_modified">{{ i18n.ts.modified }}</span></template>
+					<template #caption>{{ i18n.ts.preferPopularUserFactorDescription }}</template>
+					<option value="follower">{{ i18n.ts.followersCount }}</option>
+					<option value="pv">{{ i18n.ts.pageViewCount }}</option>
+					<option value="none">{{ i18n.ts.disabled }}</option>
+				</MkRadios>
 			</MkFolder>
 
 			<MkFolder>
@@ -341,11 +349,13 @@ const infoForm = useForm({
 	fetchInstance(true);
 });
 
-const pinnedUsersForm = useForm({
+const explorePageForm = useForm({
 	pinnedUsers: meta.pinnedUsers.join('\n'),
+	preferPopularUserFactor: meta.preferPopularUserFactor,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		pinnedUsers: state.pinnedUsers.split('\n'),
+		preferPopularUserFactor: state.preferPopularUserFactor,
 	});
 	fetchInstance(true);
 });

@@ -251,6 +251,11 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		preferPopularUserFactor: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['follower', 'pv', 'none'],
+		},
 		backgroundImageUrl: {
 			type: 'string',
 			optional: false, nullable: true,

@@ -550,6 +550,11 @@ export const meta = {
 					},
 				},
 			},
+			preferPopularUserFactor: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['follower', 'pv', 'none'],
+			},
 			singleUserMode: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -717,6 +722,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				federation: instance.federation,
 				federationHosts: instance.federationHosts,
 				deliverSuspendedSoftware: instance.deliverSuspendedSoftware,
+				preferPopularUserFactor: instance.preferPopularUserFactor,
 				singleUserMode: instance.singleUserMode,
 				ugcVisibilityForVisitor: instance.ugcVisibilityForVisitor,
 				proxyRemoteFiles: instance.proxyRemoteFiles,

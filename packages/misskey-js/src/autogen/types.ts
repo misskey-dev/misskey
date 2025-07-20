@@ -5379,6 +5379,8 @@ export type components = {
             } | null;
             mediaProxy: string;
             enableUrlPreview: boolean;
+            /** @enum {string} */
+            preferPopularUserFactor: 'follower' | 'pv' | 'none';
             backgroundImageUrl: string | null;
             impressumUrl: string | null;
             logoImageUrl: string | null;
@@ -9364,6 +9366,8 @@ export interface operations {
                             software: string;
                             versionRange: string;
                         }[];
+                        /** @enum {string} */
+                        preferPopularUserFactor: 'follower' | 'pv' | 'none';
                         singleUserMode: boolean;
                         /** @enum {string} */
                         ugcVisibilityForVisitor: 'all' | 'local' | 'none';
@@ -12593,6 +12597,8 @@ export interface operations {
                         software: string;
                         versionRange: string;
                     }[];
+                    /** @enum {string} */
+                    preferPopularUserFactor?: 'follower' | 'pv' | 'none';
                     singleUserMode?: boolean;
                     /** @enum {string} */
                     ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
@@ -33982,7 +33988,7 @@ export interface operations {
                     /** @default 0 */
                     offset?: number;
                     /** @enum {string} */
-                    sort?: '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
+                    sort?: '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt' | '+pv' | '-pv';
                     /**
                      * @default all
                      * @enum {string}

@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
 				<MkUserList :paginator="pinnedUsersPaginator"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persistKey="explore-popular-users">
+			<MkFoldableSection v-if="instance.preferPopularUserFactor !== 'none'" class="_margin" persistKey="explore-popular-users">
 				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<MkUserList :paginator="popularUsersPaginator"/>
 			</MkFoldableSection>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFoldableSection>
 
 		<template v-if="tag == null">
-			<MkFoldableSection class="_margin">
+			<MkFoldableSection v-if="instance.preferPopularUserFactor !== 'none'" class="_margin">
 				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<MkUserList :paginator="popularUsersFPaginator"/>
 			</MkFoldableSection>
@@ -105,7 +105,7 @@ const popularUsersPaginator = markRaw(new Paginator('users', {
 	params: {
 		state: 'alive',
 		origin: 'local',
-		sort: '+follower',
+		sort: instance.preferPopularUserFactor === 'pv' ? '+pv' : '+follower',
 	},
 }));
 
@@ -134,7 +134,7 @@ const popularUsersFPaginator = markRaw(new Paginator('users', {
 	params: {
 		state: 'alive',
 		origin: 'remote',
-		sort: '+follower',
+		sort: '+follower', // リモートのpvは信用できないため固定
 	},
 }));
 

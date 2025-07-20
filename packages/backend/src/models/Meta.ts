@@ -682,6 +682,12 @@ export class MiMeta {
 	})
 	public deliverSuspendedSoftware: SoftwareSuspension[];
 
+	@Column('enum', {
+		enum: ['follower', 'pv', 'none'],
+		default: 'follower',
+	})
+	public preferPopularUserFactor: 'follower' | 'pv' | 'none';
+
 	@Column('boolean', {
 		default: false,
 	})

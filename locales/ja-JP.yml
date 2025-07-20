@@ -1368,6 +1368,9 @@ redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
 defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
+pageViewCount: "ページ閲覧数"
+preferPopularUserFactor: "人気のユーザーの算出基準"
+preferPopularUserFactorDescription: "ページ閲覧数はローカルユーザーにのみ適用されます（リモートユーザーはフォロワー数で表示されます）。「無効」に設定すると、ローカル・リモートどちらの「人気のユーザー」セクションも表示されなくなります。"
 
 _order:
   newest: "新しい順"
