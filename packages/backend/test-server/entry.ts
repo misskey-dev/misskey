@@ -74,13 +74,10 @@ async function startControllerEndpoints(port = config.port + 1000) {
 	});
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
-		console.log('env-reset');
 		process.env = JSON.parse(originEnv);
 
 		await serverService.dispose();
-		console.log('ServerService application closed.');
 		await app.close();
-		console.log('MainModule application closed.');
 
 		await killTestServer();
 
@@ -91,7 +88,6 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		});
 		serverService = app.get(ServerService);
 		await serverService.launch();
-		console.log('application launched.');
 
 		res.code(200).send({ success: true });
 	});

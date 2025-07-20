@@ -7,7 +7,5 @@ import { initTestDb, sendEnvResetRequest } from './utils.js';
 
 beforeAll(async () => {
 		await initTestDb(false);
-		console.log('Test database initialized.');
 		await sendEnvResetRequest();
-		console.log('Environment reset completed.');
 });
