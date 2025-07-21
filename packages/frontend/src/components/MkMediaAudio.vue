@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted, shallowRef } from 'vue';
+import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted, shallowRef, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import type { MenuItem } from '@/types/menu.js';
@@ -592,6 +592,35 @@ function init() {
 	});
 }
 
+function dispose() {
+	isReady.value = false;
+	isPlaying.value = false;
+	isActuallyPlaying.value = false;
+	elapsedTimeMs.value = 0;
+	durationMs.value = 0;
+	bufferedEnd.value = 0;
+	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore');
+	stopAudioElWatch();
+	onceInit = false;
+	if (mediaTickFrameId) {
+		window.cancelAnimationFrame(mediaTickFrameId);
+		mediaTickFrameId = null;
+	}
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+		controlStateTimer = null;
+	}
+	if (audioSource.value) {
+		audioSource.value.disconnect();
+		audioSource.value = null;
+	}
+	if (audioCtx.state !== 'closed') {
+		audioCtx.close().catch(err => {
+			console.error('Failed to close AudioContext:', err);
+		});
+	}
+}
+
 watch(volume, (to) => {
 	gainNode.gain.value = to;
 });
@@ -627,32 +656,11 @@ onActivated(() => {
 });
 
 onDeactivated(() => {
-	isReady.value = false;
-	isPlaying.value = false;
-	isActuallyPlaying.value = false;
-	elapsedTimeMs.value = 0;
-	durationMs.value = 0;
-	bufferedEnd.value = 0;
-	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore');
-	stopAudioElWatch();
-	onceInit = false;
-	if (mediaTickFrameId) {
-		window.cancelAnimationFrame(mediaTickFrameId);
-		mediaTickFrameId = null;
-	}
-	if (controlStateTimer) {
-		window.clearTimeout(controlStateTimer);
-		controlStateTimer = null;
-	}
-	if (audioSource.value) {
-		audioSource.value.disconnect();
-		audioSource.value = null;
-	}
-	if (audioCtx.state !== 'closed') {
-		audioCtx.close().catch(err => {
-			console.error('Failed to close AudioContext:', err);
-		});
-	}
+	dispose();
+});
+
+onBeforeUnmount(() => {
+	dispose();
 });
 </script>
 
