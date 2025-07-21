@@ -412,11 +412,15 @@ function drawVisualizer() {
 
 	// 波形の中心にアバターを円形にくりぬいて描画
 	const avatarSize = radius;
+	const avatarHeight = Math.max(userAvatarImage.value.height * (avatarSize / userAvatarImage.value.width), avatarSize);
+	const avatarWidth = Math.max(userAvatarImage.value.width * (avatarSize / userAvatarImage.value.height), avatarSize);
+	const avatarDx = centerX - avatarWidth / 2;
+	const avatarDy = centerY - avatarHeight / 2;
 	canvasCtx.value.save();
 	canvasCtx.value.beginPath();
 	canvasCtx.value.arc(centerX, centerY, avatarSize / 2, 0, Math.PI * 2);
 	canvasCtx.value.clip();
-	canvasCtx.value.drawImage(userAvatarImage.value, centerX - avatarSize / 2, centerY - avatarSize / 2, avatarSize, avatarSize);
+	canvasCtx.value.drawImage(userAvatarImage.value, avatarDx, avatarDy, avatarWidth, avatarHeight);
 	canvasCtx.value.restore();
 
 	if (isActuallyPlaying.value) {
