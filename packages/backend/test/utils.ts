@@ -636,16 +636,46 @@ export async function sendEnvUpdateRequest(params: { key: string, value?: string
 }
 
 export async function sendEnvResetRequest() {
-	const res = await fetch(
-		`http://localhost:${port + 1000}/env-reset`,
-		{
-			method: 'POST',
-			body: JSON.stringify({}),
-		},
-	);
+	let res = null as Awaited<ReturnType<typeof fetch>> | null;
+	
+	// fetch env-resetがタイムアウトする場合がある
+	// See https://github.com/misskey-dev/misskey/issues/16312
+	for (let i = 0; i <= 3; i++) {
+		const controller = new AbortController();
+		const signal = controller.signal;
+		const timer = setTimeout(() => {
+			controller.abort();
+		}, 10000);
 
-	if (res.status !== 200) {
-		throw new Error('server env update failed.');
+		try {
+			res = await fetch(
+				`http://localhost:${port + 1000}/env-reset`,
+				{
+					method: 'POST',
+					body: JSON.stringify({}),
+					signal,
+				},
+			);
+		} catch {
+			res = null;
+		} finally {
+			if (signal.aborted) {
+				console.warn('env-reset request aborted due to timeout.');
+			}
+			clearTimeout(timer);
+		}
+
+		if (res != null) break;
+		// 1秒待ってみる
+		await new Promise(resolve => setTimeout(resolve, 1000));
+	}
+
+	if (res === null) {
+		throw new Error('server env reset failed.');
+	}
+
+	if (res?.status !== 200) {
+		throw new Error('server env update failed.', { cause: res.statusText });
 	}
 }
 
