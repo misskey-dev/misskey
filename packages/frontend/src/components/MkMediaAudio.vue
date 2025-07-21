@@ -603,6 +603,10 @@ function dispose() {
 		window.clearTimeout(controlStateTimer);
 		controlStateTimer = null;
 	}
+	if (visualizerTickFrameId) {
+		window.cancelAnimationFrame(visualizerTickFrameId);
+		visualizerTickFrameId = null;
+	}
 	if (audioSource.value) {
 		audioSource.value.disconnect();
 		audioSource.value = null;
