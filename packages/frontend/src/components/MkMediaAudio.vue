@@ -579,13 +579,6 @@ function init() {
 
 			// 音量制御はGainNode
 			audioEl.value.volume = 1;
-
-			hasAudio(audioEl.value).then(had => {
-				if (!had && audioEl.value) {
-					audioEl.value.loop = audioEl.value.muted = true;
-					audioEl.value.play();
-				}
-			});
 		}
 	}, {
 		immediate: true,
