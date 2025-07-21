@@ -343,7 +343,7 @@ const userAvatarImage = computed(() => {
 
 function drawVisualizer() {
 	if (!canvasEl.value || !canvasCtx.value || !audioEl.value || !audioSource.value) return;
-	if (document.visibilityState === 'hidden') {
+	if (window.document.visibilityState === 'hidden') {
 		if (isActuallyPlaying.value) {
 			visualizerTickFrameId = window.requestAnimationFrame(drawVisualizer);
 		} else {
