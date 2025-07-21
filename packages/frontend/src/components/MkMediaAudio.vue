@@ -10,15 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	tabindex="0"
 	:class="[
 		$style.audioContainer,
+		controlsShowing && $style.active,
 		(audio.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
+	@mouseover.passive="onMouseOver"
+	@mousemove.passive="onMouseMove"
+	@mouseleave.passive="onMouseLeave"
 	@contextmenu.stop
 	@keydown.stop
 >
 	<button v-if="hide" :class="$style.hidden" @click="show">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
+			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
@@ -35,71 +39,83 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</audio>
 	</div>
 
-	<div v-else :class="$style.audioControls">
+	<div v-else :class="$style.audioRoot">
 		<audio
 			ref="audioEl"
 			preload="metadata"
+			tabindex="-1"
 			@keydown.prevent="() => {}"
 		>
 			<source :src="audio.url">
 		</audio>
-		<div :class="[$style.controlsChild, $style.controlsLeft]">
-			<button
-				:class="['_button', $style.controlButton]"
-				tabindex="-1"
-				@click.stop="togglePlayPause"
-			>
-				<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-				<i v-else class="ti ti-player-play-filled"></i>
-			</button>
+		<canvas
+			ref="canvasEl"
+			width="1600"
+			height="900"
+			:class="$style.audio"
+			@keydown.prevent
+			@click.self="togglePlayPause"
+		></canvas>
+		<button v-if="isReady && !isPlaying" class="_button" :class="$style.audioOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
+		<div v-else-if="!isActuallyPlaying" :class="$style.audioLoading">
+			<MkLoading/>
 		</div>
-		<div :class="[$style.controlsChild, $style.controlsRight]">
-			<button
-				:class="['_button', $style.controlButton]"
-				tabindex="-1"
-				@click.stop="() => {}"
-				@mousedown.prevent.stop="showMenu"
-			>
-				<i class="ti ti-settings"></i>
-			</button>
+		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
+		<div :class="$style.indicators">
+			<div v-if="audio.comment" :class="$style.indicator">ALT</div>
+			<div v-if="audio.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
-		<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
-		<div :class="[$style.controlsChild, $style.controlsVolume]">
-			<button
-				:class="['_button', $style.controlButton]"
-				tabindex="-1"
-				@click.stop="toggleMute"
-			>
-				<i v-if="volume === 0" class="ti ti-volume-3"></i>
-				<i v-else class="ti ti-volume"></i>
-			</button>
+		<div :class="$style.audioControls" @click.self="togglePlayPause">
+			<div :class="[$style.controlsChild, $style.controlsLeft]">
+				<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
+					<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
+					<i v-else class="ti ti-player-play-filled"></i>
+				</button>
+			</div>
+			<div :class="[$style.controlsChild, $style.controlsRight]">
+				<button class="_button" :class="$style.controlButton" @click="showMenu">
+					<i class="ti ti-settings"></i>
+				</button>
+			</div>
+			<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
+			<div :class="[$style.controlsChild, $style.controlsVolume]">
+				<button class="_button" :class="$style.controlButton" @click="toggleMute">
+					<i v-if="volume === 0" class="ti ti-volume-3"></i>
+					<i v-else class="ti ti-volume"></i>
+				</button>
+				<MkMediaRange
+					v-model="volume"
+					:sliderBgWhite="true"
+					:class="$style.volumeSeekbar"
+				/>
+			</div>
 			<MkMediaRange
-				v-model="volume"
-				:class="$style.volumeSeekbar"
+				v-model="rangePercent"
+				:sliderBgWhite="true"
+				:class="$style.seekbarRoot"
+				:buffer="bufferedDataRatio"
 			/>
 		</div>
-		<MkMediaRange
-			v-model="rangePercent"
-			:class="$style.seekbarRoot"
-			:buffer="bufferedDataRatio"
-		/>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import tinycolor from 'tinycolor2';
 import type { MenuItem } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -150,9 +166,6 @@ function hasFocus() {
 	if (!playerEl.value) return false;
 	return playerEl.value === window.document.activeElement || playerEl.value.contains(window.document.activeElement);
 }
-
-const playerEl = useTemplateRef('playerEl');
-const audioEl = useTemplateRef('audioEl');
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore'));
@@ -273,6 +286,146 @@ async function toggleSensitive(file: Misskey.entities.DriveFile) {
 	});
 }
 
+// MediaControl: Video State
+const audioEl = useTemplateRef('audioEl');
+const audioSource = shallowRef<MediaElementAudioSourceNode | null>(null);
+const audioCtx = new AudioContext();
+const gainNode = audioCtx.createGain();
+gainNode.gain.value = 0.25;
+const playerEl = useTemplateRef('playerEl');
+const isHoverring = ref(false);
+const controlsShowing = computed(() => {
+	if (!oncePlayed.value) return true;
+	if (isHoverring.value) return true;
+	if (menuShowing.value) return true;
+	return false;
+});
+let controlStateTimer: number | null = null;
+
+// MediaControl: Audio Visualizer
+const canvasEl = useTemplateRef('canvasEl');
+const canvasCtx = computed(() => {
+	if (!canvasEl.value) return null;
+	return canvasEl.value.getContext('2d');
+});
+
+const channelMergerNode = audioCtx.createChannelMerger(2);
+const analyser = audioCtx.createAnalyser();
+analyser.smoothingTimeConstant = 0.85;
+analyser.fftSize = 2048;
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
+const prevDataArray = new Uint8Array(bufferLength);
+
+const WAVE_THRESHOLD = 50; // 波形の閾値
+const EXPONENTIAL_FACTOR = 2; // 波形の伸びを調整する指数
+const WAVE_REFRESH_THRESHOLD = 2; // 波形の更新間隔（フレーム数）
+
+let visualizerTickFrameId: number | null = null;
+let visualizerTickCount = 0;
+
+const bgColor = computed(() => {
+	return props.audio.user?.avatarBlurhash ? extractAvgColorFromBlurhash(props.audio.user?.avatarBlurhash) ?? '#aaa' : '#aaa';
+});
+const fgColor = computed(() => {
+	const tcInstance = tinycolor(bgColor.value);
+	if (tcInstance.isDark()) {
+		return tcInstance.lighten(20).toHexString();
+	} else {
+		return tcInstance.darken(20).toHexString();
+	}
+});
+const userAvatarImage = computed(() => {
+	const img = new Image();
+	img.src = props.audio.user?.avatarUrl ?? '/static-assets/avatar.png';
+	return img;
+});
+
+function drawVisualizer() {
+	if (!canvasEl.value || !canvasCtx.value || !audioEl.value || !audioSource.value) return;
+	if (document.visibilityState === 'hidden') {
+		if (isActuallyPlaying.value) {
+			visualizerTickFrameId = window.requestAnimationFrame(drawVisualizer);
+		} else {
+			visualizerTickFrameId = null;
+		}
+		return;
+	}
+
+	visualizerTickCount++;
+	const tickStep = visualizerTickCount % WAVE_REFRESH_THRESHOLD;
+
+	canvasCtx.value.clearRect(0, 0, canvasEl.value.width, canvasEl.value.height);
+
+	if (tickStep === 0) {
+		prevDataArray.set(dataArray);
+		analyser.getByteTimeDomainData(dataArray);
+	}
+
+	canvasCtx.value.fillStyle = bgColor.value;
+	canvasCtx.value.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);
+
+	const centerX = canvasEl.value.width / 2;
+	const centerY = canvasEl.value.height / 2;
+	const radius = Math.min(centerX, centerY) * 0.8;
+
+	canvasCtx.value.beginPath();
+	canvasCtx.value.fillStyle = fgColor.value;
+
+	// 波形データを円形に滑らかにつなぐ
+	const points: { x: number, y: number }[] = [];
+	for (let i = 0; i < bufferLength; i++) {
+		if (i % WAVE_THRESHOLD !== 0 && i !== bufferLength - 1) continue; // Skip values below threshold
+
+		const data = prevDataArray[i] + (dataArray[i] - prevDataArray[i]) * tickStep / WAVE_REFRESH_THRESHOLD;
+		const value = Math.pow(data / 255 * Math.sqrt(EXPONENTIAL_FACTOR), EXPONENTIAL_FACTOR); // Exponential scaling
+
+		const angle = (i / bufferLength) * Math.PI - (Math.PI / 2); // 半円分の角度に制限
+		const x = centerX + radius * value * Math.cos(angle);
+		const y = centerY + radius * value * Math.sin(angle);
+		points.push({ x, y });
+	}
+
+	// 残りの半分を左右反転
+	const mirroredPoints = points.map(point => ({ x: centerX - (point.x - centerX), y: point.y })).reverse();
+
+	if (points.length > 0) {
+		canvasCtx.value.moveTo(points[0].x, points[0].y);
+		for (let i = 1; i < points.length - 1; i++) {
+			const xc = (points[i].x + points[i + 1].x) / 2;
+			const yc = (points[i].y + points[i + 1].y) / 2;
+			canvasCtx.value.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+		}
+		canvasCtx.value.lineTo(mirroredPoints[0].x, mirroredPoints[0].y);
+
+		for (let i = 1; i < mirroredPoints.length - 1; i++) {
+			const xc = (mirroredPoints[i].x + mirroredPoints[i + 1].x) / 2;
+			const yc = (mirroredPoints[i].y + mirroredPoints[i + 1].y) / 2;
+			canvasCtx.value.quadraticCurveTo(mirroredPoints[i].x, mirroredPoints[i].y, xc, yc);
+		}
+
+		canvasCtx.value.lineTo(points[0].x, points[0].y);
+	}
+
+	canvasCtx.value.closePath();
+	canvasCtx.value.fill();
+
+	// 波形の中心にアバターを円形にくりぬいて描画
+	const avatarSize = radius;
+	canvasCtx.value.save();
+	canvasCtx.value.beginPath();
+	canvasCtx.value.arc(centerX, centerY, avatarSize / 2, 0, Math.PI * 2);
+	canvasCtx.value.clip();
+	canvasCtx.value.drawImage(userAvatarImage.value, centerX - avatarSize / 2, centerY - avatarSize / 2, avatarSize, avatarSize);
+	canvasCtx.value.restore();
+
+	if (isActuallyPlaying.value) {
+		visualizerTickFrameId = window.requestAnimationFrame(drawVisualizer);
+	} else {
+		visualizerTickFrameId = null;
+	}
+}
+
 // MediaControl: Common State
 const oncePlayed = ref(false);
 const isReady = ref(false);
@@ -299,8 +452,44 @@ const bufferedDataRatio = computed(() => {
 });
 
 // MediaControl Events
+function onMouseOver() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
+	isHoverring.value = true;
+
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 3000);
+}
+
+function onMouseMove() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
+	isHoverring.value = true;
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 3000);
+}
+
+function onMouseLeave() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 100);
+}
+
 function togglePlayPause() {
 	if (!isReady.value || !audioEl.value) return;
+
+	if (audioCtx.state === 'suspended') {
+		audioCtx.resume().catch(err => {
+			console.error('Failed to resume AudioContext:', err);
+		});
+	}
 
 	if (isPlaying.value) {
 		audioEl.value.pause();
@@ -328,8 +517,18 @@ function init() {
 	if (onceInit) return;
 	onceInit = true;
 
+	if (prefer.s.useNativeUiForVideoAudioPlayer) return;
+
 	stopAudioElWatch = watch(audioEl, () => {
 		if (audioEl.value) {
+			audioSource.value = audioCtx.createMediaElementSource(audioEl.value);
+
+			// Visualizer用
+			audioSource.value.connect(channelMergerNode).connect(analyser);
+
+			// Player用
+			audioSource.value.connect(gainNode).connect(audioCtx.destination);
+
 			isReady.value = true;
 
 			function updateMediaTick() {
@@ -346,6 +545,7 @@ function init() {
 						loop.value = audioEl.value.loop;
 					}
 				}
+
 				mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 			}
 
@@ -373,7 +573,15 @@ function init() {
 				}
 			});
 
-			audioEl.value.volume = volume.value;
+			// 音量制御はGainNode
+			audioEl.value.volume = 1;
+
+			hasAudio(audioEl.value).then(had => {
+				if (!had && audioEl.value) {
+					audioEl.value.loop = audioEl.value.muted = true;
+					audioEl.value.play();
+				}
+			});
 		}
 	}, {
 		immediate: true,
@@ -381,7 +589,7 @@ function init() {
 }
 
 watch(volume, (to) => {
-	if (audioEl.value) audioEl.value.volume = to;
+	gainNode.gain.value = to;
 });
 
 watch(speed, (to) => {
@@ -390,6 +598,20 @@ watch(speed, (to) => {
 
 watch(loop, (to) => {
 	if (audioEl.value) audioEl.value.loop = to;
+});
+
+watch(isActuallyPlaying, (to) => {
+	if (to) {
+		if (visualizerTickFrameId) {
+			window.cancelAnimationFrame(visualizerTickFrameId);
+		}
+		visualizerTickFrameId = window.requestAnimationFrame(drawVisualizer);
+	} else {
+		if (visualizerTickFrameId) {
+			window.cancelAnimationFrame(visualizerTickFrameId);
+			visualizerTickFrameId = null;
+		}
+	}
 });
 
 onMounted(() => {
@@ -414,6 +636,19 @@ onDeactivated(() => {
 		window.cancelAnimationFrame(mediaTickFrameId);
 		mediaTickFrameId = null;
 	}
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+		controlStateTimer = null;
+	}
+	if (audioSource.value) {
+		audioSource.value.disconnect();
+		audioSource.value = null;
+	}
+	if (audioCtx.state !== 'closed') {
+		audioCtx.close().catch(err => {
+			console.error('Failed to close AudioContext:', err);
+		});
+	}
 });
 </script>
 
@@ -421,8 +656,6 @@ onDeactivated(() => {
 .audioContainer {
 	container-type: inline-size;
 	position: relative;
-	border: .5px solid var(--MI_THEME-divider);
-	border-radius: var(--MI-radius);
 	overflow: clip;
 
 	&:focus-visible {
@@ -446,15 +679,46 @@ onDeactivated(() => {
 	}
 }
 
+.indicators {
+	display: inline-flex;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	pointer-events: none;
+	opacity: .5;
+	gap: 6px;
+}
+
+.indicator {
+	font-size: 0.8em;
+	padding: 2px 5px;
+}
+
+.hide {
+	display: block;
+	position: absolute;
+	border-radius: 6px;
+	background-color: var(--MI_THEME-fg);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+	font-size: 12px;
+	opacity: .5;
+	padding: 5px 8px;
+	text-align: center;
+	cursor: pointer;
+	top: 12px;
+	right: 12px;
+}
+
 .hidden {
 	width: 100%;
+	height: 100%;
 	background: #000;
 	border: none;
 	outline: none;
 	font: inherit;
 	color: inherit;
 	cursor: pointer;
-	padding: 12px 0;
+	padding: 60px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -466,6 +730,54 @@ onDeactivated(() => {
 	color: #fff;
 }
 
+.audioRoot {
+	background: #000;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	border-radius: var(--MI-radius);
+	overflow: clip;
+}
+
+.audio {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
+.audioOverlayPlayButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+
+	opacity: 0;
+	transition: opacity .4s ease-in-out;
+
+	background: var(--MI_THEME-accent);
+	color: #fff;
+	padding: 1rem;
+	border-radius: 99rem;
+
+	font-size: 1.1rem;
+
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+.audioLoading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .audioControls {
 	display: grid;
 	grid-template-areas:
@@ -474,22 +786,47 @@ onDeactivated(() => {
 	grid-template-columns: auto auto 1fr auto auto;
 	align-items: center;
 	gap: 4px 8px;
-	padding: 10px;
+
+	padding: 35px 10px 10px 10px;
+	background: linear-gradient(rgba(0, 0, 0, 0),rgba(0, 0, 0, .75));
+
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	transform: translateY(100%);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity .4s ease-in-out, transform .4s ease-in-out;
+}
+
+.active {
+	.audioControls {
+		transform: translateY(0);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.audioOverlayPlayButton {
+		opacity: 1;
+	}
 }
 
 .controlsChild {
 	display: flex;
 	align-items: center;
 	gap: 4px;
+	color: #fff;
 
 	.controlButton {
 		padding: 6px;
 		border-radius: calc(var(--MI-radius) / 2);
+		transition: background-color .2s ease-in-out;
 		font-size: 1.05rem;
 
 		&:hover {
-			color: var(--MI_THEME-accent);
-			background-color: var(--MI_THEME-accentedBg);
+			background-color: var(--MI_THEME-accent);
 		}
 
 		&:focus-visible {
@@ -521,6 +858,9 @@ onDeactivated(() => {
 
 .seekbarRoot {
 	grid-area: seekbar;
+	/* ▼シークバー操作をやりやすくするためにクリックイベントが伝播されないエリアを拡張する */
+	margin: -10px;
+	padding: 10px;
 }
 
 @container (min-width: 500px) {
