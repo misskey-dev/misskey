@@ -3121,7 +3121,7 @@ _uploader:
   tip: "El archivo aún no se ha cargado, por lo que este cuadro de diálogo te permite confirmar, renombrar, comprimir y recortar el archivo antes de cargarlo. Cuando esté listo, puedes iniciar la carga pulsando el botón \"Cargar\"."
 _clientPerformanceIssueTip:
   title: "Si crees que el consumo de batería es demasiado alto"
-  makeSureDisabledAdBlocker: "Por favor, desactive el bloqueador de publicidad."
+  makeSureDisabledAdBlocker: "Por favor, desactiva el bloqueador de publicidad."
   makeSureDisabledAdBlocker_description: "Los bloqueadores de anuncios pueden afectar al rendimiento. Asegúrate de que no están activados en tu sistema o en las funciones/extensiones de tu navegador."
   makeSureDisabledCustomCss: "Desactiva el CSS personalizado"
   makeSureDisabledCustomCss_description: "Anular estilos puede afectar al rendimiento. Asegúrate de que el CSS personalizado o las extensiones que sobrescriben estilos no están activados."
