@@ -519,6 +519,10 @@ export function useUploader(options: {
 			});
 		}
 
+		// misskey_with_like での独自改変
+		// 画像の圧縮を強制する
+		item.compressionLevel = ( item.compressionLevel === 0 ? 1 : item.compressionLevel ) as typeof item.compressionLevel;
+
 		const compressionSettings = getCompressionSettings(item.compressionLevel);
 		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
 
