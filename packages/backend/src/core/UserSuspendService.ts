@@ -73,7 +73,7 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postUnsuspend(user, false).catch((e: any) => { });
-			await this.restoreFollowings(user).catch((e: any) => { });
+			await this.restoreFollowings(user).catch((e: any) => { console.error(e); });
 		})();
 	}
 

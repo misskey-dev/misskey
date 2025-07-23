@@ -30,6 +30,7 @@ import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
+import { MiRemoteUser } from '@/models/User.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -96,6 +97,7 @@ describe('UserSuspendService', () => {
 					useFactory: () => ({
 						isLocalUser: jest.fn(),
 						genLocalUserUri: jest.fn(),
+						isSuspendedEither: jest.fn(),
 					}),
 				},
 				{
@@ -244,6 +246,8 @@ describe('UserSuspendService', () => {
 		});
 
 		test('should restore follower relationships', async () => {
+			userEntityService.isSuspendedEither.mockReturnValue(false);
+
 			const user = await createUser({ isSuspended: true });
 			const followee1 = await createUser();
 			const followee2 = await createUser();
@@ -286,6 +290,8 @@ describe('UserSuspendService', () => {
 
 	describe('integration test: suspend and unsuspend cycle', () => {
 		test('should preserve follow relationships through suspend/unsuspend cycle', async () => {
+			userEntityService.isSuspendedEither.mockReturnValue(false);
+
 			const user = await createUser();
 			const followee1 = await createUser();
 			const followee2 = await createUser();
@@ -441,7 +447,7 @@ describe('UserSuspendService', () => {
 
 	describe('suspension from remote', () => {
 		test('should suspend remote user and post suspend event', async () => {
-			const remoteUser = { id: secureRndstr(16), host: genHost() };
+			const remoteUser = await createUser({ host: genHost() }) as MiRemoteUser;
 			await userSuspendService.suspendFromRemote(remoteUser);
 
 			// ユーザーがリモート凍結されているかチェック
@@ -456,7 +462,7 @@ describe('UserSuspendService', () => {
 		});
 
 		test('should unsuspend remote user and post unsuspend event', async () => {
-			const remoteUser = { id: secureRndstr(16), host: genHost() };
+			const remoteUser = await createUser({ host: genHost(), isRemoteSuspended: true }) as MiRemoteUser;
 			await userSuspendService.unsuspendFromRemote(remoteUser);
 
 			// ユーザーのリモート凍結が解除されているかチェック
