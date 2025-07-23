@@ -35,13 +35,15 @@ describe('User Suspension', () => {
 				await aAdmin.client.request('admin/suspend-user', { userId: alice.id });
 				await sleep();
 
-				const following = await bob.client.request('users/following', { userId: bob.id });
-				strictEqual(following.length, 0); // no following relation
+				const aliceInBRaw = await bAdmin.client.request('admin/show-user', { userId: aliceInB.id });
+				strictEqual(aliceInBRaw.isRemoteSuspended, true);
+				const renewedAliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+				strictEqual(renewedAliceInB.isSuspended, true);
 
 				await rejects(
 					async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 					(err: any) => {
-						strictEqual(err.code, 'NO_SUCH_USER');
+						strictEqual(err.code, 'ALREADY_FOLLOWING');
 						return true;
 					},
 				);
@@ -51,35 +53,18 @@ describe('User Suspension', () => {
 				await aAdmin.client.request('admin/unsuspend-user', { userId: alice.id });
 				await sleep();
 
-				const followers = await alice.client.request('users/followers', { userId: alice.id });
-				strictEqual(followers.length, 1); // FIXME: followers are not deleted??
+				const aliceInBRenewed = await bAdmin.client.request('admin/show-user', { userId: aliceInB.id });
+				strictEqual(aliceInBRenewed.isRemoteSuspended, false);
 
-				/**
-				 * FIXME: still rejected!
-				 *        seems to can't process Undo Delete activity because it is not implemented
-				 *        related @see https://github.com/misskey-dev/misskey/issues/13273
-				 */
 				await rejects(
 					async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 					(err: any) => {
-						strictEqual(err.code, 'NO_SUCH_USER');
-						return true;
-					},
-				);
-
-				// FIXME: resolving also fails
-				await rejects(
-					async () => await resolveRemoteUser('a.test', alice.id, bob),
-					(err: any) => {
-						strictEqual(err.code, 'INTERNAL_ERROR');
+						strictEqual(err.code, 'ALREADY_FOLLOWING');
 						return true;
 					},
 				);
 			});
 
-			/**
-			 * instead of simple unsuspension, let's tell existence by following from Alice
-			 */
 			test('Alice can follow Bob', async () => {
 				await alice.client.request('following/create', { userId: bobInA.id });
 				await sleep();
@@ -87,29 +72,23 @@ describe('User Suspension', () => {
 				const bobFollowers = await bob.client.request('users/followers', { userId: bob.id });
 				strictEqual(bobFollowers.length, 1); // followed by Alice
 				assert(bobFollowers[0].follower != null);
-				const renewedaliceInB = bobFollowers[0].follower;
-				assert(aliceInB.username === renewedaliceInB.username);
-				assert(aliceInB.host === renewedaliceInB.host);
-				assert(aliceInB.id !== renewedaliceInB.id); // TODO: Same username and host, but their ids are different! Is it OK?
+				const renewedAliceInB = bobFollowers[0].follower;
+				assert(aliceInB.username === renewedAliceInB.username);
+				assert(aliceInB.host === renewedAliceInB.host);
+				assert(aliceInB.id === renewedAliceInB.id);
+			});
 
-				const following = await bob.client.request('users/following', { userId: bob.id });
-				strictEqual(following.length, 0); // following are deleted
+			test('Alice follows Bob, and Alice gets suspended, the following relation hidden', async () => {
+				await aAdmin.client.request('admin/suspend-user', { userId: alice.id });
+				await sleep(1000);
 
-				// Bob tries to follow Alice
-				await bob.client.request('following/create', { userId: renewedaliceInB.id });
-				await sleep();
+				const renewedAliceInB = await bob.client.request('users/show', { userId: aliceInB.id });
+				strictEqual(renewedAliceInB.isSuspended, true);
+				const aliceInBRaw = await bAdmin.client.request('admin/show-user', { userId: aliceInB.id });
+				strictEqual(aliceInBRaw.isRemoteSuspended, true);
 
-				const aliceFollowers = await alice.client.request('users/followers', { userId: alice.id });
-				strictEqual(aliceFollowers.length, 1);
-
-				// FIXME: but resolving still fails ...
-				await rejects(
-					async () => await resolveRemoteUser('a.test', alice.id, bob),
-					(err: any) => {
-						strictEqual(err.code, 'INTERNAL_ERROR');
-						return true;
-					},
-				);
+				const bobFollowers = await bob.client.request('users/followers', { userId: bob.id });
+				strictEqual(bobFollowers.length, 0); // Relation is hidden
 			});
 		});
 	});

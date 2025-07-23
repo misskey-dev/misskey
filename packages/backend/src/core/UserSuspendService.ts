@@ -56,7 +56,10 @@ export class UserSuspendService {
 			isRemoteSuspended: true,
 		});
 
-		this.postSuspend(user, true);
+		(async () => {
+			await this.postSuspend(user, true).catch((e: any) => { });
+			await this.suspendFollowings(user).catch((e: any) => { });
+		})();
 	}
 
 	@bindThis
@@ -73,7 +76,7 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postUnsuspend(user, false).catch((e: any) => { });
-			await this.restoreFollowings(user).catch((e: any) => { console.error(e); });
+			await this.restoreFollowings(user).catch((e: any) => { });
 		})();
 	}
 
@@ -83,7 +86,10 @@ export class UserSuspendService {
 			isRemoteSuspended: false,
 		});
 
-		this.postUnsuspend(user, true);
+		(async () => {
+			await this.postUnsuspend(user, true).catch((e: any) => { });
+			await this.restoreFollowings(user).catch((e: any) => { });
+		})();
 	}
 
 	@bindThis

@@ -38,6 +38,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -48,7 +49,6 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
-import { UserSuspendService } from '@/core/UserSuspendService.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -606,10 +606,12 @@ export class ApPersonService implements OnModuleInit {
 		//#region suspend
 		if (exist.isRemoteSuspended === false && person.suspended === true) {
 			// リモートサーバーでアカウントが凍結された
+			this.logger.info(`Remote User Suspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
 			this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
 		}
 		if (exist.isRemoteSuspended === true && person.suspended === false) {
 			// リモートサーバーでアカウントが解凍された
+			this.logger.info(`Remote User Unsuspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
 			this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
 		}
 		//#endregion
