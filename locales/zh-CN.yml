@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "指定 MIME 类型。可用换行指定多个类型，也可以用星号（*）作为通配符。（如 image/*）"
     uploadableFileTypes_caption2: "文件根据文件的不同，可能无法判断其类型。若要允许此类文件，请在指定中添加 {x}。"
     noteDraftLimit: "可在服务器上创建多少草稿"
+    watermarkAvailable: "能否使用水印功能"
   _condition:
     roleAssignedTo: "已分配给手动角色"
     isLocal: "是本地用户"
@@ -2806,6 +2807,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "添加日期"
   attachedNotes: "附加到的帖子"
+  usage: "使用"
   thisPageCanBeSeenFromTheAuthor: "此页只能被该文件的上传者查看。"
 _externalResourceInstaller:
   title: "从外部站点安装"

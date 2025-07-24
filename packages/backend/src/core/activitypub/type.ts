@@ -193,6 +193,7 @@ export interface IActor extends IObject {
 	};
 	'vcard:bday'?: string;
 	'vcard:Address'?: string;
+	suspended?: boolean;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

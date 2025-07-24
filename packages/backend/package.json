@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "^20.10.0 || ^22.0.0"
+		"node": "^20.18.1 || ^22.0.0"
 	},
 	"scripts": {
 		"start": "node ./built/boot/entry.js",
@@ -33,6 +33,7 @@
 		"test:fed": "pnpm jest:fed",
 		"test-and-coverage": "pnpm jest-and-coverage",
 		"test-and-coverage:e2e": "pnpm build && pnpm build:test && pnpm jest-and-coverage:e2e",
+		"check-migrations": "node scripts/check_migrations_clean.js",
 		"generate-api-json": "node ./scripts/generate_api_json.js"
 	},
 	"optionalDependencies": {

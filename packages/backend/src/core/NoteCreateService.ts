@@ -545,6 +545,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// TODO: キャッシュ
 			this.followingsRepository.findBy({
 				followeeId: user.id,
+				isFollowerSuspended: false,
 				notify: 'normal',
 			}).then(async followings => {
 				if (note.visibility !== 'specified') {
@@ -850,6 +851,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					where: {
 						followeeId: user.id,
 						followerHost: IsNull(),
+						isFollowerSuspended: false,
 						isFollowerHibernated: false,
 					},
 					select: ['followerId', 'withReplies'],

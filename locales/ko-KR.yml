@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "MIME 유형을 "
     uploadableFileTypes_caption2: "파일에 따라서는 유형을 검사하지 못하는 경우가 있습니다. 그러한 파일을 허가하는 경우에는 {x}를 지정으로 추가해주십시오."
     noteDraftLimit: "서버측 노트 초안 작성 가능 수"
+    watermarkAvailable: "워터마크 기능의 사용 여부"
   _condition:
     roleAssignedTo: "수동 역할에 이미 할당됨"
     isLocal: "로컬 유저"
@@ -2806,6 +2807,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "업로드 날짜"
   attachedNotes: "첨부된 노트"
+  usage: "이용"
   thisPageCanBeSeenFromTheAuthor: "이 페이지는 파일 소유자만 열람할 수 있습니다"
 _externalResourceInstaller:
   title: "외부 사이트로부터 설치"
@@ -3182,6 +3184,7 @@ drafts: "초안"
 _drafts:
   select: "초안 선택"
   cannotCreateDraftAnymore: "초안 작성 가능 수를 초과했습니다."
+  cannotCreateDraft: "이 내용으로는 초안을 작성할 수 없습니다. "
   delete: "초안 삭제\n"
   deleteAreYouSure: "초안을 삭제하시겠습니까?"
   noDrafts: "초안 없음\n"

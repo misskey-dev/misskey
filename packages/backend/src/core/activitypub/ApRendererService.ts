@@ -581,6 +581,7 @@ export class ApRendererService {
 			],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
+			suspended: user.isSuspended,
 		};
 
 		if (user.movedToUri) {

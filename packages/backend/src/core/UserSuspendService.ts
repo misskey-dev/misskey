@@ -4,19 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Not, IsNull } from 'typeorm';
 import type { FollowingsRepository, FollowRequestsRepository, UsersRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { UserKeypairService } from './UserKeypairService.js';
-import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.js';
-import { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { QueueService } from '@/core/QueueService.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 @Injectable()
 export class UserSuspendService {
@@ -31,11 +26,8 @@ export class UserSuspendService {
 		private followRequestsRepository: FollowRequestsRepository,
 
 		private userEntityService: UserEntityService,
-		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
-		private apRendererService: ApRendererService,
-		private userKeypairService: UserKeypairService,
-		private apDeliverManagerService: ApDeliverManagerService,
+		private accountUpdateService: AccountUpdateService,
 		private moderationLogService: ModerationLogService,
 	) {
 	}
@@ -53,8 +45,20 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch(e => {});
-			await this.unFollowAll(user).catch(e => {});
+			await this.postSuspend(user, false).catch((e: any) => { });
+			await this.suspendFollowings(user).catch((e: any) => { });
+		})();
+	}
+
+	@bindThis
+	public async suspendFromRemote(user: { id: MiRemoteUser['id']; host: MiRemoteUser['host'] }): Promise<void> {
+		await this.usersRepository.update(user.id, {
+			isRemoteSuspended: true,
+		});
+
+		(async () => {
+			await this.postSuspend(user, true).catch((e: any) => { });
+			await this.suspendFollowings(user).catch((e: any) => { });
 		})();
 	}
 
@@ -71,13 +75,29 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch(e => {});
+			await this.postUnsuspend(user, false).catch((e: any) => { });
+			await this.restoreFollowings(user).catch((e: any) => { });
 		})();
 	}
 
 	@bindThis
-	private async postSuspend(user: { id: MiUser['id']; host: MiUser['host'] }): Promise<void> {
-		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
+	public async unsuspendFromRemote(user: { id: MiRemoteUser['id']; host: MiRemoteUser['host'] }): Promise<void> {
+		await this.usersRepository.update(user.id, {
+			isRemoteSuspended: false,
+		});
+
+		(async () => {
+			await this.postUnsuspend(user, true).catch((e: any) => { });
+			await this.restoreFollowings(user).catch((e: any) => { });
+		})();
+	}
+
+	@bindThis
+	private async postSuspend(user: { id: MiUser['id']; host: MiUser['host'] }, isFromRemote: boolean): Promise<void> {
+		this.globalEventService.publishInternalEvent(
+			'userChangeSuspendedState',
+			isFromRemote ? { id: user.id, isRemoteSuspended: true } : { id: user.id, isSuspended: true }
+		);
 
 		this.followRequestsRepository.delete({
 			followeeId: user.id,
@@ -87,48 +107,55 @@ export class UserSuspendService {
 		});
 
 		if (this.userEntityService.isLocalUser(user)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
-			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
-			manager.addAllKnowingSharedInboxRecipe();
-			// process deliver時にはキーペアが消去されているはずなので、ここで挿入する
-			const privateKey = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, 'main');
-			manager.execute({ privateKey });
+			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 
 	@bindThis
-	private async postUnsuspend(user: MiUser): Promise<void> {
-		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
+	private async postUnsuspend(user: { id: MiUser['id']; host: MiUser['host'] }, isFromRemote: boolean): Promise<void> {
+		this.globalEventService.publishInternalEvent(
+			'userChangeSuspendedState',
+			isFromRemote ? { id: user.id, isRemoteSuspended: false } : { id: user.id, isSuspended: false }
+		);
 
 		if (this.userEntityService.isLocalUser(user)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user), user));
-			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
-			manager.addAllKnowingSharedInboxRecipe();
-			// process deliver時にはキーペアが消去されているはずなので、ここで挿入する
-			const privateKey = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, 'main');
-			manager.execute({ privateKey });
+			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 
 	@bindThis
-	private async unFollowAll(follower: MiUser) {
-		const followings = await this.followingsRepository.find({
-			where: {
+	private async suspendFollowings(follower: { id: MiUser['id'] }) {
+		await this.followingsRepository.update(
+			{
 				followerId: follower.id,
-				followeeId: Not(IsNull()),
 			},
-		});
-
-		const jobs: RelationshipJobData[] = [];
-		for (const following of followings) {
-			if (following.followeeId && following.followerId) {
-				jobs.push({
-					from: { id: following.followerId },
-					to: { id: following.followeeId },
-					silent: true,
-				});
+			{
+				isFollowerSuspended: true,
 			}
+		);
+	}
+
+	@bindThis
+	private async restoreFollowings(_follower: { id: MiUser['id'] }) {
+		// 最新の情報を取得
+		const follower = await this.usersRepository.findOneBy({ id: _follower.id });
+		if (follower == null) {
+			// ユーザーが削除されている場合は何もしないでおく
+			return;
 		}
-		this.queueService.createUnfollowJob(jobs);
+		if (this.userEntityService.isSuspendedEither(follower)) {
+			// フォロー関係を復元しない
+			return;
+		}
+
+		// フォロー関係を復元（isFollowerSuspended: false）に変更
+		await this.followingsRepository.update(
+			{
+				followerId: follower.id,
+			},
+			{
+				isFollowerSuspended: false,
+			}
+		);
 	}
 }

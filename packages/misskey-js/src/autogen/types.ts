@@ -4401,7 +4401,9 @@ export type components = {
              * @example xxxxxxxxxx
              */
             renoteId?: string | null;
+            /** @description The reply target note contents if exists. If the reply target has been deleted since the draft was created, this will be null while replyId is not null. */
             reply?: components['schemas']['Note'] | null;
+            /** @description The renote target note contents if exists. If the renote target has been deleted since the draft was created, this will be null while renoteId is not null. */
             renote?: components['schemas']['Note'] | null;
             /** @enum {string} */
             visibility: 'public' | 'home' | 'followers' | 'specified';
@@ -5226,6 +5228,7 @@ export type components = {
             /** @enum {string} */
             chatAvailability: 'available' | 'readonly' | 'unavailable';
             noteDraftLimit: number;
+            watermarkAvailable: boolean;
         };
         ReversiGameLite: {
             /** Format: id */
@@ -11587,6 +11590,7 @@ export interface operations {
                         isModerator: boolean;
                         isSilenced: boolean;
                         isSuspended: boolean;
+                        isRemoteSuspended: boolean;
                         isHibernated: boolean;
                         lastActiveDate: string | null;
                         moderationNote: string;

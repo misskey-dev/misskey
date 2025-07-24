@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "請指定 MIME 類型。可以用換行區隔多個類型，也可以使用星號（*）作為萬用字元進行指定。（例如：image/*）\n"
     uploadableFileTypes_caption2: "有些檔案可能無法判斷其類型。若要允許這類檔案，請在指定中加入 {x}。"
     noteDraftLimit: "伺服器端可建立的貼文草稿數量上限\n"
+    watermarkAvailable: "浮水印功能是否可用"
   _condition:
     roleAssignedTo: "手動指派角色完成"
     isLocal: "本地使用者"
@@ -2806,6 +2807,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "加入日期"
   attachedNotes: "含有附件的貼文"
+  usage: "使用情況"
   thisPageCanBeSeenFromTheAuthor: "本頁面僅限上傳了這個檔案的使用者可以檢視。"
 _externalResourceInstaller:
   title: "從外部網站安裝"

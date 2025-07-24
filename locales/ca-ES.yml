@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "Especifica el tipus MIME. Es poden especificar diferents tipus MIME separats amb una nova línia, i es poden especificar comodins amb asteriscs (*). (Per exemple: image/*)"
     uploadableFileTypes_caption2: "Pot que no sigui possible determinar el tipus MIME d'alguns arxius. Per permetre aquests tipus d'arxius afegeix {x} a les especificacions."
     noteDraftLimit: "Nombre possible d'esborranys de notes al servidor"
+    watermarkAvailable: "Pots fer servir la marca d'aigua"
   _condition:
     roleAssignedTo: "Assignat a rols manuals"
     isLocal: "Usuari local"
@@ -2806,6 +2807,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "Pujat el"
   attachedNotes: "Notes amb aquest fitxer"
+  usage: "Ús "
   thisPageCanBeSeenFromTheAuthor: "Aquesta pàgina només la pot veure l'usuari que ha pujat aquest fitxer."
 _externalResourceInstaller:
   title: "Instal·lar des d'un lloc extern"

@@ -129,7 +129,7 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute(opts?: { privateKey?: PrivateKeyWithPem }): Promise<void> {
+	public async execute(opts: { privateKey?: PrivateKeyWithPem; ignoreSuspend?: boolean } = {}): Promise<void> {
 		//#region MIGRATION
 		if (!opts?.privateKey) {
 			/**
@@ -153,17 +153,19 @@ class DeliverManager {
 
 		if (this.recipes.some(r => isAllKnowingSharedInbox(r))) {
 			// all-knowing shared inbox
-			const followings = await this.followingsRepository.find({
-				where: [
-					{ followerSharedInbox: Not(IsNull()) },
-					{ followeeSharedInbox: Not(IsNull()) },
-				],
-				select: ['followerSharedInbox', 'followeeSharedInbox'],
-			});
+			const followings = await this.followingsRepository.createQueryBuilder('f')
+				.select([
+					'f.followerSharedInbox',
+					'f.followeeSharedInbox',
+				])
+				.where('f.followerSharedInbox IS NOT NULL')
+				.orWhere('f.followeeSharedInbox IS NOT NULL')
+				.distinct()
+				.getRawMany<{ f_followerSharedInbox: string | null; f_followeeSharedInbox: string | null; }>();
 
 			for (const following of followings) {
-				if (following.followeeSharedInbox) inboxes.set(following.followeeSharedInbox, true);
-				if (following.followerSharedInbox) inboxes.set(following.followerSharedInbox, true);
+				if (following.f_followeeSharedInbox) inboxes.set(following.f_followeeSharedInbox, true);
+				if (following.f_followerSharedInbox) inboxes.set(following.f_followerSharedInbox, true);
 			}
 		}
 
@@ -177,6 +179,7 @@ class DeliverManager {
 				where: {
 					followeeId: this.actor.id,
 					followerHost: Not(IsNull()),
+					isFollowerSuspended: opts.ignoreSuspend ? undefined : false,
 				},
 				select: {
 					followerSharedInbox: true,

@@ -138,6 +138,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} : {
 					id: In(ps.userIds),
 					isSuspended: false,
+					isRemoteSuspended: false,
 				});
 
 				// リクエストされた通りに並べ替え

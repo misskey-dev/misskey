@@ -133,7 +133,7 @@ export class ApInboxService {
 
 	@bindThis
 	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
-		if (actor.isSuspended) return;
+		// ここでは凍結されているかどうかはチェックせず、各処理で判断する
 
 		if (isCreate(activity)) {
 			return await this.create(actor, activity, resolver);
