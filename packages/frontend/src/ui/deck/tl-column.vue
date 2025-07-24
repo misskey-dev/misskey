@@ -20,12 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStreamingNotesTimeline
 		v-else-if="column.tl"
 		ref="timeline"
-		:key="column.tl + withRenotes + withReplies + withFiles"
+		:key="column.tl + withRenotes + withReplies + onlyFiles"
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
 		:withSensitive="withSensitive"
-		:withFiles="withFiles"
+		:onlyFiles="onlyFiles"
 		:sound="true"
 		:customSound="soundSetting"
 	/>
@@ -56,7 +56,7 @@ const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, 
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
 const withSensitive = ref(props.column.withSensitive ?? true);
-const withFiles = ref(props.column.withFiles ?? false);
+const onlyFiles = ref(props.column.onlyFiles ?? false);
 
 watch(withRenotes, v => {
 	updateColumn(props.column.id, {
@@ -76,9 +76,9 @@ watch(withSensitive, v => {
 	});
 });
 
-watch(withFiles, v => {
+watch(onlyFiles, v => {
 	updateColumn(props.column.id, {
-		withFiles: v,
+		onlyFiles: v,
 	});
 });
 
@@ -139,14 +139,14 @@ const menu = computed<MenuItem[]>(() => {
 			type: 'switch',
 			text: i18n.ts.showRepliesToOthersInTimeline,
 			ref: withReplies,
-			disabled: withFiles,
+			disabled: onlyFiles,
 		});
 	}
 
 	menuItems.push({
 		type: 'switch',
 		text: i18n.ts.fileAttachedOnly,
-		ref: withFiles,
+		ref: onlyFiles,
 		disabled: hasWithReplies(props.column.tl) ? withReplies : false,
 	}, {
 		type: 'switch',

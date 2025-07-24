@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPostForm v-if="shouldShowFixedPostForm" :channel="currentChannel" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);" :isInYamiTimeline="src === 'yami'" :isInNormalTimeline="src !== 'yami'"/>
 		<MkStreamingNotesTimeline
 			ref="tlComponent"
-			:key="src + withRenotes + withReplies + withHashtags + withFiles + localOnly + remoteOnly + withSensitive"
+			:key="src + withRenotes + withReplies + withHashtags + onlyFiles + localOnly + remoteOnly + withSensitive"
 			:class="$style.tl"
 			:src="src.split(':')[0]"
 			:list="src.startsWith('list:') ? src.split(':')[1] : undefined"
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:withReplies="withReplies"
 			:withHashtags="withHashtags"
 			:withSensitive="withSensitive"
-			:withFiles="withFiles"
+			:onlyFiles="onlyFiles"
 			:localOnly="localOnly"
 			:remoteOnly="remoteOnly"
 			:showYamiNonFollowingPublicNotes="showYamiNonFollowingPublicNotes"
@@ -115,16 +115,16 @@ const currentChannel = computed(() => {
 });
 
 // computed内での無限ループを防ぐためのフラグ
-const localSocialTLFilterSwitchStore = ref<'withReplies' | 'withFiles' | false>(
+const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
 	store.r.tl.value.filter.withReplies ? 'withReplies' :
-	store.r.tl.value.filter.withFiles ? 'withFiles' :
+	store.r.tl.value.filter.onlyFiles ? 'onlyFiles' :
 	false,
 );
 
 const withReplies = computed<boolean>({
 	get: () => {
 		if (!$i) return false;
-		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withFiles') {
+		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
 			return store.r.tl.value.filter.withReplies;
@@ -132,15 +132,15 @@ const withReplies = computed<boolean>({
 	},
 	set: (x) => saveTlFilter('withReplies', x),
 });
-const withFiles = computed<boolean>({
+const onlyFiles = computed<boolean>({
 	get: () => {
 		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
-			return store.r.tl.value.filter.withFiles;
+			return store.r.tl.value.filter.onlyFiles;
 		}
 	},
-	set: (x) => saveTlFilter('withFiles', x),
+	set: (x) => saveTlFilter('onlyFiles', x),
 });
 
 const withHashtags = computed<boolean>({
@@ -148,11 +148,11 @@ const withHashtags = computed<boolean>({
 	set: (x) => saveTlFilter('withHashtags', x),
 });
 
-watch([withReplies, withFiles], ([withRepliesTo, withFilesTo]) => {
+watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
 	if (withRepliesTo) {
 		localSocialTLFilterSwitchStore.value = 'withReplies';
-	} else if (withFilesTo) {
-		localSocialTLFilterSwitchStore.value = 'withFiles';
+	} else if (onlyFilesTo) {
+		localSocialTLFilterSwitchStore.value = 'onlyFiles';
 	} else {
 		localSocialTLFilterSwitchStore.value = false;
 	}
@@ -355,7 +355,7 @@ const headerActions = computed(() => {
 						icon: 'ti ti-messages',
 						text: i18n.ts.showRepliesToOthersInTimeline,
 						ref: withReplies,
-						disabled: withFiles,
+						disabled: onlyFiles,
 					});
 				}
 
@@ -368,7 +368,7 @@ const headerActions = computed(() => {
 					type: 'switch',
 					icon: 'ti ti-photo',
 					text: i18n.ts.fileAttachedOnly,
-					ref: withFiles,
+					ref: onlyFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
 				});
 
