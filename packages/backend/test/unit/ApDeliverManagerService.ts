@@ -99,7 +99,7 @@ describe('ApDeliverManagerService', () => {
 					useFactory: () => ({
 						publishToFollowers: jest.fn(),
 					}),
-				}
+				},
 			],
 		}).compile();
 
@@ -411,6 +411,10 @@ describe('ApDeliverManagerService (SQL)', () => {
 			providers: [
 				ApDeliverManagerService,
 				{
+					provide: ApDeliverManagerService.name,
+					useExisting: ApDeliverManagerService,
+				},
+				{
 					provide: QueueService,
 					useFactory: () => ({
 						deliverMany: jest.fn(),
@@ -428,18 +432,31 @@ describe('ApDeliverManagerService (SQL)', () => {
 						},
 					},
 				},
+				{
+					provide: UserKeypairService,
+					useFactory: () => ({
+						refreshAndPrepareEd25519KeyPair: jest.fn(),
+					}),
+				},
+				{
+					provide: AccountUpdateService.name,
+					useFactory: () => ({
+						publishToFollowers: jest.fn(),
+					}),
+				},
 			],
 		}).compile();
 
 		app.enableShutdownHooks();
+		// Reset mocks
+		jest.clearAllMocks();
 
 		service = app.get<ApDeliverManagerService>(ApDeliverManagerService);
 		followingsRepository = app.get<FollowingsRepository>(DI.followingsRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
 
-		// Reset mocks
-		jest.clearAllMocks();
+		await service.onModuleInit();
 	});
 
 	afterEach(async () => {
