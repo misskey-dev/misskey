@@ -58,6 +58,10 @@ describe('ApDeliverManagerService', () => {
 			providers: [
 				ApDeliverManagerService,
 				{
+					provide: ApDeliverManagerService.name,
+					useExisting: ApDeliverManagerService,
+				},
+				{
 					provide: DI.followingsRepository,
 					useValue: {
 						find: jest.fn(),
@@ -89,6 +93,8 @@ describe('ApDeliverManagerService', () => {
 		followingsRepository = module.get(DI.followingsRepository);
 		queueService = module.get(QueueService);
 		apLoggerService = module.get(ApLoggerService);
+
+		await service.onModuleInit();
 	});
 
 	beforeEach(() => {
