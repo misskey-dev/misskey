@@ -16,7 +16,7 @@ import { bindThis } from '@/decorators.js';
 import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 
 @Injectable()
-export class AccountUpdateService {
+export class AccountUpdateService implements OnModuleInit {
 	private apDeliverManagerService: ApDeliverManagerService;
 	constructor(
 		private moduleRef: ModuleRef,
@@ -28,6 +28,10 @@ export class AccountUpdateService {
 		private apRendererService: ApRendererService,
 		private relayService: RelayService,
 	) {
+	}
+
+	async onModuleInit() {
+		this.apDeliverManagerService = this.moduleRef.get(ApDeliverManagerService.name);
 	}
 
 	private async createUpdatePersonActivity(user: MiLocalUser) {

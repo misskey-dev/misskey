@@ -31,6 +31,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { RelayService } from '@/core/RelayService.js';
 import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 import { MiRemoteUser } from '@/models/User.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -47,6 +48,9 @@ describe('UserSuspendService', () => {
 	let globalEventService: jest.Mocked<GlobalEventService>;
 	let apRendererService: jest.Mocked<ApRendererService>;
 	let moderationLogService: jest.Mocked<ModerationLogService>;
+	let userKeypairService: jest.Mocked<UserKeypairService>;
+	let accountUpdateService: AccountUpdateService;
+	let apDeliverManagerService: ApDeliverManagerService;
 
 	async function createUser(data: Partial<MiUser> = {}): Promise<MiUser> {
 		const user = {
@@ -92,6 +96,14 @@ describe('UserSuspendService', () => {
 				UserSuspendService,
 				AccountUpdateService,
 				ApDeliverManagerService,
+				{
+					provide: AccountUpdateService.name,
+					useExisting: AccountUpdateService,
+				},
+				{
+					provide: ApDeliverManagerService.name,
+					useExisting: ApDeliverManagerService,
+				},
 				{
 					provide: UserEntityService,
 					useFactory: () => ({
@@ -145,6 +157,12 @@ describe('UserSuspendService', () => {
 						},
 					}),
 				},
+				{
+					provide: UserKeypairService,
+					useFactory: () => ({
+						refreshAndPrepareEd25519KeyPair: jest.fn(),
+					}),
+				}
 			],
 		}).compile();
 
@@ -159,6 +177,12 @@ describe('UserSuspendService', () => {
 		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
 		apRendererService = app.get<ApRendererService>(ApRendererService) as jest.Mocked<ApRendererService>;
 		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
+		userKeypairService = app.get<UserKeypairService>(UserKeypairService) as jest.Mocked<UserKeypairService>;
+
+		apDeliverManagerService = app.get<ApDeliverManagerService>(ApDeliverManagerService);
+		await apDeliverManagerService.onModuleInit();
+		accountUpdateService = app.get<AccountUpdateService>(AccountUpdateService.name);
+		await accountUpdateService.onModuleInit();
 	});
 
 	beforeEach(() => {

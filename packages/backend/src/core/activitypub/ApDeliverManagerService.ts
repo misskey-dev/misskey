@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
@@ -17,6 +17,7 @@ import type Logger from '@/logger.js';
 import { UserKeypairService } from '../UserKeypairService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import type { PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
+import { ModuleRef } from '@nestjs/core';
 
 interface IRecipe {
 	type: string;
@@ -212,19 +213,25 @@ class DeliverManager {
 }
 
 @Injectable()
-export class ApDeliverManagerService {
+export class ApDeliverManagerService implements OnModuleInit {
 	private logger: Logger;
+	private accountUpdateService: AccountUpdateService;
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
 		private userKeypairService: UserKeypairService,
 		private queueService: QueueService,
-		private accountUpdateService: AccountUpdateService,
 		private apLoggerService: ApLoggerService,
 	) {
 		this.logger = this.apLoggerService.logger.createSubLogger('deliver-manager');
+	}
+
+	async onModuleInit() {
+		this.accountUpdateService = this.moduleRef.get(AccountUpdateService.name);
 	}
 
 	/**
