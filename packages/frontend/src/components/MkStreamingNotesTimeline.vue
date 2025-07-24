@@ -90,6 +90,9 @@ const props = withDefaults(defineProps<{
 	withReplies?: boolean;
 	withSensitive?: boolean;
 	onlyFiles?: boolean;
+	localOnly?: boolean;
+	remoteOnly?: boolean;
+	withHashtags?: boolean;
 	showYamiNonFollowingPublicNotes?: boolean;
 	showYamiFollowingNotes?: boolean;
 }>(), {
@@ -97,6 +100,9 @@ const props = withDefaults(defineProps<{
 	withReplies: false,
 	withSensitive: true,
 	onlyFiles: false,
+	localOnly: false,
+	remoteOnly: false,
+	withHashtags: false,
 	showYamiNonFollowingPublicNotes: false,
 	showYamiFollowingNotes: true,
 	sound: false,
@@ -149,6 +155,7 @@ if (props.src === 'antenna') {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
+			localOnly: props.localOnly,
 		})),
 		useShallowRef: true,
 	}));
@@ -157,6 +164,8 @@ if (props.src === 'antenna') {
 		computedParams: computed(() => ({
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+			remoteOnly: props.remoteOnly,
+			withHashtags: props.withHashtags,
 		})),
 		useShallowRef: true,
 	}));
@@ -347,11 +356,14 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
+			localOnly: props.localOnly,
 		});
 	} else if (props.src === 'global') {
 		connection = stream.useChannel('globalTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+			remoteOnly: props.remoteOnly,
+			withHashtags: props.withHashtags,
 		});
 	} else if (props.src === 'mentions') {
 		connection = stream.useChannel('main');
@@ -394,7 +406,7 @@ if (store.s.realtimeMode) {
 	connectChannel();
 }
 
-watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], () => {
+watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes, props.withReplies, props.onlyFiles, props.localOnly, props.remoteOnly, props.withHashtags], () => {
 	if (store.s.realtimeMode) {
 		disconnectChannel();
 		connectChannel();
