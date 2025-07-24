@@ -37,9 +37,12 @@ export class AccountUpdateService {
 	@bindThis
 	public async publishToFollowers(userId: MiUser['id']) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
-		if (user == null) throw new Error('user not found');
+		if (user == null || user.isDeleted) {
+			// ユーザーが存在しない、または削除されている場合は何もしない
+			return;
+		}
 
-		// 投稿者がローカルユーザーならUpdateを配信
+		// ローカルユーザーならUpdateを配信
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = await this.createUpdatePersonActivity(user);
 			this.apDeliverManagerService.deliverToFollowers(user, content);
@@ -50,9 +53,12 @@ export class AccountUpdateService {
 	@bindThis
 	async publishToFollowersAndSharedInboxAndRelays(userId: MiUser['id']) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
-		if (user == null) throw new Error('user not found');
+		if (user == null || user.isDeleted) {
+			// ユーザーが存在しない、または削除されている場合は何もしない
+			return;
+		}
 
-		// 投稿者がローカルユーザーならUpdateを配信
+		// ローカルユーザーならUpdateを配信
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = await this.createUpdatePersonActivity(user);
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
