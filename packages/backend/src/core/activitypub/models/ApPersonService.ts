@@ -390,7 +390,7 @@ export class ApPersonService implements OnModuleInit {
 				.then(isPublic => isPublic ? 'public' : 'private')
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('Create the Person: error occurred while fetching following/followers collection', { stack: err });
 					}
 					return 'private';
 				}),
@@ -416,7 +416,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
 			.then(_emojis => _emojis.map(emoji => emoji.name))
 			.catch(err => {
-				this.logger.error('error occurred while fetching user emojis', { stack: err });
+				this.logger.error('Create the Person: error occurred while fetching user emojis', { stack: err });
 				return [];
 			});
 		//#endregion
@@ -479,6 +479,7 @@ export class ApPersonService implements OnModuleInit {
 					(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
 					(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
 
+					this.logger.debug(`Create the Person: Saving public keys for user ${user.id}`, { keyIds: Array.from(publicKeys.keys()) });
 					await transactionalEntityManager.save(Array.from(publicKeys.values(), key => new MiUserPublickey({
 						keyId: key.id,
 						userId: user!.id,
@@ -491,7 +492,10 @@ export class ApPersonService implements OnModuleInit {
 			if (isDuplicateKeyValueError(e)) {
 				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
-				if (u == null) throw new Error('already registered');
+				if (u == null) {
+					this.logger.error('Create the Person: duplicate key error', { stack: e });
+					throw new Error('already registered');
+				}
 
 				user = u as MiRemoteUser;
 			} else {
