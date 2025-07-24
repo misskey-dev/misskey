@@ -152,6 +152,7 @@ describe('ApDeliverManagerService', () => {
 				{ id: mockLocalUser.id },
 				mockActivity,
 				expect.any(Map),
+				undefined,
 			);
 
 			// 呼び出されたinboxesを確認
@@ -185,6 +186,7 @@ describe('ApDeliverManagerService', () => {
 				{ id: mockLocalUser.id },
 				mockActivity,
 				expect.any(Map),
+				undefined,
 			);
 
 			const [, , inboxes] = queueService.deliverMany.mock.calls[0];
