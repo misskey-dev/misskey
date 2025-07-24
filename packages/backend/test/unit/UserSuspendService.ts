@@ -162,7 +162,7 @@ describe('UserSuspendService', () => {
 					useFactory: () => ({
 						refreshAndPrepareEd25519KeyPair: jest.fn(),
 					}),
-				}
+				},
 			],
 		}).compile();
 

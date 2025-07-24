@@ -16,6 +16,8 @@ import { QueueService } from '@/core/QueueService.js';
 import { FollowingsRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 describe('ApDeliverManagerService', () => {
 	let service: ApDeliverManagerService;
@@ -86,6 +88,18 @@ describe('ApDeliverManagerService', () => {
 						},
 					},
 				},
+				{
+					provide: UserKeypairService,
+					useFactory: () => ({
+						refreshAndPrepareEd25519KeyPair: jest.fn(),
+					}),
+				},
+				{
+					provide: AccountUpdateService.name,
+					useFactory: () => ({
+						publishToFollowers: jest.fn(),
+					}),
+				}
 			],
 		}).compile();
 
