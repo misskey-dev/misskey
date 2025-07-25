@@ -35,7 +35,7 @@
 			"url": "url",
 			"files": [
 				{
-					"name": "file",
+					"name": "files",
 					"accept": "*/*"
 				}
 			]

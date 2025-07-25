@@ -188,7 +188,7 @@ export class ClientServerService {
 					'url': 'url',
 					'files': [
 						{
-							'name': 'file',
+							'name': 'files',
 							'accept': '*/*',
 						},
 					],
