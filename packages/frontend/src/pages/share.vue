@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { get } from 'idb-keyval';
+import { get, del } from 'idb-keyval';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
@@ -204,9 +204,10 @@ async function init() {
 		if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
 			tempFiles.value = filesFromIdb;
 		}
+		del('share-files-temp'); // Clear the temporary files from IndexedDB
 	}
 
-	if (urlParams.has('file')) {
+	if (urlParams.has('file') && urlParams.get('file').startsWith('data:')) {
 		try {
 			const file = await window.fetch(urlParams.get('file')).then(res => res.blob());
 			if (file instanceof Blob) {
