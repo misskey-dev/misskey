@@ -43,11 +43,13 @@ globalThis.addEventListener('fetch', ev => {
 	//#region /sw/share
 	const url = new URL(ev.request.url);
 	if (url.pathname === '/sw/share') {
-    ev.respondWith((async () => {
+		ev.respondWith((async () => {
 			const responseUrl = new URL(ev.request.url);
 			responseUrl.pathname = '/share';
 			const formData = await ev.request.formData();
 
+			// とりあえず初期化 (IndexedDBの削除は時間がかかる可能性があるため空の配列をセット)
+			await set('share-url-temp', []);
 			if (formData.has('files')) {
 				const files = formData.getAll('files');
 				if (files.length > 0 && files.every(file => file instanceof Blob)) {
@@ -60,8 +62,8 @@ globalThis.addEventListener('fetch', ev => {
 				responseUrl.searchParams.set(key, value.toString());
 			}
 
-      return Response.redirect(responseUrl, 303);
-    })());
+			return Response.redirect(responseUrl, 303);
+		})());
 		return;
 	}
 
