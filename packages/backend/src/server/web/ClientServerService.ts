@@ -179,9 +179,9 @@ export class ClientServerService {
 				'purpose': 'any',
 			}],
 			'share_target': {
-				'action': '/share/',
-				'method': 'GET',
-				'enctype': 'application/x-www-form-urlencoded',
+				'action': '/sw/share',
+				'method': 'POST',
+				'enctype': 'multipart/form-data',
 				'params': {
 					'title': 'title',
 					'text': 'text',
@@ -189,7 +189,7 @@ export class ClientServerService {
 					'files': [
 						{
 							'name': 'file',
-							'accept': '*/*'
+							'accept': '*/*',
 						},
 					],
 				},
