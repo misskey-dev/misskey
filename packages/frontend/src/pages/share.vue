@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:initialText="initialText"
 			:initialVisibility="visibility"
 			:initialFiles="files"
+			:initialLocalFiles="tempFiles"
 			:initialLocalOnly="localOnly"
 			:reply="reply"
 			:renote="renote"
@@ -33,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import { get } from 'idb-keyval';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
@@ -41,7 +43,19 @@ import { definePage } from '@/page.js';
 import { postMessageToParentWindow } from '@/utility/post-message.js';
 import { i18n } from '@/i18n.js';
 
+//#region parameters
 const urlParams = new URLSearchParams(window.location.search);
+// merge hash parameters
+try {
+	const hashParams = new URLSearchParams(window.location.hash.slice(1));
+	for (const [key, value] of hashParams.entries()) {
+		urlParams.set(key, value);
+	}
+} catch (e) {
+	console.error('Failed to parse hash parameters:', e);
+}
+//#endregion
+
 const localOnlyQuery = urlParams.get('localOnly');
 const visibilityQuery = urlParams.get('visibility') as typeof Misskey.noteVisibilities[number];
 
@@ -56,6 +70,7 @@ const visibility = ref(Misskey.noteVisibilities.includes(visibilityQuery) ? visi
 const localOnly = ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
 const files = ref([] as Misskey.entities.DriveFile[]);
 const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
+const tempFiles = ref([] as File[]);
 
 async function init() {
 	let noteText = '';
@@ -182,6 +197,29 @@ async function init() {
 		});
 	}
 
+	//#region Local files
+	// If the browser supports IndexedDB, try to get the temporary files from temp.
+	if (typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function') : true) {
+		const filesFromIdb = await get<File[]>('share-files-temp');
+		if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
+			tempFiles.value = filesFromIdb;
+		}
+	}
+
+	if (urlParams.has('file')) {
+		try {
+			const file = await window.fetch(urlParams.get('file')).then(res => res.blob());
+			if (file instanceof Blob) {
+				tempFiles.value.push(file as File);
+			} else {
+				console.error('Fetched file is not a Blob:', file);
+			}
+		} catch (e) {
+			console.error('Failed to fetch file:', e);
+		}
+	}
+	//#endregion
+
 	state.value = 'writing';
 }
 
@@ -205,7 +243,26 @@ function onPosted(): void {
 	postMessageToParentWindow('misskey:shareForm:shareCompleted');
 }
 
-const headerActions = computed(() => []);
+const headerActions = computed(() => [
+	{
+		icon: 'ti ti-dots',
+		text: i18n.ts.menu,
+		handler: (ev: MouseEvent) => {
+			os.popupMenu([
+				{
+					icon: 'ti ti-home',
+					text: i18n.ts.goToMisskey,
+					action: () => goToMisskey(),
+				},
+				{
+					icon: 'ti ti-x',
+					text: i18n.ts.close,
+					action: () => close(),
+				},
+			], ev.currentTarget ?? ev.target);
+		},
+	},
+]);
 
 const headerTabs = computed(() => []);
 

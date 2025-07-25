@@ -58,7 +58,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { useUploader } from '@/composables/use-uploader.js';
+import { FileUploader } from '@/composables/use-uploader.js';
 import MkUploaderItems from '@/components/MkUploaderItems.vue';
 
 const $i = ensureSignin();
@@ -80,7 +80,7 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-const uploader = useUploader({
+const uploader = new FileUploader({
 	multiple: props.multiple,
 	folderId: props.folderId,
 	features: props.features,

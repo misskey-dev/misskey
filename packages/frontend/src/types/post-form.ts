@@ -15,6 +15,7 @@ export interface PostFormProps {
 	initialCw?: string;
 	initialVisibility?: (typeof Misskey.noteVisibilities)[number];
 	initialFiles?: Misskey.entities.DriveFile[];
+	initialLocalFiles?: File[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: Misskey.entities.UserDetailed[];
 	initialNote?: Misskey.entities.Note;

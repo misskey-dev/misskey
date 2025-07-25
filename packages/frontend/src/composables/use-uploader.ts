@@ -99,31 +99,43 @@ function getCompressionSettings(level: 0 | 1 | 2 | 3) {
 	}
 }
 
-export function useUploader(options: {
-	folderId?: string | null;
-	multiple?: boolean;
-	features?: UploaderFeatures;
-} = {}) {
-	const $i = ensureSignin();
-
-	const events = new EventEmitter<{
+export class FileUploader {
+	private $i: Misskey.entities.MeDetailed;
+	public events = new EventEmitter<{
 		'itemUploaded': (ctx: { item: UploaderItem; }) => void;
 	}>();
-
-	const uploaderFeatures = computed<Required<UploaderFeatures>>(() => {
+	private uploaderFeatures = computed<Required<UploaderFeatures>>(() => {
 		return {
-			imageEditing: options.features?.imageEditing ?? true,
-			watermark: options.features?.watermark ?? true,
+			imageEditing: this.options.features?.imageEditing ?? true,
+			watermark: this.options.features?.watermark ?? true,
 		};
 	});
+	public items = ref<UploaderItem[]>([]);
+	public uploading = computed(() => this.items.value.some(item => item.uploading));
+	public readyForUpload = computed(() => this.items.value.length > 0 && this.items.value.some(item => item.uploaded == null) && !this.items.value.some(item => item.uploading || item.preprocessing));
+	public allItemsUploaded = computed(() => this.items.value.every(item => item.uploaded != null));
 
-	const items = ref<UploaderItem[]>([]);
+	constructor(
+		public options: {
+			folderId?: string | null;
+			multiple?: boolean;
+			features?: UploaderFeatures;
+		} = {}
+	) {
+		this.$i = ensureSignin();
 
-	function initializeFile(file: File) {
+		onUnmounted(() => {
+			for (const item of this.items.value) {
+				if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+			}
+		});
+	}
+
+	private initializeFile(file: File) {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
 		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
-		items.value.push({
+		this.items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
 			progress: null,
@@ -134,27 +146,27 @@ export function useUploader(options: {
 			uploaded: null,
 			uploadFailed: false,
 			compressionLevel: prefer.s.defaultImageCompressionLevel,
-			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
+			watermarkPresetId: this.uploaderFeatures.value.watermark && this.$i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
 			file: markRaw(file),
 		});
-		const reactiveItem = items.value.at(-1)!;
-		preprocess(reactiveItem).then(() => {
-			triggerRef(items);
+		const reactiveItem = this.items.value.at(-1)!;
+		this.preprocess(reactiveItem).then(() => {
+			triggerRef(this.items);
 		});
 	}
 
-	function addFiles(newFiles: File[]) {
+	public addFiles(newFiles: File[]) {
 		for (const file of newFiles) {
-			initializeFile(file);
+			this.initializeFile(file);
 		}
 	}
 
-	function removeItem(item: UploaderItem) {
+	public removeItem(item: UploaderItem) {
 		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-		items.value.splice(items.value.indexOf(item), 1);
+		this.items.value.splice(this.items.value.indexOf(item), 1);
 	}
 
-	function getMenu(item: UploaderItem): MenuItem[] {
+	public getMenu(item: UploaderItem): MenuItem[] {
 		const menu: MenuItem[] = [];
 
 		if (
@@ -206,7 +218,7 @@ export function useUploader(options: {
 		}
 
 		if (
-			uploaderFeatures.value.imageEditing &&
+			this.uploaderFeatures.value.imageEditing &&
 			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
@@ -222,14 +234,14 @@ export function useUploader(options: {
 					action: async () => {
 						const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
 						if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-						items.value.splice(items.value.indexOf(item), 1, {
+						this.items.value.splice(this.items.value.indexOf(item), 1, {
 							...item,
 							file: markRaw(cropped),
 							thumbnail: window.URL.createObjectURL(cropped),
 						});
-						const reactiveItem = items.value.find(x => x.id === item.id)!;
-						preprocess(reactiveItem).then(() => {
-							triggerRef(items);
+						const reactiveItem = this.items.value.find(x => x.id === item.id)!;
+						this.preprocess(reactiveItem).then(() => {
+							triggerRef(this.items);
 						});
 					},
 				}, /*{
@@ -247,14 +259,14 @@ export function useUploader(options: {
 						}, {
 							ok: (file) => {
 								if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-								items.value.splice(items.value.indexOf(item), 1, {
+								this.items.value.splice(this.items.value.indexOf(item), 1, {
 									...item,
 									file: markRaw(file),
 									thumbnail: window.URL.createObjectURL(file),
 								});
-								const reactiveItem = items.value.find(x => x.id === item.id)!;
-								preprocess(reactiveItem).then(() => {
-									triggerRef(items);
+								const reactiveItem = this.items.value.find(x => x.id === item.id)!;
+								this.preprocess(reactiveItem).then(() => {
+									triggerRef(this.items);
 								});
 							},
 							closed: () => dispose(),
@@ -265,19 +277,19 @@ export function useUploader(options: {
 		}
 
 		if (
-			uploaderFeatures.value.watermark &&
-			$i.policies.watermarkAvailable &&
+			this.uploaderFeatures.value.watermark &&
+			this.$i.policies.watermarkAvailable &&
 			WATERMARK_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changeWatermarkPreset(presetId: string | null) {
+			const changeWatermarkPreset = (presetId: string | null) => {
 				item.watermarkPresetId = presetId;
-				preprocess(item).then(() => {
-					triggerRef(items);
+				this.preprocess(item).then(() => {
+					triggerRef(this.items);
 				});
-			}
+			};
 
 			menu.push({
 				icon: 'ti ti-copyright',
@@ -323,12 +335,12 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changeCompressionLevel(level: 0 | 1 | 2 | 3) {
+			const changeCompressionLevel = (level: 0 | 1 | 2 | 3) => {
 				item.compressionLevel = level;
-				preprocess(item).then(() => {
-					triggerRef(items);
+				this.preprocess(item).then(() => {
+					triggerRef(this.items);
 				});
-			}
+			};
 
 			menu.push({
 				icon: 'ti ti-leaf',
@@ -381,14 +393,14 @@ export function useUploader(options: {
 				icon: 'ti ti-upload',
 				text: i18n.ts.upload,
 				action: () => {
-					uploadOne(item);
+					this.uploadOne(item);
 				},
 			}, {
 				icon: 'ti ti-x',
 				text: i18n.ts.remove,
 				danger: true,
 				action: () => {
-					removeItem(item);
+					this.removeItem(item);
 				},
 			});
 		} else if (item.uploading) {
@@ -409,13 +421,13 @@ export function useUploader(options: {
 		return menu;
 	}
 
-	async function uploadOne(item: UploaderItem): Promise<void> {
+	private async uploadOne(item: UploaderItem): Promise<void> {
 		item.uploadFailed = false;
 		item.uploading = true;
 
 		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
 			name: item.uploadName ?? item.name,
-			folderId: options.folderId === undefined ? prefer.s.uploadFolder : options.folderId,
+			folderId: this.options.folderId === undefined ? prefer.s.uploadFolder : this.options.folderId,
 			isSensitive: item.isSensitive ?? false,
 			caption: item.caption ?? null,
 			onProgress: (progress) => {
@@ -438,7 +450,7 @@ export function useUploader(options: {
 		await filePromise.then((file) => {
 			item.uploaded = file;
 			item.abort = null;
-			events.emit('itemUploaded', { item });
+			this.events.emit('itemUploaded', { item });
 		}).catch(err => {
 			item.uploadFailed = true;
 			item.progress = null;
@@ -450,26 +462,26 @@ export function useUploader(options: {
 		});
 	}
 
-	async function upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
-		items.value = items.value.map(item => ({
+	public async upload() { // エラーハンドリングなどを考慮してシーケンシャルにやる
+		this.items.value = this.items.value.map(item => ({
 			...item,
 			aborted: false,
 			uploadFailed: false,
 			uploading: false,
 		}));
 
-		for (const item of items.value.filter(item => item.uploaded == null)) {
+		for (const item of this.items.value.filter(item => item.uploaded == null)) {
 			// アップロード処理途中で値が変わる場合（途中で全キャンセルされたりなど）もあるので、Array filterではなくここでチェック
 			if (item.aborted) {
 				continue;
 			}
 
-			await uploadOne(item);
+			await this.uploadOne(item);
 		}
 	}
 
-	function abortAll() {
-		for (const item of items.value) {
+	public abortAll() {
+		for (const item of this.items.value) {
 			if (item.uploaded != null) {
 				continue;
 			}
@@ -482,12 +494,12 @@ export function useUploader(options: {
 		}
 	}
 
-	async function preprocess(item: UploaderItem): Promise<void> {
+	private async preprocess(item: UploaderItem): Promise<void> {
 		item.preprocessing = true;
 
 		try {
 			if (IMAGE_PREPROCESS_NEEDED_TYPES.includes(item.file.type)) {
-				await preprocessForImage(item);
+				await this.preprocessForImage(item);
 			}
 		} catch (err) {
 			console.error('Failed to preprocess image', err);
@@ -498,12 +510,12 @@ export function useUploader(options: {
 		item.preprocessing = false;
 	}
 
-	async function preprocessForImage(item: UploaderItem): Promise<void> {
+	private async preprocessForImage(item: UploaderItem): Promise<void> {
 		const imageBitmap = await window.createImageBitmap(item.file);
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
+		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && this.$i.policies.watermarkAvailable;
 		const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
 		if (needsWatermark && preset != null) {
 			const canvas = window.document.createElement('canvas');
@@ -563,24 +575,4 @@ export function useUploader(options: {
 		item.thumbnail = THUMBNAIL_SUPPORTED_TYPES.includes(preprocessedFile.type) ? window.URL.createObjectURL(preprocessedFile) : null;
 		item.preprocessedFile = markRaw(preprocessedFile);
 	}
-
-	onUnmounted(() => {
-		for (const item of items.value) {
-			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-		}
-	});
-
-	return {
-		items,
-		addFiles,
-		removeItem,
-		abortAll,
-		upload,
-		getMenu,
-		uploading: computed(() => items.value.some(item => item.uploading)),
-		readyForUpload: computed(() => items.value.length > 0 && items.value.some(item => item.uploaded == null) && !items.value.some(item => item.uploading || item.preprocessing)),
-		allItemsUploaded: computed(() => items.value.every(item => item.uploaded != null)),
-		events,
-	};
 }
-

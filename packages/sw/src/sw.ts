@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { get } from 'idb-keyval';
+import { get, set } from 'idb-keyval';
 import * as Misskey from 'misskey-js';
 import type { PushNotificationDataMap } from '@/types.js';
 import type { I18n } from '@@/js/i18n.js';
@@ -39,7 +39,32 @@ async function offlineContentHTML() {
 	return `<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta content="width=device-width,initial-scale=1"name="viewport"><title>${messages.title}</title><style>body{background-color:#0c1210;color:#dee7e4;font-family:Hiragino Maru Gothic Pro,BIZ UDGothic,Roboto,HelveticaNeue,Arial,sans-serif;line-height:1.35;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;box-sizing:border-box}.icon{max-width:120px;width:100%;height:auto;margin-bottom:20px;}.message{text-align:center;font-size:20px;font-weight:700;margin-bottom:20px}.version{text-align:center;font-size:90%;margin-bottom:20px}button{padding:7px 14px;min-width:100px;font-weight:700;font-family:Hiragino Maru Gothic Pro,BIZ UDGothic,Roboto,HelveticaNeue,Arial,sans-serif;line-height:1.35;border-radius:99rem;background-color:#b4e900;color:#192320;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}button:hover{background-color:#c6ff03}</style></head><body><svg class="icon"fill="none"height="24"stroke="currentColor"stroke-linecap="round"stroke-linejoin="round"stroke-width="2"viewBox="0 0 24 24"width="24"xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z"fill="none"stroke="none"/><path d="M9.58 5.548c.24 -.11 .492 -.207 .752 -.286c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 .957 -.383 1.824 -1.003 2.454m-2.997 1.033h-11.343c-2.572 -.004 -4.657 -2.011 -4.657 -4.487c0 -2.475 2.085 -4.482 4.657 -4.482c.13 -.582 .37 -1.128 .7 -1.62"/><path d="M3 3l18 18"/></svg><div class="message">${messages.header}</div><div class="version">v${_VERSION_}</div><button onclick="reloadPage()">${messages.reload}</button><script>function reloadPage(){location.reload(!0)}</script></body></html>`;
 }
 
-globalThis.addEventListener('fetch', ev => {
+globalThis.addEventListener('fetch', async ev => {
+	//#region /sw/share
+	const url = new URL(ev.request.url);
+	if (url.pathname === '/sw/share') {
+    ev.respondWith((async () => {
+			const responseUrl = new URL(ev.request.url);
+			responseUrl.pathname = '/share';
+			const formData = await ev.request.formData();
+
+			if (formData.has('files')) {
+				const files = formData.getAll('files');
+				if (files.length > 0 && files.every(file => file instanceof Blob)) {
+					set('share-files-temp', files);
+				}
+			}
+
+			formData.delete('files');
+			for (const [key, value] of formData.entries()) {
+				responseUrl.searchParams.set(key, value.toString());
+			}
+
+      return Response.redirect(responseUrl, 303);
+    })());
+	}
+
+	//#region others
 	let isHTMLRequest = false;
 	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
 		isHTMLRequest = true;
@@ -62,6 +87,7 @@ globalThis.addEventListener('fetch', ev => {
 				});
 			}),
 	);
+	//#endregion
 });
 
 globalThis.addEventListener('push', ev => {
