@@ -204,7 +204,6 @@ async function init() {
 		if (Array.isArray(filesFromIdb) && filesFromIdb.length > 0 && filesFromIdb.every(file => file instanceof Blob)) {
 			tempFiles.value = filesFromIdb;
 		}
-		del('share-files-temp'); // Clear the temporary files from IndexedDB
 	}
 
 	if (urlParams.has('file') && urlParams.get('file').startsWith('data:')) {
@@ -241,6 +240,8 @@ function goToMisskey(): void {
 
 function onPosted(): void {
 	state.value = 'posted';
+	// SWが保存したファイルは投稿が完了するまでIndexedDBに保持
+	del('share-files-temp');
 	postMessageToParentWindow('misskey:shareForm:shareCompleted');
 }
 
