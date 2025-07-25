@@ -186,6 +186,12 @@ export class ClientServerService {
 					'title': 'title',
 					'text': 'text',
 					'url': 'url',
+					'files': [
+						{
+							'name': 'file',
+							'accept': '*/*'
+						},
+					],
 				},
 			},
 		};

@@ -32,7 +32,13 @@
 		"params": {
 			"title": "title",
 			"text": "text",
-			"url": "url"
+			"url": "url",
+			"files": [
+				{
+					"name": "file",
+					"accept": "*/*"
+				}
+			]
 		}
 	}
 }
