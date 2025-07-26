@@ -40,7 +40,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									:src="embedPreviewUrl"
 									:class="$style.embedCodeGenPreviewIframe"
 									:style="{ height: `${iframeHeight}px` }"
-									@load="iframeOnLoad"
 								></iframe>
 							</div>
 						</div>
@@ -217,16 +216,6 @@ const resizeObserver = new ResizeObserver(() => {
 	calcScale();
 });
 
-function iframeOnLoad() {
-	iframeEl.value?.contentWindow?.addEventListener('beforeunload', () => {
-		iframeLoading.value = true;
-		nextTick(() => {
-			iframeHeight.value = 0;
-			iframeScale.value = 1;
-		});
-	});
-}
-
 function windowEventHandler(event: MessageEvent) {
 	if (event.source !== iframeEl.value?.contentWindow) {
 		return;
@@ -244,6 +233,13 @@ function windowEventHandler(event: MessageEvent) {
 		nextTick(() => {
 			calcScale();
 			iframeLoading.value = false; // 初回の高さ変更まで待つ
+		});
+	}
+	if (event.data.type === 'misskey:embed:beforeUnload') {
+		iframeLoading.value = true; // iframeがunloadされるので、リサイズを待つ
+		nextTick(() => {
+			iframeHeight.value = 0;
+			iframeScale.value = 1;
 		});
 	}
 }

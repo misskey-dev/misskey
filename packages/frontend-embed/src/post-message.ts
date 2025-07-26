@@ -5,6 +5,7 @@
 
 export const postMessageEventTypes = [
 	'misskey:embed:ready',
+	'misskey:embed:beforeUnload',
 	'misskey:embed:changeHeight',
 ] as const;
 
@@ -12,6 +13,7 @@ export type PostMessageEventType = typeof postMessageEventTypes[number];
 
 export interface PostMessageEventPayload extends Record<PostMessageEventType, any> {
 	'misskey:embed:ready': undefined;
+	'misskey:embed:beforeUnload': undefined;
 	'misskey:embed:changeHeight': {
 		height: number;
 	};

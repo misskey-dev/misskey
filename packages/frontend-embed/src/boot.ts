@@ -164,6 +164,10 @@ const rootEl = ((): HTMLElement => {
 
 postMessageToParentWindow('misskey:embed:ready');
 
+window.addEventListener('beforeunload', () => {
+	postMessageToParentWindow('misskey:embed:beforeUnload');
+});
+
 app.mount(rootEl);
 
 // boot.jsのやつを解除
