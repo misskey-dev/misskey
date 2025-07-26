@@ -403,7 +403,7 @@ export class ClientServerService {
 
 		// Embed Javascript
 		fastify.get('/embed.js', async (request, reply) => {
-			return await reply.sendFile('/embed.js', staticAssets, {
+			return await reply.sendFile('/embed.js', frontendEmbedViteOut, {
 				maxAge: ms('1 day'),
 			});
 		});
@@ -795,82 +795,84 @@ export class ClientServerService {
 		});
 		//#endregion
 
-		//#region embed pages
-		fastify.get<{ Params: { user: string; } }>('/embed/user-timeline/:user', async (request, reply) => {
-			reply.removeHeader('X-Frame-Options');
+		//#region embed page
+		if (process.env.NODE_ENV !== 'production' || this.config.embedPage == null) {
+			fastify.get<{ Params: { user: string; } }>('/embed/user-timeline/:user', async (request, reply) => {
+				reply.removeHeader('X-Frame-Options');
 
-			const user = await this.usersRepository.findOneBy({
-				id: request.params.user,
+				const user = await this.usersRepository.findOneBy({
+					id: request.params.user,
+				});
+
+				if (user == null) return;
+				if (user.host != null) return;
+
+				const _user = await this.userEntityService.pack(user);
+
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('base-embed', {
+					title: this.meta.name ?? 'Misskey',
+					...await this.generateCommonPugData(this.meta),
+					embedCtx: htmlSafeJsonStringify({
+						user: _user,
+					}),
+				});
 			});
 
-			if (user == null) return;
-			if (user.host != null) return;
+			fastify.get<{ Params: { note: string; } }>('/embed/notes/:note', async (request, reply) => {
+				reply.removeHeader('X-Frame-Options');
 
-			const _user = await this.userEntityService.pack(user);
+				const note = await this.notesRepository.findOneBy({
+					id: request.params.note,
+				});
 
-			reply.header('Cache-Control', 'public, max-age=3600');
-			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonPugData(this.meta),
-				embedCtx: htmlSafeJsonStringify({
-					user: _user,
-				}),
-			});
-		});
+				if (note == null) return;
+				if (['specified', 'followers'].includes(note.visibility)) return;
+				if (note.userHost != null) return;
 
-		fastify.get<{ Params: { note: string; } }>('/embed/notes/:note', async (request, reply) => {
-			reply.removeHeader('X-Frame-Options');
+				const _note = await this.noteEntityService.pack(note, null, { detail: true });
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
-			});
-
-			if (note == null) return;
-			if (['specified', 'followers'].includes(note.visibility)) return;
-			if (note.userHost != null) return;
-
-			const _note = await this.noteEntityService.pack(note, null, { detail: true });
-
-			reply.header('Cache-Control', 'public, max-age=3600');
-			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonPugData(this.meta),
-				embedCtx: htmlSafeJsonStringify({
-					note: _note,
-				}),
-			});
-		});
-
-		fastify.get<{ Params: { clip: string; } }>('/embed/clips/:clip', async (request, reply) => {
-			reply.removeHeader('X-Frame-Options');
-
-			const clip = await this.clipsRepository.findOneBy({
-				id: request.params.clip,
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('base-embed', {
+					title: this.meta.name ?? 'Misskey',
+					...await this.generateCommonPugData(this.meta),
+					embedCtx: htmlSafeJsonStringify({
+						note: _note,
+					}),
+				});
 			});
 
-			if (clip == null) return;
+			fastify.get<{ Params: { clip: string; } }>('/embed/clips/:clip', async (request, reply) => {
+				reply.removeHeader('X-Frame-Options');
 
-			const _clip = await this.clipEntityService.pack(clip);
+				const clip = await this.clipsRepository.findOneBy({
+					id: request.params.clip,
+				});
 
-			reply.header('Cache-Control', 'public, max-age=3600');
-			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonPugData(this.meta),
-				embedCtx: htmlSafeJsonStringify({
-					clip: _clip,
-				}),
+				if (clip == null) return;
+
+				const _clip = await this.clipEntityService.pack(clip);
+
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('base-embed', {
+					title: this.meta.name ?? 'Misskey',
+					...await this.generateCommonPugData(this.meta),
+					embedCtx: htmlSafeJsonStringify({
+						clip: _clip,
+					}),
+				});
 			});
-		});
 
-		fastify.get('/embed/*', async (request, reply) => {
-			reply.removeHeader('X-Frame-Options');
+			fastify.get('/embed/*', async (request, reply) => {
+				reply.removeHeader('X-Frame-Options');
 
-			reply.header('Cache-Control', 'public, max-age=3600');
-			return await reply.view('base-embed', {
-				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonPugData(this.meta),
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('base-embed', {
+					title: this.meta.name ?? 'Misskey',
+					...await this.generateCommonPugData(this.meta),
+				});
 			});
-		});
+		}
 
 		fastify.get('/_info_card_', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');

@@ -10,7 +10,6 @@ const providedMetaEl = document.getElementById('misskey_meta');
 
 const _serverMetadata: Misskey.entities.MetaDetailed | null = (providedMetaEl && providedMetaEl.textContent) ? JSON.parse(providedMetaEl.textContent) : null;
 
-// NOTE: devモードのときしか _serverMetadata が null になることは無い
 export const serverMetadata: Misskey.entities.MetaDetailed = _serverMetadata ?? await misskeyApi('meta', {
 	detail: true,
 });

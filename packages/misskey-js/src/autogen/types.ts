@@ -5395,6 +5395,7 @@ export type components = {
             maxFileSize: number;
             /** @enum {string} */
             federation: 'all' | 'specified' | 'none';
+            embedBaseUrl: string | null;
         };
         MetaDetailedOnly: {
             features?: {

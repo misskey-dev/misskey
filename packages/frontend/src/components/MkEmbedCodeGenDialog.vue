@@ -105,6 +105,7 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
 
@@ -145,6 +146,12 @@ const paramsForUrl = computed<EmbedParams>(() => ({
 	rounded: rounded.value,
 	border: border.value,
 }));
+const baseUrl = computed(() => {
+	if (instance.embedBaseUrl) {
+		return instance.embedBaseUrl;
+	}
+	return url + '/embed/';
+});
 
 // プレビュー用params（手動で更新を掛けるのでref）
 const paramsForPreview = ref<EmbedParams>(props.params ?? {});
@@ -155,7 +162,7 @@ const embedPreviewUrl = computed(() => {
 		const maxHeight = parseInt(paramClass.get('maxHeight')!);
 		paramClass.set('maxHeight', maxHeight === 0 ? '500' : Math.min(maxHeight, 700).toString()); // プレビューであまりにも縮小されると見づらいため、700pxまでに制限
 	}
-	return `${url}/embed/${props.entity}/${props.id}${paramClass.toString() ? '?' + paramClass.toString() : ''}`;
+	return `${baseUrl.value}${props.entity}/${props.id}${paramClass.toString() ? '?' + paramClass.toString() : ''}`;
 });
 
 const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(props.entity));
@@ -188,7 +195,7 @@ function applyToPreview() {
 const result = ref('');
 
 function generate() {
-	result.value = getEmbedCode(`/embed/${props.entity}/${props.id}`, paramsForUrl.value);
+	result.value = getEmbedCode(`${props.entity}/${props.id}`, paramsForUrl.value);
 	phase.value = 'result';
 }
 

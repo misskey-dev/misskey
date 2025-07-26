@@ -1,6 +1,8 @@
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
-import { type UserConfig, defineConfig } from 'vite';
+import pluginCopyLocales from './lib/vite-plugin-copy-locales.js';
+import { defineConfig } from 'vite';
+import type { UserConfig, BuildEnvironmentOptions } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
 
@@ -9,7 +11,9 @@ import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
 
-const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
+const configFile = yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8'));
+const isStandaloneMode = (process.env.NODE_ENV === 'production' && configFile.embedPage != null);
+const url = process.env.NODE_ENV === 'development' ? configFile.url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -63,8 +67,64 @@ function toBase62(n: number): string {
 }
 
 export function getConfig(): UserConfig {
+	let build: BuildEnvironmentOptions = {
+		target: [
+			'chrome116',
+			'firefox116',
+			'safari16',
+		],
+		manifest: 'manifest.json',
+		rollupOptions: {
+			input: {
+				app: './src/boot.ts',
+			},
+			external: externalPackages.map(p => p.match),
+			output: {
+				manualChunks: {
+					vue: ['vue'],
+				},
+				chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
+				assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+				paths(id) {
+					for (const p of externalPackages) {
+						if (p.match.test(id)) {
+							return p.path(id, p.match);
+						}
+					}
+
+					return id;
+				},
+			},
+		},
+		cssCodeSplit: true,
+		outDir: __dirname + '/../../built/_frontend_embed_vite_',
+		assetsDir: '.',
+		emptyOutDir: false,
+		sourcemap: process.env.NODE_ENV === 'development',
+		reportCompressedSize: false,
+
+		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
+		commonjsOptions: {
+			include: [/misskey-js/, /node_modules/],
+		},
+	};
+
+	if (isStandaloneMode) {
+		build = {
+			...build,
+			manifest: false,
+			rollupOptions: {
+				...build.rollupOptions,
+				input: {
+					app: './index.html',
+				},
+			},
+			emptyOutDir: true,
+		};
+	}
+
 	return {
-		base: '/embed_vite/',
+		base: isStandaloneMode ? configFile.embedPage?.basePath ?? '/' : '/embed_vite/',
 
 		// The console is shared with backend, so clearing the console will also clear the backend log.
 		clearScreen: false,
@@ -86,6 +146,7 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginVue(),
 			pluginJson5(),
+			...(isStandaloneMode ? [pluginCopyLocales()] : []), // Standaloneモードではindex.htmlを読み込むためのプラグインを追加しない
 		],
 
 		resolve: {
@@ -119,6 +180,7 @@ export function getConfig(): UserConfig {
 		define: {
 			_VERSION_: JSON.stringify(meta.version),
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
+			_MISSKEY_URL_: JSON.stringify(configFile.url.replace(/\/$/, '')),
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
@@ -126,47 +188,7 @@ export function getConfig(): UserConfig {
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
-		build: {
-			target: [
-				'chrome116',
-				'firefox116',
-				'safari16',
-			],
-			manifest: 'manifest.json',
-			rollupOptions: {
-				input: {
-					app: './src/boot.ts',
-				},
-				external: externalPackages.map(p => p.match),
-				output: {
-					manualChunks: {
-						vue: ['vue'],
-					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
-					paths(id) {
-						for (const p of externalPackages) {
-							if (p.match.test(id)) {
-								return p.path(id, p.match);
-							}
-						}
-
-						return id;
-					},
-				},
-			},
-			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_frontend_embed_vite_',
-			assetsDir: '.',
-			emptyOutDir: false,
-			sourcemap: process.env.NODE_ENV === 'development',
-			reportCompressedSize: false,
-
-			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
-			commonjsOptions: {
-				include: [/misskey-js/, /node_modules/],
-			},
-		},
+		build,
 
 		worker: {
 			format: 'es',

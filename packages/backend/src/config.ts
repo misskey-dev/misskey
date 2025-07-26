@@ -70,6 +70,11 @@ type Source = {
 		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
 	};
 
+	embedPage?: {
+		host: string;
+		basePath?: string;
+	};
+
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
 	setupPassword?: string;
@@ -203,6 +208,10 @@ export type Config = {
 		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
 		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
 	} | undefined;
+	embedPage: {
+		host: string;
+		basePath: string;
+	} | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
@@ -288,6 +297,10 @@ export function loadConfig(): Config {
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
 		sentryForBackend: config.sentryForBackend,
 		sentryForFrontend: config.sentryForFrontend,
+		embedPage: config.embedPage ? {
+			host: config.embedPage.host,
+			basePath: config.embedPage.basePath ?? '/',
+		} : undefined,
 		id: config.id,
 		proxy: config.proxy,
 		proxySmtp: config.proxySmtp,
