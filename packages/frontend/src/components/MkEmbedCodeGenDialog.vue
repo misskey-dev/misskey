@@ -237,7 +237,7 @@ function windowEventHandler(event: MessageEvent) {
 			payload: {
 				iframeId: 'embedCodeGen', // 同じタイミングで複数のembed iframeがある際の区別用なのでここではなんでもいい
 			},
-		});
+		}, '*');
 	}
 	if (event.data.type === 'misskey:embed:changeHeight') {
 		iframeHeight.value = event.data.payload.height;
