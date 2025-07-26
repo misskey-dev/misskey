@@ -1,6 +1,5 @@
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
-import pluginCopyLocales from './lib/vite-plugin-copy-locales.js';
 import { defineConfig } from 'vite';
 import type { UserConfig, BuildEnvironmentOptions } from 'vite';
 import * as yaml from 'js-yaml';
@@ -146,7 +145,6 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginVue(),
 			pluginJson5(),
-			...(isStandaloneMode ? [pluginCopyLocales()] : []), // Standaloneモードではindex.htmlを読み込むためのプラグインを追加しない
 		],
 
 		resolve: {
@@ -180,6 +178,7 @@ export function getConfig(): UserConfig {
 		define: {
 			_VERSION_: JSON.stringify(meta.version),
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
+			_EMBED_STANDALONE_MODE_: JSON.stringify(isStandaloneMode),
 			_MISSKEY_URL_: JSON.stringify(configFile.url.replace(/\/$/, '')),
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',

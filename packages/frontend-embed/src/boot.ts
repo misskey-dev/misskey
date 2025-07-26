@@ -12,6 +12,10 @@ if (import.meta.env.DEV) {
 	await import('icons-subsetter/built/tabler-icons-frontendEmbed.css');
 }
 
+if (_EMBED_STANDALONE_MODE_) {
+	await import ('@/style.standalone.scss');
+}
+
 import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import defaultLightTheme from '@@/themes/l-light.json5';
@@ -35,6 +39,15 @@ console.log('Misskey Embed');
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
 if (_DEV_) console.log(embedParams);
+
+if (_EMBED_STANDALONE_MODE_) {
+	if (!embedParams.rounded) {
+		window.document.documentElement.classList.add('norounded');
+	}
+	if (!embedParams.border) {
+		window.document.documentElement.classList.add('noborder');
+	}
+}
 //#endregion
 
 //#region テーマ
@@ -79,7 +92,7 @@ if (embedParams.colorMode === 'dark') {
 const localeVersion = localStorage.getItem('localeVersion');
 const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
 if (localeOutdated) {
-	const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+	const res = await window.fetch(_EMBED_STANDALONE_MODE_ ? `${import.meta.env.BASE_URL}locales/${lang}.${version}.json` : `/assets/locales/${lang}.${version}.json`);
 	if (res.status === 200) {
 		const newLocale = await res.text();
 		const parsedNewLocale = JSON.parse(newLocale);

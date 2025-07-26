@@ -236,7 +236,9 @@ export class ClientServerService {
 		});
 
 		//#region vite assets
-		if (this.config.frontendEmbedManifestExists) {
+		const configUrl = new URL(this.config.url);
+		const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
+		if (this.config.frontendManifestExists) {
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
 					root: frontendViteOut,
@@ -245,6 +247,19 @@ export class ClientServerService {
 					immutable: true,
 					decorateReply: false,
 				});
+				fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
+				done();
+			});
+		} else {
+			const port = (process.env.VITE_PORT ?? '5173');
+			fastify.register(fastifyProxy, {
+				upstream: urlOriginWithoutPort + ':' + port,
+				prefix: '/vite',
+				rewritePrefix: '/vite',
+			});
+		}
+		if (this.config.frontendEmbedManifestExists) {
+			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
 					root: frontendEmbedViteOut,
 					prefix: '/embed_vite/',
@@ -255,20 +270,10 @@ export class ClientServerService {
 				fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
 				done();
 			});
-		} else {
-			const configUrl = new URL(this.config.url);
-			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
-
-			const port = (process.env.VITE_PORT ?? '5173');
+		} else if (process.env.NODE_ENV === 'production' && this.config.embedPage != null) {
+			const port = (process.env.EMBED_VITE_PORT ?? '5174');
 			fastify.register(fastifyProxy, {
 				upstream: urlOriginWithoutPort + ':' + port,
-				prefix: '/vite',
-				rewritePrefix: '/vite',
-			});
-
-			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
-			fastify.register(fastifyProxy, {
-				upstream: urlOriginWithoutPort + ':' + embedPort,
 				prefix: '/embed_vite',
 				rewritePrefix: '/embed_vite',
 			});

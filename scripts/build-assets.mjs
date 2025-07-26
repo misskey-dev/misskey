@@ -45,6 +45,15 @@ async function copyFrontendLocales() {
   }
 }
 
+async function copyStandaloneFrontendEmbedLocales() {
+	await fs.mkdir('./built/_frontend_embed_vite_/locales', { recursive: true });
+	const v = { '_version_': meta.version };
+
+	for (const [lang, locale] of Object.entries(locales)) {
+		await fs.writeFile(`./built/_frontend_embed_vite_/locales/${lang}.${meta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
+	}
+}
+
 async function copyBackendViews() {
   await fs.cp('./packages/backend/src/server/web/views', './packages/backend/built/server/web/views', { recursive: true });
 }
@@ -89,7 +98,19 @@ async function build() {
     copyBackendViews(),
     buildBackendScript(),
     buildBackendStyle(),
-		loadConfig().then(config => config?.publishTarballInsteadOfProvideRepositoryUrl && buildTarball()),
+		loadConfig().then((config) => {
+			const promises = [];
+
+			if (config?.publishTarballInsteadOfProvideRepositoryUrl) {
+				promises.push(buildTarball());
+			}
+
+			if (config?.embedPage != null) {
+				promises.push(copyStandaloneFrontendEmbedLocales());
+			}
+
+			return Promise.all(promises);
+		}),
   ]);
 }
 
