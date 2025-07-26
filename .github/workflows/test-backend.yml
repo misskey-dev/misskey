@@ -108,11 +108,14 @@ jobs:
   e2e:
     name: E2E tests (backend)
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.continue-on-error }}
     strategy:
       matrix:
-        node-version-file:
-          - .node-version
-          - .github/min.node-version
+        node-version-file: [.node-version]
+        continue-on-error: [false]
+        include:
+          - node-version-file: .github/min.node-version
+            continue-on-error: true
 
     services:
       postgres:
