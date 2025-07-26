@@ -46,11 +46,11 @@ async function copyFrontendLocales() {
 }
 
 async function copyStandaloneFrontendEmbedLocales() {
-	await fs.mkdir('./built/_frontend_embed_vite_/locales', { recursive: true });
+	await fs.mkdir('./built/_frontend_embed_vite_/assets/locales', { recursive: true });
 	const v = { '_version_': meta.version };
 
 	for (const [lang, locale] of Object.entries(locales)) {
-		await fs.writeFile(`./built/_frontend_embed_vite_/locales/${lang}.${meta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
+		await fs.writeFile(`./built/_frontend_embed_vite_/assets/locales/${lang}.${meta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
 	}
 }
 

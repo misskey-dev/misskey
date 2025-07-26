@@ -270,7 +270,7 @@ export class ClientServerService {
 				fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
 				done();
 			});
-		} else if (process.env.NODE_ENV === 'production' && this.config.embedPage != null) {
+		} else if (process.env.NODE_ENV !== 'development' && this.config.embedPage != null) {
 			const port = (process.env.EMBED_VITE_PORT ?? '5174');
 			fastify.register(fastifyProxy, {
 				upstream: urlOriginWithoutPort + ':' + port,

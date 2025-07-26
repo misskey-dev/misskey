@@ -11,7 +11,7 @@ import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
 
 const configFile = yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8'));
-const isStandaloneMode = (process.env.NODE_ENV === 'production' && configFile.embedPage != null);
+const isStandaloneMode = (process.env.NODE_ENV !== 'development' && configFile.embedPage != null);
 const url = process.env.NODE_ENV === 'development' ? configFile.url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
@@ -82,8 +82,8 @@ export function getConfig(): UserConfig {
 				manualChunks: {
 					vue: ['vue'],
 				},
-				chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-				assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+				chunkFileNames: process.env.NODE_ENV !== 'development' ? '[hash:8].js' : '[name]-[hash:8].js',
+				assetFileNames: process.env.NODE_ENV !== 'development' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
 				paths(id) {
 					for (const p of externalPackages) {
 						if (p.match.test(id)) {
@@ -118,6 +118,7 @@ export function getConfig(): UserConfig {
 					app: './index.html',
 				},
 			},
+			assetsDir: 'assets',
 			emptyOutDir: true,
 		};
 	}
@@ -161,7 +162,7 @@ export function getConfig(): UserConfig {
 			modules: {
 				generateScopedName(name, filename, _css): string {
 					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
-					if (process.env.NODE_ENV === 'production') {
+					if (process.env.NODE_ENV !== 'development') {
 						return 'x' + toBase62(hash(id)).substring(0, 4);
 					} else {
 						return id;

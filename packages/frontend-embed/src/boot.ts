@@ -12,10 +12,6 @@ if (import.meta.env.DEV) {
 	await import('icons-subsetter/built/tabler-icons-frontendEmbed.css');
 }
 
-if (_EMBED_STANDALONE_MODE_) {
-	await import ('@/style.standalone.scss');
-}
-
 import '@/style.scss';
 import { createApp, defineAsyncComponent } from 'vue';
 import defaultLightTheme from '@@/themes/l-light.json5';
@@ -25,7 +21,7 @@ import { applyTheme, assertIsTheme } from '@/theme.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, version, locale, lang, updateLocale } from '@@/js/config.js';
+import { url, version, locale, lang as savedLang, updateLocale } from '@@/js/config.js';
 import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 import { serverContext } from '@/server-context.js';
@@ -38,15 +34,30 @@ console.log('Misskey Embed');
 //#region Embedパラメータの取得・パース
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
+let lang: string;
 if (_DEV_) console.log(embedParams);
 
 if (_EMBED_STANDALONE_MODE_) {
+	const supportedLangs = _LANGS_.map(x => x[0]);
+	let _lang: string | null = window.localStorage.getItem('lang');
+	if (_lang == null || !supportedLangs.includes(_lang)) {
+		if (supportedLangs.includes(navigator.language)) {
+			_lang = navigator.language;
+		} else {
+			_lang = supportedLangs.find(x => x.split('-')[0] === navigator.language) ?? 'en-US';
+		}
+	}
+	lang = _lang;
+	window.localStorage.setItem('lang', lang);
+
 	if (!embedParams.rounded) {
 		window.document.documentElement.classList.add('norounded');
 	}
 	if (!embedParams.border) {
 		window.document.documentElement.classList.add('noborder');
 	}
+} else {
+	lang = savedLang;
 }
 //#endregion
 
@@ -92,7 +103,7 @@ if (embedParams.colorMode === 'dark') {
 const localeVersion = localStorage.getItem('localeVersion');
 const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
 if (localeOutdated) {
-	const res = await window.fetch(_EMBED_STANDALONE_MODE_ ? `${import.meta.env.BASE_URL}locales/${lang}.${version}.json` : `/assets/locales/${lang}.${version}.json`);
+	const res = await window.fetch(_EMBED_STANDALONE_MODE_ ? `${import.meta.env.BASE_URL}assets/locales/${lang}.${version}.json` : `/assets/locales/${lang}.${version}.json`);
 	if (res.status === 200) {
 		const newLocale = await res.text();
 		const parsedNewLocale = JSON.parse(newLocale);
