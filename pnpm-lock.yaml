@@ -99,8 +99,8 @@ importers:
         specifier: 3.826.0
         version: 3.826.0(@aws-sdk/client-s3@3.826.0)
       '@discordapp/twemoji':
-        specifier: 15.1.0
-        version: 15.1.0
+        specifier: 16.0.1
+        version: 16.0.1
       '@fastify/accepts':
         specifier: 5.0.2
         version: 5.0.2
@@ -168,8 +168,8 @@ importers:
         specifier: 1.12.0
         version: 1.12.0
       '@twemoji/parser':
-        specifier: 15.1.1
-        version: 15.1.1
+        specifier: 16.0.0
+        version: 16.0.0
       '@types/redis-info':
         specifier: 3.0.3
         version: 3.0.3
@@ -707,8 +707,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@discordapp/twemoji':
-        specifier: 15.1.0
-        version: 15.1.0
+        specifier: 16.0.1
+        version: 16.0.1
       '@github/webauthn-json':
         specifier: 2.1.1
         version: 2.1.1
@@ -734,8 +734,8 @@ importers:
         specifier: 0.19.0
         version: 0.19.0
       '@twemoji/parser':
-        specifier: 15.1.1
-        version: 15.1.1
+        specifier: 16.0.0
+        version: 16.0.0
       '@vitejs/plugin-vue':
         specifier: 5.2.4
         version: 5.2.4(vite@6.3.5(@types/node@22.16.4)(sass@1.89.2)(terser@5.43.1)(tsx@4.20.3))(vue@3.5.17(typescript@5.8.3))
@@ -1080,8 +1080,8 @@ importers:
   packages/frontend-embed:
     dependencies:
       '@discordapp/twemoji':
-        specifier: 15.1.0
-        version: 15.1.0
+        specifier: 16.0.1
+        version: 16.0.1
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.45.1)
@@ -1092,8 +1092,8 @@ importers:
         specifier: 5.2.0
         version: 5.2.0(rollup@4.45.1)
       '@twemoji/parser':
-        specifier: 15.1.1
-        version: 15.1.1
+        specifier: 16.0.0
+        version: 16.0.0
       '@vitejs/plugin-vue':
         specifier: 5.2.4
         version: 5.2.4(vite@6.3.5(@types/node@22.16.4)(sass@1.89.2)(terser@5.43.1)(tsx@4.20.3))(vue@3.5.17(typescript@5.8.3))
@@ -1964,8 +1964,8 @@ packages:
     resolution: {integrity: sha512-Ahk1N+s7urkgj7WvvUND5f8GiWEPfUw0D41hdElaqLgu8wZScI8gdI0q+qWw5N1d35x7GCRH2uk9mi+Uzo9M3g==}
     engines: {node: '>=14.0'}
 
-  '@discordapp/twemoji@15.1.0':
-    resolution: {integrity: sha512-QdpV4ifTONAXvDjRrMohausZeGrQ1ac/Ox6togUh6Xl3XKJ/KAaMMuAEi0qsb0wDwoVTSZBll5Y6+N3hB2ktBw==}
+  '@discordapp/twemoji@16.0.1':
+    resolution: {integrity: sha512-figLiBWzjS5cyrAjLaGjM8AAaowO3qvK8rg5bA2dElB4qsaPMvBVlFDMO2d3x+nC1igt7kgWH4dvNmvvUHUF8w==}
 
   '@emnapi/runtime@1.4.3':
     resolution: {integrity: sha512-pBPWdu6MLKROBX05wSNKcNb++m5Er+KQ9QkB+WVM+pW2Kx9hoSrVTnu3BdkI5eBLZoKu/J6mW/B6i6bJB2ytXQ==}
@@ -4273,11 +4273,8 @@ packages:
   '@twemoji/parser@15.0.0':
     resolution: {integrity: sha512-lh9515BNsvKSNvyUqbj5yFu83iIDQ77SwVcsN/SnEGawczhsKU6qWuogewN1GweTi5Imo5ToQ9s+nNTf97IXvg==}
 
-  '@twemoji/parser@15.1.0':
-    resolution: {integrity: sha512-3HTiSxPvkWUJ4kZeCvwyKlIwkpTUfBOk6igpBBRQni58ceQMv5YK4smkc8vX/eqOlMMNER/9qobv+Q6Q8LVrqA==}
-
-  '@twemoji/parser@15.1.1':
-    resolution: {integrity: sha512-CChRzIu6ngkCJOmURBlYEdX5DZSu+bBTtqR60XjBkFrmvplKW7OQsea+i8XwF4bLVlUXBO7ZmHhRPDzfQyLwwg==}
+  '@twemoji/parser@16.0.0':
+    resolution: {integrity: sha512-jmuIjkp3OIaEemwMy3sArBwZSuZkRqmueGwRe2Zk4cFzbUJISFBJSZLDUUBNIgq3c+nY49ideYN2OiII6JUqwA==}
 
   '@types/accepts@1.3.7':
     resolution: {integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==}
@@ -10717,8 +10714,8 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {integrity: sha512-YbGqHZ5/eW4SnkPNR44mKVc6ZKQoRs/Rux1sxC6rdwXb4qpbOSYfDr9DsTHolOTGmIKgM9j141mZbBeg05R1pw==}
 
-  vue-component-type-helpers@3.0.3:
-    resolution: {integrity: sha512-koiBu7lO8e6w/UlbZAAIW11qcFQocYIl7Nh/SVwGZ804ej5KrncU32bRxi2zfU2Kyf6HWuk1CeeVP2rhIL+vyQ==}
+  vue-component-type-helpers@3.0.4:
+    resolution: {integrity: sha512-WtR3kPk8vqKYfCK/HGyT47lK/T3FaVyWxaCNuosaHYE8h9/k0lYRZ/PI/+T/z2wP+uuNKmL6z30rOcBboOu/YA==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -11893,9 +11890,9 @@ snapshots:
     transitivePeerDependencies:
       - web-streams-polyfill
 
-  '@discordapp/twemoji@15.1.0':
+  '@discordapp/twemoji@16.0.1':
     dependencies:
-      '@twemoji/parser': 15.1.0
+      '@twemoji/parser': 16.0.0
       fs-extra: 8.1.0
       jsonfile: 5.0.0
       universalify: 0.1.2
@@ -14330,7 +14327,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.17(typescript@5.8.3)
-      vue-component-type-helpers: 3.0.3
+      vue-component-type-helpers: 3.0.4
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.31.0)(typescript@5.8.3)':
     dependencies:
@@ -14593,9 +14590,7 @@ snapshots:
 
   '@twemoji/parser@15.0.0': {}
 
-  '@twemoji/parser@15.1.0': {}
-
-  '@twemoji/parser@15.1.1': {}
+  '@twemoji/parser@16.0.0': {}
 
   '@types/accepts@1.3.7':
     dependencies:
@@ -22265,7 +22260,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.0.3: {}
+  vue-component-type-helpers@3.0.4: {}
 
   vue-demi@0.14.7(vue@3.5.17(typescript@5.8.3)):
     dependencies:
