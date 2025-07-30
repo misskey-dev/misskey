@@ -116,6 +116,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.enable }}<span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
 						<template #caption>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</template>
 					</MkSwitch>
+
+					<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
+						<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningMaxDurationInMinutes" type="number">
+							<template #label>remoteNotesCleaningMaxDurationInMinutes<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkInput>
+					</template>
 				</div>
 			</MkFolder>
 		</div>
@@ -215,9 +221,11 @@ const rbtForm = useForm({
 
 const remoteNotesCleaningForm = useForm({
 	enableRemoteNotesCleaning: meta.enableRemoteNotesCleaning,
+	remoteNotesCleaningMaxDurationInMinutes: meta.remoteNotesCleaningMaxDurationInMinutes,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableRemoteNotesCleaning: state.enableRemoteNotesCleaning,
+		remoteNotesCleaningMaxDurationInMinutes: state.remoteNotesCleaningMaxDurationInMinutes,
 	});
 	fetchInstance(true);
 });

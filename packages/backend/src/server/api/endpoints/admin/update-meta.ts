@@ -205,6 +205,8 @@ export const paramDef = {
 		proxyRemoteFiles: { type: 'boolean' },
 		signToActivityPubGet: { type: 'boolean' },
 		allowExternalApRedirect: { type: 'boolean' },
+		enableRemoteNotesCleaning: { type: 'boolean' },
+		remoteNotesCleaningMaxDurationInMinutes: { type: 'number' },
 	},
 	required: [],
 } as const;
@@ -721,6 +723,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.allowExternalApRedirect !== undefined) {
 				set.allowExternalApRedirect = ps.allowExternalApRedirect;
+			}
+
+			if (ps.enableRemoteNotesCleaning !== undefined) {
+				set.enableRemoteNotesCleaning = ps.enableRemoteNotesCleaning;
+			}
+
+			if (ps.remoteNotesCleaningMaxDurationInMinutes !== undefined) {
+				set.remoteNotesCleaningMaxDurationInMinutes = ps.remoteNotesCleaningMaxDurationInMinutes;
 			}
 
 			const before = await this.metaService.fetch(true);
