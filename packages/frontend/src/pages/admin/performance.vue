@@ -101,6 +101,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</div>
 			</MkFolder>
+
+			<MkFolder :defaultOpen="true">
+				<template #icon><i class="ti ti-recycle"></i></template>
+				<template #label>Remote Notes Cleaning (仮)</template>
+				<template v-if="remoteNotesCleaningForm.savedState.enableRemoteNotesCleaning" #suffix>Enabled</template>
+				<template v-else #suffix>Disabled</template>
+				<template v-if="remoteNotesCleaningForm.modified.value" #footer>
+					<MkFormFooter :form="remoteNotesCleaningForm"/>
+				</template>
+
+				<div class="_gaps_m">
+					<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
+						<template #label>{{ i18n.ts.enable }}<span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
+						<template #caption>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
 		</div>
 	</div>
 </PageWithHeader>
@@ -192,6 +209,15 @@ const rbtForm = useForm({
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableReactionsBuffering: state.enableReactionsBuffering,
+	});
+	fetchInstance(true);
+});
+
+const remoteNotesCleaningForm = useForm({
+	enableRemoteNotesCleaning: meta.enableRemoteNotesCleaning,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		enableRemoteNotesCleaning: state.enableRemoteNotesCleaning,
 	});
 	fetchInstance(true);
 });
