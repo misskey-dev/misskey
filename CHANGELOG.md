@@ -4,6 +4,8 @@
 -
 
 ### Client
+- Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 - Fix: テーマエディタが動作しない問題を修正
 
 ### Server

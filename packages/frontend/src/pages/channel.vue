@@ -147,7 +147,11 @@ watch(() => props.channelId, async () => {
 }, { immediate: true });
 
 function edit() {
-	router.push(`/channels/${channel.value?.id}/edit`);
+	router.push('/channels/:channelId/edit', {
+		params: {
+			channelId: props.channelId,
+		}
+	});
 }
 
 function openPostForm() {
