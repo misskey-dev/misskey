@@ -94,6 +94,18 @@ export class CleanRemoteNotesProcessorService {
 				return !favorites.some(favorite => favorite.noteId === note.id);
 			});
 
+			const replies = notes.length === 0 ? [] : await this.notesRepository.find({
+				where: {
+					replyId: In(notes.map(note => note.id)),
+					userHost: IsNull(),
+				},
+				select: ['replyId'],
+			});
+
+			notes = notes.filter(note => {
+				return !replies.some(reply => reply.replyId === note.id);
+			});
+
 			if (notes.length === 0) {
 				job.updateProgress(100);
 				break;
