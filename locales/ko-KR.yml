@@ -1998,6 +1998,7 @@ _role:
     uploadableFileTypes_caption: "MIME 유형을 "
     uploadableFileTypes_caption2: "파일에 따라서는 유형을 검사하지 못하는 경우가 있습니다. 그러한 파일을 허가하는 경우에는 {x}를 지정으로 추가해주십시오."
     noteDraftLimit: "서버측 노트 초안 작성 가능 수"
+    watermarkAvailable: "워터마크 기능의 사용 여부"
   _condition:
     roleAssignedTo: "수동 역할에 이미 할당됨"
     isLocal: "로컬 유저"
