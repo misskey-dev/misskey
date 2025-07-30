@@ -267,6 +267,29 @@ id: 'aidx'
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
+#   ┌────────────┐
+#───┘ Embed Page └──────────────────────────────────────────
+
+# By default, embed pages are served from the same origin as the Misskey server.
+# If you want to serve them from a different origin, you can set the following option.
+
+# NOTE: This option is for advanced users only.
+# - This option is not affected while you are in development mode.
+# - You need to set up a workflow to deploy the embed pages separately from the Misskey server.
+# - This option will alter the build artifact of the embed frontend. With this option enabled,
+#   the frontend-embed package will be built as a standalone single-page application.
+# - Embed pages will still use the APIs of the Misskey server. If the embed page is not working,
+#   check the CORS settings of the server.
+
+#embedPage:
+#  # Required. The host of the embed page.
+#  # DO NOT include the trailing slash.
+#  host: https://embed.example.tld
+#
+#  # Optional. Defaults to "/".
+#  # INCLUDE the leading and trailing slashes.
+#  basePath: /embed/
+
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 

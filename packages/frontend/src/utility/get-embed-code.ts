@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { defineAsyncComponent } from 'vue';
+import { instance } from '@/instance.js';
 import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';
@@ -52,9 +52,11 @@ export function getEmbedCode(path: string, params?: EmbedParams): string {
 		paramString = searchParams.toString() === '' ? '' : '?' + searchParams.toString();
 	}
 
+	const basePath = instance.embedBaseUrl ? instance.embedBaseUrl : url + '/embed/';
+
 	const iframeCode = [
-		`<iframe src="${url + path + paramString}" data-misskey-embed-id="${iframeId}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="border: none; width: 100%; max-width: 500px; height: 300px; color-scheme: light dark;"></iframe>`,
-		`<script defer src="${url}/embed.js"></script>`,
+		`<iframe src="${basePath + path + paramString}" data-misskey-embed-id="${iframeId}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="border: none; width: 100%; max-width: 500px; height: 300px; color-scheme: light dark;"></iframe>`,
+		`<script defer src="${basePath}embed.js"></script>`,
 	];
 	return iframeCode.join('\n');
 }
@@ -73,7 +75,7 @@ export async function genEmbedCode(entity: EmbeddableEntity, id: string, params?
 
 	// PCじゃない場合はコードカスタマイズ画面を出さずにそのままコピー
 	if (window.innerWidth < MOBILE_THRESHOLD) {
-		copyToClipboard(getEmbedCode(`/embed/${entity}/${id}`, _params));
+		copyToClipboard(getEmbedCode(`${entity}/${id}`, _params));
 	} else {
 		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkEmbedCodeGenDialog.vue').then(x => x.default), {
 			entity,

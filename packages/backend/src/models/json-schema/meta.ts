@@ -302,6 +302,10 @@ export const packedMetaLiteSchema = {
 			enum: ['all', 'specified', 'none'],
 			optional: false, nullable: false,
 		},
+		embedBaseUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 	},
 } as const;
 

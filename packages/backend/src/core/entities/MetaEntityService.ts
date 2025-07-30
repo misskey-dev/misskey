@@ -133,6 +133,7 @@ export class MetaEntityService {
 			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
 			maxFileSize: this.config.maxFileSize,
 			federation: this.meta.federation,
+			embedBaseUrl: (process.env.NODE_ENV !== 'development' && this.config.embedPage != null) ? (this.config.embedPage.host + this.config.embedPage.basePath) : null,
 		};
 
 		return packed;

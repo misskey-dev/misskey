@@ -5,7 +5,6 @@
 
 import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
-import { apiUrl } from '@@/js/config.js';
 
 export const pendingApiRequestsCount = ref(0);
 
@@ -29,7 +28,7 @@ export function misskeyApi<
 
 	const promise = new Promise<_ResT>((resolve, reject) => {
 		// Send request
-		window.fetch(`${apiUrl}/${endpoint}`, {
+		window.fetch(`${_MISSKEY_URL_}/api/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
@@ -76,7 +75,7 @@ export function misskeyApiGet<
 
 	const promise = new Promise<_ResT>((resolve, reject) => {
 		// Send request
-		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
+		window.fetch(`${_MISSKEY_URL_}/api/${endpoint}?${query}`, {
 			method: 'GET',
 			credentials: 'omit',
 			cache: 'default',

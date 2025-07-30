@@ -33,15 +33,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
+import { defineAsyncComponent, ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { DI } from '@/di.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
-import EmNotePage from '@/pages/note.vue';
-import EmUserTimelinePage from '@/pages/user-timeline.vue';
-import EmClipPage from '@/pages/clip.vue';
-import EmTagPage from '@/pages/tag.vue';
-import XNotFound from '@/pages/not-found.vue';
 import EmLoading from '@/components/EmLoading.vue';
 
 function safeURIDecode(str: string): string {
@@ -52,8 +47,15 @@ function safeURIDecode(str: string): string {
 	}
 }
 
-const page = location.pathname.split('/')[2];
-const contentId = safeURIDecode(location.pathname.split('/')[3]);
+const EmNotePage = defineAsyncComponent(() => import('@/pages/note.vue'));
+const EmUserTimelinePage = defineAsyncComponent(() => import('@/pages/user-timeline.vue'));
+const EmClipPage = defineAsyncComponent(() => import('@/pages/clip.vue'));
+const EmTagPage = defineAsyncComponent(() => import('@/pages/tag.vue'));
+const XNotFound = defineAsyncComponent(() => import('@/pages/not-found.vue'));
+
+const basePath = location.pathname.replace(import.meta.env.BASE_URL, '');
+const page = basePath.split('/')[0];
+const contentId = safeURIDecode(basePath.split('/')[1]);
 if (_DEV_) console.log(page, contentId);
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
