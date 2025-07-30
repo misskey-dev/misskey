@@ -5493,6 +5493,10 @@ export interface Locale extends ILocale {
      * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
      */
     "defaultImageCompressionLevel_description": string;
+    /**
+     * 分
+     */
+    "inMinutes": string;
     "_order": {
         /**
          * 新しい順
@@ -6490,6 +6494,10 @@ export interface Locale extends ILocale {
          * 有効にすると、参照されていない古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
          */
         "remoteNotesCleaning_description": string;
+        /**
+         * 最大処理継続時間
+         */
+        "remoteNotesCleaningMaxDuration": string;
         /**
          * 問い合わせ先URL
          */
