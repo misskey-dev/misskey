@@ -114,7 +114,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
 						<template #label>{{ i18n.ts.enable }}<span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</div>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>{{ i18n.ts._serverSettings.remoteNotesCleaning_description2 }}</div>
+						</template>
 					</MkSwitch>
 
 					<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">

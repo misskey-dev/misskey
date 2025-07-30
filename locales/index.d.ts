@@ -6491,9 +6491,13 @@ export interface Locale extends ILocale {
          */
         "reactionsBufferingDescription": string;
         /**
-         * 有効にすると、参照されていない古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
+         * 有効にすると、古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
          */
         "remoteNotesCleaning_description": string;
+        /**
+         * 削除されたリモートの投稿に紐づく、ローカルのノートも削除されることがあります。
+         */
+        "remoteNotesCleaning_description2": string;
         /**
          * 最大処理継続時間
          */
