@@ -495,7 +495,7 @@ function done(query?: string): boolean | void {
 
 function settings() {
 	emit('esc');
-	router.push('settings/emoji-palette');
+	router.push('/settings/emoji-palette');
 }
 
 onMounted(() => {
