@@ -137,6 +137,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	if (deepEqual(currentTheme, theme)) return;
+	// リアクティビティ解除
 	currentTheme = deepClone(theme);
 
 	if (window.document.startViewTransition != null && prefer.s.animation) {
