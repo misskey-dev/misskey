@@ -360,8 +360,7 @@ export class QueryService {
 	public generateSuspendedUserQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean): void {
 		if (excludeAuthor) {
 			const brakets = (user: string) => new Brackets(qb => qb
-				.where(`note.${user}Id IS NULL`)
-				.orWhere(`${user}.id IS NULL`) // leftjoinなどでuserが存在しなかった場合を考慮
+				.where(`${user}.id IS NULL`) // そもそもreplyやrenoteではない、もしくはleftjoinなどでuserが存在しなかった場合を考慮
 				.orWhere(`user.id = ${user}.id`)
 				.orWhere(`${user}.isSuspended = FALSE`));
 			q
@@ -369,8 +368,7 @@ export class QueryService {
 				.andWhere(brakets('renoteUser'));
 		} else {
 			const brakets = (user: string) => new Brackets(qb => qb
-				.where(`note.${user}Id IS NULL`)
-				.orWhere(`${user}.id IS NULL`) // leftjoinなどでuserが存在しなかった場合を考慮
+				.where(`${user}.id IS NULL`) // そもそもreplyやrenoteではない、もしくはleftjoinなどでuserが存在しなかった場合を考慮
 				.orWhere(`${user}.isSuspended = FALSE`));
 			q
 				.andWhere('user.isSuspended = FALSE')
