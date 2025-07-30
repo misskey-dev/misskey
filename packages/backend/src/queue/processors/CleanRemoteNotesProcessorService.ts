@@ -5,9 +5,9 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { And, IsNull, LessThan, MoreThan, Not } from 'typeorm';
+import { And, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiNote, NotesRepository } from '@/models/_.js';
+import type { MiNote, NoteFavoritesRepository, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -21,6 +21,9 @@ export class CleanRemoteNotesProcessorService {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.noteFavoritesRepository)
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
 		private idService: IdService,
 		private queueLoggerService: QueueLoggerService,
@@ -51,13 +54,12 @@ export class CleanRemoteNotesProcessorService {
 		let cursor: MiNote['id'] | null = null;
 
 		while (true) {
-			const notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
+			let notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
 				where: {
 					id: cursor ? And(MoreThan(cursor), LessThan(maxId)) : LessThan(maxId),
 					userHost: Not(IsNull()),
 					clippedCount: 0,
 					renoteCount: 0,
-					// TODO: お気に入りされてないかなどの判定
 				},
 				take: MAX_NOTE_COUNT_PER_QUERY,
 				order: {
@@ -65,6 +67,17 @@ export class CleanRemoteNotesProcessorService {
 					id: 1,
 				},
 				select: ['id'],
+			});
+
+			const favorites = notes.length === 0 ? [] : await this.noteFavoritesRepository.find({
+				where: {
+					noteId: In(notes.map(note => note.id)),
+				},
+				select: ['noteId'],
+			});
+
+			notes = notes.filter(note => {
+				return !favorites.some(favorite => favorite.noteId === note.id);
 			});
 
 			if (notes.length === 0) {
