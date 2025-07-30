@@ -101,9 +101,19 @@ type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => 
 export type PreferencesDefinition = Record<string, PreferencesDefinitionRecord<any>>;
 
 export function definePreferences<T extends Record<string, unknown>>(x: {
-	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
+	states: {
+		[K in keyof T]: PreferencesDefinitionRecord<T[K]>;
+	};
+	computed: {
+		[K in keyof T]: PreferencesDefinitionRecord<T[K]>;
+	};
 }): {
-		[K in keyof T]: PreferencesDefinitionRecord<T[K]>
+		states: {
+			[K in keyof T]: PreferencesDefinitionRecord<T[K]>;
+		};
+		computed: {
+			[K in keyof T]: PreferencesDefinitionRecord<T[K]>;
+		};
 	} {
 	return x;
 }

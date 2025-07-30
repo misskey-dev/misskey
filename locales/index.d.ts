@@ -5493,6 +5493,10 @@ export interface Locale extends ILocale {
      * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
      */
     "defaultImageCompressionLevel_description": string;
+    /**
+     * 低電力モード
+     */
+    "lowPowerMode": string;
     "_order": {
         /**
          * 新しい順
@@ -5799,6 +5803,10 @@ export interface Locale extends ILocale {
          * UIのアニメーション
          */
         "uiAnimations": string;
+        /**
+         * アニメーション画像を再生
+         */
+        "playAnimatedImages": string;
         /**
          * ナビゲーションバーに副ボタンを表示
          */
