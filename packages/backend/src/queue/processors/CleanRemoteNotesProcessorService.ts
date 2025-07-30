@@ -7,7 +7,7 @@ import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { And, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiNote, NoteFavoritesRepository, NotesRepository } from '@/models/_.js';
+import type { MiMeta, MiNote, NoteFavoritesRepository, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -19,6 +19,9 @@ export class CleanRemoteNotesProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -36,10 +39,21 @@ export class CleanRemoteNotesProcessorService {
 		deletedCount: number;
 		oldest: number | null;
 		newest: number | null;
+		skipped?: boolean;
 	}> {
-		this.logger.info('garbage collecting remote notes...');
+		if (!this.meta.enableRemoteNotesCleaning) {
+			this.logger.info('Remote notes cleaning is disabled, skipping...');
+			return {
+				deletedCount: 0,
+				oldest: null,
+				newest: null,
+				skipped: true,
+			};
+		}
 
-		const maxDuration = 1000 * 60 * 60; // 1 hour
+		this.logger.info('cleaning remote notes...');
+
+		const maxDuration = this.meta.remoteNotesCleaningMaxDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
 		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30 days ago
@@ -107,7 +121,7 @@ export class CleanRemoteNotesProcessorService {
 
 			if (elapsed >= maxDuration) {
 				this.logger.info(`Reached maximum duration of ${maxDuration}ms, stopping...`);
-				job.log('Reached maximum duration, stopping garbage collection.');
+				job.log('Reached maximum duration, stopping cleaning.');
 				job.updateProgress(100);
 				break;
 			}
@@ -117,12 +131,13 @@ export class CleanRemoteNotesProcessorService {
 			await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
 		}
 
-		this.logger.succ('garbage collection of remote notes completed.');
+		this.logger.succ('cleaning of remote notes completed.');
 
 		return {
 			deletedCount: stats.deletedCount,
 			oldest: stats.oldest,
 			newest: stats.newest,
+			skipped: false,
 		};
 	}
 }

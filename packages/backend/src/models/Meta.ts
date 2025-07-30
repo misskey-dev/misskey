@@ -701,6 +701,16 @@ export class MiMeta {
 		default: true,
 	})
 	public allowExternalApRedirect: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableRemoteNotesCleaning: boolean;
+
+	@Column('integer', {
+		default: 60, // minutes
+	})
+	public remoteNotesCleaningMaxDurationInMinutes: number;
 }
 
 export type SoftwareSuspension = {
