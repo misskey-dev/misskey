@@ -361,17 +361,17 @@ export class QueryService {
 		if (excludeAuthor) {
 			const brakets = (user: string) => new Brackets(qb => qb
 				.where(`note.${user}Id IS NULL`)
+				.orWhere(`${user}.id IS NULL`) // leftjoinなどでuserが存在しなかった場合を考慮
 				.orWhere(`user.id = ${user}.id`)
-				.orWhere(`${user}.isSuspended = FALSE`)
-				.orWhere(`${user}.isSuspended IS NULL`)); // leftjoinなどでuserが存在しなかった場合はカラムの値はnullになるため
+				.orWhere(`${user}.isSuspended = FALSE`));
 			q
 				.andWhere(brakets('replyUser'))
 				.andWhere(brakets('renoteUser'));
 		} else {
 			const brakets = (user: string) => new Brackets(qb => qb
 				.where(`note.${user}Id IS NULL`)
-				.orWhere(`${user}.isSuspended = FALSE`)
-				.orWhere(`${user}.isSuspended IS NULL`)); // leftjoinなどでuserが存在しなかった場合はカラムの値はnullになるため
+				.orWhere(`${user}.id IS NULL`) // leftjoinなどでuserが存在しなかった場合を考慮
+				.orWhere(`${user}.isSuspended = FALSE`));
 			q
 				.andWhere('user.isSuspended = FALSE')
 				.andWhere(brakets('replyUser'))
