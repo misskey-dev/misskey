@@ -436,7 +436,7 @@ export class NoteEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
 
-				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
+				reply: (note.replyId && note.reply == null) ? null : note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
