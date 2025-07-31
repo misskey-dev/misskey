@@ -135,7 +135,7 @@ async function del(): Promise<void> {
 		webhookId: props.webhookId,
 	});
 
-	router.push('/settings/webhook');
+	router.push('/settings/connect');
 }
 
 async function test(type: Misskey.entities.UserWebhook['on'][number]): Promise<void> {

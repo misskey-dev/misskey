@@ -165,7 +165,11 @@ function save() {
 		os.apiWithDialog('channels/update', params);
 	} else {
 		os.apiWithDialog('channels/create', params).then(created => {
-			router.push(`/channels/${created.id}`);
+			router.push('/channels/:channelId', {
+				params: {
+					channelId: created.id,
+				},
+			});
 		});
 	}
 }

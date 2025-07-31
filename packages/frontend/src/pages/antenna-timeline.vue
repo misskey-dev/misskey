@@ -47,7 +47,11 @@ async function timetravel() {
 }
 
 function settings() {
-	router.push(`/my/antennas/${props.antennaId}`);
+	router.push('/my/antennas/:antennaId', {
+		params: {
+			antennaId: props.antennaId,
+		}
+	});
 }
 
 function focus() {

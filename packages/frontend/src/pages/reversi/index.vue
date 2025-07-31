@@ -168,7 +168,11 @@ function startGame(game: Misskey.entities.ReversiGameDetailed) {
 		playbackRate: 1,
 	});
 
-	router.push(`/reversi/g/${game.id}`);
+	router.push('/reversi/g/:gameId', {
+		params: {
+			gameId: game.id,
+		},
+	});
 }
 
 async function matchHeatbeat() {

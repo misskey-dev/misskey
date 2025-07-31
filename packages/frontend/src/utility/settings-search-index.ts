@@ -24,6 +24,7 @@ for (const item of generated) {
 			const inline = rootMods.get(id);
 			if (inline) {
 				inline.parentId = item.id;
+				inline.path = item.path;
 			} else {
 				console.log('[Settings Search Index] Failed to inline', id);
 			}

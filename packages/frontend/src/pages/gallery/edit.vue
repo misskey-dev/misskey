@@ -85,7 +85,11 @@ async function save() {
 			fileIds: files.value.map(file => file.id),
 			isSensitive: isSensitive.value,
 		});
-		router.push(`/gallery/${props.postId}`);
+		router.push('/gallery/:postId', {
+			params: {
+				postId: props.postId,
+			}
+		});
 	} else {
 		const created = await os.apiWithDialog('gallery/posts/create', {
 			title: title.value,
@@ -93,7 +97,11 @@ async function save() {
 			fileIds: files.value.map(file => file.id),
 			isSensitive: isSensitive.value,
 		});
-		router.push(`/gallery/${created.id}`);
+		router.push('/gallery/:postId', {
+			params: {
+				postId: created.id,
+			}
+		});
 	}
 }
 

@@ -88,7 +88,11 @@ const role = reactive(await misskeyApi('admin/roles/show', {
 }));
 
 function edit() {
-	router.push('/admin/roles/' + role.id + '/edit');
+	router.push('/admin/roles/:id/edit', {
+		params: {
+			id: role.id,
+		}
+	});
 }
 
 async function del() {

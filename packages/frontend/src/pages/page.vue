@@ -267,7 +267,11 @@ function showMenu(ev: MouseEvent) {
 		menuItems.push({
 			icon: 'ti ti-pencil',
 			text: i18n.ts.edit,
-			action: () => router.push(`/pages/edit/${page.value.id}`),
+			action: () => router.push('/pages/edit/:initPageId', {
+				params: {
+					initPageId: page.value!.id,
+				},
+			}),
 		});
 
 		if ($i.pinnedPageId === page.value.id) {
