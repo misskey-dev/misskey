@@ -436,14 +436,16 @@ export class NoteEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
 
-				reply: (note.replyId && note.reply == null) ? null : note.replyId ? this.pack(note.reply ?? note.replyId, me, {
+				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
+				reply: (note.replyId && note.reply === null) ? null : note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				renote: (note.renoteId && note.renote == null) ? null : note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
+				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
+				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
