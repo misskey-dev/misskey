@@ -38,8 +38,6 @@ describe('Note', () => {
 				/** Consistency of files is checked at {@link file://./drive.test.ts}, so let's skip. */
 				'fileIds',
 				'files',
-				/** @see https://github.com/misskey-dev/misskey/issues/12409 */
-				'reactionAcceptance',
 				'userId',
 				'user',
 				'uri',
@@ -63,7 +61,6 @@ describe('Note', () => {
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
-				'reactionAcceptance',
 				'replyId',
 				'reply',
 				'userId',
@@ -105,7 +102,6 @@ describe('Note', () => {
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
-				'reactionAcceptance',
 				'renoteId',
 				'renote',
 				'userId',
