@@ -59,7 +59,6 @@ export class CleanRemoteNotesProcessorService {
 		const maxDuration = this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
-		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes)); // Convert days to milliseconds
 		const MAX_NOTE_COUNT_PER_QUERY = 50;
 
 		const stats = {
@@ -68,20 +67,21 @@ export class CleanRemoteNotesProcessorService {
 			newest: null as number | null,
 		};
 
-		let cursor: MiNote['id'] | null = null;
+		let cursor: MiNote['id'] = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
 
 		while (true) {
 			let notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
 				where: {
-					id: cursor ? And(MoreThan(cursor), LessThan(maxId)) : LessThan(maxId),
+					id: LessThan(cursor),
 					userHost: Not(IsNull()),
 					clippedCount: 0,
 					renoteCount: 0,
 				},
 				take: MAX_NOTE_COUNT_PER_QUERY,
 				order: {
-					// 古い順
-					id: 1,
+					// 新しい順
+					// https://github.com/misskey-dev/misskey/pull/16292#issuecomment-3139376314
+					id: -1,
 				},
 				select: ['id'],
 			});
@@ -128,7 +128,7 @@ export class CleanRemoteNotesProcessorService {
 			await this.notesRepository.delete(notes.map(note => note.id));
 
 			for (const note of notes) {
-				if (cursor === null || note.id > cursor) {
+				if (note.id < cursor) {
 					cursor = note.id;
 				}
 
