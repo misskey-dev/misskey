@@ -150,7 +150,11 @@ async function unlike() {
 }
 
 function edit() {
-	router.push(`/gallery/${post.value.id}/edit`);
+	router.push('/gallery/:postId/edit', {
+		params: {
+			postId: props.postId,
+		},
+	});
 }
 
 async function reportAbuse() {

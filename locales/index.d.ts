@@ -2567,11 +2567,11 @@ export interface Locale extends ILocale {
      */
     "serviceworkerInfo": string;
     /**
-     * 削除された投稿
+     * 削除されたノート
      */
     "deletedNote": string;
     /**
-     * 非公開の投稿
+     * 非公開のノート
      */
     "invisibleNote": string;
     /**

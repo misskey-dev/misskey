@@ -1,15 +1,20 @@
 ## Unreleased
 
 ### General
--
+- ノートを削除した際、関連するノートが同時に削除されないようになりました
+	- APIで、「replyIdが存在しているのにreplyがnull」や「renoteIdが存在しているのにrenoteがnull」であるという、今までにはなかったパターンが表れることになります
 
 ### Client
 - Feat: セーフモード
   - プラグイン・テーマ・カスタムCSSの使用でクライアントの起動に問題が発生した際に、これらを無効にして起動できます
-	- クライアントが起動しているPCでは `g` キーを連打して、それ以外の環境ではURLに`?safemode=true`を付けると入ることができます
+  - クライアントが起動しているPCでは `g` キーを連打して、それ以外の環境ではURLに`?safemode=true`を付けると入ることができます
+- Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
+- Fix: テーマエディタが動作しない問題を修正
 
 ### Server
--
+- Enhance: ノートの削除処理の効率化
+- Enhance: 全体的なパフォーマンスの向上
 
 
 ## 2025.7.0
