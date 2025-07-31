@@ -118,6 +118,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 
 					<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
+						<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningAgeThresholdInDays" type="number">
+							<template #label>{{ i18n.ts._serverSettings.remoteNotesCleaningAgeThresholdInDays }} ({{ i18n.ts.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningAgeThresholdInDays" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #suffix>{{ i18n.ts._time.day }}</template>
+						</MkInput>
+
 						<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningMaxDurationInMinutes" type="number">
 							<template #label>{{ i18n.ts._serverSettings.remoteNotesCleaningMaxDuration }} ({{ i18n.ts.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
 							<template #suffix>{{ i18n.ts._time.minute }}</template>
@@ -222,10 +227,12 @@ const rbtForm = useForm({
 
 const remoteNotesCleaningForm = useForm({
 	enableRemoteNotesCleaning: meta.enableRemoteNotesCleaning,
+	remoteNotesCleaningAgeThresholdInDays: meta.remoteNotesCleaningAgeThresholdInDays,
 	remoteNotesCleaningMaxDurationInMinutes: meta.remoteNotesCleaningMaxDurationInMinutes,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableRemoteNotesCleaning: state.enableRemoteNotesCleaning,
+		remoteNotesCleaningAgeThresholdInDays: state.remoteNotesCleaningAgeThresholdInDays,
 		remoteNotesCleaningMaxDurationInMinutes: state.remoteNotesCleaningMaxDurationInMinutes,
 	});
 	fetchInstance(true);

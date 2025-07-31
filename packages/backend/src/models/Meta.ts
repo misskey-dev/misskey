@@ -711,6 +711,11 @@ export class MiMeta {
 		default: 60, // minutes
 	})
 	public remoteNotesCleaningMaxDurationInMinutes: number;
+
+	@Column('integer', {
+		default: 30, // days
+	})
+	public remoteNotesCleaningAgeThresholdInDays: number;
 }
 
 export type SoftwareSuspension = {

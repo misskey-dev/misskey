@@ -56,7 +56,7 @@ export class CleanRemoteNotesProcessorService {
 		const maxDuration = this.meta.remoteNotesCleaningMaxDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
-		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30 days ago
+		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningAgeThresholdInDays)); // Convert days to milliseconds
 		const MAX_NOTE_COUNT_PER_QUERY = 50;
 
 		const stats = {
