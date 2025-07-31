@@ -583,7 +583,7 @@ export class ClientServerService {
 					id: request.params.note,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user'],
+				relations: ['user', 'reply', 'renote'],
 			});
 
 			if (
@@ -824,8 +824,11 @@ export class ClientServerService {
 		fastify.get<{ Params: { note: string; } }>('/embed/notes/:note', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+				},
+				relations: ['user', 'reply', 'renote'],
 			});
 
 			if (note == null) return;
