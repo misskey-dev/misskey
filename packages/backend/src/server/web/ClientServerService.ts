@@ -580,7 +580,7 @@ export class ClientServerService {
 					id: request.params.note,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user'],
+				relations: ['user', 'reply', 'renote'],
 			});
 
 			if (
