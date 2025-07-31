@@ -53,6 +53,33 @@ export const QUEUE_TYPES = [
 	'systemWebhookDeliver',
 ] as const;
 
+const REPEATABLE_SYSTEM_JOB_DEF = [{
+	name: 'tickCharts',
+	pattern: '55 * * * *',
+}, {
+	name: 'resyncCharts',
+	pattern: '0 0 * * *',
+}, {
+	name: 'cleanCharts',
+	pattern: '0 0 * * *',
+}, {
+	name: 'aggregateRetention',
+	pattern: '0 0 * * *',
+}, {
+	name: 'clean',
+	pattern: '0 0 * * *',
+}, {
+	name: 'checkExpiredMutings',
+	pattern: '*/5 * * * *',
+}, {
+	name: 'bakeBufferedReactions',
+	pattern: '0 0 * * *',
+}, {
+	name: 'checkModeratorsActivity',
+	// 毎時30分に起動
+	pattern: '30 * * * *',
+}];
+
 @Injectable()
 export class QueueService {
 	constructor(
@@ -69,85 +96,25 @@ export class QueueService {
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {
-		this.systemQueue.upsertJobScheduler('tickCharts', {
-			pattern: '55 * * * *',
-		}, {
-			name: 'tickCharts',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
+		for (const def of REPEATABLE_SYSTEM_JOB_DEF) {
+			this.systemQueue.upsertJobScheduler(def.name, {
+				pattern: def.pattern,
+			}, {
+				name: def.name,
+				opts: {
+					removeOnComplete: 10,
+					removeOnFail: 30,
+				},
+			});
+		}
 
-		this.systemQueue.upsertJobScheduler('resyncCharts', {
-			pattern: '0 0 * * *',
-		}, {
-			name: 'resyncCharts',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
-
-		this.systemQueue.upsertJobScheduler('cleanCharts', {
-			pattern: '0 0 * * *',
-		}, {
-			name: 'cleanCharts',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
-
-		this.systemQueue.upsertJobScheduler('aggregateRetention', {
-			pattern: '0 0 * * *',
-		}, {
-			name: 'aggregateRetention',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
-
-		this.systemQueue.upsertJobScheduler('clean', {
-			pattern: '0 0 * * *',
-		}, {
-			name: 'clean',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
-
-		this.systemQueue.upsertJobScheduler('checkExpiredMutings', {
-			pattern: '*/5 * * * *',
-		}, {
-			name: 'checkExpiredMutings',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
-
-		this.systemQueue.upsertJobScheduler('bakeBufferedReactions', {
-			pattern: '0 0 * * *',
-		}, {
-			name: 'bakeBufferedReactions',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
-		});
-
-		this.systemQueue.upsertJobScheduler('checkModeratorsActivity', {
-			// 毎時30分に起動
-			pattern: '30 * * * *',
-		}, {
-			name: 'checkModeratorsActivity',
-			opts: {
-				removeOnComplete: 10,
-				removeOnFail: 30,
-			},
+		// 古いバージョンで作成され現在使われなくなったrepeatableジョブをクリーンアップ
+		this.systemQueue.getJobSchedulers().then(schedulers => {
+			for (const scheduler of schedulers) {
+				if (!REPEATABLE_SYSTEM_JOB_DEF.some(def => def.name === scheduler.key)) {
+					this.systemQueue.removeJobScheduler(scheduler.key);
+				}
+			}
 		});
 
 		this.systemQueue.upsertJobScheduler('cleanRemoteNotes', {
