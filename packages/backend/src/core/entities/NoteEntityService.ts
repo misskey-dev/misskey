@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { EntityNotFoundError, In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -44,6 +44,17 @@ function getAppearNoteIds(notes: MiNote[]): Set<string> {
 		}
 	}
 	return appearNoteIds;
+}
+
+async function nullIfEntityNotFound<T>(promise: Promise<T>): Promise<T | null> {
+	try {
+		return await promise;
+	} catch (err) {
+		if (err instanceof EntityNotFoundError) {
+			return null;
+		}
+		throw err;
+	}
 }
 
 @Injectable()
@@ -437,20 +448,20 @@ export class NoteEntityService implements OnModuleInit {
 				clippedCount: note.clippedCount,
 
 				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				reply: (note.replyId && note.reply === null) ? null : note.replyId ? this.pack(note.reply ?? note.replyId, me, {
+				reply: (note.replyId && note.reply === null) ? null : note.replyId ? nullIfEntityNotFound(this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
 				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
+				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
