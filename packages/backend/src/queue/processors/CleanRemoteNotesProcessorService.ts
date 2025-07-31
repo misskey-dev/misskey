@@ -86,6 +86,12 @@ export class CleanRemoteNotesProcessorService {
 				select: ['id'],
 			});
 
+			for (const note of notes) {
+				if (note.id < cursor) {
+					cursor = note.id;
+				}
+			}
+
 			const pinings = notes.length === 0 ? [] : await this.userNotePiningsRepository.find({
 				where: {
 					noteId: In(notes.map(note => note.id)),
@@ -120,28 +126,21 @@ export class CleanRemoteNotesProcessorService {
 				return !replies.some(reply => reply.replyId === note.id);
 			});
 
-			if (notes.length === 0) {
-				job.updateProgress(100);
-				break;
+			if (notes.length > 0) {
+				await this.notesRepository.delete(notes.map(note => note.id));
+
+				for (const note of notes) {
+					const t = this.idService.parse(note.id).date.getTime();
+					if (stats.oldest === null || t < stats.oldest) {
+						stats.oldest = t;
+					}
+					if (stats.newest === null || t > stats.newest) {
+						stats.newest = t;
+					}
+				}
+
+				stats.deletedCount += notes.length;
 			}
-
-			await this.notesRepository.delete(notes.map(note => note.id));
-
-			for (const note of notes) {
-				if (note.id < cursor) {
-					cursor = note.id;
-				}
-
-				const t = this.idService.parse(note.id).date.getTime();
-				if (stats.oldest === null || t < stats.oldest) {
-					stats.oldest = t;
-				}
-				if (stats.newest === null || t > stats.newest) {
-					stats.newest = t;
-				}
-			}
-
-			stats.deletedCount += notes.length;
 
 			const elapsed = Date.now() - startAt;
 
