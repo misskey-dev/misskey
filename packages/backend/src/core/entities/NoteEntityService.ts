@@ -443,7 +443,7 @@ export class NoteEntityService implements OnModuleInit {
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
+				renote: (note.renoteId && note.renote == null) ? null : note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
