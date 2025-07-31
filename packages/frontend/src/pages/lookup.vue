@@ -45,11 +45,20 @@ function fetch() {
 		promise = misskeyApi('ap/show', {
 			uri,
 		});
+
 		promise.then(res => {
 			if (res.type === 'User') {
-				mainRouter.replace(res.object.host ? `/@${res.object.username}@${res.object.host}` : `/@${res.object.username}`);
+				mainRouter.replace('/@:acct/:page?', {
+					params: {
+						acct: res.host != null ? `${res.object.username}@${res.object.host}` : res.object.username,
+					}
+				});
 			} else if (res.type === 'Note') {
-				mainRouter.replace(`/notes/${res.object.id}`);
+				mainRouter.replace('/notes/:noteId/:initialTab?', {
+					params: {
+						noteId: res.object.id,
+					}
+				});
 			} else {
 				os.alert({
 					type: 'error',
@@ -63,7 +72,11 @@ function fetch() {
 		}
 		promise = misskeyApi('users/show', Misskey.acct.parse(uri));
 		promise.then(user => {
-			mainRouter.replace(user.host ? `/@${user.username}@${user.host}` : `/@${user.username}`);
+			mainRouter.replace('/@:acct/:page?', {
+				params: {
+					acct: user.host != null ? `${user.username}@${user.host}` : user.username,
+				}
+			});
 		});
 	}
 

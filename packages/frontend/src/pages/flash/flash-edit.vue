@@ -429,7 +429,11 @@ async function save() {
 			script: script.value,
 			visibility: visibility.value,
 		});
-		router.push('/play/' + created.id + '/edit');
+		router.push('/play/:id/edit', {
+			params: {
+				id: created.id,
+			},
+		});
 	}
 }
 
