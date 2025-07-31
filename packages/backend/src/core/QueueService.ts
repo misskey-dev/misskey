@@ -69,61 +69,85 @@ export class QueueService {
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {
-		this.systemQueue.add('tickCharts', {
+		this.systemQueue.upsertJobScheduler('tickCharts', {
+			pattern: '55 * * * *',
 		}, {
-			repeat: { pattern: '55 * * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'tickCharts',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('resyncCharts', {
+		this.systemQueue.upsertJobScheduler('resyncCharts', {
+			pattern: '0 0 * * *',
 		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'resyncCharts',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('cleanCharts', {
+		this.systemQueue.upsertJobScheduler('cleanCharts', {
+			pattern: '0 0 * * *',
 		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'cleanCharts',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('aggregateRetention', {
+		this.systemQueue.upsertJobScheduler('aggregateRetention', {
+			pattern: '0 0 * * *',
 		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'aggregateRetention',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('clean', {
+		this.systemQueue.upsertJobScheduler('clean', {
+			pattern: '0 0 * * *',
 		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'clean',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('checkExpiredMutings', {
+		this.systemQueue.upsertJobScheduler('checkExpiredMutings', {
+			pattern: '*/5 * * * *',
 		}, {
-			repeat: { pattern: '*/5 * * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'checkExpiredMutings',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('bakeBufferedReactions', {
+		this.systemQueue.upsertJobScheduler('bakeBufferedReactions', {
+			pattern: '0 0 * * *',
 		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			name: 'bakeBufferedReactions',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
-		this.systemQueue.add('checkModeratorsActivity', {
-		}, {
+		this.systemQueue.upsertJobScheduler('checkModeratorsActivity', {
 			// 毎時30分に起動
-			repeat: { pattern: '30 * * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			pattern: '30 * * * *',
+		}, {
+			name: 'checkModeratorsActivity',
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 
 		this.systemQueue.add('cleanRemoteNotes', {
