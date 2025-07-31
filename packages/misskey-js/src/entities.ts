@@ -34,7 +34,7 @@ export type PureRenote =
 	& AllNullOrOptionalRecord<Pick<Note, 'reply' | 'replyId' | 'cw' | 'poll'>>
 	& { files: []; fileIds: []; }
 	& NonNullableRecord<Pick<Note, 'renoteId'>>
-	& Pick<Note, 'renote'>;
+	& Pick<Note, 'renote'>; // リノート対象が削除された場合、renoteIdはあるがrenoteはnullになる
 
 export type PageEvent = {
 	pageId: Page['id'];
