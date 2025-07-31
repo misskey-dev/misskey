@@ -9,7 +9,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 
 ### Server
--
+- Enhance: 全体的なパフォーマンスの向上
 
 
 ## 2025.7.0
