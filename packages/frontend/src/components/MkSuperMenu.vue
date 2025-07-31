@@ -186,7 +186,7 @@ function searchOnKeyDown(ev: KeyboardEvent) {
 
 	if (ev.key === 'Enter' && searchSelectedIndex.value != null) {
 		ev.preventDefault();
-		router.push(searchResult.value[searchSelectedIndex.value].path + '#' + searchResult.value[searchSelectedIndex.value].id);
+		router.pushByPath(searchResult.value[searchSelectedIndex.value].path + '#' + searchResult.value[searchSelectedIndex.value].id);
 	} else if (ev.key === 'ArrowDown') {
 		ev.preventDefault();
 		const current = searchSelectedIndex.value ?? -1;

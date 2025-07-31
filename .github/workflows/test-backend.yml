@@ -109,6 +109,7 @@ jobs:
     name: E2E tests (backend)
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version-file:
           - .node-version
