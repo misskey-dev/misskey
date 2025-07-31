@@ -150,12 +150,14 @@ export class QueueService {
 			},
 		});
 
-		this.systemQueue.add('cleanRemoteNotes', {
-		}, {
+		this.systemQueue.upsertJobScheduler('cleanRemoteNotes', {
 			// 毎日午前4時に起動(最も人の少ない時間帯)
-			repeat: { pattern: '0 4 * * *' },
-			removeOnComplete: 10,
-			removeOnFail: 30,
+			pattern: '0 4 * * *',
+		}, {
+			opts: {
+				removeOnComplete: 10,
+				removeOnFail: 30,
+			},
 		});
 	}
 
