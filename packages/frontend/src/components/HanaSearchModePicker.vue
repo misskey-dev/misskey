@@ -1,5 +1,14 @@
 <template>
-<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :transparentBg="true" :src="src" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
+<MkModal
+	ref="modal"
+	v-slot="{ type }"
+	zPriority="high"
+	:transparentBg="true"
+	:anchorElement="anchorElement"
+	@click="modal?.close()"
+	@closed="emit('closed')"
+	@esc="modal?.close()"
+>
 	<div class="_popup _shadow" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts._hana._searchMode.title }}
@@ -37,7 +46,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
 	currentMode: SearchMode;
-	src?: HTMLElement;
+	anchorElement?: HTMLElement;
 }>(), {
 });
 

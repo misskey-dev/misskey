@@ -46,7 +46,6 @@ import { ref, computed } from 'vue';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
 
@@ -97,7 +96,6 @@ async function setMode() {
 	}
 	emit('set');
 	onceSet.value = true;
-	globalEvents.emit('requestClearPageCache');
 	if (isInHanaMode) {
 		claimAchievement('markedAsHanaModeUser');
 	}
@@ -161,9 +159,9 @@ async function setMode() {
 		text-align: center;
 		font-size: 1rem;
 		line-height: 2rem;
-		color: var(--MI_THEME-fgTransparent);
+		color: color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 		border-radius: 50%;
-		border: 1px dashed var(--MI_THEME-fgTransparent);
+		border: 1px dashed color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 
 		> i {
 			display: inline-block;
@@ -181,7 +179,7 @@ async function setMode() {
 .radioRecommendedFor {
 	margin: 8px 0 0;
 	padding: 24px 12px 12px;
-	border: 1px dashed var(--MI_THEME-fgTransparent);
+	border: 1px dashed color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 	border-radius: var(--MI-radius);
 
 	.title {
