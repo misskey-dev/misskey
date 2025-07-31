@@ -33,7 +33,8 @@ export type PureRenote =
 	& AllNullRecord<Pick<Note, 'text'>>
 	& AllNullOrOptionalRecord<Pick<Note, 'reply' | 'replyId' | 'cw' | 'poll'>>
 	& { files: []; fileIds: []; }
-	& NonNullableRecord<Pick<Note, 'renote' | 'renoteId'>>;
+	& NonNullableRecord<Pick<Note, 'renoteId'>>
+	& Pick<Note, 'renote'>;
 
 export type PageEvent = {
 	pageId: Page['id'];
