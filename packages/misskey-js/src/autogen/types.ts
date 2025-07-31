@@ -9371,7 +9371,8 @@ export interface operations {
                         signToActivityPubGet: boolean;
                         allowExternalApRedirect: boolean;
                         enableRemoteNotesCleaning: boolean;
-                        remoteNotesCleaningMaxDurationInMinutes: number;
+                        remoteNotesCleaningExpiryDaysForEachNotes: number;
+                        remoteNotesCleaningMaxProcessingDurationInMinutes: number;
                     };
                 };
             };
@@ -12602,7 +12603,8 @@ export interface operations {
                     signToActivityPubGet?: boolean;
                     allowExternalApRedirect?: boolean;
                     enableRemoteNotesCleaning?: boolean;
-                    remoteNotesCleaningMaxDurationInMinutes?: number;
+                    remoteNotesCleaningExpiryDaysForEachNotes?: number;
+                    remoteNotesCleaningMaxProcessingDurationInMinutes?: number;
                 };
             };
         };

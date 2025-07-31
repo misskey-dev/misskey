@@ -575,7 +575,11 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			remoteNotesCleaningMaxDurationInMinutes: {
+			remoteNotesCleaningExpiryDaysForEachNotes: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			remoteNotesCleaningMaxProcessingDurationInMinutes: {
 				type: 'number',
 				optional: false, nullable: false,
 			},
@@ -731,7 +735,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				signToActivityPubGet: instance.signToActivityPubGet,
 				allowExternalApRedirect: instance.allowExternalApRedirect,
 				enableRemoteNotesCleaning: instance.enableRemoteNotesCleaning,
-				remoteNotesCleaningMaxDurationInMinutes: instance.remoteNotesCleaningMaxDurationInMinutes,
+				remoteNotesCleaningExpiryDaysForEachNotes: instance.remoteNotesCleaningExpiryDaysForEachNotes,
+				remoteNotesCleaningMaxProcessingDurationInMinutes: instance.remoteNotesCleaningMaxProcessingDurationInMinutes,
 			};
 		});
 	}

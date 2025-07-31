@@ -206,7 +206,8 @@ export const paramDef = {
 		signToActivityPubGet: { type: 'boolean' },
 		allowExternalApRedirect: { type: 'boolean' },
 		enableRemoteNotesCleaning: { type: 'boolean' },
-		remoteNotesCleaningMaxDurationInMinutes: { type: 'number' },
+		remoteNotesCleaningExpiryDaysForEachNotes: { type: 'number' },
+		remoteNotesCleaningMaxProcessingDurationInMinutes: { type: 'number' },
 	},
 	required: [],
 } as const;
@@ -729,8 +730,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.enableRemoteNotesCleaning = ps.enableRemoteNotesCleaning;
 			}
 
-			if (ps.remoteNotesCleaningMaxDurationInMinutes !== undefined) {
-				set.remoteNotesCleaningMaxDurationInMinutes = ps.remoteNotesCleaningMaxDurationInMinutes;
+			if (ps.remoteNotesCleaningExpiryDaysForEachNotes !== undefined) {
+				set.remoteNotesCleaningExpiryDaysForEachNotes = ps.remoteNotesCleaningExpiryDaysForEachNotes;
+			}
+
+			if (ps.remoteNotesCleaningMaxProcessingDurationInMinutes !== undefined) {
+				set.remoteNotesCleaningMaxProcessingDurationInMinutes = ps.remoteNotesCleaningMaxProcessingDurationInMinutes;
 			}
 
 			const before = await this.metaService.fetch(true);

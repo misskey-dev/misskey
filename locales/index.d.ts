@@ -5497,6 +5497,10 @@ export interface Locale extends ILocale {
      * 分
      */
     "inMinutes": string;
+    /**
+     * 日
+     */
+    "inDays": string;
     "_order": {
         /**
          * 新しい順
@@ -6495,9 +6499,13 @@ export interface Locale extends ILocale {
          */
         "remoteNotesCleaning_description": string;
         /**
-         * 最大処理継続時間
+         * 最大クリーニング処理継続時間
          */
-        "remoteNotesCleaningMaxDuration": string;
+        "remoteNotesCleaningMaxProcessingDuration": string;
+        /**
+         * 最低ノート保持日数
+         */
+        "remoteNotesCleaningExpiryDaysForEachNotes": string;
         /**
          * 問い合わせ先URL
          */

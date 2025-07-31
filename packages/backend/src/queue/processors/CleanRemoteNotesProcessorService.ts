@@ -53,10 +53,10 @@ export class CleanRemoteNotesProcessorService {
 
 		this.logger.info('cleaning remote notes...');
 
-		const maxDuration = this.meta.remoteNotesCleaningMaxDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
+		const maxDuration = this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
-		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningAgeThresholdInDays)); // Convert days to milliseconds
+		const maxId = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes)); // Convert days to milliseconds
 		const MAX_NOTE_COUNT_PER_QUERY = 50;
 
 		const stats = {

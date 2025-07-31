@@ -710,12 +710,12 @@ export class MiMeta {
 	@Column('integer', {
 		default: 60, // minutes
 	})
-	public remoteNotesCleaningMaxDurationInMinutes: number;
+	public remoteNotesCleaningMaxProcessingDurationInMinutes: number;
 
 	@Column('integer', {
-		default: 30, // days
+		default: 90, // days
 	})
-	public remoteNotesCleaningAgeThresholdInDays: number;
+	public remoteNotesCleaningExpiryDaysForEachNotes: number;
 }
 
 export type SoftwareSuspension = {
