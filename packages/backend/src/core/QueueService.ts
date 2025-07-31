@@ -154,6 +154,7 @@ export class QueueService {
 			// 毎日午前4時に起動(最も人の少ない時間帯)
 			pattern: '0 4 * * *',
 		}, {
+			name: 'cleanRemoteNotes',
 			opts: {
 				removeOnComplete: 10,
 				removeOnFail: 30,
