@@ -1,15 +1,18 @@
 ## Unreleased
 
 ### General
-- 定期的にリモートの投稿を削除する機能が実装されました
+- ノートを削除した際、関連するノートが同時に削除されないようになりました
+	- APIで、「replyIdが存在しているのにreplyがnull」や「renoteIdが存在しているのにrenoteがnull」であるという、今までにはなかったパターンが表れることになります
+- 定期的に参照されていないリモートの投稿を削除する機能が実装されました
 	- **デフォルトでオン**になっています
-	- 現時点で、リモートの投稿に紐づくローカルの投稿も削除されます
 
 ### Client
--
+- Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 
 ### Server
--
+- Enhance: ノートの削除処理の効率化
+- Enhance: 全体的なパフォーマンスの向上
 
 
 ## 2025.7.0
