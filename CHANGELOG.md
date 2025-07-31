@@ -9,6 +9,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 
 ### Server
+- Enhance: ノートの削除処理の効率化
 - Enhance: 全体的なパフォーマンスの向上
 
 
