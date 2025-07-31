@@ -7,7 +7,7 @@ import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { And, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiMeta, MiNote, NoteFavoritesRepository, NotesRepository } from '@/models/_.js';
+import type { MiMeta, MiNote, NoteFavoritesRepository, NotesRepository, UserNotePiningsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -27,6 +27,9 @@ export class CleanRemoteNotesProcessorService {
 
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
+
+		@Inject(DI.userNotePiningsRepository)
+		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		private idService: IdService,
 		private queueLoggerService: QueueLoggerService,
@@ -81,6 +84,17 @@ export class CleanRemoteNotesProcessorService {
 					id: 1,
 				},
 				select: ['id'],
+			});
+
+			const pinings = notes.length === 0 ? [] : await this.userNotePiningsRepository.find({
+				where: {
+					noteId: In(notes.map(note => note.id)),
+				},
+				select: ['noteId'],
+			});
+
+			notes = notes.filter(note => {
+				return !pinings.some(pining => pining.noteId === note.id);
 			});
 
 			const favorites = notes.length === 0 ? [] : await this.noteFavoritesRepository.find({
