@@ -15,6 +15,12 @@
 - 日本語における公開範囲名称の「ダイレクト」が「指名」に改称されました
 
 ### Client
+- Feat: セーフモード
+	- プラグイン・テーマ・カスタムCSSの使用でクライアントの起動に問題が発生した際に、これらを無効にして起動できます
+	- 以下の方法でセーフモードを起動できます
+		- `g` キーを連打する
+		- URLに`?safemode=true`を付ける
+		- PWAのショートカットで Safemode を選択して起動する
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 - Fix: テーマエディタが動作しない問題を修正

@@ -5501,6 +5501,22 @@ export interface Locale extends ILocale {
      * 日
      */
     "inDays": string;
+    /**
+     * セーフモードが有効です
+     */
+    "safeModeEnabled": string;
+    /**
+     * セーフモードが有効なため、プラグインはすべて無効化されています。
+     */
+    "pluginsAreDisabledBecauseSafeMode": string;
+    /**
+     * セーフモードが有効なため、カスタムCSSは適用されていません。
+     */
+    "customCssIsDisabledBecauseSafeMode": string;
+    /**
+     * セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。
+     */
+    "themeIsDefaultBecauseSafeMode": string;
     "_order": {
         /**
          * 新しい順
@@ -11839,6 +11855,10 @@ export interface Locale extends ILocale {
          * 修復ツールを起動
          */
         "otherOption3": string;
+        /**
+         * Misskeyをセーフモードで起動
+         */
+        "otherOption4": string;
     };
     "_search": {
         /**
