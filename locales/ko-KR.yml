@@ -1370,6 +1370,10 @@ defaultImageCompressionLevel: "기본 이미지 압축 정도"
 defaultImageCompressionLevel_description: "낮추면 화질을 유지합니다만 파일 크기는 증가합니다. <br>높이면 파일 크기를 줄일 수 있습니다만 화질은 저하됩니다."
 inMinutes: "분"
 inDays: "일"
+safeModeEnabled: "세이프 모드가 활성화돼있습니다"
+pluginsAreDisabledBecauseSafeMode: "세이프 모드가 활성화돼있기에 플러그인은 전부 비활성화됩니다."
+customCssIsDisabledBecauseSafeMode: "세이프 모드가 활성화돼있기에 커스텀 CSS는 적용되지 않습니다."
+themeIsDefaultBecauseSafeMode: "세이프 모드가 활성화돼있는 동안에는 기본 테마가 사용됩니다. 세이프 모드를 끄면 원래대로 돌아옵니다."
 _order:
   newest: "최신 순"
   oldest: "오래된 순"
@@ -1656,6 +1660,8 @@ _serverSettings:
   userGeneratedContentsVisibilityForVisitor: "비이용자에 대한 유저 작성 콘텐츠의 공개 범위"
   userGeneratedContentsVisibilityForVisitor_description: "조정을 하기 힘든 부적절한 리모트 콘텐츠 등이 자신의 서버 경유로 의도치 않게 인터넷에 공개되는 문제의 방지 등에 도움을 줍니다."
   userGeneratedContentsVisibilityForVisitor_description2: "서버에서 받은 리모트 콘텐츠를 포함해 서버 내의 모든 콘텐츠를 무조건 인터넷에 공개하는 것에는 위험이 따릅니다. 특히, 분산형 특성에 대해 모르는 열람자에게는 리모트 콘텐츠여도 서버 내에서 작성된 콘텐츠라고 잘못 인식할 수 있기에 주의가 필요합니다."
+  restartServerSetupWizardConfirm_title: "서버의 초기 설정 위자드를 재시도하시겠습니까?"
+  restartServerSetupWizardConfirm_text: "현재 일부 설정은 리셋됩니다."
   _userGeneratedContentsVisibilityForVisitor:
     all: "모두 공개"
     localOnly: "로컬 콘텐츠만 공개하고 리모트 콘텐츠는 비공개"
@@ -3066,6 +3072,7 @@ _bootErrors:
   otherOption1: "클라이언트 설정 및 캐시 삭제"
   otherOption2: "간편 클라이언트 실행"
   otherOption3: "복구 툴 실행"
+  otherOption4: "Misskey를 세이프 모드로 열기"
 _search:
   searchScopeAll: "전체"
   searchScopeLocal: "로컬"
