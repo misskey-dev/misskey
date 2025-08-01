@@ -1368,6 +1368,8 @@ redisplayAllTips: "Mostra tutti i suggerimenti"
 hideAllTips: "Nascondi tutti i suggerimenti"
 defaultImageCompressionLevel: "Livello predefinito di compressione immagini"
 defaultImageCompressionLevel_description: "La compressione diminuisce la qualità dell'immagine, poca compressione mantiene alta qualità delle immagini. Aumentandola, si riducono le dimensioni del file, a discapito della qualità dell'immagine."
+inMinutes: "min"
+inDays: "giorni"
 _order:
   newest: "Prima i più recenti"
   oldest: "Meno recenti prima"
