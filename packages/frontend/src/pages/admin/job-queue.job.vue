@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 			<MkKeyValue v-if="job.progress != null && typeof job.progress === 'number' && job.progress > 0">
 				<template #key>Progress</template>
-				<template #value>{{ Math.floor(job.progress * 100) }}%</template>
+				<template #value>{{ Math.floor(job.progress) }}%</template>
 			</MkKeyValue>
 		</div>
 		<MkFolder :withSpacer="false">
@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton><i class="ti ti-device-floppy"></i> Update</MkButton>
 	</div>
 	<div v-else-if="tab === 'result'">
-		<MkCode :code="String(job.returnValue)"/>
+		<MkCode :code="JSON5.stringify(job.returnValue, null, '\t')" lang="json5"/>
 	</div>
 	<div v-else-if="tab === 'error'" class="_gaps_s">
 		<MkCode v-for="log in job.stacktrace" :code="log" lang="stacktrace"/>
