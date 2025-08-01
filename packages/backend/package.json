@@ -135,7 +135,7 @@
 		"jsrsasign": "11.1.0",
 		"juice": "11.0.1",
 		"meilisearch": "0.51.0",
-		"mfm-js": "0.24.0",
+		"mfm-js": "0.25.0",
 		"microformats-parser": "2.0.3",
 		"mime-types": "2.1.35",
 		"misskey-js": "workspace:*",

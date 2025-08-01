@@ -23,7 +23,7 @@
 		"icons-subsetter": "workspace:*",
 		"frontend-shared": "workspace:*",
 		"json5": "2.2.3",
-		"mfm-js": "0.24.0",
+		"mfm-js": "0.25.0",
 		"misskey-js": "workspace:*",
 		"punycode.js": "2.3.1",
 		"rollup": "4.45.1",

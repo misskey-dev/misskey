@@ -294,8 +294,8 @@ importers:
         specifier: 0.51.0
         version: 0.51.0
       mfm-js:
-        specifier: 0.24.0
-        version: 0.24.0
+        specifier: 0.25.0
+        version: 0.25.0
       microformats-parser:
         specifier: 2.0.3
         version: 2.0.3
@@ -818,8 +818,8 @@ importers:
         specifier: 0.20.0
         version: 0.20.0
       mfm-js:
-        specifier: 0.24.0
-        version: 0.24.0
+        specifier: 0.25.0
+        version: 0.25.0
       misskey-bubble-game:
         specifier: workspace:*
         version: link:../misskey-bubble-game
@@ -1119,8 +1119,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.24.0
-        version: 0.24.0
+        specifier: 0.25.0
+        version: 0.25.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -4269,9 +4269,6 @@ packages:
   '@tsd/typescript@5.8.3':
     resolution: {integrity: sha512-oKarNCN1QUhG148M88mtZdOlBZWWGcInquef+U8QL7gwJkRuNo5WS45Fjsd+3hM9cDJWGpqSZ4Oo097KDx4IWA==}
     engines: {node: '>=14.17'}
-
-  '@twemoji/parser@15.0.0':
-    resolution: {integrity: sha512-lh9515BNsvKSNvyUqbj5yFu83iIDQ77SwVcsN/SnEGawczhsKU6qWuogewN1GweTi5Imo5ToQ9s+nNTf97IXvg==}
 
   '@twemoji/parser@16.0.0':
     resolution: {integrity: sha512-jmuIjkp3OIaEemwMy3sArBwZSuZkRqmueGwRe2Zk4cFzbUJISFBJSZLDUUBNIgq3c+nY49ideYN2OiII6JUqwA==}
@@ -7983,8 +7980,8 @@ packages:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
 
-  mfm-js@0.24.0:
-    resolution: {integrity: sha512-6m8N0ElH9/4CA1izhVqmxTfLj5Z9RspdqM/lMew4xU/UTgm4Pf//VpDunpasxbRFjeJSVW+zoVwL4ZPfPtfiQg==}
+  mfm-js@0.25.0:
+    resolution: {integrity: sha512-JoK5TOtswXIvZSZ9hUEL+ZkcNV4onu/DtkaKeXK846+sJBBF8DvxYmPutt7nPaRDsUMmJGr64PNVMFpMGdk3hw==}
 
   microformats-parser@2.0.3:
     resolution: {integrity: sha512-MhZoQXkvWrvI3iu1IJ7Zk2VglphPt5P482E5rXvHalvtxhuS/QioMB8gEr8omt7Fd0K/qQEAbTmabvNpCbi3EQ==}
@@ -14588,8 +14585,6 @@ snapshots:
 
   '@tsd/typescript@5.8.3': {}
 
-  '@twemoji/parser@15.0.0': {}
-
   '@twemoji/parser@16.0.0': {}
 
   '@types/accepts@1.3.7':
@@ -19279,9 +19274,9 @@ snapshots:
 
   methods@1.1.2: {}
 
-  mfm-js@0.24.0:
+  mfm-js@0.25.0:
     dependencies:
-      '@twemoji/parser': 15.0.0
+      '@twemoji/parser': 16.0.0
 
   microformats-parser@2.0.3:
     dependencies:
