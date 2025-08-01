@@ -7,7 +7,7 @@ export class RemoteNotesCleaning1753863104203 {
     name = 'RemoteNotesCleaning1753863104203'
 
     async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "meta" ADD "enableRemoteNotesCleaning" boolean NOT NULL DEFAULT true`);
+        await queryRunner.query(`ALTER TABLE "meta" ADD "enableRemoteNotesCleaning" boolean NOT NULL DEFAULT false`);
         await queryRunner.query('ALTER TABLE "meta" ADD "remoteNotesCleaningMaxProcessingDurationInMinutes" integer NOT NULL DEFAULT \'60\'');
 		await queryRunner.query('ALTER TABLE "meta" ADD "remoteNotesCleaningExpiryDaysForEachNotes" integer NOT NULL DEFAULT \'90\'');
     }
