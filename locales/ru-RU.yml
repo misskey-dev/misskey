@@ -1272,6 +1272,8 @@ markAsSensitiveConfirm: "Отметить контент как чувствит
 resetToDefaultValue: "Сбросить настройки до стандартных"
 postForm: "Форма отправки"
 information: "Описание"
+inMinutes: "мин"
+inDays: "сут"
 _chat:
   invitations: "Пригласить"
   noHistory: "История пока пуста"
