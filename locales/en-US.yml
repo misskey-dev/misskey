@@ -1500,7 +1500,7 @@ _abuseUserReport:
   resolveTutorial: "If the report's content is legitimate, select \"Accept\" to mark it as resolved.\nIf the report's content is illegitimate, select \"Reject\" to ignore it."
 _delivery:
   status: "Delivery status"
-  stop: "Suspended"
+  stop: "Suspend"
   resume: "Delivery resume"
   _type:
     none: "Publishing"
