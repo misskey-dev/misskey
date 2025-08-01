@@ -315,11 +315,11 @@ export interface Locale extends ILocale {
      */
     "mention": string;
     /**
-     * あなた宛て
+     * メンション
      */
     "mentions": string;
     /**
-     * ダイレクト投稿
+     * 指名
      */
     "directNotes": string;
     /**
@@ -6353,7 +6353,7 @@ export interface Locale extends ILocale {
                  */
                 "followers": string;
                 /**
-                 * 指定したユーザーにのみ公開され、また相手に通知が入ります。ダイレクトメッセージのかわりにお使いいただけます。
+                 * 指定したユーザーにのみ公開され、また相手に通知が入ります。
                  */
                 "direct": string;
                 /**
@@ -6361,7 +6361,7 @@ export interface Locale extends ILocale {
                  */
                 "doNotSendConfidencialOnDirect1": string;
                 /**
-                 * 送信先のサーバーの管理者は投稿内容を見ることが可能なので、信頼できないサーバーのユーザーにダイレクト投稿を送信する場合は、機密情報の扱いに注意が必要です。
+                 * 送信先のサーバーの管理者は投稿内容を見ることが可能なので、信頼できないサーバーのユーザーが含まれる限定公開のノートを作成する際は、機密情報の扱いに注意が必要です。
                  */
                 "doNotSendConfidencialOnDirect2": string;
                 /**
@@ -9641,7 +9641,7 @@ export interface Locale extends ILocale {
          */
         "followersDescription": string;
         /**
-         * ダイレクト
+         * 指名
          */
         "specified": string;
         /**
@@ -10530,11 +10530,11 @@ export interface Locale extends ILocale {
              */
             "channel": string;
             /**
-             * あなた宛て
+             * メンション
              */
             "mentions": string;
             /**
-             * ダイレクト
+             * 指名
              */
             "direct": string;
             /**
