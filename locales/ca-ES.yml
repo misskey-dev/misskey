@@ -1370,9 +1370,13 @@ defaultImageCompressionLevel: "Nivell de comprensió de la imatge per defecte"
 defaultImageCompressionLevel_description: "Baixa, conserva la qualitat de la imatge però la mida de l'arxiu és més gran. <br>Alta, redueix la mida de l'arxiu però també la qualitat de la imatge."
 inMinutes: "Minut(s)"
 inDays: "Di(a)(es)"
+safeModeEnabled: "Mode segur activat"
+pluginsAreDisabledBecauseSafeMode: "Els afegits no estan activats perquè el mode segur està activat."
+customCssIsDisabledBecauseSafeMode: "El CSS personalitzat no s'aplica perquè el mode segur es troba activat."
+themeIsDefaultBecauseSafeMode: "El tema predeterminat es farà servir mentre el mode segur estigui activat. Una vegada es desactivi el mode segur es restablirà el tema escollit."
 _order:
   newest: "Més recent"
-  oldest: "Cronològic"
+  oldest: "Antigues primer"
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"
@@ -3068,6 +3072,7 @@ _bootErrors:
   otherOption1: "Esborrar la configuració i la memòria cau del client"
   otherOption2: "Iniciar client senzill"
   otherOption3: "Iniciar l'eina de reparació "
+  otherOption4: "Iniciar Misskey en mode segur"
 _search:
   searchScopeAll: "Tot"
   searchScopeLocal: "Local"
