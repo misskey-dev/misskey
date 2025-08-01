@@ -70,6 +70,8 @@ export class CleanRemoteNotesProcessorService {
 		let cursor: MiNote['id'] = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
 
 		while (true) {
+			const batchBeginAt = Date.now();
+
 			let notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
 				where: {
 					id: LessThan(cursor),
@@ -85,6 +87,8 @@ export class CleanRemoteNotesProcessorService {
 				},
 				select: ['id'],
 			});
+
+			const fetchedCount = notes.length;
 
 			for (const note of notes) {
 				if (note.id < cursor) {
@@ -141,6 +145,8 @@ export class CleanRemoteNotesProcessorService {
 
 				stats.deletedCount += notes.length;
 			}
+
+			job.log(`Deleted ${notes.length} of ${fetchedCount}; ${Date.now() - batchBeginAt}ms`);
 
 			const elapsed = Date.now() - startAt;
 
