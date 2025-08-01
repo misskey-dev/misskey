@@ -188,6 +188,10 @@ export class ClientServerService {
 					'url': 'url',
 				},
 			},
+			'shortcuts': [{
+				'name': 'Safemode',
+				'url': '/?safemode=true',
+			}],
 		};
 
 		manifest = {
