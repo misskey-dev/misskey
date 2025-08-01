@@ -6495,6 +6495,10 @@ export interface Locale extends ILocale {
          */
         "reactionsBufferingDescription": string;
         /**
+         * リモート投稿の自動クリーニング
+         */
+        "remoteNotesCleaning": string;
+        /**
          * 有効にすると、参照されていない古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
          */
         "remoteNotesCleaning_description": string;
@@ -11971,6 +11975,14 @@ export interface Locale extends ILocale {
          * 連合可能なサーバーの指定など、高度な設定も後ほど可能です。
          */
         "youCanConfigureMoreFederationSettingsLater": string;
+        /**
+         * 受信コンテンツの自動クリーニング
+         */
+        "remoteContentsCleaning": string;
+        /**
+         * 連合を行うと、継続して多くのコンテンツを受信します。自動クリーニングを有効にすると、参照されていない古くなったコンテンツを自動でサーバーから削除し、ストレージを節約できます。
+         */
+        "remoteContentsCleaning_description": string;
         /**
          * 管理者情報
          */

@@ -63,6 +63,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<MkInfo v-if="q_federation === 'yes'">{{ i18n.ts._serverSetupWizard.youCanConfigureMoreFederationSettingsLater }}</MkInfo>
+
+			<MkSwitch v-if="q_federation === 'yes'" v-model="q_remoteContentsCleaning">
+				<template #label>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning }}</template>
+				<template #caption>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning_description }}</template>
+			</MkSwitch>
 		</div>
 	</MkFolder>
 
@@ -109,6 +114,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<div><b>{{ i18n.ts.federation }}:</b></div>
 				<div>{{ serverSettings.federation === 'none' ? i18n.ts.no : i18n.ts.all }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._serverSettings.remoteNotesCleaning }}:</b></div>
+				<div>{{ serverSettings.enableRemoteNotesCleaning ? i18n.ts.yes : i18n.ts.no }}</div>
 			</div>
 			<div>
 				<div><b>FTT:</b></div>
@@ -185,6 +194,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 
 const emit = defineEmits<{
@@ -202,6 +212,7 @@ const q_name = ref(currentMeta.name ?? '');
 const q_use = ref('single');
 const q_scale = ref('small');
 const q_federation = ref(currentMeta.federation === 'none' ? 'no' : 'yes');
+const q_remoteContentsCleaning = ref(currentMeta.enableRemoteNotesCleaning);
 const q_adminName = ref(currentMeta.maintainerName ?? '');
 const q_adminEmail = ref(currentMeta.maintainerEmail ?? '');
 
@@ -219,6 +230,7 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 		emailRequiredForSignup: q_use.value === 'open',
 		enableIpLogging: q_use.value === 'open',
 		federation: q_federation.value === 'yes' ? 'all' : 'none',
+		enableRemoteNotesCleaning: q_remoteContentsCleaning.value,
 		enableFanoutTimeline: true,
 		enableFanoutTimelineDbFallback: q_use.value === 'single',
 		enableReactionsBuffering,
