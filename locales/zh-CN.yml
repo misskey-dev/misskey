@@ -1368,6 +1368,8 @@ redisplayAllTips: "重新显示所有的提示和技巧"
 hideAllTips: "隐藏所有的提示和技巧"
 defaultImageCompressionLevel: "默认图像压缩等级"
 defaultImageCompressionLevel_description: "较低的等级可以保持画质，但会增加文件大小。<br>较高的等级可以减少文件大小，但相对应的画质将会降低。"
+inMinutes: "分"
+inDays: "日"
 _order:
   newest: "从新到旧"
   oldest: "从旧到新"
