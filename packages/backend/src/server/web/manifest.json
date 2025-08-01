@@ -40,5 +40,11 @@
 				}
 			]
 		}
-	}
+	},
+	"shortcuts": [
+		{
+			"name": "Safemode",
+			"url": "/?safemode=true"
+		}
+	]
 }

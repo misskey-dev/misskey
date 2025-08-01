@@ -194,6 +194,10 @@ export class ClientServerService {
 					],
 				},
 			},
+			'shortcuts': [{
+				'name': 'Safemode',
+				'url': '/?safemode=true',
+			}],
 		};
 
 		manifest = {
