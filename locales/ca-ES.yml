@@ -1368,6 +1368,8 @@ redisplayAllTips: "Torna ha mostrat tots els trucs i consells"
 hideAllTips: "Amagar tots els trucs i consells"
 defaultImageCompressionLevel: "Nivell de comprensió de la imatge per defecte"
 defaultImageCompressionLevel_description: "Baixa, conserva la qualitat de la imatge però la mida de l'arxiu és més gran. <br>Alta, redueix la mida de l'arxiu però també la qualitat de la imatge."
+inMinutes: "Minut(s)"
+inDays: "Di(a)(es)"
 _order:
   newest: "Més recent"
   oldest: "Cronològic"
