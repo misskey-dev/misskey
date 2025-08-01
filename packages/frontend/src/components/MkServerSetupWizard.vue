@@ -196,12 +196,14 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-const q_name = ref('');
+const currentMeta = await misskeyApi('admin/meta');
+
+const q_name = ref(currentMeta.name ?? '');
 const q_use = ref('single');
 const q_scale = ref('small');
-const q_federation = ref('yes');
-const q_adminName = ref('');
-const q_adminEmail = ref('');
+const q_federation = ref(currentMeta.federation === 'none' ? 'no' : 'yes');
+const q_adminName = ref(currentMeta.maintainerName ?? '');
+const q_adminEmail = ref(currentMeta.maintainerEmail ?? '');
 
 const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 	let enableReactionsBuffering;

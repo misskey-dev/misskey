@@ -6578,6 +6578,14 @@ export interface Locale extends ILocale {
          * サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。
          */
         "userGeneratedContentsVisibilityForVisitor_description2": string;
+        /**
+         * サーバーの初期設定ウィザードをやり直しますか？
+         */
+        "restartServerSetupWizardConfirm_title": string;
+        /**
+         * 現在の一部の設定はリセットされます。
+         */
+        "restartServerSetupWizardConfirm_text": string;
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
