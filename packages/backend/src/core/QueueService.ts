@@ -811,6 +811,13 @@ export class QueueService {
 	}
 
 	@bindThis
+	public async queueGetJobLogs(queueType: typeof QUEUE_TYPES[number], jobId: string) {
+		const queue = this.getQueue(queueType);
+		const result = await queue.getJobLogs(jobId);
+		return result.logs;
+	}
+
+	@bindThis
 	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobTypes: JobType[], search?: string) {
 		const RETURN_LIMIT = 100;
 		const queue = this.getQueue(queueType);

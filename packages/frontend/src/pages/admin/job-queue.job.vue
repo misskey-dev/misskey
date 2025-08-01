@@ -155,6 +155,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-else-if="tab === 'error'" class="_gaps_s">
 		<MkCode v-for="log in job.stacktrace" :code="log" lang="stacktrace"/>
 	</div>
+	<div v-else-if="tab === 'logs'">
+		<MkButton primary rounded @click="loadLogs()"><i class="ti ti-refresh"></i> Load logs</MkButton>
+		<div v-for="log in logs">{{ log }}</div>
+	</div>
 </MkFolder>
 </template>
 
@@ -198,6 +202,7 @@ const emit = defineEmits<{
 const tab = ref('info');
 const editData = ref(JSON5.stringify(props.job.data, null, '\t'));
 const canEdit = true;
+const logs = ref<string[]>([]);
 
 type TlType = TlEvent<{
 	type: 'created' | 'processed' | 'finished';
@@ -266,6 +271,10 @@ async function removeJob() {
 	if (canceled) return;
 
 	os.apiWithDialog('admin/queue/remove-job', { queue: props.queueType, jobId: props.job.id });
+}
+
+async function loadLogs() {
+	logs.value = await os.apiWithDialog('admin/queue/show-job-logs', { queue: props.queueType, jobId: props.job.id });
 }
 
 // TODO
