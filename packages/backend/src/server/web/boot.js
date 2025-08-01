@@ -94,23 +94,37 @@
 	}
 	//#endregion
 
-	//#region Theme
-	const theme = localStorage.getItem('theme');
-	if (theme) {
-		for (const [k, v] of Object.entries(JSON.parse(theme))) {
-			document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
+	let isSafeMode = (localStorage.getItem('isSafeMode') === 'true');
 
-			// HTMLの theme-color 適用
-			if (k === 'htmlThemeColor') {
-				for (const tag of document.head.children) {
-					if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-						tag.setAttribute('content', v);
-						break;
+	if (!isSafeMode) {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		if (urlParams.has('safemode') && urlParams.get('safemode') === 'true') {
+			localStorage.setItem('isSafeMode', 'true');
+			isSafeMode = true;
+		}
+	}
+
+	//#region Theme
+	if (!isSafeMode) {
+		const theme = localStorage.getItem('theme');
+		if (theme) {
+			for (const [k, v] of Object.entries(JSON.parse(theme))) {
+				document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
+
+				// HTMLの theme-color 適用
+				if (k === 'htmlThemeColor') {
+					for (const tag of document.head.children) {
+						if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+							tag.setAttribute('content', v);
+							break;
+						}
 					}
 				}
 			}
 		}
 	}
+
 	const colorScheme = localStorage.getItem('colorScheme');
 	if (colorScheme) {
 		document.documentElement.style.setProperty('color-scheme', colorScheme);
@@ -127,11 +141,13 @@
 		document.documentElement.classList.add('useSystemFont');
 	}
 
-	const customCss = localStorage.getItem('customCss');
-	if (customCss && customCss.length > 0) {
-		const style = document.createElement('style');
-		style.innerHTML = customCss;
-		document.head.appendChild(style);
+	if (!isSafeMode) {
+		const customCss = localStorage.getItem('customCss');
+		if (customCss && customCss.length > 0) {
+			const style = document.createElement('style');
+			style.innerHTML = customCss;
+			document.head.appendChild(style);
+		}
 	}
 
 	async function addStyle(styleText) {
@@ -159,8 +175,12 @@
 			otherOption1: 'Clear preferences and cache',
 			otherOption2: 'Start the simple client',
 			otherOption3: 'Start the repair tool',
+			otherOption4: 'Start Misskey in safe mode',
 		}, locale?._bootErrors || {});
 		const reload = locale?.reload || 'Reload';
+
+		const safeModeUrl = new URL(window.location.href);
+		safeModeUrl.searchParams.set('safemode', 'true');
 
 		let errorsElement = document.getElementById('errors');
 
@@ -182,6 +202,12 @@
 			<p>${messages.solution4}</p>
 			<details style="color: #86b300;">
 				<summary>${messages.otherOption}</summary>
+				<a href="${safeModeUrl}">
+					<button class="button-small">
+						<span class="button-label-small">${messages.otherOption4}</span>
+					</button>
+				</a>
+				<br>
 				<a href="/flush">
 					<button class="button-small">
 						<span class="button-label-small">${messages.otherOption1}</span>

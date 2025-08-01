@@ -315,11 +315,11 @@ export interface Locale extends ILocale {
      */
     "mention": string;
     /**
-     * あなた宛て
+     * メンション
      */
     "mentions": string;
     /**
-     * ダイレクト投稿
+     * 指名
      */
     "directNotes": string;
     /**
@@ -5518,6 +5518,22 @@ export interface Locale extends ILocale {
      */
     "inDays": string;
     /**
+     * セーフモードが有効です
+     */
+    "safeModeEnabled": string;
+    /**
+     * セーフモードが有効なため、プラグインはすべて無効化されています。
+     */
+    "pluginsAreDisabledBecauseSafeMode": string;
+    /**
+     * セーフモードが有効なため、カスタムCSSは適用されていません。
+     */
+    "customCssIsDisabledBecauseSafeMode": string;
+    /**
+     * セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。
+     */
+    "themeIsDefaultBecauseSafeMode": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
@@ -6332,7 +6348,7 @@ export interface Locale extends ILocale {
                  */
                 "followers": string;
                 /**
-                 * 指定したユーザーにのみ公開され、また相手に通知が入ります。ダイレクトメッセージのかわりにお使いいただけます。
+                 * 指定したユーザーにのみ公開され、また相手に通知が入ります。
                  */
                 "direct": string;
                 /**
@@ -6340,7 +6356,7 @@ export interface Locale extends ILocale {
                  */
                 "doNotSendConfidencialOnDirect1": string;
                 /**
-                 * 送信先のサーバーの管理者は投稿内容を見ることが可能なので、信頼できないサーバーのユーザーにダイレクト投稿を送信する場合は、機密情報の扱いに注意が必要です。
+                 * 送信先のサーバーの管理者は投稿内容を見ることが可能なので、信頼できないサーバーのユーザーが含まれる限定公開のノートを作成する際は、機密情報の扱いに注意が必要です。
                  */
                 "doNotSendConfidencialOnDirect2": string;
                 /**
@@ -9768,7 +9784,7 @@ export interface Locale extends ILocale {
          */
         "followersDescription": string;
         /**
-         * ダイレクト
+         * 指名
          */
         "specified": string;
         /**
@@ -10661,11 +10677,11 @@ export interface Locale extends ILocale {
              */
             "channel": string;
             /**
-             * あなた宛て
+             * メンション
              */
             "mentions": string;
             /**
-             * ダイレクト
+             * 指名
              */
             "direct": string;
             /**
@@ -11986,6 +12002,10 @@ export interface Locale extends ILocale {
          * 修復ツールを起動
          */
         "otherOption3": string;
+        /**
+         * Misskeyをセーフモードで起動
+         */
+        "otherOption4": string;
     };
     "_search": {
         /**
