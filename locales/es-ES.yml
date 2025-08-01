@@ -1368,6 +1368,8 @@ redisplayAllTips: "Volver a mostrar todos \"Trucos y consejos\""
 hideAllTips: "Ocultar todos los \"Trucos y consejos\""
 defaultImageCompressionLevel: "Nivel de compresión de la imagen por defecto"
 defaultImageCompressionLevel_description: "Baja, conserva la calidad de la imagen pero la medida del archivo es más grande. <br>Alta, reduce la medida del archivo pero también la calidad de la imagen."
+inMinutes: "Minutos"
+inDays: "Días"
 _order:
   newest: "Los más recientes primero"
   oldest: "Los más antiguos primero"
