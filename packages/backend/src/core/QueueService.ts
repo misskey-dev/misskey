@@ -102,8 +102,13 @@ export class QueueService {
 			}, {
 				name: def.name,
 				opts: {
-					removeOnComplete: 10,
-					removeOnFail: 30,
+					// 期限ではなくcountで設定したいが、ジョブごとではなくキュー全体でカウントされるため、高頻度で実行されるジョブによって低頻度で実行されるジョブのログが消えることになる
+					removeOnComplete: {
+						age: 3600 * 24 * 7, // keep up to 7 days
+					},
+					removeOnFail: {
+						age: 3600 * 24 * 7, // keep up to 7 days
+					},
 				},
 			});
 		}
