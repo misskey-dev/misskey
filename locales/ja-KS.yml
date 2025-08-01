@@ -1331,6 +1331,8 @@ unmuteX: "{x}のミュートやめたる"
 redisplayAllTips: "全部の「ヒントとコツ」をもっかい見して"
 hideAllTips: "「ヒントとコツ」は全部表示せんでええ"
 defaultImageCompressionLevel_description: "低くすると画質は保てるんやけど、ファイルサイズが増えるで。<br>高くするとファイルサイズは減らせるんやけど、画質が落ちるで。"
+inMinutes: "分"
+inDays: "日"
 _chat:
   noMessagesYet: "まだメッセージはあらへんで"
   individualChat_description: "特定のユーザーと一対一でチャットができるで。"
