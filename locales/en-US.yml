@@ -1368,6 +1368,8 @@ redisplayAllTips: "Show all “Tips & Tricks” again"
 hideAllTips: "Hide all \"Tips & Tricks\""
 defaultImageCompressionLevel: "Default image compression level"
 defaultImageCompressionLevel_description: "Lower level preserves image quality but increases file size.<br>Higher level reduce file size, but reduce image quality."
+inMinutes: "Minute(s)"
+inDays: "Day(s)"
 _order:
   newest: "Newest First"
   oldest: "Oldest First"
