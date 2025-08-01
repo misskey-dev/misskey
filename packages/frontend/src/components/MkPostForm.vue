@@ -146,7 +146,7 @@ import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
-import { FileUploader } from '@/composables/use-uploader.js';
+import { useUploader } from '@/composables/use-uploader.js';
 
 const $i = ensureSignin();
 
@@ -214,7 +214,7 @@ const targetChannel = shallowRef(props.channel);
 const serverDraftId = ref<string | null>(null);
 const postFormActions = getPluginHandlers('post_form_action');
 
-const uploader = new FileUploader({
+const uploader = useUploader({
 	multiple: true,
 });
 
