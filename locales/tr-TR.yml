@@ -388,7 +388,7 @@ _email:
 _theme:
   color: "Renk"
   keys:
-    mention: "Bahset"
+    mention: "Bahsetmeler"
     renote: "vazgeçme"
 _sfx:
   note: "notlar"
@@ -418,6 +418,7 @@ _visibility:
   publicDescription: "Herkese açık"
   home: "Ana sayfa"
   followers: "takipçi"
+  specified: "Kişisel mesajlar"
 _profile:
   username: "Kullanıcı Adı"
 _exportOrImport:
@@ -438,7 +439,7 @@ _notification:
   unreadAntennaNote: "{name} anteni"
   _types:
     follow: "takipçi"
-    mention: "Bahset"
+    mention: "Bahsetmeler"
     renote: "vazgeçme"
     quote: "alıntı"
     reaction: "Tepkiler"
@@ -455,6 +456,7 @@ _deck:
     tl: "Zaman çizelgesi"
     list: "Listeler"
     mentions: "Bahsetmeler"
+    direct: "Kişisel mesajlar"
 _moderationLogTypes:
   suspend: "askıya al"
   resetPassword: "Şifre sıfırlama"
