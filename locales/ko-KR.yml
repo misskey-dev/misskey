@@ -1368,6 +1368,8 @@ redisplayAllTips: "모든 '팁과 유용한 정보'를 재표시"
 hideAllTips: "모든 '팁과 유용한 정보'를 비표시"
 defaultImageCompressionLevel: "기본 이미지 압축 정도"
 defaultImageCompressionLevel_description: "낮추면 화질을 유지합니다만 파일 크기는 증가합니다. <br>높이면 파일 크기를 줄일 수 있습니다만 화질은 저하됩니다."
+inMinutes: "분"
+inDays: "일"
 _order:
   newest: "최신 순"
   oldest: "오래된 순"
