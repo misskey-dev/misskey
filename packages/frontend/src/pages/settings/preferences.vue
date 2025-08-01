@@ -567,50 +567,73 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><SearchIcon><i class="ti ti-battery-vertical-eco"></i></SearchIcon></template>
 
 					<div class="_gaps_s">
-						<SearchMarker :keywords="['animation', 'motion', 'reduce']">
-							<MkPreferenceContainer k="animation">
-								<MkSwitch :modelValue="!reduceAnimation" @update:modelValue="v => reduceAnimation = !v">
-									<template #label><SearchLabel>{{ i18n.ts._settings.uiAnimations }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+						<SearchMarker :keywords="['lowpowermode', 'battery', 'eco', 'save']">
+							<MkPreferenceContainer k="lowPowerMode">
+								<MkSwitch v-model="lowPowerMode">
+									<template #label><SearchLabel>{{ i18n.ts.lowPowerMode }}</SearchLabel></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['blur']">
-							<MkPreferenceContainer k="useBlurEffect">
-								<MkSwitch v-model="useBlurEffect">
-									<template #label><SearchLabel>{{ i18n.ts.useBlurEffect }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
+						<hr>
 
-						<SearchMarker :keywords="['blur', 'modal']">
-							<MkPreferenceContainer k="useBlurEffectForModal">
-								<MkSwitch v-model="useBlurEffectForModal">
-									<template #label><SearchLabel>{{ i18n.ts.useBlurEffectForModal }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
+						<MkDisableSection :disabled="lowPowerMode">
+							<div class="_gaps_s">
+								<SearchMarker :keywords="['animation', 'image', 'gif']">
+									<MkPreferenceContainer k="disableShowingAnimatedImages">
+										<MkSwitch :modelValue="!disableShowingAnimatedImages" @update:modelValue="v => disableShowingAnimatedImages = !v">
+											<template #label><SearchLabel>{{ i18n.ts._settings.playAnimatedImages }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
 
-						<SearchMarker :keywords="['blurhash', 'image', 'photo', 'picture', 'thumbnail', 'placeholder']">
-							<MkPreferenceContainer k="enableHighQualityImagePlaceholders">
-								<MkSwitch v-model="enableHighQualityImagePlaceholders">
-									<template #label><SearchLabel>{{ i18n.ts._settings.enableHighQualityImagePlaceholders }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
+								<SearchMarker :keywords="['animation', 'motion', 'reduce']">
+									<MkPreferenceContainer k="animation">
+										<MkSwitch :modelValue="!reduceAnimation" @update:modelValue="v => reduceAnimation = !v">
+											<template #label><SearchLabel>{{ i18n.ts._settings.uiAnimations }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
 
-						<SearchMarker :keywords="['sticky']">
-							<MkPreferenceContainer k="useStickyIcons">
-								<MkSwitch v-model="useStickyIcons">
-									<template #label><SearchLabel>{{ i18n.ts._settings.useStickyIcons }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
+								<SearchMarker :keywords="['blur']">
+									<MkPreferenceContainer k="useBlurEffect">
+										<MkSwitch v-model="useBlurEffect">
+											<template #label><SearchLabel>{{ i18n.ts.useBlurEffect }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['blur', 'modal']">
+									<MkPreferenceContainer k="useBlurEffectForModal">
+										<MkSwitch v-model="useBlurEffectForModal">
+											<template #label><SearchLabel>{{ i18n.ts.useBlurEffectForModal }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['blurhash', 'image', 'photo', 'picture', 'thumbnail', 'placeholder']">
+									<MkPreferenceContainer k="enableHighQualityImagePlaceholders">
+										<MkSwitch v-model="enableHighQualityImagePlaceholders">
+											<template #label><SearchLabel>{{ i18n.ts._settings.enableHighQualityImagePlaceholders }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['sticky']">
+									<MkPreferenceContainer k="useStickyIcons">
+										<MkSwitch v-model="useStickyIcons">
+											<template #label><SearchLabel>{{ i18n.ts._settings.useStickyIcons }}</SearchLabel></template>
+											<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</div>
+						</MkDisableSection>
 
 						<MkInfo>
 							<div class="_gaps_s">
@@ -871,6 +894,7 @@ const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPla
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
+const lowPowerMode = prefer.model('lowPowerMode');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
@@ -928,6 +952,7 @@ watch([
 	enablePullToRefresh,
 	reduceAnimation,
 	showAvailableReactionsFirstInNote,
+	lowPowerMode,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

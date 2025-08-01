@@ -5494,6 +5494,10 @@ export interface Locale extends ILocale {
      */
     "defaultImageCompressionLevel_description": string;
     /**
+     * 低電力モード
+     */
+    "lowPowerMode": string;
+    /**
      * 分
      */
     "inMinutes": string;
@@ -5823,6 +5827,10 @@ export interface Locale extends ILocale {
          * UIのアニメーション
          */
         "uiAnimations": string;
+        /**
+         * アニメーション画像を再生
+         */
+        "playAnimatedImages": string;
         /**
          * ナビゲーションバーに副ボタンを表示
          */
