@@ -64,7 +64,6 @@ export class NoteDeleteService {
 	 */
 	async delete(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, quiet = false, deleter?: MiUser) {
 		const deletedAt = new Date();
-		const cascadingNotes = await this.findCascadingNotes(note);
 
 		if (note.replyId) {
 			await this.notesRepository.decrement({ id: note.replyId }, 'repliesCount', 1);
@@ -92,15 +91,6 @@ export class NoteDeleteService {
 
 				this.deliverToConcerned(user, note, content);
 			}
-
-			// also deliver delete activity to cascaded notes
-			const federatedLocalCascadingNotes = (cascadingNotes).filter(note => !note.localOnly && note.userHost == null); // filter out local-only notes
-			for (const cascadingNote of federatedLocalCascadingNotes) {
-				if (!cascadingNote.user) continue;
-				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
-				const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
-				this.deliverToConcerned(cascadingNote.user, cascadingNote, content);
-			}
 			//#endregion
 
 			this.notesChart.update(note, false);
@@ -120,10 +110,6 @@ export class NoteDeleteService {
 			}
 		}
 
-		for (const cascadingNote of cascadingNotes) {
-			this.searchService.unindexNote(cascadingNote);
-			this.hanamiSearchService.unindexNote(cascadingNote);
-		}
 		this.searchService.unindexNote(note);
 		this.hanamiSearchService.unindexNote(note);
 
@@ -142,29 +128,6 @@ export class NoteDeleteService {
 				note: note,
 			});
 		}
-	}
-
-	@bindThis
-	private async findCascadingNotes(note: MiNote): Promise<MiNote[]> {
-		const recursive = async (noteId: string): Promise<MiNote[]> => {
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.replyId = :noteId', { noteId })
-				.orWhere(new Brackets(q => {
-					q.where('note.renoteId = :noteId', { noteId })
-						.andWhere('note.text IS NOT NULL');
-				}))
-				.leftJoinAndSelect('note.user', 'user');
-			const replies = await query.getMany();
-
-			return [
-				replies,
-				...await Promise.all(replies.map(reply => recursive(reply.id))),
-			].flat();
-		};
-
-		const cascadingNotes: MiNote[] = await recursive(note.id);
-
-		return cascadingNotes;
 	}
 
 	@bindThis

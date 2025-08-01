@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<div v-for="(notification, i) in paginator.items.value" :key="notification.id" :data-scroll-anchor="notification.id" :class="$style.item">
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, notification.createdAt)" :class="$style.date">
-					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt).prevText }}</span>
+					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt)?.prevText }}</span>
 					<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
-					<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+					<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt)?.nextText }} <i class="ti ti-chevron-down"></i></span>
 				</div>
-				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.content" :note="notification.note" :withHardMute="true"/>
+				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type) && 'note' in notification" :class="$style.content" :note="notification.note" :withHardMute="true"/>
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
 			</div>
 		</component>

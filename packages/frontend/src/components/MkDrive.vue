@@ -145,7 +145,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { store } from '@/store.js';
-import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import { makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';

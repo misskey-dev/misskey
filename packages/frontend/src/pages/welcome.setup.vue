@@ -87,7 +87,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>{{ i18n.ts._serverSetupWizard.settingsYouMakeHereCanBeChangedLater }}</div>
 					</div>
 
-					<MkServerSetupWizard :token="token" @finished="onWizardFinished"/>
+					<Suspense>
+						<template #default>
+							<MkServerSetupWizard :token="token" @finished="onWizardFinished"/>
+						</template>
+						<template #fallback>
+							<MkLoading/>
+						</template>
+					</Suspense>
 
 					<MkButton rounded style="margin: 0 auto;" @click="skipSettings">
 						{{ i18n.ts._serverSetupWizard.skipSettings }}

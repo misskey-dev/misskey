@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-planet"></i></template>
 
 		<div class="_gaps_s">
-			<div>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description1 }}<br>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description2 }}</div>
+			<div>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description1 }}<br>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description2 }}<br><MkLink target="_blank" url="https://wikipedia.org/wiki/Fediverse">{{ i18n.ts.learnMore }}</MkLink></div>
 
 			<MkRadios v-model="q_federation" :vertical="true">
 				<option value="yes">{{ i18n.ts.yes }}</option>
@@ -63,6 +63,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<MkInfo v-if="q_federation === 'yes'">{{ i18n.ts._serverSetupWizard.youCanConfigureMoreFederationSettingsLater }}</MkInfo>
+
+			<MkSwitch v-if="q_federation === 'yes'" v-model="q_remoteContentsCleaning">
+				<template #label>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning }}</template>
+				<template #caption>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning_description }}</template>
+			</MkSwitch>
 		</div>
 	</MkFolder>
 
@@ -109,6 +114,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<div><b>{{ i18n.ts.federation }}:</b></div>
 				<div>{{ serverSettings.federation === 'none' ? i18n.ts.no : i18n.ts.all }}</div>
+			</div>
+			<div>
+				<div><b>{{ i18n.ts._serverSettings.remoteNotesCleaning }}:</b></div>
+				<div>{{ serverSettings.enableRemoteNotesCleaning ? i18n.ts.yes : i18n.ts.no }}</div>
 			</div>
 			<div>
 				<div><b>FTT:</b></div>
@@ -185,7 +194,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkLink from '@/components/MkLink.vue';
 
 const emit = defineEmits<{
 	(ev: 'finished'): void;
@@ -200,6 +211,7 @@ const q_name = ref('');
 const q_use = ref('single');
 const q_scale = ref('small');
 const q_federation = ref('yes');
+const q_remoteContentsCleaning = ref(true);
 const q_adminName = ref('');
 const q_adminEmail = ref('');
 
@@ -217,6 +229,7 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 		emailRequiredForSignup: q_use.value === 'open',
 		enableIpLogging: q_use.value === 'open',
 		federation: q_federation.value === 'yes' ? 'all' : 'none',
+		enableRemoteNotesCleaning: q_remoteContentsCleaning.value,
 		enableFanoutTimeline: true,
 		enableFanoutTimelineDbFallback: q_use.value === 'single',
 		enableReactionsBuffering,

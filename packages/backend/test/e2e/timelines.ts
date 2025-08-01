@@ -722,7 +722,7 @@ describe('Timelines', () => {
 					assert.strictEqual(res.body.some(note => note.id === carolRenote.id), false);
 				});
 
-				test('凍結解除後に凍結されていたユーザーに対するRenoteや凍結されたユーザーのRenoteが見えなくなる', async () => {
+				test('凍結解除後に凍結されていたユーザーに対するRenoteや凍結されたユーザーのRenoteが見えるようになる', async () => {
 					await api('admin/unsuspend-user', { userId: carol.id }, root);
 					await setTimeout(100);
 

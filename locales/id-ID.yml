@@ -1263,6 +1263,8 @@ thereAreNChanges: "Ada {n} perubahan"
 prohibitedWordsForNameOfUser: "Kata yang dilarang untuk nama pengguna"
 postForm: "Buat catatan"
 information: "Informasi"
+inMinutes: "menit"
+inDays: "hari"
 _chat:
   invitations: "Undang"
   noHistory: "Tidak ada riwayat"

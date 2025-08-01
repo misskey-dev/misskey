@@ -70,6 +70,7 @@ export * as 'admin/queue/inbox-delayed' from './endpoints/admin/queue/inbox-dela
 export * as 'admin/queue/retry-job' from './endpoints/admin/queue/retry-job.js';
 export * as 'admin/queue/remove-job' from './endpoints/admin/queue/remove-job.js';
 export * as 'admin/queue/show-job' from './endpoints/admin/queue/show-job.js';
+export * as 'admin/queue/show-job-logs' from './endpoints/admin/queue/show-job-logs.js';
 export * as 'admin/queue/promote-jobs' from './endpoints/admin/queue/promote-jobs.js';
 export * as 'admin/queue/jobs' from './endpoints/admin/queue/jobs.js';
 export * as 'admin/queue/stats' from './endpoints/admin/queue/stats.js';

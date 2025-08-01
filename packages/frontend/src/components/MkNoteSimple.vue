@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-if="note" :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
@@ -19,6 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 </div>
+<div v-else :class="$style.deleted">
+	{{ i18n.ts.deletedNote }}
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -27,9 +30,10 @@ import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 }>();
 
 const showContent = ref(false);
@@ -100,5 +104,15 @@ const showContent = ref(false);
 		width: 48px;
 		height: 48px;
 	}
+}
+
+.deleted {
+	text-align: center;
+	padding: 8px !important;
+	margin: 8px 8px 0 8px;
+	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	border-radius: 8px;
 }
 </style>

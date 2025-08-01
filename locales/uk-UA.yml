@@ -919,6 +919,8 @@ flip: "Перевернути"
 lastNDays: "Останні {n} днів"
 postForm: "Створення нотатки"
 information: "Інформація"
+inMinutes: "х"
+inDays: "д"
 _chat:
   invitations: "Запросити"
   noHistory: "Історія порожня"

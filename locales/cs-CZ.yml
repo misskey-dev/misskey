@@ -1107,6 +1107,8 @@ lastNDays: "Posledních {n} dnů"
 surrender: "Zrušit"
 postForm: "Formulář pro odeslání"
 information: "Informace"
+inMinutes: "Minut"
+inDays: "Dnů"
 _chat:
   invitations: "Pozvat"
   noHistory: "Žádná historie"
