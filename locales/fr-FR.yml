@@ -1272,6 +1272,8 @@ pleaseSelectAccount: "Sélectionner un compte"
 availableRoles: "Rôles disponibles"
 postForm: "Formulaire de publication"
 information: "Informations"
+inMinutes: "min"
+inDays: "j"
 _chat:
   invitations: "Inviter"
   noHistory: "Pas d'historique"
