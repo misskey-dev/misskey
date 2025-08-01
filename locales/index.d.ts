@@ -5494,6 +5494,14 @@ export interface Locale extends ILocale {
      */
     "defaultImageCompressionLevel_description": string;
     /**
+     * 分
+     */
+    "inMinutes": string;
+    /**
+     * 日
+     */
+    "inDays": string;
+    /**
      * セーフモードが有効です
      */
     "safeModeEnabled": string;
@@ -6503,6 +6511,22 @@ export interface Locale extends ILocale {
          */
         "reactionsBufferingDescription": string;
         /**
+         * リモート投稿の自動クリーニング
+         */
+        "remoteNotesCleaning": string;
+        /**
+         * 有効にすると、参照されていない古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
+         */
+        "remoteNotesCleaning_description": string;
+        /**
+         * 最大クリーニング処理継続時間
+         */
+        "remoteNotesCleaningMaxProcessingDuration": string;
+        /**
+         * 最低ノート保持日数
+         */
+        "remoteNotesCleaningExpiryDaysForEachNotes": string;
+        /**
          * 問い合わせ先URL
          */
         "inquiryUrl": string;
@@ -6574,6 +6598,14 @@ export interface Locale extends ILocale {
          * サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。
          */
         "userGeneratedContentsVisibilityForVisitor_description2": string;
+        /**
+         * サーバーの初期設定ウィザードをやり直しますか？
+         */
+        "restartServerSetupWizardConfirm_title": string;
+        /**
+         * 現在の一部の設定はリセットされます。
+         */
+        "restartServerSetupWizardConfirm_text": string;
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
@@ -11963,6 +11995,14 @@ export interface Locale extends ILocale {
          * 連合可能なサーバーの指定など、高度な設定も後ほど可能です。
          */
         "youCanConfigureMoreFederationSettingsLater": string;
+        /**
+         * 受信コンテンツの自動クリーニング
+         */
+        "remoteContentsCleaning": string;
+        /**
+         * 連合を行うと、継続して多くのコンテンツを受信します。自動クリーニングを有効にすると、参照されていない古くなったコンテンツを自動でサーバーから削除し、ストレージを節約できます。
+         */
+        "remoteContentsCleaning_description": string;
         /**
          * 管理者情報
          */
