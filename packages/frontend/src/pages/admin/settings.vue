@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['shortName']">
 								<MkInput v-model="infoForm.state.shortName">
 									<template #label><SearchLabel>{{ i18n.ts._serverSettings.shortName }}</SearchLabel> ({{ i18n.ts.optional }})<span v-if="infoForm.modifiedStates.shortName" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.shortNameDescription }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.shortNameDescription }}</SearchText></template>
 								</MkInput>
 							</SearchMarker>
 
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['inquiry', 'contact']">
 								<MkInput v-model="infoForm.state.inquiryUrl" type="url">
 									<template #label><SearchLabel>{{ i18n.ts._serverSettings.inquiryUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.inquiryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</SearchText></template>
 									<template #prefix><i class="ti ti-link"></i></template>
 								</MkInput>
 							</SearchMarker>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['repository', 'url']">
 								<MkInput v-model="infoForm.state.repositoryUrl" type="url">
 									<template #label><SearchLabel>{{ i18n.ts.repositoryUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.repositoryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.repositoryUrlDescription }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.repositoryUrlDescription }}</SearchText></template>
 									<template #prefix><i class="ti ti-link"></i></template>
 								</MkInput>
 							</SearchMarker>
@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['impressum', 'legalNotice']">
 								<MkInput v-model="infoForm.state.impressumUrl" type="url">
 									<template #label><SearchLabel>{{ i18n.ts.impressumUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.impressumUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.impressumDescription }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.impressumDescription }}</SearchText></template>
 									<template #prefix><i class="ti ti-link"></i></template>
 								</MkInput>
 							</SearchMarker>
@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
 							<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption><SearchKeyword>{{ i18n.ts.pinnedUsersDescription }}</SearchKeyword></template>
+							<template #caption><SearchText>{{ i18n.ts.pinnedUsersDescription }}</SearchText></template>
 						</MkTextarea>
 					</MkFolder>
 				</SearchMarker>
@@ -123,7 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker>
 								<MkSwitch v-model="serviceWorkerForm.state.enableServiceWorker">
 									<template #label><SearchLabel>{{ i18n.ts.enableServiceworker }}</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.enableServiceWorker" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.serviceworkerInfo }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.serviceworkerInfo }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 
@@ -303,14 +303,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['sign', 'get']">
 								<MkSwitch v-model="federationForm.state.signToActivityPubGet">
 									<template #label><SearchLabel>{{ i18n.ts._serverSettings.signToActivityPubGet }}</SearchLabel><span v-if="federationForm.modifiedStates.signToActivityPubGet" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.signToActivityPubGet_description }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.signToActivityPubGet_description }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 
 							<SearchMarker :keywords="['proxy', 'remote', 'files']">
 								<MkSwitch v-model="federationForm.state.proxyRemoteFiles">
 									<template #label><SearchLabel>{{ i18n.ts._serverSettings.proxyRemoteFiles }}</SearchLabel><span v-if="federationForm.modifiedStates.proxyRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.proxyRemoteFiles_description }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.proxyRemoteFiles_description }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 
@@ -318,7 +318,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkSwitch v-model="federationForm.state.allowExternalApRedirect">
 									<template #label><SearchLabel>{{ i18n.ts._serverSettings.allowExternalApRedirect }}</SearchLabel><span v-if="federationForm.modifiedStates.allowExternalApRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #caption>
-										<div><SearchKeyword>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</SearchKeyword></div>
+										<div><SearchText>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</SearchText></div>
 										<div>{{ i18n.ts.needToRestartServerToApply }}</div>
 									</template>
 								</MkSwitch>
@@ -327,7 +327,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['cache', 'remote', 'files']">
 								<MkSwitch v-model="federationForm.state.cacheRemoteFiles">
 									<template #label><SearchLabel>{{ i18n.ts.cacheRemoteFiles }}</SearchLabel><span v-if="federationForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.cacheRemoteFilesDescription }}</SearchKeyword>{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+									<template #caption><SearchText>{{ i18n.ts.cacheRemoteFilesDescription }}</SearchText>{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
 								</MkSwitch>
 							</SearchMarker>
 
@@ -335,7 +335,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<SearchMarker :keywords="['cache', 'remote', 'sensitive', 'files']">
 									<MkSwitch v-model="federationForm.state.cacheRemoteSensitiveFiles">
 										<template #label><SearchLabel>{{ i18n.ts.cacheRemoteSensitiveFiles }}</SearchLabel><span v-if="federationForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-										<template #caption><SearchKeyword>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</SearchKeyword></template>
+										<template #caption><SearchText>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</SearchText></template>
 									</MkSwitch>
 								</SearchMarker>
 							</template>

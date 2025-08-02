@@ -165,12 +165,28 @@ watch(rawSearchQuery, (value) => {
 			});
 		};
 
-		for (const item of searchIndexItemById.values()) {
-			if (
-				compareStringIncludes(item.label, value) ||
-				item.keywords.some((x) => compareStringIncludes(x, value))
-			) {
+		// label, keywords, texts の順に優先して表示
+
+		let items = Array.from(searchIndexItemById.values());
+
+		for (const item of items) {
+			if (compareStringIncludes(item.label, value)) {
 				addSearchResult(item);
+				items = items.filter(i => i.id !== item.id);
+			}
+		}
+
+		for (const item of items) {
+			if (item.keywords.some((x) => compareStringIncludes(x, value))) {
+				addSearchResult(item);
+				items = items.filter(i => i.id !== item.id);
+			}
+		}
+
+		for (const item of items) {
+			if (item.texts.some((x) => compareStringIncludes(x, value))) {
+				addSearchResult(item);
+				items = items.filter(i => i.id !== item.id);
 			}
 		}
 	}

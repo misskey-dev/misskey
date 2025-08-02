@@ -11,6 +11,7 @@ export type SearchIndexItem = {
 	path?: string;
 	label: string;
 	keywords: string[];
+	texts: string[];
 	icon?: string;
 };
 

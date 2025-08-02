@@ -9,6 +9,7 @@ type XGeneratedSearchIndexItem = {
 	path?: string;
 	label: string;
 	keywords: string[];
+	texts: string[];
 	icon?: string;
 	inlining?: string[];
 };

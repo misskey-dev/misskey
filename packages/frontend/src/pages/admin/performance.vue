@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkSwitch v-model="fttForm.state.enableFanoutTimeline">
 									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #caption>
-										<div><SearchKeyword>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</SearchKeyword></div>
+										<div><SearchText>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</SearchText></div>
 										<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ i18n.ts.details }}</MkLink></div>
 									</template>
 								</MkSwitch>
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<SearchMarker :keywords="['db', 'database', 'fallback']">
 									<MkSwitch v-model="fttForm.state.enableFanoutTimelineDbFallback">
 										<template #label><SearchLabel>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ i18n.ts.modified }}</span></template>
-										<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</SearchKeyword></template>
+										<template #caption><SearchText>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</SearchText></template>
 									</MkSwitch>
 								</SearchMarker>
 
@@ -124,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker>
 								<MkSwitch v-model="rbtForm.state.enableReactionsBuffering">
 									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
 						</div>
@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
 								<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</SearchKeyword></template>
+								<template #caption><SearchText>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</SearchText></template>
 							</MkSwitch>
 
 							<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
