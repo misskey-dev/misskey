@@ -155,7 +155,6 @@ import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
