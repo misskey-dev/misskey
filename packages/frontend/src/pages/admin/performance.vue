@@ -8,40 +8,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<SearchMarker path="/admin/performance" :label="i18n.ts.performance" :keywords="['performance']" icon="ti ti-bolt">
 			<div class="_gaps">
-				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableServerMachineStats" @change="onChange_enableServerMachineStats">
-						<template #label>{{ i18n.ts.enableServerMachineStats }}</template>
-						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
-					</MkSwitch>
-				</div>
+				<SearchMarker>
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="enableServerMachineStats" @change="onChange_enableServerMachineStats">
+							<template #label><SearchLabel>{{ i18n.ts.enableServerMachineStats }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
 
-				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableIdenticonGeneration" @change="onChange_enableIdenticonGeneration">
-						<template #label>{{ i18n.ts.enableIdenticonGeneration }}</template>
-						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
-					</MkSwitch>
-				</div>
+				<SearchMarker>
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="enableIdenticonGeneration" @change="onChange_enableIdenticonGeneration">
+							<template #label><SearchLabel>{{ i18n.ts.enableIdenticonGeneration }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
 
-				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableChartsForRemoteUser" @change="onChange_enableChartsForRemoteUser">
-						<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
-						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
-					</MkSwitch>
-				</div>
+				<SearchMarker>
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="enableChartsForRemoteUser" @change="onChange_enableChartsForRemoteUser">
+							<template #label><SearchLabel>{{ i18n.ts.enableChartsForRemoteUser }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
 
-				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableStatsForFederatedInstances" @change="onChange_enableStatsForFederatedInstances">
-						<template #label>{{ i18n.ts.enableStatsForFederatedInstances }}</template>
-						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
-					</MkSwitch>
-				</div>
+				<SearchMarker>
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="enableStatsForFederatedInstances" @change="onChange_enableStatsForFederatedInstances">
+							<template #label><SearchLabel>{{ i18n.ts.enableStatsForFederatedInstances }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
 
-				<div class="_panel" style="padding: 16px;">
-					<MkSwitch v-model="enableChartsForFederatedInstances" @change="onChange_enableChartsForFederatedInstances">
-						<template #label>{{ i18n.ts.enableChartsForFederatedInstances }}</template>
-						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
-					</MkSwitch>
-				</div>
+				<SearchMarker>
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="enableChartsForFederatedInstances" @change="onChange_enableChartsForFederatedInstances">
+							<template #label><SearchLabel>{{ i18n.ts.enableChartsForFederatedInstances }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
 
 				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-bolt"></i></template>
