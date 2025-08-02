@@ -53,94 +53,114 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</SearchMarker>
 
-				<MkFolder :defaultOpen="true">
-					<template #icon><i class="ti ti-bolt"></i></template>
-					<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
-					<template v-if="fttForm.savedState.enableFanoutTimeline" #suffix>Enabled</template>
-					<template v-else #suffix>Disabled</template>
-					<template v-if="fttForm.modified.value" #footer>
-						<MkFormFooter :form="fttForm"/>
-					</template>
+				<SearchMarker>
+					<MkFolder :defaultOpen="true">
+						<template #icon><SearchIcon><i class="ti ti-bolt"></i></SearchIcon></template>
+						<template #label><SearchLabel>Misskey® Fan-out Timeline Technology™ (FTT)</SearchLabel></template>
+						<template v-if="fttForm.savedState.enableFanoutTimeline" #suffix>Enabled</template>
+						<template v-else #suffix>Disabled</template>
+						<template v-if="fttForm.modified.value" #footer>
+							<MkFormFooter :form="fttForm"/>
+						</template>
 
-					<div class="_gaps">
-						<MkSwitch v-model="fttForm.state.enableFanoutTimeline">
-							<template #label>{{ i18n.ts.enable }}<span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>
-								<div>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</div>
-								<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ i18n.ts.details }}</MkLink></div>
+						<div class="_gaps">
+							<SearchMarker>
+								<MkSwitch v-model="fttForm.state.enableFanoutTimeline">
+									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>
+										<div><SearchKeyword>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</SearchKeyword></div>
+										<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ i18n.ts.details }}</MkLink></div>
+									</template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<template v-if="fttForm.state.enableFanoutTimeline">
+								<SearchMarker :keywords="['db', 'database', 'fallback']">
+									<MkSwitch v-model="fttForm.state.enableFanoutTimelineDbFallback">
+										<template #label><SearchLabel>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</SearchKeyword></template>
+									</MkSwitch>
+								</SearchMarker>
+
+								<SearchMarker>
+									<MkInput v-model="fttForm.state.perLocalUserUserTimelineCacheMax" type="number">
+										<template #label><SearchLabel>perLocalUserUserTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perLocalUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker>
+									<MkInput v-model="fttForm.state.perRemoteUserUserTimelineCacheMax" type="number">
+										<template #label><SearchLabel>perRemoteUserUserTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perRemoteUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker>
+									<MkInput v-model="fttForm.state.perUserHomeTimelineCacheMax" type="number">
+										<template #label><SearchLabel>perUserHomeTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perUserHomeTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker>
+									<MkInput v-model="fttForm.state.perUserListTimelineCacheMax" type="number">
+										<template #label><SearchLabel>perUserListTimelineCacheMax</SearchLabel><span v-if="fttForm.modifiedStates.perUserListTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
+									</MkInput>
+								</SearchMarker>
 							</template>
-						</MkSwitch>
+						</div>
+					</MkFolder>
+				</SearchMarker>
 
-						<template v-if="fttForm.state.enableFanoutTimeline">
-							<MkSwitch v-model="fttForm.state.enableFanoutTimelineDbFallback">
-								<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}<span v-if="fttForm.modifiedStates.enableFanoutTimelineDbFallback" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
+				<SearchMarker>
+					<MkFolder :defaultOpen="true">
+						<template #icon><SearchIcon><i class="ti ti-bolt"></i></SearchIcon></template>
+						<template #label><SearchLabel>Misskey® Reactions Boost Technology™ (RBT)</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+						<template v-if="rbtForm.savedState.enableReactionsBuffering" #suffix>Enabled</template>
+						<template v-else #suffix>Disabled</template>
+						<template v-if="rbtForm.modified.value" #footer>
+							<MkFormFooter :form="rbtForm"/>
+						</template>
+
+						<div class="_gaps_m">
+							<SearchMarker>
+								<MkSwitch v-model="rbtForm.state.enableReactionsBuffering">
+									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</SearchKeyword></template>
+								</MkSwitch>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker>
+					<MkFolder :defaultOpen="true">
+						<template #icon><SearchIcon><i class="ti ti-recycle"></i></SearchIcon></template>
+						<template #label><SearchLabel>Remote Notes Cleaning (仮)</SearchLabel></template>
+						<template v-if="remoteNotesCleaningForm.savedState.enableRemoteNotesCleaning" #suffix>Enabled</template>
+						<template v-else #suffix>Disabled</template>
+						<template v-if="remoteNotesCleaningForm.modified.value" #footer>
+							<MkFormFooter :form="remoteNotesCleaningForm"/>
+						</template>
+
+						<div class="_gaps_m">
+							<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
+								<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption><SearchKeyword>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</SearchKeyword></template>
 							</MkSwitch>
 
-							<MkInput v-model="fttForm.state.perLocalUserUserTimelineCacheMax" type="number">
-								<template #label>perLocalUserUserTimelineCacheMax<span v-if="fttForm.modifiedStates.perLocalUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-							</MkInput>
+							<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
+								<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningExpiryDaysForEachNotes" type="number">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.remoteNotesCleaningExpiryDaysForEachNotes }}</SearchLabel> ({{ i18n.ts.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningExpiryDaysForEachNotes" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #suffix>{{ i18n.ts._time.day }}</template>
+								</MkInput>
 
-							<MkInput v-model="fttForm.state.perRemoteUserUserTimelineCacheMax" type="number">
-								<template #label>perRemoteUserUserTimelineCacheMax<span v-if="fttForm.modifiedStates.perRemoteUserUserTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-							</MkInput>
-
-							<MkInput v-model="fttForm.state.perUserHomeTimelineCacheMax" type="number">
-								<template #label>perUserHomeTimelineCacheMax<span v-if="fttForm.modifiedStates.perUserHomeTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-							</MkInput>
-
-							<MkInput v-model="fttForm.state.perUserListTimelineCacheMax" type="number">
-								<template #label>perUserListTimelineCacheMax<span v-if="fttForm.modifiedStates.perUserListTimelineCacheMax" class="_modified">{{ i18n.ts.modified }}</span></template>
-							</MkInput>
-						</template>
-					</div>
-				</MkFolder>
-
-				<MkFolder :defaultOpen="true">
-					<template #icon><i class="ti ti-bolt"></i></template>
-					<template #label>Misskey® Reactions Boost Technology™ (RBT)<span class="_beta">{{ i18n.ts.beta }}</span></template>
-					<template v-if="rbtForm.savedState.enableReactionsBuffering" #suffix>Enabled</template>
-					<template v-else #suffix>Disabled</template>
-					<template v-if="rbtForm.modified.value" #footer>
-						<MkFormFooter :form="rbtForm"/>
-					</template>
-
-					<div class="_gaps_m">
-						<MkSwitch v-model="rbtForm.state.enableReactionsBuffering">
-							<template #label>{{ i18n.ts.enable }}<span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</template>
-						</MkSwitch>
-					</div>
-				</MkFolder>
-
-				<MkFolder :defaultOpen="true">
-					<template #icon><i class="ti ti-recycle"></i></template>
-					<template #label>Remote Notes Cleaning (仮)</template>
-					<template v-if="remoteNotesCleaningForm.savedState.enableRemoteNotesCleaning" #suffix>Enabled</template>
-					<template v-else #suffix>Disabled</template>
-					<template v-if="remoteNotesCleaningForm.modified.value" #footer>
-						<MkFormFooter :form="remoteNotesCleaningForm"/>
-					</template>
-
-					<div class="_gaps_m">
-						<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
-							<template #label>{{ i18n.ts.enable }}<span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</template>
-						</MkSwitch>
-
-						<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
-							<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningExpiryDaysForEachNotes" type="number">
-								<template #label>{{ i18n.ts._serverSettings.remoteNotesCleaningExpiryDaysForEachNotes }} ({{ i18n.ts.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningExpiryDaysForEachNotes" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #suffix>{{ i18n.ts._time.day }}</template>
-							</MkInput>
-
-							<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningMaxProcessingDurationInMinutes" type="number">
-								<template #label>{{ i18n.ts._serverSettings.remoteNotesCleaningMaxProcessingDuration }} ({{ i18n.ts.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxProcessingDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #suffix>{{ i18n.ts._time.minute }}</template>
-							</MkInput>
-						</template>
-					</div>
-				</MkFolder>
+								<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningMaxProcessingDurationInMinutes" type="number">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.remoteNotesCleaningMaxProcessingDuration }}</SearchLabel> ({{ i18n.ts.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxProcessingDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #suffix>{{ i18n.ts._time.minute }}</template>
+								</MkInput>
+							</template>
+						</div>
+					</MkFolder>
+				</SearchMarker>
 			</div>
 		</SearchMarker>
 	</div>
