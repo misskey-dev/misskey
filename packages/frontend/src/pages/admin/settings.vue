@@ -173,8 +173,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<SearchMarker v-slot="slotProps" :keywords="['url', 'preview']">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-						<template #icon><i class="ti ti-world-search"></i></template>
-						<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
+						<template #icon><SearchIcon><i class="ti ti-world-search"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.title }}</SearchLabel></template>
 						<template v-if="urlPreviewForm.modified.value" #footer>
 							<MkFormFooter :form="urlPreviewForm"/>
 						</template>
