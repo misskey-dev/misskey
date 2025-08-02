@@ -99,6 +99,20 @@ export class MiDeletedNote {
 	})
 	public channelId: MiChannel['id'] | null;
 
+	@Column({
+		...id(),
+		nullable: true,
+		comment: '[Denormalized]',
+	})
+	public replyUserId: MiUser['id'] | null;
+
+	@Column({
+		...id(),
+		nullable: true,
+		comment: '[Denormalized]',
+	})
+	public renoteUserId: MiUser['id'] | null;
+
 	@ManyToOne(type => MiChannel, {
 		onDelete: 'CASCADE',
 	})

@@ -130,6 +130,8 @@ export class NoteDeleteService {
 				uri: note.uri,
 				url: note.url,
 				channelId: note.channelId,
+				replyUserId: note.replyUserId,
+				renoteUserId: note.renoteUserId,
 			});
 		});
 

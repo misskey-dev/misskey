@@ -86,6 +86,8 @@ export class CleanRemoteNotesProcessorService {
 				'uri',
 				'url',
 				'channelId',
+				'replyUserId',
+				'renoteUserId',
 			] as const];
 			let notes: Pick<MiNote, typeof selectColumns[number]>[] = await this.notesRepository.find({
 				where: {
@@ -156,6 +158,8 @@ export class CleanRemoteNotesProcessorService {
 						localOnly: note.localOnly,
 						uri: note.uri,
 						url: note.url,
+						replyUserId: note.replyUserId,
+						renoteUserId: note.renoteUserId,
 					})));
 					await transaction.delete(MiNote, notes.map(note => note.id));
 				});
