@@ -57,6 +57,18 @@ async function nullIfEntityNotFound<T>(promise: Promise<T>): Promise<T | null> {
 	}
 }
 
+type PackSingleOptions = {
+	detail?: boolean;
+	skipHide?: boolean;
+	withReactionAndUserPairCache?: boolean;
+	_hint_?: {
+		bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
+		myReactions: Map<MiNote['id'], string | null>;
+		packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
+		packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
+	};
+};
+
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
@@ -358,20 +370,23 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
+	public async packMayDeleted(
+		src: MiNote | MiDeletedNote,
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: PackSingleOptions,
+	): Promise<Packed<'Note'>> {
+		if ('deletedAt' in src) {
+			return this.packDeletedNote(src, me, options);
+		} else {
+			return this.pack(src, me, options);
+		}
+	}
+
+	@bindThis
 	public async pack(
 		src: MiNote['id'] | MiNote,
 		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			detail?: boolean;
-			skipHide?: boolean;
-			withReactionAndUserPairCache?: boolean;
-			_hint_?: {
-				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
-				myReactions: Map<MiNote['id'], string | null>;
-				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
-			};
-		},
+		options?: PackSingleOptions,
 	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
@@ -462,7 +477,6 @@ export class NoteEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
 
-				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
 				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
@@ -470,7 +484,6 @@ export class NoteEntityService implements OnModuleInit {
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
 				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
@@ -502,17 +515,7 @@ export class NoteEntityService implements OnModuleInit {
 	public async packDeletedNote(
 		srcId: MiNote['id'] | MiDeletedNote,
 		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			detail?: boolean;
-			skipHide?: boolean;
-			withReactionAndUserPairCache?: boolean;
-			_hint_?: {
-				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
-				myReactions: Map<MiNote['id'], string | null>;
-				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
-			};
-		},
+		options?: PackSingleOptions,
 	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
@@ -595,7 +598,7 @@ export class NoteEntityService implements OnModuleInit {
 
 	@bindThis
 	public async packMany(
-		notes: MiNote[],
+		notes: (MiNote | MiDeletedNote)[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
@@ -604,7 +607,9 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany([...getAppearNoteIds(notes)]) : null;
+		const liveNotes = notes.filter((n): n is MiNote => !('deletedAt' in n));
+
+		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany([...getAppearNoteIds(liveNotes)]) : null;
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
@@ -614,7 +619,7 @@ export class NoteEntityService implements OnModuleInit {
 			// パフォーマンスのためノートが作成されてから2秒以上経っていない場合はリアクションを取得しない
 			const oldId = this.idService.gen(Date.now() - 2000);
 
-			for (const note of notes) {
+			for (const note of liveNotes) {
 				if (isPureRenote(note)) {
 					const reactionsCount = Object.values(this.reactionsBufferingService.mergeReactions(note.renote.reactions, bufferedReactions?.get(note.renote.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
 					if (reactionsCount === 0) {
@@ -662,9 +667,9 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
-		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(notes));
+		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(liveNotes));
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
-		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
+		const fileIds = liveNotes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 		const users = [
 			...notes.map(({ user, userId }) => user ?? userId),
@@ -674,7 +679,7 @@ export class NoteEntityService implements OnModuleInit {
 		const packedUsers = await this.userEntityService.packMany(users, me)
 			.then(users => new Map(users.map(u => [u.id, u])));
 
-		return await Promise.all(notes.map(n => this.pack(n, me, {
+		return await Promise.all(notes.map(n => this.packMayDeleted(n, me, {
 			...options,
 			_hint_: {
 				bufferedReactions,

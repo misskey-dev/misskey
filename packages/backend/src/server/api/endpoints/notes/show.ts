@@ -57,28 +57,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let note: MiNote | void;
-			try {
-				note = await this.getterService.getNoteWithRelations(ps.noteId);
-			} catch (err) {
-				if (err instanceof IdentifiableError && err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') {
-					try {
-						const deletedNote = await this.getterService.getDeletedNoteWithRelations(ps.noteId);
-
-						return await this.noteEntityService.packDeletedNote(deletedNote, me, {
-							detail: true,
-						});
-					} catch (err) {
-						if (err instanceof IdentifiableError && err.id === 'f2d7e5b8-9d79-4996-b996-89b538a1b71f') {
-							throw new ApiError(meta.errors.noSuchNote);
-						}
-						throw err;
-					}
-				}
+			const note = await this.getterService.getMayDeletedNoteWithRelations(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
-			}
+			});
 
-			if (note.user!.requireSigninToViewContents && me == null) {
+			if (note.user.requireSigninToViewContents && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
@@ -86,11 +70,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.userHost != null && me == null) {
+			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.user.host != null && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			return await this.noteEntityService.pack(note, me, {
+			return await this.noteEntityService.packMayDeleted(note, me, {
 				detail: true,
 			});
 		});

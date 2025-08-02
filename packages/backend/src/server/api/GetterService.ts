@@ -9,6 +9,7 @@ import type { DeletedNotesRepository, NotesRepository, UsersRepository } from '@
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
+import type { MiDeletedNote } from '@/models/DeletedNote.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 
@@ -43,19 +44,17 @@ export class GetterService {
 	}
 
 	@bindThis
-	public async getDeletedNote(noteId: MiNote['id']) {
-		const note = await this.deletedNotesRepository.findOneBy({ id: noteId });
+	public async getMayDeletedNoteOrNull(noteId: MiNote['id']): Promise<MiNote | MiDeletedNote | null> {
+		let note: MiNote | MiDeletedNote | null = await this.notesRepository.findOneBy({ id: noteId });
 
-		if (note == null) {
-			throw new IdentifiableError('f2d7e5b8-9d79-4996-b996-89b538a1b71f', 'No such deleted note.');
-		}
+		note ??= await this.deletedNotesRepository.findOneBy({ id: noteId });
 
 		return note;
 	}
 
 	@bindThis
-	public async getNoteWithRelations(noteId: MiNote['id']) {
-		const note = await this.notesRepository.findOne({ where: { id: noteId }, relations: ['user', 'reply', 'renote', 'reply.user', 'renote.user'] });
+	public async getMayDeletedNote(noteId: MiNote['id']): Promise<(MiNote | MiDeletedNote)> {
+		const note = await this.getMayDeletedNoteOrNull(noteId);
 
 		if (note == null) {
 			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
@@ -65,14 +64,16 @@ export class GetterService {
 	}
 
 	@bindThis
-	public async getDeletedNoteWithRelations(noteId: MiNote['id']) {
-		const note = await this.deletedNotesRepository.findOne({ where: { id: noteId }, relations: ['user', 'reply', 'renote', 'reply.user', 'renote.user'] });
+	public async getMayDeletedNoteWithRelations(noteId: MiNote['id']): Promise<(MiNote | MiDeletedNote) & { user: NonNullable<MiNote['user']> }> {
+		let note: MiNote | MiDeletedNote | null = await this.notesRepository.findOne({ where: { id: noteId }, relations: ['user', 'reply', 'renote', 'reply.user', 'renote.user'] });
+
+		note ??= await this.deletedNotesRepository.findOne({ where: { id: noteId }, relations: ['user', 'reply', 'renote', 'reply.user', 'renote.user'] });
 
 		if (note == null) {
-			throw new IdentifiableError('f2d7e5b8-9d79-4996-b996-89b538a1b71f', 'No such deleted note.');
+			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
 		}
 
-		return note;
+		return note as (MiNote | MiDeletedNote) & { user: object };
 	}
 
 	/**
