@@ -28,6 +28,11 @@ export const searchIndexes = [{
 	mainVirtualModule: 'search-index:settings',
 	modulesToHmrOnUpdate: ['src/pages/settings/index.vue'],
 	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
+}, {
+	targetFilePaths: ['src/pages/admin/*.vue'],
+	mainVirtualModule: 'search-index:admin',
+	modulesToHmrOnUpdate: ['src/pages/admin/index.vue'],
+	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
 }] satisfies SearchIndexOptions[];
 
 /**
