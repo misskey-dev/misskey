@@ -42,11 +42,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 											</template>
 										</I18n>
 									</div>
+									<div v-else-if="draft.replyId" class="_nowrap">
+										<i class="ti ti-arrow-back-up"></i> <I18n :src="i18n.ts._drafts.replyTo" tag="span">
+											<template #user>
+												{{ i18n.ts.deletedNote }}
+											</template>
+										</I18n>
+									</div>
 									<div v-if="draft.renote && draft.text != null" class="_nowrap">
 										<i class="ti ti-quote"></i> <I18n :src="i18n.ts._drafts.quoteOf" tag="span">
 											<template #user>
 												<Mfm v-if="draft.renote.user.name != null" :text="draft.renote.user.name" :plain="true" :nowrap="true"/>
 												<MkAcct v-else :user="draft.renote.user"/>
+											</template>
+										</I18n>
+									</div>
+									<div v-else-if="draft.renoteId" class="_nowrap">
+										<i class="ti ti-quote"></i> <I18n :src="i18n.ts._drafts.quoteOf" tag="span">
+											<template #user>
+												{{ i18n.ts.deletedNote }}
 											</template>
 										</I18n>
 									</div>

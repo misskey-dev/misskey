@@ -6,6 +6,7 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
+import { isSafeMode } from '@@/js/config.js';
 import { genId } from '@/utility/id.js';
 import * as Misskey from 'misskey-js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
@@ -14,12 +15,13 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import type { FormWithDefault } from '@/utility/form.js';
 
 export type Plugin = {
 	installId: string;
 	name: string;
 	active: boolean;
-	config?: Record<string, { default: any }>;
+	config?: FormWithDefault;
 	configData: Record<string, any>;
 	src: string | null;
 	version: string;
@@ -231,6 +233,7 @@ export function launchPlugins() {
 }
 
 async function launchPlugin(id: Plugin['installId']): Promise<void> {
+	if (isSafeMode) return;
 	const plugin = prefer.s.plugins.find(x => x.installId === id);
 	if (!plugin) return;
 
@@ -240,7 +243,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	pluginLogs.value.set(plugin.installId, []);
 
 	function systemLog(message: string, isError = false): void {
-		pluginLogs.value.get(plugin.installId)?.push({
+		pluginLogs.value.get(plugin!.installId)?.push({
 			at: Date.now(),
 			isSystem: true,
 			message,

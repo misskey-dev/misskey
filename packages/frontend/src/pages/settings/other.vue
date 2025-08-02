@@ -156,12 +156,14 @@ import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
+import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { rolePolicyDef, getPolicyDisplayValue } from '@/utility/role-policy.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
 
 const $i = ensureSignin();
 
@@ -188,8 +190,8 @@ const policiesKv = computed(() => {
 	}>;
 });
 
-watch(skipNoteRender, async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+watch(skipNoteRender, () => {
+	suggestReload();
 });
 
 async function deleteAccount() {

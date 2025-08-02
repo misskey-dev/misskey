@@ -584,6 +584,15 @@ export type paths = {
          */
         post: operations['admin___queue___show-job'];
     };
+    '/admin/queue/show-job-logs': {
+        /**
+         * admin/queue/show-job-logs
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:admin:queue*
+         */
+        post: operations['admin___queue___show-job-logs'];
+    };
     '/admin/queue/stats': {
         /**
          * admin/queue/stats
@@ -4401,7 +4410,9 @@ export type components = {
              * @example xxxxxxxxxx
              */
             renoteId?: string | null;
+            /** @description The reply target note contents if exists. If the reply target has been deleted since the draft was created, this will be null while replyId is not null. */
             reply?: components['schemas']['Note'] | null;
+            /** @description The renote target note contents if exists. If the renote target has been deleted since the draft was created, this will be null while renoteId is not null. */
             renote?: components['schemas']['Note'] | null;
             /** @enum {string} */
             visibility: 'public' | 'home' | 'followers' | 'specified';
@@ -5225,6 +5236,7 @@ export type components = {
             /** @enum {string} */
             chatAvailability: 'available' | 'readonly' | 'unavailable';
             noteDraftLimit: number;
+            watermarkAvailable: boolean;
         };
         ReversiGameLite: {
             /** Format: id */
@@ -9367,6 +9379,9 @@ export interface operations {
                         proxyRemoteFiles: boolean;
                         signToActivityPubGet: boolean;
                         allowExternalApRedirect: boolean;
+                        enableRemoteNotesCleaning: boolean;
+                        remoteNotesCleaningExpiryDaysForEachNotes: number;
+                        remoteNotesCleaningMaxProcessingDurationInMinutes: number;
                     };
                 };
             };
@@ -10112,6 +10127,73 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['QueueJob'];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'admin___queue___show-job-logs': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @enum {string} */
+                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    jobId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': string[];
                 };
             };
             /** @description Client error */
@@ -12596,6 +12678,9 @@ export interface operations {
                     proxyRemoteFiles?: boolean;
                     signToActivityPubGet?: boolean;
                     allowExternalApRedirect?: boolean;
+                    enableRemoteNotesCleaning?: boolean;
+                    remoteNotesCleaningExpiryDaysForEachNotes?: number;
+                    remoteNotesCleaningMaxProcessingDurationInMinutes?: number;
                 };
             };
         };
