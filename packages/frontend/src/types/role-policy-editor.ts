@@ -14,10 +14,6 @@ interface RolePolicyDefItemBase<T = any> {
 	inputCaption?: string | Component;
 }
 
-export type RolePolicyDefItemBaseDisplayValueGetter = {
-	displayValue: (value: boolean | number | string, full?: boolean) => string;
-};
-
 interface RolePolicyDefItemBoolean extends RolePolicyDefItemBase<boolean> {
 	type: 'boolean';
 }
