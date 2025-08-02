@@ -106,37 +106,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
 							<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
+							<template #caption><SearchKeyword>{{ i18n.ts.pinnedUsersDescription }}</SearchKeyword></template>
 						</MkTextarea>
 					</MkFolder>
 				</SearchMarker>
 
-				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-					<template #icon><i class="ti ti-world-cog"></i></template>
-					<template #label>ServiceWorker</template>
-					<template v-if="serviceWorkerForm.modified.value" #footer>
-						<MkFormFooter :form="serviceWorkerForm"/>
-					</template>
-
-					<div class="_gaps">
-						<MkSwitch v-model="serviceWorkerForm.state.enableServiceWorker">
-							<template #label>{{ i18n.ts.enableServiceworker }}<span v-if="serviceWorkerForm.modifiedStates.enableServiceWorker" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-						</MkSwitch>
-
-						<template v-if="serviceWorkerForm.state.enableServiceWorker">
-							<MkInput v-model="serviceWorkerForm.state.swPublicKey">
-								<template #label>Public key<span v-if="serviceWorkerForm.modifiedStates.swPublicKey" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #prefix><i class="ti ti-key"></i></template>
-							</MkInput>
-
-							<MkInput v-model="serviceWorkerForm.state.swPrivateKey">
-								<template #label>Private key<span v-if="serviceWorkerForm.modifiedStates.swPrivateKey" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #prefix><i class="ti ti-key"></i></template>
-							</MkInput>
+				<SearchMarker v-slot="slotProps" :keywords="['serviceWorker']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-world-cog"></i></SearchIcon></template>
+						<template #label><SearchLabel>ServiceWorker</SearchLabel></template>
+						<template v-if="serviceWorkerForm.modified.value" #footer>
+							<MkFormFooter :form="serviceWorkerForm"/>
 						</template>
-					</div>
-				</MkFolder>
+
+						<div class="_gaps">
+							<SearchMarker>
+								<MkSwitch v-model="serviceWorkerForm.state.enableServiceWorker">
+									<template #label><SearchLabel>{{ i18n.ts.enableServiceworker }}</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.enableServiceWorker" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.serviceworkerInfo }}</SearchKeyword></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<template v-if="serviceWorkerForm.state.enableServiceWorker">
+								<SearchMarker>
+									<MkInput v-model="serviceWorkerForm.state.swPublicKey">
+										<template #label><SearchLabel>Public key</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.swPublicKey" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #prefix><i class="ti ti-key"></i></template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker>
+									<MkInput v-model="serviceWorkerForm.state.swPrivateKey">
+										<template #label><SearchLabel>Private key</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.swPrivateKey" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #prefix><i class="ti ti-key"></i></template>
+									</MkInput>
+								</SearchMarker>
+							</template>
+						</div>
+					</MkFolder>
+				</SearchMarker>
 
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #icon><i class="ti ti-ad"></i></template>
