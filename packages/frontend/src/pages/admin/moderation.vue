@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<SearchMarker path="/admin/moderation" :label="i18n.ts.moderation" :keywords="['moderation']" icon="ti ti-shield">
+		<SearchMarker path="/admin/moderation" :label="i18n.ts.moderation" :keywords="['moderation']" icon="ti ti-shield" :inlining="['serverRules']">
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['open', 'registration']">
 					<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 				</SearchMarker>
 
-				<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
+				<XServerRules/>
 
 				<SearchMarker :keywords="['preserved', 'usernames']">
 					<MkFolder>
@@ -158,6 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import XServerRules from './server-rules.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
