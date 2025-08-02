@@ -179,6 +179,10 @@ export const rolePolicyDef = {
 		displayLabel: i18n.ts._role._options.noteDraftLimit,
 		min: 0,
 	},
+	watermarkAvailable: {
+		type: 'boolean',
+		displayLabel: i18n.ts._role._options.watermarkAvailable,
+	},
 } satisfies RolePolicyDef;
 
 export type RolePolicyValueRecord = _RolePolicyValueRecord<typeof rolePolicyDef>;
