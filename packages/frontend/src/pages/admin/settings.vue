@@ -146,83 +146,90 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
-				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-					<template #icon><i class="ti ti-ad"></i></template>
-					<template #label>{{ i18n.ts._ad.adsSettings }}</template>
-					<template v-if="adForm.modified.value" #footer>
-						<MkFormFooter :form="adForm"/>
-					</template>
+				<SearchMarker v-slot="slotProps" :keywords="['ads']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-ad"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts._ad.adsSettings }}</SearchLabel></template>
+						<template v-if="adForm.modified.value" #footer>
+							<MkFormFooter :form="adForm"/>
+						</template>
 
-					<div class="_gaps">
-						<div class="_gaps_s">
-							<MkInput v-model="adForm.state.notesPerOneAd" :min="0" type="number">
-								<template #label>{{ i18n.ts._ad.notesPerOneAd }}<span v-if="adForm.modifiedStates.notesPerOneAd" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
-							</MkInput>
-							<MkInfo v-if="adForm.state.notesPerOneAd > 0 && adForm.state.notesPerOneAd < 20" :warn="true">
-								{{ i18n.ts._ad.adsTooClose }}
-							</MkInfo>
+						<div class="_gaps">
+							<div class="_gaps_s">
+								<SearchMarker>
+									<MkInput v-model="adForm.state.notesPerOneAd" :min="0" type="number">
+										<template #label><SearchLabel>{{ i18n.ts._ad.notesPerOneAd }}</SearchLabel><span v-if="adForm.modifiedStates.notesPerOneAd" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
+									</MkInput>
+								</SearchMarker>
+
+								<MkInfo v-if="adForm.state.notesPerOneAd > 0 && adForm.state.notesPerOneAd < 20" :warn="true">
+									{{ i18n.ts._ad.adsTooClose }}
+								</MkInfo>
+							</div>
 						</div>
-					</div>
-				</MkFolder>
+					</MkFolder>
+				</SearchMarker>
 
-				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-					<template #icon><i class="ti ti-world-search"></i></template>
-					<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
-					<template v-if="urlPreviewForm.modified.value" #footer>
-						<MkFormFooter :form="urlPreviewForm"/>
-					</template>
+				<SearchMarker v-slot="slotProps" :keywords="['url', 'preview']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><i class="ti ti-world-search"></i></template>
+						<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
+						<template v-if="urlPreviewForm.modified.value" #footer>
+							<MkFormFooter :form="urlPreviewForm"/>
+						</template>
 
-					<div class="_gaps">
-						<MkSwitch v-model="urlPreviewForm.state.urlPreviewEnabled">
-							<template #label>{{ i18n.ts._urlPreviewSetting.enable }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewEnabled" class="_modified">{{ i18n.ts.modified }}</span></template>
-						</MkSwitch>
-
-						<template v-if="urlPreviewForm.state.urlPreviewEnabled">
-							<MkSwitch v-model="urlPreviewForm.state.urlPreviewAllowRedirect">
-								<template #label>{{ i18n.ts._urlPreviewSetting.allowRedirect }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewAllowRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._urlPreviewSetting.allowRedirectDescription }}</template>
+						<div class="_gaps">
+							<MkSwitch v-model="urlPreviewForm.state.urlPreviewEnabled">
+								<template #label>{{ i18n.ts._urlPreviewSetting.enable }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewEnabled" class="_modified">{{ i18n.ts.modified }}</span></template>
 							</MkSwitch>
 
-							<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
-								<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
-							</MkSwitch>
+							<template v-if="urlPreviewForm.state.urlPreviewEnabled">
+								<MkSwitch v-model="urlPreviewForm.state.urlPreviewAllowRedirect">
+									<template #label>{{ i18n.ts._urlPreviewSetting.allowRedirect }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewAllowRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts._urlPreviewSetting.allowRedirectDescription }}</template>
+								</MkSwitch>
 
-							<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
-								<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
-							</MkInput>
+								<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
+									<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
+								</MkSwitch>
 
-							<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
-								<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
-							</MkInput>
-
-							<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
-								<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
-							</MkInput>
-
-							<div>
-								<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
-									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+								<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
+									<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
 								</MkInput>
 
-								<div :class="$style.subCaption">
-									{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
-									<ul style="padding-left: 20px; margin: 4px 0">
-										<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
-										<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
-										<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
-										<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
-									</ul>
+								<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
+									<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
+								</MkInput>
+
+								<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
+									<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
+								</MkInput>
+
+								<div>
+									<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
+										<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+									</MkInput>
+
+									<div :class="$style.subCaption">
+										{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
+										<ul style="padding-left: 20px; margin: 4px 0">
+											<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
+											<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
+											<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
+											<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
+										</ul>
+									</div>
 								</div>
-							</div>
-						</template>
-					</div>
-				</MkFolder>
+							</template>
+						</div>
+					</MkFolder>
+				</SearchMarker>
 
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #icon><i class="ti ti-planet"></i></template>
