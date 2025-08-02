@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets, In, IsNull, Not } from 'typeorm';
+import { Brackets, DataSource, In, IsNull, Not } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { MiNote, IMentionedRemoteUsers } from '@/models/Note.js';
+import { MiNote } from '@/models/Note.js';
+import { MiDeletedNote } from '@/models/DeletedNote.js';
+import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import type { InstancesRepository, MiMeta, NotesRepository, UsersRepository } from '@/models/_.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -29,6 +31,9 @@ export class NoteDeleteService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.db)
+		private db: DataSource,
 
 		@Inject(DI.meta)
 		private meta: MiMeta,
@@ -110,9 +115,21 @@ export class NoteDeleteService {
 
 		this.searchService.unindexNote(note);
 
-		await this.notesRepository.delete({
-			id: note.id,
-			userId: user.id,
+		await this.db.transaction(async transaction => {
+			await transaction.delete(MiNote, {
+				id: note.id,
+				userId: user.id,
+			});
+			await transaction.save(MiDeletedNote, {
+				id: note.id,
+				deletedAt: new Date(),
+				replyId: note.replyId,
+				renoteId: note.renoteId,
+				userId: note.userId,
+				localOnly: note.localOnly,
+				uri: note.uri,
+				url: note.url,
+			});
 		});
 
 		if (deleter && (note.userId !== deleter.id)) {

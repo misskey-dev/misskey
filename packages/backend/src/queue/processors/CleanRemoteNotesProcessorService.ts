@@ -5,9 +5,11 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { And, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
+import { DataSource, In, IsNull, LessThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiMeta, MiNote, NoteFavoritesRepository, NotesRepository, UserNotePiningsRepository } from '@/models/_.js';
+import { MiNote } from '@/models/Note.js';
+import { MiDeletedNote } from '@/models/DeletedNote.js';
+import type { MiMeta, NoteFavoritesRepository, NotesRepository, UserNotePiningsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -21,6 +23,9 @@ export class CleanRemoteNotesProcessorService {
 	constructor(
 		@Inject(DI.meta)
 		private meta: MiMeta,
+
+		@Inject(DI.db)
+		private db: DataSource,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -72,7 +77,17 @@ export class CleanRemoteNotesProcessorService {
 		while (true) {
 			const batchBeginAt = Date.now();
 
-			let notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
+			const selectColumns = [...[
+				'id',
+				'replyId',
+				'renoteId',
+				'userId',
+				'localOnly',
+				'uri',
+				'url',
+				'channelId',
+			] as const];
+			let notes: Pick<MiNote, typeof selectColumns[number]>[] = await this.notesRepository.find({
 				where: {
 					id: LessThan(cursor),
 					userHost: Not(IsNull()),
@@ -85,7 +100,7 @@ export class CleanRemoteNotesProcessorService {
 					// https://github.com/misskey-dev/misskey/pull/16292#issuecomment-3139376314
 					id: -1,
 				},
-				select: ['id'],
+				select: selectColumns,
 			});
 
 			const fetchedCount = notes.length;
@@ -131,7 +146,19 @@ export class CleanRemoteNotesProcessorService {
 			});
 
 			if (notes.length > 0) {
-				await this.notesRepository.delete(notes.map(note => note.id));
+				await this.db.transaction(async (transaction) => {
+					await transaction.save(MiDeletedNote, notes.map(note => ({
+						id: note.id,
+						deletedAt: null, // This is existing note on the remote, so we set deletedAt to null.
+						replyId: note.replyId,
+						renoteId: note.renoteId,
+						userId: note.userId,
+						localOnly: note.localOnly,
+						uri: note.uri,
+						url: note.url,
+					})));
+					await transaction.delete(MiNote, notes.map(note => note.id));
+				});
 
 				for (const note of notes) {
 					const t = this.idService.parse(note.id).date.getTime();
