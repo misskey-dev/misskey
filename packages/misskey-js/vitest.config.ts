@@ -10,6 +10,7 @@ export default defineConfig({
 				'generator/**/*',
 				'built/**/*',
 				'test-d/**/*',
+				'build.js',
 			],
 		}
 	},
