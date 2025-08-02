@@ -1567,6 +1567,8 @@ _serverSettings:
   allowExternalApRedirect_description: "つけると、他のサーバーがうちのサーバーを通して第三者のコンテンツを照会できるようになるんやけど、コンテンツのなりすましが発生するかもしれへん。"
   userGeneratedContentsVisibilityForVisitor_description: "モデレーションが行き届きにくい不適切なリモートコンテンツとかが、うちのサーバー経由で図らずもインターネットに公開されてまうことによるトラブルを防止できたりするで。"
   userGeneratedContentsVisibilityForVisitor_description2: "サーバーで受け取ったリモートのコンテンツを含め、サーバー内の全部のコンテンツを何でもかんでもインターネットに公開するのはリスクを伴うねん。特に、分散型の特性を知らん閲覧者にとっては、リモートのコンテンツやったとしてもサーバー内で作られたコンテンツやと誤認してまうかもしれへんから、注意が必要やな。"
+  restartServerSetupWizardConfirm_title: "サーバーの初期設定ウィザードをやり直すん？"
+  restartServerSetupWizardConfirm_text: "現在の一部の設定はリセットされるで。"
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに引っ越す"
   moveFromSub: "別のアカウントへエイリアスを作る"
@@ -1863,6 +1865,7 @@ _role:
   descriptionOfIsExplorable: "オンにしたらロールの面子一覧が「みつける」で公開されるし、ロールのタイムラインが使えるようになるで。"
   displayOrder: "表示順"
   descriptionOfDisplayOrder: "数がでかいほど、UI上で先に表示されるで。"
+  preserveAssignmentOnMoveAccount_description: "つけると、このロールがのっかったアカウントが引っ越したときに、引っ越し先アカウントにもこのロールがのっかるようになるで。"
   canEditMembersByModerator: "モデレーターがメンバーいじるのを許す"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者だけやなくてモデレーターもこのロールにユーザーを入れたり抜いたりできるで。オフにすると管理者だけしかやれへんくなるで。"
   priority: "優先度"
@@ -1903,6 +1906,8 @@ _role:
     canImportFollowing: "フォローのインポートを許す"
     canImportMuting: "ミュートのインポートを許す"
     canImportUserLists: "リストのインポートを許す"
+    uploadableFileTypes_caption: "MIMEタイプを指定してや。改行で区切って複数指定もできるし、アスタリスク(*)でワイルドカード指定もできるで。(例: image/*)"
+    uploadableFileTypes_caption2: "ファイルによっては種別がわからんこともあるで。そないなファイルを許可するんやったら {x} を指定に追加してな。"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -2371,6 +2376,8 @@ _visibility:
   disableFederation: "連合なし"
   disableFederationDescription: "他サーバーへは送らんとくわ"
 _postForm:
+  quitInspiteOfThereAreUnuploadedFilesConfirm: "アップロードされてへんファイルがあるんやけど、ほかしてフォームを閉じてもええんか？"
+  uploaderTip: "ファイルはまだアップロードされてへんで。ファイルのメニューから、リネームとか画像のクロップ、ウォーターマークをのっける、圧縮するかどうかなんかを設定できるで。ファイルはノートを投稿するときに自動でアップロードされるで。"
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
@@ -2522,6 +2529,7 @@ _notification:
   newNote: "さらの投稿"
   unreadAntennaNote: "アンテナ {name}"
   roleAssigned: "ロールが付与されたで"
+  chatRoomInvitationReceived: "チャットルームへ招待されたで"
   emptyPushNotificationMessage: "プッシュ通知の更新をしといたで"
   achievementEarned: "実績を獲得しとるで"
   testNotification: "通知テスト"
@@ -2741,6 +2749,10 @@ _dataSaver:
   _avatar:
     title: "アイコンの絵"
     description: "アイコン画像のアニメが止まるで。普通の画像よりもデータ量がでかいから、もっと通信量を節約できるねん。"
+  _urlPreviewThumbnail:
+    description: "URLプレビューのサムネイル画像が読み込まれへんくなるで。"
+  _disableUrlPreview:
+    description: "URLプレビュー機能を切るで。サムネイル画像だけと違って、リンク先の情報の読み込み自体を削減できるで。"
   _code:
     title: "コードハイライトは表示せんでええ"
     description: "MFMとかでコードハイライト記法が使われてるとき、タップするまで読み込まれへんくなるで。コードハイライトではハイライトする言語ごとにその決めてるファイルを読む必要はあんねんな。けどな、それは自動で読み込まれなくなるから、通信量を少なくできることができるねん。"
@@ -2798,6 +2810,7 @@ _offlineScreen:
 _urlPreviewSetting:
   title: "URLプレビューの設定"
   enable: "URLプレビューを有効にする"
+  allowRedirectDescription: "入力されたURLがリダイレクトされるとき、そのリダイレクト先をたどってプレビューを表示するかどうかを設定できるで。無効にするとサーバーリソースを節約できるんやけど、リダイレクト先の内容は表示されへんくなるで。"
   timeout: "プレビュー取得時のタイムアウト(ms)"
   timeoutDescription: "プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されへんで。"
   maximumContentLength: "Content-Lengthの最大値(byte)"
@@ -2942,6 +2955,25 @@ _search:
   searchScopeAll: "みんな"
   searchScopeLocal: "ローカル"
   searchScopeUser: "ユーザー指定"
+  pleaseEnterServerHost: "サーバーのホストはどないするん？"
+  pleaseSelectUser: "ユーザーを選んでや"
+_serverSetupWizard:
+  installCompleted: "Misskeyのインストールが終わったで！"
+  firstCreateAccount: "最初は、管理者アカウントを作成しよか。"
+  accountCreated: "管理者アカウントができたで！"
+  youCanEasilyConfigureOptimalServerSettingsWithThisWizard: "このウィザードで簡単にええ感じのサーバーの設定ができるで。"
+  settingsYouMakeHereCanBeChangedLater: "ここでの設定は、あとからでも変えられるで。"
+  howWillYouUseMisskey: "Misskeyをどんな感じに使うん？"
+  _use:
+    single_youCanCreateMultipleAccounts: "お一人様サーバーとして運用するとしても、アカウントは必要に応じて複数作れるで。"
+  openServerAdvice: "不特定多数の利用者を受け入れるには相応のリスクがあるで。トラブルに対処できるよう、ちゃんとしたモデレーション体制で運営しいや。"
+  openServerAntiSpamAdvice: "うちのサーバーがスパムの踏み台にならへんように、reCAPTCHAとかのアンチボット機能を使う、みたいなセキュリティ対策もしっかり考えてな。"
+  howManyUsersDoYouExpect: "どれくらいの人数を考えとるん？"
+  largeScaleServerAdvice: "大規模なサーバーやったら、ロードバランシングとかデータベースのレプリケーションみたいな、高度なインフラストラクチャーの知識が必要になるかもしれへんわ。"
+  doYouConnectToFediverse: "Fediverseと接続するんやっけ？"
+  doYouConnectToFediverse_description1: "分散型サーバーでできたネットワーク(Fediverse)に繋げると、他のサーバーと相互にコンテンツのやり取りができるようになるで。"
+  doYouConnectToFediverse_description2: "Fediverseと接続することは「連合」とも呼ばれるな。"
+  youCanConfigureMoreFederationSettingsLater: "連合してもええサーバーの指定とか、高度な設定も後でできるで。"
 _watermarkEditor:
   driveFileTypeWarn: "このファイルは対応しとらへん"
   opacity: "不透明度"
