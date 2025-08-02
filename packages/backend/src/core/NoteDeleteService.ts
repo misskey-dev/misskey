@@ -129,6 +129,7 @@ export class NoteDeleteService {
 				localOnly: note.localOnly,
 				uri: note.uri,
 				url: note.url,
+				channelId: note.channelId,
 			});
 		});
 

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository } from '@/models/_.js';
+import type { DeletedNotesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -20,6 +20,9 @@ export class GetterService {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.deletedNotesRepository)
+		private deletedNotesRepository: DeletedNotesRepository,
 
 		private userEntityService: UserEntityService,
 	) {
@@ -40,11 +43,33 @@ export class GetterService {
 	}
 
 	@bindThis
+	public async getDeletedNote(noteId: MiNote['id']) {
+		const note = await this.deletedNotesRepository.findOneBy({ id: noteId });
+
+		if (note == null) {
+			throw new IdentifiableError('f2d7e5b8-9d79-4996-b996-89b538a1b71f', 'No such deleted note.');
+		}
+
+		return note;
+	}
+
+	@bindThis
 	public async getNoteWithRelations(noteId: MiNote['id']) {
 		const note = await this.notesRepository.findOne({ where: { id: noteId }, relations: ['user', 'reply', 'renote', 'reply.user', 'renote.user'] });
 
 		if (note == null) {
 			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
+		}
+
+		return note;
+	}
+
+	@bindThis
+	public async getDeletedNoteWithRelations(noteId: MiNote['id']) {
+		const note = await this.deletedNotesRepository.findOne({ where: { id: noteId }, relations: ['user', 'reply', 'renote', 'reply.user', 'renote.user'] });
+
+		if (note == null) {
+			throw new IdentifiableError('f2d7e5b8-9d79-4996-b996-89b538a1b71f', 'No such deleted note.');
 		}
 
 		return note;

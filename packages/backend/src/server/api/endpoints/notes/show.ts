@@ -9,6 +9,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { MiMeta } from '@/models/Meta.js';
+import { MiNote } from '@/models/Note.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -55,10 +57,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await this.getterService.getNoteWithRelations(ps.noteId).catch(err => {
-				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+			let note: MiNote | void;
+			try {
+				note = await this.getterService.getNoteWithRelations(ps.noteId);
+			} catch (err) {
+				if (err instanceof IdentifiableError && err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') {
+					try {
+						const deletedNote = await this.getterService.getDeletedNoteWithRelations(ps.noteId);
+
+						return await this.noteEntityService.packDeletedNote(deletedNote, me, {
+							detail: true,
+						});
+					} catch (err) {
+						if (err instanceof IdentifiableError && err.id === 'f2d7e5b8-9d79-4996-b996-89b538a1b71f') {
+							throw new ApiError(meta.errors.noSuchNote);
+						}
+						throw err;
+					}
+				}
 				throw err;
-			});
+			}
 
 			if (note.user!.requireSigninToViewContents && me == null) {
 				throw new ApiError(meta.errors.signinRequired);

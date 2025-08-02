@@ -11,7 +11,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta } from '@/models/_.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta, DeletedNotesRepository, MiDeletedNote } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
@@ -78,6 +78,9 @@ export class NoteEntityService implements OnModuleInit {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.deletedNotesRepository)
+		private deletedNotesRepository: DeletedNotesRepository,
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
@@ -377,7 +380,19 @@ export class NoteEntityService implements OnModuleInit {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
+		let note: MiNote;
+		if (typeof src === 'object') {
+			note = src;
+		} else {
+			try {
+				note = await this.noteLoader.load(src);
+			} catch (err) {
+				if (err instanceof EntityNotFoundError) {
+					return this.packDeletedNote(src);
+				}
+				throw err;
+			}
+		}
 		const host = note.userHost;
 
 		const bufferedReactions = opts._hint_?.bufferedReactions != null
@@ -448,20 +463,20 @@ export class NoteEntityService implements OnModuleInit {
 				clippedCount: note.clippedCount,
 
 				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				reply: (note.replyId && note.reply === null) ? null : note.replyId ? nullIfEntityNotFound(this.pack(note.reply ?? note.replyId, me, {
+				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				})) : undefined,
+				}) : undefined,
 
 				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
+				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				})) : undefined,
+				}) : undefined,
 
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
@@ -482,6 +497,100 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		return packed;
+	}
+
+	public async packDeletedNote(
+		srcId: MiNote['id'] | MiDeletedNote,
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			detail?: boolean;
+			skipHide?: boolean;
+			withReactionAndUserPairCache?: boolean;
+			_hint_?: {
+				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
+				myReactions: Map<MiNote['id'], string | null>;
+				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
+				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
+			};
+		},
+	): Promise<Packed<'Note'>> {
+		const opts = Object.assign({
+			detail: true,
+			skipHide: false,
+			withReactionAndUserPairCache: false,
+		}, options);
+
+		const deletedNote = typeof srcId === 'object' ? srcId : await this.deletedNotesRepository.findOneOrFail({
+			where: {
+				id: srcId,
+			},
+			relations: ['user', 'renote', 'reply', 'channel'],
+		});
+
+		const packedUsers = options?._hint_?.packedUsers;
+
+		const channel = deletedNote.channelId
+			? deletedNote.channel ?? await this.channelsRepository.findOneBy({ id: deletedNote.channelId })
+			: null;
+
+		return await awaitAll({
+			id: deletedNote.id,
+			createdAt: this.idService.parse(deletedNote.id).date.toISOString(),
+			deletedAt: deletedNote.deletedAt?.toISOString() ?? undefined,
+			userId: deletedNote.userId,
+			user: packedUsers?.get(deletedNote.userId) ?? this.userEntityService.pack(deletedNote.user ?? deletedNote.userId, me),
+			text: deletedNote.deletedAt ? "<small>Deleted note</small>" : "<small>Forgotten remote note. View on remote instance to see contents.</small>",
+			cw: null,
+			visibility: 'public',
+			localOnly: deletedNote.localOnly,
+			reactionAcceptance: 'likeOnly',
+			visibleUserIds: undefined,
+			renoteCount: 0,
+			repliesCount: 0,
+			reactionCount: 0,
+			reactions: {},
+			reactionEmojis: {},
+			reactionAndUserPairCache: [],
+			emojis: {},
+			tags: undefined,
+			fileIds: [],
+			files: [],
+			replyId: deletedNote.replyId,
+			renoteId: deletedNote.renoteId,
+			channelId: deletedNote.channelId ?? undefined,
+			channel: channel ? {
+				id: channel.id,
+				name: channel.name,
+				color: channel.color,
+				isSensitive: channel.isSensitive,
+				allowRenoteToExternal: channel.allowRenoteToExternal,
+				userId: channel.userId,
+			} : undefined,
+			mentions: undefined,
+			hasPoll: undefined,
+			uri: deletedNote.uri ?? undefined,
+			url: deletedNote.url ?? undefined,
+
+			...(opts.detail ? {
+				clippedCount: 0,
+
+				reply: deletedNote.replyId ? this.pack(deletedNote.reply ?? deletedNote.replyId, me, {
+					detail: false,
+					skipHide: opts.skipHide,
+					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
+					_hint_: options?._hint_,
+				}) : undefined,
+
+				renote: deletedNote.renoteId ? this.pack(deletedNote.renote ?? deletedNote.renoteId, me, {
+					detail: true,
+					skipHide: opts.skipHide,
+					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
+					_hint_: options?._hint_,
+				}) : undefined,
+
+				poll: undefined,
+			} : {}),
+		});
 	}
 
 	@bindThis
