@@ -19,7 +19,7 @@
 		"@analytics/google-analytics": "1.1.0",
 		"@discordapp/twemoji": "15.1.0",
 		"@github/webauthn-json": "2.1.1",
-		"@hanamisskey/browser-search": "https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.1.0.tar.gz",
+		"@hanamisskey/browser-search": "https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@rollup/plugin-json": "6.1.0",

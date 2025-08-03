@@ -708,8 +708,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       '@hanamisskey/browser-search':
-        specifier: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.1.0.tar.gz
-        version: https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0
+        specifier: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz
+        version: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz
       '@mcaptcha/vanilla-glue':
         specifier: 0.1.0-alpha-3
         version: 0.1.0-alpha-3
@@ -2383,9 +2383,9 @@ packages:
     resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
     hasBin: true
 
-  '@hanamisskey/browser-search@https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0':
-    resolution: {tarball: https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0}
-    version: 0.1.0
+  '@hanamisskey/browser-search@https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz':
+    resolution: {tarball: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz}
+    version: 0.4.1
 
   '@hapi/boom@10.0.1':
     resolution: {integrity: sha512-ERcCZaEjdH3OgSJlyjVk8pHIFeus91CjKP3v+MpgBNp5IvGzP2l/bRiD78nqYcKPaZdbKkK5vDBVPd2ohHBlsA==}
@@ -10746,6 +10746,9 @@ packages:
   vue-component-type-helpers@2.2.10:
     resolution: {integrity: sha512-iDUO7uQK+Sab2tYuiP9D1oLujCWlhHELHMgV/cB13cuGbG4qwkLHvtfWb6FzvxrIOPDnU0oHsz2MlQjhYDeaHA==}
 
+  vue-component-type-helpers@3.0.5:
+    resolution: {integrity: sha512-uoNZaJ+a1/zppa/Vgmi8zIOP2PHXDN2rT8NyF+zQRK6ZG94lNB9prcV0GdLJbY9i9lrD47JOVIH92SaiA7oJ1A==}
+
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
     engines: {node: '>=12'}
@@ -12238,7 +12241,7 @@ snapshots:
 
   '@github/webauthn-json@2.1.1': {}
 
-  '@hanamisskey/browser-search@https://codeload.github.com/HanaMisskey/hanami-wasm-search/tar.gz/refs/tags/0.1.0':
+  '@hanamisskey/browser-search@https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz':
     dependencies:
       defu: 6.1.4
 
@@ -14390,7 +14393,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.16(typescript@5.8.3)
-      vue-component-type-helpers: 2.2.10
+      vue-component-type-helpers: 3.0.5
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.28.0)(typescript@5.8.3)':
     dependencies:
@@ -22074,6 +22077,8 @@ snapshots:
   vue-component-type-helpers@2.0.16: {}
 
   vue-component-type-helpers@2.2.10: {}
+
+  vue-component-type-helpers@3.0.5: {}
 
   vue-demi@0.14.7(vue@3.5.16(typescript@5.8.3)):
     dependencies:
