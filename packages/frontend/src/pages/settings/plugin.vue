@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/plugin" :label="i18n.ts.plugins" :keywords="['plugin', 'addon', 'extension']" icon="ti ti-plug">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/electric_plug_3d.png" color="#ffbb00">
-			<SearchKeyword>{{ i18n.ts._settings.pluginBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.pluginBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.pluginsAreDisabledBecauseSafeMode }}</MkInfo>
