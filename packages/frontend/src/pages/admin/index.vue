@@ -327,12 +327,6 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePage(() => INFO.value);
-
-defineExpose({
-	header: {
-		title: i18n.ts.controlPanel,
-	},
-});
 </script>
 
 <style lang="scss" scoped>
