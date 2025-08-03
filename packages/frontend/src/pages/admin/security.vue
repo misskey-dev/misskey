@@ -6,115 +6,153 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<div class="_gaps_m">
-			<XBotProtection/>
+		<SearchMarker path="/admin/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['botProtection']">
+			<div class="_gaps_m">
+				<XBotProtection/>
 
-			<MkFolder>
-				<template #icon><i class="ti ti-eye-off"></i></template>
-				<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
-				<template v-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
-				<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
-				<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
-				<template v-else #suffix>{{ i18n.ts.none }}</template>
-				<template v-if="sensitiveMediaDetectionForm.modified.value" #footer>
-					<MkFormFooter :form="sensitiveMediaDetectionForm"/>
-				</template>
+				<SearchMarker v-slot="slotProps" :keywords="['sensitive', 'media', 'detection']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-eye-off"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.sensitiveMediaDetection }}</SearchLabel></template>
+						<template v-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
+						<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
+						<template v-else-if="sensitiveMediaDetectionForm.savedState.sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
+						<template v-else #suffix>{{ i18n.ts.none }}</template>
+						<template v-if="sensitiveMediaDetectionForm.modified.value" #footer>
+							<MkFormFooter :form="sensitiveMediaDetectionForm"/>
+						</template>
 
-				<div class="_gaps_m">
-					<span>{{ i18n.ts._sensitiveMediaDetection.description }}</span>
+						<div class="_gaps_m">
+							<div><SearchText>{{ i18n.ts._sensitiveMediaDetection.description }}</SearchText></div>
 
-					<MkRadios v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection">
-						<option value="none">{{ i18n.ts.none }}</option>
-						<option value="all">{{ i18n.ts.all }}</option>
-						<option value="local">{{ i18n.ts.localOnly }}</option>
-						<option value="remote">{{ i18n.ts.remoteOnly }}</option>
-					</MkRadios>
+							<MkRadios v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection">
+								<option value="none">{{ i18n.ts.none }}</option>
+								<option value="all">{{ i18n.ts.all }}</option>
+								<option value="local">{{ i18n.ts.localOnly }}</option>
+								<option value="remote">{{ i18n.ts.remoteOnly }}</option>
+							</MkRadios>
 
-					<MkRange v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :textConverter="(v) => `${v + 1}`">
-						<template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
-						<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
-					</MkRange>
+							<SearchMarker :keywords="['sensitivity']">
+								<MkRange v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :textConverter="(v) => `${v + 1}`">
+									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</SearchLabel></template>
+									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</SearchText></template>
+								</MkRange>
+							</SearchMarker>
 
-					<MkSwitch v-model="sensitiveMediaDetectionForm.state.enableSensitiveMediaDetectionForVideos">
-						<template #label>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
-						<template #caption>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</template>
-					</MkSwitch>
+							<SearchMarker :keywords="['video', 'analyze']">
+								<MkSwitch v-model="sensitiveMediaDetectionForm.state.enableSensitiveMediaDetectionForVideos">
+									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</SearchText></template>
+								</MkSwitch>
+							</SearchMarker>
 
-					<MkSwitch v-model="sensitiveMediaDetectionForm.state.setSensitiveFlagAutomatically">
-						<template #label>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }} ({{ i18n.ts.notRecommended }})</template>
-						<template #caption>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</template>
-					</MkSwitch>
+							<SearchMarker :keywords="['flag', 'automatically']">
+								<MkSwitch v-model="sensitiveMediaDetectionForm.state.setSensitiveFlagAutomatically">
+									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</SearchLabel> ({{ i18n.ts.notRecommended }})</template>
+									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</SearchText></template>
+								</MkSwitch>
+							</SearchMarker>
 
-					<!-- 現状 false positive が多すぎて実用に耐えない
+							<!-- 現状 false positive が多すぎて実用に耐えない
 					<MkSwitch v-model="disallowUploadWhenPredictedAsPorn">
 						<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
 					</MkSwitch>
 					-->
-				</div>
-			</MkFolder>
+						</div>
+					</MkFolder>
+				</SearchMarker>
 
-			<MkFolder>
-				<template #label>Active Email Validation</template>
-				<template v-if="emailValidationForm.savedState.enableActiveEmailValidation" #suffix>Enabled</template>
-				<template v-else #suffix>Disabled</template>
-				<template v-if="emailValidationForm.modified.value" #footer>
-					<MkFormFooter :form="emailValidationForm"/>
-				</template>
+				<SearchMarker v-slot="slotProps" :keywords="['email', 'validation']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #label><SearchLabel>Active Email Validation</SearchLabel></template>
+						<template v-if="emailValidationForm.savedState.enableActiveEmailValidation" #suffix>Enabled</template>
+						<template v-else #suffix>Disabled</template>
+						<template v-if="emailValidationForm.modified.value" #footer>
+							<MkFormFooter :form="emailValidationForm"/>
+						</template>
 
-				<div class="_gaps_m">
-					<span>{{ i18n.ts.activeEmailValidationDescription }}</span>
-					<MkSwitch v-model="emailValidationForm.state.enableActiveEmailValidation">
-						<template #label>Enable</template>
-					</MkSwitch>
-					<MkSwitch v-model="emailValidationForm.state.enableVerifymailApi">
-						<template #label>Use Verifymail.io API</template>
-					</MkSwitch>
-					<MkInput v-model="emailValidationForm.state.verifymailAuthKey">
-						<template #prefix><i class="ti ti-key"></i></template>
-						<template #label>Verifymail.io API Auth Key</template>
-					</MkInput>
-					<MkSwitch v-model="emailValidationForm.state.enableTruemailApi">
-						<template #label>Use TrueMail API</template>
-					</MkSwitch>
-					<MkInput v-model="emailValidationForm.state.truemailInstance">
-						<template #prefix><i class="ti ti-key"></i></template>
-						<template #label>TrueMail API Instance</template>
-					</MkInput>
-					<MkInput v-model="emailValidationForm.state.truemailAuthKey">
-						<template #prefix><i class="ti ti-key"></i></template>
-						<template #label>TrueMail API Auth Key</template>
-					</MkInput>
-				</div>
-			</MkFolder>
+						<div class="_gaps_m">
+							<div><SearchText>{{ i18n.ts.activeEmailValidationDescription }}</SearchText></div>
 
-			<MkFolder>
-				<template #label>Banned Email Domains</template>
-				<template v-if="bannedEmailDomainsForm.modified.value" #footer>
-					<MkFormFooter :form="bannedEmailDomainsForm"/>
-				</template>
+							<SearchMarker>
+								<MkSwitch v-model="emailValidationForm.state.enableActiveEmailValidation">
+									<template #label><SearchLabel>Enable</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
 
-				<div class="_gaps_m">
-					<MkTextarea v-model="bannedEmailDomainsForm.state.bannedEmailDomains">
-						<template #label>Banned Email Domains List</template>
-					</MkTextarea>
-				</div>
-			</MkFolder>
+							<SearchMarker>
+								<MkSwitch v-model="emailValidationForm.state.enableVerifymailApi">
+									<template #label><SearchLabel>Use Verifymail.io API</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
 
-			<MkFolder>
-				<template #label>Log IP address</template>
-				<template v-if="ipLoggingForm.savedState.enableIpLogging" #suffix>Enabled</template>
-				<template v-else #suffix>Disabled</template>
-				<template v-if="ipLoggingForm.modified.value" #footer>
-					<MkFormFooter :form="ipLoggingForm"/>
-				</template>
+							<SearchMarker>
+								<MkInput v-model="emailValidationForm.state.verifymailAuthKey">
+									<template #prefix><i class="ti ti-key"></i></template>
+									<template #label><SearchLabel>Verifymail.io API Auth Key</SearchLabel></template>
+								</MkInput>
+							</SearchMarker>
 
-				<div class="_gaps_m">
-					<MkSwitch v-model="ipLoggingForm.state.enableIpLogging">
-						<template #label>Enable</template>
-					</MkSwitch>
-				</div>
-			</MkFolder>
-		</div>
+							<SearchMarker>
+								<MkSwitch v-model="emailValidationForm.state.enableTruemailApi">
+									<template #label><SearchLabel>Use TrueMail API</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<SearchMarker>
+								<MkInput v-model="emailValidationForm.state.truemailInstance">
+									<template #prefix><i class="ti ti-key"></i></template>
+									<template #label><SearchLabel>TrueMail API Instance</SearchLabel></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker>
+								<MkInput v-model="emailValidationForm.state.truemailAuthKey">
+									<template #prefix><i class="ti ti-key"></i></template>
+									<template #label><SearchLabel>TrueMail API Auth Key</SearchLabel></template>
+								</MkInput>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['banned', 'email', 'domains', 'blacklist']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #label><SearchLabel>Banned Email Domains</SearchLabel></template>
+						<template v-if="bannedEmailDomainsForm.modified.value" #footer>
+							<MkFormFooter :form="bannedEmailDomainsForm"/>
+						</template>
+
+						<div class="_gaps_m">
+							<SearchMarker>
+								<MkTextarea v-model="bannedEmailDomainsForm.state.bannedEmailDomains">
+									<template #label><SearchLabel>Banned Email Domains List</SearchLabel></template>
+								</MkTextarea>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['log', 'ipAddress']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #label><SearchLabel>Log IP address</SearchLabel></template>
+						<template v-if="ipLoggingForm.savedState.enableIpLogging" #suffix>Enabled</template>
+						<template v-else #suffix>Disabled</template>
+						<template v-if="ipLoggingForm.modified.value" #footer>
+							<MkFormFooter :form="ipLoggingForm"/>
+						</template>
+
+						<div class="_gaps_m">
+							<SearchMarker>
+								<MkSwitch v-model="ipLoggingForm.state.enableIpLogging">
+									<template #label><SearchLabel>Enable</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+			</div>
+		</SearchMarker>
 	</div>
 </PageWithHeader>
 </template>

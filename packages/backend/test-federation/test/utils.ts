@@ -79,6 +79,9 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 				rateLimitFactor: 0 as never,
 			},
 		}, res.token);
+		await client.request('admin/update-meta', {
+			federation: 'all',
+		}, res.token);
 		return res;
 	}).catch(err => {
 		if (err.info.e.message === 'access denied') return undefined;

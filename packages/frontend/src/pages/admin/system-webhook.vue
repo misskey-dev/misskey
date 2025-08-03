@@ -6,17 +6,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
-		<div class="_gaps_m">
-			<MkButton primary @click="onCreateWebhookClicked">
-				<i class="ti ti-plus"></i> {{ i18n.ts._webhookSettings.createWebhook }}
-			</MkButton>
+		<SearchMarker path="/admin/system-webhook" label="SystemWebhook" :keywords="['webhook']" icon="ti ti-webhook">
+			<div class="_gaps_m">
+				<SearchMarker>
+					<MkButton primary @click="onCreateWebhookClicked">
+						<i class="ti ti-plus"></i> <SearchLabel>{{ i18n.ts._webhookSettings.createWebhook }}</SearchLabel>
+					</MkButton>
+				</SearchMarker>
 
-			<FormSection>
-				<div class="_gaps">
-					<XItem v-for="item in webhooks" :key="item.id" :entity="item" @edit="onEditButtonClicked" @delete="onDeleteButtonClicked"/>
-				</div>
-			</FormSection>
-		</div>
+				<FormSection>
+					<div class="_gaps">
+						<XItem v-for="item in webhooks" :key="item.id" :entity="item" @edit="onEditButtonClicked" @delete="onDeleteButtonClicked"/>
+					</div>
+				</FormSection>
+			</div>
+		</SearchMarker>
 	</div>
 </PageWithHeader>
 </template>

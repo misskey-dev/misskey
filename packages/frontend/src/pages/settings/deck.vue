@@ -97,8 +97,8 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { selectFile } from '@/utility/drive.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
 
 const navWindow = prefer.model('deck.navWindow');
 const useSimpleUiForNonRootPages = prefer.model('deck.useSimpleUiForNonRootPages');
@@ -109,8 +109,8 @@ const menuPosition = prefer.model('deck.menuPosition');
 const navbarPosition = prefer.model('deck.navbarPosition');
 const wallpaper = prefer.model('deck.wallpaper');
 
-watch(wallpaper, async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+watch(wallpaper, () => {
+	suggestReload();
 });
 
 function setWallpaper(ev: MouseEvent) {

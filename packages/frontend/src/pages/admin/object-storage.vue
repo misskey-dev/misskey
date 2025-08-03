@@ -6,70 +6,94 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<FormSuspense :p="init">
+		<SearchMarker path="/admin/object-storage" :label="i18n.ts.objectStorage" :keywords="['objectStorage']" icon="ti ti-cloud">
 			<div class="_gaps_m">
-				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
+				<SearchMarker>
+					<MkSwitch v-model="useObjectStorage"><SearchLabel>{{ i18n.ts.useObjectStorage }}</SearchLabel></MkSwitch>
+				</SearchMarker>
 
 				<template v-if="useObjectStorage">
-					<MkInput v-model="objectStorageBaseUrl" :placeholder="'https://example.com'" type="url">
-						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
-						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
-					</MkInput>
+					<SearchMarker>
+						<MkInput v-model="objectStorageBaseUrl" :placeholder="'https://example.com'" type="url">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageBaseUrl }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.objectStorageBaseUrlDesc }}</SearchText></template>
+						</MkInput>
+					</SearchMarker>
 
-					<MkInput v-model="objectStorageBucket">
-						<template #label>{{ i18n.ts.objectStorageBucket }}</template>
-						<template #caption>{{ i18n.ts.objectStorageBucketDesc }}</template>
-					</MkInput>
+					<SearchMarker>
+						<MkInput v-model="objectStorageBucket">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageBucket }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.objectStorageBucketDesc }}</SearchText></template>
+						</MkInput>
+					</SearchMarker>
 
-					<MkInput v-model="objectStoragePrefix">
-						<template #label>{{ i18n.ts.objectStoragePrefix }}</template>
-						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
-					</MkInput>
+					<SearchMarker>
+						<MkInput v-model="objectStoragePrefix">
+							<template #label><SearchLabel>{{ i18n.ts.objectStoragePrefix }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.objectStoragePrefixDesc }}</SearchText></template>
+						</MkInput>
+					</SearchMarker>
 
-					<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
-						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
-						<template #prefix>https://</template>
-						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
-					</MkInput>
+					<SearchMarker>
+						<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageEndpoint }}</SearchLabel></template>
+							<template #prefix>https://</template>
+							<template #caption><SearchText>{{ i18n.ts.objectStorageEndpointDesc }}</SearchText></template>
+						</MkInput>
+					</SearchMarker>
 
-					<MkInput v-model="objectStorageRegion">
-						<template #label>{{ i18n.ts.objectStorageRegion }}</template>
-						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
-					</MkInput>
+					<SearchMarker>
+						<MkInput v-model="objectStorageRegion">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageRegion }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.objectStorageRegionDesc }}</SearchText></template>
+						</MkInput>
+					</SearchMarker>
 
 					<FormSplit :minWidth="280">
-						<MkInput v-model="objectStorageAccessKey">
-							<template #prefix><i class="ti ti-key"></i></template>
-							<template #label>Access key</template>
-						</MkInput>
+						<SearchMarker>
+							<MkInput v-model="objectStorageAccessKey">
+								<template #prefix><i class="ti ti-key"></i></template>
+								<template #label><SearchLabel>Access key</SearchLabel></template>
+							</MkInput>
+						</SearchMarker>
 
-						<MkInput v-model="objectStorageSecretKey" type="password">
-							<template #prefix><i class="ti ti-key"></i></template>
-							<template #label>Secret key</template>
-						</MkInput>
+						<SearchMarker>
+							<MkInput v-model="objectStorageSecretKey" type="password">
+								<template #prefix><i class="ti ti-key"></i></template>
+								<template #label><SearchLabel>Secret key</SearchLabel></template>
+							</MkInput>
+						</SearchMarker>
 					</FormSplit>
 
-					<MkSwitch v-model="objectStorageUseSSL">
-						<template #label>{{ i18n.ts.objectStorageUseSSL }}</template>
-						<template #caption>{{ i18n.ts.objectStorageUseSSLDesc }}</template>
-					</MkSwitch>
+					<SearchMarker>
+						<MkSwitch v-model="objectStorageUseSSL">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageUseSSL }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.objectStorageUseSSLDesc }}</SearchText></template>
+						</MkSwitch>
+					</SearchMarker>
 
-					<MkSwitch v-model="objectStorageUseProxy">
-						<template #label>{{ i18n.ts.objectStorageUseProxy }}</template>
-						<template #caption>{{ i18n.ts.objectStorageUseProxyDesc }}</template>
-					</MkSwitch>
+					<SearchMarker>
+						<MkSwitch v-model="objectStorageUseProxy">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageUseProxy }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.objectStorageUseProxyDesc }}</SearchText></template>
+						</MkSwitch>
+					</SearchMarker>
 
-					<MkSwitch v-model="objectStorageSetPublicRead">
-						<template #label>{{ i18n.ts.objectStorageSetPublicRead }}</template>
-					</MkSwitch>
+					<SearchMarker>
+						<MkSwitch v-model="objectStorageSetPublicRead">
+							<template #label><SearchLabel>{{ i18n.ts.objectStorageSetPublicRead }}</SearchLabel></template>
+						</MkSwitch>
+					</SearchMarker>
 
-					<MkSwitch v-model="objectStorageS3ForcePathStyle">
-						<template #label>s3ForcePathStyle</template>
-						<template #caption>{{ i18n.ts.s3ForcePathStyleDesc }}</template>
-					</MkSwitch>
+					<SearchMarker>
+						<MkSwitch v-model="objectStorageS3ForcePathStyle">
+							<template #label><SearchLabel>s3ForcePathStyle</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.s3ForcePathStyleDesc }}</SearchText></template>
+						</MkSwitch>
+					</SearchMarker>
 				</template>
 			</div>
-		</FormSuspense>
+		</SearchMarker>
 	</div>
 	<template #footer>
 		<div :class="$style.footer">
@@ -94,36 +118,21 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 
-const useObjectStorage = ref<boolean>(false);
-const objectStorageBaseUrl = ref<string | null>(null);
-const objectStorageBucket = ref<string | null>(null);
-const objectStoragePrefix = ref<string | null>(null);
-const objectStorageEndpoint = ref<string | null>(null);
-const objectStorageRegion = ref<string | null>(null);
-const objectStoragePort = ref<number | null>(null);
-const objectStorageAccessKey = ref<string | null>(null);
-const objectStorageSecretKey = ref<string | null>(null);
-const objectStorageUseSSL = ref<boolean>(false);
-const objectStorageUseProxy = ref<boolean>(false);
-const objectStorageSetPublicRead = ref<boolean>(false);
-const objectStorageS3ForcePathStyle = ref<boolean>(true);
+const meta = await misskeyApi('admin/meta');
 
-async function init() {
-	const meta = await misskeyApi('admin/meta');
-	useObjectStorage.value = meta.useObjectStorage;
-	objectStorageBaseUrl.value = meta.objectStorageBaseUrl;
-	objectStorageBucket.value = meta.objectStorageBucket;
-	objectStoragePrefix.value = meta.objectStoragePrefix;
-	objectStorageEndpoint.value = meta.objectStorageEndpoint;
-	objectStorageRegion.value = meta.objectStorageRegion;
-	objectStoragePort.value = meta.objectStoragePort;
-	objectStorageAccessKey.value = meta.objectStorageAccessKey;
-	objectStorageSecretKey.value = meta.objectStorageSecretKey;
-	objectStorageUseSSL.value = meta.objectStorageUseSSL;
-	objectStorageUseProxy.value = meta.objectStorageUseProxy;
-	objectStorageSetPublicRead.value = meta.objectStorageSetPublicRead;
-	objectStorageS3ForcePathStyle.value = meta.objectStorageS3ForcePathStyle;
-}
+const useObjectStorage = ref(meta.useObjectStorage);
+const objectStorageBaseUrl = ref(meta.objectStorageBaseUrl);
+const objectStorageBucket = ref(meta.objectStorageBucket);
+const objectStoragePrefix = ref(meta.objectStoragePrefix);
+const objectStorageEndpoint = ref(meta.objectStorageEndpoint);
+const objectStorageRegion = ref(meta.objectStorageRegion);
+const objectStoragePort = ref(meta.objectStoragePort);
+const objectStorageAccessKey = ref(meta.objectStorageAccessKey);
+const objectStorageSecretKey = ref(meta.objectStorageSecretKey);
+const objectStorageUseSSL = ref(meta.objectStorageUseSSL);
+const objectStorageUseProxy = ref(meta.objectStorageUseProxy);
+const objectStorageSetPublicRead = ref(meta.objectStorageSetPublicRead);
+const objectStorageS3ForcePathStyle = ref(meta.objectStorageS3ForcePathStyle);
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
-			<SearchKeyword>{{ i18n.ts._settings.notificationsBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<FormSection first>

@@ -6,48 +6,67 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<FormSuspense :p="init">
+		<SearchMarker path="/admin/email-settings" :label="i18n.ts.emailServer" :keywords="['email']" icon="ti ti-mail">
 			<div class="_gaps_m">
-				<MkSwitch v-model="enableEmail">
-					<template #label>{{ i18n.ts.enableEmail }} ({{ i18n.ts.recommended }})</template>
-					<template #caption>{{ i18n.ts.emailConfigInfo }}</template>
-				</MkSwitch>
+				<SearchMarker>
+					<MkSwitch v-model="enableEmail">
+						<template #label><SearchLabel>{{ i18n.ts.enableEmail }}</SearchLabel> ({{ i18n.ts.recommended }})</template>
+						<template #caption><SearchText>{{ i18n.ts.emailConfigInfo }}</SearchText></template>
+					</MkSwitch>
+				</SearchMarker>
 
 				<template v-if="enableEmail">
-					<MkInput v-model="email" type="email">
-						<template #label>{{ i18n.ts.emailAddress }}</template>
-					</MkInput>
+					<SearchMarker>
+						<MkInput v-model="email" type="email">
+							<template #label><SearchLabel>{{ i18n.ts.emailAddress }}</SearchLabel></template>
+						</MkInput>
+					</SearchMarker>
 
-					<FormSection>
-						<template #label>{{ i18n.ts.smtpConfig }}</template>
+					<SearchMarker>
+						<FormSection>
+							<template #label><SearchLabel>{{ i18n.ts.smtpConfig }}</SearchLabel></template>
 
-						<div class="_gaps_m">
-							<FormSplit :minWidth="280">
-								<MkInput v-model="smtpHost">
-									<template #label>{{ i18n.ts.smtpHost }}</template>
-								</MkInput>
-								<MkInput v-model="smtpPort" type="number">
-									<template #label>{{ i18n.ts.smtpPort }}</template>
-								</MkInput>
-							</FormSplit>
-							<FormSplit :minWidth="280">
-								<MkInput v-model="smtpUser">
-									<template #label>{{ i18n.ts.smtpUser }}</template>
-								</MkInput>
-								<MkInput v-model="smtpPass" type="password">
-									<template #label>{{ i18n.ts.smtpPass }}</template>
-								</MkInput>
-							</FormSplit>
-							<FormInfo>{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
-							<MkSwitch v-model="smtpSecure">
-								<template #label>{{ i18n.ts.smtpSecure }}</template>
-								<template #caption>{{ i18n.ts.smtpSecureInfo }}</template>
-							</MkSwitch>
-						</div>
-					</FormSection>
+							<div class="_gaps_m">
+								<FormSplit :minWidth="280">
+									<SearchMarker>
+										<MkInput v-model="smtpHost">
+											<template #label><SearchLabel>{{ i18n.ts.smtpHost }}</SearchLabel></template>
+										</MkInput>
+									</SearchMarker>
+									<SearchMarker>
+										<MkInput v-model="smtpPort" type="number">
+											<template #label><SearchLabel>{{ i18n.ts.smtpPort }}</SearchLabel></template>
+										</MkInput>
+									</SearchMarker>
+								</FormSplit>
+
+								<FormSplit :minWidth="280">
+									<SearchMarker>
+										<MkInput v-model="smtpUser">
+											<template #label><SearchLabel>{{ i18n.ts.smtpUser }}</SearchLabel></template>
+										</MkInput>
+									</SearchMarker>
+									<SearchMarker>
+										<MkInput v-model="smtpPass" type="password">
+											<template #label><SearchLabel>{{ i18n.ts.smtpPass }}</SearchLabel></template>
+										</MkInput>
+									</SearchMarker>
+								</FormSplit>
+
+								<FormInfo>{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
+
+								<SearchMarker>
+									<MkSwitch v-model="smtpSecure">
+										<template #label><SearchLabel>{{ i18n.ts.smtpSecure }}</SearchLabel></template>
+										<template #caption><SearchText>{{ i18n.ts.smtpSecureInfo }}</SearchText></template>
+									</MkSwitch>
+								</SearchMarker>
+							</div>
+						</FormSection>
+					</SearchMarker>
 				</template>
 			</div>
-		</FormSuspense>
+		</SearchMarker>
 	</div>
 	<template #footer>
 		<div :class="$style.footer">
@@ -67,7 +86,6 @@ import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import FormInfo from '@/components/MkInfo.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
@@ -77,24 +95,15 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 
-const enableEmail = ref<boolean>(false);
-const email = ref<string | null>(null);
-const smtpSecure = ref<boolean>(false);
-const smtpHost = ref<string>('');
-const smtpPort = ref<number>(0);
-const smtpUser = ref<string>('');
-const smtpPass = ref<string>('');
+const meta = await misskeyApi('admin/meta');
 
-async function init() {
-	const meta = await misskeyApi('admin/meta');
-	enableEmail.value = meta.enableEmail;
-	email.value = meta.email;
-	smtpSecure.value = meta.smtpSecure;
-	smtpHost.value = meta.smtpHost;
-	smtpPort.value = meta.smtpPort;
-	smtpUser.value = meta.smtpUser;
-	smtpPass.value = meta.smtpPass;
-}
+const enableEmail = ref(meta.enableEmail);
+const email = ref(meta.email);
+const smtpSecure = ref(meta.smtpSecure);
+const smtpHost = ref(meta.smtpHost);
+const smtpPort = ref(meta.smtpPort);
+const smtpUser = ref(meta.smtpUser);
+const smtpPass = ref(meta.smtpPass);
 
 async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({

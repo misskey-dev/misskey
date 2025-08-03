@@ -13,6 +13,10 @@
 		- 増加量を抑えるには、最大処理継続時間をデフォルトより短くしてください。
 - サーバーの初期設定が完了するまでは連合がオンにならないようになりました
 - 日本語における公開範囲名称の「ダイレクト」が「指名」に改称されました
+- mfm.jsをアップデートしました
+  - Enhance: Unicode 15.1 および 16.0 に収録されている絵文字に対応
+  - Enhance: acctに `.` が入っているユーザーのメンションに対応
+  - Fix: Unicode絵文字に隣接する異体字セレクタ（`U+FE0F`）が絵文字として認識される問題を修正
 
 ### Client
 - Feat: セーフモード
@@ -21,6 +25,7 @@
 		- `g` キーを連打する
 		- URLに`?safemode=true`を付ける
 		- PWAのショートカットで Safemode を選択して起動する
+- Enhance: コントロールパネルを検索できるように
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 - Fix: テーマエディタが動作しない問題を修正
