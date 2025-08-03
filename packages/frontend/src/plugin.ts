@@ -6,7 +6,8 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
-import { v4 as uuid } from 'uuid';
+import { isSafeMode } from '@@/js/config.js';
+import { genId } from '@/utility/id.js';
 import * as Misskey from 'misskey-js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { store } from '@/store.js';
@@ -14,12 +15,13 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import type { FormWithDefault } from '@/utility/form.js';
 
 export type Plugin = {
 	installId: string;
 	name: string;
 	active: boolean;
-	config?: Record<string, { default: any }>;
+	config?: FormWithDefault;
 	configData: Record<string, any>;
 	src: string | null;
 	version: string;
@@ -95,8 +97,8 @@ export async function authorizePlugin(plugin: Plugin) {
 	if (plugin.permissions == null || plugin.permissions.length === 0) return;
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) return;
 
-	const token = await new Promise<string>((res, rej) => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
+	const token = await new Promise<string>(async (res, rej) => {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: plugin.name,
@@ -135,7 +137,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		throw new Error('Plugin already installed');
 	}
 
-	const installId = uuid();
+	const installId = genId();
 
 	const plugin = {
 		...realMeta,
@@ -155,6 +157,13 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 export async function uninstallPlugin(plugin: Plugin) {
 	abortPlugin(plugin);
 	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
+
+	Object.keys(window.localStorage).forEach(key => {
+		if (key.startsWith('aiscript:plugins:' + plugin.installId)) {
+			window.localStorage.removeItem(key);
+		}
+	});
+
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) {
 		await os.apiWithDialog('i/revoke-token', {
 			token: store.s.pluginTokens[plugin.installId],
@@ -224,6 +233,7 @@ export function launchPlugins() {
 }
 
 async function launchPlugin(id: Plugin['installId']): Promise<void> {
+	if (isSafeMode) return;
 	const plugin = prefer.s.plugins.find(x => x.installId === id);
 	if (!plugin) return;
 
@@ -233,7 +243,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	pluginLogs.value.set(plugin.installId, []);
 
 	function systemLog(message: string, isError = false): void {
-		pluginLogs.value.get(plugin.installId)?.push({
+		pluginLogs.value.get(plugin!.installId)?.push({
 			at: Date.now(),
 			isSystem: true,
 			message,

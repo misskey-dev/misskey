@@ -1008,6 +1008,8 @@ lastNDays: "آخر {n} أيام"
 surrender: "ألغِ"
 postForm: "أنشئ ملاحظة"
 information: "عن"
+inMinutes: "د"
+inDays: "ي"
 _chat:
   invitations: "دعوة"
   noHistory: "السجل فارغ"
@@ -1252,7 +1254,6 @@ _theme:
     buttonBg: "خلفية الأزرار"
     buttonHoverBg: "خلفية الأزرار (عند التمرير فوقها)"
     inputBorder: "حواف حقل الإدخال"
-    driveFolderBg: "خلفية مجلد قرص التخزين"
     messageBg: "خلفية المحادثة"
 _sfx:
   note: "الملاحظات"
@@ -1590,3 +1591,11 @@ _search:
   searchScopeAll: "الكل"
   searchScopeLocal: "المحلي"
   searchScopeUser: "مستخدم محدد"
+_watermarkEditor:
+  opacity: "الشفافية"
+  scale: "الحجم"
+  text: "نص"
+  position: "الموضع"
+  type: "نوع"
+  image: "صور"
+  advanced: "متقدم"

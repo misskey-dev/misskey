@@ -25,7 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkUserName class="name" :user="user" :nowrap="true"/>
 								<div class="bottom">
 									<span class="username"><MkAcct :user="user" :detail="true"/></span>
-									<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
 									<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 									<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
@@ -44,7 +43,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserName :user="user" :nowrap="false" class="name"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 							</div>
@@ -138,7 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 					<template v-if="narrow">
 						<MkLazy>
-							<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
+							<XFiles :key="user.id" :user="user" @showMore="emit('showMoreFiles')"/>
 						</MkLazy>
 						<MkLazy>
 							<XActivity :key="user.id" :user="user"/>
@@ -152,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-				<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
+				<XFiles :key="user.id" :user="user" @showMore="emit('showMoreFiles')"/>
 				<XActivity :key="user.id" :user="user"/>
 			</div>
 		</div>
@@ -217,7 +215,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'unfoldFiles'): void;
+	(ev: 'showMoreFiles'): void;
 }>();
 
 const router = useRouter();

@@ -403,3 +403,5 @@ _reversi:
   total: "Σύνολο"
 _search:
   searchScopeLocal: "Τοπικό"
+_watermarkEditor:
+  image: "Εικόνες"
