@@ -138,18 +138,29 @@ export class CleanRemoteNotesProcessorService {
 			const replies = notes.length === 0 ? [] : await this.notesRepository.find({
 				where: {
 					replyId: In(notes.map(note => note.id)),
-					userHost: IsNull(),
 				},
-				select: ['replyId'],
+				select: ['replyId', 'userHost'],
 			});
 
+			const noteIdsWithReplies = new Set(replies.map(reply => reply.replyId));
+
 			notes = notes.filter(note => {
-				return !replies.some(reply => reply.replyId === note.id);
+				return !replies.some(reply => reply.userHost == null && reply.replyId === note.id);
 			});
+
+			// find self renotes and quotes to determine if we should keep deleted notes
+			const renotes = notes.length === 0 ? [] : await this.notesRepository.find({
+				where: {
+					renoteId: In(notes.map(note => note.id)),
+				},
+				select: ['renoteId'],
+			});
+
+			const noteIdsWithRenotes = new Set(renotes.map(reply => reply.replyId));
 
 			if (notes.length > 0) {
 				await this.db.transaction(async (transaction) => {
-					await transaction.save(MiDeletedNote, notes.map(note => ({
+					await transaction.save(MiDeletedNote, notes.filter(x => x.replyId != null || x.renoteId != null || noteIdsWithReplies.has(x.id) || noteIdsWithRenotes.has(x.id)).map(note => ({
 						id: note.id,
 						deletedAt: null, // This is existing note on the remote, so we set deletedAt to null.
 						replyId: note.replyId,
