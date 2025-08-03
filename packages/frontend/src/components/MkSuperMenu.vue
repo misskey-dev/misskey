@@ -52,9 +52,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ item.label }}
 					</template>
 					<template v-else>
-						<span style="opacity: 0.7; font-size: 90%;">{{ item.parentLabels.join(' > ') }}</span>
+						<span style="opacity: 0.7; font-size: 90%; word-break: break-word;">{{ item.parentLabels.join(' > ') }}</span>
 						<br>
-						<span>{{ item.label }}</span>
+						<span style="word-break: break-word;">{{ item.label }}</span>
 					</template>
 				</span>
 			</MkA>
