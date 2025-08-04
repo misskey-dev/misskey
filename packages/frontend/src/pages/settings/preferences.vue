@@ -477,6 +477,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['tabs', 'tabbar', 'bottom', 'under']">
+								<MkPreferenceContainer k="showPageTabBarBottom">
+									<MkSwitch v-model="showPageTabBarBottom">
+										<template #label><SearchLabel>{{ i18n.ts._settings.showPageTabBarBottom }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['swipe', 'horizontal', 'tab']">
 								<MkPreferenceContainer k="enableHorizontalSwipe">
 									<MkSwitch v-model="enableHorizontalSwipe">
@@ -866,6 +874,7 @@ const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
 const keepScreenOn = prefer.model('keepScreenOn');
 const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
+const showPageTabBarBottom = prefer.model('showPageTabBarBottom');
 const enablePullToRefresh = prefer.model('enablePullToRefresh');
 const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
 const contextMenu = prefer.model('contextMenu');
@@ -925,6 +934,7 @@ watch([
 	useSystemFont,
 	makeEveryTextElementsSelectable,
 	enableHorizontalSwipe,
+	showPageTabBarBottom,
 	enablePullToRefresh,
 	reduceAnimation,
 	showAvailableReactionsFirstInNote,
