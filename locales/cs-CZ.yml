@@ -2004,7 +2004,7 @@ _deck:
     list: "Seznamy"
     channel: "Kanály"
     mentions: "Zmínění"
-    direct: "Přímý"
+    direct: "Přímé poznámky"
     roleTimeline: "Časová osa role"
 _dialog:
   charactersExceeded: "Překročili jste maximální počet znaků! V současné době je na hodnotě {current} z {max}."
