@@ -787,6 +787,9 @@ importers:
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
+      es-module-lexer:
+        specifier: 1.7.0
+        version: 1.7.0
       estree-walker:
         specifier: 3.0.3
         version: 3.0.3
@@ -14637,7 +14640,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       estraverse: 5.3.0
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     transitivePeerDependencies:
       - supports-color
       - typescript

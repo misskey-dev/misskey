@@ -15,6 +15,7 @@ import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
 import type { PreRenderedChunk } from 'rollup';
+import pluginLocaleBundle from './lib/vite-plugin-locale-bundle';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -112,6 +113,7 @@ export function getConfig(): UserConfig {
 			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
 			pluginVue(),
+			pluginLocaleBundle(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
 			...process.env.NODE_ENV === 'production'
