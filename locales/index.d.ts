@@ -5871,6 +5871,10 @@ export interface Locale extends ILocale {
          * 利用できるリアクションを先頭に表示
          */
         "showAvailableReactionsFirstInNote": string;
+        /**
+         * ページのタブバーを下部に表示
+         */
+        "showPageTabBarBottom": string;
         "_chat": {
             /**
              * 送信者の名前を表示

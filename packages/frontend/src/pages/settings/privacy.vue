@@ -7,13 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/privacy" :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/unlocked_3d.png" color="#aeff00">
-			<SearchKeyword>{{ i18n.ts._settings.privacyBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.privacyBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['follow', 'lock']">
 			<MkSwitch v-model="isLocked" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.makeFollowManuallyApprove }}</SearchLabel></template>
-				<template #caption><SearchKeyword>{{ i18n.ts.lockedAccountInfo }}</SearchKeyword></template>
+				<template #caption><SearchText>{{ i18n.ts.lockedAccountInfo }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['reaction', 'public']">
 			<MkSwitch v-model="publicReactions" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.makeReactionsPublic }}</SearchLabel></template>
-				<template #caption><SearchKeyword>{{ i18n.ts.makeReactionsPublicDescription }}</SearchKeyword></template>
+				<template #caption><SearchText>{{ i18n.ts.makeReactionsPublicDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -53,28 +53,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['online', 'status']">
 			<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.hideOnlineStatus }}</SearchLabel></template>
-				<template #caption><SearchKeyword>{{ i18n.ts.hideOnlineStatusDescription }}</SearchKeyword></template>
+				<template #caption><SearchText>{{ i18n.ts.hideOnlineStatusDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['crawle', 'index', 'search']">
 			<MkSwitch v-model="noCrawle" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.noCrawle }}</SearchLabel></template>
-				<template #caption><SearchKeyword>{{ i18n.ts.noCrawleDescription }}</SearchKeyword></template>
+				<template #caption><SearchText>{{ i18n.ts.noCrawleDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['crawle', 'ai']">
 			<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.preventAiLearning }}</SearchLabel></template>
-				<template #caption><SearchKeyword>{{ i18n.ts.preventAiLearningDescription }}</SearchKeyword></template>
+				<template #caption><SearchText>{{ i18n.ts.preventAiLearningDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['explore']">
 			<MkSwitch v-model="isExplorable" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.makeExplorable }}</SearchLabel></template>
-				<template #caption><SearchKeyword>{{ i18n.ts.makeExplorableDescription }}</SearchKeyword></template>
+				<template #caption><SearchText>{{ i18n.ts.makeExplorableDescription }}</SearchText></template>
 			</MkSwitch>
 		</SearchMarker>
 
@@ -146,7 +146,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #caption>
-								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchKeyword></div>
+								<div><SearchText>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchText></div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
@@ -183,7 +183,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #caption>
-								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchKeyword></div>
+								<div><SearchText>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchText></div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
