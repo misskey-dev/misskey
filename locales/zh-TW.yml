@@ -1465,6 +1465,7 @@ _settings:
   contentsUpdateFrequency_description2: "當即時模式開啟時，不論此設定為何，內容都會即時更新。"
   showUrlPreview: "顯示網址預覽"
   showAvailableReactionsFirstInNote: "將可用的反應顯示在頂部"
+  showPageTabBarBottom: "在底部顯示頁面的標籤列"
   _chat:
     showSenderName: "顯示發送者的名稱"
     sendOnEnter: "按下 Enter 發送訊息"
