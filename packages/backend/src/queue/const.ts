@@ -12,6 +12,7 @@ export const QUEUE = {
 	INBOX: 'inbox',
 	SYSTEM: 'system',
 	ENDED_POLL_NOTIFICATION: 'endedPollNotification',
+	DELETE_USER_MUTING: 'deleteUserMuting',
 	DB: 'db',
 	RELATIONSHIP: 'relationship',
 	OBJECT_STORAGE: 'objectStorage',
