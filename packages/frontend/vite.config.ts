@@ -14,6 +14,7 @@ import pluginJson5 from './vite.json5.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
+import type { PreRenderedChunk } from 'rollup';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -174,7 +175,8 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/_boot_.ts',
+					none: './src/_boot_.ts',
+					...Object.fromEntries(Object.keys(locales).map(lang => [lang, `./src/_boot_.ts?lang=${lang}`])),
 				},
 				external: externalPackages.map(p => p.match),
 				output: {
@@ -182,8 +184,9 @@ export function getConfig(): UserConfig {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+					entryFileNames: localeBundleFile,
+					chunkFileNames: localeBundleFile,
+					assetFileNames: 'assets/[hash:8][extname]',
 					paths(id) {
 						for (const p of externalPackages) {
 							if (p.match.test(id)) {
@@ -227,6 +230,23 @@ export function getConfig(): UserConfig {
 			includeSource: ['src/**/*.ts'],
 		},
 	};
+}
+
+// (chunkInfo: PreRenderedChunk) => string
+function localeBundleFile(chunkInfo: PreRenderedChunk): string {
+	const locale = getLocale(chunkInfo.facadeModuleId);
+	if (chunkInfo.isEntry) {
+		return `${locale}/entry.js`;
+	} else {
+		return `${locale}/[hash:8].js`;
+	}
+}
+
+function getLocale(url: string | null): string {
+	if (url == null) return 'none';
+	const match = url.match(/[?&]lang=([a-zA-Z-]+)($|&)/);
+	if (match == null) return 'none';
+	return match[1];
 }
 
 const config = defineConfig(({ command, mode }) => getConfig());

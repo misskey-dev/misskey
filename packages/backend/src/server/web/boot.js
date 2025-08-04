@@ -22,10 +22,12 @@
 		return;
 	}
 
+	/** @type { string } */
+	let lang;
 	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
+	if (true) {
 		const supportedLangs = LANGS;
-		let lang = localStorage.getItem('lang');
+		lang = localStorage.getItem('lang');
 		if (lang == null || !supportedLangs.includes(lang)) {
 			if (supportedLangs.includes(navigator.language)) {
 				lang = navigator.language;
@@ -77,7 +79,7 @@
 
 	//#region Script
 	async function importAppScript() {
-		await import(`/vite/${CLIENT_ENTRY}`)
+		await import(PRODUCTION ? `/vite/${lang}/entry.js?v=${VERSION}` : `/vite/src/_boot_.ts?lang=${lang}`)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);
