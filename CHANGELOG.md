@@ -26,6 +26,7 @@
 		- URLに`?safemode=true`を付ける
 		- PWAのショートカットで Safemode を選択して起動する
 - Enhance: コントロールパネルを検索できるように
+- Enhance: トルコ語 (tr-TR) に対応
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 - Fix: テーマエディタが動作しない問題を修正
