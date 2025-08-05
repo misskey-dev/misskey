@@ -28,6 +28,7 @@
 - Feat: ページのタブバーを下部に表示できるように
 - Enhance: コントロールパネルを検索できるように
 - Enhance: トルコ語 (tr-TR) に対応
+- Fix: 投稿フォームでファイルのアップロードが中止または失敗した際のハンドリングを修正
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
 - Fix: テーマエディタが動作しない問題を修正
