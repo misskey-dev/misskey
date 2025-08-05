@@ -174,13 +174,17 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
+					i18n: './src/i18n.ts',
 					entry: './src/_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),
+				preserveEntrySignatures: 'allow-extension',
 				output: {
 					manualChunks: {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
+						// dependencies of i18n.ts
+						'config': ['@@/js/config.js'],
 					},
 					entryFileNames: 'scripts/[name].js',
 					chunkFileNames: 'scripts/[hash:8].js',
