@@ -1,6 +1,6 @@
 ---
 _lang_: "Türkçe"
-headlineMisskey: "Notlarla birbirine bağlanan bir ağ"
+headlineMisskey: "Notlarla birbirine bağlı bir ağ"
 introMisskey: "Hoş geldiniz! Misskey, açık kaynaklı, merkezi olmayan bir mikroblog hizmetidir.\nDüşüncelerinizi çevrenizdeki herkesle paylaşmak için “notlar” oluşturun. 📡\n“Tepkiler” ile herkesin notları hakkındaki duygularınızı hızlıca ifade edebilirsiniz. 👍\nYeni bir dünyayı keşfedelim! 🚀"
 poweredByMisskeyDescription: "{name}, açık kaynak platformu <b>Misskey</b> (kısaca “Misskey örneği” olarak anılır) tarafından desteklenen hizmetlerden biridir."
 monthAndDay: "{month}/{day}"
@@ -1465,6 +1465,7 @@ _settings:
   contentsUpdateFrequency_description2: "Gerçek zamanlı mod açık olduğunda, bu ayardan bağımsız olarak içerik gerçek zamanlı olarak güncellenir."
   showUrlPreview: "URL önizlemesini göster"
   showAvailableReactionsFirstInNote: "Mevcut tepkileri en üstte göster."
+  showPageTabBarBottom: "Sayfa sekme çubuğunu aşağıda göster"
   _chat:
     showSenderName: "Gönderenin adını göster"
     sendOnEnter: "Enter tuşuna basarak gönderin"
