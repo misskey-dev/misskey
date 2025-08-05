@@ -1064,6 +1064,9 @@ importers:
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
         version: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640(1169897c5e200f76aeb2e7696f1450e0)
+      tsx:
+        specifier: 4.20.3
+        version: 4.20.3
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
