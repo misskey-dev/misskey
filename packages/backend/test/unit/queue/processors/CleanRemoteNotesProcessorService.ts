@@ -5,22 +5,23 @@
 
 import { jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import type {
+import ms from 'ms';
+import {
+	type MiNote,
+	type MiUser,
+	type NotesRepository,
+	type NoteFavoritesRepository,
+	type UserNotePiningsRepository,
+	type UsersRepository,
+	type UserProfilesRepository,
 	MiMeta,
-	MiNote,
-	MiUser,
-	MiUserProfile,
-	NotesRepository,
-	NoteFavoritesRepository,
-	UserNotePiningsRepository,
-	UsersRepository,
-	UserProfilesRepository,
 } from '@/models/_.js';
 import { CleanRemoteNotesProcessorService } from '@/queue/processors/CleanRemoteNotesProcessorService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
 import { GlobalModule } from '@/GlobalModule.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 describe('CleanRemoteNotesProcessorService', () => {
 	let app: TestingModule;
@@ -31,7 +32,19 @@ describe('CleanRemoteNotesProcessorService', () => {
 	let userNotePiningsRepository: UserNotePiningsRepository;
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
-	let mockMeta: MiMeta;
+
+	// Local user
+	let alice: MiUser;
+	// Remote user 1
+	let bob: MiUser;
+	// Remote user 2
+	let carol: MiUser;
+
+	const meta = new MiMeta();
+	// Initial values for meta, can be adjusted as needed
+	meta.enableRemoteNotesCleaning = true;
+	meta.remoteNotesCleaningMaxProcessingDurationInMinutes = 1;
+	meta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
 
 	// Mock job object
 	const createMockJob = () => ({
@@ -39,50 +52,37 @@ describe('CleanRemoteNotesProcessorService', () => {
 		updateProgress: jest.fn(),
 	});
 
-	async function createUser(data: Partial<MiUser> = {}, profile: Partial<MiUserProfile> = {}): Promise<MiUser> {
+	async function createUser(data: Partial<MiUser> = {}) {
 		const id = idService.gen();
+		const un = data.username || secureRndstr(16);
 		const user = await usersRepository
 			.insert({
-				id: id,
-				username: `user_${id}`,
-				usernameLower: `user_${id}`.toLowerCase(),
+				id,
+				username: un,
+				usernameLower: un.toLowerCase(),
 				...data,
 			})
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 
-		await userProfilesRepository.insert({
-			userId: user.id,
-			...profile,
+		await userProfilesRepository.save({
+			userId: id,
 		});
 
 		return user;
 	}
 
-	async function createNote(data: Partial<MiNote> = {}): Promise<MiNote> {
-		const id = idService.gen();
+	async function createNote(data: Partial<MiNote>, user: MiUser, time?: number): Promise<MiNote> {
+		const id = idService.gen(time);
 		const note = await notesRepository
 			.insert({
 				id: id,
 				text: `note_${id}`,
-				userId: data.userId || idService.gen(), // Default userId if not provided
-				clippedCount: 0,
-				visibility: 'public', // Required field
-				localOnly: false, // Required field
-				reactionAcceptance: null, // Can be null
-				fileIds: [], // Required field (array)
-				attachedFileTypes: [], // Required field (array)
-				visibleUserIds: [], // Required field (array)
-				mentions: [], // Required field (array)
-				mentionedRemoteUsers: '[]', // Required field (JSON string)
-				reactionAndUserPairCache: [], // Required field (array)
-				emojis: [], // Required field (array)
-				tags: [], // Required field (array)
-				hasPoll: false, // Required field
-				reactions: {}, // Required field (object)
+				userId: user.id,
+				userHost: user.host,
+				visibility: 'public',
 				...data,
 			})
 			.then(x => notesRepository.findOneByOrFail(x.identifiers[0]));
-
 		return note;
 	}
 
@@ -109,6 +109,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 					},
 				],
 			})
+			.overrideProvider(DI.meta).useFactory({ factory: () => meta })
 			.compile();
 
 		service = app.get(CleanRemoteNotesProcessorService);
@@ -118,7 +119,10 @@ describe('CleanRemoteNotesProcessorService', () => {
 		userNotePiningsRepository = app.get(DI.userNotePiningsRepository);
 		usersRepository = app.get(DI.usersRepository);
 		userProfilesRepository = app.get(DI.userProfilesRepository);
-		mockMeta = app.get(DI.meta);
+
+		alice = await createUser({ username: 'alice', host: null });
+		bob = await createUser({ username: 'bob', host: 'remote1.example.com' });
+		carol = await createUser({ username: 'carol', host: 'remote2.example.com' });
 
 		app.enableShutdownHooks();
 	});
@@ -128,9 +132,9 @@ describe('CleanRemoteNotesProcessorService', () => {
 		jest.clearAllMocks();
 
 		// Set default meta values
-		mockMeta.enableRemoteNotesCleaning = true;
-		mockMeta.remoteNotesCleaningMaxProcessingDurationInMinutes = 1;
-		mockMeta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
+		meta.enableRemoteNotesCleaning = true;
+		meta.remoteNotesCleaningMaxProcessingDurationInMinutes = 1;
+		meta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
 	}, 60 * 1000);
 
 	afterEach(async () => {
@@ -139,8 +143,6 @@ describe('CleanRemoteNotesProcessorService', () => {
 			notesRepository.createQueryBuilder().delete().execute(),
 			userNotePiningsRepository.createQueryBuilder().delete().execute(),
 			noteFavoritesRepository.createQueryBuilder().delete().execute(),
-			userProfilesRepository.createQueryBuilder().delete().execute(),
-			usersRepository.createQueryBuilder().delete().execute(),
 		]);
 	}, 60 * 1000);
 
@@ -148,9 +150,9 @@ describe('CleanRemoteNotesProcessorService', () => {
 		await app.close();
 	});
 
-	describe('process', () => {
+	describe('basic', () => {
 		test('should skip cleaning when enableRemoteNotesCleaning is false', async () => {
-			mockMeta.enableRemoteNotesCleaning = false;
+			meta.enableRemoteNotesCleaning = false;
 			const job = createMockJob();
 
 			const result = await service.process(job as any);
@@ -164,9 +166,10 @@ describe('CleanRemoteNotesProcessorService', () => {
 		});
 
 		test('should return success result when enableRemoteNotesCleaning is true and no notes to clean', async () => {
-			mockMeta.enableRemoteNotesCleaning = true;
+			meta.enableRemoteNotesCleaning = true;
 			const job = createMockJob();
-			console.log('Starting job processing...');
+
+			await createNote({}, alice);
 			const result = await service.process(job as any);
 
 			expect(result).toEqual({
@@ -176,184 +179,46 @@ describe('CleanRemoteNotesProcessorService', () => {
 				skipped: false,
 			});
 		});
-		/**
-		test('should clean old remote notes correctly', async () => {
-			mockMeta.enableRemoteNotesCleaning = true;
-			mockMeta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
+
+		test('should clean remote notes and return stats', async () => {
+			meta.enableRemoteNotesCleaning = true;
+
+			// Remote notes
+			const remoteNotes = await Promise.all([
+				createNote({}, bob),
+				createNote({}, carol),
+				createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000),
+				createNote({}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000), // Note older than expiry
+			]);
+
+			// Local notes
+			const localNotes = await Promise.all([
+				createNote({}, alice),
+				createNote({}, alice, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000),
+			]);
+
 			const job = createMockJob();
-
-			// Create a remote user
-			const remoteUser = await createUser({
-				host: 'remote.example.com',
-			});
-
-			// Create old remote notes that should be deleted
-			// Note: We need to create notes with old IDs to simulate old notes
-			const oldDate = new Date();
-			oldDate.setDate(oldDate.getDate() - 35); // 35 days ago
-			const oldNoteId = idService.gen(oldDate.getTime());
-
-			const oldNote = await createNote({
-				id: oldNoteId,
-				userId: remoteUser.id,
-				userHost: 'remote.example.com',
-				clippedCount: 0,
-			});
 
 			const result = await service.process(job as any);
 
-			expect(result.deletedCount).toBe(1);
-			expect(result.skipped).toBe(false);
+			expect(result).toEqual({
+				deletedCount: 2,
+				oldest: expect.any(Number),
+				newest: expect.any(Number),
+				skipped: false,
+			});
 
-			// Verify the note was deleted
-			const deletedNote = await notesRepository.findOneBy({ id: oldNote.id });
-			expect(deletedNote).toBeNull();
+			// Check side-by-side from all notes
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.length).toBe(4);
+			expect(remainingNotes.some(n => n.id === remoteNotes[0].id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === remoteNotes[1].id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === remoteNotes[2].id)).toBe(false);
+			expect(remainingNotes.some(n => n.id === remoteNotes[3].id)).toBe(false);
+			expect(remainingNotes.some(n => n.id === localNotes[0].id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === localNotes[1].id)).toBe(true);
 		});
-
-		test('should not delete local notes', async () => {
-			mockMeta.enableRemoteNotesCleaning = true;
-			mockMeta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
-			const job = createMockJob();
-
-			// Create a local user
-			const localUser = await createUser({
-				host: null, // Local user
-			});
-
-			// Create old local notes that should NOT be deleted
-			const oldDate = new Date();
-			oldDate.setDate(oldDate.getDate() - 35); // 35 days ago
-			const oldNoteId = idService.gen(oldDate.getTime());
-
-			const localNote = await createNote({
-				id: oldNoteId,
-				userId: localUser.id,
-				userHost: null, // Local note
-				clippedCount: 0,
-			});
-
-			const result = await service.process(job as any);
-
-			expect(result.deletedCount).toBe(0);
-			expect(result.skipped).toBe(false);
-
-			// Verify the local note was NOT deleted
-			const existingNote = await notesRepository.findOneBy({ id: localNote.id });
-			expect(existingNote).not.toBeNull();
-		});
-
-		test('should not delete clipped notes', async () => {
-			mockMeta.enableRemoteNotesCleaning = true;
-			mockMeta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
-			const job = createMockJob();
-
-			// Create a remote user
-			const remoteUser = await createUser({
-				host: 'remote.example.com',
-			});
-
-			// Create old remote notes that are clipped (should NOT be deleted)
-			const oldDate = new Date();
-			oldDate.setDate(oldDate.getDate() - 35); // 35 days ago
-			const oldNoteId = idService.gen(oldDate.getTime());
-
-			const clippedNote = await createNote({
-				id: oldNoteId,
-				userId: remoteUser.id,
-				userHost: 'remote.example.com',
-				clippedCount: 1, // Clipped
-			});
-
-			const result = await service.process(job as any);
-
-			expect(result.deletedCount).toBe(0);
-			expect(result.skipped).toBe(false);
-
-			// Verify the clipped note was NOT deleted
-			const existingNote = await notesRepository.findOneBy({ id: clippedNote.id });
-			expect(existingNote).not.toBeNull();
-		});
-
-		test('should not delete favorited notes', async () => {
-			mockMeta.enableRemoteNotesCleaning = true;
-			mockMeta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
-			const job = createMockJob();
-
-			// Create users
-			const remoteUser = await createUser({
-				host: 'remote.example.com',
-			});
-			const localUser = await createUser({
-				host: null,
-			});
-
-			// Create old remote note
-			const oldDate = new Date();
-			oldDate.setDate(oldDate.getDate() - 35); // 35 days ago
-			const oldNoteId = idService.gen(oldDate.getTime());
-
-			const favoritedNote = await createNote({
-				id: oldNoteId,
-				userId: remoteUser.id,
-				userHost: 'remote.example.com',
-				clippedCount: 0,
-			});
-
-			// Add to favorites
-			await noteFavoritesRepository.insert({
-				id: idService.gen(),
-				userId: localUser.id,
-				noteId: favoritedNote.id,
-			});
-
-			const result = await service.process(job as any);
-
-			expect(result.deletedCount).toBe(0);
-			expect(result.skipped).toBe(false);
-
-			// Verify the favorited note was NOT deleted
-			const existingNote = await notesRepository.findOneBy({ id: favoritedNote.id });
-			expect(existingNote).not.toBeNull();
-		});
-
-		test('should not delete pinned notes', async () => {
-			mockMeta.enableRemoteNotesCleaning = true;
-			mockMeta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
-			const job = createMockJob();
-
-			// Create a remote user
-			const remoteUser = await createUser({
-				host: 'remote.example.com',
-			});
-
-			// Create old remote note
-			const oldDate = new Date();
-			oldDate.setDate(oldDate.getDate() - 35); // 35 days ago
-			const oldNoteId = idService.gen(oldDate.getTime());
-
-			const pinnedNote = await createNote({
-				id: oldNoteId,
-				userId: remoteUser.id,
-				userHost: 'remote.example.com',
-				clippedCount: 0,
-			});
-
-			// Pin the note
-			await userNotePiningsRepository.insert({
-				id: idService.gen(),
-				userId: remoteUser.id,
-				noteId: pinnedNote.id,
-			});
-
-			const result = await service.process(job as any);
-
-			expect(result.deletedCount).toBe(0);
-			expect(result.skipped).toBe(false);
-
-			// Verify the pinned note was NOT deleted
-			const existingNote = await notesRepository.findOneBy({ id: pinnedNote.id });
-			expect(existingNote).not.toBeNull();
-		});
-		 */
 	});
+
+	// TODO: Add more tests...
 });

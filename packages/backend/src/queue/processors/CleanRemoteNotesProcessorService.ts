@@ -5,9 +5,8 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { And, Brackets, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiMeta, MiNote, NoteFavoritesRepository, NotesRepository, UserNotePiningsRepository } from '@/models/_.js';
+import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -24,12 +23,6 @@ export class CleanRemoteNotesProcessorService {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-
-		@Inject(DI.noteFavoritesRepository)
-		private noteFavoritesRepository: NoteFavoritesRepository,
-
-		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		private idService: IdService,
 		private queueLoggerService: QueueLoggerService,
@@ -74,7 +67,20 @@ export class CleanRemoteNotesProcessorService {
 		let cursor = '0'; // oldest note ID to start from
 
 		while (true) {
+			//#region check time
 			const batchBeginAt = Date.now();
+
+			const elapsed = batchBeginAt - startAt;
+
+			if (elapsed >= maxDuration) {
+				this.logger.info(`Reached maximum duration of ${maxDuration}ms, stopping...`);
+				job.log('Reached maximum duration, stopping cleaning.');
+				job.updateProgress(100);
+				break;
+			}
+
+			job.updateProgress((elapsed / maxDuration) * 100);
+			//#endregion
 
 			// We use string literals instead of query builder for several reasons:
 			// - for removeCondition, we need to use it in having clause, which is not supported by Brackets.
@@ -100,7 +106,8 @@ export class CleanRemoteNotesProcessorService {
 			// The initiator query contains the oldest ${MAX_NOTE_COUNT_PER_QUERY} remote non-clipped notes
 			const initiatorQuery = `
 				SELECT "note"."id" AS "id", "note"."replyId" AS "replyId", "note"."renoteId" AS "renoteId", "note"."id" AS "initiatorId"
-				FROM "note" "note" WHERE ${removeCondition} AND "note"."id" > :cursor ORDER BY "note"."id" ASC LIMIT ${MAX_NOTE_COUNT_PER_QUERY}`;
+				FROM "note" "note" WHERE ${removeCondition} AND "note"."id" > :cursor ORDER BY "note"."id" ASC LIMIT ${MAX_NOTE_COUNT_PER_QUERY}
+			`;
 
 			// The union query queries the related notes and replies related to the initiator query
 			const unionQuery = `
@@ -132,13 +139,14 @@ export class CleanRemoteNotesProcessorService {
 
 			const fetchedCount = notes.length;
 
+			if (fetchedCount === 0) {
+				job.log('No more notes to clean.');
+				break;
+			}
+
 			// update the cursor to the newest initiatorId found in the fetched notes.
 			// We don't use 'id' since the note can be newer than the initiator note.
-			for (const note of notes) {
-				if (cursor < note.initiatorId) {
-					cursor = note.initiatorId;
-				}
-			}
+			cursor = notes.reduce((max, note) => note.initiatorId > max ? note.initiatorId : max, cursor);
 
 			if (notes.length > 0) {
 				await this.notesRepository.delete(notes.map(note => note.id));
@@ -157,17 +165,6 @@ export class CleanRemoteNotesProcessorService {
 			}
 
 			job.log(`Deleted ${notes.length} of ${fetchedCount}; ${Date.now() - batchBeginAt}ms`);
-
-			const elapsed = Date.now() - startAt;
-
-			if (elapsed >= maxDuration) {
-				this.logger.info(`Reached maximum duration of ${maxDuration}ms, stopping...`);
-				job.log('Reached maximum duration, stopping cleaning.');
-				job.updateProgress(100);
-				break;
-			}
-
-			job.updateProgress((elapsed / maxDuration) * 100);
 
 			await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
 		}
