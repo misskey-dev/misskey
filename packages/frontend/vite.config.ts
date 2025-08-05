@@ -14,8 +14,6 @@ import pluginJson5 from './vite.json5.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
-import type { PreRenderedChunk } from 'rollup';
-import pluginLocaleBundle from './lib/vite-plugin-locale-bundle';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -113,7 +111,6 @@ export function getConfig(): UserConfig {
 			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
 			pluginVue(),
-			pluginLocaleBundle(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
 			...process.env.NODE_ENV === 'production'
@@ -177,10 +174,7 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					none: './src/_boot_.ts',
-					...Object.fromEntries(
-						(process.env.TARGET_LOCALE ? process.env.TARGET_LOCALE.split(',') : Object.keys(locales))
-							.map(lang => [lang, `./src/_boot_.ts?lang=${lang}`])),
+					entry: './src/_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),
 				output: {
@@ -188,8 +182,8 @@ export function getConfig(): UserConfig {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
-					entryFileNames: localeBundleFile,
-					chunkFileNames: localeBundleFile,
+					entryFileNames: 'scripts/[name].js',
+					chunkFileNames: 'scripts/[hash:8].js',
 					assetFileNames: 'assets/[hash:8][extname]',
 					paths(id) {
 						for (const p of externalPackages) {
@@ -203,7 +197,7 @@ export function getConfig(): UserConfig {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + (process.env.TARGET_LOCALE ? '/build/' + process.env.TARGET_LOCALE : '/../../built/_frontend_vite_'),
+			outDir: __dirname + '/../../built/_frontend_vite_',
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',
@@ -234,24 +228,6 @@ export function getConfig(): UserConfig {
 			includeSource: ['src/**/*.ts'],
 		},
 	};
-}
-
-// (chunkInfo: PreRenderedChunk) => string
-function localeBundleFile(chunkInfo: PreRenderedChunk): string {
-	const locale = getLocale(chunkInfo.facadeModuleId ?? chunkInfo.moduleIds.at(-1) ?? null);
-	if (chunkInfo.isEntry) {
-		return `${locale}/entry.js`;
-	} else {
-		console.log(chunkInfo.facadeModuleId, JSON.stringify(chunkInfo.moduleIds, null, 2));
-		return `${locale}/[hash:8].js`;
-	}
-}
-
-function getLocale(url: string | null): string {
-	if (url == null) return 'none';
-	const match = url.match(/[?&]lang=([a-zA-Z-]+)($|&)/);
-	if (match == null) return 'none';
-	return match[1];
 }
 
 const config = defineConfig(({ command, mode }) => getConfig());

@@ -1,7 +1,6 @@
 import * as fs from 'fs/promises';
 import url from 'node:url';
 import path from 'node:path';
-import os from 'node:os';
 import { execa } from 'execa';
 import locales from '../../locales/index.js';
 
@@ -9,71 +8,41 @@ import locales from '../../locales/index.js';
 // const __dirname = import.meta.dirname;
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const buildDir = __dirname + '/build';
 const outputDir = __dirname + '/../../built/_frontend_vite_';
 
 /**
- * @param targetLocales {string[]}
  * @return {Promise<void>}
  */
-async function viteBuild(targetLocales) {
+async function viteBuild() {
 	await execa('vite', ['build'], {
 		cwd: __dirname,
 		stdout: process.stdout,
 		stderr: process.stderr,
-		env: {
-			'TARGET_LOCALE': targetLocales.join(','),
-		},
 	});
 }
 
-/**
- * @template T
- * @param array {T[]}
- * @param chunkSize {number}
- * @return {T[][]}
- */
-function chunked(array, chunkSize) {
-	if (chunkSize <= 0) {
-		throw new Error('Chunk size must be greater than 0');
-	}
-	/** @type {T[][]} */
-	const result = [];
-	for (let i = 0; i < array.length; i += chunkSize) {
-		result.push(array.slice(i, i + chunkSize));
-	}
-	return result;
-}
-
 async function buildAllLocale() {
-	const localeNames = Object.keys(locales);
-	const localePerProcess = Math.ceil(localeNames.length / os.cpus().length);
-	const localeGroups = chunked(localeNames, localePerProcess);
-	await Promise.all(
-		localeGroups.map(locales => viteBuild(locales)),
-	);
-}
+	// TODO: inline locales where possible
+	// currently just copies scrips directory to each locale directory
 
-async function mergeLocales() {
-	// merge build/* into __dirname + '/../../built/_frontend_vite_'
-	await fs.rm(outputDir, { recursive: true, force: true });
-	await fs.mkdir(outputDir, { recursive: true });
-	for (const locale of await fs.readdir(outputDir)) {
+	const localeNames = Object.keys(locales);
+	for (const localeName of localeNames) {
+		const localeDir = path.join(outputDir, localeName);
+		await fs.mkdir(outputDir, { recursive: true });
 		await fs.cp(
-			`${buildDir}/${locale}`,
-			`${outputDir}`,
+			`${outputDir}/scripts`,
+			`${localeDir}`,
 			{
-				recursive: true,
 				force: true,
+				recursive: true,
 			},
 		);
 	}
 }
 
 async function build() {
-	await fs.rm(buildDir, { recursive: true, force: true });
+	await viteBuild();
 	await buildAllLocale();
-	await mergeLocales();
 }
 
 await build();
