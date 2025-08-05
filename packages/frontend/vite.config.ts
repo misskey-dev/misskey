@@ -236,10 +236,11 @@ export function getConfig(): UserConfig {
 
 // (chunkInfo: PreRenderedChunk) => string
 function localeBundleFile(chunkInfo: PreRenderedChunk): string {
-	const locale = getLocale(chunkInfo.facadeModuleId);
+	const locale = getLocale(chunkInfo.facadeModuleId ?? chunkInfo.moduleIds.at(-1) ?? null);
 	if (chunkInfo.isEntry) {
 		return `${locale}/entry.js`;
 	} else {
+		console.log(chunkInfo.facadeModuleId, JSON.stringify(chunkInfo.moduleIds, null, 2));
 		return `${locale}/[hash:8].js`;
 	}
 }
