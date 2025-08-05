@@ -421,7 +421,7 @@ async function buildAllLocale() {
 							const paramList = Array.from(params).join(',');
 							let body = components.filter(x => x != '""').join('+');
 							if (body == '') body = '""'; // if the body is empty, we return empty string
-							replacement = `((${paramList})=>(${body}))`;
+							replacement = `(({${paramList}})=>(${body}))`;
 						}
 						magicString.update(modification.begin, modification.end, replacement);
 						break;
@@ -481,8 +481,8 @@ function assertType<T>(node: unknown): asserts node is T {
 }
 
 async function build() {
-	//await fs.rm(outputDir, { recursive: true, force: true });
-	//await viteBuild();
+	await fs.rm(outputDir, { recursive: true, force: true });
+	await viteBuild();
 	await buildAllLocale();
 }
 
