@@ -1373,7 +1373,7 @@ inDays: "日"
 safeModeEnabled: "啟用安全模式"
 pluginsAreDisabledBecauseSafeMode: "由於啟用安全模式，所有的外掛都被停用。"
 customCssIsDisabledBecauseSafeMode: "由於啟用安全模式，所有的客製 CSS 都被停用。"
-themeIsDefaultBecauseSafeMode: "啟用安全模式時將使用預設主題，關閉安全模式時將恢復預設主題。"
+themeIsDefaultBecauseSafeMode: "在安全模式啟用期間將使用預設主題。關閉安全模式後會恢復原本的設定。"
 _order:
   newest: "最新的在前"
   oldest: "最舊的在前"
