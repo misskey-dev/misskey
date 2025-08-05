@@ -86,7 +86,7 @@ watch(rootEl, () => {
 	box-sizing: border-box;
 	background: var(--MI_THEME-navBg);
 	color: var(--MI_THEME-navFg);
-	box-shadow: 0px 0px 6px 6px #0000000f;
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .item {

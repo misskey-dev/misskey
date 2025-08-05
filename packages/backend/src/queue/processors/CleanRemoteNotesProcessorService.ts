@@ -5,7 +5,7 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { And, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
+import { And, Brackets, In, IsNull, LessThan, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, MiNote, NoteFavoritesRepository, NotesRepository, UserNotePiningsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -67,68 +67,78 @@ export class CleanRemoteNotesProcessorService {
 			newest: null as number | null,
 		};
 
-		let cursor: MiNote['id'] = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
+		// The date limit for the newest note to be considered for deletion.
+		// All notes newer than this limit will always be retained.
+		const newestLimit = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
+
+		let cursor = '0'; // oldest note ID to start from
 
 		while (true) {
 			const batchBeginAt = Date.now();
 
-			let notes: Pick<MiNote, 'id'>[] = await this.notesRepository.find({
-				where: {
-					id: LessThan(cursor),
-					userHost: Not(IsNull()),
-					clippedCount: 0,
-					renoteCount: 0,
-				},
-				take: MAX_NOTE_COUNT_PER_QUERY,
-				order: {
-					// 新しい順
-					// https://github.com/misskey-dev/misskey/pull/16292#issuecomment-3139376314
-					id: -1,
-				},
-				select: ['id'],
-			});
+			// We use string literals instead of query builder for several reasons:
+			// - for removeCondition, we need to use it in having clause, which is not supported by Brackets.
+			// - for recursive part, we need to preserve the order of columns, but typeorm query builder does not guarantee the order of columns in the result query
+
+			// The condition for removing the notes.
+			// The note must be:
+			// - old enough (older than the newestLimit)
+			// - a remote note (userHost is not null).
+			// - not have clipped
+			// - not have pinned on the user profile
+			// - not has been favorite by any user
+			const removeCondition = 'note.id < :newestLimit'
+				+ ' AND note."clippedCount" = 0'
+				+ ' AND note."userHost" IS NOT NULL'
+				// using both userId and noteId instead of just noteId to use index on user_note_pining table.
+				// This is safe because notes are only pinned by the user who created them.
+				+ ' AND NOT EXISTS(SELECT 1 FROM "user_note_pining" WHERE "noteId" = note."id" AND "userId" = note."userId")'
+				// We cannot use userId trick because users can favorite notes from other users.
+				+ ' AND NOT EXISTS(SELECT 1 FROM "note_favorite" WHERE "noteId" = note."id")'
+			;
+
+			// The initiator query contains the oldest ${MAX_NOTE_COUNT_PER_QUERY} remote non-clipped notes
+			const initiatorQuery = `
+				SELECT "note"."id" AS "id", "note"."replyId" AS "replyId", "note"."renoteId" AS "renoteId", "note"."id" AS "initiatorId"
+				FROM "note" "note" WHERE ${removeCondition} AND "note"."id" > :cursor ORDER BY "note"."id" ASC LIMIT ${MAX_NOTE_COUNT_PER_QUERY}`;
+
+			// The union query queries the related notes and replies related to the initiator query
+			const unionQuery = `
+				SELECT "note"."id", "note"."replyId", "note"."renoteId", rn."initiatorId"
+				FROM "note" "note"
+					INNER JOIN "related_notes" "rn"
+						ON "note"."replyId" = rn.id
+						     OR "note"."renoteId" = rn.id
+						     OR "note"."id" = rn."replyId"
+						     OR "note"."id" = rn."renoteId"
+			`;
+			const recursiveQuery = `(${initiatorQuery}) UNION (${unionQuery})`;
+
+			const removableInitiatorNotesQuery = this.notesRepository.createQueryBuilder('note')
+				.select('rn."initiatorId"')
+				.innerJoin('related_notes', 'rn', 'note.id = rn.id')
+				.groupBy('rn."initiatorId"')
+				.having(`bool_and(${removeCondition})`);
+
+			const notesQuery = this.notesRepository.createQueryBuilder('note')
+				.addCommonTableExpression(recursiveQuery, 'related_notes', { recursive: true })
+				.select('note.id', 'id')
+				.addSelect('rn."initiatorId"')
+				.innerJoin('related_notes', 'rn', 'note.id = rn.id')
+				.where(`rn."initiatorId" IN (${ removableInitiatorNotesQuery.getQuery() })`)
+				.setParameters({ cursor, newestLimit });
+
+			const notes: { id: MiNote['id'], initiatorId: MiNote['id'] }[] = await notesQuery.getRawMany();
 
 			const fetchedCount = notes.length;
 
+			// update the cursor to the newest initiatorId found in the fetched notes.
+			// We don't use 'id' since the note can be newer than the initiator note.
 			for (const note of notes) {
-				if (note.id < cursor) {
-					cursor = note.id;
+				if (cursor < note.initiatorId) {
+					cursor = note.initiatorId;
 				}
 			}
-
-			const pinings = notes.length === 0 ? [] : await this.userNotePiningsRepository.find({
-				where: {
-					noteId: In(notes.map(note => note.id)),
-				},
-				select: ['noteId'],
-			});
-
-			notes = notes.filter(note => {
-				return !pinings.some(pining => pining.noteId === note.id);
-			});
-
-			const favorites = notes.length === 0 ? [] : await this.noteFavoritesRepository.find({
-				where: {
-					noteId: In(notes.map(note => note.id)),
-				},
-				select: ['noteId'],
-			});
-
-			notes = notes.filter(note => {
-				return !favorites.some(favorite => favorite.noteId === note.id);
-			});
-
-			const replies = notes.length === 0 ? [] : await this.notesRepository.find({
-				where: {
-					replyId: In(notes.map(note => note.id)),
-					userHost: IsNull(),
-				},
-				select: ['replyId'],
-			});
-
-			notes = notes.filter(note => {
-				return !replies.some(reply => reply.replyId === note.id);
-			});
 
 			if (notes.length > 0) {
 				await this.notesRepository.delete(notes.map(note => note.id));

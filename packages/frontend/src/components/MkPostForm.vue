@@ -1007,6 +1007,11 @@ async function post(ev?: MouseEvent) {
 
 	if (uploader.items.value.some(x => x.uploaded == null)) {
 		await uploadFiles();
+
+		// アップロード失敗したものがあったら中止
+		if (uploader.items.value.some(x => x.uploaded == null)) {
+			return;
+		}
 	}
 
 	let postData = {
