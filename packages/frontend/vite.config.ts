@@ -178,7 +178,9 @@ export function getConfig(): UserConfig {
 			rollupOptions: {
 				input: {
 					none: './src/_boot_.ts',
-					...Object.fromEntries(Object.keys(locales).map(lang => [lang, `./src/_boot_.ts?lang=${lang}`])),
+					...Object.fromEntries(
+						(process.env.TARGET_LOCALE ? process.env.TARGET_LOCALE.split(',') : Object.keys(locales))
+							.map(lang => [lang, `./src/_boot_.ts?lang=${lang}`])),
 				},
 				external: externalPackages.map(p => p.match),
 				output: {
@@ -201,7 +203,7 @@ export function getConfig(): UserConfig {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_frontend_vite_',
+			outDir: __dirname + (process.env.TARGET_LOCALE ? '/build/' + process.env.TARGET_LOCALE : '/../../built/_frontend_vite_'),
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',
