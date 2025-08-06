@@ -14,7 +14,7 @@ import pluginJson5 from './vite.json5.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
-import pluginRemoveUnrefI18n from './lib/rollup-plugin-remove-unref-i18n';
+import pluginRemoveUnrefI18n from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;

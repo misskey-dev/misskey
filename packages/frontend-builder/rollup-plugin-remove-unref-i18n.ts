@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { generate } from 'astring';
 import * as estreeWalker from 'estree-walker';
 import type { Plugin } from 'vite';
-import type {
-	CallExpression, Expression, Identifier,
-	Program,
-} from 'estree';
+import type { CallExpression, Expression, Program, } from 'estree';
 import MagicString from 'magic-string';
 import type { AstNode } from 'rollup';
-
-const i18nSymbolName = 'i18n';
+import { assertType } from './utils.js';
 
 // This plugin transforms `unref(i18n)` to `i18n` in the code, which is useful for removing unnecessary unref calls
 // and helps locale inliner runs after vite build to inline the locale data into the final build.
 //
 // locale inliner cannot know minifiedSymbol(i18n) is 'unref(i18n)' or 'otherFunctionsWithEffect(i18n)' so
 // it is necessary to remove unref calls before minification.
-export default function pluginRemoveUnrefI18n(): Plugin {
+export default function pluginRemoveUnrefI18n(
+	{
+		i18nSymbolName = 'i18n',
+	}: {
+		i18nSymbolName?: string
+	} = {}): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',
 		renderChunk(code) {
@@ -50,8 +50,4 @@ export default function pluginRemoveUnrefI18n(): Plugin {
 			}
 		},
 	};
-}
-
-// The helper to spool the typescript type checker
-function assertType<T>(value: unknown): asserts value is T {
 }
