@@ -256,7 +256,7 @@ async function buildAllLocale() {
 		assertType<AstNode>(i18nImport);
 
 		if (i18nImport.specifiers.length == 0) {
-			fileLogger.info(`Importing i18n without specifiers, removing the import.`);
+			fileLogger.debug(`Importing i18n without specifiers, removing the import.`);
 			modifications.push({
 				type: 'delete',
 				begin: i18nImport.start,
