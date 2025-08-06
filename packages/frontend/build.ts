@@ -119,6 +119,7 @@ type EachTextModification = {
 	type: 'locale-name';
 	begin: number;
 	end: number;
+	literal: boolean;
 	localizedOnly: true;
 }
 type TextModification = EachTextModification & {
@@ -153,7 +154,9 @@ async function buildAllLocale() {
 		const modifications: TextModification[] = [];
 		modificationsByFileName[fileName] = modifications;
 
-		// first, replace all `scripts/` path literals with locale code
+		// first
+		// 1) replace all `scripts/` path literals with locale code
+		// 2) replace all `localStorage.getItem("lang")` with `localeName` variable
 		estreeWalker.walk(programNode, {
 			enter(this: import('estree-walker/types/walker').WalkerContext,node) {
 				assertType<AstNode>(node)
@@ -169,8 +172,32 @@ async function buildAllLocale() {
 								type: 'locale-name',
 								begin: node.start + 1,
 								end: node.start + 1 + 'scripts'.length,
+								literal: false,
 								localizedOnly: true,
 							});
+						}
+					}
+				} else if (node.type === 'CallExpression') {
+					assertType<estree.CallExpression & AstNode>(node);
+					if (node.callee.type === 'MemberExpression'
+						&& node.callee.object.type === 'Identifier' && node.callee.object.name === 'localStorage'
+						&& node.callee.property.type === 'Identifier' && node.callee.property.name === 'getItem'
+						&& node.arguments.length === 1
+					) {
+						const argument = node.arguments[0];
+						fileLogger.debug(`${lineCol(sourceCode, node)}: found localStorage.getItem call with argument ${argument.type}`);
+						if (argument.type === 'Literal' && typeof argument.value === 'string') {
+							const argValue = argument.value;
+							if (argValue === 'lang') {
+								fileLogger.debug(`${lineCol(sourceCode, node)}: found localStorage.getItem("lang") call`);
+								modifications.push({
+									type: 'locale-name',
+									begin: node.start,
+									end: node.end,
+									literal: true,
+									localizedOnly: true,
+								});
+							}
 						}
 					}
 				}
@@ -432,7 +459,7 @@ async function buildAllLocale() {
 						}
 					}
 					case "locale-name": {
-						magicString.update(modification.begin, modification.end, localeName);
+						magicString.update(modification.begin, modification.end, modification.literal ? JSON.stringify(localeName) : localeName);
 						break;
 					}
 					default: {
