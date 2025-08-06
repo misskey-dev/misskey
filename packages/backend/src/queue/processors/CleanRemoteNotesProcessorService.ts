@@ -98,7 +98,7 @@ export class CleanRemoteNotesProcessorService {
 
 		const selectRelatedNotesFromInitiatorIdsQuery = `
 				SELECT "note"."id" AS "id", "note"."replyId" AS "replyId", "note"."renoteId" AS "renoteId", "note"."id" AS "initiatorId"
-				FROM "note" "note" WHERE "note"."id" IN (:...initiatorIds) ORDER BY "note"."id"
+				FROM "note" "note" WHERE "note"."id" IN (:...initiatorIds)
 			`;
 
 		const recursiveQuery = `(${selectRelatedNotesFromInitiatorIdsQuery}) UNION (${unionQuery})`;
