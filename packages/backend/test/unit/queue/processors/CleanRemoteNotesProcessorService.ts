@@ -41,10 +41,6 @@ describe('CleanRemoteNotesProcessorService', () => {
 	let carol: MiUser;
 
 	const meta = new MiMeta();
-	// Initial values for meta, can be adjusted as needed
-	meta.enableRemoteNotesCleaning = true;
-	meta.remoteNotesCleaningMaxProcessingDurationInMinutes = 1;
-	meta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
 
 	// Mock job object
 	const createMockJob = () => ({
@@ -133,7 +129,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 		// Set default meta values
 		meta.enableRemoteNotesCleaning = true;
-		meta.remoteNotesCleaningMaxProcessingDurationInMinutes = 1;
+		meta.remoteNotesCleaningMaxProcessingDurationInMinutes = 0.3;
 		meta.remoteNotesCleaningExpiryDaysForEachNotes = 30;
 	}, 60 * 1000);
 
@@ -282,7 +278,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(remainingNote).not.toBeNull();
 		});
 
-		// reply, renoteが含まれている時の挙動
+		// 古いreply, renoteが含まれている時の挙動
 		test('should handle reply/renote relationships correctly', async () => {
 			const job = createMockJob();
 
@@ -327,6 +323,34 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const remainingNotes = await notesRepository.find();
 			expect(remainingNotes.some(n => n.id === oldNote.id)).toBe(true);
 			expect(remainingNotes.some(n => n.id === recentReplyNote.id)).toBe(true); // Recent reply note should remain
+		});
+
+		// 古いリモートノートに新しいリプライと古いリプライがある時、全て残る
+		test('should not delete old remote note with new reply and old reply', async () => {
+			const job = createMockJob();
+
+			// Create old remote note that should be deleted
+			const oldNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
+			// Create a reply note that is newer than the expiry period
+			const recentReplyNote = await createNote({
+				replyId: oldNote.id,
+			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) + 1000);
+
+			// Create an old reply note that should be deleted
+			const oldReplyNote = await createNote({
+				replyId: oldNote.id,
+			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(0);
+			expect(result.skipped).toBe(false);
+
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.some(n => n.id === oldNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === recentReplyNote.id)).toBe(true); // Recent reply note should remain
+			expect(remainingNotes.some(n => n.id === oldReplyNote.id)).toBe(true); // Old reply note should be deleted
 		});
 
 		// リプライがお気に入りされているとき、どちらも削除されない
@@ -562,22 +586,26 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const oldTime = Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000;
 			const newTime = Date.now();
 			for (let i = 0; i < AMOUNT_BASE; i++) {
+				// should remain
 				const note = await createNote({}, carol, oldTime - AMOUNT_BASE - i);
+				// should remain
 				await createNote({ replyId: note.id }, bob, newTime + i);
 			}
 
-			const noteIdsExpectedToBeRemained = [];
+			const noteIdsExpectedToBeDeleted = [];
 			for (let i = 0; i < AMOUNT_BASE; i++) {
+				// should be deleted
 				const note = await createNote({}, bob, oldTime - i);
-				noteIdsExpectedToBeRemained.push(note.id);
+				noteIdsExpectedToBeDeleted.push(note.id);
 			}
 
 			const result = await service.process(job as any);
 			expect(result.deletedCount).toBe(AMOUNT_BASE); // Assuming all replies are deletable
 			expect(result.skipped).toBe(false);
+
 			const remainingNotes = await notesRepository.find();
-			expect(remainingNotes.length).toBe(AMOUNT_BASE); // Only replies should remain
-			noteIdsExpectedToBeRemained.forEach(id => {
+			expect(remainingNotes.length).toBe(AMOUNT_BASE * 2); // Only replies should remain
+			noteIdsExpectedToBeDeleted.forEach(id => {
 				expect(remainingNotes.some(n => n.id === id)).toBe(false); // All original notes should be deleted
 			});
 		});
