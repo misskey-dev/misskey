@@ -5,11 +5,9 @@
 
 import { markRaw } from 'vue';
 import { I18n } from '@@/js/i18n.js';
-import { lang, version } from '@@/js/config.js';
+import { locale } from '@@/js/locale.js';
 import type { Locale } from '../../../locales/index.js';
 
-// ここはビルド時に const locale = JSON.parse("...") みたいな感じで置き換えられるので top-level await は消える
-const locale = await window.fetch(`/assets/locales/${lang}.${version}.json`).then(r => r.json(), () => null);
 export const i18n = markRaw(new I18n<Locale>(locale, _DEV_));
 
 // test 以外では使わないこと。インライン化されてるのでだいたい意味がない

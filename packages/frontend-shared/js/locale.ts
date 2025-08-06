@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { lang, version } from '@@/js/config.js';
 import type { Locale } from '../../../locales/index.js';
 
-const preParseLocale = localStorage.getItem('locale');
-export let locale: Locale = preParseLocale ? JSON.parse(preParseLocale) : null;
+// ここはビルド時に const locale = JSON.parse("...") みたいな感じで置き換えられるので top-level await は消える
+export let locale: Locale = await window.fetch(`/assets/locales/${lang}.${version}.json`).then(r => r.json(), () => null);
 
 export function updateLocale(newLocale: Locale): void {
 	locale = newLocale;

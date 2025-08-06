@@ -186,7 +186,7 @@ export type Config = {
 	userAgent: string;
 	frontendEntry: { file: string | null };
 	frontendManifestExists: boolean;
-	frontendEmbedEntry: string;
+	frontendEmbedEntry: { file: string | null };
 	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
@@ -238,7 +238,7 @@ export function loadConfig(): Config {
 		: { 'src/_boot_.ts': { file: null } };
 	const frontendEmbedManifest = frontendEmbedManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
-		: { 'src/boot.ts': { file: 'src/boot.ts' } };
+		: { 'src/boot.ts': { file: null } };
 
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 

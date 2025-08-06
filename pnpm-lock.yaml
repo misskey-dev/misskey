@@ -1270,6 +1270,9 @@ importers:
       start-server-and-test:
         specifier: 2.0.12
         version: 2.0.12
+      tsx:
+        specifier: 4.20.3
+        version: 4.20.3
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
