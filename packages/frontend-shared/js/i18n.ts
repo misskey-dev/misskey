@@ -39,11 +39,7 @@ export class I18n<T extends ILocale> {
 	private devMode: boolean;
 
 	constructor(public locale: T, devMode = false) {
-		// 場合によってはバージョンアップ前の翻訳データを参照した結果存在しないプロパティにアクセスしてクライアントが起動できなくなることがある問題の応急処置として非devモードでもプロキシする
-		// TODO: https://github.com/misskey-dev/misskey/issues/14453 が実装されたらそのようなことは発生し得なくなるため消す
-		const oukyuusyoti = true;
-
-		this.devMode = devMode || oukyuusyoti;
+		this.devMode = devMode;
 
 		//#region BIND
 		this.t = this.t.bind(this);
