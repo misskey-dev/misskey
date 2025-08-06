@@ -219,7 +219,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 	describe('advanced', () => {
 		// お気に入り
-		test('should not delete notes that are favorited by any user', async () => {
+		test('should not delete note that is favorited by any user', async () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
@@ -237,13 +237,12 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
 
-			// Verify the favorited note was NOT deleted
 			const remainingNote = await notesRepository.findOneBy({ id: oldRemoteNote.id });
 			expect(remainingNote).not.toBeNull();
 		});
 
 		// ピン留め
-		test('should not delete notes that are pinned by the user', async () => {
+		test('should not delete note that is pinned by the user', async () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
@@ -261,13 +260,12 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
 
-			// Verify the pinned note was NOT deleted
 			const remainingNote = await notesRepository.findOneBy({ id: oldRemoteNote.id });
 			expect(remainingNote).not.toBeNull();
 		});
 
 		// クリップ
-		test('should not delete notes with clippedCount > 0', async () => {
+		test('should not delete note that is clipped', async () => {
 			const job = createMockJob();
 
 			// Create old remote note that is clipped
@@ -280,7 +278,6 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
 
-			// Verify the clipped note was NOT deleted
 			const remainingNote = await notesRepository.findOneBy({ id: clippedNote.id });
 			expect(remainingNote).not.toBeNull();
 		});
@@ -304,7 +301,6 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(3);
 			expect(result.skipped).toBe(false);
 
-			// Verify all notes were deleted
 			const remainingNotes = await notesRepository.find();
 			expect(remainingNotes.some(n => n.id === originalNote.id)).toBe(false);
 			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(false);
@@ -327,10 +323,91 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 			expect(result.deletedCount).toBe(0); // Only the old note should be deleted
 			expect(result.skipped).toBe(false);
-			// Verify only the old note was deleted
+
 			const remainingNotes = await notesRepository.find();
 			expect(remainingNotes.some(n => n.id === oldNote.id)).toBe(true);
 			expect(remainingNotes.some(n => n.id === recentReplyNote.id)).toBe(true); // Recent reply note should remain
+		});
+
+		// リプライがお気に入りされているとき、どちらも削除されない
+		test('should not delete reply note that is favorited', async () => {
+			const job = createMockJob();
+
+			// Create old remote note that should be deleted
+			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+			
+			// Create a reply note that is newer than the expiry period
+			const replyNote = await createNote({
+				replyId: oldRemoteNote.id,
+			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
+
+			// Favorite the reply note
+			await noteFavoritesRepository.save({
+				id: idService.gen(),
+				userId: alice.id,
+				noteId: replyNote.id,
+			});
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(0); // Only the old note should be deleted
+			expect(result.skipped).toBe(false);
+
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.some(n => n.id === oldRemoteNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(true); // Recent reply note should remain
+		});
+
+		// リプライがピン留めされているとき、どちらも削除されない
+		test('should not delete reply note that is pinned', async () => {
+			const job = createMockJob();
+
+			// Create old remote note that should be deleted
+			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+			
+			// Create a reply note that is newer than the expiry period
+			const replyNote = await createNote({
+				replyId: oldRemoteNote.id,
+			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
+
+			// Pin the reply note
+			await userNotePiningsRepository.save({
+				id: idService.gen(),
+				userId: carol.id,
+				noteId: replyNote.id,
+			});
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(0); // Only the old note should be deleted
+			expect(result.skipped).toBe(false);
+
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.some(n => n.id === oldRemoteNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(true); // Reply note should remain
+		});
+
+		// リプライがクリップされているとき、どちらも削除されない
+		test('should not delete reply note that is clipped', async () => {
+			const job = createMockJob();
+
+			// Create old remote note that should be deleted
+			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+			
+			// Create a reply note that is old but clipped
+			const replyNote = await createNote({
+				replyId: oldRemoteNote.id,
+				clippedCount: 1, // Clipped
+			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(0); // Both notes should be kept because reply is clipped
+			expect(result.skipped).toBe(false);
+
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.some(n => n.id === oldRemoteNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(true);
 		});
 
 		test('should handle mixed scenarios with multiple conditions', async () => {
@@ -374,7 +451,6 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(1); // Only deletableNote should be deleted
 			expect(result.skipped).toBe(false);
 
-			// Verify correct notes remain
 			const remainingNotes = await notesRepository.find();
 			expect(remainingNotes.length).toBe(5);
 			expect(remainingNotes.some(n => n.id === deletableNote.id)).toBe(false); // Deleted
@@ -403,7 +479,6 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(AMOUNT);
 			expect(result.skipped).toBe(false);
 
-			// Verify all notes were deleted
 			const remainingNotes = await notesRepository.find();
 			expect(remainingNotes.length).toBe(0);
 		});
@@ -453,7 +528,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				}
 			}
 			const result = await service.process(job as any);
-			// Should delete all old notes, but keep the new replies/renotes
+
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
 		});
