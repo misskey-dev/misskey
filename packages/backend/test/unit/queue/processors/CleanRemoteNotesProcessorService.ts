@@ -219,13 +219,13 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
-			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
-			
+			const olderRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
 			// Favorite the note
 			await noteFavoritesRepository.save({
 				id: idService.gen(),
 				userId: alice.id,
-				noteId: oldRemoteNote.id,
+				noteId: olderRemoteNote.id,
 			});
 
 			const result = await service.process(job as any);
@@ -233,7 +233,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
 
-			const remainingNote = await notesRepository.findOneBy({ id: oldRemoteNote.id });
+			const remainingNote = await notesRepository.findOneBy({ id: olderRemoteNote.id });
 			expect(remainingNote).not.toBeNull();
 		});
 
@@ -242,13 +242,13 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
-			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
-			
+			const olderRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
 			// Pin the note by the user who created it
 			await userNotePiningsRepository.save({
 				id: idService.gen(),
 				userId: bob.id, // Same user as the note creator
-				noteId: oldRemoteNote.id,
+				noteId: olderRemoteNote.id,
 			});
 
 			const result = await service.process(job as any);
@@ -256,7 +256,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
 
-			const remainingNote = await notesRepository.findOneBy({ id: oldRemoteNote.id });
+			const remainingNote = await notesRepository.findOneBy({ id: olderRemoteNote.id });
 			expect(remainingNote).not.toBeNull();
 		});
 
@@ -358,11 +358,11 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
-			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
-			
+			const olderRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
 			// Create a reply note that is newer than the expiry period
 			const replyNote = await createNote({
-				replyId: oldRemoteNote.id,
+				replyId: olderRemoteNote.id,
 			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
 
 			// Favorite the reply note
@@ -378,7 +378,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.skipped).toBe(false);
 
 			const remainingNotes = await notesRepository.find();
-			expect(remainingNotes.some(n => n.id === oldRemoteNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === olderRemoteNote.id)).toBe(true);
 			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(true); // Recent reply note should remain
 		});
 
@@ -387,11 +387,11 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
-			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
-			
+			const olderRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
 			// Create a reply note that is newer than the expiry period
 			const replyNote = await createNote({
-				replyId: oldRemoteNote.id,
+				replyId: olderRemoteNote.id,
 			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
 
 			// Pin the reply note
@@ -407,7 +407,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.skipped).toBe(false);
 
 			const remainingNotes = await notesRepository.find();
-			expect(remainingNotes.some(n => n.id === oldRemoteNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === olderRemoteNote.id)).toBe(true);
 			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(true); // Reply note should remain
 		});
 
@@ -416,11 +416,11 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const job = createMockJob();
 
 			// Create old remote note that should be deleted
-			const oldRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
-			
+			const olderRemoteNote = await createNote({}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
 			// Create a reply note that is old but clipped
 			const replyNote = await createNote({
-				replyId: oldRemoteNote.id,
+				replyId: olderRemoteNote.id,
 				clippedCount: 1, // Clipped
 			}, carol, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 2000);
 
@@ -430,7 +430,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(result.skipped).toBe(false);
 
 			const remainingNotes = await notesRepository.find();
-			expect(remainingNotes.some(n => n.id === oldRemoteNote.id)).toBe(true);
+			expect(remainingNotes.some(n => n.id === olderRemoteNote.id)).toBe(true);
 			expect(remainingNotes.some(n => n.id === replyNote.id)).toBe(true);
 		});
 
@@ -468,7 +468,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			const localNote = await createNote({}, alice, oldTime);
 
 			// Should NOT be deleted: new remote note
-			const newRemoteNote = await createNote({}, bob);
+			const newerRemoteNote = await createNote({}, bob);
 
 			const result = await service.process(job as any);
 
@@ -482,7 +482,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(remainingNotes.some(n => n.id === pinnedNote.id)).toBe(true); // Kept
 			expect(remainingNotes.some(n => n.id === clippedNote.id)).toBe(true); // Kept
 			expect(remainingNotes.some(n => n.id === localNote.id)).toBe(true); // Kept
-			expect(remainingNotes.some(n => n.id === newRemoteNote.id)).toBe(true); // Kept
+			expect(remainingNotes.some(n => n.id === newerRemoteNote.id)).toBe(true); // Kept
 		});
 
 		// 大量のノート
@@ -615,7 +615,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 			// Create notes with specific timing to test cursor behavior
 			const baseTime = Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 10000;
-			
+
 			const note1 = await createNote({}, bob, baseTime);
 			const note2 = await createNote({}, carol, baseTime - 1000);
 			const note3 = await createNote({}, bob, baseTime - 2000);
