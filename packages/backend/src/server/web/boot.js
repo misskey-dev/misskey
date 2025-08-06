@@ -22,28 +22,25 @@
 		return;
 	}
 
+	//#region Detect language
+	const supportedLangs = LANGS;
 	/** @type { string } */
-	let lang;
-	//#region Detect language & fetch translations
-	if (true) {
-		const supportedLangs = LANGS;
-		lang = localStorage.getItem('lang');
-		if (lang == null || !supportedLangs.includes(lang)) {
-			if (supportedLangs.includes(navigator.language)) {
-				lang = navigator.language;
-			} else {
-				lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
+	let lang = localStorage.getItem('lang');
+	if (lang == null || !supportedLangs.includes(lang)) {
+		if (supportedLangs.includes(navigator.language)) {
+			lang = navigator.language;
+		} else {
+			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
 
-				// Fallback
-				if (lang == null) lang = 'en-US';
-			}
+			// Fallback
+			if (lang == null) lang = 'en-US';
 		}
+	}
 
-		// for https://github.com/misskey-dev/misskey/issues/10202
-		if (lang == null || lang.toString == null || lang.toString() === 'null') {
-			console.error('invalid lang value detected!!!', typeof lang, lang);
-			lang = 'en-US';
-		}
+	// for https://github.com/misskey-dev/misskey/issues/10202
+	if (lang == null || lang.toString == null || lang.toString() === 'null') {
+		console.error('invalid lang value detected!!!', typeof lang, lang);
+		lang = 'en-US';
 	}
 	//#endregion
 
