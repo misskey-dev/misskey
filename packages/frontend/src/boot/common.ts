@@ -80,26 +80,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
-
-	async function fetchAndUpdateLocale({ useCache } = { useCache: true }) {
-		const fetchOptions: RequestInit | undefined = useCache ? undefined : { cache: 'no-store' };
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`, fetchOptions);
-		if (res.status === 200) {
-			const newLocale = await res.text();
-			const parsedNewLocale = JSON.parse(newLocale);
-			miLocalStorage.setItem('locale', newLocale);
-			miLocalStorage.setItem('localeVersion', version);
-			updateLocale(parsedNewLocale);
-			updateI18n(parsedNewLocale);
-		}
-	}
-
-	if (localeOutdated) {
-		fetchAndUpdateLocale();
-	}
-
 	if (import.meta.hot) {
 		import.meta.hot.on('locale-update', async (updatedLang: string) => {
 			console.info(`Locale updated: ${updatedLang}`);
@@ -107,7 +87,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 				await new Promise(resolve => {
 					window.setTimeout(resolve, 500);
 				});
-				await fetchAndUpdateLocale({ useCache: false });
 				window.location.reload();
 			}
 		});
