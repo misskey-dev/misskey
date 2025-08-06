@@ -5,6 +5,7 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
+import { arrayBufferToBase64String } from '@tensorflow/tfjs-core/dist/io/io_utils.js';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -148,11 +149,14 @@ export class CleanRemoteNotesProcessorService {
 			// We don't use 'id' since the note can be newer than the initiator note.
 			cursor = notes.reduce((max, note) => note.initiatorId > max ? note.initiatorId : max, cursor);
 
-			if (notes.length > 0) {
-				await this.notesRepository.delete(notes.map(note => note.id));
+			// Duplicate check
+			const notesIds = new Set(notes.map(note => note.id));
 
-				for (const note of notes) {
-					const t = this.idService.parse(note.id).date.getTime();
+			if (notesIds.size > 0) {
+				await this.notesRepository.delete(Array.from(notesIds));
+
+				for (const noteId of notesIds) {
+					const t = this.idService.parse(noteId).date.getTime();
 					if (stats.oldest === null || t < stats.oldest) {
 						stats.oldest = t;
 					}
@@ -161,10 +165,10 @@ export class CleanRemoteNotesProcessorService {
 					}
 				}
 
-				stats.deletedCount += notes.length;
+				stats.deletedCount += notesIds.size;
 			}
 
-			job.log(`Deleted ${notes.length} of ${fetchedCount}; ${Date.now() - batchBeginAt}ms`);
+			job.log(`Deleted ${notesIds.size}; ${Date.now() - batchBeginAt}ms`);
 
 			await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
 		}
