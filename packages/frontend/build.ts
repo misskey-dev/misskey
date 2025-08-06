@@ -150,11 +150,6 @@ async function buildAllLocale() {
 		if (programNode.sourceType !== 'module') throw new Error(`${fileName} is not a module`);
 		const fileLogger = logger.prefixed(`${fileName} (${scriptNameByPath[fileName]}): `);
 
-		const imports = programNode.body.filter<estree.ImportDeclaration>(x => x.type === 'ImportDeclaration');
-		const i18nImport = imports.find(x => x.source.value === `./${i18nFileName}`) as estree.ImportDeclaration;
-		if (!i18nImport) continue; // We don't need to process i18n
-		assertType<AstNode>(i18nImport);
-
 		const modifications: TextModification[] = [];
 		modificationsByFileName[fileName] = modifications;
 
@@ -181,6 +176,11 @@ async function buildAllLocale() {
 				}
 			}
 		})
+
+		const imports = programNode.body.filter<estree.ImportDeclaration>(x => x.type === 'ImportDeclaration');
+		const i18nImport = imports.find(x => x.source.value === `./${i18nFileName}`) as estree.ImportDeclaration;
+		if (!i18nImport) continue; // We don't need to process i18n
+		assertType<AstNode>(i18nImport);
 
 		if (i18nImport.specifiers.length == 0) {
 			fileLogger.info(`Importing i18n without specifiers, removing the import.`);
@@ -309,21 +309,6 @@ async function buildAllLocale() {
 							localizedOnly: true,
 						});
 						this.skip();
-					}
-				} else if (node.type === 'Literal') {
-					assertType<estree.Literal>(node);
-					if (typeof node.value === 'string' && node.raw) {
-						// we find `scripts/\w+\.js` literal and replace 'scripts' part with locale code
-						const match = node.raw.match(/^(['"])scripts\/([^']+\.js)\1$/);
-						if (match) {
-							fileLogger.debug(`${lineCol(sourceCode, node)}: found scripts/ path literal ${node.raw}`);
-							modifications.push({
-								type: 'locale-name',
-								begin: node.start + 1,
-								end: node.start + 1 + 'scripts'.length,
-								localizedOnly: true,
-							});
-						}
 					}
 				} else if (node.type === 'ArrowFunctionExpression') {
 					assertType<estree.ArrowFunctionExpression>(node);
