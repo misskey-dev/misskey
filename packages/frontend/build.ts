@@ -208,9 +208,9 @@ async function buildAllLocale() {
 					}
 				} else if (node.type == 'AwaitExpression') {
 					assertType<estree.AwaitExpression>(node);
-					// await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())
+					// await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json(), () => null)
 					if (node.argument.type === 'CallExpression'
-						&& node.argument.arguments.length === 1 // check `u=>u.json()` later
+						&& node.argument.arguments.length >= 1 // check `u=>u.json()` later
 						&& node.argument.callee.type === 'MemberExpression'
 						&& !node.argument.callee.computed
 						&& node.argument.callee.property.type === 'Identifier' && node.argument.callee.property.name === 'then'
