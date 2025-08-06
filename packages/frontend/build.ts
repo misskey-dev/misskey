@@ -282,9 +282,9 @@ async function buildAllLocale() {
 					}
 				} else if (node.type === 'MemberExpression') {
 					assertType<estree.MemberExpression>(node);
-					if (parent.type === 'CallExpression' && property == 'callee') return; // we don't want to process `i18n.ts.property.stringBuiltinMethod()`
 					const i18nPath = parseI18nPropertyAccess(node);
 					if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] == 'ts') {
+						if (parent.type === 'CallExpression' && property == 'callee') return; // we don't want to process `i18n.ts.property.stringBuiltinMethod()`
 						if (i18nPath.at(-1)?.startsWith('_')) fileLogger.debug(`found i18n grouped property access ${i18nPath.join('.')}`);
 						else fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n property access ${i18nPath.join('.')}`);
 						// it's i18n.ts.propertyAccess
@@ -294,6 +294,18 @@ async function buildAllLocale() {
 							begin: node.start,
 							end: node.end,
 							localizationKey: i18nPath.slice(1), // remove 'ts' prefix
+							localizedOnly: true,
+						});
+						this.skip();
+					} else if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] == 'tsx') {
+						// it's parameterized locale substitution (`i18n.tsx.property(parameters)`)
+						// we expect the parameter to be an object literal
+						fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n function access (object) ${i18nPath.join('.')}`);
+						modifications.push({
+							type: 'parameterized-function',
+							begin: node.start,
+							end: node.end,
+							localizationKey: i18nPath.slice(1), // remove 'tsx' prefix
 							localizedOnly: true,
 						});
 						this.skip();
@@ -401,10 +413,18 @@ async function buildAllLocale() {
 					case "parameterized-function":{
 						const accessed = getPropertyByPath(localeJson, modification.localizationKey);
 						let replacement: string;
-						if (typeof accessed !== 'string') {
-							fileLogger.error(`Cannot find localization key ${modification.localizationKey.join('.')}`);
-							replacement = '(() => "")'; // placeholder for missing locale
+						if (typeof accessed === 'string') {
+							replacement = formatFunction(accessed);
+						} else if (typeof accessed === 'object' && accessed !== null) {
+							replacement = `({${Object.entries(accessed).map(([key, value]) => `${key}:${formatFunction(value)}`).join(',')}})`;
 						} else {
+							fileLogger.error(`Cannot find localization key (or is object) ${modification.localizationKey.join('.')}`);
+							replacement = '(() => "")'; // placeholder for missing locale
+						}
+						magicString.update(modification.begin, modification.end, replacement);
+						break;
+
+						function formatFunction(accessed: string): string {
 							const params = new Set<string>();
 							const components: string[] = [];
 							let lastIndex = 0;
@@ -423,10 +443,8 @@ async function buildAllLocale() {
 							const paramList = Array.from(params).join(',');
 							let body = components.filter(x => x != '""').join('+');
 							if (body == '') body = '""'; // if the body is empty, we return empty string
-							replacement = `(({${paramList}})=>(${body}))`;
+							return `(({${paramList}})=>(${body}))`;
 						}
-						magicString.update(modification.begin, modification.end, replacement);
-						break;
 					}
 					case "locale-name": {
 						magicString.update(modification.begin, modification.end, localeName);
