@@ -281,6 +281,7 @@ async function buildAllLocale() {
 					}
 				} else if (node.type === 'MemberExpression') {
 					assertType<estree.MemberExpression>(node);
+					if (parent.type === 'CallExpression' && property == 'callee') return; // we don't want to process `i18n.ts.property.stringBuiltinMethod()`
 					const i18nPath = parseI18nPropertyAccess(node);
 					if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] == 'ts') {
 						if (i18nPath.at(-1)?.startsWith('_')) fileLogger.debug(`found i18n grouped property access ${i18nPath.join('.')}`);
