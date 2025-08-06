@@ -121,6 +121,11 @@ type EachTextModification = {
 	end: number;
 	literal: boolean;
 	localizedOnly: true;
+} | {
+	type: 'locale-json';
+	begin: number;
+	end: number;
+	localizedOnly: true;
 }
 type TextModification = EachTextModification & {
 	localizedOnly: boolean;
@@ -157,6 +162,7 @@ async function buildAllLocale() {
 		// first
 		// 1) replace all `scripts/` path literals with locale code
 		// 2) replace all `localStorage.getItem("lang")` with `localeName` variable
+		// 3) replace all `await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())` with `localeJson` variable
 		estreeWalker.walk(programNode, {
 			enter(this: import('estree-walker/types/walker').WalkerContext,node) {
 				assertType<AstNode>(node)
@@ -198,6 +204,46 @@ async function buildAllLocale() {
 									localizedOnly: true,
 								});
 							}
+						}
+					}
+				} else if (node.type == 'AwaitExpression') {
+					assertType<estree.AwaitExpression>(node);
+					// await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())
+					if (node.argument.type === 'CallExpression'
+						&& node.argument.arguments.length === 1 // check `u=>u.json()` later
+						&& node.argument.callee.type === 'MemberExpression'
+						&& !node.argument.callee.computed
+						&& node.argument.callee.property.type === 'Identifier' && node.argument.callee.property.name === 'then'
+						&& node.argument.callee.object.type === 'CallExpression'
+						&& node.argument.callee.object.arguments.length === 1 // check `/assets/locales/${d}.${x}.json` later
+						&& node.argument.callee.object.callee.type === 'MemberExpression'
+						&& !node.argument.callee.object.callee.computed
+						&& node.argument.callee.object.callee.object.type === 'Identifier' && node.argument.callee.object.callee.object.name === 'window'
+						&& node.argument.callee.object.callee.property.type === 'Identifier' && node.argument.callee.object.callee.property.name === 'fetch'
+					) {
+						const arrowFunction = node.argument.arguments[0];
+						const fetchArgument = node.argument.callee.object.arguments[0];
+						if (arrowFunction.type === 'ArrowFunctionExpression'
+							&& arrowFunction.params.length === 1
+							&& arrowFunction.body.type === 'CallExpression'
+							&& arrowFunction.body.callee.type === 'MemberExpression'
+							&& !arrowFunction.body.callee.computed
+							&& arrowFunction.body.callee.property.type === 'Identifier' && arrowFunction.body.callee.property.name === 'json'
+
+							&& fetchArgument.type === 'TemplateLiteral'
+							&& fetchArgument.quasis.length === 3
+							&& fetchArgument.expressions.length === 2
+							&& fetchArgument.quasis[0].value.cooked === '/assets/locales/'
+							&& fetchArgument.quasis[1].value.cooked === '.'
+							&& fetchArgument.quasis[2].value.cooked === '.json'
+						) {
+							fileLogger.debug(`${lineCol(sourceCode, node)}: found await window.fetch(\`/assets/locales/\${d}.\${x}.json\`).then(u=>u.json()) call`);
+							modifications.push({
+								type: 'locale-json',
+								begin: node.start,
+								end: node.end,
+								localizedOnly: true,
+							});
 						}
 					}
 				}
@@ -460,6 +506,10 @@ async function buildAllLocale() {
 					}
 					case "locale-name": {
 						magicString.update(modification.begin, modification.end, modification.literal ? JSON.stringify(localeName) : localeName);
+						break;
+					}
+					case "locale-json": {
+						magicString.update(modification.begin, modification.end, `JSON.parse(${JSON.stringify(JSON.stringify(localeJson))})`);
 						break;
 					}
 					default: {
