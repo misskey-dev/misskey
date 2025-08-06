@@ -84,10 +84,26 @@
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
-		const locale = JSON.parse(localStorage.getItem('locale') || '{}');
+		let messages = null;
+		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
+		if (bootloaderLocales) {
+			messages = JSON.parse(bootloaderLocales);
+		}
+		if (!messages) {
+			// older version of misskey does not store bootloaderLocales, stores locale as a whole
+			const legacyLocale = localStorage.getItem('locale');
+			if (legacyLocale) {
+				const parsed = JSON.parse(legacyLocale);
+				messages = {
+					...(parsed._bootErrors ?? {}),
+					reload: parsed.reload,
+				};
+			}
+		}
+		if (!messages) messages = {};
 
-		const title = locale?._bootErrors?.title || 'Failed to initialize Misskey';
-		const reload = locale?.reload || 'Reload';
+		const title = messages?.title || 'Failed to initialize Misskey';
+		const reload = messages?.reload || 'Reload';
 
 		document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
 		<div class="message">${title}</div>

@@ -8,6 +8,7 @@ import { compareVersions } from 'compare-versions';
 import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
@@ -79,6 +80,8 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	//#region Detect language & fetch translations
+	storeBootloaderErrors({ ...i18n.ts._bootErrors, reload: i18n.ts.reload });
+
 	if (import.meta.hot) {
 		import.meta.hot.on('locale-update', async (updatedLang: string) => {
 			console.info(`Locale updated: ${updatedLang}`);

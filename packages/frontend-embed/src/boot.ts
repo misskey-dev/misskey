@@ -17,6 +17,7 @@ import { createApp, defineAsyncComponent } from 'vue';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-dark.json5';
 import { MediaProxy } from '@@/js/media-proxy.js';
+import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import { applyTheme, assertIsTheme } from '@/theme.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
@@ -76,6 +77,7 @@ if (embedParams.colorMode === 'dark') {
 //#endregion
 
 //#region Detect language & fetch translations
+storeBootloaderErrors({ ...i18n.ts._bootErrors, reload: i18n.ts.reload });
 //#endregion
 
 // サイズの制限
