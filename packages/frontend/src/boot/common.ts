@@ -86,6 +86,8 @@ export async function common(createVue: () => Promise<App<Element>>) {
 				await new Promise(resolve => {
 					window.setTimeout(resolve, 500);
 				});
+				// fetch with cache: 'no-store' to ensure the latest locale is fetched
+				await window.fetch(`/assets/locales/${lang}.${version}.json`, { cache: 'no-store' }).then(async res => res.status === 200 && await res.text());
 				window.location.reload();
 			}
 		});
