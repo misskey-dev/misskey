@@ -731,8 +731,11 @@ importers:
         specifier: 10.0.0
         version: 10.0.0(vue@3.5.18(typescript@5.9.2))
       '@syuilo/aiscript':
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 1.0.0
+        version: 1.0.0
+      '@syuilo/aiscript-0-19-0':
+        specifier: npm:@syuilo/aiscript@^0.19.0
+        version: '@syuilo/aiscript@0.19.0'
       '@twemoji/parser':
         specifier: 16.0.0
         version: 16.0.0
@@ -4301,6 +4304,9 @@ packages:
 
   '@syuilo/aiscript@0.19.0':
     resolution: {integrity: sha512-ZWG4s1m6RrFjE7NeIMaxFz769YO1jW5ReTrOROrEO4IHheOrjxxJ/Ffe2TUNqX9/XxDloMwfWplKhfSzx8LGMA==}
+
+  '@syuilo/aiscript@1.0.0':
+    resolution: {integrity: sha512-m+Dxx0g2pDI198OCj/OJgiJnE4ajlbOFAMyh84FmbY1S8ss/MHytxY82dCnMZj5WVt7VE7a1rtW7biuRRfuyaA==}
 
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
@@ -14637,7 +14643,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       estraverse: 5.3.0
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -14734,6 +14740,12 @@ snapshots:
       seedrandom: 3.0.5
       stringz: 2.1.0
       uuid: 9.0.1
+
+  '@syuilo/aiscript@1.0.0':
+    dependencies:
+      seedrandom: 3.0.5
+      stringz: 2.1.0
+      uuid: 11.1.0
 
   '@szmarczak/http-timer@5.0.1':
     dependencies:

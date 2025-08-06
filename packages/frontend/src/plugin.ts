@@ -7,15 +7,15 @@ import { ref, defineAsyncComponent } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import { isSafeMode } from '@@/js/config.js';
-import { genId } from '@/utility/id.js';
 import * as Misskey from 'misskey-js';
+import type { FormWithDefault } from '@/utility/form.js';
+import { genId } from '@/utility/id.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import type { FormWithDefault } from '@/utility/form.js';
 
 export type Plugin = {
 	installId: string;
@@ -394,8 +394,8 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		'Plugin:register:note_view_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_view_interruptor', {
-				handler: withContext(ctx => async (note) => {
-					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(note)]));
+				handler: withContext(ctx => (note) => {
+					return utils.valToJs(ctx.execFnSync(handler, [utils.jsToVal(note)]));
 				}),
 			});
 		}),
