@@ -5,7 +5,6 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { arrayBufferToBase64String } from '@tensorflow/tfjs-core/dist/io/io_utils.js';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
