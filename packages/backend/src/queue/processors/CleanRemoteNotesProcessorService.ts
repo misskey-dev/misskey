@@ -139,11 +139,12 @@ export class CleanRemoteNotesProcessorService {
 			const notes: { id: MiNote['id'], initiatorId: MiNote['id'] }[] = await notesQuery.getRawMany();
 
 			const fetchedCount = notes.length;
+			console.log(`Fetched ${fetchedCount} notes with initiatorId >= ${cursor}`);
 
-			if (fetchedCount === 0) {
-				job.log('No more notes to clean.');
-				break;
-			}
+			//if (fetchedCount === 0) {
+			//	job.log('No more notes to clean.');
+			//	break;
+			//}
 
 			// update the cursor to the newest initiatorId found in the fetched notes.
 			// We don't use 'id' since the note can be newer than the initiator note.

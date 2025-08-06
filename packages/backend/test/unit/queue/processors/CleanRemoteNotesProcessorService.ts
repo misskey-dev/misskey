@@ -177,7 +177,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				newest: null,
 				skipped: false,
 			});
-		});
+		}, 3000);
 
 		test('should clean remote notes and return stats', async () => {
 			// Remote notes
@@ -531,6 +531,55 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 			expect(result.deletedCount).toBe(0);
 			expect(result.skipped).toBe(false);
+		});
+
+		// 大量の残す対象(clippedCount: 1)と大量の削除対象
+		test('should handle large number of notes, mixed conditions with clippedCount', async () => {
+			const AMOUNT_BASE = 70;
+			const job = createMockJob();
+
+			const oldTime = Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000;
+			const noteIds = [];
+			for (let i = 0; i < AMOUNT_BASE; i++) {
+				const note = await createNote({ clippedCount: 1 }, bob, oldTime - i - AMOUNT_BASE);
+				noteIds.push(note.id);
+			}
+			for (let i = 0; i < AMOUNT_BASE; i++) {
+				const note = await createNote({}, carol, oldTime - i);
+				noteIds.push(note.id);
+			}
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(AMOUNT_BASE); // Assuming half are deletable
+			expect(result.skipped).toBe(false);
+		});
+
+		// 大量の残す対象(リプライ)と大量の削除対象
+		test('should handle large number of notes, mixed conditions with replies', async () => {
+			const AMOUNT_BASE = 70;
+			const job = createMockJob();
+			const oldTime = Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000;
+			const newTime = Date.now();
+			for (let i = 0; i < AMOUNT_BASE; i++) {
+				const note = await createNote({}, carol, oldTime - AMOUNT_BASE - i);
+				await createNote({ replyId: note.id }, bob, newTime + i);
+			}
+
+			const noteIdsExpectedToBeRemained = [];
+			for (let i = 0; i < AMOUNT_BASE; i++) {
+				const note = await createNote({}, bob, oldTime - i);
+				noteIdsExpectedToBeRemained.push(note.id);
+			}
+
+			const result = await service.process(job as any);
+			expect(result.deletedCount).toBe(AMOUNT_BASE); // Assuming all replies are deletable
+			expect(result.skipped).toBe(false);
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.length).toBe(AMOUNT_BASE); // Only replies should remain
+			noteIdsExpectedToBeRemained.forEach(id => {
+				expect(remainingNotes.some(n => n.id === id)).toBe(false); // All original notes should be deleted
+			});
 		});
 
 		test('should update cursor correctly during batch processing', async () => {
