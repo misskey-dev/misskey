@@ -68,8 +68,7 @@ html
 
 		script.
 			var VERSION = "#{version}";
-			var CLIENT_ENTRY = "#{entry.file}";
-			var PRODUCTION = #{config.frontendManifestExists};
+			var CLIENT_ENTRY = !{JSON.stringify(entry.file)};
 
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson

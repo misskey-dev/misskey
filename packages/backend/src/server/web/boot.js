@@ -46,7 +46,7 @@
 
 	//#region Script
 	async function importAppScript() {
-		await import(PRODUCTION ? `/vite/${lang}/entry.js?v=${VERSION}` : `/vite/src/_boot_.ts?lang=${lang}`)
+		await import(CLIENT_ENTRY ? `/vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/vite/src/_boot_.ts')
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);

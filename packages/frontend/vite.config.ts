@@ -188,7 +188,7 @@ export function getConfig(): UserConfig {
 						// dependencies of i18n.ts
 						'config': ['@@/js/config.js'],
 					},
-					entryFileNames: 'scripts/[name].js',
+					entryFileNames: 'scripts/[hash:8].js',
 					chunkFileNames: 'scripts/[hash:8].js',
 					assetFileNames: 'assets/[hash:8][extname]',
 					paths(id) {
