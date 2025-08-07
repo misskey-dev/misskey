@@ -5,7 +5,7 @@ import type { Manifest as ViteManifest } from 'vite';
 import MagicString from 'magic-string';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
-import { blankLogger, loggerFactory, type Logger } from './logger.js';
+import { blankLogger, type Logger } from './logger.js';
 
 export class LocaleInliner {
 	outputDir: string;
@@ -19,7 +19,7 @@ export class LocaleInliner {
 		outputDir: string,
 		scriptsDir: string,
 		i18nFile: string,
-		logger?: Logger,
+		logger: Logger,
 	}): Promise<LocaleInliner> {
 		const manifest: ViteManifest = JSON.parse(await fs.readFile(`${options.outputDir}/manifest.json`, 'utf-8'));
 		return new LocaleInliner({ ...options, manifest });
@@ -30,13 +30,13 @@ export class LocaleInliner {
 		scriptsDir: string,
 		i18nFile: string,
 		manifest: ViteManifest,
-		logger?: Logger,
+		logger: Logger,
 	}) {
 		this.outputDir = options.outputDir;
 		this.scriptsDir = options.scriptsDir;
 		this.i18nFile = options.i18nFile;
 		this.i18nFileName = this.stripScriptDir(options.manifest[this.i18nFile].file);
-		this.logger = options.logger || loggerFactory("");
+		this.logger = options.logger;
 		this.chunks = Object.values(options.manifest).filter(chunk => this.isScriptFile(chunk.file)).map(chunk => ({
 			fileName: this.stripScriptDir(chunk.file),
 			chunkName: chunk.name,

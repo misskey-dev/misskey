@@ -4,6 +4,7 @@ import path from 'node:path';
 import { execa } from 'execa';
 import locales from '../../locales/index.js';
 import { LocaleInliner } from '../frontend-builder/locale-inliner.js'
+import { createLogger } from '../frontend-builder/logger';
 
 // requires node 21 or later
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -22,8 +23,10 @@ async function viteBuild() {
 
 
 async function buildAllLocale() {
+	const logger = createLogger()
 	const inliner = await LocaleInliner.create({
 		outputDir,
+		logger,
 		scriptsDir: 'scripts',
 		i18nFile: 'src/i18n.ts',
 	})
@@ -33,6 +36,10 @@ async function buildAllLocale() {
 	inliner.collectsModifications();
 
 	await inliner.saveAllLocales(locales);
+
+	if (logger.errorCount > 0) {
+		throw new Error(`Build failed with ${logger.errorCount} errors and ${logger.warningCount} warnings.`);
+	}
 }
 
 async function build() {
