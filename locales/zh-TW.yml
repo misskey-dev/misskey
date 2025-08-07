@@ -1550,7 +1550,7 @@ _initialAccountSetting:
   theseSettingsCanEditLater: "這裡的設定可以在之後變更。"
   youCanEditMoreSettingsInSettingsPageLater: "除此之外，還可以在「設定」頁面進行各種設定。之後請確認看看。"
   followUsers: "為了構築時間軸，試著追隨您感興趣的使用者吧。"
-  pushNotificationDescription: "啟用推送通知後，就可以在裝置上接收來自{name}的通知了。"
+  pushNotificationDescription: "啟用推送通知後，就可以在裝置上接收來自 {name} 的通知了。"
   initialAccountSettingCompleted: "初始設定完成了！"
   haveFun: "盡情享受{name}吧！"
   youCanContinueTutorial: "您可以繼續學習如何使用{name}(Misskey)，也可以就此打住，立即開始使用。"
