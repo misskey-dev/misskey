@@ -2,7 +2,7 @@ import type { AstNode, ProgramNode } from 'rollup';
 import { parseAst } from 'vite';
 import * as estreeWalker from 'estree-walker';
 import type * as estree from 'estree';
-import type { TextModification } from '../locale-inliner.js';
+import type { LocaleInliner, TextModification } from '../locale-inliner.js';
 import type { Logger } from '../logger.js'
 import { assertNever, assertType } from '../utils.js';
 
@@ -11,7 +11,7 @@ interface WalkerContext {
 	skip: () => void;
 }
 
-export function collectModifications(sourceCode: string, fileLogger: Logger, i18nFileName: string): TextModification[] {
+export function collectModifications(sourceCode: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
 	let programNode: ProgramNode;
 	try {
 		programNode = parseAst(sourceCode);
@@ -34,13 +34,13 @@ export function collectModifications(sourceCode: string, fileLogger: Logger, i18
 		enter(this: WalkerContext, node: Node) {
 			assertType<AstNode>(node)
 
-			if (node.type === 'Literal' && typeof node.value === 'string' && node.raw && node.raw.match(/^(['"])scripts\/([^']+\.js)\1$/)) {
+			if (node.type === 'Literal' && typeof node.value === 'string' && node.raw && node.raw.substring(1).startsWith(inliner.scriptsDir)) {
 				// we find `scripts/\w+\.js` literal and replace 'scripts' part with locale code
-				fileLogger.debug(`${lineCol(sourceCode, node)}: found scripts/ path literal ${node.raw}`);
+				fileLogger.debug(`${lineCol(sourceCode, node)}: found ${inliner.scriptsDir}/ path literal ${node.raw}`);
 				modifications.push({
 					type: 'locale-name',
 					begin: node.start + 1,
-					end: node.start + 1 + 'scripts'.length,
+					end: node.start + 1 + inliner.scriptsDir.length,
 					literal: false,
 					localizedOnly: true,
 				});
@@ -70,7 +70,7 @@ export function collectModifications(sourceCode: string, fileLogger: Logger, i18
 		}
 	})
 
-	const importSpecifierResult = findImportSpecifier(programNode, i18nFileName, 'i18n');
+	const importSpecifierResult = findImportSpecifier(programNode, inliner.i18nFileName, 'i18n');
 
 	switch (importSpecifierResult.type) {
 		case 'no-import':
@@ -86,7 +86,7 @@ export function collectModifications(sourceCode: string, fileLogger: Logger, i18
 			});
 			return modifications;
 		case 'unexpected-specifiers':
-			fileLogger.info(`Importing ${i18nFileName} found but with unexpected specifiers. Skipping inlining.`);
+			fileLogger.info(`Importing ${inliner.i18nFileName} found but with unexpected specifiers. Skipping inlining.`);
 			return modifications;
 		case 'specifier':
 			fileLogger.debug(`Found import i18n as ${importSpecifierResult.localI18nIdentifier}`);

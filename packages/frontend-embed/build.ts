@@ -24,7 +24,7 @@ async function viteBuild() {
 async function buildAllLocale() {
 	const inliner = await LocaleInliner.create({
 		outputDir,
-		scriptsDir: 'scripts/',
+		scriptsDir: 'scripts',
 		i18nFile: 'src/i18n.ts',
 	})
 
