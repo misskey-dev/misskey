@@ -27,14 +27,7 @@ export function applyWithLocale(
 				if (accessed == null) {
 					fileLogger.warn(`Cannot find localization key ${modification.localizationKey.join('.')}`);
 				}
-				let replacement: string;
-				if (typeof accessed === 'string') {
-					replacement = JSON.stringify(accessed);
-				} else {
-					const jsonString = JSON.stringify(JSON.stringify(accessed));
-					replacement = `JSON.parse(${jsonString})`;
-				}
-				sourceCode.update(modification.begin, modification.end, replacement);
+				sourceCode.update(modification.begin, modification.end, JSON.stringify(accessed));
 				break;
 			}
 			case "parameterized-function": {
@@ -43,7 +36,7 @@ export function applyWithLocale(
 				if (typeof accessed === 'string') {
 					replacement = formatFunction(accessed);
 				} else if (typeof accessed === 'object' && accessed !== null) {
-					replacement = `({${Object.entries(accessed).map(([key, value]) => `${key}:${formatFunction(value)}`).join(',')}})`;
+					replacement = `({${Object.entries(accessed).map(([key, value]) => `${JSON.stringify(key)}:${formatFunction(value)}`).join(',')}})`;
 				} else {
 					fileLogger.warn(`Cannot find localization key ${modification.localizationKey.join('.')}`);
 					replacement = '(() => "")'; // placeholder for missing locale
@@ -78,6 +71,9 @@ export function applyWithLocale(
 				break;
 			}
 			case "locale-json": {
+				// locale-json is inlined to place where initialize module-level variable which is executed only once.
+				// In such case we can use JSON.parse to speed up the parsing script.
+				// https://v8.dev/blog/cost-of-javascript-2019#json
 				sourceCode.update(modification.begin, modification.end, `JSON.parse(${JSON.stringify(JSON.stringify(localeJson))})`);
 				break;
 			}
