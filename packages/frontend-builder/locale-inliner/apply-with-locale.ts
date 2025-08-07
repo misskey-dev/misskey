@@ -19,6 +19,9 @@ export function applyWithLocale(
 			case "insert":
 				sourceCode.appendRight(modification.begin, modification.text);
 				break;
+			case "replace":
+				sourceCode.update(modification.begin, modification.end, modification.text);
+				break;
 			case "localized": {
 				const accessed = getPropertyByPath(localeJson, modification.localizationKey);
 				if (accessed == null) {

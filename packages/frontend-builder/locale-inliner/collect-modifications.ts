@@ -11,7 +11,7 @@ interface WalkerContext {
 	skip: () => void;
 }
 
-export function collectModifications(sourceCode: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
+export function collectModifications(sourceCode: string, fileName: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
 	let programNode: ProgramNode;
 	try {
 		programNode = parseAst(sourceCode);
@@ -34,16 +34,30 @@ export function collectModifications(sourceCode: string, fileLogger: Logger, inl
 		enter(this: WalkerContext, node: Node) {
 			assertType<AstNode>(node)
 
-			if (node.type === 'Literal' && typeof node.value === 'string' && node.raw && node.raw.substring(1).startsWith(inliner.scriptsDir)) {
-				// we find `scripts/\w+\.js` literal and replace 'scripts' part with locale code
-				fileLogger.debug(`${lineCol(sourceCode, node)}: found ${inliner.scriptsDir}/ path literal ${node.raw}`);
-				modifications.push({
-					type: 'locale-name',
-					begin: node.start + 1,
-					end: node.start + 1 + inliner.scriptsDir.length,
-					literal: false,
-					localizedOnly: true,
-				});
+			if (node.type === 'Literal' && typeof node.value === 'string' && node.raw) {
+				if (node.raw.substring(1).startsWith(inliner.scriptsDir)) {
+					// we find `scripts/\w+\.js` literal and replace 'scripts' part with locale code
+					fileLogger.debug(`${lineCol(sourceCode, node)}: found ${inliner.scriptsDir}/ path literal ${node.raw}`);
+					modifications.push({
+						type: 'locale-name',
+						begin: node.start + 1,
+						end: node.start + 1 + inliner.scriptsDir.length,
+						literal: false,
+						localizedOnly: true,
+					});
+				}
+				if (node.raw.substring(1, node.raw.length - 1) == `${inliner.scriptsDir}/${inliner.i18nFileName}`) {
+					// we find `scripts/i18n.ts` literal.
+					// This is tipically in depmap and replace with this file name to avoid unnecessary loading i18n script
+					fileLogger.debug(`${lineCol(sourceCode, node)}: found ${inliner.i18nFileName} path literal ${node.raw}`);
+					modifications.push({
+						type: 'replace',
+						begin: node.end - 1 - inliner.i18nFileName.length,
+						end: node.end - 1,
+						text: fileName,
+						localizedOnly: true,
+					});
+				}
 			}
 
 			if (isLocalStorageGetItemLang(node)) {

@@ -56,7 +56,7 @@ export class LocaleInliner {
 				throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			}
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-			chunk.modifications = collectModifications(chunk.sourceCode, fileLogger, this);
+			chunk.modifications = collectModifications(chunk.sourceCode, chunk.fileName, fileLogger, this);
 		}
 	}
 
@@ -111,6 +111,12 @@ export type TextModification = {
 	// can be used later to insert '../scripts' for common files
 	type: 'insert';
 	begin: number;
+	text: string;
+	localizedOnly: boolean;
+} | {
+	type: 'replace';
+	begin: number;
+	end: number;
 	text: string;
 	localizedOnly: boolean;
 } | {
