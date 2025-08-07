@@ -25,7 +25,7 @@ export function applyWithLocale(
 			case "localized": {
 				const accessed = getPropertyByPath(localeJson, modification.localizationKey);
 				if (accessed == null) {
-					fileLogger.error(`Cannot find localization key ${modification.localizationKey.join('.')}`);
+					fileLogger.warn(`Cannot find localization key ${modification.localizationKey.join('.')}`);
 				}
 				let replacement: string;
 				if (typeof accessed === 'string') {
@@ -45,7 +45,7 @@ export function applyWithLocale(
 				} else if (typeof accessed === 'object' && accessed !== null) {
 					replacement = `({${Object.entries(accessed).map(([key, value]) => `${key}:${formatFunction(value)}`).join(',')}})`;
 				} else {
-					fileLogger.error(`Cannot find localization key (or is object) ${modification.localizationKey.join('.')}`);
+					fileLogger.warn(`Cannot find localization key ${modification.localizationKey.join('.')}`);
 					replacement = '(() => "")'; // placeholder for missing locale
 				}
 				sourceCode.update(modification.begin, modification.end, replacement);
