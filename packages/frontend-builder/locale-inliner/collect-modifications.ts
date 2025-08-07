@@ -137,11 +137,13 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// otherwise we will remove it.
 	let preserveI18nImport = false;
 
+	const toSkip = new Set();
+	toSkip.add(i18nImport);
 	estreeWalker.walk(programNode, {
 		enter(this: WalkerContext, node, parent, property) {
 			assertType<AstNode>(node)
 			assertType<AstNode>(parent)
-			if (node == i18nImport) {
+			if (toSkip.has(node)) {
 				// This is the import specifier, skip processing it
 				this.skip();
 				return;
@@ -159,24 +161,6 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 				if (node.name == localI18nIdentifier) {
 					fileLogger.error(`${lineCol(sourceCode, node)}: Using i18n identifier "${localI18nIdentifier}" directly. Skipping inlining.`);
 					preserveI18nImport = true;
-				}
-			} else if (node.type === 'CallExpression') {
-				assertType<estree.CallExpression>(node)
-				const i18nPath = parseI18nPropertyAccess(node.callee);
-				if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] == 'tsx' && node.arguments.length == 1) {
-					// it's parameterized locale substitution (`i18n.tsx.property(parameters)`)
-					// we expect the parameter to be an object literal
-					assertType<AstNode>(node.callee);
-					const codeSnippet = sourceCode.substring(node.start, node.end);
-					fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n function access ${codeSnippet}`);
-					modifications.push({
-						type: 'parameterized-function',
-						begin: node.callee.start,
-						end: node.callee.end,
-						localizationKey: i18nPath.slice(1), // remove 'tsx' prefix
-						localizedOnly: true,
-					});
-					this.skip();
 				}
 			} else if (node.type === 'MemberExpression') {
 				assertType<estree.MemberExpression>(node);
