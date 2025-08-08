@@ -61,7 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
-	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<MkInfo v-if="!$i.policies.canNote" warn :class="$style.formWarn">{{ i18n.ts.youAreNotAllowedToCreateNote }}</MkInfo>
+	<MkInfo v-else-if="hasNotSpecifiedMentions" warn :class="$style.formWarn">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
 		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
@@ -192,7 +193,7 @@ watch(showPreview, () => store.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => prefer.commit('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref($i.policies.canFederateNote ? props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly) : true);
+const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
 const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
@@ -283,7 +284,7 @@ const canPost = computed((): boolean => {
 	const isNotMock = !props.mock;
 
 	const canNote = $i.policies.canNote;
-	const canQuote = renoteTargetNote.value ? $i.policies.canQuote : true;
+	const canQuote = renoteTargetNote.value ? $i.policies.renotePolicy === 'allow' : true;
 
 	const isNotPosting = !posting.value && !posted.value;
 	const isNotUploading = !uploader.uploading.value;
@@ -1522,7 +1523,7 @@ html[data-color-scheme=light] .preview {
 	background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }
 
-.hasNotSpecifiedMentions {
+.formWarn {
 	margin: 0 20px 16px 20px;
 }
 

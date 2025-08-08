@@ -5517,6 +5517,10 @@ export interface Locale extends ILocale {
      * セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。
      */
     "themeIsDefaultBecauseSafeMode": string;
+    /**
+     * お使いのアカウントにはノートを投稿する権限がありません。
+     */
+    "youAreNotAllowedToCreateNote": string;
     "_order": {
         /**
          * 新しい順

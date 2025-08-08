@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.renotePolicy, 'renotePolicy'])">
 						<template #label>{{ i18n.ts._role._options.renotePolicy }}</template>
-						<template #suffix>{{ policies.renotePolicy ? i18n.ts.yes : i18n.ts.no }}</template>
+						<template #suffix>{{ policies.renotePolicy.value === 'allow' ? i18n.ts._role._options.renotePolicy_allow : policies.renotePolicy.value === 'renoteOnly' ? i18n.ts._role._options.renotePolicy_renoteOnly : i18n.ts._role._options.renotePolicy_disallow }}</template>
 						<MkSelect v-model="policies.renotePolicy">
 							<template #label>{{ i18n.ts.enable }}</template>
 							<option value="allow">{{ i18n.ts._role._options.renotePolicy_allow }}</option>

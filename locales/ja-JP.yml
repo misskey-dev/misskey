@@ -1374,6 +1374,7 @@ safeModeEnabled: "セーフモードが有効です"
 pluginsAreDisabledBecauseSafeMode: "セーフモードが有効なため、プラグインはすべて無効化されています。"
 customCssIsDisabledBecauseSafeMode: "セーフモードが有効なため、カスタムCSSは適用されていません。"
 themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。"
+youAreNotAllowedToCreateNote: "お使いのアカウントにはノートを投稿する権限がありません。"
 
 _order:
   newest: "新しい順"

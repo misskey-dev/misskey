@@ -189,7 +189,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._role._options.renotePolicy }}</template>
 				<template #suffix>
 					<span v-if="role.policies.renotePolicy.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.renotePolicy.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span v-else>{{ role.policies.renotePolicy.value === 'allow' ? i18n.ts._role._options.renotePolicy_allow : role.policies.renotePolicy.value === 'renoteOnly' ? i18n.ts._role._options.renotePolicy_renoteOnly : i18n.ts._role._options.renotePolicy_disallow }}</span>
 					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.renotePolicy)"></i></span>
 				</template>
 				<div class="_gaps">
