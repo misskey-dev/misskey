@@ -41,6 +41,7 @@
 ### Server
 - Enhance: ノートの削除処理の効率化
 - Enhance: 全体的なパフォーマンスの向上
+- Fix: SystemWebhook設定でsecretを空に出来ない問題を修正
 
 
 ## 2025.7.0
