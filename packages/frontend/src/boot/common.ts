@@ -5,9 +5,10 @@
 
 import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, updateLocale, locale, apiUrl, isSafeMode } from '@@/js/config.js';
+import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
@@ -79,25 +80,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
-
-	async function fetchAndUpdateLocale({ useCache } = { useCache: true }) {
-		const fetchOptions: RequestInit | undefined = useCache ? undefined : { cache: 'no-store' };
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`, fetchOptions);
-		if (res.status === 200) {
-			const newLocale = await res.text();
-			const parsedNewLocale = JSON.parse(newLocale);
-			miLocalStorage.setItem('locale', newLocale);
-			miLocalStorage.setItem('localeVersion', version);
-			updateLocale(parsedNewLocale);
-			updateI18n(parsedNewLocale);
-		}
-	}
-
-	if (localeOutdated) {
-		fetchAndUpdateLocale();
-	}
+	storeBootloaderErrors({ ...i18n.ts._bootErrors, reload: i18n.ts.reload });
 
 	if (import.meta.hot) {
 		import.meta.hot.on('locale-update', async (updatedLang: string) => {
@@ -106,7 +89,8 @@ export async function common(createVue: () => Promise<App<Element>>) {
 				await new Promise(resolve => {
 					window.setTimeout(resolve, 500);
 				});
-				await fetchAndUpdateLocale({ useCache: false });
+				// fetch with cache: 'no-store' to ensure the latest locale is fetched
+				await window.fetch(`/assets/locales/${lang}.${version}.json`, { cache: 'no-store' }).then(async res => res.status === 200 && await res.text());
 				window.location.reload();
 			}
 		});

@@ -22,8 +22,7 @@ export type Keys = (
 	'fontSize' |
 	'ui' |
 	'ui_temp' |
-	'locale' |
-	'localeVersion' |
+	'bootloaderLocales' |
 	'theme' |
 	'themeId' |
 	'customCss' |
