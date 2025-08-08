@@ -554,6 +554,12 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | null | undefined>;
 	mock?: boolean;
 }) {
+	if ($i?.policies.renotePolicy === 'disallow') {
+		return {
+			menu: [],
+		};
+	}
+
 	const appearNote = getAppearNote(props.note);
 
 	const channelRenoteItems: MenuItem[] = [];
@@ -561,7 +567,7 @@ export function getRenoteMenu(props: {
 	const normalExternalChannelRenoteItems: MenuItem[] = [];
 
 	if (appearNote.channel) {
-		channelRenoteItems.push(...[{
+		channelRenoteItems.push({
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -585,22 +591,26 @@ export function getRenoteMenu(props: {
 					});
 				}
 			},
-		}, {
-			text: i18n.ts.inChannelQuote,
-			icon: 'ti ti-quote',
-			action: () => {
-				if (!props.mock) {
-					os.post({
-						renote: appearNote,
-						channel: appearNote.channel,
-					});
-				}
-			},
-		}]);
+		});
+
+		if ($i?.policies.renotePolicy === 'allow') {
+			channelRenoteItems.push({
+				text: i18n.ts.inChannelQuote,
+				icon: 'ti ti-quote',
+				action: () => {
+					if (!props.mock) {
+						os.post({
+							renote: appearNote,
+							channel: appearNote.channel!,
+						});
+					}
+				},
+			});
+		}
 	}
 
 	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
-		normalRenoteItems.push(...[{
+		normalRenoteItems.push({
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -634,15 +644,19 @@ export function getRenoteMenu(props: {
 					});
 				}
 			},
-		}, ...(props.mock ? [] : [{
-			text: i18n.ts.quote,
-			icon: 'ti ti-quote',
-			action: () => {
-				os.post({
-					renote: appearNote,
-				});
-			},
-		}])]);
+		});
+
+		if (!props.mock && $i?.policies.renotePolicy === 'allow') {
+			normalRenoteItems.push({
+				text: i18n.ts.quote,
+				icon: 'ti ti-quote',
+				action: () => {
+					os.post({
+						renote: appearNote,
+					});
+				},
+			});
+		}
 
 		normalExternalChannelRenoteItems.push({
 			type: 'parent',

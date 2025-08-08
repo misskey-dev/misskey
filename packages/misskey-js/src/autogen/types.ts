@@ -5237,6 +5237,12 @@ export type components = {
             chatAvailability: 'available' | 'readonly' | 'unavailable';
             noteDraftLimit: number;
             watermarkAvailable: boolean;
+            canNote: boolean;
+            /** @enum {string} */
+            renotePolicy: 'allow' | 'renoteOnly' | 'disallow';
+            canCreateSpecifiedNote: boolean;
+            canFederateNote: boolean;
+            noteFilesLimit: number;
         };
         ReversiGameLite: {
             /** Format: id */

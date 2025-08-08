@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ targetChannel.name }}</span>
 				</button>
 			</template>
-			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || visibility === 'specified'" @click="toggleLocalOnly">
+			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || visibility === 'specified' || !$i.policies.canFederateNote" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
@@ -192,7 +192,7 @@ watch(showPreview, () => store.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => prefer.commit('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
+const localOnly = ref($i.policies.canFederateNote ? props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly) : true);
 const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
@@ -280,25 +280,44 @@ const cwTextLength = computed((): number => {
 const maxCwTextLength = 100;
 
 const canPost = computed((): boolean => {
-	return !props.mock && !posting.value && !posted.value && !uploader.uploading.value && (uploader.items.value.length === 0 || uploader.readyForUpload.value) &&
-		(
-			1 <= textLength.value ||
-			1 <= files.value.length ||
-			1 <= uploader.items.value.length ||
-			poll.value != null ||
-			renoteTargetNote.value != null ||
-			quoteId.value != null
-		) &&
-		(textLength.value <= maxTextLength.value) &&
-		(
-			useCw.value ?
-				(
-					cw.value != null && cw.value.trim() !== '' &&
-					cwTextLength.value <= maxCwTextLength
-				) : true
-		) &&
-		(files.value.length <= 16) &&
-		(!poll.value || poll.value.choices.length >= 2);
+	const isNotMock = !props.mock;
+
+	const canNote = $i.policies.canNote;
+	const canQuote = renoteTargetNote.value ? $i.policies.canQuote : true;
+
+	const isNotPosting = !posting.value && !posted.value;
+	const isNotUploading = !uploader.uploading.value;
+	const isUploaderReady = uploader.items.value.length === 0 || uploader.readyForUpload.value;
+
+	const hasContent = (
+		textLength.value >= 1 ||
+		files.value.length >= 1 ||
+		uploader.items.value.length >= 1 ||
+		poll.value != null ||
+		renoteTargetNote.value != null ||
+		quoteId.value != null
+	);
+
+	const isTextLengthValid = textLength.value <= maxTextLength.value;
+	const isCwValid = useCw.value
+		? cw.value != null && cw.value.trim() !== '' && cwTextLength.value <= maxCwTextLength
+		: true;
+	const isFilesCountValid = files.value.length <= $i.policies.noteFilesLimit;
+	const isPollValid = !poll.value || poll.value.choices.length >= 2;
+
+	return (
+		isNotMock &&
+		canNote &&
+		canQuote &&
+		isNotPosting &&
+		isNotUploading &&
+		isUploaderReady &&
+		hasContent &&
+		isTextLengthValid &&
+		isCwValid &&
+		isFilesCountValid &&
+		isPollValid
+	);
 });
 
 // cannot save pure renote as draft

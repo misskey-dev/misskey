@@ -326,7 +326,10 @@ const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renot
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i?.id);
+const canRenote = computed(() => (
+	(['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id)) &&
+	($i == null || ($i.policies.canNote && $i.policies.renotePolicy !== 'disallow'))
+));
 
 useGlobalEvent('noteDeleted', (noteId) => {
 	if (noteId === note.id || noteId === appearNote.id) {

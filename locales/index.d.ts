@@ -7851,6 +7851,38 @@ export interface Locale extends ILocale {
              * ウォーターマーク機能の使用可否
              */
             "watermarkAvailable": string;
+            /**
+             * ノートの投稿を許可
+             */
+            "canNote": string;
+            /**
+             * リノート・引用を許可
+             */
+            "renotePolicy": string;
+            /**
+             * リノート・引用を許可
+             */
+            "renotePolicy_allow": string;
+            /**
+             * リノートのみ許可
+             */
+            "renotePolicy_renoteOnly": string;
+            /**
+             * リノート・引用を禁止
+             */
+            "renotePolicy_disallow": string;
+            /**
+             * 指名ノートの投稿を許可
+             */
+            "canCreateSpecifiedNote": string;
+            /**
+             * 連合するノートの投稿を許可
+             */
+            "canFederateNote": string;
+            /**
+             * ノートに添付できるファイルの最大数
+             */
+            "noteFilesLimit": string;
         };
         "_condition": {
             /**

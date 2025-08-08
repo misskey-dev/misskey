@@ -41,12 +41,54 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSwitch>
 					</MkFolder>
 
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canNote, 'canNote'])">
+						<template #label>{{ i18n.ts._role._options.canNote }}</template>
+						<template #suffix>{{ policies.canNote ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canNote">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
+
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.canPublicNote, 'canPublicNote'])">
 						<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
 						<template #suffix>{{ policies.canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
 						<MkSwitch v-model="policies.canPublicNote">
 							<template #label>{{ i18n.ts.enable }}</template>
 						</MkSwitch>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.renotePolicy, 'renotePolicy'])">
+						<template #label>{{ i18n.ts._role._options.renotePolicy }}</template>
+						<template #suffix>{{ policies.renotePolicy ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSelect v-model="policies.renotePolicy">
+							<template #label>{{ i18n.ts.enable }}</template>
+							<option value="allow">{{ i18n.ts._role._options.renotePolicy_allow }}</option>
+							<option value="renoteOnly">{{ i18n.ts._role._options.renotePolicy_renoteOnly }}</option>
+							<option value="disallow">{{ i18n.ts._role._options.renotePolicy_disallow }}</option>
+						</MkSelect>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canCreateSpecifiedNote, 'canCreateSpecifiedNote'])">
+						<template #label>{{ i18n.ts._role._options.canCreateSpecifiedNote }}</template>
+						<template #suffix>{{ policies.canCreateSpecifiedNote ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canCreateSpecifiedNote">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canFederateNote, 'canFederateNote'])">
+						<template #label>{{ i18n.ts._role._options.canFederateNote }}</template>
+						<template #suffix>{{ policies.canFederateNote ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canFederateNote">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.noteFilesLimit, 'noteFilesLimit'])">
+						<template #label>{{ i18n.ts._role._options.noteFilesLimit }}</template>
+						<template #suffix>{{ policies.noteFilesLimit }}</template>
+						<MkInput v-model="policies.noteFilesLimit" type="number" max="16" min="0">
+						</MkInput>
 					</MkFolder>
 
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.chatAvailability, 'chatAvailability'])">
