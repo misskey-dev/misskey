@@ -4,18 +4,18 @@
  */
 
 import * as estreeWalker from 'estree-walker';
-import type { Plugin } from 'vite';
-import type { CallExpression, Expression, Program, } from 'estree';
 import MagicString from 'magic-string';
-import type { AstNode } from 'rollup';
 import { assertType } from './utils.js';
+import type { Plugin } from 'vite';
+import type { CallExpression, Expression, Program } from 'estree';
+import type { AstNode } from 'rollup';
 
 // This plugin transforms `unref(i18n)` to `i18n` in the code, which is useful for removing unnecessary unref calls
 // and helps locale inliner runs after vite build to inline the locale data into the final build.
 //
 // locale inliner cannot know minifiedSymbol(i18n) is 'unref(i18n)' or 'otherFunctionsWithEffect(i18n)' so
 // it is necessary to remove unref calls before minification.
-export default function pluginRemoveUnrefI18n(
+export function pluginRemoveUnrefI18n(
 	{
 		i18nSymbolName = 'i18n',
 	}: {
@@ -42,12 +42,12 @@ export default function pluginRemoveUnrefI18n(
 							magicString.remove(arg.end, node.end);
 						}
 					}
-				}
+				},
 			});
 			return {
 				code: magicString.toString(),
 				map: magicString.generateMap({ hires: true }),
-			}
+			};
 		},
 	};
 }

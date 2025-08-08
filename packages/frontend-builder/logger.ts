@@ -1,4 +1,6 @@
-const debug = false;
+import * as process from 'node:process';
+
+const debug = process.env.BUILDER_DEBUG !== undefined && process.env.BUILDER_DEBUG !== '0';
 
 export interface Logger {
 	debug(message: string): void;
@@ -27,7 +29,7 @@ export function createLogger(): RootLogger {
 type LogContext = {
 	warningCount: number;
 	errorCount: number;
-}
+};
 
 function loggerFactory(prefix: string, context: LogContext): RootLogger {
 	return {
@@ -63,4 +65,4 @@ export const blankLogger: Logger = {
 	error: () => void 0,
 	info: () => void 0,
 	prefixed: () => blankLogger,
-}
+};

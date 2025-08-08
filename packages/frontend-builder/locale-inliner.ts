@@ -1,11 +1,12 @@
 import * as fs from 'fs/promises';
 import * as path from 'node:path';
-import { type Locale } from '../../locales/index.js';
-import type { Manifest as ViteManifest } from 'vite';
 import MagicString from 'magic-string';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
-import { blankLogger, type Logger } from './logger.js';
+import { blankLogger } from './logger.js';
+import type { Logger } from './logger.js';
+import type { Locale } from '../../locales/index.js';
+import type { Manifest as ViteManifest } from 'vite';
 
 export class LocaleInliner {
 	outputDir: string;
@@ -70,7 +71,7 @@ export class LocaleInliner {
 	async saveLocale(localeName: string, localeJson: Locale) {
 		// create directory
 		await fs.mkdir(path.join(this.outputDir, localeName), { recursive: true });
-		const localeLogger = localeName == 'ja-JP' ? this.logger : blankLogger; // we want to log for single locale only
+		const localeLogger = localeName === 'ja-JP' ? this.logger : blankLogger; // we want to log for single locale only
 		for (const chunk of this.chunks) {
 			if (!chunk.sourceCode || !chunk.modifications) {
 				throw new Error(`Source code or modifications for ${chunk.fileName} is not available.`);

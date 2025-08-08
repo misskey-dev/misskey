@@ -1,10 +1,10 @@
-import type { AstNode, ProgramNode } from 'rollup';
 import { parseAst } from 'vite';
 import * as estreeWalker from 'estree-walker';
+import { assertNever, assertType } from '../utils.js';
+import type { AstNode, ProgramNode } from 'rollup';
 import type * as estree from 'estree';
 import type { LocaleInliner, TextModification } from '../locale-inliner.js';
-import type { Logger } from '../logger.js'
-import { assertNever, assertType } from '../utils.js';
+import type { Logger } from '../logger.js';
 
 // WalkerContext is not exported from estree-walker, so we define it here
 interface WalkerContext {
@@ -15,12 +15,12 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	let programNode: ProgramNode;
 	try {
 		programNode = parseAst(sourceCode);
-	} catch (e) {
-		fileLogger.error(`Failed to parse source code: ${e}`);
+	} catch (err) {
+		fileLogger.error(`Failed to parse source code: ${err}`);
 		return [];
 	}
 	if (programNode.sourceType !== 'module') {
-		fileLogger.error(`Source code is not a module.`);
+		fileLogger.error('Source code is not a module.');
 		return [];
 	}
 
@@ -32,7 +32,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// 3) replace all `await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())` with `localeJson` variable
 	estreeWalker.walk(programNode, {
 		enter(this: WalkerContext, node: Node) {
-			assertType<AstNode>(node)
+			assertType<AstNode>(node);
 
 			if (node.type === 'Literal' && typeof node.value === 'string' && node.raw) {
 				if (node.raw.substring(1).startsWith(inliner.scriptsDir)) {
@@ -46,7 +46,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 						localizedOnly: true,
 					});
 				}
-				if (node.raw.substring(1, node.raw.length - 1) == `${inliner.scriptsDir}/${inliner.i18nFileName}`) {
+				if (node.raw.substring(1, node.raw.length - 1) === `${inliner.scriptsDir}/${inliner.i18nFileName}`) {
 					// we find `scripts/i18n.ts` literal.
 					// This is tipically in depmap and replace with this file name to avoid unnecessary loading i18n script
 					fileLogger.debug(`${lineCol(sourceCode, node)}: found ${inliner.i18nFileName} path literal ${node.raw}`);
@@ -81,17 +81,17 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 					localizedOnly: true,
 				});
 			}
-		}
-	})
+		},
+	});
 
 	const importSpecifierResult = findImportSpecifier(programNode, inliner.i18nFileName, 'i18n');
 
 	switch (importSpecifierResult.type) {
 		case 'no-import':
-			fileLogger.debug(`No import of i18n found, skipping inlining.`);
+			fileLogger.debug('No import of i18n found, skipping inlining.');
 			return modifications;
 		case 'no-specifiers':
-			fileLogger.debug(`Importing i18n without specifiers, removing the import.`);
+			fileLogger.debug('Importing i18n without specifiers, removing the import.');
 			modifications.push({
 				type: 'delete',
 				begin: importSpecifierResult.importNode.start,
@@ -115,17 +115,18 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	let isSupported = true;
 	estreeWalker.walk(programNode, {
 		enter(node) {
-			if (node.type == 'VariableDeclaration') {
+			if (node.type === 'VariableDeclaration') {
 				assertType<estree.VariableDeclaration>(node);
-				for (let id of node.declarations.flatMap(x => declsOfPattern(x.id))) {
-					if (id == localI18nIdentifier) {
+				for (const id of node.declarations.flatMap(x => declsOfPattern(x.id))) {
+					if (id === localI18nIdentifier) {
 						isSupported = false;
 					}
 				}
 			}
-		}
-	})
+		},
+	});
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!isSupported) {
 		fileLogger.error(`Duplicated identifier "${localI18nIdentifier}" in variable declaration. Skipping inlining.`);
 		return modifications;
@@ -141,8 +142,8 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	toSkip.add(i18nImport);
 	estreeWalker.walk(programNode, {
 		enter(this: WalkerContext, node, parent, property) {
-			assertType<AstNode>(node)
-			assertType<AstNode>(parent)
+			assertType<AstNode>(node);
+			assertType<AstNode>(parent);
 			if (toSkip.has(node)) {
 				// This is the import specifier, skip processing it
 				this.skip();
@@ -150,23 +151,23 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 			}
 
 			// We don't care original name part of the import declaration
-			if (node.type == 'ImportDeclaration') this.skip();
+			if (node.type === 'ImportDeclaration') this.skip();
 
 			if (node.type === 'Identifier') {
-				assertType<estree.Identifier>(node)
-				assertType<estree.Property | estree.MemberExpression | estree.ExportSpecifier>(parent)
-				if (parent.type === 'Property' && !parent.computed && property == 'key') return; // we don't care 'id' part of { id: expr }
-				if (parent.type === 'MemberExpression' && !parent.computed && property == 'property') return; // we don't care 'id' part of { id: expr }
-				if (parent.type === 'ExportSpecifier' && property == 'exported') return; // we don't care 'id' part of { id: expr }
-				if (node.name == localI18nIdentifier) {
+				assertType<estree.Identifier>(node);
+				assertType<estree.Property | estree.MemberExpression | estree.ExportSpecifier>(parent);
+				if (parent.type === 'Property' && !parent.computed && property === 'key') return; // we don't care 'id' part of { id: expr }
+				if (parent.type === 'MemberExpression' && !parent.computed && property === 'property') return; // we don't care 'id' part of { id: expr }
+				if (parent.type === 'ExportSpecifier' && property === 'exported') return; // we don't care 'id' part of { id: expr }
+				if (node.name === localI18nIdentifier) {
 					fileLogger.error(`${lineCol(sourceCode, node)}: Using i18n identifier "${localI18nIdentifier}" directly. Skipping inlining.`);
 					preserveI18nImport = true;
 				}
 			} else if (node.type === 'MemberExpression') {
 				assertType<estree.MemberExpression>(node);
 				const i18nPath = parseI18nPropertyAccess(node);
-				if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] == 'ts') {
-					if (parent.type === 'CallExpression' && property == 'callee') return; // we don't want to process `i18n.ts.property.stringBuiltinMethod()`
+				if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] === 'ts') {
+					if (parent.type === 'CallExpression' && property === 'callee') return; // we don't want to process `i18n.ts.property.stringBuiltinMethod()`
 					if (i18nPath.at(-1)?.startsWith('_')) fileLogger.debug(`found i18n grouped property access ${i18nPath.join('.')}`);
 					else fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n property access ${i18nPath.join('.')}`);
 					// it's i18n.ts.propertyAccess
@@ -179,7 +180,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 						localizedOnly: true,
 					});
 					this.skip();
-				} else if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] == 'tsx') {
+				} else if (i18nPath != null && i18nPath.length >= 2 && i18nPath[0] === 'tsx') {
 					// it's parameterized locale substitution (`i18n.tsx.property(parameters)`)
 					// we expect the parameter to be an object literal
 					fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n function access (object) ${i18nPath.join('.')}`);
@@ -197,11 +198,12 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 				// If there is 'i18n' in the parameters, we care interior of the function
 				if (node.params.flatMap(param => declsOfPattern(param)).includes(localI18nIdentifier)) this.skip();
 			}
-		}
-	})
+		},
+	});
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!preserveI18nImport) {
-		fileLogger.debug(`removing i18n import statement`);
+		fileLogger.debug('removing i18n import statement');
 		modifications.push({
 			type: 'delete',
 			begin: i18nImport.start,
@@ -211,14 +213,13 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	}
 
 	function parseI18nPropertyAccess(node: estree.Expression | estree.Super): string[] | null {
-		if (node.type === 'Identifier' && node.name == localI18nIdentifier) return []; // i18n itself
+		if (node.type === 'Identifier' && node.name === localI18nIdentifier) return []; // i18n itself
 		if (node.type !== 'MemberExpression') return null;
 		// super.*
 		if (node.object.type === 'Super') return null;
 
 		// i18n?.property is not supported
 		if (node.optional) return null;
-
 
 		let id: string | null = null;
 		if (node.computed) {
@@ -243,10 +244,10 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 
 function declsOfPattern(pattern: estree.Pattern | null): string[] {
 	if (pattern == null) return [];
-	switch (pattern?.type) {
-		case "Identifier":
+	switch (pattern.type) {
+		case 'Identifier':
 			return [pattern.name];
-		case "ObjectPattern":
+		case 'ObjectPattern':
 			return pattern.properties.flatMap(prop => {
 				switch (prop.type) {
 					case 'Property':
@@ -254,16 +255,16 @@ function declsOfPattern(pattern: estree.Pattern | null): string[] {
 					case 'RestElement':
 						return declsOfPattern(prop.argument);
 					default:
-						assertNever(prop)
+						assertNever(prop);
 				}
 			});
-		case "ArrayPattern":
+		case 'ArrayPattern':
 			return pattern.elements.flatMap(p => declsOfPattern(p));
-		case "RestElement":
+		case 'RestElement':
 			return declsOfPattern(pattern.argument);
-		case "AssignmentPattern":
+		case 'AssignmentPattern':
 			return declsOfPattern(pattern.left);
-		case "MemberExpression":
+		case 'MemberExpression':
 			// assignment pattern so no new variable is declared
 			return [];
 		default:
@@ -375,15 +376,15 @@ type SpecifierResult =
 
 function findImportSpecifier(programNode: ProgramNode, i18nFileName: string, i18nSymbol: string): SpecifierResult {
 	const imports = programNode.body.filter(x => x.type === 'ImportDeclaration');
-	const importNode = imports.find(x => x.source.value === `./${i18nFileName}`) as estree.ImportDeclaration;
+	const importNode = imports.find(x => x.source.value === `./${i18nFileName}`) as estree.ImportDeclaration | undefined;
 	if (!importNode) return { type: 'no-import' };
 	assertType<AstNode>(importNode);
 
-	if (importNode.specifiers.length == 0) {
+	if (importNode.specifiers.length === 0) {
 		return { type: 'no-specifiers', importNode };
 	}
 
-	if (importNode.specifiers.length != 1) {
+	if (importNode.specifiers.length !== 1) {
 		return { type: 'unexpected-specifiers', importNode };
 	}
 	const i18nImportSpecifier = importNode.specifiers[0];
