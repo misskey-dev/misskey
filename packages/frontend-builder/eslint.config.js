@@ -1,20 +1,13 @@
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
-import pluginMisskey from '@misskey-dev/eslint-plugin';
 import sharedConfig from '../shared/eslint.config.js';
 
 // eslint-disable-next-line import/no-default-export
 export default [
 	...sharedConfig,
 	{
-		files: ['**/*.vue'],
-		...pluginMisskey.configs.typescript,
-	},
-	{
 		files: [
-			'@types/**/*.ts',
-			'js/**/*.ts',
-			'**/*.vue',
+			'**/*.ts',
 		],
 		languageOptions: {
 			globals: {
@@ -50,45 +43,6 @@ export default [
 			// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
 			'id-denylist': ['error', 'window', 'e'],
 			'no-shadow': ['warn'],
-			'vue/attributes-order': ['error', {
-				alphabetical: false,
-			}],
-			'vue/no-use-v-if-with-v-for': ['error', {
-				allowUsingIterationVar: false,
-			}],
-			'vue/no-ref-as-operand': 'error',
-			'vue/no-multi-spaces': ['error', {
-				ignoreProperties: false,
-			}],
-			'vue/no-v-html': 'warn',
-			'vue/order-in-components': 'error',
-			'vue/html-indent': ['warn', 'tab', {
-				attribute: 1,
-				baseIndent: 0,
-				closeBracket: 0,
-				alignAttributesVertically: true,
-				ignores: [],
-			}],
-			'vue/html-closing-bracket-spacing': ['warn', {
-				startTag: 'never',
-				endTag: 'never',
-				selfClosingTag: 'never',
-			}],
-			'vue/multi-word-component-names': 'warn',
-			'vue/require-v-for-key': 'warn',
-			'vue/no-unused-components': 'warn',
-			'vue/no-unused-vars': 'warn',
-			'vue/no-dupe-keys': 'warn',
-			'vue/valid-v-for': 'warn',
-			'vue/return-in-computed-property': 'warn',
-			'vue/no-setup-props-reactivity-loss': 'warn',
-			'vue/max-attributes-per-line': 'off',
-			'vue/html-self-closing': 'off',
-			'vue/singleline-html-element-content-newline': 'off',
-			'vue/v-on-event-hyphenation': ['error', 'never', {
-				autofix: true,
-			}],
-			'vue/attribute-hyphenation': ['error', 'never'],
 		},
 	},
 	{
