@@ -118,11 +118,16 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	width: 100%;
 	box-sizing: border-box;
 
-	&:hover {
+	&:disabled {
+		opacity: 0.8;
+		cursor: not-allowed;
+	}
+
+	&:not(:disabled):hover {
 		background: rgba(0, 0, 0, 0.05);
 	}
 
-	&:active {
+	&:not(:disabled):active {
 		background: rgba(0, 0, 0, 0.1);
 	}
 
