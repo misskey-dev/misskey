@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as process from 'node:process';
 
 const debug = process.env.BUILDER_DEBUG !== undefined && process.env.BUILDER_DEBUG !== '0';

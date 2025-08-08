@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import MagicString from 'magic-string';
 import { assertNever } from '../utils.js';
 import type { Locale, ILocale } from '../../../locales/index.js';
