@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"watch": "vite",
-		"build": "vite build",
+		"build": "tsx build.ts",
 		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -20,8 +20,8 @@
 		"astring": "1.9.0",
 		"buraha": "0.0.1",
 		"estree-walker": "3.0.3",
-		"icons-subsetter": "workspace:*",
 		"frontend-shared": "workspace:*",
+		"icons-subsetter": "workspace:*",
 		"json5": "2.2.3",
 		"mfm-js": "0.25.0",
 		"misskey-js": "workspace:*",
@@ -63,6 +63,7 @@
 		"nodemon": "3.1.10",
 		"prettier": "3.6.2",
 		"start-server-and-test": "2.0.12",
+		"tsx": "4.20.3",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vue-component-type-helpers": "3.0.5",
 		"vue-eslint-parser": "10.2.0",
