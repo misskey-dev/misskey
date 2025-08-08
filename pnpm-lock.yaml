@@ -796,6 +796,9 @@ importers:
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
+      execa:
+        specifier: 9.6.0
+        version: 9.6.0
       frontend-shared:
         specifier: workspace:*
         version: link:../frontend-shared
@@ -1061,6 +1064,9 @@ importers:
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
         version: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640(1169897c5e200f76aeb2e7696f1450e0)
+      tsx:
+        specifier: 4.20.3
+        version: 4.20.3
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -1079,6 +1085,37 @@ importers:
       vue-tsc:
         specifier: 3.0.5
         version: 3.0.5(typescript@5.9.2)
+
+  packages/frontend-builder:
+    dependencies:
+      estree-walker:
+        specifier: 3.0.3
+        version: 3.0.3
+      magic-string:
+        specifier: 0.30.17
+        version: 0.30.17
+      vite:
+        specifier: 7.0.6
+        version: 7.0.6(@types/node@22.17.0)(sass@1.89.2)(terser@5.43.1)(tsx@4.20.3)
+    devDependencies:
+      '@types/estree':
+        specifier: 1.0.8
+        version: 1.0.8
+      '@types/node':
+        specifier: 22.17.0
+        version: 22.17.0
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.38.0
+        version: 8.38.0(@typescript-eslint/parser@8.38.0(eslint@9.31.0)(typescript@5.9.2))(eslint@9.31.0)(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: 8.38.0
+        version: 8.38.0(eslint@9.31.0)(typescript@5.9.2)
+      rollup:
+        specifier: 4.46.2
+        version: 4.46.2
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
 
   packages/frontend-embed:
     dependencies:
@@ -1236,6 +1273,9 @@ importers:
       start-server-and-test:
         specifier: 2.0.12
         version: 2.0.12
+      tsx:
+        specifier: 4.20.3
+        version: 4.20.3
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -6770,14 +6810,6 @@ packages:
 
   fd-slicer@1.1.0:
     resolution: {integrity: sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==}
-
-  fdir@6.4.4:
-    resolution: {integrity: sha512-1NZP+GK4GfuAv3PqKvxQRDMjdSRZjnkq7KfhlNrCNNlZ0ygQFpebfrnfnq/W7fpUnAv9aGWmY1zKx7FYL3gwhg==}
-    peerDependencies:
-      picomatch: ^3 || ^4
-    peerDependenciesMeta:
-      picomatch:
-        optional: true
 
   fdir@6.4.6:
     resolution: {integrity: sha512-hiFoqpyZcfNm1yc4u8oWCf9A2c4D3QjCrks3zmoVKVxpQRzmPNar1hUJcBG2RQHvEVGDN+Jm81ZheVLAQMK6+w==}
@@ -15365,7 +15397,7 @@ snapshots:
   '@typescript-eslint/project-service@8.34.0(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.37.0(typescript@5.8.3)
-      '@typescript-eslint/types': 8.37.0
+      '@typescript-eslint/types': 8.38.0
       debug: 4.4.1(supports-color@10.0.0)
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -15373,8 +15405,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.37.0(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.37.0(typescript@5.8.3)
-      '@typescript-eslint/types': 8.37.0
+      '@typescript-eslint/tsconfig-utils': 8.38.0(typescript@5.8.3)
+      '@typescript-eslint/types': 8.38.0
       debug: 4.4.1(supports-color@10.0.0)
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -15804,7 +15836,7 @@ snapshots:
       alien-signals: 2.0.6
       muggle-string: 0.4.1
       path-browserify: 1.0.1
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     optionalDependencies:
       typescript: 5.9.2
 
@@ -18071,10 +18103,6 @@ snapshots:
   fd-slicer@1.1.0:
     dependencies:
       pend: 1.2.0
-
-  fdir@6.4.4(picomatch@4.0.2):
-    optionalDependencies:
-      picomatch: 4.0.2
 
   fdir@6.4.6(picomatch@4.0.3):
     optionalDependencies:
@@ -22364,8 +22392,8 @@ snapshots:
 
   tinyglobby@0.2.14:
     dependencies:
-      fdir: 6.4.4(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
 
   tinypool@1.1.1: {}
 
