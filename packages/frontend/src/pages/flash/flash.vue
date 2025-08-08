@@ -63,11 +63,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
-import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import { url } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { Interpreter } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -180,8 +180,6 @@ async function unlike() {
 
 watch(() => props.id, fetchFlash, { immediate: true });
 
-const parser = new Parser();
-
 const started = ref(false);
 const aiscript = shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
@@ -195,6 +193,12 @@ function start() {
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
+
+	const isLegacy = !flash.value.script.replaceAll(' ', '').startsWith('///@1.0.0');
+
+	const { Interpreter, Parser, values } = isLegacy ? await import('@syuilo/aiscript-0-19-0') : await import('@syuilo/aiscript');
+
+	const parser = new Parser();
 
 	components.value = [];
 

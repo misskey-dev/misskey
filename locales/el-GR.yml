@@ -353,6 +353,7 @@ _visibility:
   home: "Κεντρικό"
   homeDescription: "Δημοσίευση στο κεντρικό χρονολόγιο μόνο"
   followers: "Ακολουθούν"
+  specified: "Απευθείας σημειώματα"
 _profile:
   name: "Όνομα"
   username: "Όνομα μέλους"
@@ -395,6 +396,7 @@ _deck:
     antenna: "Αντένες"
     list: "Λίστα"
     mentions: "Επισημάνσεις"
+    direct: "Απευθείας σημειώματα"
 _webhookSettings:
   name: "Όνομα"
 _moderationLogTypes:
