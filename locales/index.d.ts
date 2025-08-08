@@ -4,7 +4,7 @@
 declare const kParameters: unique symbol;
 export type ParameterizedString<T extends string = string> = string & {
     [kParameters]: T;
-}
+};
 export interface ILocale {
     [_: string]: string | ParameterizedString | ILocale;
 }

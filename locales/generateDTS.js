@@ -86,26 +86,19 @@ export default function generateDTS() {
 			],
 			ts.factory.createIntersectionTypeNode([
 				ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
-				ts.factory.createMappedTypeNode(
-					null,
-					null,
-					null,
-					null,
-					null,
-					[
-						ts.factory.createPropertySignature(
-							undefined,
-							ts.factory.createComputedPropertyName(
-								ts.factory.createIdentifier('kParameters'),
-							),
-							undefined,
-							ts.factory.createTypeReferenceNode(
-								ts.factory.createIdentifier('T'),
-								undefined,
-							),
+				ts.factory.createTypeLiteralNode([
+					ts.factory.createPropertySignature(
+						undefined,
+						ts.factory.createComputedPropertyName(
+							ts.factory.createIdentifier('kParameters'),
 						),
-					]
-				)
+						undefined,
+						ts.factory.createTypeReferenceNode(
+							ts.factory.createIdentifier('T'),
+							undefined,
+						),
+					),
+				])
 			]),
 		),
 		ts.factory.createInterfaceDeclaration(
