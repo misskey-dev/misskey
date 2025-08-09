@@ -3230,6 +3230,7 @@ _imageEffector:
     zoomLinesSmoothingDescription: "Els paràmetres de suavitzat i amplada de línia en augmentar no es poden fer servir junts."
     zoomLinesThreshold: "Amplada de línia a l'augmentar "
     zoomLinesMaskSize: "Diàmetre del centre"
+    zoomLinesBlack: "Obscurir"
 drafts: "Esborrany "
 _drafts:
   select: "Seleccionar esborrany"
