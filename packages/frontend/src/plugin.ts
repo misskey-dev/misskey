@@ -3,19 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, defineAsyncComponent } from 'vue';
-import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { ref } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { isSafeMode } from '@@/js/config.js';
-import { genId } from '@/utility/id.js';
 import * as Misskey from 'misskey-js';
-import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import type { Parser, Interpreter, values } from '@syuilo/aiscript';
+import type { FormWithDefault } from '@/utility/form.js';
+import { genId } from '@/utility/id.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import type { FormWithDefault } from '@/utility/form.js';
 
 export type Plugin = {
 	installId: string;
@@ -39,7 +38,13 @@ export type AiScriptPluginMeta = {
 	config?: Record<string, any>;
 };
 
-const parser = new Parser();
+let _parser: Parser | null = null;
+
+async function getParser(): Promise<Parser> {
+	const { Parser } = await import('@syuilo/aiscript');
+	_parser ??= new Parser();
+	return _parser;
+}
 
 export function isSupportedAiScriptVersion(version: string): boolean {
 	try {
@@ -54,6 +59,8 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		throw new Error('code is required');
 	}
 
+	const { Interpreter, utils } = await import('@syuilo/aiscript');
+
 	const lv = utils.getLangVersion(code);
 	if (lv == null) {
 		throw new Error('No language version annotation found');
@@ -63,6 +70,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 
 	let ast;
 	try {
+		const parser = await getParser();
 		ast = parser.parse(code);
 	} catch (err) {
 		throw new Error('Aiscript syntax error');
@@ -255,7 +263,10 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 
 	await authorizePlugin(plugin);
 
-	const aiscript = new Interpreter(createPluginEnv({
+	const { Interpreter, utils } = await import('@syuilo/aiscript');
+	const { aiScriptReadline } = await import('@/aiscript/api.js');
+
+	const aiscript = new Interpreter(await createPluginEnv({
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.installId,
 	}), {
@@ -280,6 +291,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 
 	pluginContexts.set(plugin.installId, aiscript);
 
+	const parser = await getParser();
 	aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
 			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
@@ -336,8 +348,11 @@ export function changePluginActive(plugin: Plugin, active: boolean) {
 	}
 }
 
-function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
+async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Promise<Record<string, values.Value>> {
 	const id = opts.plugin.installId;
+
+	const { utils, values } = await import('@syuilo/aiscript');
+	const { createAiScriptEnv } = await import('@/aiscript/api.js');
 
 	const config = new Map<string, values.Value>();
 	for (const [k, v] of Object.entries(opts.plugin.config ?? {})) {
@@ -394,8 +409,8 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		'Plugin:register:note_view_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_view_interruptor', {
-				handler: withContext(ctx => async (note) => {
-					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(note)]));
+				handler: withContext(ctx => (note) => {
+					return utils.valToJs(ctx.execFnSync(handler, [utils.jsToVal(note)]));
 				}),
 			});
 		}),

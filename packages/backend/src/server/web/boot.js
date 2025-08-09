@@ -22,62 +22,31 @@
 		return;
 	}
 
-	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
-		const supportedLangs = LANGS;
-		let lang = localStorage.getItem('lang');
-		if (lang == null || !supportedLangs.includes(lang)) {
-			if (supportedLangs.includes(navigator.language)) {
-				lang = navigator.language;
-			} else {
-				lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
-
-				// Fallback
-				if (lang == null) lang = 'en-US';
-			}
-		}
-
-		const metaRes = await window.fetch('/api/meta', {
-			method: 'POST',
-			body: JSON.stringify({}),
-			credentials: 'omit',
-			cache: 'no-cache',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		if (metaRes.status !== 200) {
-			renderError('META_FETCH');
-			return;
-		}
-		const meta = await metaRes.json();
-		const v = meta.version;
-		if (v == null) {
-			renderError('META_FETCH_V');
-			return;
-		}
-
-		// for https://github.com/misskey-dev/misskey/issues/10202
-		if (lang == null || lang.toString == null || lang.toString() === 'null') {
-			console.error('invalid lang value detected!!!', typeof lang, lang);
-			lang = 'en-US';
-		}
-
-		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
-		if (localRes.status === 200) {
-			localStorage.setItem('lang', lang);
-			localStorage.setItem('locale', await localRes.text());
-			localStorage.setItem('localeVersion', v);
+	//#region Detect language
+	const supportedLangs = LANGS;
+	/** @type { string } */
+	let lang = localStorage.getItem('lang');
+	if (lang == null || !supportedLangs.includes(lang)) {
+		if (supportedLangs.includes(navigator.language)) {
+			lang = navigator.language;
 		} else {
-			renderError('LOCALE_FETCH');
-			return;
+			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
+
+			// Fallback
+			if (lang == null) lang = 'en-US';
 		}
+	}
+
+	// for https://github.com/misskey-dev/misskey/issues/10202
+	if (lang == null || lang.toString == null || lang.toString() === 'null') {
+		console.error('invalid lang value detected!!!', typeof lang, lang);
+		lang = 'en-US';
 	}
 	//#endregion
 
 	//#region Script
 	async function importAppScript() {
-		await import(`/vite/${CLIENT_ENTRY}`)
+		await import(CLIENT_ENTRY ? `/vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/vite/src/_boot_.ts')
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);
@@ -162,9 +131,25 @@
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
-		const locale = JSON.parse(localStorage.getItem('locale') || '{}');
+		let messages = null;
+		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
+		if (bootloaderLocales) {
+			messages = JSON.parse(bootloaderLocales);
+		}
+		if (!messages) {
+			// older version of misskey does not store bootloaderLocales, stores locale as a whole
+			const legacyLocale = localStorage.getItem('locale');
+			if (legacyLocale) {
+				const parsed = JSON.parse(legacyLocale);
+				messages = {
+					...(parsed._bootErrors ?? {}),
+					reload: parsed.reload,
+				};
+			}
+		}
+		if (!messages) messages = {};
 
-		const messages = Object.assign({
+		messages = Object.assign({
 			title: 'Failed to initialize Misskey',
 			solution: 'The following actions may solve the problem.',
 			solution1: 'Update your os and browser',
@@ -176,8 +161,8 @@
 			otherOption2: 'Start the simple client',
 			otherOption3: 'Start the repair tool',
 			otherOption4: 'Start Misskey in safe mode',
-		}, locale?._bootErrors || {});
-		const reload = locale?.reload || 'Reload';
+			reload: 'Reload',
+		}, messages);
 
 		const safeModeUrl = new URL(window.location.href);
 		safeModeUrl.searchParams.set('safemode', 'true');
@@ -193,7 +178,7 @@
 			</svg>
 			<h1>${messages.title}</h1>
 			<button class="button-big" onclick="location.reload(true);">
-				<span class="button-label-big">${reload}</span>
+				<span class="button-label-big">${messages?.reload}</span>
 			</button>
 			<p><b>${messages.solution}</b></p>
 			<p>${messages.solution1}</p>

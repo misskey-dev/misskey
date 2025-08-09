@@ -8,6 +8,7 @@ on:
       - packages/backend/**
       - packages/frontend/**
       - packages/frontend-shared/**
+      - packages/frontend-builder/**
       - packages/frontend-embed/**
       - packages/icons-subsetter/**
       - packages/sw/**
@@ -21,6 +22,7 @@ on:
       - packages/backend/**
       - packages/frontend/**
       - packages/frontend-shared/**
+      - packages/frontend-builder/**
       - packages/frontend-embed/**
       - packages/icons-subsetter/**
       - packages/sw/**
@@ -55,6 +57,7 @@ jobs:
         - backend
         - frontend
         - frontend-shared
+        - frontend-builder
         - frontend-embed
         - icons-subsetter
         - sw

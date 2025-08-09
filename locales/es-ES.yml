@@ -1465,6 +1465,7 @@ _settings:
   contentsUpdateFrequency_description2: "Cuando el modo en tiempo real está activado, el contenido se actualiza en tiempo real independientemente de esta configuración."
   showUrlPreview: "Mostrar la vista previa de la URL"
   showAvailableReactionsFirstInNote: "Mostrar las reacciones disponibles en la parte superior."
+  showPageTabBarBottom: "Mostrar la barra de pestañas de la página en la parte inferior."
   _chat:
     showSenderName: "Mostrar el nombre del remitente"
     sendOnEnter: "Intro para enviar"

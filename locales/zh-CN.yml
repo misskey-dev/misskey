@@ -1465,6 +1465,7 @@ _settings:
   contentsUpdateFrequency_description2: "当实时模式开启时，无论此设置如何，内容都会实时更新。"
   showUrlPreview: "显示 URL 预览"
   showAvailableReactionsFirstInNote: "在顶部显示可用的回应"
+  showPageTabBarBottom: "在下方显示页面标签栏"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"

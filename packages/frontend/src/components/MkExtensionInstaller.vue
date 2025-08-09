@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkInfo :warn="true">{{ i18n.ts._externalResourceInstaller.checkVendorBeforeInstall }}</MkInfo>
 
-	<div v-if="isPlugin" class="_gaps_s">
+	<div v-if="extension.type === 'plugin'" class="_gaps_s">
 		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-info-circle"></i></template>
 			<template #label>{{ i18n.ts.metadata }}</template>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCode :code="extension.raw"/>
 		</MkFolder>
 	</div>
-	<div v-else-if="isTheme" class="_gaps_s">
+	<div v-else-if="extension.type === 'theme'" class="_gaps_s">
 		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-info-circle"></i></template>
 			<template #label>{{ i18n.ts.metadata }}</template>
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSplit>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._externalResourceInstaller._meta.base }}</template>
-					<template #value>{{ i18n.ts[extension.meta.base ?? 'none'] }}</template>
+					<template #value>{{ { light: i18n.ts.light, dark: i18n.ts.dark, none: i18n.ts.none }[extension.meta.base ?? 'none'] }}</template>
 				</MkKeyValue>
 			</div>
 		</MkFolder>

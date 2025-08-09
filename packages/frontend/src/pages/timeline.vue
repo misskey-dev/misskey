@@ -103,6 +103,8 @@ const withSensitive = computed<boolean>({
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
+const showFixedPostForm = prefer.model('showFixedPostForm');
+
 async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
 	const items: (MenuItem | undefined)[] = [
@@ -202,49 +204,54 @@ onActivated(() => {
 });
 
 const headerActions = computed(() => {
-	const tmp = [
-		{
-			icon: 'ti ti-dots',
-			text: i18n.ts.options,
-			handler: (ev) => {
-				const menuItems: MenuItem[] = [];
+	const items = [{
+		icon: 'ti ti-dots',
+		text: i18n.ts.options,
+		handler: (ev) => {
+			const menuItems: MenuItem[] = [];
 
+			menuItems.push({
+				type: 'switch',
+				icon: 'ti ti-repeat',
+				text: i18n.ts.showRenotes,
+				ref: withRenotes,
+			});
+
+			if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
 				menuItems.push({
 					type: 'switch',
-					icon: 'ti ti-repeat',
-					text: i18n.ts.showRenotes,
-					ref: withRenotes,
+					icon: 'ti ti-messages',
+					text: i18n.ts.showRepliesToOthersInTimeline,
+					ref: withReplies,
+					disabled: onlyFiles,
 				});
+			}
 
-				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
-					menuItems.push({
-						type: 'switch',
-						icon: 'ti ti-messages',
-						text: i18n.ts.showRepliesToOthersInTimeline,
-						ref: withReplies,
-						disabled: onlyFiles,
-					});
-				}
+			menuItems.push({
+				type: 'switch',
+				icon: 'ti ti-eye-exclamation',
+				text: i18n.ts.withSensitive,
+				ref: withSensitive,
+			}, {
+				type: 'switch',
+				icon: 'ti ti-photo',
+				text: i18n.ts.fileAttachedOnly,
+				ref: onlyFiles,
+				disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
+			}, {
+				type: 'divider',
+			}, {
+				type: 'switch',
+				text: i18n.ts.showFixedPostForm,
+				ref: showFixedPostForm,
+			});
 
-				menuItems.push({
-					type: 'switch',
-					icon: 'ti ti-eye-exclamation',
-					text: i18n.ts.withSensitive,
-					ref: withSensitive,
-				}, {
-					type: 'switch',
-					icon: 'ti ti-photo',
-					text: i18n.ts.fileAttachedOnly,
-					ref: onlyFiles,
-					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
-				});
-
-				os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
-			},
+			os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 		},
-	];
+	}];
+
 	if (deviceKind === 'desktop') {
-		tmp.unshift({
+		items.unshift({
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
@@ -252,7 +259,8 @@ const headerActions = computed(() => {
 			},
 		});
 	}
-	return tmp;
+
+	return items;
 });
 
 const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => ({
