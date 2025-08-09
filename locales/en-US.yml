@@ -2000,7 +2000,7 @@ _role:
     descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
     canHideAds: "Can hide ads"
     canSearchNotes: "Usage of note search"
-    canSearchUsers: "Usage user search"
+    canSearchUsers: "User search"
     canUseTranslator: "Translator usage"
     avatarDecorationLimit: "Maximum number of avatar decorations"
     canImportAntennas: "Can import antennas"
