@@ -103,6 +103,7 @@ export class QueueService {
 		for (const def of REPEATABLE_SYSTEM_JOB_DEF) {
 			this.systemQueue.upsertJobScheduler(def.name, {
 				pattern: def.pattern,
+				immediately: false,
 			}, {
 				name: def.name,
 				opts: {

@@ -5211,6 +5211,7 @@ export type components = {
             canManageCustomEmojis: boolean;
             canManageAvatarDecorations: boolean;
             canSearchNotes: boolean;
+            canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
             driveCapacityMb: number;
@@ -11893,7 +11894,8 @@ export interface operations {
                     name: string;
                     on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
                     url: string;
-                    secret: string;
+                    /** @default  */
+                    secret?: string;
                 };
             };
         };
@@ -12237,7 +12239,8 @@ export interface operations {
                     name: string;
                     on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
                     url: string;
-                    secret: string;
+                    /** @default  */
+                    secret?: string;
                 };
             };
         };
