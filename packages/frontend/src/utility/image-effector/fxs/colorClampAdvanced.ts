@@ -30,13 +30,14 @@ void main() {
 `;
 
 export const FX_colorClampAdvanced = defineImageEffectorFx({
-	id: 'colorClampAdvanced' as const,
+	id: 'colorClampAdvanced',
 	name: i18n.ts._imageEffector._fxs.colorClampAdvanced,
 	shader,
 	uniforms: ['rMax', 'rMin', 'gMax', 'gMin', 'bMax', 'bMin'] as const,
 	params: {
 		rMax: {
-			type: 'number' as const,
+			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.redComponent})`,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -44,7 +45,8 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		rMin: {
-			type: 'number' as const,
+			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.redComponent})`,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,
@@ -52,7 +54,8 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMax: {
-			type: 'number' as const,
+			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -60,7 +63,8 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		gMin: {
-			type: 'number' as const,
+			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,
@@ -68,7 +72,8 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMax: {
-			type: 'number' as const,
+			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -76,7 +81,8 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		bMin: {
-			type: 'number' as const,
+			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,
