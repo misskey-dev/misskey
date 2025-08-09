@@ -659,7 +659,7 @@ export class MiMeta {
 
 	@Column('varchar', {
 		length: 128,
-		default: 'all',
+		default: 'none',
 	})
 	public federation: 'all' | 'specified' | 'none';
 
@@ -706,6 +706,21 @@ export class MiMeta {
 		default: true,
 	})
 	public allowExternalApRedirect: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableRemoteNotesCleaning: boolean;
+
+	@Column('integer', {
+		default: 60, // minutes
+	})
+	public remoteNotesCleaningMaxProcessingDurationInMinutes: number;
+
+	@Column('integer', {
+		default: 90, // days
+	})
+	public remoteNotesCleaningExpiryDaysForEachNotes: number;
 }
 
 export type SoftwareSuspension = {

@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-shield-lock"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.totp }}</SearchLabel></template>
-					<template #caption><SearchKeyword>{{ i18n.ts.totpDescription }}</SearchKeyword></template>
+					<template #caption><SearchText>{{ i18n.ts.totpDescription }}</SearchText></template>
 					<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
 				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
 					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
-					<template #caption><SearchKeyword>{{ i18n.ts.passwordLessLoginDescription }}</SearchKeyword></template>
+					<template #caption><SearchText>{{ i18n.ts.passwordLessLoginDescription }}</SearchText></template>
 				</MkSwitch>
 			</SearchMarker>
 		</div>

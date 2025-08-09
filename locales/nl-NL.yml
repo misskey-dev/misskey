@@ -1019,6 +1019,7 @@ _cw:
 _visibility:
   home: "Startpagina"
   followers: "Volgers"
+  specified: "Directe notities"
 _profile:
   name: "Naam"
   username: "Gebruikersnaam"
@@ -1061,6 +1062,7 @@ _deck:
     list: "Lijsten"
     channel: "Kanalen"
     mentions: "Vermeldingen"
+    direct: "Directe notities"
 _webhookSettings:
   name: "Naam"
   active: "Ingeschakeld"
