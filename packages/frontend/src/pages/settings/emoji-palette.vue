@@ -144,7 +144,8 @@ import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
+
 const emojiPaletteForReaction = prefer.model('emojiPaletteForReaction');
 const emojiPaletteForMain = prefer.model('emojiPaletteForMain');
 const emojiPickerScale = prefer.model('emojiPickerScale');
@@ -231,8 +232,8 @@ function previewPicker(ev: MouseEvent) {
 watch([
 	emojiPickerStyle,
 	reactionPickerStyle,
-], async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+], () => {
+	suggestReload();
 });
 
 definePage(() => ({
