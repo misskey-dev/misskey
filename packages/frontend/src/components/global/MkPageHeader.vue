@@ -52,6 +52,7 @@ export type PageHeaderProps = {
 	actions?: PageHeaderItem[] | null;
 	thin?: boolean;
 	hideTitle?: boolean;
+	canOmitTitle?: boolean;
 	displayMyAvatar?: boolean;
 };
 </script>
@@ -77,7 +78,7 @@ const emit = defineEmits<{
 const injectedPageMetadata = inject(DI.pageMetadata, ref(null));
 const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
-const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle);
+const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle || (props.canOmitTitle && props.tabs.length > 0));
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
 const el = useTemplateRef('el');

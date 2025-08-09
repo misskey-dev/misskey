@@ -495,7 +495,7 @@ function done(query?: string): boolean | void {
 
 function settings() {
 	emit('esc');
-	router.push('settings/emoji-palette');
+	router.push('/settings/emoji-palette');
 }
 
 onMounted(() => {
@@ -584,6 +584,14 @@ defineExpose({
 					display: grid;
 					grid-template-columns: var(--columns);
 					font-size: 30px;
+
+					> .config {
+						aspect-ratio: 1 / 1;
+						width: auto;
+						height: auto;
+						min-width: 0;
+						font-size: 14px;
+					}
 
 					> .item {
 						aspect-ratio: 1 / 1;
