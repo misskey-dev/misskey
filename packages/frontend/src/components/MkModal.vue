@@ -42,14 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, shallowRef, computed } from 'vue';
+import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, useTemplateRef, computed } from 'vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
-import { isTouchUsing } from '@/scripts/touch.js';
-import { defaultStore } from '@/store.js';
-import { deviceKind } from '@/scripts/device-kind.js';
-import type { Keymap } from '@/scripts/hotkey.js';
-import { focusTrap } from '@/scripts/focus-trap.js';
-import { focusParent } from '@/scripts/focus.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { focusTrap } from '@/utility/focus-trap.js';
+import { focusParent } from '@/utility/focus.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -66,7 +67,7 @@ type ModalTypes = 'popup' | 'dialog' | 'drawer';
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	anchor?: { x: string; y: string; };
-	src?: HTMLElement | null;
+	anchorElement?: HTMLElement | null;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
@@ -75,7 +76,7 @@ const props = withDefaults(defineProps<{
 	returnFocusTo?: HTMLElement | null;
 }>(), {
 	manualShowing: null,
-	src: null,
+	anchorElement: null,
 	anchor: () => ({ x: 'center', y: 'bottom' }),
 	preferType: 'auto',
 	zPriority: 'low',
@@ -94,22 +95,22 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-provide('modal', true);
+provide(DI.inModal, true);
 
 const maxHeight = ref<number>();
 const fixed = ref(false);
 const transformOrigin = ref('center');
 const showing = ref(true);
-const modalRootEl = shallowRef<HTMLElement>();
-const content = shallowRef<HTMLElement>();
+const modalRootEl = useTemplateRef('modalRootEl');
+const content = useTemplateRef('content');
 const zIndex = os.claimZIndex(props.zPriority);
 const useSendAnime = ref(false);
 const type = computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
-		if ((defaultStore.state.menuStyle === 'drawer') || (defaultStore.state.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
+		if ((prefer.s.menuStyle === 'drawer') || (prefer.s.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
 			return 'drawer';
 		} else {
-			return props.src != null ? 'popup' : 'dialog';
+			return props.anchorElement != null ? 'popup' : 'dialog';
 		}
 	} else {
 		return props.preferType!;
@@ -117,7 +118,7 @@ const type = computed<ModalTypes>(() => {
 });
 const isEnableBgTransparent = computed(() => props.transparentBg && (type.value === 'popup'));
 const transitionName = computed((() =>
-	defaultStore.state.animation
+	prefer.s.animation
 		? useSendAnime.value
 			? 'send'
 			: type.value === 'drawer'
@@ -148,7 +149,7 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 	}
 
 	// eslint-disable-next-line vue/no-mutating-props
-	if (props.src) props.src.style.pointerEvents = 'auto';
+	if (props.anchorElement) props.anchorElement.style.pointerEvents = 'auto';
 	showing.value = false;
 	emit('close');
 }
@@ -173,13 +174,13 @@ const MARGIN = 16;
 const SCROLLBAR_THICKNESS = 16;
 
 const align = () => {
-	if (props.src == null) return;
+	if (props.anchorElement == null) return;
 	if (type.value === 'drawer') return;
 	if (type.value === 'dialog') return;
 
 	if (content.value == null) return;
 
-	const srcRect = props.src.getBoundingClientRect();
+	const anchorRect = props.anchorElement.getBoundingClientRect();
 
 	const width = content.value!.offsetWidth;
 	const height = content.value!.offsetHeight;
@@ -187,15 +188,15 @@ const align = () => {
 	let left;
 	let top;
 
-	const x = srcRect.left + (fixed.value ? 0 : window.scrollX);
-	const y = srcRect.top + (fixed.value ? 0 : window.scrollY);
+	const x = anchorRect.left + (fixed.value ? 0 : window.scrollX);
+	const y = anchorRect.top + (fixed.value ? 0 : window.scrollY);
 
 	if (props.anchor.x === 'center') {
-		left = x + (props.src.offsetWidth / 2) - (width / 2);
+		left = x + (props.anchorElement.offsetWidth / 2) - (width / 2);
 	} else if (props.anchor.x === 'left') {
 		// TODO
 	} else if (props.anchor.x === 'right') {
-		left = x + props.src.offsetWidth;
+		left = x + props.anchorElement.offsetWidth;
 	}
 
 	if (props.anchor.y === 'center') {
@@ -203,7 +204,7 @@ const align = () => {
 	} else if (props.anchor.y === 'top') {
 		// TODO
 	} else if (props.anchor.y === 'bottom') {
-		top = y + props.src.offsetHeight;
+		top = y + props.anchorElement.offsetHeight;
 	}
 
 	if (fixed.value) {
@@ -213,7 +214,7 @@ const align = () => {
 		}
 
 		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - top;
-		const upperSpace = (srcRect.top - MARGIN);
+		const upperSpace = (anchorRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
 		if (top + height > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
@@ -237,7 +238,7 @@ const align = () => {
 		}
 
 		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - (top - window.scrollY);
-		const upperSpace = (srcRect.top - MARGIN);
+		const upperSpace = (anchorRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
 		if (top + height - window.scrollY > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
@@ -267,15 +268,15 @@ const align = () => {
 	let transformOriginX = 'center';
 	let transformOriginY = 'center';
 
-	if (top >= srcRect.top + props.src.offsetHeight + (fixed.value ? 0 : window.scrollY)) {
+	if (top >= anchorRect.top + props.anchorElement.offsetHeight + (fixed.value ? 0 : window.scrollY)) {
 		transformOriginY = 'top';
-	} else if ((top + height) <= srcRect.top + (fixed.value ? 0 : window.scrollY)) {
+	} else if ((top + height) <= anchorRect.top + (fixed.value ? 0 : window.scrollY)) {
 		transformOriginY = 'bottom';
 	}
 
-	if (left >= srcRect.left + props.src.offsetWidth + (fixed.value ? 0 : window.scrollX)) {
+	if (left >= anchorRect.left + props.anchorElement.offsetWidth + (fixed.value ? 0 : window.scrollX)) {
 		transformOriginX = 'left';
-	} else if ((left + width) <= srcRect.left + (fixed.value ? 0 : window.scrollX)) {
+	} else if ((left + width) <= anchorRect.left + (fixed.value ? 0 : window.scrollX)) {
 		transformOriginX = 'right';
 	}
 
@@ -316,12 +317,12 @@ const alignObserver = new ResizeObserver((entries, observer) => {
 });
 
 onMounted(() => {
-	watch(() => props.src, async () => {
-		if (props.src) {
+	watch(() => props.anchorElement, async () => {
+		if (props.anchorElement) {
 			// eslint-disable-next-line vue/no-mutating-props
-			props.src.style.pointerEvents = 'none';
+			props.anchorElement.style.pointerEvents = 'none';
 		}
-		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.src) != null);
+		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.anchorElement) != null);
 
 		await nextTick();
 
@@ -338,7 +339,7 @@ onMounted(() => {
 			}
 		} else {
 			releaseFocusTrap?.();
-			focusParent(props.returnFocusTo ?? props.src, true, false);
+			focusParent(props.returnFocusTo ?? props.anchorElement, true, false);
 		}
 	}, { immediate: true });
 

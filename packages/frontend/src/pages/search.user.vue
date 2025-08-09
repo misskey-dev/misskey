@@ -17,17 +17,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 	</div>
 
-	<MkFoldableSection v-if="userPagination">
+	<MkFoldableSection v-if="paginator">
 		<template #header>{{ i18n.ts.searchResult }}</template>
-		<MkUserList :key="key" :pagination="userPagination"/>
+		<MkUserList :key="`searchUsers:${key}`" :paginator="paginator"/>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRef } from 'vue';
+import { markRaw, ref, shallowRef, toRef } from 'vue';
 import type { Endpoints } from 'misskey-js';
-import type { Paging } from '@/components/MkPagination.vue';
 import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -36,12 +35,13 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
-  query?: string,
-  origin?: Endpoints['users/search']['req']['origin'],
+	query?: string,
+	origin?: Endpoints['users/search']['req']['origin'],
 }>(), {
 	query: '',
 	origin: 'combined',
@@ -49,14 +49,16 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-const key = ref('');
+const key = ref(0);
+const paginator = shallowRef<Paginator<'users/search'> | null>(null);
+
 const searchQuery = ref(toRef(props, 'query').value);
 const searchOrigin = ref(toRef(props, 'origin').value);
-const userPagination = ref<Paging>();
 
 async function search() {
 	const query = searchQuery.value.toString().trim();
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (query == null || query === '') return;
 
 	//#region AP lookup
@@ -75,9 +77,18 @@ async function search() {
 			const res = await promise;
 
 			if (res.type === 'User') {
-				router.push(`/@${res.object.username}@${res.object.host}`);
+				router.push('/@:acct/:page?', {
+					params: {
+						acct: `${res.object.username}@${res.object.host}`,
+					},
+				});
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} else if (res.type === 'Note') {
-				router.push(`/notes/${res.object.id}`);
+				router.push('/notes/:noteId/:initialTab?', {
+					params: {
+						noteId: res.object.id,
+					},
+				});
 			}
 
 			return;
@@ -92,7 +103,7 @@ async function search() {
 				text: i18n.ts.lookupConfirm,
 			});
 			if (!confirm.canceled) {
-				router.push(`/${query}`);
+				router.pushByPath(`/${query}`);
 				return;
 			}
 		}
@@ -103,21 +114,25 @@ async function search() {
 				text: i18n.ts.openTagPageConfirm,
 			});
 			if (!confirm.canceled) {
-				router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+				router.push('/user-tags/:tag', {
+					params: {
+						tag: query.substring(1),
+					},
+				});
 				return;
 			}
 		}
 	}
 
-	userPagination.value = {
-		endpoint: 'users/search',
+	paginator.value = markRaw(new Paginator('users/search', {
 		limit: 10,
+		offsetMode: true,
 		params: {
 			query: query,
 			origin: instance.federation === 'none' ? 'local' : searchOrigin.value,
 		},
-	};
+	}));
 
-	key.value = query;
+	key.value++;
 }
 </script>

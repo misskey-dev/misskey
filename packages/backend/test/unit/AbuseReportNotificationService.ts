@@ -149,9 +149,9 @@ describe('AbuseReportNotificationService', () => {
 	});
 
 	beforeEach(async () => {
-		root = await createUser({ username: 'root', usernameLower: 'root', isRoot: true });
-		alice = await createUser({ username: 'alice', usernameLower: 'alice', isRoot: false });
-		bob = await createUser({ username: 'bob', usernameLower: 'bob', isRoot: false });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
+		alice = await createUser({ username: 'alice', usernameLower: 'alice' });
+		bob = await createUser({ username: 'bob', usernameLower: 'bob' });
 		systemWebhook1 = await createWebhook();
 		systemWebhook2 = await createWebhook();
 
@@ -162,10 +162,10 @@ describe('AbuseReportNotificationService', () => {
 		emailService.sendEmail.mockClear();
 		webhookService.enqueueSystemWebhook.mockClear();
 
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
-		await systemWebhooksRepository.delete({});
-		await abuseReportNotificationRecipientRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userProfilesRepository.createQueryBuilder().delete().execute();
+		await systemWebhooksRepository.createQueryBuilder().delete().execute();
+		await abuseReportNotificationRecipientRepository.createQueryBuilder().delete().execute();
 	});
 
 	afterAll(async () => {

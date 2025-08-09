@@ -10,9 +10,9 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DriveService } from '@/core/DriveService.js';
-import { ApiError } from '../../../error.js';
 import { MiMeta } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -55,6 +55,19 @@ export const meta = {
 			message: 'Cannot upload the file because you have no free space of drive.',
 			code: 'NO_FREE_SPACE',
 			id: 'd08dbc37-a6a9-463a-8c47-96c32ab5f064',
+		},
+
+		maxFileSizeExceeded: {
+			message: 'Cannot upload the file because it exceeds the maximum file size.',
+			code: 'MAX_FILE_SIZE_EXCEEDED',
+			id: 'b9d8c348-33f0-4673-b9a9-5d4da058977a',
+			httpStatusCode: 413,
+		},
+
+		unallowedFileType: {
+			message: 'Cannot upload the file because it is an unallowed file type.',
+			code: 'UNALLOWED_FILE_TYPE',
+			id: '4becd248-7f2c-48c4-a9f0-75edc4f9a1ea',
 		},
 	},
 } as const;
@@ -115,6 +128,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err instanceof IdentifiableError) {
 					if (err.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
 					if (err.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
+					if (err.id === 'f9e4e5f3-4df4-40b5-b400-f236945f7073') throw new ApiError(meta.errors.maxFileSizeExceeded);
+					if (err.id === 'bd71c601-f9b0-4808-9137-a330647ced9b') throw new ApiError(meta.errors.unallowedFileType);
 				}
 				throw new ApiError();
 			} finally {

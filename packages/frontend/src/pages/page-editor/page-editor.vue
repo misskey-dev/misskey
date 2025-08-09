@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="jqqmcavi">
 			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
 			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -56,27 +55,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="!readonly" rounded class="add" @click="add()"><i class="ti ti-plus"></i></MkButton>
 			</div>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
+import { url } from '@@/js/config.js';
 import XBlocks from './page-editor.blocks.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
-import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { selectFile } from '@/scripts/select-file.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { selectFile } from '@/utility/drive.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i } from '@/account.js';
-import { mainRouter } from '@/router/main.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
+import { mainRouter } from '@/router.js';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const props = defineProps<{
@@ -155,7 +154,11 @@ async function save() {
 
 		pageId.value = created.id;
 		currentName.value = name.value.trim();
-		mainRouter.replace(`/pages/edit/${pageId.value}`);
+		mainRouter.replace('/pages/edit/:initPageId', {
+			params: {
+				initPageId: pageId.value,
+			},
+		});
 	}
 }
 
@@ -190,7 +193,11 @@ async function duplicate() {
 	pageId.value = created.id;
 	currentName.value = name.value.trim();
 
-	mainRouter.push(`/pages/edit/${pageId.value}`);
+	mainRouter.push('/pages/edit/:initPageId', {
+		params: {
+			initPageId: pageId.value,
+		},
+	});
 }
 
 async function add() {
@@ -201,12 +208,15 @@ async function add() {
 	});
 	if (canceled) return;
 
-	const id = uuid();
+	const id = genId();
 	content.value.push({ id, type });
 }
 
 function setEyeCatchingImage(img: Event) {
-	selectFile(img.currentTarget ?? img.target, null).then(file => {
+	selectFile({
+		anchorElement: img.currentTarget ?? img.target,
+		multiple: false,
+	}).then(file => {
 		eyeCatchingImageId.value = file.id;
 	});
 }
@@ -241,7 +251,7 @@ async function init() {
 		content.value = page.value.content;
 		eyeCatchingImageId.value = page.value.eyeCatchingImageId;
 	} else {
-		const id = uuid();
+		const id = genId();
 		content.value = [{
 			id,
 			type: 'text',
@@ -264,10 +274,10 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-note',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.initPageId ? i18n.ts._pages.editPage
-				: props.initPageName && props.initUser ? i18n.ts._pages.readPage
-				: i18n.ts._pages.newPage,
+	: props.initPageName && props.initUser ? i18n.ts._pages.readPage
+	: i18n.ts._pages.newPage,
 	icon: 'ti ti-pencil',
 }));
 </script>

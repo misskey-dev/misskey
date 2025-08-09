@@ -8,6 +8,9 @@
 		'* 0 * * *',
 	],
 	prHourlyLimit: 5,
+	labels: [
+		'dependencies',
+	],
 	dependencyDashboardApproval: true,
 	dependencyDashboardAutoclose: true,
 	osvVulnerabilityAlerts: true,
@@ -17,6 +20,9 @@
 		'@typescript/lib-webworker',
 		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
 		'nsfwjs',
+    // https://github.com/misskey-dev/misskey/issues/15920
+    'sharp',
+		'@misskey-dev/sharp-read-bmp'
 	],
 	packageRules: [
 		{
@@ -34,7 +40,10 @@
 				'packages/misskey-bubble-game/**/package.json',
 				'packages/misskey-reversi/**/package.json',
 				'packages/sw/**/package.json',
+				'packages/icons-subsetter/**/package.json',
 			],
+			// prevent wastage of Chromatic snapshots
+			rebaseWhen: 'never',
 		},
 		{
 			groupName: '[misskey-js] Update dependencies',
@@ -67,6 +76,18 @@
 			],
 		},
 		{
+			groupName: '[Node.js] Update dependencies',
+			matchManagers: ['custom.regex'],
+			matchPackageNames: ['node'],
+		},
+		{
+			groupName: '[Node.js] Update dependencies',
+			matchDepNames: ['ghcr.io/devcontainers/features/node:1'],
+			matchFileNames: [
+				'.devcontainer/**',
+			],
+		},
+		{
 			groupName: '[Docker] Update dependencies',
 			matchFileNames: [
 				'compose.local-db.yml',
@@ -77,9 +98,20 @@
 		},
 		{
 			groupName: '[devcontainer] Update dependencies',
+			matchDepNames: ['!ghcr.io/devcontainers/features/node:1'],
 			matchFileNames: [
 				'.devcontainer/**',
 			],
+		},
+	],
+	customManagers: [
+		{
+			customType: 'regex',
+			managerFilePatterns: ['/^Dockerfile$/'],
+			matchStrings: ['ARG NODE_VERSION=(?<currentValue>.*?)\\n'],
+			datasourceTemplate: 'docker',
+			depNameTemplate: 'node',
+			versioningTemplate: 'docker',
 		},
 	],
 }

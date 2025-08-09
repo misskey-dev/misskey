@@ -119,6 +119,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		googleAnalyticsMeasurementId: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		swPublickey: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -206,6 +210,38 @@ export const packedMetaLiteSchema = {
 		translatorAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		sentryForFrontend: {
+			type: 'object',
+			optional: false, nullable: true,
+			properties: {
+				options: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						dsn: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+					additionalProperties: true,
+				},
+				vueIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+				browserTracingIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+				replayIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+			},
 		},
 		mediaProxy: {
 			type: 'string',

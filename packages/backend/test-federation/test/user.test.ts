@@ -37,6 +37,7 @@ describe('User', () => {
 					'id',
 					'host',
 					'avatarUrl',
+					'avatarBlurhash',
 					'instance',
 					'badgeRoles',
 					'url',

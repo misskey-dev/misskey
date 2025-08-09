@@ -46,6 +46,8 @@
 	},
 	"compileOnSave": false,
 	"include": [
+		"./build.ts",
+		"./lib/**/*.ts",
 		"./src/**/*.ts",
 		"./src/**/*.vue",
 		"./test/**/*.ts",

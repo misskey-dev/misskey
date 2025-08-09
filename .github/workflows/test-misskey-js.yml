@@ -14,31 +14,23 @@ on:
     paths:
       - packages/misskey-js/**
       - .github/workflows/test-misskey-js.yml
-
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   test:
     name: Unit tests (misskey.js)
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.11.0]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      - run: corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.1.0
 
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.2.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Install dependencies

@@ -9,7 +9,6 @@ export type Keys = (
 	'instance' |
 	'instanceCachedAt' |
 	'account' |
-	'accounts' |
 	'latestDonationInfoShownAt' |
 	'neverShowDonationInfo' |
 	'neverShowLocalOnlyInfo' |
@@ -18,23 +17,25 @@ export type Keys = (
 	'lang' |
 	'drafts' |
 	'hashtags' |
-	'wallpaper' |
-	'theme' |
 	'colorScheme' |
 	'useSystemFont' |
 	'fontSize' |
 	'ui' |
 	'ui_temp' |
-	'locale' |
-	'localeVersion' |
+	'bootloaderLocales' |
 	'theme' |
+	'themeId' |
 	'customCss' |
-	'message_drafts' |
+	'chatMessageDrafts' |
 	'scratchpad' |
 	'debug' |
+	'preferences' |
+	'latestPreferencesUpdate' |
+	'hidePreferencesRestoreSuggestion' |
+	'isSafeMode' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
-	`themes:${string}` |
+	`themes:${string}` | // DEPRECATED
 	`aiscript:${string}` |
 	'lastEmojisFetchedAt' | // DEPRECATED, stored in indexeddb (13.9.0~)
 	'emojis' | // DEPRECATED, stored in indexeddb (13.9.0~);
