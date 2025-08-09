@@ -101,7 +101,7 @@ export async function getNoteClipMenu(props: {
 			const { canceled, result } = await os.form(i18n.ts.createNewClip, {
 				name: {
 					type: 'string',
-					default: null,
+					default: null as string | null,
 					label: i18n.ts.name,
 				},
 				description: {
@@ -180,6 +180,7 @@ export function getNoteMenu(props: {
 	currentClip?: Misskey.entities.Clip;
 }) {
 	const appearNote = getAppearNote(props.note);
+	const link = appearNote.url ?? appearNote.uri;
 
 	const cleanups = [] as (() => void)[];
 
@@ -189,6 +190,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.noteDeleteConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
+			if ($i == null) return;
 
 			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
@@ -208,6 +210,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.deleteAndEditConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
+			if ($i == null) return;
 
 			misskeyApi('notes/delete', {
 				noteId: appearNote.id,
@@ -317,22 +320,25 @@ export function getNoteMenu(props: {
 			action: copyContent,
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
 
-		if (appearNote.url || appearNote.uri) {
+		if (link) {
 			menuItems.push({
 				icon: 'ti ti-link',
 				text: i18n.ts.copyRemoteLink,
 				action: () => {
-					copyToClipboard(appearNote.url ?? appearNote.uri);
+					copyToClipboard(link);
 				},
 			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
+					window.open(link, '_blank', 'noopener');
 				},
 			});
 		} else {
-			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.embed));
+			const embedMenu = getNoteEmbedCodeMenu(appearNote, i18n.ts.embed);
+			if (embedMenu != null) {
+				menuItems.push(embedMenu);
+			}
 		}
 
 		if (isSupportShare()) {
@@ -475,22 +481,25 @@ export function getNoteMenu(props: {
 			action: copyContent,
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
 
-		if (appearNote.url || appearNote.uri) {
+		if (link != null) {
 			menuItems.push({
 				icon: 'ti ti-link',
 				text: i18n.ts.copyRemoteLink,
 				action: () => {
-					copyToClipboard(appearNote.url ?? appearNote.uri);
+					copyToClipboard(link);
 				},
 			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
+					window.open(link, '_blank', 'noopener');
 				},
 			});
 		} else {
-			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.embed));
+			const embedMenu = getNoteEmbedCodeMenu(appearNote, i18n.ts.embed);
+			if (embedMenu != null) {
+				menuItems.push(embedMenu);
+			}
 		}
 	}
 
@@ -542,7 +551,7 @@ function smallerVisibility(a: Visibility, b: Visibility): Visibility {
 
 export function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
-	renoteButton: ShallowRef<HTMLElement | undefined>;
+	renoteButton: ShallowRef<HTMLElement | null | undefined>;
 	mock?: boolean;
 }) {
 	const appearNote = getAppearNote(props.note);
@@ -625,7 +634,7 @@ export function getRenoteMenu(props: {
 					});
 				}
 			},
-		}, (props.mock) ? undefined : {
+		}, ...(props.mock ? [] : [{
 			text: i18n.ts.quote,
 			icon: 'ti ti-quote',
 			action: () => {
@@ -633,7 +642,7 @@ export function getRenoteMenu(props: {
 					renote: appearNote,
 				});
 			},
-		}]);
+		}])]);
 
 		normalExternalChannelRenoteItems.push({
 			type: 'parent',

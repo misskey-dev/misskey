@@ -56,10 +56,12 @@ const emit = defineEmits<{
 }>();
 
 function getScreenY(event: TouchEvent | MouseEvent | PointerEvent): number {
-	if (event.touches && event.touches[0] && event.touches[0].screenY != null) {
+	if (('touches' in event) && event.touches[0] && event.touches[0].screenY != null) {
 		return event.touches[0].screenY;
-	} else {
+	} else if ('screenY' in event) {
 		return event.screenY;
+	} else {
+		return 0; // TSを黙らせるため
 	}
 }
 
@@ -67,13 +69,13 @@ function getScreenY(event: TouchEvent | MouseEvent | PointerEvent): number {
 function lockDownScroll() {
 	if (scrollEl == null) return;
 	scrollEl.style.touchAction = 'pan-x pan-down pinch-zoom';
-	scrollEl.style.overscrollBehavior = 'none';
+	scrollEl.style.overscrollBehavior = 'auto none';
 }
 
 function unlockDownScroll() {
 	if (scrollEl == null) return;
 	scrollEl.style.touchAction = 'auto';
-	scrollEl.style.overscrollBehavior = 'contain';
+	scrollEl.style.overscrollBehavior = 'auto contain';
 }
 
 function moveStartByMouse(event: MouseEvent) {

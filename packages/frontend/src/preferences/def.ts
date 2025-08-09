@@ -381,6 +381,9 @@ export const PREF_DEF = definePreferences({
 	showAvailableReactionsFirstInNote: {
 		default: false,
 	},
+	showPageTabBarBottom: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 		mergeStrategy: (a, b) => {

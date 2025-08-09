@@ -433,6 +433,7 @@ _cw:
 _visibility:
   home: "ໜ້າຫຼັກ"
   followers: "ຜູ້ຕິດຕາມ"
+  specified: "ໂພສ Direct note"
 _profile:
   name: "ຊື່"
   username: "ຊື່ຜູ້ໃຊ້"
@@ -470,6 +471,7 @@ _deck:
     list: "ລາຍການ"
     channel: "ຊ່ອງ"
     mentions: "ກ່າວເຖິງເຈົ້າ"
+    direct: "ໂພສ Direct note"
 _webhookSettings:
   name: "ຊື່"
 _abuseReport:

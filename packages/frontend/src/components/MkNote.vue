@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.showActionsOnlyHover]: prefer.s.showNoteActionsOnlyHover, [$style.skipRender]: prefer.s.skipNoteRender }]"
 	tabindex="0"
 >
-	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
+	<MkNoteSub v-if="appearNote.replyId && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="isEnabledUrlPreview">
 						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					</div>
-					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+					<div v-if="appearNote.renoteId" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>
@@ -265,24 +265,22 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 
 let note = deepClone(props.note);
 
-// コンポーネント初期化に非同期的な処理を行うとTransitionのレンダリングがバグるため同期的に実行できるメソッドが実装されるのを待つ必要がある
-// https://github.com/aiscript-dev/aiscript/issues/937
-//// plugin
-//const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
-//if (noteViewInterruptors.length > 0) {
-//	let result: Misskey.entities.Note | null = deepClone(note);
-//	for (const interruptor of noteViewInterruptors) {
-//		try {
-//			result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-//		} catch (err) {
-//			console.error(err);
-//		}
-//	}
-//	note = result as Misskey.entities.Note;
-//}
+// plugin
+const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+if (noteViewInterruptors.length > 0) {
+	let result: Misskey.entities.Note | null = deepClone(note);
+	for (const interruptor of noteViewInterruptors) {
+		try {
+			result = interruptor.handler(result!) as Misskey.entities.Note | null;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	note = result as Misskey.entities.Note;
+}
 
 const isRenote = Misskey.note.isPureRenote(note);
-const appearNote = getAppearNote(note);
+const appearNote = getAppearNote(note) ?? note;
 const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
 	note: appearNote,
 	parentNote: note,
@@ -321,20 +319,27 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${appearNote.id}`,
 }));
 
-/* Overload FunctionにLintが対応していないのでコメントアウト
+/* eslint-disable no-redeclare */
+/** checkOnlyでは純粋なワードミュート結果をbooleanで返却する */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
-*/
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly?: false): Array<string | string[]> | false | 'sensitiveMute';
+
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | boolean | 'sensitiveMute' {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, $i, mutedWords);
-		if (Array.isArray(result)) return result;
+		if (Array.isArray(result)) {
+			return checkOnly ? (result.length > 0) : result;
+		}
 
 		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-		if (Array.isArray(replyResult)) return replyResult;
+		if (Array.isArray(replyResult)) {
+			return checkOnly ? (replyResult.length > 0) : replyResult;
+		}
 
 		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-		if (Array.isArray(renoteResult)) return renoteResult;
+		if (Array.isArray(renoteResult)) {
+			return checkOnly ? (renoteResult.length > 0) : renoteResult;
+		}
 	}
 
 	if (checkOnly) return false;
@@ -345,6 +350,7 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	return false;
 }
+/* eslint-enable no-redeclare */
 
 const keymap = {
 	'r': () => {
@@ -417,7 +423,7 @@ if (!props.mock) {
 
 		const users = renotes.map(x => x.user);
 
-		if (users.length < 1) return;
+		if (users.length < 1 || renoteButton.value == null) return;
 
 		const { dispose } = os.popup(MkUsersTooltip, {
 			showing,
@@ -721,7 +727,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	}
 
 	&:hover > .article > .main > .footer > .footerButton {
-		opacity: 1;
+		color: var(--MI_THEME-fg);
 	}
 
 	&.showActionsOnlyHover {
@@ -996,7 +1002,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 .footerButton {
 	margin: 0;
 	padding: 8px;
-	opacity: 0.7;
+	color: color-mix(in srgb, var(--MI_THEME-panel), var(--MI_THEME-fg) 70%); // opacityなど不透明度で表現するとレンダリングパフォーマンスに影響するので通常の色の混合で代用
 
 	&:not(:last-child) {
 		margin-right: 28px;
@@ -1010,7 +1016,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 .footerButtonCount {
 	display: inline;
 	margin: 0 0 0 8px;
-	opacity: 0.7;
 }
 
 @container (max-width: 580px) {
