@@ -7,7 +7,7 @@ import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPla
 import { FX_stripe } from '@/utility/image-effector/fxs/stripe.js';
 import { FX_polkadot } from '@/utility/image-effector/fxs/polkadot.js';
 import { FX_checker } from '@/utility/image-effector/fxs/checker.js';
-import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
+import type { ImageEffectorFx, ImageEffectorLayer, ImageEffectorRGB } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
 const WATERMARK_FXS = [
@@ -46,7 +46,7 @@ export type WatermarkPreset = {
 		angle: number;
 		frequency: number;
 		threshold: number;
-		color: [r: number, g: number, b: number];
+		color: ImageEffectorRGB;
 		opacity: number;
 	} | {
 		id: string;
@@ -58,14 +58,14 @@ export type WatermarkPreset = {
 		minorDivisions: number;
 		minorRadius: number;
 		minorOpacity: number;
-		color: [r: number, g: number, b: number];
+		color: ImageEffectorRGB;
 		opacity: number;
 	} | {
 		id: string;
 		type: 'checker';
 		angle: number;
 		scale: number;
-		color: [r: number, g: number, b: number];
+		color: ImageEffectorRGB;
 		opacity: number;
 	})[];
 };

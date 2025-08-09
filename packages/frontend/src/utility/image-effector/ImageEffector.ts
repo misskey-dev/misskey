@@ -6,6 +6,8 @@
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { initShaderProgram } from '../webgl.js';
 
+export type ImageEffectorRGB = [r: number, g: number, b: number];
+
 type ParamTypeToPrimitive = {
 	'number': number;
 	'number:enum': number;
@@ -13,7 +15,7 @@ type ParamTypeToPrimitive = {
 	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
 	'seed': number;
 	'texture': { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
-	'color': [r: number, g: number, b: number];
+	'color': ImageEffectorRGB;
 };
 
 interface CommonParamDef {
@@ -67,7 +69,7 @@ interface TextureParamDef extends CommonParamDef {
 
 interface ColorParamDef extends CommonParamDef {
 	type: 'color';
-	default: [r: number, g: number, b: number];
+	default: ImageEffectorRGB;
 };
 
 type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | ColorParamDef;

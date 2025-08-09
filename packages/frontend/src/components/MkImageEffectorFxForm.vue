@@ -58,7 +58,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
-import type { ImageEffectorFxParamDefs } from '@/utility/image-effector/ImageEffector.js';
+import type { ImageEffectorRGB, ImageEffectorFxParamDefs } from '@/utility/image-effector/ImageEffector.js';
 
 defineProps<{
 	paramDefs: ImageEffectorFxParamDefs;
@@ -66,11 +66,11 @@ defineProps<{
 
 const params = defineModel<Record<string, any>>({ required: true });
 
-function getHex(c: [number, number, number]) {
+function getHex(c: ImageEffectorRGB) {
 	return `#${c.map(x => (x * 255).toString(16).padStart(2, '0')).join('')}`;
 }
 
-function getRgb(hex: string | number): [number, number, number] | null {
+function getRgb(hex: string | number): ImageEffectorRGB | null {
 	if (
 		typeof hex === 'number' ||
 		typeof hex !== 'string' ||
@@ -81,7 +81,7 @@ function getRgb(hex: string | number): [number, number, number] | null {
 
 	const m = hex.slice(1).match(/[0-9a-fA-F]{2}/g);
 	if (m == null) return [0, 0, 0];
-	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
+	return m.map(x => parseInt(x, 16) / 255) as ImageEffectorRGB;
 }
 </script>
 
