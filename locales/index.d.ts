@@ -5521,14 +5521,6 @@ export interface Locale extends ILocale {
      * セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。
      */
     "themeIsDefaultBecauseSafeMode": string;
-    /**
-     * リアルタイム更新時のノート取得にCDNキャッシュを併用する
-     */
-    "enableStreamNotesCdnCache": string;
-    /**
-     * （上級者向け）サーバーでCDNを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。
-     */
-    "enableStreamNotesCdnCacheDescription": string;
     "_order": {
         /**
          * 新しい順
@@ -6622,6 +6614,18 @@ export interface Locale extends ILocale {
          * 現在の一部の設定はリセットされます。
          */
         "restartServerSetupWizardConfirm_text": string;
+        /**
+         * リアルタイム更新時のノート取得にCDNキャッシュを併用する
+         */
+        "enableStreamNotesCdnCache": string;
+        /**
+         * （上級者向け）サーバーでCDNやキャッシュ機能のあるリバースプロキシを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから（非公開ノートの場合は通常のAPIから）取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。
+         */
+        "enableStreamNotesCdnCache_description": string;
+        /**
+         * 「非利用者に対するユーザー作成コンテンツの公開範囲」が「全て非公開」になっています。現在の設定では、この設定を有効にしてもノートがキャッシュされないため、効果は期待できません。
+         */
+        "enableStreamNotesCdnCache_conflictedWithUgcSettings": string;
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開

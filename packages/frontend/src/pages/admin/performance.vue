@@ -54,10 +54,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker>
-					<div class="_panel" style="padding: 16px;">
+					<div class="_panel _gaps_s" style="padding: 16px;">
+						<MkInfo warn>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_conflictedWithUgcSettings }}</MkInfo>
 						<MkSwitch v-model="enableStreamNotesCdnCache" @change="onChange_enableStreamNotesCdnCache">
-							<template #label><SearchLabel>{{ i18n.ts.enableStreamNotesCdnCache }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-							<template #caption>{{ i18n.ts.enableStreamNotesCdnCacheDescription }}</template>
+							<template #label><SearchLabel>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+							<template #caption>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_description }}</template>
 						</MkSwitch>
 					</div>
 				</SearchMarker>

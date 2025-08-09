@@ -347,6 +347,7 @@ export class NoteEntityService implements OnModuleInit {
 		const now = Date.now();
 		const createdAt = 'createdAt' in note ? note.createdAt : this.idService.parse(note.id).date.toISOString();
 		return (
+			(this.meta.ugcVisibilityForVisitor !== 'none') &&
 			(note.visibility === 'public' || note.visibility === 'home') &&
 			!this.shouldHideByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now) &&
 			!this.shouldHideByTime(note.user?.makeNotesHiddenBefore, createdAt, now) &&
