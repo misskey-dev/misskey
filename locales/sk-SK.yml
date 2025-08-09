@@ -913,6 +913,8 @@ flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
 postForm: "Napísať poznámku"
 information: "Informácie"
+inMinutes: "min"
+inDays: "dní"
 _chat:
   invitations: "Pozvať"
   noHistory: "Žiadna história"
