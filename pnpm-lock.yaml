@@ -243,8 +243,8 @@ importers:
         specifier: 2.1.3
         version: 2.1.3
       form-data:
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: 4.0.4
+        version: 4.0.4
       got:
         specifier: 14.4.7
         version: 14.4.7
@@ -6699,10 +6699,6 @@ packages:
   form-data-encoder@4.0.2:
     resolution: {integrity: sha512-KQVhvhK8ZkWzxKxOr56CPulAhH3dobtuQ4+hNQ+HekH/Wp5gSOafqRAeTphQUJAIk0GBvHZgJ2ZGRWd5kphMuw==}
     engines: {node: '>= 18'}
-
-  form-data@4.0.3:
-    resolution: {integrity: sha512-qsITQPfmvMOSAdeyZ+12I1c+CKSstAFAwu+97zrnWAbIr5u8wfsExUzCesVLC8NgHuRUqNN4Zy6UPWUTRGslcA==}
-    engines: {node: '>= 6'}
 
   form-data@4.0.4:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
@@ -14803,7 +14799,7 @@ snapshots:
   '@types/node-fetch@2.6.11':
     dependencies:
       '@types/node': 22.17.1
-      form-data: 4.0.3
+      form-data: 4.0.4
 
   '@types/node@20.19.9':
     dependencies:
@@ -14932,7 +14928,7 @@ snapshots:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
       '@types/node': 22.17.1
-      form-data: 4.0.3
+      form-data: 4.0.4
 
   '@types/supertest@6.0.3':
     dependencies:
@@ -17693,14 +17689,6 @@ snapshots:
   form-data-encoder@2.1.4: {}
 
   form-data-encoder@4.0.2: {}
-
-  form-data@4.0.3:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
-      mime-types: 2.1.35
 
   form-data@4.0.4:
     dependencies:
