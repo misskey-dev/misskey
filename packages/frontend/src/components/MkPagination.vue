@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-else key="_root_" class="_gaps">
-				<slot :items="paginator.items.value" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
+				<slot :items="unref(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
 				<div v-if="paginator.order.value === 'oldest'">
 					<MkButton v-if="!paginator.fetchingNewer.value" :class="$style.more" :wait="paginator.fetchingNewer.value" primary rounded @click="paginator.fetchNewer()">
 						{{ i18n.ts.loadMore }}
@@ -44,11 +44,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </component>
 </template>
 
-<script lang="ts" setup generic="T extends Paginator, I = UnwrapRef<T['items']>">
+<script lang="ts" setup generic="T extends IPaginator">
 import { isLink } from '@@/js/is-link.js';
-import { onMounted, watch } from 'vue';
+import { onMounted, watch, unref } from 'vue';
 import type { UnwrapRef } from 'vue';
-import type { Paginator } from '@/utility/paginator.js';
+import type { IPaginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -95,7 +95,7 @@ if (props.paginator.computedParams) {
 
 defineSlots<{
 	empty: () => void;
-	default: (props: { items: I }) => void;
+	default: (props: { items: UnwrapRef<T['items']> }) => void;
 }>();
 </script>
 

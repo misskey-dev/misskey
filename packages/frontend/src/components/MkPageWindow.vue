@@ -151,7 +151,7 @@ const contextmenu = computed(() => ([{
 
 function back() {
 	history.value.pop();
-	windowRouter.replace(history.value.at(-1)!.path);
+	windowRouter.replaceByPath(history.value.at(-1)!.path);
 }
 
 function reload() {
@@ -163,7 +163,7 @@ function close() {
 }
 
 function expand() {
-	mainRouter.push(windowRouter.getCurrentFullPath(), 'forcePage');
+	mainRouter.pushByPath(windowRouter.getCurrentFullPath(), 'forcePage');
 	windowEl.value?.close();
 }
 

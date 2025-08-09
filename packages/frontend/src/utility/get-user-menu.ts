@@ -132,6 +132,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		const userDetailed = await misskeyApi('users/show', {
 			userId: user.id,
 		});
+
 		const { canceled, result } = await os.form(i18n.ts.editMemo, {
 			memo: {
 				type: 'string',
@@ -141,6 +142,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				default: userDetailed.memo,
 			},
 		});
+
 		if (canceled) return;
 
 		os.apiWithDialog('users/update-memo', {
@@ -156,7 +158,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-user-exclamation',
 			text: i18n.ts.moderation,
 			action: () => {
-				router.push(`/admin/user/${user.id}`);
+				router.push('/admin/user/:userId', {
+					params: {
+						userId: user.id,
+					},
+				});
 			},
 		}, { type: 'divider' });
 	}
@@ -214,7 +220,12 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-search',
 			text: i18n.ts.searchThisUsersNotes,
 			action: () => {
-				router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
+				router.push('/search', {
+					query: {
+						username: user.username,
+						host: user.host ?? undefined,
+					},
+				});
 			},
 		});
 	}

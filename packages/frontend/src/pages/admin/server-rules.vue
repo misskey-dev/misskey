@@ -4,10 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader :tabs="headerTabs">
-	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
+<SearchMarker markerId="serverRules" :keywords="['rules']">
+	<MkFolder>
+		<template #icon><SearchIcon><i class="ti ti-checkbox"></i></SearchIcon></template>
+		<template #label><SearchLabel>{{ i18n.ts.serverRules }}</SearchLabel></template>
+
 		<div class="_gaps_m">
-			<div>{{ i18n.ts._serverRules.description }}</div>
+			<div><SearchText>{{ i18n.ts._serverRules.description }}</SearchText></div>
+
 			<Sortable
 				v-model="serverRules"
 				class="_gaps_m"
@@ -33,8 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 		</div>
-	</div>
-</PageWithHeader>
+	</MkFolder>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -42,9 +46,9 @@ import { defineAsyncComponent, ref, computed } from 'vue';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -60,13 +64,6 @@ const save = async () => {
 const remove = (index: number): void => {
 	serverRules.value.splice(index, 1);
 };
-
-const headerTabs = computed(() => []);
-
-definePage(() => ({
-	title: i18n.ts.serverRules,
-	icon: 'ti ti-checkbox',
-}));
 </script>
 
 <style lang="scss" module>
