@@ -287,20 +287,19 @@ const inChannel = inject('inChannel', null);
 
 let note = deepClone(props.note);
 
-// コンポーネント初期化に非同期的な処理を行うとTransitionのレンダリングがバグるため同期的に実行できるメソッドが実装されるのを待つ必要がある
-//// plugin
-//const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
-//if (noteViewInterruptors.length > 0) {
-//	let result: Misskey.entities.Note | null = deepClone(note);
-//	for (const interruptor of noteViewInterruptors) {
-//		try {
-//			result = await interruptor.handler(result!) as Misskey.entities.Note | null;
-//		} catch (err) {
-//			console.error(err);
-//		}
-//	}
-//	note = result as Misskey.entities.Note;
-//}
+// plugin
+const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+if (noteViewInterruptors.length > 0) {
+	let result: Misskey.entities.Note | null = deepClone(note);
+	for (const interruptor of noteViewInterruptors) {
+		try {
+			result = interruptor.handler(result!) as Misskey.entities.Note | null;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	note = result as Misskey.entities.Note;
+}
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);

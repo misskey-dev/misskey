@@ -1465,6 +1465,7 @@ _settings:
   contentsUpdateFrequency_description2: "실시간 모드가 켜져 있을 때는 이 설정과 상관없이 실시간으로 콘텐츠가 업데이트됩니다."
   showUrlPreview: "URL 미리보기 표시"
   showAvailableReactionsFirstInNote: "이용 가능한 리액션을 선두로 표시"
+  showPageTabBarBottom: "페이지의 탭 바를 아래쪽에 표시"
   _chat:
     showSenderName: "발신자 이름 표시"
     sendOnEnter: "엔터로 보내기"
