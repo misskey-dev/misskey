@@ -30,14 +30,14 @@ void main() {
 `;
 
 export const FX_colorClampAdvanced = defineImageEffectorFx({
-	id: 'colorClampAdvanced' as const,
+	id: 'colorClampAdvanced',
 	name: i18n.ts._imageEffector._fxs.colorClampAdvanced,
 	shader,
 	uniforms: ['rMax', 'rMin', 'gMax', 'gMin', 'bMax', 'bMin'] as const,
 	params: {
 		rMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.redComponent})`,
-			type: 'number' as const,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -46,7 +46,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 		},
 		rMin: {
 			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.redComponent})`,
-			type: 'number' as const,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,
@@ -55,7 +55,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 		},
 		gMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
-			type: 'number' as const,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -64,7 +64,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 		},
 		gMin: {
 			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.greenComponent})`,
-			type: 'number' as const,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,
@@ -73,7 +73,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 		},
 		bMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
-			type: 'number' as const,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -82,7 +82,7 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 		},
 		bMin: {
 			label: `${i18n.ts._imageEffector._fxProps.min} (${i18n.ts._imageEffector._fxProps.blueComponent})`,
-			type: 'number' as const,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,

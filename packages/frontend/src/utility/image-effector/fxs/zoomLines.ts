@@ -37,14 +37,14 @@ void main() {
 `;
 
 export const FX_zoomLines = defineImageEffectorFx({
-	id: 'zoomLines' as const,
+	id: 'zoomLines',
 	name: i18n.ts._imageEffector._fxs.zoomLines,
 	shader,
 	uniforms: ['pos', 'frequency', 'thresholdEnabled', 'threshold', 'maskSize', 'black'] as const,
 	params: {
 		x: {
 			label: i18n.ts._imageEffector._fxProps.centerX,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.0,
 			min: -1.0,
 			max: 1.0,
@@ -52,7 +52,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 		},
 		y: {
 			label: i18n.ts._imageEffector._fxProps.centerY,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.0,
 			min: -1.0,
 			max: 1.0,
@@ -60,7 +60,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 		},
 		frequency: {
 			label: i18n.ts._imageEffector._fxProps.frequency,
-			type: 'number' as const,
+			type: 'number',
 			default: 30.0,
 			min: 1.0,
 			max: 200.0,
@@ -69,12 +69,12 @@ export const FX_zoomLines = defineImageEffectorFx({
 		smoothing: {
 			label: i18n.ts._imageEffector._fxProps.zoomLinesSmoothing,
 			caption: i18n.ts._imageEffector._fxProps.zoomLinesSmoothingDescription,
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: false,
 		},
 		threshold: {
 			label: i18n.ts._imageEffector._fxProps.zoomLinesThreshold,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.2,
 			min: 0.0,
 			max: 1.0,
@@ -82,7 +82,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 		},
 		maskSize: {
 			label: i18n.ts._imageEffector._fxProps.zoomLinesMaskSize,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
@@ -90,14 +90,14 @@ export const FX_zoomLines = defineImageEffectorFx({
 		},
 		black: {
 			label: i18n.ts._imageEffector._fxProps.zoomLinesBlack,
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: false,
 		},
 	},
 	main: ({ gl, u, params }) => {
 		gl.uniform2f(u.pos, (1.0 + params.x) / 2.0, (1.0 + params.y) / 2.0);
 		gl.uniform1f(u.frequency, params.frequency);
-		// thresholdの調整が有効な間はblurEffectが利用できない
+		// thresholdの調整が有効な間はsmoothingが利用できない
 		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
 		gl.uniform1f(u.threshold, params.threshold);
 		gl.uniform1f(u.maskSize, params.maskSize);

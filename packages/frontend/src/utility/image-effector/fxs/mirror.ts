@@ -35,28 +35,28 @@ void main() {
 `;
 
 export const FX_mirror = defineImageEffectorFx({
-	id: 'mirror' as const,
+	id: 'mirror',
 	name: i18n.ts._imageEffector._fxs.mirror,
 	shader,
 	uniforms: ['h', 'v'] as const,
 	params: {
 		h: {
 			label: i18n.ts.horizontal,
-			type: 'number:enum' as const,
+			type: 'number:enum',
 			enum: [
-				{ value: -1, icon: 'ti ti-arrow-bar-right' },
-				{ value: 0, icon: 'ti ti-minus-vertical' },
-				{ value: 1, icon: 'ti ti-arrow-bar-left' }
+				{ value: -1 as const, icon: 'ti ti-arrow-bar-right' },
+				{ value: 0 as const, icon: 'ti ti-minus-vertical' },
+				{ value: 1 as const, icon: 'ti ti-arrow-bar-left' }
 			],
 			default: -1,
 		},
 		v: {
 			label: i18n.ts.vertical,
-			type: 'number:enum' as const,
+			type: 'number:enum',
 			enum: [
-				{ value: -1, icon: 'ti ti-arrow-bar-down' },
-				{ value: 0, icon: 'ti ti-minus' },
-				{ value: 1, icon: 'ti ti-arrow-bar-up' }
+				{ value: -1 as const, icon: 'ti ti-arrow-bar-down' },
+				{ value: 0 as const, icon: 'ti ti-minus' },
+				{ value: 1 as const, icon: 'ti ti-arrow-bar-up' }
 			],
 			default: 0,
 		},

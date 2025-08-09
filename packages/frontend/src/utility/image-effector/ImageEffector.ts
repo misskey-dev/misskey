@@ -9,17 +9,11 @@ import { initShaderProgram } from '../webgl.js';
 export type ImageEffectorRGB = [r: number, g: number, b: number];
 
 type ParamTypeToPrimitive = {
-	'number': number;
-	'number:enum': number;
-	'boolean': boolean;
-	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
-	'seed': number;
-	'texture': { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
-	'color': ImageEffectorRGB;
+	[K in ImageEffectorFxParamDef['type']]: (ImageEffectorFxParamDef & { type: K })['default'];
 };
 
 interface CommonParamDef {
-	type: keyof ParamTypeToPrimitive;
+	type: string;
 	label?: string;
 	caption?: string;
 	default: any;
@@ -76,6 +70,15 @@ type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanPara
 
 export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
 
+export type GetParamType<T extends ImageEffectorFxParamDef> =
+	T extends NumberEnumParamDef
+		? T['enum'][number]['value']
+		: ParamTypeToPrimitive[T['type']];
+
+export type ParamsRecordTypeToDefRecord<PS extends ImageEffectorFxParamDefs> = {
+	[K in keyof PS]: GetParamType<PS[K]>;
+};
+
 export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[]>(fx: ImageEffectorFx<ID, PS, US>) {
 	return fx;
 }
@@ -89,9 +92,7 @@ export type ImageEffectorFx<ID extends string = string, PS extends ImageEffector
 	main: (ctx: {
 		gl: WebGL2RenderingContext;
 		program: WebGLProgram;
-		params: {
-			[key in keyof PS]: ParamTypeToPrimitive[PS[key]['type']];
-		};
+		params: ParamsRecordTypeToDefRecord<PS>;
 		u: Record<US[number], WebGLUniformLocation>;
 		width: number;
 		height: number;

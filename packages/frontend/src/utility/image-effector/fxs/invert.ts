@@ -27,24 +27,24 @@ void main() {
 `;
 
 export const FX_invert = defineImageEffectorFx({
-	id: 'invert' as const,
+	id: 'invert',
 	name: i18n.ts._imageEffector._fxs.invert,
 	shader,
 	uniforms: ['r', 'g', 'b'] as const,
 	params: {
 		r: {
 			label: i18n.ts._imageEffector._fxProps.redComponent,
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: true,
 		},
 		g: {
 			label: i18n.ts._imageEffector._fxProps.greenComponent,
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: true,
 		},
 		b: {
 			label: i18n.ts._imageEffector._fxProps.blueComponent,
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: true,
 		},
 	},

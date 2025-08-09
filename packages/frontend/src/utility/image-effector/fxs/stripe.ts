@@ -50,14 +50,14 @@ void main() {
 
 // Primarily used for watermark
 export const FX_stripe = defineImageEffectorFx({
-	id: 'stripe' as const,
+	id: 'stripe',
 	name: i18n.ts._imageEffector._fxs.stripe,
 	shader,
 	uniforms: ['angle', 'frequency', 'phase', 'threshold', 'color', 'opacity'] as const,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: -1.0,
 			max: 1.0,
@@ -66,7 +66,7 @@ export const FX_stripe = defineImageEffectorFx({
 		},
 		frequency: {
 			label: i18n.ts._watermarkEditor.stripeFrequency,
-			type: 'number' as const,
+			type: 'number',
 			default: 10.0,
 			min: 1.0,
 			max: 30.0,
@@ -74,7 +74,7 @@ export const FX_stripe = defineImageEffectorFx({
 		},
 		threshold: {
 			label: i18n.ts._watermarkEditor.stripeWidth,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.1,
 			min: 0.0,
 			max: 1.0,
@@ -83,12 +83,12 @@ export const FX_stripe = defineImageEffectorFx({
 		},
 		color: {
 			label: i18n.ts._imageEffector._fxProps.color,
-			type: 'color' as const,
+			type: 'color',
 			default: [1, 1, 1],
 		},
 		opacity: {
 			label: i18n.ts._imageEffector._fxProps.opacity,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,

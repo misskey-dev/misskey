@@ -80,14 +80,14 @@ void main() {
 
 // Primarily used for watermark
 export const FX_polkadot = defineImageEffectorFx({
-	id: 'polkadot' as const,
+	id: 'polkadot',
 	name: i18n.ts._imageEffector._fxs.polkadot,
 	shader,
 	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'color'] as const,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
-			type: 'number' as const,
+			type: 'number',
 			default: 0,
 			min: -1.0,
 			max: 1.0,
@@ -96,7 +96,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		scale: {
 			label: i18n.ts._imageEffector._fxProps.scale,
-			type: 'number' as const,
+			type: 'number',
 			default: 3.0,
 			min: 1.0,
 			max: 10.0,
@@ -104,7 +104,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		majorRadius: {
 			label: i18n.ts._watermarkEditor.polkadotMainDotRadius,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.1,
 			min: 0.0,
 			max: 1.0,
@@ -112,7 +112,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		majorOpacity: {
 			label: i18n.ts._watermarkEditor.polkadotMainDotOpacity,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.75,
 			min: 0.0,
 			max: 1.0,
@@ -121,7 +121,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		minorDivisions: {
 			label: i18n.ts._watermarkEditor.polkadotSubDotDivisions,
-			type: 'number' as const,
+			type: 'number',
 			default: 4,
 			min: 0,
 			max: 16,
@@ -129,7 +129,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		minorRadius: {
 			label: i18n.ts._watermarkEditor.polkadotSubDotRadius,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.25,
 			min: 0.0,
 			max: 1.0,
@@ -137,7 +137,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		minorOpacity: {
 			label: i18n.ts._watermarkEditor.polkadotSubDotOpacity,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
@@ -146,7 +146,7 @@ export const FX_polkadot = defineImageEffectorFx({
 		},
 		color: {
 			label: i18n.ts._imageEffector._fxProps.color,
-			type: 'color' as const,
+			type: 'color',
 			default: [1, 1, 1],
 		},
 	},

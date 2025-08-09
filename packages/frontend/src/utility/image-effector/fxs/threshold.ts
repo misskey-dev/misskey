@@ -27,14 +27,14 @@ void main() {
 `;
 
 export const FX_threshold = defineImageEffectorFx({
-	id: 'threshold' as const,
+	id: 'threshold',
 	name: i18n.ts._imageEffector._fxs.threshold,
 	shader,
 	uniforms: ['r', 'g', 'b'] as const,
 	params: {
 		r: {
 			label: i18n.ts._imageEffector._fxProps.redComponent,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
@@ -42,7 +42,7 @@ export const FX_threshold = defineImageEffectorFx({
 		},
 		g: {
 			label: i18n.ts._imageEffector._fxProps.greenComponent,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
@@ -50,7 +50,7 @@ export const FX_threshold = defineImageEffectorFx({
 		},
 		b: {
 			label: i18n.ts._imageEffector._fxProps.blueComponent,
-			type: 'number' as const,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,

@@ -26,14 +26,14 @@ void main() {
 `;
 
 export const FX_colorClamp = defineImageEffectorFx({
-	id: 'colorClamp' as const,
+	id: 'colorClamp',
 	name: i18n.ts._imageEffector._fxs.colorClamp,
 	shader,
 	uniforms: ['max', 'min'] as const,
 	params: {
 		max: {
 			label: i18n.ts._imageEffector._fxProps.max,
-			type: 'number' as const,
+			type: 'number',
 			default: 1.0,
 			min: 0.0,
 			max: 1.0,
@@ -42,7 +42,7 @@ export const FX_colorClamp = defineImageEffectorFx({
 		},
 		min: {
 			label: i18n.ts._imageEffector._fxProps.min,
-			type: 'number' as const,
+			type: 'number',
 			default: -1.0,
 			min: -1.0,
 			max: 0.0,
