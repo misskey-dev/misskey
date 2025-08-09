@@ -93,7 +93,6 @@ class LocalTimelineChannel extends Channel {
 				});
 			}
 		} else {
-			this.connection.cacheNote(note);
 			this.send('note', note);
 		}
 	}

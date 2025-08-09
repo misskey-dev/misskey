@@ -4387,6 +4387,10 @@ export interface Locale extends ILocale {
      */
     "notesSearchNotAvailable": string;
     /**
+     * ユーザー検索は利用できません。
+     */
+    "usersSearchNotAvailable": string;
+    /**
      * ライセンス
      */
     "license": string;
@@ -7807,6 +7811,10 @@ export interface Locale extends ILocale {
              * ノート検索の利用
              */
             "canSearchNotes": string;
+            /**
+             * ユーザー検索の利用
+             */
+            "canSearchUsers": string;
             /**
              * 翻訳機能の利用
              */
