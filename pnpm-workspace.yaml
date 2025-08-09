@@ -2,6 +2,7 @@ packages:
   - packages/backend
   - packages/frontend-shared
   - packages/frontend
+  - packages/frontend-builder
   - packages/frontend-embed
   - packages/icons-subsetter
   - packages/sw

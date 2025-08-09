@@ -13,6 +13,8 @@ const fs = require('fs');
 	fs.rmSync(__dirname + '/../packages/frontend-shared/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/frontend-shared/node_modules', { recursive: true, force: true });
 
+	fs.rmSync(__dirname + '/../packages/frontend-builder/node_modules', { recursive: true, force: true });
+
 	fs.rmSync(__dirname + '/../packages/frontend/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/frontend/node_modules', { recursive: true, force: true });
 

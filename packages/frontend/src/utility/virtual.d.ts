@@ -3,16 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-declare module 'search-index:settings' {
-	export type GeneratedSearchIndexItem = {
-		id: string;
-		parentId?: string;
-		path?: string;
-		label: string;
-		keywords: string[];
-		icon?: string;
-		inlining?: string[];
-	};
+type XGeneratedSearchIndexItem = {
+	id: string;
+	parentId?: string;
+	path?: string;
+	label: string;
+	keywords: string[];
+	texts: string[];
+	icon?: string;
+	inlining?: string[];
+};
 
-	export const searchIndexes: GeneratedSearchIndexItem[];
+declare module 'search-index' {
+	export type GeneratedSearchIndexItem = XGeneratedSearchIndexItem;
+}
+
+declare module 'search-index:settings' {
+	export const searchIndexes: XGeneratedSearchIndexItem[];
+}
+
+declare module 'search-index:admin' {
+	export const searchIndexes: XGeneratedSearchIndexItem[];
 }
