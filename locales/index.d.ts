@@ -12437,13 +12437,13 @@ export interface Locale extends ILocale {
              */
             "centerY": string;
             /**
-             * ぼかし効果
+             * スムージング
              */
-            "zoomLinesBlurEffect": string;
+            "zoomLinesSmoothing": string;
             /**
-             * ぼかし効果と集中線の幅の設定は併用できません。
+             * スムージングと集中線の幅の設定は併用できません。
              */
-            "zoomLinesBlurEffectDescription": string;
+            "zoomLinesSmoothingDescription": string;
             /**
              * 集中線の幅
              */

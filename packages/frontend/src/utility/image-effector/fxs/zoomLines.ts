@@ -66,9 +66,9 @@ export const FX_zoomLines = defineImageEffectorFx({
 			max: 200.0,
 			step: 0.1,
 		},
-		blurEffect: {
-			label: i18n.ts._imageEffector._fxProps.zoomLinesBlurEffect,
-			caption: i18n.ts._imageEffector._fxProps.zoomLinesBlurEffectDescription,
+		smoothing: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesSmoothing,
+			caption: i18n.ts._imageEffector._fxProps.zoomLinesSmoothingDescription,
 			type: 'boolean' as const,
 			default: false,
 		},
@@ -98,7 +98,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 		gl.uniform2f(u.pos, (1.0 + params.x) / 2.0, (1.0 + params.y) / 2.0);
 		gl.uniform1f(u.frequency, params.frequency);
 		// thresholdの調整が有効な間はblurEffectが利用できない
-		gl.uniform1i(u.thresholdEnabled, params.blurEffect ? 0 : 1);
+		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
 		gl.uniform1f(u.threshold, params.threshold);
 		gl.uniform1f(u.maskSize, params.maskSize);
 		gl.uniform1i(u.black, params.black ? 1 : 0);
