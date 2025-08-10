@@ -54,6 +54,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker>
+					<div class="_panel _gaps_s" style="padding: 16px;">
+						<MkInfo warn>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_conflictedWithUgcSettings }}</MkInfo>
+						<MkSwitch v-model="enableStreamNotesCdnCache" @change="onChange_enableStreamNotesCdnCache">
+							<template #label><SearchLabel>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+							<template #caption>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_description }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
+
+				<SearchMarker>
 					<MkFolder :defaultOpen="true">
 						<template #icon><SearchIcon><i class="ti ti-bolt"></i></SearchIcon></template>
 						<template #label><SearchLabel>Misskey® Fan-out Timeline Technology™ (FTT)</SearchLabel></template>
@@ -188,6 +198,7 @@ const enableIdenticonGeneration = ref(meta.enableIdenticonGeneration);
 const enableChartsForRemoteUser = ref(meta.enableChartsForRemoteUser);
 const enableStatsForFederatedInstances = ref(meta.enableStatsForFederatedInstances);
 const enableChartsForFederatedInstances = ref(meta.enableChartsForFederatedInstances);
+const enableStreamNotesCdnCache = ref(meta.enableStreamNotesCdnCache);
 
 function onChange_enableServerMachineStats(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
@@ -224,6 +235,14 @@ function onChange_enableStatsForFederatedInstances(value: boolean) {
 function onChange_enableChartsForFederatedInstances(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		enableChartsForFederatedInstances: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableStreamNotesCdnCache(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableStreamNotesCdnCache: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

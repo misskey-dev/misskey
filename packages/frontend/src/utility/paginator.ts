@@ -59,6 +59,7 @@ export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 	releaseQueue(): void;
 	removeItem(id: string): void;
 	updateItem(id: string, updater: (item: _T) => _T): void;
+	clearItems(): void;
 }
 
 export class Paginator<
@@ -160,6 +161,7 @@ export class Paginator<
 		this.releaseQueue = this.releaseQueue.bind(this);
 		this.removeItem = this.removeItem.bind(this);
 		this.updateItem = this.updateItem.bind(this);
+		this.clearItems = this.clearItems.bind(this);
 	}
 
 	private getNewestId(): string | null | undefined {
@@ -390,5 +392,12 @@ export class Paginator<
 			this.items.value[index] = updater(item);
 			if (this.useShallowRef) triggerRef(this.items);
 		}
+	}
+
+	public clearItems(): void {
+		this.items.value = [];
+		this.aheadQueue = [];
+		this.queuedAheadItemsCount.value = 0;
+		if (this.useShallowRef) triggerRef(this.items);
 	}
 }

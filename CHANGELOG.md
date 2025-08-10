@@ -44,6 +44,9 @@
 - Fix: カラムの名前が正しくリスト/チャンネルの名前にならない問題を修正
 
 ### Server
+- Feat: サーバーがCDN等を利用している場合、タイムラインのリアルタイム更新時にCDN等のキャッシュを併用できるように（上級者向け）
+  - この機能はCDNやレスポンスのキャッシュ機能を持つリバースプロキシなどの外部ソフトウェアの設定と連携するように設計されています。Misskey側のみで機能を有効にし、CDN等を正しく設定していない場合、かえって負荷が大きくなる可能性があります。詳しくはMisskey Hubのドキュメント (TODO) を参照してください。
+  - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 - Enhance: ノートの削除処理の効率化
 - Enhance: 全体的なパフォーマンスの向上
 - Enhance: 依存ソフトウェアの更新
