@@ -4,16 +4,18 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
+import { DataSource, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { MiUser } from '@/models/User.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
+import { MiNote } from '@/models/Note.js';
 import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
 import { SearchService } from '@/core/SearchService.js';
+import { extendTimeoutQuery } from '@/postgres.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';
@@ -23,6 +25,9 @@ export class DeleteAccountProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -73,7 +78,9 @@ export class DeleteAccountProcessorService {
 
 				cursor = notes.at(-1)?.id ?? null;
 
-				await this.notesRepository.delete(notes.map(note => note.id));
+				await extendTimeoutQuery(this.db, async (manager) => {
+					await manager.delete(MiNote, notes.map(note => note.id));
+				});
 
 				for (const note of notes) {
 					await this.searchService.unindexNote(note);
@@ -125,7 +132,9 @@ export class DeleteAccountProcessorService {
 		if (job.data.soft) {
 		// nop
 		} else {
-			await this.usersRepository.delete(job.data.user.id);
+			await extendTimeoutQuery(this.db, async (manager) => {
+				await manager.delete(MiUser, job.data.user.id);
+			});
 		}
 
 		return 'Account deleted';
