@@ -69,8 +69,10 @@ export class LocaleInliner {
 	async saveAllLocales(locales: Record<string, Locale>) {
 		const localeNames = Object.keys(locales);
 		for (const localeName of localeNames) {
+			this.logger.info(`Creating bundle for ${localeName}`);
 			await this.saveLocale(localeName, locales[localeName]);
 		}
+		this.logger.info('Done');
 	}
 
 	async saveLocale(localeName: string, localeJson: Locale) {

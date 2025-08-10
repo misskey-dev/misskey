@@ -32,7 +32,6 @@ export default class Connection {
 	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: Partial<Record<string, number>> = {};
-	private cachedNotes: Packed<'Note'>[] = [];
 	public userProfile: MiUserProfile | null = null;
 	public following: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
 	public followingChannels: Set<string> = new Set();
@@ -130,26 +129,6 @@ export default class Connection {
 	@bindThis
 	private onBroadcastMessage(data: GlobalEvents['broadcast']['payload']) {
 		this.sendMessageToWs(data.type, data.body);
-	}
-
-	@bindThis
-	public cacheNote(note: Packed<'Note'>) {
-		const add = (note: Packed<'Note'>) => {
-			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
-			if (existIndex > -1) {
-				this.cachedNotes[existIndex] = note;
-				return;
-			}
-
-			this.cachedNotes.unshift(note);
-			if (this.cachedNotes.length > 32) {
-				this.cachedNotes.splice(32);
-			}
-		};
-
-		add(note);
-		if (note.reply) add(note.reply);
-		if (note.renote) add(note.renote);
 	}
 
 	@bindThis

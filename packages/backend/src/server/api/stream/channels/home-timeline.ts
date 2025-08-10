@@ -88,8 +88,6 @@ class HomeTimelineChannel extends Channel {
 			}
 		}
 
-		this.connection.cacheNote(reactionMutedNote);
-
 		this.send('note', reactionMutedNote);
 	}
 

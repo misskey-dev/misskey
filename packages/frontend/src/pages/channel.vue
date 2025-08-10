@@ -115,7 +115,7 @@ const searchQuery = ref('');
 const searchMode = ref<SearchMode>($i?.policies.canSearchWithHanamiSearchV1 ? 'v1' : 'v0');
 const searchPaginator = shallowRef();
 const searchKey = ref('');
-const featuredPaginator = markRaw(new Paginator('channels/featured', {
+const featuredPaginator = markRaw(new Paginator('notes/featured', {
 	limit: 10,
 	computedParams: computed(() => ({
 		channelId: props.channelId,

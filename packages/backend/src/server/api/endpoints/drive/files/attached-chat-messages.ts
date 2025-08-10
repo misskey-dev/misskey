@@ -10,6 +10,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { ChatService } from '@/core/ChatService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -60,14 +61,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.chatMessagesRepository)
 		private chatMessagesRepository: ChatMessagesRepository,
 
+		private chatService: ChatService,
 		private chatEntityService: ChatEntityService,
 		private queryService: QueryService,
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const isModerator = await this.roleService.isModerator(me);
+
+			if (!isModerator) {
+				await this.chatService.checkChatAvailability(me.id, 'read');
+			}
+
 			const file = await this.driveFilesRepository.findOneBy({
 				id: ps.fileId,
-				userId: await this.roleService.isModerator(me) ? undefined : me.id,
+				userId: isModerator ? undefined : me.id,
 			});
 
 			if (file == null) {

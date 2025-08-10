@@ -26,7 +26,7 @@ void main() {
 `;
 
 export const FX_grayscale = defineImageEffectorFx({
-	id: 'grayscale' as const,
+	id: 'grayscale',
 	name: i18n.ts._imageEffector._fxs.grayscale,
 	shader,
 	uniforms: [] as const,

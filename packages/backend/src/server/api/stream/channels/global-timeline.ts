@@ -67,8 +67,6 @@ class GlobalTimelineChannel extends Channel {
 			}
 		}
 
-		this.connection.cacheNote(reactionMutedNote);
-
 		this.send('note', reactionMutedNote);
 	}
 

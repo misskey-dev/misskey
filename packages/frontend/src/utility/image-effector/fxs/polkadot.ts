@@ -78,14 +78,16 @@ void main() {
 }
 `;
 
+// Primarily used for watermark
 export const FX_polkadot = defineImageEffectorFx({
-	id: 'polkadot' as const,
+	id: 'polkadot',
 	name: i18n.ts._imageEffector._fxs.polkadot,
 	shader,
 	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'color'] as const,
 	params: {
 		angle: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.angle,
+			type: 'number',
 			default: 0,
 			min: -1.0,
 			max: 1.0,
@@ -93,21 +95,24 @@ export const FX_polkadot = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
 		scale: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.scale,
+			type: 'number',
 			default: 3.0,
 			min: 1.0,
 			max: 10.0,
 			step: 0.1,
 		},
 		majorRadius: {
-			type: 'number' as const,
+			label: i18n.ts._watermarkEditor.polkadotMainDotRadius,
+			type: 'number',
 			default: 0.1,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		majorOpacity: {
-			type: 'number' as const,
+			label: i18n.ts._watermarkEditor.polkadotMainDotOpacity,
+			type: 'number',
 			default: 0.75,
 			min: 0.0,
 			max: 1.0,
@@ -115,21 +120,24 @@ export const FX_polkadot = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		minorDivisions: {
-			type: 'number' as const,
+			label: i18n.ts._watermarkEditor.polkadotSubDotDivisions,
+			type: 'number',
 			default: 4,
 			min: 0,
 			max: 16,
 			step: 1,
 		},
 		minorRadius: {
-			type: 'number' as const,
+			label: i18n.ts._watermarkEditor.polkadotSubDotRadius,
+			type: 'number',
 			default: 0.25,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		minorOpacity: {
-			type: 'number' as const,
+			label: i18n.ts._watermarkEditor.polkadotSubDotOpacity,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
@@ -137,7 +145,8 @@ export const FX_polkadot = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		color: {
-			type: 'color' as const,
+			label: i18n.ts._imageEffector._fxProps.color,
+			type: 'color',
 			default: [1, 1, 1],
 		},
 	},
