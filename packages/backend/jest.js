@@ -17,4 +17,15 @@ args.push(...[
 	...process.argv.slice(2),
 ]);
 
-child_process.spawn(process.execPath, args, { stdio: 'inherit' });
+const child = child_process.spawn(process.execPath, args, { stdio: 'inherit' });
+child.on('error', (err) => {
+	console.error('Failed to start Jest:', err);
+	process.exit(1);
+});
+child.on('exit', (code, signal) => {
+	if (code === null) {
+		process.exit(128 + signal);
+	} else {
+		process.exit(code);
+	}
+});

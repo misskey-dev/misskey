@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
-			<SearchKeyword>{{ i18n.ts._settings.notificationsBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<FormSection first>
@@ -38,11 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSection>
 		<FormSection>
 			<div class="_gaps_m">
-				<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
+				<FormLink to="/settings/sounds">{{ i18n.ts.notificationSoundSettings }}</FormLink>
 			</div>
 		</FormSection>
 		<FormSection>
-			<div class="_gaps_m">
+			<div class="_gaps_s">
+				<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 				<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
 				<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
 			</div>

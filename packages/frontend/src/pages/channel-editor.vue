@@ -73,7 +73,7 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -165,7 +165,11 @@ function save() {
 		os.apiWithDialog('channels/update', params);
 	} else {
 		os.apiWithDialog('channels/create', params).then(created => {
-			router.push(`/channels/${created.id}`);
+			router.push('/channels/:channelId', {
+				params: {
+					channelId: created.id,
+				},
+			});
 		});
 	}
 }
@@ -188,7 +192,10 @@ async function archive() {
 }
 
 function setBannerImage(evt) {
-	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
+	selectFile({
+		anchorElement: evt.currentTarget ?? evt.target,
+		multiple: false,
+	}).then(file => {
 		bannerId.value = file.id;
 	});
 }

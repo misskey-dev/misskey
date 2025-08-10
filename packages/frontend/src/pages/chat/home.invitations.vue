@@ -61,7 +61,11 @@ async function join(invitation: Misskey.entities.ChatRoomInvitation) {
 		roomId: invitation.room.id,
 	});
 
-	router.push(`/chat/room/${invitation.room.id}`);
+	router.push('/chat/room/:roomId', {
+		params: {
+			roomId: invitation.room.id,
+		},
+	});
 }
 
 async function ignore(invitation: Misskey.entities.ChatRoomInvitation) {

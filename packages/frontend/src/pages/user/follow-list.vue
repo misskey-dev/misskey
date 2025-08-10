@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkPagination v-slot="{items}" ref="list" :pagination="type === 'following' ? followingPagination : followersPagination">
+	<MkPagination v-slot="{items}" :paginator="type === 'following' ? followingPaginator : followersPaginator" withControl>
 		<div :class="$style.users">
 			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" :user="user"/>
 		</div>
@@ -14,31 +14,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	user: Misskey.entities.User;
 	type: 'following' | 'followers';
 }>();
 
-const followingPagination = {
-	endpoint: 'users/following' as const,
+const followingPaginator = markRaw(new Paginator('users/following', {
 	limit: 20,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: props.user.id,
 	})),
-};
+}));
 
-const followersPagination = {
-	endpoint: 'users/followers' as const,
+const followersPaginator = markRaw(new Paginator('users/followers', {
 	limit: 20,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: props.user.id,
 	})),
-};
+}));
 </script>
 
 <style lang="scss" module>
