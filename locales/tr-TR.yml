@@ -2290,7 +2290,7 @@ _2fa:
   securityKeyName: "Bir anahtar adı girin"
   tapSecurityKey: "Güvenlik veya geçiş anahtarını kaydetmek için lütfen tarayıcınızı takip edin."
   removeKey: "Güvenlik anahtarını kaldır"
-  removeKeyConfirm: "{name} anahtarını gerçekten silmek istiyor musunuz?"
+  removeKeyConfirm: "{name} anahtarını cidden silmek istiyor musun?"
   whyTOTPOnlyRenew: "Güvenlik anahtarı kayıtlı olduğu sürece kimlik doğrulama uygulaması kaldırılamaz."
   renewTOTP: "Kimlik doğrulama uygulamasını yeniden yapılandırın"
   renewTOTPConfirm: "Bu, önceki uygulamanızdaki doğrulama kodlarının çalışmamasına neden olacaktır."
@@ -3180,7 +3180,7 @@ _watermarkEditor:
 _imageEffector:
   title: "Effektler"
   addEffect: "Efektler Ekle"
-  discardChangesConfirm: "Gerçekten çıkmak istiyor musun? Kaydedilmemiş değişiklikleriniz var."
+  discardChangesConfirm: "Cidden çıkmak istiyor musun? Kaydedilmemiş değişiklikleriniz var."
   nothingToConfigure: "Yapılandırılabilir seçenekler mevcut değildir."
   _fxs:
     chromaticAberration: "Renk Sapması"
