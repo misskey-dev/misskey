@@ -1593,3 +1593,10 @@ _watermarkEditor:
   type: "Typ"
   image: "Zdjęcia"
   advanced: "Zaawansowane"
+_imageEffector:
+  _fxProps:
+    scale: "Rozmiar"
+    size: "Rozmiar"
+    color: "Kolor"
+    opacity: "Przezroczystość"
+    lightness: "Rozjaśnij"

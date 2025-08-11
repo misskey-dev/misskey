@@ -2372,3 +2372,11 @@ _watermarkEditor:
   image: "Images"
   advanced: "Avancé"
   angle: "Angle"
+_imageEffector:
+  _fxProps:
+    angle: "Angle"
+    scale: "Taille"
+    size: "Taille"
+    color: "Couleur"
+    opacity: "Transparence"
+    lightness: "Clair"
