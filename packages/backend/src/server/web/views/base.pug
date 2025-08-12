@@ -2,6 +2,7 @@ block vars
 
 block loadClientEntry
 	- const entry = config.frontendEntry;
+	- const bootLoader = config.frontendBootLoader;
 	- const baseUrl = config.url;
 
 doctype html
@@ -76,8 +77,7 @@ html
 		script(type='application/json' id='misskey_clientCtx' data-generated-at=now)
 			!= clientCtx
 
-		script
-			include ../boot.js
+		script(type='module', src=`/vite/${bootLoader.file}`)
 
 	body
 		noscript: p

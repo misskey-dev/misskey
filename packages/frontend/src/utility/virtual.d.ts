@@ -25,3 +25,8 @@ declare module 'search-index:settings' {
 declare module 'search-index:admin' {
 	export const searchIndexes: XGeneratedSearchIndexItem[];
 }
+
+declare module 'virtual:supported-langs' {
+	const value: string[];
+	export default value;
+}
