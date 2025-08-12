@@ -1599,3 +1599,9 @@ _watermarkEditor:
   type: "نوع"
   image: "صور"
   advanced: "متقدم"
+_imageEffector:
+  _fxProps:
+    scale: "الحجم"
+    size: "الحجم"
+    color: "اللون"
+    opacity: "الشفافية"

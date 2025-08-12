@@ -3020,6 +3020,13 @@ _watermarkEditor:
   angle: "角度"
 _imageEffector:
   discardChangesConfirm: "変更をせんで終わるか？"
+  _fxProps:
+    angle: "角度"
+    scale: "大きさ"
+    size: "大きさ"
+    color: "色"
+    opacity: "不透明度"
+    lightness: "明るさ"
 _drafts:
   cannotCreateDraftAnymore: "下書きはこれ以上は作れへんな。"
   cannotCreateDraft: "この内容で下書きは作れへんな。"

@@ -716,3 +716,8 @@ _search:
 _watermarkEditor:
   scale: "Storlek"
   image: "Bilder"
+_imageEffector:
+  _fxProps:
+    scale: "Storlek"
+    size: "Storlek"
+    color: "Färg"

@@ -2257,4 +2257,12 @@ _watermarkEditor:
   image: "Изображения"
   advanced: "Для продвинутых"
   angle: "Угол"
+_imageEffector:
+  _fxProps:
+    angle: "Угол"
+    scale: "Размер"
+    size: "Размер"
+    color: "Цвет"
+    opacity: "Непрозрачность"
+    lightness: "Осветление"
 drafts: "Черновик"

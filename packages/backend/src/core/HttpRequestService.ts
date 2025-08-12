@@ -6,6 +6,7 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
 import * as net from 'node:net';
+import * as stream from 'node:stream';
 import ipaddr from 'ipaddr.js';
 import CacheableLookup from 'cacheable-lookup';
 import fetch from 'node-fetch';
@@ -26,12 +27,6 @@ export type HttpRequestSendOptions = {
 	validators?: ((res: Response) => void)[];
 };
 
-declare module 'node:http' {
-	interface Agent {
-		createConnection(options: net.NetConnectOpts, callback?: (err: unknown, stream: net.Socket) => void): net.Socket;
-	}
-}
-
 class HttpRequestServiceAgent extends http.Agent {
 	constructor(
 		private config: Config,
@@ -41,11 +36,11 @@ class HttpRequestServiceAgent extends http.Agent {
 	}
 
 	@bindThis
-	public createConnection(options: net.NetConnectOpts, callback?: (err: unknown, stream: net.Socket) => void): net.Socket {
+	public createConnection(options: http.ClientRequestArgs, callback?: (err: Error | null, stream: stream.Duplex) => void): stream.Duplex {
 		const socket = super.createConnection(options, callback)
 			.on('connect', () => {
-				const address = socket.remoteAddress;
-				if (process.env.NODE_ENV === 'production') {
+				if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
+					const address = socket.remoteAddress;
 					if (address && ipaddr.isValid(address)) {
 						if (this.isPrivateIp(address)) {
 							socket.destroy(new Error(`Blocked address: ${address}`));
@@ -80,11 +75,11 @@ class HttpsRequestServiceAgent extends https.Agent {
 	}
 
 	@bindThis
-	public createConnection(options: net.NetConnectOpts, callback?: (err: unknown, stream: net.Socket) => void): net.Socket {
+	public createConnection(options: http.ClientRequestArgs, callback?: (err: Error | null, stream: stream.Duplex) => void): stream.Duplex {
 		const socket = super.createConnection(options, callback)
 			.on('connect', () => {
-				const address = socket.remoteAddress;
-				if (process.env.NODE_ENV === 'production') {
+				if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
+					const address = socket.remoteAddress;
 					if (address && ipaddr.isValid(address)) {
 						if (this.isPrivateIp(address)) {
 							socket.destroy(new Error(`Blocked address: ${address}`));

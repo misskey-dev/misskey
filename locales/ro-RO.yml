@@ -1400,3 +1400,7 @@ _watermarkEditor:
   type: "Tip"
   image: "Imagini"
   advanced: "Avansat"
+_imageEffector:
+  _fxProps:
+    scale: "Dimensiune"
+    size: "Dimensiune"

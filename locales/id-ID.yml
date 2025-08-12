@@ -2627,3 +2627,11 @@ _watermarkEditor:
   image: "Gambar"
   advanced: "Tingkat lanjut"
   angle: "Sudut"
+_imageEffector:
+  _fxProps:
+    angle: "Sudut"
+    scale: "Ukuran"
+    size: "Ukuran"
+    color: "Warna"
+    opacity: "Opasitas"
+    lightness: "Menerangkan"
