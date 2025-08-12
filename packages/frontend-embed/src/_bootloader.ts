@@ -5,22 +5,24 @@
 
 'use strict';
 
+import { addStyle, bootloaderLocales, detectLanguage } from '@@/js/bootloader';
+
 interface Window {
 	CLIENT_ENTRY: string | undefined;
 }
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
-	window.onerror = (e) => {
-		console.error(e);
+	window.onerror = (error) => {
+		console.error(error);
 		renderError('SOMETHING_HAPPENED');
 	};
-	window.onunhandledrejection = (e) => {
-		console.error(e);
+	window.onunhandledrejection = (error) => {
+		console.error(error);
 		renderError('SOMETHING_HAPPENED_IN_PROMISE');
 	};
 
-	let forceError = localStorage.getItem('forceError');
+	const forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
 		return;
@@ -35,33 +37,13 @@ interface Window {
 		document.documentElement.classList.add('noborder');
 	}
 
-	//#region Detect language & fetch translations
-	const supportedLangs = _LANG_IDS_;
-	/** @type { string } */
-	let lang = localStorage.getItem('lang');
-	if (lang == null || !supportedLangs.includes(lang)) {
-		if (supportedLangs.includes(navigator.language)) {
-			lang = navigator.language;
-		} else {
-			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
-
-			// Fallback
-			if (lang == null) lang = 'en-US';
-		}
-	}
-
-	// for https://github.com/misskey-dev/misskey/issues/10202
-	if (lang == null || lang.toString == null || lang.toString() === 'null') {
-		console.error('invalid lang value detected!!!', typeof lang, lang);
-		lang = 'en-US';
-	}
-	//#endregion
+	const lang = detectLanguage();
 
 	//#region Script
 	async function importAppScript() {
 		await import(`/embed_vite/${(window.CLIENT_ENTRY ?? 'src/boot.ts').replace('scripts', lang)}`)
-			.catch(async e => {
-				console.error(e);
+			.catch(async error => {
+				console.error(error);
 				renderError('APP_IMPORT');
 			});
 	}
@@ -76,44 +58,19 @@ interface Window {
 	}
 	//#endregion
 
-	async function addStyle(styleText) {
-		let css = document.createElement('style');
-		css.appendChild(document.createTextNode(styleText));
-		document.head.appendChild(css);
-	}
-
-	async function renderError(code) {
+	async function renderError(code: string, _details?) {
 		// Cannot set property 'innerHTML' of null を回避
 		if (document.readyState === 'loading') {
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
-		let messages = null;
-		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
-		if (bootloaderLocales) {
-			messages = JSON.parse(bootloaderLocales);
-		}
-		if (!messages) {
-			// older version of misskey does not store bootloaderLocales, stores locale as a whole
-			const legacyLocale = localStorage.getItem('locale');
-			if (legacyLocale) {
-				const parsed = JSON.parse(legacyLocale);
-				messages = {
-					...(parsed._bootErrors ?? {}),
-					reload: parsed.reload,
-				};
-			}
-		}
-		if (!messages) messages = {};
-
-		const title = messages?.title || 'Failed to initialize Misskey';
-		const reload = messages?.reload || 'Reload';
+		const messages = bootloaderLocales();
 
 		document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
-		<div class="message">${title}</div>
+		<div class="message">${messages.title}</div>
 		<div class="submessage">Error Code: ${code}</div>
 		<button onclick="location.reload(!0)">
-			<div>${reload}</div>
+			<div>${messages.reload}</div>
 		</button>`;
 		addStyle(`
 		#misskey_app,
