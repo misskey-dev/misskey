@@ -121,6 +121,7 @@ export function getConfig(): UserConfig {
 		define: {
 			_VERSION_: JSON.stringify(meta.version),
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
+			_LANG_IDS_: JSON.stringify(Object.keys(locales)),
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
@@ -139,6 +140,7 @@ export function getConfig(): UserConfig {
 				input: {
 					i18n: './src/i18n.ts',
 					entry: './src/boot.ts',
+					bootloader: './src/_bootloader.ts',
 				},
 				external: externalPackages.map(p => p.match),
 				preserveEntrySignatures: 'allow-extension',

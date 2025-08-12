@@ -5,6 +5,10 @@
 
 'use strict';
 
+interface Window {
+	CLIENT_ENTRY: string | undefined;
+}
+
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	window.onerror = (e) => {
@@ -32,7 +36,7 @@
 	}
 
 	//#region Detect language & fetch translations
-	const supportedLangs = LANGS;
+	const supportedLangs = _LANG_IDS_;
 	/** @type { string } */
 	let lang = localStorage.getItem('lang');
 	if (lang == null || !supportedLangs.includes(lang)) {
@@ -55,7 +59,7 @@
 
 	//#region Script
 	async function importAppScript() {
-		await import(CLIENT_ENTRY ? `/embed_vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/embed_vite/src/_boot_.ts')
+		await import(`/embed_vite/${(window.CLIENT_ENTRY ?? 'src/boot.ts').replace('scripts', lang)}`)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT');

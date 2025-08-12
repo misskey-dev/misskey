@@ -188,6 +188,7 @@ export type Config = {
 	frontendBootLoader: { file: string };
 	frontendManifestExists: boolean;
 	frontendEmbedEntry: { file: string | null };
+	frontendEmbedBootLoader: { file: string };
 	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
@@ -239,7 +240,7 @@ export function loadConfig(): Config {
 		: { 'src/_boot_.ts': { file: null }, 'src/_bootloader.ts': { file: 'src/_bootloader.ts' } };
 	const frontendEmbedManifest = frontendEmbedManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
-		: { 'src/boot.ts': { file: null } };
+		: { 'src/boot.ts': { file: null }, 'src/_bootloader.ts': { file: 'src/_bootloader.ts' } };
 
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
@@ -316,6 +317,7 @@ export function loadConfig(): Config {
 		frontendBootLoader: frontendManifest['src/_bootloader.ts'],
 		frontendManifestExists: frontendManifestExists,
 		frontendEmbedEntry: frontendEmbedManifest['src/boot.ts'],
+		frontendEmbedBootLoader: frontendEmbedManifest['src/_bootloader.ts'],
 		frontendEmbedManifestExists: frontendEmbedManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
