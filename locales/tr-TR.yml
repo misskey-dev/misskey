@@ -2515,7 +2515,7 @@ _profile:
   avatarDecorationMax: "En fazla {max} süs ekleyebilirsin."
   followedMessage: "Takip edildiğinizde gönderilen mesaj"
   followedMessageDescription: "Abonelerin seni takip ettiklerinde görüntülenmesini istediğin kısa bir mesaj ayarlayabilirsin."
-  followedMessageDescriptionForLockedAccount: "Takip isteklerinin onay gerektirdiğini ayarladıysanız, bir takip isteğini kabul ettiğinizde bu mesaj görüntülenir."
+  followedMessageDescriptionForLockedAccount: "Takip isteklerinin onay gerektirmesini ayarladıysan, bir takip isteğini kabul ettiğinde bu mesaj görüntülenir."
 _exportOrImport:
   allNotes: "Tüm notlar"
   favoritedNotes: "Favori notlar"
