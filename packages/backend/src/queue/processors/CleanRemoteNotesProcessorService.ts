@@ -77,14 +77,13 @@ export class CleanRemoteNotesProcessorService {
 		// - not have clipped
 		// - not have pinned on the user profile
 		// - not has been favorite by any user
-		const removalCriteria = (qb: SelectQueryBuilder<MiNote>) => {
-			return qb
-				.where('note."id" < :newestLimit')
-				.andWhere('note."clippedCount" = 0')
-				.andWhere('note."userHost" IS NOT NULL')
-				.andWhere('NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")')
-				.andWhere('NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")');
-		};
+		const removalCriteria = [
+			'note."id" < :newestLimit',
+			'note."clippedCount" = 0',
+			'note."userHost" IS NOT NULL',
+			'NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")',
+			'NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")',
+		].join(' AND ');
 
 		const idBounds = await this.notesRepository.createQueryBuilder('note')
 			.select('MIN(note.id)', 'minId')
@@ -125,7 +124,7 @@ export class CleanRemoteNotesProcessorService {
 			this.notesRepository.createQueryBuilder('note')
 				.select('note.id', 'id')
 				.where('note."id" >= :cursorLeft')
-				.andWhere('note."id" < :newestLimit')
+				.andWhere('note."id" <= :newestLimit')
 				.andWhere('note."replyId" IS NULL')
 				.andWhere('note."renoteId" IS NULL')
 				.andWhere(removalCriteria)
@@ -136,14 +135,14 @@ export class CleanRemoteNotesProcessorService {
 
 		const candidateNotesCteName = 'candidate_notes';
 
-		const candidateNotesQueryBase = (cursorRight?: MiNote['id']) => this.notesRepository.createQueryBuilder('note')
+		const candidateNotesQueryBase = (cursorRight: MiNote['id']) => this.notesRepository.createQueryBuilder('note')
 			.select('note."id"', 'id')
 			.addSelect('note."replyId"', 'replyId')
 			.addSelect('note."renoteId"', 'renoteId')
 			.addSelect('note."id"', 'rootId')
 			.addSelect('TRUE', 'isRemovable')
-			.where({ id: MoreThanOrEqual(cursorLeft) })
-			.andWhere(cursorRight ? { id: LessThanOrEqual(cursorRight) } : {})
+			.where('note."id" >= :cursorLeft')
+			.andWhere('note."id" < :cursorRight')
 			.andWhere(removalCriteria)
 			.andWhere({ replyId: IsNull(), renoteId: IsNull() });
 
@@ -152,26 +151,39 @@ export class CleanRemoteNotesProcessorService {
 			.addSelect('note."replyId"', 'replyId')
 			.addSelect('note."renoteId"', 'renoteId')
 			.addSelect('parent."rootId"', 'rootId')
-			.addSelect(`
-				note."id" < :newestLimit
-				AND note."clippedCount" = 0
-				AND note."userHost" IS NOT NULL
-				AND NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")
-				AND NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")
-				`, 'isRemovable')
+			.addSelect(removalCriteria, 'isRemovable')
 			.innerJoin(candidateNotesCteName, 'parent', 'parent."id" = note."replyId" OR parent."id" = note."renoteId"')
 			.where('parent."isRemovable" = TRUE');
 
-		const candidateNotesQuery = (cursorRight?: MiNote['id']) => this.db.createQueryBuilder()
-			.select('candidate_notes.id', 'id')
+		// `candidate_notes` will have the following structure after recursive query (some columns omitted):
+		// After performing a LEFT JOIN with `candidate_notes` as `unremovable`,
+		// the note tree containing unremovable notes will be joined.
+		// For removable rows, the `unremovable` columns will have `NULL` values.
+		// | id  | rootId | isRemovable |
+		// |-----|--------|-------------|
+		// | aaa | aaa    | TRUE        |
+		// | bbb | aaa    | FALSE       |
+		// | ccc | aaa    | FALSE       |
+		// | ddd | ddd    | TRUE        |
+		// | eee | ddd    | TRUE        |
+		// | fff | fff    | TRUE        |
+		// | ggg | ggg    | FALSE       |
+		//
+		// A note tree can be deleted if there is no unremovable rows with the same rootId.
+		const candidateNotesQuery = (cursorRight: MiNote['id']) => this.db.createQueryBuilder()
+			.select(`"${candidateNotesCteName}"."id"`, 'id')
 			.addCommonTableExpression(
 				`(${candidateNotesQueryBase(cursorRight).getQuery()} UNION ${candidateNotesQueryInductive.getQuery()})`,
 				candidateNotesCteName,
 				{ recursive: true },
 			)
+			.addCommonTableExpression(
+				`(SELECT DISTINCT "rootId" FROM "${candidateNotesCteName}" WHERE "isRemovable" = FALSE)`,
+				'bad_root_ids',
+			)
 			.from(candidateNotesCteName, candidateNotesCteName)
-			.leftJoin(candidateNotesCteName, 'unremovable', `unremovable."rootId" = "${candidateNotesCteName}"."rootId" AND unremovable."isRemovable" = FALSE`)
-			.where('unremovable."id" IS NULL');
+			.leftJoin('bad_root_ids', 'bad_root_ids', `bad_root_ids."rootId" = "${candidateNotesCteName}"."rootId"`)
+			.where('bad_root_ids."rootId" IS NULL');
 
 		const stats = {
 			deletedCount: 0,
@@ -189,8 +201,7 @@ export class CleanRemoteNotesProcessorService {
 			const elapsed = batchBeginAt - startAt;
 
 			if (elapsed >= maxDuration) {
-				this.logger.info(`Reached maximum duration of ${maxDuration}ms, stopping...`);
-				job.log('Reached maximum duration, stopping cleaning.');
+				job.log(`Reached maximum duration of ${maxDuration}ms, stopping... (last cursor: ${cursorLeft}, final progress ${this.computeProgress(minId, maxId, cursorLeft)}%)`);
 				job.updateProgress(100);
 				break;
 			}
@@ -198,7 +209,9 @@ export class CleanRemoteNotesProcessorService {
 			const progress = this.computeProgress(minId, maxId, cursorLeft);
 			const wallClockUsage = elapsed / maxDuration;
 			if (wallClockUsage > 0.5 && progress < 50 && !lowThroughputWarned) {
-				this.logger.warn(`Not projected to finish in time! (wall clock usage ${wallClockUsage * 100}% at ${progress}%, current limit ${currentLimit})`);
+				const msg = `Not projected to finish in time! (wall clock usage ${wallClockUsage * 100}% at ${progress}%, current limit ${currentLimit})`;
+				this.logger.warn(msg);
+				job.log(msg);
 				lowThroughputWarned = true;
 			}
 			job.updateProgress(progress);
@@ -211,7 +224,7 @@ export class CleanRemoteNotesProcessorService {
 			}
 
 			const queryBegin = performance.now();
-			const noteIds = await candidateNotesQuery(cursorRight).setParameters({ newestLimit, cursorLeft }).getRawMany<{ id: MiNote['id'] }>().then(result => result.map(r => r.id));
+			const noteIds = await candidateNotesQuery(cursorRight).setParameters({ newestLimit, cursorLeft, cursorRight }).getRawMany<{ id: MiNote['id'] }>().then(result => result.map(r => r.id));
 
 			const queryDuration = performance.now() - queryBegin;
 			// try to adjust such that each query takes about 1~5 seconds and reasonable NodeJS heap so the task stays responsive
@@ -251,7 +264,7 @@ export class CleanRemoteNotesProcessorService {
 			job.log(`Deleted ${noteIds.length} notes; ${Date.now() - batchBeginAt}ms`);
 
 			if (process.env.NODE_ENV !== 'test') {
-				await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
+				await setTimeout(Math.min(1000 * 5, queryDuration)); // Wait a moment to avoid overwhelming the db
 			}
 		} while (cursorLeft < maxId);
 
