@@ -48,7 +48,8 @@ export class CleanRemoteNotesProcessorService {
 		deletedCount: number;
 		oldest: number | null;
 		newest: number | null;
-		skipped?: boolean;
+		skipped: boolean;
+		transientErrors: number;
 	}> {
 		if (!this.meta.enableRemoteNotesCleaning) {
 			this.logger.info('Remote notes cleaning is disabled, skipping...');
@@ -57,6 +58,7 @@ export class CleanRemoteNotesProcessorService {
 				oldest: null,
 				newest: null,
 				skipped: true,
+				transientErrors: 0,
 			};
 		}
 
@@ -102,10 +104,12 @@ export class CleanRemoteNotesProcessorService {
 				oldest: null,
 				newest: null,
 				skipped: false,
+				transientErrors: 0,
 			};
 		}
 
 		// start with a conservative limit and adjust it based on the query duration
+		const minimumLimit = 10;
 		let currentLimit = 100;
 		let cursorLeft = minId.slice(0, -1);
 
@@ -170,6 +174,7 @@ export class CleanRemoteNotesProcessorService {
 		};
 
 		let lowThroughputWarned = false;
+		let transientErrors = 0;
 		for (;;) {
 			//#region check time
 			const batchBeginAt = Date.now();
@@ -194,9 +199,21 @@ export class CleanRemoteNotesProcessorService {
 			//#endregion
 
 			const queryBegin = performance.now();
-			const noteIds = await candidateNotesQuery.setParameters(
-				{ newestLimit, cursorLeft },
-			).getRawMany<{ id: MiNote['id'], isRemovable: boolean, isBase: boolean }>();
+			let noteIds = null;
+
+			try {
+				noteIds = await candidateNotesQuery.setParameters(
+					{ newestLimit, cursorLeft },
+				).getRawMany<{ id: MiNote['id'], isRemovable: boolean, isBase: boolean }>();
+			} catch (e) {
+				if (currentLimit > minimumLimit && e instanceof QueryFailedError && e.driverError?.code === '57014') {
+					// Statement timeout (maybe suddenly hit a large note tree), reduce the limit and try again
+					// continuous failures will eventually converge to currentLimit == minimumLimit and then throw
+					currentLimit = Math.max(minimumLimit, Math.floor(currentLimit * 0.25));
+					continue;
+				}
+				throw e;
+			}
 
 			if (noteIds.length === 0) {
 				job.log('No more notes to clean.');
@@ -212,7 +229,7 @@ export class CleanRemoteNotesProcessorService {
 				currentLimit = Math.floor(currentLimit * 1.5);
 			}
 			// clamp to a sane range
-			currentLimit = Math.min(Math.max(currentLimit, 10), 5000);
+			currentLimit = Math.min(Math.max(currentLimit, minimumLimit), 5000);
 
 			const deletableNoteIds = noteIds.filter(result => result.isRemovable).map(result => result.id);
 			if (deletableNoteIds.length > 0) {
@@ -234,7 +251,8 @@ export class CleanRemoteNotesProcessorService {
 					// check for integrity violation errors (class 23) that might have occurred between the check and the delete
 					// we can safely continue to the next batch
 					if (e instanceof QueryFailedError && e.driverError?.code?.startsWith('23')) {
-						job.log(`Error deleting notes: ${e} (cursor: [${cursorLeft}..) (transient race condition?)`);
+						transientErrors++;
+						job.log(`Error deleting notes: ${e} (transient race condition?)`);
 					} else {
 						throw e;
 					}
@@ -250,6 +268,11 @@ export class CleanRemoteNotesProcessorService {
 			}
 		};
 
+		if (transientErrors > 0) {
+			const msg = `${transientErrors} transient errors occurred while cleaning remote notes. You may need a second pass to complete the cleaning.`;
+			this.logger.warn(msg);
+			job.log(msg);
+		}
 		this.logger.succ('cleaning of remote notes completed.');
 
 		return {
@@ -257,6 +280,7 @@ export class CleanRemoteNotesProcessorService {
 			oldest: stats.oldest,
 			newest: stats.newest,
 			skipped: false,
+			transientErrors,
 		};
 	}
 }
