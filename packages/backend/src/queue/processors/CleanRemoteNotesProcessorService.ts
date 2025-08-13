@@ -5,6 +5,7 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource, IsNull, LessThan, LessThanOrEqual, MoreThanOrEqual, Not, SelectQueryBuilder } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -24,10 +25,22 @@ export class CleanRemoteNotesProcessorService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.db)
+		private db: DataSource,
+
 		private idService: IdService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean-remote-notes');
+	}
+
+	@bindThis
+	private computeProgress(minId: string, maxId: string, cursorLeft: string) {
+		const minTs = this.idService.parse(minId).date.getTime();
+		const maxTs = this.idService.parse(maxId).date.getTime();
+		const cursorTs = this.idService.parse(cursorLeft).date.getTime();
+
+		return ((cursorTs - minTs) / (maxTs - minTs)) * 100;
 	}
 
 	@bindThis
@@ -52,12 +65,10 @@ export class CleanRemoteNotesProcessorService {
 		const maxDuration = this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
-		const MAX_NOTE_COUNT_PER_QUERY = 50;
-
-		//#retion queries
-		// We use string literals instead of query builder for several reasons:
-		// - for removeCondition, we need to use it in having clause, which is not supported by Brackets.
-		// - for recursive part, we need to preserve the order of columns, but typeorm query builder does not guarantee the order of columns in the result query
+		//#region queries
+		// The date limit for the newest note to be considered for deletion.
+		// All notes newer than this limit will always be retained.
+		const newestLimit = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
 
 		// The condition for removing the notes.
 		// The note must be:
@@ -66,56 +77,101 @@ export class CleanRemoteNotesProcessorService {
 		// - not have clipped
 		// - not have pinned on the user profile
 		// - not has been favorite by any user
-		const removeCondition = 'note.id < :newestLimit'
-			+ ' AND note."clippedCount" = 0'
-			+ ' AND note."userHost" IS NOT NULL'
-			// using both userId and noteId instead of just noteId to use index on user_note_pining table.
-			// This is safe because notes are only pinned by the user who created them.
-			+ ' AND NOT EXISTS(SELECT 1 FROM "user_note_pining" WHERE "noteId" = note."id" AND "userId" = note."userId")'
-			// We cannot use userId trick because users can favorite notes from other users.
-			+ ' AND NOT EXISTS(SELECT 1 FROM "note_favorite" WHERE "noteId" = note."id")'
-			;
+		const removalCriteria = (qb: SelectQueryBuilder<MiNote>) => {
+			return qb
+				.where('note."id" < :newestLimit')
+				.andWhere('note."clippedCount" = 0')
+				.andWhere('note."userHost" IS NOT NULL')
+				.andWhere('NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")')
+				.andWhere('NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")');
+		};
 
-		// The initiator query contains the oldest ${MAX_NOTE_COUNT_PER_QUERY} remote non-clipped notes
-		const initiatorQuery = this.notesRepository.createQueryBuilder('note')
+		const idBounds = await this.notesRepository.createQueryBuilder('note')
+			.select('MIN(note.id)', 'minId')
+			.addSelect('MAX(note.id)', 'maxId')
+			.where({
+				id: LessThan(newestLimit),
+				userHost: Not(IsNull()),
+				replyId: IsNull(),
+				renoteId: IsNull(),
+			})
+			.getRawOne<{ minId?: MiNote['id'], maxId?: MiNote['id'] }>();
+
+		if (!idBounds) {
+			this.logger.info('No notes can possibly be deleted, skipping...');
+			return {
+				deletedCount: 0,
+				oldest: null,
+				newest: null,
+				skipped: false,
+			};
+		}
+
+		const { minId, maxId } = idBounds;
+
+		if (!minId || !maxId) {
+			this.logger.info('No notes can possibly be deleted, skipping...');
+			return {
+				deletedCount: 0,
+				oldest: null,
+				newest: null,
+				skipped: false,
+			};
+		}
+
+		let cursorLeft = minId;
+
+		const findRightCursor = (limit: number) =>
+			this.notesRepository.createQueryBuilder('note')
+				.select('note.id', 'id')
+				.where('note."id" >= :cursorLeft')
+				.andWhere('note."id" < :newestLimit')
+				.andWhere('note."replyId" IS NULL')
+				.andWhere('note."renoteId" IS NULL')
+				.andWhere(removalCriteria)
+				.orderBy('note.id', 'ASC')
+				.offset(limit)
+				.setParameters({ newestLimit, cursorLeft })
+				.getRawOne<{ id: MiNote['id'] }>().then(result => result?.id);
+
+		const candidateNotesCteName = 'candidate_notes';
+
+		const candidateNotesQueryBase = (cursorRight?: MiNote['id']) => this.notesRepository.createQueryBuilder('note')
+			.select('note."id"', 'id')
+			.addSelect('note."replyId"', 'replyId')
+			.addSelect('note."renoteId"', 'renoteId')
+			.addSelect('note."id"', 'rootId')
+			.addSelect('TRUE', 'isRemovable')
+			.where({ id: MoreThanOrEqual(cursorLeft) })
+			.andWhere(cursorRight ? { id: LessThanOrEqual(cursorRight) } : {})
+			.andWhere(removalCriteria)
+			.andWhere({ replyId: IsNull(), renoteId: IsNull() });
+
+		const candidateNotesQueryInductive = this.notesRepository.createQueryBuilder('note')
 			.select('note.id', 'id')
-			.where(removeCondition)
-			.andWhere('note.id > :cursor')
-			.orderBy('note.id', 'ASC')
-			.limit(MAX_NOTE_COUNT_PER_QUERY);
+			.addSelect('note."replyId"', 'replyId')
+			.addSelect('note."renoteId"', 'renoteId')
+			.addSelect('parent."rootId"', 'rootId')
+			.addSelect(`
+				note."id" < :newestLimit
+				AND note."clippedCount" = 0
+				AND note."userHost" IS NOT NULL
+				AND NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")
+				AND NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")
+				`, 'isRemovable')
+			.innerJoin(candidateNotesCteName, 'parent', 'parent."id" = note."replyId" OR parent."id" = note."renoteId"')
+			.where('parent."isRemovable" = TRUE');
 
-		// The union query queries the related notes and replies related to the initiator query
-		const unionQuery = `
-				SELECT "note"."id", "note"."replyId", "note"."renoteId", rn."initiatorId"
-				FROM "note" "note"
-					INNER JOIN "related_notes" "rn"
-						ON "note"."replyId" = rn.id
-						     OR "note"."renoteId" = rn.id
-						     OR "note"."id" = rn."replyId"
-						     OR "note"."id" = rn."renoteId"
-			`;
-
-		const selectRelatedNotesFromInitiatorIdsQuery = `
-				SELECT "note"."id" AS "id", "note"."replyId" AS "replyId", "note"."renoteId" AS "renoteId", "note"."id" AS "initiatorId"
-				FROM "note" "note" WHERE "note"."id" IN (:...initiatorIds)
-			`;
-
-		const recursiveQuery = `(${selectRelatedNotesFromInitiatorIdsQuery}) UNION (${unionQuery})`;
-
-		const removableInitiatorNotesQuery = this.notesRepository.createQueryBuilder('note')
-			.select('rn."initiatorId"')
-			.innerJoin('related_notes', 'rn', 'note.id = rn.id')
-			.groupBy('rn."initiatorId"')
-			.having(`bool_and(${removeCondition})`);
-
-		const notesQuery = this.notesRepository.createQueryBuilder('note')
-			.addCommonTableExpression(recursiveQuery, 'related_notes', { recursive: true })
-			.select('note.id', 'id')
-			.addSelect('rn."initiatorId"')
-			.innerJoin('related_notes', 'rn', 'note.id = rn.id')
-			.where(`rn."initiatorId" IN (${removableInitiatorNotesQuery.getQuery()})`)
-			.distinctOn(['note.id']);
-		//#endregion
+		const candidateNotesQuery = (cursorRight?: MiNote['id']) => this.db.createQueryBuilder()
+			.select('candidate_notes.id', 'id')
+			.addCommonTableExpression(
+				`(${candidateNotesQueryBase(cursorRight).getQuery()} UNION ${candidateNotesQueryInductive.getQuery()})`,
+				candidateNotesCteName,
+				{ recursive: true },
+			)
+			.from(candidateNotesCteName, candidateNotesCteName)
+			.leftJoin(candidateNotesCteName, 'unremovable', `unremovable."rootId" = "${candidateNotesCteName}"."rootId" AND unremovable."isRemovable" = FALSE`)
+			.where('unremovable."id" IS NULL');
 
 		const stats = {
 			deletedCount: 0,
@@ -123,13 +179,10 @@ export class CleanRemoteNotesProcessorService {
 			newest: null as number | null,
 		};
 
-		// The date limit for the newest note to be considered for deletion.
-		// All notes newer than this limit will always be retained.
-		const newestLimit = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
-
-		let cursor = '0'; // oldest note ID to start from
-
-		while (true) {
+		// start with a conservative limit and adjust it based on the query duration
+		let currentLimit = 50;
+		let lowThroughputWarned = false;
+		do {
 			//#region check time
 			const batchBeginAt = Date.now();
 
@@ -142,32 +195,39 @@ export class CleanRemoteNotesProcessorService {
 				break;
 			}
 
-			job.updateProgress((elapsed / maxDuration) * 100);
+			const progress = this.computeProgress(minId, maxId, cursorLeft);
+			const wallClockUsage = elapsed / maxDuration;
+			if (wallClockUsage > 0.5 && progress < 50 && !lowThroughputWarned) {
+				this.logger.warn(`Not projected to finish in time! (wall clock usage ${wallClockUsage * 100}% at ${progress}%, current limit ${currentLimit})`);
+				lowThroughputWarned = true;
+			}
+			job.updateProgress(progress);
 			//#endregion
 
-			// First, we fetch the initiator notes that are older than the newestLimit.
-			const initiatorNotes: { id: MiNote['id'] }[] = await initiatorQuery.setParameters({ cursor, newestLimit }).getRawMany();
+			let cursorRight = await findRightCursor(currentLimit);
 
-			// update the cursor to the newest initiatorId found in the fetched notes.
-			const newCursor = initiatorNotes.reduce((max, note) => note.id > max ? note.id : max, cursor);
-
-			if (initiatorNotes.length === 0 || cursor === newCursor || newCursor >= newestLimit) {
-				// If no notes were found or the cursor did not change, we can stop.
-				job.log('No more notes to clean. (no initiator notes found or cursor did not change.)');
-				break;
+			if (!cursorRight || cursorRight > newestLimit) {
+				cursorRight = newestLimit;
 			}
 
-			const notes: { id: MiNote['id'], initiatorId: MiNote['id'] }[] = await notesQuery.setParameters({
-				initiatorIds: initiatorNotes.map(note => note.id),
-				newestLimit,
-			}).getRawMany();
+			const queryBegin = performance.now();
+			const noteIds = await candidateNotesQuery(cursorRight).setParameters({ newestLimit, cursorLeft }).getRawMany<{ id: MiNote['id'] }>().then(result => result.map(r => r.id));
 
-			cursor = newCursor;
+			const queryDuration = performance.now() - queryBegin;
+			// try to adjust such that each query takes about 1~5 seconds and reasonable NodeJS heap so the task stays responsive
+			// this should not oscillate..
+			if (queryDuration > 5000 || noteIds.length > 5000) {
+				currentLimit = Math.floor(currentLimit * 0.5);
+			} else if (queryDuration < 1000 && noteIds.length < 1000) {
+				currentLimit = Math.floor(currentLimit * 1.5);
+			}
+			// clamp to a sane range
+			currentLimit = Math.min(Math.max(currentLimit, 10), 5000);
 
-			if (notes.length > 0) {
-				await this.notesRepository.delete(notes.map(note => note.id));
+			if (noteIds.length > 0) {
+				await this.notesRepository.delete(noteIds);
 
-				for (const { id } of notes) {
+				for (const id of noteIds) {
 					const t = this.idService.parse(id).date.getTime();
 					if (stats.oldest === null || t < stats.oldest) {
 						stats.oldest = t;
@@ -177,19 +237,23 @@ export class CleanRemoteNotesProcessorService {
 					}
 				}
 
-				stats.deletedCount += notes.length;
+				stats.deletedCount += noteIds.length;
 			}
 
-			job.log(`Deleted ${notes.length} from ${initiatorNotes.length} initiators; ${Date.now() - batchBeginAt}ms`);
-
-			if (initiatorNotes.length < MAX_NOTE_COUNT_PER_QUERY) {
-				// If we fetched less than the maximum, it means there are no more notes to process.
-				job.log(`No more notes to clean. (fewer than MAX_NOTE_COUNT_PER_QUERY =${MAX_NOTE_COUNT_PER_QUERY}.)`);
+			// edge case breakout if maxId is the newest note and it is deleted while we are working on it
+			if (cursorLeft === cursorRight || !cursorRight) {
+				job.log('No more notes to clean. (cursorLeft === cursorRight)');
 				break;
 			}
 
-			await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
-		}
+			cursorLeft = cursorRight;
+
+			job.log(`Deleted ${noteIds.length} notes; ${Date.now() - batchBeginAt}ms`);
+
+			if (process.env.NODE_ENV !== 'test') {
+				await setTimeout(1000 * 5); // Wait a moment to avoid overwhelming the db
+			}
+		} while (cursorLeft < maxId);
 
 		this.logger.succ('cleaning of remote notes completed.');
 
