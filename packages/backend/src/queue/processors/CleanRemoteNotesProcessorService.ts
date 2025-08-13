@@ -5,7 +5,7 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, IsNull, LessThan, LessThanOrEqual, MoreThanOrEqual, Not, SelectQueryBuilder } from 'typeorm';
+import { DataSource, IsNull, LessThan, QueryFailedError, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
@@ -236,19 +236,29 @@ export class CleanRemoteNotesProcessorService {
 			currentLimit = Math.min(Math.max(currentLimit, 10), 5000);
 
 			if (noteIds.length > 0) {
-				await this.notesRepository.delete(noteIds);
+				try {
+					await this.notesRepository.delete(noteIds);
 
-				for (const id of noteIds) {
-					const t = this.idService.parse(id).date.getTime();
-					if (stats.oldest === null || t < stats.oldest) {
-						stats.oldest = t;
+					for (const id of noteIds) {
+						const t = this.idService.parse(id).date.getTime();
+						if (stats.oldest === null || t < stats.oldest) {
+							stats.oldest = t;
+						}
+						if (stats.newest === null || t > stats.newest) {
+							stats.newest = t;
+						}
 					}
-					if (stats.newest === null || t > stats.newest) {
-						stats.newest = t;
+
+					stats.deletedCount += noteIds.length;
+				} catch (e) {
+					// check for integrity violation errors (class 23) that might have occurred between the check and the delete
+					// we can safely continue to the next batch
+					if (e instanceof QueryFailedError && e.driverError?.code?.startsWith('23')) {
+						job.log(`Error deleting notes: ${e} (cursor: [${cursorLeft}, ${cursorRight}) (transient race condition?)`);
+					} else {
+						throw e;
 					}
 				}
-
-				stats.deletedCount += noteIds.length;
 			}
 
 			// edge case breakout if maxId is the newest note and it is deleted while we are working on it
