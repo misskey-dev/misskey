@@ -190,7 +190,7 @@ export class CleanRemoteNotesProcessorService {
 		};
 
 		// start with a conservative limit and adjust it based on the query duration
-		let currentLimit = 50;
+		let currentLimit = 100;
 		let lowThroughputWarned = false;
 		do {
 			//#region check time
