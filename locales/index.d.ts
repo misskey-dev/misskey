@@ -4235,6 +4235,10 @@ export interface Locale extends ILocale {
      */
     "selectFromPresets": string;
     /**
+     * 手動で設定
+     */
+    "setManually": string;
+    /**
      * 実績
      */
     "achievements": string;
@@ -8836,6 +8840,10 @@ export interface Locale extends ILocale {
          * 日
          */
         "day": string;
+        /**
+         * ヶ月
+         */
+        "month": string;
     };
     "_2fa": {
         /**
