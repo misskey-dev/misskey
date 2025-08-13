@@ -135,7 +135,8 @@ export class CleanRemoteNotesProcessorService {
 
 		const candidateNotesCteName = 'candidate_notes';
 
-		const candidateNotesQueryBase = (cursorRight: MiNote['id']) => this.notesRepository.createQueryBuilder('note')
+		// tree walk down all root notes, short-circuit when the first unremovable note is found
+		const candidateNotesQueryBase = this.notesRepository.createQueryBuilder('note')
 			.select('note."id"', 'id')
 			.addSelect('note."replyId"', 'replyId')
 			.addSelect('note."renoteId"', 'renoteId')
@@ -155,9 +156,11 @@ export class CleanRemoteNotesProcessorService {
 			.innerJoin(candidateNotesCteName, 'parent', 'parent."id" = note."replyId" OR parent."id" = note."renoteId"')
 			.where('parent."isRemovable" = TRUE');
 
+		// A note tree can be deleted if there are no unremovable rows with the same rootId.
+		//
 		// `candidate_notes` will have the following structure after recursive query (some columns omitted):
 		// After performing a LEFT JOIN with `candidate_notes` as `unremovable`,
-		// the note tree containing unremovable notes will be joined.
+		// the note tree containing unremovable notes will be anti-joined.
 		// For removable rows, the `unremovable` columns will have `NULL` values.
 		// | id  | rootId | isRemovable |
 		// |-----|--------|-------------|
@@ -169,21 +172,16 @@ export class CleanRemoteNotesProcessorService {
 		// | fff | fff    | TRUE        |
 		// | ggg | ggg    | FALSE       |
 		//
-		// A note tree can be deleted if there is no unremovable rows with the same rootId.
-		const candidateNotesQuery = (cursorRight: MiNote['id']) => this.db.createQueryBuilder()
+		const candidateNotesQuery = this.db.createQueryBuilder()
 			.select(`"${candidateNotesCteName}"."id"`, 'id')
 			.addCommonTableExpression(
-				`(${candidateNotesQueryBase(cursorRight).getQuery()} UNION ${candidateNotesQueryInductive.getQuery()})`,
+				`(${candidateNotesQueryBase.getQuery()} UNION ${candidateNotesQueryInductive.getQuery()})`,
 				candidateNotesCteName,
 				{ recursive: true },
 			)
-			.addCommonTableExpression(
-				`(SELECT DISTINCT "rootId" FROM "${candidateNotesCteName}" WHERE "isRemovable" = FALSE)`,
-				'bad_root_ids',
-			)
 			.from(candidateNotesCteName, candidateNotesCteName)
-			.leftJoin('bad_root_ids', 'bad_root_ids', `bad_root_ids."rootId" = "${candidateNotesCteName}"."rootId"`)
-			.where('bad_root_ids."rootId" IS NULL');
+			.leftJoin(candidateNotesCteName, 'unremovable', `unremovable."rootId" = "${candidateNotesCteName}"."rootId" AND unremovable."isRemovable" = FALSE`)
+			.where('unremovable."id" IS NULL');
 
 		const stats = {
 			deletedCount: 0,
@@ -224,7 +222,7 @@ export class CleanRemoteNotesProcessorService {
 			}
 
 			const queryBegin = performance.now();
-			const noteIds = await candidateNotesQuery(cursorRight).setParameters({ newestLimit, cursorLeft, cursorRight }).getRawMany<{ id: MiNote['id'] }>().then(result => result.map(r => r.id));
+			const noteIds = await candidateNotesQuery.setParameters({ newestLimit, cursorLeft, cursorRight }).getRawMany<{ id: MiNote['id'] }>().then(result => result.map(r => r.id));
 
 			const queryDuration = performance.now() - queryBegin;
 			// try to adjust such that each query takes about 1~5 seconds and reasonable NodeJS heap so the task stays responsive
