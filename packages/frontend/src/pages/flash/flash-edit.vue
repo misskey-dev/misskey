@@ -88,7 +88,7 @@ let choices = [
 ]
 
 // シードが「PlayID+ユーザーID+今日の日付」である乱数生成器を用意
-let random = Math:gen_rng(\`{THIS_ID}{USER_ID}{Date:year()}{Date:month()}{Date:day()}\`)
+let random = Math:gen_rng(\`{THIS_ID}{USER_ID}{Date:year()}{Date:month()}{Date:day()}\`, { algorithm: 'rc4_legacy' })
 
 // ランダムに選択肢を選ぶ
 let chosen = choices[random(0, (choices.len - 1))]
@@ -127,7 +127,7 @@ var results = []
 // どれだけ巻き戻しているか
 var cursor = 0
 
-@do() {
+@main() {
 	if (cursor != 0) {
 		results = results.slice(0, (cursor + 1))
 		cursor = 0
@@ -175,7 +175,7 @@ var cursor = 0
 						onClick: forward
 					}, {
 						text: "引き直す"
-						onClick: do
+						onClick: main
 					}]
 				})
 				Ui:C:postFormButton({
@@ -191,7 +191,7 @@ var cursor = 0
 	])
 }
 
-do()
+main()
 `;
 
 const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}

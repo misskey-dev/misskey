@@ -903,7 +903,7 @@ _theme:
     header: "Sarlavha"
     navBg: "Yon panel foni"
     navFg: "Yon panel matni"
-    mention: "Murojat"
+    mention: "Eslatib o'tish"
     renote: "Qayta qayd etish"
     divider: "Ajratrmoq"
     fgHighlighted: "Belgilangan matn"
@@ -1045,7 +1045,7 @@ _notification:
   _types:
     all: "Barchasi"
     follow: "Obuna bo‘lish"
-    mention: "Murojat"
+    mention: "Eslatib o'tish"
     renote: "Qayta qayd etish"
     quote: "Iqtibos keltirish"
     reaction: "Reaktsiyalar"
@@ -1102,3 +1102,7 @@ _watermarkEditor:
   type: "turi"
   image: "Rasmlar"
   advanced: "Murakkab"
+_imageEffector:
+  _fxProps:
+    color: "Rang"
+    lightness: "Yoritish"

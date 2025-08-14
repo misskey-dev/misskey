@@ -297,6 +297,12 @@ type AdminQueueRemoveJobRequest = operations['admin___queue___remove-job']['requ
 type AdminQueueRetryJobRequest = operations['admin___queue___retry-job']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminQueueShowJobLogsRequest = operations['admin___queue___show-job-logs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueShowJobLogsResponse = operations['admin___queue___show-job-logs']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminQueueShowJobRequest = operations['admin___queue___show-job']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1559,6 +1565,8 @@ declare namespace entities {
         AdminQueueRetryJobRequest,
         AdminQueueShowJobRequest,
         AdminQueueShowJobResponse,
+        AdminQueueShowJobLogsRequest,
+        AdminQueueShowJobLogsResponse,
         AdminQueueStatsResponse,
         AdminRelaysAddRequest,
         AdminRelaysAddResponse,

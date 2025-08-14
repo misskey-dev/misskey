@@ -83,46 +83,46 @@ void main() {
 `;
 
 export const FX_watermarkPlacement = defineImageEffectorFx({
-	id: 'watermarkPlacement' as const,
+	id: 'watermarkPlacement',
 	name: '(internal)',
 	shader,
 	uniforms: ['texture_watermark', 'resolution_watermark', 'scale', 'angle', 'opacity', 'repeat', 'alignX', 'alignY', 'fitMode'] as const,
 	params: {
 		cover: {
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: false,
 		},
 		repeat: {
-			type: 'boolean' as const,
+			type: 'boolean',
 			default: false,
 		},
 		scale: {
-			type: 'number' as const,
+			type: 'number',
 			default: 0.3,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		angle: {
-			type: 'number' as const,
+			type: 'number',
 			default: 0,
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		align: {
-			type: 'align' as const,
+			type: 'align',
 			default: { x: 'right', y: 'bottom' },
 		},
 		opacity: {
-			type: 'number' as const,
+			type: 'number',
 			default: 0.75,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		watermark: {
-			type: 'texture' as const,
+			type: 'texture',
 			default: null,
 		},
 	},
