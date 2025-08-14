@@ -31,7 +31,7 @@ import PageWithHeader from './global/PageWithHeader.vue';
 import PageWithAnimBg from './global/PageWithAnimBg.vue';
 import SearchMarker from './global/SearchMarker.vue';
 import SearchLabel from './global/SearchLabel.vue';
-import SearchKeyword from './global/SearchKeyword.vue';
+import SearchText from './global/SearchText.vue';
 import SearchIcon from './global/SearchIcon.vue';
 
 import type { App } from 'vue';
@@ -71,7 +71,7 @@ export const components = {
 	PageWithAnimBg: PageWithAnimBg,
 	SearchMarker: SearchMarker,
 	SearchLabel: SearchLabel,
-	SearchKeyword: SearchKeyword,
+	SearchText: SearchText,
 	SearchIcon: SearchIcon,
 };
 
@@ -105,7 +105,7 @@ declare module '@vue/runtime-core' {
 		PageWithAnimBg: typeof PageWithAnimBg;
 		SearchMarker: typeof SearchMarker;
 		SearchLabel: typeof SearchLabel;
-		SearchKeyword: typeof SearchKeyword;
+		SearchText: typeof SearchText;
 		SearchIcon: typeof SearchIcon;
 	}
 }

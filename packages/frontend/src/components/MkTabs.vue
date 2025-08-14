@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.tabs">
+<div :class="[$style.tabs, { [$style.centered]: props.centered }]">
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		ref="tabHighlightEl"
-		:class="[$style.tabHighlight, { [$style.animate]: prefer.s.animation }]"
+		:class="[$style.tabHighlight, { [$style.animate]: prefer.s.animation, [$style.tabHighlightUpper]: tabHighlightUpper }]"
 	></div>
 </div>
 </template>
@@ -59,6 +59,8 @@ import { prefer } from '@/preferences.js';
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
+	centered?: boolean;
+	tabHighlightUpper?: boolean;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -169,6 +171,16 @@ onUnmounted(() => {
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: none;
+
+	&.centered {
+		text-align: center;
+	}
+}
+
+@container (max-width: 450px) {
+	.tabs {
+		font-size: 80%;
+	}
 }
 
 .tabsInner {
@@ -226,6 +238,11 @@ onUnmounted(() => {
 
 	&.animate {
 		transition: width 0.15s ease, left 0.15s ease;
+	}
+
+	&.tabHighlightUpper {
+		top: 0;
+		bottom: auto;
 	}
 }
 </style>
