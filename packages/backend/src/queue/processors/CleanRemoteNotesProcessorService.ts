@@ -111,7 +111,7 @@ export class CleanRemoteNotesProcessorService {
 		// start with a conservative limit and adjust it based on the query duration
 		const minimumLimit = 10;
 		let currentLimit = 100;
-		let cursorLeft = minId.slice(0, -1);
+		let cursorLeft = '0';
 
 		const candidateNotesCteName = 'candidate_notes';
 
@@ -181,13 +181,14 @@ export class CleanRemoteNotesProcessorService {
 
 			const elapsed = batchBeginAt - startAt;
 
+			const progress = this.computeProgress(minId, newestLimit, cursorLeft > minId ? cursorLeft : minId);
+
 			if (elapsed >= maxDuration) {
-				job.log(`Reached maximum duration of ${maxDuration}ms, stopping... (last cursor: ${cursorLeft}, final progress ${this.computeProgress(minId, newestLimit, cursorLeft)}%)`);
+				job.log(`Reached maximum duration of ${maxDuration}ms, stopping... (last cursor: ${cursorLeft}, final progress ${progress}%)`);
 				job.updateProgress(100);
 				break;
 			}
 
-			const progress = this.computeProgress(minId, newestLimit, cursorLeft);
 			const wallClockUsage = elapsed / maxDuration;
 			if (wallClockUsage > 0.5 && progress < 50 && !lowThroughputWarned) {
 				const msg = `Not projected to finish in time! (wall clock usage ${wallClockUsage * 100}% at ${progress}%, current limit ${currentLimit})`;
