@@ -125,7 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
 								</MkSelect>
 
-								<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" :modelValue="makeNotesFollowersOnlyBefore_configMode" @update:modelValue="makeNotesFollowersOnlyBefore = $event === 'preset' ? -604800 : $event === 'custom' ? -15552000 : null">
+								<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore_configMode">
 									<option value="preset">{{ i18n.ts.selectFromPresets }}</option>
 									<option value="custom">{{ i18n.ts.setManually }}</option>
 								</MkSelect>
@@ -139,7 +139,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									:modelValue="-makeNotesFollowersOnlyBefore / (30 * 24 * 60 * 60)"
 									type="number"
 									:min="1"
-									:manualSave="true"
 									@update:modelValue="makeNotesFollowersOnlyBefore = -Math.abs(Math.floor(Number($event))) * 30 * 24 * 60 * 60"
 								>
 									<template #suffix>{{ i18n.ts._time.month }}</template>
@@ -172,7 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
 								</MkSelect>
 
-								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" :modelValue="makeNotesHiddenBefore_configMode" @update:modelValue="makeNotesHiddenBefore = $event === 'preset' ? -604800 : $event === 'custom' ? -15552000 : null">
+								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore_configMode">
 									<option value="preset">{{ i18n.ts.selectFromPresets }}</option>
 									<option value="custom">{{ i18n.ts.setManually }}</option>
 								</MkSelect>
@@ -186,7 +185,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									:modelValue="-makeNotesHiddenBefore / (30 * 24 * 60 * 60)"
 									type="number"
 									:min="1"
-									:manualSave="true"
 									@update:modelValue="makeNotesHiddenBefore = -Math.abs(Math.floor(Number($event))) * 30 * 24 * 60 * 60"
 								>
 									<template #suffix>{{ i18n.ts._time.month }}</template>
@@ -271,7 +269,7 @@ const makeNotesFollowersOnlyBefore_options = [
 	{ value: -31104000, label: i18n.ts.oneYear },
 ];
 
-const makeNotesFollowersOnlyBefore_configMode = computed(() => {
+const makeNotesFollowersOnlyBefore_configMode = ref((() => {
 	if (makeNotesFollowersOnlyBefore.value == null) {
 		return null;
 	} else if (makeNotesFollowersOnlyBefore_options.some((option) => option.value === makeNotesFollowersOnlyBefore.value)) {
@@ -279,7 +277,7 @@ const makeNotesFollowersOnlyBefore_configMode = computed(() => {
 	} else {
 		return 'custom';
 	}
-});
+})());
 
 const makeNotesHiddenBefore_type = computed(() => {
 	if (makeNotesHiddenBefore.value == null) {
@@ -301,15 +299,15 @@ const makeNotesHiddenBefore_options = [
 	{ value: -31104000, label: i18n.ts.oneYear },
 ];
 
-const makeNotesHiddenBefore_configMode = computed(() => {
+const makeNotesHiddenBefore_configMode = ref((() => {
 	if (makeNotesHiddenBefore.value == null) {
 		return null;
-	} else if (makeNotesFollowersOnlyBefore_options.some((option) => option.value === makeNotesHiddenBefore.value)) {
+	} else if (makeNotesHiddenBefore_options.some((option) => option.value === makeNotesHiddenBefore.value)) {
 		return 'preset';
 	} else {
 		return 'custom';
 	}
-});
+})());
 
 watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 	save();
