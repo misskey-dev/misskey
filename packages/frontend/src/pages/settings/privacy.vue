@@ -136,10 +136,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<MkInput
 									v-if="makeNotesFollowersOnlyBefore_type === 'relative' && makeNotesFollowersOnlyBefore_configMode === 'custom'"
-									:modelValue="-makeNotesFollowersOnlyBefore / (30 * 24 * 60 * 60)"
+									v-model="makeNotesFollowersOnlyBefore_customMonth"
 									type="number"
 									:min="1"
-									@update:modelValue="makeNotesFollowersOnlyBefore = -Math.abs(Math.floor(Number($event))) * 30 * 24 * 60 * 60"
 								>
 									<template #suffix>{{ i18n.ts._time.month }}</template>
 								</MkInput>
@@ -182,10 +181,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<MkInput
 									v-if="makeNotesHiddenBefore_type === 'relative' && makeNotesHiddenBefore_configMode === 'custom'"
-									:modelValue="-makeNotesHiddenBefore / (30 * 24 * 60 * 60)"
+									v-model="makeNotesHiddenBefore_customMonth"
 									type="number"
 									:min="1"
-									@update:modelValue="makeNotesHiddenBefore = -Math.abs(Math.floor(Number($event))) * 30 * 24 * 60 * 60"
 								>
 									<template #suffix>{{ i18n.ts._time.month }}</template>
 								</MkInput>
@@ -279,6 +277,15 @@ const makeNotesFollowersOnlyBefore_configMode = ref((() => {
 	}
 })());
 
+const makeNotesFollowersOnlyBefore_customMonth = computed({
+	get() {
+		return makeNotesFollowersOnlyBefore.value ? -makeNotesFollowersOnlyBefore.value / (30 * 24 * 60 * 60) : 1;
+	},
+	set(value: number) {
+		makeNotesFollowersOnlyBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
+	}
+});
+
 const makeNotesHiddenBefore_type = computed(() => {
 	if (makeNotesHiddenBefore.value == null) {
 		return null;
@@ -308,6 +315,15 @@ const makeNotesHiddenBefore_configMode = ref((() => {
 		return 'custom';
 	}
 })());
+
+const makeNotesHiddenBefore_customMonth = computed({
+	get() {
+		return makeNotesHiddenBefore.value ? -makeNotesHiddenBefore.value / (30 * 24 * 60 * 60) : 1;
+	},
+	set(value: number) {
+		makeNotesHiddenBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
+	}
+});
 
 watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 	save();
