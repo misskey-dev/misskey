@@ -111,6 +111,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>
 							<a style="display: inline-block;" class="purpledotdigital" title="Purple Dot Digital" href="https://purpledotdigital.com/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/purple-dot-digital.jpg" alt="Purple Dot Digital"></a>
 						</div>
+						<div>
+							<a style="display: inline-block;" class="sads-llc" title="合同会社サッズ" href="https://sads-llc.co.jp/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/sads-llc.png" alt="合同会社サッズ"></a>
+						</div>
 					</div>
 				</FormSection>
 				<FormSection>
@@ -403,6 +406,7 @@ const patrons = [
 	'東雲 琥珀',
 	'ほとラズ',
 	'スズカケン',
+	'蒼井よみこ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
