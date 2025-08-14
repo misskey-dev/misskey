@@ -6,288 +6,369 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<div class="_gaps_m">
-			<MkFolder :defaultOpen="true">
-				<template #icon><i class="ti ti-info-circle"></i></template>
-				<template #label>{{ i18n.ts.info }}</template>
-				<template v-if="infoForm.modified.value" #footer>
-					<MkFormFooter :form="infoForm"/>
-				</template>
-
-				<div class="_gaps">
-					<MkInput v-model="infoForm.state.name">
-						<template #label>{{ i18n.ts.instanceName }}<span v-if="infoForm.modifiedStates.name" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkInput>
-
-					<MkInput v-model="infoForm.state.shortName">
-						<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})<span v-if="infoForm.modifiedStates.shortName" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
-					</MkInput>
-
-					<MkTextarea v-model="infoForm.state.description">
-						<template #label>{{ i18n.ts.instanceDescription }}<span v-if="infoForm.modifiedStates.description" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkTextarea>
-
-					<FormSplit :minWidth="300">
-						<MkInput v-model="infoForm.state.maintainerName">
-							<template #label>{{ i18n.ts.maintainerName }}<span v-if="infoForm.modifiedStates.maintainerName" class="_modified">{{ i18n.ts.modified }}</span></template>
-						</MkInput>
-
-						<MkInput v-model="infoForm.state.maintainerEmail" type="email">
-							<template #label>{{ i18n.ts.maintainerEmail }}<span v-if="infoForm.modifiedStates.maintainerEmail" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #prefix><i class="ti ti-mail"></i></template>
-						</MkInput>
-					</FormSplit>
-
-					<MkInput v-model="infoForm.state.tosUrl" type="url">
-						<template #label>{{ i18n.ts.tosUrl }}<span v-if="infoForm.modifiedStates.tosUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #prefix><i class="ti ti-link"></i></template>
-					</MkInput>
-
-					<MkInput v-model="infoForm.state.privacyPolicyUrl" type="url">
-						<template #label>{{ i18n.ts.privacyPolicyUrl }}<span v-if="infoForm.modifiedStates.privacyPolicyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #prefix><i class="ti ti-link"></i></template>
-					</MkInput>
-
-					<MkInput v-model="infoForm.state.inquiryUrl" type="url">
-						<template #label>{{ i18n.ts._serverSettings.inquiryUrl }}<span v-if="infoForm.modifiedStates.inquiryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-					</MkInput>
-
-					<MkInput v-model="infoForm.state.repositoryUrl" type="url">
-						<template #label>{{ i18n.ts.repositoryUrl }}<span v-if="infoForm.modifiedStates.repositoryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-					</MkInput>
-
-					<MkInfo v-if="!instance.providesTarball && !infoForm.state.repositoryUrl" warn>
-						{{ i18n.ts.repositoryUrlOrTarballRequired }}
-					</MkInfo>
-
-					<MkInput v-model="infoForm.state.impressumUrl" type="url">
-						<template #label>{{ i18n.ts.impressumUrl }}<span v-if="infoForm.modifiedStates.impressumUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.impressumDescription }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-					</MkInput>
-				</div>
-			</MkFolder>
-
-			<MkFolder>
-				<template #icon><i class="ti ti-user-star"></i></template>
-				<template #label>{{ i18n.ts.pinnedUsers }}</template>
-				<template v-if="pinnedUsersForm.modified.value" #footer>
-					<MkFormFooter :form="pinnedUsersForm"/>
-				</template>
-
-				<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
-					<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
-					<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
-				</MkTextarea>
-			</MkFolder>
-
-			<MkFolder>
-				<template #icon><i class="ti ti-world-cog"></i></template>
-				<template #label>ServiceWorker</template>
-				<template v-if="serviceWorkerForm.modified.value" #footer>
-					<MkFormFooter :form="serviceWorkerForm"/>
-				</template>
-
-				<div class="_gaps">
-					<MkSwitch v-model="serviceWorkerForm.state.enableServiceWorker">
-						<template #label>{{ i18n.ts.enableServiceworker }}<span v-if="serviceWorkerForm.modifiedStates.enableServiceWorker" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-					</MkSwitch>
-
-					<template v-if="serviceWorkerForm.state.enableServiceWorker">
-						<MkInput v-model="serviceWorkerForm.state.swPublicKey">
-							<template #label>Public key<span v-if="serviceWorkerForm.modifiedStates.swPublicKey" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #prefix><i class="ti ti-key"></i></template>
-						</MkInput>
-
-						<MkInput v-model="serviceWorkerForm.state.swPrivateKey">
-							<template #label>Private key<span v-if="serviceWorkerForm.modifiedStates.swPrivateKey" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #prefix><i class="ti ti-key"></i></template>
-						</MkInput>
-					</template>
-				</div>
-			</MkFolder>
-
-			<MkFolder>
-				<template #icon><i class="ti ti-ad"></i></template>
-				<template #label>{{ i18n.ts._ad.adsSettings }}</template>
-				<template v-if="adForm.modified.value" #footer>
-					<MkFormFooter :form="adForm"/>
-				</template>
-
-				<div class="_gaps">
-					<div class="_gaps_s">
-						<MkInput v-model="adForm.state.notesPerOneAd" :min="0" type="number">
-							<template #label>{{ i18n.ts._ad.notesPerOneAd }}<span v-if="adForm.modifiedStates.notesPerOneAd" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
-						</MkInput>
-						<MkInfo v-if="adForm.state.notesPerOneAd > 0 && adForm.state.notesPerOneAd < 20" :warn="true">
-							{{ i18n.ts._ad.adsTooClose }}
-						</MkInfo>
-					</div>
-				</div>
-			</MkFolder>
-
-			<MkFolder>
-				<template #icon><i class="ti ti-world-search"></i></template>
-				<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
-				<template v-if="urlPreviewForm.modified.value" #footer>
-					<MkFormFooter :form="urlPreviewForm"/>
-				</template>
-
-				<div class="_gaps">
-					<MkSwitch v-model="urlPreviewForm.state.urlPreviewEnabled">
-						<template #label>{{ i18n.ts._urlPreviewSetting.enable }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewEnabled" class="_modified">{{ i18n.ts.modified }}</span></template>
-					</MkSwitch>
-
-					<template v-if="urlPreviewForm.state.urlPreviewEnabled">
-						<MkSwitch v-model="urlPreviewForm.state.urlPreviewAllowRedirect">
-							<template #label>{{ i18n.ts._urlPreviewSetting.allowRedirect }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewAllowRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.allowRedirectDescription }}</template>
-						</MkSwitch>
-
-						<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
-							<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
-						</MkSwitch>
-
-						<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
-							<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
-						</MkInput>
-
-						<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
-							<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
-						</MkInput>
-
-						<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
-							<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
-						</MkInput>
-
-						<div>
-							<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
-								<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
-							</MkInput>
-
-							<div :class="$style.subCaption">
-								{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
-								<ul style="padding-left: 20px; margin: 4px 0">
-									<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
-									<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
-									<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
-									<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
-								</ul>
-							</div>
-						</div>
-					</template>
-				</div>
-			</MkFolder>
-
-			<MkFolder>
-				<template #icon><i class="ti ti-planet"></i></template>
-				<template #label>{{ i18n.ts.federation }}</template>
-				<template v-if="federationForm.savedState.federation === 'all'" #suffix>{{ i18n.ts.all }}</template>
-				<template v-else-if="federationForm.savedState.federation === 'specified'" #suffix>{{ i18n.ts.specifyHost }}</template>
-				<template v-else-if="federationForm.savedState.federation === 'none'" #suffix>{{ i18n.ts.none }}</template>
-				<template v-if="federationForm.modified.value" #footer>
-					<MkFormFooter :form="federationForm"/>
-				</template>
-
-				<div class="_gaps">
-					<MkRadios v-model="federationForm.state.federation">
-						<template #label>{{ i18n.ts.behavior }}<span v-if="federationForm.modifiedStates.federation" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<option value="all">{{ i18n.ts.all }}</option>
-						<option value="specified">{{ i18n.ts.specifyHost }}</option>
-						<option value="none">{{ i18n.ts.none }}</option>
-					</MkRadios>
-
-					<MkTextarea v-if="federationForm.state.federation === 'specified'" v-model="federationForm.state.federationHosts">
-						<template #label>{{ i18n.ts.federationAllowedHosts }}<span v-if="federationForm.modifiedStates.federationHosts" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.federationAllowedHostsDescription }}</template>
-					</MkTextarea>
-
-					<MkFolder>
-						<template #icon><i class="ti ti-list"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts._serverSettings.deliverSuspendedSoftware }}</SearchLabel></template>
-						<template #footer>
-							<div class="_buttons">
-								<MkButton @click="federationForm.state.deliverSuspendedSoftware.push({software: '', versionRange: ''})"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-							</div>
+		<SearchMarker path="/admin/settings" :label="i18n.ts.general" :keywords="['general', 'settings']" icon="ti ti-settings">
+			<div class="_gaps_m">
+				<SearchMarker v-slot="slotProps" :keywords="['information', 'meta']">
+					<MkFolder :defaultOpen="true">
+						<template #icon><SearchIcon><i class="ti ti-info-circle"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.info }}</SearchLabel></template>
+						<template v-if="infoForm.modified.value" #footer>
+							<MkFormFooter :form="infoForm"/>
 						</template>
 
-						<div :class="$style.metadataRoot" class="_gaps_s">
-							<MkInfo>{{ i18n.ts._serverSettings.deliverSuspendedSoftwareDescription }}</MkInfo>
-							<div v-for="(element, index) in federationForm.state.deliverSuspendedSoftware" :key="index" v-panel :class="$style.fieldDragItem">
-								<button class="_button" :class="$style.dragItemRemove" @click="federationForm.state.deliverSuspendedSoftware.splice(index, 1)"><i class="ti ti-x"></i></button>
-								<div :class="$style.dragItemForm">
-									<FormSplit :minWidth="200">
-										<MkInput v-model="element.software" small :placeholder="i18n.ts.softwareName">
-										</MkInput>
-										<MkInput v-model="element.versionRange" small :placeholder="i18n.ts.version">
-										</MkInput>
-									</FormSplit>
-								</div>
+						<div class="_gaps">
+							<SearchMarker :keywords="['name']">
+								<MkInput v-model="infoForm.state.name">
+									<template #label><SearchLabel>{{ i18n.ts.instanceName }}</SearchLabel><span v-if="infoForm.modifiedStates.name" class="_modified">{{ i18n.ts.modified }}</span></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['shortName']">
+								<MkInput v-model="infoForm.state.shortName">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.shortName }}</SearchLabel> ({{ i18n.ts.optional }})<span v-if="infoForm.modifiedStates.shortName" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.shortNameDescription }}</SearchText></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['description']">
+								<MkTextarea v-model="infoForm.state.description">
+									<template #label><SearchLabel>{{ i18n.ts.instanceDescription }}</SearchLabel><span v-if="infoForm.modifiedStates.description" class="_modified">{{ i18n.ts.modified }}</span></template>
+								</MkTextarea>
+							</SearchMarker>
+
+							<FormSplit :minWidth="300">
+								<SearchMarker :keywords="['maintainer', 'name']">
+									<MkInput v-model="infoForm.state.maintainerName">
+										<template #label><SearchLabel>{{ i18n.ts.maintainerName }}</SearchLabel><span v-if="infoForm.modifiedStates.maintainerName" class="_modified">{{ i18n.ts.modified }}</span></template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['maintainer', 'email', 'contact']">
+									<MkInput v-model="infoForm.state.maintainerEmail" type="email">
+										<template #label><SearchLabel>{{ i18n.ts.maintainerEmail }}</SearchLabel><span v-if="infoForm.modifiedStates.maintainerEmail" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #prefix><i class="ti ti-mail"></i></template>
+									</MkInput>
+								</SearchMarker>
+							</FormSplit>
+
+							<SearchMarker :keywords="['tos', 'termsOfService']">
+								<MkInput v-model="infoForm.state.tosUrl" type="url">
+									<template #label><SearchLabel>{{ i18n.ts.tosUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.tosUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #prefix><i class="ti ti-link"></i></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['privacyPolicy']">
+								<MkInput v-model="infoForm.state.privacyPolicyUrl" type="url">
+									<template #label><SearchLabel>{{ i18n.ts.privacyPolicyUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.privacyPolicyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #prefix><i class="ti ti-link"></i></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['inquiry', 'contact']">
+								<MkInput v-model="infoForm.state.inquiryUrl" type="url">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.inquiryUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.inquiryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</SearchText></template>
+									<template #prefix><i class="ti ti-link"></i></template>
+								</MkInput>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['repository', 'url']">
+								<MkInput v-model="infoForm.state.repositoryUrl" type="url">
+									<template #label><SearchLabel>{{ i18n.ts.repositoryUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.repositoryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts.repositoryUrlDescription }}</SearchText></template>
+									<template #prefix><i class="ti ti-link"></i></template>
+								</MkInput>
+							</SearchMarker>
+
+							<MkInfo v-if="!instance.providesTarball && !infoForm.state.repositoryUrl" warn>
+								{{ i18n.ts.repositoryUrlOrTarballRequired }}
+							</MkInfo>
+
+							<SearchMarker :keywords="['impressum', 'legalNotice']">
+								<MkInput v-model="infoForm.state.impressumUrl" type="url">
+									<template #label><SearchLabel>{{ i18n.ts.impressumUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.impressumUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts.impressumDescription }}</SearchText></template>
+									<template #prefix><i class="ti ti-link"></i></template>
+								</MkInput>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['pinned', 'users']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-user-star"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.pinnedUsers }}</SearchLabel></template>
+						<template v-if="pinnedUsersForm.modified.value" #footer>
+							<MkFormFooter :form="pinnedUsersForm"/>
+						</template>
+
+						<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
+							<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption><SearchText>{{ i18n.ts.pinnedUsersDescription }}</SearchText></template>
+						</MkTextarea>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['serviceWorker']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-world-cog"></i></SearchIcon></template>
+						<template #label><SearchLabel>ServiceWorker</SearchLabel></template>
+						<template v-if="serviceWorkerForm.modified.value" #footer>
+							<MkFormFooter :form="serviceWorkerForm"/>
+						</template>
+
+						<div class="_gaps">
+							<SearchMarker>
+								<MkSwitch v-model="serviceWorkerForm.state.enableServiceWorker">
+									<template #label><SearchLabel>{{ i18n.ts.enableServiceworker }}</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.enableServiceWorker" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts.serviceworkerInfo }}</SearchText></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<template v-if="serviceWorkerForm.state.enableServiceWorker">
+								<SearchMarker>
+									<MkInput v-model="serviceWorkerForm.state.swPublicKey">
+										<template #label><SearchLabel>Public key</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.swPublicKey" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #prefix><i class="ti ti-key"></i></template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker>
+									<MkInput v-model="serviceWorkerForm.state.swPrivateKey">
+										<template #label><SearchLabel>Private key</SearchLabel><span v-if="serviceWorkerForm.modifiedStates.swPrivateKey" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #prefix><i class="ti ti-key"></i></template>
+									</MkInput>
+								</SearchMarker>
+							</template>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['ads']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-ad"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts._ad.adsSettings }}</SearchLabel></template>
+						<template v-if="adForm.modified.value" #footer>
+							<MkFormFooter :form="adForm"/>
+						</template>
+
+						<div class="_gaps">
+							<div class="_gaps_s">
+								<SearchMarker>
+									<MkInput v-model="adForm.state.notesPerOneAd" :min="0" type="number">
+										<template #label><SearchLabel>{{ i18n.ts._ad.notesPerOneAd }}</SearchLabel><span v-if="adForm.modifiedStates.notesPerOneAd" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
+									</MkInput>
+								</SearchMarker>
+
+								<MkInfo v-if="adForm.state.notesPerOneAd > 0 && adForm.state.notesPerOneAd < 20" :warn="true">
+									{{ i18n.ts._ad.adsTooClose }}
+								</MkInfo>
 							</div>
 						</div>
 					</MkFolder>
+				</SearchMarker>
 
-					<MkSwitch v-model="federationForm.state.signToActivityPubGet">
-						<template #label>{{ i18n.ts._serverSettings.signToActivityPubGet }}<span v-if="federationForm.modifiedStates.signToActivityPubGet" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.signToActivityPubGet_description }}</template>
-					</MkSwitch>
-
-					<MkSwitch v-model="federationForm.state.proxyRemoteFiles">
-						<template #label>{{ i18n.ts._serverSettings.proxyRemoteFiles }}<span v-if="federationForm.modifiedStates.proxyRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts._serverSettings.proxyRemoteFiles_description }}</template>
-					</MkSwitch>
-
-					<MkSwitch v-model="federationForm.state.allowExternalApRedirect">
-						<template #label>{{ i18n.ts._serverSettings.allowExternalApRedirect }}<span v-if="federationForm.modifiedStates.allowExternalApRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>
-							<div>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</div>
-							<div>{{ i18n.ts.needToRestartServerToApply }}</div>
+				<SearchMarker v-slot="slotProps" :keywords="['url', 'preview']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-world-search"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.title }}</SearchLabel></template>
+						<template v-if="urlPreviewForm.modified.value" #footer>
+							<MkFormFooter :form="urlPreviewForm"/>
 						</template>
-					</MkSwitch>
 
-					<MkSwitch v-model="federationForm.state.cacheRemoteFiles">
-						<template #label>{{ i18n.ts.cacheRemoteFiles }}<span v-if="federationForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-						<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
-					</MkSwitch>
+						<div class="_gaps">
+							<SearchMarker>
+								<MkSwitch v-model="urlPreviewForm.state.urlPreviewEnabled">
+									<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.enable }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewEnabled" class="_modified">{{ i18n.ts.modified }}</span></template>
+								</MkSwitch>
+							</SearchMarker>
 
-					<template v-if="federationForm.state.cacheRemoteFiles">
-						<MkSwitch v-model="federationForm.state.cacheRemoteSensitiveFiles">
-							<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}<span v-if="federationForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
-						</MkSwitch>
-					</template>
-				</div>
-			</MkFolder>
+							<template v-if="urlPreviewForm.state.urlPreviewEnabled">
+								<SearchMarker :keywords="['allow', 'redirect']">
+									<MkSwitch v-model="urlPreviewForm.state.urlPreviewAllowRedirect">
+										<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.allowRedirect }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewAllowRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._urlPreviewSetting.allowRedirectDescription }}</template>
+									</MkSwitch>
+								</SearchMarker>
 
-			<MkFolder>
-				<template #icon><i class="ti ti-ghost"></i></template>
-				<template #label>{{ i18n.ts.proxyAccount }}</template>
-				<template v-if="proxyAccountForm.modified.value" #footer>
-					<MkFormFooter :form="proxyAccountForm"/>
-				</template>
+								<SearchMarker :keywords="['contentLength']">
+									<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
+										<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.requireContentLength }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
+									</MkSwitch>
+								</SearchMarker>
 
-				<div class="_gaps">
-					<MkInfo>{{ i18n.ts.proxyAccountDescription }}</MkInfo>
+								<SearchMarker :keywords="['contentLength']">
+									<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
+										<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
+									</MkInput>
+								</SearchMarker>
 
-					<MkTextarea v-model="proxyAccountForm.state.description" :max="500" tall mfmAutocomplete :mfmPreview="true">
-						<template #label>{{ i18n.ts._profile.description }}</template>
-						<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-					</MkTextarea>
-				</div>
-			</MkFolder>
-		</div>
+								<SearchMarker :keywords="['timeout']">
+									<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
+										<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.timeout }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
+									</MkInput>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['userAgent']">
+									<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
+										<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.userAgent }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
+									</MkInput>
+								</SearchMarker>
+
+								<div>
+									<SearchMarker :keywords="['proxy']">
+										<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
+											<template #label><SearchLabel>{{ i18n.ts._urlPreviewSetting.summaryProxy }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+											<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+										</MkInput>
+									</SearchMarker>
+
+									<div :class="$style.subCaption">
+										{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
+										<ul style="padding-left: 20px; margin: 4px 0">
+											<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
+											<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
+											<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
+											<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
+										</ul>
+									</div>
+								</div>
+							</template>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['federation']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-planet"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.federation }}</SearchLabel></template>
+						<template v-if="federationForm.savedState.federation === 'all'" #suffix>{{ i18n.ts.all }}</template>
+						<template v-else-if="federationForm.savedState.federation === 'specified'" #suffix>{{ i18n.ts.specifyHost }}</template>
+						<template v-else-if="federationForm.savedState.federation === 'none'" #suffix>{{ i18n.ts.none }}</template>
+						<template v-if="federationForm.modified.value" #footer>
+							<MkFormFooter :form="federationForm"/>
+						</template>
+
+						<div class="_gaps">
+							<SearchMarker>
+								<MkRadios v-model="federationForm.state.federation">
+									<template #label><SearchLabel>{{ i18n.ts.behavior }}</SearchLabel><span v-if="federationForm.modifiedStates.federation" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<option value="all">{{ i18n.ts.all }}</option>
+									<option value="specified">{{ i18n.ts.specifyHost }}</option>
+									<option value="none">{{ i18n.ts.none }}</option>
+								</MkRadios>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['hosts']">
+								<MkTextarea v-if="federationForm.state.federation === 'specified'" v-model="federationForm.state.federationHosts">
+									<template #label><SearchLabel>{{ i18n.ts.federationAllowedHosts }}</SearchLabel><span v-if="federationForm.modifiedStates.federationHosts" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts.federationAllowedHostsDescription }}</template>
+								</MkTextarea>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['suspended', 'software']">
+								<MkFolder>
+									<template #icon><i class="ti ti-list"></i></template>
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.deliverSuspendedSoftware }}</SearchLabel></template>
+									<template #footer>
+										<div class="_buttons">
+											<MkButton @click="federationForm.state.deliverSuspendedSoftware.push({software: '', versionRange: ''})"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+										</div>
+									</template>
+
+									<div :class="$style.metadataRoot" class="_gaps_s">
+										<MkInfo>{{ i18n.ts._serverSettings.deliverSuspendedSoftwareDescription }}</MkInfo>
+										<div v-for="(element, index) in federationForm.state.deliverSuspendedSoftware" :key="index" v-panel :class="$style.fieldDragItem">
+											<button class="_button" :class="$style.dragItemRemove" @click="federationForm.state.deliverSuspendedSoftware.splice(index, 1)"><i class="ti ti-x"></i></button>
+											<div :class="$style.dragItemForm">
+												<FormSplit :minWidth="200">
+													<MkInput v-model="element.software" small :placeholder="i18n.ts.softwareName">
+													</MkInput>
+													<MkInput v-model="element.versionRange" small :placeholder="i18n.ts.version">
+													</MkInput>
+												</FormSplit>
+											</div>
+										</div>
+									</div>
+								</MkFolder>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['sign', 'get']">
+								<MkSwitch v-model="federationForm.state.signToActivityPubGet">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.signToActivityPubGet }}</SearchLabel><span v-if="federationForm.modifiedStates.signToActivityPubGet" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.signToActivityPubGet_description }}</SearchText></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['proxy', 'remote', 'files']">
+								<MkSwitch v-model="federationForm.state.proxyRemoteFiles">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.proxyRemoteFiles }}</SearchLabel><span v-if="federationForm.modifiedStates.proxyRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts._serverSettings.proxyRemoteFiles_description }}</SearchText></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['allow', 'external', 'redirect']">
+								<MkSwitch v-model="federationForm.state.allowExternalApRedirect">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings.allowExternalApRedirect }}</SearchLabel><span v-if="federationForm.modifiedStates.allowExternalApRedirect" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>
+										<div><SearchText>{{ i18n.ts._serverSettings.allowExternalApRedirect_description }}</SearchText></div>
+										<div>{{ i18n.ts.needToRestartServerToApply }}</div>
+									</template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['cache', 'remote', 'files']">
+								<MkSwitch v-model="federationForm.state.cacheRemoteFiles">
+									<template #label><SearchLabel>{{ i18n.ts.cacheRemoteFiles }}</SearchLabel><span v-if="federationForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts.cacheRemoteFilesDescription }}</SearchText>{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<template v-if="federationForm.state.cacheRemoteFiles">
+								<SearchMarker :keywords="['cache', 'remote', 'sensitive', 'files']">
+									<MkSwitch v-model="federationForm.state.cacheRemoteSensitiveFiles">
+										<template #label><SearchLabel>{{ i18n.ts.cacheRemoteSensitiveFiles }}</SearchLabel><span v-if="federationForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption><SearchText>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</SearchText></template>
+									</MkSwitch>
+								</SearchMarker>
+							</template>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<SearchMarker v-slot="slotProps" :keywords="['proxy', 'account']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-ghost"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.proxyAccount }}</SearchLabel></template>
+						<template v-if="proxyAccountForm.modified.value" #footer>
+							<MkFormFooter :form="proxyAccountForm"/>
+						</template>
+
+						<div class="_gaps">
+							<MkInfo>{{ i18n.ts.proxyAccountDescription }}</MkInfo>
+
+							<SearchMarker :keywords="['description']">
+								<MkTextarea v-model="proxyAccountForm.state.description" :max="500" tall mfmAutocomplete :mfmPreview="true">
+									<template #label><SearchLabel>{{ i18n.ts._profile.description }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
+								</MkTextarea>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
+				<MkButton primary @click="openSetupWizard">
+					Open setup wizard
+				</MkButton>
+			</div>
+		</SearchMarker>
 	</div>
 </PageWithHeader>
 </template>
@@ -424,6 +505,20 @@ const proxyAccountForm = useForm({
 	});
 	fetchInstance(true);
 });
+
+async function openSetupWizard() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts._serverSettings.restartServerSetupWizardConfirm_title,
+		text: i18n.ts._serverSettings.restartServerSetupWizardConfirm_text,
+	});
+	if (canceled) return;
+
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkServerSetupWizardDialog.vue').then(x => x.default), {
+	}, {
+		closed: () => dispose(),
+	});
+}
 
 const headerTabs = computed(() => []);
 

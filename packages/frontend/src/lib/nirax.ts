@@ -165,6 +165,8 @@ function buildFullPath(args: {
 			const replaceRegex = new RegExp(`:${key}(\\?)?`, 'g');
 			fullPath = fullPath.replace(replaceRegex, value ? encodeURIComponent(value) : '');
 		}
+		// remove any optional parameters that are not provided
+		fullPath = fullPath.replace(/\/:\w+\?(?=\/|$)/g, '');
 	}
 
 	if (args.query) {

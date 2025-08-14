@@ -137,9 +137,10 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	if (deepEqual(currentTheme, theme)) return;
-	currentTheme = theme;
+	// リアクティビティ解除
+	currentTheme = deepClone(theme);
 
-	if (window.document.startViewTransition != null && prefer.s.animation) {
+	if (window.document.startViewTransition != null) {
 		window.document.documentElement.classList.add('_themeChanging_');
 		window.document.startViewTransition(async () => {
 			applyThemeInternal(theme, persist);
@@ -150,15 +151,9 @@ export function applyTheme(theme: Theme, persist = true) {
 			globalEvents.emit('themeChanged');
 		});
 	} else {
-		// TODO: ViewTransition API が主要ブラウザで対応したら消す
-		window.document.documentElement.classList.add('_themeChangingFallback_');
-		timeout = window.setTimeout(() => {
-			window.document.documentElement.classList.remove('_themeChangingFallback_');
-			// 色計算など再度行えるようにクライアント全体に通知
-			globalEvents.emit('themeChanged');
-		}, 500);
-
 		applyThemeInternal(theme, persist);
+		// 色計算など再度行えるようにクライアント全体に通知
+		globalEvents.emit('themeChanged');
 	}
 }
 

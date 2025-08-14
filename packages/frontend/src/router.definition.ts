@@ -492,10 +492,6 @@ export const ROUTE_DEF = [{
 		name: 'performance',
 		component: page(() => import('@/pages/admin/performance.vue')),
 	}, {
-		path: '/server-rules',
-		name: 'server-rules',
-		component: page(() => import('@/pages/admin/server-rules.vue')),
-	}, {
 		path: '/invites',
 		name: 'invites',
 		component: page(() => import('@/pages/admin/invites.vue')),
