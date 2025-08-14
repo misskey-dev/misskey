@@ -1040,6 +1040,8 @@ surrender: "Odrzuć"
 gameRetry: "Spróbuj ponownie"
 postForm: "Formularz tworzenia wpisu"
 information: "Informacje"
+inMinutes: "minuta"
+inDays: "dzień"
 _chat:
   invitations: "Zaproś"
   noHistory: "Brak historii"
@@ -1591,3 +1593,10 @@ _watermarkEditor:
   type: "Typ"
   image: "Zdjęcia"
   advanced: "Zaawansowane"
+_imageEffector:
+  _fxProps:
+    scale: "Rozmiar"
+    size: "Rozmiar"
+    color: "Kolor"
+    opacity: "Przezroczystość"
+    lightness: "Rozjaśnij"
