@@ -158,6 +158,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				oldest: null,
 				newest: null,
 				skipped: true,
+				transientErrors: 0,
 			});
 		});
 
@@ -172,6 +173,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				oldest: null,
 				newest: null,
 				skipped: false,
+				transientErrors: 0,
 			});
 		}, 3000);
 
@@ -199,6 +201,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				oldest: expect.any(Number),
 				newest: expect.any(Number),
 				skipped: false,
+				transientErrors: 0,
 			});
 
 			// Check side-by-side from all notes
