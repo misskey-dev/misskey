@@ -114,6 +114,12 @@ export class MiNote {
 	})
 	public clippedCount: number;
 
+	@Column('smallint', {
+		default: 0,
+		comment: 'The number of note page blocks referencing this note.',
+	})
+	public pageCount: number;
+
 	@Column('jsonb', {
 		default: {},
 	})
