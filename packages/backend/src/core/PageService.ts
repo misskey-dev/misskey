@@ -17,7 +17,7 @@ import {
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiLocalUser } from '@/models/User.js';
+import type { MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
@@ -57,7 +57,7 @@ export class PageService {
 
 	@bindThis
 	public async create(
-		me: MiLocalUser,
+		me: MiUser,
 		body: PageBody,
 	): Promise<MiPage> {
 		await this.pagesRepository.findBy({
@@ -96,7 +96,7 @@ export class PageService {
 
 	@bindThis
 	public async update(
-		me: MiLocalUser,
+		me: MiUser,
 		pageId: MiPage['id'],
 		body: Partial<PageBody>,
 	): Promise<void> {
@@ -161,7 +161,7 @@ export class PageService {
 	}
 
 	@bindThis
-	public async delete(me: MiLocalUser, pageId: MiPage['id']): Promise<void> {
+	public async delete(me: MiUser, pageId: MiPage['id']): Promise<void> {
 		await this.db.transaction(async (transaction) => {
 			const page = await transaction.findOne(MiPage, {
 				where: {
