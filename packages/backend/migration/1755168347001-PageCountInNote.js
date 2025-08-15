@@ -8,7 +8,6 @@ export class PageCountInNote1755168347001 {
 
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "note" ADD "pageCount" smallint NOT NULL DEFAULT '0'`);
-        await queryRunner.query(`COMMENT ON COLUMN "note"."pageCount" IS 'The number of note page blocks referencing this note.'`);
 
         // Update existing notes
         // block_list CTE collects all page blocks on the pages including child blocks in the section blocks.
@@ -54,7 +53,6 @@ export class PageCountInNote1755168347001 {
     }
 
     async down(queryRunner) {
-        await queryRunner.query(`COMMENT ON COLUMN "note"."pageCount" IS 'The number of note page blocks referencing this note.'`);
         await queryRunner.query(`ALTER TABLE "note" DROP COLUMN "pageCount"`);
     }
 }
