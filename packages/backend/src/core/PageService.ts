@@ -199,17 +199,25 @@ export class PageService {
 
 	collectReferencedNotes(content: MiPage['content']): string[] {
 		const referencingNotes = new Set<string>();
-		for (const contentElement of content) {
-			if (typeof contentElement === 'object'
-				&& contentElement !== null
-				&& 'type' in contentElement
-				&& contentElement.type === 'note'
-				&& 'note' in contentElement
-				&& typeof contentElement.note === 'string'
-			) {
-				referencingNotes.add(contentElement.note);
+		const recursiveCollect = (content: unknown[]) => {
+			for (const contentElement of content) {
+				if (typeof contentElement === 'object'
+					&& contentElement !== null
+					&& 'type' in contentElement) {
+					if (contentElement.type === 'note'
+						&& 'note' in contentElement
+						&& typeof contentElement.note === 'string') {
+						referencingNotes.add(contentElement.note);
+					}
+					if (contentElement.type === 'section'
+						&& 'children' in contentElement
+						&& Array.isArray(contentElement.children)) {
+						recursiveCollect(contentElement.children);
+					}
+				}
 			}
-		}
+		};
+		recursiveCollect(content);
 		return [...referencingNotes];
 	}
 }
