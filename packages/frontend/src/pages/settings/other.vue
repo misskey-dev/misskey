@@ -128,9 +128,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
+			<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
 
-		<hr>
+			<hr>
+		</template>
 
 		<FormSlot>
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
