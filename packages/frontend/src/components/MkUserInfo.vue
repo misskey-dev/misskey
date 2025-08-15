@@ -21,15 +21,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
 	</div>
 	<div :class="$style.status">
-		<div :class="$style.statusItem">
+		<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
-		</div>
-		<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
+		</MkA>
+		<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user,  'following')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
-		</div>
-		<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
+		</MkA>
+		<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
-		</div>
+		</MkA>
 	</div>
 	<MkFollowButton v-if="user.id != $i?.id" :class="$style.follow" :user="user" mini/>
 </div>
