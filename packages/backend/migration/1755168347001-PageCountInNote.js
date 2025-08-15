@@ -11,16 +11,39 @@ export class PageCountInNote1755168347001 {
         await queryRunner.query(`COMMENT ON COLUMN "note"."pageCount" IS 'The number of note page blocks referencing this note.'`);
 
         // Update existing notes
-        // CTE to get the count of page blocks referencing each note,
-        // and then update the note's pageCount with that value.
+        // block_list CTE collects all page blocks on the pages including child blocks in the section blocks.
+        // The clipped_notes CTE counts how many distinct pages each note block is referenced in.
+        // Finally, we update the note table with the count of pages for each referenced note.
         await queryRunner.query(`
-            WITH clipped_notes AS (
+            WITH RECURSIVE block_list AS (
+                (
+                    SELECT
+                        page.id as page_id,
+                        block as block
+                    FROM page
+                        CROSS JOIN LATERAL jsonb_array_elements(page.content) block
+                    WHERE block->>'type' = 'note' OR block->>'type' = 'section'
+                )
+                UNION ALL
+                (
+                    SELECT
+                        block_list.page_id,
+                        child_block AS block
+                    FROM LATERAL (
+                        SELECT page_id, block
+                            FROM block_list
+                            WHERE block_list.block->>'type' = 'section'
+                        ) block_list
+                        CROSS JOIN LATERAL jsonb_array_elements(block_list.block->'children') child_block
+                    WHERE child_block->>'type' = 'note' OR child_block->>'type' = 'section'
+                )
+            ),
+            clipped_notes AS (
                 SELECT
                     (block->>'note') AS note_id,
-                    COUNT(distinct p.id) AS count
-                FROM page p
-                         CROSS JOIN LATERAL jsonb_array_elements(p.content) block
-                WHERE block->>'type' = 'note'
+                    COUNT(distinct block_list.page_id) AS count
+                FROM block_list
+                WHERE block_list.block->>'type' = 'note'
                 GROUP BY block->>'note'
             )
             UPDATE note
