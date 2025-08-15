@@ -121,7 +121,7 @@ export const miRepository = {
 			return this.insertOneImpl(entity, findOptions);
 		}
 	},
-	async insertOneImpl(this: Repository<T> & MiRepository<T>, entity, findOptions?, queryRunner?) {
+	async insertOneImpl(entity, findOptions?, queryRunner?) {
 		// ---- insert + returningの結果を共通テーブル式(CTE)に保持するクエリを生成 ----
 
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
