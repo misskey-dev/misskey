@@ -4235,9 +4235,9 @@ export interface Locale extends ILocale {
      */
     "selectFromPresets": string;
     /**
-     * 手動で設定
+     * カスタム
      */
-    "setManually": string;
+    "custom": string;
     /**
      * 実績
      */
