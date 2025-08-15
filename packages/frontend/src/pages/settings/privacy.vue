@@ -125,18 +125,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
 								</MkSelect>
 
-								<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore_configMode">
-									<option value="preset">{{ i18n.ts.selectFromPresets }}</option>
-									<option value="custom">{{ i18n.ts.setManually }}</option>
-								</MkSelect>
-
-								<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative' && makeNotesFollowersOnlyBefore_configMode === 'preset'" v-model="makeNotesFollowersOnlyBefore">
-									<option v-for="option in makeNotesFollowersOnlyBefore_options" :value="option.value">{{ option.label }}</option>
+								<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore_selection">
+									<option v-for="preset in makeNotesFollowersOnlyBefore_presets" :value="preset.value">{{ preset.label }}</option>
+									<option value="custom">{{ i18n.ts.custom }}</option>
 								</MkSelect>
 
 								<MkInput
-									v-if="makeNotesFollowersOnlyBefore_type === 'relative' && makeNotesFollowersOnlyBefore_configMode === 'custom'"
-									v-model="makeNotesFollowersOnlyBefore_customMonth"
+									v-if="makeNotesFollowersOnlyBefore_type === 'relative' && makeNotesFollowersOnlyBefore_isCustomMode"
+									v-model="makeNotesFollowersOnlyBefore_customMonths"
 									type="number"
 									:min="1"
 								>
@@ -170,18 +166,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
 								</MkSelect>
 
-								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore_configMode">
-									<option value="preset">{{ i18n.ts.selectFromPresets }}</option>
-									<option value="custom">{{ i18n.ts.setManually }}</option>
-								</MkSelect>
-
-								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative' && makeNotesHiddenBefore_configMode === 'preset'" v-model="makeNotesHiddenBefore">
-									<option v-for="option in makeNotesHiddenBefore_options" :value="option.value">{{ option.label }}</option>
+								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore_selection">
+									<option v-for="preset in makeNotesHiddenBefore_presets" :value="preset.value">{{ preset.label }}</option>
+									<option value="custom">{{ i18n.ts.custom }}</option>
 								</MkSelect>
 
 								<MkInput
-									v-if="makeNotesHiddenBefore_type === 'relative' && makeNotesHiddenBefore_configMode === 'custom'"
-									v-model="makeNotesHiddenBefore_customMonth"
+									v-if="makeNotesHiddenBefore_type === 'relative' && makeNotesHiddenBefore_isCustomMode"
+									v-model="makeNotesHiddenBefore_customMonths"
 									type="number"
 									:min="1"
 								>
@@ -257,32 +249,34 @@ const makeNotesFollowersOnlyBefore_type = computed(() => {
 	}
 });
 
-const makeNotesFollowersOnlyBefore_options = [
-	{ value: -3600, label: i18n.ts.oneHour },
-	{ value: -86400, label: i18n.ts.oneDay },
-	{ value: -259200, label: i18n.ts.threeDays },
-	{ value: -604800, label: i18n.ts.oneWeek },
-	{ value: -2592000, label: i18n.ts.oneMonth },
-	{ value: -7776000, label: i18n.ts.threeMonths },
-	{ value: -31104000, label: i18n.ts.oneYear },
+const makeNotesFollowersOnlyBefore_presets = [
+	{ label: i18n.ts.oneHour, value: -3600 },
+	{ label: i18n.ts.oneDay, value: -86400 },
+	{ label: i18n.ts.threeDays, value: -259200 },
+	{ label: i18n.ts.oneWeek, value: -604800 },
+	{ label: i18n.ts.oneMonth, value: -2592000 },
+	{ label: i18n.ts.threeMonths, value: -7776000 },
+	{ label: i18n.ts.oneYear, value: -31104000 },
 ];
 
-const makeNotesFollowersOnlyBefore_configMode = ref((() => {
-	if (makeNotesFollowersOnlyBefore.value == null) {
-		return null;
-	} else if (makeNotesFollowersOnlyBefore_options.some((option) => option.value === makeNotesFollowersOnlyBefore.value)) {
-		return 'preset';
-	} else {
-		return 'custom';
-	}
-})());
+const makeNotesFollowersOnlyBefore_isCustomMode = ref(
+	makeNotesFollowersOnlyBefore.value != null &&
+	makeNotesFollowersOnlyBefore.value < 0 &&
+	!makeNotesFollowersOnlyBefore_presets.some((preset) => preset.value === makeNotesFollowersOnlyBefore.value)
+);
 
-const makeNotesFollowersOnlyBefore_customMonth = computed({
-	get() {
-		return makeNotesFollowersOnlyBefore.value ? -makeNotesFollowersOnlyBefore.value / (30 * 24 * 60 * 60) : 1;
-	},
-	set(value: number) {
-		makeNotesFollowersOnlyBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
+const makeNotesFollowersOnlyBefore_selection = computed({
+	get: () => makeNotesFollowersOnlyBefore_isCustomMode.value ? 'custom' : makeNotesFollowersOnlyBefore.value,
+	set(value) {
+		makeNotesFollowersOnlyBefore_isCustomMode.value = value === 'custom';
+		if (value !== 'custom') makeNotesFollowersOnlyBefore.value = value;
+	}
+});
+
+const makeNotesFollowersOnlyBefore_customMonths = computed({
+	get: () => makeNotesFollowersOnlyBefore.value ? Math.abs(makeNotesFollowersOnlyBefore.value) / (30 * 24 * 60 * 60) : null,
+	set(value) {
+		if (value != null && value > 0) makeNotesFollowersOnlyBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
 	}
 });
 
@@ -296,32 +290,34 @@ const makeNotesHiddenBefore_type = computed(() => {
 	}
 });
 
-const makeNotesHiddenBefore_options = [
-	{ value: -3600, label: i18n.ts.oneHour },
-	{ value: -86400, label: i18n.ts.oneDay },
-	{ value: -259200, label: i18n.ts.threeDays },
-	{ value: -604800, label: i18n.ts.oneWeek },
-	{ value: -2592000, label: i18n.ts.oneMonth },
-	{ value: -7776000, label: i18n.ts.threeMonths },
-	{ value: -31104000, label: i18n.ts.oneYear },
+const makeNotesHiddenBefore_presets = [
+	{ label: i18n.ts.oneHour, value: -3600 },
+	{ label: i18n.ts.oneDay, value: -86400 },
+	{ label: i18n.ts.threeDays, value: -259200 },
+	{ label: i18n.ts.oneWeek, value: -604800 },
+	{ label: i18n.ts.oneMonth, value: -2592000 },
+	{ label: i18n.ts.threeMonths, value: -7776000 },
+	{ label: i18n.ts.oneYear, value: -31104000 },
 ];
 
-const makeNotesHiddenBefore_configMode = ref((() => {
-	if (makeNotesHiddenBefore.value == null) {
-		return null;
-	} else if (makeNotesHiddenBefore_options.some((option) => option.value === makeNotesHiddenBefore.value)) {
-		return 'preset';
-	} else {
-		return 'custom';
-	}
-})());
+const makeNotesHiddenBefore_isCustomMode = ref(
+	makeNotesHiddenBefore.value != null &&
+	makeNotesHiddenBefore.value < 0 &&
+	!makeNotesHiddenBefore_presets.some((preset) => preset.value === makeNotesHiddenBefore.value)
+);
 
-const makeNotesHiddenBefore_customMonth = computed({
-	get() {
-		return makeNotesHiddenBefore.value ? -makeNotesHiddenBefore.value / (30 * 24 * 60 * 60) : 1;
-	},
-	set(value: number) {
-		makeNotesHiddenBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
+const makeNotesHiddenBefore_selection = computed({
+	get: () => makeNotesHiddenBefore_isCustomMode.value ? 'custom' : makeNotesHiddenBefore.value,
+	set(value) {
+		makeNotesHiddenBefore_isCustomMode.value = value === 'custom';
+		if (value !== 'custom') makeNotesHiddenBefore.value = value;
+	}
+});
+
+const makeNotesHiddenBefore_customMonths = computed({
+	get: () => makeNotesHiddenBefore.value ? Math.abs(makeNotesHiddenBefore.value) / (30 * 24 * 60 * 60) : null,
+	set(value) {
+		if (value != null && value > 0) makeNotesHiddenBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
 	}
 });
 
