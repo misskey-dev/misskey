@@ -82,6 +82,7 @@ export class CleanRemoteNotesProcessorService {
 		const removalCriteria = [
 			'note."id" < :newestLimit',
 			'note."clippedCount" = 0',
+			'note."pageCount" = 0',
 			'note."userHost" IS NOT NULL',
 			'NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")',
 			'NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")',
