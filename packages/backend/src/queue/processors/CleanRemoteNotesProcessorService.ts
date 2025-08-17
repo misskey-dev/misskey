@@ -86,6 +86,7 @@ export class CleanRemoteNotesProcessorService {
 			'note."userHost" IS NOT NULL',
 			'NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")',
 			'NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")',
+			'NOT EXISTS (SELECT 1 FROM note_reaction INNER JOIN "user" ON note_reaction."userId" = "user".id WHERE note_reaction."noteId" = note."id" AND "user"."host" IS NULL)',
 		].join(' AND ');
 
 		const minId = (await this.notesRepository.createQueryBuilder('note')
