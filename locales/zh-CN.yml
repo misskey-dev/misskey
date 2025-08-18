@@ -1376,6 +1376,7 @@ safeModeEnabled: "已启用安全模式"
 pluginsAreDisabledBecauseSafeMode: "因启用了安全模式，所有插件均已被禁用。"
 customCssIsDisabledBecauseSafeMode: "因启用了安全模式，无法应用自定义 CSS。"
 themeIsDefaultBecauseSafeMode: "启用安全模式时将使用默认主题。关闭安全模式后将还原。"
+thankYouForTestingBeta: "感谢您协助测试 beta 版！"
 _order:
   newest: "从新到旧"
   oldest: "从旧到新"
