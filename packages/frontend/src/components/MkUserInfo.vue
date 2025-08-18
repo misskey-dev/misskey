@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
 		</MkA>
-		<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user,  'following')">
+		<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'following')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
 		</MkA>
 		<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
