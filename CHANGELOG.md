@@ -39,6 +39,7 @@
 - Enhance: 不必要な翻訳データを読み込まなくなり、パフォーマンスが向上しました
 - Enhance: 画像エフェクトのパラメータ名の多言語対応
 - Enhance: 依存ソフトウェアの更新
+- Enhance: ノートを非表示にする相対期間を1ヶ月単位で自由に指定できるように
 - Fix: 投稿フォームでファイルのアップロードが中止または失敗した際のハンドリングを修正
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
