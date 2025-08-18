@@ -52,6 +52,7 @@
 		"icons-subsetter": "workspace:*",
 		"idb-keyval": "6.2.2",
 		"insert-text-at-cursor": "0.3.0",
+		"ios-haptics": "0.1.0",
 		"is-file-animated": "1.0.2",
 		"json5": "2.2.3",
 		"magic-string": "0.30.17",

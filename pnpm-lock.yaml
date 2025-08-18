@@ -811,6 +811,9 @@ importers:
       insert-text-at-cursor:
         specifier: 0.3.0
         version: 0.3.0
+      ios-haptics:
+        specifier: 0.1.0
+        version: 0.1.0
       is-file-animated:
         specifier: 1.0.2
         version: 1.0.2
@@ -7178,6 +7181,9 @@ packages:
   ioredis@5.7.0:
     resolution: {integrity: sha512-NUcA93i1lukyXU+riqEyPtSEkyFq8tX90uL659J+qpCZ3rEdViB/APC58oAhIh3+bJln2hzdlZbBZsGNrlsR8g==}
     engines: {node: '>=12.22.0'}
+
+  ios-haptics@0.1.0:
+    resolution: {integrity: sha512-Fk0RApBYJeZNZ9pW3Wx3WcunhdLlpEnVNy/BOn85tx39eZDOHLGhXEb7medoIURGBUjXatOZf5Ozy0+OG466YA==}
 
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
@@ -18220,6 +18226,8 @@ snapshots:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
+
+  ios-haptics@0.1.0: {}
 
   ip-address@9.0.5:
     dependencies:
