@@ -281,6 +281,24 @@ describe('CleanRemoteNotesProcessorService', () => {
 			expect(remainingNote).not.toBeNull();
 		});
 
+		// ページ
+		test('should not delete note that is embedded in a page', async () => {
+			const job = createMockJob();
+
+			// Create old remote note that is embedded in a page
+			const clippedNote = await createNote({
+				pageCount: 1, // Embedded in a page
+			}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(0);
+			expect(result.skipped).toBe(false);
+
+			const remainingNote = await notesRepository.findOneBy({ id: clippedNote.id });
+			expect(remainingNote).not.toBeNull();
+		});
+
 		// 古いreply, renoteが含まれている時の挙動
 		test('should handle reply/renote relationships correctly', async () => {
 			const job = createMockJob();

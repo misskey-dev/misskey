@@ -731,8 +731,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0(vue@3.5.18(typescript@5.9.2))
       '@syuilo/aiscript':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.0
+        version: 1.1.0
       '@syuilo/aiscript-0-19-0':
         specifier: npm:@syuilo/aiscript@^0.19.0
         version: '@syuilo/aiscript@0.19.0'
@@ -811,6 +811,9 @@ importers:
       insert-text-at-cursor:
         specifier: 0.3.0
         version: 0.3.0
+      ios-haptics:
+        specifier: 0.1.0
+        version: 0.1.0
       is-file-animated:
         specifier: 1.0.2
         version: 1.0.2
@@ -4193,8 +4196,8 @@ packages:
   '@syuilo/aiscript@0.19.0':
     resolution: {integrity: sha512-ZWG4s1m6RrFjE7NeIMaxFz769YO1jW5ReTrOROrEO4IHheOrjxxJ/Ffe2TUNqX9/XxDloMwfWplKhfSzx8LGMA==}
 
-  '@syuilo/aiscript@1.0.0':
-    resolution: {integrity: sha512-m+Dxx0g2pDI198OCj/OJgiJnE4ajlbOFAMyh84FmbY1S8ss/MHytxY82dCnMZj5WVt7VE7a1rtW7biuRRfuyaA==}
+  '@syuilo/aiscript@1.1.0':
+    resolution: {integrity: sha512-3S6+tWC6f8WD8nnCgXSkqzPlEL9iKH9cfjERrk3OEuVQy+qP3wSLRszjy9FEHeYtvg90erUCGhTuYUy4XCNnmg==}
 
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
@@ -7178,6 +7181,9 @@ packages:
   ioredis@5.7.0:
     resolution: {integrity: sha512-NUcA93i1lukyXU+riqEyPtSEkyFq8tX90uL659J+qpCZ3rEdViB/APC58oAhIh3+bJln2hzdlZbBZsGNrlsR8g==}
     engines: {node: '>=12.22.0'}
+
+  ios-haptics@0.1.0:
+    resolution: {integrity: sha512-Fk0RApBYJeZNZ9pW3Wx3WcunhdLlpEnVNy/BOn85tx39eZDOHLGhXEb7medoIURGBUjXatOZf5Ozy0+OG466YA==}
 
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
@@ -14450,7 +14456,7 @@ snapshots:
       stringz: 2.1.0
       uuid: 9.0.1
 
-  '@syuilo/aiscript@1.0.0':
+  '@syuilo/aiscript@1.1.0':
     dependencies:
       seedrandom: 3.0.5
       stringz: 2.1.0
@@ -18220,6 +18226,8 @@ snapshots:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
+
+  ios-haptics@0.1.0: {}
 
   ip-address@9.0.5:
     dependencies:
