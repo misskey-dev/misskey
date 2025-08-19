@@ -24,6 +24,7 @@ const base: MiNote = {
 	renoteCount: 0,
 	repliesCount: 0,
 	clippedCount: 0,
+	pageCount: 0,
 	reactions: {},
 	visibility: 'public',
 	uri: null,

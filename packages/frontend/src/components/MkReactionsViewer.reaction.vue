@@ -38,6 +38,7 @@ import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { noteEvents } from '@/composables/use-note-capture.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isEmojiMuted } from '@/utility/emoji-mute.js';
+import { haptic } from '@/utility/haptic.js';
 
 const props = defineProps<{
 	noteId: Misskey.entities.Note['id'];
@@ -80,6 +81,7 @@ async function toggleReaction() {
 
 		if (oldReaction !== props.reaction) {
 			sound.playMisskeySfx('reaction');
+			haptic();
 		}
 
 		if (mock) {
@@ -118,6 +120,7 @@ async function toggleReaction() {
 		}
 
 		sound.playMisskeySfx('reaction');
+		haptic();
 
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));

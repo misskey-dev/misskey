@@ -292,6 +292,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'NigN',
 	icon: 'https://assets.misskey-hub.net/patrons/1ccaef8e73ec4a50b59ff7cd688ceb84.jpg',
+}, {
+	name: 'しゃどかの',
+	icon: 'https://assets.misskey-hub.net/patrons/5bec3c6b402942619e03f7a2ae76d69e.jpg',
 }];
 
 const patrons = [

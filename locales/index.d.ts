@@ -4251,6 +4251,10 @@ export interface Locale extends ILocale {
      */
     "selectFromPresets": string;
     /**
+     * カスタム
+     */
+    "custom": string;
+    /**
      * 実績
      */
     "achievements": string;
@@ -5538,6 +5542,10 @@ export interface Locale extends ILocale {
      */
     "themeIsDefaultBecauseSafeMode": string;
     /**
+     * ベータ版の検証にご協力いただきありがとうございます！
+     */
+    "thankYouForTestingBeta": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
@@ -6703,6 +6711,18 @@ export interface Locale extends ILocale {
          * 現在の一部の設定はリセットされます。
          */
         "restartServerSetupWizardConfirm_text": string;
+        /**
+         * エントランスページのスタイル
+         */
+        "entrancePageStyle": string;
+        /**
+         * タイムラインを表示する
+         */
+        "showTimelineForVisitor": string;
+        /**
+         * アクティビティを表示する
+         */
+        "showActivityiesForVisitor": string;
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
@@ -8979,6 +8999,10 @@ export interface Locale extends ILocale {
          * 日
          */
         "day": string;
+        /**
+         * ヶ月
+         */
+        "month": string;
     };
     "_2fa": {
         /**

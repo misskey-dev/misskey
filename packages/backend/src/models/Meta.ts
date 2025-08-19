@@ -721,6 +721,11 @@ export class MiMeta {
 		default: 90, // days
 	})
 	public remoteNotesCleaningExpiryDaysForEachNotes: number;
+
+	@Column('jsonb', {
+		default: { },
+	})
+	public clientOptions: Record<string, any>;
 }
 
 export type SoftwareSuspension = {
