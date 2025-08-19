@@ -6622,6 +6622,18 @@ export interface Locale extends ILocale {
          * 現在の一部の設定はリセットされます。
          */
         "restartServerSetupWizardConfirm_text": string;
+        /**
+         * エントランスページのスタイル
+         */
+        "entrancePageStyle": string;
+        /**
+         * タイムラインを表示する
+         */
+        "showTimelineForVisitor": string;
+        /**
+         * アクティビティを表示する
+         */
+        "showActivityiesForVisitor": string;
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
