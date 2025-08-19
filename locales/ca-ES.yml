@@ -1666,6 +1666,9 @@ _serverSettings:
   userGeneratedContentsVisibilityForVisitor_description2: "La publicació incondicional de tots els continguts del servidor a internet, incloent-hi els continguts remots rebuts pel servidor, comporta riscos. Això és extremadament important per els espectadors que desconeixen el caràcter descentralitzat dels continguts, ja que poden percebre erroneament els continguts remots com contingut generat per el propi servidor."
   restartServerSetupWizardConfirm_title: "Vols tornar a executar l'assistent de configuració inicial del servidor?"
   restartServerSetupWizardConfirm_text: "Algunes configuracions actuals seran restablertes."
+  entrancePageStyle: "Estil de la pàgina d'inici"
+  showTimelineForVisitor: "Mostrar la línia de temps"
+  showActivityiesForVisitor: "Mostrar les activitats"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Tot obert al públic "
     localOnly: "Només es publiquen els continguts locals, el contingut remot es manté privat"
