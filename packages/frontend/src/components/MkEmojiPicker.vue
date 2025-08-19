@@ -141,6 +141,7 @@ import { $i } from '@/i.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
+import { haptic } from '@/utility/haptic.js';
 
 const router = useRouter();
 
@@ -430,6 +431,8 @@ function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, 
 
 	const key = getKey(emoji);
 	emit('chosen', key);
+
+	haptic();
 
 	// 最近使った絵文字更新
 	if (!pinned.value?.includes(key)) {
