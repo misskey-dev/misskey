@@ -4235,6 +4235,10 @@ export interface Locale extends ILocale {
      */
     "selectFromPresets": string;
     /**
+     * カスタム
+     */
+    "custom": string;
+    /**
      * 実績
      */
     "achievements": string;
@@ -5521,6 +5525,10 @@ export interface Locale extends ILocale {
      * セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。
      */
     "themeIsDefaultBecauseSafeMode": string;
+    /**
+     * ベータ版の検証にご協力いただきありがとうございます！
+     */
+    "thankYouForTestingBeta": string;
     "_order": {
         /**
          * 新しい順
@@ -8836,6 +8844,10 @@ export interface Locale extends ILocale {
          * 日
          */
         "day": string;
+        /**
+         * ヶ月
+         */
+        "month": string;
     };
     "_2fa": {
         /**
