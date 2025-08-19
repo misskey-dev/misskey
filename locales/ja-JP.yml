@@ -1055,6 +1055,7 @@ permissionDeniedError: "操作が拒否されました"
 permissionDeniedErrorDescription: "このアカウントにはこの操作を行うための権限がありません。"
 preset: "プリセット"
 selectFromPresets: "プリセットから選択"
+custom: "カスタム"
 achievements: "実績"
 gotInvalidResponseError: "サーバーの応答が無効です"
 gotInvalidResponseErrorDescription: "サーバーがダウンまたはメンテナンスしている可能性があります。しばらくしてから再度お試しください。"
@@ -1093,6 +1094,7 @@ prohibitedWordsDescription2: "スペースで区切るとAND指定になり、�
 hiddenTags: "非表示ハッシュタグ"
 hiddenTagsDescription: "設定したタグをトレンドに表示させないようにします。改行で区切って複数設定できます。"
 notesSearchNotAvailable: "ノート検索は利用できません。"
+usersSearchNotAvailable: "ユーザー検索は利用できません。"
 license: "ライセンス"
 unfavoriteConfirm: "お気に入り解除しますか？"
 myClips: "自分のクリップ"
@@ -1375,6 +1377,7 @@ safeModeEnabled: "セーフモードが有効です"
 pluginsAreDisabledBecauseSafeMode: "セーフモードが有効なため、プラグインはすべて無効化されています。"
 customCssIsDisabledBecauseSafeMode: "セーフモードが有効なため、カスタムCSSは適用されていません。"
 themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。"
+thankYouForTestingBeta: "ベータ版の検証にご協力いただきありがとうございます！"
 
 _order:
   newest: "新しい順"
@@ -1681,6 +1684,9 @@ _serverSettings:
   userGeneratedContentsVisibilityForVisitor_description2: "サーバーで受信したリモートのコンテンツを含め、サーバー内の全てのコンテンツを無条件でインターネットに公開することはリスクが伴います。特に、分散型の特性を知らない閲覧者にとっては、リモートのコンテンツであってもサーバー内で作成されたコンテンツであると誤って認識してしまう可能性があるため、注意が必要です。"
   restartServerSetupWizardConfirm_title: "サーバーの初期設定ウィザードをやり直しますか？"
   restartServerSetupWizardConfirm_text: "現在の一部の設定はリセットされます。"
+  entrancePageStyle: "エントランスページのスタイル"
+  showTimelineForVisitor: "タイムラインを表示する"
+  showActivityiesForVisitor: "アクティビティを表示する"
 
   _userGeneratedContentsVisibilityForVisitor:
     all: "全て公開"
@@ -2021,6 +2027,7 @@ _role:
     descriptionOfRateLimitFactor: "小さいほど制限が緩和され、大きいほど制限が強化されます。"
     canHideAds: "広告の非表示"
     canSearchNotes: "ノート検索の利用"
+    canSearchUsers: "ユーザー検索の利用"
     canUseTranslator: "翻訳機能の利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
     canImportAntennas: "アンテナのインポートを許可"
@@ -2320,6 +2327,7 @@ _time:
   minute: "分"
   hour: "時間"
   day: "日"
+  month: "ヶ月"
 
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
