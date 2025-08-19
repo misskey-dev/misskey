@@ -1666,6 +1666,9 @@ _serverSettings:
   userGeneratedContentsVisibilityForVisitor_description2: "Esistono dei rischi nell'esporre incondizionatamente su internet tutto il contenuto del tuo server, incluso il contenuto remoto ricevuto da altri server. In particolare, occorre prestare attenzione, perché le persone non consapevoli della federazione potrebbero erroneamente credere che il contenuto remoto sia stato invece creato all'interno del proprio server."
   restartServerSetupWizardConfirm_title: "Vuoi ripetere la procedura guidata di configurazione iniziale del server?"
   restartServerSetupWizardConfirm_text: "Verranno ripristinate alcune tue impostazioni personalizzate."
+  entrancePageStyle: "Stile della pagina di ingresso"
+  showTimelineForVisitor: "Mostra la Timeline a visitatori non autenticati"
+  showActivityiesForVisitor: "Mostra le attività a visitatori non autenticati"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Tutto pubblico"
     localOnly: "Pubblica solo contenuti locali, mantieni privati ​​i contenuti remoti"
@@ -3234,7 +3237,7 @@ _imageEffector:
     zoomLinesThreshold: "Limite delle linee zoom"
     zoomLinesMaskSize: "Ampiezza del diametro"
     zoomLinesBlack: "Bande nere"
-drafts: "Bozza"
+drafts: "Bozze"
 _drafts:
   select: "Selezionare bozza"
   cannotCreateDraftAnymore: "Hai superato il numero massimo di bozze ammissibili."
