@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<div>
 				<MkInput v-model="host" :debounce="true" class="">
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSplit>
 			</div>
 
-			<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
+			<MkPagination v-slot="{items}" :key="host + state" :paginator="paginator">
 				<div :class="$style.instances">
 					<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.instance" :to="`/instance-info/${instance.host}`">
 						<MkInstanceCardMini :instance="instance"/>
@@ -50,13 +50,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkPagination>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { computed, ref } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -64,15 +64,15 @@ import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const host = ref('');
 const state = ref('federating');
 const sort = ref('+pubSub');
-const pagination = {
-	endpoint: 'federation/instances' as const,
+const paginator = markRaw(new Paginator('federation/instances', {
 	limit: 10,
 	offsetMode: true,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		sort: sort.value,
 		host: host.value !== '' ? host.value : null,
 		...(
@@ -85,7 +85,7 @@ const pagination = {
 			state.value === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-};
+}));
 
 function getStatus(instance: Misskey.entities.FederationInstance) {
 	switch (instance.suspensionState) {

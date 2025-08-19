@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
 			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</template>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -97,6 +97,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { genId } from '@/utility/id.js';
 
 const announcementsStatus = ref<'active' | 'archived'>('active');
 
@@ -117,7 +118,7 @@ watch(announcementsStatus, (to) => {
 
 function add() {
 	announcements.value.unshift({
-		_id: Math.random().toString(36),
+		_id: genId(),
 		id: null,
 		title: 'New announcement',
 		text: '',

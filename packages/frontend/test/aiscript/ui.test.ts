@@ -316,6 +316,7 @@ describe('AiScript UI API', () => {
 
 	describe('textInput', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let text_input = Ui:C:textInput({
 					onInput: print
@@ -356,6 +357,7 @@ describe('AiScript UI API', () => {
 
 	describe('textarea', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let textarea = Ui:C:textarea({
 					onInput: print
@@ -396,6 +398,7 @@ describe('AiScript UI API', () => {
 
 	describe('numberInput', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let number_input = Ui:C:numberInput({
 					onInput: print
@@ -557,6 +560,7 @@ describe('AiScript UI API', () => {
 
 	describe('switch', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let switch = Ui:C:switch({
 					onChange: print
@@ -597,6 +601,7 @@ describe('AiScript UI API', () => {
 
 	describe('select', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let select = Ui:C:select({
 					items: [

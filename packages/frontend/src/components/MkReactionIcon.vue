@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, useTemplateRef } from 'vue';
-import { useTooltip } from '@/use/use-tooltip.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
@@ -24,6 +24,7 @@ const elRef = useTemplateRef('elRef');
 
 if (props.withTooltip) {
 	useTooltip(elRef, (showing) => {
+		if (elRef.value == null) return;
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkReactionTooltip.vue')), {
 			showing,
 			reaction: props.reaction.replace(/^:(\w+):$/, ':$1@.:'),

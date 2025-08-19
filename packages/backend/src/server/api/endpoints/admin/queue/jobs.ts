@@ -5,7 +5,6 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
 
 export const meta = {
@@ -14,13 +13,22 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'read:admin:queue',
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			optional: false, nullable: false,
+			ref: 'QueueJob',
+		},
+	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
 		queue: { type: 'string', enum: QUEUE_TYPES },
-		state: { type: 'array', items: { type: 'string', enum: ['active', 'wait', 'delayed', 'completed', 'failed'] } },
+		state: { type: 'array', items: { type: 'string', enum: ['active', 'wait', 'delayed', 'completed', 'failed', 'paused'] } },
 		search: { type: 'string' },
 	},
 	required: ['queue', 'state'],

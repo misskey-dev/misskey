@@ -4,47 +4,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div v-if="tab === 'all'">
-			<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
+			<MkStreamingNotificationsTimeline :class="$style.notifications" :excludeTypes="excludeTypes"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
-			<MkNotes :pagination="mentionsPagination"/>
+			<MkNotesTimeline :paginator="mentionsPaginator"/>
 		</div>
 		<div v-else-if="tab === 'directNotes'">
-			<MkNotes :pagination="directNotesPagination"/>
+			<MkNotesTimeline :paginator="directNotesPaginator"/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import { notificationTypes } from '@@/js/const.js';
-import XNotifications from '@/components/MkNotifications.vue';
-import MkNotes from '@/components/MkNotes.vue';
-import MkSwiper from '@/components/MkSwiper.vue';
+import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value.includes(t)) : null);
 
-const mentionsPagination = {
-	endpoint: 'notes/mentions' as const,
+const mentionsPaginator = markRaw(new Paginator('notes/mentions', {
 	limit: 10,
-};
+}));
 
-const directNotesPagination = {
-	endpoint: 'notes/mentions' as const,
+const directNotesPaginator = markRaw(new Paginator('notes/mentions', {
 	limit: 10,
 	params: {
 		visibility: 'specified',
 	},
-};
+}));
 
 function setFilter(ev) {
 	const typeItems = notificationTypes.map(t => ({

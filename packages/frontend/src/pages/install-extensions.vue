@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithAnimBg>
-	<MkSpacer :contentMax="550" :marginMax="50">
+	<div class="_spacer" style="--MI_SPACER-w: 550px; --MI_SPACER-max: 50px;">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
 		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
 			<template #additionalInfo>
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_s">
 						<MkKeyValue>
 							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
-							<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
+							<template #value><MkUrl v-if="url" :url="url" :showUrlPreview="false"></MkUrl></template>
 						</MkKeyValue>
 						<MkKeyValue>
 							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithAnimBg>
 </template>
 
@@ -151,7 +151,7 @@ async function fetch() {
 		case 'theme':
 			try {
 				const metaRaw = parseThemeCode(res.data);
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 				const { id, props, desc: description, ...meta } = metaRaw;
 				data.value = {
 					type: 'theme',

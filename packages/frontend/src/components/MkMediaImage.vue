@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="reveal">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -17,7 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			style: 'cursor: zoom-in;'
 		}"
 	>
-		<ImgWithBlurhash
+		<MkImgWithBlurhash
+			v-if="prefer.s.enableHighQualityImagePlaceholders"
 			:hash="image.blurhash"
 			:src="(prefer.s.dataSaver.media && hide) ? null : url"
 			:forceBlurhash="hide"
@@ -27,6 +28,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:width="image.properties.width"
 			:height="image.properties.height"
 			:style="hide ? 'filter: brightness(0.7);' : null"
+			:class="$style.image"
+		/>
+		<div
+			v-else-if="prefer.s.dataSaver.media || hide"
+			:title="image.comment || image.name"
+			:style="hide ? 'background: #888;' : null"
+			:class="$style.image"
+		></div>
+		<img
+			v-else
+			:src="url"
+			:alt="image.comment || image.name"
+			:title="image.comment || image.name"
+			:class="$style.image"
 		/>
 	</component>
 	<template v-if="hide">
@@ -57,7 +72,7 @@ import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import bytes from '@/filters/bytes.js';
-import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/i.js';
@@ -81,10 +96,10 @@ const url = computed(() => (props.raw || prefer.s.loadRawImages)
 	? props.image.url
 	: prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl,
+		: props.image.thumbnailUrl!,
 );
 
-async function onclick(ev: MouseEvent) {
+async function reveal(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
 	}
@@ -299,5 +314,13 @@ html[data-color-scheme=light] .visible {
 	font-weight: bold;
 	font-size: 0.8em;
 	padding: 2px 5px;
+}
+
+.image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	object-position: center;
 }
 </style>

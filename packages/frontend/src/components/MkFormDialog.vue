@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ title }}
 	</template>
 
-	<MkSpacer :marginMin="20" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
 		<div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
 			<template v-for="(v, k) in Object.fromEntries(Object.entries(form))">
 				<template v-if="typeof v.hidden == 'function' ? v.hidden(values) : v.hidden"></template>
@@ -62,11 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 			</template>
 		</div>
-		<div v-else class="_fullinfo">
-			<img :src="infoImageUrl" draggable="false"/>
-			<div>{{ i18n.ts.nothing }}</div>
-		</div>
-	</MkSpacer>
+		<MkResult v-else type="empty"/>
+	</div>
 </MkModalWindow>
 </template>
 
@@ -83,7 +80,6 @@ import XFile from './MkFormDialog.file.vue';
 import type { Form } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	title: string;

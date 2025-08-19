@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
@@ -24,16 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkCodeEditor>
 		</div>
-	</MkSpacer>
+	</div>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer>
+			<div class="_spacer">
 				<div class="_buttons">
 					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 					<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 				</div>
-			</MkSpacer>
+			</div>
 		</div>
 	</template>
 </PageWithHeader>
@@ -127,7 +127,7 @@ var results = []
 // どれだけ巻き戻しているか
 var cursor = 0
 
-@do() {
+@main() {
 	if (cursor != 0) {
 		results = results.slice(0, (cursor + 1))
 		cursor = 0
@@ -175,7 +175,7 @@ var cursor = 0
 						onClick: forward
 					}, {
 						text: "引き直す"
-						onClick: do
+						onClick: main
 					}]
 				})
 				Ui:C:postFormButton({
@@ -191,7 +191,7 @@ var cursor = 0
 	])
 }
 
-do()
+main()
 `;
 
 const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}
@@ -429,7 +429,11 @@ async function save() {
 			script: script.value,
 			visibility: visibility.value,
 		});
-		router.push('/play/' + created.id + '/edit');
+		router.push('/play/:id/edit', {
+			params: {
+				id: created.id,
+			},
+		});
 	}
 }
 

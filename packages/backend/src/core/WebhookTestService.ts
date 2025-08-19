@@ -85,6 +85,7 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		renoteCount: 10,
 		repliesCount: 5,
 		clippedCount: 0,
+		pageCount: 0,
 		reactions: {},
 		visibility: 'public',
 		uri: null,

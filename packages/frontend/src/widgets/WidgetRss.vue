@@ -11,10 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
-		<div v-else-if="(!items || items.length === 0) && widgetProps.showHeader" class="_fullinfo">
-			<img :src="infoImageUrl" draggable="false"/>
-			<div>{{ i18n.ts.nothing }}</div>
-		</div>
+		<MkResult v-else-if="(!items || items.length === 0) && widgetProps.showHeader" type="empty"/>
 		<div v-else :class="$style.feed">
 			<a v-for="item in items" :key="item.link" :class="$style.item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
@@ -29,31 +26,30 @@ import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 
 const name = 'rss';
 
 const widgetPropsDef = {
 	url: {
-		type: 'string' as const,
+		type: 'string',
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 	},
 	refreshIntervalSec: {
-		type: 'number' as const,
+		type: 'number',
 		default: 60,
 	},
 	maxEntries: {
-		type: 'number' as const,
+		type: 'number',
 		default: 15,
 	},
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :tabs="headerTabs">
-	<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<XEditor v-if="data" v-model="data"/>
-	</MkSpacer>
+	</div>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer :contentMax="600" :marginMin="16" :marginMax="16">
+			<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-			</MkSpacer>
+			</div>
 		</div>
 	</template>
 </PageWithHeader>
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import XEditor from './roles.editor.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -55,7 +55,7 @@ if (props.id) {
 		color: null,
 		iconUrl: null,
 		target: 'manual',
-		condFormula: { id: uuid(), type: 'isRemote' },
+		condFormula: { id: genId(), type: 'isRemote' },
 		isPublic: false,
 		isExplorable: false,
 		asBadge: false,
@@ -72,12 +72,20 @@ async function save() {
 			roleId: role.value.id,
 			...data.value,
 		});
-		router.push('/admin/roles/' + role.value.id);
+		router.push('/admin/roles/:id', {
+			params: {
+				id: role.value.id,
+			}
+		});
 	} else {
 		const created = await os.apiWithDialog('admin/roles/create', {
 			...data.value,
 		});
-		router.push('/admin/roles/' + created.id);
+		router.push('/admin/roles/:id', {
+			params: {
+				id: created.id,
+			}
+		});
 	}
 }
 

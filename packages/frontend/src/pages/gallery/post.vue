@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="_root">
 			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkContainer :max-height="300" :foldable="true" class="other">
 						<template #icon><i class="ti ti-clock"></i></template>
 						<template #header>{{ i18n.ts.recentPosts }}</template>
-						<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
+						<MkPagination v-slot="{items}" :paginator="otherPostsPaginator">
 							<div class="sdrarzaf">
 								<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 							</div>
@@ -57,12 +57,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkLoading v-else/>
 			</Transition>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -80,6 +80,7 @@ import { $i } from '@/i.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -89,13 +90,12 @@ const props = defineProps<{
 
 const post = ref<Misskey.entities.GalleryPost | null>(null);
 const error = ref<any>(null);
-const otherPostsPagination = {
-	endpoint: 'users/gallery/posts' as const,
+const otherPostsPaginator = markRaw(new Paginator('users/gallery/posts', {
 	limit: 6,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: post.value.user.id,
 	})),
-};
+}));
 
 function fetchPost() {
 	post.value = null;
@@ -150,15 +150,19 @@ async function unlike() {
 }
 
 function edit() {
-	router.push(`/gallery/${post.value.id}/edit`);
+	router.push('/gallery/:postId/edit', {
+		params: {
+			postId: props.postId,
+		},
+	});
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!post.value) return;
 
 	const pageUrl = `${url}/gallery/${post.value.id}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: post.value.user,
 		initialComment: `Post: ${pageUrl}\n-----\n`,
 	}, {

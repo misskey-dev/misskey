@@ -5,31 +5,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="1200">
+	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div class="_gaps_s">
-			<MkUserList :pagination="tagUsers"/>
+			<MkUserList :paginator="paginator"/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, markRaw } from 'vue';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePage } from '@/page.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	tag: string;
 }>();
 
-const tagUsers = computed(() => ({
-	endpoint: 'hashtags/users' as const,
+const paginator = markRaw(new Paginator('hashtags/users', {
 	limit: 30,
-	params: {
+	computedParams: computed(() => ({
 		tag: props.tag,
 		origin: 'combined',
 		sort: '+follower',
-	},
+	})),
 }));
 
 definePage(() => ({

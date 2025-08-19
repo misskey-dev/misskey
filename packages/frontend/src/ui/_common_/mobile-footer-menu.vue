@@ -79,18 +79,27 @@ watch(rootEl, () => {
 .root {
 	position: relative;
 	z-index: 1;
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	padding-bottom: env(safe-area-inset-bottom, 0px);
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
 	background: var(--MI_THEME-navBg);
 	color: var(--MI_THEME-navFg);
-	box-shadow: 0px 0px 6px 6px #0000000f;
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .item {
+	padding: 12px 0;
+
+	&:first-child {
+		padding-left: 12px;
+	}
+
+	&:last-child {
+		padding-right: 12px;
+	}
+
 	&.post {
 		.itemInner {
 			background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
@@ -112,7 +121,7 @@ watch(rootEl, () => {
 	padding: 0;
 	aspect-ratio: 1;
 	width: 100%;
-	max-width: 45px;
+	max-width: 42px;
 	margin: auto;
 	align-content: center;
 	border-radius: 100%;
@@ -127,7 +136,7 @@ watch(rootEl, () => {
 }
 
 .itemIcon {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 .itemIndicator {

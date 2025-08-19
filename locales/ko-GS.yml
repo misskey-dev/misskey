@@ -224,7 +224,6 @@ noUsers: "사용자가 어ᇝ십니다"
 editProfile: "프로필 적기"
 noteDeleteConfirm: "요 노트럴 뭉캡니꺼?"
 pinLimitExceeded: "더 몬 붙입니다"
-intro: "Misskey럴 다 깔앗십니다! 간리자 게정얼 맨걸어 보입시다."
 done: "햇어예"
 processing: "처리하고 잇어예"
 preview: "미리보기"
@@ -746,7 +745,7 @@ _menuDisplay:
 _theme:
   description: "설멩"
   keys:
-    mention: "멘션"
+    mention: "받언 멘션"
     renote: "리노트"
 _sfx:
   note: "새 노트"
@@ -776,6 +775,7 @@ _cw:
 _visibility:
   home: "덜머리"
   followers: "팔로워"
+  specified: "쪽지 서기"
 _postForm:
   _placeholders:
     e: "옇다 서 주이소"
@@ -810,7 +810,7 @@ _notification:
   newNote: "새 걸"
   _types:
     follow: "팔로잉"
-    mention: "멘션"
+    mention: "받언 멘션"
     renote: "리노트"
     quote: "따오기"
     reaction: "반엉"
@@ -825,6 +825,7 @@ _deck:
     antenna: "안테나"
     list: "리스트"
     mentions: "받언 멘션"
+    direct: "쪽지 서기"
 _webhookSettings:
   name: "이럼"
 _abuseReport:
@@ -849,3 +850,5 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "말캉"
   searchScopeUser: "사용자 지정"
+_watermarkEditor:
+  image: "이미지"
