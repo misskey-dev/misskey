@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- Success state -->
 				<div v-if="verified === true">
 					<div :class="$style.title">{{ i18n.ts.emailVerified }}</div>
-					<div>{{ i18n.ts.emailVerifiedDescription }}</div>
+					<div>{{ i18n.ts.emailVerifiedDescription || i18n.ts.emailVerified }}</div>
 					<div>
 						<MkButton gradate large rounded @click="goToLogin" style="margin: 0 auto;">
 							{{ i18n.ts.gotIt }}
@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<!-- Error state -->
 				<div v-else-if="verified === false">
-					<div :class="$style.title">{{ i18n.ts.emailVerificationFailed }}</div>
-					<div>{{ i18n.ts.emailVerificationFailedDescription }}</div>
+					<div :class="$style.title">{{ i18n.ts.emailVerificationFailed || i18n.ts.error }}</div>
+					<div>{{ i18n.ts.emailVerificationFailedDescription || i18n.ts.error }}</div>
 					<div>
 						<MkButton gradate large rounded @click="goHome" style="margin: 0 auto;">
 							{{ i18n.ts.gotIt }}
