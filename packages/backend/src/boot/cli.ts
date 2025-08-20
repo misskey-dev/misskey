@@ -27,10 +27,16 @@ switch (command) {
 	case 'help': {
 		console.log('Available commands:');
 		console.log('  help - Displays this help message');
+		console.log('  reset-captcha - Resets the captcha');
 		break;
 	}
 	case 'ping': {
 		await commandService.ping();
+		break;
+	}
+	case 'reset-captcha': {
+		await commandService.resetCaptcha();
+		console.log('Captcha has been reset.');
 		break;
 	}
 	default: {
@@ -39,3 +45,5 @@ switch (command) {
 		process.exit(1);
 	}
 }
+
+process.exit(0);
