@@ -238,10 +238,7 @@ export class ServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
-			// Redirect to frontend page for verification
-			reply.redirect(`/verify-email/${request.params.code}`);
-		});
+		// Email verification is now handled by frontend route /verify-email/:code
 
 		fastify.register(this.clientServerService.createServer);
 
