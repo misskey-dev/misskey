@@ -102,6 +102,10 @@ export class InboxProcessorService implements OnApplicationShutdown {
 					}
 					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
 				}
+				// ブロックされたインスタンスからのリレー経由アクティビティをスキップ
+				if (err instanceof IdentifiableError && err.id === '09d79f9e-64f1-4316-9cfa-e75c4d091574') {
+					throw new Bull.UnrecoverableError(`skip: ${err.message}`);
+				}
 			}
 		}
 
