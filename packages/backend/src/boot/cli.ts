@@ -20,4 +20,22 @@ const app = await NestFactory.createApplicationContext(CommandModule, {
 });
 
 const commandService = app.get(CommandService);
-commandService.ping();
+
+const command = process.argv[2] ?? 'help';
+
+switch (command) {
+	case 'help': {
+		console.log('Available commands:');
+		console.log('  help - Displays this help message');
+		break;
+	}
+	case 'ping': {
+		await commandService.ping();
+		break;
+	}
+	default: {
+		console.error(`Unrecognized command: ${command}`);
+		console.error('Use "help" to see available commands.');
+		process.exit(1);
+	}
+}
