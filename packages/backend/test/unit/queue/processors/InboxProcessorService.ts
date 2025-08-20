@@ -201,5 +201,32 @@ describe('InboxProcessorService', () => {
 				}
 			);
 		});
+
+		test('should still block direct requests from blocked instances', async () => {
+			const jobData = {
+				signature: {
+					keyId: 'https://blocked.example.com/actor#main-key', // Direct from blocked instance
+				},
+				activity: {
+					type: 'Create',
+					actor: 'https://blocked.example.com/users/testuser',
+					id: 'https://blocked.example.com/activities/1',
+					object: {
+						type: 'Note',
+						id: 'https://blocked.example.com/notes/1',
+						content: 'test note',
+						attributedTo: 'https://blocked.example.com/users/testuser',
+					},
+				},
+			};
+
+			const job = {
+				data: jobData,
+			} as Bull.Job;
+
+			// Should be blocked at the primary federation check (before user resolution)
+			const result = await inboxProcessorService.process(job);
+			assert.strictEqual(result, 'Blocked request: blocked.example.com');
+		});
 	});
 });
