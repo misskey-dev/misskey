@@ -325,7 +325,11 @@ export class Paginator<
 
 		this.fetchingNewer.value = false;
 
-		if (apiRes == null || apiRes.length === 0) return; // これやらないと余計なre-renderが走る
+		if (apiRes == null || apiRes.length === 0) {
+			this.canFetchNewer.value = false;
+			// 余計なre-renderを防止するためここで終了
+			return;
+		}
 
 		if (options.toQueue) {
 			this.aheadQueue.unshift(...apiRes.toReversed());
@@ -347,13 +351,9 @@ export class Paginator<
 			} else {
 				this.canFetchNewer.value = true;
 			}
-		} else if (this.canFetchDetection === 'safe' || this.canFetchDetection == null) {
-			if (apiRes.length === 0) {
-				this.canFetchNewer.value = false;
-			} else {
-				this.canFetchNewer.value = true;
-			}
 		}
+		// canFetchDetectionが'safe'の場合・apiRes.length === 0 の場合は apiRes.length === 0 の場合に canFetchNewer.value = false になるが、
+		// 余計な re-render を防ぐために上部で処理している。そのため、ここでは何もしない
 	}
 
 	public trim(trigger = true): void {
