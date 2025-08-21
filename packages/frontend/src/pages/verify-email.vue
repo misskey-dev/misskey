@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.formContainer">
 		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
 			<div :class="$style.banner">
-				<i class="ti ti-user-check"></i>
+				<i class="ti ti-mail-check"></i>
 			</div>
 			<Transition
 				mode="out-in"
