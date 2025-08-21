@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:enterFromClass="$style.transition_enterFrom"
 				:leaveToClass="$style.transition_leaveTo"
 			>
-				<div v-if="!succeeded" class="_gaps_m" style="padding: 32px;" key="input">
+				<div v-if="!succeeded" key="input" class="_gaps_m" style="padding: 32px;">
 					<div :class="$style.mainText">{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
 					<div>
 						<MkButton gradate large rounded type="submit" :disabled="submitting" style="margin: 0 auto;">
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkButton>
 					</div>
 				</div>
-				<div v-else class="_gaps_m" style="padding: 32px;" key="success">
+				<div v-else key="success" class="_gaps_m" style="padding: 32px;">
 					<div :class="$style.mainText">{{ i18n.ts.emailVerified }}</div>
 					<div>
 						<MkButton large rounded link to="/" linkBehavior="browser" style="margin: 0 auto;">
