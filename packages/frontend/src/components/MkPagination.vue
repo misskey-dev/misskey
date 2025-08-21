@@ -99,11 +99,12 @@ const upButtonVisible = computed(() => {
 const upButtonLoading = computed(() => {
 	return props.paginator.order.value === 'oldest' ? props.paginator.fetchingOlder.value : props.paginator.fetchingNewer.value;
 });
+
 function upButtonClick() {
 	if (props.paginator.order.value === 'oldest') {
 		props.paginator.fetchOlder();
 	} else {
-		props.paginator.fetchNewer({ noTrim: true });
+		props.paginator.fetchNewer();
 	}
 }
 
@@ -113,9 +114,10 @@ const downButtonVisible = computed(() => {
 const downButtonLoading = computed(() => {
 	return props.paginator.order.value === 'oldest' ? props.paginator.fetchingNewer.value : props.paginator.fetchingOlder.value;
 });
+
 function downButtonClick() {
 	if (props.paginator.order.value === 'oldest') {
-		props.paginator.fetchNewer({ noTrim: true });
+		props.paginator.fetchNewer();
 	} else {
 		props.paginator.fetchOlder();
 	}
