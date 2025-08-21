@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:leaveToClass="$style.transition_leaveTo"
 			>
 				<div v-if="!succeeded" class="_gaps_m" style="padding: 32px;" key="input">
-					<div>{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
+					<div :class="$style.mainText">{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
 					<div>
 						<MkButton gradate large rounded type="submit" :disabled="submitting" style="margin: 0 auto;">
 							{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
@@ -26,9 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div v-else class="_gaps_m" style="padding: 32px;" key="success">
-					<div>{{ i18n.ts.emailVerified }}</div>
+					<div :class="$style.mainText">{{ i18n.ts.emailVerified }}</div>
 					<div>
-						<MkButton large rounded to="/" style="margin: 0 auto;">
+						<MkButton large rounded link to="/" linkBehavior="browser" style="margin: 0 auto;">
 							{{ i18n.ts.goToMisskey }}
 						</MkButton>
 					</div>
@@ -92,16 +92,19 @@ function submit() {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-	display: grid;
-	place-content: center;
+	display: flex;
+	align-items: center;
 }
 
 .form {
 	position: relative;
+	display: block;
+	margin: 0 auto;
 	z-index: 10;
 	border-radius: var(--MI-radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: clip;
+	width: 100%;
 	max-width: 500px;
 }
 
@@ -111,5 +114,9 @@ function submit() {
 	font-size: 26px;
 	background-color: var(--MI_THEME-accentedBg);
 	color: var(--MI_THEME-accent);
+}
+
+.mainText {
+	text-align: center;
 }
 </style>
