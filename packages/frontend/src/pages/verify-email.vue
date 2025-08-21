@@ -10,14 +10,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.banner">
 				<i class="ti ti-user-check"></i>
 			</div>
-			<div class="_gaps_m" style="padding: 32px;">
-				<div>{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
-				<div>
-					<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
-						{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
-					</MkButton>
+			<Transition
+				mode="out-in"
+				:enterActiveClass="$style.transition_enterActive"
+				:leaveActiveClass="$style.transition_leaveActive"
+				:enterFromClass="$style.transition_enterFrom"
+				:leaveToClass="$style.transition_leaveTo"
+			>
+				<div v-if="!succeeded" class="_gaps_m" style="padding: 32px;" key="input">
+					<div>{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
+					<div>
+						<MkButton gradate large rounded type="submit" :disabled="submitting" style="margin: 0 auto;">
+							{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
+						</MkButton>
+					</div>
 				</div>
-			</div>
+				<div v-else class="_gaps_m" style="padding: 32px;" key="success">
+					<div>{{ i18n.ts.emailVerified }}</div>
+					<div>
+						<MkButton large rounded to="/" style="margin: 0 auto;">
+							{{ i18n.ts.goToMisskey }}
+						</MkButton>
+					</div>
+				</div>
+			</Transition>
 		</form>
 	</div>
 </PageWithAnimBg>
@@ -29,9 +45,9 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { login } from '@/accounts.js';
 
 const submitting = ref(false);
+const succeeded = ref(false);
 
 const props = defineProps<{
 	code: string;
@@ -41,10 +57,11 @@ function submit() {
 	if (submitting.value) return;
 	submitting.value = true;
 
-	misskeyApi('signup-pending', {
+	misskeyApi('verify-email', {
 		code: props.code,
-	}).then(res => {
-		return login(res.i, '/');
+	}).then(() => {
+		succeeded.value = true;
+		submitting.value = false;
 	}).catch(() => {
 		submitting.value = false;
 
@@ -58,6 +75,19 @@ function submit() {
 </script>
 
 <style lang="scss" module>
+.transition_enterActive,
+.transition_leaveActive {
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
+}
+.transition_enterFrom {
+	opacity: 0;
+	transform: translateX(50px);
+}
+.transition_leaveTo {
+	opacity: 0;
+	transform: translateX(-50px);
+}
+
 .formContainer {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
