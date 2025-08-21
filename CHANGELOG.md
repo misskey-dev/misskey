@@ -44,6 +44,7 @@
 - Enhance: 画像エフェクトのパラメータ名の多言語対応
 - Enhance: 依存ソフトウェアの更新
 - Enhance: ノートを非表示にする相対期間を1ヶ月単位で自由に指定できるように
+- Enhance: メールアドレス確認画面のUIを改善
 - Fix: 投稿フォームでファイルのアップロードが中止または失敗した際のハンドリングを修正
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
@@ -62,6 +63,8 @@
 - Enhance: ノートの削除処理の効率化
 - Enhance: 全体的なパフォーマンスの向上
 - Enhance: 依存ソフトウェアの更新
+- Enhance: `clips/list` APIがページネーションに対応しました
+- Fix: `notes/mentions` で場合によっては並び順が正しく返されない問題を修正
 - Fix: SystemWebhook設定でsecretを空に出来ない問題を修正
 
 
