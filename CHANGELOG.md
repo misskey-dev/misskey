@@ -63,6 +63,7 @@
 - Enhance: 全体的なパフォーマンスの向上
 - Enhance: 依存ソフトウェアの更新
 - Enhance: `clips/list` APIがページネーションに対応しました
+- Fix: `notes/mentions` で場合によっては並び順が正しく返されない問題を修正
 - Fix: SystemWebhook設定でsecretを空に出来ない問題を修正
 
 
