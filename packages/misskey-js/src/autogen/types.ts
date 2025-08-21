@@ -18254,6 +18254,20 @@ export interface operations {
         };
     };
     clips___list: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 10 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                };
+            };
+        };
         responses: {
             /** @description OK (with results) */
             200: {
