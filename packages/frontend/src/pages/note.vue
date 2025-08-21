@@ -81,7 +81,6 @@ const error = ref();
 const prevUserPaginator = markRaw(new Paginator('users/notes', {
 	limit: 10,
 	initialId: props.noteId,
-	initialDirection: 'older',
 	computedParams: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
@@ -91,6 +90,7 @@ const nextUserPaginator = markRaw(new Paginator('users/notes', {
 	limit: 10,
 	initialId: props.noteId,
 	initialDirection: 'newer',
+	direction: 'up',
 	computedParams: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
@@ -99,7 +99,6 @@ const nextUserPaginator = markRaw(new Paginator('users/notes', {
 const prevChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
 	initialId: props.noteId,
-	initialDirection: 'older',
 	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
 	}) : undefined),
@@ -109,6 +108,7 @@ const nextChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
 	initialId: props.noteId,
 	initialDirection: 'newer',
+	direction: 'up',
 	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
 	}) : undefined),
