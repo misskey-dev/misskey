@@ -5001,7 +5001,7 @@ export interface Locale extends ILocale {
     /**
      * メールアドレスの確認中に問題が発生しました。リンクの有効期限が切れている可能性があります。
      */
-    "signupPendingError": string;
+    "emailVerificationFailedError": string;
     /**
      * 「内容を隠す」がオンの場合は注釈の記述が必要です。
      */
