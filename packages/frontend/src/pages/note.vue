@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note">
 				<div v-if="showNext" class="_margin">
-					<MkNotesTimeline :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true"/>
+					<MkNotesTimeline direction="up" :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true"/>
 				</div>
 
 				<div class="_margin">
@@ -90,7 +90,6 @@ const nextUserPaginator = markRaw(new Paginator('users/notes', {
 	limit: 10,
 	initialId: props.noteId,
 	initialDirection: 'newer',
-	direction: 'up',
 	computedParams: computed(() => note.value ? ({
 		userId: note.value.userId,
 	}) : undefined),
@@ -108,7 +107,6 @@ const nextChannelPaginator = markRaw(new Paginator('channels/timeline', {
 	limit: 10,
 	initialId: props.noteId,
 	initialDirection: 'newer',
-	direction: 'up',
 	computedParams: computed(() => note.value && note.value.channelId != null ? ({
 		channelId: note.value.channelId,
 	}) : undefined),

@@ -25,14 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-else key="_root_" class="_gaps">
-				<div v-if="paginator.direction === 'up' || paginator.direction === 'both'" v-show="upButtonVisible">
+				<div v-if="direction === 'up' || direction === 'both'" v-show="upButtonVisible">
 					<MkButton v-if="!upButtonLoading" :class="$style.more" primary rounded @click="upButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
 				<slot :items="unref(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
-				<div v-if="paginator.direction === 'down' || paginator.direction === 'both'" v-show="downButtonVisible">
+				<div v-if="direction === 'down' || direction === 'both'" v-show="downButtonVisible">
 					<MkButton v-if="!downButtonLoading" :class="$style.more" primary rounded @click="downButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
@@ -58,11 +58,20 @@ import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	paginator: T;
+
+	// ページネーションを進める方向
+	// up: 上方向
+	// down: 下方向 (default)
+	// both: 双方向
+	// NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
+	direction?: 'up' | 'down' | 'both';
+
 	autoLoad?: boolean;
 	pullToRefresh?: boolean;
 	withControl?: boolean;
 }>(), {
 	autoLoad: true,
+	direction: 'down',
 	pullToRefresh: true,
 	withControl: false,
 });

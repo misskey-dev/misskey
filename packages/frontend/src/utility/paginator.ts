@@ -46,7 +46,6 @@ export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 	initialDirection: 'newer' | 'older';
 	noPaging: boolean;
 	searchQuery: Ref<null | string>;
-	direction: 'up' | 'down' | 'both';
 	order: Ref<'newest' | 'oldest'>;
 
 	init(): Promise<void>;
@@ -102,13 +101,6 @@ export class Paginator<
 	private aheadQueue: T[] = [];
 	private useShallowRef: SRef;
 
-	// ページネーションを進める方向
-	// up: 上方向
-	// down: 下方向 (default)
-	// both: 双方向
-	// NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
-	public direction: 'up' | 'down' | 'both' = 'down';
-
 	// 配列内の要素をどのような順序で並べるか
 	// newest: 新しいものが先頭 (default)
 	// oldest: 古いものが先頭
@@ -132,7 +124,6 @@ export class Paginator<
 		initialDate?: number | null;
 		initialDirection?: 'newer' | 'older';
 
-		direction?: 'up' | 'down' | 'both';
 		order?: 'newest' | 'oldest';
 
 		// 一部のAPIはさらに遡れる場合でもパフォーマンス上の理由でlimit以下の結果を返す場合があり、その場合はsafe、それ以外はlimitにすることを推奨
@@ -155,7 +146,6 @@ export class Paginator<
 		this.params = props.params ?? {};
 		this.computedParams = props.computedParams ?? null;
 		this.order = ref(props.order ?? 'newest');
-		this.direction = props.direction ?? 'down';
 		this.initialId = props.initialId ?? null;
 		this.initialDate = props.initialDate ?? null;
 		this.initialDirection = props.initialDirection ?? 'older';
