@@ -64,6 +64,7 @@ const q = ref<string | null>(null);
 
 watch(order, () => {
 	props.paginator.order.value = order.value;
+	props.paginator.initialDirection = order.value === 'oldest' ? 'newer' : 'older';
 	props.paginator.reload();
 });
 
