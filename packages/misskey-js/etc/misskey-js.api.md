@@ -1197,6 +1197,9 @@ type ClipsDeleteRequest = operations['clips___delete']['requestBody']['content']
 type ClipsFavoriteRequest = operations['clips___favorite']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ClipsListRequest = operations['clips___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type ClipsListResponse = operations['clips___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -1741,6 +1744,7 @@ declare namespace entities {
         ClipsCreateResponse,
         ClipsDeleteRequest,
         ClipsFavoriteRequest,
+        ClipsListRequest,
         ClipsListResponse,
         ClipsMyFavoritesResponse,
         ClipsNotesRequest,

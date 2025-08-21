@@ -264,6 +264,7 @@ import type {
 	ClipsCreateResponse,
 	ClipsDeleteRequest,
 	ClipsFavoriteRequest,
+	ClipsListRequest,
 	ClipsListResponse,
 	ClipsMyFavoritesResponse,
 	ClipsNotesRequest,
@@ -830,7 +831,7 @@ export type Endpoints = {
 	'clips/create': { req: ClipsCreateRequest; res: ClipsCreateResponse };
 	'clips/delete': { req: ClipsDeleteRequest; res: EmptyResponse };
 	'clips/favorite': { req: ClipsFavoriteRequest; res: EmptyResponse };
-	'clips/list': { req: EmptyRequest; res: ClipsListResponse };
+	'clips/list': { req: ClipsListRequest; res: ClipsListResponse };
 	'clips/my-favorites': { req: EmptyRequest; res: ClipsMyFavoritesResponse };
 	'clips/notes': { req: ClipsNotesRequest; res: ClipsNotesResponse };
 	'clips/remove-note': { req: ClipsRemoveNoteRequest; res: EmptyResponse };

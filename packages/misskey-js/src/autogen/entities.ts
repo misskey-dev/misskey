@@ -267,6 +267,7 @@ export type ClipsCreateRequest = operations['clips___create']['requestBody']['co
 export type ClipsCreateResponse = operations['clips___create']['responses']['200']['content']['application/json'];
 export type ClipsDeleteRequest = operations['clips___delete']['requestBody']['content']['application/json'];
 export type ClipsFavoriteRequest = operations['clips___favorite']['requestBody']['content']['application/json'];
+export type ClipsListRequest = operations['clips___list']['requestBody']['content']['application/json'];
 export type ClipsListResponse = operations['clips___list']['responses']['200']['content']['application/json'];
 export type ClipsMyFavoritesResponse = operations['clips___my-favorites']['responses']['200']['content']['application/json'];
 export type ClipsNotesRequest = operations['clips___notes']['requestBody']['content']['application/json'];
