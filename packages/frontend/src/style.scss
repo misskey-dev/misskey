@@ -37,11 +37,6 @@ html {
 	color: var(--MI_THEME-fg);
 	accent-color: var(--MI_THEME-accent);
 
-	&, * {
-		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-		scrollbar-width: thin;
-	}
-
 	&.f-1 {
 		font-size: 15px;
 	}
@@ -61,12 +56,6 @@ html {
 	&:not(.forceSelectableAll) {
 		user-select: none;
 		-webkit-user-select: none;
-	}
-}
-
-html._themeChangingFallback_ {
-	&, * {
-		transition: background 0.5s ease, border 0.5s ease !important;
 	}
 }
 
@@ -97,7 +86,11 @@ html::selection {
 	100% {
 		opacity: 0;
 	}
+}
 
+html, body, main, div {
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
+	scrollbar-width: thin;
 }
 
 html,

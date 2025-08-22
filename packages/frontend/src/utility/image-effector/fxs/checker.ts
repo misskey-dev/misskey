@@ -47,13 +47,14 @@ void main() {
 `;
 
 export const FX_checker = defineImageEffectorFx({
-	id: 'checker' as const,
+	id: 'checker',
 	name: i18n.ts._imageEffector._fxs.checker,
 	shader,
 	uniforms: ['angle', 'scale', 'color', 'opacity'] as const,
 	params: {
 		angle: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.angle,
+			type: 'number',
 			default: 0,
 			min: -1.0,
 			max: 1.0,
@@ -61,18 +62,21 @@ export const FX_checker = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
 		scale: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.scale,
+			type: 'number',
 			default: 3.0,
 			min: 1.0,
 			max: 10.0,
 			step: 0.1,
 		},
 		color: {
-			type: 'color' as const,
+			label: i18n.ts._imageEffector._fxProps.color,
+			type: 'color',
 			default: [1, 1, 1],
 		},
 		opacity: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.opacity,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,

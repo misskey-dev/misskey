@@ -127,7 +127,7 @@ var results = []
 // どれだけ巻き戻しているか
 var cursor = 0
 
-@do() {
+@main() {
 	if (cursor != 0) {
 		results = results.slice(0, (cursor + 1))
 		cursor = 0
@@ -175,7 +175,7 @@ var cursor = 0
 						onClick: forward
 					}, {
 						text: "引き直す"
-						onClick: do
+						onClick: main
 					}]
 				})
 				Ui:C:postFormButton({
@@ -191,7 +191,7 @@ var cursor = 0
 	])
 }
 
-do()
+main()
 `;
 
 const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}
@@ -429,7 +429,11 @@ async function save() {
 			script: script.value,
 			visibility: visibility.value,
 		});
-		router.push('/play/' + created.id + '/edit');
+		router.push('/play/:id/edit', {
+			params: {
+				id: created.id,
+			},
+		});
 	}
 }
 
