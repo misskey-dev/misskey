@@ -366,7 +366,8 @@ describe('クリップ', () => {
 			parameters: { limit: clips.length },
 		});
 
-		assert.deepStrictEqual(res, clips);
+		// 返ってくるときは作成が直近のものからとなるので、作成時のデータの順番を逆順にしたものと比較
+		assert.deepStrictEqual(res, clips.toReversed());
 	});
 
 	test('の一覧が取得できる(空)', async () => {
