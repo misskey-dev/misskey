@@ -233,11 +233,13 @@ function addPluginHandler<K extends keyof HandlerDef>(installId: Plugin['install
 }
 
 export function launchPlugins() {
-	for (const plugin of prefer.s.plugins) {
+	return Promise.all(prefer.s.plugins.map(plugin => {
 		if (plugin.active) {
-			launchPlugin(plugin.installId);
+			return launchPlugin(plugin.installId);
+		} else {
+			return Promise.resolve();
 		}
-	}
+	}));
 }
 
 async function launchPlugin(id: Plugin['installId']): Promise<void> {
@@ -292,7 +294,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	pluginContexts.set(plugin.installId, aiscript);
 
 	const parser = await getParser();
-	aiscript.exec(parser.parse(plugin.src)).then(
+	await aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
 			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 			systemLog('Plugin started');

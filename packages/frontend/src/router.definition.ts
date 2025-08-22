@@ -211,6 +211,9 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/onboarding.vue')),
 	loginRequired: true,
 }, {
+	path: '/verify-email/:code',
+	component: page(() => import('@/pages/verify-email.vue')),
+}, {
 	path: '/announcements',
 	component: page(() => import('@/pages/announcements.vue')),
 }, {

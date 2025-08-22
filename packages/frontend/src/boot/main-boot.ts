@@ -27,7 +27,6 @@ import { mainRouter } from '@/router.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
-import { launchPlugins } from '@/plugin.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
@@ -79,8 +78,6 @@ export async function mainBoot() {
 			migrateOldSettings();
 		}
 	}
-
-	launchPlugins();
 
 	try {
 		if (hanaStore.s.flowerEffect) {
@@ -433,7 +430,7 @@ export async function mainBoot() {
 				}
 			},
 			allowRepeat: true,
-		}
+		},
 	} as const satisfies Keymap;
 	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
