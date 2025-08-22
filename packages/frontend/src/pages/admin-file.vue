@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer v-if="file" :contentMax="600" :marginMin="16" :marginMax="32">
+	<div v-if="file" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -44,8 +44,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
-		<div v-else-if="tab === 'notes' && info" class="_gaps_m">
-			<XNotes :fileId="fileId"/>
+		<div v-else-if="tab === 'usage' && info" class="_gaps_m">
+			<MkTabs
+				v-model:tab="usageTab"
+				:tabs="[{
+					key: 'note',
+					title: 'Note',
+				}, {
+					key: 'chat',
+					title: 'Chat',
+				}]"
+			/>
+			<XNotes v-if="usageTab === 'note'" :fileId="fileId"/>
+			<XChat v-else-if="usageTab === 'chat'" :fileId="fileId"/>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
 			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
@@ -65,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkObjectView v-if="info" tall :value="info">
 			</MkObjectView>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -86,12 +97,15 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { iAmAdmin, iAmModerator } from '@/i.js';
+import MkTabs from '@/components/MkTabs.vue';
 
 const tab = ref('overview');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
 const isSensitive = ref<boolean>(false);
+const usageTab = ref<'note' | 'chat'>('note');
 const XNotes = defineAsyncComponent(() => import('./drive.file.notes.vue'));
+const XChat = defineAsyncComponent(() => import('./admin-file.chat.vue'));
 
 const props = defineProps<{
 	fileId: string,
@@ -147,9 +161,9 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
-	key: 'notes',
-	title: i18n.ts._fileViewer.attachedNotes,
-	icon: 'ti ti-pencil',
+	key: 'usage',
+	title: i18n.ts._fileViewer.usage,
+	icon: 'ti ti-plus',
 } : null, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',

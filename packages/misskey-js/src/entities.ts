@@ -24,12 +24,17 @@ type NonNullableRecord<T> = {
 type AllNullRecord<T> = {
 	[P in keyof T]: null;
 };
+type AllNullOrOptionalRecord<T> = {
+	[P in keyof T]: never;
+};
 
 export type PureRenote =
 	Omit<Note, 'renote' | 'renoteId' | 'reply' | 'replyId' | 'text' | 'cw' | 'files' | 'fileIds' | 'poll'>
-	& AllNullRecord<Pick<Note, 'reply' | 'replyId' | 'text' | 'cw' | 'poll'>>
+	& AllNullRecord<Pick<Note, 'text'>>
+	& AllNullOrOptionalRecord<Pick<Note, 'reply' | 'replyId' | 'cw' | 'poll'>>
 	& { files: []; fileIds: []; }
-	& NonNullableRecord<Pick<Note, 'renote' | 'renoteId'>>;
+	& NonNullableRecord<Pick<Note, 'renoteId'>>
+	& Pick<Note, 'renote'>; // リノート対象が削除された場合、renoteIdはあるがrenoteはnullになる
 
 export type PageEvent = {
 	pageId: Page['id'];

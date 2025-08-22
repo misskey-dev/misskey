@@ -34,6 +34,7 @@ export const webpDefault: sharp.WebpOptions = {
 	smartSubsample: true,
 	mixed: true,
 	effort: 2,
+	loop: 0,
 };
 
 export const avifDefault: sharp.AvifOptions = {

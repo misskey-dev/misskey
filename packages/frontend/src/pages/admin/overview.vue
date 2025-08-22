@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="1000">
+<div class="_spacer" style="--MI_SPACER-w: 1000px;">
 	<div ref="rootEl" :class="$style.root">
 		<MkFoldableSection class="item">
 			<template #header>Stats</template>
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XQueue domain="inbox"/>
 		</MkFoldableSection>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -84,6 +84,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { genId } from '@/utility/id.js';
 
 const rootEl = useTemplateRef('rootEl');
 const serverInfo = ref<Misskey.entities.ServerInfoResponse | null>(null);
@@ -170,7 +171,7 @@ onMounted(async () => {
 
 	nextTick(() => {
 		queueStatsConnection.send('requestLog', {
-			id: Math.random().toString().substring(2, 10),
+			id: genId(),
 			length: 100,
 		});
 	});

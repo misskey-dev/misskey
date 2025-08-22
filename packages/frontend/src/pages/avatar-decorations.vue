@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<div :class="$style.decorations">
 				<div
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -46,7 +46,7 @@ function load() {
 load();
 
 async function add(ev: MouseEvent) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('./avatar-decoration-edit-dialog.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('./avatar-decoration-edit-dialog.vue').then(x => x.default), {
 	}, {
 		done: result => {
 			if (result.created) {
@@ -57,8 +57,8 @@ async function add(ev: MouseEvent) {
 	});
 }
 
-function edit(avatarDecoration) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('./avatar-decoration-edit-dialog.vue')), {
+async function edit(avatarDecoration) {
+	const { dispose } = await os.popupAsyncWithDialog(import('./avatar-decoration-edit-dialog.vue').then(x => x.default), {
 		avatarDecoration: avatarDecoration,
 	}, {
 		done: result => {

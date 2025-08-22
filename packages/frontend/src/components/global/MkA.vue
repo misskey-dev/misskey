@@ -64,7 +64,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: () => {
-			router.push(props.to, 'forcePage');
+			router.pushByPath(props.to, 'forcePage');
 		},
 	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
@@ -99,6 +99,6 @@ function nav(ev: MouseEvent) {
 		return openWindow();
 	}
 
-	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
+	router.pushByPath(props.to, ev.ctrlKey ? 'forcePage' : null);
 }
 </script>

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkPostForm
 			v-if="state === 'writing'"
 			fixed
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary @click="close">{{ i18n.ts.close }}</MkButton>
 			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -59,10 +59,21 @@ const visibleUsers = ref([] as Misskey.entities.UserDetailed[]);
 
 async function init() {
 	let noteText = '';
-	if (title.value) noteText += `[ ${title.value} ]\n`;
-	// Googleニュース対策
-	if (text?.startsWith(`${title.value}.\n`)) noteText += text.replace(`${title.value}.\n`, '');
-	else if (text && title.value !== text) noteText += `${text}\n`;
+	if (title.value) {
+		noteText += `[ ${title.value} ]\n`;
+
+		//#region add text to note text
+		if (text?.startsWith(title.value)) {
+			// For the Google app https://github.com/misskey-dev/misskey/issues/16224
+			noteText += text.replace(title.value, '').trimStart();
+		} else if (text) {
+			noteText += `${text}\n`;
+		}
+		//#endregion
+	} else if (text) {
+		noteText += `${text}\n`;
+	}
+
 	if (url) {
 		try {
 			// Normalize the URL to URL-encoded and puny-coded from with the URL constructor.

@@ -14,6 +14,13 @@ on:
       - packages/backend/**
       - packages/misskey-js/**
       - .github/workflows/test-federation.yml
+  workflow_dispatch:
+    inputs:
+      force_ffmpeg_cache_update:
+        description: 'Force update ffmpeg cache'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   test:
@@ -21,14 +28,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22.11.0]
+        node-version-file:
+          - .node-version
+          - .github/min.node-version
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.1.0
+      - name: Get current date
+        id: current-date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Setup and Restore ffmpeg/ffprobe Cache
+        id: cache-ffmpeg
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/bin/ffmpeg
+            /usr/local/bin/ffprobe
+          # daily cache
+          key: ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
+          restore-keys: |
+            ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
       - name: Install FFmpeg
+        if: steps.cache-ffmpeg.outputs.cache-hit != 'true' || github.event.inputs.force_ffmpeg_cache_update == true
         run: |
           for i in {1..3}; do
             echo "Attempt $i: Installing FFmpeg..."
@@ -43,10 +67,10 @@ jobs:
               exit 1
             fi
           done
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.3.0
+      - name: Use Node.js
+        uses: actions/setup-node@v4.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
       - name: Build Misskey
         run: |
@@ -54,6 +78,7 @@ jobs:
           pnpm build
       - name: Setup
         run: |
+          echo "NODE_VERSION=$(cat ${{ matrix.node-version-file }})" >> $GITHUB_ENV
           cd packages/backend/test-federation
           bash ./setup.sh
           sudo chmod 644 ./certificates/*.test.key
@@ -71,18 +96,16 @@ jobs:
           docker compose logs | tail -n 300
           exit 1
       - name: Test
-        id: test
-        continue-on-error: true
         run: |
           cd packages/backend/test-federation
           docker compose run --no-deps tester
       - name: Log
-        if: ${{ steps.test.outcome == 'failure' }}
+        if: always()
         run: |
           cd packages/backend/test-federation
           docker compose logs
-          exit 1
       - name: Stop servers
+        if: always()
         run: |
           cd packages/backend/test-federation
           docker compose down
