@@ -80,6 +80,10 @@ export const rolePolicyDef = {
 		type: 'boolean',
 		displayLabel: i18n.ts._role._options.canSearchNotes,
 	},
+	canSearchUsers: {
+		type: 'boolean',
+		displayLabel: i18n.ts._role._options.canSearchUsers,
+	},
 	canUseTranslator: {
 		type: 'boolean',
 		displayLabel: i18n.ts._role._options.canUseTranslator,

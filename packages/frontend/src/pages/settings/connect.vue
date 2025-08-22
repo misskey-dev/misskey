@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/connect" :label="i18n.ts._settings.serviceConnection" :keywords="['app', 'service', 'connect', 'webhook', 'api', 'token']" icon="ti ti-link">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/link_3d.png" color="#ff0088">
-			<SearchKeyword>{{ i18n.ts._settings.serviceConnectionBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.serviceConnectionBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['api', 'app', 'token', 'accessToken']">

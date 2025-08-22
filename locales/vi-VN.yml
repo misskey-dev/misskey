@@ -2091,3 +2091,11 @@ _watermarkEditor:
   image: "Hình ảnh"
   advanced: "Nâng cao"
   angle: "Góc"
+_imageEffector:
+  _fxProps:
+    angle: "Góc"
+    scale: "Kích thước"
+    size: "Kích thước"
+    color: "Màu sắc"
+    opacity: "Độ trong suốt"
+    lightness: "Độ sáng"
