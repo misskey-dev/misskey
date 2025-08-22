@@ -50,6 +50,7 @@ import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { ReactionService } from '@/core/ReactionService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { ChatService } from '@/core/ChatService.js';
 
 process.env.NODE_ENV = 'test';
 
@@ -73,7 +74,7 @@ describe('UserEntityService', () => {
 					...userData,
 					id: genAidx(Date.now()),
 					username: un,
-					usernameLower: un,
+					usernameLower: un.toLowerCase(),
 				})
 				.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 
@@ -172,6 +173,7 @@ describe('UserEntityService', () => {
 				ReactionService,
 				ReactionsBufferingService,
 				NotificationService,
+				ChatService,
 			];
 
 			app = await Test.createTestingModule({
@@ -230,7 +232,7 @@ describe('UserEntityService', () => {
 		});
 
 		test('MeDetailed', async() => {
-			const achievements = [{ name: 'achievement', unlockedAt: new Date().getTime() }];
+			const achievements = [{ name: 'iLoveMisskey' as const, unlockedAt: new Date().getTime() }];
 			const me = await createUser({}, {
 				birthday: '2000-01-01',
 				achievements: achievements,

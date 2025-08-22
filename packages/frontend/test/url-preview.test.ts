@@ -24,7 +24,10 @@ describe('MkUrlPreview', () => {
 			};
 		}
 
-		fetchMock.mockOnceIf(/^\/url?/, () => {
+		fetchMock.mockOnceIf((req) => {
+			const url = new URL(req.url);
+			return url.pathname === '/url';
+		}, () => {
 			return {
 				status: 200,
 				body: JSON.stringify(summary),

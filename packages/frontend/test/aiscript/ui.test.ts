@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import { describe, expect, test } from 'vitest';
 import { type Ref, ref } from 'vue';
@@ -19,7 +19,7 @@ import type {
 	AsUiText,
 	AsUiTextarea,
 	AsUiTextInput,
-} from '@/scripts/aiscript/ui.js';
+} from '@/aiscript/ui.js';
 
 type ExeResult = {
 	root: AsUiRoot;
@@ -316,6 +316,7 @@ describe('AiScript UI API', () => {
 
 	describe('textInput', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let text_input = Ui:C:textInput({
 					onInput: print
@@ -356,6 +357,7 @@ describe('AiScript UI API', () => {
 
 	describe('textarea', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let textarea = Ui:C:textarea({
 					onInput: print
@@ -396,6 +398,7 @@ describe('AiScript UI API', () => {
 
 	describe('numberInput', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let number_input = Ui:C:numberInput({
 					onInput: print
@@ -557,6 +560,7 @@ describe('AiScript UI API', () => {
 
 	describe('switch', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let switch = Ui:C:switch({
 					onChange: print
@@ -597,6 +601,7 @@ describe('AiScript UI API', () => {
 
 	describe('select', () => {
 		test.concurrent('all options', async () => {
+			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let select = Ui:C:select({
 					items: [

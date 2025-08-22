@@ -85,11 +85,11 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
-import { useLoading } from '@/components/hook/useLoading.js';
+import { useLoading } from '@/composables/use-loading.js';
 
 type GridItem = {
 	checked: boolean;
@@ -174,7 +174,10 @@ function setupGrid(): GridSetting {
 			{
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
-					const file = await selectFile(cellElement);
+					const file = await selectFile({
+						anchorElement: cellElement,
+						multiple: false,
+					});
 					gridItems.value[row.index].url = file.url;
 					gridItems.value[row.index].fileId = file.id;
 
@@ -285,7 +288,7 @@ const searchQuery = ref<EmojiSearchQuery>({
 	localOnly: null,
 	roles: [],
 	sortOrders: [],
-	limit: 25,
+	limit: 100,
 });
 let searchWindowOpening = false;
 
@@ -525,10 +528,10 @@ const headerPageMetadata = computed(() => ({
 const headerActions = computed(() => [{
 	icon: 'ti ti-search',
 	text: i18n.ts.search,
-	handler: () => {
+	handler: async () => {
 		if (searchWindowOpening) return;
 		searchWindowOpening = true;
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.search.vue')), {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.search.vue').then(x => x.default), {
 			query: searchQuery.value,
 		}, {
 			queryUpdated: (query: EmojiSearchQuery) => {
@@ -584,8 +587,8 @@ const headerActions = computed(() => [{
 }, {
 	icon: 'ti ti-notes',
 	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
-	handler: () => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.logs.vue')), {
+	handler: async () => {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.logs.vue').then(x => x.default), {
 			logs: requestLogs.value,
 		}, {
 			closed: () => {

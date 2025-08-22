@@ -22,31 +22,22 @@ on:
       - packages/backend/**
       - .github/workflows/test-frontend.yml
       - .github/misskey/test.yml
-
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   vitest:
     name: Unit tests (frontend)
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.11.0]
-
     steps:
     - uses: actions/checkout@v4.2.2
       with:
         submodules: true
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.2.0
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
+    - name: Use Node.js
+      uses: actions/setup-node@v4.4.0
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
@@ -69,7 +60,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22.11.0]
         browser: [chrome]
 
     services:
@@ -95,14 +85,13 @@ jobs:
     #  if: ${{ matrix.browser == 'firefox' }}
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.2.0
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
+    - name: Use Node.js
+      uses: actions/setup-node@v4.4.0
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config

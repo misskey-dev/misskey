@@ -35,12 +35,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { markRaw, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XChart from './overview.queue.chart.vue';
 import type { ApQueueDomain } from '@/pages/admin/queue.vue';
 import number from '@/filters/number.js';
 import { useStream } from '@/stream.js';
+import { genId } from '@/utility/id.js';
 
 const connection = markRaw(useStream().useChannel('queueStats'));
 
@@ -48,10 +49,10 @@ const activeSincePrevTick = ref(0);
 const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
-const chartProcess = shallowRef<InstanceType<typeof XChart>>();
-const chartActive = shallowRef<InstanceType<typeof XChart>>();
-const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
-const chartWaiting = shallowRef<InstanceType<typeof XChart>>();
+const chartProcess = useTemplateRef('chartProcess');
+const chartActive = useTemplateRef('chartActive');
+const chartDelayed = useTemplateRef('chartDelayed');
+const chartWaiting = useTemplateRef('chartWaiting');
 
 const props = defineProps<{
 	domain: ApQueueDomain;
@@ -92,7 +93,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
 		length: 100,
 	});
 });

@@ -7,7 +7,6 @@ import * as WebSocket from 'ws';
 import type { MiUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -33,7 +32,6 @@ export default class Connection {
 	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: Partial<Record<string, number>> = {};
-	private cachedNotes: Packed<'Note'>[] = [];
 	public userProfile: MiUserProfile | null = null;
 	public following: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
 	public followingChannels: Set<string> = new Set();
@@ -45,7 +43,6 @@ export default class Connection {
 
 	constructor(
 		private channelsService: ChannelsService,
-		private noteReadService: NoteReadService,
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 		private channelFollowingService: ChannelFollowingService,
@@ -119,7 +116,7 @@ export default class Connection {
 			case 'readNotification': this.onReadNotification(body); break;
 			case 'subNote': this.onSubscribeNote(body); break;
 			case 's': this.onSubscribeNote(body); break; // alias
-			case 'sr': this.onSubscribeNote(body); this.readNote(body); break;
+			case 'sr': this.onSubscribeNote(body); break;
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
@@ -132,39 +129,6 @@ export default class Connection {
 	@bindThis
 	private onBroadcastMessage(data: GlobalEvents['broadcast']['payload']) {
 		this.sendMessageToWs(data.type, data.body);
-	}
-
-	@bindThis
-	public cacheNote(note: Packed<'Note'>) {
-		const add = (note: Packed<'Note'>) => {
-			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
-			if (existIndex > -1) {
-				this.cachedNotes[existIndex] = note;
-				return;
-			}
-
-			this.cachedNotes.unshift(note);
-			if (this.cachedNotes.length > 32) {
-				this.cachedNotes.splice(32);
-			}
-		};
-
-		add(note);
-		if (note.reply) add(note.reply);
-		if (note.renote) add(note.renote);
-	}
-
-	@bindThis
-	private readNote(body: JsonValue | undefined) {
-		if (!isJsonObject(body)) return;
-		const id = body.id;
-
-		const note = this.cachedNotes.find(n => n.id === id);
-		if (note == null) return;
-
-		if (this.user && (note.userId !== this.user.id)) {
-			this.noteReadService.read(this.user.id, [note]);
-		}
 	}
 
 	@bindThis

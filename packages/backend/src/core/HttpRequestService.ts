@@ -6,6 +6,7 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
 import * as net from 'node:net';
+import * as stream from 'node:stream';
 import ipaddr from 'ipaddr.js';
 import CacheableLookup from 'cacheable-lookup';
 import fetch from 'node-fetch';
@@ -16,7 +17,7 @@ import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { assertActivityMatchesUrls } from '@/core/activitypub/misc/check-against-url.js';
+import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from '@/core/activitypub/type.js';
 import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
@@ -25,12 +26,6 @@ export type HttpRequestSendOptions = {
 	throwErrorWhenResponseNotOk: boolean;
 	validators?: ((res: Response) => void)[];
 };
-
-declare module 'node:http' {
-	interface Agent {
-		createConnection(options: net.NetConnectOpts, callback?: (err: unknown, stream: net.Socket) => void): net.Socket;
-	}
-}
 
 class HttpRequestServiceAgent extends http.Agent {
 	constructor(
@@ -41,11 +36,11 @@ class HttpRequestServiceAgent extends http.Agent {
 	}
 
 	@bindThis
-	public createConnection(options: net.NetConnectOpts, callback?: (err: unknown, stream: net.Socket) => void): net.Socket {
+	public createConnection(options: http.ClientRequestArgs, callback?: (err: Error | null, stream: stream.Duplex) => void): stream.Duplex {
 		const socket = super.createConnection(options, callback)
 			.on('connect', () => {
-				const address = socket.remoteAddress;
-				if (process.env.NODE_ENV === 'production') {
+				if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
+					const address = socket.remoteAddress;
 					if (address && ipaddr.isValid(address)) {
 						if (this.isPrivateIp(address)) {
 							socket.destroy(new Error(`Blocked address: ${address}`));
@@ -80,11 +75,11 @@ class HttpsRequestServiceAgent extends https.Agent {
 	}
 
 	@bindThis
-	public createConnection(options: net.NetConnectOpts, callback?: (err: unknown, stream: net.Socket) => void): net.Socket {
+	public createConnection(options: http.ClientRequestArgs, callback?: (err: Error | null, stream: stream.Duplex) => void): stream.Duplex {
 		const socket = super.createConnection(options, callback)
 			.on('connect', () => {
-				const address = socket.remoteAddress;
-				if (process.env.NODE_ENV === 'production') {
+				if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
+					const address = socket.remoteAddress;
 					if (address && ipaddr.isValid(address)) {
 						if (this.isPrivateIp(address)) {
 							socket.destroy(new Error(`Blocked address: ${address}`));
@@ -115,32 +110,32 @@ export class HttpRequestService {
 	/**
 	 * Get http non-proxy agent (without local address filtering)
 	 */
-	private httpNative: http.Agent;
+	private readonly httpNative: http.Agent;
 
 	/**
 	 * Get https non-proxy agent (without local address filtering)
 	 */
-	private httpsNative: https.Agent;
+	private readonly httpsNative: https.Agent;
 
 	/**
 	 * Get http non-proxy agent
 	 */
-	private http: http.Agent;
+	private readonly http: http.Agent;
 
 	/**
 	 * Get https non-proxy agent
 	 */
-	private https: https.Agent;
+	private readonly https: https.Agent;
 
 	/**
 	 * Get http proxy or non-proxy agent
 	 */
-	public httpAgent: http.Agent;
+	public readonly httpAgent: http.Agent;
 
 	/**
 	 * Get https proxy or non-proxy agent
 	 */
-	public httpsAgent: https.Agent;
+	public readonly httpsAgent: https.Agent;
 
 	constructor(
 		@Inject(DI.config)
@@ -197,7 +192,8 @@ export class HttpRequestService {
 	/**
 	 * Get agent by URL
 	 * @param url URL
-	 * @param bypassProxy Allways bypass proxy
+	 * @param bypassProxy Always bypass proxy
+	 * @param isLocalAddressAllowed
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false, isLocalAddressAllowed = false): http.Agent | https.Agent {
@@ -214,8 +210,40 @@ export class HttpRequestService {
 		}
 	}
 
+	/**
+	 * Get agent for http by URL
+	 * @param url URL
+	 * @param isLocalAddressAllowed
+	 */
 	@bindThis
-	public async getActivityJson(url: string, isLocalAddressAllowed = false): Promise<IObject> {
+	public getAgentForHttp(url: URL, isLocalAddressAllowed = false): http.Agent {
+		if ((this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+			return isLocalAddressAllowed
+				? this.httpNative
+				: this.http;
+		} else {
+			return this.httpAgent;
+		}
+	}
+
+	/**
+	 * Get agent for https by URL
+	 * @param url URL
+	 * @param isLocalAddressAllowed
+	 */
+	@bindThis
+	public getAgentForHttps(url: URL, isLocalAddressAllowed = false): https.Agent {
+		if ((this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+			return isLocalAddressAllowed
+				? this.httpsNative
+				: this.https;
+		} else {
+			return this.httpsAgent;
+		}
+	}
+
+	@bindThis
+	public async getActivityJson(url: string, isLocalAddressAllowed = false, allowSoftfail: FetchAllowSoftFailMask = FetchAllowSoftFailMask.Strict): Promise<IObject> {
 		const res = await this.send(url, {
 			method: 'GET',
 			headers: {
@@ -232,7 +260,7 @@ export class HttpRequestService {
 		const finalUrl = res.url; // redirects may have been involved
 		const activity = await res.json() as IObject;
 
-		assertActivityMatchesUrls(activity, [finalUrl]);
+		assertActivityMatchesUrl(url, activity, finalUrl, allowSoftfail);
 
 		return activity;
 	}
