@@ -25,15 +25,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-else key="_root_" class="_gaps">
-				<slot :items="unref(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
-				<div v-if="paginator.order.value === 'oldest'">
-					<MkButton v-if="!paginator.fetchingNewer.value" :class="$style.more" :wait="paginator.fetchingNewer.value" primary rounded @click="paginator.fetchNewer()">
+				<div v-if="direction === 'up' || direction === 'both'" v-show="upButtonVisible">
+					<MkButton v-if="!upButtonLoading" :class="$style.more" primary rounded @click="upButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
-				<div v-else v-show="paginator.canFetchOlder.value">
-					<MkButton v-if="!paginator.fetchingOlder.value" :class="$style.more" :wait="paginator.fetchingOlder.value" primary rounded @click="paginator.fetchOlder()">
+				<slot :items="unref(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
+				<div v-if="direction === 'down' || direction === 'both'" v-show="downButtonVisible">
+					<MkButton v-if="!downButtonLoading" :class="$style.more" primary rounded @click="downButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup generic="T extends IPaginator">
 import { isLink } from '@@/js/is-link.js';
-import { onMounted, watch, unref } from 'vue';
+import { onMounted, computed, watch, unref } from 'vue';
 import type { UnwrapRef } from 'vue';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
@@ -58,11 +58,20 @@ import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	paginator: T;
+
+	// ページネーションを進める方向
+	// up: 上方向
+	// down: 下方向 (default)
+	// both: 双方向
+	// NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
+	direction?: 'up' | 'down' | 'both';
+
 	autoLoad?: boolean;
 	pullToRefresh?: boolean;
 	withControl?: boolean;
 }>(), {
 	autoLoad: true,
+	direction: 'down',
 	pullToRefresh: true,
 	withControl: false,
 });
@@ -91,6 +100,36 @@ if (props.paginator.computedParams) {
 	watch(props.paginator.computedParams, () => {
 		props.paginator.reload();
 	}, { immediate: false, deep: true });
+}
+
+const upButtonVisible = computed(() => {
+	return props.paginator.order.value === 'oldest' ? props.paginator.canFetchOlder.value : props.paginator.canFetchNewer.value;
+});
+const upButtonLoading = computed(() => {
+	return props.paginator.order.value === 'oldest' ? props.paginator.fetchingOlder.value : props.paginator.fetchingNewer.value;
+});
+
+function upButtonClick() {
+	if (props.paginator.order.value === 'oldest') {
+		props.paginator.fetchOlder();
+	} else {
+		props.paginator.fetchNewer();
+	}
+}
+
+const downButtonVisible = computed(() => {
+	return props.paginator.order.value === 'oldest' ? props.paginator.canFetchNewer.value : props.paginator.canFetchOlder.value;
+});
+const downButtonLoading = computed(() => {
+	return props.paginator.order.value === 'oldest' ? props.paginator.fetchingNewer.value : props.paginator.fetchingOlder.value;
+});
+
+function downButtonClick() {
+	if (props.paginator.order.value === 'oldest') {
+		props.paginator.fetchNewer();
+	} else {
+		props.paginator.fetchOlder();
+	}
 }
 
 defineSlots<{

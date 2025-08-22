@@ -91,6 +91,7 @@ export const ROLE_POLICIES = [
 	'canManageAvatarDecorations',
 	'canSearchNotes',
 	'canSearchWithHanamiSearchV1',
+	'canSearchUsers',
 	'canUseTranslator',
 	'canHideAds',
 	'driveCapacityMb',
