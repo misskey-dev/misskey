@@ -282,7 +282,7 @@ export class Paginator<
 		}
 
 		if (this.order.value === 'oldest') {
-			this.unshiftItems(apiRes.toReversed(), true);
+			this.unshiftItems(apiRes.toReversed(), false);
 		} else {
 			this.pushItems(apiRes);
 		}
@@ -341,7 +341,7 @@ export class Paginator<
 			if (this.order.value === 'oldest') {
 				this.pushItems(apiRes);
 			} else {
-				this.unshiftItems(apiRes.toReversed(), true);
+				this.unshiftItems(apiRes.toReversed(), false);
 			}
 		}
 
@@ -362,10 +362,10 @@ export class Paginator<
 		if (this.useShallowRef && trigger) triggerRef(this.items);
 	}
 
-	public unshiftItems(newItems: T[], noTrim = false): void {
+	public unshiftItems(newItems: T[], trim = true): void {
 		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
 		this.items.value.unshift(...newItems.filter(x => !this.items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
-		if (!noTrim) this.trim(true);
+		if (trim) this.trim(true);
 		if (this.useShallowRef) triggerRef(this.items);
 	}
 
