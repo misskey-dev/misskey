@@ -43,6 +43,7 @@ export type RolePolicies = {
 	canManageCustomEmojis: boolean;
 	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
+	canSearchUsers: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
@@ -67,6 +68,7 @@ export type RolePolicies = {
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
 	uploadableFileTypes: string[];
 	noteDraftLimit: number;
+	watermarkAvailable: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -81,6 +83,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageCustomEmojis: false,
 	canManageAvatarDecorations: false,
 	canSearchNotes: false,
+	canSearchUsers: true,
 	canUseTranslator: true,
 	canHideAds: false,
 	driveCapacityMb: 100,
@@ -111,6 +114,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 		'audio/*',
 	],
 	noteDraftLimit: 10,
+	watermarkAvailable: true,
 };
 
 @Injectable()
@@ -400,6 +404,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
+			canSearchUsers: calc('canSearchUsers', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
@@ -433,6 +438,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				return [...set];
 			}),
 			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
+			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
 		};
 	}
 

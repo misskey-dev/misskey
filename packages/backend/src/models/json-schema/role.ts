@@ -212,6 +212,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canSearchUsers: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canUseTranslator: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -311,6 +315,10 @@ export const packedRolePoliciesSchema = {
 		},
 		noteDraftLimit: {
 			type: 'integer',
+			optional: false, nullable: false,
+		},
+		watermarkAvailable: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 	},

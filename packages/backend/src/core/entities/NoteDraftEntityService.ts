@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { EntityNotFoundError } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -90,6 +91,17 @@ export class NoteDraftEntityService implements OnModuleInit {
 		const packedFiles = options?._hint_?.packedFiles;
 		const packedUsers = options?._hint_?.packedUsers;
 
+		async function nullIfEntityNotFound<T>(promise: Promise<T>): Promise<T | null> {
+			try {
+				return await promise;
+			} catch (err) {
+				if (err instanceof EntityNotFoundError) {
+					return null;
+				}
+				throw err;
+			}
+		}
+
 		const packed: Packed<'NoteDraft'> = await awaitAll({
 			id: noteDraft.id,
 			createdAt: this.idService.parse(noteDraft.id).date.toISOString(),
@@ -117,15 +129,15 @@ export class NoteDraftEntityService implements OnModuleInit {
 			} : undefined,
 
 			...(opts.detail ? {
-				reply: noteDraft.replyId ? this.noteEntityService.pack(noteDraft.replyId, me, {
+				reply: noteDraft.replyId ? nullIfEntityNotFound(this.noteEntityService.pack(noteDraft.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
-				}) : undefined,
+				})) : undefined,
 
-				renote: noteDraft.renoteId ? this.noteEntityService.pack(noteDraft.renoteId, me, {
+				renote: noteDraft.renoteId ? nullIfEntityNotFound(this.noteEntityService.pack(noteDraft.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
-				}) : undefined,
+				})) : undefined,
 
 				poll: noteDraft.hasPoll ? {
 					choices: noteDraft.pollChoices,

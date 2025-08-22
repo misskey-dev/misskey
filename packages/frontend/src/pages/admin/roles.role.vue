@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
-								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
+								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItems.includes(item.id) }]">
 									<div :class="$style.userItemMain">
 										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
 											<MkUserCardMini :user="item.user"/>
@@ -76,19 +76,23 @@ const props = defineProps<{
 
 const usersPaginator = markRaw(new Paginator('admin/roles/users', {
 	limit: 20,
-	computedParams: computed(() => ({
+	computedParams: computed(() => props.id ? ({
 		roleId: props.id,
-	})),
+	}) : undefined),
 }));
 
-const expandedItems = ref([]);
+const expandedItems = ref<string[]>([]);
 
 const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
 }));
 
 function edit() {
-	router.push('/admin/roles/' + role.id + '/edit');
+	router.push('/admin/roles/:id/edit', {
+		params: {
+			id: role.id,
+		}
+	});
 }
 
 async function del() {
@@ -199,7 +203,7 @@ definePage(() => ({
 	transition: transform 0.1s ease-out;
 }
 
-.userItem.userItemOpend {
+.userItem.userItemOpened {
 	.chevron {
 		transform: rotateX(180deg);
 	}

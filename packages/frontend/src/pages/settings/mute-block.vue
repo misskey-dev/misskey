@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/mute-block" :label="i18n.ts.muteAndBlock" icon="ti ti-ban" :keywords="['mute', 'block']">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/prohibited_3d.png" color="#ff2600">
-			<SearchKeyword>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
@@ -189,10 +189,10 @@ import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
 
 const $i = ensureSignin();
 
@@ -208,16 +208,16 @@ const blockingPaginator = markRaw(new Paginator('blocking/list', {
 	limit: 10,
 }));
 
-const expandedRenoteMuteItems = ref([]);
-const expandedMuteItems = ref([]);
-const expandedBlockItems = ref([]);
+const expandedRenoteMuteItems = ref<string[]>([]);
+const expandedMuteItems = ref<string[]>([]);
+const expandedBlockItems = ref<string[]>([]);
 
 const showSoftWordMutedWord = prefer.model('showSoftWordMutedWord');
 
 watch([
 	showSoftWordMutedWord,
-], async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+], () => {
+	suggestReload();
 });
 
 async function unrenoteMute(user, ev) {
@@ -253,7 +253,7 @@ async function unblock(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function toggleRenoteMuteItem(item) {
+async function toggleRenoteMuteItem(item: { id: string }) {
 	if (expandedRenoteMuteItems.value.includes(item.id)) {
 		expandedRenoteMuteItems.value = expandedRenoteMuteItems.value.filter(x => x !== item.id);
 	} else {
@@ -261,7 +261,7 @@ async function toggleRenoteMuteItem(item) {
 	}
 }
 
-async function toggleMuteItem(item) {
+async function toggleMuteItem(item: { id: string }) {
 	if (expandedMuteItems.value.includes(item.id)) {
 		expandedMuteItems.value = expandedMuteItems.value.filter(x => x !== item.id);
 	} else {
@@ -269,7 +269,7 @@ async function toggleMuteItem(item) {
 	}
 }
 
-async function toggleBlockItem(item) {
+async function toggleBlockItem(item: { id: string }) {
 	if (expandedBlockItems.value.includes(item.id)) {
 		expandedBlockItems.value = expandedBlockItems.value.filter(x => x !== item.id);
 	} else {

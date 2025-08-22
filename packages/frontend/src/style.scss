@@ -22,11 +22,6 @@
 	}
 }
 
-::selection {
-	color: var(--MI_THEME-fgOnAccent);
-	background-color: var(--MI_THEME-accent);
-}
-
 html {
 	overflow: auto;
 	overflow-wrap: break-word;
@@ -41,32 +36,6 @@ html {
 	background-color: var(--MI_THEME-bg);
 	color: var(--MI_THEME-fg);
 	accent-color: var(--MI_THEME-accent);
-
-	&, * {
-		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-		scrollbar-width: thin;
-
-		&::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-
-		&::-webkit-scrollbar-track {
-			background: inherit;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background: var(--MI_THEME-scrollbarHandle);
-
-			&:hover {
-				background: var(--MI_THEME-scrollbarHandleHover);
-			}
-
-			&:active {
-				background: var(--MI_THEME-accent);
-			}
-		}
-	}
 
 	&.f-1 {
 		font-size: 15px;
@@ -90,12 +59,6 @@ html {
 	}
 }
 
-html._themeChangingFallback_ {
-	&, * {
-		transition: background 0.5s ease, border 0.5s ease !important;
-	}
-}
-
 html._themeChanging_ {
 	view-transition-name: theme-changing;
 }
@@ -110,6 +73,11 @@ html::view-transition-old(theme-changing) {
 	animation-fill-mode: forwards;
 }
 
+html::selection {
+	color: var(--MI_THEME-fgOnAccent);
+	background-color: var(--MI_THEME-accent);
+}
+
 @keyframes themeChangingOld {
 	0% {
 		opacity: 1;
@@ -118,7 +86,11 @@ html::view-transition-old(theme-changing) {
 	100% {
 		opacity: 0;
 	}
+}
 
+html, body, main, div {
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
+	scrollbar-width: thin;
 }
 
 html,

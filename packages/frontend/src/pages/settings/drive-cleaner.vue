@@ -48,6 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import type { StyleValue } from 'vue';
@@ -62,7 +63,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { Paginator } from '@/utility/paginator.js';
 
-const sortMode = ref('+size');
+const sortMode = ref<Misskey.entities.DriveFilesRequest['sort']>('+size');
 const paginator = markRaw(new Paginator('drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({ sort: sortMode.value })),

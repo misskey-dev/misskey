@@ -76,7 +76,7 @@ function mount() {
 function back() {
 	const prev = tabs.value[tabs.value.length - 2];
 	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
-	router.replace(prev.fullPath);
+	router?.replaceByPath(prev.fullPath);
 }
 
 router.useListener('change', ({ resolved }) => {

@@ -122,6 +122,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSwitch>
 					</MkFolder>
 
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canSearchUsers, 'canSearchUsers'])">
+						<template #label>{{ i18n.ts._role._options.canSearchUsers }}</template>
+						<template #suffix>{{ policies.canSearchUsers ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canSearchUsers">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
+
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canUseTranslator'])">
 						<template #label>{{ i18n.ts._role._options.canUseTranslator }}</template>
 						<template #suffix>{{ policies.canUseTranslator ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -290,6 +298,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix>{{ policies.noteDraftLimit }}</template>
 						<MkInput v-model="policies.noteDraftLimit" type="number" :min="0">
 						</MkInput>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.watermarkAvailable, 'watermarkAvailable'])">
+						<template #label>{{ i18n.ts._role._options.watermarkAvailable }}</template>
+						<template #suffix>{{ policies.watermarkAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.watermarkAvailable">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
 					</MkFolder>
 				</div>
 			</MkFolder>
