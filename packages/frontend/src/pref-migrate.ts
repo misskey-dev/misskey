@@ -17,7 +17,13 @@ import { i18n } from '@/i18n.js';
 export async function migrateOldSettings() {
 	os.waiting({ text: i18n.ts.settingsMigrating });
 
-	await store.loaded.then(async () => {
+	const minWait = new Promise<void>(resolve => {
+		window.setTimeout(() => {
+			resolve();
+		}, 5000);
+	});
+
+	const migratePromise = store.loaded.then(async () => {
 		const migrationPromises: Promise<any>[] = [];
 
 		migrationPromises.push(misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
@@ -141,6 +147,9 @@ export async function migrateOldSettings() {
 
 		await Promise.all(migrationPromises);
 	});
+
+	// 最低5秒 or 設定移行が完了するまで待つ
+	await Promise.all([migratePromise, minWait]);
 
 	unisonReload();
 }
