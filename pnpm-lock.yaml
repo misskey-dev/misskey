@@ -417,8 +417,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0
       tmp:
-        specifier: 0.2.3
-        version: 0.2.3
+        specifier: 0.2.4
+        version: 0.2.4
       tsc-alias:
         specifier: 1.8.16
         version: 1.8.16
@@ -10215,8 +10215,8 @@ packages:
     resolution: {integrity: sha512-rv8LUyez4Ygkopqn+M6OLItAOT9FF3REpPQDkdMx5ix8w4qkuE7Vo2o/vw1nxKQYmJDV8JpAMJQr1b+lTKf0FA==}
     hasBin: true
 
-  tmp@0.2.3:
-    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
+  tmp@0.2.4:
+    resolution: {integrity: sha512-UdiSoX6ypifLmrfQ/XfiawN6hkjSBpCjhKxxZcWlUUmoXLaCKQU0bx4HF/tdDK2uzRuchf1txGvrWBzYREssoQ==}
     engines: {node: '>=14.14'}
 
   tmpl@1.0.5:
@@ -16587,7 +16587,7 @@ snapshots:
       request-progress: 3.0.0
       semver: 7.7.2
       supports-color: 8.1.1
-      tmp: 0.2.3
+      tmp: 0.2.4
       tree-kill: 1.2.2
       untildify: 4.0.0
       yauzl: 2.10.0
@@ -16634,7 +16634,7 @@ snapshots:
       request-progress: 3.0.0
       semver: 7.7.2
       supports-color: 8.1.1
-      tmp: 0.2.3
+      tmp: 0.2.4
       tree-kill: 1.2.2
       untildify: 4.0.0
       yauzl: 2.10.0
@@ -21838,7 +21838,7 @@ snapshots:
     dependencies:
       tldts-core: 6.1.61
 
-  tmp@0.2.3: {}
+  tmp@0.2.4: {}
 
   tmpl@1.0.5: {}
 

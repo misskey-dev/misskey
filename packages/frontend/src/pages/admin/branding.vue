@@ -8,6 +8,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<SearchMarker path="/admin/branding" :label="i18n.ts.branding" :keywords="['branding']" icon="ti ti-paint">
 			<div class="_gaps_m">
+				<SearchMarker :keywords="['entrance', 'welcome', 'landing', 'front', 'home', 'page', 'style']">
+					<MkRadios v-model="entrancePageStyle">
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.entrancePageStyle }}</SearchLabel></template>
+						<option value="classic">Classic</option>
+						<option value="simple">Simple</option>
+					</MkRadios>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['timeline']">
+					<MkSwitch v-model="showTimelineForVisitor">
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.showTimelineForVisitor }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['activity', 'activities']">
+					<MkSwitch v-model="showActivityiesForVisitor">
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.showActivityiesForVisitor }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['icon', 'image']">
 					<MkInput v-model="iconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
@@ -141,9 +161,14 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const meta = await misskeyApi('admin/meta');
 
+const entrancePageStyle = ref(meta.clientOptions.entrancePageStyle ?? 'classic');
+const showTimelineForVisitor = ref(meta.clientOptions.showTimelineForVisitor ?? true);
+const showActivityiesForVisitor = ref(meta.clientOptions.showActivityiesForVisitor ?? true);
 const iconUrl = ref(meta.iconUrl);
 const app192IconUrl = ref(meta.app192IconUrl);
 const app512IconUrl = ref(meta.app512IconUrl);
@@ -161,6 +186,11 @@ const manifestJsonOverride = ref(meta.manifestJsonOverride === '' ? '{}' : JSON.
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
+		clientOptions: {
+			entrancePageStyle: entrancePageStyle.value,
+			showTimelineForVisitor: showTimelineForVisitor.value,
+			showActivityiesForVisitor: showActivityiesForVisitor.value,
+		},
 		iconUrl: iconUrl.value,
 		app192IconUrl: app192IconUrl.value,
 		app512IconUrl: app512IconUrl.value,
