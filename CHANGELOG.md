@@ -66,6 +66,7 @@
 - Enhance: `clips/list` APIがページネーションに対応しました
 - Fix: `notes/mentions` で場合によっては並び順が正しく返されない問題を修正
 - Fix: SystemWebhook設定でsecretを空に出来ない問題を修正
+- Fix: 削除されたユーザーがチャットメッセージにリアクションしている場合`chat/history`などでエラーになる問題を修正
 
 
 ## 2025.7.0
