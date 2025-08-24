@@ -12548,6 +12548,20 @@ export interface Locale extends ILocale {
          */
         "listDrafts": string;
     };
+    /**
+     * 二次元コード
+     */
+    "qr": string;
+    "_qr": {
+        /**
+         * 表示
+         */
+        "showTabTitle": string;
+        /**
+         * 読み取る
+         */
+        "readTabTitle": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
