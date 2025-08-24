@@ -15,6 +15,12 @@ import { i18n } from '@/i18n.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
 export const navbarItemDef = reactive({
+	qr: {
+		title: i18n.ts.qr,
+		icon: 'ti ti-qrcode',
+		show: computed(() => $i != null),
+		to: '/qr',
+	},
 	notifications: {
 		title: i18n.ts.notifications,
 		icon: 'ti ti-bell',
