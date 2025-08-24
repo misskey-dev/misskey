@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :tabs="headerTabs" :swipable="true" :style="{ overflow: tab === 'show' ? 'clip' : undefined }">
+<PageWithHeader v-model:tab="tab" :tabs="headerTabs" :swipable="true" :style="{ overflowY: tab === 'show' ? 'clip' : undefined }">
 	<MkQrShow v-if="tab === 'show'"/>
 	<MkQrRead v-else-if="tab === 'read'"/>
 	<MkError v-else-if="error" :error="error"/>

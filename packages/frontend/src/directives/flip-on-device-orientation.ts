@@ -2,19 +2,21 @@ import type { Directive } from 'vue';
 
 let initialized = false;
 let styleEl: HTMLStyleElement | null = null;
-const elements = new Set<HTMLElement>();
+const canUseDeviceOrientation = !window.DeviceOrientationEvent;
 const className = '_flipOnDeviceOrientation';
-const variableName = `--flip_on_device_orientation_transform`;
+const variableName = `--MI-flip_on_device_orientation_transform`;
 
-function handleOrientationChange() {
-	const isUpsideDown = window.screen.orientation.type === 'landscape-secondary';
+function handleOrientationChange(event: DeviceOrientationEvent) {
+	const isUpsideDown = event.beta ? event.beta < -15 : false;
 	const transform = isUpsideDown ? 'scale(-1, -1)' : '';
 	window.document.body.style.setProperty(variableName, transform);
 }
 
 function registerListener() {
+	if (!canUseDeviceOrientation) return;
+
 	if (!initialized) {
-		screen.orientation.addEventListener('change', handleOrientationChange);
+		window.addEventListener('deviceorientation', handleOrientationChange);
 		if (!styleEl) {
 			styleEl = window.document.createElement('style');
 			styleEl.textContent = `.${className} { transform: var(${variableName}); }`;
@@ -22,7 +24,7 @@ function registerListener() {
 		}
 		initialized = true;
 	} else if (window.document.getElementsByClassName(className).length === 0) {
-		screen.orientation.removeEventListener('change', handleOrientationChange);
+		window.removeEventListener('deviceorientation', handleOrientationChange);
 		if (styleEl) {
 			window.document.head.removeChild(styleEl);
 			styleEl = null;
@@ -35,7 +37,6 @@ export default {
 	mounted(el) {
 		registerListener();
 		el.classList.add(className);
-		handleOrientationChange();
 	},
 	unmounted(el) {
 		el.classList.remove(className);

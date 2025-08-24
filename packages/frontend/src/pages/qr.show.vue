@@ -42,6 +42,8 @@ import { ensureSignin } from '@/i.js';
 import { userPage, userName } from '@/filters/user.js';
 import misskeysvg from '/client-assets/misskey.svg';
 import MkAnimBg from '@/components/MkAnimBg.vue';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
 
@@ -62,7 +64,8 @@ const avatarHsl = computed(() => avatarColor.value.toHsl());
 const bgColor = tinycolor(`hsl(${avatarHsl.value.h}, 60, 46)`).toRgbString();
 
 function share() {
-	return navigator.share?.({
+	if (!canShare.value) return;
+	return navigator.share({
 		title: i18n.tsx._qr.shareTitle({ name: userName($i), acct: acct.value }),
 		text: i18n.tsx._qr.shareText({ name: userName($i), acct: acct.value }),
 		url: url.value,
@@ -76,7 +79,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 		margin: 40,
 		type: 'canvas',
 		data: url.value,
-		image: instance.iconUrl ?? '/favicon.ico',
+		image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
 		qrOptions: {
 			typeNumber: 0,
 			mode: 'Byte',
@@ -142,7 +145,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 .qrInner {
 	width: 100%;
 	max-height: 40dvh;
-	margin: 5dvh auto 2dvh;
+	margin: 58px auto 32px;
 
 	> svg,
 	> canvas {
@@ -156,10 +159,10 @@ $avatarSize: 58px;
 
 .user {
 	display: flex;
-	margin: 2dvh auto;
+	margin: 32px auto;
 	justify-content: center;
 	align-items: center;
-	overflow: clip;
+	overflow: visible;
 	width: fit-content;
 	max-width: 100%;
 }
@@ -178,7 +181,8 @@ $avatarSize: 58px;
 	align-items: start;
 	margin-top: -4px;
 	max-width: 100%;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: visible;
 }
 
 .name {
@@ -188,7 +192,8 @@ $avatarSize: 58px;
 	line-height: 24px;
 	width: fit-content;
 	max-width: calc(100% - 16px);
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: visible;
 	padding-right: 16px;
 	mask-image: linear-gradient(90deg,#000,#000 calc(100% - 16px),#0000);
 }
@@ -200,13 +205,14 @@ $avatarSize: 58px;
 	line-height: 16px;
 	width: fit-content;
 	max-width: calc(100% - 16px);
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: visible;
 	padding-right: 16px;
 	mask-image: linear-gradient(90deg,#000,#000 calc(100% - 16px),#0000);
 }
 
 .logo {
 	width: 30%;
-	margin: 2dvh auto 0;
+	margin: 32px auto 0;
 }
 </style>
