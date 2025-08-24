@@ -17,5 +17,6 @@ const $i = ensureSignin();
 
 <style lang="scss" module>
 .root {
+	padding: 16px;
 }
 </style>

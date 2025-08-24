@@ -12561,6 +12561,14 @@ export interface Locale extends ILocale {
          * 読み取る
          */
         "readTabTitle": string;
+        /**
+         * {name} {acct}
+         */
+        "shareTitle": ParameterizedString<"name" | "acct">;
+        /**
+         * Fediverseで私をフォローしてください！
+         */
+        "shareText": string;
     };
 }
 declare const locales: {

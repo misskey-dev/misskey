@@ -3364,3 +3364,5 @@ qr: 二次元コード
 _qr:
   showTabTitle: "表示"
   readTabTitle: "読み取る"
+  shareTitle: "{name} {acct}"
+  shareText: "Fediverseで私をフォローしてください！"
