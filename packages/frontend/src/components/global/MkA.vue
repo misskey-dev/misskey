@@ -99,6 +99,11 @@ function nav(ev: MouseEvent) {
 		return openWindow();
 	}
 
+	if (ev.ctrlKey) {
+		window.open(props.to, '_blank', 'noopener');
+		return;
+	}
+
 	router.pushByPath(props.to, ev.ctrlKey ? 'forcePage' : null);
 }
 </script>
