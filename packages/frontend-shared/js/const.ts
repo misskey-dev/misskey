@@ -114,6 +114,11 @@ export const ROLE_POLICIES = [
 	'uploadableFileTypes',
 	'noteDraftLimit',
 	'watermarkAvailable',
+	'canNote',
+	'renotePolicy',
+	'canCreateSpecifiedNote',
+	'canFederateNote',
+	'noteFilesLimit',
 ] as const;
 
 export const MFM_TAGS = ['tada', 'jelly', 'twitch', 'shake', 'spin', 'jump', 'bounce', 'flip', 'x2', 'x3', 'x4', 'scale', 'position', 'fg', 'bg', 'border', 'font', 'blur', 'rainbow', 'sparkle', 'rotate', 'ruby', 'unixtime'];

@@ -1377,6 +1377,7 @@ pluginsAreDisabledBecauseSafeMode: "セーフモードが有効なため、プ�
 customCssIsDisabledBecauseSafeMode: "セーフモードが有効なため、カスタムCSSは適用されていません。"
 themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。"
 thankYouForTestingBeta: "ベータ版の検証にご協力いただきありがとうございます！"
+youAreNotAllowedToCreateNote: "お使いのアカウントにはノートを投稿する権限がありません。"
 
 _order:
   newest: "新しい順"
@@ -2040,6 +2041,14 @@ _role:
     uploadableFileTypes_caption2: "ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。"
     noteDraftLimit: "サーバーサイドのノートの下書きの作成可能数"
     watermarkAvailable: "ウォーターマーク機能の使用可否"
+    canNote: "ノートの投稿を許可"
+    renotePolicy: "リノート・引用を許可"
+    renotePolicy_allow: "リノート・引用を許可"
+    renotePolicy_renoteOnly: "リノートのみ許可"
+    renotePolicy_disallow: "リノート・引用を禁止"
+    canCreateSpecifiedNote: "指名ノートの投稿を許可"
+    canFederateNote: "連合するノートの投稿を許可"
+    noteFilesLimit: "ノートに添付できるファイルの最大数"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"

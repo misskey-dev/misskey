@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ targetChannel.name }}</span>
 				</button>
 			</template>
-			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || visibility === 'specified'" @click="toggleLocalOnly">
+			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || visibility === 'specified' || !$i.policies.canFederateNote" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
@@ -61,7 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
-	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<MkInfo v-if="!$i.policies.canNote" warn :class="$style.formWarn">{{ i18n.ts.youAreNotAllowedToCreateNote }}</MkInfo>
+	<MkInfo v-else-if="hasNotSpecifiedMentions" warn :class="$style.formWarn">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
 		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
@@ -85,8 +86,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
+			<button v-if="$i.policies.noteFilesLimit > 0" v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
+			<button v-if="$i.policies.noteFilesLimit > 0" v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
@@ -280,25 +281,44 @@ const cwTextLength = computed((): number => {
 const maxCwTextLength = 100;
 
 const canPost = computed((): boolean => {
-	return !props.mock && !posting.value && !posted.value && !uploader.uploading.value && (uploader.items.value.length === 0 || uploader.readyForUpload.value) &&
-		(
-			1 <= textLength.value ||
-			1 <= files.value.length ||
-			1 <= uploader.items.value.length ||
-			poll.value != null ||
-			renoteTargetNote.value != null ||
-			quoteId.value != null
-		) &&
-		(textLength.value <= maxTextLength.value) &&
-		(
-			useCw.value ?
-				(
-					cw.value != null && cw.value.trim() !== '' &&
-					cwTextLength.value <= maxCwTextLength
-				) : true
-		) &&
-		(files.value.length <= 16) &&
-		(!poll.value || poll.value.choices.length >= 2);
+	const isNotMock = !props.mock;
+
+	const canNote = $i.policies.canNote;
+	const canQuote = renoteTargetNote.value ? $i.policies.renotePolicy === 'allow' : true;
+
+	const isNotPosting = !posting.value && !posted.value;
+	const isNotUploading = !uploader.uploading.value;
+	const isUploaderReady = uploader.items.value.length === 0 || uploader.readyForUpload.value;
+
+	const hasContent = (
+		textLength.value >= 1 ||
+		files.value.length >= 1 ||
+		uploader.items.value.length >= 1 ||
+		poll.value != null ||
+		renoteTargetNote.value != null ||
+		quoteId.value != null
+	);
+
+	const isTextLengthValid = textLength.value <= maxTextLength.value;
+	const isCwValid = useCw.value
+		? cw.value != null && cw.value.trim() !== '' && cwTextLength.value <= maxCwTextLength
+		: true;
+	const isFilesCountValid = files.value.length <= $i.policies.noteFilesLimit;
+	const isPollValid = !poll.value || poll.value.choices.length >= 2;
+
+	return (
+		isNotMock &&
+		canNote &&
+		canQuote &&
+		isNotPosting &&
+		isNotUploading &&
+		isUploaderReady &&
+		hasContent &&
+		isTextLengthValid &&
+		isCwValid &&
+		isFilesCountValid &&
+		isPollValid
+	);
 });
 
 // cannot save pure renote as draft
@@ -699,7 +719,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/') && $i.policies.renotePolicy === 'allow') {
 		ev.preventDefault();
 
 		os.confirm({
@@ -1512,7 +1532,7 @@ html[data-color-scheme=light] .preview {
 	background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }
 
-.hasNotSpecifiedMentions {
+.formWarn {
 	margin: 0 20px 16px 20px;
 }
 

@@ -229,6 +229,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
 	}, data: Option, silent = false): Promise<MiNote> {
+		const userPolicies = await this.roleService.getUserPolicies(user.id);
+
+		if (!userPolicies.canNote) {
+			throw new IdentifiableError('ebd9b2a9-4d95-4b01-8824-e701629b65e7', 'You are not allowed to create notes');
+		}
+
+		if (data.files != null && data.files.length > userPolicies.noteFilesLimit) {
+			throw new IdentifiableError('80dc1304-d910-4daa-b26f-4220b6c944ff', 'Too many files attached to note');
+		}
+
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -256,7 +266,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			const sensitiveWords = this.meta.sensitiveWords;
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
 				data.visibility = 'home';
-			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
+			} else if (userPolicies.canPublicNote === false) {
 				data.visibility = 'home';
 			}
 		}
@@ -303,8 +313,19 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
+		const isRenote = this.isRenote(data);
+		const isQuote = isRenote ? this.isQuote(data) : false;
+
+		if (isRenote && userPolicies.renotePolicy === 'disallow') {
+			throw new IdentifiableError('d35d80dc-02ba-4c9b-b9b8-905d306dcb67', 'You are not allowed to renote');
+		}
+
+		if (isQuote && (userPolicies.renotePolicy === 'disallow' || userPolicies.renotePolicy === 'renoteOnly')) {
+			throw new IdentifiableError('3a97010b-c338-4cdf-a567-24c54b67726e', 'You are not allowed to quote');
+		}
+
 		// Check blocking
-		if (this.isRenote(data) && !this.isQuote(data)) {
+		if (isRenote && !isQuote) {
 			if (data.renote.userHost === null) {
 				if (data.renote.userId !== user.id) {
 					const blocked = await this.userBlockingService.checkBlocked(data.renote.userId, user.id);
@@ -374,6 +395,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'specified') {
 			if (data.visibleUsers == null) throw new Error('invalid param');
+			if (!userPolicies.canCreateSpecifiedNote) throw new IdentifiableError('80d26afb-d466-4d86-9c01-11b9cad9da24', 'You are not allowed to send direct notes');
 
 			for (const u of data.visibleUsers) {
 				if (!mentionedUsers.some(x => x.id === u.id)) {
@@ -384,6 +406,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
 				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
+
+			if (!userPolicies.canFederateNote && data.visibleUsers.some(u => this.userEntityService.isRemoteUser(u))) {
+				throw new IdentifiableError('5bbfae8d-097c-4c58-93f4-bc242d600529', 'You are not allowed to send direct notes to remote users');
+			}
+		} else if (!userPolicies.canFederateNote) {
+			data.localOnly = true;
 		}
 
 		if (mentionedUsers.length > 0 && mentionedUsers.length > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {

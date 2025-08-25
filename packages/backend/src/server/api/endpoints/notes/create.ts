@@ -11,7 +11,7 @@ import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesR
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiChannel } from '@/models/Channel.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { MAX_NOTE_ATTACHMENTS, MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
@@ -162,14 +162,14 @@ export const paramDef = {
 			type: 'array',
 			uniqueItems: true,
 			minItems: 1,
-			maxItems: 16,
+			maxItems: MAX_NOTE_ATTACHMENTS,
 			items: { type: 'string', format: 'misskey:id' },
 		},
 		mediaIds: {
 			type: 'array',
 			uniqueItems: true,
 			minItems: 1,
-			maxItems: 16,
+			maxItems: MAX_NOTE_ATTACHMENTS,
 			items: { type: 'string', format: 'misskey:id' },
 		},
 		poll: {
@@ -396,10 +396,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (e) {
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
 				if (e instanceof IdentifiableError) {
-					if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
-						throw new ApiError(meta.errors.containsProhibitedWords);
-					} else if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
-						throw new ApiError(meta.errors.containsTooManyMentions);
+					switch (e.id) {
+						case '689ee33f-f97c-479a-ac49-1b9f8140af99':
+							throw new ApiError(meta.errors.containsProhibitedWords);
+						case '9f466dab-c856-48cd-9e65-ff90ff750580':
+							throw new ApiError(meta.errors.containsTooManyMentions);
 					}
 				}
 				throw e;
