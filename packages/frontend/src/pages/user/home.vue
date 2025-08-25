@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkUserName class="name" :user="user" :nowrap="true"/>
 								<div class="bottom">
 									<span class="username"><MkAcct :user="user" :detail="true"/></span>
-									<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
-									<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+									<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
+									<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
 									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
 										<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
 									</button>
@@ -43,8 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserName :user="user" :nowrap="false" class="name"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
-								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+								<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
+								<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
 							</div>
 						</div>
 						<div v-if="user.followedMessage != null" class="followedMessage">
@@ -228,7 +228,7 @@ const bannerEl = ref<null | HTMLElement>(null);
 const memoTextareaEl = ref<null | HTMLElement>(null);
 const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
-const moderationNote = ref(props.user.moderationNote);
+const moderationNote = ref(props.user.moderationNote ?? '');
 const editModerationNote = ref(false);
 
 watch(moderationNote, async () => {

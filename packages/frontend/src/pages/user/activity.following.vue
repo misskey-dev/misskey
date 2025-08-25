@@ -36,7 +36,7 @@ const props = defineProps<{
 const chartEl = useTemplateRef('chartEl');
 const legendEl = useTemplateRef('legendEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const chartLimit = 30;
 const fetching = ref(true);
 
