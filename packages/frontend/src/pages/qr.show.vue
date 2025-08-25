@@ -89,43 +89,43 @@ function share() {
 	});
 }
 
-onMounted(() => {
-	const qrCodeInstance = new QRCodeStyling({
-		width: 512,
-		height: 512,
-		margin: 40,
-		type: 'canvas',
-		data: url.value,
-		image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
-		qrOptions: {
-			typeNumber: 0,
-			mode: 'Byte',
-			errorCorrectionLevel: 'H',
+const qrCodeInstance = new QRCodeStyling({
+	width: 512,
+	height: 512,
+	margin: 40,
+	type: 'canvas',
+	data: url.value,
+	image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
+	qrOptions: {
+		typeNumber: 0,
+		mode: 'Byte',
+		errorCorrectionLevel: 'H',
+	},
+	imageOptions: {
+		hideBackgroundDots: true,
+		imageSize: 0.3,
+		margin: 12,
+		crossOrigin: 'anonymous',
+	},
+	dotsOptions: {
+		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString(),
+		gradient: {
+			type: 'linear',
+			rotation: 1, // radian
+			colorStops: [
+				{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
+				{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 20)`).toRgbString() },
+				{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
+			],
 		},
-		imageOptions: {
-			hideBackgroundDots: true,
-			imageSize: 0.3,
-			margin: 12,
-			crossOrigin: 'anonymous',
-		},
-		dotsOptions: {
-			color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString(),
-			gradient: {
-				type: 'linear',
-				rotation: 1, // radian
-				colorStops: [
-					{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
-					{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 20)`).toRgbString() },
-					{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
-				],
-			},
-			type: 'classy-rounded',
-		},
-		backgroundOptions: {
-			color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 97)`).toRgbString(),
-		},
-	});
+		type: 'classy-rounded',
+	},
+	backgroundOptions: {
+		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 97)`).toRgbString(),
+	},
+});
 
+onMounted(() => {
 	if (qrCodeEl.value != null) {
 		qrCodeInstance.append(qrCodeEl.value);
 	}
