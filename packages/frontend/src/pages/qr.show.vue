@@ -47,7 +47,7 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import type { Directive } from 'vue';
-import { computed, ref, watch, onMounted, useCssModule, onUnmounted } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
@@ -57,8 +57,6 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@@/js/scroll';
-
-const $style = useCssModule();
 
 const $i = ensureSignin();
 
@@ -166,7 +164,7 @@ function handleOrientationChange(event: DeviceOrientationEvent) {
 
 watch(flip, (newState) => {
 	flipEls.forEach(el => {
-		el.classList.toggle($style.fliped, newState);
+		el.classList.toggle('_qrShowFlipFliped', newState);
 	});
 });
 
@@ -181,10 +179,10 @@ onUnmounted(() => {
 const vFlip = {
 	mounted(el: Element) {
 		flipEls.add(el);
-		el.classList.add($style.flip);
+		el.classList.add('_qrShowFlip');
 	},
 	unmounted(el: Element) {
-		el.classList.remove($style.flip);
+		el.classList.remove('_qrShowFlip');
 		flipEls.delete(el);
 	}
 } as Directive;
@@ -218,15 +216,6 @@ $avatarSize: 58px;
 	flex-direction: column;
 	align-items: center;
 	margin: 0 auto;
-}
-
-.flip {
-	transition: scale rotate 0.3s ease-in;
-}
-
-.fliped {
-	rotate: x 1;
-	scale: y -1;
 }
 
 .qrOuter {
@@ -298,5 +287,20 @@ $avatarSize: 58px;
 .logo {
 	width: 25%;
 	margin: $s3 auto 0;
+}
+</style>
+
+<style lang="scss">
+/*
+ * useCssModuleで$styleを読み込みたかったが、rollupでのunwindが壊れてしまうらしく失敗。
+ * グローバルにクラスを定義することでお茶を濁す。
+ */
+._qrShowFlip {
+	transition: scale rotate 0.3s ease-in;
+}
+
+._qrShowFlipFliped {
+	rotate: x 1;
+	scale: y -1;
 }
 </style>
