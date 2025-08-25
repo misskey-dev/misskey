@@ -115,9 +115,9 @@ watch([qrCodeEl, avatarHsl, url], () => {
 				type: 'linear',
 				rotation: 1, // radian
 				colorStops: [
-					{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
+					{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
 					{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString() },
-					{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
+					{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
 				],
 			},
 			type: 'classy-rounded',
