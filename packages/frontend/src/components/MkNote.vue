@@ -460,14 +460,12 @@ if (!props.mock) {
 	}
 }
 
-function renote(viaKeyboard = false) {
+function renote() {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
-	os.popupMenu(menu, renoteButton.value, {
-		viaKeyboard,
-	});
+	os.popupMenu(menu, renoteButton.value);
 
 	subscribeManuallyToNoteCapture();
 }
