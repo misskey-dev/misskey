@@ -15,11 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:style="{
 				'--MI_SPACER-w': '512px',
 				'--MI_SPACER-max': '14px',
-				'cursor': canShare ? 'pointer' : 'default',
 			}"
 		>
 			<div
 				:class="$style.qrOuter"
+				:style="{
+					'cursor': canShare ? 'pointer' : 'default',
+				}"
 				@click="share"
 			>
 				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
