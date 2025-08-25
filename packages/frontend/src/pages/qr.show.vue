@@ -149,11 +149,12 @@ onUnmounted(() => {
 //#endregion
 
 //#region flip
+const THRESHOLD = -3;
 const flipEls: Set<Element> = new Set();
 const flip = ref(false);
 
 function handleOrientationChange(event: DeviceOrientationEvent) {
-	const isUpsideDown = event.beta ? event.beta < 5 : false;
+	const isUpsideDown = event.beta ? event.beta < THRESHOLD : false;
 	flip.value = isUpsideDown;
 }
 
