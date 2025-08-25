@@ -26,11 +26,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
 			</div>
-			<div :class="$style.user">
-				<MkAvatar v-flip :class="$style.avatar" :user="$i" :indicator="false"/>
+			<div v-flip :class="$style.user">
+				<MkAvatar :class="$style.avatar" :user="$i" :indicator="false"/>
 				<div :class="$style.names">
-					<div v-flip :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
-					<div v-flip :class="$style.name"><MkCondensedLine :minScale="2 / 3">{{ userName($i) }}</MkCondensedLine></div>
+					<div :class="$style.name"><MkCondensedLine :minScale="2 / 3">{{ userName($i) }}</MkCondensedLine></div>
+					<div :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
 				</div>
 			</div>
 			<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion" />
@@ -272,7 +272,7 @@ $avatarSize: 58px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: start;
-	margin: -2px -2px 0 ($avatarSize * 0.3);
+	margin: -2px -2px 0 ($avatarSize * 0.25);
 	padding-right: 16px;
 	max-width: 100%;
 	overflow-x: hidden;
