@@ -190,9 +190,9 @@ const vFlip = {
 </script>
 
 <style lang="scss" module>
-$s1: 16px;
-$s2: 24px;
-$s3: 32px;
+$s1: 14px;
+$s2: 21px;
+$s3: 28px;
 $avatarSize: 58px;
 
 .root {
@@ -267,8 +267,8 @@ $avatarSize: 58px;
 .name {
 	display: inline-block;
 	color: #fff;
-	font-size: 20px;
-	line-height: 24px;
+	font-size: 18px;
+	line-height: 21px;
 	width: fit-content;
 	max-width: 100%;
 	overflow: visible;
@@ -277,8 +277,8 @@ $avatarSize: 58px;
 .username {
 	display: inline-block;
 	color: rgba(255, 255, 255, 0.7);
-	font-size: 14px;
-	line-height: 16px;
+	font-size: 13px;
+	line-height: 15px;
 	width: fit-content;
 	max-width: 100%;
 	overflow: visible;
