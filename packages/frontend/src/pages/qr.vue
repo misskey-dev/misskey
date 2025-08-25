@@ -17,6 +17,7 @@ import { defineAsyncComponent, ref, shallowRef } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
+import MkQrShow from './qr.show.vue';
 
 // router definitionでloginRequiredが設定されているためエラーハンドリングしない
 const $i = ensureSignin();
@@ -24,7 +25,6 @@ const $i = ensureSignin();
 const tab = ref<'read' | 'show'>('show');
 const error = ref<any>(null);
 
-const MkQrShow = defineAsyncComponent(() => import('./qr.show.vue'));
 const MkQrRead = defineAsyncComponent(() => import('./qr.read.vue'));
 
 const headerTabs = [{
