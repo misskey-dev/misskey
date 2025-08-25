@@ -2,14 +2,14 @@ import type { Directive } from 'vue';
 
 let initialized = false;
 let styleEl: HTMLStyleElement | null = null;
-const canUseDeviceOrientation = !window.DeviceOrientationEvent;
+const canUseDeviceOrientation = !!window.DeviceOrientationEvent;
 const className = '_flipOnDeviceOrientation';
 const variableName = `--MI-flip_on_device_orientation_transform`;
 
 function handleOrientationChange(event: DeviceOrientationEvent) {
-	const isUpsideDown = event.beta ? event.beta < -15 : false;
+	const isUpsideDown = event.beta ? event.beta < 5 : false;
 	const transform = isUpsideDown ? 'scale(-1, -1)' : '';
-	window.document.body.style.setProperty(variableName, transform);
+	window.document.documentElement.style.setProperty(variableName, transform);
 }
 
 function registerListener() {

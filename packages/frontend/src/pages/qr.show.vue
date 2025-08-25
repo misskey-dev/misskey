@@ -170,7 +170,6 @@ $avatarSize: 58px;
 .avatar {
 	width: $avatarSize;
 	height: $avatarSize;
-	margin-right: 8px;
 }
 
 .names {
@@ -179,10 +178,12 @@ $avatarSize: 58px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: start;
-	margin-top: -4px;
+	margin: -4px -2px 0 8px;
+	padding-right: 16px;
 	max-width: 100%;
 	overflow-x: hidden;
 	overflow-y: visible;
+	mask-image: linear-gradient(90deg,#000,#000 calc(100% - 16px),#0000);
 }
 
 .name {
@@ -191,11 +192,8 @@ $avatarSize: 58px;
 	font-size: 20px;
 	line-height: 24px;
 	width: fit-content;
-	max-width: calc(100% - 16px);
-	overflow-x: hidden;
-	overflow-y: visible;
-	padding-right: 16px;
-	mask-image: linear-gradient(90deg,#000,#000 calc(100% - 16px),#0000);
+	max-width: 100%;
+	overflow: visible;
 }
 
 .username {
@@ -204,11 +202,8 @@ $avatarSize: 58px;
 	font-size: 14px;
 	line-height: 16px;
 	width: fit-content;
-	max-width: calc(100% - 16px);
-	overflow-x: hidden;
-	overflow-y: visible;
-	padding-right: 16px;
-	mask-image: linear-gradient(90deg,#000,#000 calc(100% - 16px),#0000);
+	max-width: 100%;
+	overflow: visible;
 }
 
 .logo {
