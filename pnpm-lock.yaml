@@ -847,6 +847,9 @@ importers:
       qr-code-styling:
         specifier: 1.9.2
         version: 1.9.2
+      qr-scanner:
+        specifier: 1.4.2
+        version: 1.4.2
       rollup:
         specifier: 4.48.0
         version: 4.48.0
@@ -9514,6 +9517,9 @@ packages:
   qr-code-styling@1.9.2:
     resolution: {integrity: sha512-RgJaZJ1/RrXJ6N0j7a+pdw3zMBmzZU4VN2dtAZf8ZggCfRB5stEQ3IoDNGaNhYY3nnZKYlYSLl5YkfWN5dPutg==}
     engines: {node: '>=18.18.0'}
+
+  qr-scanner@1.4.2:
+    resolution: {integrity: sha512-kV1yQUe2FENvn59tMZW6mOVfpq9mGxGf8l6+EGaXUOd4RBOLg7tRC83OrirM5AtDvZRpdjdlXURsHreAOSPOUw==}
 
   qrcode-generator@1.5.2:
     resolution: {integrity: sha512-pItrW0Z9HnDBnFmgiNrY1uxRdri32Uh9EjNYLPVC2zZ3ZRIIEqBoDgm4DkvDwNNDHTK7FNkmr8zAa77BYc9xNw==}
@@ -21093,6 +21099,10 @@ snapshots:
   qr-code-styling@1.9.2:
     dependencies:
       qrcode-generator: 1.5.2
+
+  qr-scanner@1.4.2:
+    dependencies:
+      '@types/offscreencanvas': 2019.7.0
 
   qrcode-generator@1.5.2: {}
 

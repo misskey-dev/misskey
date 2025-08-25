@@ -64,6 +64,7 @@
 		"photoswipe": "5.4.4",
 		"punycode.js": "2.3.1",
 		"qr-code-styling": "1.9.2",
+		"qr-scanner": "1.4.2",
 		"rollup": "4.48.0",
 		"sanitize-html": "2.17.0",
 		"sass": "1.90.0",

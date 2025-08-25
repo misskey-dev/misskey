@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="rootEl" :class="$style.root" :style="{
 	backgroundColor: bgColor,
-	'--MI-QrShowMinHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing) )`,
+	'--MI-QrShowScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing, 0px) )`,
 }">
 	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5" />
 	<div :class="$style.fg">
@@ -214,7 +214,7 @@ $avatarSize: 58px;
 	margin-top: calc( -1 * var(--MI-stickyTop) );
 	margin-bottom: calc( -1 * var(--MI-stickyBottom) );
 	height: fit-content;
-	min-height: var(--MI-QrShowMinHeight);
+	min-height: var(--MI-QrShowScrollHeight);
 }
 
 .fg {
@@ -237,7 +237,7 @@ $avatarSize: 58px;
 	display: flex;
 	width: 100%;
 	padding: 0 0 $s3;
-	max-height: max(256px, calc((var(--MI-QrShowMinHeight) - var(--MI-stickyTop) - var(--MI-stickyBottom)) * 0.55));
+	max-height: max(256px, calc((var(--MI-QrShowScrollHeight) - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px)) * 0.55));
 }
 
 .qrInner {
