@@ -46,15 +46,18 @@ const uris = ref<string[]>([]);
 const usersSource = new Map<string, misskey.entities.UserDetailed | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
 
-let timer = ref<ReturnType<typeof setTimeout> | null>(null);
+const timer = ref<ReturnType<typeof setTimeout> | null>(null);
 
 function updateUsers() {
 	users.value = uris.value.map(uri => usersSource.get(uri)).filter(u => u) as misskey.entities.UserDetailed[];
+	updateRequired.value = false;
 }
 
-watch([uris, timer], () => {
+const updateRequired = ref(false);
+
+watch(uris, () => {
 	if (timer.value) {
-		console.log('Skip updateUsers because of timer');
+		updateRequired.value = true;
 		return;
 	}
 
@@ -63,6 +66,9 @@ watch([uris, timer], () => {
 	timer.value = setTimeout(() => {
 		console.log('Update users after 3 seconds');
 		timer.value = null;
+		if (updateRequired.value) {
+			updateUsers();
+		}
 	}, 3000);
 });
 
