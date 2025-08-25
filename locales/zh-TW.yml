@@ -1668,7 +1668,6 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "當前的部分設定將會被重設。"
   entrancePageStyle: "入口頁面的樣式"
   showTimelineForVisitor: "顯示時間軸"
-  showActivityiesForVisitor: "顯示活動"
   _userGeneratedContentsVisibilityForVisitor:
     all: "全部公開\n"
     localOnly: "僅公開本地內容，遠端內容則不公開\n"
