@@ -213,7 +213,7 @@ $avatarSize: 58px;
 	box-sizing: border-box;
 	margin-top: calc( -1 * var(--MI-stickyTop) );
 	margin-bottom: calc( -1 * var(--MI-stickyBottom) );
-	height: 100%;
+	height: fit-content;
 	min-height: var(--MI-QrShowMinHeight);
 }
 
