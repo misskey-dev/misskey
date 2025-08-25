@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         submodules: true
     - name: Setup pnpm
@@ -89,7 +89,7 @@ jobs:
           MEILI_ENV: 'development'
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         submodules: true
     # https://github.com/cypress-io/cypress-docker-images/issues/150

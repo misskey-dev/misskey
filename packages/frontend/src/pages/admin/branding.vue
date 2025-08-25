@@ -23,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['activity', 'activities']">
-					<MkSwitch v-model="showActivityiesForVisitor">
-						<template #label><SearchLabel>{{ i18n.ts._serverSettings.showActivityiesForVisitor }}</SearchLabel></template>
+					<MkSwitch v-model="showActivitiesForVisitor">
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.showActivitiesForVisitor }}</SearchLabel></template>
 					</MkSwitch>
 				</SearchMarker>
 
@@ -168,7 +168,7 @@ const meta = await misskeyApi('admin/meta');
 
 const entrancePageStyle = ref(meta.clientOptions.entrancePageStyle ?? 'classic');
 const showTimelineForVisitor = ref(meta.clientOptions.showTimelineForVisitor ?? true);
-const showActivityiesForVisitor = ref(meta.clientOptions.showActivityiesForVisitor ?? true);
+const showActivitiesForVisitor = ref(meta.clientOptions.showActivitiesForVisitor ?? true);
 const iconUrl = ref(meta.iconUrl);
 const app192IconUrl = ref(meta.app192IconUrl);
 const app512IconUrl = ref(meta.app512IconUrl);
@@ -189,7 +189,7 @@ function save() {
 		clientOptions: {
 			entrancePageStyle: entrancePageStyle.value,
 			showTimelineForVisitor: showTimelineForVisitor.value,
-			showActivityiesForVisitor: showActivityiesForVisitor.value,
+			showActivitiesForVisitor: showActivitiesForVisitor.value,
 		},
 		iconUrl: iconUrl.value,
 		app192IconUrl: app192IconUrl.value,

@@ -363,7 +363,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 }
 
-function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder | null) {
+function onUploadRequested(files: File[], folder?: Misskey.entities.DriveFolder | null) {
 	os.launchUploader(files, {
 		folderId: folder?.id ?? null,
 	});

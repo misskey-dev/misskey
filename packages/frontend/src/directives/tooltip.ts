@@ -57,7 +57,7 @@ export default {
 				text: self.text,
 				asMfm: binding.modifiers.mfm,
 				direction: binding.modifiers.left ? 'left' : binding.modifiers.right ? 'right' : binding.modifiers.top ? 'top' : binding.modifiers.bottom ? 'bottom' : 'top',
-				targetElement: el,
+				anchorElement: el,
 			}, {
 				closed: () => dispose(),
 			});
