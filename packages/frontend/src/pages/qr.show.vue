@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				'--MI_SPACER-max': '14px',
 				'cursor': canShare ? 'pointer' : 'default',
 			}"
-			@click="share"
 		>
 			<div
 				:class="$style.qrOuter"
+				@click="share"
 			>
 				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
 			</div>
@@ -31,7 +31,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-flip :class="$style.name"><MkCondensedLine :minScale="2 / 3">{{ userName($i) }}</MkCondensedLine></div>
 				</div>
 			</div>
-			<img v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
+			<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion" />
+			<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" />
 		</div>
 	</div>
 </div>
@@ -150,6 +151,8 @@ onUnmounted(() => {
 
 //#region flip
 const THRESHOLD = -3;
+// @ts-ignore
+const deviceMotionPermissionNeeded = window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function';
 const flipEls: Set<Element> = new Set();
 const flip = ref(false);
 
@@ -163,6 +166,18 @@ watch(flip, (newState) => {
 		el.classList.toggle('_qrShowFlipFliped', newState);
 	});
 });
+
+function requestDeviceMotion() {
+	if (!deviceMotionPermissionNeeded) return;
+	// @ts-ignore
+	window.DeviceMotionEvent.requestPermission()
+		.then((response: string) => {
+			if (response === 'granted') {
+				window.addEventListener('deviceorientation', handleOrientationChange);
+			}
+		})
+		.catch(console.error);
+}
 
 onMounted(() => {
 	window.addEventListener('deviceorientation', handleOrientationChange);
