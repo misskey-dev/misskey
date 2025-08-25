@@ -405,7 +405,7 @@ useTooltip(renoteButton, async (showing) => {
 		showing,
 		users,
 		count: appearNote.renoteCount,
-		targetElement: renoteButton.value,
+		anchorElement: renoteButton.value,
 	}, {
 		closed: () => dispose(),
 	});
@@ -428,7 +428,7 @@ if (appearNote.reactionAcceptance === 'likeOnly') {
 			reaction: '❤️',
 			users,
 			count: $appearNote.reactionCount,
-			targetElement: reactButton.value!,
+			anchorElement: reactButton.value!,
 		}, {
 			closed: () => dispose(),
 		});

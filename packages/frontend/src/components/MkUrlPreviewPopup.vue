@@ -20,7 +20,7 @@ import { prefer } from '@/preferences.js';
 const props = defineProps<{
 	showing: boolean;
 	url: string;
-	anchorEl: HTMLElement;
+	anchorElement: HTMLElement;
 }>();
 
 const emit = defineEmits<{
@@ -32,9 +32,9 @@ const top = ref(0);
 const left = ref(0);
 
 onMounted(() => {
-	const rect = props.anchorEl.getBoundingClientRect();
-	const x = Math.max((rect.left + (props.anchorEl.offsetWidth / 2)) - (300 / 2), 6) + window.scrollX;
-	const y = rect.top + props.anchorEl.offsetHeight + window.scrollY;
+	const rect = props.anchorElement.getBoundingClientRect();
+	const x = Math.max((rect.left + (props.anchorElement.offsetWidth / 2)) - (300 / 2), 6) + window.scrollX;
+	const y = rect.top + props.anchorElement.offsetHeight + window.scrollY;
 
 	top.value = y;
 	left.value = x;
