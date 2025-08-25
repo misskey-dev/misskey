@@ -296,11 +296,11 @@ $avatarSize: 58px;
  * グローバルにクラスを定義することでお茶を濁す。
  */
 ._qrShowFlip {
-	transition: scale rotate 0.3s ease-in;
+	transition: rotate .3s linear, scale .3s .15s step-start;
 }
 
 ._qrShowFlipFliped {
-	rotate: x 1;
-	scale: y -1;
+	scale: -1 1;
+  rotate: x 180deg;
 }
 </style>
