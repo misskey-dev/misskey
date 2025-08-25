@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="botProtectionForm.savedState.provider === 'turnstile'" #suffix>Turnstile</template>
 		<template v-else-if="botProtectionForm.savedState.provider === 'testcaptcha'" #suffix>testCaptcha</template>
 		<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
-		<template #footer>
+		<template v-if="botProtectionForm.modified.value" #footer>
 			<MkFormFooter :canSaving="canSaving" :form="botProtectionForm"/>
 		</template>
 
