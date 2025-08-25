@@ -13,10 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" :style="{
 		'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
 	}">
-		<div :class="$style.listBig">
+		<div class="_gaps" style="padding-bottom: var(--MI-margin);">
 			<MkUserInfo v-for="user in users.slice(0, 5)" :key="user.id" :user="user"/>
 		</div>
-		<div :class="$style.listMini">
+		<div class="_gaps_s">
 			<MkA v-for="user in users.slice(5)" :key="user.id" :to="userPage(user)">
 				<MkUserCardMini :user="user" />
 			</MkA>
