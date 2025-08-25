@@ -1668,7 +1668,6 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Algunas configuraciones actuales se restablecerán"
   entrancePageStyle: "Estilo de la página de inicio"
   showTimelineForVisitor: "Mostrar la línea de tiempo"
-  showActivityiesForVisitor: "Mostrar actividades"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Todo es público."
     localOnly: "Sólo se publica el contenido local, el remoto se mantiene privado"
