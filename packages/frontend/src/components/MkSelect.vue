@@ -79,7 +79,7 @@ import * as os from '@/os.js';
 // あと型推論と相性が良くない
 
 const props = defineProps<{
-	modelValue: string;
+	modelValue: ValuesOfItems<T>;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
