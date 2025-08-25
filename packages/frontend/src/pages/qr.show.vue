@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="[$style.content, '_spacer']"
 			:style="{
 				'--MI_SPACER-w': '512px',
-				'--MI_SPACER-max': '16px',
+				'--MI_SPACER-max': '14px',
 				'cursor': canShare ? 'pointer' : 'default',
 			}"
 			@click="share"
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				:class="$style.qrOuter"
 				:style="{
-					maxHeight: container ? `max(256px, ${scrollHeight * 0.5}px)` : `max(256px, 50dvh)`,
+					maxHeight: container ? `max(256px, ${scrollHeight * 0.45}px)` : `max(256px, 45dvh)`,
 				}"
 			>
 				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
@@ -221,7 +221,7 @@ $avatarSize: 58px;
 .qrOuter {
 	display: flex;
 	width: 100%;
-	padding: $s3 0;
+	padding: $s1 0 $s3;
 }
 
 .qrInner {
