@@ -99,6 +99,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableFolderPageView">
 							<template #label>Enable folder page view</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableHapticFeedback">
+							<template #label>Enable haptic feedback</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -173,6 +176,7 @@ const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
+const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
 
 watch(skipNoteRender, () => {
 	suggestReload();

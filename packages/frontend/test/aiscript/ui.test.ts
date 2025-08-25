@@ -320,7 +320,7 @@ describe('AiScript UI API', () => {
 			const { root, get, outputs } = await exe(`
 				let text_input = Ui:C:textInput({
 					onInput: print
-					"default": 'a'
+					default: 'a'
 					label: 'b'
 					caption: 'c'
 				}, 'id')
@@ -361,7 +361,7 @@ describe('AiScript UI API', () => {
 			const { root, get, outputs } = await exe(`
 				let textarea = Ui:C:textarea({
 					onInput: print
-					"default": 'a'
+					default: 'a'
 					label: 'b'
 					caption: 'c'
 				}, 'id')
@@ -402,7 +402,7 @@ describe('AiScript UI API', () => {
 			const { root, get, outputs } = await exe(`
 				let number_input = Ui:C:numberInput({
 					onInput: print
-					"default": 1
+					default: 1
 					label: 'a'
 					caption: 'b'
 				}, 'id')
@@ -564,7 +564,7 @@ describe('AiScript UI API', () => {
 			const { root, get, outputs } = await exe(`
 				let switch = Ui:C:switch({
 					onChange: print
-					"default": false
+					default: false
 					label: 'a'
 					caption: 'b'
 				}, 'id')
@@ -609,7 +609,7 @@ describe('AiScript UI API', () => {
 						{ text: 'B', value: 'b' }
 					]
 					onChange: print
-					"default": 'a'
+					default: 'a'
 					label: 'c'
 					caption: 'd'
 				}, 'id')
