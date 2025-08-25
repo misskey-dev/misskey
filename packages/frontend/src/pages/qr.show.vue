@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-flip :class="$style.name"><MkCondensedLine :minScale="2 / 3">{{ userName($i) }}</MkCondensedLine></div>
 				</div>
 			</div>
-			<img :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
+			<img v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
 		</div>
 	</div>
 </div>
@@ -91,7 +91,7 @@ function share() {
 	});
 }
 
-watch([qrCodeEl, avatarHsl, url], () => {
+onMounted(() => {
 	const qrCodeInstance = new QRCodeStyling({
 		width: 512,
 		height: 512,
@@ -117,7 +117,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 				rotation: 1, // radian
 				colorStops: [
 					{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
-					{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString() },
+					{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 20)`).toRgbString() },
 					{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
 				],
 			},
@@ -131,7 +131,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 	if (qrCodeEl.value != null) {
 		qrCodeInstance.append(qrCodeEl.value);
 	}
-}, { immediate: true });
+});
 
 //#region scroll height
 function checkScrollHeight() {
@@ -195,6 +195,7 @@ const vFlip = {
 $s1: 16px;
 $s2: 24px;
 $s3: 32px;
+$avatarSize: 58px;
 
 .root {
 	position: relative;
@@ -244,8 +245,6 @@ $s3: 32px;
 		object-fit: contain;
 	}
 }
-
-$avatarSize: 58px;
 
 .user {
 	display: flex;
