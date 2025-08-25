@@ -106,7 +106,7 @@ watch([qrCodeEl, avatarHsl, url], () => {
 		imageOptions: {
 			hideBackgroundDots: true,
 			imageSize: 0.3,
-			margin: 8,
+			margin: 12,
 			crossOrigin: 'anonymous',
 		},
 		dotsOptions: {
