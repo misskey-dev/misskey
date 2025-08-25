@@ -47,7 +47,7 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import type { Directive } from 'vue';
-import { computed, ref, watch, onMounted, useCssModule, onUnmounted, type ComponentPublicInstance, nextTick } from 'vue';
+import { computed, ref, watch, onMounted, useCssModule, onUnmounted } from 'vue';
 import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
