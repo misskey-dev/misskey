@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5" />
 	<div :class="$style.fg">
 		<div
-			:class="$style.content" class="_spacer"
+			:class="[$style.content, '_spacer']"
 			@click="share"
 			:style="{
 				'--MI_SPACER-w': '512px',
