@@ -178,7 +178,7 @@ $avatarSize: 58px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: start;
-	margin: -4px -2px 0 8px;
+	margin: -4px -2px 0 ($avatarSize / 4);
 	padding-right: 16px;
 	max-width: 100%;
 	overflow-x: hidden;
