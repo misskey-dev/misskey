@@ -1668,7 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "현재 일부 설정은 리셋됩니다."
   entrancePageStyle: "입구 페이지의 스타일"
   showTimelineForVisitor: "타임라인 표시"
-  showActivityiesForVisitor: "활동 표시"
+  showActivitiesForVisitor: "액티비티 표시하기"
   _userGeneratedContentsVisibilityForVisitor:
     all: "모두 공개"
     localOnly: "로컬 콘텐츠만 공개하고 리모트 콘텐츠는 비공개"
