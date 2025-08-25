@@ -1668,6 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Algunes configuracions actuals seran restablertes."
   entrancePageStyle: "Estil de la pàgina d'inici"
   showTimelineForVisitor: "Mostrar la línia de temps"
+  showActivitiesForVisitor: "Mostrar activitat"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Tot obert al públic "
     localOnly: "Només es publiquen els continguts locals, el contingut remot es manté privat"
