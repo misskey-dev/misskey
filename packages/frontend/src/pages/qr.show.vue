@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-flip :class="$style.name"><MkCondensedLine :minScale="2 / 3">{{ userName($i) }}</MkCondensedLine></div>
 				</div>
 			</div>
-			<img v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
+			<img :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
 		</div>
 	</div>
 </div>
