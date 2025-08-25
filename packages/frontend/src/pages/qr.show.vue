@@ -88,9 +88,9 @@ function share() {
 }
 
 const qrCodeInstance = new QRCodeStyling({
-	width: 512,
-	height: 512,
-	margin: 40,
+	width: 600,
+	height: 600,
+	margin: 36,
 	type: 'canvas',
 	data: url.value,
 	image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
@@ -102,7 +102,7 @@ const qrCodeInstance = new QRCodeStyling({
 	imageOptions: {
 		hideBackgroundDots: true,
 		imageSize: 0.3,
-		margin: 12,
+		margin: 16,
 		crossOrigin: 'anonymous',
 	},
 	dotsOptions: {
@@ -272,7 +272,7 @@ $avatarSize: 58px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: start;
-	margin: -4px -2px 0 ($avatarSize * 0.3);
+	margin: -2px -2px 0 ($avatarSize * 0.3);
 	padding-right: 16px;
 	max-width: 100%;
 	overflow-x: hidden;
