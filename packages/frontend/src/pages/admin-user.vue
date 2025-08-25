@@ -260,11 +260,20 @@ const isSystem = ref(user.value.host == null && user.value.username.includes('.'
 const moderationNote = ref(info.value.moderationNote);
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
+	computedParams: computed(() => ({
+		userId: props.userId,
+	})),
+}));
+
+const announcementsStatus = ref<'active' | 'archived'>('active');
+
+const announcementsPaginator = markRaw(new Paginator('admin/announcements/list', {
 	limit: 10,
 	computedParams: computed(() => ({
 		userId: props.userId,
 		status: announcementsStatus.value,
 	})),
+}));
 const expandedRoleIds = ref<(typeof info.value.roles[number]['id'])[]>([]);
 
 function _fetch_() {
