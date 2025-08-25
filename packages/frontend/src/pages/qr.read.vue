@@ -111,7 +111,7 @@ onMounted(() => {
 		processResult,
 		{
 			onDecodeError(err) {
-				if (err === 'No QR code found') return;
+				if (err.toString().includes('No QR code found')) return;
 				if (alertLock.value) return;
 				alertLock.value = true;
 				os.alert({
