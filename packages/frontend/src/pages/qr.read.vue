@@ -46,7 +46,7 @@ const uris = ref<string[]>([]);
 const usersSource = new Map<string, misskey.entities.UserDetailed | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
 
-const timer = ref<ReturnType<typeof window.setTimeout> | null>(null);
+const timer = ref<number | null>(null);
 
 function updateUsers() {
 	users.value = uris.value.map(uri => usersSource.get(uri)).filter(u => u) as misskey.entities.UserDetailed[];
@@ -69,7 +69,7 @@ watch(uris, () => {
 		if (updateRequired.value) {
 			updateUsers();
 		}
-	}, 3000);
+	}, 3000) as number;
 });
 
 async function processResult(result: QrScanner.ScanResult) {
