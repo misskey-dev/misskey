@@ -6,9 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="rootEl" :class="$style.root" :style="{
 	backgroundColor: bgColor,
-	minHeight: container ?
-		`calc( ${scrollHeight}px - var(--MI-stickyTop) - var(--MI-stickyBottom) )`
-		: `calc( 100dvh - var(--MI-stickyTop) - var(--MI-stickyBottom) )`,
+	'--MI-QrShowMinHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing) )`,
 }">
 	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5" />
 	<div :class="$style.fg">
@@ -23,9 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<div
 				:class="$style.qrOuter"
-				:style="{
-					maxHeight: container ? `max(256px, ${scrollHeight * 0.45}px)` : `max(256px, 45dvh)`,
-				}"
 			>
 				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
 			</div>
@@ -47,7 +42,7 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import type { Directive } from 'vue';
-import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
+import { computed, ref, shallowRef, watch, onMounted, onUnmounted } from 'vue';
 import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
@@ -60,7 +55,7 @@ import { getScrollContainer } from '@@/js/scroll';
 
 const $i = ensureSignin();
 
-const container = ref<HTMLElement | null>(null);
+const scrollContainer = shallowRef<HTMLElement | null>(null);
 const rootEl = ref<HTMLDivElement | null>(null);
 const scrollHeight = ref(window.innerHeight);
 
@@ -133,18 +128,18 @@ onMounted(() => {
 
 //#region scroll height
 function checkScrollHeight() {
-	scrollHeight.value = container.value ? container.value.clientHeight : window.innerHeight;
+	scrollHeight.value = scrollContainer.value ? scrollContainer.value.clientHeight : window.innerHeight;
 }
 
 let ro: ResizeObserver | undefined;
 
 onMounted(() => {
-	container.value = getScrollContainer(rootEl.value);
+	scrollContainer.value = getScrollContainer(rootEl.value);
 	checkScrollHeight();
 
-	if (container.value) {
+	if (scrollContainer.value) {
 		ro = new ResizeObserver(checkScrollHeight);
-		ro.observe(container.value);
+		ro.observe(scrollContainer.value);
 	}
 });
 
@@ -197,16 +192,17 @@ $avatarSize: 58px;
 
 .root {
 	position: relative;
+	box-sizing: border-box;
 	margin-top: calc( -1 * var(--MI-stickyTop) );
 	margin-bottom: calc( -1 * var(--MI-stickyBottom) );
-  padding-top: var(--MI-stickyTop);
-	padding-bottom: var(--MI-stickyBottom);
 	height: 100%;
+	min-height: var(--MI-QrShowMinHeight);
 }
 
 .fg {
 	position: sticky;
-	top: var(--MI-stickyTop);
+  padding-top: var(--MI-stickyTop);
+	padding-bottom: var(--MI-stickyBottom);
 	width: 100%;
 	height: 100%;
 }
@@ -216,12 +212,14 @@ $avatarSize: 58px;
 	flex-direction: column;
 	align-items: center;
 	margin: 0 auto;
+	padding-top: $s1;
 }
 
 .qrOuter {
 	display: flex;
 	width: 100%;
-	padding: $s1 0 $s3;
+	padding: 0 0 $s3;
+	max-height: max(256px, calc((var(--MI-QrShowMinHeight) - var(--MI-stickyTop) - var(--MI-stickyBottom)) * 0.55));
 }
 
 .qrInner {
