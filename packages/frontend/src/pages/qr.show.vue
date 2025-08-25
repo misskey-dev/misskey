@@ -153,7 +153,7 @@ onUnmounted(() => {
 
 //#region flip
 const THRESHOLD = -3;
-// @ts-ignore
+// @ts-expect-error TS(2339)
 const deviceMotionPermissionNeeded = window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function';
 const flipEls: Set<Element> = new Set();
 const flip = ref(false);
@@ -171,7 +171,7 @@ watch(flip, (newState) => {
 
 function requestDeviceMotion() {
 	if (!deviceMotionPermissionNeeded) return;
-	// @ts-ignore
+	// @ts-expect-error TS(2339)
 	window.DeviceMotionEvent.requestPermission()
 		.then((response: string) => {
 			if (response === 'granted') {

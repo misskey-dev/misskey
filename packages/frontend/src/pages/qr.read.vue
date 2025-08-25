@@ -46,7 +46,7 @@ const uris = ref<string[]>([]);
 const usersSource = new Map<string, misskey.entities.UserDetailed | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
 
-const timer = ref<ReturnType<typeof setTimeout> | null>(null);
+const timer = ref<ReturnType<typeof window.setTimeout> | null>(null);
 
 function updateUsers() {
 	users.value = uris.value.map(uri => usersSource.get(uri)).filter(u => u) as misskey.entities.UserDetailed[];
@@ -63,7 +63,7 @@ watch(uris, () => {
 
 	updateUsers();
 
-	timer.value = setTimeout(() => {
+	timer.value = window.setTimeout(() => {
 		console.log('Update users after 3 seconds');
 		timer.value = null;
 		if (updateRequired.value) {
@@ -102,7 +102,7 @@ async function processResult(result: QrScanner.ScanResult) {
 const alertLock = ref(false);
 
 onMounted(() => {
-	const videoEl = document.querySelector('video');
+	const videoEl = window.document.querySelector('video');
 
 	if (!videoEl) {
 		os.alert({
@@ -135,7 +135,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	if (timer.value) {
-		clearTimeout(timer.value);
+		window.clearTimeout(timer.value);
 		timer.value = null;
 	}
 
