@@ -14,12 +14,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.fg">
 		<div
 			:class="[$style.content, '_spacer']"
-			@click="share"
 			:style="{
 				'--MI_SPACER-w': '512px',
 				'--MI_SPACER-max': '16px',
 				'cursor': canShare ? 'pointer' : 'default',
 			}"
+			@click="share"
 		>
 			<div
 				:class="$style.qrOuter"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					maxHeight: container ? `max(256px, ${scrollHeight * 0.5}px)` : `max(256px, 50dvh)`,
 				}"
 			>
-				<div v-flip ref="qrCodeEl" :class="$style.qrInner"></div>
+				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
 			</div>
 			<div :class="$style.user">
 				<MkAvatar v-flip :class="$style.avatar" :user="$i" :indicator="false"/>
@@ -46,7 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
-import { computed, ref, watch, onMounted, type Directive, useCssModule, onUnmounted, type ComponentPublicInstance, nextTick } from 'vue';
+import type { Directive } from 'vue';
+import { computed, ref, watch, onMounted, useCssModule, onUnmounted, type ComponentPublicInstance, nextTick } from 'vue';
 import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
