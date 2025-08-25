@@ -16,7 +16,6 @@ import clickAnime from './click-anime.js';
 import panel from './panel.js';
 import adaptiveBorder from './adaptive-border.js';
 import adaptiveBg from './adaptive-bg.js';
-import flipOnDeviceOrientation from './flip-on-device-orientation.js';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(directives)) {
@@ -37,5 +36,4 @@ export const directives = {
 	'panel': panel,
 	'adaptive-border': adaptiveBorder,
 	'adaptive-bg': adaptiveBg,
-	'flip-on-device-orientation': flipOnDeviceOrientation,
 };
