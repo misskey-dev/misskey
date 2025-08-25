@@ -256,7 +256,7 @@ $avatarSize: 58px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: start;
-	margin: -4px -2px 0 ($avatarSize * 0.25);
+	margin: -4px -2px 0 ($avatarSize * 0.3);
 	padding-right: 16px;
 	max-width: 100%;
 	overflow-x: hidden;
