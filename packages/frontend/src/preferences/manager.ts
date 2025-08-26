@@ -109,10 +109,11 @@ export function definePreferences<T extends Record<string, unknown>>(x: {
 }
 
 export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
-	if (typeof PREF_DEF[k].default === 'function') { // factory
-		return PREF_DEF[k].default();
+	const _default = PREF_DEF[k as string].default;
+	if (typeof _default === 'function') { // factory
+		return _default();
 	} else {
-		return PREF_DEF[k].default;
+		return _default;
 	}
 }
 
