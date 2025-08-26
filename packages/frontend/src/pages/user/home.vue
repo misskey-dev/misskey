@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkFukidashi>
 						</div>
 						<div v-if="user.roles.length > 0" class="roles">
-							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color ?? '' }">
 								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
 									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
 									{{ role.name }}
@@ -249,7 +249,7 @@ const style = computed(() => {
 });
 
 const age = computed(() => {
-	return calcAge(props.user.birthday);
+	return props.user.birthday ? calcAge(props.user.birthday) : NaN;
 });
 
 function menu(ev: MouseEvent) {
