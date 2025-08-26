@@ -59,7 +59,7 @@ import { prefer } from '@/preferences.js';
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
-	rootEl?: HTMLElement;
+	rootEl?: HTMLElement | null;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });

@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-if="items.length > 0" class="_gaps">
 				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/my/lists/${ list.id }`">
-					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }})</span></div>
-					<MkAvatars :userIds="list.userIds" :limit="10"/>
+					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.tsx.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }})</span></div>
+					<MkAvatars :userIds="list.userIds!" :limit="10"/>
 				</MkA>
 			</div>
 		</div>
@@ -40,20 +40,20 @@ const $i = ensureSignin();
 
 const items = computed(() => userListsCache.value.value ?? []);
 
-function fetch() {
+function _fetch_() {
 	userListsCache.fetch();
 }
 
-fetch();
+_fetch_();
 
 async function create() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.enterListName,
 	});
-	if (canceled) return;
+	if (canceled || name == null) return;
 	await os.apiWithDialog('users/lists/create', { name: name });
 	userListsCache.delete();
-	fetch();
+	_fetch_();
 }
 
 const headerActions = computed(() => [{
@@ -62,7 +62,7 @@ const headerActions = computed(() => [{
 	text: i18n.ts.reload,
 	handler: () => {
 		userListsCache.delete();
-		fetch();
+		_fetch_();
 	},
 }]);
 
@@ -74,7 +74,7 @@ definePage(() => ({
 }));
 
 onActivated(() => {
-	fetch();
+	_fetch_();
 });
 </script>
 

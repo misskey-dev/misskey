@@ -61,7 +61,7 @@ const event_reaction = ref(true);
 const event_mention = ref(true);
 
 async function create(): Promise<void> {
-	const events = [];
+	const events: string[] = [];
 	if (event_follow.value) events.push('follow');
 	if (event_followed.value) events.push('followed');
 	if (event_note.value) events.push('note');

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!--<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i></MkButton>-->
 		</div>
 
-		<MkUserCardMini v-for="x in accounts" :key="x[0] + x[1].id" :user="x[1]" :class="$style.user" @click.prevent="menu(x[0], x[1], $event)"/>
+		<MkUserCardMini v-for="x in accounts" :key="x[0] + x[1].id" :user="x[1]" :class="$style.user" @click.prevent="showMenu(x[0], x[1], $event)"/>
 	</div>
 </SearchMarker>
 </template>
@@ -36,7 +36,7 @@ function refreshAllAccounts() {
 	// TODO
 }
 
-function menu(host: string, account: Misskey.entities.UserDetailed, ev: MouseEvent) {
+function showMenu(host: string, account: Misskey.entities.UserDetailed, ev: MouseEvent) {
 	let menu: MenuItem[];
 
 	menu = [{
