@@ -52,7 +52,7 @@ export async function lookupUserByEmail() {
 		const user = await os.apiWithDialog('admin/accounts/find-by-email', { email: result });
 
 		os.pageWindow(`/admin/user/${user.id}`);
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'USER_NOT_FOUND') {
 			os.alert({
 				type: 'error',

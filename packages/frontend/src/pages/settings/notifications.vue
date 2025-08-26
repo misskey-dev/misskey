@@ -43,9 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSection>
 		<FormSection>
 			<div class="_gaps_s">
-				<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-				<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
-				<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
+				<MkButton @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</MkButton>
+				<MkButton @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</MkButton>
+				<MkButton @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</MkButton>
 			</div>
 		</FormSection>
 		<FormSection>
@@ -76,6 +76,7 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -96,7 +97,7 @@ const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadM
 const userLists = await misskeyApi('users/lists/list');
 
 async function readAllNotifications() {
-	await os.apiWithDialog('notifications/mark-all-as-read');
+	await os.apiWithDialog('notifications/mark-all-as-read', {});
 }
 
 async function updateReceiveConfig(type: typeof notificationTypes[number], value: NotificationConfig) {
@@ -134,7 +135,7 @@ async function flushNotification() {
 
 	if (canceled) return;
 
-	os.apiWithDialog('notifications/flush');
+	os.apiWithDialog('notifications/flush', {});
 }
 
 const headerActions = computed(() => []);

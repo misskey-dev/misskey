@@ -39,7 +39,7 @@ export async function getNoteClipMenu(props: {
 		}
 	}
 
-	const appearNote = getAppearNote(props.note);
+	const appearNote = getAppearNote(props.note) ?? props.note;
 
 	const clips = await clipsCache.fetch();
 	const menu: MenuItem[] = [...clips.map(clip => ({

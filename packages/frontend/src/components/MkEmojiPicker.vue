@@ -152,7 +152,7 @@ const props = withDefaults(defineProps<{
 	asDrawer?: boolean;
 	asWindow?: boolean;
 	asReactionPicker?: boolean; // 今は使われてないが将来的に使いそう
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 }>(), {
 	showPinned: true,
 });
