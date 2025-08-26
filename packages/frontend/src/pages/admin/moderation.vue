@@ -25,11 +25,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['ugc', 'content', 'visibility', 'visitor', 'guest']">
-					<MkSelect v-model="ugcVisibilityForVisitor" @update:modelValue="onChange_ugcVisibilityForVisitor">
+					<MkSelect
+						v-model="ugcVisibilityForVisitor" :items="[{
+							value: 'all',
+							label: i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all,
+						}, {
+							value: 'local',
+							label: i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly + ' (' + i18n.ts.recommended + ')',
+						}, {
+							value: 'none',
+							label: i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none,
+						}] as const" @update:modelValue="onChange_ugcVisibilityForVisitor"
+					>
 						<template #label><SearchLabel>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor }}</SearchLabel></template>
-						<option value="all">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all }}</option>
-						<option value="local">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly }} ({{ i18n.ts.recommended }})</option>
-						<option value="none">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none }}</option>
 						<template #caption>
 							<div><SearchText>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description }}</SearchText></div>
 							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> <SearchText>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description2 }}</SearchText></div>
@@ -158,6 +166,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XServerRules from './server-rules.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -212,7 +221,7 @@ function onChange_emailRequiredForSignup(value: boolean) {
 	});
 }
 
-function onChange_ugcVisibilityForVisitor(value: string) {
+function onChange_ugcVisibilityForVisitor(value: Misskey.entities.AdminUpdateMetaRequest['ugcVisibilityForVisitor']) {
 	os.apiWithDialog('admin/update-meta', {
 		ugcVisibilityForVisitor: value,
 	}).then(() => {
