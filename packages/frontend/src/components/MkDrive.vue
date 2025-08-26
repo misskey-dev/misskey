@@ -293,7 +293,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent) {
+function onDrop(ev: DragEvent): void | boolean {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;

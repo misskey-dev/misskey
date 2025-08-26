@@ -39,17 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 export type Tab = {
 	key: string;
 	onClick?: (ev: MouseEvent) => void;
-} & (
-	| {
-		iconOnly?: false;
-		title: string;
-		icon?: string;
-	}
-	| {
-		iconOnly: true;
-		icon: string;
-	}
-);
+	iconOnly?: boolean;
+	title: string;
+	icon?: string;
+};
 </script>
 
 <script lang="ts" setup>
