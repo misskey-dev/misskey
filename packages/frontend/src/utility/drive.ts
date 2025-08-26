@@ -233,7 +233,7 @@ function select(anchorElement: HTMLElement | EventTarget | null, label: string |
 		os.popupMenu([label ? {
 			text: label,
 			type: 'label',
-		} : undefined, {
+		} : null, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
 			action: () => chooseFileFromPcAndUpload({ multiple, features }).then(files => res(files)),
