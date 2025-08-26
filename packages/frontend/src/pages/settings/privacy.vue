@@ -160,10 +160,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
-								<MkSelect :modelValue="makeNotesHiddenBefore_type" @update:modelValue="makeNotesHiddenBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null">
-									<option :value="null">{{ i18n.ts.none }}</option>
-									<option value="relative">{{ i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod }}</option>
-									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
+								<MkSelect
+									:items="[{
+										value: null,
+										label: i18n.ts.none
+									}, {
+										value: 'relative',
+										label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod
+									}, {
+										value: 'absolute',
+										label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime
+									}] as const" :modelValue="makeNotesHiddenBefore_type" @update:modelValue="makeNotesHiddenBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null"
+								>
 								</MkSelect>
 
 								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore_selection">
@@ -262,7 +270,7 @@ const makeNotesFollowersOnlyBefore_presets = [
 const makeNotesFollowersOnlyBefore_isCustomMode = ref(
 	makeNotesFollowersOnlyBefore.value != null &&
 	makeNotesFollowersOnlyBefore.value < 0 &&
-	!makeNotesFollowersOnlyBefore_presets.some((preset) => preset.value === makeNotesFollowersOnlyBefore.value)
+	!makeNotesFollowersOnlyBefore_presets.some((preset) => preset.value === makeNotesFollowersOnlyBefore.value),
 );
 
 const makeNotesFollowersOnlyBefore_selection = computed({
@@ -270,14 +278,14 @@ const makeNotesFollowersOnlyBefore_selection = computed({
 	set(value) {
 		makeNotesFollowersOnlyBefore_isCustomMode.value = value === 'custom';
 		if (value !== 'custom') makeNotesFollowersOnlyBefore.value = value;
-	}
+	},
 });
 
 const makeNotesFollowersOnlyBefore_customMonths = computed({
 	get: () => makeNotesFollowersOnlyBefore.value ? Math.abs(makeNotesFollowersOnlyBefore.value) / (30 * 24 * 60 * 60) : null,
 	set(value) {
 		if (value != null && value > 0) makeNotesFollowersOnlyBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
-	}
+	},
 });
 
 const makeNotesHiddenBefore_type = computed(() => {
@@ -303,7 +311,7 @@ const makeNotesHiddenBefore_presets = [
 const makeNotesHiddenBefore_isCustomMode = ref(
 	makeNotesHiddenBefore.value != null &&
 	makeNotesHiddenBefore.value < 0 &&
-	!makeNotesHiddenBefore_presets.some((preset) => preset.value === makeNotesHiddenBefore.value)
+	!makeNotesHiddenBefore_presets.some((preset) => preset.value === makeNotesHiddenBefore.value),
 );
 
 const makeNotesHiddenBefore_selection = computed({
@@ -311,14 +319,14 @@ const makeNotesHiddenBefore_selection = computed({
 	set(value) {
 		makeNotesHiddenBefore_isCustomMode.value = value === 'custom';
 		if (value !== 'custom') makeNotesHiddenBefore.value = value;
-	}
+	},
 });
 
 const makeNotesHiddenBefore_customMonths = computed({
 	get: () => makeNotesHiddenBefore.value ? Math.abs(makeNotesHiddenBefore.value) / (30 * 24 * 60 * 60) : null,
 	set(value) {
 		if (value != null && value > 0) makeNotesHiddenBefore.value = -Math.abs(Math.floor(Number(value))) * 30 * 24 * 60 * 60;
-	}
+	},
 });
 
 watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
