@@ -23,6 +23,7 @@ export type Acct = {
 
 declare namespace acct {
     export {
+        correctAcct,
         parse,
         toString_2 as toString,
         Acct
@@ -1228,6 +1229,9 @@ type ClipsUpdateRequest = operations['clips___update']['requestBody']['content']
 
 // @public (undocumented)
 type ClipsUpdateResponse = operations['clips___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+function correctAcct(acct: Acct, localHostname?: string): Acct;
 
 // @public (undocumented)
 type DateString = string;
@@ -3253,7 +3257,7 @@ type PagesUnlikeRequest = operations['pages___unlike']['requestBody']['content']
 type PagesUpdateRequest = operations['pages___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function parse(_acct: string): Acct;
+function parse(acct: string, localHostname?: string): Acct;
 
 // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
 //
