@@ -1,64 +1,96 @@
 import { describe, it, expect } from 'vitest';
 import * as acct from '../src/acct.js';
 
-describe('acct.parse', () => {
+function testParseAcct(fn: (acct: string) => acct.Acct) {
 	it('parses plain username', () => {
-		const res = acct.parse('alice');
+		const res = fn('alice');
 		expect(res).toEqual({ username: 'alice', host: null });
 	});
 
 	it('parses at-mark style without host', () => {
-		const res = acct.parse('@alice');
+		const res = fn('@alice');
 		expect(res).toEqual({ username: 'alice', host: null });
 	});
 
 	it('parses at-mark style with host', () => {
-		const res = acct.parse('@alice@example.com');
+		const res = fn('@alice@example.com');
 		expect(res).toEqual({ username: 'alice', host: 'example.com' });
-	});
-
-	it('nulls host for at-mark style when localHostname matches', () => {
-		const res = acct.parse('@alice@example.com', 'example.com');
-		expect(res).toEqual({ username: 'alice', host: null });
 	});
 
 	it('parses acct: style', () => {
-		const res = acct.parse('acct:alice@example.com');
+		const res = fn('acct:alice@example.com');
 		expect(res).toEqual({ username: 'alice', host: 'example.com' });
 	});
 
-	it('nulls host for acct: style when localHostname matches', () => {
-		const res = acct.parse('acct:alice@example.com', 'example.com');
-		expect(res).toEqual({ username: 'alice', host: null });
+	it('parse Mr.http', () => {
+		const res = fn('http');
+		expect(res).toEqual({ username: 'http', host: null });
 	});
+}
 
+function testParseUrl(fn: (acct: string) => acct.Acct) {
 	it('parses url style https with same host -> host kept when localHostname not provided', () => {
-		const res = acct.parse('https://example.com/@alice');
+		const res = fn('https://example.com/@alice');
 		expect(res).toEqual({ username: 'alice', host: 'example.com' });
-	});
-
-	it('parses url style http with same host and nulls host when localHostname matches', () => {
-		const res = acct.parse('http://example.com/@alice', 'example.com');
-		expect(res).toEqual({ username: 'alice', host: null });
 	});
 
 	it('parses url style with remote host contained in path', () => {
-		const res = acct.parse('https://self.example.com/@alice@other.example.com');
+		const res = fn('https://self.example.com/@alice@other.example.com');
 		expect(res).toEqual({ username: 'alice', host: 'other.example.com' });
 	});
 
-	it('nulls host when localHostname matches the remote host in path', () => {
-		const res = acct.parse('https://self.example.com/@alice@other.example.com', 'other.example.com');
+	it('throws on non-acct-like url path', () => {
+		expect(() => fn('https://example.com/users/alice')).toThrowError();
+	});
+}
+
+describe('acct.parse', () => {
+	testParseAcct(acct.parse);
+});
+
+describe('acct.parseUrl', () => {
+	testParseUrl(acct.parseUrl);
+});
+
+describe('acct.parseAcctOrUrl', () => {
+	testParseAcct(acct.parseAcctOrUrl);
+	testParseUrl(acct.parseAcctOrUrl);
+
+	it('parse url with localHostname', () => {
+		const res = acct.parseAcctOrUrl('https://example.com/@alice', 'example.com');
 		expect(res).toEqual({ username: 'alice', host: null });
 	});
 
-	it('throws on non-acct-like url path', () => {
-		expect(() => acct.parse('https://example.com/users/alice')).toThrowError();
+	it('parse @username with localHostname', () => {
+		const res = acct.parseAcctOrUrl('@alice', 'example.com');
+		expect(res).toEqual({ username: 'alice', host: null });
+	});
+});
+
+describe('acct.correctAcct', () => {
+	it('returns host=null when acct.host is null', () => {
+		const input: acct.Acct = { username: 'alice', host: null };
+		const out = acct.correctAcct(input);
+		expect(out).toEqual({ username: 'alice', host: null });
+		expect(out).not.toBe(input); // immutability
 	});
 
-	it('parses correctly Mr.http', () => {
-		const res = acct.parse('http');
-		expect(res).toEqual({ username: 'http', host: null });
+	it('keeps host when localHostname not provided', () => {
+		const input: acct.Acct = { username: 'bob', host: 'example.com' };
+		const out = acct.correctAcct(input);
+		expect(out).toEqual({ username: 'bob', host: 'example.com' });
+	});
+
+	it('nulls host when it matches localHostname', () => {
+		const input: acct.Acct = { username: 'carol', host: 'example.com' };
+		const out = acct.correctAcct(input, 'example.com');
+		expect(out).toEqual({ username: 'carol', host: null });
+	});
+
+	it('keeps host when it differs from localHostname', () => {
+		const input: acct.Acct = { username: 'dave', host: 'other.example.com' };
+		const out = acct.correctAcct(input, 'example.com');
+		expect(out).toEqual({ username: 'dave', host: 'other.example.com' });
 	});
 });
 

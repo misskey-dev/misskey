@@ -13,6 +13,30 @@ export function correctAcct(acct: Acct, localHostname?: string): Acct {
 	return result;
 }
 
+export function parse(acct: string): Acct {
+	let acctWithNoPrefix = acct;
+
+	if (acct.startsWith('@')) {
+		acctWithNoPrefix = acct.substring(1);
+	} else if (acct.startsWith('acct:')) {
+		acctWithNoPrefix = acct.substring(5);
+	}
+
+	const split = acctWithNoPrefix.split('@', 2);
+
+	return { username: split[0], host: split[1] || null };
+}
+
+export function parseUrl(str: string): Acct {
+	const url = new URL(str);
+	const path = url.pathname.split('/').find((p) => p.startsWith('@') && p.length >= 2);
+	if (!path) throw new Error('This url is not acct like.');
+
+	const split = path.split('@', 3); // ['', 'username', 'other.example.com']
+
+	return { username: split[1], host: split[2] || url.hostname };
+}
+
 /**
  * Parses a string and returns an Acct object.
  * @param acct String to parse
@@ -23,30 +47,14 @@ export function correctAcct(acct: Acct, localHostname?: string): Acct {
  * @param localHostname If provided and matches the host found in acct, the returned `host` will be set to `null`.
  * @returns Acct object
  */
-export function parse(acct: string, localHostname?: string): Acct {
-	//#region url style
+export function parseAcctOrUrl(acct: string, localHostname?: string): Acct {
 	if (acct.startsWith('https://') || acct.startsWith('http://')) {
-		const url = new URL(acct);
-		const path = url.pathname.split('/').find((p) => p.startsWith('@') && p.length >= 2);
-		if (!path) throw new Error('This url is not acct like.');
-
-		const split = path.split('@', 3); // ['', 'username', 'other.example.com']
-
-		return correctAcct({ username: split[1], host: split[2] || url.hostname }, localHostname);
+		// url style
+		return correctAcct(parseUrl(acct), localHostname);
 	}
-	//#endregion
 
-	//#region at-mark and acct: style
-	let acctWithNoPrefix = acct;
-	if (acct.startsWith('@')) {
-		acctWithNoPrefix = acct.substring(1);
-	} else if (acct.startsWith('acct:')) {
-		acctWithNoPrefix = acct.substring(5);
-	}
-	const split = acctWithNoPrefix.split('@', 2);
-
-	return correctAcct({ username: split[0], host: split[1] || null }, localHostname);
-	//#endregion
+	// acct style
+	return correctAcct(parse(acct), localHostname);
 }
 
 export function toString(acct: Acct): string {
