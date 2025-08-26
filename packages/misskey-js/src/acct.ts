@@ -3,6 +3,16 @@ export type Acct = {
 	host: string | null;
 };
 
+export function correctAcct(acct: Acct, localHostname?: string): Acct {
+	const result = { ...acct };
+	if (!acct.host) {
+		result.host = null;
+	} else if (localHostname && acct.host === localHostname) {
+		result.host = null;
+	}
+	return result;
+}
+
 /**
  * Parses a string and returns an Acct object.
  * @param acct String to parse
@@ -22,12 +32,7 @@ export function parse(acct: string, localHostname?: string): Acct {
 
 		const split = path.split('@', 3); // ['', 'username', 'other.example.com']
 
-		let host: string | null = split[2] || url.hostname;
-		if (localHostname && host === localHostname) {
-			host = null;
-		}
-
-		return { username: split[1], host: host };
+		return correctAcct({ username: split[1], host: split[2] || url.hostname }, localHostname);
 	}
 	//#endregion
 
@@ -40,12 +45,7 @@ export function parse(acct: string, localHostname?: string): Acct {
 	}
 	const split = acctWithNoPrefix.split('@', 2);
 
-	let host: string | null = split[1] || null;
-	if (localHostname && host === localHostname) {
-		host = null;
-	}
-
-	return { username: split[0], host };
+	return correctAcct({ username: split[0], host: split[1] || null }, localHostname);
 	//#endregion
 }
 
