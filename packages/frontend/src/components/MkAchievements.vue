@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
 const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null);
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
-function fetch() {
+function _fetch_() {
 	misskeyApi('users/achievements', { userId: props.user.id }).then(res => {
 		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
@@ -84,11 +84,11 @@ function fetch() {
 
 function clickHere() {
 	claimAchievement('clickedClickHere');
-	fetch();
+	_fetch_();
 }
 
 onMounted(() => {
-	fetch();
+	_fetch_();
 });
 </script>
 

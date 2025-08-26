@@ -40,11 +40,11 @@ const $i = ensureSignin();
 
 const items = computed(() => userListsCache.value.value ?? []);
 
-function fetch() {
+function _fetch_() {
 	userListsCache.fetch();
 }
 
-fetch();
+_fetch_();
 
 async function create() {
 	const { canceled, result: name } = await os.inputText({
@@ -53,7 +53,7 @@ async function create() {
 	if (canceled || name == null) return;
 	await os.apiWithDialog('users/lists/create', { name: name });
 	userListsCache.delete();
-	fetch();
+	_fetch_();
 }
 
 const headerActions = computed(() => [{
@@ -62,7 +62,7 @@ const headerActions = computed(() => [{
 	text: i18n.ts.reload,
 	handler: () => {
 		userListsCache.delete();
-		fetch();
+		_fetch_();
 	},
 }]);
 
@@ -74,7 +74,7 @@ definePage(() => ({
 }));
 
 onActivated(() => {
-	fetch();
+	_fetch_();
 });
 </script>
 

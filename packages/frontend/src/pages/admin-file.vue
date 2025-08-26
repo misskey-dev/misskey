@@ -111,13 +111,13 @@ const props = defineProps<{
 	fileId: string,
 }>();
 
-async function fetch() {
+async function _fetch_() {
 	file.value = await misskeyApi('drive/files/show', { fileId: props.fileId });
 	info.value = await misskeyApi('admin/drive/show-file', { fileId: props.fileId });
 	isSensitive.value = file.value.isSensitive;
 }
 
-fetch();
+_fetch_();
 
 async function del() {
 	const { canceled } = await os.confirm({

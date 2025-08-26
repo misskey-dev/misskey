@@ -198,7 +198,7 @@ if (iAmModerator) {
 	});
 }
 
-async function fetch(): Promise<void> {
+async function _fetch_(): Promise<void> {
 	if (iAmAdmin) {
 		meta.value = await misskeyApi('admin/meta');
 	}
@@ -276,7 +276,7 @@ function refreshMetadata(): void {
 	});
 }
 
-fetch();
+_fetch_();
 
 const headerActions = computed(() => [{
 	text: `https://${props.host}`,

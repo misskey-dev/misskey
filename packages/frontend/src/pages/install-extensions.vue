@@ -80,7 +80,7 @@ function close_(): void {
 	}
 }
 
-async function fetch() {
+async function _fetch_() {
 	if (!url.value || !hash.value) {
 		errorKV.value = {
 			title: i18n.ts._externalResourceInstaller._errors._invalidParams.title,
@@ -229,7 +229,7 @@ async function install() {
 const urlParams = new URLSearchParams(window.location.search);
 url.value = urlParams.get('url');
 hash.value = urlParams.get('hash');
-fetch();
+_fetch_();
 
 definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,
