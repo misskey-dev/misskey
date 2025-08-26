@@ -71,5 +71,3 @@ describe('acct.toString', () => {
 		expect(acct.toString({ username: 'alice', host: 'example.com' })).toBe('alice@example.com');
 	});
 });
-
-
