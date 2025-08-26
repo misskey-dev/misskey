@@ -300,7 +300,7 @@ useTooltip(rootEl, (showing) => {
 	const result = os.popup(defineAsyncComponent(() => import('@/components/grid/MkCellTooltip.vue')), {
 		showing,
 		content,
-		targetElement: rootEl.value!,
+		anchorElement: rootEl.value!,
 	}, {
 		closed: () => {
 			result.dispose();

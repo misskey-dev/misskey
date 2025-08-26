@@ -23,6 +23,7 @@ export type Theme = {
 	author: string;
 	desc?: string;
 	base?: 'dark' | 'light';
+	kind?: 'dark' | 'light'; // legacy
 	props: Record<string, string>;
 	codeHighlighter?: {
 		base: BundledTheme;

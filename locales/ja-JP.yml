@@ -1685,7 +1685,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "現在の一部の設定はリセットされます。"
   entrancePageStyle: "エントランスページのスタイル"
   showTimelineForVisitor: "タイムラインを表示する"
-  showActivityiesForVisitor: "アクティビティを表示する"
+  showActivitiesForVisitor: "アクティビティを表示する"
 
   _userGeneratedContentsVisibilityForVisitor:
     all: "全て公開"

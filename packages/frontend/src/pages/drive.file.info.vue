@@ -105,7 +105,7 @@ const folderHierarchy = computed(() => {
 });
 const isImage = computed(() => file.value?.type.startsWith('image/'));
 
-async function fetch() {
+async function _fetch_() {
 	fetching.value = true;
 
 	file.value = await misskeyApi('drive/files/show', {
@@ -134,7 +134,7 @@ function move() {
 			fileId: file.value.id,
 			folderId: folder[0] ? folder[0].id : null,
 		}).then(async () => {
-			await fetch();
+			await _fetch_();
 		});
 	});
 }
@@ -146,7 +146,7 @@ function toggleSensitive() {
 		fileId: file.value.id,
 		isSensitive: !file.value.isSensitive,
 	}).then(async () => {
-		await fetch();
+		await _fetch_();
 	}).catch(err => {
 		os.alert({
 			type: 'error',
@@ -169,7 +169,7 @@ function rename() {
 			fileId: file.value.id,
 			name: name,
 		}).then(async () => {
-			await fetch();
+			await _fetch_();
 		});
 	});
 }
@@ -186,7 +186,7 @@ async function describe() {
 				fileId: file.value.id,
 				comment: caption.length === 0 ? null : caption,
 			}).then(async () => {
-				await fetch();
+				await _fetch_();
 			});
 		},
 		closed: () => dispose(),
@@ -212,7 +212,7 @@ async function deleteFile() {
 }
 
 onMounted(async () => {
-	await fetch();
+	await _fetch_();
 });
 </script>
 

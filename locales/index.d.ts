@@ -6633,7 +6633,7 @@ export interface Locale extends ILocale {
         /**
          * アクティビティを表示する
          */
-        "showActivityiesForVisitor": string;
+        "showActivitiesForVisitor": string;
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
