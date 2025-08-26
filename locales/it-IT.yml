@@ -1668,6 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Verranno ripristinate alcune tue impostazioni personalizzate."
   entrancePageStyle: "Stile della pagina di ingresso"
   showTimelineForVisitor: "Mostra la Timeline a visitatori non autenticati"
+  showActivitiesForVisitor: "Mostrare la propria attività"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Tutto pubblico"
     localOnly: "Pubblica solo contenuti locali, mantieni privati ​​i contenuti remoti"
