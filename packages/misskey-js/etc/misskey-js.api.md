@@ -25,6 +25,8 @@ declare namespace acct {
     export {
         correctAcct,
         parse,
+        parseUrl,
+        parseAcctOrUrl,
         toString_2 as toString,
         Acct
     }
@@ -3257,7 +3259,13 @@ type PagesUnlikeRequest = operations['pages___unlike']['requestBody']['content']
 type PagesUpdateRequest = operations['pages___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function parse(acct: string, localHostname?: string): Acct;
+function parse(acct: string): Acct;
+
+// @public (undocumented)
+function parseAcctOrUrl(acct: string, localHostname?: string): Acct;
+
+// @public (undocumented)
+function parseUrl(str: string): Acct;
 
 // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
 //
