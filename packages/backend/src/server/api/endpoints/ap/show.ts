@@ -66,7 +66,7 @@ export const meta = {
 		somethingHappenedInFetchingUri: {
 			message: 'Something happened while fetching the URI.',
 			code: 'SOMETHING_HAPPENED_IN_FETCHING_URI',
-			id: '14d45054-9df7-4f85-9e60-343b22f16b05,
+			id: '14d45054-9df7-4f85-9e60-343b22f16b05',
 		},
 	},
 
