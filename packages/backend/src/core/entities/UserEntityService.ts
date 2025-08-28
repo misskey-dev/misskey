@@ -471,8 +471,8 @@ export class UserEntityService implements OnModuleInit {
 			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : null;
+		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : false; // この場合undefinedにしたい(レスポンスに含める必要がないため)が、念のため後方互換性を確保
+		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : false; // この場合undefinedにしたい(レスポンスに含める必要がないため)が、念のため後方互換性を確保
 		const unreadAnnouncements = isMe && isDetailed ?
 			(await this.announcementService.getUnreadAnnouncements(user)).map((announcement) => ({
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
