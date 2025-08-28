@@ -25,6 +25,7 @@ import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-ur
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta } from '@/models/_.js';
+import { ApiLoggerService } from '../../ApiLoggerService.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -67,6 +68,11 @@ export const meta = {
 			message: 'Something happened while fetching the URI.',
 			code: 'SOMETHING_HAPPENED_IN_FETCHING_URI',
 			id: '14d45054-9df7-4f85-9e60-343b22f16b05',
+		},
+		uriIsAcctLikeButThisIsOnlyUriFetchMode: {
+			message: 'URI is acct-like but onlyUriFetch is true.',
+			code: 'URI_IS_ACCT_LIKE_BUT_THIS_IS_ONLY_URI_FETCH_MODE',
+			id: 'b224ffe3-ae5c-44e2-9df4-f0b8662bb085',
 		},
 	},
 
@@ -130,28 +136,43 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private apPersonService: ApPersonService,
 		private apNoteService: ApNoteService,
 		private remoteUserResolveService: RemoteUserResolveService,
+		private apiLoggerService: ApiLoggerService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let object: SchemaType<typeof meta['res']> | null;
+			let object: SchemaType<typeof meta['res']> | null = null;
+			let acct: misskey.acct.Acct | null = null;
 
-			if (!ps.onlyUriFetch) {
+			try {
+				acct = misskey.acct.parseAcctOrUrl(ps.uri);
+			} catch (err) {
+				// nothing to do
+			}
+
+			if (!ps.onlyUriFetch && acct) {
 				try {
-					object = await this.fetchAcct(misskey.acct.parseAcctOrUrl(ps.uri), me);
+					object = await this.fetchAcct(acct, me);
 				} catch (err) {
 					if (err instanceof IdentifiableError && err.id === 'bddd9f4c-f0a8-4cac-9c0a-4e6d2fc43408') {
 						// Signin required
 						throw new ApiError(meta.errors.noSuchObject);
 					}
+
+					this.apiLoggerService.logger.warn('ap/show: fetchAcct failed', { uri: ps.uri, error: err });
 				}
 			}
 
-			try {
-				object = await this.fetchAnyUri(ps.uri, me);
-			} catch (err) {
-				if (err instanceof ApiError) {
-					throw err;
+			if (object == null) {
+				try {
+					object = await this.fetchAnyUri(ps.uri, me);
+				} catch (err) {
+					if (err instanceof ApiError) {
+						throw err;
+					}
+					if (acct) {
+						throw new ApiError(meta.errors.uriIsAcctLikeButThisIsOnlyUriFetchMode);
+					}
+					throw new ApiError(meta.errors.somethingHappenedInFetchingUri, err);
 				}
-				throw new ApiError(meta.errors.somethingHappenedInFetchingUri);
 			}
 
 			if (object) {
