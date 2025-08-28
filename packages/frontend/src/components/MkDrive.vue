@@ -152,11 +152,12 @@ import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
+	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
 }>(), {
+	initialFolder: null,
 	multiple: false,
 	select: null,
 });
