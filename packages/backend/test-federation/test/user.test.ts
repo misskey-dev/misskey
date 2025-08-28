@@ -516,7 +516,7 @@ describe('User', () => {
 				await rejects(
 					async () => await resolveRemoteUser('a.test', alice.id, bob),
 					(err: any) => {
-						strictEqual(err.code, 'INTERNAL_ERROR');
+						strictEqual(err.code, 'SOMETHING_HAPPENED_IN_FETCHING_URI');
 						return true;
 					},
 				);
@@ -551,7 +551,7 @@ describe('User', () => {
 				await rejects(
 					async () => await resolveRemoteUser('a.test', alice.id, bob),
 					(err: any) => {
-						strictEqual(err.code, 'INTERNAL_ERROR');
+						strictEqual(err.code, 'SOMETHING_HAPPENED_IN_FETCHING_URI');
 						return true;
 					},
 				);
