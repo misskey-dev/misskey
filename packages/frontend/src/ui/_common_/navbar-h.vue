@@ -57,6 +57,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
 
 const WINDOW_THRESHOLD = 1400;
 
@@ -72,8 +73,11 @@ const otherNavItemIndicated = computed<boolean>(() => {
 });
 
 async function more(ev: MouseEvent) {
+	const target = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
+	if (!target) return;
+
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLaunchPad.vue').then(x => x.default), {
-		anchorElement: ev.currentTarget ?? ev.target,
+		anchorElement: target,
 		anchor: { x: 'center', y: 'bottom' },
 	}, {
 		closed: () => dispose(),

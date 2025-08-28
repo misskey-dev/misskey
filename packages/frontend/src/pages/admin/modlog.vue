@@ -78,7 +78,7 @@ const timeline = computed(() => {
 	return paginator.items.value.map(x => ({
 		id: x.id,
 		timestamp: new Date(x.createdAt).getTime(),
-		data: x,
+		data: x as Misskey.entities.ModerationLog,
 	}));
 });
 
