@@ -69,7 +69,7 @@ async function setList() {
 				})),
 			} : undefined),
 		],
-		default: props.column.listId,
+		default: lists.find(x => x.id === props.column.listId),
 	});
 	if (canceled || list == null) return;
 

@@ -54,7 +54,7 @@ async function setRole() {
 		items: roles.map(x => ({
 			value: x, text: x.name,
 		})),
-		default: props.column.roleId,
+		default: roles.find(x => x.id === props.column.roleId),
 	});
 	if (canceled || role == null) return;
 	updateColumn(props.column.id, {
