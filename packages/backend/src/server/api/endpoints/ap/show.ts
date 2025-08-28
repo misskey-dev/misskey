@@ -195,7 +195,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		return {
 			type: 'User',
 			object: await this.userEntityService.pack(user, me, { schema: 'UserDetailed' }),
-		}
+		};
 	}
 
 	/**
