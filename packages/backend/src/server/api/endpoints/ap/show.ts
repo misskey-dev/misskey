@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as misskey from 'misskey-js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
@@ -21,6 +22,9 @@ import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { DI } from '@/di-symbols.js';
+import type { MiMeta } from '@/models/_.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -58,6 +62,11 @@ export const meta = {
 			message: 'No such object.',
 			code: 'NO_SUCH_OBJECT',
 			id: 'dc94d745-1262-4e63-a17d-fecaa57efc82',
+		},
+		somethingHappenedInFetchingUri: {
+			message: 'Something happened while fetching the URI.',
+			code: 'SOMETHING_HAPPENED_IN_FETCHING_URI',
+			id: '14d45054-9df7-4f85-9e60-343b22f16b05,
 		},
 	},
 
@@ -102,6 +111,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		uri: { type: 'string' },
+		onlyUriFetch: { type: 'boolean', optional: true, nullable: false },
 	},
 	required: ['uri'],
 } as const;
@@ -109,6 +119,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -116,9 +129,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private apDbResolverService: ApDbResolverService,
 		private apPersonService: ApPersonService,
 		private apNoteService: ApNoteService,
+		private remoteUserResolveService: RemoteUserResolveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const object = await this.fetchAny(ps.uri, me);
+			let object: SchemaType<typeof meta['res']> | null;
+
+			if (!ps.onlyUriFetch) {
+				try {
+					object = await this.fetchAcct(misskey.acct.parseAcctOrUrl(ps.uri), me);
+				} catch (err) {
+					if (err instanceof IdentifiableError && err.id === 'bddd9f4c-f0a8-4cac-9c0a-4e6d2fc43408') {
+						// Signin required
+						throw new ApiError(meta.errors.noSuchObject);
+					}
+				}
+			}
+
+			try {
+				object = await this.fetchAnyUri(ps.uri, me);
+			} catch (err) {
+				if (err instanceof ApiError) {
+					throw err;
+				}
+				throw new ApiError(meta.errors.somethingHappenedInFetchingUri);
+			}
+
 			if (object) {
 				return object;
 			} else {
@@ -127,11 +162,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		});
 	}
 
-	/***
+	private async fetchAcct(acct: misskey.acct.Acct, me: MiLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+		if (this.serverSettings.ugcVisibilityForVisitor === 'local' && me == null) {
+			throw new IdentifiableError('bddd9f4c-f0a8-4cac-9c0a-4e6d2fc43408', 'Signin required');
+		}
+
+		const user = await this.remoteUserResolveService.resolveUser(acct.username, acct.host);
+
+		if (!user) return null;
+
+		return {
+			type: 'User',
+			object: await this.userEntityService.pack(user, me, { schema: 'UserDetailed' }),
+		}
+	}
+
+	/**
 	 * URIからUserかNoteを解決する
 	 */
 	@bindThis
-	private async fetchAny(uri: string, me: MiLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	private async fetchAnyUri(uri: string, me: MiLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 		if (!this.utilityService.isFederationAllowedUri(uri)) {
 			throw new ApiError(meta.errors.federationNotAllowed);
 		}
@@ -174,7 +224,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						throw new ApiError(meta.errors.responseInvalid);
 				}
 			}
-
 			throw new ApiError(meta.errors.requestFailed);
 		});
 
