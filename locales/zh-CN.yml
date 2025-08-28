@@ -1668,7 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "现有的部分设定将重置。"
   entrancePageStyle: "入口页面样式"
   showTimelineForVisitor: "显示时间线"
-  showActivityiesForVisitor: "显示活动"
+  showActivitiesForVisitor: "显示活动"
   _userGeneratedContentsVisibilityForVisitor:
     all: "全部公开"
     localOnly: "仅公开本地内容，隐藏远程内容"
@@ -3120,6 +3120,7 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "可在之后进行如哪些服务器可以进行联合等高级设置。"
   remoteContentsCleaning: "自动清理传入内容"
   remoteContentsCleaning_description: "加入联合后，服务器将持续接收大量内容。打开自动清理后，将自动删除无法找到的旧内容，可节省存储空间。"
+  remoteContentsCleaning_description2: "如超链接之类的某些引用方法无法被系统检测到。"
   adminInfo: "管理员信息"
   adminInfo_description: "设置用于接受询问的管理员信息。"
   adminInfo_mustBeFilled: "开放服务器或开启了联合的情况下必须输入。"
