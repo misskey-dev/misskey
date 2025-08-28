@@ -54,14 +54,10 @@ router.useListener('change', ({ resolved }) => {
 	if (resolved == null || 'redirect' in resolved.route) return;
 	if (resolved.route.path === currentRoutePath && deepEqual(resolved.props, currentPageProps.value)) return;
 
-	function _() {
-		currentPageComponent.value = resolved.route.component;
-		currentPageProps.value = resolved.props;
-		key.value = router.getCurrentFullPath();
-		currentRoutePath = resolved.route.path;
-	}
-
-	_();
+	currentPageComponent.value = resolved.route.component;
+	currentPageProps.value = resolved.props;
+	key.value = router.getCurrentFullPath();
+	currentRoutePath = resolved.route.path;
 });
 </script>
 
