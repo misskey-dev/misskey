@@ -61,8 +61,8 @@ import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/utili
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	withLocked: boolean;
-	withDescription: boolean;
+	withLocked?: boolean;
+	withDescription?: boolean;
 }>(), {
 	withLocked: true,
 	withDescription: true,

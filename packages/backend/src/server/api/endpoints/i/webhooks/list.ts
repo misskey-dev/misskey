@@ -21,29 +21,7 @@ export const meta = {
 		type: 'array',
 		items: {
 			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					format: 'misskey:id',
-				},
-				userId: {
-					type: 'string',
-					format: 'misskey:id',
-				},
-				name: { type: 'string' },
-				on: {
-					type: 'array',
-					items: {
-						type: 'string',
-						enum: webhookEventTypes,
-					},
-				},
-				url: { type: 'string' },
-				secret: { type: 'string' },
-				active: { type: 'boolean' },
-				latestSentAt: { type: 'string', format: 'date-time', nullable: true },
-				latestStatus: { type: 'integer', nullable: true },
-			},
+			ref: 'UserWebhook',
 		},
 	},
 } as const;
@@ -65,19 +43,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: me.id,
 			});
 
-			return webhooks.map(webhook => (
-				{
-					id: webhook.id,
-					userId: webhook.userId,
-					name: webhook.name,
-					on: webhook.on,
-					url: webhook.url,
-					secret: webhook.secret,
-					active: webhook.active,
-					latestSentAt: webhook.latestSentAt ? webhook.latestSentAt.toISOString() : null,
-					latestStatus: webhook.latestStatus,
-				}
-			));
+			return webhooks.map(webhook => ({
+				id: webhook.id,
+				userId: webhook.userId,
+				name: webhook.name,
+				on: webhook.on,
+				url: webhook.url,
+				secret: webhook.secret,
+				active: webhook.active,
+				latestSentAt: webhook.latestSentAt ? webhook.latestSentAt.toISOString() : null,
+				latestStatus: webhook.latestStatus,
+			}));
 		});
 	}
 }
