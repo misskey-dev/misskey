@@ -465,11 +465,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		isModerator: {
 			type: 'boolean',
-			nullable: false, optional: false, // optionalにしたいが念のため後方互換性を確保
+			nullable: false, optional: false,
 		},
 		isAdmin: {
 			type: 'boolean',
-			nullable: false, optional: false, // optionalにしたいが念のため後方互換性を確保
+			nullable: false, optional: false,
 		},
 		injectFeaturedNote: {
 			type: 'boolean',
