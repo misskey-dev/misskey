@@ -111,7 +111,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		uri: { type: 'string' },
-		onlyUriFetch: { type: 'boolean', optional: true, nullable: false },
+		onlyUriFetch: { type: 'boolean' },
 	},
 	required: ['uri'],
 } as const;
