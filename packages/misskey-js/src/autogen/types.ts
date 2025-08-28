@@ -4058,8 +4058,8 @@ export type components = {
             /** Format: id */
             bannerId: string | null;
             followedMessage: string | null;
-            isModerator: boolean | null;
-            isAdmin: boolean | null;
+            isModerator: boolean;
+            isAdmin: boolean;
             injectFeaturedNote: boolean;
             receiveAnnouncementEmail: boolean;
             alwaysMarkNsfw: boolean;
