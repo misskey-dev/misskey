@@ -13554,6 +13554,7 @@ export interface operations {
             content: {
                 'application/json': {
                     uri: string;
+                    onlyUriFetch?: boolean;
                 };
             };
         };
