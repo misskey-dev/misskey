@@ -49,7 +49,7 @@ export type ModerationLog = {
 	id: ID;
 	createdAt: DateString;
 	userId: User['id'];
-	user: UserDetailedNotMe | null;
+	user: UserDetailedNotMe;
 } & ({
 	type: 'updateServerSettings';
 	info: ModerationLogPayloads['updateServerSettings'];
