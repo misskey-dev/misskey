@@ -47,7 +47,7 @@ import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
 
@@ -62,7 +62,7 @@ type Input = {
 
 type Select = {
 	items: MkSelectItem[];
-	default: string | null;
+	default: OptionValue | null;
 };
 
 type Result = string | number | true | null;

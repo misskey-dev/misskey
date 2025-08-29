@@ -210,11 +210,10 @@ async function duplicate() {
 
 async function add() {
 	const { canceled, result: type } = await os.select({
-		type: null,
 		title: i18n.ts._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
-	if (canceled) return;
+	if (canceled || type == null) return;
 
 	const id = genId();
 	content.value.push({ id, type });

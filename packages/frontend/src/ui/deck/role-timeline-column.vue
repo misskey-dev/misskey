@@ -49,14 +49,15 @@ watch(soundSetting, v => {
 
 async function setRole() {
 	const roles = (await misskeyApi('roles/list')).filter(x => x.isExplorable);
-	const { canceled, result: role } = await os.select({
+	const { canceled, result: roleId } = await os.select({
 		title: i18n.ts.role,
 		items: roles.map(x => ({
-			value: x, text: x.name,
+			value: x.id, label: x.name,
 		})),
 		default: props.column.roleId,
 	});
-	if (canceled || role == null) return;
+	if (canceled || roleId == null) return;
+	const role = roles.find(x => x.id === roleId)!;
 	updateColumn(props.column.id, {
 		roleId: role.id,
 		timelineNameCache: role.name,
