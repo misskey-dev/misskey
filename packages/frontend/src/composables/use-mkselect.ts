@@ -9,6 +9,7 @@ import type { MkSelectItem, OptionValue, GetMkSelectValueTypesFromDef } from '@/
 
 type UnwrapReadonlyItems<T> = T extends readonly (infer U)[] ? U[] : T;
 
+/** 指定したオプション定義をもとに型を狭めたrefを生成するコンポーサブル */
 export function useMkSelect<
 	const TItemsInput extends MaybeRefOrGetter<MkSelectItem[]>,
 	const TItems extends TItemsInput extends MaybeRefOrGetter<infer U> ? U : never,
