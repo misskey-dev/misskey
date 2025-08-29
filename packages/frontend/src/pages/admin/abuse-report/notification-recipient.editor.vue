@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 				</MkSelect>
 				<div>
-					<MkSelect v-if="method === 'email'" :items="userIdDef" v-model="userId">
+					<MkSelect v-if="method === 'email'" v-model="userId" :items="userIdDef">
 						<template #label>{{ i18n.ts._abuseReport._notificationRecipient.notifiedUser }}</template>
 					</MkSelect>
 					<div v-else-if="method === 'webhook'" :class="$style.systemWebhook">

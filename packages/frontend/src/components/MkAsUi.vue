@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="valueForSelect" @update:modelValue="onSelectUpdate" :items="selectDef">
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="valueForSelect" :items="selectDef" @update:modelValue="onSelectUpdate">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkSelect>

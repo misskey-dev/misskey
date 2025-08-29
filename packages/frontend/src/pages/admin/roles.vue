@@ -53,12 +53,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
 						<template #suffix>{{ policies.chatAvailability === 'available' ? i18n.ts.yes : policies.chatAvailability === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</template>
 						<MkSelect
+							v-model="policies.chatAvailability"
 							:items="[
 								{ label: i18n.ts.enabled, value: 'available' },
 								{ label: i18n.ts.readonly, value: 'readonly' },
 								{ label: i18n.ts.disabled, value: 'unavailable' },
 							]"
-							v-model="policies.chatAvailability"
 						>
 							<template #label>{{ i18n.ts.enable }}</template>
 						</MkSelect>

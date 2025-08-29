@@ -298,7 +298,7 @@ const makeNotesFollowersOnlyBefore_type = computed({
 			makeNotesFollowersOnlyBefore.value = null;
 		}
 	},
-})
+});
 
 const makeNotesFollowersOnlyBefore_presets = [
 	{ label: i18n.ts.oneHour, value: -3600 },
@@ -350,7 +350,7 @@ const makeNotesHiddenBefore_type = computed({
 			makeNotesHiddenBefore.value = null;
 		}
 	},
-})
+});
 
 const makeNotesHiddenBefore_presets = [
 	{ label: i18n.ts.oneHour, value: -3600 },
