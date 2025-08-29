@@ -91,7 +91,7 @@ async function addItem() {
 			value: '-', text: i18n.ts.divider,
 		}],
 	});
-	if (canceled) return;
+	if (canceled || item == null) return;
 	items.value = [...items.value, {
 		id: genId(),
 		type: item,

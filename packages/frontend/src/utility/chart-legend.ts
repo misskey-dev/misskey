@@ -10,7 +10,7 @@ export const chartLegend = (legend: InstanceType<typeof MkChartLegend>) => ({
 	id: 'htmlLegend',
 	afterUpdate(chart, args, options) {
 		// Reuse the built-in legendItems generator
-		const items = chart.options.plugins.legend.labels.generateLabels(chart);
+		const items = chart.options.plugins!.legend!.labels!.generateLabels!(chart);
 
 		legend.update(chart, items);
 	},

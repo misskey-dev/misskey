@@ -30,11 +30,13 @@ const props = defineProps<{
 	router?: Router;
 }>();
 
-const router = props.router ?? inject(DI.router);
+const _router = props.router ?? inject(DI.router);
 
-if (router == null) {
+if (_router == null) {
 	throw new Error('no router provided');
 }
+
+const router = _router;
 
 const viewId = randomId();
 provide(DI.viewId, viewId);
@@ -42,7 +44,7 @@ provide(DI.viewId, viewId);
 const currentDepth = inject(DI.routerCurrentDepth, 0);
 provide(DI.routerCurrentDepth, currentDepth + 1);
 
-const current = router.current!;
+const current = router.current;
 const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
 const currentPageProps = ref(current.props);
 let currentRoutePath = current.route.path;
@@ -52,14 +54,10 @@ router.useListener('change', ({ resolved }) => {
 	if (resolved == null || 'redirect' in resolved.route) return;
 	if (resolved.route.path === currentRoutePath && deepEqual(resolved.props, currentPageProps.value)) return;
 
-	function _() {
-		currentPageComponent.value = resolved.route.component;
-		currentPageProps.value = resolved.props;
-		key.value = router.getCurrentFullPath();
-		currentRoutePath = resolved.route.path;
-	}
-
-	_();
+	currentPageComponent.value = resolved.route.component;
+	currentPageProps.value = resolved.props;
+	key.value = router.getCurrentFullPath();
+	currentRoutePath = resolved.route.path;
 });
 </script>
 

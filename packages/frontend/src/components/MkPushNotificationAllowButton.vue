@@ -78,7 +78,7 @@ function subscribe() {
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 	return promiseDialog(registration.value.pushManager.subscribe({
 		userVisibleOnly: true,
-		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
+		applicationServerKey: urlBase64ToBase64(instance.swPublickey),
 	})
 		.then(async subscription => {
 			pushSubscription.value = subscription;
@@ -131,22 +131,16 @@ function encode(buffer: ArrayBuffer | null) {
 }
 
 /**
- * Convert the URL safe base64 string to a Uint8Array
+ * Convert the URL safe base64 string to a base64 string
  * @param base64String base64 string
  */
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToBase64(base64String: string): string {
 	const padding = '='.repeat((4 - base64String.length % 4) % 4);
 	const base64 = (base64String + padding)
 		.replace(/-/g, '+')
 		.replace(/_/g, '/');
 
-	const rawData = window.atob(base64);
-	const outputArray = new Uint8Array(rawData.length);
-
-	for (let i = 0; i < rawData.length; ++i) {
-		outputArray[i] = rawData.charCodeAt(i);
-	}
-	return outputArray;
+	return base64;
 }
 
 if (navigator.serviceWorker == null) {

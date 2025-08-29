@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkLoading/>
 </div>
 <div v-else-if="resolved">
-	<slot :result="result"></slot>
+	<slot :result="result as T"></slot>
 </div>
 <div v-else>
 	<div :class="$style.error">

@@ -110,6 +110,11 @@ async function search() {
 
 	const type = searchType.value.toString().trim();
 
+	if (type !== 'nameAndDescription' && type !== 'nameOnly') {
+		console.error(`Unrecognized search type: ${type}`);
+		return;
+	}
+
 	channelPaginator.value = markRaw(new Paginator('channels/search', {
 		limit: 10,
 		params: {

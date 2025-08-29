@@ -383,7 +383,7 @@ if (props.id) {
 
 const title = ref(flash.value?.title ?? 'New Play');
 const summary = ref(flash.value?.summary ?? '');
-const permissions = ref(flash.value?.permissions ?? []);
+const permissions = ref([]); // not implemented yet
 const visibility = ref<'private' | 'public'>(flash.value?.visibility ?? 'public');
 const script = ref(flash.value?.script ?? PRESET_DEFAULT);
 
@@ -412,9 +412,9 @@ function selectPreset(ev: MouseEvent) {
 }
 
 async function save() {
-	if (flash.value) {
+	if (flash.value != null) {
 		os.apiWithDialog('flash/update', {
-			flashId: props.id,
+			flashId: flash.value.id,
 			title: title.value,
 			summary: summary.value,
 			permissions: permissions.value,
@@ -448,6 +448,8 @@ function show() {
 }
 
 async function del() {
+	if (flash.value == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.deleteAreYouSure({ x: flash.value.title }),
@@ -455,7 +457,7 @@ async function del() {
 	if (canceled) return;
 
 	await os.apiWithDialog('flash/delete', {
-		flashId: props.id,
+		flashId: flash.value.id,
 	});
 	router.push('/play');
 }
@@ -468,6 +470,7 @@ definePage(() => ({
 	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>
+
 <style lang="scss" module>
 .footer {
 	backdrop-filter: var(--MI-blur, blur(15px));

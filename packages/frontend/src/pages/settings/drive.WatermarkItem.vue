@@ -43,7 +43,7 @@ async function edit() {
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
 		preset: deepClone(props.preset),
 	}, {
-		ok: (preset: WatermarkPreset) => {
+		ok: (preset) => {
 			emit('updatePreset', preset);
 		},
 		closed: () => dispose(),

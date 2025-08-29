@@ -312,6 +312,7 @@ const headerActions = computed(() => [{
 	handler: add,
 }, {
 	icon: 'ti ti-dots',
+	text: i18n.ts.more,
 	handler: menu,
 }]);
 

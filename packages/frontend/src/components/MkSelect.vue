@@ -39,13 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, useSlots } from 'vue';
-import { useInterval } from '@@/js/use-interval.js';
-import type { VNode, VNodeChild } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
-import * as os from '@/os.js';
-
+<script lang="ts">
 type ItemOption = {
 	type?: 'option';
 	value: string | number | null;
@@ -60,11 +54,32 @@ type ItemGroup = {
 
 export type MkSelectItem = ItemOption | ItemGroup;
 
+type ValuesOfItems<T> = T extends (infer U)[]
+	? U extends { type: 'group'; items: infer V }
+		? V extends (infer W)[]
+			? W extends { value: infer X }
+				? X
+				: never
+			: never
+		: U extends { value: infer Y }
+			? Y
+			: never
+	: never;
+</script>
+
+<script lang="ts" setup generic="T extends MkSelectItem[]">
+import { onMounted, nextTick, ref, watch, computed, toRefs, useSlots } from 'vue';
+import { useInterval } from '@@/js/use-interval.js';
+import type { VNode, VNodeChild } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import * as os from '@/os.js';
+
 // TODO: itemsをslot内のoptionで指定する用法は廃止する(props.itemsを必須化する)
 // see: https://github.com/misskey-dev/misskey/issues/15558
+// あと型推論と相性が良くない
 
 const props = defineProps<{
-	modelValue: string | number | null;
+	modelValue: ValuesOfItems<T>;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -73,11 +88,11 @@ const props = defineProps<{
 	inline?: boolean;
 	small?: boolean;
 	large?: boolean;
-	items?: MkSelectItem[];
+	items?: T;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: string | number | null): void;
+	(ev: 'update:modelValue', value: ValuesOfItems<T>): void;
 }>();
 
 const slots = useSlots();

@@ -1668,7 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Verranno ripristinate alcune tue impostazioni personalizzate."
   entrancePageStyle: "Stile della pagina di ingresso"
   showTimelineForVisitor: "Mostra la Timeline a visitatori non autenticati"
-  showActivityiesForVisitor: "Mostra le attività a visitatori non autenticati"
+  showActivitiesForVisitor: "Mostrare la propria attività"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Tutto pubblico"
     localOnly: "Pubblica solo contenuti locali, mantieni privati ​​i contenuti remoti"
@@ -3120,6 +3120,7 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "Puoi svolgere la configurazione avanzata anche dopo. Ad esempio specificando quali server possono federarsi."
   remoteContentsCleaning: "Pulizia automatica dei contenuti in arrivo"
   remoteContentsCleaning_description: "Con la federazione funzionante, riceverai sempre più contenuti. Abilitando la pulizia automatica, i contenuti non referenziati e obsoleti verranno rimossi automaticamente dai tuoi server, risparmiando spazio di archiviazione."
+  remoteContentsCleaning_description2: "Alcuni metodi di riferimento, come i collegamenti ipertestuali, non possono essere rilevati sul sistema."
   adminInfo: "Informazioni sull'amministratore"
   adminInfo_description: "Imposta le informazioni dell'amministratore utilizzate per accettare le richieste."
   adminInfo_mustBeFilled: "Questa operazione è necessaria su un server aperto o se è attiva la federazione."

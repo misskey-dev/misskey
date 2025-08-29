@@ -18,7 +18,7 @@ export type MenuAction = (ev: MouseEvent) => void;
 export interface MenuButton {
 	type?: 'button';
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	icon?: string;
 	indicate?: boolean;
 	danger?: boolean;
@@ -38,14 +38,14 @@ export interface MenuDivider extends MenuBase {
 export interface MenuLabel extends MenuBase {
 	type: 'label';
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 }
 
 export interface MenuLink extends MenuBase {
 	type: 'link';
 	to: string;
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	icon?: string;
 	indicate?: boolean;
 	avatar?: Misskey.entities.User;
@@ -57,7 +57,7 @@ export interface MenuA extends MenuBase {
 	target?: string;
 	download?: string;
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	icon?: string;
 	indicate?: boolean;
 }
@@ -74,7 +74,7 @@ export interface MenuSwitch extends MenuBase {
 	type: 'switch';
 	ref: Ref<boolean>;
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	icon?: string;
 	disabled?: boolean | Ref<boolean>;
 }
@@ -82,7 +82,7 @@ export interface MenuSwitch extends MenuBase {
 export interface MenuRadio extends MenuBase {
 	type: 'radio';
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	icon?: string;
 	ref: Ref<MenuRadioOptionsDef[keyof MenuRadioOptionsDef]>;
 	options: MenuRadioOptionsDef;
@@ -92,7 +92,7 @@ export interface MenuRadio extends MenuBase {
 export interface MenuRadioOption extends MenuBase {
 	type: 'radioOption';
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	action: MenuAction;
 	active?: boolean | ComputedRef<boolean>;
 }
@@ -106,7 +106,7 @@ export interface MenuComponent<T extends Component = any> extends MenuBase {
 export interface MenuParent extends MenuBase {
 	type: 'parent';
 	text: Text;
-	caption?: Text;
+	caption?: Text | null | undefined | ComputedRef<null | undefined>;
 	icon?: string;
 	children: MenuItem[] | (() => Promise<MenuItem[]> | MenuItem[]);
 }

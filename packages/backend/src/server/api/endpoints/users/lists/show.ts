@@ -23,6 +23,16 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		ref: 'UserList',
+		properties: {
+			likedCount: {
+				type: 'number',
+				optional: true, nullable: false,
+			},
+			isLiked: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+		},
 	},
 
 	errors: {

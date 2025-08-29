@@ -65,7 +65,7 @@ export const packedUserLiteSchema = {
 		avatarUrl: {
 			type: 'string',
 			format: 'url',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		avatarBlurhash: {
 			type: 'string',
@@ -469,11 +469,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		isModerator: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		isAdmin: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		injectFeaturedNote: {
 			type: 'boolean',
@@ -595,7 +595,7 @@ export const packedMeDetailedOnlySchema = {
 		},
 		mutedInstances: {
 			type: 'array',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 			items: {
 				type: 'string',
 				nullable: false, optional: false,

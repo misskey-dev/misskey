@@ -59,7 +59,7 @@ import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-sep
 import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
-	excludeTypes?: typeof notificationTypes[number][];
+	excludeTypes?: typeof notificationTypes[number][] | null;
 }>();
 
 const rootEl = useTemplateRef('rootEl');

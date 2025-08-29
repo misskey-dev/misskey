@@ -265,6 +265,8 @@ onUnmounted(() => {
 	if (handle) {
 		window.cancelAnimationFrame(handle);
 	}
+
+	// TODO: WebGLリソースの解放
 });
 </script>
 

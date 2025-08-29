@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Mfm class="summaryMfm" :text="flash.summary" :plain="true" :nowrap="true"/>
 		</p>
 		<footer>
-			<img v-if="flash.user.avatarUrl != null" class="icon" :src="flash.user.avatarUrl"/>
+			<img class="icon" :src="flash.user.avatarUrl"/>
 			<p>{{ userName(flash.user) }}</p>
 		</footer>
 	</article>

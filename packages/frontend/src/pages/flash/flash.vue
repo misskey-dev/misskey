@@ -196,13 +196,13 @@ async function run() {
 
 	const isLegacy = !flash.value.script.replaceAll(' ', '').startsWith('///@1.0.0');
 
-	const { Interpreter, Parser, values } = isLegacy ? await import('@syuilo/aiscript-0-19-0') : await import('@syuilo/aiscript');
+	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
 
 	const parser = new Parser();
 
 	components.value = [];
 
-	aiscript.value = new Interpreter({
+	const interpreter = new Interpreter({
 		...createAiScriptEnv({
 			storageKey: 'flash:' + flash.value.id,
 		}),
@@ -221,6 +221,8 @@ async function run() {
 		},
 	});
 
+	aiscript.value = interpreter;
+
 	let ast;
 	try {
 		ast = parser.parse(flash.value.script);
@@ -232,8 +234,8 @@ async function run() {
 		return;
 	}
 	try {
-		await aiscript.value.exec(ast);
-	} catch (err) {
+		await interpreter.exec(ast);
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
 			title: 'AiScript Error',

@@ -20,8 +20,8 @@ export function popout(path: string, w?: HTMLElement) {
 	} else {
 		const width = 400;
 		const height = 500;
-		const x = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
-		const y = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
+		const x = window.top == null ? 0 : window.top.outerHeight / 2 + window.top.screenY - (height / 2);
+		const y = window.top == null ? 0 : window.top.outerWidth / 2 + window.top.screenX - (width / 2);
 		window.open(url, url,
 			`width=${width}, height=${height}, top=${x}, left=${y}`);
 	}
