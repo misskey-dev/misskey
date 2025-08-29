@@ -59,6 +59,14 @@ function testParseUrl(fn: (acct: string) => acct.Acct) {
 	it('throws url have @username path but ended with sub directory', () => {
 		expect(() => fn('https://example.com/@alice/subdir')).toThrowError();
 	});
+
+	it('throws url with search params', () => {
+		expect(() => fn('https://example.com/@alice?foo=bar')).toThrowError();
+	});
+
+	it('throws url with hash', () => {
+		expect(() => fn('https://example.com/@alice#fragment')).toThrowError();
+	});
 }
 
 describe('acct.parse', () => {

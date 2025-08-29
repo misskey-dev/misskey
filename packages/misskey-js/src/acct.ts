@@ -27,15 +27,25 @@ export function parse(acct: string): Acct {
 	return { username: split[0], host: split[1] || null };
 }
 
+export class UrlIsNotAcctLikeError extends Error {
+	constructor() {
+		super('This url is not acct like.');
+	}
+}
+
 export function parseUrl(str: string): Acct {
 	const url = new URL(str);
+
+	if (url.hash.length > 0) throw new UrlIsNotAcctLikeError();
+	if (url.search.length > 0) throw new UrlIsNotAcctLikeError();
+
 	const splited = url.pathname.split('/');
 	let path = splited.pop();
 	if (path === '') path = splited.pop(); // If the last segment is empty due to a trailing '/', use the previous segment
 
-	if (!path) throw new Error('This url is not acct like.');
-	if (!path.startsWith('@')) throw new Error('This url is not acct like.');
-	if (path.length <= 1) throw new Error('This url is not acct like.');
+	if (!path) throw new UrlIsNotAcctLikeError();
+	if (!path.startsWith('@')) throw new UrlIsNotAcctLikeError();
+	if (path.length <= 1) throw new UrlIsNotAcctLikeError();
 
 	const split = path.split('@', 3); // ['', 'username', 'other.example.com']
 
