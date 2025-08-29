@@ -32,6 +32,15 @@ export type SoundStore = {
 	volume: number;
 };
 
+export type StatusbarStore = {
+	name: string;
+	id: string;
+	type: string;
+	size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
+	black: boolean;
+	props: Record<string, any>;
+};
+
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
 export const PREF_DEF = definePreferences({
@@ -180,14 +189,7 @@ export const PREF_DEF = definePreferences({
 		],
 	},
 	statusbars: {
-		default: [] as {
-			name: string;
-			id: string;
-			type: string;
-			size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
-			black: boolean;
-			props: Record<string, any>;
-		}[],
+		default: [] as StatusbarStore[],
 	},
 	serverDisconnectedBehavior: {
 		default: 'quiet' as 'quiet' | 'reload' | 'dialog',

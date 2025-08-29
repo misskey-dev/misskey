@@ -154,10 +154,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'announcements'" class="_gaps">
 				<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
 
-				<MkSelect v-model="announcementsStatus">
+				<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
 					<template #label>{{ i18n.ts.filter }}</template>
-					<option value="active">{{ i18n.ts.active }}</option>
-					<option value="archived">{{ i18n.ts.archived }}</option>
 				</MkSelect>
 
 				<MkPagination :paginator="announcementsPaginator">
@@ -185,8 +183,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
 					<div class="selects">
-						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-							<option value="per-user-notes">{{ i18n.ts.notes }}</option>
+						<MkSelect v-model="chartSrc" :items="chartSrcDef" style="margin: 0 10px 0 0; flex: 1;">
 						</MkSelect>
 					</div>
 					<div class="charts">
@@ -232,6 +229,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { iAmAdmin, $i, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -245,7 +243,15 @@ const props = withDefaults(defineProps<{
 });
 
 const tab = ref(props.initialTab);
-const chartSrc = ref('per-user-notes');
+const {
+	model: chartSrc,
+	def: chartSrcDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.notes, value: 'per-user-notes' },
+],
+	initialValue: 'per-user-notes',
+});
 const user = ref<null | Misskey.entities.UserDetailed>();
 const init = ref<ReturnType<typeof createFetcher>>();
 const info = ref<any>();
@@ -263,7 +269,16 @@ const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	})),
 }));
 
-const announcementsStatus = ref<'active' | 'archived'>('active');
+const {
+	model: announcementsStatus,
+	def: announcementsStatusDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.active, value: 'active' },
+		{ label: i18n.ts.archived, value: 'archived' },
+	],
+	initialValue: 'active',
+});
 
 const announcementsPaginator = markRaw(new Paginator('admin/announcements/list', {
 	limit: 10,

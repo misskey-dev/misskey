@@ -8,10 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<MkPaginationControl :paginator="paginator" canFilter>
-				<MkSelect v-model="type" style="margin: 0; flex: 1;">
+				<MkSelect v-model="type" :items="typeDef" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
-					<option :value="null">{{ i18n.ts.all }}</option>
-					<option v-for="t in Misskey.moderationLogTypes" :key="t" :value="t">{{ i18n.ts._moderationLogTypes[t] ?? t }}</option>
 				</MkSelect>
 
 				<MkInput v-model="moderatorId" style="margin: 0; flex: 1;">
@@ -54,12 +52,22 @@ import MkTl from '@/components/MkTl.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPaginationControl from '@/components/MkPaginationControl.vue';
 import { Paginator } from '@/utility/paginator.js';
 
-const type = ref<string | null>(null);
+const {
+	model: type,
+	def: typeDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: null },
+		...Misskey.moderationLogTypes.map(t => ({ label: i18n.ts._moderationLogTypes[t] ?? t, value: t })),
+	],
+	initialValue: null,
+});
 const moderatorId = ref('');
 
 const paginator = markRaw(new Paginator('admin/show-moderation-logs', {

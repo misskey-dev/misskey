@@ -6,11 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
-		<MkSelect v-model="filterType" :class="$style.input" @update:modelValue="filterItems">
+		<MkSelect v-model="filterType" :items="filterTypeDef" :class="$style.input" @update:modelValue="filterItems">
 			<template #label>{{ i18n.ts.state }}</template>
-			<option value="all">{{ i18n.ts.all }}</option>
-			<option value="publishing">{{ i18n.ts.publishing }}</option>
-			<option value="expired">{{ i18n.ts.expired }}</option>
 		</MkSelect>
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
@@ -95,6 +92,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const ads = ref<Misskey.entities.Ad[]>([]);
 
@@ -102,7 +100,17 @@ const ads = ref<Misskey.entities.Ad[]>([]);
 const localTime = new Date();
 const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
 const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, i18n.ts._weekday.tuesday, i18n.ts._weekday.wednesday, i18n.ts._weekday.thursday, i18n.ts._weekday.friday, i18n.ts._weekday.saturday];
-const filterType = ref('all');
+const {
+	model: filterType,
+	def: filterTypeDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'all' },
+		{ label: i18n.ts.publishing, value: 'publishing' },
+		{ label: i18n.ts.expired, value: 'expired' },
+	],
+	initialValue: 'all',
+});
 let publishing: boolean | null = null;
 
 misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
@@ -121,7 +129,7 @@ misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 	}
 });
 
-const filterItems = (v) => {
+const filterItems = (v: typeof filterType.value) => {
 	if (v === 'publishing') {
 		publishing = true;
 	} else if (v === 'expired') {
@@ -134,7 +142,7 @@ const filterItems = (v) => {
 };
 
 // 選択された曜日(index)のビットフラグを操作する
-function toggleDayOfWeek(ad, index) {
+function toggleDayOfWeek(ad: Misskey.entities.Ad, index: number) {
 	ad.dayOfWeek ^= 1 << index;
 }
 
@@ -153,7 +161,7 @@ function add() {
 	});
 }
 
-function remove(ad) {
+function remove(ad: Misskey.entities.Ad) {
 	os.confirm({
 		type: 'warning',
 		text: i18n.tsx.removeAreYouSure({ x: ad.url }),
@@ -169,7 +177,7 @@ function remove(ad) {
 	});
 }
 
-function save(ad) {
+function save(ad: Misskey.entities.Ad) {
 	if (ad.id == null) {
 		misskeyApi('admin/ad/create', {
 			...ad,

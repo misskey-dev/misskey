@@ -39,9 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-text="v.label || k"></span>
 					<template v-if="v.description" #caption>{{ v.description }}</template>
 				</MkSwitch>
-				<MkSelect v-else-if="v.type === 'enum'" v-model="values[k]">
+				<MkSelect v-else-if="v.type === 'enum'" v-model="values[k]" :items="getMkSelectDef(v)">
 					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="option in v.enum" :key="option.value" :value="option.value">{{ option.label }}</option>
 				</MkSelect>
 				<MkRadios v-else-if="v.type === 'radio'" v-model="values[k]">
 					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
@@ -72,12 +71,12 @@ import { reactive, useTemplateRef } from 'vue';
 import MkInput from './MkInput.vue';
 import MkTextarea from './MkTextarea.vue';
 import MkSwitch from './MkSwitch.vue';
-import MkSelect from './MkSelect.vue';
+import MkSelect, { type MkSelectItem } from './MkSelect.vue';
 import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import XFile from './MkFormDialog.file.vue';
-import type { Form } from '@/utility/form.js';
+import type { EnumFormItem, Form } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 
@@ -100,6 +99,16 @@ const values = reactive({});
 
 for (const item in props.form) {
 	values[item] = props.form[item].default ?? null;
+}
+
+function getMkSelectDef(def: EnumFormItem): MkSelectItem[] {
+	return def.enum.map((v) => {
+		if (typeof v === 'string') {
+			return { value: v, label: v };
+		} else {
+			return { value: v.value, label: v.label };
+		}
+	});
 }
 
 function ok() {
