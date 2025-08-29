@@ -43,7 +43,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+type SupportedTypes = 'text' | 'password' | 'email' | 'url' | 'tel' | 'number' | 'search';
+type ModelValueType<T extends SupportedTypes> =
+	T extends 'number' ? number :
+	T extends 'text' | 'password' | 'email' | 'url' | 'tel' | 'search' ? string :
+	never;
+</script>
+
+<script lang="ts" setup generic="T extends SupportedTypes = 'text'">
 import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
@@ -55,8 +63,8 @@ import { Autocomplete } from '@/utility/autocomplete.js';
 import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	modelValue: string | number | null;
-	type?: InputHTMLAttributes['type'];
+	modelValue: ModelValueType<T> | null;
+	type?: T;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -83,7 +91,7 @@ const emit = defineEmits<{
 	(ev: 'change', _ev: KeyboardEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter', _ev: KeyboardEvent): void;
-	(ev: 'update:modelValue', value: string | number): void;
+	(ev: 'update:modelValue', value: ModelValueType<T>): void;
 }>();
 
 const { modelValue, type, autofocus } = toRefs(props);
