@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { ref } from 'vue';
 import type { Ref, MaybeRefOrGetter } from 'vue';
 import type { MkSelectItem, OptionValue, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
