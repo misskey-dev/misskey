@@ -94,8 +94,8 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: ModelValueType<T>): void;
 }>();
 
-const { modelValue, type, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
+const { modelValue } = toRefs(props);
+const v = ref<ModelValueType<T> | null>(modelValue.value);
 const id = genId();
 const focused = ref(false);
 const changed = ref(false);
@@ -128,8 +128,8 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 const updated = () => {
 	changed.value = false;
-	if (type.value === 'number') {
-		emit('update:modelValue', typeof v.value === 'number' ? v.value : parseFloat(v.value ?? '0'));
+	if (props.type === 'number') {
+		emit('update:modelValue', typeof v.value === 'number' ? v.value as ModelValueType<T> : parseFloat(v.value ?? '0') as ModelValueType<T>);
 	} else {
 		emit('update:modelValue', v.value ?? '');
 	}
@@ -175,7 +175,7 @@ useInterval(() => {
 
 onMounted(() => {
 	nextTick(() => {
-		if (autofocus.value) {
+		if (props.autofocus) {
 			focus();
 		}
 	});
