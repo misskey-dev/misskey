@@ -292,9 +292,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkSelect
 										v-model="nsfw"
 										:items="[
-											{ label: i18n.ts.respect, value: 'respect' },
-											{ label: i18n.ts.ignore, value: 'ignore' },
-											{ label: i18n.ts.force, value: 'force' },
+											{ label: i18n.ts._displayOfSensitiveMedia.respect, value: 'respect' },
+											{ label: i18n.ts._displayOfSensitiveMedia.ignore, value: 'ignore' },
+											{ label: i18n.ts._displayOfSensitiveMedia.force, value: 'force' },
 										]"
 									>
 										<template #label><SearchLabel>{{ i18n.ts.displayOfSensitiveMedia }}</SearchLabel></template>
