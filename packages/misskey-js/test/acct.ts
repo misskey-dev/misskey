@@ -39,8 +39,25 @@ function testParseUrl(fn: (acct: string) => acct.Acct) {
 		expect(res).toEqual({ username: 'alice', host: 'other.example.com' });
 	});
 
-	it('throws on non-acct-like url path', () => {
+	it('throws on non-acct-like url path (root)', () => {
+		expect(() => fn('https://example.com')).toThrowError();
+	});
+
+	it('throws on non-acct-like url path (users/alice)', () => {
 		expect(() => fn('https://example.com/users/alice')).toThrowError();
+	});
+
+	it('throws ended with @', () => {
+		expect(() => fn('https://example.com/@')).toThrowError();
+	});
+
+	it('parses url ended with /', () => {
+		const res = fn('https://example.com/@alice/');
+		expect(res).toEqual({ username: 'alice', host: 'example.com' });
+	});
+
+	it('throws url have @username path but ended with sub directory', () => {
+		expect(() => fn('https://example.com/@alice/subdir')).toThrowError();
 	});
 }
 

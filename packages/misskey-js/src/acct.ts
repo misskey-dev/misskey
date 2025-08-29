@@ -29,8 +29,13 @@ export function parse(acct: string): Acct {
 
 export function parseUrl(str: string): Acct {
 	const url = new URL(str);
-	const path = url.pathname.split('/').find((p) => p.startsWith('@') && p.length >= 2);
+	const splited = url.pathname.split('/');
+	let path = splited.pop();
+	if (path === '') path = splited.pop(); // If the last segment is empty due to a trailing '/', use the previous segment
+
 	if (!path) throw new Error('This url is not acct like.');
+	if (!path.startsWith('@')) throw new Error('This url is not acct like.');
+	if (path.length <= 1) throw new Error('This url is not acct like.');
 
 	const split = path.split('@', 3); // ['', 'username', 'other.example.com']
 
