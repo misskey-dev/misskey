@@ -28,7 +28,8 @@ declare namespace acct {
         parseUrl,
         parseAcctOrUrl,
         toString_2 as toString,
-        Acct
+        Acct,
+        UrlIsNotAcctLikeError
     }
 }
 export { acct }
@@ -3639,6 +3640,11 @@ type TestResponse = operations['test']['responses']['200']['content']['applicati
 
 // @public (undocumented)
 function toString_2(acct: Acct): string;
+
+// @public (undocumented)
+class UrlIsNotAcctLikeError extends Error {
+    constructor();
+}
 
 // @public (undocumented)
 type User = components['schemas']['User'];
