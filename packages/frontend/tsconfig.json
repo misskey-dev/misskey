@@ -55,6 +55,7 @@
 		"./@types/**/*.ts"
 	],
 	"exclude": [
-		".storybook/**/*"
+		".storybook/**/*",
+		"./src/**/*.stories.ts"
 	]
 }

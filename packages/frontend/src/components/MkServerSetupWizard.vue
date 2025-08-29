@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkSwitch v-if="q_federation === 'yes'" v-model="q_remoteContentsCleaning">
 				<template #label>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning }}</template>
-				<template #caption>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning_description }}</template>
+				<template #caption>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning_description }} ({{ i18n.ts._serverSetupWizard.remoteContentsCleaning_description2 }})</template>
 			</MkSwitch>
 		</div>
 	</MkFolder>

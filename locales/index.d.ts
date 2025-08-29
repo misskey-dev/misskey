@@ -12032,13 +12032,17 @@ export interface Locale extends ILocale {
          */
         "youCanConfigureMoreFederationSettingsLater": string;
         /**
-         * 受信コンテンツの自動クリーニング
+         * リモートコンテンツの自動クリーニング
          */
         "remoteContentsCleaning": string;
         /**
-         * 連合を行うと、継続して多くのコンテンツを受信します。自動クリーニングを有効にすると、参照されていない古くなったコンテンツを自動でサーバーから削除し、ストレージを節約できます。
+         * 連合を行うと、継続して多くのコンテンツを受信します。自動クリーニングを有効にすると、参照されていない古くなったリモートコンテンツを自動でサーバーから削除し、ストレージを節約できます。
          */
         "remoteContentsCleaning_description": string;
+        /**
+         * ローカル内リモートコンテンツへのハイパーリンクはリンク切れとなります。
+         */
+        "remoteContentsCleaning_description2": string;
         /**
          * 管理者情報
          */

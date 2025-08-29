@@ -50,6 +50,7 @@ export type DefaultStoredWidget = {
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, computed } from 'vue';
+import { isLink } from '@@/js/is-link.js';
 import { genId } from '@/utility/id.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -57,8 +58,7 @@ import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { isLink } from '@@/js/is-link.js';
-import { useMkSelect } from '@/composables/use-mkselect';
+\import { useMkSelect } from '@/composables/use-mkselect';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -81,7 +81,7 @@ const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
 	(ev: 'addWidget', widget: Widget): void;
 	(ev: 'removeWidget', widget: Widget): void;
-	(ev: 'updateWidget', widget: Partial<Widget>): void;
+	(ev: 'updateWidget', widget: { id: Widget['id']; data: Widget['data']; }): void;
 	(ev: 'exit'): void;
 }>();
 
@@ -112,7 +112,7 @@ const addWidget = () => {
 const removeWidget = (widget) => {
 	emit('removeWidget', widget);
 };
-const updateWidget = (id, data) => {
+const updateWidget = (id: Widget['id'], data: Widget['data']) => {
 	emit('updateWidget', { id, data });
 };
 

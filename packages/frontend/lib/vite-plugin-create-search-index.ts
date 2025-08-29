@@ -8,7 +8,7 @@
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
 import {
 	createLogger,
-	EnvironmentModuleGraph,
+	type EnvironmentModuleGraph,
 	type LogErrorOptions,
 	type LogOptions,
 	normalizePath,

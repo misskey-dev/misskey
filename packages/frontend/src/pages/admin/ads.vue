@@ -148,15 +148,15 @@ function toggleDayOfWeek(ad: Misskey.entities.Ad, index: number) {
 
 function add() {
 	ads.value.unshift({
-		id: null,
+		id: '',
 		memo: '',
 		place: 'square',
 		priority: 'middle',
 		ratio: 1,
 		url: '',
-		imageUrl: null,
-		expiresAt: null,
-		startsAt: null,
+		imageUrl: '',
+		expiresAt: new Date().toISOString(),
+		startsAt: new Date().toISOString(),
 		dayOfWeek: 0,
 	});
 }
@@ -168,7 +168,7 @@ function remove(ad: Misskey.entities.Ad) {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		ads.value = ads.value.filter(x => x !== ad);
-		if (ad.id == null) return;
+		if (ad.id === '') return;
 		os.apiWithDialog('admin/ad/delete', {
 			id: ad.id,
 		}).then(() => {
@@ -178,7 +178,7 @@ function remove(ad: Misskey.entities.Ad) {
 }
 
 function save(ad: Misskey.entities.Ad) {
-	if (ad.id == null) {
+	if (ad.id === '') {
 		misskeyApi('admin/ad/create', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
@@ -215,7 +215,7 @@ function save(ad: Misskey.entities.Ad) {
 }
 
 function more() {
-	misskeyApi('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id != null ? ad : acc).id, publishing: publishing }).then(adsResponse => {
+	misskeyApi('admin/ad/list', { untilId: ads.value.reduce((acc, ad) => ad.id !== '' ? ad : acc).id, publishing: publishing }).then(adsResponse => {
 		if (adsResponse == null) return;
 		ads.value = ads.value.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
