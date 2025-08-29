@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						[$style.iconFrame_platinum]: ACHIEVEMENT_BADGES[achievement.name].frame === 'platinum',
 					}]"
 				>
-					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg }">
+					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg ?? '' }">
 						<img :class="$style.iconImg" :src="ACHIEVEMENT_BADGES[achievement.name].img">
 					</div>
 				</div>
@@ -61,8 +61,8 @@ import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/utili
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	withLocked: boolean;
-	withDescription: boolean;
+	withLocked?: boolean;
+	withDescription?: boolean;
 }>(), {
 	withLocked: true,
 	withDescription: true,

@@ -43,6 +43,8 @@ const fetching = ref(true);
 const { handler: externalTooltipHandler } = useChartTooltip();
 
 async function renderChart() {
+	if (chartEl.value == null) return;
+
 	if (chartInstance) {
 		chartInstance.destroy();
 	}

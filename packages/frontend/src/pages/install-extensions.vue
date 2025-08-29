@@ -161,7 +161,7 @@ async function _fetch_() {
 					},
 					raw: res.data,
 				};
-			} catch (err) {
+			} catch (err: any) {
 				switch (err.message.toLowerCase()) {
 					case 'this theme is already installed':
 						errorKV.value = {

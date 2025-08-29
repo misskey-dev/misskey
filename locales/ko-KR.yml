@@ -1668,7 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "현재 일부 설정은 리셋됩니다."
   entrancePageStyle: "입구 페이지의 스타일"
   showTimelineForVisitor: "타임라인 표시"
-  showActivityiesForVisitor: "활동 표시"
+  showActivitiesForVisitor: "액티비티 표시하기"
   _userGeneratedContentsVisibilityForVisitor:
     all: "모두 공개"
     localOnly: "로컬 콘텐츠만 공개하고 리모트 콘텐츠는 비공개"
@@ -3120,6 +3120,7 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "나중에 연합 가능한 서버의 지정 등 고급 설정을 할 수 있습니다."
   remoteContentsCleaning: "리모트 콘텐츠 자동 정리"
   remoteContentsCleaning_description: "연합 중인 서버가 있는 경우, 리모트 서버에서 대단히 많은 콘텐츠를 받아오게 됩니다. 자동 정리 기능을 활성화하면, 오래되고 서버에서 더 이상 조회되지 않는 콘텐츠를 자동으로 서버에서 삭제하여, 스토리지를 절약할 수 있습니다."
+  remoteContentsCleaning_description2: "로컬 내 원격 콘텐츠로의 하이퍼링크는 깨진 링크로 됩니다."
   adminInfo: "관리자 정보"
   adminInfo_description: "문의 접수를 위해 사용되는 관리자 정보를 설정합니다."
   adminInfo_mustBeFilled: "오픈 서버 혹은 연합이 켜져 있는 경우 반드시 입력해야 합니다."

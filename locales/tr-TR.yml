@@ -1668,7 +1668,6 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Bazı mevcut ayarlar sıfırlanacaktır."
   entrancePageStyle: "Giriş sayfası stili"
   showTimelineForVisitor: "Panoyu göster"
-  showActivityiesForVisitor: "Aktiviteleri göster"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Her şey halka açıktır."
     localOnly: "Yalnızca yerel içerik yayınlanır, uzak içerik gizli tutulur."

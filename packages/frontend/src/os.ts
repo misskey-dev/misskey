@@ -684,7 +684,7 @@ export async function cropImageFile(imageFile: File | Blob, options: {
 	});
 }
 
-export function popupMenu(items: MenuItem[], anchorElement?: HTMLElement | EventTarget | null, options?: {
+export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElement | EventTarget | null, options?: {
 	align?: string;
 	width?: number;
 	onClosing?: () => void;
@@ -696,7 +696,7 @@ export function popupMenu(items: MenuItem[], anchorElement?: HTMLElement | Event
 	let returnFocusTo = getHTMLElementOrNull(anchorElement) ?? getHTMLElementOrNull(window.document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
-			items,
+			items: items.filter(x => x != null),
 			anchorElement,
 			width: options?.width,
 			align: options?.align,

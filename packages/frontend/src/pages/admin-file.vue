@@ -172,7 +172,7 @@ const headerTabs = computed(() => [{
 	key: 'raw',
 	title: 'Raw data',
 	icon: 'ti ti-code',
-}]);
+}].filter(x => x != null));
 
 definePage(() => ({
 	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,

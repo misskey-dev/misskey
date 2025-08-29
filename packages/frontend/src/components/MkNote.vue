@@ -654,7 +654,7 @@ function showRenoteMenu(): void {
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
-			($i?.isModerator || $i?.isAdmin) ? getUnrenote() : undefined,
+			...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : []),
 		], renoteTime.value);
 	}
 }

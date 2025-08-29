@@ -156,11 +156,8 @@ async function done() {
 		isSensitive: isSensitive.value,
 		localOnly: localOnly.value,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
+		fileId: file.value ? file.value.id : undefined,
 	};
-
-	if (file.value) {
-		params.fileId = file.value.id;
-	}
 
 	if (props.emoji) {
 		await os.apiWithDialog('admin/emoji/update', {
@@ -177,7 +174,12 @@ async function done() {
 
 		windowEl.value?.close();
 	} else {
-		const created = await os.apiWithDialog('admin/emoji/add', params);
+		if (params.fileId == null) return;
+
+		const created = await os.apiWithDialog('admin/emoji/add', {
+			...params,
+			fileId: params.fileId, // TSを黙らすため
+		});
 
 		emit('done', {
 			created: created,
