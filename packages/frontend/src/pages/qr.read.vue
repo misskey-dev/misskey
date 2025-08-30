@@ -116,10 +116,10 @@ async function processResult(result: QrScanner.ScanResult) {
 	await misskeyApi('ap/show', { uri })
 		.then(data => {
 			if (data.type === 'User') {
-				sources.set(uri, data.object);
+				sources.set(uri, data);
 				tab.value = 'users';
 			} else if (data.type === 'Note') {
-				sources.set(uri, data.object);
+				sources.set(uri, data);
 				tab.value = 'notes';
 			}
 			updateLists();
