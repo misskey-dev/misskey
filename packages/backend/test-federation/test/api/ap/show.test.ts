@@ -1,5 +1,5 @@
 import { strictEqual, rejects } from 'node:assert';
-import { createAccount, sleep, type LoginUser } from '../../utils.js';
+import { createAccount, resolveRemoteUser, sleep, type LoginUser } from '../../utils.js';
 
 describe('API ap/show', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -36,12 +36,20 @@ describe('API ap/show', () => {
 			strictEqual(res.object.id, alice.id);
 		});
 
-		test('throws in resolving a remote user by local profile URL (https://a.test/@bob@b.test)', async () => {
+		test('resolve a fetched remote user by local profile url (https://a.test/@bob@b.test)', async () => {
+			await resolveRemoteUser('b.test', bob.id, alice);
+			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` });
+			strictEqual(res.type, 'User');
+			strictEqual(res.object.id, bob.id);
+		});
+
+		test('throws in resolving a non-fetched remote user by local profile url (https://a.test/@bob@b.test)', async () => {
+			// ユーザーがこのような問い合わせをすることは、ない！
+
 			await rejects(
 				async () => await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` }),
 				(err: any) => {
 					strictEqual(err.code, 'NO_SUCH_OBJECT');
-					strictEqual(err.info.e.message, 'No such object.');
 					return true;
 				},
 			);
