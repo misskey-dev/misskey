@@ -18,6 +18,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import type { Config } from '@/config.js';
 import { ApiError } from '../../error.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
@@ -113,6 +114,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -120,9 +127,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private apDbResolverService: ApDbResolverService,
 		private apPersonService: ApPersonService,
 		private apNoteService: ApNoteService,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const object = await this.fetchAny(ps.uri, me);
@@ -220,6 +224,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		const pathComponents = uri.pathname.split('/').filter(Boolean);
 		if (pathComponents.length === 1 && pathComponents[0].startsWith('@')) {
 			const acct = Acct.parse(pathComponents[0]);
+			// normalize acct host
+			if (acct.host != null && this.utilityService.toPuny(acct.host) === this.utilityService.toPuny(this.config.host)) acct.host = null;
 
 			return await this.usersRepository.findOneBy({
 				usernameLower: acct.username.toLowerCase(),
