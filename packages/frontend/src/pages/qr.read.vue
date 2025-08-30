@@ -221,6 +221,18 @@ onMounted(() => {
 			highlightScanRegion: true,
 			highlightCodeOutline: true,
 			overlay: overlayEl.value,
+			calculateScanRegion(video: HTMLVideoElement): QrScanner.ScanRegion {
+				const aspectRatio = video.videoWidth / video.videoHeight;
+				const SHORT_SIDE_SIZE_DOWNSCALED = 360;
+				return {
+					x: 0,
+					y: 0,
+					width: video.videoWidth,
+					height: video.videoHeight,
+					downScaledWidth: aspectRatio > 1 ? Math.round(SHORT_SIDE_SIZE_DOWNSCALED * aspectRatio) : SHORT_SIDE_SIZE_DOWNSCALED,
+					downScaledHeight: aspectRatio > 1 ? SHORT_SIDE_SIZE_DOWNSCALED : Math.round(SHORT_SIDE_SIZE_DOWNSCALED / aspectRatio),
+				};
+			},
 			onDecodeError(err) {
 				if (err.toString().includes('No QR code found')) return;
 				if (alertLock.value) return;
