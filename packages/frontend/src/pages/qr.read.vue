@@ -4,22 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root" :style="{
-	'--MI-QrReadScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing) )`,
-	'--MI-QrReadViewHeight': 'calc(var(--MI-QrReadScrollHeight) - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px))',
-	'--MI-QrReadVideoHeight': 'min(calc(var(--MI-QrReadViewHeight) * 0.3), 512px)',
-}">
+<div
+	ref="rootEl" :class="$style.root" :style="{
+		'--MI-QrReadScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing) )`,
+		'--MI-QrReadViewHeight': 'calc(var(--MI-QrReadScrollHeight) - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px))',
+		'--MI-QrReadVideoHeight': 'min(calc(var(--MI-QrReadViewHeight) * 0.3), 512px)',
+	}"
+>
 	<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
-	<div class="_spacer" :style="{
-		'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
-	}">
-		<div class="_gaps" style="padding-bottom: var(--MI-margin);">
-			<MkUserInfo v-for="user in users.slice(0, 5)" :key="user.id" :user="user"/>
+	<div
+		class="_spacer" :style="{
+			'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
+		}"
+	>
+		<MkTab v-model="tab" :class="$style.tab">
+			<option value="users">{{ i18n.ts.users }} ({{ users.length }})</option>
+			<option value="notes">{{ i18n.ts.notes }} ({{ notes.length }})</option>
+		</MkTab>
+		<div v-if="tab === 'users'" class="_gaps" style="padding-bottom: var(--MI-margin);">
+			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
 		</div>
-		<div class="_gaps_s">
-			<MkA v-for="user in users.slice(5)" :key="user.id" :to="userPage(user)">
-				<MkUserCardMini :user="user" />
-			</MkA>
+		<div v-else-if="tab === 'notes'" class="_gaps" style="padding-bottom: var(--MI-margin);">
+			<MkNote v-for="note in notes" :key="note.id" :note="note"/>
 		</div>
 	</div>
 </div>
@@ -29,27 +35,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 import QrScanner from 'qr-scanner';
 import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
+import { getScrollContainer } from '@@/js/scroll.js';
+import type { ApShowResponse } from 'misskey-js/entities.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { userPage } from '@/filters/user.js';
-import { getScrollContainer } from '@@/js/scroll.js';
+
+const LIST_RERENDER_INTERVAL = 1500;
 
 const scrollContainer = shallowRef<HTMLElement | null>(null);
 const rootEl = ref<HTMLDivElement | null>(null);
 const scrollHeight = ref(window.innerHeight);
 
+const tab = ref<'users' | 'notes'>('users');
+
 const scannerInstance = shallowRef<QrScanner | null>(null);
+
 const uris = ref<string[]>([]);
+const sources = new Map<string, ApShowResponse | null>();
 const usersSource = new Map<string, misskey.entities.UserDetailed | null>();
+const notesSource = new Map<string, misskey.entities.Note | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
+const notes = ref<misskey.entities.Note[]>([]);
 
 const timer = ref<number | null>(null);
 
-function updateUsers() {
-	users.value = uris.value.map(uri => usersSource.get(uri)).filter(u => u) as misskey.entities.UserDetailed[];
+function updateLists() {
+	const results = uris.value.map(uri => sources.get(uri)).filter((r): r is ApShowResponse => !!r);
+	users.value = results.filter(r => r.type === 'User').map(r => r.object).filter((u): u is misskey.entities.UserDetailed => !!u);
+	notes.value = results.filter(r => r.type === 'Note').map(r => r.object).filter((n): n is misskey.entities.Note => !!n);
 	updateRequired.value = false;
 }
 
@@ -61,15 +76,22 @@ watch(uris, () => {
 		return;
 	}
 
-	updateUsers();
+	updateLists();
 
 	timer.value = window.setTimeout(() => {
 		console.log('Update users after 3 seconds');
 		timer.value = null;
 		if (updateRequired.value) {
-			updateUsers();
+			updateLists();
 		}
-	}, 3000) as number;
+	}, LIST_RERENDER_INTERVAL) as number;
+});
+
+watch(tab, () => {
+	if (timer.value) {
+		window.clearTimeout(timer.value);
+		timer.value = null;
+	}
 });
 
 async function processResult(result: QrScanner.ScanResult) {
@@ -89,13 +111,21 @@ async function processResult(result: QrScanner.ScanResult) {
 	if (usersSource.has(uri)) return;
 	// Start fetching user info
 	usersSource.set(uri, null);
-	
+	notesSource.set(uri, null);
+
 	await misskeyApi('ap/show', { uri })
 		.then(data => {
 			if (data.type === 'User') {
 				usersSource.set(uri, data.object);
-				updateUsers();
+				tab.value = 'users';
+			} else if (data.type === 'Note') {
+				notesSource.set(uri, data.object);
+				tab.value = 'notes';
 			}
+			updateLists();
+		})
+		.catch(err => {
+			console.error(err);
 		});
 }
 
@@ -172,6 +202,8 @@ onUnmounted(() => {
 
 .video {
 	position: sticky;
+	top: var(--MI-stickyTop, 0);
+	z-index: 1;
 	background: var(--MI_THEME-bg);
 	background-size: 16px 16px;
 	width: 100%;
