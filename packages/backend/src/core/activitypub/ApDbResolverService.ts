@@ -7,7 +7,7 @@ import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as misskey from 'misskey-js';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { MiMeta, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -50,6 +50,9 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -128,14 +131,25 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject, acceptAcct: boolean = false): Promise<MiLocalUser | MiRemoteUser | null> {
+	public async getUserFromApId(value: string | IObject, acceptAcct = false): Promise<MiLocalUser | MiRemoteUser | null> {
 		const parsed = this.parseLocalUri(value);
 
 		if (acceptAcct && 'acct' in parsed) {
-			return await this.usersRepository.findOneBy({
-				usernameLower: parsed.acct.username.toLowerCase(),
-				host: (parsed.acct.host == null || parsed.local) ? IsNull() : this.utilityService.toPuny(parsed.acct.host),
-			}) as MiLocalUser | MiRemoteUser | null;
+			if (parsed.acct.host == null || parsed.local) {
+				return await this.usersRepository.findOneBy({
+					usernameLower: parsed.acct.username.toLowerCase(),
+					host: IsNull(),
+				}) as MiLocalUser | null;
+			}
+
+			if (this.meta.allowExternalApRedirect) {
+				return await this.usersRepository.findOneBy({
+					usernameLower: parsed.acct.username.toLowerCase(),
+					host: this.utilityService.toPuny(parsed.acct.host),
+				}) as MiRemoteUser | null;
+			}
+
+			return null;
 		}
 
 		if ('uri' in parsed) {
