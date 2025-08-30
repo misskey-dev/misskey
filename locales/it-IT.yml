@@ -2663,7 +2663,7 @@ _notification:
   createToken: "È stato creato un token di accesso"
   createTokenDescription: "In caso contrario, eliminare il token di accesso tramite ({text})."
   _types:
-    all: "Tutto"
+    all: "Tutte"
     note: "Nuove Note"
     follow: "Follower"
     mention: "Menzioni"
@@ -2671,7 +2671,7 @@ _notification:
     renote: "Rinota"
     quote: "Cita"
     reaction: "Reazioni"
-    pollEnded: "Sondaggio chiuso."
+    pollEnded: "Sondaggio terminato"
     receiveFollowRequest: "Richieste di follow in arrivo"
     followRequestAccepted: "Richieste di follow accettate"
     roleAssigned: "Ruolo concesso"
