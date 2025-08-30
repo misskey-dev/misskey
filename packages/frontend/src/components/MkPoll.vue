@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
@@ -57,6 +57,13 @@ const remaining = computed(() => {
 	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
 });
 
+const remainingWatchStop = watch(remaining, (to) => {
+	if (to <= 0) {
+		showResult.value = true;
+		remainingWatchStop();
+	}
+}, { immediate: true });
+
 const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
@@ -78,7 +85,7 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${props.noteId}`,
 }));
 
-const vote = async (id) => {
+const vote = async (id: number) => {
 	if (props.readOnly || closed.value || isVoted.value) return;
 
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
