@@ -24,6 +24,12 @@ describe('API ap/show', () => {
 			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
 		});
 
+		test('resolve local user by local uri', async () => {
+			const res = await alice.client.request('ap/show', { uri: `https://a.test/users/${alice.id}` });
+			strictEqual(res.type, 'User');
+			strictEqual(res.object.id, alice.id);
+		});
+
 		test('resolve local user by local profile url', async () => {
 			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${alice.username}` });
 			strictEqual(res.type, 'User');
