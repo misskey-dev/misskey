@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
 	<div
-		class="_spacer" :style="{
+		:style="{
 			'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
 		}"
 	>
@@ -21,10 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<option value="users">{{ i18n.ts.users }} ({{ users.length }})</option>
 			<option value="notes">{{ i18n.ts.notes }} ({{ notes.length }})</option>
 		</MkTab>
-		<div v-if="tab === 'users'" class="_gaps" style="padding-bottom: var(--MI-margin);">
+		<div v-if="tab === 'users'" :class="['_spacer', '_gaps', $style.users]" style="padding-bottom: var(--MI-margin);">
 			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
 		</div>
-		<div v-else-if="tab === 'notes'" class="_gaps" style="padding-bottom: var(--MI-margin);">
+		<div v-else-if="tab === 'notes'" class="_spacer _gaps" style="padding-bottom: var(--MI-margin);">
 			<MkNote v-for="note in notes" :key="note.id" :note="note"/>
 		</div>
 	</div>
@@ -221,16 +221,9 @@ html[data-color-scheme=light] .video {
 	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
 }
 
-.listBig {
+.users {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(405px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 	grid-gap: var(--MI-margin);
-}
-
-.listMini {
-	width: 100%;
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-	grid-gap: 12px;
 }
 </style>
