@@ -1668,6 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Some current settings will be reset."
   entrancePageStyle: "Entrance page style"
   showTimelineForVisitor: "Show timeline"
+  showActivitiesForVisitor: "Show activities"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Everything is public"
     localOnly: "Only local content is published, remote content is kept private"
@@ -3119,6 +3120,7 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "Advanced settings such as specifying federated servers can be configured later."
   remoteContentsCleaning: "Automatic cleanup of received contents"
   remoteContentsCleaning_description: "Federation may result in a continuous inflow of content. Enabling automatic cleanup will remove outdated and unreferenced content from the server to save storage."
+  remoteContentsCleaning_description2: "Hyperlinks to remote content within the local server may become broken."
   adminInfo: "Administrator information"
   adminInfo_description: "Sets the administrator information used to receive inquiries."
   adminInfo_mustBeFilled: "Must be entered if public server or federation is on."
