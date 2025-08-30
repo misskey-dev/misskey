@@ -51,9 +51,8 @@ function testParseUrl(fn: (acct: string) => acct.Acct) {
 		expect(() => fn('https://example.com/@')).toThrowError();
 	});
 
-	it('parses url ended with /', () => {
-		const res = fn('https://example.com/@alice/');
-		expect(res).toEqual({ username: 'alice', host: 'example.com' });
+	it('throws ended with /', () => {
+		expect(() => fn('https://example.com/@alice/')).toThrowError();
 	});
 
 	it('throws url have @username path but ended with sub directory', () => {
