@@ -36,10 +36,15 @@ describe('API ap/show', () => {
 			strictEqual(res.object.id, alice.id);
 		});
 
-		test('resolve a remote user by local profile URL (https://a.test/@bob@b.test)', async () => {
-			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` });
-			strictEqual(res.type, 'User');
-			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
+		test('throws in resolving a remote user by local profile URL (https://a.test/@bob@b.test)', async () => {
+			await rejects(
+				async () => await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` }),
+				(err: any) => {
+					strictEqual(err.code, 'NO_SUCH_OBJECT');
+					strictEqual(err.info.e.message, 'No such object.');
+					return true;
+				},
+			);
 		});
 	});
 
