@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import isChromatic from 'chromatic/isChromatic';
-import { ref, computed, watch } from 'vue';
+import { computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import { dateTimeFormat } from '@@/js/intl-const.js';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
