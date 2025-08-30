@@ -128,10 +128,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject): Promise<MiLocalUser | MiRemoteUser | null> {
+	public async getUserFromApId(value: string | IObject, acceptAcct: boolean = false): Promise<MiLocalUser | MiRemoteUser | null> {
 		const parsed = this.parseLocalUri(value);
 
-		if ('acct' in parsed) {
+		if (acceptAcct && 'acct' in parsed) {
 			return await this.usersRepository.findOneBy({
 				usernameLower: parsed.acct.username.toLowerCase(),
 				host: (parsed.acct.host == null || parsed.local) ? IsNull() : this.utilityService.toPuny(parsed.acct.host),

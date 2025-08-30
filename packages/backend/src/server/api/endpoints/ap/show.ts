@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		let local = await this.mergePack(me, ...await Promise.all([
-			this.apDbResolverService.getUserFromApId(uri),
+			this.apDbResolverService.getUserFromApId(uri, true),
 			this.apDbResolverService.getNoteFromApId(uri),
 		]));
 		if (local != null) return local;
