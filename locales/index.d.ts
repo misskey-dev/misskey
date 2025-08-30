@@ -12040,10 +12040,6 @@ export interface Locale extends ILocale {
          */
         "remoteContentsCleaning_description": string;
         /**
-         * ローカル内リモートコンテンツへのハイパーリンクはリンク切れとなります。
-         */
-        "remoteContentsCleaning_description2": string;
-        /**
          * 管理者情報
          */
         "adminInfo": string;
