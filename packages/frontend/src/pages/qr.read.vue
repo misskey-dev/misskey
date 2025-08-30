@@ -13,38 +13,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 		'--MI-QrReadVideoHeight': 'min(calc(var(--MI-QrReadViewHeight) * 0.3), 512px)',
 	}"
 >
-	<div :class="$style.view">
-		<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
-		<div ref="overlayEl" :class="$style.overlay"></div>
-		<div v-if="scannerInstance" :class="$style.controls">
-			<MkButton v-if="qrStarted" v-tooltip="i18n.ts._qr.stopQr" iconOnly @click="stopQr"><i class="ti ti-player-play"></i></MkButton>
-			<MkButton v-else v-tooltip="i18n.ts._qr.startQr" iconOnly danger @click="startQr"><i class="ti ti-player-pause"></i></MkButton>
+	<MkStickyContainer>
+		<template #header>
+			<div :class="$style.view">
+				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
+				<div ref="overlayEl" :class="$style.overlay"></div>
+				<div v-if="scannerInstance" :class="$style.controls">
+					<MkButton v-if="qrStarted" v-tooltip="i18n.ts._qr.stopQr" iconOnly @click="stopQr"><i class="ti ti-player-play"></i></MkButton>
+					<MkButton v-else v-tooltip="i18n.ts._qr.startQr" iconOnly danger @click="startQr"><i class="ti ti-player-pause"></i></MkButton>
 
-			<MkButton v-tooltip="i18n.ts._qr.chooseCamera" iconOnly @click="chooseCamera"><i class="ti ti-camera-rotate"></i></MkButton>
+					<MkButton v-tooltip="i18n.ts._qr.chooseCamera" iconOnly @click="chooseCamera"><i class="ti ti-camera-rotate"></i></MkButton>
 
-			<MkButton v-if="!flashCanToggle" v-tooltip="i18n.ts._qr.cannotToggleFlash" iconOnly disabled><i class="ti ti-bolt"></i></MkButton>
-			<MkButton v-else-if="!flash" v-tooltip="i18n.ts._qr.turnOnFlash" iconOnly @click="toggleFlash(true)"><i class="ti ti-bolt-off"></i></MkButton>
-			<MkButton v-else v-tooltip="i18n.ts._qr.turnOffFlash" iconOnly @click="toggleFlash(false)"><i class="ti ti-bolt-filled"></i></MkButton>
+					<MkButton v-if="!flashCanToggle" v-tooltip="i18n.ts._qr.cannotToggleFlash" iconOnly disabled><i class="ti ti-bolt"></i></MkButton>
+					<MkButton v-else-if="!flash" v-tooltip="i18n.ts._qr.turnOnFlash" iconOnly @click="toggleFlash(true)"><i class="ti ti-bolt-off"></i></MkButton>
+					<MkButton v-else v-tooltip="i18n.ts._qr.turnOffFlash" iconOnly @click="toggleFlash(false)"><i class="ti ti-bolt-filled"></i></MkButton>
+				</div>
+			</div>
+		</template>
+		<div
+			:class="['_spacer', $style.contents]"
+			:style="{
+				'--MI_SPACER-w': '800px'
+			}"
+		>
+			<MkStickyContainer>
+				<template #header>
+					<MkTab v-model="tab" :class="$style.tab">
+						<option value="users">{{ i18n.ts.users }}</option>
+						<option value="notes">{{ i18n.ts.notes }}</option>
+					</MkTab>
+				</template>
+				<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
+					<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
+				</div>
+				<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
+					<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
+				</div>
+			</MkStickyContainer>
 		</div>
-	</div>
-	<div
-		class="_spacer"
-		:style="{
-			'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
-			'--MI_SPACER-w': '800px'
-		}"
-	>
-		<MkTab v-model="tab" :class="$style.tab">
-			<option value="users">{{ i18n.ts.users }}</option>
-			<option value="notes">{{ i18n.ts.notes }}</option>
-		</MkTab>
-		<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
-			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
-		</div>
-		<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
-			<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
-		</div>
-	</div>
+	</MkStickyContainer>
 </div>
 </template>
 
@@ -338,6 +345,15 @@ html[data-color-scheme=dark] .view {
 html[data-color-scheme=light] .view {
 	--c: rgb(0 0 0 / 2%);
 	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
+}
+
+.contents {
+	padding-top: calc(var(--MI-margin) / 2);
+}
+
+.tab {
+	padding: calc(var(--MI-margin) / 2) 0;
+	background: var(--MI_THEME-bg);
 }
 
 .users {
