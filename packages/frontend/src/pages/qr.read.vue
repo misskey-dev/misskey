@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		class="_spacer"
 		:style="{
 			'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
+			'--MI_SPACER-w': '800px'
 		}"
 	>
 		<MkTab v-model="tab" :class="$style.tab">
