@@ -50,9 +50,11 @@ const props = defineProps<{
 
 const now = useLowresTime();
 
+const expiresAtTime = computed(() => props.expiresAt ? new Date(props.expiresAt).getTime() : null);
+
 const remaining = computed(() => {
-	if (props.expiresAt == null) return -1;
-	return Math.floor(Math.max(new Date(props.expiresAt).getTime() - now.value, 0) / 1000);
+	if (expiresAtTime.value == null) return -1;
+	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
 });
 
 const total = computed(() => sum(props.choices.map(x => x.votes)));
