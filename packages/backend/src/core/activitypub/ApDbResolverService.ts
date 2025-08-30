@@ -89,7 +89,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 				type: 'acct',
 				acct,
 			};
-		} finally {
+		} catch (e) {
 			// no-op
 		}
 
