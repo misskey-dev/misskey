@@ -57,8 +57,6 @@ const scannerInstance = shallowRef<QrScanner | null>(null);
 
 const uris = ref<string[]>([]);
 const sources = new Map<string, ApShowResponse | null>();
-const usersSource = new Map<string, misskey.entities.UserDetailed | null>();
-const notesSource = new Map<string, misskey.entities.Note | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
 const notes = ref<misskey.entities.Note[]>([]);
 
@@ -111,18 +109,17 @@ async function processResult(result: QrScanner.ScanResult) {
 		uris.value = [uri, ...uris.value.slice(0, 29).filter(u => u !== uri)];
 	}
 
-	if (usersSource.has(uri)) return;
+	if (sources.has(uri)) return;
 	// Start fetching user info
-	usersSource.set(uri, null);
-	notesSource.set(uri, null);
+	sources.set(uri, null);
 
 	await misskeyApi('ap/show', { uri })
 		.then(data => {
 			if (data.type === 'User') {
-				usersSource.set(uri, data.object);
+				sources.set(uri, data.object);
 				tab.value = 'users';
 			} else if (data.type === 'Note') {
-				notesSource.set(uri, data.object);
+				sources.set(uri, data.object);
 				tab.value = 'notes';
 			}
 			updateLists();
