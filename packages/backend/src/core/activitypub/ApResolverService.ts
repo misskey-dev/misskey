@@ -16,8 +16,8 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { getApId, isCollectionOrOrderedCollection } from './type.js';
-import { ApDbResolverService, type UriParseResult } from './ApDbResolverService.js';
+import { isCollectionOrOrderedCollection } from './type.js';
+import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import { FetchAllowSoftFailMask } from './misc/check-against-url.js';
@@ -96,9 +96,8 @@ export class Resolver {
 		this.history.add(value);
 
 		const host = this.utilityService.extractDbHost(value);
-		const parsed = this.apDbResolverService.parseLocalUri(value);
-		if (parsed.local === true) {
-			return await this.resolveLocal(getApId(value), parsed);
+		if (this.utilityService.isSelfHost(host)) {
+			return await this.resolveLocal(value);
 		}
 
 		if (!this.utilityService.isFederationAllowedHost(host)) {
@@ -125,18 +124,9 @@ export class Resolver {
 	}
 
 	@bindThis
-	private resolveLocal(url: string, parsed: UriParseResult): Promise<IObject> {
-		if (parsed.local === false || 'uri' in parsed) {
-			throw new IdentifiableError('02b40cd0-fa92-4b0c-acc9-fb2ada952ab8', 'resolveLocal: not local');
-		}
-
-		if ('acct' in parsed) {
-			return this.usersRepository.findOneByOrFail({
-				usernameLower: parsed.acct.username.toLowerCase(),
-				host: IsNull(),
-			})
-				.then(user => this.apRendererService.renderPerson(user as MiLocalUser));
-		}
+	private resolveLocal(url: string): Promise<IObject> {
+		const parsed = this.apDbResolverService.parseLocalUri(url);
+		if (!parsed.local) throw new IdentifiableError('02b40cd0-fa92-4b0c-acc9-fb2ada952ab8', 'resolveLocal: not local');
 
 		switch (parsed.type) {
 			case 'notes':
