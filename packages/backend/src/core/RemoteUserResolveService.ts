@@ -75,7 +75,7 @@ export class RemoteUserResolveService {
 			const self = await this.resolveSelf(acctLower);
 
 			if (this.utilityService.isUriLocal(self.href)) {
-				const local = this.apDbResolverService.parseUri(self.href);
+				const local = this.apDbResolverService.parseLocalUri(self.href);
 				if (local.local && local.type === 'users') {
 					// the LR points to local
 					return (await this.apDbResolverService

@@ -15,9 +15,10 @@ import { bindThis } from '@/decorators.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isCollectionOrOrderedCollection } from './type.js';
-import { ApDbResolverService } from './ApDbResolverService.js';
+import { ApDbResolverService, type UriParseResult } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import { FetchAllowSoftFailMask } from './misc/check-against-url.js';
@@ -42,6 +43,7 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private remoteUserResolveService: RemoteUserResolveService,
 		private loggerService: LoggerService,
 		private recursionLimit = 256,
 	) {
@@ -96,8 +98,9 @@ export class Resolver {
 		this.history.add(value);
 
 		const host = this.utilityService.extractDbHost(value);
-		if (this.utilityService.isSelfHost(host)) {
-			return await this.resolveLocal(value);
+		const parsed = this.apDbResolverService.parseLocalUri(value);
+		if (parsed.local === true) {
+			return await this.resolveLocal(parsed);
 		}
 
 		if (!this.utilityService.isFederationAllowedHost(host)) {
@@ -124,9 +127,18 @@ export class Resolver {
 	}
 
 	@bindThis
-	private resolveLocal(url: string): Promise<IObject> {
-		const parsed = this.apDbResolverService.parseUri(url);
-		if (!parsed.local) throw new IdentifiableError('02b40cd0-fa92-4b0c-acc9-fb2ada952ab8', 'resolveLocal: not local');
+	private resolveLocal(parsed: UriParseResult): Promise<IObject> {
+		if (parsed.local === false || 'uri' in parsed) {
+			throw new IdentifiableError('02b40cd0-fa92-4b0c-acc9-fb2ada952ab8', 'resolveLocal: not local');
+		}
+
+		if ('acct' in parsed) {
+			return this.usersRepository.findOneByOrFail({
+				usernameLower: parsed.acct.username.toLowerCase(),
+				host: IsNull(),
+			})
+				.then(user => this.apRendererService.renderPerson(user as MiLocalUser));
+		}
 
 		switch (parsed.type) {
 			case 'notes':
