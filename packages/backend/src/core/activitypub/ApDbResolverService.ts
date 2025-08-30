@@ -84,13 +84,11 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		try {
 			const acct = misskey.acct.parseUrl(uri.toString());
-			if (acct) {
-				return {
-					local: this.utilityService.isSelfHost(acct.host),
-					type: 'acct',
-					acct,
-				};
-			}
+			return {
+				local: this.utilityService.isSelfHost(acct.host),
+				type: 'acct',
+				acct,
+			};
 		} finally {
 			// no-op
 		}
