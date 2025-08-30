@@ -1,5 +1,10 @@
 import { strictEqual, rejects } from 'node:assert';
-import { createAccount, resolveRemoteUser, sleep, type LoginUser } from '../../utils.js';
+import { createAccount, fetchAdmin, resolveRemoteUser, sleep, type LoginUser } from '../../utils.js';
+
+const [aAdmin, bAdmin] = await Promise.all([
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
+]);
 
 describe('API ap/show', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -37,15 +42,16 @@ describe('API ap/show', () => {
 		});
 
 		test('resolve a fetched remote user by local profile url (https://a.test/@bob@b.test)', async () => {
-			await alice.client.request('admin/update-meta', { allowExternalApRedirect: true });
+			await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect: true });
 			await resolveRemoteUser('b.test', bob.id, alice);
+
 			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` });
 			strictEqual(res.type, 'User');
 			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
 		});
 
 		test('throws in resolving a fetched remote user by local profile url when allowExternalApRedirect: false', async () => {
-			await alice.client.request('admin/update-meta', { allowExternalApRedirect: false });
+			await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect: false });
 			await resolveRemoteUser('b.test', bob.id, alice);
 
 			await rejects(
@@ -58,9 +64,10 @@ describe('API ap/show', () => {
 		});
 
 		test('throws in resolving a non-fetched remote user by local profile url (https://a.test/@bob@b.test)', async () => {
-			// ユーザーがこのような問い合わせをすることは、ない！
+			// ユーザーがこのような問い合わせをすることは故意でない限りなさそうだし、ActivityPubServerServiceでもこのような仕様である
 
-			await alice.client.request('admin/update-meta', { allowExternalApRedirect: true });
+			await aAdmin.client.request('admin/update-meta', { allowExternalApRedirect: true });
+
 			await rejects(
 				async () => await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` }),
 				(err: any) => {
