@@ -12569,6 +12569,30 @@ export interface Locale extends ILocale {
          * Fediverseで私をフォローしてください！
          */
         "shareText": string;
+        /**
+         * カメラを選択
+         */
+        "chooseCamera": string;
+        /**
+         * ライト選択不可
+         */
+        "cannotToggleFlash": string;
+        /**
+         * ライトをオンにする
+         */
+        "turnOnFlash": string;
+        /**
+         * ライトをオフにする
+         */
+        "turnOffFlash": string;
+        /**
+         * コードリーダーを再開
+         */
+        "startQr": string;
+        /**
+         * コードリーダーを停止
+         */
+        "stopQr": string;
     };
 }
 declare const locales: {

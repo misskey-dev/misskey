@@ -11,24 +11,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 		'--MI-QrReadVideoHeight': 'min(calc(var(--MI-QrReadViewHeight) * 0.3), 512px)',
 	}"
 >
-	<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
-	<div
-		class="_spacer"
-		:style="{
-			'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
-			'--MI_SPACER-w': '800px'
-		}"
-	>
-		<MkTab v-model="tab" :class="$style.tab">
-			<option value="users">{{ i18n.ts.users }}</option>
-			<option value="notes">{{ i18n.ts.notes }}</option>
-		</MkTab>
-		<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
-			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
+	<div :class="$style.view">
+		<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
+		<div ref="overlayEl" :class="$style.overlay"></div>
+		<div v-if="scannerInstance" :class="$style.controls">
+			<MkButton v-if="qrStarted" v-tooltip="i18n.ts._qr.stopQr" iconOnly @click="stopQr"><i class="ti ti-player-play"></i></MkButton>
+			<MkButton v-else v-tooltip="i18n.ts._qr.startQr" iconOnly danger @click="startQr"><i class="ti ti-player-pause"></i></MkButton>
+
+			<MkButton v-tooltip="i18n.ts._qr.chooseCamera" iconOnly @click="chooseCamera"><i class="ti ti-camera-rotate"></i></MkButton>
+
+			<MkButton v-if="!flashCanToggle" v-tooltip="i18n.ts._qr.cannotToggleFlash" iconOnly disabled><i class="ti ti-bolt"></i></MkButton>
+			<MkButton v-else-if="!flash" v-tooltip="i18n.ts._qr.turnOnFlash" iconOnly @click="toggleFlash(true)"><i class="ti ti-bolt-off"></i></MkButton>
+			<MkButton v-else v-tooltip="i18n.ts._qr.turnOffFlash" iconOnly @click="toggleFlash(false)"><i class="ti ti-bolt-filled"></i></MkButton>
 		</div>
-		<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
-			<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
-		</div>
+	</div>
+</div>
+<div
+	class="_spacer"
+	:style="{
+		'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
+		'--MI_SPACER-w': '800px'
+	}"
+>
+	<MkTab v-model="tab" :class="$style.tab">
+		<option value="users">{{ i18n.ts.users }}</option>
+		<option value="notes">{{ i18n.ts.notes }}</option>
+	</MkTab>
+	<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
+		<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
+	</div>
+	<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
+		<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
 	</div>
 </div>
 </template>
@@ -45,16 +58,20 @@ import MkUserInfo from '@/components/MkUserInfo.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkNote from '@/components/MkNote.vue';
 import MkTab from '@/components/MkTab.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const LIST_RERENDER_INTERVAL = 1500;
 
-const scrollContainer = shallowRef<HTMLElement | null>(null);
 const rootEl = ref<HTMLDivElement | null>(null);
+const videoEl = ref<HTMLVideoElement | null>(null);
+const overlayEl = ref<HTMLDivElement | null>(null);
+
+const scrollContainer = shallowRef<HTMLElement | null>(null);
 const scrollHeight = ref(window.innerHeight);
 
-const tab = ref<'users' | 'notes'>('users');
-
 const scannerInstance = shallowRef<QrScanner | null>(null);
+
+const tab = ref<'users' | 'notes'>('users');
 
 const uris = ref<string[]>([]);
 const sources = new Map<string, ApShowResponse | null>();
@@ -134,12 +151,62 @@ async function processResult(result: QrScanner.ScanResult) {
 		});
 }
 
+const qrStarted = ref(true);
+const flashCanToggle = ref(false);
+const flash = ref(false);
+
+async function chooseCamera() {
+	if (!scannerInstance.value) return;
+	const cameras = await QrScanner.listCameras(true);
+	if (cameras.length === 0) {
+		os.alert({
+			type: 'error',
+		});
+		return;
+	}
+
+	const select = await os.select({
+		title: i18n.ts._qr.chooseCamera,
+		items: cameras.map(camera => ({
+			text: camera.label,
+			value: camera.id,
+		})),
+	});
+	if (select.canceled) return;
+	if (select.result == null) return;
+
+	await scannerInstance.value.setCamera(select.result);
+	flashCanToggle.value = await scannerInstance.value.hasFlash();
+	flash.value = scannerInstance.value.isFlashOn();
+}
+
+async function toggleFlash(to = false) {
+	if (!scannerInstance.value) return;
+
+	flash.value = to;
+	if (flash.value) {
+		await scannerInstance.value.turnFlashOn();
+	} else {
+		await scannerInstance.value.turnFlashOff();
+	}
+}
+
+async function startQr() {
+	if (!scannerInstance.value) return;
+	await scannerInstance.value.start();
+	qrStarted.value = true;
+}
+
+async function stopQr() {
+	if (!scannerInstance.value) return;
+	await scannerInstance.value.stop();
+	qrStarted.value = false;
+}
+
 const alertLock = ref(false);
 
 onMounted(() => {
-	const videoEl = window.document.querySelector('video');
-
-	if (!videoEl) {
+	if (!videoEl.value || !overlayEl.value) {
 		os.alert({
 			type: 'error',
 			text: i18n.ts.somethingHappened,
@@ -148,9 +215,12 @@ onMounted(() => {
 	}
 
 	scannerInstance.value = new QrScanner(
-		videoEl,
+		videoEl.value,
 		processResult,
 		{
+			highlightScanRegion: true,
+			highlightCodeOutline: true,
+			overlay: overlayEl.value,
 			onDecodeError(err) {
 				if (err.toString().includes('No QR code found')) return;
 				if (alertLock.value) return;
@@ -165,7 +235,21 @@ onMounted(() => {
 		},
 	);
 
-	scannerInstance.value.start();
+	scannerInstance.value.start()
+		.then(async () => {
+			qrStarted.value = true;
+			if (!scannerInstance.value) return;
+			flashCanToggle.value = await scannerInstance.value.hasFlash();
+			flash.value = scannerInstance.value.isFlashOn();
+		})
+		.catch(err => {
+			qrStarted.value = false;
+			os.alert({
+				type: 'error',
+				text: err.toString(),
+			});
+			console.error(err);
+		});
 });
 
 onUnmounted(() => {
@@ -205,7 +289,7 @@ onUnmounted(() => {
 	position: relative;
 }
 
-.video {
+.view {
 	position: sticky;
 	top: var(--MI-stickyTop, 0);
 	z-index: 1;
@@ -213,15 +297,31 @@ onUnmounted(() => {
 	background-size: 16px 16px;
 	width: 100%;
 	height: var(--MI-QrReadVideoHeight);
+}
+
+.video {
+	width: 100%;
+	height: 100%;
 	object-fit: contain;
 }
 
-html[data-color-scheme=dark] .video {
+.controls {
+	width: 100%;
+	position: absolute;
+	left: 0;
+	bottom: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+html[data-color-scheme=dark] .view {
 	--c: rgb(255 255 255 / 2%);
 	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
 }
 
-html[data-color-scheme=light] .video {
+html[data-color-scheme=light] .view {
 	--c: rgb(0 0 0 / 2%);
 	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
 }
