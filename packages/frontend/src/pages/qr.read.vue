@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 	>
 		<MkTab v-model="tab" :class="$style.tab">
-			<option value="users">{{ i18n.ts.users }} ({{ usersCount }})</option>
-			<option value="notes">{{ i18n.ts.notes }} ({{ notesCount }})</option>
+			<option value="users">{{ i18n.ts.users }}</option>
+			<option value="notes">{{ i18n.ts.notes }}</option>
 		</MkTab>
 		<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
 			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
