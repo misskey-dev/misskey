@@ -29,7 +29,7 @@ import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
-const MAX_ROOM_MEMBERS = 30;
+const MAX_ROOM_MEMBERS = 50;
 const MAX_REACTIONS_PER_MESSAGE = 100;
 const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
 
@@ -328,6 +328,16 @@ export class ChatService {
 		const redisPipeline = this.redisClient.pipeline();
 		redisPipeline.del(`newRoomChatMessageExists:${readerId}:${roomId}`);
 		redisPipeline.srem(`newChatMessagesExists:${readerId}`, `room:${roomId}`);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
+	public async readAllChatMessages(
+		readerId: MiUser['id'],
+	): Promise<void> {
+		const redisPipeline = this.redisClient.pipeline();
+		// TODO: newUserChatMessageExists とか newRoomChatMessageExists も消したい(けどキーの列挙が必要になって面倒)
+		redisPipeline.del(`newChatMessagesExists:${readerId}`);
 		await redisPipeline.exec();
 	}
 

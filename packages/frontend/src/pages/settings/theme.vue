@@ -9,8 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-adaptive-border class="rfqxtzch _panel">
 			<div class="toggle">
 				<div class="toggleWrapper">
-					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-					<label for="dn" class="toggle">
+					<div class="toggle" :class="store.r.darkMode.value ? 'checked' : null" @click="toggleDarkMode()">
 						<span class="before">{{ i18n.ts.light }}</span>
 						<span class="after">{{ i18n.ts.dark }}</span>
 						<span class="toggle__handler">
@@ -24,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="star star--4"></span>
 						<span class="star star--5"></span>
 						<span class="star star--6"></span>
-					</label>
+					</div>
 				</div>
 			</div>
 			<div class="sync">
@@ -36,8 +35,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div class="_gaps">
-			<template v-if="!darkMode">
+		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.themeIsDefaultBecauseSafeMode }}</MkInfo>
+
+		<div v-else class="_gaps">
+			<template v-if="!store.r.darkMode.value">
 				<SearchMarker :keywords="['light', 'theme']">
 					<MkFolder :defaultOpen="true" :max-height="500">
 						<template #icon><i class="ti ti-sun"></i></template>
@@ -57,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceLightTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(instanceLightTheme, $event)">
 											<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceLightTheme.name }}</div>
 										</label>
@@ -77,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -97,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -128,7 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceDarkTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(instanceDarkTheme, $event)">
 											<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceDarkTheme.name }}</div>
 										</label>
@@ -148,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -168,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -204,13 +205,16 @@ import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { isSafeMode } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
+import * as os from '@/os.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
-import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
+import MkInfo from '@/components/MkInfo.vue';
+import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -218,6 +222,7 @@ import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
@@ -257,7 +262,6 @@ const lightThemeId = computed({
 	},
 });
 
-const darkMode = computed(store.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const themesCount = installedThemes.value.length;
 
@@ -266,6 +270,22 @@ watch(syncDeviceDarkMode, () => {
 		store.set('darkMode', isDeviceDarkmode());
 	}
 });
+
+async function toggleDarkMode() {
+	const value = !store.r.darkMode.value;
+	if (syncDeviceDarkMode.value) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+		});
+		if (canceled) return;
+
+		syncDeviceDarkMode.value = false;
+		store.set('darkMode', value);
+	} else {
+		store.set('darkMode', value);
+	}
+}
 
 const themesSyncEnabled = ref(prefer.isSyncEnabled('themes'));
 
@@ -279,6 +299,26 @@ function changeThemesSyncEnabled(value: boolean) {
 		prefer.disableSync('themes');
 		themesSyncEnabled.value = false;
 	}
+}
+
+function onThemeContextmenu(theme: Theme, ev: MouseEvent) {
+	os.contextMenu([{
+		type: 'label',
+		text: theme.name,
+	}, {
+		icon: 'ti ti-clipboard',
+		text: i18n.ts._theme.copyThemeCode,
+		action: () => {
+			copyToClipboard(JSON5.stringify(theme, null, '\t'));
+		},
+	}, {
+		icon: 'ti ti-trash',
+		text: i18n.ts.delete,
+		danger: true,
+		action: () => {
+			removeTheme(theme);
+		},
+	}], ev);
 }
 
 const headerActions = computed(() => []);
@@ -365,16 +405,6 @@ definePage(() => ({
 			overflow: clip;
 			padding: 0 100px;
 			vertical-align: bottom;
-
-			input {
-				position: absolute;
-				left: -99em;
-			}
-		}
-
-		.dn:focus-visible ~ .toggle {
-			outline: 2px solid var(--MI_THEME-focus);
-			outline-offset: 2px;
 		}
 
 		.toggle {
@@ -402,6 +432,61 @@ definePage(() => ({
 			> .after {
 				right: -68px;
 				color: var(--MI_THEME-fg);
+			}
+
+			&.checked {
+				background-color: #749DD6;
+
+				> .before {
+					color: var(--MI_THEME-fg);
+				}
+
+				> .after {
+					color: var(--MI_THEME-accent);
+				}
+
+				.toggle__handler {
+					background-color: #FFE5B5;
+					transform: translate3d(40px, 0, 0) rotate(0);
+
+					.crater { opacity: 1; }
+				}
+
+				.star--1 {
+					width: 2px;
+					height: 2px;
+				}
+
+				.star--2 {
+					width: 4px;
+					height: 4px;
+					transform: translate3d(-5px, 0, 0);
+				}
+
+				.star--3 {
+					width: 2px;
+					height: 2px;
+					transform: translate3d(-7px, 0, 0);
+				}
+
+				.star--4,
+				.star--5,
+				.star--6 {
+					opacity: 1;
+					transform: translate3d(0,0,0);
+				}
+
+				.star--4 {
+					transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
+
+				.star--5 {
+					transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
+
+				.star--6 {
+					transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
 			}
 		}
 
@@ -512,63 +597,6 @@ definePage(() => ({
 			width: 2px;
 			height: 2px;
 			transform: translate3d(3px,0,0);
-		}
-
-		input:checked {
-			+ .toggle {
-				background-color: #749DD6;
-
-				> .before {
-					color: var(--MI_THEME-fg);
-				}
-
-				> .after {
-					color: var(--MI_THEME-accent);
-				}
-
-				.toggle__handler {
-					background-color: #FFE5B5;
-					transform: translate3d(40px, 0, 0) rotate(0);
-
-					.crater { opacity: 1; }
-				}
-
-				.star--1 {
-					width: 2px;
-					height: 2px;
-				}
-
-				.star--2 {
-					width: 4px;
-					height: 4px;
-					transform: translate3d(-5px, 0, 0);
-				}
-
-				.star--3 {
-					width: 2px;
-					height: 2px;
-					transform: translate3d(-7px, 0, 0);
-				}
-
-				.star--4,
-				.star--5,
-				.star--6 {
-					opacity: 1;
-					transform: translate3d(0,0,0);
-				}
-
-				.star--4 {
-					transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				}
-
-				.star--5 {
-					transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				}
-
-				.star--6 {
-					transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				}
-			}
 		}
 	}
 

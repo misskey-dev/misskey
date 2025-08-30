@@ -28,7 +28,8 @@ type ParametersOf<T extends ILocale, TKey extends FlattenKeys<T, ParameterizedSt
 		: never;
 
 type Tsx<T extends ILocale> = {
-	readonly [K in keyof T as T[K] extends string ? never : K]: T[K] extends ParameterizedString<infer P>
+	// `string extends T[K] ? never : K` part removes non-parameterized string keys from Tsx type.
+	readonly [K in keyof T as string extends T[K] ? never : K]: T[K] extends ParameterizedString<infer P>
 		? (arg: { readonly [_ in P]: string | number }) => string
 		// @ts-expect-error -- 証明省略
 		: Tsx<T[K]>;
@@ -68,7 +69,7 @@ export class I18n<T extends ILocale> {
 
 					console.error(`Unexpected locale key: ${String(p)}`);
 
-					return p;
+					return new Proxy({} as any, new Handler<TTarget[keyof TTarget] & ILocale>());
 				}
 			}
 
@@ -137,7 +138,7 @@ export class I18n<T extends ILocale> {
 
 					console.error(`Unexpected locale key: ${String(p)}`);
 
-					return p;
+					return new Proxy((() => p) as any, new Handler<TTarget[keyof TTarget] & ILocale>());
 				}
 			}
 

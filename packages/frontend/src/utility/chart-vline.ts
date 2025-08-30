@@ -8,9 +8,10 @@ import type { Plugin } from 'chart.js';
 export const chartVLine = (vLineColor: string) => ({
 	id: 'vLine',
 	beforeDraw(chart, args, options) {
-		if (chart.tooltip?._active?.length) {
+		const tooltip = chart.tooltip as any;
+		if (tooltip?._active?.length) {
 			const ctx = chart.ctx;
-			const xs = chart.tooltip._active.map(a => a.element.x);
+			const xs = tooltip._active.map(a => a.element.x);
 			const x = xs.reduce((a, b) => a + b, 0) / xs.length;
 			const topY = chart.scales.y.top;
 			const bottomY = chart.scales.y.bottom;

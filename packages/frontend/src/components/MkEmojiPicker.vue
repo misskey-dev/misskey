@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkCustomEmoji v-if="!emoji.hasOwnProperty('char')" class="emoji" :name="getKey(emoji)" :normal="true"/>
 						<MkEmoji v-else class="emoji" :emoji="getKey(emoji)" :normal="true"/>
 					</button>
+					<button v-tooltip="i18n.ts.settings" class="_button config" @click="settings"><i class="ti ti-settings"></i></button>
 				</div>
 			</section>
 
@@ -139,6 +140,10 @@ import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-e
 import { $i } from '@/i.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
+import { haptic } from '@/utility/haptic.js';
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -147,7 +152,7 @@ const props = withDefaults(defineProps<{
 	asDrawer?: boolean;
 	asWindow?: boolean;
 	asReactionPicker?: boolean; // 今は使われてないが将来的に使いそう
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 }>(), {
 	showPinned: true,
 });
@@ -427,6 +432,8 @@ function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, 
 	const key = getKey(emoji);
 	emit('chosen', key);
 
+	haptic();
+
 	// 最近使った絵文字更新
 	if (!pinned.value?.includes(key)) {
 		let recents = store.s.recentlyUsedEmojis;
@@ -487,6 +494,11 @@ function done(query?: string): boolean | void {
 		chosen(searchResultUnicode.value[0]);
 		return true;
 	}
+}
+
+function settings() {
+	emit('esc');
+	router.push('/settings/emoji-palette');
 }
 
 onMounted(() => {
@@ -575,6 +587,14 @@ defineExpose({
 					display: grid;
 					grid-template-columns: var(--columns);
 					font-size: 30px;
+
+					> .config {
+						aspect-ratio: 1 / 1;
+						width: auto;
+						height: auto;
+						min-width: 0;
+						font-size: 14px;
+					}
 
 					> .item {
 						aspect-ratio: 1 / 1;
@@ -675,12 +695,7 @@ defineExpose({
 		height: 100%;
 		overflow-y: auto;
 		overflow-x: hidden;
-
 		scrollbar-width: none;
-
-		&::-webkit-scrollbar {
-			display: none;
-		}
 
 		> .group {
 			&:not(.index) {
@@ -719,6 +734,15 @@ defineExpose({
 			> .body {
 				position: relative;
 				padding: $pad;
+
+				> .config {
+					position: relative;
+					padding: 0 3px;
+					width: var(--eachSize);
+					height: var(--eachSize);
+					contain: strict;
+					opacity: 0.5;
+				}
 
 				> .item {
 					position: relative;

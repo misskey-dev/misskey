@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormPagination ref="list" :pagination="pagination">
+	<MkPagination :paginator="paginator">
 		<template #empty><MkResult type="empty"/></template>
 		<template #default="{items}">
 			<div class="_gaps">
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 					<template #label>{{ token.name }}</template>
 					<template #caption>{{ token.description }}</template>
-					<template #suffix><MkTime :time="token.lastUsedAt"/></template>
+					<template v-if="token.lastUsedAt != null" #suffix><MkTime :time="token.lastUsedAt"/></template>
 					<template #footer>
 						<MkButton danger @click="revoke(token)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					</template>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #key>{{ i18n.ts.installedDate }}</template>
 								<template #value><MkTime :time="token.createdAt" :mode="'detail'"/></template>
 							</MkKeyValue>
-							<MkKeyValue oneline>
+							<MkKeyValue v-if="token.lastUsedAt != null" oneline>
 								<template #key>{{ i18n.ts.lastUsedDate }}</template>
 								<template #value><MkTime :time="token.lastUsedAt" :mode="'detail'"/></template>
 							</MkKeyValue>
@@ -44,35 +44,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</div>
 		</template>
-	</FormPagination>
+	</MkPagination>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from 'vue';
+import { ref, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
-import FormPagination from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import { Paginator } from '@/utility/paginator.js';
 
-const list = useTemplateRef('list');
-
-const pagination = {
-	endpoint: 'i/apps' as const,
+const paginator = markRaw(new Paginator('i/apps', {
 	limit: 100,
 	noPaging: true,
 	params: {
 		sort: '+lastUsedAt',
 	},
-};
+}));
 
 function revoke(token) {
 	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
-		list.value?.paginator.reload();
+		paginator.reload();
 	});
 }
 

@@ -913,6 +913,8 @@ flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
 postForm: "Napísať poznámku"
 information: "Informácie"
+inMinutes: "min"
+inDays: "dní"
 _chat:
   invitations: "Pozvať"
   noHistory: "Žiadna história"
@@ -1108,7 +1110,6 @@ _theme:
     buttonBg: "Pozadie tlačidla"
     buttonHoverBg: "Pozadie tlačidla (pod kurzorom)"
     inputBorder: "Okraj vstupného poľa"
-    driveFolderBg: "Pozadie priečinu disku"
     badge: "Odznak"
     messageBg: "Pozadie chatu"
     fgHighlighted: "Zvýraznený text"
@@ -1451,3 +1452,17 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Všetko"
   searchScopeLocal: "Lokálne"
+_watermarkEditor:
+  opacity: "Priehľadnosť"
+  scale: "Veľkosť"
+  text: "Text"
+  type: "Typ"
+  image: "Obrázky"
+  advanced: "Rozšírené"
+_imageEffector:
+  _fxProps:
+    scale: "Veľkosť"
+    size: "Veľkosť"
+    color: "Farba"
+    opacity: "Priehľadnosť"
+    lightness: "Zosvetliť"

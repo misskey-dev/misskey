@@ -34,6 +34,7 @@ const props = defineProps<{
 const password = ref('');
 
 async function save() {
+	if (props.token == null) return;
 	await os.apiWithDialog('reset-password', {
 		token: props.token,
 		password: password.value,
@@ -41,9 +42,9 @@ async function save() {
 	mainRouter.push('/');
 }
 
-onMounted(() => {
+onMounted(async () => {
 	if (props.token == null) {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkForgotPassword.vue').then(x => x.default), {}, {
 			closed: () => dispose(),
 		});
 		mainRouter.push('/');

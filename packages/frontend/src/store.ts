@@ -10,6 +10,7 @@ import darkTheme from '@@/themes/d-green-lime.json5';
 import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { Plugin } from '@/plugin.js';
+import type { TIPS } from '@/tips.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Pizzax } from '@/lib/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
@@ -22,26 +23,13 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'account',
 		default: 0,
 	},
-	timelineTutorials: {
-		where: 'account',
-		default: {
-			home: false,
-			local: false,
-			social: false,
-			global: false,
-		},
-	},
-	abusesTutorial: {
-		where: 'account',
-		default: false,
-	},
-	readDriveTip: {
-		where: 'account',
-		default: false,
+	tips: {
+		where: 'device',
+		default: {} as Partial<Record<typeof TIPS[number], boolean>>, // true = 既読
 	},
 	memo: {
 		where: 'account',
-		default: null,
+		default: null as string | null,
 	},
 	reactionAcceptance: {
 		where: 'account',
@@ -118,7 +106,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	accountInfos: {
 		where: 'device',
-		default: {} as Record<string, Misskey.entities.User>, // host/userId, user
+		default: {} as Record<string, Misskey.entities.MeDetailed>, // host/userId, user
 	},
 
 	enablePreferencesAutoCloudBackup: {

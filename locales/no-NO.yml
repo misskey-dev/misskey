@@ -461,6 +461,8 @@ replies: "Svar"
 renotes: "Renote"
 surrender: "Avbryt"
 information: "Informasjon"
+inMinutes: "Minutter"
+inDays: "Dager"
 _chat:
   invitations: "Inviter"
   members: "Medlemmer"
@@ -735,3 +737,13 @@ _remoteLookupErrors:
     title: "Ikke funnet"
 _search:
   searchScopeAll: "Alle"
+_watermarkEditor:
+  scale: "Størrelse"
+  text: "Tekst"
+  type: "Type"
+  image: "Bilder"
+_imageEffector:
+  _fxProps:
+    scale: "Størrelse"
+    size: "Størrelse"
+    color: "Farge"

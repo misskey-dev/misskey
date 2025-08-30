@@ -16,11 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkTextarea>
 
 			<div class="_gaps_s">
-				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : '' }">
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>
-				<MkButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
+				<MkButton primary @click="chooseFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
 			</div>
 
 			<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
@@ -44,7 +44,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import { selectFiles } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -63,8 +63,11 @@ const description = ref<string | null>(null);
 const title = ref<string | null>(null);
 const isSensitive = ref(false);
 
-function selectFile(evt) {
-	selectFiles(evt.currentTarget ?? evt.target, null).then(selected => {
+function chooseFile(evt) {
+	selectFile({
+		anchorElement: evt.currentTarget ?? evt.target,
+		multiple: true,
+	}).then(selected => {
 		files.value = files.value.concat(selected);
 	});
 }
@@ -82,7 +85,11 @@ async function save() {
 			fileIds: files.value.map(file => file.id),
 			isSensitive: isSensitive.value,
 		});
-		router.push(`/gallery/${props.postId}`);
+		router.push('/gallery/:postId', {
+			params: {
+				postId: props.postId,
+			},
+		});
 	} else {
 		const created = await os.apiWithDialog('gallery/posts/create', {
 			title: title.value,
@@ -90,7 +97,11 @@ async function save() {
 			fileIds: files.value.map(file => file.id),
 			isSensitive: isSensitive.value,
 		});
-		router.push(`/gallery/${created.id}`);
+		router.push('/gallery/:postId', {
+			params: {
+				postId: created.id,
+			},
+		});
 	}
 }
 
