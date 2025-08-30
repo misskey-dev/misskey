@@ -19,14 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 	>
 		<MkTab v-model="tab" :class="$style.tab">
-			<option value="users">{{ i18n.ts.users }} ({{ users.length }})</option>
-			<option value="notes">{{ i18n.ts.notes }} ({{ notes.length }})</option>
+			<option value="users">{{ i18n.ts.users }} ({{ usersCount }})</option>
+			<option value="notes">{{ i18n.ts.notes }} ({{ notesCount }})</option>
 		</MkTab>
-		<div v-if="tab === 'users'" :class="['_gaps', $style.users]" style="padding-bottom: var(--MI-margin);">
+		<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
 			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
 		</div>
-		<div v-else-if="tab === 'notes'" class="_gaps" style="padding-bottom: var(--MI-margin);">
-			<MkNote v-for="note in notes" :key="note.id" :note="note"/>
+		<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
+			<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
 		</div>
 	</div>
 </div>
@@ -58,14 +58,18 @@ const scannerInstance = shallowRef<QrScanner | null>(null);
 const uris = ref<string[]>([]);
 const sources = new Map<string, ApShowResponse | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
+const usersCount = ref(0);
 const notes = ref<misskey.entities.Note[]>([]);
+const notesCount = ref(0);
 
 const timer = ref<number | null>(null);
 
 function updateLists() {
 	const results = uris.value.map(uri => sources.get(uri)).filter((r): r is ApShowResponse => !!r);
 	users.value = results.filter(r => r.type === 'User').map(r => r.object).filter((u): u is misskey.entities.UserDetailed => !!u);
+	usersCount.value = users.value.length;
 	notes.value = results.filter(r => r.type === 'Note').map(r => r.object).filter((n): n is misskey.entities.Note => !!n);
+	notesCount.value = notes.value.length;
 	updateRequired.value = false;
 }
 
@@ -225,5 +229,10 @@ html[data-color-scheme=light] .video {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 	grid-gap: var(--MI-margin);
+}
+
+.note {
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 }
 </style>
