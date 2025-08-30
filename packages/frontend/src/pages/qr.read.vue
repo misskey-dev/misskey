@@ -82,7 +82,6 @@ watch(uris, () => {
 	updateLists();
 
 	timer.value = window.setTimeout(() => {
-		console.log('Update users after 3 seconds');
 		timer.value = null;
 		if (updateRequired.value) {
 			updateLists();
@@ -95,6 +94,7 @@ watch(tab, () => {
 		window.clearTimeout(timer.value);
 		timer.value = null;
 	}
+	updateLists();
 });
 
 async function processResult(result: QrScanner.ScanResult) {
