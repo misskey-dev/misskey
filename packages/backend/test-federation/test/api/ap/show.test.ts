@@ -13,33 +13,28 @@ describe('API ap/show', () => {
 	});
 
 	describe('User resolution', () => {
-		test('resolve by acct (bob@b.test)', async () => {
-			const res = await alice.client.request('ap/show', { uri: `${bob.username}@b.test` });
-			strictEqual(res.type, 'User');
-			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
-		});
-
 		test('resolve by canonical user URL (https://b.test/users/:id)', async () => {
 			const res = await alice.client.request('ap/show', { uri: `https://b.test/users/${bob.id}` });
 			strictEqual(res.type, 'User');
 			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
 		});
 
-		test('resolve by cross-origin non-canonical URL (https://a.test/@bob@b.test)', async () => {
-			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` });
+		test('resolve by user profile URL (https://b.test/@bob)', async () => {
+			const res = await alice.client.request('ap/show', { uri: `https://b.test/@${bob.username}` });
 			strictEqual(res.type, 'User');
-			// 非正規URLから正規IDに追従して同一ユーザーになること
 			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
 		});
 
-		test('onlyUriFetch=true with acct string returns generic fetch error', async () => {
-			await rejects(
-				async () => await alice.client.request('ap/show', { uri: `${bob.username}@b.test`, onlyUriFetch: true }),
-				(err: any) => {
-					strictEqual(err.code, 'URI_IS_ACCT_LIKE_BUT_THIS_IS_ONLY_URI_FETCH_MODE');
-					return true;
-				},
-			);
+		test('resolve local user by local profile url', async () => {
+			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${alice.username}` });
+			strictEqual(res.type, 'User');
+			strictEqual(res.object.id, alice.id);
+		});
+
+		test('resolve remote user by local profile URL (https://a.test/@bob@b.test)', async () => {
+			const res = await alice.client.request('ap/show', { uri: `https://a.test/@${bob.username}@b.test` });
+			strictEqual(res.type, 'User');
+			strictEqual(res.object.uri, `https://b.test/users/${bob.id}`);
 		});
 	});
 
