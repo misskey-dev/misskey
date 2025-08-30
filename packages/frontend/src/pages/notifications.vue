@@ -7,6 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div v-if="tab === 'all'">
+			<MkTip k="notifications" style="margin-bottom: var(--MI-margin);">
+				<I18n :src="i18n.ts.oldNotificationsWillBeDeleted" tag="span">
+					<template #here>
+						<MkA class="_link" to="/settings/notifications">{{ i18n.ts.oldNotificationsWillBeDeletedPlaceholderHere }}</MkA>
+					</template>
+				</I18n>
+			</MkTip>
 			<MkStreamingNotificationsTimeline :class="$style.notifications" :excludeTypes="excludeTypes"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
