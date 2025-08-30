@@ -27,6 +27,6 @@ export function useLowresTime() {
 	return computed(() => Math.max(time.value, now));
 }
 
-setInterval(() => {
+window.setInterval(() => {
 	time.value = Date.now();
 }, 10000);
