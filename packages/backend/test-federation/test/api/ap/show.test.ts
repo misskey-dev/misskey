@@ -1,5 +1,5 @@
 import { strictEqual, rejects } from 'node:assert';
-import { createAccount, resolveRemoteUser, sleep, type LoginUser } from '../../uatils.js';
+import { createAccount, resolveRemoteUser, sleep, type LoginUser } from '../../utils.js';
 
 describe('API ap/show', () => {
 	let alice: LoginUser, bob: LoginUser;
