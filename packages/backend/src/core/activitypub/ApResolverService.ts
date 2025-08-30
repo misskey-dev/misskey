@@ -16,7 +16,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { isCollectionOrOrderedCollection } from './type.js';
+import { getApId, isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService, type UriParseResult } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
@@ -98,7 +98,7 @@ export class Resolver {
 		const host = this.utilityService.extractDbHost(value);
 		const parsed = this.apDbResolverService.parseLocalUri(value);
 		if (parsed.local === true) {
-			return await this.resolveLocal(parsed);
+			return await this.resolveLocal(getApId(value), parsed);
 		}
 
 		if (!this.utilityService.isFederationAllowedHost(host)) {
@@ -125,7 +125,7 @@ export class Resolver {
 	}
 
 	@bindThis
-	private resolveLocal(parsed: UriParseResult): Promise<IObject> {
+	private resolveLocal(url: string, parsed: UriParseResult): Promise<IObject> {
 		if (parsed.local === false || 'uri' in parsed) {
 			throw new IdentifiableError('02b40cd0-fa92-4b0c-acc9-fb2ada952ab8', 'resolveLocal: not local');
 		}
