@@ -5,7 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	ref="rootEl" :class="$style.root" :style="{
+	ref="rootEl"
+	:class="$style.root"
+	:style="{
 		'--MI-QrReadScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing) )`,
 		'--MI-QrReadViewHeight': 'calc(var(--MI-QrReadScrollHeight) - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px))',
 		'--MI-QrReadVideoHeight': 'min(calc(var(--MI-QrReadViewHeight) * 0.3), 512px)',
@@ -25,23 +27,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-else v-tooltip="i18n.ts._qr.turnOffFlash" iconOnly @click="toggleFlash(false)"><i class="ti ti-bolt-filled"></i></MkButton>
 		</div>
 	</div>
-</div>
-<div
-	class="_spacer"
-	:style="{
-		'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
-		'--MI_SPACER-w': '800px'
-	}"
->
-	<MkTab v-model="tab" :class="$style.tab">
-		<option value="users">{{ i18n.ts.users }}</option>
-		<option value="notes">{{ i18n.ts.notes }}</option>
-	</MkTab>
-	<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
-		<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
-	</div>
-	<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
-		<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
+	<div
+		class="_spacer"
+		:style="{
+			'--MI-stickyTop': 'calc(var(--MI-stickyTop, 0px) + var(--MI-QrReadVideoHeight, 0px))',
+			'--MI_SPACER-w': '800px'
+		}"
+	>
+		<MkTab v-model="tab" :class="$style.tab">
+			<option value="users">{{ i18n.ts.users }}</option>
+			<option value="notes">{{ i18n.ts.notes }}</option>
+		</MkTab>
+		<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
+			<MkUserInfo v-for="user in users" :key="user.id" :user="user"/>
+		</div>
+		<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
+			<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
+		</div>
 	</div>
 </div>
 </template>
