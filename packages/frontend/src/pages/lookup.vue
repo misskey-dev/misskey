@@ -48,7 +48,7 @@ function _fetch_() {
 			if (res.type === 'User') {
 				mainRouter.replace('/@:acct/:page?', {
 					params: {
-						acct: res.host != null ? `${res.object.username}@${res.object.host}` : res.object.username,
+						acct: res.object.host != null ? `${res.object.username}@${res.object.host}` : res.object.username,
 					},
 				});
 			} else if (res.type === 'Note') {

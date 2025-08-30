@@ -469,6 +469,8 @@ export class PreferencesManager {
 				return local;
 			} else if (choice === 'merge') {
 				return mergedValue!;
+			} else { // TSを黙らすため
+				return undefined;
 			}
 		}
 
