@@ -38,12 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@@/js/use-interval.js';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
 
 const name = 'calendar';
 
@@ -65,6 +65,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
+const fNow = useLowresTime();
 const year = ref(0);
 const month = ref(0);
 const day = ref(0);
@@ -73,8 +74,9 @@ const yearP = ref(0);
 const monthP = ref(0);
 const dayP = ref(0);
 const isHoliday = ref(false);
-const tick = () => {
-	const now = new Date();
+
+watch(fNow, (to) => {
+	const now = new Date(to);
 	const nd = now.getDate();
 	const nm = now.getMonth();
 	const ny = now.getFullYear();
@@ -104,12 +106,7 @@ const tick = () => {
 	yearP.value = yearNumer / yearDenom * 100;
 
 	isHoliday.value = now.getDay() === 0 || now.getDay() === 6;
-};
-
-useInterval(tick, 1000, {
-	immediate: true,
-	afterMounted: false,
-});
+}, { immediate: true });
 
 defineExpose<WidgetComponentExpose>({
 	name,
