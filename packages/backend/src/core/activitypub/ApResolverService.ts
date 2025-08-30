@@ -15,7 +15,6 @@ import { bindThis } from '@/decorators.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
-import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService, type UriParseResult } from './ApDbResolverService.js';
@@ -43,7 +42,6 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
-		private remoteUserResolveService: RemoteUserResolveService,
 		private loggerService: LoggerService,
 		private recursionLimit = 256,
 	) {
