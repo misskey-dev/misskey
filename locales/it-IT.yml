@@ -2222,7 +2222,7 @@ _theme:
     hashtag: "Hashtag"
     mention: "Menzioni"
     mentionMe: "Menzioni (di me)"
-    renote: "Renota"
+    renote: "Rinota"
     modalBg: "Sfondo modale."
     divider: "Interruzione di linea"
     scrollbarHandle: "Maniglie della barra di scorrimento"
@@ -2679,7 +2679,7 @@ _notification:
     achievementEarned: "Risultato raggiunto"
     exportCompleted: "Esportazione completata"
     login: "Accessi"
-    createToken: "Creare un token di accesso"
+    createToken: "Aggiunto un token di accesso"
     test: "Notifiche di test"
     app: "Notifiche da applicazioni"
   _actions:
