@@ -43,6 +43,8 @@ export function parseUrl(str: string): Acct {
 	if (url.search.length > 0) throw new UrlIsNotAcctLikeError();
 
 	const splited = url.pathname.split('/');
+	if (splited.length !== 2) throw new UrlIsNotAcctLikeError();
+
 	const path = splited[1];
 
 	if (!path) throw new UrlIsNotAcctLikeError();
