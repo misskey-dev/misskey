@@ -1,11 +1,10 @@
 import { strictEqual, rejects } from 'node:assert';
-import * as Misskey from 'misskey-js';
-import { createAccount, resolveRemoteUser, sleep, type LoginUser } from '../../utils.js';
+import { createAccount, sleep, type LoginUser } from '../../utils.js';
 
 describe('API ap/show', () => {
 	let alice: LoginUser, bob: LoginUser;
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		[alice, bob] = await Promise.all([
 			createAccount('a.test'),
 			createAccount('b.test'),
@@ -41,7 +40,6 @@ describe('API ap/show', () => {
 	describe('Note resolution', () => {
 		test('resolve by note URL (https://b.test/notes/:id)', async () => {
 			const note = (await bob.client.request('notes/create', { text: 'hello from Bob' })).createdNote;
-			// 伝搬待ち
 			await sleep();
 
 			const res = await alice.client.request('ap/show', { uri: `https://b.test/notes/${note.id}` });
