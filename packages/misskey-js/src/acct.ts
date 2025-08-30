@@ -33,6 +33,9 @@ export class UrlIsNotAcctLikeError extends Error {
 	}
 }
 
+/**
+ * Only supports `https?://example.com/@username` or `https?://example.com/@username@other.example.com`
+ */
 export function parseUrl(str: string): Acct {
 	const url = new URL(str);
 
@@ -40,8 +43,7 @@ export function parseUrl(str: string): Acct {
 	if (url.search.length > 0) throw new UrlIsNotAcctLikeError();
 
 	const splited = url.pathname.split('/');
-	let path = splited.pop();
-	if (path === '') path = splited.pop(); // If the last segment is empty due to a trailing '/', use the previous segment
+	const path = splited[1];
 
 	if (!path) throw new UrlIsNotAcctLikeError();
 	if (!path.startsWith('@')) throw new UrlIsNotAcctLikeError();
