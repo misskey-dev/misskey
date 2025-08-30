@@ -67,6 +67,10 @@ function testParseUrl(fn: (acct: string) => acct.Acct) {
 	it('throws url with hash', () => {
 		expect(() => fn('https://example.com/@alice#fragment')).toThrowError();
 	});
+
+	it('throws not root path', () => {
+		expect(() => fn('https://example.com/users/@alice')).toThrowError();
+	});
 }
 
 describe('acct.parse', () => {
