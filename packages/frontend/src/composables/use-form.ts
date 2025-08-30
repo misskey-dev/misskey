@@ -3,21 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, reactive, watch } from 'vue';
-import type { Reactive } from 'vue';
-import { deepEqual } from '@/utility/deep-equal';
-
-function copy<T>(v: T): T {
-	return JSON.parse(JSON.stringify(v));
-}
-
-function unwrapReactive<T>(v: Reactive<T>): T {
-	return JSON.parse(JSON.stringify(v));
-}
+import { computed, reactive, watch, toRaw } from 'vue';
+import { deepEqual } from '@/utility/deep-equal.js';
+import { deepClone } from '@/utility/clone.js';
 
 export function useForm<T extends Record<string, any>>(initialState: T, save: (newState: T) => Promise<void>) {
-	const currentState = reactive<T>(copy(initialState));
-	const previousState = reactive<T>(copy(initialState));
+	const currentState = reactive<T>(deepClone(initialState));
+	const previousState = reactive<T>(deepClone(initialState));
 
 	const modifiedStates = reactive<Record<keyof T, boolean>>({} as any);
 	for (const key in currentState) {
@@ -33,15 +25,15 @@ export function useForm<T extends Record<string, any>>(initialState: T, save: (n
 	}, { deep: true });
 
 	async function _save() {
-		await save(unwrapReactive(currentState));
+		await save(toRaw(currentState) as T);
 		for (const key in currentState) {
-			previousState[key] = copy(currentState[key]);
+			previousState[key] = deepClone(currentState[key]);
 		}
 	}
 
 	function discard() {
 		for (const key in currentState) {
-			currentState[key] = copy(previousState[key]);
+			currentState[key] = deepClone(previousState[key]);
 		}
 	}
 
