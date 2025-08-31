@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/speaker_high_volume_3d.png" color="#ff006f">
-			<SearchKeyword>{{ i18n.ts._settings.soundsBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.soundsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['mute']">

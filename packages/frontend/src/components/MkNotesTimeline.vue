@@ -4,21 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination :paginator="paginator" :autoLoad="autoLoad" :pullToRefresh="pullToRefresh" :withControl="withControl">
+<MkPagination :paginator="paginator" :direction="direction" :autoLoad="autoLoad" :pullToRefresh="pullToRefresh" :withControl="withControl">
 	<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]">
 			<template v-for="(note, i) in notes" :key="note.id">
-				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, note.createdAt)" :data-scroll-anchor="note.id">
-					<div :class="$style.date">
-						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).prevText }}</span>
+				<div
+					v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i - 1].createdAt, note.createdAt)"
+					:data-scroll-anchor="note.id"
+					:class="{ '_gaps': !noGap }"
+				>
+					<div :class="[$style.date, { [$style.noGap]: noGap }]">
+						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i - 1].createdAt, note.createdAt)?.prevText }}</span>
 						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
-						<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+						<span>{{ getSeparatorInfo(paginator.items.value[i - 1].createdAt, note.createdAt)?.nextText }} <i class="ti ti-chevron-down"></i></span>
 					</div>
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
+					<div v-if="note._shouldInsertAd_" :class="$style.ad">
+						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
+					</div>
 				</div>
-				<div v-else-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
+				<div v-else-if="note._shouldInsertAd_" :class="{ '_gaps': !noGap }" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
@@ -43,11 +50,14 @@ import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-sep
 const props = withDefaults(defineProps<{
 	paginator: T;
 	noGap?: boolean;
+
+	direction?: 'up' | 'down' | 'both';
 	autoLoad?: boolean;
 	pullToRefresh?: boolean;
 	withControl?: boolean;
 }>(), {
 	autoLoad: true,
+	direction: 'down',
 	pullToRefresh: true,
 	withControl: true,
 });
@@ -103,7 +113,10 @@ defineExpose({
 	opacity: 0.75;
 	padding: 8px 8px;
 	margin: 0 auto;
-	border-bottom: solid 0.5px var(--MI_THEME-divider);
+
+	&.noGap {
+		border-bottom: solid 0.5px var(--MI_THEME-divider);
+	}
 }
 
 .ad:empty {

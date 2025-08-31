@@ -82,10 +82,10 @@ const logs = ref<{
 	text: string;
 	print: boolean;
 }[]>([]);
-const root = ref<AsUiRoot>();
+const root = ref<AsUiRoot | undefined>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
-const uiInspectorOpenedComponents = ref(new Map<string, boolean>);
+const uiInspectorOpenedComponents = ref(new WeakMap<AsUiComponent | Ref<AsUiComponent>, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
@@ -186,11 +186,13 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 const showns = computed(() => {
+	if (root.value == null) return new Set<string>();
 	const result = new Set<string>();
 	(function addChildrenToResult(c: AsUiComponent) {
 		result.add(c.id);
-		if (c.children) {
-			const childComponents = components.value.filter(v => c.children.includes(v.value.id));
+		const children = c.children;
+		if (children) {
+			const childComponents = components.value.filter(v => children.includes(v.value.id));
 			for (const child of childComponents) {
 				addChildrenToResult(child.value);
 			}

@@ -673,7 +673,6 @@ describe('アンテナ', () => {
 			assert.deepStrictEqual(response, expected);
 		});
 
-
 		test.skip('が取得でき、日付指定のPaginationに一貫性があること', async () => { });
 		test.each([
 			{ label: 'ID指定', offsetBy: 'id' },

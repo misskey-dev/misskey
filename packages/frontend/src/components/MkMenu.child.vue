@@ -16,7 +16,7 @@ import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	items: MenuItem[];
-	targetElement: HTMLElement;
+	anchorElement: HTMLElement;
 	rootElement: HTMLElement;
 	width?: number;
 }>();
@@ -36,10 +36,10 @@ const SCROLLBAR_THICKNESS = 16;
 function setPosition() {
 	if (el.value == null) return;
 	const rootRect = props.rootElement.getBoundingClientRect();
-	const parentRect = props.targetElement.getBoundingClientRect();
+	const parentRect = props.anchorElement.getBoundingClientRect();
 	const myRect = el.value.getBoundingClientRect();
 
-	let left = props.targetElement.offsetWidth;
+	let left = props.anchorElement.offsetWidth;
 	let top = (parentRect.top - rootRect.top) - 8;
 	if (rootRect.left + left + myRect.width >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
 		left = -myRect.width;
@@ -59,7 +59,7 @@ function onChildClosed(actioned?: boolean) {
 	}
 }
 
-watch(() => props.targetElement, () => {
+watch(() => props.anchorElement, () => {
 	setPosition();
 });
 

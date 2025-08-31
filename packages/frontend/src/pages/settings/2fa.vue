@@ -20,12 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-shield-lock"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.totp }}</SearchLabel></template>
-					<template #caption><SearchKeyword>{{ i18n.ts.totpDescription }}</SearchKeyword></template>
+					<template #caption><SearchText>{{ i18n.ts.totpDescription }}</SearchText></template>
 					<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
 						<div v-text="i18n.ts._2fa.alreadyRegistered"/>
-						<template v-if="$i.securityKeysList.length > 0">
+						<template v-if="$i.securityKeysList!.length > 0">
 							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 						</template>
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<template v-else>
 							<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-							<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
+							<MkFolder v-for="key in $i.securityKeysList!" :key="key.id">
 								<template #label>{{ key.name }}</template>
 								<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
 								<div class="_buttons">
@@ -72,9 +72,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
-				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
+				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
 					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
-					<template #caption><SearchKeyword>{{ i18n.ts.passwordLessLoginDescription }}</SearchKeyword></template>
+					<template #caption><SearchText>{{ i18n.ts.passwordLessLoginDescription }}</SearchText></template>
 				</MkSwitch>
 			</SearchMarker>
 		</div>

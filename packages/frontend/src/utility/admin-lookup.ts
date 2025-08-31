@@ -12,7 +12,7 @@ export async function lookupUser() {
 	const { canceled, result } = await os.inputText({
 		title: i18n.ts.usernameOrUserId,
 	});
-	if (canceled) return;
+	if (canceled || result == null) return;
 
 	const show = (user) => {
 		os.pageWindow(`/admin/user/${user.id}`);
@@ -46,13 +46,13 @@ export async function lookupUserByEmail() {
 		title: i18n.ts.emailAddress,
 		type: 'email',
 	});
-	if (canceled) return;
+	if (canceled || result == null) return;
 
 	try {
 		const user = await os.apiWithDialog('admin/accounts/find-by-email', { email: result });
 
 		os.pageWindow(`/admin/user/${user.id}`);
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'USER_NOT_FOUND') {
 			os.alert({
 				type: 'error',

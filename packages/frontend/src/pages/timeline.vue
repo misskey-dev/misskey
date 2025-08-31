@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :swipable="true" :displayMyAvatar="true">
+<PageWithHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :swipable="true" :displayMyAvatar="true" :canOmitTitle="true">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkTip v-if="isBasicTimeline(src)" :k="`tl.${src}`" style="margin-bottom: var(--MI-margin);">
 			{{ i18n.ts._timelineDescription[src] }}
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="tlComponent"
 			:key="src + withRenotes + withReplies + onlyFiles + withSensitive"
 			:class="$style.tl"
-			:src="src.split(':')[0]"
+			:src="(src.split(':')[0] as (BasicTimelineType | 'list'))"
 			:list="src.split(':')[1]"
 			:withRenotes="withRenotes"
 			:withReplies="withReplies"
@@ -44,8 +44,6 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
-
-provide('shouldOmitHeaderTitle', true);
 
 const tlComponent = useTemplateRef('tlComponent');
 
@@ -105,9 +103,11 @@ const withSensitive = computed<boolean>({
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
+const showFixedPostForm = prefer.model('showFixedPostForm');
+
 async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
-	const items: MenuItem[] = [
+	const items: (MenuItem | undefined)[] = [
 		...lists.map(list => ({
 			type: 'link' as const,
 			text: list.name,
@@ -121,12 +121,12 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 			to: '/my/lists',
 		},
 	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	const antennas = await antennasCache.fetch();
-	const items: MenuItem[] = [
+	const items: (MenuItem | undefined)[] = [
 		...antennas.map(antenna => ({
 			type: 'link' as const,
 			text: antenna.name,
@@ -141,12 +141,12 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 			to: '/my/antennas',
 		},
 	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
 	const channels = await favoritedChannelsCache.fetch();
-	const items: MenuItem[] = [
+	const items: (MenuItem | undefined)[] = [
 		...channels.map(channel => {
 			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
 			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
@@ -166,7 +166,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 			to: '/channels',
 		},
 	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
 function saveSrc(newSrc: TimelinePageSrc): void {
@@ -190,19 +190,6 @@ function saveTlFilter(key: keyof typeof store.s.tl.filter, newValue: boolean) {
 	}
 }
 
-async function timetravel(): Promise<void> {
-	const { canceled, result: date } = await os.inputDate({
-		title: i18n.ts.date,
-	});
-	if (canceled) return;
-
-	tlComponent.value.timetravel(date);
-}
-
-function focus(): void {
-	tlComponent.value.focus();
-}
-
 function switchTlIfNeeded() {
 	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
 		src.value = availableBasicTimelines()[0];
@@ -217,49 +204,54 @@ onActivated(() => {
 });
 
 const headerActions = computed(() => {
-	const tmp = [
-		{
-			icon: 'ti ti-dots',
-			text: i18n.ts.options,
-			handler: (ev) => {
-				const menuItems: MenuItem[] = [];
+	const items = [{
+		icon: 'ti ti-dots',
+		text: i18n.ts.options,
+		handler: (ev) => {
+			const menuItems: MenuItem[] = [];
 
+			menuItems.push({
+				type: 'switch',
+				icon: 'ti ti-repeat',
+				text: i18n.ts.showRenotes,
+				ref: withRenotes,
+			});
+
+			if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
 				menuItems.push({
 					type: 'switch',
-					icon: 'ti ti-repeat',
-					text: i18n.ts.showRenotes,
-					ref: withRenotes,
+					icon: 'ti ti-messages',
+					text: i18n.ts.showRepliesToOthersInTimeline,
+					ref: withReplies,
+					disabled: onlyFiles,
 				});
+			}
 
-				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
-					menuItems.push({
-						type: 'switch',
-						icon: 'ti ti-messages',
-						text: i18n.ts.showRepliesToOthersInTimeline,
-						ref: withReplies,
-						disabled: onlyFiles,
-					});
-				}
+			menuItems.push({
+				type: 'switch',
+				icon: 'ti ti-eye-exclamation',
+				text: i18n.ts.withSensitive,
+				ref: withSensitive,
+			}, {
+				type: 'switch',
+				icon: 'ti ti-photo',
+				text: i18n.ts.fileAttachedOnly,
+				ref: onlyFiles,
+				disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
+			}, {
+				type: 'divider',
+			}, {
+				type: 'switch',
+				text: i18n.ts.showFixedPostForm,
+				ref: showFixedPostForm,
+			});
 
-				menuItems.push({
-					type: 'switch',
-					icon: 'ti ti-eye-exclamation',
-					text: i18n.ts.withSensitive,
-					ref: withSensitive,
-				}, {
-					type: 'switch',
-					icon: 'ti ti-photo',
-					text: i18n.ts.fileAttachedOnly,
-					ref: onlyFiles,
-					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
-				});
-
-				os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
-			},
+			os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 		},
-	];
+	}];
+
 	if (deviceKind === 'desktop') {
-		tmp.unshift({
+		items.unshift({
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
@@ -267,7 +259,8 @@ const headerActions = computed(() => {
 			},
 		});
 	}
-	return tmp;
+
+	return items;
 });
 
 const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => ({

@@ -9,6 +9,7 @@ on:
       - packages/backend/**
       - packages/frontend/**
       - packages/frontend-shared/**
+      - packages/frontend-builder/**
       - packages/frontend-embed/**
       - packages/icons-subsetter/**
       - packages/sw/**
@@ -22,6 +23,7 @@ on:
       - packages/backend/**
       - packages/frontend/**
       - packages/frontend-shared/**
+      - packages/frontend-builder/**
       - packages/frontend-embed/**
       - packages/icons-subsetter/**
       - packages/sw/**
@@ -34,7 +36,7 @@ jobs:
   pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         fetch-depth: 0
         submodules: true
@@ -56,6 +58,7 @@ jobs:
         - backend
         - frontend
         - frontend-shared
+        - frontend-builder
         - frontend-embed
         - icons-subsetter
         - sw
@@ -66,7 +69,7 @@ jobs:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         fetch-depth: 0
         submodules: true
@@ -78,7 +81,7 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
     - name: Restore eslint cache
-      uses: actions/cache@v4.2.3
+      uses: actions/cache@v4.2.4
       with:
         path: ${{ env.eslint-cache-path }}
         key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
@@ -96,7 +99,7 @@ jobs:
         - sw
         - misskey-js
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         fetch-depth: 0
         submodules: true

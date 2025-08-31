@@ -52,9 +52,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ item.label }}
 					</template>
 					<template v-else>
-						<span style="opacity: 0.7; font-size: 90%;">{{ item.parentLabels.join(' > ') }}</span>
+						<span style="opacity: 0.7; font-size: 90%; word-break: break-word;">{{ item.parentLabels.join(' > ') }}</span>
 						<br>
-						<span>{{ item.label }}</span>
+						<span style="word-break: break-word;">{{ item.label }}</span>
 					</template>
 				</span>
 			</MkA>
@@ -95,7 +95,7 @@ export type SuperMenuDef = {
 <script lang="ts" setup>
 import { useTemplateRef, ref, watch, nextTick, computed } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
-import type { SearchIndexItem } from '@/utility/settings-search-index.js';
+import type { SearchIndexItem } from '@/utility/inapp-search.js';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
@@ -165,12 +165,28 @@ watch(rawSearchQuery, (value) => {
 			});
 		};
 
-		for (const item of searchIndexItemById.values()) {
-			if (
-				compareStringIncludes(item.label, value) ||
-				item.keywords.some((x) => compareStringIncludes(x, value))
-			) {
+		// label, keywords, texts の順に優先して表示
+
+		let items = Array.from(searchIndexItemById.values());
+
+		for (const item of items) {
+			if (compareStringIncludes(item.label, value)) {
 				addSearchResult(item);
+				items = items.filter(i => i.id !== item.id);
+			}
+		}
+
+		for (const item of items) {
+			if (item.keywords.some((x) => compareStringIncludes(x, value))) {
+				addSearchResult(item);
+				items = items.filter(i => i.id !== item.id);
+			}
+		}
+
+		for (const item of items) {
+			if (item.texts.some((x) => compareStringIncludes(x, value))) {
+				addSearchResult(item);
+				items = items.filter(i => i.id !== item.id);
 			}
 		}
 	}
@@ -186,7 +202,7 @@ function searchOnKeyDown(ev: KeyboardEvent) {
 
 	if (ev.key === 'Enter' && searchSelectedIndex.value != null) {
 		ev.preventDefault();
-		router.push(searchResult.value[searchSelectedIndex.value].path + '#' + searchResult.value[searchSelectedIndex.value].id);
+		router.pushByPath(searchResult.value[searchSelectedIndex.value].path + '#' + searchResult.value[searchSelectedIndex.value].id);
 	} else if (ev.key === 'ArrowDown') {
 		ev.preventDefault();
 		const current = searchSelectedIndex.value ?? -1;

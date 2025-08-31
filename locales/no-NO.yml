@@ -461,6 +461,8 @@ replies: "Svar"
 renotes: "Renote"
 surrender: "Avbryt"
 information: "Informasjon"
+inMinutes: "Minutter"
+inDays: "Dager"
 _chat:
   invitations: "Inviter"
   members: "Medlemmer"
@@ -740,3 +742,8 @@ _watermarkEditor:
   text: "Tekst"
   type: "Type"
   image: "Bilder"
+_imageEffector:
+  _fxProps:
+    scale: "Størrelse"
+    size: "Størrelse"
+    color: "Farge"

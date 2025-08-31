@@ -34,9 +34,10 @@ import { deviceKind } from '@/utility/device-kind.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
-	anchorElement?: HTMLElement;
+	anchorElement?: HTMLElement | null;
 	anchor?: { x: string; y: string; };
 }>(), {
+	anchorElement: null,
 	anchor: () => ({ x: 'right', y: 'center' }),
 });
 

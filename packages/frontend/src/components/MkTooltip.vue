@@ -31,7 +31,7 @@ import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;
-	targetElement?: HTMLElement;
+	anchorElement?: HTMLElement;
 	x?: number;
 	y?: number;
 	text?: string;
@@ -58,7 +58,7 @@ const zIndex = os.claimZIndex('high');
 function setPosition() {
 	if (el.value == null) return;
 	const data = calcPopupPosition(el.value, {
-		anchorElement: props.targetElement,
+		anchorElement: props.anchorElement,
 		direction: props.direction,
 		align: 'center',
 		innerMargin: props.innerMargin,

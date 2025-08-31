@@ -1302,6 +1302,7 @@ _cw:
 _visibility:
   home: "Acasă"
   followers: "Urmăritori"
+  specified: "Note directe"
 _postForm:
   replyPlaceholder: "Răspunde la această notă..."
   quotePlaceholder: "Citează aceasta nota..."
@@ -1356,6 +1357,7 @@ _deck:
     list: "Liste"
     channel: "Canale"
     mentions: "Mențiuni"
+    direct: "Note directe"
     roleTimeline: "Cronologia rolului"
 _webhookSettings:
   name: "Nume"
@@ -1398,3 +1400,7 @@ _watermarkEditor:
   type: "Tip"
   image: "Imagini"
   advanced: "Avansat"
+_imageEffector:
+  _fxProps:
+    scale: "Dimensiune"
+    size: "Dimensiune"

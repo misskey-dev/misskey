@@ -646,6 +646,7 @@ _poll:
 _visibility:
   home: "Hem"
   followers: "Följare"
+  specified: "Direktnoter"
 _profile:
   name: "Namn"
   username: "Användarnamn"
@@ -692,6 +693,7 @@ _deck:
     list: "Listor"
     channel: "kanal"
     mentions: "Omnämningar"
+    direct: "Direktnoter"
 _webhookSettings:
   name: "Namn"
   active: "Aktiverad"
@@ -714,3 +716,8 @@ _search:
 _watermarkEditor:
   scale: "Storlek"
   image: "Bilder"
+_imageEffector:
+  _fxProps:
+    scale: "Storlek"
+    size: "Storlek"
+    color: "Färg"

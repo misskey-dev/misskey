@@ -52,15 +52,20 @@ import TestWebGL2 from '@/workers/test-webgl2?worker';
 import { WorkerMultiDispatch } from '@@/js/worker-multi-dispatch.js';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 
+// テスト環境で Web Worker インスタンスは作成できない
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const isTest = (import.meta.env.MODE === 'test' || window.Cypress != null);
+
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
-	// テスト環境で Web Worker インスタンスは作成できない
-	if (import.meta.env.MODE === 'test') {
+	if (isTest) {
 		const canvas = window.document.createElement('canvas');
 		canvas.width = 64;
 		canvas.height = 64;
 		resolve(canvas);
 		return;
 	}
+
 	const testWorker = new TestWebGL2();
 	testWorker.addEventListener('message', event => {
 		if (event.data.result) {
@@ -189,7 +194,7 @@ function drawAvg() {
 }
 
 async function draw() {
-	if (import.meta.env.MODE === 'test' && props.hash == null) return;
+	if (isTest && props.hash == null) return;
 
 	drawAvg();
 

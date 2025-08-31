@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// TODO: (可能な部分を)sharedに抽出して frontend-embed と共通化
+
 import { ref, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
@@ -23,6 +25,7 @@ export type Theme = {
 	author: string;
 	desc?: string;
 	base?: 'dark' | 'light';
+	kind?: 'dark' | 'light'; // legacy
 	props: Record<string, string>;
 	codeHighlighter?: {
 		base: BundledTheme;
@@ -137,9 +140,10 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	if (deepEqual(currentTheme, theme)) return;
-	currentTheme = theme;
+	// リアクティビティ解除
+	currentTheme = deepClone(theme);
 
-	if (window.document.startViewTransition != null && prefer.s.animation) {
+	if (window.document.startViewTransition != null) {
 		window.document.documentElement.classList.add('_themeChanging_');
 		window.document.startViewTransition(async () => {
 			applyThemeInternal(theme, persist);
@@ -150,15 +154,9 @@ export function applyTheme(theme: Theme, persist = true) {
 			globalEvents.emit('themeChanged');
 		});
 	} else {
-		// TODO: ViewTransition API が主要ブラウザで対応したら消す
-		window.document.documentElement.classList.add('_themeChangingFallback_');
-		timeout = window.setTimeout(() => {
-			window.document.documentElement.classList.remove('_themeChangingFallback_');
-			// 色計算など再度行えるようにクライアント全体に通知
-			globalEvents.emit('themeChanged');
-		}, 500);
-
 		applyThemeInternal(theme, persist);
+		// 色計算など再度行えるようにクライアント全体に通知
+		globalEvents.emit('themeChanged');
 	}
 }
 
@@ -170,16 +168,21 @@ export function compile(theme: Theme): Record<string, string> {
 			return getColor(theme.props[val]);
 		} else if (val[0] === ':') { // func
 			const parts = val.split('<');
-			const func = parts.shift().substring(1);
-			const arg = parseFloat(parts.shift());
-			const color = getColor(parts.join('<'));
+			const funcTxt = parts.shift();
+			const argTxt = parts.shift();
 
-			switch (func) {
-				case 'darken': return color.darken(arg);
-				case 'lighten': return color.lighten(arg);
-				case 'alpha': return color.setAlpha(arg);
-				case 'hue': return color.spin(arg);
-				case 'saturate': return color.saturate(arg);
+			if (funcTxt && argTxt) {
+				const func = funcTxt.substring(1);
+				const arg = parseFloat(argTxt);
+				const color = getColor(parts.join('<'));
+
+				switch (func) {
+					case 'darken': return color.darken(arg);
+					case 'lighten': return color.lighten(arg);
+					case 'alpha': return color.setAlpha(arg);
+					case 'hue': return color.spin(arg);
+					case 'saturate': return color.saturate(arg);
+				}
 			}
 		}
 

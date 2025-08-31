@@ -135,7 +135,7 @@ async function del(): Promise<void> {
 		webhookId: props.webhookId,
 	});
 
-	router.push('/settings/webhook');
+	router.push('/settings/connect');
 }
 
 async function test(type: Misskey.entities.UserWebhook['on'][number]): Promise<void> {
@@ -149,10 +149,8 @@ async function test(type: Misskey.entities.UserWebhook['on'][number]): Promise<v
 	});
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const headerActions = computed(() => []);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const headerTabs = computed(() => []);
 
 definePage(() => ({
