@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTab v-model="tab" :class="$style.tab">
 						<option value="users">{{ i18n.ts.users }}</option>
 						<option value="notes">{{ i18n.ts.notes }}</option>
+						<option value="all">{{ i18n.ts.all }}</option>
 					</MkTab>
 				</template>
 				<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
@@ -48,6 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-else-if="tab === 'notes'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
 					<MkNote v-for="note in notes" :key="note.id" :note="note" :class="$style.note"/>
+				</div>
+				<div v-else-if="tab === 'all'" class="_margin _gaps" style="padding-bottom: var(--MI-margin);">
+					<MkQrReadRawViewer v-for="result in Array.from(results).reverse()" :key="result" :data="result"/>
 				</div>
 			</MkStickyContainer>
 		</div>
@@ -68,6 +72,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkNote from '@/components/MkNote.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkQrReadRawViewer from '@/pages/qr.read.raw-viewer.vue';
 
 const LIST_RERENDER_INTERVAL = 1500;
 
@@ -80,8 +85,11 @@ const scrollHeight = ref(window.innerHeight);
 
 const scannerInstance = shallowRef<QrScanner | null>(null);
 
-const tab = ref<'users' | 'notes'>('users');
+const tab = ref<'users' | 'notes' | 'all'>('users');
 
+// higher is recent
+const results = ref(new Set<string>());
+// lower is recent
 const uris = ref<string[]>([]);
 const sources = new Map<string, ApShowResponse | null>();
 const users = ref<(misskey.entities.UserDetailed)[]>([]);
@@ -92,10 +100,10 @@ const notesCount = ref(0);
 const timer = ref<number | null>(null);
 
 function updateLists() {
-	const results = uris.value.map(uri => sources.get(uri)).filter((r): r is ApShowResponse => !!r);
-	users.value = results.filter(r => r.type === 'User').map(r => r.object).filter((u): u is misskey.entities.UserDetailed => !!u);
+	const responses = uris.value.map(uri => sources.get(uri)).filter((r): r is ApShowResponse => !!r);
+	users.value = responses.filter(r => r.type === 'User').map(r => r.object).filter((u): u is misskey.entities.UserDetailed => !!u);
 	usersCount.value = users.value.length;
-	notes.value = results.filter(r => r.type === 'Note').map(r => r.object).filter((n): n is misskey.entities.Note => !!n);
+	notes.value = responses.filter(r => r.type === 'Note').map(r => r.object).filter((n): n is misskey.entities.Note => !!n);
 	notesCount.value = notes.value.length;
 	updateRequired.value = false;
 }
@@ -128,29 +136,38 @@ watch(tab, () => {
 
 async function processResult(result: QrScanner.ScanResult) {
 	if (!result) return;
-	const uri = result.data.trim();
+	const trimmed = result.data.trim();
+
+	if (!trimmed) return;
+
+	const haveExisted = results.value.has(trimmed);
+	results.value.add(trimmed);
+
 	try {
-		new URL(uri);
+		new URL(trimmed);
 	} catch {
+		if (!haveExisted) {
+			tab.value = 'all';
+		}
 		return;
 	}
 
-	if (uris.value[0] !== uri) {
+	if (uris.value[0] !== trimmed) {
 		// 並べ替え
-		uris.value = [uri, ...uris.value.slice(0, 29).filter(u => u !== uri)];
+		uris.value = [trimmed, ...uris.value.slice(0, 29).filter(u => u !== trimmed)];
 	}
 
-	if (sources.has(uri)) return;
+	if (sources.has(trimmed)) return;
 	// Start fetching user info
-	sources.set(uri, null);
+	sources.set(trimmed, null);
 
-	await misskeyApi('ap/show', { uri })
+	await misskeyApi('ap/show', { uri: trimmed })
 		.then(data => {
 			if (data.type === 'User') {
-				sources.set(uri, data);
+				sources.set(trimmed, data);
 				tab.value = 'users';
 			} else if (data.type === 'Note') {
-				sources.set(uri, data);
+				sources.set(trimmed, data);
 				tab.value = 'notes';
 			}
 			updateLists();
