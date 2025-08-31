@@ -5,30 +5,26 @@
 		<MkTabs
 			v-model:tab="tab"
 			:tabs="[
-				...(urls.length > 0 ? [{
-					key: 'urls',
-					title: 'URLs',
-				}] : []),
-				{
-					key: 'raw',
-					title: 'Raw',
-				},
 				{
 					key: 'mfm',
 					title: 'MFM',
+					icon: 'ti ti-align-left',
+				},
+				{
+					key: 'raw',
+					title: 'Raw',
+					icon: 'ti ti-code',
 				},
 			]"
 		/>
 	</template>
 
-	<div v-show="tab === 'urls'" class="_spacer _gaps">
+	<div v-show="tab === 'mfm'" class="_spacer">
+		<Mfm :text="data" :nyaize="false"/>
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false"/>
 	</div>
 	<div v-show="tab === 'raw'" class="_spacer" style="--MI_SPACER-min: 14px; --MI_SPACER-max: 22px;">
 		<MkCode :code="data" lang="text"/>
-	</div>
-	<div v-show="tab === 'mfm'" class="_spacer">
-		<Mfm :text="data" :nyaize="false"/>
 	</div>
 </MkFolder>
 </template>
@@ -48,5 +44,5 @@ const props = defineProps<{
 
 const parsed = computed(() => mfm.parse(props.data));
 const urls = computed(() => extractUrlFromMfm(parsed.value));
-const tab = ref<'urls' | 'mfm' | 'raw'>(urls.value.length > 0 ? 'urls' : 'mfm');
+const tab = ref<'mfm' | 'raw'>('mfm');
 </script>

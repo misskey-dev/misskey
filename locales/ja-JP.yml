@@ -3374,3 +3374,6 @@ _qr:
   stopQr: "コードリーダーを停止"
   noQrCodeFound: "QRコードが見つかりません"
   scanFile: "端末の画像をスキャン"
+  urls: "URL"
+  raw: "生データ"
+  mfm: "MFM"
