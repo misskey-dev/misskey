@@ -77,7 +77,7 @@ import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import XFile from './MkFormDialog.file.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
-import type { EnumItem, Form, RadioFormItem } from '@/utility/form.js';
+import type { Form, EnumFormItem, RadioFormItem } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 
