@@ -45,9 +45,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'search'">
 			<div v-if="notesSearchAvailable" class="_gaps">
 				<div>
-					<MkInput v-model="searchQuery" @enter="search()">
+					<HanaSearchInput v-model="searchQuery" @enter="search()">
 						<template #prefix><i class="ti ti-search"></i></template>
-					</MkInput>
+					</HanaSearchInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 				</div>
 				<MkNotesTimeline v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
