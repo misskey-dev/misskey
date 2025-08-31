@@ -6,6 +6,7 @@
 import { defineAsyncComponent, ref } from 'vue';
 import type { Directive } from 'vue';
 import { popup } from '@/os.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 export class UserPreview {
 	private el;
@@ -107,6 +108,7 @@ export class UserPreview {
 export default {
 	mounted(el: HTMLElement, binding, vn) {
 		if (binding.value == null) return;
+		if (isTouchUsing) return;
 
 		// TODO: 新たにプロパティを作るのをやめMapを使う
 		// ただメモリ的には↓の方が省メモリかもしれないので検討中

@@ -3120,7 +3120,6 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "Los ajustes avanzados, como la especificación de servidores federados, pueden configurarse más adelante."
   remoteContentsCleaning: "Limpieza automática de los contenidos recibidos"
   remoteContentsCleaning_description: "La federación puede dar lugar a un flujo continuo de contenido. Al habilitar la limpieza automática, se eliminará del servidor el contenido obsoleto y sin referencias para ahorrar espacio de almacenamiento."
-  remoteContentsCleaning_description2: "Ciertos métodos de referencia, como los hipervínculos, no pueden ser detectados por el sistema."
   adminInfo: "Información del administrador"
   adminInfo_description: "Establece la información del administrador para recibir consultas."
   adminInfo_mustBeFilled: "Esta información debe ser introducida en el caso de registros abiertos o la federación esté activada."

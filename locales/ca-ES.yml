@@ -3120,7 +3120,6 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "Les configuracions avançades, com especificar els servidors amb els quals es pot federar, es poden fer més tard."
   remoteContentsCleaning: "Neteja automàtica del contingut rebut"
   remoteContentsCleaning_description: "Quan es comença a federar es rep un munt de contingut, quan s'activa la neteja automàtica el contingut antic que no es consulta serà eliminat del servidor, el que permet estalviar espai d'emmagatzematge."
-  remoteContentsCleaning_description2: "Alguns mètodes de referència, com els enllaços, no poden ser detectats pel sistema."
   adminInfo: "Informació de l'administrador "
   adminInfo_description: "Estableix la informació de l'administrador que es farà servir per rebre consultes."
   adminInfo_mustBeFilled: "Aquesta informació ha de ser omplerta si el servidor té els registres oberts o la federació es troba activada."
