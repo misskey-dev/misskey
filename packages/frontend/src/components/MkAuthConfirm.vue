@@ -167,9 +167,13 @@ async function init() {
 		for (const user of usersRes) {
 			if (users.value.has(user.id)) continue;
 
+			const account = accounts.find(a => a.id === user.id);
+
+			if (!account || account.token == null) continue;
+
 			users.value.set(user.id, {
 				...user,
-				token: accounts.find(a => a.id === user.id)!.token,
+				token: account.token,
 			});
 		}
 	}
