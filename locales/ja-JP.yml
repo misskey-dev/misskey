@@ -3372,3 +3372,5 @@ _qr:
   turnOffFlash: "ライトをオフにする"
   startQr: "コードリーダーを再開"
   stopQr: "コードリーダーを停止"
+  noQrCodeFound: "QRコードが見つかりません"
+  scanFile: "端末の画像をスキャン"

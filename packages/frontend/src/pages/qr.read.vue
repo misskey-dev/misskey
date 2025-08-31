@@ -18,7 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.view">
 				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
 				<div ref="overlayEl" :class="$style.overlay"></div>
-				<div v-if="scannerInstance" :class="$style.controls">
+				<div :class="$style.controls">
+					<MkButton v-tooltip="i18n.ts._qr.scanFile" iconOnly @click="upload"><i class="ti ti-photo-plus"></i></MkButton>
+
 					<MkButton v-if="qrStarted" v-tooltip="i18n.ts._qr.stopQr" iconOnly @click="stopQr"><i class="ti ti-player-play"></i></MkButton>
 					<MkButton v-else v-tooltip="i18n.ts._qr.startQr" iconOnly danger @click="startQr"><i class="ti ti-player-pause"></i></MkButton>
 
@@ -173,13 +175,39 @@ async function processResult(result: QrScanner.ScanResult) {
 			updateLists();
 		})
 		.catch(err => {
-			console.error(err);
+			return err;
 		});
 }
 
 const qrStarted = ref(true);
 const flashCanToggle = ref(false);
 const flash = ref(false);
+
+async function upload() {
+	os.chooseFileFromPc({ multiple: true }).then(files => {
+		if (files.length === 0) return;
+		for (const file of files) {
+			QrScanner.scanImage(file, { returnDetailedScanResult: true })
+				.then(result => {
+					processResult(result);
+				})
+				.catch(err => {
+					if (err.toString().includes('No QR code found')) {
+						os.alert({
+							type: 'info',
+							text: i18n.ts._qr.noQrCodeFound,
+						});
+					} else {
+						os.alert({
+							type: 'error',
+							text: err.toString(),
+						});
+						console.error(err);
+					}
+				});
+		}
+	});
+}
 
 async function chooseCamera() {
 	if (!scannerInstance.value) return;

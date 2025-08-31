@@ -12593,6 +12593,14 @@ export interface Locale extends ILocale {
          * コードリーダーを停止
          */
         "stopQr": string;
+        /**
+         * QRコードが見つかりません
+         */
+        "noQrCodeFound": string;
+        /**
+         * 端末の画像をスキャン
+         */
+        "scanFile": string;
     };
 }
 declare const locales: {
