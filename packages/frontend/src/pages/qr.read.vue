@@ -175,7 +175,8 @@ async function processResult(result: QrScanner.ScanResult) {
 			updateLists();
 		})
 		.catch(err => {
-			return err;
+			tab.value = 'all';
+			throw err;
 		});
 }
 
