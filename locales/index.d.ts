@@ -6531,7 +6531,7 @@ export interface Locale extends ILocale {
          */
         "remoteNotesCleaning": string;
         /**
-         * 有効にすると、参照されていない古いリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
+         * 有効にすると、一定期間経過したリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。
          */
         "remoteNotesCleaning_description": string;
         /**
@@ -12036,13 +12036,9 @@ export interface Locale extends ILocale {
          */
         "remoteContentsCleaning": string;
         /**
-         * 連合を行うと、継続して多くのコンテンツを受信します。自動クリーニングを有効にすると、参照されていない古くなったリモートコンテンツを自動でサーバーから削除し、ストレージを節約できます。
+         * 連合を行うと、継続して多くのコンテンツを受信します。自動クリーニングを有効にすると、一定期間経過したリモートコンテンツを自動でサーバーから削除し、ストレージを節約できます。
          */
         "remoteContentsCleaning_description": string;
-        /**
-         * ローカル内リモートコンテンツへのハイパーリンクはリンク切れとなります。
-         */
-        "remoteContentsCleaning_description2": string;
         /**
          * 管理者情報
          */
