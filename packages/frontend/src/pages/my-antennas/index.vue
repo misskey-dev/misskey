@@ -30,11 +30,11 @@ import { antennasCache } from '@/cache.js';
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 
-function fetch() {
+function _fetch_() {
 	antennasCache.fetch();
 }
 
-fetch();
+_fetch_();
 
 const headerActions = computed(() => [{
 	asFullButton: true,
@@ -42,7 +42,7 @@ const headerActions = computed(() => [{
 	text: i18n.ts.reload,
 	handler: () => {
 		antennasCache.delete();
-		fetch();
+		_fetch_();
 	},
 }]);
 

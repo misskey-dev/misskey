@@ -32,6 +32,8 @@ export type SoundStore = {
 	volume: number;
 };
 
+type OmitStrict<T, K extends keyof T> = T extends any ? Pick<T, Exclude<keyof T, K>> : never;
+
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
 export const PREF_DEF = definePreferences({
@@ -381,8 +383,11 @@ export const PREF_DEF = definePreferences({
 	showAvailableReactionsFirstInNote: {
 		default: false,
 	},
+	showPageTabBarBottom: {
+		default: false,
+	},
 	plugins: {
-		default: [] as Plugin[],
+		default: [] as (OmitStrict<Plugin, 'config'> & { config: Record<string, any> })[],
 		mergeStrategy: (a, b) => {
 			const sameIdExists = a.some(x => b.some(y => x.installId === y.installId));
 			if (sameIdExists) throw new Error();
@@ -493,6 +498,9 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	'experimental.enableFolderPageView': {
+		default: false,
+	},
+	'experimental.enableHapticFeedback': {
 		default: false,
 	},
 });

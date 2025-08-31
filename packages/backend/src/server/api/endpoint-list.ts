@@ -70,6 +70,7 @@ export * as 'admin/queue/inbox-delayed' from './endpoints/admin/queue/inbox-dela
 export * as 'admin/queue/retry-job' from './endpoints/admin/queue/retry-job.js';
 export * as 'admin/queue/remove-job' from './endpoints/admin/queue/remove-job.js';
 export * as 'admin/queue/show-job' from './endpoints/admin/queue/show-job.js';
+export * as 'admin/queue/show-job-logs' from './endpoints/admin/queue/show-job-logs.js';
 export * as 'admin/queue/promote-jobs' from './endpoints/admin/queue/promote-jobs.js';
 export * as 'admin/queue/jobs' from './endpoints/admin/queue/jobs.js';
 export * as 'admin/queue/stats' from './endpoints/admin/queue/stats.js';
@@ -411,6 +412,7 @@ export * as 'users/search' from './endpoints/users/search.js';
 export * as 'users/search-by-username-and-host' from './endpoints/users/search-by-username-and-host.js';
 export * as 'users/show' from './endpoints/users/show.js';
 export * as 'users/update-memo' from './endpoints/users/update-memo.js';
+export * as 'verify-email' from './endpoints/verify-email.js';
 export * as 'chat/messages/create-to-user' from './endpoints/chat/messages/create-to-user.js';
 export * as 'chat/messages/create-to-room' from './endpoints/chat/messages/create-to-room.js';
 export * as 'chat/messages/delete' from './endpoints/chat/messages/delete.js';

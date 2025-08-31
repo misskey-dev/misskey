@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			mode="default"
 		>
 			<MkMarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
-				<span v-for="instance in instances" :key="instance.id" :class="[$style.item, { [$style.colored]: colored }]" :style="{ background: colored ? instance.themeColor : null }">
+				<span v-for="instance in instances" :key="instance.id" :class="[$style.item, { [$style.colored]: colored }]" :style="{ background: colored ? instance.themeColor ?? '' : '' }">
 					<img :class="$style.icon" :src="getInstanceIcon(instance)" alt=""/>
 					<MkA :to="`/instance-info/${instance.host}`" :class="$style.host" class="_monospace">
 						{{ instance.host }}
@@ -33,9 +33,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { useInterval } from '@@/js/use-interval.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
@@ -44,7 +44,7 @@ const props = defineProps<{
 	marqueeDuration?: number;
 	marqueeReverse?: boolean;
 	oneByOneInterval?: number;
-	refreshIntervalSec?: number;
+	refreshIntervalSec: number;
 }>();
 
 const instances = ref<Misskey.entities.FederationInstance[]>([]);

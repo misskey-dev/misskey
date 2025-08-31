@@ -141,6 +141,7 @@ import { $i } from '@/i.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
+import { haptic } from '@/utility/haptic.js';
 
 const router = useRouter();
 
@@ -151,7 +152,7 @@ const props = withDefaults(defineProps<{
 	asDrawer?: boolean;
 	asWindow?: boolean;
 	asReactionPicker?: boolean; // 今は使われてないが将来的に使いそう
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 }>(), {
 	showPinned: true,
 });
@@ -431,6 +432,8 @@ function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, 
 	const key = getKey(emoji);
 	emit('chosen', key);
 
+	haptic();
+
 	// 最近使った絵文字更新
 	if (!pinned.value?.includes(key)) {
 		let recents = store.s.recentlyUsedEmojis;
@@ -495,7 +498,7 @@ function done(query?: string): boolean | void {
 
 function settings() {
 	emit('esc');
-	router.push('settings/emoji-palette');
+	router.push('/settings/emoji-palette');
 }
 
 onMounted(() => {
@@ -584,6 +587,14 @@ defineExpose({
 					display: grid;
 					grid-template-columns: var(--columns);
 					font-size: 30px;
+
+					> .config {
+						aspect-ratio: 1 / 1;
+						width: auto;
+						height: auto;
+						min-width: 0;
+						font-size: 14px;
+					}
 
 					> .item {
 						aspect-ratio: 1 / 1;

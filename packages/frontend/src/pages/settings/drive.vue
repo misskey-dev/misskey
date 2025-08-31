@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/drive" :label="i18n.ts.drive" :keywords="['drive']" icon="ti ti-cloud">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/cloud_3d.png" color="#0059ff">
-			<SearchKeyword>{{ i18n.ts._settings.driveBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.driveBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['capacity', 'usage']">
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPreferenceContainer k="keepOriginalFilename">
 							<MkSwitch v-model="keepOriginalFilename">
 								<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
-								<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
+								<template #caption><SearchText>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchText></template>
 							</MkSwitch>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['auto', 'nsfw', 'sensitive', 'media', 'file']">
 						<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
 							<template #label><SearchLabel>{{ i18n.ts.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-							<template #caption><SearchKeyword>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchKeyword></template>
+							<template #caption><SearchText>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchText></template>
 						</MkSwitch>
 					</SearchMarker>
 				</div>

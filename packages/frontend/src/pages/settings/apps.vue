@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 					<template #label>{{ token.name }}</template>
 					<template #caption>{{ token.description }}</template>
-					<template #suffix><MkTime :time="token.lastUsedAt"/></template>
+					<template v-if="token.lastUsedAt != null" #suffix><MkTime :time="token.lastUsedAt"/></template>
 					<template #footer>
 						<MkButton danger @click="revoke(token)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					</template>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #key>{{ i18n.ts.installedDate }}</template>
 								<template #value><MkTime :time="token.createdAt" :mode="'detail'"/></template>
 							</MkKeyValue>
-							<MkKeyValue oneline>
+							<MkKeyValue v-if="token.lastUsedAt != null" oneline>
 								<template #key>{{ i18n.ts.lastUsedDate }}</template>
 								<template #value><MkTime :time="token.lastUsedAt" :mode="'detail'"/></template>
 							</MkKeyValue>

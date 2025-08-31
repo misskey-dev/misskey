@@ -33,7 +33,8 @@ export type PureRenote =
 	& AllNullRecord<Pick<Note, 'text'>>
 	& AllNullOrOptionalRecord<Pick<Note, 'reply' | 'replyId' | 'cw' | 'poll'>>
 	& { files: []; fileIds: []; }
-	& NonNullableRecord<Pick<Note, 'renote' | 'renoteId'>>;
+	& NonNullableRecord<Pick<Note, 'renoteId'>>
+	& Pick<Note, 'renote'>; // リノート対象が削除された場合、renoteIdはあるがrenoteはnullになる
 
 export type PageEvent = {
 	pageId: Page['id'];
@@ -48,7 +49,7 @@ export type ModerationLog = {
 	id: ID;
 	createdAt: DateString;
 	userId: User['id'];
-	user: UserDetailedNotMe | null;
+	user: UserDetailedNotMe;
 } & ({
 	type: 'updateServerSettings';
 	info: ModerationLogPayloads['updateServerSettings'];
@@ -202,6 +203,9 @@ export type ModerationLog = {
 } | {
 	type: 'deleteChatRoom';
 	info: ModerationLogPayloads['deleteChatRoom'];
+} | {
+	type: 'updateProxyAccountDescription';
+	info: ModerationLogPayloads['updateProxyAccountDescription'];
 });
 
 export type ServerStats = {

@@ -848,6 +848,8 @@ sourceCode: "সোর্স কোড"
 flip: "উল্টান"
 postForm: "নোট লিখুন"
 information: "আপনার সম্পর্কে"
+inMinutes: "মিনিট"
+inDays: "দিন"
 _chat:
   invitations: "আমন্ত্রণ"
   noHistory: "কোনো ইতিহাস নেই"
@@ -1355,3 +1357,10 @@ _watermarkEditor:
   text: "লেখা"
   image: "ছবি"
   advanced: "উন্নত"
+_imageEffector:
+  _fxProps:
+    scale: "আকার"
+    size: "আকার"
+    color: "রং"
+    opacity: "অস্বচ্ছতা"
+    lightness: "উজ্জ্বল করুন"

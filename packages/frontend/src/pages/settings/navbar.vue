@@ -64,7 +64,6 @@ import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { store } from '@/store.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
@@ -92,7 +91,7 @@ async function addItem() {
 			value: '-', text: i18n.ts.divider,
 		}],
 	});
-	if (canceled) return;
+	if (canceled || item == null) return;
 	items.value = [...items.value, {
 		id: genId(),
 		type: item,

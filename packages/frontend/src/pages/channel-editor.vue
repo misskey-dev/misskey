@@ -92,7 +92,7 @@ const props = defineProps<{
 }>();
 
 const channel = ref<Misskey.entities.Channel | null>(null);
-const name = ref<string | null>(null);
+const name = ref<string>('');
 const description = ref<string | null>(null);
 const bannerUrl = ref<string | null>(null);
 const bannerId = ref<string | null>(null);
@@ -114,20 +114,22 @@ watch(() => bannerId.value, async () => {
 async function fetchChannel() {
 	if (props.channelId == null) return;
 
-	channel.value = await misskeyApi('channels/show', {
+	const result = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 
-	name.value = channel.value.name;
-	description.value = channel.value.description;
-	bannerId.value = channel.value.bannerId;
-	bannerUrl.value = channel.value.bannerUrl;
-	isSensitive.value = channel.value.isSensitive;
-	pinnedNotes.value = channel.value.pinnedNoteIds.map(id => ({
+	name.value = result.name;
+	description.value = result.description;
+	bannerId.value = result.bannerId;
+	bannerUrl.value = result.bannerUrl;
+	isSensitive.value = result.isSensitive;
+	pinnedNotes.value = result.pinnedNoteIds.map(id => ({
 		id,
 	}));
-	color.value = channel.value.color;
-	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
+	color.value = result.color;
+	allowRenoteToExternal.value = result.allowRenoteToExternal;
+
+	channel.value = result;
 }
 
 fetchChannel();
@@ -154,29 +156,36 @@ function save() {
 		name: name.value,
 		description: description.value,
 		bannerId: bannerId.value,
-		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 		color: color.value,
 		isSensitive: isSensitive.value,
 		allowRenoteToExternal: allowRenoteToExternal.value,
-	};
+	} satisfies Misskey.entities.ChannelsCreateRequest;
 
-	if (props.channelId) {
-		params.channelId = props.channelId;
-		os.apiWithDialog('channels/update', params);
+	if (props.channelId != null) {
+		os.apiWithDialog('channels/update', {
+			...params,
+			channelId: props.channelId,
+			pinnedNoteIds: pinnedNotes.value.map(x => x.id),
+		});
 	} else {
 		os.apiWithDialog('channels/create', params).then(created => {
-			router.push(`/channels/${created.id}`);
+			router.push('/channels/:channelId', {
+				params: {
+					channelId: created.id,
+				},
+			});
 		});
 	}
 }
 
 async function archive() {
+	if (props.channelId == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.tsx.channelArchiveConfirmTitle({ name: name.value }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
-
 	if (canceled) return;
 
 	misskeyApi('channels/update', {

@@ -22,15 +22,15 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/matter-js": "0.19.8",
+		"@types/matter-js": "0.20.0",
 		"@types/seedrandom": "3.0.8",
-		"@types/node": "22.16.4",
-		"@typescript-eslint/eslint-plugin": "8.37.0",
-		"@typescript-eslint/parser": "8.37.0",
+		"@types/node": "22.17.2",
+		"@typescript-eslint/eslint-plugin": "8.40.0",
+		"@typescript-eslint/parser": "8.40.0",
 		"nodemon": "3.1.10",
 		"execa": "9.6.0",
-		"typescript": "5.8.3",
-		"esbuild": "0.25.6",
+		"typescript": "5.9.2",
+		"esbuild": "0.25.9",
 		"glob": "11.0.3"
 	},
 	"files": [

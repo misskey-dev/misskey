@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkTextarea>
 
 			<div class="_gaps_s">
-				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : '' }">
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>
@@ -85,7 +85,11 @@ async function save() {
 			fileIds: files.value.map(file => file.id),
 			isSensitive: isSensitive.value,
 		});
-		router.push(`/gallery/${props.postId}`);
+		router.push('/gallery/:postId', {
+			params: {
+				postId: props.postId,
+			},
+		});
 	} else {
 		const created = await os.apiWithDialog('gallery/posts/create', {
 			title: title.value,
@@ -93,7 +97,11 @@ async function save() {
 			fileIds: files.value.map(file => file.id),
 			isSensitive: isSensitive.value,
 		});
-		router.push(`/gallery/${created.id}`);
+		router.push('/gallery/:postId', {
+			params: {
+				postId: created.id,
+			},
+		});
 	}
 }
 

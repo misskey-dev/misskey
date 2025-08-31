@@ -6,22 +6,78 @@
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { initShaderProgram } from '../webgl.js';
 
+export type ImageEffectorRGB = [r: number, g: number, b: number];
+
 type ParamTypeToPrimitive = {
-	'number': number;
-	'number:enum': number;
-	'boolean': boolean;
-	'align': { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; };
-	'seed': number;
-	'texture': { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
-	'color': [r: number, g: number, b: number];
+	[K in ImageEffectorFxParamDef['type']]: (ImageEffectorFxParamDef & { type: K })['default'];
 };
 
-type ImageEffectorFxParamDefs = Record<string, {
-	type: keyof ParamTypeToPrimitive;
-	default: any;
+interface CommonParamDef {
+	type: string;
 	label?: string;
-	toViewValue?: (v: any) => string;
-}>;
+	caption?: string;
+	default: any;
+}
+
+interface NumberParamDef extends CommonParamDef {
+	type: 'number';
+	default: number;
+	min: number;
+	max: number;
+	step?: number;
+	toViewValue?: (v: number) => string;
+};
+
+interface NumberEnumParamDef extends CommonParamDef {
+	type: 'number:enum';
+	enum: {
+		value: number;
+		label?: string;
+		icon?: string;
+	}[];
+	default: number;
+};
+
+interface BooleanParamDef extends CommonParamDef {
+	type: 'boolean';
+	default: boolean;
+};
+
+interface AlignParamDef extends CommonParamDef {
+	type: 'align';
+	default: {
+		x: 'left' | 'center' | 'right';
+		y: 'top' | 'center' | 'bottom';
+	};
+};
+
+interface SeedParamDef extends CommonParamDef {
+	type: 'seed';
+	default: number;
+};
+
+interface TextureParamDef extends CommonParamDef {
+	type: 'texture';
+	default: { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
+};
+
+interface ColorParamDef extends CommonParamDef {
+	type: 'color';
+	default: ImageEffectorRGB;
+};
+
+type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | ColorParamDef;
+
+export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
+
+export type GetParamType<T extends ImageEffectorFxParamDef> =
+	T extends NumberEnumParamDef
+		? T['enum'][number]['value']
+		: ParamTypeToPrimitive[T['type']];
+
+export type ParamsRecordTypeToDefRecord<PS extends ImageEffectorFxParamDefs> = {
+	[K in keyof PS]: GetParamType<PS[K]>;
+};
 
 export function defineImageEffectorFx<ID extends string, PS extends ImageEffectorFxParamDefs, US extends string[]>(fx: ImageEffectorFx<ID, PS, US>) {
 	return fx;
@@ -36,9 +92,7 @@ export type ImageEffectorFx<ID extends string = string, PS extends ImageEffector
 	main: (ctx: {
 		gl: WebGL2RenderingContext;
 		program: WebGLProgram;
-		params: {
-			[key in keyof PS]: ParamTypeToPrimitive[PS[key]['type']];
-		};
+		params: ParamsRecordTypeToDefRecord<PS>;
 		u: Record<US[number], WebGLUniformLocation>;
 		width: number;
 		height: number;

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['2fa']">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/locked_with_key_3d.png" color="#ffbf00">
-			<SearchKeyword>{{ i18n.ts._settings.securityBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.securityBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['password']">
@@ -24,30 +24,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<X2fa/>
 
-		<FormSection>
-			<template #label>{{ i18n.ts.signinHistory }}</template>
-			<MkPagination :paginator="paginator" withControl>
-				<template #default="{items}">
-					<div>
-						<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
-							<header>
-								<i v-if="item.success" class="ti ti-check icon succ"></i>
-								<i v-else class="ti ti-circle-x icon fail"></i>
-								<code class="ip _monospace">{{ item.ip }}</code>
-								<MkTime :time="item.createdAt" class="time"/>
-							</header>
+		<SearchMarker :keywords="['signin', 'login', 'history', 'log']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.signinHistory }}</SearchLabel></template>
+				<MkPagination :paginator="paginator" withControl>
+					<template #default="{items}">
+						<div>
+							<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
+								<header>
+									<i v-if="item.success" class="ti ti-check icon succ"></i>
+									<i v-else class="ti ti-circle-x icon fail"></i>
+									<code class="ip _monospace">{{ item.ip }}</code>
+									<MkTime :time="item.createdAt" class="time"/>
+								</header>
+							</div>
 						</div>
-					</div>
-				</template>
-			</MkPagination>
-		</FormSection>
+					</template>
+				</MkPagination>
+			</FormSection>
+		</SearchMarker>
 
-		<FormSection>
-			<FormSlot>
-				<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</MkButton>
-				<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
-			</FormSlot>
-		</FormSection>
+		<SearchMarker :keywords="['regenerate', 'refresh', 'reset', 'token']">
+			<FormSection>
+				<FormSlot>
+					<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> <SearchLabel>{{ i18n.ts.regenerateLoginToken }}</SearchLabel></MkButton>
+					<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
+				</FormSlot>
+			</FormSection>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -76,14 +80,14 @@ async function change() {
 		type: 'password',
 		autocomplete: 'new-password',
 	});
-	if (canceled2) return;
+	if (canceled2 || newPassword == null) return;
 
 	const { canceled: canceled3, result: newPassword2 } = await os.inputText({
 		title: i18n.ts.newPasswordRetype,
 		type: 'password',
 		autocomplete: 'new-password',
 	});
-	if (canceled3) return;
+	if (canceled3 || newPassword2 == null) return;
 
 	if (newPassword !== newPassword2) {
 		os.alert({
