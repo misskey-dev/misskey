@@ -112,7 +112,9 @@ const canvasLoading = ref(true);
 
 const name = ref($i.name ?? $i.username);
 
-const fontFace = new FontFace('PlemolJP-HS', 'url(https://static-assets.misskey.flowers/fonts/plemoljp-hs/PlemolJPHS-Bold.woff2)');
+const fontFace = new FontFace('PlemolJP-HS', 'url(https://static-assets.misskey.flowers/fonts/plemoljp-hs/PlemolJPHS-Bold.woff2)', {
+	weight: 'bold',
+});
 
 const bg = new Image();
 bg.crossOrigin = 'anonymous';
