@@ -19,11 +19,11 @@
 		/>
 	</template>
 
-	<div v-show="tab === 'mfm'" class="_spacer">
+	<div v-show="tab === 'mfm'" class="_spacer _gaps">
 		<Mfm :text="data" :nyaize="false"/>
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false"/>
 	</div>
-	<div v-show="tab === 'raw'" class="_spacer" style="--MI_SPACER-min: 14px; --MI_SPACER-max: 22px;">
+	<div v-show="tab === 'raw'" class="_spacer" style="--MI_SPACER-min: 10px; --MI_SPACER-max: 16px;">
 		<MkCode :code="data" lang="text"/>
 	</div>
 </MkFolder>
