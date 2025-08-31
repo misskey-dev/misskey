@@ -47,6 +47,7 @@
 - Enhance: 依存ソフトウェアの更新
 - Enhance: ノートを非表示にする相対期間を1ヶ月単位で自由に指定できるように
 - Enhance: メールアドレス確認画面のUIを改善
+- Enhance: アイコンのスクロール追従を無効化する際の適用範囲を強化
 - Fix: 投稿フォームでファイルのアップロードが中止または失敗した際のハンドリングを修正
 - Fix: 一部の設定検索結果が存在しないパスになる問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/1171)
