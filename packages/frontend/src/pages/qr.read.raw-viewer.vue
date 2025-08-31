@@ -7,12 +7,12 @@
 			:tabs="[
 				{
 					key: 'mfm',
-					title: 'MFM',
+					title: i18n.ts._qr.mfm,
 					icon: 'ti ti-align-left',
 				},
 				{
 					key: 'raw',
-					title: 'Raw',
+					title: i18n.ts._qr.raw,
 					icon: 'ti ti-code',
 				},
 			]"
@@ -37,6 +37,7 @@ import MkTabs from '@/components/MkTabs.vue';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm';
 import MkCode from '@/components/MkCode.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	data: string;

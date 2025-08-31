@@ -12601,6 +12601,14 @@ export interface Locale extends ILocale {
          * 端末の画像をスキャン
          */
         "scanFile": string;
+        /**
+         * テキスト
+         */
+        "raw": string;
+        /**
+         * MFM
+         */
+        "mfm": string;
     };
 }
 declare const locales: {
