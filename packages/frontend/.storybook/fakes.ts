@@ -127,7 +127,7 @@ export function galleryPost(isSensitive = false) {
 	}
 }
 
-export function file(isSensitive = false) {
+export function file(isSensitive = false): entities.DriveFile {
 	return {
 		id: 'somefileid',
 		createdAt: '2016-12-28T22:49:51.000Z',
