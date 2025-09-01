@@ -44,10 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-type SupportedTypes = 'text' | 'password' | 'email' | 'url' | 'tel' | 'number' | 'search';
+type SupportedTypes = 'text' | 'password' | 'email' | 'url' | 'tel' | 'number' | 'search' | 'color';
 type ModelValueType<T extends SupportedTypes> =
 	T extends 'number' ? number :
-	T extends 'text' | 'password' | 'email' | 'url' | 'tel' | 'search' ? string :
+	T extends 'text' | 'password' | 'email' | 'url' | 'tel' | 'search' | 'color' ? string :
 	never;
 </script>
 
