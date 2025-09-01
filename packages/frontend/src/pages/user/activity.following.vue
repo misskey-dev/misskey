@@ -117,7 +117,6 @@ async function renderChart() {
 					offset: true,
 					stacked: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
