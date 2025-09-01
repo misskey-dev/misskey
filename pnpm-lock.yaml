@@ -2276,6 +2276,7 @@ packages:
 
   '@github/webauthn-json@2.1.1':
     resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
+    deprecated: 'Deprecated: Modern browsers support built-in WebAuthn JSON methods. Please use native browser methods instead. For more information, visit https://github.com/github/webauthn-json'
     hasBin: true
 
   '@hapi/boom@10.0.1':
@@ -3693,6 +3694,7 @@ packages:
 
   '@simplewebauthn/types@12.0.0':
     resolution: {integrity: sha512-q6y8MkoV8V8jB4zzp18Uyj2I7oFp2/ONL8c3j8uT06AOWu3cIChc1au71QYHrP2b+xDapkGTiv+9lX7xkTlAsA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
