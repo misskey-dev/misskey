@@ -154,8 +154,6 @@ async function renderChart() {
 					display: true,
 					text: 'Unique/Natural PV',
 					padding: {
-						left: 0,
-						right: 0,
 						top: 0,
 						bottom: 12,
 					},
@@ -171,7 +169,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],

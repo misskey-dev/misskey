@@ -160,7 +160,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],
