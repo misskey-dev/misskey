@@ -33,9 +33,9 @@ export type SoundStore = {
 };
 
 export type StatusbarStore = {
-	name: string;
+	name: string | null;
 	id: string;
-	type: string;
+	type: string | null;
 	size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
 	black: boolean;
 	props: Record<string, any>;
