@@ -98,6 +98,7 @@ import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
+import { miRegistoryItem } from '@/registry-item';
 
 const router = useRouter();
 
@@ -139,14 +140,27 @@ watch(() => props.channelId, async () => {
 	}
 
 	if ((favorited.value || channel.value.isFollowing) && channel.value.lastNotedAt) {
-		const lastReadedAt: number = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.value.id}`) ?? 0;
+		const lastReadedAt = miLocalStorage.getItemAsJson('channelsLastReadedAt')[channel.value.id] ?? undefined;
 		const lastNotedAt = Date.parse(channel.value.lastNotedAt);
 
+		if (!lastReadedAt) {
+			saveLastReadedAt();
+			return;
+		}
+
 		if (lastNotedAt > lastReadedAt) {
-			miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.value.id}`, lastNotedAt);
+			saveLastReadedAt();
 		}
 	}
 }, { immediate: true });
+
+async function saveLastReadedAt() {
+	if (!channel.value) return;
+	const tmp = await miRegistoryItem.get('channelsLastReadedAt');
+	tmp[channel.value.id] = Date.now();
+	await miRegistoryItem.set('channelsLastReadedAt', tmp);
+	miLocalStorage.setItemAsJson('channelsLastReadedAt', tmp);
+}
 
 function edit() {
 	router.push('/channels/:channelId/edit', {
