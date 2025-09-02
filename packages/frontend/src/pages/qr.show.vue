@@ -4,11 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root" :style="{
-	backgroundColor: bgColor,
-	'--MI-QrShowScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing, 0px) )`,
-}">
-	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5" />
+<div
+	ref="rootEl" :class="$style.root" :style="{
+		backgroundColor: bgColor,
+		'--MI-QrShowScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing, 0px) )`,
+	}"
+>
+	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 	<div :class="$style.fg">
 		<div
 			:class="[$style.content, '_spacer']"
@@ -33,8 +35,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
 				</div>
 			</div>
-			<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion" />
-			<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" />
+			<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion"/>
+			<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
 		</div>
 	</div>
 </div>
@@ -44,9 +46,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
-import type { Directive } from 'vue';
 import { computed, ref, shallowRef, watch, onMounted, onUnmounted } from 'vue';
-import { host } from '@@/js/config.js';
+import { url, host } from '@@/js/config.js';
+import { getScrollContainer } from '@@/js/scroll';
+import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { userPage, userName } from '@/filters/user.js';
@@ -54,7 +57,6 @@ import misskeysvg from '/client-assets/misskey.svg';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
-import { getScrollContainer } from '@@/js/scroll';
 
 const $i = ensureSignin();
 
@@ -63,9 +65,13 @@ const rootEl = ref<HTMLDivElement | null>(null);
 const scrollHeight = ref(window.innerHeight);
 
 const acct = computed(() => `@${$i.username}@${host}`);
-const url = computed(() => userPage($i, undefined, true));
-
-const canShare = computed(() => navigator.canShare && navigator.canShare({ url: url.value }));
+const userProfileUrl = computed(() => userPage($i, undefined, true));
+const shareData = computed(() => ({
+	title: i18n.tsx._qr.shareTitle({ name: userName($i), acct: acct.value }),
+	text: i18n.ts._qr.shareText,
+	url: userProfileUrl.value,
+}));
+const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
 
 const qrCodeEl = ref<HTMLDivElement | null>(null);
 
@@ -80,11 +86,7 @@ const bgColor = tinycolor(`hsl(${avatarHsl.value.h}, 60, 46)`).toRgbString();
 
 function share() {
 	if (!canShare.value) return;
-	return navigator.share({
-		title: i18n.tsx._qr.shareTitle({ name: userName($i), acct: acct.value }),
-		text: i18n.ts._qr.shareText,
-		url: url.value,
-	});
+	return navigator.share(shareData.value);
 }
 
 const qrCodeInstance = new QRCodeStyling({
@@ -92,7 +94,7 @@ const qrCodeInstance = new QRCodeStyling({
 	height: 600,
 	margin: 36,
 	type: 'canvas',
-	data: url.value,
+	data: `${url}/users/${$i.id}`,
 	image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
 	qrOptions: {
 		typeNumber: 0,
@@ -197,7 +199,7 @@ const vFlip = {
 	unmounted(el: Element) {
 		el.classList.remove('_qrShowFlip');
 		flipEls.delete(el);
-	}
+	},
 } as Directive;
 //#endregion
 </script>
