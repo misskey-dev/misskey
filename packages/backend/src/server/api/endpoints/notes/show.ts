@@ -9,6 +9,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { MiMeta } from '@/models/Meta.js';
+import { MiNote } from '@/models/Note.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -55,12 +57,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await this.getterService.getNoteWithRelations(ps.noteId).catch(err => {
+			const note = await this.getterService.getMayDeletedNoteWithRelations(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
 
-			if (note.user!.requireSigninToViewContents && me == null) {
+			if (note.user.requireSigninToViewContents && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
@@ -68,11 +70,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.userHost != null && me == null) {
+			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.user.host != null && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			return await this.noteEntityService.pack(note, me, {
+			return await this.noteEntityService.packMayDeleted(note, me, {
 				detail: true,
 			});
 		});

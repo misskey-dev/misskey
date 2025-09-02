@@ -13,6 +13,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
+import { MiDeletedNote } from '@/models/DeletedNote.js';
 import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, MiMeta, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
@@ -403,6 +404,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new MiNote({
+			// Note: id は transaction内で確定させるので、ここの id は一時的なものである可能性がある
 			id: this.idService.gen(data.createdAt?.getTime()),
 			fileIds: data.files ? data.files.map(file => file.id) : [],
 			replyId: data.reply ? data.reply.id : null,
@@ -460,11 +462,24 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// 投稿を作成
 		try {
-			if (insert.hasPoll) {
-				// Start transaction
-				await this.db.transaction(async transactionalEntityManager => {
-					await transactionalEntityManager.insert(MiNote, insert);
+			await this.db.transaction(async transactionalEntityManager => {
+				if (data.uri) {
+					// もし URI が指定されている場合は、MiDeletedNote から id を引き継ぐ。
+					const deletedOne = await transactionalEntityManager.findOneBy(MiDeletedNote, { uri: data.uri });
+					if (deletedOne != null) {
+						if (deletedOne.deletedAt) {
+							// もしこの投稿がモデレータ等によって削除されていた場合は、復活させてはいけないので、エラーにする
+							throw new Error('This note uri is deleted by moderator.');
+						}
+						// さもなければ、もとの id を引き継ぎ、MiDeletedNote からは削除する
+						insert.id = deletedOne.id;
+						await transactionalEntityManager.delete(MiDeletedNote, deletedOne.id);
+					}
+				}
 
+				await transactionalEntityManager.insert(MiNote, insert);
+
+				if (insert.hasPoll) {
 					const poll = new MiPoll({
 						noteId: insert.id,
 						choices: data.poll!.choices,
@@ -478,10 +493,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 					});
 
 					await transactionalEntityManager.insert(MiPoll, poll);
-				});
-			} else {
-				await this.notesRepository.insert(insert);
-			}
+				}
+			});
 
 			return {
 				...insert,
