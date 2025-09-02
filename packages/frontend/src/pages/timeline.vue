@@ -148,7 +148,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	const channels = await favoritedChannelsCache.fetch();
 	const items: (MenuItem | undefined)[] = [
 		...channels.map(channel => {
-			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
+			const lastReadedAt = miLocalStorage.getItemAsJson('channelsLastReadedAt')[channel.id] ?? null;
 			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
 
 			return {
