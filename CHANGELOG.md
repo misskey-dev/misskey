@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+-
+
+### Client
+- Fix: RSSティッカーウィジェットが正しく動作しない問題を修正
+
+### Server
+-
+
+
 ## 2025.8.0
 
 ### Note
