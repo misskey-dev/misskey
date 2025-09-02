@@ -125,6 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							where: {
 								followeeId: user.id,
 								followerId: me.id,
+								isFollowerSuspended: false,
 							},
 						});
 						if (!isFollowing) {
@@ -136,11 +137,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('following.followeeId = :userId', { userId: user.id })
+				.andWhere('following.isFollowerSuspended = FALSE')
 				.innerJoinAndSelect('following.follower', 'follower');
 
 			const followings = await query
 				.limit(ps.limit)
 				.getMany();
+
+			console.log(followings);
 
 			return await this.followingEntityService.packMany(followings, me, { populateFollower: true });
 		});

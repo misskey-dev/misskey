@@ -51,6 +51,7 @@ import { ReactionService } from '@/core/ReactionService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import { ChatService } from '@/core/ChatService.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
 
 process.env.NODE_ENV = 'test';
 
@@ -170,6 +171,7 @@ describe('UserEntityService', () => {
 				InstanceChart,
 				ApLoggerService,
 				AccountMoveService,
+				UserSuspendService,
 				ReactionService,
 				ReactionsBufferingService,
 				NotificationService,
