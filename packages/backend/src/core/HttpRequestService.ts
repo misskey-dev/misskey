@@ -162,7 +162,7 @@ export class HttpRequestService {
 
 		this.https = new HttpsRequestServiceAgent(config, agentOption);
 
-		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
+		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 16);
 
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
