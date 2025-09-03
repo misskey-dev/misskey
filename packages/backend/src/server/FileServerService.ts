@@ -124,9 +124,6 @@ export class FileServerService {
 		}
 
 		if (request.headers.range && 'file' in file && file.size > 0) {
-			// Development mode: handle byte range requests
-			// See https://github.com/misskey-dev/misskey/issues/16506
-
 			const range = request.headers.range as string;
 			const parts = range.replace(/bytes=/, '').split('-');
 			const start = parseInt(parts[0], 10);
