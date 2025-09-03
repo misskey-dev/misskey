@@ -123,7 +123,7 @@ export class FileServerService {
 			throw new Error('Invalid file');
 		}
 
-		if (process.env.NODE_ENV !== 'production' && request.headers.range && 'file' in file && file.size > 0) {
+		if (request.headers.range && 'file' in file && file.size > 0) {
 			// Development mode: handle byte range requests
 			// See https://github.com/misskey-dev/misskey/issues/16506
 
