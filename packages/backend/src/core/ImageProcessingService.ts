@@ -10,21 +10,39 @@ export type IImage = {
 	data: Buffer;
 	ext: string | null;
 	type: string;
+	filename?: string;
+	size?: number;
 };
 
 export type IImageStream = {
 	data: Readable;
 	ext: string | null;
 	type: string;
+	filename?: string;
+	size?: number;
 };
 
 export type IImageSharp = {
 	data: sharp.Sharp;
 	ext: string | null;
 	type: string;
+	filename?: string;
+	size?: number;
 };
 
 export type IImageStreamable = IImage | IImageStream | IImageSharp;
+
+export function getSizeFromIImage(image: IImageStreamable): number | undefined {
+	if ('size' in image) {
+		return image.size;
+	}
+
+	if (image.data instanceof Buffer) {
+		return image.data.length;
+	}
+
+	return;
+}
 
 export const webpDefault: sharp.WebpOptions = {
 	quality: 77,

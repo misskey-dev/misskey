@@ -18,7 +18,7 @@ import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
+import { getSizeFromIImage, type IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
@@ -118,6 +118,50 @@ export class FileServerService {
 	}
 
 	@bindThis
+	private processFileAndConvertToIImage(file: Awaited<ReturnType<FileServerService['getStreamAndTypeFromUrl']>>, request: FastifyRequest, reply: FastifyReply): IImageStreamable {
+		if (typeof file !== 'object' || !file) {
+			throw new Error('Invalid file');
+		}
+
+		if (process.env.NODE_ENV !== 'production' && request.headers.range && 'file' in file && file.size > 0) {
+			// Development mode: handle byte range requests
+			// See https://github.com/misskey-dev/misskey/issues/16506
+
+			const range = request.headers.range as string;
+			const parts = range.replace(/bytes=/, '').split('-');
+			const start = parseInt(parts[0], 10);
+			let end = parts[1] ? parseInt(parts[1], 10) : file.size - 1;
+			if (end > file.size) {
+				end = file.size - 1;
+			}
+			const chunksize = end - start + 1;
+
+			reply.header('Content-Range', `bytes ${start}-${end}/${file.size}`);
+			reply.header('Accept-Ranges', 'bytes');
+			reply.code(206);
+
+			return {
+				data: fs.createReadStream(file.path, {
+					start,
+					end,
+				}),
+				ext: file.ext,
+				type: file.mime,
+				size: chunksize,
+				filename: file.filename,
+			};
+		}
+
+		return {
+			data: fs.createReadStream(file.path),
+			ext: file.ext,
+			type: file.mime,
+			size: file.size,
+			filename: file.filename,
+		};
+	}
+
+	@bindThis
 	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
 		const key = request.params.key;
 		const file = await this.getFileFromKey(key).then();
@@ -135,9 +179,9 @@ export class FileServerService {
 		}
 
 		try {
-			if (file.state === 'remote') {
-				let image: IImageStreamable | null = null;
+			let image: IImageStreamable | null = null;
 
+			if (file.state === 'remote') {
 				if (file.fileRole === 'thumbnail') {
 					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
@@ -172,36 +216,7 @@ export class FileServerService {
 				}
 
 				if (!image) {
-					if (request.headers.range && file.file.size > 0) {
-						const range = request.headers.range as string;
-						const parts = range.replace(/bytes=/, '').split('-');
-						const start = parseInt(parts[0], 10);
-						let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
-						if (end > file.file.size) {
-							end = file.file.size - 1;
-						}
-						const chunksize = end - start + 1;
-
-						image = {
-							data: fs.createReadStream(file.path, {
-								start,
-								end,
-							}),
-							ext: file.ext,
-							type: file.mime,
-						};
-
-						reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
-						reply.header('Accept-Ranges', 'bytes');
-						reply.header('Content-Length', chunksize);
-						reply.code(206);
-					} else {
-						image = {
-							data: fs.createReadStream(file.path),
-							ext: file.ext,
-							type: file.mime,
-						};
-					}
+					image = this.processFileAndConvertToIImage(file, request, reply);
 				}
 
 				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
@@ -212,78 +227,31 @@ export class FileServerService {
 					// image.dataがstreamでないなら直ちにcleanup
 					file.cleanup();
 				}
-
-				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-				reply.header('Content-Length', file.file.size);
-				reply.header('Cache-Control', 'max-age=31536000, immutable');
-				reply.header('Content-Disposition',
-					contentDisposition(
-						'inline',
-						correctFilename(file.filename, image.ext),
-					),
-				);
-				return image.data;
-			}
-
-			if (file.fileRole !== 'original') {
-				const filename = rename(file.filename, {
-					suffix: file.fileRole === 'thumbnail' ? '-thumb' : '-web',
-					extname: file.ext ? `.${file.ext}` : '.unknown',
-				}).toString();
-
-				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.mime) ? file.mime : 'application/octet-stream');
-				reply.header('Cache-Control', 'max-age=31536000, immutable');
-				reply.header('Content-Disposition', contentDisposition('inline', filename));
-
-				if (request.headers.range && file.file.size > 0) {
-					const range = request.headers.range as string;
-					const parts = range.replace(/bytes=/, '').split('-');
-					const start = parseInt(parts[0], 10);
-					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
-					if (end > file.file.size) {
-						end = file.file.size - 1;
-					}
-					const chunksize = end - start + 1;
-					const fileStream = fs.createReadStream(file.path, {
-						start,
-						end,
-					});
-					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
-					reply.header('Accept-Ranges', 'bytes');
-					reply.header('Content-Length', chunksize);
-					reply.code(206);
-					return fileStream;
-				}
-
-				return fs.createReadStream(file.path);
 			} else {
-				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
-				reply.header('Content-Length', file.file.size);
-				reply.header('Cache-Control', 'max-age=31536000, immutable');
-				reply.header('Content-Disposition', contentDisposition('inline', file.filename));
+				if (file.fileRole !== 'original') {
+					const filename = rename(file.filename, {
+						suffix: file.fileRole === 'thumbnail' ? '-thumb' : '-web',
+						extname: file.ext ? `.${file.ext}` : '.unknown',
+					}).toString();
 
-				if (request.headers.range && file.file.size > 0) {
-					const range = request.headers.range as string;
-					const parts = range.replace(/bytes=/, '').split('-');
-					const start = parseInt(parts[0], 10);
-					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
-					if (end > file.file.size) {
-						end = file.file.size - 1;
-					}
-					const chunksize = end - start + 1;
-					const fileStream = fs.createReadStream(file.path, {
-						start,
-						end,
-					});
-					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
-					reply.header('Accept-Ranges', 'bytes');
-					reply.header('Content-Length', chunksize);
-					reply.code(206);
-					return fileStream;
+					reply.header('Content-Disposition', contentDisposition('inline', filename));
+					image = this.processFileAndConvertToIImage(file, request, reply);
+					image.filename = filename;
+				} else {
+					image = this.processFileAndConvertToIImage(file, request, reply);
 				}
-
-				return fs.createReadStream(file.path);
 			}
+
+			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+			reply.header('Content-Length', getSizeFromIImage(image) ?? file.size ?? undefined);
+			reply.header('Cache-Control', 'max-age=31536000, immutable');
+			reply.header('Content-Disposition',
+				contentDisposition(
+					'inline',
+					correctFilename(image.filename ?? file.filename, image.ext),
+				),
+			);
+			return image.data;
 		} catch (e) {
 			if ('cleanup' in file) file.cleanup();
 			throw e;
@@ -363,6 +331,7 @@ export class FileServerService {
 						data: fs.createReadStream(file.path),
 						ext: file.ext,
 						type: file.mime,
+						size: file.size,
 					};
 				} else {
 					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
@@ -379,9 +348,9 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 422);
+				image = await this.imageProcessingService.convertSharpToWebp(await sharpBmp(file.path, file.mime), 498, 422);
 			} else if ('preview' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
+				image = await this.imageProcessingService.convertSharpToWebp(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
@@ -414,42 +383,13 @@ export class FileServerService {
 					type: 'image/png',
 				};
 			} else if (file.mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
+				image = await this.imageProcessingService.convertToWebp(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}
 
 			if (!image) {
-				if (request.headers.range && file.file && file.file.size > 0) {
-					const range = request.headers.range as string;
-					const parts = range.replace(/bytes=/, '').split('-');
-					const start = parseInt(parts[0], 10);
-					let end = parts[1] ? parseInt(parts[1], 10) : file.file.size - 1;
-					if (end > file.file.size) {
-						end = file.file.size - 1;
-					}
-					const chunksize = end - start + 1;
-
-					image = {
-						data: fs.createReadStream(file.path, {
-							start,
-							end,
-						}),
-						ext: file.ext,
-						type: file.mime,
-					};
-
-					reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
-					reply.header('Accept-Ranges', 'bytes');
-					reply.header('Content-Length', chunksize);
-					reply.code(206);
-				} else {
-					image = {
-						data: fs.createReadStream(file.path),
-						ext: file.ext,
-						type: file.mime,
-					};
-				}
+				image = this.processFileAndConvertToIImage(file, request, reply);
 			}
 
 			if ('cleanup' in file) {
@@ -464,6 +404,7 @@ export class FileServerService {
 			}
 
 			reply.header('Content-Type', image.type);
+			reply.header('Content-Length', getSizeFromIImage(image) ?? file.size ?? undefined);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition',
 				contentDisposition(
@@ -479,12 +420,7 @@ export class FileServerService {
 	}
 
 	@bindThis
-	private async getStreamAndTypeFromUrl(url: string): Promise<
-		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: MiDriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; mime: string; ext: string | null; path: string; }
-		| '404'
-		| '204'
-	> {
+	private async getStreamAndTypeFromUrl(url: string): Promise<Awaited<ReturnType<FileServerService['downloadAndDetectTypeFromUrl']>> | Awaited<ReturnType<FileServerService['getFileFromKey']>>> {
 		if (url.startsWith(`${this.config.url}/files/`)) {
 			const key = url.replace(`${this.config.url}/files/`, '').split('/').shift();
 			if (!key) throw new StatusError('Invalid File Key', 400, 'Invalid File Key');
@@ -497,17 +433,18 @@ export class FileServerService {
 
 	@bindThis
 	private async downloadAndDetectTypeFromUrl(url: string): Promise<
-		{ state: 'remote'; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
+		{ state: 'remote'; mime: string; ext: string | null; size: number; path: string; cleanup: () => void; filename: string; }
 	> {
 		const [path, cleanup] = await createTemp();
 		try {
 			const { filename } = await this.downloadService.downloadUrl(url, path);
 
 			const { mime, ext } = await this.fileInfoService.detectType(path);
+			const { size } = await fs.promises.stat(path);
 
 			return {
 				state: 'remote',
-				mime, ext,
+				mime, ext, size,
 				path, cleanup,
 				filename,
 			};
@@ -519,8 +456,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getFileFromKey(key: string): Promise<
-		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; url: string; mime: string; ext: string | null; path: string; cleanup: () => void; }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; url: string; mime: string; ext: string | null; size: number; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: MiDriveFile; filename: string; mime: string; ext: string | null; size: number; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -539,7 +476,6 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (!(file.isLink && file.uri)) return '204';
 			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
-			file.size = (await fs.promises.stat(result.path)).size;	// DB file.sizeは正確とは限らないので
 			return {
 				...result,
 				url: file.uri,
@@ -553,16 +489,18 @@ export class FileServerService {
 
 		if (isThumbnail || isWebpublic) {
 			const { mime, ext } = await this.fileInfoService.detectType(path);
+			const { size } = await fs.promises.stat(path);
 			return {
 				state: 'stored_internal',
 				fileRole: isThumbnail ? 'thumbnail' : 'webpublic',
 				file,
 				filename: file.name,
-				mime, ext,
+				mime, ext, size,
 				path,
 			};
 		}
 
+		const { size } = await fs.promises.stat(path);
 		return {
 			state: 'stored_internal',
 			fileRole: 'original',
@@ -571,6 +509,7 @@ export class FileServerService {
 			// 古いファイルは修正前のmimeを持っているのでできるだけ修正してあげる
 			mime: this.fileInfoService.fixMime(file.type),
 			ext: null,
+			size,
 			path,
 		};
 	}
