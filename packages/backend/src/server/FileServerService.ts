@@ -124,6 +124,8 @@ export class FileServerService {
 		}
 
 		if (request.headers.range && 'file' in file && file.size > 0) {
+			this.logger.info(`Range request for file ${file.file.id} ${file.fileRole}: ${request.headers.range}`);
+
 			const range = request.headers.range as string;
 			const parts = range.replace(/bytes=/, '').split('-');
 			const start = parseInt(parts[0], 10);
