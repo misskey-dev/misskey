@@ -919,6 +919,8 @@ flip: "Перевернути"
 lastNDays: "Останні {n} днів"
 postForm: "Створення нотатки"
 information: "Інформація"
+inMinutes: "х"
+inDays: "д"
 _chat:
   invitations: "Запросити"
   noHistory: "Історія порожня"
@@ -1646,3 +1648,10 @@ _watermarkEditor:
   type: "Тип"
   image: "Зображення"
   advanced: "Розширені"
+_imageEffector:
+  _fxProps:
+    scale: "Розмір"
+    size: "Розмір"
+    color: "Колір"
+    opacity: "Непрозорість"
+    lightness: "Яскравість"

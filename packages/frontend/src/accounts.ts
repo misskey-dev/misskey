@@ -23,7 +23,7 @@ export async function getAccounts(): Promise<{
 	host: string;
 	id: Misskey.entities.User['id'];
 	username: Misskey.entities.User['username'];
-	user?: Misskey.entities.User | null;
+	user?: Misskey.entities.MeDetailed | null;
 	token: string | null;
 }[]> {
 	const tokens = store.s.accountTokens;
@@ -38,7 +38,7 @@ export async function getAccounts(): Promise<{
 	}));
 }
 
-async function addAccount(host: string, user: Misskey.entities.User, token: AccountWithToken['token']) {
+async function addAccount(host: string, user: Misskey.entities.MeDetailed, token: AccountWithToken['token']) {
 	if (!prefer.s.accounts.some(x => x[0] === host && x[1].id === user.id)) {
 		store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + user.id]: token });
 		store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + user.id]: user });
@@ -149,9 +149,10 @@ export function updateCurrentAccountPartial(accountData: Partial<Misskey.entitie
 
 export async function refreshCurrentAccount() {
 	if (!$i) return;
+	const me = $i;
 	return fetchAccount($i.token, $i.id).then(updateCurrentAccount).catch(reason => {
 		if (reason === isAccountDeleted) {
-			removeAccount(host, $i.id);
+			removeAccount(host, me.id);
 			if (Object.keys(store.s.accountTokens).length > 0) {
 				login(Object.values(store.s.accountTokens)[0]);
 			} else {
@@ -214,19 +215,37 @@ export async function openAccountMenu(opts: {
 	includeCurrentAccount?: boolean;
 	withExtraOperation: boolean;
 	active?: Misskey.entities.User['id'];
-	onChoose?: (account: Misskey.entities.User) => void;
+	onChoose?: (account: Misskey.entities.MeDetailed) => void;
 }, ev: MouseEvent) {
 	if (!$i) return;
+	const me = $i;
 
-	function createItem(host: string, id: Misskey.entities.User['id'], username: Misskey.entities.User['username'], account: Misskey.entities.User | null | undefined, token: string): MenuItem {
+	const callback = opts.onChoose;
+
+	function createItem(host: string, id: Misskey.entities.User['id'], username: Misskey.entities.User['username'], account: Misskey.entities.MeDetailed | null | undefined, token: string | null): MenuItem {
 		if (account) {
 			return {
 				type: 'user' as const,
 				user: account,
 				active: opts.active != null ? opts.active === id : false,
 				action: async () => {
-					if (opts.onChoose) {
-						opts.onChoose(account);
+					if (callback) {
+						callback(account);
+					} else {
+						switchAccount(host, id);
+					}
+				},
+			};
+		} else if (token != null) {
+			return {
+				type: 'button' as const,
+				text: username,
+				active: opts.active != null ? opts.active === id : false,
+				action: async () => {
+					if (callback) {
+						fetchAccount(token, id).then(account => {
+							callback(account);
+						});
 					} else {
 						switchAccount(host, id);
 					}
@@ -238,13 +257,7 @@ export async function openAccountMenu(opts: {
 				text: username,
 				active: opts.active != null ? opts.active === id : false,
 				action: async () => {
-					if (opts.onChoose) {
-						fetchAccount(token, id).then(account => {
-							opts.onChoose(account);
-						});
-					} else {
-						switchAccount(host, id);
-					}
+					// TODO
 				},
 			};
 		}
@@ -253,7 +266,7 @@ export async function openAccountMenu(opts: {
 	const menuItems: MenuItem[] = [];
 
 	// TODO: $iのホストも比較したいけど通常null
-	const accountItems = (await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id))).map(a => createItem(a.host, a.id, a.username, a.user, a.token));
+	const accountItems = (await getAccounts().then(accounts => accounts.filter(x => x.id !== me.id))).map(a => createItem(a.host, a.id, a.username, a.user, a.token));
 
 	if (opts.withExtraOperation) {
 		menuItems.push({

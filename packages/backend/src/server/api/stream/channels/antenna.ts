@@ -43,8 +43,6 @@ class AntennaChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			this.connection.cacheNote(note);
-
 			this.send('note', note);
 		} else {
 			this.send(data.type, data.body);

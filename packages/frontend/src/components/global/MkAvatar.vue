@@ -84,7 +84,6 @@ const bound = computed(() => props.link
 	: {});
 
 const url = computed(() => {
-	if (props.user.avatarUrl == null) return null;
 	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
 	return props.user.avatarUrl;
 });

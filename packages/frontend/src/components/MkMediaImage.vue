@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="reveal">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -96,10 +96,10 @@ const url = computed(() => (props.raw || prefer.s.loadRawImages)
 	? props.image.url
 	: prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl,
+		: props.image.thumbnailUrl!,
 );
 
-async function onclick(ev: MouseEvent) {
+async function reveal(ev: MouseEvent) {
 	if (!props.controls) {
 		return;
 	}

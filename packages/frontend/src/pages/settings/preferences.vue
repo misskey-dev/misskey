@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/preferences" :label="i18n.ts.preferences" :keywords="['general', 'preferences']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/gear_3d.png" color="#00ff9d">
-			<SearchKeyword>{{ i18n.ts._settings.preferencesBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.preferencesBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<SearchMarker :keywords="['realtimemode']">
 							<MkSwitch v-model="realtimeMode">
 								<template #label><i class="ti ti-bolt"></i> <SearchLabel>{{ i18n.ts.realtimeMode }}</SearchLabel></template>
-								<template #caption><SearchKeyword>{{ i18n.ts._settings.realtimeMode_description }}</SearchKeyword></template>
+								<template #caption><SearchText>{{ i18n.ts._settings.realtimeMode_description }}</SearchText></template>
 							</MkSwitch>
 						</SearchMarker>
 
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="pollingInterval">
 									<MkRange v-model="pollingInterval" :min="1" :max="3" :step="1" easing :showTicks="true" :textConverter="(v) => v === 1 ? i18n.ts.low : v === 2 ? i18n.ts.middle : v === 3 ? i18n.ts.high : ''">
 										<template #label><SearchLabel>{{ i18n.ts._settings.contentsUpdateFrequency }}</SearchLabel></template>
-										<template #caption><SearchKeyword>{{ i18n.ts._settings.contentsUpdateFrequency_description }}</SearchKeyword><br><SearchKeyword>{{ i18n.ts._settings.contentsUpdateFrequency_description2 }}</SearchKeyword></template>
+										<template #caption><SearchText>{{ i18n.ts._settings.contentsUpdateFrequency_description }}</SearchText><br><SearchText>{{ i18n.ts._settings.contentsUpdateFrequency_description2 }}</SearchText></template>
 										<template #prefix><i class="ti ti-player-play"></i></template>
 										<template #suffix><i class="ti ti-player-track-next"></i></template>
 									</MkRange>
@@ -165,7 +165,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="collapseRenotes">
 									<MkSwitch v-model="collapseRenotes">
 										<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
-										<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
+										<template #caption><SearchText>{{ i18n.ts.collapseRenotesDescription }}</SearchText></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -449,7 +449,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div class="_gaps_m">
 						<MkFeatureBanner icon="/client-assets/mens_room_3d.png" color="#0011ff">
-							<SearchKeyword>{{ i18n.ts._settings.accessibilityBanner }}</SearchKeyword>
+							<SearchText>{{ i18n.ts._settings.accessibilityBanner }}</SearchText>
 						</MkFeatureBanner>
 
 						<div class="_gaps_s">
@@ -477,6 +477,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['tabs', 'tabbar', 'bottom', 'under']">
+								<MkPreferenceContainer k="showPageTabBarBottom">
+									<MkSwitch v-model="showPageTabBarBottom">
+										<template #label><SearchLabel>{{ i18n.ts._settings.showPageTabBarBottom }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['swipe', 'horizontal', 'tab']">
 								<MkPreferenceContainer k="enableHorizontalSwipe">
 									<MkSwitch v-model="enableHorizontalSwipe">
@@ -489,7 +497,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="enablePullToRefresh">
 									<MkSwitch v-model="enablePullToRefresh">
 										<template #label><SearchLabel>{{ i18n.ts._settings.enablePullToRefresh }}</SearchLabel></template>
-										<template #caption><SearchKeyword>{{ i18n.ts._settings.enablePullToRefresh_description }}</SearchKeyword></template>
+										<template #caption><SearchText>{{ i18n.ts._settings.enablePullToRefresh_description }}</SearchText></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -571,7 +579,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="animation">
 								<MkSwitch :modelValue="!reduceAnimation" @update:modelValue="v => reduceAnimation = !v">
 									<template #label><SearchLabel>{{ i18n.ts._settings.uiAnimations }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -580,7 +588,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useBlurEffect">
 								<MkSwitch v-model="useBlurEffect">
 									<template #label><SearchLabel>{{ i18n.ts.useBlurEffect }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -589,7 +597,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useBlurEffectForModal">
 								<MkSwitch v-model="useBlurEffectForModal">
 									<template #label><SearchLabel>{{ i18n.ts.useBlurEffectForModal }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -598,7 +606,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="enableHighQualityImagePlaceholders">
 								<MkSwitch v-model="enableHighQualityImagePlaceholders">
 									<template #label><SearchLabel>{{ i18n.ts._settings.enableHighQualityImagePlaceholders }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -607,7 +615,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useStickyIcons">
 								<MkSwitch v-model="useStickyIcons">
 									<template #label><SearchLabel>{{ i18n.ts._settings.useStickyIcons }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
+									<template #caption><SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -796,7 +804,6 @@ import MkInfo from '@/components/MkInfo.vue';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -808,6 +815,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
 
 const $i = ensureSignin();
 
@@ -867,6 +875,7 @@ const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
 const keepScreenOn = prefer.model('keepScreenOn');
 const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
+const showPageTabBarBottom = prefer.model('showPageTabBarBottom');
 const enablePullToRefresh = prefer.model('enablePullToRefresh');
 const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
 const contextMenu = prefer.model('contextMenu');
@@ -878,8 +887,6 @@ const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
-	miLocalStorage.removeItem('locale');
-	miLocalStorage.removeItem('localeVersion');
 });
 
 watch(fontSize, () => {
@@ -926,11 +933,12 @@ watch([
 	useSystemFont,
 	makeEveryTextElementsSelectable,
 	enableHorizontalSwipe,
+	showPageTabBarBottom,
 	enablePullToRefresh,
 	reduceAnimation,
 	showAvailableReactionsFirstInNote,
-], async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+], () => {
+	suggestReload();
 });
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
@@ -1024,7 +1032,6 @@ function testNotification(): void {
 	const notification: Misskey.entities.Notification = {
 		id: genId(),
 		createdAt: new Date().toUTCString(),
-		isRead: false,
 		type: 'test',
 	};
 

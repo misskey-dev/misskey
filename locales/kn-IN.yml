@@ -44,6 +44,7 @@ showMore: "ಇನ್ನಷ್ಟು ನೋಡು"
 youGotNewFollower: "ಹಿಂಬಾಲಿಸಿದರು"
 receiveFollowRequest: "ಹಿಂಬಾಲನೆ ವಿನಂತಿ ಬಂದಿದೆ"
 followRequestAccepted: "ಹಿಂಬಾಲನೆ ವಿನಂತಿ ಸ್ವೀಕರಿಸಲಾಯಿತು"
+mention: "ಹೆಸರಿಸಿದ"
 mentions: "ಹೆಸರಿಸಿದ"
 directNotes: "ನೇರ ಟಿಪ್ಪಣಿಗಳು"
 importAndExport: "ಆಮದು/ರಫ್ತು"
@@ -65,6 +66,9 @@ replies: "ಉತ್ತರಿಸು"
 _email:
   _follow:
     title: "ಹಿಂಬಾಲಿಸಿದರು"
+_theme:
+  keys:
+    mention: "ಹೆಸರಿಸಿದ"
 _sfx:
   notification: "ಅಧಿಸೂಚನೆಗಳು"
 _widgets:
@@ -73,11 +77,14 @@ _widgets:
   timeline: "ಸಮಯಸಾಲು"
 _cw:
   show: "ಇನ್ನಷ್ಟು ನೋಡು"
+_visibility:
+  specified: "ನೇರ ಟಿಪ್ಪಣಿಗಳು"
 _profile:
   username: "ಬಳಕೆಹೆಸರು"
 _notification:
   youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
   _types:
+    mention: "ಹೆಸರಿಸಿದ"
     login: "ಪ್ರವೇಶ"
   _actions:
     reply: "ಉತ್ತರಿಸು"
@@ -86,3 +93,4 @@ _deck:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"
     tl: "ಸಮಯಸಾಲು"
     mentions: "ಹೆಸರಿಸಿದ"
+    direct: "ನೇರ ಟಿಪ್ಪಣಿಗಳು"

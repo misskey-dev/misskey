@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.title">
-		<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+		<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
 		<span :class="$style.instanceTitle">{{ instance.name ?? host }}</span>
 	</div>
 	<div :class="$style.controls">

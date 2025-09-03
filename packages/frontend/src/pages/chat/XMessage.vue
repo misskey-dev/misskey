@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="message.fromUser!" :link="!isMe" :preview="false"/>
+	<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="message.fromUser!" :link="!isMe" :preview="false"/>
 	<div :class="[$style.body, message.file != null ? $style.fullWidth : null]" @contextmenu.stop="onContextmenu">
 		<div :class="$style.header"><MkUserName v-if="!isMe && prefer.s['chat.showSenderName'] && message.fromUser != null" :user="message.fromUser"/></div>
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :fullWidth="message.file != null" :accented="isMe">
@@ -231,11 +231,14 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 }
 
 .avatar {
-	position: sticky;
-	top: calc(16px + var(--MI-stickyTop, 0px));
 	display: block;
 	width: 50px;
 	height: 50px;
+
+	&.useSticky {
+		position: sticky;
+		top: calc(16px + var(--MI-stickyTop, 0px));
+	}
 }
 
 @container (max-width: 450px) {

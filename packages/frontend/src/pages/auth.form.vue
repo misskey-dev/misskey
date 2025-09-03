@@ -44,11 +44,13 @@ const name = computed(() => {
 });
 
 function cancel() {
-	misskeyApi('auth/deny', {
-		token: props.session.token,
-	}).then(() => {
-		emit('denied');
-	});
+	//misskeyApi('auth/deny', {
+	//	token: props.session.token,
+	//}).then(() => {
+	//	emit('denied');
+	//});
+
+	emit('denied');
 }
 
 function accept() {

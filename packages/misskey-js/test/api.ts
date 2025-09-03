@@ -1,41 +1,24 @@
-import { enableFetchMocks } from 'jest-fetch-mock';
+import { vi, describe, test, expect } from 'vitest';
 import { APIClient, isAPIError } from '../src/api.js';
-
-enableFetchMocks();
-
-function getFetchCall(call: any[]) {
-	const { body, method } = call[1];
-	const contentType = call[1].headers['Content-Type'];
-	if (
-		body == null ||
-		(contentType === 'application/json' && typeof body !== 'string') ||
-		(contentType === 'multipart/form-data' && !(body instanceof FormData))
-	) {
-		throw new Error('invalid body');
-	}
-	return {
-		url: call[0],
-		method: method,
-		contentType: contentType,
-		body: body instanceof FormData ? Object.fromEntries(body.entries()) : JSON.parse(body),
-	};
-}
 
 describe('API', () => {
 	test('success', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			const body = await req.json();
-			if (req.method == 'POST' && req.url == 'https://misskey.test/api/i') {
-				if (body.i === 'TOKEN') {
-					return JSON.stringify({ id: 'foo' });
-				} else {
-					return { status: 400 };
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async (url, options) => {
+				if (url === 'https://misskey.test/api/i' && options?.method === 'POST') {
+					if (options.body) {
+						const body = JSON.parse(options.body as string);
+						if (body.i === 'TOKEN') {
+							return new Response(JSON.stringify({ id: 'foo' }), { status: 200 });
+						}
+					}
+
+					return new Response(null, { status: 400 });
 				}
-			} else {
-				return { status: 404 };
-			}
-		});
+
+				return new Response(null, { status: 404 });
+			});
 
 		const cli = new APIClient({
 			origin: 'https://misskey.test',
@@ -48,28 +31,38 @@ describe('API', () => {
 			id: 'foo'
 		});
 
-		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
-			url: 'https://misskey.test/api/i',
+		fetch('https://misskey.test/api/i', {
 			method: 'POST',
-			contentType: 'application/json',
-			body: { i: 'TOKEN' }
+		})
+
+		expect(fetchMock).toHaveBeenCalledWith('https://misskey.test/api/i', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'omit',
+			cache: 'no-cache',
+			body: JSON.stringify({ i: 'TOKEN' }),
 		});
+
+		fetchMock.mockRestore();
 	});
 
 	test('with params', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			const body = await req.json();
-			if (req.method == 'POST' && req.url == 'https://misskey.test/api/notes/show') {
-				if (body.i === 'TOKEN' && body.noteId === 'aaaaa') {
-					return JSON.stringify({ id: 'foo' });
-				} else {
-					return { status: 400 };
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async (url, options) => {
+				if (url === 'https://misskey.test/api/notes/show' && options?.method === 'POST') {
+					if (options.body) {
+						const body = JSON.parse(options.body as string);
+						if (body.i === 'TOKEN' && body.noteId === 'aaaaa') {
+							return new Response(JSON.stringify({ id: 'foo' }), { status: 200 });
+						}
+					}
+					return new Response(null, { status: 400 });
 				}
-			} else {
-				return { status: 404 };
-			}
-		});
+				return new Response(null, { status: 404 });
+			});
 
 		const cli = new APIClient({
 			origin: 'https://misskey.test',
@@ -82,23 +75,34 @@ describe('API', () => {
 			id: 'foo'
 		});
 
-		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
-			url: 'https://misskey.test/api/notes/show',
+		expect(fetchMock).toHaveBeenCalledWith('https://misskey.test/api/notes/show', {
 			method: 'POST',
-			contentType: 'application/json',
-			body: { i: 'TOKEN', noteId: 'aaaaa' }
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'omit',
+			cache: 'no-cache',
+			body: JSON.stringify({ noteId: 'aaaaa', i: 'TOKEN' }),
 		});
+
+		fetchMock.mockRestore();
 	});
 
 	test('multipart/form-data', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			if (req.method == 'POST' && req.url == 'https://misskey.test/api/drive/files/create') {
-				return JSON.stringify({ id: 'foo' });
-			} else {
-				return { status: 404 };
-			}
-		});
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async (url, options) => {
+				if (url === 'https://misskey.test/api/drive/files/create' && options?.method === 'POST') {
+					if (options.body instanceof FormData) {
+						const file = options.body.get('file');
+						if (file instanceof File && file.name === 'foo.txt') {
+							return new Response(JSON.stringify({ id: 'foo' }), { status: 200 });
+						}
+					}
+					return new Response(null, { status: 400 });
+				}
+				return new Response(null, { status: 404 });
+			});
 
 		const cli = new APIClient({
 			origin: 'https://misskey.test',
@@ -116,26 +120,26 @@ describe('API', () => {
 			id: 'foo'
 		});
 
-		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
-			url: 'https://misskey.test/api/drive/files/create',
+		expect(fetchMock).toHaveBeenCalledWith('https://misskey.test/api/drive/files/create', {
 			method: 'POST',
-			contentType: undefined,
-			body: {
-				i: 'TOKEN',
-				file: testFile,
-			}
+			body: expect.any(FormData),
+			headers: {},
+			credentials: 'omit',
+			cache: 'no-cache',
 		});
+
+		fetchMock.mockRestore();
 	});
 
 	test('204 No Content で null が返る', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			if (req.method == 'POST' && req.url == 'https://misskey.test/api/reset-password') {
-				return { status: 204 };
-			} else {
-				return { status: 404 };
-			}
-		});
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async (url, options) => {
+				if (url === 'https://misskey.test/api/reset-password' && options?.method === 'POST') {
+					return new Response(null, { status: 204 });
+				}
+				return new Response(null, { status: 404 });
+			});
 
 		const cli = new APIClient({
 			origin: 'https://misskey.test',
@@ -146,37 +150,42 @@ describe('API', () => {
 
 		expect(res).toEqual(null);
 
-		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
-			url: 'https://misskey.test/api/reset-password',
+		expect(fetchMock).toHaveBeenCalledWith('https://misskey.test/api/reset-password', {
 			method: 'POST',
-			contentType: 'application/json',
-			body: { i: 'TOKEN', token: 'aaa', password: 'aaa' }
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'omit',
+			cache: 'no-cache',
+			body: JSON.stringify({ token: 'aaa', password: 'aaa', i: 'TOKEN' }),
 		});
+
+		fetchMock.mockRestore();
 	});
 
 	test('インスタンスの credential が指定されていても引数で credential が null ならば null としてリクエストされる', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			const body = await req.json();
-			if (req.method == 'POST' && req.url == 'https://misskey.test/api/i') {
-				if (typeof body.i === 'string') {
-					return JSON.stringify({ id: 'foo' });
-				} else {
-					return {
-						status: 401,
-						body: JSON.stringify({
-							error: {
-								message: 'Credential required.',
-								code: 'CREDENTIAL_REQUIRED',
-								id: '1384574d-a912-4b81-8601-c7b1c4085df1',
-							}
-						})
-					};
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async (url, options) => {
+				if (url === 'https://misskey.test/api/i' && options?.method === 'POST') {
+					if (options.body) {
+						const body = JSON.parse(options.body as string);
+						if (typeof body.i === 'string') {
+							return new Response(JSON.stringify({ id: 'foo' }), { status: 200 });
+						} else {
+							return new Response(JSON.stringify({
+								error: {
+									message: 'Credential required.',
+									code: 'CREDENTIAL_REQUIRED',
+									id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+								}
+							}), { status: 401 });
+						}
+					}
+					return new Response(null, { status: 400 });
 				}
-			} else {
-				return { status: 404 };
-			}
-		});
+				return new Response(null, { status: 404 });
+			});
 
 		try {
 			const cli = new APIClient({
@@ -187,24 +196,24 @@ describe('API', () => {
 			await cli.request('i', {}, null);
 		} catch (e) {
 			expect(isAPIError(e)).toEqual(true);
+		} finally {
+			fetchMock.mockRestore();
 		}
 	});
 
 	test('api error', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			return {
-				status: 500,
-				body: JSON.stringify({
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async () => {
+				return new Response(JSON.stringify({
 					error: {
 						message: 'Internal error occurred. Please contact us if the error persists.',
 						code: 'INTERNAL_ERROR',
 						id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
 						kind: 'server',
 					},
-				})
-			};
-		});
+				}), { status: 500 });
+			});
 
 		try {
 			const cli = new APIClient({
@@ -216,12 +225,17 @@ describe('API', () => {
 		} catch (e: any) {
 			expect(isAPIError(e)).toEqual(true);
 			expect(e.id).toEqual('5d37dbcb-891e-41ca-a3d6-e690c97775ac');
+		} finally {
+			fetchMock.mockRestore();
 		}
 	});
 
 	test('network error', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockAbort();
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async () => {
+				throw new Error('Network error');
+			});
 
 		try {
 			const cli = new APIClient({
@@ -232,17 +246,17 @@ describe('API', () => {
 			await cli.request('i');
 		} catch (e) {
 			expect(isAPIError(e)).toEqual(false);
+		} finally {
+			fetchMock.mockRestore();
 		}
 	});
 
 	test('json parse error', async () => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async (req) => {
-			return {
-				status: 500,
-				body: '<html>I AM NOT JSON</html>'
-			};
-		});
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async () => {
+				return new Response('<html>I AM NOT JSON</html>', { status: 500 });
+			});
 
 		try {
 			const cli = new APIClient({
@@ -253,18 +267,18 @@ describe('API', () => {
 			await cli.request('i');
 		} catch (e) {
 			expect(isAPIError(e)).toEqual(false);
+		} finally {
+			fetchMock.mockRestore();
 		}
 	});
 
 	test('admin/roles/create の型が合う', async() => {
-		fetchMock.resetMocks();
-		fetchMock.mockResponse(async () => {
-			return {
+		const fetchMock = vi
+			.spyOn(globalThis, 'fetch')
+			.mockImplementation(async () => {
 				// 本来返すべき値は`Role`型だが、テストなのでお茶を濁す
-				status: 200,
-				body: '{}'
-			};
-		});
+				return new Response('{}', { status: 200 });
+			});
 
 		const cli = new APIClient({
 			origin: 'https://misskey.test',
@@ -292,5 +306,7 @@ describe('API', () => {
 			},
 			target: 'manual',
 		});
+
+		fetchMock.mockRestore();
 	})
 });

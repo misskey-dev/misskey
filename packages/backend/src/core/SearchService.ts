@@ -234,10 +234,10 @@ export class SearchService {
 				if (defaultTag) {
 					query.andWhere(':t <@ note.tags', { t: [normalizeForSearch(defaultTag)] });
 				} else {
-					query.andWhere('user.host IS NULL');
+					query.andWhere('note.userHost IS NULL');
 				}
 			} else {
-				query.andWhere('user.host = :host', { host: opts.host });
+				query.andWhere('note.userHost = :host', { host: opts.host });
 			}
 		}
 

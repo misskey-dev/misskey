@@ -150,7 +150,6 @@ export class WatermarkRenderer {
 						minorRadius: layer.minorRadius,
 						minorOpacity: layer.minorOpacity,
 						color: layer.color,
-						opacity: layer.opacity,
 					},
 				};
 			} else if (layer.type === 'checker') {

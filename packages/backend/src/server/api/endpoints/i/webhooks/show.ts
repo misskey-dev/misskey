@@ -28,29 +28,7 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'misskey:id',
-			},
-			userId: {
-				type: 'string',
-				format: 'misskey:id',
-			},
-			name: { type: 'string' },
-			on: {
-				type: 'array',
-				items: {
-					type: 'string',
-					enum: webhookEventTypes,
-				},
-			},
-			url: { type: 'string' },
-			secret: { type: 'string' },
-			active: { type: 'boolean' },
-			latestSentAt: { type: 'string', format: 'date-time', nullable: true },
-			latestStatus: { type: 'integer', nullable: true },
-		},
+		ref: 'UserWebhook',
 	},
 } as const;
 

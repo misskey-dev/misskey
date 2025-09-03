@@ -38,20 +38,22 @@ void main() {
 `;
 
 export const FX_tearing = defineImageEffectorFx({
-	id: 'tearing' as const,
+	id: 'tearing',
 	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
 	shader,
 	uniforms: ['amount', 'channelShift'] as const,
 	params: {
 		amount: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.amount,
+			type: 'number',
 			default: 3,
 			min: 1,
 			max: 100,
 			step: 1,
 		},
 		strength: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.strength,
+			type: 'number',
 			default: 0.05,
 			min: -1,
 			max: 1,
@@ -59,7 +61,8 @@ export const FX_tearing = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		size: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.size,
+			type: 'number',
 			default: 0.2,
 			min: 0,
 			max: 1,
@@ -67,7 +70,8 @@ export const FX_tearing = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		channelShift: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.glitchChannelShift,
+			type: 'number',
 			default: 0.5,
 			min: 0,
 			max: 10,
@@ -75,7 +79,8 @@ export const FX_tearing = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		seed: {
-			type: 'seed' as const,
+			label: i18n.ts._imageEffector._fxProps.seed,
+			type: 'seed',
 			default: 100,
 		},
 	},

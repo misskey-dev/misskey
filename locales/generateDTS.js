@@ -73,7 +73,7 @@ export default function generateDTS() {
 				ts.NodeFlags.Const,
 			),
 		),
-		ts.factory.createInterfaceDeclaration(
+		ts.factory.createTypeAliasDeclaration(
 			[ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
 			ts.factory.createIdentifier('ParameterizedString'),
 			[
@@ -84,20 +84,22 @@ export default function generateDTS() {
 					ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
 				),
 			],
-			undefined,
-			[
-				ts.factory.createPropertySignature(
-					undefined,
-					ts.factory.createComputedPropertyName(
-						ts.factory.createIdentifier('kParameters'),
-					),
-					undefined,
-					ts.factory.createTypeReferenceNode(
-						ts.factory.createIdentifier('T'),
+			ts.factory.createIntersectionTypeNode([
+				ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+				ts.factory.createTypeLiteralNode([
+					ts.factory.createPropertySignature(
 						undefined,
+						ts.factory.createComputedPropertyName(
+							ts.factory.createIdentifier('kParameters'),
+						),
+						undefined,
+						ts.factory.createTypeReferenceNode(
+							ts.factory.createIdentifier('T'),
+							undefined,
+						),
 					),
-				),
-			],
+				])
+			]),
 		),
 		ts.factory.createInterfaceDeclaration(
 			[ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
