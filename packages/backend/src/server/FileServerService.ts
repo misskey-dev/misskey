@@ -234,7 +234,6 @@ export class FileServerService {
 						extname: file.ext ? `.${file.ext}` : '.unknown',
 					}).toString();
 
-					reply.header('Content-Disposition', contentDisposition('inline', filename));
 					image = this.processFileAndConvertToIImage(file, request, reply);
 					image.filename = filename;
 				} else {
