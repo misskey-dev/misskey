@@ -6,58 +6,57 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<FormSuspense :p="init">
-			<div v-if="tab === 'overview'" class="_gaps_m">
-				<div class="aeakzknw">
-					<MkAvatar class="avatar" :user="user" indicator link preview/>
-					<div class="body">
-						<span class="name"><MkUserName class="name" :user="user"/></span>
-						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
-						<span class="state">
-							<span v-if="suspended" class="suspended">Suspended</span>
-							<span v-if="silenced" class="silenced">Silenced</span>
-							<span v-if="moderator" class="moderator">Moderator</span>
-						</span>
-					</div>
+		<div v-if="tab === 'overview'" class="_gaps_m">
+			<div class="aeakzknw">
+				<MkAvatar class="avatar" :user="user" indicator link preview/>
+				<div class="body">
+					<span class="name"><MkUserName class="name" :user="user"/></span>
+					<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
+					<span class="state">
+						<span v-if="suspended" class="suspended">Suspended</span>
+						<span v-if="silenced" class="silenced">Silenced</span>
+						<span v-if="moderator" class="moderator">Moderator</span>
+					</span>
 				</div>
+			</div>
 
-				<MkInfo v-if="isSystem">{{ i18n.ts.isSystemAccount }}</MkInfo>
+			<MkInfo v-if="isSystem">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
-				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
+			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
-				<div style="display: flex; flex-direction: column; gap: 1em;">
-					<MkKeyValue :copy="user.id" oneline>
-						<template #key>ID</template>
-						<template #value><span class="_monospace">{{ user.id }}</span></template>
-					</MkKeyValue>
-					<!-- 要る？
+			<div style="display: flex; flex-direction: column; gap: 1em;">
+				<MkKeyValue :copy="user.id" oneline>
+					<template #key>ID</template>
+					<template #value><span class="_monospace">{{ user.id }}</span></template>
+				</MkKeyValue>
+				<!-- 要る？
 					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline>
 						<template #key>IP (recent)</template>
 						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
 					</MkKeyValue>
 					-->
-					<template v-if="!isSystem">
-						<MkKeyValue oneline>
-							<template #key>{{ i18n.ts.createdAt }}</template>
-							<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
-						</MkKeyValue>
-						<MkKeyValue v-if="info" oneline>
-							<template #key>{{ i18n.ts.lastActiveDate }}</template>
-							<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
-						</MkKeyValue>
-						<MkKeyValue v-if="info" oneline>
-							<template #key>{{ i18n.ts.email }}</template>
-							<template #value><span class="_monospace">{{ info.email }}</span></template>
-						</MkKeyValue>
-					</template>
-				</div>
+				<template v-if="!isSystem">
+					<MkKeyValue oneline>
+						<template #key>{{ i18n.ts.createdAt }}</template>
+						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline>
+						<template #key>{{ i18n.ts.lastActiveDate }}</template>
+						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline>
+						<template #key>{{ i18n.ts.email }}</template>
+						<template #value><span class="_monospace">{{ info.email }}</span></template>
+					</MkKeyValue>
+				</template>
+			</div>
 
-				<MkTextarea v-if="!isSystem" v-model="moderationNote" manualSave>
-					<template #label>{{ i18n.ts.moderationNote }}</template>
-					<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
-				</MkTextarea>
+			<MkTextarea v-if="!isSystem" v-model="moderationNote" manualSave>
+				<template #label>{{ i18n.ts.moderationNote }}</template>
+				<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+			</MkTextarea>
 
-				<!--
+			<!--
 				<FormSection>
 					<template #label>ActivityPub</template>
 
@@ -93,119 +92,118 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSection>
 			-->
 
-				<FormSection v-if="!isSystem">
-					<div class="_gaps">
-						<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+			<FormSection v-if="!isSystem">
+				<div class="_gaps">
+					<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
 
-						<div>
-							<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
-						</div>
-
-						<MkFolder>
-							<template #icon><i class="ti ti-license"></i></template>
-							<template #label>{{ i18n.ts._role.policies }}</template>
-							<div class="_gaps">
-								<div v-for="policy in Object.keys(info.policies)" :key="policy">
-									{{ policy }} ... {{ info.policies[policy] }}
-								</div>
-							</div>
-						</MkFolder>
-
-						<MkFolder>
-							<template #icon><i class="ti ti-password"></i></template>
-							<template #label>IP</template>
-							<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
-							<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
-							<template v-if="iAmAdmin && ips">
-								<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
-									<span class="date">{{ record.createdAt }}</span>
-									<span class="ip">{{ record.ip }}</span>
-								</div>
-							</template>
-						</MkFolder>
-
-						<div>
-							<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
-							<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
-						</div>
-						<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
+					<div>
+						<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					</div>
-				</FormSection>
-			</div>
 
-			<div v-else-if="tab === 'roles'" class="_gaps">
-				<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
-
-				<div v-for="role in info.roles" :key="role.id">
-					<div :class="$style.roleItemMain">
-						<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
-						<button class="_button" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
-						<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
-						<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
-					</div>
-					<div v-if="expandedRoles.includes(role.id)" :class="$style.roleItemSub">
-						<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id).createdAt" mode="detail"/></div>
-						<div v-if="info.roleAssigns.find(a => a.roleId === role.id).expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id).expiresAt).toLocaleString() }}</div>
-						<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
-					</div>
-				</div>
-			</div>
-
-			<div v-else-if="tab === 'announcements'" class="_gaps">
-				<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
-
-				<MkSelect v-model="announcementsStatus">
-					<template #label>{{ i18n.ts.filter }}</template>
-					<option value="active">{{ i18n.ts.active }}</option>
-					<option value="archived">{{ i18n.ts.archived }}</option>
-				</MkSelect>
-
-				<MkPagination :paginator="announcementsPaginator">
-					<template #default="{ items }">
-						<div class="_gaps_s">
-							<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
-								<span style="margin-right: 0.5em;">
-									<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-									<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
-									<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
-									<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
-								</span>
-								<span>{{ announcement.title }}</span>
-								<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
+					<MkFolder>
+						<template #icon><i class="ti ti-license"></i></template>
+						<template #label>{{ i18n.ts._role.policies }}</template>
+						<div class="_gaps">
+							<div v-for="policy in Object.keys(info.policies)" :key="policy">
+								{{ policy }} ... {{ info.policies[policy] }}
 							</div>
 						</div>
-					</template>
-				</MkPagination>
-			</div>
+					</MkFolder>
 
-			<div v-else-if="tab === 'drive'" class="_gaps">
-				<MkFileListForAdmin :paginator="filesPaginator" viewMode="grid"/>
-			</div>
+					<MkFolder>
+						<template #icon><i class="ti ti-password"></i></template>
+						<template #label>IP</template>
+						<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+						<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
+						<template v-if="iAmAdmin && ips">
+							<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
+								<span class="date">{{ record.createdAt }}</span>
+								<span class="ip">{{ record.ip }}</span>
+							</div>
+						</template>
+					</MkFolder>
 
-			<div v-else-if="tab === 'chart'" class="_gaps_m">
-				<div class="cmhjzshm">
-					<div class="selects">
-						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-							<option value="per-user-notes">{{ i18n.ts.notes }}</option>
-						</MkSelect>
+					<div>
+						<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
+						<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
 					</div>
-					<div class="charts">
-						<div class="label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
-						<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
-						<div class="label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
-						<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
-					</div>
+					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
+				</div>
+			</FormSection>
+		</div>
+
+		<div v-else-if="tab === 'roles'" class="_gaps">
+			<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+
+			<div v-for="role in info.roles" :key="role.id">
+				<div :class="$style.roleItemMain">
+					<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
+					<button class="_button" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
+					<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+					<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+				</div>
+				<div v-if="expandedRoleIds.includes(role.id)" :class="$style.roleItemSub">
+					<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id)!.createdAt" mode="detail"/></div>
+					<div v-if="info.roleAssigns.find(a => a.roleId === role.id)!.expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id)!.expiresAt!).toLocaleString() }}</div>
+					<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 				</div>
 			</div>
+		</div>
 
-			<div v-else-if="tab === 'raw'" class="_gaps_m">
-				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
-				</MkObjectView>
+		<div v-else-if="tab === 'announcements'" class="_gaps">
+			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
 
-				<MkObjectView tall :value="user">
-				</MkObjectView>
+			<MkSelect v-model="announcementsStatus">
+				<template #label>{{ i18n.ts.filter }}</template>
+				<option value="active">{{ i18n.ts.active }}</option>
+				<option value="archived">{{ i18n.ts.archived }}</option>
+			</MkSelect>
+
+			<MkPagination :paginator="announcementsPaginator">
+				<template #default="{ items }">
+					<div class="_gaps_s">
+						<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
+							<span style="margin-right: 0.5em;">
+								<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
+								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
+								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
+							</span>
+							<span>{{ announcement.title }}</span>
+							<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
+						</div>
+					</div>
+				</template>
+			</MkPagination>
+		</div>
+
+		<div v-else-if="tab === 'drive'" class="_gaps">
+			<MkFileListForAdmin :paginator="filesPaginator" viewMode="grid"/>
+		</div>
+
+		<div v-else-if="tab === 'chart'" class="_gaps_m">
+			<div class="cmhjzshm">
+				<div class="selects">
+					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
+						<option value="per-user-notes">{{ i18n.ts.notes }}</option>
+					</MkSelect>
+				</div>
+				<div class="charts">
+					<div class="label">{{ i18n.tsx.recentNHours({ n: 90 }) }}</div>
+					<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
+					<div class="label">{{ i18n.tsx.recentNDays({ n: 90 }) }}</div>
+					<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
+				</div>
 			</div>
-		</FormSuspense>
+		</div>
+
+		<div v-else-if="tab === 'raw'" class="_gaps_m">
+			<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
+			</MkObjectView>
+
+			<MkObjectView tall :value="user">
+			</MkObjectView>
+		</div>
 	</div>
 </PageWithHeader>
 </template>
@@ -224,7 +222,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
@@ -232,10 +229,12 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin, $i, iAmModerator } from '@/i.js';
+import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+
+const $i = ensureSignin();
 
 const props = withDefaults(defineProps<{
 	userId: string;
@@ -244,18 +243,19 @@ const props = withDefaults(defineProps<{
 	initialTab: 'overview',
 });
 
+const result = await _fetch_();
+
 const tab = ref(props.initialTab);
 const chartSrc = ref('per-user-notes');
-const user = ref<null | Misskey.entities.UserDetailed>();
-const init = ref<ReturnType<typeof createFetcher>>();
-const info = ref<any>();
-const ips = ref<Misskey.entities.AdminGetUserIpsResponse | null>(null);
+const user = ref(result.user);
+const info = ref(result.info);
+const ips = ref(result.ips);
 const ap = ref<any>(null);
-const moderator = ref(false);
-const silenced = ref(false);
-const suspended = ref(false);
-const isSystem = ref(false);
-const moderationNote = ref('');
+const moderator = ref(info.value.isModerator);
+const silenced = ref(info.value.isSilenced);
+const suspended = ref(info.value.isSuspended);
+const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
+const moderationNote = ref(info.value.moderationNote);
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({
@@ -272,34 +272,37 @@ const announcementsPaginator = markRaw(new Paginator('admin/announcements/list',
 		status: announcementsStatus.value,
 	})),
 }));
-const expandedRoles = ref([]);
+const expandedRoleIds = ref<(typeof info.value.roles[number]['id'])[]>([]);
 
-function createFetcher() {
-	return () => Promise.all([misskeyApi('users/show', {
+function _fetch_() {
+	return Promise.all([misskeyApi('users/show', {
 		userId: props.userId,
 	}), misskeyApi('admin/show-user', {
 		userId: props.userId,
 	}), iAmAdmin ? misskeyApi('admin/get-user-ips', {
 		userId: props.userId,
-	}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => {
-		user.value = _user;
-		info.value = _info;
-		ips.value = _ips;
-		moderator.value = info.value.isModerator;
-		silenced.value = info.value.isSilenced;
-		suspended.value = info.value.isSuspended;
-		moderationNote.value = info.value.moderationNote;
-		isSystem.value = user.value.host == null && user.value.username.includes('.');
-
-		watch(moderationNote, async () => {
-			await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
-			await refreshUser();
-		});
-	});
+	}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => ({
+		user: _user,
+		info: _info,
+		ips: _ips,
+	}));
 }
 
-function refreshUser() {
-	init.value = createFetcher();
+watch(moderationNote, async () => {
+	await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
+	await refreshUser();
+});
+
+async function refreshUser() {
+	const result = await _fetch_();
+	user.value = result.user;
+	info.value = result.info;
+	ips.value = result.ips;
+	moderator.value = info.value.isModerator;
+	silenced.value = info.value.isSilenced;
+	suspended.value = info.value.isSuspended;
+	isSystem.value = user.value.host == null && user.value.username.includes('.');
+	moderationNote.value = info.value.moderationNote;
 }
 
 async function updateRemoteUser() {
@@ -456,7 +459,7 @@ async function assignRole() {
 	refreshUser();
 }
 
-async function unassignRole(role, ev) {
+async function unassignRole(role: typeof info.value.roles[number], ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unassign,
 		icon: 'ti ti-x',
@@ -468,11 +471,11 @@ async function unassignRole(role, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function toggleRoleItem(role) {
-	if (expandedRoles.value.includes(role.id)) {
-		expandedRoles.value = expandedRoles.value.filter(x => x !== role.id);
+function toggleRoleItem(role: typeof info.value.roles[number]) {
+	if (expandedRoleIds.value.includes(role.id)) {
+		expandedRoleIds.value = expandedRoleIds.value.filter(x => x !== role.id);
 	} else {
-		expandedRoles.value.push(role.id);
+		expandedRoleIds.value.push(role.id);
 	}
 }
 
@@ -492,12 +495,6 @@ async function editAnnouncement(announcement) {
 		closed: () => dispose(),
 	});
 }
-
-watch(() => props.userId, () => {
-	init.value = createFetcher();
-}, {
-	immediate: true,
-});
 
 watch(user, () => {
 	misskeyApi('ap/get', {
