@@ -242,7 +242,8 @@ export class FileServerService {
 			}
 
 			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-			reply.header('Content-Length', getSizeFromIImage(image) ?? undefined);
+			const size = getSizeFromIImage(image);
+			if (size) reply.header('Content-Length', size);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition',
 				contentDisposition(
@@ -337,11 +338,10 @@ export class FileServerService {
 						.resize({
 							height: 'emoji' in request.query ? 128 : 320,
 							withoutEnlargement: true,
-						})
-						.webp(webpDefault);
+						});
 
 					image = {
-						data,
+						data: await data.webp(webpDefault).toBuffer(),
 						ext: 'webp',
 						type: 'image/webp',
 					};
@@ -403,7 +403,8 @@ export class FileServerService {
 			}
 
 			reply.header('Content-Type', image.type);
-			reply.header('Content-Length', getSizeFromIImage(image) ?? undefined);
+			const size = getSizeFromIImage(image);
+			if (size) reply.header('Content-Length', size);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition',
 				contentDisposition(
