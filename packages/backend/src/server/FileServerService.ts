@@ -242,7 +242,7 @@ export class FileServerService {
 			}
 
 			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-			reply.header('Content-Length', getSizeFromIImage(image) ?? file.size ?? undefined);
+			reply.header('Content-Length', getSizeFromIImage(image) ?? undefined);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition',
 				contentDisposition(
@@ -403,7 +403,7 @@ export class FileServerService {
 			}
 
 			reply.header('Content-Type', image.type);
-			reply.header('Content-Length', getSizeFromIImage(image) ?? file.size ?? undefined);
+			reply.header('Content-Length', getSizeFromIImage(image) ?? undefined);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition',
 				contentDisposition(
