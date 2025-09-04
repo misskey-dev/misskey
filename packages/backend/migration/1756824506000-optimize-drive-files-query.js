@@ -4,16 +4,16 @@
  */
 
 export class OptimizeDriveFilesQuery1756824506000 {
-	name = 'OptimizeDriveFilesQuery1756824506000'
+    name = 'OptimizeDriveFilesQuery1756824506000'
 
-	async up(queryRunner) {
-		// Create optimized partial index for drive files query performance
-		// This index is specifically designed for the common query pattern:
-		// SELECT * FROM drive_file WHERE userId = ? AND folderId IS NULL ORDER BY id DESC
-		await queryRunner.query(`CREATE INDEX "IDX_drive_file_userid_null_folderid_id_desc" ON "drive_file" ("userId", ("folderId" IS NULL), "id" DESC)`);
-	}
+    async up(queryRunner) {
+        // Create optimized composite index for drive files query performance
+        await queryRunner.query(`DROP INDEX "IDX_860fa6f6c7df5bb887249fba22"`);
+        await queryRunner.query(`CREATE INDEX "IDX_a76118b66adb3228e0ee69c281" ON "drive_file" ("userId", "id" DESC)`);
+    }
 
-	async down(queryRunner) {
-		await queryRunner.query(`DROP INDEX "IDX_drive_file_userid_null_folderid_id_desc"`);
-	}
+    async down(queryRunner) {
+        await queryRunner.query(`DROP INDEX "IDX_a76118b66adb3228e0ee69c281"`);
+        await queryRunner.query(`CREATE INDEX "IDX_860fa6f6c7df5bb887249fba22" ON "drive_file" ("userId")`);
+    }
 }

@@ -10,12 +10,11 @@ import { MiDriveFolder } from './DriveFolder.js';
 
 @Entity('drive_file')
 @Index(['userId', 'folderId', 'id'])
-@Index('IDX_drive_file_userid_null_folderid_id_desc', { synchronize: false })
+@Index(['userId', 'id'])
 export class MiDriveFile {
 	@PrimaryColumn(id())
 	public id: string;
 
-	@Index()
 	@Column({
 		...id(),
 		nullable: true,
