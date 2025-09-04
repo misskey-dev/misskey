@@ -332,23 +332,37 @@ export class FileServerService {
 						type: file.mime,
 						size: file.size,
 					};
+				} else if (!('static' in request.query)) {
+					// animated
+					const data = (await sharpBmp(file.path, file.mime, { animated: true }))
+						.resize({
+							height: 'emoji' in request.query ? 128 : 320,
+							withoutEnlargement: true,
+						});
+
+					// byte range requestになる可能性があるので、Content-Lengthを送信するためにbufferにする
+					image = {
+						data: await data.webp(webpDefault).toBuffer(),
+						ext: 'webp',
+						type: 'image/webp',
+					};
 				} else {
-					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
+					const data = (await sharpBmp(file.path, file.mime, { animated: false }))
 						.resize({
 							height: 'emoji' in request.query ? 128 : 320,
 							withoutEnlargement: true,
 						});
 
 					image = {
-						data: await data.webp(webpDefault).toBuffer(),
+						data: data.webp(webpDefault),
 						ext: 'webp',
 						type: 'image/webp',
 					};
 				}
 			} else if ('static' in request.query) {
-				image = await this.imageProcessingService.convertSharpToWebp(await sharpBmp(file.path, file.mime), 498, 422);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 422);
 			} else if ('preview' in request.query) {
-				image = await this.imageProcessingService.convertSharpToWebp(await sharpBmp(file.path, file.mime), 200, 200);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
@@ -381,7 +395,7 @@ export class FileServerService {
 					type: 'image/png',
 				};
 			} else if (file.mime === 'image/svg+xml') {
-				image = await this.imageProcessingService.convertToWebp(file.path, 2048, 2048);
+				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}
