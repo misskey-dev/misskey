@@ -3,50 +3,40 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* eslint no-restricted-globals: off */
+
 'use strict';
+
+import { addStyle, bootloaderLocales, detectLanguage } from '@@/js/bootloader';
+
+interface Window {
+	CLIENT_ENTRY: string | undefined;
+}
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
-	window.onerror = (e) => {
-		console.error(e);
-		renderError('SOMETHING_HAPPENED', e);
+	const CLIENT_ENTRY = window.CLIENT_ENTRY;
+
+	window.onerror = (error) => {
+		console.error(error);
+		renderError('SOMETHING_HAPPENED', error);
 	};
-	window.onunhandledrejection = (e) => {
-		console.error(e);
-		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
+	window.onunhandledrejection = (error) => {
+		console.error(error);
+		renderError('SOMETHING_HAPPENED_IN_PROMISE', error);
 	};
 
-	let forceError = localStorage.getItem('forceError');
+	const forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
 		return;
 	}
 
-	//#region Detect language
-	const supportedLangs = LANGS;
-	/** @type { string } */
-	let lang = localStorage.getItem('lang');
-	if (lang == null || !supportedLangs.includes(lang)) {
-		if (supportedLangs.includes(navigator.language)) {
-			lang = navigator.language;
-		} else {
-			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
-
-			// Fallback
-			if (lang == null) lang = 'en-US';
-		}
-	}
-
-	// for https://github.com/misskey-dev/misskey/issues/10202
-	if (lang == null || lang.toString == null || lang.toString() === 'null') {
-		console.error('invalid lang value detected!!!', typeof lang, lang);
-		lang = 'en-US';
-	}
-	//#endregion
+	const lang = detectLanguage();
 
 	//#region Script
 	async function importAppScript() {
-		await import(CLIENT_ENTRY ? `/vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/vite/src/_boot_.ts')
+		await import(`/vite/${(CLIENT_ENTRY ?? 'src/_boot_.ts').replace('scripts', lang)}`)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);
@@ -78,7 +68,7 @@
 	if (!isSafeMode) {
 		const theme = localStorage.getItem('theme');
 		if (theme) {
-			for (const [k, v] of Object.entries(JSON.parse(theme))) {
+			for (const [k, v] of Object.entries(JSON.parse(theme) as Record<string, string>)) {
 				document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 
 				// HTMLの theme-color 適用
@@ -119,50 +109,13 @@
 		}
 	}
 
-	async function addStyle(styleText) {
-		let css = document.createElement('style');
-		css.appendChild(document.createTextNode(styleText));
-		document.head.appendChild(css);
-	}
-
 	async function renderError(code, details) {
 		// Cannot set property 'innerHTML' of null を回避
 		if (document.readyState === 'loading') {
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
-		let messages = null;
-		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
-		if (bootloaderLocales) {
-			messages = JSON.parse(bootloaderLocales);
-		}
-		if (!messages) {
-			// older version of misskey does not store bootloaderLocales, stores locale as a whole
-			const legacyLocale = localStorage.getItem('locale');
-			if (legacyLocale) {
-				const parsed = JSON.parse(legacyLocale);
-				messages = {
-					...(parsed._bootErrors ?? {}),
-					reload: parsed.reload,
-				};
-			}
-		}
-		if (!messages) messages = {};
-
-		messages = Object.assign({
-			title: 'Failed to initialize Misskey',
-			solution: 'The following actions may solve the problem.',
-			solution1: 'Update your os and browser',
-			solution2: 'Disable an adblocker',
-			solution3: 'Clear the browser cache',
-			solution4: '(Tor Browser) Set dom.webaudio.enabled to true',
-			otherOption: 'Other options',
-			otherOption1: 'Clear preferences and cache',
-			otherOption2: 'Start the simple client',
-			otherOption3: 'Start the repair tool',
-			otherOption4: 'Start Misskey in safe mode',
-			reload: 'Reload',
-		}, messages);
+		const messages = bootloaderLocales();
 
 		const safeModeUrl = new URL(window.location.href);
 		safeModeUrl.searchParams.set('safemode', 'true');
@@ -214,7 +167,7 @@
 			<br>
 			<div id="errors"></div>
 			`;
-			errorsElement = document.getElementById('errors');
+			errorsElement = document.getElementById('errors')!;
 		}
 		const detailsElement = document.createElement('details');
 		detailsElement.id = 'errorInfo';

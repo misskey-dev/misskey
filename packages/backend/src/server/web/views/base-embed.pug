@@ -2,6 +2,7 @@ block vars
 
 block loadClientEntry
 	- const entry = config.frontendEmbedEntry;
+	- const bootLoader = config.frontendEmbedBootLoader;
 
 doctype html
 
@@ -47,8 +48,7 @@ html(class='embed')
 		script(type='application/json' id='misskey_embedCtx' data-generated-at=now)
 			!= embedCtx
 
-		script
-			include ../boot.embed.js
+		script(type='module', src=`/embed_vite/${bootLoader.file}`)
 
 	body
 		noscript: p
