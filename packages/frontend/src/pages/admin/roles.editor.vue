@@ -835,7 +835,6 @@ import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/Mk
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -874,9 +873,9 @@ function updateAvatarDecorationLimit(value: string | number) {
 }
 
 const rolePermissionDef = [
-	{ label: i18n.ts._role.roleType.administrator, value: 'administrator' },
-	{ label: i18n.ts._role.roleType.moderator, value: 'moderator' },
-	{ label: i18n.ts._role.roleType.normal, value: 'normal' },
+	{ label: i18n.ts.normal, value: 'normal' },
+	{ label: i18n.ts.moderator, value: 'moderator' },
+	{ label: i18n.ts.administrator, value: 'administrator' },
 ] as const satisfies MkSelectItem[];
 
 const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissionDef>>({
