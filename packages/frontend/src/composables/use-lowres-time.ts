@@ -7,6 +7,8 @@ import { ref, readonly, computed } from 'vue';
 
 const time = ref(Date.now());
 
+export const TIME_UPDATE_INTERVAL = 10000; // 10秒
+
 /**
  * 精度が求められないが定期的に更新しないといけない時計で使用（10秒に一度更新）。
  * tickを各コンポーネントで行うのではなく、ここで一括して行うことでパフォーマンスを改善する。
@@ -29,4 +31,4 @@ export function useLowresTime() {
 
 window.setInterval(() => {
 	time.value = Date.now();
-}, 10000);
+}, TIME_UPDATE_INTERVAL);
