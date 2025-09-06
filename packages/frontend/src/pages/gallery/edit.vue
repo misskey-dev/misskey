@@ -4,162 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
-		<FormSuspense :p="init" class="_gaps">
-			<MkInput v-model="title">
-				<template #label>{{ i18n.ts.title }}</template>
-			</MkInput>
-
-			<MkTextarea v-model="description" :max="500">
-				<template #label>{{ i18n.ts.description }}</template>
-			</MkTextarea>
-
-			<div class="_gaps_s">
-				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : '' }">
-					<div class="name">{{ file.name }}</div>
-					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
-				</div>
-				<MkButton primary @click="chooseFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
-			</div>
-
-			<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
-
-			<div class="_buttons">
-				<MkButton v-if="postId" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton v-else primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.publish }}</MkButton>
-
-				<MkButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-			</div>
-		</FormSuspense>
-	</div>
-</PageWithHeader>
+<MkSuspense v-slot="{ result }" :p="_fetch_">
+	<XRoot :post="result"/>
+</MkSuspense>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import FormSuspense from '@/components/form/suspense.vue';
-import { selectFile } from '@/utility/drive.js';
-import * as os from '@/os.js';
+import XRoot from './edit.root.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router.js';
-
-const router = useRouter();
+import { definePage } from '@/page.js';
 
 const props = defineProps<{
-	postId?: string;
+	postId?: string,
 }>();
 
-const init = ref<(() => Promise<any>) | null>(null);
-const files = ref<Misskey.entities.DriveFile[]>([]);
-const description = ref<string | null>(null);
-const title = ref<string | null>(null);
-const isSensitive = ref(false);
-
-function chooseFile(evt) {
-	selectFile({
-		anchorElement: evt.currentTarget ?? evt.target,
-		multiple: true,
-	}).then(selected => {
-		files.value = files.value.concat(selected);
-	});
-}
-
-function remove(file) {
-	files.value = files.value.filter(f => f.id !== file.id);
-}
-
-async function save() {
-	if (props.postId) {
-		await os.apiWithDialog('gallery/posts/update', {
-			postId: props.postId,
-			title: title.value,
-			description: description.value,
-			fileIds: files.value.map(file => file.id),
-			isSensitive: isSensitive.value,
-		});
-		router.push('/gallery/:postId', {
-			params: {
-				postId: props.postId,
-			},
-		});
+function _fetch_() {
+	if (props.postId == null) {
+		return Promise.resolve(null);
 	} else {
-		const created = await os.apiWithDialog('gallery/posts/create', {
-			title: title.value,
-			description: description.value,
-			fileIds: files.value.map(file => file.id),
-			isSensitive: isSensitive.value,
-		});
-		router.push('/gallery/:postId', {
-			params: {
-				postId: created.id,
-			},
+		return misskeyApi('gallery/posts/show', {
+			postId: props.postId,
 		});
 	}
 }
-
-async function del() {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.ts.deleteConfirm,
-	});
-	if (canceled) return;
-	await os.apiWithDialog('gallery/posts/delete', {
-		postId: props.postId,
-	});
-	router.push('/gallery');
-}
-
-watch(() => props.postId, () => {
-	init.value = () => props.postId ? misskeyApi('gallery/posts/show', {
-		postId: props.postId,
-	}).then(post => {
-		files.value = post.files ?? [];
-		title.value = post.title;
-		description.value = post.description;
-		isSensitive.value = post.isSensitive;
-	}) : Promise.resolve(null);
-}, { immediate: true });
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
 
 definePage(() => ({
 	title: props.postId ? i18n.ts.edit : i18n.ts.postToGallery,
 	icon: 'ti ti-pencil',
 }));
 </script>
-
-<style lang="scss" scoped>
-.wqugxsfx {
-	height: 200px;
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
-	position: relative;
-
-	> .name {
-		position: absolute;
-		top: 8px;
-		left: 9px;
-		padding: 8px;
-		background: var(--MI_THEME-panel);
-	}
-
-	> .remove {
-		position: absolute;
-		top: 8px;
-		right: 9px;
-		padding: 8px;
-		background: var(--MI_THEME-panel);
-	}
-}
-</style>

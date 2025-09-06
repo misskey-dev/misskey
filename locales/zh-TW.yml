@@ -3120,7 +3120,6 @@ _serverSetupWizard:
   youCanConfigureMoreFederationSettingsLater: "您可以在稍後進行更高級的設定，例如指定可以聯繫的伺服器等。\n"
   remoteContentsCleaning: "自動清理接收的內容"
   remoteContentsCleaning_description: "進行聯邦後，會持續接收大量內容。啟用自動清理功能後，系統會自動從伺服器中刪除未被參照的過時內容，以節省儲存空間。"
-  remoteContentsCleaning_description2: "有些引用方式系統上無法檢測到，例如超連結。"
   adminInfo: "管理員資訊"
   adminInfo_description: "設定用於接收查詢的管理者資訊。\n"
   adminInfo_mustBeFilled: "當設置為開放伺服器或啟用聯邦時，必須填寫此資訊。\n"

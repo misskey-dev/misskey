@@ -1668,6 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "Some current settings will be reset."
   entrancePageStyle: "Entrance page style"
   showTimelineForVisitor: "Show timeline"
+  showActivitiesForVisitor: "Show activities"
   _userGeneratedContentsVisibilityForVisitor:
     all: "Everything is public"
     localOnly: "Only local content is published, remote content is kept private"
