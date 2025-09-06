@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
@@ -86,6 +86,11 @@ function openWindow() {
 }
 
 function nav(ev: MouseEvent) {
+	// 制御キーとの組み合わせは無視（shiftを除く）
+	if (ev.metaKey || ev.altKey || ev.ctrlKey) return;
+
+	ev.preventDefault();
+
 	if (behavior === 'browser') {
 		window.location.href = props.to;
 		return;
