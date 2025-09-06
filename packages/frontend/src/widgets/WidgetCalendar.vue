@@ -38,12 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@@/js/use-interval.js';
+import { useLowresTime, TIME_UPDATE_INTERVAL } from '@/composables/use-lowres-time.js';
 
 const name = 'calendar';
 
@@ -65,6 +65,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
+const fNow = useLowresTime();
 const year = ref(0);
 const month = ref(0);
 const day = ref(0);
@@ -73,8 +74,14 @@ const yearP = ref(0);
 const monthP = ref(0);
 const dayP = ref(0);
 const isHoliday = ref(false);
-const tick = () => {
-	const now = new Date();
+
+const nextDay = new Date();
+nextDay.setHours(24, 0, 0, 0);
+let nextDayMidnightTime = nextDay.getTime();
+let nextDayTimer: number | null = null;
+
+function update(time: number) {
+	const now = new Date(time);
 	const nd = now.getDate();
 	const nm = now.getMonth();
 	const ny = now.getFullYear();
@@ -104,11 +111,28 @@ const tick = () => {
 	yearP.value = yearNumer / yearDenom * 100;
 
 	isHoliday.value = now.getDay() === 0 || now.getDay() === 6;
-};
+}
 
-useInterval(tick, 1000, {
-	immediate: true,
-	afterMounted: false,
+watch(fNow, (to) => {
+	update(to);
+
+	// 次回更新までに日付が変わる場合、日付が変わった直後に強制的に更新するタイマーをセットする
+	if (nextDayMidnightTime - to <= TIME_UPDATE_INTERVAL) {
+		if (nextDayTimer != null) {
+			window.clearTimeout(nextDayTimer);
+			nextDayTimer = null;
+		}
+
+		nextDayTimer = window.setTimeout(() => {
+			update(nextDayMidnightTime);
+			nextDayTimer = null;
+		}, nextDayMidnightTime - to);
+	}
+}, { immediate: true });
+
+watch(day, () => {
+	nextDay.setHours(24, 0, 0, 0);
+	nextDayMidnightTime = nextDay.getTime();
 });
 
 defineExpose<WidgetComponentExpose>({
