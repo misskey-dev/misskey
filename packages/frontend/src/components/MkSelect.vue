@@ -85,11 +85,11 @@ const props = defineProps<{
 	large?: boolean;
 }>();
 
-const model = defineModel<MODELT & (
-	MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
-		? unknown
-		: 'Error: The type of model does not match the type of items.'
-)>({ required: true });
+type ModelTChecked = MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
+	? unknown
+	: 'Error: The type of model does not match the type of items.';
+
+const model = defineModel<ModelTChecked>({ required: true });
 
 const { autofocus } = toRefs(props);
 const focused = ref(false);
@@ -177,7 +177,7 @@ function show() {
 					text: option.label,
 					active: computed(() => model.value === option.value),
 					action: () => {
-						model.value = option.value as MODELT;
+						model.value = option.value as ModelTChecked;
 					},
 				});
 			}
@@ -186,7 +186,7 @@ function show() {
 				text: item.label,
 				active: computed(() => model.value === item.value),
 				action: () => {
-					model.value = item.value as MODELT;
+					model.value = item.value as ModelTChecked;
 				},
 			});
 		}
