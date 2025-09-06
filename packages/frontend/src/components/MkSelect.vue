@@ -85,9 +85,11 @@ const props = defineProps<{
 	large?: boolean;
 }>();
 
-type ModelTChecked = MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
+type ModelTChecked = MODELT & (
+	MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
 	? unknown
-	: 'Error: The type of model does not match the type of items.';
+	: 'Error: The type of model does not match the type of items.'
+);
 
 const model = defineModel<ModelTChecked>({ required: true });
 
