@@ -699,7 +699,7 @@ useGlobalEvent('driveFoldersDeleted', (folders) => {
 	}
 });
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['drive']> | null = null;
 
 onMounted(() => {
 	if (store.s.realtimeMode) {

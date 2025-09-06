@@ -31,7 +31,7 @@ import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import MarqueeText from '@/components/MkMarqueeText.vue';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { shuffle } from '@/utility/shuffle.js';

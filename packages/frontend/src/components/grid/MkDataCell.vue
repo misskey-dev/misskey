@@ -48,6 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-else-if="cellType === 'image'">
 					<img
+						v-if="cell.value && typeof cell.value === 'string'"
 						:src="cell.value"
 						:alt="cell.value"
 						:class="$style.viewImage"

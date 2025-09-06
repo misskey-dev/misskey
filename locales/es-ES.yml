@@ -2137,7 +2137,7 @@ _aboutMisskey:
 _displayOfSensitiveMedia:
   respect: "Esconder medios marcados como sensibles"
   ignore: "Mostrar medios marcados como sensibles"
-  force: "Esconder todala multimedia"
+  force: "Esconder toda la multimedia"
 _instanceTicker:
   none: "No mostrar"
   remote: "Mostrar a usuarios remotos"

@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
-				<slot :items="unref(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
+				<slot :items="getValue(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
 				<div v-if="direction === 'down' || direction === 'both'" v-show="downButtonVisible">
 					<MkButton v-if="!downButtonLoading" :class="$style.more" primary rounded @click="downButtonClick">
 						{{ i18n.ts.loadMore }}
@@ -90,6 +90,10 @@ function onContextmenu(ev: MouseEvent) {
 	}], ev);
 }
 
+function getValue(v: IPaginator['items']) {
+	return unref(v) as UnwrapRef<T['items']>;
+}
+
 if (props.autoLoad) {
 	onMounted(() => {
 		props.paginator.init();
@@ -134,7 +138,7 @@ function downButtonClick() {
 
 defineSlots<{
 	empty: () => void;
-	default: (props: { items: UnwrapRef<T['items']> }) => void;
+	default: (props: { items: UnwrapRef<T['items']>, fetching: boolean }) => void;
 }>();
 </script>
 

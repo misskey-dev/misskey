@@ -29,7 +29,7 @@ export class AiService {
 	}
 
 	@bindThis
-	public async detectSensitive(path: string): Promise<nsfw.PredictionType[] | null> {
+	public async detectSensitive(source: string | Buffer): Promise<nsfw.PredictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
 				isSupportedCpu = await this.computeIsSupportedCpu();
@@ -51,7 +51,7 @@ export class AiService {
 				});
 			}
 
-			const buffer = await fs.promises.readFile(path);
+			const buffer = source instanceof Buffer ? source : await fs.promises.readFile(source);
 			const image = await tf.node.decodeImage(buffer, 3) as any;
 			try {
 				const predictions = await this.model.classify(image);

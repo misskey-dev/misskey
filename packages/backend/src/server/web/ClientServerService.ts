@@ -201,6 +201,8 @@ export class ClientServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+		const configUrl = new URL(this.config.url);
+
 		fastify.register(fastifyView, {
 			root: _dirname + '/views',
 			engine: {
@@ -239,7 +241,6 @@ export class ClientServerService {
 				done();
 			});
 		} else {
-			const configUrl = new URL(this.config.url);
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -887,6 +888,22 @@ export class ClientServerService {
 			[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
 		fastify.get('/flush', async (request, reply) => {
+			let sendHeader = true;
+
+			if (request.headers['origin']) {
+				const originURL = new URL(request.headers['origin']);
+				if (originURL.protocol !== 'https:') { // Clear-Site-Data only supports https
+					sendHeader = false;
+				}
+				if (originURL.host !== configUrl.host) {
+					sendHeader = false;
+				}
+			}
+
+			if (sendHeader) {
+				reply.header('Clear-Site-Data', '"*"');
+			}
+			reply.header('Set-Cookie', 'http-flush-failed=1; Path=/flush; Max-Age=60');
 			return await reply.view('flush');
 		});
 

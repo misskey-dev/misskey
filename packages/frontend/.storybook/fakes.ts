@@ -127,7 +127,7 @@ export function galleryPost(isSensitive = false) {
 	}
 }
 
-export function file(isSensitive = false) {
+export function file(isSensitive = false): entities.DriveFile {
 	return {
 		id: 'somefileid',
 		createdAt: '2016-12-28T22:49:51.000Z',
@@ -207,6 +207,7 @@ export function federationInstance(): entities.FederationInstance {
 		isSuspended: false,
 		suspensionState: 'none',
 		isBlocked: false,
+		isMediaSilenced: false,
 		softwareName: 'misskey',
 		softwareVersion: '2024.5.0',
 		openRegistrations: false,
@@ -311,6 +312,8 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host: enti
 		alsoKnownAs: null,
 		notify: 'none',
 		memo: null,
+		canChat: true,
+		chatScope: 'everyone',
 	};
 }
 
@@ -378,6 +381,7 @@ export function role(params: {
 		asBadge: params.asBadge ?? true,
 		canEditMembersByModerator: params.canEditMembersByModerator ?? false,
 		usersCount: params.usersCount ?? 10,
+		preserveAssignmentOnMoveAccount: false,
 		condFormula: {
 			id: '',
 			type: 'or',

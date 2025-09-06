@@ -138,9 +138,10 @@ async function addPinnedNote() {
 	const { canceled, result: value } = await os.inputText({
 		title: i18n.ts.noteIdOrUrl,
 	});
-	if (canceled) return;
+	if (canceled || value == null) return;
+	const fromUrl = value.includes('/') ? value.split('/').pop() : null;
 	const note = await os.apiWithDialog('notes/show', {
-		noteId: value.includes('/') ? value.split('/').pop() : value,
+		noteId: fromUrl ?? value,
 	});
 	pinnedNotes.value = [{
 		id: note.id,
