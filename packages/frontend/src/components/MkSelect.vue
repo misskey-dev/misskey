@@ -173,7 +173,7 @@ function show() {
 					text: option.label,
 					active: computed(() => model.value === option.value),
 					action: () => {
-						model.value = option.value;
+						model.value = option.value as MODELT;
 					},
 				});
 			}
@@ -182,7 +182,7 @@ function show() {
 				text: item.label,
 				active: computed(() => model.value === item.value),
 				action: () => {
-					model.value = item.value;
+					model.value = item.value as MODELT;
 				},
 			});
 		}
