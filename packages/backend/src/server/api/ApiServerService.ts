@@ -178,7 +178,7 @@ export class ApiServerService {
 
 		fastify.all('/clear-browser-cache', (request, reply) => {
 			if (['GET', 'POST'].includes(request.method)) {
-				reply.header('Clear-Site-Data', '"cache", "executionContexts"');
+				reply.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
 				reply.code(204);
 				reply.send();
 			} else {
