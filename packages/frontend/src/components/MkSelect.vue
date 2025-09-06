@@ -67,7 +67,7 @@ export type GetMkSelectValueTypesFromDef<T extends MkSelectItem[]> = T[number] e
 	: never;
 </script>
 
-<script lang="ts" setup generic="ITEMS extends MkSelectItem[], MODELT = string extends GetMkSelectValueTypesFromDef<ITEMS> ? OptionValue : GetMkSelectValueTypesFromDef<ITEMS>">
+<script lang="ts" setup generic="ITEMS extends MkSelectItem[], MODELT extends OptionValue">
 import { onMounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { useInterval } from '@@/js/use-interval.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -85,7 +85,11 @@ const props = defineProps<{
 	large?: boolean;
 }>();
 
-const model = defineModel<MODELT>({ required: true });
+const model = defineModel<MODELT & (
+	MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
+		? unknown
+		: 'Error: The type of model does not match the type of items.'
+)>({ required: true });
 
 const { autofocus } = toRefs(props);
 const focused = ref(false);
