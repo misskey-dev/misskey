@@ -16,23 +16,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkTip>
 
 			<div :class="$style.inputs" class="_gaps">
-				<MkSelect v-model="state" style="margin: 0; flex: 1;">
+				<MkSelect v-model="state" :items="stateDef" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.state }}</template>
-					<option value="all">{{ i18n.ts.all }}</option>
-					<option value="unresolved">{{ i18n.ts.unresolved }}</option>
-					<option value="resolved">{{ i18n.ts.resolved }}</option>
 				</MkSelect>
-				<MkSelect v-model="targetUserOrigin" style="margin: 0; flex: 1;">
+				<MkSelect v-model="targetUserOrigin" :items="targetUserOriginDef" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.reporteeOrigin }}</template>
-					<option value="combined">{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option value="remote">{{ i18n.ts.remote }}</option>
 				</MkSelect>
-				<MkSelect v-model="reporterOrigin" style="margin: 0; flex: 1;">
+				<MkSelect v-model="reporterOrigin" :items="reporterOriginDef" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.reporterOrigin }}</template>
-					<option value="combined">{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option value="remote">{{ i18n.ts.remote }}</option>
 				</MkSelect>
 			</div>
 
@@ -64,13 +55,44 @@ import MkPagination from '@/components/MkPagination.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkButton from '@/components/MkButton.vue';
 import { store } from '@/store.js';
 import { Paginator } from '@/utility/paginator.js';
 
-const state = ref('unresolved');
-const reporterOrigin = ref('combined');
-const targetUserOrigin = ref('combined');
+const {
+	model: state,
+	def: stateDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'all' },
+		{ label: i18n.ts.unresolved, value: 'unresolved' },
+		{ label: i18n.ts.resolved, value: 'resolved' },
+	],
+	initialValue: 'unresolved',
+});
+const {
+	model: reporterOrigin,
+	def: reporterOriginDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'combined' },
+		{ label: i18n.ts.local, value: 'local' },
+		{ label: i18n.ts.remote, value: 'remote' },
+	],
+	initialValue: 'combined',
+});
+const {
+	model: targetUserOrigin,
+	def: targetUserOriginDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'combined' },
+		{ label: i18n.ts.local, value: 'local' },
+		{ label: i18n.ts.remote, value: 'remote' },
+	],
+	initialValue: 'combined',
+});
 const searchUsername = ref('');
 const searchHost = ref('');
 

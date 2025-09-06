@@ -67,15 +67,15 @@ const fetching = ref(true);
 
 async function chooseList() {
 	const lists = await misskeyApi('users/lists/list');
-	const { canceled, result: list } = await os.select({
+	const { canceled, result: listId } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
-			value: x, text: x.name,
+			value: x.id, label: x.name,
 		})),
 		default: widgetProps.listId,
 	});
-	if (canceled || list == null) return;
-
+	if (canceled || listId == null) return;
+	const list = lists.find(x => x.id === listId)!;
 	widgetProps.listId = list.id;
 	save();
 	fetch();

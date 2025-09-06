@@ -58,22 +58,23 @@ watch(soundSetting, v => {
 
 async function setList() {
 	const lists = await misskeyApi('users/lists/list');
-	const { canceled, result: list } = await os.select<MisskeyEntities.UserList | '_CREATE_'>({
+	const { canceled, result: listIdOrOperation } = await os.select({
 		title: i18n.ts.selectList,
 		items: [
-			{ value: '_CREATE_', text: i18n.ts.createNew },
+			{ value: '_CREATE_', label: i18n.ts.createNew },
 			(lists.length > 0 ? {
-				sectionTitle: i18n.ts.createdLists,
+				type: 'group' as const,
+				label: i18n.ts.createdLists,
 				items: lists.map(x => ({
-					value: x, text: x.name,
+					value: x.id, label: x.name,
 				})),
 			} : undefined),
 		],
 		default: props.column.listId,
 	});
-	if (canceled || list == null) return;
+	if (canceled || listIdOrOperation == null) return;
 
-	if (list === '_CREATE_') {
+	if (listIdOrOperation === '_CREATE_') {
 		const { canceled, result: name } = await os.inputText({
 			title: i18n.ts.enterListName,
 		});
@@ -87,6 +88,8 @@ async function setList() {
 			timelineNameCache: res.name,
 		});
 	} else {
+		const list = lists.find(x => x.id === listIdOrOperation)!;
+
 		updateColumn(props.column.id, {
 			listId: list.id,
 			timelineNameCache: list.name,

@@ -22,11 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSwitch v-model="multiple">{{ i18n.ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
 		<div>
-			<MkSelect v-model="expiration" small>
+			<MkSelect v-model="expiration" :items="expirationDef" small>
 				<template #label>{{ i18n.ts._poll.expiration }}</template>
-				<option value="infinite">{{ i18n.ts._poll.infinite }}</option>
-				<option value="at">{{ i18n.ts._poll.at }}</option>
-				<option value="after">{{ i18n.ts._poll.after }}</option>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
 				<MkInput v-model="atDate" small type="date" class="input">
@@ -40,12 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="after" small type="number" :min="1" class="input">
 					<template #label>{{ i18n.ts._poll.duration }}</template>
 				</MkInput>
-				<MkSelect v-model="unit" small>
-					<option value="second">{{ i18n.ts._time.second }}</option>
-					<option value="minute">{{ i18n.ts._time.minute }}</option>
-					<option value="hour">{{ i18n.ts._time.hour }}</option>
-					<option value="day">{{ i18n.ts._time.day }}</option>
-				</MkSelect>
+				<MkSelect v-model="unit" :items="unitDef" small></MkSelect>
 			</section>
 		</div>
 	</section>
@@ -61,6 +53,7 @@ import MkButton from './MkButton.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
 import { addTime } from '@/utility/time.js';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 export type PollEditorModelValue = {
 	expiresAt: number | null;
@@ -78,11 +71,32 @@ const emit = defineEmits<{
 
 const choices = ref(props.modelValue.choices);
 const multiple = ref(props.modelValue.multiple);
-const expiration = ref('infinite');
+const {
+	model: expiration,
+	def: expirationDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._poll.infinite, value: 'infinite' },
+		{ label: i18n.ts._poll.at, value: 'at' },
+		{ label: i18n.ts._poll.after, value: 'after' },
+	],
+	initialValue: 'infinite',
+});
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
-const unit = ref('second');
+const {
+	model: unit,
+	def: unitDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._time.second, value: 'second' },
+		{ label: i18n.ts._time.minute, value: 'minute' },
+		{ label: i18n.ts._time.hour, value: 'hour' },
+		{ label: i18n.ts._time.day, value: 'day' },
+	],
+	initialValue: 'second',
+});
 
 if (props.modelValue.expiresAt) {
 	expiration.value = 'at';

@@ -5,9 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="type">
+	<MkSelect v-model="type" :items="typeDef">
 		<template #label>{{ i18n.ts.sound }}</template>
-		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getSoundTypeName(x) }}</option>
 	</MkSelect>
 	<div v-if="type === '_driveFile_' && driveFileError === true" :class="$style.fileSelectorRoot">
 		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
@@ -38,6 +37,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/utility/sound.js';
 import { selectFile } from '@/utility/drive.js';
@@ -53,7 +53,16 @@ const emit = defineEmits<{
 	(ev: 'update', result: { type: SoundType; fileId?: string; fileUrl?: string; volume: number; }): void;
 }>();
 
-const type = ref<SoundType>(props.type);
+const {
+	model: type,
+	def: typeDef,
+} = useMkSelect({
+	items: soundsTypes.map((x) => ({
+		label: getSoundTypeName(x),
+		value: x,
+	})),
+	initialValue: props.type,
+});
 const fileId = ref(props.fileId);
 const fileUrl = ref(props.fileUrl);
 const fileName = ref<string>('');
