@@ -169,7 +169,7 @@ const {
 		{ value: 'light', label: i18n.ts.light },
 		{ value: 'dark', label: i18n.ts.dark },
 	],
-	initialValue: 'auto',
+	initialValue: props.params?.colorMode ?? 'auto',
 });
 
 const rounded = ref(props.params?.rounded ?? true);
