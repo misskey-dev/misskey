@@ -8,8 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="rootEl"
 	:class="$style.root"
 	:style="{
-		'--MI-QrReadScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing) )`,
-		'--MI-QrReadViewHeight': 'calc(var(--MI-QrReadScrollHeight) - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px))',
+		'--MI-QrReadViewHeight': 'calc(100cqh - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px))',
 		'--MI-QrReadVideoHeight': 'min(calc(var(--MI-QrReadViewHeight) * 0.3), 512px)',
 	}"
 >
@@ -81,9 +80,6 @@ const LIST_RERENDER_INTERVAL = 1500;
 const rootEl = ref<HTMLDivElement | null>(null);
 const videoEl = ref<HTMLVideoElement | null>(null);
 const overlayEl = ref<HTMLDivElement | null>(null);
-
-const scrollContainer = shallowRef<HTMLElement | null>(null);
-const scrollHeight = ref(window.innerHeight);
 
 const scannerInstance = shallowRef<QrScanner | null>(null);
 
@@ -335,28 +331,6 @@ onUnmounted(() => {
 
 	scannerInstance.value?.destroy();
 });
-
-//#region scroll height
-function checkScrollHeight() {
-	scrollHeight.value = scrollContainer.value ? scrollContainer.value.clientHeight : window.innerHeight;
-}
-
-let ro: ResizeObserver | undefined;
-
-onMounted(() => {
-	scrollContainer.value = getScrollContainer(rootEl.value);
-	checkScrollHeight();
-
-	if (scrollContainer.value) {
-		ro = new ResizeObserver(checkScrollHeight);
-		ro.observe(scrollContainer.value);
-	}
-});
-
-onUnmounted(() => {
-	ro?.disconnect();
-});
-//#endregion
 </script>
 
 <style lang="scss" module>

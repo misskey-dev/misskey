@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	ref="rootEl" :class="$style.root" :style="{
 		backgroundColor: bgColor,
-		'--MI-QrShowScrollHeight': scrollContainer ? `${scrollHeight}px` : `calc( 100dvh - var(--MI-minBottomSpacing, 0px) )`,
 	}"
 >
 	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
@@ -62,7 +61,6 @@ const $i = ensureSignin();
 
 const scrollContainer = shallowRef<HTMLElement | null>(null);
 const rootEl = ref<HTMLDivElement | null>(null);
-const scrollHeight = ref(window.innerHeight);
 
 const acct = computed(() => `@${$i.username}@${host}`);
 const userProfileUrl = computed(() => userPage($i, undefined, true));
@@ -131,28 +129,6 @@ onMounted(() => {
 	}
 });
 
-//#region scroll height
-function checkScrollHeight() {
-	scrollHeight.value = scrollContainer.value ? scrollContainer.value.clientHeight : window.innerHeight;
-}
-
-let ro: ResizeObserver | undefined;
-
-onMounted(() => {
-	scrollContainer.value = getScrollContainer(rootEl.value);
-	checkScrollHeight();
-
-	if (scrollContainer.value) {
-		ro = new ResizeObserver(checkScrollHeight);
-		ro.observe(scrollContainer.value);
-	}
-});
-
-onUnmounted(() => {
-	ro?.disconnect();
-});
-//#endregion
-
 //#region flip
 const THRESHOLD = -3;
 // @ts-expect-error TS(2339)
@@ -216,7 +192,7 @@ $avatarSize: 58px;
 	margin-top: calc( -1 * var(--MI-stickyTop) );
 	margin-bottom: calc( -1 * var(--MI-stickyBottom) );
 	height: fit-content;
-	min-height: var(--MI-QrShowScrollHeight);
+	min-height: 100cqh;
 }
 
 .fg {
@@ -239,7 +215,7 @@ $avatarSize: 58px;
 	display: flex;
 	width: 100%;
 	padding: 0 0 $s3;
-	max-height: max(256px, calc((var(--MI-QrShowScrollHeight) - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px)) * 0.55));
+	max-height: max(256px, calc((100cqh - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px)) * 0.55));
 }
 
 .qrInner {
