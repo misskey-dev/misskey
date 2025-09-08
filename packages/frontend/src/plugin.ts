@@ -205,13 +205,13 @@ type HandlerDef = {
 		handler: (note: Misskey.entities.Note) => void;
 	};
 	note_view_interruptor: {
-		handler: (note: Misskey.entities.Note) => unknown;
+		handler: (note: Misskey.entities.Note) => Misskey.entities.Note | null;
 	};
 	note_post_interruptor: {
 		handler: (note: FIXME) => unknown;
 	};
 	page_view_interruptor: {
-		handler: (page: Misskey.entities.Page) => unknown;
+		handler: (page: Misskey.entities.Page) => Misskey.entities.Page;
 	};
 };
 

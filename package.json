@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2025.8.0",
+	"version": "2025.9.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.15.0",
+	"packageManager": "pnpm@10.15.1",
 	"workspaces": [
 		"packages/frontend-shared",
 		"packages/frontend",
@@ -62,21 +62,22 @@
 		"js-yaml": "4.1.0",
 		"postcss": "8.5.6",
 		"tar": "7.4.3",
-		"terser": "5.43.1",
+		"terser": "5.44.0",
 		"typescript": "5.9.2"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.1.0",
-		"@types/node": "22.17.2",
-		"@typescript-eslint/eslint-plugin": "8.40.0",
-		"@typescript-eslint/parser": "8.40.0",
+		"@types/js-yaml": "4.0.9",
+		"@types/node": "22.18.1",
+		"@typescript-eslint/eslint-plugin": "8.42.0",
+		"@typescript-eslint/parser": "8.42.0",
 		"cross-env": "7.0.3",
 		"cypress": "14.5.4",
-		"eslint": "9.34.0",
+		"eslint": "9.35.0",
 		"globals": "16.3.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.15.0",
-		"start-server-and-test": "2.0.13"
+		"pnpm": "10.15.1",
+		"start-server-and-test": "2.1.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
