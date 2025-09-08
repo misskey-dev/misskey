@@ -368,11 +368,6 @@ export async function mainBoot() {
 				});
 			});
 
-			main.on('unreadAntenna', () => {
-				updateCurrentAccountPartial({ hasUnreadAntenna: true });
-				sound.playMisskeySfx('antenna');
-			});
-
 			main.on('newChatMessage', () => {
 				updateCurrentAccountPartial({ hasUnreadChatMessages: true });
 				sound.playMisskeySfx('chatMessage');

@@ -22,20 +22,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="blocked">{{ i18n.ts.blocked }}</option>
 				<option value="notResponding">{{ i18n.ts.notResponding }}</option>
 			</MkSelect>
-			<MkSelect v-model="sort">
+			<MkSelect
+				v-model="sort" :items="[{
+					label: `${i18n.ts.pubSub} (${i18n.ts.descendingOrder})`,
+					value: '+pubSub',
+				}, {
+					label: `${i18n.ts.pubSub} (${i18n.ts.ascendingOrder})`,
+					value: '-pubSub',
+				}, {
+					label: `${i18n.ts.notes} (${i18n.ts.descendingOrder})`,
+					value: '+notes',
+				}, {
+					label: `${i18n.ts.notes} (${i18n.ts.ascendingOrder})`,
+					value: '-notes',
+				}, {
+					label: `${i18n.ts.users} (${i18n.ts.descendingOrder})`,
+					value: '+users',
+				}, {
+					label: `${i18n.ts.users} (${i18n.ts.ascendingOrder})`,
+					value: '-users',
+				}, {
+					label: `${i18n.ts.following} (${i18n.ts.descendingOrder})`,
+					value: '+following',
+				}, {
+					label: `${i18n.ts.following} (${i18n.ts.ascendingOrder})`,
+					value: '-following',
+				}, {
+					label: `${i18n.ts.followers} (${i18n.ts.descendingOrder})`,
+					value: '+followers',
+				}, {
+					label: `${i18n.ts.followers} (${i18n.ts.ascendingOrder})`,
+					value: '-followers',
+				}, {
+					label: `${i18n.ts.registeredAt} (${i18n.ts.descendingOrder})`,
+					value: '+firstRetrievedAt',
+				}, {
+					label: `${i18n.ts.registeredAt} (${i18n.ts.ascendingOrder})`,
+					value: '-firstRetrievedAt',
+				}] as const"
+			>
 				<template #label>{{ i18n.ts.sort }}</template>
-				<option value="+pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+notes">{{ i18n.ts.notes }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-notes">{{ i18n.ts.notes }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+users">{{ i18n.ts.users }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-users">{{ i18n.ts.users }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+following">{{ i18n.ts.following }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-following">{{ i18n.ts.following }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+followers">{{ i18n.ts.followers }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
 			</MkSelect>
 		</FormSplit>
 	</div>
@@ -52,6 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -62,7 +89,7 @@ import { Paginator } from '@/utility/paginator.js';
 
 const host = ref('');
 const state = ref('federating');
-const sort = ref('+pubSub');
+const sort = ref<NonNullable<Misskey.entities.FederationInstancesRequest['sort']>>('+pubSub');
 const paginator = markRaw(new Paginator('federation/instances', {
 	limit: 10,
 	offsetMode: true,
