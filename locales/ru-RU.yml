@@ -1538,7 +1538,7 @@ _achievements:
       description: "Нажато здесь"
     _justPlainLucky:
       title: "Чистая удача"
-      description: "Может достаться с вероятностью 0,01% каждые 10 секунд."
+      description: "Может достаться с вероятностью 0,005% каждые 10 секунд."
     _setNameToSyuilo:
       title: "Комплекс бога"
       description: "Установлено «syuilo» в качестве имени"
