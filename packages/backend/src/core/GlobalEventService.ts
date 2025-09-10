@@ -225,7 +225,7 @@ type UndefinedAsNullAll<T> = {
 };
 
 export interface InternalEventTypes {
-	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; };
+	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; } | { id: MiUser['id']; isRemoteSuspended: MiUser['isRemoteSuspended']; };
 	userChangeDeletedState: { id: MiUser['id']; isDeleted: MiUser['isDeleted']; };
 	userTokenRegenerated: { id: MiUser['id']; oldToken: string; newToken: string; };
 	remoteUserUpdated: { id: MiUser['id']; };
@@ -260,6 +260,7 @@ export interface InternalEventTypes {
 	unmute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
 	userListMemberAdded: { userListId: MiUserList['id']; memberId: MiUser['id']; };
 	userListMemberRemoved: { userListId: MiUserList['id']; memberId: MiUser['id']; };
+	userKeypairUpdated: { userId: MiUser['id']; };
 }
 
 type EventTypesToEventPayload<T> = EventUnionFromDictionary<UndefinedAsNullAll<SerializedAll<T>>>;

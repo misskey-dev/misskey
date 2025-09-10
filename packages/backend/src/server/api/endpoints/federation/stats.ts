@@ -94,11 +94,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.followingsRepository.count({
 					where: {
 						followeeHost: Not(IsNull()),
+						isFollowerSuspended: false,
 					},
 				}),
 				this.followingsRepository.count({
 					where: {
 						followerHost: Not(IsNull()),
+						isFollowerSuspended: false,
 					},
 				}),
 			]);
