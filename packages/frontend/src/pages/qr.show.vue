@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-flip :class="$style.user">
 				<MkAvatar :class="$style.avatar" :user="$i" :indicator="false"/>
 				<div :class="$style.names">
-					<div :class="$style.name"><MkCondensedLine :minScale="2 / 3">{{ userName($i) }}</MkCondensedLine></div>
+					<div :class="$style.name"><MkCondensedLine :minScale="2 / 3"><MkUserName :user="$i" :nowrap="true"/></MkCondensedLine></div>
 					<div :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
 				</div>
 			</div>
