@@ -13,7 +13,6 @@ import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
@@ -49,8 +48,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch(e => {});
-			await this.unFollowAll(user).catch(e => {});
+			await this.postSuspend(user).catch((e: any) => {});
+			await this.suspendFollowings(user).catch((e: any) => {});
 		})();
 	}
 
@@ -67,7 +66,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch(e => {});
+			await this.postUnsuspend(user).catch((e: any) => {});
+			await this.restoreFollowings(user).catch((e: any) => {});
 		})();
 	}
 
@@ -139,24 +139,27 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	private async unFollowAll(follower: MiUser) {
-		const followings = await this.followingsRepository.find({
-			where: {
+	private async suspendFollowings(follower: MiUser) {
+		await this.followingsRepository.update(
+			{
 				followerId: follower.id,
-				followeeId: Not(IsNull()),
 			},
-		});
-
-		const jobs: RelationshipJobData[] = [];
-		for (const following of followings) {
-			if (following.followeeId && following.followerId) {
-				jobs.push({
-					from: { id: following.followerId },
-					to: { id: following.followeeId },
-					silent: true,
-				});
+			{
+				isFollowerSuspended: true,
 			}
-		}
-		this.queueService.createUnfollowJob(jobs);
+		);
+	}
+
+	@bindThis
+	private async restoreFollowings(follower: MiUser) {
+		// フォロー関係を復元（isFollowerSuspended: false）に変更
+		await this.followingsRepository.update(
+			{
+				followerId: follower.id,
+			},
+			{
+				isFollowerSuspended: false,
+			}
+		);
 	}
 }
