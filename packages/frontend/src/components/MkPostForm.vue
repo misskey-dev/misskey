@@ -1616,19 +1616,16 @@ html[data-color-scheme=light] .preview {
 
 .footerLeft {
 	flex: 1;
-	display: grid;
-	grid-auto-flow: row;
-	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 40px;
+	display: flex;
+	height: 40px;
+	overflow: auto;
 }
 
 .footerRight {
 	flex: 0;
 	margin-left: auto;
-	display: grid;
-	grid-auto-flow: row;
-	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 40px;
+	display: flex;
+	height: 40px;
 	direction: rtl;
 }
 
@@ -1638,6 +1635,7 @@ html[data-color-scheme=light] .preview {
 	margin: 0;
 	font-size: 1em;
 	width: auto;
+	min-width: 42px;
 	height: 100%;
 	border-radius: 6px;
 
