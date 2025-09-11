@@ -21,9 +21,9 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.17.2",
-		"@typescript-eslint/eslint-plugin": "8.40.0",
-		"@typescript-eslint/parser": "8.40.0",
+		"@types/node": "22.18.1",
+		"@typescript-eslint/eslint-plugin": "8.42.0",
+		"@typescript-eslint/parser": "8.42.0",
 		"esbuild": "0.25.9",
 		"eslint-plugin-vue": "10.4.0",
 		"nodemon": "3.1.10",
@@ -35,6 +35,6 @@
 	],
 	"dependencies": {
 		"misskey-js": "workspace:*",
-		"vue": "3.5.19"
+		"vue": "3.5.21"
 	}
 }
