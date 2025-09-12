@@ -25,9 +25,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<MkCondensedLine :minScale="2 / 3"><slot></slot></MkCondensedLine>
 			</div>
-			<div v-if="$slots.caption" :class="$style.headerTextSub">
-				<MkCondensedLine :minScale="2 / 3"><slot name="caption"></slot></MkCondensedLine>
-			</div>
 		</div>
 		<span :class="$style.suffix">
 			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
@@ -38,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
 	to?: string;
 	active?: boolean;
 	external?: boolean;
@@ -98,11 +95,6 @@ const props = defineProps<{
 	text-align: start;
 	overflow: hidden;
 	padding-right: 12px;
-}
-
-.headerTextSub {
-	color: var(--fgTransparentWeak);
-	font-size: .85em;
 }
 
 .suffix {
