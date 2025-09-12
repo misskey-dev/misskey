@@ -20,8 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import type { HeatmapSource } from '@/components/MkHeatmap.vue';
 
-const src = ref('active-users');
+const src = ref<HeatmapSource>('active-users');
 </script>
 
 <style lang="scss" module>

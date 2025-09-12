@@ -140,7 +140,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 
 								<MkInput
-									v-if="makeNotesFollowersOnlyBefore_type === 'absolute'"
+									v-if="makeNotesFollowersOnlyBefore_type === 'absolute' && makeNotesFollowersOnlyBefore != null"
 									:modelValue="formatDateTimeString(new Date(makeNotesFollowersOnlyBefore * 1000), 'yyyy-MM-dd')"
 									type="date"
 									:manualSave="true"
@@ -189,7 +189,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 
 								<MkInput
-									v-if="makeNotesHiddenBefore_type === 'absolute'"
+									v-if="makeNotesHiddenBefore_type === 'absolute' && makeNotesHiddenBefore != null"
 									:modelValue="formatDateTimeString(new Date(makeNotesHiddenBefore * 1000), 'yyyy-MM-dd')"
 									type="date"
 									:manualSave="true"
@@ -217,7 +217,6 @@ import { ref, computed, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -247,14 +246,25 @@ const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
 const chatScope = ref($i.chatScope);
 
-const makeNotesFollowersOnlyBefore_type = computed(() => {
-	if (makeNotesFollowersOnlyBefore.value == null) {
-		return null;
-	} else if (makeNotesFollowersOnlyBefore.value >= 0) {
-		return 'absolute';
-	} else {
-		return 'relative';
-	}
+const makeNotesFollowersOnlyBefore_type = computed({
+	get: () => {
+		if (makeNotesFollowersOnlyBefore.value == null) {
+			return null;
+		} else if (makeNotesFollowersOnlyBefore.value >= 0) {
+			return 'absolute';
+		} else {
+			return 'relative';
+		}
+	},
+	set(value) {
+		if (value === 'relative') {
+			makeNotesFollowersOnlyBefore.value = -604800;
+		} else if (value === 'absolute') {
+			makeNotesFollowersOnlyBefore.value = Math.floor(Date.now() / 1000);
+		} else {
+			makeNotesFollowersOnlyBefore.value = null;
+		}
+	},
 });
 
 const makeNotesFollowersOnlyBefore_presets = [
@@ -288,14 +298,25 @@ const makeNotesFollowersOnlyBefore_customMonths = computed({
 	},
 });
 
-const makeNotesHiddenBefore_type = computed(() => {
-	if (makeNotesHiddenBefore.value == null) {
-		return null;
-	} else if (makeNotesHiddenBefore.value >= 0) {
-		return 'absolute';
-	} else {
-		return 'relative';
-	}
+const makeNotesHiddenBefore_type = computed({
+	get: () => {
+		if (makeNotesHiddenBefore.value == null) {
+			return null;
+		} else if (makeNotesHiddenBefore.value >= 0) {
+			return 'absolute';
+		} else {
+			return 'relative';
+		}
+	},
+	set(value) {
+		if (value === 'relative') {
+			makeNotesHiddenBefore.value = -604800;
+		} else if (value === 'absolute') {
+			makeNotesHiddenBefore.value = Math.floor(Date.now() / 1000);
+		} else {
+			makeNotesHiddenBefore.value = null;
+		}
+	},
 });
 
 const makeNotesHiddenBefore_presets = [
