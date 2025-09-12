@@ -161,6 +161,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<div class="_gaps_s">
 								<MkSelect
+									v-model="makeNotesHiddenBefore_type"
 									:items="[{
 										value: null,
 										label: i18n.ts.none
@@ -171,7 +172,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 										value: 'absolute',
 										label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime
 									}]"
-									v-model="makeNotesHiddenBefore_type"
 								>
 								</MkSelect>
 
