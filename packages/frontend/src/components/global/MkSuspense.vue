@@ -12,8 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 <div v-else>
 	<div :class="$style.error">
-		<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
-		<MkButton inline style="margin-top: 16px;" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+		<slot name="error" :error="error">
+			<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
+			<div v-if="error">{{ JSON.stringify(error) }}</div>
+			<MkButton inline style="margin-top: 16px;" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
+		</slot>
 	</div>
 </div>
 </template>
@@ -27,15 +30,17 @@ const props = defineProps<{
 	p: () => Promise<T>;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'resolved', result: T): void;
+}>();
+
 const pending = ref(true);
 const resolved = ref(false);
 const rejected = ref(false);
 const result = ref<T | null>(null);
+const error = ref<any | null>(null);
 
 const process = () => {
-	if (props.p == null) {
-		return;
-	}
 	const promise = props.p();
 	pending.value = true;
 	resolved.value = false;
@@ -44,10 +49,12 @@ const process = () => {
 		pending.value = false;
 		resolved.value = true;
 		result.value = _result;
+		emit('resolved', _result);
 	});
-	promise.catch(() => {
+	promise.catch((_error) => {
 		pending.value = false;
 		rejected.value = true;
+		error.value = _error;
 	});
 };
 

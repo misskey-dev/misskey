@@ -42,6 +42,9 @@ const { handler: externalTooltipHandler } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
 
 onMounted(async () => {
+	if (chartEl.value == null) return;
+	if (chartEl2.value == null) return;
+
 	const now = isChromatic() ? new Date('2024-08-31T10:00:00Z') : new Date();
 
 	const getDate = (ago: number) => {
@@ -122,7 +125,6 @@ onMounted(async () => {
 					stacked: true,
 					offset: false,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 					},
 					grid: {
@@ -144,7 +146,7 @@ onMounted(async () => {
 					ticks: {
 						display: true,
 						//mirror: true,
-						callback: (value, index, values) => value < 0 ? -value : value,
+						callback: (value, index, values) => (value as number) < 0 ? -value : value,
 					},
 				},
 			},
@@ -173,7 +175,9 @@ onMounted(async () => {
 						label: context => `${context.dataset.label}: ${Math.abs(context.parsed.y)}`,
 					},
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
@@ -213,7 +217,6 @@ onMounted(async () => {
 					type: 'time',
 					offset: false,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -260,7 +263,9 @@ onMounted(async () => {
 					},
 					external: externalTooltipHandler2,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

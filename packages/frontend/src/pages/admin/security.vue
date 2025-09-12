@@ -194,7 +194,7 @@ const sensitiveMediaDetectionForm = useForm({
 			state.sensitiveMediaDetectionSensitivity === 2 ? 'medium' :
 			state.sensitiveMediaDetectionSensitivity === 3 ? 'high' :
 			state.sensitiveMediaDetectionSensitivity === 4 ? 'veryHigh' :
-			0,
+			null as never,
 		setSensitiveFlagAutomatically: state.setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos: state.enableSensitiveMediaDetectionForVideos,
 	});

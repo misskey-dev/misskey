@@ -22,7 +22,7 @@ import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 const MkUrlPreview = defineAsyncComponent(() => import('@/components/MkUrlPreview.vue'));
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
+	block: Extract<Misskey.entities.PageBlock, { type: 'text' }>,
 	page: Misskey.entities.Page,
 }>();
 

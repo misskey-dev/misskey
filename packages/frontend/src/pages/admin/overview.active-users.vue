@@ -37,6 +37,8 @@ async function renderChart() {
 		chartInstance.destroy();
 	}
 
+	if (chartEl.value == null) return;
+
 	const getDate = (ago: number) => {
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -105,7 +107,6 @@ async function renderChart() {
 					type: 'time',
 					offset: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -149,7 +150,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

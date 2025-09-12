@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2025.8.0",
+	"version": "2025.9.0",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -36,9 +36,9 @@
 	},
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.52.11",
-		"@types/node": "22.17.2",
-		"@typescript-eslint/eslint-plugin": "8.40.0",
-		"@typescript-eslint/parser": "8.40.0",
+		"@types/node": "22.18.1",
+		"@typescript-eslint/eslint-plugin": "8.42.0",
+		"@typescript-eslint/parser": "8.42.0",
 		"@vitest/coverage-v8": "3.2.4",
 		"esbuild": "0.25.9",
 		"execa": "9.6.0",
