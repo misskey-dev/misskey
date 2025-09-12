@@ -119,7 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
-								<MkSelect :modelValue="makeNotesFollowersOnlyBefore_type" @update:modelValue="makeNotesFollowersOnlyBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null">
+								<MkSelect v-model="makeNotesFollowersOnlyBefore_type">
 									<option :value="null">{{ i18n.ts.none }}</option>
 									<option value="relative">{{ i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod }}</option>
 									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
@@ -170,7 +170,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 									}, {
 										value: 'absolute',
 										label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime
-									}] as const" :modelValue="makeNotesHiddenBefore_type" @update:modelValue="makeNotesHiddenBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null"
+									}]"
+									v-model="makeNotesHiddenBefore_type"
 								>
 								</MkSelect>
 
