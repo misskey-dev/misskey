@@ -193,6 +193,7 @@ export const moderationLogTypes = [
 export const rolePolicies = [
 	'gtlAvailable',
 	'ltlAvailable',
+	'hanamiTlAvailable',
 	'canPublicNote',
 	'mentionLimit',
 	'canInvite',
