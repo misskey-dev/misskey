@@ -120,7 +120,7 @@ export class MiUser {
 
 	// avatarId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは avatarId の non-null チェックをすること
 	@Column('varchar', {
-		length: 512, nullable: true,
+		length: 1024, nullable: true,
 	})
 	public avatarUrl: string | null;
 

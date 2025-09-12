@@ -22,6 +22,7 @@
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
 		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
@@ -46,7 +47,6 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		"./lib/**/*.ts",
 		"./src/**/*.ts",
 		"./src/**/*.vue",
 		"./test/**/*.ts",
@@ -54,6 +54,6 @@
 		"./@types/**/*.ts"
 	],
 	"exclude": [
-		".storybook/**/*"
+		"./src/**/*.stories.ts"
 	]
 }

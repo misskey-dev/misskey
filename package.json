@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2025.6.3",
+	"version": "2025.9.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.12.1",
+	"packageManager": "pnpm@10.15.1",
 	"workspaces": [
 		"packages/frontend-shared",
 		"packages/frontend",
@@ -27,6 +27,7 @@
 		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "ncp ./.github/misskey/test.yml ./.config/test.yml && cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
+		"cli": "cd packages/backend && pnpm cli",
 		"init": "pnpm migrate",
 		"migrate": "cd packages/backend && pnpm migrate",
 		"revert": "cd packages/backend && pnpm revert",
@@ -52,30 +53,31 @@
 		"lodash": "4.17.21"
 	},
 	"dependencies": {
-		"cssnano": "7.0.7",
-		"esbuild": "0.25.5",
+		"cssnano": "7.1.1",
+		"esbuild": "0.25.9",
 		"execa": "9.6.0",
 		"fast-glob": "3.3.3",
-		"glob": "11.0.2",
+		"glob": "11.0.3",
 		"ignore-walk": "7.0.0",
 		"js-yaml": "4.1.0",
-		"postcss": "8.5.4",
+		"postcss": "8.5.6",
 		"tar": "7.4.3",
-		"terser": "5.42.0",
-		"typescript": "5.8.3"
+		"terser": "5.44.0",
+		"typescript": "5.9.2"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.1.0",
-		"@types/node": "22.15.31",
-		"@typescript-eslint/eslint-plugin": "8.34.0",
-		"@typescript-eslint/parser": "8.34.0",
+		"@types/js-yaml": "4.0.9",
+		"@types/node": "22.18.1",
+		"@typescript-eslint/eslint-plugin": "8.42.0",
+		"@typescript-eslint/parser": "8.42.0",
 		"cross-env": "7.0.3",
-		"cypress": "14.4.1",
-		"eslint": "9.28.0",
-		"globals": "16.2.0",
+		"cypress": "14.5.4",
+		"eslint": "9.35.0",
+		"globals": "16.3.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.12.1",
-		"start-server-and-test": "2.0.12"
+		"pnpm": "10.15.1",
+		"start-server-and-test": "2.1.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
@@ -83,6 +85,9 @@
 	"pnpm": {
 		"overrides": {
 			"@aiscript-dev/aiscript-languageserver": "-"
+		},
+		"patchedDependencies": {
+			"typeorm": "patches/typeorm.patch"
 		}
 	}
 }

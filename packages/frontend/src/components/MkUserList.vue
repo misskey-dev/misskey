@@ -4,27 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination :pagination="pagination">
+<MkPagination :paginator="paginator">
 	<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
 	<template #default="{ items }">
 		<div :class="$style.root">
-			<MkUserInfo v-for="item in items" :key="item.id" class="user" :user="extractor(item)"/>
+			<MkUserInfo v-for="item in items" :key="item.id" :user="extractor(item)"/>
 		</div>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import * as Misskey from 'misskey-js';
+import type { IPaginator } from '@/utility/paginator.js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	pagination: PagingCtx;
+	paginator: IPaginator;
 	noGap?: boolean;
-	extractor?: (item: any) => any;
+	extractor?: (item: any) => Misskey.entities.UserDetailed;
 }>(), {
 	extractor: (item) => item,
 });

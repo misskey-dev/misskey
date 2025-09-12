@@ -29,18 +29,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { useInterval } from '@@/js/use-interval.js';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { shuffle } from '@/utility/shuffle.js';
 
 const props = defineProps<{
-	url?: string;
+	url: string;
 	shuffle?: boolean;
 	display?: 'marquee' | 'oneByOne';
 	marqueeDuration?: number;
 	marqueeReverse?: boolean;
 	oneByOneInterval?: number;
-	refreshIntervalSec?: number;
+	refreshIntervalSec: number;
 }>();
 
 const items = ref<Misskey.entities.FetchRssResponse['items']>([]);

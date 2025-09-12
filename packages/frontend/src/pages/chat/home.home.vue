@@ -86,7 +86,11 @@ function start(ev: MouseEvent) {
 async function startUser() {
 	// TODO: localOnly は連合に対応したら消す
 	os.selectUser({ localOnly: true }).then(user => {
-		router.push(`/chat/user/${user.id}`);
+		router.push('/chat/user/:userId', {
+			params: {
+				userId: user.id,
+			}
+		});
 	});
 }
 
@@ -101,7 +105,11 @@ async function createRoom() {
 		name: result,
 	});
 
-	router.push(`/chat/room/${room.id}`);
+	router.push('/chat/room/:roomId', {
+		params: {
+			roomId: room.id,
+		}
+	});
 }
 
 async function search() {

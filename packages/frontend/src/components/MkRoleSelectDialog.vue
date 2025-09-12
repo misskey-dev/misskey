@@ -105,9 +105,7 @@ async function addRole() {
 		.map(r => ({ text: r.name, value: r }));
 
 	const { canceled, result: role } = await os.select({ items });
-	if (canceled) {
-		return;
-	}
+	if (canceled || role == null) return;
 
 	selectedRoleIds.value.push(role.id);
 }

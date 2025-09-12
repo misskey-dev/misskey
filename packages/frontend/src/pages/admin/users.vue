@@ -38,15 +38,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #prefix>@</template>
 					<template #label>{{ i18n.ts.username }}</template>
 				</MkInput>
-				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
+				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="paginator.computedParams?.value?.origin === 'local'">
 					<template #prefix>@</template>
 					<template #label>{{ i18n.ts.host }}</template>
 				</MkInput>
 			</div>
 
-			<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination">
+			<MkPagination v-slot="{items}" :paginator="paginator">
 				<div :class="$style.users">
-					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
+					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'Unknown'}`" :class="$style.user" :to="`/admin/user/${user.id}`">
 						<MkUserCardMini :user="user"/>
 					</MkA>
 				</div>
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, useTemplateRef, ref, watchEffect } from 'vue';
+import { computed, markRaw, ref, watchEffect } from 'vue';
 import { defaultMemoryStorage } from '@/memory-storage';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -69,6 +69,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
+import { Paginator } from '@/utility/paginator.js';
 
 type SearchQuery = {
 	sort?: string;
@@ -78,7 +79,6 @@ type SearchQuery = {
 	hostname?: string;
 };
 
-const paginationComponent = useTemplateRef('paginationComponent');
 const storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
 
 const sort = ref(storedQuery.sort ?? '+createdAt');
@@ -86,10 +86,9 @@ const state = ref(storedQuery.state ?? 'all');
 const origin = ref(storedQuery.origin ?? 'local');
 const searchUsername = ref(storedQuery.username ?? '');
 const searchHost = ref(storedQuery.hostname ?? '');
-const pagination = {
-	endpoint: 'admin/show-users' as const,
+const paginator = markRaw(new Paginator('admin/show-users', {
 	limit: 10,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		sort: sort.value,
 		state: state.value,
 		origin: origin.value,
@@ -97,7 +96,7 @@ const pagination = {
 		hostname: searchHost.value,
 	})),
 	offsetMode: true,
-};
+}));
 
 function searchUser() {
 	os.selectUser({ includeSelf: true }).then(user => {
@@ -121,7 +120,7 @@ async function addUser() {
 		username: username,
 		password: password,
 	}).then(res => {
-		paginationComponent.value?.paginator.reload();
+		paginator.reload();
 	});
 }
 

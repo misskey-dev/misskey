@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div>
-			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
+			<MkPagination v-slot="{items}" :paginator="paginator" withControl>
 				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/list/${ list.id }`">
 					<div>{{ list.name }}</div>
 					<MkAvatars :userIds="list.userIds"/>
@@ -19,24 +19,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {} from 'vue';
+import { markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import MkAvatars from '@/components/MkAvatars.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-const pagination = {
-	endpoint: 'users/lists/list' as const,
+const paginator = markRaw(new Paginator('users/lists/list', {
 	noPaging: true,
 	limit: 10,
 	params: {
 		userId: props.user.id,
 	},
-};
+}));
 </script>
 
 <style lang="scss" module>

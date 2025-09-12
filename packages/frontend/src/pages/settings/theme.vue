@@ -35,7 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div class="_gaps">
+		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.themeIsDefaultBecauseSafeMode }}</MkInfo>
+
+		<div v-else class="_gaps">
 			<template v-if="!store.r.darkMode.value">
 				<SearchMarker :keywords="['light', 'theme']">
 					<MkFolder :defaultOpen="true" :max-height="500">
@@ -56,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceLightTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(instanceLightTheme, $event)">
 											<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceLightTheme.name }}</div>
 										</label>
@@ -76,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -96,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -127,7 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceDarkTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(instanceDarkTheme, $event)">
 											<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceDarkTheme.name }}</div>
 										</label>
@@ -147,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -167,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -203,6 +205,7 @@ import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { isSafeMode } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
 import * as os from '@/os.js';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -210,7 +213,8 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
-import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
+import MkInfo from '@/components/MkInfo.vue';
+import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -218,6 +222,7 @@ import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
@@ -270,6 +275,7 @@ async function toggleDarkMode() {
 	const value = !store.r.darkMode.value;
 	if (syncDeviceDarkMode.value) {
 		const { canceled } = await os.confirm({
+			type: 'question',
 			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
 		});
 		if (canceled) return;
@@ -293,6 +299,26 @@ function changeThemesSyncEnabled(value: boolean) {
 		prefer.disableSync('themes');
 		themesSyncEnabled.value = false;
 	}
+}
+
+function onThemeContextmenu(theme: Theme, ev: MouseEvent) {
+	os.contextMenu([{
+		type: 'label',
+		text: theme.name,
+	}, {
+		icon: 'ti ti-clipboard',
+		text: i18n.ts._theme.copyThemeCode,
+		action: () => {
+			copyToClipboard(JSON5.stringify(theme, null, '\t'));
+		},
+	}, {
+		icon: 'ti ti-trash',
+		text: i18n.ts.delete,
+		danger: true,
+		action: () => {
+			removeTheme(theme);
+		},
+	}], ev);
 }
 
 const headerActions = computed(() => []);
