@@ -65,8 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-on="popup.events"
 />
 
-<component
-	:is="prefer.s.animation ? TransitionGroup : 'div'"
+<MkTransitionGroup
 	tag="div"
 	:class="[$style.notifications, {
 		[$style.notificationsPosition_leftTop]: prefer.s.notificationPosition === 'leftTop',
@@ -85,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
-</component>
+</MkTransitionGroup>
 
 <XStreamIndicator/>
 
@@ -102,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
