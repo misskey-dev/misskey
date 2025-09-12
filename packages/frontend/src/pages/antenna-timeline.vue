@@ -6,6 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<MkTip k="antennas" style="margin-bottom: var(--MI-margin);">
+			{{ i18n.ts._timelineDescription.antenna }}
+		</MkTip>
 		<div :class="$style.tl">
 			<MkStreamingNotesTimeline
 				ref="tlEl" :key="antennaId"
