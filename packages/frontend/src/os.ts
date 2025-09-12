@@ -511,7 +511,7 @@ type SelectItem<C> = {
 export function select<C = unknown>(props: {
 	title?: string;
 	text?: string;
-	default: string;
+	default: C;
 	items: (SelectItem<C> | {
 		sectionTitle: string;
 		items: SelectItem<C>[];
@@ -524,7 +524,7 @@ export function select<C = unknown>(props: {
 export function select<C = unknown>(props: {
 	title?: string;
 	text?: string;
-	default?: string | null;
+	default?: C | null;
 	items: (SelectItem<C> | {
 		sectionTitle: string;
 		items: SelectItem<C>[];
@@ -537,7 +537,7 @@ export function select<C = unknown>(props: {
 export function select<C = unknown>(props: {
 	title?: string;
 	text?: string;
-	default?: string | null;
+	default?: C | null;
 	items: (SelectItem<C> | {
 		sectionTitle: string;
 		items: SelectItem<C>[];
