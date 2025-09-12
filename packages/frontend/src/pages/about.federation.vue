@@ -22,25 +22,51 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="blocked">{{ i18n.ts.blocked }}</option>
 				<option value="notResponding">{{ i18n.ts.notResponding }}</option>
 			</MkSelect>
-			<MkSelect v-model="sort">
+			<MkSelect
+				v-model="sort" :items="[{
+					label: `${i18n.ts.pubSub} (${i18n.ts.descendingOrder})`,
+					value: '+pubSub',
+				}, {
+					label: `${i18n.ts.pubSub} (${i18n.ts.ascendingOrder})`,
+					value: '-pubSub',
+				}, {
+					label: `${i18n.ts.notes} (${i18n.ts.descendingOrder})`,
+					value: '+notes',
+				}, {
+					label: `${i18n.ts.notes} (${i18n.ts.ascendingOrder})`,
+					value: '-notes',
+				}, {
+					label: `${i18n.ts.users} (${i18n.ts.descendingOrder})`,
+					value: '+users',
+				}, {
+					label: `${i18n.ts.users} (${i18n.ts.ascendingOrder})`,
+					value: '-users',
+				}, {
+					label: `${i18n.ts.following} (${i18n.ts.descendingOrder})`,
+					value: '+following',
+				}, {
+					label: `${i18n.ts.following} (${i18n.ts.ascendingOrder})`,
+					value: '-following',
+				}, {
+					label: `${i18n.ts.followers} (${i18n.ts.descendingOrder})`,
+					value: '+followers',
+				}, {
+					label: `${i18n.ts.followers} (${i18n.ts.ascendingOrder})`,
+					value: '-followers',
+				}, {
+					label: `${i18n.ts.registeredAt} (${i18n.ts.descendingOrder})`,
+					value: '+firstRetrievedAt',
+				}, {
+					label: `${i18n.ts.registeredAt} (${i18n.ts.ascendingOrder})`,
+					value: '-firstRetrievedAt',
+				}] as const"
+			>
 				<template #label>{{ i18n.ts.sort }}</template>
-				<option value="+pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+notes">{{ i18n.ts.notes }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-notes">{{ i18n.ts.notes }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+users">{{ i18n.ts.users }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-users">{{ i18n.ts.users }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+following">{{ i18n.ts.following }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-following">{{ i18n.ts.following }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+followers">{{ i18n.ts.followers }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
 			</MkSelect>
 		</FormSplit>
 	</div>
 
-	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
+	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :paginator="paginator">
 		<div :class="$style.items">
 			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.item" :to="`/instance-info/${instance.host}`">
 				<MkInstanceCardMini :instance="instance"/>
@@ -51,24 +77,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, markRaw, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const host = ref('');
 const state = ref('federating');
-const sort = ref('+pubSub');
-const pagination = {
-	endpoint: 'federation/instances' as const,
+const sort = ref<NonNullable<Misskey.entities.FederationInstancesRequest['sort']>>('+pubSub');
+const paginator = markRaw(new Paginator('federation/instances', {
 	limit: 10,
-	displayLimit: 50,
 	offsetMode: true,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		sort: sort.value,
 		host: host.value !== '' ? host.value : null,
 		...(
@@ -81,7 +106,7 @@ const pagination = {
 			state.value === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-} as PagingCtx;
+}));
 
 function getStatus(instance) {
 	if (instance.isSuspended) return 'Suspended';

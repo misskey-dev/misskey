@@ -160,7 +160,7 @@ const embedPreviewUrl = computed(() => {
 
 const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(props.entity));
 const header = ref(props.params?.header ?? true);
-const maxHeight = ref(props.params?.maxHeight !== 0 ? props.params?.maxHeight ?? undefined : 500);
+const maxHeight = ref(props.params?.maxHeight !== 0 ? props.params?.maxHeight ?? null : 500);
 
 const colorMode = ref<'light' | 'dark' | 'auto'>(props.params?.colorMode ?? 'auto');
 const rounded = ref(props.params?.rounded ?? true);

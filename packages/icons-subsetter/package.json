@@ -11,17 +11,17 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.15.31",
+		"@types/node": "22.18.1",
 		"@types/wawoff2": "1.0.2",
-		"@typescript-eslint/eslint-plugin": "8.34.0",
-		"@typescript-eslint/parser": "8.34.0"
+		"@typescript-eslint/eslint-plugin": "8.42.0",
+		"@typescript-eslint/parser": "8.42.0"
 	},
 	"dependencies": {
-		"@tabler/icons-webfont": "3.34.0",
-		"harfbuzzjs": "0.4.7",
+		"@tabler/icons-webfont": "3.34.1",
+		"harfbuzzjs": "0.4.11",
 		"tiny-glob": "0.2.9",
-		"tsx": "4.19.4",
-		"typescript": "5.8.3",
+		"tsx": "4.20.5",
+		"typescript": "5.9.2",
 		"wawoff2": "2.0.1"
 	},
 	"files": [

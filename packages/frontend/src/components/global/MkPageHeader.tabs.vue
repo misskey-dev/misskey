@@ -39,17 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 export type Tab = {
 	key: string;
 	onClick?: (ev: MouseEvent) => void;
-} & (
-	| {
-		iconOnly?: false;
-		title: string;
-		icon?: string;
-	}
-	| {
-		iconOnly: true;
-		icon: string;
-	}
-);
+	iconOnly?: boolean;
+	title: string;
+	icon?: string;
+};
 </script>
 
 <script lang="ts" setup>
@@ -59,7 +52,7 @@ import { prefer } from '@/preferences.js';
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
-	rootEl?: HTMLElement;
+	rootEl?: HTMLElement | null;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -194,10 +187,6 @@ onUnmounted(() => {
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: none;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
 }
 
 .tabsInner {
