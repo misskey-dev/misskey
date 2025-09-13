@@ -20,7 +20,7 @@ export function useMkSelect<
 		: (TItemsValue | TInitialValue)
 >(opts: {
 	items: TItemsInput;
-	initialValue?: (OptionValue extends TItemsValue ? OptionValue : TInitialValue) & (
+	initialValue?: (TInitialValue | (OptionValue extends TItemsValue ? OptionValue : TInitialValue)) & (
 		TItemsValue extends TInitialValue
 			? unknown
 			: { 'Error: Type of initialValue must include all types of items': TItemsValue }
