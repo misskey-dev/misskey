@@ -6085,7 +6085,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['MeDetailed'];
+                    'application/json': components['schemas']['MeDetailed'] & {
+                        token: string;
+                    };
                 };
             };
             /** @description Client error */
@@ -35618,7 +35620,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserList'];
+                    'application/json': components['schemas']['UserList'] & {
+                        likedCount?: number;
+                        isLiked?: boolean;
+                    };
                 };
             };
             /** @description Client error */

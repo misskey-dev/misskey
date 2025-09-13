@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkA :to="forModeration ? `/admin/roles/${role.id}` : `/roles/${role.id}`" :class="$style.root" tabindex="-1" :style="{ '--color': role.color }">
 	<template v-if="forModeration">
-		<i v-if="role.isPublic" class="ti ti-world" :class="$style.icon" style="color: var(--MI_THEME-success)"></i>
+		<i v-if="'isPublic' in role && role.isPublic" class="ti ti-world" :class="$style.icon" style="color: var(--MI_THEME-success)"></i>
 		<i v-else class="ti ti-lock" :class="$style.icon" style="color: var(--MI_THEME-warn)"></i>
 	</template>
 
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</span>
 			<span :class="$style.bodyName">{{ role.name }}</span>
-			<template v-if="detailed">
+			<template v-if="detailed && 'target' in role && 'usersCount' in role">
 				<span v-if="role.target === 'manual'" :class="$style.bodyUsers">{{ role.usersCount }} users</span>
 				<span v-else-if="role.target === 'conditional'" :class="$style.bodyUsers">? users</span>
 			</template>
@@ -39,7 +39,7 @@ import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	role: Misskey.entities.Role;
+	role: Misskey.entities.Role | Misskey.entities.IResponse['roles'][number];
 	forModeration: boolean;
 	detailed?: boolean;
 }>(), {

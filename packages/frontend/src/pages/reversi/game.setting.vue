@@ -132,7 +132,7 @@ const mapCategories = Array.from(new Set(Object.values(Reversi.maps).map(x => x.
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection: Misskey.ChannelConnection<Misskey.Channels['reversiGame']>;
+	connection: Misskey.IChannelConnection<Misskey.Channels['reversiGame']>;
 }>();
 
 const shareWhenStart = defineModel<boolean>('shareWhenStart', { default: false });

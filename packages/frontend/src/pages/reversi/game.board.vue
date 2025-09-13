@@ -164,7 +164,7 @@ const $i = ensureSignin();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection?: Misskey.ChannelConnection<Misskey.Channels['reversiGame']> | null;
+	connection?: Misskey.IChannelConnection<Misskey.Channels['reversiGame']> | null;
 }>();
 
 const showBoardLabels = ref<boolean>(false);

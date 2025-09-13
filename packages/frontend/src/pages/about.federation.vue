@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				}, {
 					label: `${i18n.ts.registeredAt} (${i18n.ts.ascendingOrder})`,
 					value: '-firstRetrievedAt',
-				}] as const"
+				}]"
 			>
 				<template #label>{{ i18n.ts.sort }}</template>
 			</MkSelect>

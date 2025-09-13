@@ -233,6 +233,7 @@ import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+import type { ChartSrc } from '@/components/MkChart.vue';
 
 const $i = ensureSignin();
 
@@ -246,7 +247,7 @@ const props = withDefaults(defineProps<{
 const result = await _fetch_();
 
 const tab = ref(props.initialTab);
-const chartSrc = ref('per-user-notes');
+const chartSrc = ref<ChartSrc>('per-user-notes');
 const user = ref(result.user);
 const info = ref(result.info);
 const ips = ref(result.ips);
@@ -429,7 +430,7 @@ async function assignRole() {
 		title: i18n.ts._role.chooseRoleToAssign,
 		items: roles.map(r => ({ text: r.name, value: r.id })),
 	});
-	if (canceled) return;
+	if (canceled || roleId == null) return;
 
 	const { canceled: canceled2, result: period } = await os.select({
 		title: i18n.ts.period + ': ' + roles.find(r => r.id === roleId)!.name,

@@ -27,6 +27,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'text' }): void;
+	(ev: 'remove'): void;
 }>();
 
 let autocomplete: Autocomplete;
@@ -42,6 +43,7 @@ watch(text, () => {
 });
 
 onMounted(() => {
+	if (inputEl.value == null) return;
 	autocomplete = new Autocomplete(inputEl.value, text);
 });
 

@@ -26,10 +26,10 @@ const chartEl = useTemplateRef('chartEl');
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
-let chartInstance: Chart;
+let chartInstance: Chart | null = null;
 
 function setData(values) {
-	if (chartInstance == null) return;
+	if (chartInstance == null || chartInstance.data.labels == null) return;
 	for (const value of values) {
 		chartInstance.data.labels.push('');
 		chartInstance.data.datasets[0].data.push(value);
@@ -42,7 +42,7 @@ function setData(values) {
 }
 
 function pushData(value) {
-	if (chartInstance == null) return;
+	if (chartInstance == null || chartInstance.data.labels == null) return;
 	chartInstance.data.labels.push('');
 	chartInstance.data.datasets[0].data.push(value);
 	if (chartInstance.data.datasets[0].data.length > 200) {
@@ -68,6 +68,8 @@ const color =
 
 onMounted(() => {
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+
+	if (chartEl.value == null) return;
 
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',
