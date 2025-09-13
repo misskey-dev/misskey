@@ -296,7 +296,29 @@ export function getNoteMenu(props: {
 
 	const menuItems: MenuItem[] = [];
 
-	if ($i) {
+	if (appearNote.deletedAt) {
+		menuItems.push({
+			icon: 'ti ti-info-circle',
+			text: i18n.ts.details,
+			action: openDetail,
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
+
+		if (link != null) {
+			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
+				action: () => {
+					copyToClipboard(link);
+				},
+			}, {
+				icon: 'ti ti-external-link',
+				text: i18n.ts.showOnRemote,
+				action: () => {
+					window.open(link, '_blank', 'noopener');
+				},
+			});
+		}
+	} else if ($i) {
 		const statePromise = misskeyApi('notes/state', {
 			noteId: appearNote.id,
 		});
