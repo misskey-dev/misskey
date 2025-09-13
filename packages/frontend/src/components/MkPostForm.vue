@@ -567,11 +567,11 @@ async function toggleReactionAcceptance() {
 	const select = await os.select({
 		title: i18n.ts.reactionAcceptance,
 		items: [
-			{ value: null, text: i18n.ts.all },
-			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
-			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
-			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
-			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+			{ value: null, label: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, label: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, label: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, label: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, label: i18n.ts.likeOnly },
 		],
 		default: reactionAcceptance.value,
 	});
