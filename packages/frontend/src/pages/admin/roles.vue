@@ -350,6 +350,7 @@ import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
+import { deepClone } from '@/utility/clone.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
@@ -357,10 +358,7 @@ const baseRoleQ = ref('');
 
 const roles = await misskeyApi('admin/roles/list');
 
-const policies = reactive<Record<typeof Misskey.rolePolicies[number], any>>({});
-for (const ROLE_POLICY of Misskey.rolePolicies) {
-	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
-}
+const policies = reactive(deepClone(instance.policies));
 
 const avatarDecorationLimit = computed({
 	get: () => Math.min(16, Math.max(0, policies.avatarDecorationLimit)),
@@ -380,6 +378,7 @@ function matchQuery(keywords: string[]): boolean {
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
+		//@ts-expect-error misskey-js側の型定義が不十分
 		policies,
 	});
 	fetchInstance(true);

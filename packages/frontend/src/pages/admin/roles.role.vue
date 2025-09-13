@@ -71,7 +71,7 @@ import { Paginator } from '@/utility/paginator.js';
 const router = useRouter();
 
 const props = defineProps<{
-	id?: string;
+	id: string;
 }>();
 
 const usersPaginator = markRaw(new Paginator('admin/roles/users', {

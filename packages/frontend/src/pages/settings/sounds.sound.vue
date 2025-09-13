@@ -41,12 +41,10 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/utility/sound.js';
 import { selectFile } from '@/utility/drive.js';
+import type { SoundStore } from '@/preferences/def.js';
 
 const props = defineProps<{
-	type: SoundType;
-	fileId?: string;
-	fileUrl?: string;
-	volume: number;
+	def: SoundStore;
 }>();
 
 const emit = defineEmits<{
@@ -61,14 +59,14 @@ const {
 		label: getSoundTypeName(x),
 		value: x,
 	})),
-	initialValue: props.type,
+	initialValue: props.def.type,
 });
-const fileId = ref(props.fileId);
-const fileUrl = ref(props.fileUrl);
+const fileId = ref('fileId' in props.def ? props.def.fileId : undefined);
+const fileUrl = ref('fileUrl' in props.def ? props.def.fileUrl : undefined);
 const fileName = ref<string>('');
 const driveFileError = ref(false);
 const hasChanged = ref(false);
-const volume = ref(props.volume);
+const volume = ref(props.def.volume);
 
 if (type.value === '_driveFile_' && fileId.value) {
 	await misskeyApi('drive/files/show', {

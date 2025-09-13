@@ -231,6 +231,7 @@ import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+import type { ChartSrc } from '@/components/MkChart.vue';
 
 const $i = ensureSignin();
 

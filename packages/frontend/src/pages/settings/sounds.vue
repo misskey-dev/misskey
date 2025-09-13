@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 					<Suspense>
 						<template #default>
-							<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+							<XSound :def="sounds[type]" @update="(res) => updated(type, res)"/>
 						</template>
 						<template #fallback>
 							<MkLoading/>
