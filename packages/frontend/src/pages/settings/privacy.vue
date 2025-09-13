@@ -33,20 +33,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['following', 'visibility']">
-			<MkSelect v-model="followingVisibility" @update:modelValue="save()">
+			<MkSelect v-model="followingVisibility" :items="followingVisibilityDef" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.followingVisibility }}</SearchLabel></template>
-				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
-				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
-				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 			</MkSelect>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['follower', 'visibility']">
-			<MkSelect v-model="followersVisibility" @update:modelValue="save()">
+			<MkSelect v-model="followersVisibility" :items="followersVisibilityDef" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.followersVisibility }}</SearchLabel></template>
-				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
-				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
-				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 			</MkSelect>
 		</SearchMarker>
 
@@ -85,13 +79,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<MkInfo v-if="$i.policies.chatAvailability === 'unavailable'">{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 					<SearchMarker :keywords="['chat']">
-						<MkSelect v-model="chatScope" @update:modelValue="save()">
+						<MkSelect v-model="chatScope" :items="chatScopeDef" @update:modelValue="save()">
 							<template #label><SearchLabel>{{ i18n.ts._chat.chatAllowedUsers }}</SearchLabel></template>
-							<option value="everyone">{{ i18n.ts._chat._chatAllowedUsers.everyone }}</option>
-							<option value="followers">{{ i18n.ts._chat._chatAllowedUsers.followers }}</option>
-							<option value="following">{{ i18n.ts._chat._chatAllowedUsers.following }}</option>
-							<option value="mutual">{{ i18n.ts._chat._chatAllowedUsers.mutual }}</option>
-							<option value="none">{{ i18n.ts._chat._chatAllowedUsers.none }}</option>
 							<template #caption>{{ i18n.ts._chat.chatAllowedUsers_note }}</template>
 						</MkSelect>
 					</SearchMarker>
@@ -119,15 +108,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
-								<MkSelect v-model="makeNotesFollowersOnlyBefore_type">
-									<option :value="null">{{ i18n.ts.none }}</option>
-									<option value="relative">{{ i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod }}</option>
-									<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
+								<MkSelect
+									v-model="makeNotesFollowersOnlyBefore_type"
+									:items="[
+										{ label: i18n.ts.none, value: null },
+										{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
+										{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
+									]"
+								>
 								</MkSelect>
 
-								<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore_selection">
-									<option v-for="preset in makeNotesFollowersOnlyBefore_presets" :value="preset.value">{{ preset.label }}</option>
-									<option value="custom">{{ i18n.ts.custom }}</option>
+								<MkSelect
+									v-if="makeNotesFollowersOnlyBefore_type === 'relative'"
+									v-model="makeNotesFollowersOnlyBefore_selection"
+									:items="[
+										...makeNotesFollowersOnlyBefore_presets,
+										{ label: i18n.ts.custom, value: 'custom' },
+									]"
+								>
 								</MkSelect>
 
 								<MkInput
@@ -162,22 +160,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div class="_gaps_s">
 								<MkSelect
 									v-model="makeNotesHiddenBefore_type"
-									:items="[{
-										value: null,
-										label: i18n.ts.none
-									}, {
-										value: 'relative',
-										label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod
-									}, {
-										value: 'absolute',
-										label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime
-									}]"
+									:items="[
+										{ label: i18n.ts.none, value: null },
+										{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
+										{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
+									]"
 								>
 								</MkSelect>
 
-								<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore_selection">
-									<option v-for="preset in makeNotesHiddenBefore_presets" :value="preset.value">{{ preset.label }}</option>
-									<option value="custom">{{ i18n.ts.custom }}</option>
+								<MkSelect
+									v-if="makeNotesHiddenBefore_type === 'relative'"
+									v-model="makeNotesHiddenBefore_selection"
+									:items="[
+										...makeNotesHiddenBefore_presets,
+										{ label: i18n.ts.custom, value: 'custom' },
+									]"
+								>
 								</MkSelect>
 
 								<MkInput
@@ -217,6 +215,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -225,6 +224,7 @@ import { ensureSignin } from '@/i.js';
 import { definePage } from '@/page.js';
 import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import MkDisableSection from '@/components/MkDisableSection.vue';
@@ -243,9 +243,41 @@ const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
-const followingVisibility = ref($i.followingVisibility);
-const followersVisibility = ref($i.followersVisibility);
-const chatScope = ref($i.chatScope);
+const {
+	model: followingVisibility,
+	def: followingVisibilityDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.public, value: 'public' },
+		{ label: i18n.ts.followers, value: 'followers' },
+		{ label: i18n.ts.private, value: 'private' },
+	],
+	initialValue: $i.followingVisibility,
+});
+const {
+	model: followersVisibility,
+	def: followersVisibilityDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.public, value: 'public' },
+		{ label: i18n.ts.followers, value: 'followers' },
+		{ label: i18n.ts.private, value: 'private' },
+	],
+	initialValue: $i.followersVisibility,
+});
+const {
+	model: chatScope,
+	def: chatScopeDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._chat._chatAllowedUsers.everyone, value: 'everyone' },
+		{ label: i18n.ts._chat._chatAllowedUsers.followers, value: 'followers' },
+		{ label: i18n.ts._chat._chatAllowedUsers.following, value: 'following' },
+		{ label: i18n.ts._chat._chatAllowedUsers.mutual, value: 'mutual' },
+		{ label: i18n.ts._chat._chatAllowedUsers.none, value: 'none' },
+	],
+	initialValue: $i.chatScope,
+});
 
 const makeNotesFollowersOnlyBefore_type = computed({
 	get: () => {
@@ -276,7 +308,7 @@ const makeNotesFollowersOnlyBefore_presets = [
 	{ label: i18n.ts.oneMonth, value: -2592000 },
 	{ label: i18n.ts.threeMonths, value: -7776000 },
 	{ label: i18n.ts.oneYear, value: -31104000 },
-];
+] satisfies MkSelectItem[];
 
 const makeNotesFollowersOnlyBefore_isCustomMode = ref(
 	makeNotesFollowersOnlyBefore.value != null &&
@@ -328,7 +360,7 @@ const makeNotesHiddenBefore_presets = [
 	{ label: i18n.ts.oneMonth, value: -2592000 },
 	{ label: i18n.ts.threeMonths, value: -7776000 },
 	{ label: i18n.ts.oneYear, value: -31104000 },
-];
+] satisfies MkSelectItem[];
 
 const makeNotesHiddenBefore_isCustomMode = ref(
 	makeNotesHiddenBefore.value != null &&

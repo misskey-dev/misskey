@@ -168,7 +168,7 @@ const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
 		items: columnTypes.map(column => ({
-			value: column, text: i18n.ts._deck._columns[column],
+			value: column, label: i18n.ts._deck._columns[column],
 		})),
 	});
 	if (canceled || column == null) return;

@@ -11,26 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton style="margin-left: auto" @click="resetQuery">{{ i18n.ts.reset }}</MkButton>
 			</div>
 			<div :class="$style.inputs">
-				<MkSelect v-model="sort" style="flex: 1;">
+				<MkSelect v-model="sort" :items="sortDef" style="flex: 1;">
 					<template #label>{{ i18n.ts.sort }}</template>
-					<option value="-createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.ascendingOrder }})</option>
-					<option value="+createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.descendingOrder }})</option>
-					<option value="-updatedAt">{{ i18n.ts.lastUsed }} ({{ i18n.ts.ascendingOrder }})</option>
-					<option value="+updatedAt">{{ i18n.ts.lastUsed }} ({{ i18n.ts.descendingOrder }})</option>
 				</MkSelect>
-				<MkSelect v-model="state" style="flex: 1;">
+				<MkSelect v-model="state" :items="stateDef" style="flex: 1;">
 					<template #label>{{ i18n.ts.state }}</template>
-					<option value="all">{{ i18n.ts.all }}</option>
-					<option value="available">{{ i18n.ts.normal }}</option>
-					<option value="admin">{{ i18n.ts.administrator }}</option>
-					<option value="moderator">{{ i18n.ts.moderator }}</option>
-					<option value="suspended">{{ i18n.ts.suspend }}</option>
 				</MkSelect>
-				<MkSelect v-model="origin" style="flex: 1;">
+				<MkSelect v-model="origin" :items="originDef" style="flex: 1;">
 					<template #label>{{ i18n.ts.instance }}</template>
-					<option value="combined">{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option value="remote">{{ i18n.ts.remote }}</option>
 				</MkSelect>
 			</div>
 			<div :class="$style.inputs">
@@ -67,23 +55,57 @@ import * as os from '@/os.js';
 import { lookupUser } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 import { Paginator } from '@/utility/paginator.js';
 
 type SearchQuery = {
-	sort?: string;
-	state?: string;
-	origin?: string;
+	sort?: '-createdAt' | '+createdAt' | '-updatedAt' | '+updatedAt';
+	state?: 'all' | 'available' | 'admin' | 'moderator' | 'suspended';
+	origin?: 'combined' | 'local' | 'remote';
 	username?: string;
 	hostname?: string;
 };
 
 const storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
 
-const sort = ref(storedQuery.sort ?? '+createdAt');
-const state = ref(storedQuery.state ?? 'all');
-const origin = ref(storedQuery.origin ?? 'local');
+const {
+	model: sort,
+	def: sortDef,
+} = useMkSelect({
+	items: [
+		{ label: `${i18n.ts.registeredDate} (${i18n.ts.ascendingOrder})`, value: '-createdAt' },
+		{ label: `${i18n.ts.registeredDate} (${i18n.ts.descendingOrder})`, value: '+createdAt' },
+		{ label: `${i18n.ts.lastUsed} (${i18n.ts.ascendingOrder})`, value: '-updatedAt' },
+		{ label: `${i18n.ts.lastUsed} (${i18n.ts.descendingOrder})`, value: '+updatedAt' },
+	],
+	initialValue: storedQuery.sort ?? '+createdAt',
+});
+const {
+	model: state,
+	def: stateDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'all' },
+		{ label: i18n.ts.normal, value: 'available' },
+		{ label: i18n.ts.administrator, value: 'admin' },
+		{ label: i18n.ts.moderator, value: 'moderator' },
+		{ label: i18n.ts.suspend, value: 'suspended' },
+	],
+	initialValue: storedQuery.state ?? 'all',
+});
+const {
+	model: origin,
+	def: originDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'combined' },
+		{ label: i18n.ts.local, value: 'local' },
+		{ label: i18n.ts.remote, value: 'remote' },
+	],
+	initialValue: storedQuery.origin ?? 'local',
+});
 const searchUsername = ref(storedQuery.username ?? '');
 const searchHost = ref(storedQuery.hostname ?? '');
 const paginator = markRaw(new Paginator('admin/show-users', {

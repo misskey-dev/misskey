@@ -4,10 +4,11 @@
  */
 
 import * as Misskey from 'misskey-js';
+import type { OptionValue } from '@/components/MkSelect.vue';
 
 export type EnumItem = string | {
 	label: string;
-	value: unknown;
+	value: OptionValue;
 };
 
 type Hidden = boolean | ((v: any) => boolean);

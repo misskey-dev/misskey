@@ -30,10 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkSwitch v-model="alignCenter">{{ i18n.ts._pages.alignCenter }}</MkSwitch>
 
-				<MkSelect v-model="font">
+				<MkSelect v-model="font" :items="fontDef">
 					<template #label>{{ i18n.ts._pages.font }}</template>
-					<option value="serif">{{ i18n.ts._pages.fontSerif }}</option>
-					<option value="sans-serif">{{ i18n.ts._pages.fontSansSerif }}</option>
 				</MkSelect>
 
 				<MkSwitch v-model="hideTitleWhenPinned">{{ i18n.ts._pages.hideTitleWhenPinned }}</MkSwitch>
@@ -76,6 +74,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import { mainRouter } from '@/router.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const props = defineProps<{
@@ -95,7 +94,16 @@ const summary = ref<string | null>(null);
 const name = ref(Date.now().toString());
 const eyeCatchingImage = ref<Misskey.entities.DriveFile | null>(null);
 const eyeCatchingImageId = ref<string | null>(null);
-const font = ref<'sans-serif' | 'serif'>('sans-serif');
+const {
+	model: font,
+	def: fontDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._pages.fontSansSerif, value: 'sans-serif' },
+		{ label: i18n.ts._pages.fontSerif, value: 'serif' },
+	],
+	initialValue: 'sans-serif',
+});
 const content = ref<Misskey.entities.Page['content']>([]);
 const alignCenter = ref(false);
 const hideTitleWhenPinned = ref(false);

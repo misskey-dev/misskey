@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }, { label: i18n.ts._watermarkEditor.advanced, value: 'advanced' }]">
+					<MkSelect v-model="type" :items="typeDef">
 						<template #label>{{ i18n.ts._watermarkEditor.type }}</template>
 					</MkSelect>
 
@@ -86,6 +86,7 @@ import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const $i = ensureSignin();
 
@@ -186,7 +187,18 @@ async function cancel() {
 	dialog.value?.close();
 }
 
-const type = ref(preset.layers.length > 1 ? 'advanced' : preset.layers[0].type);
+const {
+	model: type,
+	def: typeDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._watermarkEditor.text, value: 'text' },
+		{ label: i18n.ts._watermarkEditor.image, value: 'image' },
+		{ label: i18n.ts._watermarkEditor.advanced, value: 'advanced' },
+	],
+	initialValue: preset.layers.length > 1 ? 'advanced' : preset.layers[0].type,
+});
+
 watch(type, () => {
 	if (type.value === 'text') {
 		preset.layers = [createTextLayer()];
