@@ -123,8 +123,14 @@ db:
   #disableCache: true
 
   # Extra Connection options
+  # You can use extra options for connection pool, such as SSL, Statement Timeout or max/minimum pool size.
+  # For more details and options, see: https://github.com/brianc/node-postgres/blob/master/packages/pg-pool/README.md
   #extra:
   #  ssl: true
+  #  statement_timeout: 10000
+  #  # Minimum/maximum pool size
+  #  min: 2
+  #  max: 100
 
 dbReplications: false
 
