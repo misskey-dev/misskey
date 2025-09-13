@@ -577,7 +577,7 @@ showFixedPostForm: "Visualizzare la finestra di pubblicazione in cima alla timel
 showFixedPostFormInChannel: "Per i canali, mostra il modulo di pubblicazione in cima alla timeline"
 withRepliesByDefaultForNewlyFollowed: "Quando segui nuovi profili, includi le risposte in TL come impostazione predefinita"
 newNoteRecived: "Nuove Note da leggere"
-newNote: "Nuova Nota"
+newNote: "Nuove Note"
 sounds: "Impostazioni suoni"
 sound: "Suono"
 notificationSoundSettings: "Preferenze di notifica"
