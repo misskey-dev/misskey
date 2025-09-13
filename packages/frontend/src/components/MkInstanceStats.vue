@@ -93,8 +93,8 @@ const {
 	model: chartSrc,
 	def: chartSrcDef,
 } = useMkSelect({
-	items: computed<MkSelectItem[]>(() => {
-		const items: MkSelectItem[] = [];
+	items: computed<MkSelectItem<ChartSrc>[]>(() => {
+		const items: MkSelectItem<ChartSrc>[] = [];
 
 		if (shouldShowFederation.value) {
 			items.push({
@@ -117,7 +117,7 @@ const {
 			],
 		});
 
-		const notesItems: ItemOption[] = [
+		const notesItems: ItemOption<ChartSrc>[] = [
 			{ value: 'notes', label: i18n.ts._charts.notesIncDec },
 			{ value: 'local-notes', label: i18n.ts._charts.localNotesIncDec },
 		];
