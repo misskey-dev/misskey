@@ -109,6 +109,10 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
+export type DeleteUserMutingsJobData = {
+	mutingId: string;
+};
+
 export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = SystemWebhookEventType> = {
 	type: T;
 	content: SystemWebhookPayload<T>;
