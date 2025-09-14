@@ -51,8 +51,8 @@ const canShare = computed(() => navigator.canShare && navigator.canShare(shareDa
 
 const qrCodeEl = useTemplateRef('qrCodeEl');
 
-const avatarColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
-const avatarHsl = computed(() => avatarColor.value.toHsl());
+const qrColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
+const qrHsl = computed(() => qrColor.value.toHsl());
 
 function share() {
 	if (!canShare.value) return;
@@ -78,10 +78,10 @@ const qrCodeInstance = new QRCodeStyling({
 		crossOrigin: 'anonymous',
 	},
 	dotsOptions: {
-		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString(),
+		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 18)`).toRgbString(),
 	},
 	backgroundOptions: {
-		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 97)`).toRgbString(),
+		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 97)`).toRgbString(),
 	},
 });
 
