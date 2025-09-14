@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root">
+<div :class="$style.root">
 	<div :class="[$style.content]">
 		<div
 			ref="qrCodeEl" v-flip :style="{
@@ -26,25 +26,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { url, host } from '@@/js/config.js';
-import { getScrollContainer } from '@@/js/scroll';
 import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { userPage, userName } from '@/filters/user.js';
 import misskeysvg from '/client-assets/misskey.svg';
-import MkAnimBg from '@/components/MkAnimBg.vue';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
-
-const scrollContainer = shallowRef<HTMLElement | null>(null);
-const rootEl = useTemplateRef('rootEl');
 
 const acct = computed(() => `@${$i.username}@${host}`);
 const userProfileUrl = computed(() => userPage($i, undefined, true));
@@ -59,7 +53,6 @@ const qrCodeEl = useTemplateRef('qrCodeEl');
 
 const avatarColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
 const avatarHsl = computed(() => avatarColor.value.toHsl());
-const bgColor = tinycolor(`hsl(${avatarHsl.value.h}, 60, 46)`).toRgbString();
 
 function share() {
 	if (!canShare.value) return;
