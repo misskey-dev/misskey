@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_pageScrollable">
-	<div class="_spacer" style="min-height: 100%;">
+	<div class="_spacer" style="min-height: 100%; display: flex; flex-direction: column;">
 		<MkButton v-if="read" :class="$style.button" rounded @click="read = false"><i class="ti ti-qrcode"></i> {{ i18n.ts._qr.showTabTitle }}</MkButton>
 		<MkButton v-else :class="$style.button" rounded @click="read = true"><i class="ti ti-scan"></i> {{ i18n.ts._qr.readTabTitle }}</MkButton>
 
