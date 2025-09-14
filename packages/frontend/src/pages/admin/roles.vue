@@ -52,11 +52,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.chatAvailability, 'chatAvailability'])">
 						<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
 						<template #suffix>{{ policies.chatAvailability === 'available' ? i18n.ts.yes : policies.chatAvailability === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</template>
-						<MkSelect v-model="policies.chatAvailability">
+						<MkSelect
+							v-model="policies.chatAvailability"
+							:items="[
+								{ label: i18n.ts.enabled, value: 'available' },
+								{ label: i18n.ts.readonly, value: 'readonly' },
+								{ label: i18n.ts.disabled, value: 'unavailable' },
+							]"
+						>
 							<template #label>{{ i18n.ts.enable }}</template>
-							<option value="available">{{ i18n.ts.enabled }}</option>
-							<option value="readonly">{{ i18n.ts.readonly }}</option>
-							<option value="unavailable">{{ i18n.ts.disabled }}</option>
 						</MkSelect>
 					</MkFolder>
 
@@ -346,6 +350,7 @@ import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
+import { deepClone } from '@/utility/clone.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
@@ -353,10 +358,7 @@ const baseRoleQ = ref('');
 
 const roles = await misskeyApi('admin/roles/list');
 
-const policies = reactive<Record<typeof Misskey.rolePolicies[number], any>>({});
-for (const ROLE_POLICY of Misskey.rolePolicies) {
-	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
-}
+const policies = reactive(deepClone(instance.policies));
 
 const avatarDecorationLimit = computed({
 	get: () => Math.min(16, Math.max(0, policies.avatarDecorationLimit)),
@@ -376,6 +378,7 @@ function matchQuery(keywords: string[]): boolean {
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
+		//@ts-expect-error misskey-js側の型定義が不十分
 		policies,
 	});
 	fetchInstance(true);

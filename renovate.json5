@@ -37,6 +37,7 @@
 				'packages/frontend/**/package.json',
 				'packages/frontend-embed/**/package.json',
 				'packages/frontend-shared/**/package.json',
+				'packages/frontend-builder/**/package.json',
 				'packages/misskey-bubble-game/**/package.json',
 				'packages/misskey-reversi/**/package.json',
 				'packages/sw/**/package.json',

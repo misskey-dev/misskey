@@ -37,15 +37,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			const { canceled, result: period } = await os.select({
 				title: i18n.ts.mutePeriod,
 				items: [{
-					value: 'indefinitely', text: i18n.ts.indefinitely,
+					value: 'indefinitely', label: i18n.ts.indefinitely,
 				}, {
-					value: 'tenMinutes', text: i18n.ts.tenMinutes,
+					value: 'tenMinutes', label: i18n.ts.tenMinutes,
 				}, {
-					value: 'oneHour', text: i18n.ts.oneHour,
+					value: 'oneHour', label: i18n.ts.oneHour,
 				}, {
-					value: 'oneDay', text: i18n.ts.oneDay,
+					value: 'oneDay', label: i18n.ts.oneDay,
 				}, {
-					value: 'oneWeek', text: i18n.ts.oneWeek,
+					value: 'oneWeek', label: i18n.ts.oneWeek,
 				}],
 				default: 'indefinitely',
 			});
@@ -289,7 +289,6 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 							caseSensitive: antenna.caseSensitive,
 							withReplies: antenna.withReplies,
 							withFile: antenna.withFile,
-							notify: antenna.notify,
 						});
 						antennasCache.delete();
 					},
@@ -313,15 +312,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 							const { canceled, result: period } = await os.select({
 								title: i18n.ts.period + ': ' + r.name,
 								items: [{
-									value: 'indefinitely', text: i18n.ts.indefinitely,
+									value: 'indefinitely', label: i18n.ts.indefinitely,
 								}, {
-									value: 'oneHour', text: i18n.ts.oneHour,
+									value: 'oneHour', label: i18n.ts.oneHour,
 								}, {
-									value: 'oneDay', text: i18n.ts.oneDay,
+									value: 'oneDay', label: i18n.ts.oneDay,
 								}, {
-									value: 'oneWeek', text: i18n.ts.oneWeek,
+									value: 'oneWeek', label: i18n.ts.oneWeek,
 								}, {
-									value: 'oneMonth', text: i18n.ts.oneMonth,
+									value: 'oneMonth', label: i18n.ts.oneMonth,
 								}],
 								default: 'indefinitely',
 							});
