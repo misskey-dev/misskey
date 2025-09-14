@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
-import { computed, ref, shallowRef, watch, onMounted, onUnmounted } from 'vue';
+import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { url, host } from '@@/js/config.js';
 import { getScrollContainer } from '@@/js/scroll';
 import type { Directive } from 'vue';
@@ -44,7 +44,7 @@ import { i18n } from '@/i18n.js';
 const $i = ensureSignin();
 
 const scrollContainer = shallowRef<HTMLElement | null>(null);
-const rootEl = ref<HTMLDivElement | null>(null);
+const rootEl = useTemplateRef('rootEl');
 
 const acct = computed(() => `@${$i.username}@${host}`);
 const userProfileUrl = computed(() => userPage($i, undefined, true));
@@ -55,7 +55,7 @@ const shareData = computed(() => ({
 }));
 const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
 
-const qrCodeEl = ref<HTMLDivElement | null>(null);
+const qrCodeEl = useTemplateRef('qrCodeEl');
 
 const avatarColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
 const avatarHsl = computed(() => avatarColor.value.toHsl());
