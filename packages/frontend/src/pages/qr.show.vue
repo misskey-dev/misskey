@@ -4,39 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div
-	ref="rootEl" :class="$style.root" :style="{
-		backgroundColor: bgColor,
-	}"
->
-	<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-	<div :class="$style.fg">
+<div ref="rootEl" :class="$style.root">
+	<div :class="[$style.content]">
 		<div
-			:class="[$style.content, '_spacer']"
-			:style="{
-				'--MI_SPACER-w': '512px',
-				'--MI_SPACER-max': '14px',
+			ref="qrCodeEl" v-flip :style="{
+				'cursor': canShare ? 'pointer' : 'default',
 			}"
-		>
-			<div
-				:class="$style.qrOuter"
-				:style="{
-					'cursor': canShare ? 'pointer' : 'default',
-				}"
-				@click="share"
-			>
-				<div ref="qrCodeEl" v-flip :class="$style.qrInner"></div>
+			:class="$style.qr" @click="share"
+		></div>
+		<div v-flip :class="$style.user">
+			<MkAvatar :class="$style.avatar" :user="$i" :indicator="false"/>
+			<div :class="$style.names">
+				<div :class="$style.name"><MkCondensedLine :minScale="2 / 3"><MkUserName :user="$i" :nowrap="true"/></MkCondensedLine></div>
+				<div :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
 			</div>
-			<div v-flip :class="$style.user">
-				<MkAvatar :class="$style.avatar" :user="$i" :indicator="false"/>
-				<div :class="$style.names">
-					<div :class="$style.name"><MkCondensedLine :minScale="2 / 3"><MkUserName :user="$i" :nowrap="true"/></MkCondensedLine></div>
-					<div :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
-				</div>
-			</div>
-			<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion"/>
-			<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
 		</div>
+		<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion"/>
+		<img v-else v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo"/>
 	</div>
 </div>
 </template>
@@ -73,12 +57,7 @@ const canShare = computed(() => navigator.canShare && navigator.canShare(shareDa
 
 const qrCodeEl = ref<HTMLDivElement | null>(null);
 
-const avatarColor = computed(() => tinycolor(
-	$i.avatarBlurhash ?
-		extractAvgColorFromBlurhash($i.avatarBlurhash)
-		: instance.themeColor
-		?? '#86b300',
-));
+const avatarColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
 const avatarHsl = computed(() => avatarColor.value.toHsl());
 const bgColor = tinycolor(`hsl(${avatarHsl.value.h}, 60, 46)`).toRgbString();
 
@@ -90,7 +69,7 @@ function share() {
 const qrCodeInstance = new QRCodeStyling({
 	width: 600,
 	height: 600,
-	margin: 36,
+	margin: 42,
 	type: 'canvas',
 	data: `${url}/users/${$i.id}`,
 	image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
@@ -107,16 +86,6 @@ const qrCodeInstance = new QRCodeStyling({
 	},
 	dotsOptions: {
 		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 18)`).toRgbString(),
-		gradient: {
-			type: 'linear',
-			rotation: 1, // radian
-			colorStops: [
-				{ offset: 0, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 25)`).toRgbString() },
-				{ offset: 0.5, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 20)`).toRgbString() },
-				{ offset: 1, color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 6)`).toRgbString() },
-			],
-		},
-		type: 'classy-rounded',
 	},
 	backgroundOptions: {
 		color: tinycolor(`hsl(${avatarHsl.value.h}, 100, 97)`).toRgbString(),
@@ -188,19 +157,7 @@ $avatarSize: 58px;
 
 .root {
 	position: relative;
-	box-sizing: border-box;
-	margin-top: calc( -1 * var(--MI-stickyTop) );
-	margin-bottom: calc( -1 * var(--MI-stickyBottom) );
-	height: fit-content;
-	min-height: 100cqh;
-}
-
-.fg {
-	position: sticky;
-  padding-top: var(--MI-stickyTop);
-	padding-bottom: var(--MI-stickyBottom);
-	width: 100%;
-	height: 100%;
+	padding-top: 16px;
 }
 
 .content {
@@ -208,32 +165,34 @@ $avatarSize: 58px;
 	flex-direction: column;
 	align-items: center;
 	margin: 0 auto;
-	padding-top: $s1;
 }
 
-.qrOuter {
-	display: flex;
+.qr {
+	position: relative;
+	margin: 0 auto;
 	width: 100%;
-	padding: 0 0 $s3;
-	max-height: max(256px, calc((100cqh - var(--MI-stickyTop, 0px) - var(--MI-stickyBottom, 0px)) * 0.55));
-}
-
-.qrInner {
-	margin: 0;
+	max-width: 250px;
+	border-radius: 8px;
+	overflow: clip;
+	aspect-ratio: 1;
 
 	> svg,
 	> canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
 	}
 }
 
 .user {
 	display: flex;
+	flex-direction: column;
 	margin: $s3 auto;
 	justify-content: center;
 	align-items: center;
+	text-align: center;
 	overflow: visible;
 	width: fit-content;
 	max-width: 100%;
@@ -242,44 +201,23 @@ $avatarSize: 58px;
 .avatar {
 	width: $avatarSize;
 	height: $avatarSize;
+	margin-bottom: 16px;
 }
 
 .names {
-	display: flex;
-	font-weight: bold;
-	flex-direction: column;
-	justify-content: center;
-	align-items: start;
-	margin: -2px -2px 0 ($avatarSize * 0.25);
-	padding-right: 16px;
-	max-width: 100%;
-	overflow-x: hidden;
-	overflow-y: visible;
-	mask-image: linear-gradient(90deg,#000,#000 calc(100% - 16px),#0000);
+
 }
 
 .name {
-	display: inline-block;
-	color: #fff;
-	font-size: 18px;
-	line-height: 21px;
-	width: fit-content;
-	max-width: 100%;
-	overflow: visible;
+	font-weight: bold;
 }
 
 .username {
-	display: inline-block;
-	color: rgba(255, 255, 255, 0.7);
-	font-size: 13px;
-	line-height: 15px;
-	width: fit-content;
-	max-width: 100%;
-	overflow: visible;
+
 }
 
 .logo {
-	width: 25%;
+	width: 100px;
 	margin: $s3 auto 0;
 }
 </style>
