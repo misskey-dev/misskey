@@ -16,6 +16,8 @@ export const TIPS = [
 	'tl.social',
 	'tl.global',
 	'abuses',
+	'antennas',
+	'notifications',
 ] as const;
 
 export function closeTip(tip: typeof TIPS[number]) {

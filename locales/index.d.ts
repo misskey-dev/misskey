@@ -5529,6 +5529,14 @@ export interface Locale extends ILocale {
      * ベータ版の検証にご協力いただきありがとうございます！
      */
     "thankYouForTestingBeta": string;
+    /**
+     * 古い通知は自動的に削除されます。{here}から手動でリセットすることもできます。
+     */
+    "oldNotificationsWillBeDeleted": ParameterizedString<"here">;
+    /**
+     * こちら
+     */
+    "oldNotificationsWillBeDeletedPlaceholderHere": string;
     "_order": {
         /**
          * 新しい順
@@ -6470,6 +6478,10 @@ export interface Locale extends ILocale {
          * グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。
          */
         "global": string;
+        /**
+         * アンテナに保持されているノートは古いものから削除されていきます。必要に応じてクリップなどに移動させてください。
+         */
+        "antenna": string;
     };
     "_serverRules": {
         /**
