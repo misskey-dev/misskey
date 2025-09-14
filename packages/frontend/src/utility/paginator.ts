@@ -278,7 +278,7 @@ export class Paginator<
 
 		for (let i = 0; i < apiRes.length; i++) {
 			const item = apiRes[i];
-			if (i === 10) item._shouldInsertAd_ = true;
+			if (i === 50) item._shouldInsertAd_ = true;
 		}
 
 		if (this.order.value === 'oldest') {
