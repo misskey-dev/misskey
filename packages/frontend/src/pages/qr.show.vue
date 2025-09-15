@@ -78,7 +78,14 @@ const qrCodeInstance = new QRCodeStyling({
 		crossOrigin: 'anonymous',
 	},
 	dotsOptions: {
+		type: 'dots',
 		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 18)`).toRgbString(),
+	},
+	cornersDotOptions: {
+		type: 'dot',
+	},
+	cornersSquareOptions: {
+		type: 'extra-rounded',
 	},
 	backgroundOptions: {
 		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 97)`).toRgbString(),
