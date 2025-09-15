@@ -160,14 +160,13 @@ $avatarSize: 58px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin: 0 auto;
 }
 
 .qr {
 	position: relative;
 	margin: 0 auto;
 	width: 100%;
-	max-width: 250px;
+	max-width: 230px;
 	border-radius: 8px;
 	overflow: clip;
 	aspect-ratio: 1;
