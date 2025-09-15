@@ -219,7 +219,7 @@ async function chooseCamera() {
 	const select = await os.select({
 		title: i18n.ts._qr.chooseCamera,
 		items: cameras.map(camera => ({
-			text: camera.label,
+			label: camera.label,
 			value: camera.id,
 		})),
 	});
