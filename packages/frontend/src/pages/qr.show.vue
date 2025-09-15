@@ -221,6 +221,7 @@ $avatarSize: 58px;
 .logo {
 	width: 100px;
 	margin: $s3 auto 0;
+	filter: drop-shadow(0 0 6px #0007);
 }
 </style>
 
