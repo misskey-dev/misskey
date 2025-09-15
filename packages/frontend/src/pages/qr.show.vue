@@ -14,9 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></div>
 		<div v-flip :class="$style.user">
 			<MkAvatar :class="$style.avatar" :user="$i" :indicator="false"/>
-			<div :class="$style.names">
+			<div>
 				<div :class="$style.name"><MkCondensedLine :minScale="2 / 3"><MkUserName :user="$i" :nowrap="true"/></MkCondensedLine></div>
-				<div :class="$style.username"><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
+				<div><MkCondensedLine :minScale="2 / 3">{{ acct }}</MkCondensedLine></div>
 			</div>
 		</div>
 		<img v-if="deviceMotionPermissionNeeded" v-flip :class="$style.logo" :src="misskeysvg" alt="Misskey Logo" @click="requestDeviceMotion"/>
@@ -206,16 +206,8 @@ $avatarSize: 58px;
 	margin-bottom: 16px;
 }
 
-.names {
-
-}
-
 .name {
 	font-weight: bold;
-}
-
-.username {
-
 }
 
 .logo {
