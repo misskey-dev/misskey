@@ -428,7 +428,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					// 絵文字 only かつ、絵文字5個以下のときは拡大
 					if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode').length <= 5) {
 						return [h('span', {
-							style: 'font-size: 300%; display: inline-block;',
+							class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 						}, [h(MkCustomEmoji, {
 							key: Math.random(),
 							name: token.props.name,
@@ -458,7 +458,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					} else {
 						if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode').length <= 5) {
 							return [h('span', {
-								style: 'font-size: 300%; display: inline-block;',
+								class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 							}, [h(MkCustomEmoji, {
 								key: Math.random(),
 								name: token.props.name,
@@ -488,7 +488,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'unicodeEmoji': {
 				if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'unicodeEmoji').length <= 5) {
 					return [h('span', {
-						style: 'font-size: 300%; display: inline-block;',
+						class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 					}, [h(MkEmoji, {
 						key: Math.random(),
 						emoji: token.props.emoji,
