@@ -72,7 +72,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 	const isEmojiOnlyNote = (ast: mfm.MfmNode[]): boolean => {
 		return ast.every(node => {
-			if (node.type === 'emojiCode') {
+			if (node.type === 'emojiCode' || node.type === 'unicodeEmoji' ) {
 				return true;
 			}
 			if (node.type === 'text') {
@@ -434,7 +434,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							name: token.props.name,
 							normal: props.plain,
 							host: null,
-							useOriginalSize: true, // 3倍なので元サイズ使用
+							useOriginalSize: scale >= 2.5,
 							menu: props.enableEmojiMenu,
 							menuReaction: props.enableEmojiMenuReaction,
 							fallbackToImage: false,
@@ -465,7 +465,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 								url: props.emojiUrls && props.emojiUrls[token.props.name],
 								normal: props.plain,
 								host: props.author.host,
-								useOriginalSize: true, // 3倍なので元サイズ使用
+								useOriginalSize: scale >= 2.5,
 								menu: props.enableEmojiMenu,
 								menuReaction: false,
 							})])];
@@ -486,12 +486,23 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'unicodeEmoji': {
-				return [h(MkEmoji, {
-					key: Math.random(),
-					emoji: token.props.emoji,
-					menu: props.enableEmojiMenu,
-					menuReaction: props.enableEmojiMenuReaction,
-				})];
+				if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'unicodeEmoji').length <= 5) {
+					return [h('span', {
+						style: 'font-size: 300%; display: inline-block;',
+					}, [h(MkEmoji, {
+						key: Math.random(),
+						emoji: token.props.emoji,
+						menu: props.enableEmojiMenu,
+						menuReaction: props.enableEmojiMenuReaction,
+					})])];
+				} else {
+					return [h(MkEmoji, {
+						key: Math.random(),
+						emoji: token.props.emoji,
+						menu: props.enableEmojiMenu,
+						menuReaction: props.enableEmojiMenuReaction,
+					})];
+				}
 			}
 
 			case 'mathInline': {
