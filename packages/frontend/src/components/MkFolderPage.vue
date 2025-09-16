@@ -56,12 +56,12 @@ function onClosed() {
 	emit('closed');
 }
 
-const popstateHandler = (): void => {
+function popstateHandler(): void {
 	// If the hash is no longer our folder hash, close the page
 	if (window.location.hash !== `#folder-${props.pageId}`) {
 		closePage();
 	}
-};
+}
 
 onMounted(() => {
 	// Push a new history state with a unique hash when the folder page opens
