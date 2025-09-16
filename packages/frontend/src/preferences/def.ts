@@ -508,7 +508,7 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	'experimental.enableFolderPageView': {
-		default: false,
+		default: true,
 	},
 	'experimental.enableHapticFeedback': {
 		default: false,
