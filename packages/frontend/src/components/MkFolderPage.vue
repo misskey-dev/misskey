@@ -43,44 +43,37 @@ const emit = defineEmits<{
 
 const zIndex = claimZIndex('low');
 const showing = ref(true);
-const closedByBackButton = ref(false);
 
 function closePage() {
 	showing.value = false;
 }
 
 function onClosed() {
-	// Don't manipulate history if we're closing due to back button
-	// The browser has already handled the history navigation
-	if (!closedByBackButton.value) {
-		// When closing normally (via close button), go back to remove our history entry
+	// When closing, remove our history entry if we're still on our hash
+	if (window.location.hash === `#folder-${props.pageId}`) {
 		window.history.back();
 	}
 	emit('closed');
 }
 
-function handlePopState() {
-	// User pressed back button - close the folder page
-	closedByBackButton.value = true;
-	closePage();
-}
+const popstateHandler = (): void => {
+	// If the hash is no longer our folder hash, close the page
+	if (window.location.hash !== `#folder-${props.pageId}`) {
+		closePage();
+	}
+};
 
 onMounted(() => {
-	// Push a new history state when the folder page opens
-	const folderPageState = {
-		folderPageId: props.pageId,
-		isFolderPage: true,
-	};
+	// Push a new history state with a unique hash when the folder page opens
+	window.history.pushState(null, '', `#folder-${props.pageId}`);
 	
-	window.history.pushState(folderPageState, '', window.location.href);
-	
-	// Listen for popstate events (browser back button) with high priority
-	window.addEventListener('popstate', handlePopState, true);
+	// Listen for popstate events (browser back button)
+	window.addEventListener('popstate', popstateHandler);
 });
 
 onUnmounted(() => {
 	// Clean up the event listener
-	window.removeEventListener('popstate', handlePopState, true);
+	window.removeEventListener('popstate', popstateHandler);
 });
 
 </script>
