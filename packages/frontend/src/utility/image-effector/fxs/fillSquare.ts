@@ -9,10 +9,6 @@ import { i18n } from '@/i18n.js';
 const shader = `#version 300 es
 precision mediump float;
 
-const float PI = 3.141592653589793;
-const float TWO_PI = 6.283185307179586;
-const float HALF_PI = 1.5707963267948966;
-
 in vec2 in_uv;
 uniform sampler2D in_texture;
 uniform vec2 in_resolution;
