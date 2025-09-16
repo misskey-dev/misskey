@@ -19,9 +19,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<div :class="$style.container">
 			<div :class="$style.preview">
-				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
+				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown="onImagePointerdown"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+					<div class="_acrylic" :class="$style.editControls">
+						<button class="_button" :class="[$style.previewControlsButton, fillSquare ? $style.active : null]" @click="fillSquare = true">fillSquare</button>
+					</div>
 					<div class="_acrylic" :class="$style.previewControls">
 						<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
 						<button class="_button" :class="[$style.previewControlsButton, enabled ? $style.active : null]" @click="enabled = true">After</button>
@@ -212,6 +215,59 @@ watch(enabled, () => {
 		renderer.render();
 	}
 });
+
+const fillSquare = ref(false);
+
+function onImagePointerdown(ev: PointerEvent) {
+	const PADDING = 20;
+
+	let startX = ev.offsetX;
+	let startY = ev.offsetY;
+
+	const xRatio = Math.max(imageBitmap!.width / imageBitmap!.height, 1);
+	const yRatio = Math.max(imageBitmap!.height / imageBitmap!.width, 1);
+
+	startX = (startX - PADDING) / ((canvasEl.value!.clientWidth / yRatio) - (PADDING * 2));
+	startY = (startY - PADDING) / ((canvasEl.value!.clientHeight / xRatio) - (PADDING * 2));
+
+	const id = genId();
+	layers.push({
+		id,
+		fxId: 'fillSquare',
+		params: {
+			offsetX: 0,
+			offsetY: 0,
+			scaleX: 0.1,
+			scaleY: 0.1,
+			angle: 0,
+			opacity: 1,
+			color: [1, 1, 1],
+		},
+	});
+
+	canvasEl.value!.onpointermove = (ev) => {
+		let x = ev.offsetX;
+		let y = ev.offsetY;
+		x = (x - PADDING) / ((canvasEl.value!.clientWidth / yRatio) - (PADDING * 2));
+		y = (y - PADDING) / ((canvasEl.value!.clientHeight / xRatio) - (PADDING * 2));
+
+		const scaleX = Math.abs(x - startX);
+		const scaleY = Math.abs(y - startY);
+		x = (x + startX) / 2;
+		y = (y + startY) / 2;
+
+		const layerIndex = layers.findIndex((l) => l.id === id);
+		const layer = layerIndex !== -1 ? layers[layerIndex] : null;
+		if (layer != null) {
+			layer.params.offsetX = (x * 2) - 1;
+			layer.params.offsetY = (y * 2) - 1;
+			layer.params.scaleX = scaleX;
+			layer.params.scaleY = scaleY;
+			layers[layerIndex] = layer;
+		}
+	};
+	canvasEl.value!.setPointerCapture(ev.pointerId);
+}
 </script>
 
 <style module>
@@ -249,6 +305,18 @@ watch(enabled, () => {
 	padding: 6px 10px;
 	border-radius: 6px;
 	font-size: 85%;
+}
+
+.editControls {
+	position: absolute;
+	z-index: 100;
+	bottom: 8px;
+	left: 8px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border-radius: 6px;
 }
 
 .previewControls {
