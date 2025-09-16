@@ -70,6 +70,18 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
+	const isEmojiOnlyNote = (ast: mfm.MfmNode[]): boolean => {
+		return ast.every(node => {
+			if (node.type === 'emojiCode') {
+				return true;
+			}
+			if (node.type === 'text') {
+				return node.props.text.trim() === ''; // 空白文字のみ
+			}
+			return false;
+		});
+	};
+
 	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;
 		if (typeof t === 'boolean') return null;
@@ -413,31 +425,62 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'emojiCode': {
 				if (props.author?.host == null) {
-					return [h(MkCustomEmoji, {
-						key: Math.random(),
-						name: token.props.name,
-						normal: props.plain,
-						host: null,
-						useOriginalSize: scale >= 2.5,
-						menu: props.enableEmojiMenu,
-						menuReaction: props.enableEmojiMenuReaction,
-						fallbackToImage: false,
-					})];
+					// 絵文字 only かつ、絵文字5個以下のときは拡大
+					if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode').length <= 5) {
+						return [h('span', {
+							style: 'font-size: 300%; display: inline-block;',
+						}, [h(MkCustomEmoji, {
+							key: Math.random(),
+							name: token.props.name,
+							normal: props.plain,
+							host: null,
+							useOriginalSize: true, // 3倍なので元サイズ使用
+							menu: props.enableEmojiMenu,
+							menuReaction: props.enableEmojiMenuReaction,
+							fallbackToImage: false,
+						})])];
+					} else {
+						return [h(MkCustomEmoji, {
+							key: Math.random(),
+							name: token.props.name,
+							normal: props.plain,
+							host: null,
+							useOriginalSize: scale >= 2.5,
+							menu: props.enableEmojiMenu,
+							menuReaction: props.enableEmojiMenuReaction,
+							fallbackToImage: false,
+						})];
+					}
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					if (props.emojiUrls && (props.emojiUrls[token.props.name] == null)) {
 						return [h('span', `:${token.props.name}:`)];
 					} else {
-						return [h(MkCustomEmoji, {
-							key: Math.random(),
-							name: token.props.name,
-							url: props.emojiUrls && props.emojiUrls[token.props.name],
-							normal: props.plain,
-							host: props.author.host,
-							useOriginalSize: scale >= 2.5,
-							menu: props.enableEmojiMenu,
-							menuReaction: false,
-						})];
+						if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode').length <= 5) {
+							return [h('span', {
+								style: 'font-size: 300%; display: inline-block;',
+							}, [h(MkCustomEmoji, {
+								key: Math.random(),
+								name: token.props.name,
+								url: props.emojiUrls && props.emojiUrls[token.props.name],
+								normal: props.plain,
+								host: props.author.host,
+								useOriginalSize: true, // 3倍なので元サイズ使用
+								menu: props.enableEmojiMenu,
+								menuReaction: false,
+							})])];
+						} else {
+							return [h(MkCustomEmoji, {
+								key: Math.random(),
+								name: token.props.name,
+								url: props.emojiUrls && props.emojiUrls[token.props.name],
+								normal: props.plain,
+								host: props.author.host,
+								useOriginalSize: scale >= 2.5,
+								menu: props.enableEmojiMenu,
+								menuReaction: false,
+							})];
+						}
 					}
 				}
 			}

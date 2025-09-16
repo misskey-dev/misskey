@@ -1,3 +1,9 @@
+This repository is a fork of [misskey-dev/misskey](https://github.com/misskey-dev/misskey).
+
+This fork is running at <https://azkey.azuki.blue/>
+
+---
+
 <div align="center">
 <a href="https://misskey-hub.net">
 	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
