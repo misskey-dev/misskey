@@ -221,10 +221,12 @@ const fillSquare = ref(false);
 function onImagePointerdown(ev: PointerEvent) {
 	const PADDING = 0; // TODO
 
-	const AW = canvasEl.value!.clientWidth;
-	const AH = canvasEl.value!.clientHeight;
-	const BW = imageBitmap!.width;
-	const BH = imageBitmap!.height;
+	if (canvasEl.value == null || imageBitmap == null || !fillSquare.value) return;
+
+	const AW = canvasEl.value.clientWidth;
+	const AH = canvasEl.value.clientHeight;
+	const BW = imageBitmap.width;
+	const BH = imageBitmap.height;
 
 	let xOffset = 0;
 	let yOffset = 0;
@@ -264,9 +266,11 @@ function onImagePointerdown(ev: PointerEvent) {
 		},
 	});
 
-	canvasEl.value!.onpointermove = (ev) => {
-		let x = ev.offsetX - xOffset;
-		let y = ev.offsetY - yOffset;
+	_move(ev.offsetX, ev.offsetY);
+
+	function _move(pointerX: number, pointerY: number) {
+		let x = pointerX - xOffset;
+		let y = pointerY - yOffset;
 
 		if (AW / AH < BW / BH) { // 横長
 			x = (x - PADDING) / ((Math.max(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
@@ -282,14 +286,28 @@ function onImagePointerdown(ev: PointerEvent) {
 		const layerIndex = layers.findIndex((l) => l.id === id);
 		const layer = layerIndex !== -1 ? layers[layerIndex] : null;
 		if (layer != null) {
-			layer.params.offsetX = ((x + startX) / 2 * 2) - 1;
-			layer.params.offsetY = ((y + startY) / 2 * 2) - 1;
+			layer.params.offsetX = (x + startX) - 1;
+			layer.params.offsetY = (y + startY) - 1;
 			layer.params.scaleX = scaleX;
 			layer.params.scaleY = scaleY;
 			layers[layerIndex] = layer;
 		}
-	};
-	canvasEl.value!.setPointerCapture(ev.pointerId);
+	}
+
+	function move(ev: PointerEvent) {
+		_move(ev.offsetX, ev.offsetY);
+	}
+
+	function up() {
+		canvasEl.value?.removeEventListener('pointermove', move);
+		canvasEl.value?.removeEventListener('pointerup', up);
+		canvasEl.value?.removeEventListener('pointercancel', up);
+		canvasEl.value?.releasePointerCapture(ev.pointerId);
+	}
+
+	canvasEl.value.addEventListener('pointermove', move);
+	canvasEl.value.addEventListener('pointerup', up);
+	canvasEl.value.setPointerCapture(ev.pointerId);
 }
 </script>
 
