@@ -12378,6 +12378,10 @@ export interface Locale extends ILocale {
              * ティアリング
              */
             "tearing": string;
+            /**
+             * 塗りつぶし(四角)
+             */
+            "fillSquare": string;
         };
         "_fxProps": {
             /**
@@ -12392,6 +12396,10 @@ export interface Locale extends ILocale {
              * サイズ
              */
             "size": string;
+            /**
+             * 位置
+             */
+            "offset": string;
             /**
              * 色
              */
