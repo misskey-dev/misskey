@@ -219,16 +219,38 @@ watch(enabled, () => {
 const fillSquare = ref(false);
 
 function onImagePointerdown(ev: PointerEvent) {
-	const PADDING = 20;
+	const PADDING = 0; // TODO
 
-	let startX = ev.offsetX;
-	let startY = ev.offsetY;
+	const AW = canvasEl.value!.clientWidth;
+	const AH = canvasEl.value!.clientHeight;
+	const BW = imageBitmap!.width;
+	const BH = imageBitmap!.height;
 
-	const xRatio = Math.max(imageBitmap!.width / imageBitmap!.height, 1);
-	const yRatio = Math.max(imageBitmap!.height / imageBitmap!.width, 1);
+	let xOffset = 0;
+	let yOffset = 0;
 
-	startX = (startX - PADDING) / ((canvasEl.value!.clientWidth / yRatio) - (PADDING * 2));
-	startY = (startY - PADDING) / ((canvasEl.value!.clientHeight / xRatio) - (PADDING * 2));
+	if (AW / AH < BW / BH) { // 横長
+		yOffset = AH - BH * (AW / BW);
+	} else { // 縦長
+		xOffset = AW - BW * (AH / BH);
+	}
+
+	const imageXRatio = xOffset === 0 ? Math.max(BH / BW, 1) : Math.max(BW / BH, 1);
+	const imageYRatio = xOffset === 0 ? Math.max(BW / BH, 1) : Math.max(BH / BW, 1);
+
+	xOffset /= 2;
+	yOffset /= 2;
+
+	let startX = ev.offsetX - xOffset;
+	let startY = ev.offsetY - yOffset;
+
+	if (AW / AH < BW / BH) { // 横長
+		startX = (startX - PADDING) / ((Math.max(AW, AH) / imageXRatio) - (PADDING * 2));
+		startY = (startY - PADDING) / ((Math.max(AW, AH) / imageYRatio) - (PADDING * 2));
+	} else { // 縦長
+		startX = (startX - PADDING) / ((Math.min(AW, AH) / imageYRatio) - (PADDING * 2));
+		startY = (startY - PADDING) / ((Math.min(AW, AH) / imageXRatio) - (PADDING * 2));
+	}
 
 	const id = genId();
 	layers.push({
@@ -246,21 +268,25 @@ function onImagePointerdown(ev: PointerEvent) {
 	});
 
 	canvasEl.value!.onpointermove = (ev) => {
-		let x = ev.offsetX;
-		let y = ev.offsetY;
-		x = (x - PADDING) / ((canvasEl.value!.clientWidth / yRatio) - (PADDING * 2));
-		y = (y - PADDING) / ((canvasEl.value!.clientHeight / xRatio) - (PADDING * 2));
+		let x = ev.offsetX - xOffset;
+		let y = ev.offsetY - yOffset;
+
+		if (AW / AH < BW / BH) { // 横長
+			x = (x - PADDING) / ((Math.max(AW, AH) / imageXRatio) - (PADDING * 2));
+			y = (y - PADDING) / ((Math.max(AW, AH) / imageYRatio) - (PADDING * 2));
+		} else { // 縦長
+			x = (x - PADDING) / ((Math.min(AW, AH) / imageYRatio) - (PADDING * 2));
+			y = (y - PADDING) / ((Math.min(AW, AH) / imageXRatio) - (PADDING * 2));
+		}
 
 		const scaleX = Math.abs(x - startX);
 		const scaleY = Math.abs(y - startY);
-		x = (x + startX) / 2;
-		y = (y + startY) / 2;
 
 		const layerIndex = layers.findIndex((l) => l.id === id);
 		const layer = layerIndex !== -1 ? layers[layerIndex] : null;
 		if (layer != null) {
-			layer.params.offsetX = (x * 2) - 1;
-			layer.params.offsetY = (y * 2) - 1;
+			layer.params.offsetX = ((x + startX) / 2 * 2) - 1;
+			layer.params.offsetY = ((y + startY) / 2 * 2) - 1;
 			layer.params.scaleX = scaleX;
 			layer.params.scaleY = scaleY;
 			layers[layerIndex] = layer;
@@ -353,7 +379,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	padding: 20px;
+	padding: 0px; /* TODO */
 	box-sizing: border-box;
 	object-fit: contain;
 }
