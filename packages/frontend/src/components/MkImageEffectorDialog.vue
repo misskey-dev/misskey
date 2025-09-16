@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.editControls">
-						<button class="_button" :class="[$style.previewControlsButton, fillSquare ? $style.active : null]" @click="fillSquare = true">fillSquare</button>
+						<button class="_button" :class="[$style.previewControlsButton, fillSquare ? $style.active : null]" @click="fillSquare = true"><i class="ti ti-pencil"></i></button>
 					</div>
 					<div class="_acrylic" :class="$style.previewControls">
 						<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
@@ -301,6 +301,8 @@ function onImagePointerdown(ev: PointerEvent) {
 		canvasEl.value?.removeEventListener('pointerup', up);
 		canvasEl.value?.removeEventListener('pointercancel', up);
 		canvasEl.value?.releasePointerCapture(ev.pointerId);
+
+		fillSquare.value = false;
 	}
 
 	canvasEl.value.addEventListener('pointermove', move);
