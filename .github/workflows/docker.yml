@@ -1,12 +1,12 @@
 name: Publish Docker image
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: misskey/misskey
+  REGISTRY_IMAGE: ghcr.io/azuki774/misskey
   TAGS: |
     type=edge
     type=ref,event=pr
@@ -25,7 +25,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-          - linux/arm64
+          # - linux/arm64
     steps:
       - name: Prepare
         run: |
@@ -41,12 +41,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: ${{ env.TAGS }}
-      - name: Log in to Docker Hub
+      - name: Log in to ghcr.io
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and Push to Docker Hub
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Build and Push to ghcr.io
         id: build
         uses: docker/build-push-action@v6
         with:
@@ -90,11 +91,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: ${{ env.TAGS }}
-      - name: Login to Docker Hub
+      - name: Login to ghcr.io
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_ACCESS_TOKEN }}
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
