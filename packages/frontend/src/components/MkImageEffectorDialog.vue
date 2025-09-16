@@ -235,9 +235,6 @@ function onImagePointerdown(ev: PointerEvent) {
 		xOffset = AW - BW * (AH / BH);
 	}
 
-	const imageXRatio = xOffset === 0 ? Math.max(BH / BW, 1) : Math.max(BW / BH, 1);
-	const imageYRatio = xOffset === 0 ? Math.max(BW / BH, 1) : Math.max(BH / BW, 1);
-
 	xOffset /= 2;
 	yOffset /= 2;
 
@@ -245,11 +242,11 @@ function onImagePointerdown(ev: PointerEvent) {
 	let startY = ev.offsetY - yOffset;
 
 	if (AW / AH < BW / BH) { // 横長
-		startX = (startX - PADDING) / ((Math.max(AW, AH) / imageXRatio) - (PADDING * 2));
-		startY = (startY - PADDING) / ((Math.max(AW, AH) / imageYRatio) - (PADDING * 2));
+		startX = (startX - PADDING) / ((Math.max(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
+		startY = (startY - PADDING) / ((Math.max(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
 	} else { // 縦長
-		startX = (startX - PADDING) / ((Math.min(AW, AH) / imageYRatio) - (PADDING * 2));
-		startY = (startY - PADDING) / ((Math.min(AW, AH) / imageXRatio) - (PADDING * 2));
+		startX = (startX - PADDING) / ((Math.min(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
+		startY = (startY - PADDING) / ((Math.min(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
 	}
 
 	const id = genId();
@@ -272,11 +269,11 @@ function onImagePointerdown(ev: PointerEvent) {
 		let y = ev.offsetY - yOffset;
 
 		if (AW / AH < BW / BH) { // 横長
-			x = (x - PADDING) / ((Math.max(AW, AH) / imageXRatio) - (PADDING * 2));
-			y = (y - PADDING) / ((Math.max(AW, AH) / imageYRatio) - (PADDING * 2));
+			x = (x - PADDING) / ((Math.max(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
+			y = (y - PADDING) / ((Math.max(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
 		} else { // 縦長
-			x = (x - PADDING) / ((Math.min(AW, AH) / imageYRatio) - (PADDING * 2));
-			y = (y - PADDING) / ((Math.min(AW, AH) / imageXRatio) - (PADDING * 2));
+			x = (x - PADDING) / ((Math.min(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
+			y = (y - PADDING) / ((Math.min(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
 		}
 
 		const scaleX = Math.abs(x - startX);
