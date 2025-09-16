@@ -76,7 +76,8 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return true;
 			}
 			if (node.type === 'text') {
-				return node.props.text.trim() === ''; // 空白文字のみ
+				// 通常の空白文字 + U+200B（ゼロ幅スペース）を除去
+				return node.props.text.replace(/[\u200B]/g, '').trim() === '';
 			}
 			return false;
 		});
@@ -426,7 +427,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'emojiCode': {
 				if (props.author?.host == null) {
 					// 絵文字 only かつ、絵文字5個以下のときは拡大
-					if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode').length <= 5) {
+					if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
 						return [h('span', {
 							class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 						}, [h(MkCustomEmoji, {
@@ -456,7 +457,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					if (props.emojiUrls && (props.emojiUrls[token.props.name] == null)) {
 						return [h('span', `:${token.props.name}:`)];
 					} else {
-						if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode').length <= 5) {
+						if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
 							return [h('span', {
 								class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 							}, [h(MkCustomEmoji, {
@@ -486,7 +487,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'unicodeEmoji': {
-				if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'unicodeEmoji').length <= 5) {
+				if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
 					return [h('span', {
 						class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 					}, [h(MkEmoji, {
