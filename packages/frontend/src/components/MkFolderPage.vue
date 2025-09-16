@@ -65,7 +65,8 @@ function popstateHandler(): void {
 
 onMounted(() => {
 	// Push a new history state with a unique hash when the folder page opens
-	window.history.pushState(null, '', `#folder-${props.pageId}`);
+	const folderHash = `#folder-${props.pageId}`;
+	window.history.pushState(null, '', folderHash);
 	
 	// Listen for popstate events (browser back button)
 	window.addEventListener('popstate', popstateHandler);
