@@ -1319,6 +1319,7 @@ preferenceSyncConflictChoiceMerge: "ガッチャンコしよか"
 preferenceSyncConflictChoiceCancel: "同期の有効化はやめとくわ"
 postForm: "投稿フォーム"
 information: "情報"
+directMessage: "チャットしよか"
 migrateOldSettings: "旧設定情報をお引っ越し"
 migrateOldSettings_description: "通常これは自動で行われるはずなんやけど、なんかの理由で上手く移行できへんかったときは手動で移行処理をポチっとできるで。今の設定情報は上書きされるで。"
 settingsMigrating: "設定を移行しとるで。ちょっと待っとってな... (後で、設定→その他→旧設定情報を移行 で手動で移行することもできるで)"
@@ -2135,6 +2136,7 @@ _sfx:
   noteMy: "ノート(自分)"
   notification: "通知"
   reaction: "ツッコミ選んどるとき"
+  chatMessage: "チャットしよか"
 _soundSettings:
   driveFile: "ドライブん中の音使う"
   driveFileWarn: "ドライブん中のファイル選びや"
@@ -2340,6 +2342,7 @@ _widgets:
     chooseList: "リストを選ぶ"
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のツレ"
+  chat: "チャットしよか"
 _cw:
   hide: "隠す"
   show: "続き見して！"
@@ -2602,6 +2605,7 @@ _deck:
     mentions: "あんた宛て"
     direct: "ダイレクト"
     roleTimeline: "ロールタイムライン"
+    chat: "チャットしよか"
 _dialog:
   charactersExceeded: "最大の文字数を上回っとるで！今は {current} / 最大でも {max}"
   charactersBelow: "最小の文字数を下回っとるで！今は {current} / 最低でも {min}"
