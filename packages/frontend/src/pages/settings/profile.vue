@@ -151,6 +151,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</SearchMarker>
+
+		<hr>
+
+		<SearchMarker :keywords="['qrcode']">
+			<FormLink to="/qr">
+				<template #icon><i class="ti ti-qrcode"></i></template>
+				<SearchLabel>{{ i18n.ts.qr }}</SearchLabel>
+			</FormLink>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -164,6 +173,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
+import FormLink from '@/components/form/link.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
