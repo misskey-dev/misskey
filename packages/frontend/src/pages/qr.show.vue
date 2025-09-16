@@ -208,6 +208,7 @@ $avatarSize: 58px;
 
 .name {
 	font-weight: bold;
+	font-size: 110%;
 }
 
 .logo {
