@@ -109,6 +109,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	chatAvailability: 'available',
 	uploadableFileTypes: [
 		'text/plain',
+		'text/csv',
 		'application/json',
 		'image/*',
 		'video/*',
