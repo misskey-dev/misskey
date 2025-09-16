@@ -219,8 +219,6 @@ watch(enabled, () => {
 const fillSquare = ref(false);
 
 function onImagePointerdown(ev: PointerEvent) {
-	const PADDING = 0; // TODO
-
 	if (canvasEl.value == null || imageBitmap == null || !fillSquare.value) return;
 
 	const AW = canvasEl.value.clientWidth;
@@ -244,11 +242,11 @@ function onImagePointerdown(ev: PointerEvent) {
 	let startY = ev.offsetY - yOffset;
 
 	if (AW / AH < BW / BH) { // 横長
-		startX = (startX - PADDING) / ((Math.max(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
-		startY = (startY - PADDING) / ((Math.max(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
+		startX = startX / (Math.max(AW, AH) / Math.max(BH / BW, 1));
+		startY = startY / (Math.max(AW, AH) / Math.max(BW / BH, 1));
 	} else { // 縦長
-		startX = (startX - PADDING) / ((Math.min(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
-		startY = (startY - PADDING) / ((Math.min(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
+		startX = startX / (Math.min(AW, AH) / Math.max(BH / BW, 1));
+		startY = startY / (Math.min(AW, AH) / Math.max(BW / BH, 1));
 	}
 
 	const id = genId();
@@ -273,11 +271,11 @@ function onImagePointerdown(ev: PointerEvent) {
 		let y = pointerY - yOffset;
 
 		if (AW / AH < BW / BH) { // 横長
-			x = (x - PADDING) / ((Math.max(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
-			y = (y - PADDING) / ((Math.max(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
+			x = x / (Math.max(AW, AH) / Math.max(BH / BW, 1));
+			y = y / (Math.max(AW, AH) / Math.max(BW / BH, 1));
 		} else { // 縦長
-			x = (x - PADDING) / ((Math.min(AW, AH) / Math.max(BH / BW, 1)) - (PADDING * 2));
-			y = (y - PADDING) / ((Math.min(AW, AH) / Math.max(BW / BH, 1)) - (PADDING * 2));
+			x = x / (Math.min(AW, AH) / Math.max(BH / BW, 1));
+			y = y / (Math.min(AW, AH) / Math.max(BW / BH, 1));
 		}
 
 		const scaleX = Math.abs(x - startX);
@@ -392,9 +390,11 @@ function onImagePointerdown(ev: PointerEvent) {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
-	padding: 0px; /* TODO */
+	width: -webkit-fill-available;
+	width: stretch;
+	height: -webkit-fill-available;
+	height: stretch;
+	margin: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
 }
