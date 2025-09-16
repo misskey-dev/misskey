@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { claimZIndex } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -43,14 +43,45 @@ const emit = defineEmits<{
 
 const zIndex = claimZIndex('low');
 const showing = ref(true);
+const closedByBackButton = ref(false);
 
 function closePage() {
 	showing.value = false;
 }
 
 function onClosed() {
+	// Don't manipulate history if we're closing due to back button
+	// The browser has already handled the history navigation
+	if (!closedByBackButton.value) {
+		// When closing normally (via close button), go back to remove our history entry
+		window.history.back();
+	}
 	emit('closed');
 }
+
+function handlePopState() {
+	// User pressed back button - close the folder page
+	closedByBackButton.value = true;
+	closePage();
+}
+
+onMounted(() => {
+	// Push a new history state when the folder page opens
+	const folderPageState = {
+		folderPageId: props.pageId,
+		isFolderPage: true,
+	};
+	
+	window.history.pushState(folderPageState, '', window.location.href);
+	
+	// Listen for popstate events (browser back button) with high priority
+	window.addEventListener('popstate', handlePopState, true);
+});
+
+onUnmounted(() => {
+	// Clean up the event listener
+	window.removeEventListener('popstate', handlePopState, true);
+});
 
 </script>
 
