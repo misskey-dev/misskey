@@ -3206,6 +3206,7 @@ _imageEffector:
     angle: "แองเกิล"
     scale: "ขนาด"
     size: "ขนาด"
+    offset: "ตำแหน่ง"
     color: "สี"
     opacity: "ความทึบแสง"
     normalize: "นอร์มัลไลซ์"
