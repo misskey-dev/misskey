@@ -3027,6 +3027,7 @@ _imageEffector:
     angle: "角度"
     scale: "大きさ"
     size: "大きさ"
+    offset: "位置"
     color: "色"
     opacity: "不透明度"
     lightness: "明るさ"
