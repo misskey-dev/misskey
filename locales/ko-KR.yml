@@ -3213,6 +3213,7 @@ _imageEffector:
     angle: "각도"
     scale: "크기"
     size: "크기"
+    offset: "위치"
     color: "색"
     opacity: "불투명도"
     normalize: "노멀라이즈"
