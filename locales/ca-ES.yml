@@ -3213,6 +3213,7 @@ _imageEffector:
     angle: "Angle"
     scale: "Mida"
     size: "Mida"
+    offset: "Posició "
     color: "Color"
     opacity: "Opacitat"
     normalize: "Normalitzar"
