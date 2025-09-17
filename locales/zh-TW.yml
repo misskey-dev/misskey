@@ -3213,6 +3213,7 @@ _imageEffector:
     angle: "角度"
     scale: "大小"
     size: "大小"
+    offset: "位置"
     color: "顏色"
     opacity: "透明度"
     normalize: "正規化"
