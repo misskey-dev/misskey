@@ -3177,6 +3177,7 @@ _imageEffector:
     angle: "Winkel"
     scale: "Größe"
     size: "Größe"
+    offset: "Position"
     color: "Farbe"
     opacity: "Transparenz"
     lightness: "Erhellen"
