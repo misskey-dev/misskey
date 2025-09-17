@@ -1541,7 +1541,7 @@ _announcement:
   needConfirmationToRead: "Es necessita confirmació de lectura de la notificació "
   needConfirmationToReadDescription: "Si s'activa es mostrarà un diàleg per confirmar la lectura d'aquesta notificació. A més aquesta notificació serà exclosa de qualsevol funcionalitat com \"Marcar tot com a llegit\"."
   end: "Final de la notificació "
-  tooManyActiveAnnouncementDescription: "Tenir massa notificacions actives pot empitjorar l'experiència de l'usuari. Considera finalitzar els avisos que siguin antics."
+  tooManyActiveAnnouncementDescription: "Tenir masses notificacions actives pot empitjorar l'experiència de l'usuari. Considera finalitzar els avisos que siguin antics."
   readConfirmTitle: "Marcar com llegida?"
   readConfirmText: "Això marcarà el contingut de \"{title}\" com llegit."
   shouldNotBeUsedToPresentPermanentInfo: "Ja que l'ús de notificacions pot impactar l'experiència dels nous usuaris, és recomanable fer servir les notificacions amb el flux d'informació en comptes de fer-les servir en un únic bloc."
@@ -2080,7 +2080,7 @@ _ad:
   timezoneinfo: "El dia de la setmana ve determinat del fus horari del servidor."
   adsSettings: "Configurar la publicitat"
   notesPerOneAd: "Interval d'emplaçament publicitari en temps real (Notes per anuncis)"
-  setZeroToDisable: "Ajusta aquest valor a 0 per deshabilitar l'actualització d'anuncis en temps real"
+  setZeroToDisable: "Ajusta aquest valor a 0 per deshabilitar l'actualització de publicitat en temps real"
   adsTooClose: "L'interval actual pot fer que l'experiència de l'usuari sigui dolenta perquè l'interval és molt baix."
 _forgotPassword:
   enterEmail: "Escriu l'adreça de correu electrònic amb la que et vas registrar. S'enviarà un correu electrònic amb un enllaç perquè puguis canviar-la."
@@ -3209,6 +3209,7 @@ _imageEffector:
     checker: "Escacs"
     blockNoise: "Bloqueig de soroll"
     tearing: "Trencament d'imatge "
+    fillSquare: "Omplir quadrat"
   _fxProps:
     angle: "Angle"
     scale: "Mida"
