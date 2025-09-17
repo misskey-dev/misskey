@@ -3209,6 +3209,7 @@ _imageEffector:
     checker: "棋盤格"
     blockNoise: "阻擋雜訊"
     tearing: "撕裂"
+    fillSquare: "填充(方形)"
   _fxProps:
     angle: "角度"
     scale: "大小"
