@@ -3210,6 +3210,7 @@ _imageEffector:
     angle: "Açı"
     scale: "Boyut"
     size: "Boyut"
+    offset: "Pozisyon"
     color: "Renk"
     opacity: "Opaklık"
     normalize: "Normalize"
