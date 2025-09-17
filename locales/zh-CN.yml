@@ -3209,10 +3209,12 @@ _imageEffector:
     checker: "检查"
     blockNoise: "块状噪点"
     tearing: "撕裂"
+    fillSquare: "填充（四角）"
   _fxProps:
     angle: "角度"
     scale: "大小"
     size: "大小"
+    offset: "位置"
     color: "颜色"
     opacity: "不透明度"
     normalize: "标准化"
