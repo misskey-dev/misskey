@@ -21,6 +21,10 @@ import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import * as Acct from '@/misc/acct.js';
+import { IsNull } from 'typeorm';
+import { DI } from '@/di-symbols.js';
+import type { NotesRepository, UsersRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -109,6 +113,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -137,7 +144,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		let local = await this.mergePack(me, ...await Promise.all([
-			this.apDbResolverService.getUserFromApId(uri),
+			this.apDbResolverService.getUserFromApId(uri).then(async x => x ?? await this.getUserFromProfileUrl(uri)),
 			this.apDbResolverService.getNoteFromApId(uri),
 		]));
 		if (local != null) return local;
@@ -198,6 +205,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			isActor(object) ? await this.apPersonService.createPerson(getApId(object)) : null,
 			isPost(object) ? await this.apNoteService.createNote(getApId(object), undefined, undefined, true) : null,
 		);
+	}
+
+	// To keep consistency with ap/show from external server,
+	// this function will handle `https://local.instance/@user`
+	// profile url to resolve user.
+	@bindThis
+	private async getUserFromProfileUrl(url: string): Promise<MiUser | null | undefined> {
+		if (!this.utilityService.isUriLocal(url)) {
+			return null;
+		}
+
+		const uri = new URL(url);
+		const pathComponents = uri.pathname.split('/').filter(Boolean);
+		if (pathComponents.length === 1 && pathComponents[0].startsWith('@')) {
+			const acct = Acct.parse(pathComponents[0]);
+			// normalize acct host
+			if (this.utilityService.isSelfHost(acct.host)) acct.host = null;
+
+			return await this.usersRepository.findOneBy({
+				usernameLower: acct.username.toLowerCase(),
+				host: acct.host ?? IsNull(),
+				isSuspended: false,
+			});
+		}
+
+		return null;
 	}
 
 	@bindThis
