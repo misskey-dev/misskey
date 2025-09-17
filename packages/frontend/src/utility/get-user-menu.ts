@@ -376,8 +376,8 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		//}
 
 		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-mail',
-			text: i18n.ts.sendMessage,
+			icon: 'ti ti-pencil-heart',
+			text: i18n.ts.createUserSpecifiedNote,
 			action: () => {
 				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
 				os.post({ specified: user, initialText: `${canonical} ` });

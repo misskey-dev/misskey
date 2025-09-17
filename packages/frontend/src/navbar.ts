@@ -117,7 +117,7 @@ export const navbarItemDef = reactive({
 		to: '/channels',
 	},
 	chat: {
-		title: i18n.ts.chat,
+		title: i18n.ts.directMessage_short,
 		icon: 'ti ti-messages',
 		to: '/chat',
 		show: computed(() => $i != null && $i.policies.chatAvailability !== 'unavailable'),
