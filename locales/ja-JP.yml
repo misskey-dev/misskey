@@ -3314,11 +3314,13 @@ _imageEffector:
     checker: "チェッカー"
     blockNoise: "ブロックノイズ"
     tearing: "ティアリング"
+    fillSquare: "塗りつぶし(四角)"
 
   _fxProps:
     angle: "角度"
     scale: "サイズ"
     size: "サイズ"
+    offset: "位置"
     color: "色"
     opacity: "不透明度"
     normalize: "正規化"
