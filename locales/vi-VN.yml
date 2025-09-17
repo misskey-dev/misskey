@@ -2093,6 +2093,7 @@ _imageEffector:
     angle: "Góc"
     scale: "Kích thước"
     size: "Kích thước"
+    offset: "Vị trí"
     color: "Màu sắc"
     opacity: "Độ trong suốt"
     lightness: "Độ sáng"
