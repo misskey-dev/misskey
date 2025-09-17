@@ -1404,3 +1404,4 @@ _imageEffector:
   _fxProps:
     scale: "Dimensiune"
     size: "Dimensiune"
+    offset: "Poziție"
