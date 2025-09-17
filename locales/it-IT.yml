@@ -3210,6 +3210,7 @@ _imageEffector:
     angle: "Angolo"
     scale: "Dimensioni"
     size: "Dimensioni"
+    offset: "Posizione"
     color: "Colore"
     opacity: "Opacità"
     normalize: "Normalizza"
