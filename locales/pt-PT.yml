@@ -3186,6 +3186,7 @@ _imageEffector:
     angle: "Ângulo"
     scale: "Tamanho"
     size: "Tamanho"
+    offset: "Posição"
     color: "Cor"
     opacity: "Opacidade"
     lightness: "Esclarecer"
