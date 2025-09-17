@@ -1603,5 +1603,6 @@ _imageEffector:
   _fxProps:
     scale: "الحجم"
     size: "الحجم"
+    offset: "الموضع"
     color: "اللون"
     opacity: "الشفافية"
