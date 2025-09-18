@@ -312,7 +312,13 @@ function onDrop(ev) {
 
 	height: 100%;
 	overflow: clip;
-	contain: strict;
+	/**
+	 * FIXME: Safari 26 で contain: layout を(含む)指定するとバグる
+	 * https://github.com/misskey-dev/misskey/issues/16204#issuecomment-3265404776
+	 * https://bugs.webkit.org/show_bug.cgi?id=297186
+	 */
+	// contain: strict;
+	contain: size style paint;
 	border-radius: 10px;
 
 	&.draghover {
