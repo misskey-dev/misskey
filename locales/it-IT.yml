@@ -1344,6 +1344,7 @@ textCount: "Il numero di caratteri"
 information: "Informazioni"
 chat: "Chat"
 directMessage: "Chatta con questa persona"
+directMessage_short: "Messaggio"
 migrateOldSettings: "Migrare le vecchie impostazioni"
 migrateOldSettings_description: "Di solito, viene fatto automaticamente. Se per qualche motivo non fossero migrate con successo, è possibile avviare il processo di migrazione manualmente, sovrascrivendo le configurazioni attuali."
 compress: "Compressione"
@@ -1378,10 +1379,12 @@ pluginsAreDisabledBecauseSafeMode: "Tutti i plugin sono disattivati, poiché la 
 customCssIsDisabledBecauseSafeMode: "Il CSS personalizzato non è stato applicato, poiché la modalità sicura è attiva."
 themeIsDefaultBecauseSafeMode: "Quando la modalità sicura è attiva, viene utilizzato il tema predefinito. Quando la modalità sicura viene disattivata, il tema torna a essere quello precedente."
 thankYouForTestingBeta: "Grazie per la tua collaborazione nella verifica delle versioni beta!"
+createUserSpecifiedNote: "Creare Nota personalizzata"
 _order:
   newest: "Prima i più recenti"
   oldest: "Meno recenti prima"
 _chat:
+  messages: "Messaggi"
   noMessagesYet: "Ancora nessun messaggio"
   newMessage: "Nuovo messaggio"
   individualChat: "Chat individuale"
@@ -3206,6 +3209,7 @@ _imageEffector:
     checker: "revisore"
     blockNoise: "Attenua rumore"
     tearing: "Strappa immagine"
+    fillSquare: "Riempi (quadrato)"
   _fxProps:
     angle: "Angolo"
     scale: "Dimensioni"
