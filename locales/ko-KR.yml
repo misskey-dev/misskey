@@ -3209,6 +3209,7 @@ _imageEffector:
     checker: "체크 무늬"
     blockNoise: "노이즈 방지"
     tearing: "티어링"
+    fillSquare: "칠하기(사각형)"
   _fxProps:
     angle: "각도"
     scale: "크기"
