@@ -100,6 +100,7 @@ export class Paginator<
 	private canFetchDetection: 'safe' | 'limit' | null = null;
 	private aheadQueue: T[] = [];
 	private useShallowRef: SRef;
+	private totalNotesCount: number = 0;
 
 	// 配列内の要素をどのような順序で並べるか
 	// newest: 新しいものが先頭 (default)
@@ -223,7 +224,8 @@ export class Paginator<
 
 		for (let i = 0; i < apiRes.length; i++) {
 			const item = apiRes[i];
-			if (i === 3) item._shouldInsertAd_ = true;
+			this.totalNotesCount++;
+			if (this.totalNotesCount % 100 === 0) item._shouldInsertAd_ = true;
 		}
 
 		this.pushItems(apiRes);
@@ -278,7 +280,8 @@ export class Paginator<
 
 		for (let i = 0; i < apiRes.length; i++) {
 			const item = apiRes[i];
-			if (i === 50) item._shouldInsertAd_ = true;
+			this.totalNotesCount++;
+			if (this.totalNotesCount % 100 === 0) item._shouldInsertAd_ = true;
 		}
 
 		if (this.order.value === 'oldest') {
