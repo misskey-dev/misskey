@@ -133,7 +133,7 @@ function applyThemeInternal(theme: Theme, persist: boolean) {
 let timeout: number | null = null;
 let currentTheme: Theme | null = null;
 
-export function applyTheme(theme: Theme, persist = true) {
+export async function applyTheme(theme: Theme, persist = true) {
 	if (timeout) {
 		window.clearTimeout(timeout);
 		timeout = null;
@@ -144,15 +144,26 @@ export function applyTheme(theme: Theme, persist = true) {
 	currentTheme = deepClone(theme);
 
 	if (window.document.startViewTransition != null) {
-		window.document.documentElement.classList.add('_themeChanging_');
-		window.document.startViewTransition(async () => {
-			applyThemeInternal(theme, persist);
-			await nextTick();
-		}).finished.then(() => {
+		// startViewTransitionはいくつかの理由でエラーになることがあり、特にここはブートエラーになりやすいのでエラーハンドリングする
+		// See https://github.com/misskey-dev/misskey/issues/16562
+
+		let applied = false;
+		try {
+			window.document.documentElement.classList.add('_themeChanging_');
+
+			await window.document.startViewTransition(async () => {
+				applyThemeInternal(theme, persist);
+				applied = true;
+				await nextTick();
+			}).finished;
+		} catch (e) {
+			console.error('applyTheme: something happened while ViewTransition', e);
+			if (!applied) applyThemeInternal(theme, persist);
+		} finally {
 			window.document.documentElement.classList.remove('_themeChanging_');
 			// 色計算など再度行えるようにクライアント全体に通知
 			globalEvents.emit('themeChanged');
-		});
+		}
 	} else {
 		applyThemeInternal(theme, persist);
 		// 色計算など再度行えるようにクライアント全体に通知
