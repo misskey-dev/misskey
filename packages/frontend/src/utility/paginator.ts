@@ -281,7 +281,6 @@ export class Paginator<
 		for (let i = 0; i < apiRes.length; i++) {
 			const item = apiRes[i];
 			this.totalNotesCount++;
-			if (i === 3) item._shouldInsertAd_ = true;
 			if (instance.notesPerOneAd > 0 && this.totalNotesCount % instance.notesPerOneAd === 0) item._shouldInsertAd_ = true;
 		}
 
