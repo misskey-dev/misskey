@@ -7,6 +7,7 @@ import { ref, shallowRef, triggerRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { instance } from '@/instance.js';
 
 const MAX_ITEMS = 30;
 const MAX_QUEUE_ITEMS = 100;
@@ -225,7 +226,7 @@ export class Paginator<
 		for (let i = 0; i < apiRes.length; i++) {
 			const item = apiRes[i];
 			this.totalNotesCount++;
-			if (this.totalNotesCount % 100 === 0) item._shouldInsertAd_ = true;
+			if (instance.notesPerOneAd > 0 && this.totalNotesCount % instance.notesPerOneAd === 0) item._shouldInsertAd_ = true;
 		}
 
 		this.pushItems(apiRes);
@@ -281,7 +282,7 @@ export class Paginator<
 		for (let i = 0; i < apiRes.length; i++) {
 			const item = apiRes[i];
 			this.totalNotesCount++;
-			if (this.totalNotesCount % 100 === 0) item._shouldInsertAd_ = true;
+			if (instance.notesPerOneAd > 0 && this.totalNotesCount % instance.notesPerOneAd === 0) item._shouldInsertAd_ = true;
 		}
 
 		if (this.order.value === 'oldest') {
