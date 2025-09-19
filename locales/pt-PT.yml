@@ -3205,3 +3205,6 @@ _drafts:
   restoreFromDraft: "Restaurar de Rascunho"
   restore: "Redefinir"
   listDrafts: "Lista de Rascunhos"
+_qr:
+  showTabTitle: "Visualizar"
+  raw: "Texto"
