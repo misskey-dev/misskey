@@ -3275,7 +3275,9 @@ _watermarkEditor:
   opacity: "不透明度"
   scale: "サイズ"
   text: "テキスト"
+  qr: "二次元コード"
   position: "位置"
+  margin: "マージン"
   type: "タイプ"
   image: "画像"
   advanced: "高度"
@@ -3290,6 +3292,7 @@ _watermarkEditor:
   polkadotSubDotOpacity: "サブドットの不透明度"
   polkadotSubDotRadius: "サブドットの大きさ"
   polkadotSubDotDivisions: "サブドットの数"
+  leaveBlankToAccountUrl: "空欄にするとアカウントのURLになります"
 
 _imageEffector:
   title: "エフェクト"
@@ -3365,3 +3368,20 @@ _drafts:
   restoreFromDraft: "下書きから復元"
   restore: "復元"
   listDrafts: "下書き一覧"
+
+qr: "二次元コード"
+_qr:
+  showTabTitle: "表示"
+  readTabTitle: "読み取る"
+  shareTitle: "{name} {acct}"
+  shareText: "Fediverseで私をフォローしてください！"
+  chooseCamera: "カメラを選択"
+  cannotToggleFlash: "ライト選択不可"
+  turnOnFlash: "ライトをオンにする"
+  turnOffFlash: "ライトをオフにする"
+  startQr: "コードリーダーを再開"
+  stopQr: "コードリーダーを停止"
+  noQrCodeFound: "QRコードが見つかりません"
+  scanFile: "端末の画像をスキャン"
+  raw: "テキスト"
+  mfm: "MFM"

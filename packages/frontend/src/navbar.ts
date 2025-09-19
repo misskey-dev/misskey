@@ -66,6 +66,12 @@ export const navbarItemDef = reactive({
 			lookup();
 		},
 	},
+	qr: {
+		title: i18n.ts.qr,
+		icon: 'ti ti-qrcode',
+		show: computed(() => $i != null),
+		to: '/qr',
+	},
 	lists: {
 		title: i18n.ts.lists,
 		icon: 'ti ti-list',

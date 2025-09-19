@@ -12236,9 +12236,17 @@ export interface Locale extends ILocale {
          */
         "text": string;
         /**
+         * 二次元コード
+         */
+        "qr": string;
+        /**
          * 位置
          */
         "position": string;
+        /**
+         * マージン
+         */
+        "margin": string;
         /**
          * タイプ
          */
@@ -12295,6 +12303,10 @@ export interface Locale extends ILocale {
          * サブドットの数
          */
         "polkadotSubDotDivisions": string;
+        /**
+         * 空欄にするとアカウントのURLになります
+         */
+        "leaveBlankToAccountUrl": string;
     };
     "_imageEffector": {
         /**
@@ -12571,6 +12583,68 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+    };
+    /**
+     * 二次元コード
+     */
+    "qr": string;
+    "_qr": {
+        /**
+         * 表示
+         */
+        "showTabTitle": string;
+        /**
+         * 読み取る
+         */
+        "readTabTitle": string;
+        /**
+         * {name} {acct}
+         */
+        "shareTitle": ParameterizedString<"name" | "acct">;
+        /**
+         * Fediverseで私をフォローしてください！
+         */
+        "shareText": string;
+        /**
+         * カメラを選択
+         */
+        "chooseCamera": string;
+        /**
+         * ライト選択不可
+         */
+        "cannotToggleFlash": string;
+        /**
+         * ライトをオンにする
+         */
+        "turnOnFlash": string;
+        /**
+         * ライトをオフにする
+         */
+        "turnOffFlash": string;
+        /**
+         * コードリーダーを再開
+         */
+        "startQr": string;
+        /**
+         * コードリーダーを停止
+         */
+        "stopQr": string;
+        /**
+         * QRコードが見つかりません
+         */
+        "noQrCodeFound": string;
+        /**
+         * 端末の画像をスキャン
+         */
+        "scanFile": string;
+        /**
+         * テキスト
+         */
+        "raw": string;
+        /**
+         * MFM
+         */
+        "mfm": string;
     };
 }
 declare const locales: {

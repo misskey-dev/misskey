@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink @click="chooseUploadFolder()">
 							<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
 							<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-							<template #suffixIcon><i class="ti ti-folder"></i></template>
+							<template #icon><i class="ti ti-folder"></i></template>
 						</FormLink>
 					</SearchMarker>
 
