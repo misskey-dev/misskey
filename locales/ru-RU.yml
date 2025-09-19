@@ -2281,3 +2281,6 @@ _imageEffector:
     opacity: "Непрозрачность"
     lightness: "Осветление"
 drafts: "Черновик"
+_qr:
+  showTabTitle: "Отображение"
+  raw: "Текст"
