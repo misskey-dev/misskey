@@ -2380,3 +2380,6 @@ _imageEffector:
     color: "Couleur"
     opacity: "Transparence"
     lightness: "Clair"
+_qr:
+  showTabTitle: "Affichage"
+  raw: "Texte"
