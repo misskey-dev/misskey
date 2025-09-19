@@ -3257,3 +3257,6 @@ _drafts:
   restoreFromDraft: "Restaurar desde los borradores"
   restore: "Restaurar"
   listDrafts: "Listar los borradores"
+_qr:
+  showTabTitle: "Apariencia"
+  raw: "Texto"
