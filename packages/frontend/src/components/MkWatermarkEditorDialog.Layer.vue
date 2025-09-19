@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkRange
 			:modelValue="layer.align.margin ?? 0"
 			:min="0"
-			:max="0.5"
+			:max="0.25"
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkRange
 			:modelValue="layer.align.margin ?? 0"
 			:min="0"
-			:max="0.5"
+			:max="0.25"
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
@@ -148,7 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkRange
 			:modelValue="layer.align.margin ?? 0"
 			:min="0"
-			:max="0.5"
+			:max="0.25"
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
