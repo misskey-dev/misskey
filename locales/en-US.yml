@@ -3254,3 +3254,6 @@ _drafts:
   restoreFromDraft: "Restore from Draft"
   restore: "Restore"
   listDrafts: "List of Drafts"
+_qr:
+  showTabTitle: "Display"
+  raw: "Text"
