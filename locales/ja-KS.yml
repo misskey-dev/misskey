@@ -3037,3 +3037,6 @@ _drafts:
   delete: "下書きをほかす"
   deleteAreYouSure: "下書きをほかしてもええか？"
   noDrafts: "下書きはあらへん"
+_qr:
+  showTabTitle: "表示"
+  raw: "テキスト"
