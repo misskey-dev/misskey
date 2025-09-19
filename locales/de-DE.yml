@@ -3195,3 +3195,6 @@ _drafts:
   restoreFromDraft: "Aus Entwurf wiederherstellen"
   restore: "Wiederherstellen"
   listDrafts: "Liste der Entwürfe"
+_qr:
+  showTabTitle: "Anzeigeart"
+  raw: "Text"
