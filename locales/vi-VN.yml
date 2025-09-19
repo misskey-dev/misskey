@@ -2097,3 +2097,6 @@ _imageEffector:
     color: "Màu sắc"
     opacity: "Độ trong suốt"
     lightness: "Độ sáng"
+_qr:
+  showTabTitle: "Hiển thị"
+  raw: "Văn bản"
