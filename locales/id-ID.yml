@@ -2635,3 +2635,6 @@ _imageEffector:
     color: "Warna"
     opacity: "Opasitas"
     lightness: "Menerangkan"
+_qr:
+  showTabTitle: "Tampilkan"
+  raw: "Teks"
