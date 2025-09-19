@@ -3258,3 +3258,6 @@ _drafts:
   restoreFromDraft: "Recuperare dalle bozze"
   restore: "Ripristina"
   listDrafts: "Elenco bozze"
+_qr:
+  showTabTitle: "Visualizza"
+  raw: "Testo"
