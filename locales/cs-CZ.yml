@@ -2061,3 +2061,6 @@ _imageEffector:
     color: "Barva"
     opacity: "Průhlednost"
     lightness: "Zesvětlit"
+_qr:
+  showTabTitle: "Zobrazit"
+  raw: "Text"
