@@ -3250,3 +3250,6 @@ _drafts:
   restoreFromDraft: "คืนค่าจากฉบับร่าง"
   restore: "กู้คืน"
   listDrafts: "รายการฉบับร่าง"
+_qr:
+  showTabTitle: "แสดงผล"
+  raw: "ข้อความ"
