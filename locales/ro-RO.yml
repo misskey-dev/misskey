@@ -1405,3 +1405,6 @@ _imageEffector:
     scale: "Dimensiune"
     size: "Dimensiune"
     offset: "Poziție"
+_qr:
+  showTabTitle: "Arată"
+  raw: "Text"
