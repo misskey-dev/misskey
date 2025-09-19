@@ -392,10 +392,12 @@ function onImagePointerdown(ev: PointerEvent) {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: -webkit-fill-available;
+	/* なんかiOSでレンダリングがおかしい
 	width: stretch;
-	height: -webkit-fill-available;
 	height: stretch;
+	*/
+	width: calc(100% - 40px);
+	height: calc(100% - 40px);
 	margin: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
