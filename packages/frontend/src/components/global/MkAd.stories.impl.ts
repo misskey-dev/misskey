@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
- 
+
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import MkAd from './MkAd.vue';
 import type { StoryObj } from '@storybook/vue3';
@@ -75,6 +75,7 @@ const common = {
 			place: '',
 			imageUrl: '',
 			dayOfWeek: 7,
+			isSensitive: false,
 		},
 	},
 	parameters: {

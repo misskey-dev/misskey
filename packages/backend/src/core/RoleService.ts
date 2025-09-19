@@ -110,11 +110,12 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportBlocking: true,
 	canImportFollowing: true,
 	canImportMuting: true,
-	canImportNotes: true,
+	canImportNotes: false,
 	canImportUserLists: true,
 	chatAvailability: 'unavailable',
 	uploadableFileTypes: [
 		'text/plain',
+		'text/csv',
 		'application/json',
 		'image/*',
 		'video/*',

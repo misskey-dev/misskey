@@ -9,21 +9,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSelect v-model="filterType" :items="filterTypeDef" :class="$style.input" @update:modelValue="filterItems">
 			<template #label>{{ i18n.ts.state }}</template>
 		</MkSelect>
+
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
 				<MkAd v-if="ad.url" :key="ad.id" :specify="ad"/>
+
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
 				</MkInput>
+
 				<MkInput v-model="ad.imageUrl" type="url">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
+
 				<MkRadios v-model="ad.place">
 					<template #label>Form</template>
 					<option value="square">square</option>
 					<option value="horizontal">horizontal</option>
 					<option value="horizontal-big">horizontal-big</option>
 				</MkRadios>
+
 				<!--
 			<div style="margin: 32px 0;">
 				{{ i18n.ts.priority }}
@@ -32,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadio v-model="ad.priority" value="low">{{ i18n.ts.low }}</MkRadio>
 			</div>
 			-->
+
 				<FormSplit>
 					<MkInput v-model="ad.ratio" type="number">
 						<template #label>{{ i18n.ts.ratio }}</template>
@@ -43,6 +49,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
 				</FormSplit>
+
+				<MkSwitch v-model="ad.isSensitive">
+					<template #label>{{ i18n.ts.sensitive }}</template>
+				</MkSwitch>
+
 				<MkFolder>
 					<template #label>{{ i18n.ts.advancedSettings }}</template>
 					<span>
@@ -56,9 +67,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</span>
 				</MkFolder>
+
 				<MkTextarea v-model="ad.memo">
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
+
 				<div class="_buttons">
 					<MkButton inline primary style="margin-right: 12px;" @click="save(ad)">
 						<i
@@ -70,6 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkButton>
 				</div>
 			</div>
+
 			<MkButton @click="more()">
 				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 			</MkButton>
@@ -88,6 +102,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -158,6 +173,7 @@ function add() {
 		expiresAt: new Date().toISOString(),
 		startsAt: new Date().toISOString(),
 		dayOfWeek: 0,
+		isSensitive: false,
 	});
 }
 
