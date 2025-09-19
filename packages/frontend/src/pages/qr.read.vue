@@ -357,10 +357,10 @@ onUnmounted(() => {
 .controls {
 	width: 100%;
 	position: absolute;
-	left: 0;
+	right: 10px;
 	bottom: 10px;
 	display: flex;
-	justify-content: center;
+	justify-content: end;
 	align-items: center;
 	gap: 10px;
 }
