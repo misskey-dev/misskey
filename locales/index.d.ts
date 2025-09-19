@@ -12236,9 +12236,17 @@ export interface Locale extends ILocale {
          */
         "text": string;
         /**
+         * 二次元コード (アカウント)
+         */
+        "accountQr": string;
+        /**
          * 位置
          */
         "position": string;
+        /**
+         * マージン
+         */
+        "margin": string;
         /**
          * タイプ
          */
