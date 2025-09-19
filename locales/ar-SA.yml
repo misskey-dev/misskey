@@ -1606,3 +1606,6 @@ _imageEffector:
     offset: "الموضع"
     color: "اللون"
     opacity: "الشفافية"
+_qr:
+  showTabTitle: "المظهر"
+  raw: "نص"
