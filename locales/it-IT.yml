@@ -1322,7 +1322,7 @@ markAsSensitiveConfirm: "Vuoi davvero indicare questo contenuto multimediale com
 unmarkAsSensitiveConfirm: "Vuoi davvero indicare come non esplicito il contenuto multimediale?"
 preferences: "Preferenze"
 accessibility: "Accessibilità"
-preferencesProfile: "Profilo preferenze"
+preferencesProfile: "Preferenze del profilo"
 copyPreferenceId: "Copia ID preferenze"
 resetToDefaultValue: "Ripristina a predefinito"
 overrideByAccount: "Sovrascrivere col profilo"
@@ -2691,7 +2691,7 @@ _notification:
     reply: "Rispondi"
     renote: "Rinota"
 _deck:
-  alwaysShowMainColumn: "Mostra sempre la colonna principale"
+  alwaysShowMainColumn: "Mostrare sempre la colonna Principale"
   columnAlign: "Allineamento delle colonne"
   columnGap: "Spessore del margine tra colonne"
   deckMenuPosition: "Posizione del menu Deck"
