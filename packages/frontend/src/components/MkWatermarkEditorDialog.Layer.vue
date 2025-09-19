@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
-			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'account-qr' }>).align.margin = v"
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'text' }>).align.margin = v"
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
 		</MkRange>
@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
-			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'account-qr' }>).align.margin = v"
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'image' }>).align.margin = v"
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
 		</MkRange>
@@ -131,7 +131,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSwitch>
 	</template>
 
-	<template v-else-if="layer.type === 'account-qr'">
+	<template v-else-if="layer.type === 'qr'">
+		<MkInput v-model="layer.data" debounce>
+			<template #label>{{ i18n.ts._watermarkEditor.text }}</template>
+			<template #caption>{{ i18n.ts._watermarkEditor.leaveBlankToAccountUrl }}</template>
+		</MkInput>
+
 		<FormSlot>
 			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
 			<MkPositionSelector
@@ -147,7 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:step="0.01"
 			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
 			continuousUpdate
-			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'account-qr' }>).align.margin = v"
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'qr' }>).align.margin = v"
 		>
 			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
 		</MkRange>

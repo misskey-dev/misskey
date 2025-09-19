@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>
 								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
 								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
-								<div v-if="layer.type === 'account-qr'">{{ i18n.ts._watermarkEditor.accountQr }}</div>
+								<div v-if="layer.type === 'qr'">{{ i18n.ts._watermarkEditor.qr }}</div>
 								<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
 								<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
 								<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
@@ -108,10 +108,11 @@ function createImageLayer(): WatermarkPreset['layers'][number] {
 	};
 }
 
-function createAccountQrLayer(): WatermarkPreset['layers'][number] {
+function createQrLayer(): WatermarkPreset['layers'][number] {
 	return {
 		id: genId(),
-		type: 'account-qr',
+		type: 'qr',
+		data: '',
 		align: { x: 'right', y: 'bottom', margin: 0 },
 		scale: 0.3,
 		opacity: 1,
@@ -317,9 +318,9 @@ function addLayer(ev: MouseEvent) {
 			preset.layers.push(createImageLayer());
 		},
 	}, {
-		text: i18n.ts._watermarkEditor.accountQr,
+		text: i18n.ts._watermarkEditor.qr,
 		action: () => {
-			preset.layers.push(createAccountQrLayer());
+			preset.layers.push(createQrLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.stripe,

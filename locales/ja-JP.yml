@@ -3275,7 +3275,7 @@ _watermarkEditor:
   opacity: "不透明度"
   scale: "サイズ"
   text: "テキスト"
-  accountQr: "二次元コード (アカウント)"
+  qr: "二次元コード"
   position: "位置"
   margin: "マージン"
   type: "タイプ"
@@ -3292,6 +3292,7 @@ _watermarkEditor:
   polkadotSubDotOpacity: "サブドットの不透明度"
   polkadotSubDotRadius: "サブドットの大きさ"
   polkadotSubDotDivisions: "サブドットの数"
+  leaveBlankToAccountUrl: "空欄にするとアカウントのURLになります"
 
 _imageEffector:
   title: "エフェクト"

@@ -67,7 +67,7 @@ interface TextureParamDef extends CommonParamDef {
 	} | {
 		type: 'url'; url: string | null;
 	} | {
-		type: 'account-qr';
+		type: 'qr'; data: string | null;
 	} | null;
 };
 
@@ -337,7 +337,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 				const texture =
 					v.type === 'text' ? await createTextureFromText(this.gl, v.text) :
 					v.type === 'url' ? await createTextureFromUrl(this.gl, v.url) :
-					v.type === 'account-qr' ? await createTextureFromAccountQr(this.gl) :
+					v.type === 'qr' ? await createTextureFromQr(this.gl, { data: v.data }) :
 					null;
 				if (texture == null) continue;
 
@@ -369,7 +369,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		return (
 			v.type === 'text' ? `text:${v.text}` :
 			v.type === 'url' ? `url:${v.url}` :
-			v.type === 'account-qr' ? 'account-qr' :
+			v.type === 'qr' ? `qr:${v.data}` :
 			''
 		);
 	}
@@ -487,7 +487,7 @@ async function createTextureFromText(gl: WebGL2RenderingContext, text: string | 
 	return info;
 }
 
-async function createTextureFromAccountQr(gl: WebGL2RenderingContext, resolution = 512): Promise<{ texture: WebGLTexture, width: number, height: number } | null> {
+async function createTextureFromQr(gl: WebGL2RenderingContext, options: { data: string | null }, resolution = 512): Promise<{ texture: WebGLTexture, width: number, height: number } | null> {
 	const $i = ensureSignin();
 
 	const qrCodeInstance = new QRCodeStyling({
@@ -495,7 +495,7 @@ async function createTextureFromAccountQr(gl: WebGL2RenderingContext, resolution
 		height: resolution,
 		margin: 42,
 		type: 'canvas',
-		data: `${url}/users/${$i.id}`,
+		data: options.data == null || options.data === '' ? `${url}/users/${$i.id}` : options.data,
 		image: $i.avatarUrl,
 		qrOptions: {
 			typeNumber: 0,
@@ -522,12 +522,12 @@ async function createTextureFromAccountQr(gl: WebGL2RenderingContext, resolution
 	const blob = await qrCodeInstance.getRawData('png') as Blob | null;
 	if (blob == null) return null;
 
-	const data = await window.createImageBitmap(blob);
+	const image = await window.createImageBitmap(blob);
 
 	const texture = createTexture(gl);
 	gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, resolution, resolution, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, resolution, resolution, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
 	gl.bindTexture(gl.TEXTURE_2D, null);
 
 	return {

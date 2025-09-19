@@ -44,7 +44,8 @@ export type WatermarkPreset = {
 		opacity: number;
 	} | {
 		id: string;
-		type: 'account-qr';
+		type: 'qr';
+		data: string;
 		scale: number;
 		align: Align;
 		opacity: number;
@@ -133,7 +134,7 @@ export class WatermarkRenderer {
 						},
 					},
 				};
-			} else if (layer.type === 'account-qr') {
+			} else if (layer.type === 'qr') {
 				return {
 					fxId: 'watermarkPlacement',
 					id: layer.id,
@@ -145,7 +146,8 @@ export class WatermarkRenderer {
 						opacity: layer.opacity,
 						cover: false,
 						watermark: {
-							type: 'account-qr',
+							type: 'qr',
+							data: layer.data,
 						},
 					},
 				};
