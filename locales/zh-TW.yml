@@ -3258,3 +3258,6 @@ _drafts:
   restoreFromDraft: "從草稿復原\n"
   restore: "還原"
   listDrafts: "草稿清單"
+_qr:
+  showTabTitle: "檢視"
+  raw: "文字"
