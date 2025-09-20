@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FX_blur } from './fxs/blur.js';
 import { FX_checker } from './fxs/checker.js';
 import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
 import { FX_colorAdjust } from './fxs/colorAdjust.js';
@@ -25,6 +26,7 @@ export const FXS = [
 	FX_mirror,
 	FX_invert,
 	FX_grayscale,
+	FX_blur,
 	FX_colorAdjust,
 	FX_colorClamp,
 	FX_colorClampAdvanced,
