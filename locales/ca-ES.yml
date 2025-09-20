@@ -3212,7 +3212,6 @@ _imageEffector:
     checker: "Escacs"
     blockNoise: "Bloqueig de soroll"
     tearing: "Trencament d'imatge "
-    fillSquare: "Omplir quadrat"
   _fxProps:
     angle: "Angle"
     scale: "Mida"
