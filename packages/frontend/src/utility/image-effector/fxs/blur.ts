@@ -13,35 +13,47 @@ in vec2 in_uv;
 uniform sampler2D in_texture;
 uniform vec2 in_resolution;
 uniform float u_radius;
+uniform int u_samples;
 out vec4 out_color;
 
 void main() {
 	vec2 texelSize = 1.0 / in_resolution;
 	vec4 result = vec4(0.0);
+	float totalWeight = 0.0;
 	
-	// Simple box blur with fixed kernel size for better performance
-	// This avoids dynamic loops which can be slow on some GPUs
-	float radius = min(u_radius, 8.0); // Clamp to reasonable maximum
+	// High-quality blur with configurable sample count
+	int samples = min(u_samples, 128); // Clamp to reasonable maximum
+	int radius = int(u_radius);
 	
-	// Sample in a cross pattern for efficiency
-	result += texture(in_texture, in_uv); // Center
+	// Use a more sophisticated sampling pattern for better quality
+	for (int x = -radius; x <= radius; x++) {
+		for (int y = -radius; y <= radius; y++) {
+			// Calculate distance from center for weighting
+			float distance = length(vec2(float(x), float(y)));
+			
+			// Skip samples beyond the circular radius
+			if (distance > u_radius) continue;
+			
+			// Calculate sample position
+			vec2 offset = vec2(float(x), float(y)) * texelSize;
+			vec2 sampleUV = in_uv + offset;
+			
+			// Only sample if within texture bounds
+			if (sampleUV.x >= 0.0 && sampleUV.x <= 1.0 && sampleUV.y >= 0.0 && sampleUV.y <= 1.0) {
+				// Use Gaussian-like weighting for better quality
+				float weight = exp(-(distance * distance) / (2.0 * (u_radius * 0.5) * (u_radius * 0.5)));
+				result += texture(in_texture, sampleUV) * weight;
+				totalWeight += weight;
+				
+				// Limit actual samples processed for performance
+				samples--;
+				if (samples <= 0) break;
+			}
+		}
+		if (samples <= 0) break;
+	}
 	
-	// Horizontal samples
-	result += texture(in_texture, in_uv + vec2(-radius * texelSize.x, 0.0));
-	result += texture(in_texture, in_uv + vec2(radius * texelSize.x, 0.0));
-	
-	// Vertical samples  
-	result += texture(in_texture, in_uv + vec2(0.0, -radius * texelSize.y));
-	result += texture(in_texture, in_uv + vec2(0.0, radius * texelSize.y));
-	
-	// Diagonal samples for better quality
-	result += texture(in_texture, in_uv + vec2(-radius * texelSize.x, -radius * texelSize.y));
-	result += texture(in_texture, in_uv + vec2(radius * texelSize.x, -radius * texelSize.y));
-	result += texture(in_texture, in_uv + vec2(-radius * texelSize.x, radius * texelSize.y));
-	result += texture(in_texture, in_uv + vec2(radius * texelSize.x, radius * texelSize.y));
-	
-	// Average the samples
-	out_color = result / 9.0;
+	out_color = totalWeight > 0.0 ? result / totalWeight : texture(in_texture, in_uv);
 }
 `;
 
@@ -49,18 +61,27 @@ export const FX_blur = defineImageEffectorFx({
 	id: 'blur',
 	name: i18n.ts._imageEffector._fxs.blur,
 	shader,
-	uniforms: ['radius'] as const,
+	uniforms: ['radius', 'samples'] as const,
 	params: {
 		radius: {
 			label: i18n.ts._imageEffector._fxProps.radius,
 			type: 'number',
 			default: 3.0,
 			min: 0.0,
-			max: 10.0,
+			max: 15.0,
 			step: 0.5,
+		},
+		samples: {
+			label: i18n.ts._imageEffector._fxProps.samples,
+			type: 'number',
+			default: 64,
+			min: 9,
+			max: 128,
+			step: 1,
 		},
 	},
 	main: ({ gl, u, params }) => {
 		gl.uniform1f(u.radius, params.radius);
+		gl.uniform1i(u.samples, params.samples);
 	},
 });

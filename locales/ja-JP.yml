@@ -3325,6 +3325,7 @@ _imageEffector:
     scale: "サイズ"
     size: "サイズ"
     radius: "半径"
+    samples: "サンプル数"
     offset: "位置"
     color: "色"
     opacity: "不透明度"

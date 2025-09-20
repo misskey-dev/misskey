@@ -3211,6 +3211,7 @@ _imageEffector:
     scale: "Size"
     size: "Size"
     radius: "Radius"
+    samples: "Samples"
     color: "Color"
     opacity: "Opacity"
     normalize: "Normalize"
