@@ -46,9 +46,9 @@ void main() {
 }
 `;
 
-export const FX_fillSquare = defineImageEffectorFx({
-	id: 'fillSquare',
-	name: i18n.ts._imageEffector._fxs.fillSquare,
+export const FX_fill = defineImageEffectorFx({
+	id: 'fill',
+	name: i18n.ts._imageEffector._fxs.fill,
 	shader,
 	uniforms: ['offset', 'scale', 'angle', 'color', 'opacity'] as const,
 	params: {

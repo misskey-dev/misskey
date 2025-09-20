@@ -3318,7 +3318,7 @@ _imageEffector:
     checker: "チェッカー"
     blockNoise: "ブロックノイズ"
     tearing: "ティアリング"
-    fillSquare: "塗りつぶし(四角)"
+    fill: "塗りつぶし"
 
   _fxProps:
     angle: "角度"
