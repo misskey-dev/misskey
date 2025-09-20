@@ -18,9 +18,9 @@ out vec4 out_color;
 
 void main() {
 	vec4 result = vec4(0.0);
-	float totalWeight = 0.0;
+	float totalSamples = 0.0;
 	
-	// Gaussian-approximated blur with configurable sample count
+	// Simple box blur with configurable sample count
 	// The radius controls visual blur size, samples controls quality within that radius
 	int samples = min(u_samples, 128);
 	
@@ -34,28 +34,13 @@ void main() {
 	// This determines the grid density, not the blur extent
 	int sampleRadius = int(sqrt(float(samples)) / 2.0);
 	
-	// Gaussian-like sigma for weighting calculation
-	float sigma = u_radius * 0.3; // Approximation: sigma as fraction of radius
-	float sigmaSq2 = 2.0 * sigma * sigma;
-	
 	// Sample in a grid pattern within the specified radius
-	// This includes horizontal, vertical, and diagonal directions with Gaussian-like weighting
+	// This includes horizontal, vertical, and diagonal directions for better quality
 	for (int x = -sampleRadius; x <= sampleRadius; x++) {
 		for (int y = -sampleRadius; y <= sampleRadius; y++) {
 			// Normalize the grid position to [-1, 1] range
 			float normalizedX = float(x) / float(sampleRadius);
 			float normalizedY = float(y) / float(sampleRadius);
-			
-			// Calculate distance from center for Gaussian weighting
-			float distance = length(vec2(normalizedX, normalizedY));
-			
-			// Skip samples beyond circular radius for better quality
-			if (distance > 1.0) continue;
-			
-			// Calculate Gaussian-like weight based on distance
-			// Using approximation: weight = exp(-(distance^2 * radius^2) / (2 * sigma^2))
-			float distanceScaled = distance * u_radius;
-			float weight = exp(-(distanceScaled * distanceScaled) / sigmaSq2);
 			
 			// Scale by radius to get the actual sampling offset
 			vec2 offset = vec2(normalizedX, normalizedY) * blurOffset;
@@ -63,13 +48,13 @@ void main() {
 			
 			// Only sample if within texture bounds
 			if (sampleUV.x >= 0.0 && sampleUV.x <= 1.0 && sampleUV.y >= 0.0 && sampleUV.y <= 1.0) {
-				result += texture(in_texture, sampleUV) * weight;
-				totalWeight += weight;
+				result += texture(in_texture, sampleUV);
+				totalSamples += 1.0;
 			}
 		}
 	}
 	
-	out_color = totalWeight > 0.0 ? result / totalWeight : texture(in_texture, in_uv);
+	out_color = totalSamples > 0.0 ? result / totalSamples : texture(in_texture, in_uv);
 }
 `;
 
