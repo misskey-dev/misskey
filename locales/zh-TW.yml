@@ -3278,6 +3278,6 @@ _qr:
   startQr: "啟動條碼掃描器"
   stopQr: "停止條碼掃描器"
   noQrCodeFound: "找不到 QR code"
-  scanFile: "掃描設備的影像"
+  scanFile: "掃描在裝置上的影像"
   raw: "文字"
   mfm: "MFM"
