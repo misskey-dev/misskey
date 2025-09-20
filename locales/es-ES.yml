@@ -3259,4 +3259,13 @@ _drafts:
   listDrafts: "Listar los borradores"
 _qr:
   showTabTitle: "Apariencia"
+  chooseCamera: "Seleccione cámara"
+  cannotToggleFlash: "No se puede activar el flash"
+  turnOnFlash: "Encender el flash"
+  turnOffFlash: "Apagar el flash"
+  startQr: "Reiniciar el lector de códigos QR"
+  stopQr: "Detener el lector de códigos QR"
+  noQrCodeFound: "No se encontró el código QR"
+  scanFile: "Escanear imagen desde un dispositivo"
   raw: "Texto"
+  mfm: "MFM"
