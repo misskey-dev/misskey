@@ -3212,7 +3212,6 @@ _imageEffector:
     checker: "Checker"
     blockNoise: "Block Noise"
     tearing: "Tearing"
-    fillSquare: "Fill (Square)"
   _fxProps:
     angle: "Angle"
     scale: "Size"
