@@ -3209,7 +3209,6 @@ _imageEffector:
     checker: "revisore"
     blockNoise: "Attenua rumore"
     tearing: "Strappa immagine"
-    fillSquare: "Riempi (quadrato)"
   _fxProps:
     angle: "Angolo"
     scale: "Dimensioni"
