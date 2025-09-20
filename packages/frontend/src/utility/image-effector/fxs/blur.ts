@@ -22,17 +22,23 @@ void main() {
 	float totalSamples = 0.0;
 	
 	// Simple box blur with configurable sample count
-	// Based on the original cross pattern but with more samples
+	// The radius controls visual blur size, samples controls quality within that radius
 	int samples = min(u_samples, 128);
 	float radius = u_radius;
 	
 	// Calculate how many samples to take in each direction
+	// This determines the grid density, not the blur extent
 	int sampleRadius = int(sqrt(float(samples)) / 2.0);
 	
-	// Sample in a grid pattern around the center
+	// Sample in a grid pattern within the specified radius
 	for (int x = -sampleRadius; x <= sampleRadius; x++) {
 		for (int y = -sampleRadius; y <= sampleRadius; y++) {
-			vec2 offset = vec2(float(x), float(y)) * texelSize * radius;
+			// Normalize the grid position to [-1, 1] range
+			float normalizedX = float(x) / float(sampleRadius);
+			float normalizedY = float(y) / float(sampleRadius);
+			
+			// Scale by radius to get the actual sampling offset
+			vec2 offset = vec2(normalizedX, normalizedY) * texelSize * radius;
 			vec2 sampleUV = in_uv + offset;
 			
 			// Only sample if within texture bounds
