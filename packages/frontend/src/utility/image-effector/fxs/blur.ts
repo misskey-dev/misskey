@@ -19,41 +19,31 @@ out vec4 out_color;
 void main() {
 	vec2 texelSize = 1.0 / in_resolution;
 	vec4 result = vec4(0.0);
-	float totalWeight = 0.0;
+	float totalSamples = 0.0;
 	
-	// High-quality blur with configurable sample count
-	int samples = min(u_samples, 128); // Clamp to reasonable maximum
-	int radius = int(u_radius);
+	// Simple box blur with configurable sample count
+	// Based on the original cross pattern but with more samples
+	int samples = min(u_samples, 128);
+	float radius = u_radius;
 	
-	// Use a more sophisticated sampling pattern for better quality
-	for (int x = -radius; x <= radius; x++) {
-		for (int y = -radius; y <= radius; y++) {
-			// Calculate distance from center for weighting
-			float distance = length(vec2(float(x), float(y)));
-			
-			// Skip samples beyond the circular radius
-			if (distance > u_radius) continue;
-			
-			// Calculate sample position
-			vec2 offset = vec2(float(x), float(y)) * texelSize;
+	// Calculate how many samples to take in each direction
+	int sampleRadius = int(sqrt(float(samples)) / 2.0);
+	
+	// Sample in a grid pattern around the center
+	for (int x = -sampleRadius; x <= sampleRadius; x++) {
+		for (int y = -sampleRadius; y <= sampleRadius; y++) {
+			vec2 offset = vec2(float(x), float(y)) * texelSize * radius;
 			vec2 sampleUV = in_uv + offset;
 			
 			// Only sample if within texture bounds
 			if (sampleUV.x >= 0.0 && sampleUV.x <= 1.0 && sampleUV.y >= 0.0 && sampleUV.y <= 1.0) {
-				// Use Gaussian-like weighting for better quality
-				float weight = exp(-(distance * distance) / (2.0 * (u_radius * 0.5) * (u_radius * 0.5)));
-				result += texture(in_texture, sampleUV) * weight;
-				totalWeight += weight;
-				
-				// Limit actual samples processed for performance
-				samples--;
-				if (samples <= 0) break;
+				result += texture(in_texture, sampleUV);
+				totalSamples += 1.0;
 			}
 		}
-		if (samples <= 0) break;
 	}
 	
-	out_color = totalWeight > 0.0 ? result / totalWeight : texture(in_texture, in_uv);
+	out_color = totalSamples > 0.0 ? result / totalSamples : texture(in_texture, in_uv);
 }
 `;
 
