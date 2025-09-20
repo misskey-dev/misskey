@@ -17,14 +17,18 @@ uniform int u_samples;
 out vec4 out_color;
 
 void main() {
-	vec2 texelSize = 1.0 / in_resolution;
 	vec4 result = vec4(0.0);
 	float totalSamples = 0.0;
 	
 	// Simple box blur with configurable sample count
 	// The radius controls visual blur size, samples controls quality within that radius
 	int samples = min(u_samples, 128);
-	float radius = u_radius;
+	
+	// Make blur radius resolution-independent by using a percentage of image size
+	// This ensures consistent visual blur regardless of image resolution
+	float referenceSize = min(in_resolution.x, in_resolution.y);
+	float normalizedRadius = u_radius / 100.0; // Convert radius to percentage (0-15 -> 0-0.15)
+	vec2 blurOffset = vec2(normalizedRadius) / in_resolution * referenceSize;
 	
 	// Calculate how many samples to take in each direction
 	// This determines the grid density, not the blur extent
@@ -38,7 +42,7 @@ void main() {
 			float normalizedY = float(y) / float(sampleRadius);
 			
 			// Scale by radius to get the actual sampling offset
-			vec2 offset = vec2(normalizedX, normalizedY) * texelSize * radius;
+			vec2 offset = vec2(normalizedX, normalizedY) * blurOffset;
 			vec2 sampleUV = in_uv + offset;
 			
 			// Only sample if within texture bounds
