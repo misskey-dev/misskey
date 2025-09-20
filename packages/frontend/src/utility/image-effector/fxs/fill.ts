@@ -71,7 +71,7 @@ export const FX_fill = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		scaleX: {
-			label: i18n.ts._imageEffector._fxProps.scale + ' X',
+			label: i18n.ts._imageEffector._fxProps.scale + ' W',
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
@@ -80,7 +80,7 @@ export const FX_fill = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		scaleY: {
-			label: i18n.ts._imageEffector._fxProps.scale + ' Y',
+			label: i18n.ts._imageEffector._fxProps.scale + ' H',
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
