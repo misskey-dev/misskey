@@ -3355,6 +3355,7 @@ _imageEffector:
     zoomLinesThreshold: "集中線の幅"
     zoomLinesMaskSize: "中心径"
     zoomLinesBlack: "黒色にする"
+    circle: "円形"
 
 drafts: "下書き"
 _drafts:

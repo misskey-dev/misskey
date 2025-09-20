@@ -18,6 +18,7 @@ uniform sampler2D in_texture;
 uniform vec2 in_resolution;
 uniform vec2 u_offset;
 uniform vec2 u_scale;
+uniform bool u_ellipse;
 uniform float u_angle;
 uniform float u_radius;
 uniform int u_samples;
@@ -31,7 +32,14 @@ void main() {
 		centeredUv.x * sin(angle) + centeredUv.y * cos(angle)
 	) + u_offset;
 
-	bool isInside = rotatedUV.x > u_offset.x - u_scale.x && rotatedUV.x < u_offset.x + u_scale.x && rotatedUV.y > u_offset.y - u_scale.y && rotatedUV.y < u_offset.y + u_scale.y;
+	bool isInside = false;
+	if (u_ellipse) {
+		vec2 norm = (rotatedUV - u_offset) / u_scale;
+		isInside = dot(norm, norm) <= 1.0;
+	} else {
+		isInside = rotatedUV.x > u_offset.x - u_scale.x && rotatedUV.x < u_offset.x + u_scale.x && rotatedUV.y > u_offset.y - u_scale.y && rotatedUV.y < u_offset.y + u_scale.y;
+	}
+
 	if (!isInside) {
 		out_color = texture(in_texture, in_uv);
 		return;
@@ -77,7 +85,7 @@ export const FX_blur = defineImageEffectorFx({
 	id: 'blur',
 	name: i18n.ts._imageEffector._fxs.blur,
 	shader,
-	uniforms: ['offset', 'scale', 'angle', 'radius', 'samples'] as const,
+	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'radius', 'samples'] as const,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',
@@ -115,6 +123,11 @@ export const FX_blur = defineImageEffectorFx({
 			step: 0.01,
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
+		ellipse: {
+			label: i18n.ts._imageEffector._fxProps.circle,
+			type: 'boolean',
+			default: false,
+		},
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
 			type: 'number',
@@ -136,6 +149,7 @@ export const FX_blur = defineImageEffectorFx({
 	main: ({ gl, u, params }) => {
 		gl.uniform2f(u.offset, params.offsetX / 2, params.offsetY / 2);
 		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
+		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
 		gl.uniform1f(u.angle, params.angle / 2);
 		gl.uniform1f(u.radius, params.radius);
 		gl.uniform1i(u.samples, 256);

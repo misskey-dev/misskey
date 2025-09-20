@@ -12536,6 +12536,10 @@ export interface Locale extends ILocale {
              * 黒色にする
              */
             "zoomLinesBlack": string;
+            /**
+             * 円形
+             */
+            "circle": string;
         };
     };
     /**
