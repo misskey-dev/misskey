@@ -3306,6 +3306,7 @@ _imageEffector:
     mirror: "ミラー"
     invert: "色の反転"
     grayscale: "白黒"
+    blur: "ぼかし"
     colorAdjust: "色調補正"
     colorClamp: "色の圧縮"
     colorClampAdvanced: "色の圧縮(高度)"
@@ -3317,12 +3318,14 @@ _imageEffector:
     checker: "チェッカー"
     blockNoise: "ブロックノイズ"
     tearing: "ティアリング"
-    fillSquare: "塗りつぶし(四角)"
+    fill: "塗りつぶし"
 
   _fxProps:
     angle: "角度"
     scale: "サイズ"
     size: "サイズ"
+    radius: "半径"
+    samples: "サンプル数"
     offset: "位置"
     color: "色"
     opacity: "不透明度"
@@ -3352,6 +3355,7 @@ _imageEffector:
     zoomLinesThreshold: "集中線の幅"
     zoomLinesMaskSize: "中心径"
     zoomLinesBlack: "黒色にする"
+    circle: "円形"
 
 drafts: "下書き"
 _drafts:
