@@ -1410,7 +1410,7 @@ _accountSettings:
   makeNotesFollowersOnlyBefore: "昔のノートをフォロワーだけに見てもらう"
   makeNotesFollowersOnlyBeforeDescription: "この機能が有効になってる間は、設定された日時より前、それか設定された時間が経ったノートがフォロワーのみ見れるようになるで。無効に戻すと、ノートの公開状態も戻るで。"
   makeNotesHiddenBefore: "昔のノートを見れんようにする"
-  makeNotesHiddenBeforeDescription: "この機能が有効になってる間は、設定された日時より前、それか設定された時間が経ったノートがフォロワーのみ見れるようになるで。無効に戻すと、ノートの公開状態も戻るで。"
+  makeNotesHiddenBeforeDescription: "この機能が有効になってる間は、設定された日時より前、それか設定された時間が経ったノートがあんただけ見れるようになるで。無効に戻すと、ノートの公開状態も戻るで。"
   mayNotEffectForFederatedNotes: "リモートサーバーに連合されたノートには効果が及ばんかもしれん。"
   mayNotEffectSomeSituations: "これらの制限は簡易的なものやで。リモートサーバーでの閲覧とかモデレーション時とか、一部のシチュエーションでは適用されへんかもしれん。"
   notesHavePassedSpecifiedPeriod: "決めた時間が経ったノート"
