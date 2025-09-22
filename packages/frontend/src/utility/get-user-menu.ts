@@ -230,11 +230,16 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-search',
 			text: i18n.ts.searchThisUsersNotes,
 			action: () => {
-				router.push('/search', {
-					query: {
+				const query = {
 						username: user.username,
-						host: user.host ?? undefined,
-					},
+					} as { username: string, host?: string };
+
+				if (user.host !== null) {
+					query.host = user.host;
+				}
+
+				router.push('/search', {
+					query
 				});
 			},
 		});
