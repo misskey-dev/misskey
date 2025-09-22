@@ -64,6 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option :value="1">{{ i18n.ts.small }}</option>
 								<option :value="2">{{ i18n.ts.medium }}</option>
 								<option :value="3">{{ i18n.ts.large }}</option>
+								<option :value="4">{{ i18n.ts.large }}+</option>
+								<option :value="5">{{ i18n.ts.large }}++</option>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -95,11 +97,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<SearchMarker :keywords="['emoji', 'picker', 'style']">
 						<MkPreferenceContainer k="emojiPickerStyle">
-							<MkSelect v-model="emojiPickerStyle" :items="[
-								{ label: i18n.ts.auto, value: 'auto' },
-								{ label: i18n.ts.popup, value: 'popup' },
-								{ label: i18n.ts.drawer, value: 'drawer' },
-							]">
+							<MkSelect
+								v-model="emojiPickerStyle" :items="[
+									{ label: i18n.ts.auto, value: 'auto' },
+									{ label: i18n.ts.popup, value: 'popup' },
+									{ label: i18n.ts.drawer, value: 'drawer' },
+								]"
+							>
 								<template #label><SearchLabel>{{ i18n.ts.style }}</SearchLabel></template>
 								<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 							</MkSelect>
@@ -116,13 +120,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { genId } from '@/utility/id.js';
 import XPalette from './emoji-palette.palette.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import { genId } from '@/utility/id.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
