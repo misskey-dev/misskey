@@ -16,8 +16,7 @@
 - Fix: iOSで、デバイスがダークモードだと初回読み込み時にエラーになる問題を修正
 
 ### Server
--
-
+- Enhance: ユーザーIPを確実に取得できるために設定ファイルにFastifyOptions.trustProxyを追加しました
 
 ## 2025.9.0
 
