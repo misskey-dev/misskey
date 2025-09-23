@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=22.15.0-bookworm
+ARG NODE_VERSION=22.19.0-bookworm
 
 # build assets & compile TypeScript
 
@@ -40,7 +40,26 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 COPY --link . ./
 
 RUN git submodule update --init
+
 RUN pnpm build
+
+# Verify LANGS replacement in native-builder stage
+RUN echo "Verifying LANGS replacement in native-builder stage..." && \
+    if [ -f "./packages/backend/built/server/web/boot.js" ]; then \
+        if grep -q "LANGS" ./packages/backend/built/server/web/boot.js; then \
+            echo "ERROR: LANGS not replaced in native-builder stage" && \
+            echo "Content of boot.js:" && \
+            head -20 ./packages/backend/built/server/web/boot.js && \
+            exit 1; \
+        else \
+            echo "SUCCESS: LANGS properly replaced in native-builder stage"; \
+            echo "Native-builder boot.js checksum:"; \
+            md5sum ./packages/backend/built/server/web/boot.js; \
+        fi \
+    else \
+        echo "ERROR: boot.js not found in native-builder stage" && exit 1; \
+    fi
+
 RUN rm -rf .git/
 
 # build native dependencies for target platform
@@ -103,6 +122,25 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bub
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
+
+# Final validation: Ensure all critical files are present in runner stage
+RUN echo "Final validation of runner stage..." && \
+    if [ ! -f "packages/backend/built/server/web/boot.js" ]; then \
+        echo "ERROR: boot.js missing in runner stage" && exit 1; \
+    fi && \
+    echo "SUCCESS: All critical files are present in runner stage"
+
+# LANGS置換確認バリデーション
+RUN echo "Validating LANGS replacement in boot files..." && \
+    echo "Runner boot.js checksum:"; \
+    md5sum ./packages/backend/built/server/web/boot.js; \
+    if grep -q "LANGS" ./packages/backend/built/server/web/boot.js; then \
+        echo "ERROR: LANGS not replaced in boot.js"; \
+        echo "Content of runner boot.js:"; \
+        head -20 ./packages/backend/built/server/web/boot.js; \
+        exit 1; \
+    fi && \
+    echo "SUCCESS: LANGS has been properly replaced in all boot files"
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production

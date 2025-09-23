@@ -134,7 +134,7 @@ const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) 
 	return {
 		name: name,
 		get meta() {
-			return ep.meta ?? {};
+			return ep.meta ?? { requireCredential: false, requireAdmin: false, requireModerator: false } as IEndpointMeta;
 		},
 		get params() {
 			return ep.paramDef;

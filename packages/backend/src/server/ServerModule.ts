@@ -49,6 +49,7 @@ import { ChatRoomChannelService } from './api/stream/channels/chat-room.js';
 import { ReversiChannelService } from './api/stream/channels/reversi.js';
 import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js';
 import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.js';
+import { SlackNotificationService } from '@/core/SlackNotificationService.js';
 
 @Module({
 	imports: [
@@ -77,6 +78,7 @@ import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.j
 		SigninWithPasskeyApiService,
 		SigninService,
 		SignupApiService,
+		SlackNotificationService,
 		StreamingApiServerService,
 		MainChannelService,
 		AdminChannelService,

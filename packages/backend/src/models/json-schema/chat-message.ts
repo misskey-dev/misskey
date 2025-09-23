@@ -78,6 +78,19 @@ export const packedChatMessageSchema = {
 				},
 			},
 		},
+		expiresAt: {
+			type: 'string',
+			format: 'date-time',
+			optional: true, nullable: true,
+		},
+		isSystemMessage: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		meta: {
+			type: 'object',
+			optional: true, nullable: true,
+		},
 	},
 } as const;
 
@@ -142,6 +155,19 @@ export const packedChatMessageLiteSchema = {
 				},
 			},
 		},
+		expiresAt: {
+			type: 'string',
+			format: 'date-time',
+			optional: true, nullable: true,
+		},
+		isSystemMessage: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		meta: {
+			type: 'object',
+			optional: true, nullable: true,
+		},
 	},
 } as const;
 
@@ -191,6 +217,19 @@ export const packedChatMessageLiteFor1on1Schema = {
 					},
 				},
 			},
+		},
+		expiresAt: {
+			type: 'string',
+			format: 'date-time',
+			optional: true, nullable: true,
+		},
+		isSystemMessage: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		meta: {
+			type: 'object',
+			optional: true, nullable: true,
 		},
 	},
 } as const;
@@ -251,6 +290,19 @@ export const packedChatMessageLiteForRoomSchema = {
 					},
 				},
 			},
+		},
+		expiresAt: {
+			type: 'string',
+			format: 'date-time',
+			optional: true, nullable: true,
+		},
+		isSystemMessage: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		meta: {
+			type: 'object',
+			optional: true, nullable: true,
 		},
 	},
 } as const;

@@ -1428,6 +1428,11 @@ _chat:
   thisUserNotAllowedChatAnyone: "このユーザーは誰からもメッセージを受け付けていません。"
   chatAllowedUsers: "メッセージを許可する相手"
   chatAllowedUsers_note: "自分からメッセージを送った相手とはこの設定に関わらずメッセージの送受信が可能です。"
+  secretTalk: "内緒の会話"
+  secretTalkOff: "内緒の会話を無効にする"
+  secretTalkConfirmOn: "内緒の会話を有効にしますか？送信したメッセージは24時間後に自動的に削除されます。"
+  secretTalkConfirmOff: "内緒の会話を無効にしますか？"
+  secretMessage: "内緒のメッセージを入力... (24時間後に自動削除)"
   _chatAllowedUsers:
     everyone: "誰でも"
     followers: "自分のフォロワーのみ"

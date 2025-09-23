@@ -120,7 +120,7 @@ async function fetchChannel() {
 
 	name.value = result.name;
 	description.value = result.description;
-	bannerId.value = result.bannerId;
+	bannerId.value = (result as any).bannerId;
 	bannerUrl.value = result.bannerUrl;
 	isSensitive.value = result.isSensitive;
 	pinnedNotes.value = result.pinnedNoteIds.map(id => ({

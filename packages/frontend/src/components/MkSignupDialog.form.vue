@@ -67,12 +67,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
 			<MkCaptcha v-if="instance.enableTestcaptcha" ref="testcaptcha" v-model="testcaptchaResponse" :class="$style.captcha" provider="testcaptcha" :sitekey="null"/>
-			<MkButton type="submit" :disabled="shouldDisableSubmitting" large gradate rounded data-cy-signup-submit style="margin: 0 auto;">
-				<template v-if="submitting">
-					<MkLoading :em="true" :colored="false"/>
-				</template>
-				<template v-else>{{ i18n.ts.start }}</template>
-			</MkButton>
+
+			<!-- Server Rules Agreement -->
+			<div v-if="availableServerRules" class="_gaps_s" :class="$style.agreementSection">
+				<div class="_gaps_xs">
+					<div style="font-weight: bold; text-align: center;">{{ i18n.ts.serverRules }}</div>
+					<div :class="$style.rulesList">
+						<div v-for="(item, index) in instance.serverRules.slice(0, 3)" :key="index" :class="$style.ruleItem">
+							{{ index + 1 }}. <span v-html="item"></span>
+						</div>
+						<div v-if="instance.serverRules.length > 3" :class="$style.moreRules">
+							... and {{ instance.serverRules.length - 3 }} more rules
+						</div>
+					</div>
+					<MkSwitch v-model="agreeServerRules" :disabled="submitting">
+						{{ i18n.ts.agree }}
+					</MkSwitch>
+				</div>
+			</div>
+
+			<!-- Server Rules Agreement -->
+			<div v-if="availableServerRules" class="_gaps_s" :class="$style.agreementSection">
+				<div class="_gaps_xs">
+					<div style="font-weight: bold; text-align: center;">{{ i18n.ts.serverRules }}</div>
+					<div style="font-size: 0.85em; color: var(--MI_THEME-warn); margin-bottom: 8px;">
+						{{ i18n.ts.beSureToReadThisAsItIsImportant }}
+					</div>
+					<div :class="$style.rulesPreview">
+						<div v-for="(item, index) in instance.serverRules.slice(0, 3)" :key="index" style="margin-bottom: 4px; font-size: 0.9em;">
+							{{ index + 1 }}. <span v-html="item"></span>
+						</div>
+						<div v-if="instance.serverRules.length > 3" style="font-style: italic; color: var(--MI_THEME-fg); margin-top: 4px; font-size: 0.85em;">
+							... and {{ instance.serverRules.length - 3 }} more rules
+						</div>
+					</div>
+					<MkSwitch v-model="agreeServerRules" :disabled="submitting" @update:modelValue="updateAgreeServerRules">
+						{{ i18n.ts.agree }}
+					</MkSwitch>
+				</div>
+			</div>
+
+			<!-- Terms of Service Agreement -->
+			<div v-if="availableTos || availablePrivacyPolicy" class="_gaps_s" :class="$style.agreementSection">
+				<div class="_gaps_xs">
+					<div style="font-weight: bold; text-align: center;">{{ tosPrivacyPolicyLabel }}</div>
+					<div class="_gaps_xs">
+						<a v-if="availableTos" :href="instance.tosUrl ?? undefined" target="_blank" rel="noopener" class="_link">
+							<i class="ti ti-external-link"></i>
+							{{ i18n.ts.termsOfService }}
+						</a>
+						<a v-if="availablePrivacyPolicy" :href="instance.privacyPolicyUrl ?? undefined" target="_blank" rel="noopener" class="_link">
+							<i class="ti ti-external-link"></i>
+							{{ i18n.ts.privacyPolicy }}
+						</a>
+					</div>
+					<MkSwitch v-model="agreeTosAndPrivacyPolicy" :disabled="submitting" @update:modelValue="updateAgreeTosAndPrivacyPolicy">
+						{{ i18n.ts.agree }}
+					</MkSwitch>
+				</div>
+			</div>
+
+			<!-- Basic Notes Agreement -->
+			<div class="_gaps_s" :class="$style.agreementSection">
+				<div class="_gaps_xs">
+					<div style="font-weight: bold; text-align: center;">{{ i18n.ts.basicNotesBeforeCreateAccount }}</div>
+					<a href="https://misskey-hub.net/docs/for-users/onboarding/warning/" target="_blank" rel="noopener" class="_link">
+						<i class="ti ti-external-link"></i>
+						{{ i18n.ts.basicNotesBeforeCreateAccount }}
+					</a>
+					<MkSwitch v-model="agreeNote" :disabled="submitting" @update:modelValue="updateAgreeNote">
+						{{ i18n.ts.agree }}
+					</MkSwitch>
+				</div>
+			</div>
+
+			<div class="_buttonsCenter">
+				<MkButton type="submit" :disabled="shouldDisableSubmitting" large gradate rounded primary data-cy-signup-submit>
+					<template v-if="submitting">
+						<MkLoading :em="true" :colored="false"/>
+					</template>
+					<template v-else>{{ i18n.ts.start }}</template>
+				</MkButton>
+			</div>
 		</form>
 	</div>
 </div>
@@ -85,6 +161,7 @@ import * as Misskey from 'misskey-js';
 import * as config from '@@/js/config.js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
+import MkSwitch from './MkSwitch.vue';
 import type { Captcha } from '@/components/MkCaptcha.vue';
 import MkCaptcha from '@/components/MkCaptcha.vue';
 import * as os from '@/os.js';
@@ -129,6 +206,22 @@ const turnstileResponse = ref<string | null>(null);
 const testcaptchaResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
 const emailAbortController = ref<null | AbortController>(null);
+// Agreement states
+const agreeServerRules = ref<boolean>(false);
+const agreeTosAndPrivacyPolicy = ref<boolean>(false);
+const agreeNote = ref<boolean>(false);
+
+// Availability flags
+const availableServerRules = instance.serverRules.length > 0;
+const availableTos = instance.tosUrl != null && instance.tosUrl !== '';
+const availablePrivacyPolicy = instance.privacyPolicyUrl != null && instance.privacyPolicyUrl !== '';
+
+// Legacy support
+const isAcceptedServerRule = computed(() => {
+	return (!availableServerRules || agreeServerRules.value) &&
+	       ((!availableTos && !availablePrivacyPolicy) || agreeTosAndPrivacyPolicy.value) &&
+	       agreeNote.value;
+});
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
@@ -139,6 +232,7 @@ const shouldDisableSubmitting = computed((): boolean => {
 		instance.enableTestcaptcha && !testcaptchaResponse.value ||
 		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
 		instance.disableRegistration && invitationCode.value === '' ||
+		instance.tosUrl && !isAcceptedServerRule.value ||
 		usernameState.value !== 'ok' ||
 		passwordRetypeState.value !== 'match';
 });
@@ -252,6 +346,62 @@ function onChangePasswordRetype(): void {
 	passwordRetypeState.value = password.value === retypedPassword.value ? 'match' : 'not-match';
 }
 
+const tosPrivacyPolicyLabel = computed(() => {
+	if (availableTos && availablePrivacyPolicy) {
+		return i18n.ts.tosAndPrivacyPolicy;
+	} else if (availableTos) {
+		return i18n.ts.termsOfService;
+	} else if (availablePrivacyPolicy) {
+		return i18n.ts.privacyPolicy;
+	} else {
+		return '';
+	}
+});
+
+async function updateAgreeServerRules(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.serverRules }),
+		});
+		if (confirm.canceled) return;
+		agreeServerRules.value = true;
+	} else {
+		agreeServerRules.value = false;
+	}
+}
+
+async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({
+				x: tosPrivacyPolicyLabel.value,
+			}),
+		});
+		if (confirm.canceled) return;
+		agreeTosAndPrivacyPolicy.value = true;
+	} else {
+		agreeTosAndPrivacyPolicy.value = false;
+	}
+}
+
+async function updateAgreeNote(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.basicNotesBeforeCreateAccount }),
+		});
+		if (confirm.canceled) return;
+		agreeNote.value = true;
+	} else {
+		agreeNote.value = false;
+	}
+}
+
 async function onSubmit(): Promise<void> {
 	if (submitting.value) return;
 	submitting.value = true;
@@ -274,8 +424,8 @@ async function onSubmit(): Promise<void> {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(signupPayload),
-	}).catch(() => {
-		onSignupApiError();
+	}).catch((networkError) => {
+		onSignupApiError('ネットワークエラーが発生しました。インターネット接続を確認してください。', 'NETWORK_ERROR');
 		return null;
 	});
 
@@ -297,14 +447,22 @@ async function onSubmit(): Promise<void> {
 				await login(resJson.token);
 			}
 		}
-	} else {
-		onSignupApiError();
+	} else if (res) {
+		// エラーレスポンスの詳細を取得
+		try {
+			const errorData = await res.json();
+			const errorMessage = errorData.message || 'サインアップに失敗しました';
+			const errorCode = errorData.error || `HTTP_${res.status}`;
+			onSignupApiError(errorMessage, errorCode);
+		} catch (parseError) {
+			onSignupApiError(`サーバーエラーが発生しました (HTTP ${res.status})`, `HTTP_${res.status}`);
+		}
 	}
 
 	submitting.value = false;
 }
 
-function onSignupApiError() {
+function onSignupApiError(errorDetail?: string, errorCode?: string) {
 	submitting.value = false;
 	hcaptcha.value?.reset?.();
 	mcaptcha.value?.reset?.();
@@ -312,10 +470,45 @@ function onSignupApiError() {
 	turnstile.value?.reset?.();
 	testcaptcha.value?.reset?.();
 
+	// 詳細なエラーメッセージの表示
+	const errorMessage = errorDetail || i18n.ts.somethingHappened;
+	const displayTitle = errorCode ? `エラー: ${errorCode}` : 'エラーが発生しました';
+
 	os.alert({
 		type: 'error',
-		text: i18n.ts.somethingHappened,
+		title: displayTitle,
+		text: errorMessage,
 	});
+
+	// Slackにフロントエンドエラーを送信
+	sendErrorToSlack(errorDetail, errorCode);
+}
+
+async function sendErrorToSlack(errorDetail?: string, errorCode?: string) {
+	try {
+		const errorData = {
+			type: 'SIGNUP_ERROR',
+			message: errorDetail || '不明なサインアップエラー',
+			errorCode: errorCode || 'UNKNOWN_ERROR',
+			userAgent: navigator.userAgent,
+			timestamp: new Date().toISOString(),
+			url: window.location.href,
+			username: username.value || '未入力',
+			invitationCode: invitationCode.value || '未使用',
+			email: email.value || '未入力'
+		};
+
+		await window.fetch(`${config.apiUrl}/log-frontend-error`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(errorData),
+		});
+	} catch (slackError) {
+		// Slack送信エラーは無視（ユーザーには表示しない）
+		console.error('Failed to send error to Slack:', slackError);
+	}
 }
 </script>
 
@@ -330,5 +523,22 @@ function onSignupApiError() {
 
 .captcha {
 	margin: 16px 0;
+}
+
+.tosSection {
+	padding: 12px;
+	background-color: var(--MI_THEME-panel);
+	border-radius: 8px;
+	border: 1px solid var(--MI_THEME-divider);
+}
+
+.rulesPreview {
+	background: var(--MI_THEME-bg);
+	border-radius: 4px;
+	padding: 8px;
+	font-size: 12px;
+	max-height: 120px;
+	overflow-y: auto;
+	margin-bottom: 8px;
 }
 </style>

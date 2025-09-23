@@ -120,7 +120,7 @@ function onPasskeyLogin(): void {
 			.then((res) => {
 				passkeyContext.value = res.context ?? '';
 				credentialRequest.value = parseRequestOptionsFromJSON({
-					publicKey: res.option,
+					publicKey: res.option as any,
 				});
 
 				page.value = 'passkey';
@@ -135,21 +135,21 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 
 	if (doingPasskeyFromInputPage.value) {
 		misskeyApi('signin-with-passkey', {
-			credential: credential.toJSON(),
+			credential: credential.toJSON() as any,
 			context: passkeyContext.value,
 		}).then((res) => {
-			if (res.signinResponse == null) {
+			if ('signinResponse' in res && res.signinResponse != null) {
+				emit('login', res.signinResponse);
+				onLoginSucceeded(res.signinResponse);
+			} else {
 				onSigninApiError();
-				return;
 			}
-			emit('login', res.signinResponse);
-			onLoginSucceeded(res.signinResponse);
 		}).catch(onSigninApiError);
 	} else if (userInfo.value != null) {
 		tryLogin({
 			username: userInfo.value.username,
 			password: password.value,
-			credential: credential.toJSON(),
+			credential: credential.toJSON() as any,
 		});
 	}
 }
@@ -192,7 +192,7 @@ async function onPasswordSubmitted(pw: PwResponse) {
 			'g-recaptcha-response': pw.captcha.reCaptchaResponse,
 			'turnstile-response': pw.captcha.turnstileResponse,
 			'testcaptcha-response': pw.captcha.testcaptchaResponse,
-		});
+		} as any);
 	}
 }
 
@@ -253,7 +253,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 				case 'passkey': {
 					if (webAuthnSupported()) {
 						credentialRequest.value = parseRequestOptionsFromJSON({
-							publicKey: res.authRequest,
+							publicKey: res.authRequest as any,
 						});
 						page.value = 'passkey';
 					} else {

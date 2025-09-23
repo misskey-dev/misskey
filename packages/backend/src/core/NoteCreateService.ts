@@ -254,7 +254,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = this.meta.sensitiveWords;
-			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
+			// CWとtext両方をチェック（NSFWの場合でもSensitive wordsチェックを実行）
+			const contentToCheck = (data.cw ?? '') + ' ' + (data.text ?? '');
+			if (this.utilityService.isKeyWordIncluded(contentToCheck, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';

@@ -40,5 +40,9 @@ export const packedChatRoomSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		isSecretMessageMode: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;

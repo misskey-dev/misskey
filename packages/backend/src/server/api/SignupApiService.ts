@@ -19,6 +19,7 @@ import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
+import { SlackNotificationService } from '@/core/SlackNotificationService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -51,6 +52,7 @@ export class SignupApiService {
 		private signupService: SignupService,
 		private signinService: SigninService,
 		private emailService: EmailService,
+		private slackNotificationService: SlackNotificationService,
 	) {
 	}
 
@@ -74,35 +76,55 @@ export class SignupApiService {
 	) {
 		const body = request.body;
 
+		// Helper function to send error notification
+		const sendErrorNotification = async (errorMessage: string) => {
+			try {
+				await this.slackNotificationService.sendSignupErrorNotification({
+					username: body.username,
+					message: errorMessage,
+					ip: request.ip,
+					userAgent: request.headers['user-agent'],
+					timestamp: new Date(),
+				});
+			} catch (notificationError) {
+				console.error('Failed to send signup error notification:', notificationError);
+			}
+		};
+
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
 			if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
-				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(async err => {
+					await sendErrorNotification(`HCaptcha verification failed: ${err}`);
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
-				await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+				await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(async err => {
+					await sendErrorNotification(`MCaptcha verification failed: ${err}`);
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
-				await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+				await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(async err => {
+					await sendErrorNotification(`ReCaptcha verification failed: ${err}`);
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
-				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(async err => {
+					await sendErrorNotification(`Turnstile verification failed: ${err}`);
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (this.meta.enableTestcaptcha) {
-				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
+				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(async err => {
+					await sendErrorNotification(`TestCaptcha verification failed: ${err}`);
 					throw new FastifyReplyError(400, err);
 				});
 			}
@@ -116,13 +138,23 @@ export class SignupApiService {
 
 		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
+				await sendErrorNotification('Email address required but not provided');
 				reply.code(400);
+				reply.send({
+					error: 'EMAIL_REQUIRED',
+					message: 'メールアドレスが必要です',
+				});
 				return;
 			}
 
 			const res = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!res.available) {
+				await sendErrorNotification(`Email validation failed: ${res.reason || 'unknown'}`);
 				reply.code(400);
+				reply.send({
+					error: 'EMAIL_UNAVAILABLE',
+					message: `メールアドレスが使用できません: ${res.reason || '不明なエラー'}`,
+				});
 				return;
 			}
 		}
@@ -132,7 +164,12 @@ export class SignupApiService {
 		// テスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test' && this.meta.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
+				await sendErrorNotification('Registration disabled but no invitation code provided');
 				reply.code(400);
+				reply.send({
+					error: 'INVITATION_CODE_REQUIRED',
+					message: '登録には招待コードが必要です',
+				});
 				return;
 			}
 
@@ -141,12 +178,22 @@ export class SignupApiService {
 			});
 
 			if (ticket == null || ticket.usedById != null) {
+				await sendErrorNotification(`Invalid invitation code attempted: ${invitationCode}`);
 				reply.code(400);
+				reply.send({
+					error: 'INVALID_INVITATION_CODE',
+					message: '招待コードが無効または既に使用されています',
+				});
 				return;
 			}
 
 			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
+				await sendErrorNotification(`Expired invitation code used: ${invitationCode}`);
 				reply.code(400);
+				reply.send({
+					error: 'EXPIRED_INVITATION_CODE',
+					message: '招待コードの有効期限が切れています',
+				});
 				return;
 			}
 
@@ -154,34 +201,67 @@ export class SignupApiService {
 			if (this.meta.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
+					await sendErrorNotification('Invitation code already used for email verification');
 					reply.code(400);
+					reply.send({
+						error: 'INVITATION_ALREADY_USED',
+						message: '招待コードは既にメール認証で使用されています',
+					});
 					return;
 				}
 
 				// 認証しておらず、メール送信から30分以内ならエラー
 				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
+					await sendErrorNotification('Email verification pending (within 30 minutes)');
 					reply.code(400);
+					reply.send({
+						error: 'EMAIL_VERIFICATION_PENDING',
+						message: 'メール認証が保留中です。送信されたメールをご確認ください',
+					});
 					return;
 				}
 			} else if (ticket.usedAt) {
+				await sendErrorNotification('Invitation code already used');
 				reply.code(400);
+				reply.send({
+					error: 'INVITATION_ALREADY_USED',
+					message: '招待コードは既に使用されています',
+				});
 				return;
 			}
 		}
 
 		if (this.meta.emailRequiredForSignup) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
-				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
+				await sendErrorNotification(`Duplicated username attempted: ${username} (already in use)`);
+				reply.code(400);
+				reply.send({
+					error: 'DUPLICATED_USERNAME',
+					message: 'このユーザー名は既に使用されています',
+				});
+				return;
 			}
 
 			// Check deleted username duplication
 			if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
-				throw new FastifyReplyError(400, 'USED_USERNAME');
+				await sendErrorNotification(`Used username attempted: ${username} (previously deleted account)`);
+				reply.code(400);
+				reply.send({
+					error: 'USED_USERNAME',
+					message: 'このユーザー名は以前に使用されており、利用できません',
+				});
+				return;
 			}
 
 			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
-				throw new FastifyReplyError(400, 'DENIED_USERNAME');
+				await sendErrorNotification(`Reserved username attempted: ${username} (system reserved)`);
+				reply.code(400);
+				reply.send({
+					error: 'DENIED_USERNAME',
+					message: 'このユーザー名はシステムで予約されており、利用できません',
+				});
+				return;
 			}
 
 			const code = secureRndstr(16, { chars: L_CHARS });
@@ -232,12 +312,25 @@ export class SignupApiService {
 					});
 				}
 
+				// Send success notification
+				try {
+					await this.slackNotificationService.sendSignupSuccessNotification({
+						username: account.username,
+						ip: request.ip,
+						timestamp: new Date(),
+					});
+				} catch (notificationError) {
+					console.error('Failed to send signup success notification:', notificationError);
+				}
+
 				return {
 					...res,
 					token: secret,
 				};
 			} catch (err) {
-				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
+				const errorMessage = typeof err === 'string' ? err : (err as Error).toString();
+				await sendErrorNotification(`Signup failed: ${errorMessage}`);
+				throw new FastifyReplyError(400, errorMessage);
 			}
 		}
 	}

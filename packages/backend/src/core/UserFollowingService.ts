@@ -749,17 +749,18 @@ export class UserFollowingService implements OnModuleInit {
 
 	@bindThis
 	public async isMutual(aUserId: MiUser['id'], bUserId: MiUser['id']) {
-		const count = await this.followingsRepository.createQueryBuilder('following')
-			.where(new Brackets(qb => {
-				qb.where('following.followerId = :aUserId', { aUserId })
-					.andWhere('following.followeeId = :bUserId', { bUserId });
-			}))
-			.orWhere(new Brackets(qb => {
-				qb.where('following.followerId = :bUserId', { bUserId })
-					.andWhere('following.followeeId = :aUserId', { aUserId });
-			}))
-			.getCount();
+		if (aUserId === bUserId) return false;
 
-		return count === 2;
+		// より確実な実装: EXISTS句を使用して両方向のフォロー関係を確認
+		const result = await this.followingsRepository.createQueryBuilder('following')
+			.select('1')
+			.where(
+				'EXISTS(SELECT 1 FROM following f1 WHERE f1."followerId" = :aUserId AND f1."followeeId" = :bUserId) AND ' +
+				'EXISTS(SELECT 1 FROM following f2 WHERE f2."followerId" = :bUserId AND f2."followeeId" = :aUserId)',
+				{ aUserId, bUserId }
+			)
+			.getRawOne();
+
+		return result !== undefined;
 	}
 }

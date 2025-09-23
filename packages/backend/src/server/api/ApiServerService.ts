@@ -18,6 +18,7 @@ import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
+import { SlackNotificationService } from '@/core/SlackNotificationService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
@@ -39,6 +40,7 @@ export class ApiServerService {
 		private signupApiService: SignupApiService,
 		private signinApiService: SigninApiService,
 		private signinWithPasskeyApiService: SigninWithPasskeyApiService,
+		private slackNotificationService: SlackNotificationService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -173,6 +175,36 @@ export class ApiServerService {
 				return {
 					ok: false,
 				};
+			}
+		});
+
+		// Frontend error logging endpoint
+		fastify.post<{
+			Body: {
+				type: string;
+				message: string;
+				userAgent?: string;
+				timestamp: string;
+				url?: string;
+				username?: string;
+			}
+		}>('/log-frontend-error', async (request, reply) => {
+			try {
+				await this.slackNotificationService.sendFrontendError({
+					type: request.body.type,
+					message: request.body.message,
+					userAgent: request.body.userAgent || request.headers['user-agent'],
+					timestamp: request.body.timestamp,
+					ip: request.ip,
+					url: request.body.url,
+					username: request.body.username,
+				});
+
+				reply.code(200);
+				return { success: true };
+			} catch (error) {
+				reply.code(500);
+				return { success: false };
 			}
 		});
 

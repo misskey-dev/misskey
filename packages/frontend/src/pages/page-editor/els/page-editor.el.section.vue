@@ -74,7 +74,7 @@ async function add() {
 	if (canceled || type == null) return;
 
 	const id = genId();
-	children.value.push({ id, type });
+	children.value.push({ id, type } as any);
 }
 
 onMounted(() => {

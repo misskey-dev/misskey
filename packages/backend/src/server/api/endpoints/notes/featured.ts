@@ -16,9 +16,12 @@ import { QueryService } from '@/core/QueryService.js';
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: false,
+	requireCredential: true,
 	allowGet: true,
 	cacheSec: 3600,
+
+	// TODO: read:timeline にする
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -58,12 +61,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			let noteIds: string[];
 			if (ps.channelId) {
-				noteIds = await this.featuredService.getInChannelNotesRanking(ps.channelId, 50);
+				noteIds = await this.featuredService.getInChannelNotesRanking(ps.channelId, 10);
 			} else {
 				if (this.globalNotesRankingCacheLastFetchedAt !== 0 && (Date.now() - this.globalNotesRankingCacheLastFetchedAt < 1000 * 60 * 30)) {
 					noteIds = this.globalNotesRankingCache;
 				} else {
-					noteIds = await this.featuredService.getGlobalNotesRanking(100);
+					noteIds = await this.featuredService.getGlobalNotesRanking(20);
 					this.globalNotesRankingCache = noteIds;
 					this.globalNotesRankingCacheLastFetchedAt = Date.now();
 				}

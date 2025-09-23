@@ -32,9 +32,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<button :class="[$style.item, $style.post]" class="_button" @click="os.post()">
+	<button :class="[$style.item, $style.post]" class="_button" @click="shouldShowChatIcon ? openChatCompose() : os.post()">
 		<div :class="$style.itemInner">
-			<i :class="$style.itemIcon" class="ti ti-pencil"></i>
+			<i :class="[$style.itemIcon, shouldShowChatIcon ? 'ti ti-send' : 'ti ti-pencil']"></i>
 		</div>
 	</button>
 </div>
@@ -46,6 +46,75 @@ import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import { mainRouter } from '@/router.js';
 import { navbarItemDef } from '@/navbar.js';
+
+const isInChatPage = computed(() => {
+	const path = mainRouter.currentRoute.value.path;
+	// チャット関連のパス: /chat で始まる全てのページ
+	return path.startsWith('/chat');
+});
+
+const isInActiveChat = computed(() => {
+	const path = mainRouter.currentRoute.value.path;
+	// アクティブなチャット画面: /chat/user/:userId または /chat/room/:roomId
+	return path.startsWith('/chat/user/') || path.startsWith('/chat/room/');
+});
+
+const shouldShowChatIcon = computed(() => {
+	return isInActiveChat.value;
+});
+
+function openChatCompose() {
+	// より具体的なセレクターでMisskeyの送信ボタンを探す
+	const sendButton = document.querySelector(
+		'button[data-cy-send], ' +
+		'button.send-button, ' +
+		'button[type="submit"], ' +
+		'form button:last-child, ' +
+		'button:has(i.ti-paper-plane), ' +
+		'button:has(i.ti-send)'
+	);
+
+	if (sendButton && !(sendButton as HTMLButtonElement).disabled) {
+		(sendButton as HTMLButtonElement).click();
+		return;
+	}
+
+	// フォールバック: メッセージ入力欄にEnterを送信
+	const messageInput = document.querySelector(
+		'textarea[data-cy-message-input], ' +
+		'textarea[placeholder*="メッセージ"], ' +
+		'textarea[placeholder*="message"], ' +
+		'.message-input textarea, ' +
+		'.chat-input textarea'
+	);
+
+	if (messageInput && (messageInput as HTMLTextAreaElement).value.trim()) {
+		// Ctrl+Enterで送信を試行
+		const ctrlEnterEvent = new KeyboardEvent('keydown', {
+			key: 'Enter',
+			code: 'Enter',
+			keyCode: 13,
+			which: 13,
+			ctrlKey: true,
+			bubbles: true,
+			cancelable: true
+		});
+		messageInput.dispatchEvent(ctrlEnterEvent);
+
+		// 通常のEnterも試行
+		setTimeout(() => {
+			const enterEvent = new KeyboardEvent('keydown', {
+				key: 'Enter',
+				code: 'Enter',
+				keyCode: 13,
+				which: 13,
+				bubbles: true,
+				cancelable: true
+			});
+			messageInput.dispatchEvent(enterEvent);
+		}, 100);
+	}
+}
 
 const drawerMenuShowing = defineModel<boolean>('drawerMenuShowing');
 const widgetsShowing = defineModel<boolean>('widgetsShowing');

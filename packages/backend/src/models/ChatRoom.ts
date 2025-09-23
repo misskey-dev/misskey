@@ -38,4 +38,9 @@ export class MiChatRoom {
 		default: false,
 	})
 	public isArchived: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isSecretMessageMode: boolean;
 }

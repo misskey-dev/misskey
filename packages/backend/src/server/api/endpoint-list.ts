@@ -438,4 +438,8 @@ export * as 'chat/rooms/invitations/inbox' from './endpoints/chat/rooms/invitati
 export * as 'chat/rooms/invitations/outbox' from './endpoints/chat/rooms/invitations/outbox.js';
 export * as 'chat/history' from './endpoints/chat/history.js';
 export * as 'chat/read-all' from './endpoints/chat/read-all.js';
+export * as 'chat/get-secret-mode-for-user' from './endpoints/chat/get-secret-mode-for-user.js';
+export * as 'chat/set-secret-mode-for-user' from './endpoints/chat/set-secret-mode-for-user.js';
+export * as 'chat/rooms/get-secret-mode' from './endpoints/chat/rooms/get-secret-mode.js';
+export * as 'chat/rooms/set-secret-mode' from './endpoints/chat/rooms/set-secret-mode.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';

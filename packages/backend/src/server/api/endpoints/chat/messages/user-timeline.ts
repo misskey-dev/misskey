@@ -47,6 +47,8 @@ export const paramDef = {
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 		userId: { type: 'string', format: 'misskey:id' },
+		isSystemMessage: { type: 'boolean', default: false },
+		meta: { type: 'object', nullable: true },
 	},
 	required: ['userId'],
 } as const;

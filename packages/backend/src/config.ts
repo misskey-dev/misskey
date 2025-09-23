@@ -111,7 +111,13 @@ type Source = {
 			disableQueryTruncation?: boolean,
 			enableQueryParamLogging?: boolean,
 		}
-	}
+	};
+
+	slack?: {
+		enableSignupErrorNotification?: boolean;
+		botToken?: string;
+		channelId?: string;
+	};
 };
 
 export type Config = {
@@ -207,6 +213,11 @@ export type Config = {
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
 	pidFile: string;
+	slack: {
+		enableSignupErrorNotification?: boolean;
+		botToken?: string;
+		channelId?: string;
+	} | undefined;
 };
 
 export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
@@ -320,6 +331,7 @@ export function loadConfig(): Config {
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
 		logging: config.logging,
+		slack: config.slack,
 	};
 }
 

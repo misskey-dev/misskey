@@ -17,6 +17,11 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['notes'],
 
+	requireCredential: true,
+
+	// TODO: read:timeline にする
+	kind: 'read:account',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

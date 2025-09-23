@@ -16,7 +16,7 @@ import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { bindThis } from '@/decorators.js';
-import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiChatRoomMembership, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
+import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, ChatSecretSettingsRepository, MiChatMessage, MiChatRoom, MiChatRoomMembership, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -64,6 +64,9 @@ export class ChatService {
 
 		@Inject(DI.chatApprovalsRepository)
 		private chatApprovalsRepository: ChatApprovalsRepository,
+
+		@Inject(DI.chatSecretSettingsRepository)
+		private chatSecretSettingsRepository: ChatSecretSettingsRepository,
 
 		@Inject(DI.chatRoomsRepository)
 		private chatRoomsRepository: ChatRoomsRepository,
@@ -134,10 +137,21 @@ export class ChatService {
 		file?: MiDriveFile | null;
 		uri?: string | null;
 	}): Promise<Packed<'ChatMessageLiteFor1on1'>> {
+		console.log('🚀 [DEBUG] ChatService.createMessageToUser called', {
+			fromUserId: fromUser.id,
+			toUserId: toUser.id,
+			hasText: !!params.text,
+			textLength: params.text?.length,
+			hasFile: !!params.file,
+			timestamp: new Date().toISOString()
+		});
+
 		if (fromUser.id === toUser.id) {
+			console.log('❌ [DEBUG] ChatService: User trying to send message to themselves');
 			throw new Error('yourself');
 		}
 
+		console.log('🔍 [DEBUG] ChatService: Checking chat approvals...');
 		const approvals = await this.chatApprovalsRepository.createQueryBuilder('approval')
 			.where(new Brackets(qb => { // 自分が相手を許可しているか
 				qb.where('approval.userId = :fromUserId', { fromUserId: fromUser.id })
@@ -152,6 +166,13 @@ export class ChatService {
 
 		const otherApprovedMe = approvals.some(approval => approval.userId === toUser.id);
 		const iApprovedOther = approvals.some(approval => approval.userId === fromUser.id);
+
+		console.log('✅ [DEBUG] ChatService: Approval check results', {
+			approvalsFound: approvals.length,
+			otherApprovedMe,
+			iApprovedOther,
+			toUserChatScope: toUser.chatScope
+		});
 
 		if (!otherApprovedMe) {
 			if (toUser.chatScope === 'none') {
@@ -183,6 +204,10 @@ export class ChatService {
 			throw new Error('blocked');
 		}
 
+		// 内緒の会話設定を確認
+		const isSecretMessageMode = await this.getSecretModeForUsers(fromUser.id, toUser.id);
+		const expiresAt = isSecretMessageMode ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null; // 24時間後
+
 		const message = {
 			id: this.idService.gen(),
 			fromUserId: fromUser.id,
@@ -191,12 +216,21 @@ export class ChatService {
 			fileId: params.file ? params.file.id : null,
 			reads: [],
 			uri: params.uri ?? null,
+			expiresAt: expiresAt,
+			isSystemMessage: false,
 		} satisfies Partial<MiChatMessage>;
 
+		console.log('💾 [DEBUG] ChatService: Inserting message into database...', {
+			messageId: message.id,
+			textLength: message.text?.length
+		});
+
 		const inserted = await this.chatMessagesRepository.insertOne(message);
+		console.log('✅ [DEBUG] ChatService: Message inserted successfully');
 
 		// 相手を許可しておく
 		if (!iApprovedOther) {
+			console.log('🔧 [DEBUG] ChatService: Auto-approving user for future chats');
 			this.chatApprovalsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: fromUser.id,
@@ -204,6 +238,7 @@ export class ChatService {
 			});
 		}
 
+		console.log('📦 [DEBUG] ChatService: Packing message for response...');
 		const packedMessage = await this.chatEntityService.packMessageLiteFor1on1(inserted);
 
 		if (this.userEntityService.isLocalUser(toUser)) {
@@ -236,6 +271,12 @@ export class ChatService {
 			}, 3000);
 		}
 
+		console.log('🎉 [DEBUG] ChatService: createMessageToUser completed successfully', {
+			messageId: packedMessage.id,
+			fromUserId: fromUser.id,
+			toUserId: toUser.id
+		});
+
 		return packedMessage;
 	}
 
@@ -259,6 +300,9 @@ export class ChatService {
 
 		const membershipsOtherThanMe = memberships.filter(member => member.userId !== fromUser.id);
 
+		// 内緒の会話設定を確認
+		const expiresAt = toRoom.isSecretMessageMode ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null; // 24時間後
+
 		const message = {
 			id: this.idService.gen(),
 			fromUserId: fromUser.id,
@@ -267,6 +311,8 @@ export class ChatService {
 			fileId: params.file ? params.file.id : null,
 			reads: [],
 			uri: params.uri ?? null,
+			expiresAt: expiresAt,
+			isSystemMessage: false,
 		} satisfies Partial<MiChatMessage>;
 
 		const inserted = await this.chatMessagesRepository.insertOne(message);
@@ -951,5 +997,102 @@ export class ChatService {
 		const memberships = await query.take(limit).getMany();
 
 		return memberships;
+	}
+
+	@bindThis
+	public async getSecretModeForUsers(userId1: MiUser['id'], userId2: MiUser['id']): Promise<boolean> {
+		// ユーザーIDの順序を統一（小さいIDを先に）
+		const [user1Id, user2Id] = [userId1, userId2].sort();
+
+		// 既存の設定を検索
+		const secretSetting = await this.chatSecretSettingsRepository.findOneBy({
+			user1Id: user1Id,
+			user2Id: user2Id,
+		});
+
+		return secretSetting?.isSecretMessageMode ?? false;
+	}
+
+	@bindThis
+	public async setSecretModeForUsers(userId1: MiUser['id'], userId2: MiUser['id'], isSecretMessageMode: boolean, updatedBy: MiUser['id']): Promise<void> {
+		// ユーザーIDの順序を統一（小さいIDを先に）
+		const [user1Id, user2Id] = [userId1, userId2].sort();
+
+		// 既存の設定を検索
+		let secretSetting = await this.chatSecretSettingsRepository.findOneBy({
+			user1Id: user1Id,
+			user2Id: user2Id,
+		});
+
+		if (secretSetting) {
+			// 既存の設定を更新
+			secretSetting.isSecretMessageMode = isSecretMessageMode;
+			await this.chatSecretSettingsRepository.save(secretSetting);
+		} else if (isSecretMessageMode) {
+			// 新しい設定を作成（秘密モードをONにする場合のみ）
+			secretSetting = this.chatSecretSettingsRepository.create({
+				id: this.idService.gen(),
+				user1Id: user1Id,
+				user2Id: user2Id,
+				isSecretMessageMode: isSecretMessageMode,
+			});
+			await this.chatSecretSettingsRepository.save(secretSetting);
+		}
+
+		// システムメッセージを送信
+		const systemMessageText = isSecretMessageMode ? '内緒の会話がオンになりました' : '内緒の会話がオフになりました';
+
+		const systemMessage = {
+			id: this.idService.gen(),
+			fromUserId: updatedBy,
+			toUserId: userId1 === updatedBy ? userId2 : userId1,
+			text: systemMessageText,
+			isSystemMessage: true,
+			meta: {
+				type: 'secretModeChange',
+				isSecretMessageMode: isSecretMessageMode,
+			} as Record<string, any>,
+			reads: [],
+			expiresAt: null,
+		} satisfies Partial<MiChatMessage>;
+
+		const inserted = await this.chatMessagesRepository.insertOne(systemMessage);
+
+		// リアルタイム更新
+		if (inserted.toUserId) {
+			const packedMessage = await this.chatEntityService.packMessageLiteFor1on1(inserted);
+			this.globalEventService.publishChatUserStream(inserted.fromUserId, inserted.toUserId, 'message', packedMessage);
+			this.globalEventService.publishChatUserStream(inserted.toUserId, inserted.fromUserId, 'message', packedMessage);
+		}
+	}
+
+	@bindThis
+	public async setSecretModeForRoom(roomId: MiChatRoom['id'], isSecretMessageMode: boolean, updatedBy: MiUser['id']): Promise<void> {
+		await this.chatRoomsRepository.update(roomId, {
+			isSecretMessageMode: isSecretMessageMode,
+		});
+
+		// システムメッセージを送信
+		const systemMessageText = isSecretMessageMode ? '内緒の会話がオンになりました' : '内緒の会話がオフになりました';
+
+		const systemMessage = {
+			id: this.idService.gen(),
+			fromUserId: updatedBy,
+			toRoomId: roomId,
+			text: systemMessageText,
+			isSystemMessage: true,
+			meta: {
+				type: 'secretModeChange',
+				isSecretMessageMode: isSecretMessageMode,
+			} as Record<string, any>,
+			reads: [],
+			expiresAt: null,
+		} satisfies Partial<MiChatMessage>;
+
+		const inserted = await this.chatMessagesRepository.insertOne(systemMessage);
+
+		// リアルタイム更新
+		const packedMessage = await this.chatEntityService.packMessageLiteForRoom(inserted);
+		this.globalEventService.publishChatRoomStream(roomId, 'message', packedMessage);
 	}
 }

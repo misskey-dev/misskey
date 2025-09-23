@@ -5721,6 +5721,26 @@ export interface Locale extends ILocale {
          * 自分からメッセージを送った相手とはこの設定に関わらずメッセージの送受信が可能です。
          */
         "chatAllowedUsers_note": string;
+        /**
+         * 内緒の会話
+         */
+        "secretTalk": string;
+        /**
+         * 内緒の会話を無効にする
+         */
+        "secretTalkOff": string;
+        /**
+         * 内緒の会話を有効にしますか？送信したメッセージは24時間後に自動的に削除されます。
+         */
+        "secretTalkConfirmOn": string;
+        /**
+         * 内緒の会話を無効にしますか？
+         */
+        "secretTalkConfirmOff": string;
+        /**
+         * 内緒のメッセージを入力... (24時間後に自動削除)
+         */
+        "secretMessage": string;
         "_chatAllowedUsers": {
             /**
              * 誰でも
