@@ -15,6 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import { MiMeta } from '@/models/Meta.js';
+import { removeDomain } from '@/util.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -37,7 +38,7 @@ export class UrlPreviewService {
 	@bindThis
 	private wrap(url?: string | null): string | null {
 		return url != null
-			? `/proxy/preview.webp?${query({
+			? `${this.config.mediaProxy}/preview.webp?${query({
 				url,
 				preview: '1',
 			})}`
@@ -91,8 +92,8 @@ export class UrlPreviewService {
 				throw new Error('unsupported schema included');
 			}
 
-			summary.icon = this.wrap(summary.icon);
-			summary.thumbnail = this.wrap(summary.thumbnail);
+			summary.icon = removeDomain(this.wrap(summary.icon));
+			summary.thumbnail = removeDomain(this.wrap(summary.thumbnail));
 
 			// Cache 1day
 			reply.header('Cache-Control', 'max-age=86400, immutable');
