@@ -83,7 +83,7 @@ const run = async () => {
 			switch (type) {
 				case 'end': logs.value.push({
 					id: genId(),
-					text: utils.valToString(params.val, true),
+					text: utils.valToString((params.val as any).value ?? params.val, true),
 					print: false,
 				}); break;
 				default: break;

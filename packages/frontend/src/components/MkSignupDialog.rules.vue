@@ -154,6 +154,11 @@ async function updateAgreeNote(v: boolean) {
 	font-size: 26px;
 	background-color: var(--MI_THEME-accentedBg);
 	color: var(--MI_THEME-accent);
+
+	@media (max-width: 768px) {
+		padding: 12px;
+		font-size: 20px;
+	}
 }
 
 .rules {

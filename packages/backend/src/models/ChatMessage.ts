@@ -20,7 +20,7 @@ export class MiChatMessage {
 	})
 	public fromUserId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(_type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -32,7 +32,7 @@ export class MiChatMessage {
 	})
 	public toUserId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(_type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -44,7 +44,7 @@ export class MiChatMessage {
 	})
 	public toRoomId: MiChatRoom['id'] | null;
 
-	@ManyToOne(type => MiChatRoom, {
+	@ManyToOne(_type => MiChatRoom, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -72,7 +72,7 @@ export class MiChatMessage {
 	})
 	public fileId: MiDriveFile['id'] | null;
 
-	@ManyToOne(type => MiDriveFile, {
+	@ManyToOne(_type => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -82,4 +82,19 @@ export class MiChatMessage {
 		length: 1024, array: true, default: '{}',
 	})
 	public reactions: string[];
+
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public expiresAt: Date | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isSystemMessage: boolean;
+
+	@Column('jsonb', {
+		nullable: true,
+	})
+	public meta: Record<string, any> | null;
 }

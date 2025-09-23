@@ -50,4 +50,14 @@ const props = defineProps<{
 	height: 65px;
 	margin: 0 auto;
 }
+
+.warn {
+	/* warn style - you can customize the appearance */
+	color: var(--warn);
+}
+
+.error {
+	/* error style - you can customize the appearance */
+	color: var(--error);
+}
 </style>

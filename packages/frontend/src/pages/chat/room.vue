@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</button>
 					</div>
 				</Transition>
-				<XForm v-if="initialized" :user="user" :room="room" :class="$style.form"/>
+				<XForm v-if="initialized" :user="user" :room="room" :isSecretMessageMode="isSecretMessageMode" :class="$style.form"/>
 			</div>
 		</div>
 	</template>
@@ -120,11 +120,16 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
+const isSecretMessageMode = ref(false);
+
 export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'fromUser' | 'reactions'> & {
 	fromUser: Misskey.entities.UserLite;
 	reactions: (Misskey.entities.ChatMessageLite['reactions'][number] & {
 		user: Misskey.entities.UserLite;
 	})[];
+	expiresAt?: string | null;
+	isSystemMessage?: boolean;
+	meta?: Record<string, any> | null;
 };
 
 const initializing = ref(false);
@@ -167,6 +172,42 @@ function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.en
 			user: record.user ?? (message.fromUserId === $i.id ? user.value! : $i),
 		})),
 	};
+}
+
+async function loadSecretMode() {
+	try {
+		if (props.userId) {
+			const result = await misskeyApi('chat/get-secret-mode-for-user' as any, { userId: props.userId }) as any;
+			isSecretMessageMode.value = result?.isSecretMessageMode || false;
+		} else if (props.roomId) {
+			const result = await misskeyApi('chat/rooms/get-secret-mode' as any, { roomId: props.roomId }) as any;
+			isSecretMessageMode.value = result?.isSecretMessageMode || false;
+		}
+	} catch (error) {
+		console.error('Failed to load secret mode:', error);
+	}
+}
+
+async function toggleSecretMode() {
+	try {
+		if (props.userId) {
+			await (misskeyApi as any)('chat/set-secret-mode-for-user', {
+				userId: props.userId,
+				isSecretMessageMode: !isSecretMessageMode.value
+			});
+		} else if (props.roomId) {
+			await (misskeyApi as any)('chat/rooms/set-secret-mode', {
+				roomId: props.roomId,
+				isSecretMessageMode: !isSecretMessageMode.value
+			});
+		}
+	} catch (error) {
+		console.error('Failed to toggle secret mode:', error);
+		os.alert({
+			type: 'error',
+			text: i18n.ts.somethingHappened,
+		});
+	}
 }
 
 async function initialize() {
@@ -252,6 +293,8 @@ async function initialize() {
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
 
+	await loadSecretMode();
+
 	initialized.value = true;
 	initializing.value = false;
 }
@@ -289,6 +332,16 @@ async function fetchMore() {
 
 function onMessage(message: Misskey.entities.ChatMessageLite) {
 	sound.playMisskeySfx('chatMessage');
+
+	console.debug('New message:', message);
+
+	// システムメッセージで内緒の会話の状態変更を検出
+	const msgWithMeta = message as any; // 型定義の一時的な回避
+	if (msgWithMeta.isSystemMessage && msgWithMeta.meta) {
+		if (msgWithMeta?.meta?.type === 'secretModeChange') {
+			isSecretMessageMode.value = msgWithMeta?.meta?.isSecretMessageMode || false;
+		}
+	}
 
 	messages.value.unshift(normalizeMessage(message));
 
@@ -394,6 +447,22 @@ async function leaveRoom() {
 function showMenu(ev: MouseEvent) {
 	const menuItems: MenuItem[] = [];
 
+	// 内緒の会話トグル
+	if ($i.policies?.chatAvailability === 'available') {
+		menuItems.push({
+			text: isSecretMessageMode.value ? '内緒の会話を無効にする' : '内緒の会話を有効にする',
+			icon: isSecretMessageMode.value ? 'ti ti-eye-off' : 'ti ti-eye',
+			action: () => {
+				toggleSecretMode();
+			},
+		});
+
+		// セパレーター
+		if (room.value || user.value) {
+			menuItems.push({ type: 'divider' });
+		}
+	}
+
 	if (room.value) {
 		if (room.value.ownerId === $i.id) {
 			menuItems.push({
@@ -445,11 +514,27 @@ const headerTabs = computed(() => room.value ? [{
 	icon: 'ti ti-search',
 }]);
 
-const headerActions = computed<PageHeaderItem[]>(() => [{
-	icon: 'ti ti-dots',
-	text: '',
-	handler: showMenu,
-}]);
+const headerActions = computed<PageHeaderItem[]>(() => {
+	const actions: PageHeaderItem[] = [];
+
+	// 内緒の会話トグル - チャット利用可能時のみ表示
+	if ($i.policies?.chatAvailability === 'available') {
+		actions.push({
+			icon: isSecretMessageMode.value ? 'ti ti-eye-off' : 'ti ti-eye',
+			text: isSecretMessageMode.value ? '内緒の会話を無効にする' : '内緒の会話',
+			handler: toggleSecretMode,
+		});
+	}
+
+	// 通常のメニュー
+	actions.push({
+		icon: 'ti ti-dots',
+		text: '',
+		handler: showMenu,
+	});
+
+	return actions;
+});
 
 definePage(computed(() => {
 	if (initialized.value) {
@@ -555,5 +640,20 @@ definePage(computed(() => {
 	width: fit-content;
 	padding: 0.5em 1em;
 	margin: 0 auto;
+}
+
+.secretModeIndicator {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 8px 16px;
+	background: rgba(255, 165, 0, 0.1);
+	border: 1px solid rgba(255, 165, 0, 0.3);
+	border-radius: 999px;
+	color: orange;
+	font-size: 0.9em;
+	margin: 0 auto 16px;
+	width: fit-content;
 }
 </style>

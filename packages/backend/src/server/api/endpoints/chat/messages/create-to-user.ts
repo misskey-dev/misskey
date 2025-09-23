@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import type { DriveFilesRepository, MiUser } from '@/models/_.js';
+import { bindThis } from '@/decorators.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -85,39 +86,73 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.chatService.checkChatAvailability(me.id, 'write');
+			console.log('🔍 [DEBUG] Chat API create-to-user called', {
+				userId: me.id,
+				toUserId: ps.toUserId,
+				hasText: !!ps.text,
+				textLength: ps.text?.length,
+				hasFileId: !!ps.fileId,
+				timestamp: new Date().toISOString()
+			});
 
-			let file = null;
-			if (ps.fileId != null) {
-				file = await this.driveFilesRepository.findOneBy({
-					id: ps.fileId,
-					userId: me.id,
+			try {
+				await this.chatService.checkChatAvailability(me.id, 'write');
+				console.log('✅ [DEBUG] Chat availability check passed for user:', me.id);
+
+				let file = null;
+				if (ps.fileId != null) {
+					console.log('🔍 [DEBUG] Looking for file:', ps.fileId);
+					file = await this.driveFilesRepository.findOneBy({
+						id: ps.fileId,
+						userId: me.id,
+					});
+
+					if (file == null) {
+						console.log('❌ [DEBUG] File not found:', ps.fileId);
+						throw new ApiError(meta.errors.noSuchFile);
+					}
+					console.log('✅ [DEBUG] File found:', { id: file.id, name: file.name });
+				}
+
+				// テキストが無いかつ添付ファイルも無かったらエラー
+				if (ps.text == null && file == null) {
+					console.log('❌ [DEBUG] No content provided (no text and no file)');
+					throw new ApiError(meta.errors.contentRequired);
+				}
+
+				// Myself
+				if (ps.toUserId === me.id) {
+					console.log('❌ [DEBUG] User trying to send message to themselves');
+					throw new ApiError(meta.errors.recipientIsYourself);
+				}
+
+				console.log('🔍 [DEBUG] Getting target user:', ps.toUserId);
+				const toUser = await this.getterService.getUser(ps.toUserId).catch(err => {
+					console.log('❌ [DEBUG] Failed to get target user:', { error: err.message, id: err.id });
+					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+					throw err;
 				});
 
-				if (file == null) {
-					throw new ApiError(meta.errors.noSuchFile);
-				}
+				console.log('✅ [DEBUG] Target user found:', { id: toUser.id, username: toUser.username });
+
+				console.log('🚀 [DEBUG] Creating chat message...');
+				const result = await this.chatService.createMessageToUser(me, toUser, {
+					text: ps.text,
+					file: file,
+				});
+
+				console.log('✅ [DEBUG] Chat message created successfully:', { messageId: result.id });
+				return result;
+
+			} catch (error) {
+				console.log('💥 [DEBUG] Chat API error:', {
+					error: error instanceof Error ? error.message : String(error),
+					stack: error instanceof Error ? error.stack : undefined,
+					code: (error as any)?.code,
+					id: (error as any)?.id
+				});
+				throw error;
 			}
-
-			// テキストが無いかつ添付ファイルも無かったらエラー
-			if (ps.text == null && file == null) {
-				throw new ApiError(meta.errors.contentRequired);
-			}
-
-			// Myself
-			if (ps.toUserId === me.id) {
-				throw new ApiError(meta.errors.recipientIsYourself);
-			}
-
-			const toUser = await this.getterService.getUser(ps.toUserId).catch(err => {
-				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw err;
-			});
-
-			return await this.chatService.createMessageToUser(me, toUser, {
-				text: ps.text,
-				file: file,
-			});
 		});
 	}
 }

@@ -4,11 +4,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.isMe]: isMe }]">
+<!-- システムメッセージの場合 -->
+<div v-if="(message as any).isSystemMessage" :class="$style.systemMessage">
+	<div :class="$style.systemMessageText">
+		<i class="ti ti-info-circle"></i>
+		{{ message.text }}
+	</div>
+</div>
+<!-- 通常メッセージの場合 -->
+<div v-else :class="[$style.root, { [$style.isMe]: isMe, [$style.isSecret]: isSecretMessage }]">
 	<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="message.fromUser!" :link="!isMe" :preview="false"/>
 	<div :class="[$style.body, message.file != null ? $style.fullWidth : null]" @contextmenu.stop="onContextmenu">
-		<div :class="$style.header"><MkUserName v-if="!isMe && prefer.s['chat.showSenderName'] && message.fromUser != null" :user="message.fromUser"/></div>
-		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :fullWidth="message.file != null" :accented="isMe">
+		<div :class="$style.header">
+			<MkUserName v-if="!isMe && prefer.s['chat.showSenderName'] && message.fromUser != null" :user="message.fromUser"/>
+			<div v-if="isSecretMessage" :class="$style.secretIcon">
+				<i class="ti ti-eye-off"></i>
+			</div>
+		</div>
+		<MkFukidashi :class="[$style.fukidashi, { [$style.secretFukidashi]: isSecretMessage }]" :tail="isMe ? 'right' : 'left'" :fullWidth="message.file != null" :accented="isMe">
 			<Mfm
 				v-if="message.text"
 				ref="text"
@@ -83,6 +96,7 @@ const props = defineProps<{
 
 const isMe = computed(() => props.message.fromUserId === $i.id);
 const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
+const isSecretMessage = computed(() => (props.message as any).expiresAt != null);
 
 provide(DI.mfmEmojiReactCallback, (reaction) => {
 	if ($i.policies.chatAvailability !== 'available') return;
@@ -228,6 +242,25 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 			flex-direction: row-reverse;
 		}
 	}
+
+	&.isSecret {
+		.body {
+			position: relative;
+		}
+
+		.body::before {
+			content: '';
+			position: absolute;
+			top: -4px;
+			left: -8px;
+			right: -8px;
+			bottom: -4px;
+			background: linear-gradient(45deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 200, 50, 0.1) 100%);
+			border-radius: 12px;
+			z-index: -1;
+			border: 1px solid rgba(255, 165, 0, 0.2);
+		}
+	}
 }
 
 .avatar {
@@ -271,10 +304,24 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 .header {
 	min-height: 4px; // fukidashiの位置調整も兼ねるため
 	font-size: 80%;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.secretIcon {
+	color: var(--MI_THEME-warn);
+	font-size: 14px;
+	display: flex;
+	align-items: center;
 }
 
 .fukidashi {
 	text-align: left;
+
+	&.secretFukidashi {
+		border-color: rgba(255, 165, 0, 0.3);
+	}
 }
 
 .content {
@@ -328,5 +375,24 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 .reactionIcon {
 	width: 24px;
 	height: 24px;
+}
+
+.systemMessage {
+	display: flex;
+	justify-content: center;
+	margin: 16px 0;
+}
+
+.systemMessageText {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 16px;
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
+	border-radius: 999px;
+	font-size: 0.9em;
+	border: 1px solid var(--MI_THEME-accent);
+	opacity: 0.8;
 }
 </style>

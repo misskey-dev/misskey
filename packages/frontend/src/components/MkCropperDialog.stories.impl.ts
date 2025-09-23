@@ -38,7 +38,7 @@ export const Default = {
 		};
 	},
 	args: {
-		imageFile: file(),
+		imageFile: file() as unknown as File,
 		aspectRatio: NaN,
 	},
 	parameters: {

@@ -1,0 +1,108 @@
+services:
+  web:
+    build: .
+    image: oranski-nocturne-web
+    restart: unless-stopped
+    ports:
+      - "3000-3001:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      redis:
+        condition: service_healthy
+    # env_file:
+    #   - .config/docker.env
+    volumes:
+      - /home/oranski-nocturne/data/files:/misskey/files
+      - /home/oranski-nocturne/data/.config:/misskey/.config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "Content-Type:application/json", "-d", "{}", "-X", "POST", "http://localhost:3000/api/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+      start_interval: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+        reservations:
+          memory: 4G
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=5120
+
+  redis:
+    restart: unless-stopped
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./redis:/data
+    env_file:
+      - .env.redis
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --tcp-keepalive 60
+      --tcp-backlog 511
+    healthcheck:
+      test: "redis-cli -p 6379 -a ${REDIS_PASSWORD} ping"
+      interval: 5s
+      retries: 20
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+
+#  mcaptcha:
+#    restart: always
+#    image: mcaptcha/mcaptcha:latest
+#    networks:
+#      internal_network:
+#      external_network:
+#        aliases:
+#          - localhost
+#    ports:
+#      - 7493:7493
+#    env_file:
+#      - .config/docker.env
+#    environment:
+#      PORT: 7493
+#      MCAPTCHA_redis_URL: "redis://mcaptcha_redis/"
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      mcaptcha_redis:
+#        condition: service_healthy
+#
+#  mcaptcha_redis:
+#    image: mcaptcha/cache:latest
+#    networks:
+#      - internal_network
+#    healthcheck:
+#      test: "redis-cli ping"
+#      interval: 5s
+#      retries: 20
+
+#  meilisearch:
+#    restart: always
+#    image: getmeili/meilisearch:v1.3.4
+#    environment:
+#      - MEILI_NO_ANALYTICS=true
+#      - MEILI_ENV=production
+#    env_file:
+#      - .config/meilisearch.env
+#    networks:
+#      - internal_network
+#    volumes:
+#      - ./meili_data:/meili_data
+

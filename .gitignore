@@ -41,6 +41,9 @@ docker-compose.yml
 .devcontainer/compose.yml
 !/.devcontainer/compose.yml
 
+# Environment files
+.env.redis
+
 # misskey
 /build
 built

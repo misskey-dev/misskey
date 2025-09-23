@@ -141,7 +141,7 @@ async function run() {
 			switch (type) {
 				case 'end': logs.value.push({
 					id: Math.random(),
-					text: utils.valToString(params.val, true),
+					text: utils.valToString((params.val as any).value ?? params.val, true),
 					print: false,
 				}); break;
 				default: break;

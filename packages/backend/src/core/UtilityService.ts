@@ -12,6 +12,7 @@ import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { MiMeta, SoftwareSuspension } from '@/models/Meta.js';
 import { MiInstance } from '@/models/Instance.js';
+import type { FollowingsRepository } from '@/models/_.js';
 
 @Injectable()
 export class UtilityService {
@@ -21,6 +22,9 @@ export class UtilityService {
 
 		@Inject(DI.meta)
 		private meta: MiMeta,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 	) {
 	}
 
@@ -160,5 +164,28 @@ export class UtilityService {
 				x.software === software.softwareName
 				&& semver.satisfies(softwareVersion, x.versionRange, { includePrerelease: true }));
 		}
+	}
+
+	@bindThis
+	public async isMutualFollowing(userId1: string, userId2: string): Promise<boolean> {
+		if (userId1 === userId2) return false;
+
+		const [following1, following2] = await Promise.all([
+			this.followingsRepository.findOneBy({
+				followerId: userId1,
+				followeeId: userId2,
+			}),
+			this.followingsRepository.findOneBy({
+				followerId: userId2,
+				followeeId: userId1,
+			}),
+		]);
+
+		return following1 != null && following2 != null;
+	}
+
+	@bindThis
+	public genId(): string {
+		return Math.random().toString(36).substring(2) + Date.now().toString(36);
 	}
 }

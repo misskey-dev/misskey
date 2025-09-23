@@ -56,8 +56,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="iconOnly" v-tooltip.noDelay.right="i18n.ts.realtimeMode" class="_button" :class="[$style.realtimeMode, store.r.realtimeMode.value ? $style.on : null]" @click="toggleRealtimeMode">
 				<i class="ti ti-bolt ti-fw"></i>
 			</button>
-			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
-				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
+			<button v-tooltip.noDelay.right="shouldShowChatIcon ? i18n.ts.directMessage : i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="handlePostButtonClick" @mousedown="() => console.log('🖱️ mousedown on post button')" @mouseup="() => console.log('🖱️ mouseup on post button')">
+				<i :class="[shouldShowChatIcon ? 'ti ti-send' : 'ti ti-pencil', 'ti-fw', $style.postIcon]"></i><span :class="$style.postText">{{ shouldShowChatIcon ? i18n.ts.directMessage_short : i18n.ts.note }}</span>
 			</button>
 			<button v-if="$i != null" v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
 				<MkAvatar :user="$i" :class="$style.avatar" style="viewTransitionName: navbar-avatar;"/><MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
@@ -136,8 +136,20 @@ const otherMenuItemIndicated = computed(() => {
 	return false;
 });
 
+const isInChatPage = computed(() => {
+	const path = router.currentRoute.value.path;
+	return path.startsWith('/chat');
+});
+
+const isMobile = ref(window.innerWidth <= 768);
+
+const shouldShowChatIcon = computed(() => {
+	return isInChatPage.value && isMobile.value;
+});
+
 function calcViewState() {
 	forceIconOnly.value = window.innerWidth <= 1279;
+	isMobile.value = window.innerWidth <= 768;
 }
 
 window.addEventListener('resize', calcViewState);
@@ -189,6 +201,32 @@ async function more(ev: MouseEvent) {
 function menuEdit() {
 	router.push('/settings/navbar');
 }
+
+function openChatCompose() {
+	// Open user selection dialog for starting a chat
+	os.selectUser({ localOnly: true }).then(user => {
+		router.push('/chat/user/:userId', {
+			params: {
+				userId: user.id,
+			}
+		});
+	});
+}
+
+function handlePostButtonClick() {
+	console.log('📝 handlePostButtonClick called');
+	console.log('shouldShowChatIcon:', shouldShowChatIcon.value);
+	console.log('iconOnly:', iconOnly.value);
+	console.log('asDrawer:', props.asDrawer);
+
+	if (shouldShowChatIcon.value) {
+		console.log('🗨️ Opening chat compose');
+		openChatCompose();
+	} else {
+		console.log('📝 Opening post form');
+		os.post();
+	}
+}
 </script>
 
 <style lang="scss" module>
@@ -207,6 +245,7 @@ function menuEdit() {
 .body {
 	position: relative;
 	width: var(--nav-icon-only-width);
+	z-index: 1002;
 	height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
@@ -446,6 +485,7 @@ function menuEdit() {
 		color: var(--MI_THEME-fgOnAccent);
 		font-weight: bold;
 		text-align: left;
+		z-index: 1002;
 
 		&::before {
 			content: "";
@@ -679,6 +719,8 @@ function menuEdit() {
 		width: 100%;
 		height: 52px;
 		text-align: center;
+		z-index: 1002;
+		cursor: pointer;
 
 		&::before {
 			content: "";
@@ -693,6 +735,8 @@ function menuEdit() {
 			aspect-ratio: 1/1;
 			border-radius: 100%;
 			background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
+			z-index: -1;
+			pointer-events: none;
 		}
 
 		&:focus-visible {
@@ -714,6 +758,7 @@ function menuEdit() {
 	.postIcon {
 		position: relative;
 		color: var(--MI_THEME-fgOnAccent);
+		z-index: 1;
 	}
 
 	.postText {

@@ -2,10 +2,10 @@
 .github
 .travis
 .vscode
-.config
 Dockerfile
 build/
 built/
+**/built/
 db/
 .devcontainer/compose.yml
 node_modules/
@@ -28,3 +28,6 @@ fluent-emojis/
 .idea/
 packages/*/.vscode/
 packages/backend/test/compose.yml
+
+claude
+.claude

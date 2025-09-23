@@ -78,6 +78,8 @@ export class ChatEntityService {
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
+			isSystemMessage: message.isSystemMessage,
+			meta: message.meta,
 		};
 	}
 
@@ -153,6 +155,8 @@ export class ChatEntityService {
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions,
+			isSystemMessage: message.isSystemMessage,
+			meta: message.meta,
 		};
 	}
 
@@ -206,6 +210,8 @@ export class ChatEntityService {
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
+			isSystemMessage: message.isSystemMessage,
+			meta: message.meta,
 		};
 	}
 
@@ -260,6 +266,7 @@ export class ChatEntityService {
 			owner: options?._hint_?.packedOwners.get(room.ownerId) ?? await this.userEntityService.pack(room.owner ?? room.ownerId, me),
 			isMuted: membership != null ? membership.isMuted : false,
 			invitationExists: invitation != null,
+			isSecretMessageMode: room.isSecretMessageMode,
 		};
 	}
 
