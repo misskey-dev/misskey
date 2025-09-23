@@ -233,17 +233,39 @@ function clear() {
 // テキストエリアを再レンダリング
 function refreshTextarea() {
 	if (textareaEl.value == null) return;
+
 	const parent = textareaEl.value.parentElement;
-	if (parent) {
-		const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
-		console.log('[KEYBOARD DEBUG] 親要素のzIndexを変更:', randomZIndex);
-		parent.style.zIndex = randomZIndex.toString();
-		setTimeout(() => {
-			const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
-			console.log('[KEYBOARD DEBUG] 親要素のzIndexを変更:', randomZIndex);
-			parent.style.zIndex = randomZIndex.toString();
-		}, 300);
+	if (!parent) return;
+
+	const parentParent = parent.parentElement;
+	const gaps = parent.closest('._gaps');
+
+	// 統一されたランダムzIndex値を使用
+	const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
+	console.debug('[KEYBOARD DEBUG] zIndexを変更:', randomZIndex);
+
+	// 統一されたスタイル設定方法
+	parent.style.setProperty('z-index', randomZIndex.toString());
+
+	if (parentParent) {
+		parentParent.style.setProperty('z-index', randomZIndex.toString());
+		parentParent.style.setProperty('height', '0');
 	}
+
+	if (gaps) {
+		gaps.style.setProperty('z-index', randomZIndex.toString());
+		gaps.style.setProperty('height', '0');
+	}
+
+	setTimeout(() => {
+		// 同じzIndex値を使用して一貫性を保つ
+		if (parentParent) {
+			parentParent.style.setProperty('height', 'initial');
+		}
+		if (gaps) {
+			gaps.style.setProperty('height', 'initial');
+		}
+	}, 500);
 }
 
 // iOS keyboard handling

@@ -3,11 +3,12 @@
 # 完璧ゼロダウンタイムデプロイスクリプト v2.0
 # 10秒のダウンタイムも発生させない最適化された手順
 
-set -e
+set -eux
 
 LOCK_FILE="/tmp/misskey-deploy.lock"
 LOG_FILE="/tmp/misskey-deploy.log"
 DEPLOY_START_TIME=$(date +%s)
+IMAGE_NAME="oranski-nocturne-web"
 
 # ロックファイル処理
 exec 200>"$LOCK_FILE"
@@ -314,6 +315,18 @@ log "📋 実行中のコンテナ: $RUNNING_CONTAINERS"
 # 古いコンテナを1つだけ削除実行
 remove_one_old_container "$OLD_IMAGE_ID" "web"
 
+# Port release waiting after reducing to one container
+log "🔍 Waiting for either port to be released"
+while ss -tlnp | grep ":3000 " >/dev/null 2>&1 && ss -tlnp | grep ":3001 " >/dev/null 2>&1; do
+    log "⏳ Waiting for port release (until either 3000 or 3001 is released)..."
+    sleep 3
+done
+if ! ss -tlnp | grep ":3000 " >/dev/null 2>&1; then
+    log "✅ Port 3000 release confirmed"
+elif ! ss -tlnp | grep ":3001 " >/dev/null 2>&1; then
+    log "✅ Port 3001 release confirmed"
+fi
+
 # 新しいコンテナを2つにスケールアップ
 log "🚀 新しいコンテナを2つにスケールアップ"
 if ! docker compose up -d --scale web=2 --no-recreate; then
@@ -323,6 +336,12 @@ fi
 log "⏳ 新しいコンテナ安定化待機（60秒）"
 sleep 60
 
+# ステップ2: 古いコンテナ削除・安定化
+log "🔽 ステップ2: 古いコンテナ削除・安定化"
+
+# 再度古いコンテナを1つだけ削除
+remove_one_old_container "$OLD_IMAGE_ID" "web"
+
 # Port release waiting after reducing to one container
 log "🔍 Waiting for either port to be released"
 while ss -tlnp | grep ":3000 " >/dev/null 2>&1 && ss -tlnp | grep ":3001 " >/dev/null 2>&1; do
@@ -334,13 +353,6 @@ if ! ss -tlnp | grep ":3000 " >/dev/null 2>&1; then
 elif ! ss -tlnp | grep ":3001 " >/dev/null 2>&1; then
     log "✅ Port 3001 release confirmed"
 fi
-
-
-# ステップ2: 古いコンテナ削除・安定化
-log "🔽 ステップ2: 古いコンテナ削除・安定化"
-
-# 再度古いコンテナを1つだけ削除
-remove_one_old_container "$OLD_IMAGE_ID" "web"
 
 # 新しいコンテナを2つに設定
 if ! docker compose up -d --scale web=2 --no-recreate; then
@@ -348,27 +360,6 @@ if ! docker compose up -d --scale web=2 --no-recreate; then
     exit 1
 fi
 log "⏳ 安定化スケール設定後の待機（60秒）"
-sleep 60
-
-# Port release waiting after reducing to one container
-log "🔍 Waiting for either port to be released"
-while ss -tlnp | grep ":3000 " >/dev/null 2>&1 && ss -tlnp | grep ":3001 " >/dev/null 2>&1; do
-    log "⏳ Waiting for port release (until either 3000 or 3001 is released)..."
-    sleep 3
-done
-if ! ss -tlnp | grep ":3000 " >/dev/null 2>&1; then
-    log "✅ Port 3000 release confirmed"
-elif ! ss -tlnp | grep ":3001 " >/dev/null 2>&1; then
-    log "✅ Port 3001 release confirmed"
-fi
-
-# ステップ3: 最終的に元のスケール数に設定
-log "🎯 ステップ3: 最終スケール → $CURRENT_SCALE"
-if ! docker compose up -d --scale web=$CURRENT_SCALE --no-recreate; then
-    log "❌ 最終スケール設定失敗"
-    exit 1
-fi
-log "⏳ 最終スケール設定後の安定化待機（60秒）"
 sleep 60
 
 # 最終ヘルスチェック
