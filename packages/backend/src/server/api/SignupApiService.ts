@@ -18,6 +18,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
+import { envOption } from '@/env.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -76,7 +77,7 @@ export class SignupApiService {
 
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
-		if (process.env.NODE_ENV !== 'test') {
+		if (process.env.NODE_ENV !== 'test' && envOption.disableCaptcha !== true) {
 			if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
 				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);

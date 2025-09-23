@@ -15,6 +15,7 @@ import { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { envOption } from '@/env.js';
 
 @Injectable()
 export class MetaEntityService {
@@ -85,16 +86,16 @@ export class MetaEntityService {
 			inquiryUrl: instance.inquiryUrl,
 			disableRegistration: instance.disableRegistration,
 			emailRequiredForSignup: instance.emailRequiredForSignup,
-			enableHcaptcha: instance.enableHcaptcha,
+			enableHcaptcha: envOption.disableCaptcha ? false : instance.enableHcaptcha,
 			hcaptchaSiteKey: instance.hcaptchaSiteKey,
-			enableMcaptcha: instance.enableMcaptcha,
+			enableMcaptcha: envOption.disableCaptcha ? false : instance.enableMcaptcha,
 			mcaptchaSiteKey: instance.mcaptchaSitekey,
 			mcaptchaInstanceUrl: instance.mcaptchaInstanceUrl,
-			enableRecaptcha: instance.enableRecaptcha,
+			enableRecaptcha: envOption.disableCaptcha ? false : instance.enableRecaptcha,
 			recaptchaSiteKey: instance.recaptchaSiteKey,
-			enableTurnstile: instance.enableTurnstile,
+			enableTurnstile: envOption.disableCaptcha ? false : instance.enableTurnstile,
 			turnstileSiteKey: instance.turnstileSiteKey,
-			enableTestcaptcha: instance.enableTestcaptcha,
+			enableTestcaptcha: envOption.disableCaptcha ? false : instance.enableTestcaptcha,
 			googleAnalyticsMeasurementId: instance.googleAnalyticsMeasurementId,
 			swPublickey: instance.swPublicKey,
 			themeColor: instance.themeColor,
@@ -162,9 +163,9 @@ export class MetaEntityService {
 				globalTimeline: instance.policies.gtlAvailable,
 				registration: !instance.disableRegistration,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
-				hcaptcha: instance.enableHcaptcha,
-				recaptcha: instance.enableRecaptcha,
-				turnstile: instance.enableTurnstile,
+				hcaptcha: envOption.disableCaptcha ? false : instance.enableHcaptcha,
+				recaptcha: envOption.disableCaptcha ? false : instance.enableRecaptcha,
+				turnstile: envOption.disableCaptcha ? false : instance.enableTurnstile,
 				objectStorage: instance.useObjectStorage,
 				serviceWorker: instance.enableServiceWorker,
 				miauth: true,

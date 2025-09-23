@@ -24,6 +24,7 @@ import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { envOption } from '@/env.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
@@ -170,7 +171,7 @@ export class SigninApiService {
 		};
 
 		if (!profile.twoFactorEnabled) {
-			if (process.env.NODE_ENV !== 'test') {
+			if (process.env.NODE_ENV !== 'test' && envOption.disableCaptcha !== true) {
 				if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
 					await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
 						throw new FastifyReplyError(400, err);
