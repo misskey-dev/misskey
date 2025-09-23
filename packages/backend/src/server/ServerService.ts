@@ -21,6 +21,7 @@ import { genIdenticon } from '@/misc/gen-identicon.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import { removeDomain } from '@/util.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -188,24 +189,22 @@ export class ServerService implements OnApplicationShutdown {
 				}
 			}
 
-			const searchParams = new URLSearchParams();
-			let url = '';
+			let url: URL;
 			if ('badge' in request.query) {
-				url = '/proxy/emoji.png';
+				url = new URL(`${this.config.mediaProxy}/emoji.png`);
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
-				searchParams.set('badge', '1');
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('badge', '1');
 			} else {
-				url = '/proxy/emoji.webp';
+				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
-				searchParams.set('emoji', '1');
-				if ('static' in request.query) searchParams.set('static', '1');
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('emoji', '1');
+				if ('static' in request.query) url.searchParams.set('static', '1');
 			}
-			url += `?${searchParams.toString()}`;
 
 			return await reply.redirect(
-				url,
+				removeDomain(url.toString()),
 				301,
 			);
 		});

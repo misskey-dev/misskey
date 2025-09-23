@@ -17,6 +17,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { IdService } from '@/core/IdService.js';
+import { removeDomain } from '@/util.js';
 import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -79,7 +80,7 @@ export class DriveFileEntityService {
 	@bindThis
 	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
 		return appendQuery(
-			`/proxy/${mode ?? 'image'}.webp`,
+			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
 			query({
 				url,
 				...(mode ? { [mode]: '1' } : {}),
@@ -208,8 +209,8 @@ export class DriveFileEntityService {
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : this.getPublicUrl(file),
-			thumbnailUrl: this.getThumbnailUrl(file),
+			url: removeDomain(opts.self ? file.url : this.getPublicUrl(file)),
+			thumbnailUrl: removeDomain(this.getThumbnailUrl(file)),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
@@ -246,8 +247,8 @@ export class DriveFileEntityService {
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : this.getPublicUrl(file),
-			thumbnailUrl: this.getThumbnailUrl(file),
+			url: removeDomain(opts.self ? file.url : this.getPublicUrl(file)),
+			thumbnailUrl: removeDomain(this.getThumbnailUrl(file)),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {

@@ -58,7 +58,7 @@ const url = computed(() => {
 	if (rawUrl.value == null) return undefined;
 
 	const proxied =
-		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
+		(rawUrl.value.startsWith('/emoji/') || rawUrl.value.startsWith('/files/') || (props.useOriginalSize && isLocal.value))
 			? rawUrl.value
 			: mediaProxy.getProxiedImageUrl(
 				rawUrl.value,

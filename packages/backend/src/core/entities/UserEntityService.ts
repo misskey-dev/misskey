@@ -48,6 +48,7 @@ import type { AnnouncementService } from '@/core/AnnouncementService.js';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { ChatService } from '@/core/ChatService.js';
+import { removeDomain } from '@/util.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
@@ -487,7 +488,7 @@ export class UserEntityService implements OnModuleInit {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: (user.avatarId == null ? null : user.avatarUrl) ?? this.getIdenticonUrl(user),
+			avatarUrl: (user.avatarId == null ? null : removeDomain(user.avatarUrl)) ?? this.getIdenticonUrl(user),
 			avatarBlurhash: (user.avatarId == null ? null : user.avatarBlurhash),
 			avatarDecorations: user.avatarDecorations.length > 0 ? this.avatarDecorationService.getAll().then(decorations => user.avatarDecorations.filter(ud => decorations.some(d => d.id === ud.id)).map(ud => ({
 				id: ud.id,
@@ -495,7 +496,7 @@ export class UserEntityService implements OnModuleInit {
 				flipH: ud.flipH || undefined,
 				offsetX: ud.offsetX || undefined,
 				offsetY: ud.offsetY || undefined,
-				url: decorations.find(d => d.id === ud.id)!.url,
+				url: removeDomain(decorations.find(d => d.id === ud.id)!.url),
 			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
@@ -506,8 +507,8 @@ export class UserEntityService implements OnModuleInit {
 				name: instance.name,
 				softwareName: instance.softwareName,
 				softwareVersion: instance.softwareVersion,
-				iconUrl: instance.iconUrl,
-				faviconUrl: instance.faviconUrl,
+				iconUrl: removeDomain(instance.iconUrl),
+				faviconUrl: removeDomain(instance.faviconUrl),
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
@@ -534,7 +535,7 @@ export class UserEntityService implements OnModuleInit {
 				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.bannerId == null ? null : user.bannerUrl,
+				bannerUrl: user.bannerId == null ? null : removeDomain(user.bannerUrl),
 				bannerBlurhash: user.bannerId == null ? null : user.bannerBlurhash,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
@@ -563,7 +564,7 @@ export class UserEntityService implements OnModuleInit {
 					id: role.id,
 					name: role.name,
 					color: role.color,
-					iconUrl: role.iconUrl,
+					iconUrl: removeDomain(role.iconUrl),
 					description: role.description,
 					isModerator: role.isModerator,
 					isAdministrator: role.isAdministrator,

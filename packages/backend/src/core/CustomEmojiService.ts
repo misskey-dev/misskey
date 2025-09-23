@@ -18,6 +18,7 @@ import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import type { Serialized } from '@/types.js';
+import { removeDomain } from '@/util.js';
 
 const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
@@ -141,20 +142,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	public async update(data: (
 		{ id: MiEmoji['id'], name?: string; } | { name: string; id?: MiEmoji['id'], }
 		) & {
-		originalUrl?: string;
-		publicUrl?: string;
-		fileType?: string;
-		category?: string | null;
-		aliases?: string[];
-		license?: string | null;
-		isSensitive?: boolean;
-		localOnly?: boolean;
-		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
-	}, moderator?: MiUser): Promise<
+			originalUrl?: string;
+			publicUrl?: string;
+			fileType?: string;
+			category?: string | null;
+			aliases?: string[];
+			license?: string | null;
+			isSensitive?: boolean;
+			localOnly?: boolean;
+			roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
+		}, moderator?: MiUser): Promise<
 		null
 		| 'NO_SUCH_EMOJI'
 		| 'SAME_NAME_EMOJI_EXISTS'
-	> {
+		> {
 		const emoji = data.id
 			? await this.getEmojiById(data.id)
 			: await this.getEmojiByName(data.name!);
@@ -389,7 +390,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		const emoji = await this.emojisCache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
-		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+		return removeDomain(emoji.publicUrl || emoji.originalUrl); // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 	}
 
 	/**

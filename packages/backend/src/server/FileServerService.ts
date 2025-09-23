@@ -28,6 +28,7 @@ import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
+import { removeDomain } from '@/util.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -142,13 +143,12 @@ export class FileServerService {
 					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const searchParams = new URLSearchParams();
-						searchParams.set('url', file.url);
-						searchParams.set('static', '1');
-						const url = `/proxy/static.webp?${searchParams.toString()}`;
+						const url = new URL(`${this.config.mediaProxy}/static.webp`);
+						url.searchParams.set('url', file.url);
+						url.searchParams.set('static', '1');
 
 						file.cleanup();
-						return await reply.redirect(url, 301);
+						return await reply.redirect(removeDomain(url.toString()), 301);
 					} else if (file.mime.startsWith('video/')) {
 						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
 						if (externalThumbnail) {
@@ -164,12 +164,11 @@ export class FileServerService {
 					if (['image/svg+xml'].includes(file.mime)) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const searchParams = new URLSearchParams();
-						searchParams.set('url', file.url);
-						const url = `/proxy/svg.webp?${searchParams.toString()}`;
+						const url = new URL(`${this.config.mediaProxy}/svg.webp`);
+						url.searchParams.set('url', file.url);
 
 						file.cleanup();
-						return await reply.redirect(url, 301);
+						return await reply.redirect(removeDomain(url.toString()), 301);
 					}
 				}
 
@@ -309,17 +308,14 @@ export class FileServerService {
 
 			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
 
-			const searchParams = new URLSearchParams();
-			let url = `/proxy/${request.params.url || ''}`;
+			const url = new URL(`${this.config.mediaProxy}/${request.params.url || ''}`);
 
 			for (const [key, value] of Object.entries(request.query)) {
-				searchParams.append(key, value);
+				url.searchParams.append(key, value);
 			}
 
-			url += `?${searchParams.toString()}`;
-
 			return await reply.redirect(
-				url,
+				removeDomain(url.toString()),
 				301,
 			);
 		}

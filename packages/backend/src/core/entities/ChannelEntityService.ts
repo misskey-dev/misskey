@@ -12,6 +12,7 @@ import type { MiUser } from '@/models/User.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { removeDomain } from '@/util.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 import { In } from 'typeorm';
@@ -78,7 +79,7 @@ export class ChannelEntityService {
 			name: channel.name,
 			description: channel.description,
 			userId: channel.userId,
-			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
+			bannerUrl: banner ? removeDomain(this.driveFileEntityService.getPublicUrl(banner)) : null,
 			pinnedNoteIds: channel.pinnedNoteIds,
 			color: channel.color,
 			isArchived: channel.isArchived,

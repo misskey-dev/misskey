@@ -10,6 +10,7 @@ import type { EmojisRepository, MiRole, RolesRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import { bindThis } from '@/decorators.js';
+import { removeDomain } from '@/util.js';
 
 @Injectable()
 export class EmojiEntityService {
@@ -32,7 +33,7 @@ export class EmojiEntityService {
 			name: emoji.name,
 			category: emoji.category,
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url: emoji.publicUrl || emoji.originalUrl,
+			url: removeDomain(emoji.publicUrl || emoji.originalUrl),
 			localOnly: emoji.localOnly ? true : undefined,
 			isSensitive: emoji.isSensitive ? true : undefined,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length > 0 ? emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : undefined,
@@ -59,7 +60,7 @@ export class EmojiEntityService {
 			category: emoji.category,
 			host: emoji.host,
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url: emoji.publicUrl || emoji.originalUrl,
+			url: removeDomain(emoji.publicUrl || emoji.originalUrl),
 			license: emoji.license,
 			isSensitive: emoji.isSensitive,
 			localOnly: emoji.localOnly,
