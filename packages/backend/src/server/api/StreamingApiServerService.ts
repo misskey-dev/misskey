@@ -15,6 +15,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { PreprocessWebsocketMessage } from '@/util.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
@@ -111,9 +112,10 @@ export class StreamingApiServerService {
 
 		const globalEv = new EventEmitter();
 
-		this.redisForSub.on('message', (_: string, data: string) => {
+		this.redisForSub.on('message', async (_: string, data: string) => {
 			const parsed = JSON.parse(data);
-			globalEv.emit('message', parsed);
+			const processedData = await PreprocessWebsocketMessage(parsed);
+			globalEv.emit('message', processedData);
 		});
 
 		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {

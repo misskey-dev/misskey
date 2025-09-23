@@ -62,3 +62,66 @@ export async function rewriteUser(user: { avatarUrl: string | null } | null): Pr
 export async function rewriteMiNotes(notes: PartialMinote[]): Promise<PartialMinote[]> {
 	return Promise.all(notes.map(n => rewriteMiNote(n)));
 }
+
+// Preprocess a WebSocket message, rewriting URLs as necessary
+export async function PreprocessWebsocketMessage(data: any): Promise<any> {
+	// Skip if domain rewrite is disabled
+	if (envOption.domainRewrite === false) return data;
+
+	if (data.channel === 'notesStream') {
+		if (data.message) {
+			data.message = await rewriteMiNote(data.message);
+		}
+	}
+
+	console.log('PreprocessWebsocketMessage', data); // --- IGNORE ---
+	
+	if (data.channel.startsWith('mainStream:')) {
+		if (data.message) {
+			data.message = await processMainStreamMessage(data.message);
+		}
+	}
+
+	if (data.channel.startsWith('chatUserStream:')) {
+		if (data.message) {
+			data.message = await processChatMessage(data.message);
+		}
+	}
+
+	return data;
+};
+
+async function processMainStreamMessage(message: any): Promise<any> {
+	if (message.type === 'follow') {
+		if (message.avatarUrl) message.avatarUrl = removeDomain(message.avatarUrl);
+	}
+
+	if (message.type === 'notification') {
+		if (message.body) {
+			if (message.body.note) message.body.note = await rewriteMiNote(message.body.note);
+			if (message.body.user) message.body.user = await rewriteUser(message.body.user);
+		}
+	}
+
+	return message;
+}
+
+async function processChatMessage(message: any): Promise<any> {
+	if (message.type === 'message') {
+		if (message.body.file) message.body.file = await processFileObject(message.body.file);
+		if (message.body.fromUser) message.body.fromUser = await rewriteUser(message.body.fromUser);
+		if (message.body.toUser) message.body.toUser = await rewriteUser(message.body.toUser);
+	}
+
+	return message;
+}
+
+async function processFileObject(file: any): Promise<any> {
+	if (file.url) {
+		file.url = removeDomain(file.url);
+	}
+	if (file.thumbnailUrl) {
+		file.thumbnailUrl = removeDomain(file.thumbnailUrl);
+	}
+	return file;
+}
