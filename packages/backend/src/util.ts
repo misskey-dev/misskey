@@ -73,8 +73,6 @@ export async function PreprocessWebsocketMessage(data: any): Promise<any> {
 			data.message = await rewriteMiNote(data.message);
 		}
 	}
-
-	console.log('PreprocessWebsocketMessage', data); // --- IGNORE ---
 	
 	if (data.channel.startsWith('mainStream:')) {
 		if (data.message) {
