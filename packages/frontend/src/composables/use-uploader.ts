@@ -87,6 +87,7 @@ export type UploaderItem = {
 	isSensitive?: boolean;
 	caption?: string | null;
 	abort?: (() => void) | null;
+	abortPreprocess?: (() => void) | null;
 };
 
 function getCompressionSettings(level: 0 | 1 | 2 | 3) {
@@ -403,6 +404,19 @@ export function useUploader(options: {
 					removeItem(item);
 				},
 			});
+		} else if (item.preprocessing && item.abortPreprocess != null) {
+			menu.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-player-stop',
+				text: i18n.ts.abort,
+				danger: true,
+				action: () => {
+					if (item.abortPreprocess != null) {
+						item.abortPreprocess();
+					}
+				},
+			});
 		} else if (item.uploading) {
 			menu.push({
 				type: 'divider',
@@ -486,6 +500,10 @@ export function useUploader(options: {
 				continue;
 			}
 
+			if (item.abortPreprocess != null) {
+				item.abortPreprocess();
+			}
+
 			if (item.abort != null) {
 				item.abort();
 			}
@@ -496,6 +514,7 @@ export function useUploader(options: {
 
 	async function preprocess(item: UploaderItem): Promise<void> {
 		item.preprocessing = true;
+		item.preprocessProgress = null;
 
 		if (IMAGE_PREPROCESS_NEEDED_TYPES.includes(item.file.type)) {
 			try {
@@ -518,6 +537,7 @@ export function useUploader(options: {
 		}
 
 		item.preprocessing = false;
+		item.preprocessProgress = null;
 	}
 
 	async function preprocessForImage(item: UploaderItem): Promise<void> {
@@ -620,7 +640,16 @@ export function useUploader(options: {
 
 			currentConversion.onProgress = newProgress => item.preprocessProgress = newProgress;
 
+			item.abortPreprocess = () => {
+				item.abortPreprocess = null;
+				currentConversion.cancel();
+				item.preprocessing = false;
+				item.preprocessProgress = null;
+			};
+
 			await currentConversion.execute();
+
+			item.abortPreprocess = null;
 
 			preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
 			item.compressedSize = output.target.buffer!.byteLength;
