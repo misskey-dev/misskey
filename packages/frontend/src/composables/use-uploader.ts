@@ -663,10 +663,16 @@ export function useUploader(options: {
 		item.preprocessedFile = markRaw(preprocessedFile);
 	}
 
-	onUnmounted(() => {
+	function dispose() {
 		for (const item of items.value) {
 			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 		}
+
+		abortAll();
+	}
+
+	onUnmounted(() => {
+		dispose();
 	});
 
 	return {
@@ -674,6 +680,7 @@ export function useUploader(options: {
 		addFiles,
 		removeItem,
 		abortAll,
+		dispose,
 		upload,
 		getMenu,
 		uploading: computed(() => items.value.some(item => item.uploading)),

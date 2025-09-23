@@ -219,7 +219,7 @@ const uploader = useUploader({
 });
 
 onUnmounted(() => {
-	uploader.abortAll();
+	uploader.dispose();
 });
 
 uploader.events.on('itemUploaded', ctx => {
