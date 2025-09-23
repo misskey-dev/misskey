@@ -1304,6 +1304,7 @@ async function canClose() {
 
 defineExpose({
 	clear,
+	abortUploader: () => uploader.abortAll(),
 	canClose,
 });
 </script>
