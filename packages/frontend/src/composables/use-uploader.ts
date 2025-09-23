@@ -653,6 +653,7 @@ export function useUploader(options: {
 
 			preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
 			item.compressedSize = output.target.buffer!.byteLength;
+			item.uploadName = `${item.name}.mp4`;
 		} else {
 			item.compressedSize = null;
 			item.uploadName = item.name;
