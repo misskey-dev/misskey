@@ -1031,6 +1031,10 @@ export interface Locale extends ILocale {
      */
     "processing": string;
     /**
+     * 準備中
+     */
+    "preprocessing": string;
+    /**
      * プレビュー
      */
     "preview": string;
