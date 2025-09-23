@@ -5514,6 +5514,14 @@ export interface Locale extends ILocale {
      */
     "defaultImageCompressionLevel_description": string;
     /**
+     * デフォルトの圧縮度
+     */
+    "defaultCompressionLevel": string;
+    /**
+     * 低くすると品質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、品質は低下します。
+     */
+    "defaultCompressionLevel_description": string;
+    /**
      * 分
      */
     "inMinutes": string;
@@ -5545,6 +5553,36 @@ export interface Locale extends ILocale {
      * ユーザー指定ノートを作成
      */
     "createUserSpecifiedNote": string;
+    "_compression": {
+        "_quality": {
+            /**
+             * 高品質
+             */
+            "high": string;
+            /**
+             * 中品質
+             */
+            "medium": string;
+            /**
+             * 低品質
+             */
+            "low": string;
+        };
+        "_size": {
+            /**
+             * サイズ大
+             */
+            "large": string;
+            /**
+             * サイズ中
+             */
+            "medium": string;
+            /**
+             * サイズ小
+             */
+            "small": string;
+        };
+    };
     "_order": {
         /**
          * 新しい順

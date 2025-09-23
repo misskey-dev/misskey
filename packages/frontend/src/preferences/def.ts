@@ -439,6 +439,9 @@ export const PREF_DEF = definePreferences({
 	defaultImageCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},
+	defaultVideoCompressionLevel: {
+		default: 2 as 0 | 1 | 2 | 3,
+	},
 
 	'sound.masterVolume': {
 		default: 0.5,

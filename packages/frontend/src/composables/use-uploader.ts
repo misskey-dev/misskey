@@ -145,7 +145,7 @@ export function useUploader(options: {
 			aborted: false,
 			uploaded: null,
 			uploadFailed: false,
-			compressionLevel: prefer.s.defaultImageCompressionLevel,
+			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
 			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
 			file: markRaw(file),
 		});
@@ -330,7 +330,7 @@ export function useUploader(options: {
 		}
 
 		if (
-			IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) &&
+			(IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) || VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type)) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
@@ -589,7 +589,7 @@ export function useUploader(options: {
 	async function preprocessForVideo(item: UploaderItem): Promise<void> {
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsCompress = true && VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type);
+		const needsCompress = item.compressionLevel !== 0 && VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type);
 
 		if (needsCompress) {
 			const mediabunny = await import('mediabunny');
@@ -611,7 +611,7 @@ export function useUploader(options: {
 				output,
 				video: {
 					//width: 320, // Height will be deduced automatically to retain aspect ratio
-					bitrate: mediabunny.QUALITY_MEDIUM,
+					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 				audio: {
 					bitrate: 32e3,
