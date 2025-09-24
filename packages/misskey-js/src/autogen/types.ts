@@ -4463,6 +4463,7 @@ export type components = {
             /** @enum {string|null} */
             reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
             scheduledAt: number | null;
+            isActuallyScheduled: boolean;
         };
         NoteReaction: {
             /** Format: id */
@@ -29205,6 +29206,8 @@ export interface operations {
                         expiredAfter?: number | null;
                     } | null;
                     scheduledAt?: number | null;
+                    /** @default false */
+                    isActuallyScheduled?: boolean;
                 };
             };
         };
@@ -29447,6 +29450,8 @@ export interface operations {
                         expiredAfter?: number | null;
                     } | null;
                     scheduledAt?: number | null;
+                    /** @default false */
+                    isActuallyScheduled?: boolean;
                 };
             };
         };

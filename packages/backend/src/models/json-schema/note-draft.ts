@@ -171,5 +171,9 @@ export const packedNoteDraftSchema = {
 			type: 'number',
 			optional: false, nullable: true,
 		},
+		isActuallyScheduled: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;

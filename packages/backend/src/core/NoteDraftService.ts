@@ -32,6 +32,7 @@ export type NoteDraftOptions = {
 	channelId?: MiChannel['id'] | null;
 	poll?: (IPoll & { expiredAfter?: number | null }) | null;
 	scheduledAt?: Date | null;
+	isActuallyScheduled?: boolean;
 };
 
 @Injectable()
@@ -100,7 +101,7 @@ export class NoteDraftService {
 		appliedDraft.userId = me.id;
 		const draft = await this.noteDraftsRepository.insertOne(appliedDraft);
 
-		if (draft.scheduledAt) {
+		if (draft.scheduledAt && draft.isActuallyScheduled) {
 			this.schedule(draft);
 		}
 
@@ -133,7 +134,7 @@ export class NoteDraftService {
 		await this.noteDraftsRepository.update(draftId, appliedDraft);
 
 		this.clearSchedule(draft).then(() => {
-			if (appliedDraft.scheduledAt) {
+			if (appliedDraft.scheduledAt != null && appliedDraft.isActuallyScheduled) {
 				this.schedule(draft);
 			}
 		});
@@ -328,6 +329,7 @@ export class NoteDraftService {
 			localOnly: data.localOnly,
 			reactionAcceptance: data.reactionAcceptance,
 			scheduledAt: data.scheduledAt ?? null,
+			isActuallyScheduled: data.isActuallyScheduled ?? false,
 		} satisfies MiNoteDraft;
 
 		return appliedDraft;
@@ -335,6 +337,7 @@ export class NoteDraftService {
 
 	@bindThis
 	public async schedule(draft: MiNoteDraft): Promise<void> {
+		if (!draft.isActuallyScheduled) return;
 		if (draft.scheduledAt == null) return;
 		if (draft.scheduledAt.getTime() <= Date.now()) return;
 

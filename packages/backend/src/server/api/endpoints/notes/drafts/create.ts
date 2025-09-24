@@ -184,6 +184,7 @@ export const paramDef = {
 			required: ['choices'],
 		},
 		scheduledAt: { type: 'integer', nullable: true },
+		isActuallyScheduled: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -214,6 +215,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				visibleUserIds: ps.visibleUserIds ?? [],
 				channelId: ps.channelId ?? undefined,
 				scheduledAt: ps.scheduledAt ? new Date(ps.scheduledAt) : null,
+				isActuallyScheduled: ps.isActuallyScheduled ?? false,
 			}).catch((err) => {
 				if (err instanceof IdentifiableError) {
 					switch (err.id) {

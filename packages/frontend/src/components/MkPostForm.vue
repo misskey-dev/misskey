@@ -669,6 +669,7 @@ function clear() {
 	files.value = [];
 	poll.value = null;
 	quoteId.value = null;
+	scheduledAt.value = null;
 }
 
 function onKeydown(ev: KeyboardEvent) {
@@ -839,7 +840,9 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function saveServerDraft(clearLocal = false) {
+async function saveServerDraft(options: {
+	isActuallyScheduled?: boolean;
+} = {}) {
 	return await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
 		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
 		text: text.value,
@@ -855,12 +858,7 @@ async function saveServerDraft(clearLocal = false) {
 		channelId: targetChannel.value ? targetChannel.value.id : undefined,
 		reactionAcceptance: reactionAcceptance.value,
 		scheduledAt: scheduledAt.value,
-	}).then(() => {
-		if (clearLocal) {
-			clear();
-			deleteDraft();
-		}
-	}).catch((err) => {
+		isActuallyScheduled: options.isActuallyScheduled ?? false,
 	});
 }
 
@@ -893,6 +891,21 @@ async function post(ev?: MouseEvent) {
 				end: () => dispose(),
 			});
 		}
+	}
+
+	if (scheduledAt.value != null) {
+		if (uploader.items.value.some(x => x.uploaded == null)) {
+			await uploadFiles();
+
+			// アップロード失敗したものがあったら中止
+			if (uploader.items.value.some(x => x.uploaded == null)) {
+				return;
+			}
+		}
+
+		await postAsScheduled();
+		clear();
+		return;
 	}
 
 	if (props.mock) return;
@@ -1063,6 +1076,14 @@ async function post(ev?: MouseEvent) {
 			type: 'error',
 			text: err.message + '\n' + (err as any).id,
 		});
+	});
+}
+
+async function postAsScheduled() {
+	if (props.mock) return;
+
+	await saveServerDraft({
+		isActuallyScheduled: true,
 	});
 }
 
@@ -1245,6 +1266,10 @@ async function schedule() {
 	if (canceled) return;
 
 	scheduledAt.value = result.getTime();
+}
+
+function cancelSchedule() {
+	scheduledAt.value = null;
 }
 
 onMounted(() => {

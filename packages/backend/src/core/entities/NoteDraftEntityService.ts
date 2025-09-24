@@ -106,6 +106,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 			id: noteDraft.id,
 			createdAt: this.idService.parse(noteDraft.id).date.toISOString(),
 			scheduledAt: noteDraft.scheduledAt?.getTime() ?? null,
+			isActuallyScheduled: noteDraft.isActuallyScheduled,
 			userId: noteDraft.userId,
 			user: packedUsers?.get(noteDraft.userId) ?? this.userEntityService.pack(noteDraft.user ?? noteDraft.userId, me),
 			text: text,

@@ -153,11 +153,15 @@ export class MiNoteDraft {
 
 	//#endregion
 
-	// 予約投稿
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public scheduledAt: Date | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isActuallyScheduled: boolean;
 
 	constructor(data: Partial<MiNoteDraft>) {
 		if (data == null) return;
