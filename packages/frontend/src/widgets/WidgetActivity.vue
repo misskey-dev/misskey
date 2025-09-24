@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" data-cy-mkw-activity class="mkw-activity">
 	<template #icon><i class="ti ti-chart-line"></i></template>
 	<template #header>{{ i18n.ts._widgets.activity }}</template>
-	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i :class="widgetProps.view === 0 ? 'ti ti-chart-line' : 'ti ti-activity'"></i></button></template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i :class="widgetProps.view === 0 ? 'ti ti-chart-dots' : 'ti ti-activity'"></i></button></template>
 
 	<div>
 		<MkLoading v-if="fetching"/>
