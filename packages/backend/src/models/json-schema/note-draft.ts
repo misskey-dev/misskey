@@ -167,5 +167,10 @@ export const packedNoteDraftSchema = {
 			optional: false, nullable: true,
 			enum: ['likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote', null],
 		},
+		scheduledAt: {
+			type: 'string',
+			optional: true, nullable: true,
+			format: 'date-time',
+		},
 	},
 } as const;
