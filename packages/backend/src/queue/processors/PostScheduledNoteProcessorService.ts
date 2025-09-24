@@ -9,6 +9,7 @@ import type { NoteDraftsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { PostScheduledNoteJobData } from '../types.js';
@@ -21,6 +22,7 @@ export class PostScheduledNoteProcessorService {
 		@Inject(DI.noteDraftsRepository)
 		private noteDraftsRepository: NoteDraftsRepository,
 
+		private noteCreateService: NoteCreateService,
 		private notificationService: NotificationService,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -33,6 +35,10 @@ export class PostScheduledNoteProcessorService {
 		if (draft == null) {
 			return;
 		}
+
+		const note = await this.noteCreateService.create(draft.user, draft);
+
+		this.noteDraftsRepository.remove(draft);
 
 		this.notificationService.createNotification(draft.userId, 'scheduledNotePosted', {
 			noteId: note.id,
