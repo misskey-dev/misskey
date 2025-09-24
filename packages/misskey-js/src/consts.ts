@@ -26,6 +26,7 @@ export const notificationTypes = [
 	'quote',
 	'reaction',
 	'pollEnded',
+	'scheduledNotePosted',
 	'receiveFollowRequest',
 	'followRequestAccepted',
 	'groupInvited',

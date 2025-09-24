@@ -12,6 +12,7 @@
  * quote - 投稿が引用Renoteされた
  * reaction - 投稿にリアクションされた
  * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
+ * scheduledNotePosted - 予約したノートが投稿された
  * receiveFollowRequest - フォローリクエストされた
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
  * roleAssigned - ロールが付与された
@@ -32,6 +33,7 @@ export const notificationTypes = [
 	'quote',
 	'reaction',
 	'pollEnded',
+	'scheduledNotePosted',
 	'receiveFollowRequest',
 	'followRequestAccepted',
 	'roleAssigned',
