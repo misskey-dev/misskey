@@ -1317,6 +1317,7 @@ acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします�
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 draft: "下書き"
+draftsAndScheduledNotes: "下書きと予約投稿"
 confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
@@ -3390,6 +3391,7 @@ _drafts:
   restore: "復元"
   listDrafts: "下書き一覧"
   schedule: "投稿予約"
+  listScheduledNotes: "予約投稿一覧"
 
 qr: "二次元コード"
 _qr:

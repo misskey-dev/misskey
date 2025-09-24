@@ -5287,6 +5287,10 @@ export interface Locale extends ILocale {
      */
     "draft": string;
     /**
+     * 下書きと予約投稿
+     */
+    "draftsAndScheduledNotes": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -12661,6 +12665,10 @@ export interface Locale extends ILocale {
          * 投稿予約
          */
         "schedule": string;
+        /**
+         * 予約投稿一覧
+         */
+        "listScheduledNotes": string;
     };
     /**
      * 二次元コード
