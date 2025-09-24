@@ -238,7 +238,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				replyId: ps.replyId,
 				renoteId: ps.renoteId,
 				cw: ps.cw,
-				...(ps.hashtag ? { hashtag: ps.hashtag } : {}),
+				hashtag: ps.hashtag,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,

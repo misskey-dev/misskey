@@ -97,18 +97,20 @@ export class NoteDraftService {
 
 		await this.validate(me, data);
 
-		await this.noteDraftsRepository.update(draftId, data);
+		const updatedDraft = await this.noteDraftsRepository.createQueryBuilder().update()
+			.set(data)
+			.where('id = :id', { id: draftId })
+			.returning('*')
+			.execute()
+			.then((response) => response.raw[0]);
 
-		this.clearSchedule(draft).then(() => {
-			if (data.scheduledAt != null && data.isActuallyScheduled) {
-				this.schedule(draft);
+		this.clearSchedule(draftId).then(() => {
+			if (updatedDraft.scheduledAt != null && updatedDraft.isActuallyScheduled) {
+				this.schedule(updatedDraft);
 			}
 		});
 
-		return {
-			...draft,
-			...data,
-		};
+		return updatedDraft;
 	}
 
 	@bindThis
@@ -124,7 +126,7 @@ export class NoteDraftService {
 
 		await this.noteDraftsRepository.delete(draft.id);
 
-		this.clearSchedule(draft);
+		this.clearSchedule(draftId);
 	}
 
 	@bindThis
@@ -293,10 +295,10 @@ export class NoteDraftService {
 	}
 
 	@bindThis
-	public async clearSchedule(draft: MiNoteDraft): Promise<void> {
+	public async clearSchedule(draftId: MiNoteDraft['id']): Promise<void> {
 		const jobs = await this.queueService.postScheduledNoteQueue.getJobs(['delayed', 'waiting', 'active']);
 		for (const job of jobs) {
-			if (job.data.noteDraftId === draft.id) {
+			if (job.data.noteDraftId === draftId) {
 				await job.remove();
 			}
 		}
