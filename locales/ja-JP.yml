@@ -1384,6 +1384,8 @@ themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォル
 thankYouForTestingBeta: "ベータ版の検証にご協力いただきありがとうございます！"
 createUserSpecifiedNote: "ユーザー指定ノートを作成"
 schedulePost: "投稿を予約"
+scheduleToPostOnX: "{x}に投稿を予約します"
+schedule: "予約"
 
 _compression:
   _quality:

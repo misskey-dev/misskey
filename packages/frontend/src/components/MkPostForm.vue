@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : replyTargetNote ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="submitIcon"></i>
 				</div>
 			</button>
 		</div>
@@ -61,6 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
+	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">{{ i18n.tsx.scheduleToPostOnX({ x: new Date(scheduledAt).toLocaleString() }) }} - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button></MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
@@ -263,11 +264,17 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return renoteTargetNote.value
-		? i18n.ts.quote
-		: replyTargetNote.value
-			? i18n.ts.reply
-			: i18n.ts.note;
+	return scheduledAt.value != null
+		? i18n.ts.schedule
+		: renoteTargetNote.value
+			? i18n.ts.quote
+			: replyTargetNote.value
+				? i18n.ts.reply
+				: i18n.ts.note;
+});
+
+const submitIcon = computed((): string => {
+	return posted.value ? 'ti ti-check' : scheduledAt.value != null ? 'ti ti-calendar-time' : replyTargetNote.value ? 'ti ti-arrow-back-up' : renoteTargetNote.value ? 'ti ti-quote' : 'ti ti-send';
 });
 
 const textLength = computed((): number => {
@@ -1232,10 +1239,12 @@ function showDraftMenu(ev: MouseEvent) {
 }
 
 async function schedule() {
-	const { canceled, result } = await os.inputDate({
+	const { canceled, result } = await os.inputDatetime({
 		title: i18n.ts.schedulePost,
 	});
 	if (canceled) return;
+
+	scheduledAt.value = result.getTime();
 }
 
 onMounted(() => {
@@ -1535,6 +1544,10 @@ html[data-color-scheme=light] .preview {
 }
 
 .hasNotSpecifiedMentions {
+	margin: 0 20px 16px 20px;
+}
+
+.scheduledAt {
 	margin: 0 20px 16px 20px;
 }
 

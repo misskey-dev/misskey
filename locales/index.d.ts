@@ -5557,6 +5557,14 @@ export interface Locale extends ILocale {
      * 投稿を予約
      */
     "schedulePost": string;
+    /**
+     * {x}に投稿を予約します
+     */
+    "scheduleToPostOnX": ParameterizedString<"x">;
+    /**
+     * 予約
+     */
+    "schedule": string;
     "_compression": {
         "_quality": {
             /**
