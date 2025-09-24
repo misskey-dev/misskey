@@ -31,6 +31,7 @@ export type NoteDraftOptions = {
 	hashtag?: string;
 	channelId?: MiChannel['id'] | null;
 	poll?: (IPoll & { expiredAfter?: number | null }) | null;
+	scheduledAt?: Date | null;
 };
 
 @Injectable()
@@ -309,6 +310,7 @@ export class NoteDraftService {
 			visibleUserIds: data.visibleUserIds ?? [],
 			localOnly: data.localOnly,
 			reactionAcceptance: data.reactionAcceptance,
+			scheduledAt: data.scheduledAt ?? null,
 		} satisfies MiNoteDraft;
 
 		return appliedDraft;
@@ -317,7 +319,7 @@ export class NoteDraftService {
 	@bindThis
 	public async schedule(draft: MiNoteDraft, scheduledAt: Date): Promise<void> {
 		const delay = scheduledAt.getTime() - Date.now();
-		this.queueService.deleteUserMutingQueue.add(draft.id, {
+		this.queueService.postScheduledNoteQueue.add(draft.id, {
 			noteDraftId: draft.id,
 		}, {
 			delay,
