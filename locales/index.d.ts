@@ -10357,6 +10357,10 @@ export interface Locale extends ILocale {
          */
         "scheduledNotePosted": string;
         /**
+         * 予約ノートの投稿に失敗しました
+         */
+        "scheduledNotePostFailed": string;
+        /**
          * 新しい投稿
          */
         "newNote": string;
