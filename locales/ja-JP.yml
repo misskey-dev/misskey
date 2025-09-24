@@ -1386,6 +1386,7 @@ thankYouForTestingBeta: "ベータ版の検証にご協力いただきありが�
 createUserSpecifiedNote: "ユーザー指定ノートを作成"
 schedulePost: "投稿を予約"
 scheduleToPostOnX: "{x}に投稿を予約します"
+scheduledToPostOnX: "{x}に投稿が予約されています"
 schedule: "予約"
 scheduled: "予約"
 
@@ -3393,6 +3394,7 @@ _drafts:
   listDrafts: "下書き一覧"
   schedule: "投稿予約"
   listScheduledNotes: "予約投稿一覧"
+  cancelSchedule: "予約解除"
 
 qr: "二次元コード"
 _qr:

@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:class="[$style.draft]"
 						>
 							<div :class="$style.draftBody" class="_gaps_s">
+								<MkInfo v-if="draft.scheduledAt != null && draft.isActuallyScheduled">{{ i18n.tsx.scheduledToPostOnX({ x: new Date(draft.scheduledAt).toLocaleString() }) }}</MkInfo>
 								<div :class="$style.draftInfo">
 									<div :class="$style.draftMeta">
 										<div v-if="draft.reply" class="_nowrap">
@@ -107,22 +108,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkTime :time="draft.createdAt" :class="$style.draftCreatedAt" mode="detail" colored/>
 								</div>
 							</div>
+
 							<div :class="$style.draftActions" class="_buttons">
 								<MkButton
+									v-if="draft.scheduledAt != null && draft.isActuallyScheduled"
+									:class="$style.itemButton"
+									small
+									@click="cancelSchedule(draft)"
+								>
+									<i class="ti ti-calendar-x"></i>
+									{{ i18n.ts._drafts.cancelSchedule }}
+								</MkButton>
+								<MkButton
+									v-else
 									:class="$style.itemButton"
 									small
 									@click="restoreDraft(draft)"
 								>
 									<i class="ti ti-corner-up-left"></i>
 									{{ i18n.ts._drafts.restore }}
-								</MkButton>
-								<MkButton
-									:class="$style.itemButton"
-									small
-									@click="schedule(draft)"
-								>
-									<i class="ti ti-calendar-time"></i>
-									{{ i18n.ts._drafts.schedule }}
 								</MkButton>
 								<MkButton
 									v-tooltip="i18n.ts._drafts.delete"
@@ -158,6 +162,7 @@ import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api';
 import { Paginator } from '@/utility/paginator.js';
 import MkTabs from '@/components/MkTabs.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const props = defineProps<{
 	scheduled?: boolean;

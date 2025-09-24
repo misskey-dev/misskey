@@ -5566,6 +5566,10 @@ export interface Locale extends ILocale {
      */
     "scheduleToPostOnX": ParameterizedString<"x">;
     /**
+     * {x}に投稿が予約されています
+     */
+    "scheduledToPostOnX": ParameterizedString<"x">;
+    /**
      * 予約
      */
     "schedule": string;
@@ -12673,6 +12677,10 @@ export interface Locale extends ILocale {
          * 予約投稿一覧
          */
         "listScheduledNotes": string;
+        /**
+         * 予約解除
+         */
+        "cancelSchedule": string;
     };
     /**
      * 二次元コード
