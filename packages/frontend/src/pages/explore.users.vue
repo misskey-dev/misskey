@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</div>
 	<div v-else>
-		<MkFoldableSection ref="tagsEl" :foldable="true" :expanded="false" class="_margin">
+		<MkFoldableSection :foldable="true" :expanded="false" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div>
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkFoldableSection>
 
-		<MkFoldableSection v-if="tag != null" :key="`${tag}`" class="_margin">
+		<MkFoldableSection v-if="tagUsersPaginator != null" :key="`${tag}`" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
 			<MkUserList :paginator="tagUsersPaginator"/>
 		</MkFoldableSection>
@@ -78,22 +78,17 @@ const props = defineProps<{
 }>();
 
 const origin = ref('local');
-const tagsEl = useTemplateRef('tagsEl');
 const tagsLocal = ref<Misskey.entities.Hashtag[]>([]);
 const tagsRemote = ref<Misskey.entities.Hashtag[]>([]);
 
-watch(() => props.tag, () => {
-	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);
-});
-
-const tagUsersPaginator = markRaw(new Paginator('hashtags/users', {
+const tagUsersPaginator = props.tag != null ? markRaw(new Paginator('hashtags/users', {
 	limit: 30,
 	params: {
 		tag: props.tag,
 		origin: 'combined',
 		sort: '+follower',
 	},
-}));
+})) : null;
 
 const pinnedUsersPaginator = markRaw(new Paginator('pinned-users', {
 	noPaging: true,

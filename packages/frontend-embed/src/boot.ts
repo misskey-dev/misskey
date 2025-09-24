@@ -17,22 +17,23 @@ import { createApp, defineAsyncComponent } from 'vue';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-dark.json5';
 import { MediaProxy } from '@@/js/media-proxy.js';
+import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import { applyTheme, assertIsTheme } from '@/theme.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, version, locale, lang, updateLocale } from '@@/js/config.js';
+import { url, version, lang } from '@@/js/config.js';
 import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 import { serverContext } from '@/server-context.js';
-import { i18n, updateI18n } from '@/i18n.js';
+import { i18n } from '@/i18n.js';
 
 import type { Theme } from '@/theme.js';
 
 console.log('Misskey Embed');
 
 //#region Embedパラメータの取得・パース
-const params = new URLSearchParams(location.search);
+const params = new URLSearchParams(window.location.search);
 const embedParams = parseEmbedParams(params);
 if (_DEV_) console.log(embedParams);
 //#endregion
@@ -76,23 +77,11 @@ if (embedParams.colorMode === 'dark') {
 //#endregion
 
 //#region Detect language & fetch translations
-const localeVersion = localStorage.getItem('localeVersion');
-const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
-if (localeOutdated) {
-	const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
-	if (res.status === 200) {
-		const newLocale = await res.text();
-		const parsedNewLocale = JSON.parse(newLocale);
-		localStorage.setItem('locale', newLocale);
-		localStorage.setItem('localeVersion', version);
-		updateLocale(parsedNewLocale);
-		updateI18n(parsedNewLocale);
-	}
-}
+storeBootloaderErrors({ ...i18n.ts._bootErrors, reload: i18n.ts.reload });
 //#endregion
 
 // サイズの制限
-document.documentElement.style.maxWidth = '500px';
+window.document.documentElement.style.maxWidth = '500px';
 
 // iframeIdの設定
 function setIframeIdHandler(event: MessageEvent) {
@@ -125,16 +114,16 @@ app.provide(DI.embedParams, embedParams);
 const rootEl = ((): HTMLElement => {
 	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
-	const currentRoot = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+	const currentRoot = window.document.getElementById(MISSKEY_MOUNT_DIV_ID);
 
 	if (currentRoot) {
 		console.warn('multiple import detected');
 		return currentRoot;
 	}
 
-	const root = document.createElement('div');
+	const root = window.document.createElement('div');
 	root.id = MISSKEY_MOUNT_DIV_ID;
-	document.body.appendChild(root);
+	window.document.body.appendChild(root);
 	return root;
 })();
 
@@ -170,7 +159,7 @@ console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hu
 //#endregion
 
 function removeSplash() {
-	const splash = document.getElementById('splash');
+	const splash = window.document.getElementById('splash');
 	if (splash) {
 		splash.style.opacity = '0';
 		splash.style.pointerEvents = 'none';

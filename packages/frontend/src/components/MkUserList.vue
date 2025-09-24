@@ -9,22 +9,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items }">
 		<div :class="$style.root">
-			<MkUserInfo v-for="item in items" :key="item.id" class="user" :user="extractor(item)"/>
+			<MkUserInfo v-for="item in items" :key="item.id" :user="extractor(item)"/>
 		</div>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
-import type { Paginator } from '@/utility/paginator.js';
+import * as Misskey from 'misskey-js';
+import type { IPaginator } from '@/utility/paginator.js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	paginator: Paginator;
+	paginator: IPaginator;
 	noGap?: boolean;
-	extractor?: (item: any) => any;
+	extractor?: (item: any) => Misskey.entities.UserDetailed;
 }>(), {
 	extractor: (item) => item,
 });

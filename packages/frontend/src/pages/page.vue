@@ -135,9 +135,9 @@ const page = ref<Misskey.entities.Page | null>(null);
 const error = ref<any>(null);
 const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 	limit: 6,
-	computedParams: computed(() => ({
+	computedParams: computed(() => page.value ? ({
 		userId: page.value.user.id,
-	})),
+	}) : undefined),
 }));
 const path = computed(() => props.username + '/' + props.pageName);
 
@@ -267,7 +267,11 @@ function showMenu(ev: MouseEvent) {
 		menuItems.push({
 			icon: 'ti ti-pencil',
 			text: i18n.ts.edit,
-			action: () => router.push(`/pages/edit/${page.value.id}`),
+			action: () => router.push('/pages/edit/:initPageId', {
+				params: {
+					initPageId: page.value!.id,
+				},
+			}),
 		});
 
 		if ($i.pinnedPageId === page.value.id) {

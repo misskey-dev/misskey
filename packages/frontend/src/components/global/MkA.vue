@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
@@ -64,7 +64,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: () => {
-			router.push(props.to, 'forcePage');
+			router.pushByPath(props.to, 'forcePage');
 		},
 	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
@@ -86,6 +86,11 @@ function openWindow() {
 }
 
 function nav(ev: MouseEvent) {
+	// 制御キーとの組み合わせは無視（shiftを除く）
+	if (ev.metaKey || ev.altKey || ev.ctrlKey) return;
+
+	ev.preventDefault();
+
 	if (behavior === 'browser') {
 		window.location.href = props.to;
 		return;
@@ -99,6 +104,6 @@ function nav(ev: MouseEvent) {
 		return openWindow();
 	}
 
-	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
+	router.pushByPath(props.to, ev.ctrlKey ? 'forcePage' : null);
 }
 </script>

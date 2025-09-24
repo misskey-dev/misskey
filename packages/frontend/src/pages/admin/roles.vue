@@ -52,11 +52,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.chatAvailability, 'chatAvailability'])">
 						<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
 						<template #suffix>{{ policies.chatAvailability === 'available' ? i18n.ts.yes : policies.chatAvailability === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</template>
-						<MkSelect v-model="policies.chatAvailability">
+						<MkSelect
+							v-model="policies.chatAvailability"
+							:items="[
+								{ label: i18n.ts.enabled, value: 'available' },
+								{ label: i18n.ts.readonly, value: 'readonly' },
+								{ label: i18n.ts.disabled, value: 'unavailable' },
+							]"
+						>
 							<template #label>{{ i18n.ts.enable }}</template>
-							<option value="available">{{ i18n.ts.enabled }}</option>
-							<option value="readonly">{{ i18n.ts.readonly }}</option>
-							<option value="unavailable">{{ i18n.ts.disabled }}</option>
 						</MkSelect>
 					</MkFolder>
 
@@ -118,6 +122,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._role._options.canSearchNotes }}</template>
 						<template #suffix>{{ policies.canSearchNotes ? i18n.ts.yes : i18n.ts.no }}</template>
 						<MkSwitch v-model="policies.canSearchNotes">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.canSearchUsers, 'canSearchUsers'])">
+						<template #label>{{ i18n.ts._role._options.canSearchUsers }}</template>
+						<template #suffix>{{ policies.canSearchUsers ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canSearchUsers">
 							<template #label>{{ i18n.ts.enable }}</template>
 						</MkSwitch>
 					</MkFolder>
@@ -291,6 +303,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput v-model="policies.noteDraftLimit" type="number" :min="0">
 						</MkInput>
 					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.watermarkAvailable, 'watermarkAvailable'])">
+						<template #label>{{ i18n.ts._role._options.watermarkAvailable }}</template>
+						<template #suffix>{{ policies.watermarkAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.watermarkAvailable">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
 				</div>
 			</MkFolder>
 			<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
@@ -315,7 +335,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import { ROLE_POLICIES } from '@@/js/const.js';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -330,6 +350,7 @@ import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
+import { deepClone } from '@/utility/clone.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
@@ -337,10 +358,7 @@ const baseRoleQ = ref('');
 
 const roles = await misskeyApi('admin/roles/list');
 
-const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
-for (const ROLE_POLICY of ROLE_POLICIES) {
-	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
-}
+const policies = reactive(deepClone(instance.policies));
 
 const avatarDecorationLimit = computed({
 	get: () => Math.min(16, Math.max(0, policies.avatarDecorationLimit)),
@@ -360,6 +378,7 @@ function matchQuery(keywords: string[]): boolean {
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
+		//@ts-expect-error misskey-js側の型定義が不十分
 		policies,
 	});
 	fetchInstance(true);

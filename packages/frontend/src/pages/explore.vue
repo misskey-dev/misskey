@@ -26,18 +26,12 @@ import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	tag?: string;
 	initialTab?: string;
 }>(), {
 	initialTab: 'featured',
 });
 
 const tab = ref(props.initialTab);
-const tagsEl = useTemplateRef('tagsEl');
-
-watch(() => props.tag, () => {
-	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);
-});
 
 const headerActions = computed(() => []);
 

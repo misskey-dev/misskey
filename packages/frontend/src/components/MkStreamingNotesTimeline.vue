@@ -32,9 +32,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-for="(note, i) in paginator.items.value" :key="note.id">
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, note.createdAt)" :data-scroll-anchor="note.id">
 					<div :class="$style.date">
-						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).prevText }}</span>
+						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt)?.prevText }}</span>
 						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
-						<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt).nextText }} <i class="ti ti-chevron-down"></i></span>
+						<span>{{ getSeparatorInfo(paginator.items.value[i -1].createdAt, note.createdAt)?.nextText }} <i class="ti ti-chevron-down"></i></span>
 					</div>
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 				</div>
@@ -59,9 +59,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
+import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -101,12 +103,12 @@ provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
-let paginator: Paginator;
+let paginator: IPaginator<Misskey.entities.Note>;
 
 if (props.src === 'antenna') {
 	paginator = markRaw(new Paginator('antennas/notes', {
 		computedParams: computed(() => ({
-			antennaId: props.antenna,
+			antennaId: props.antenna!,
 		})),
 		useShallowRef: true,
 	}));
@@ -160,21 +162,21 @@ if (props.src === 'antenna') {
 		computedParams: computed(() => ({
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			listId: props.list,
+			listId: props.list!,
 		})),
 		useShallowRef: true,
 	}));
 } else if (props.src === 'channel') {
 	paginator = markRaw(new Paginator('channels/timeline', {
 		computedParams: computed(() => ({
-			channelId: props.channel,
+			channelId: props.channel!,
 		})),
 		useShallowRef: true,
 	}));
 } else if (props.src === 'role') {
 	paginator = markRaw(new Paginator('roles/notes', {
 		computedParams: computed(() => ({
-			roleId: props.role,
+			roleId: props.role!,
 		})),
 		useShallowRef: true,
 	}));
@@ -223,6 +225,20 @@ onUnmounted(() => {
 	}
 });
 
+const visibility = useDocumentVisibility();
+let isPausingUpdate = false;
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		isPausingUpdate = true;
+	} else { // 'visible'
+		isPausingUpdate = false;
+		if (isTop()) {
+			releaseQueue();
+		}
+	}
+});
+
 let adInsertionCounter = 0;
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
@@ -236,7 +252,7 @@ if (!store.s.realtimeMode) {
 	// TODO: 先頭のノートの作成日時が1日以上前であれば流速が遅いTLと見做してインターバルを通常より延ばす
 	useInterval(async () => {
 		paginator.fetchNewer({
-			toQueue: !isTop(),
+			toQueue: !isTop() || isPausingUpdate,
 		});
 	}, POLLING_INTERVAL, {
 		immediate: false,
@@ -245,7 +261,7 @@ if (!store.s.realtimeMode) {
 
 	useGlobalEvent('notePosted', (note) => {
 		paginator.fetchNewer({
-			toQueue: !isTop(),
+			toQueue: !isTop() || isPausingUpdate,
 		});
 	});
 }
@@ -256,17 +272,17 @@ useGlobalEvent('noteDeleted', (noteId) => {
 
 function releaseQueue() {
 	paginator.releaseQueue();
-	scrollToTop(rootEl.value);
+	scrollToTop(rootEl.value!);
 }
 
-function prepend(note: Misskey.entities.Note) {
+function prepend(note: Misskey.entities.Note & MisskeyEntity) {
 	adInsertionCounter++;
 
 	if (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 
-	if (isTop()) {
+	if (isTop() && !isPausingUpdate) {
 		paginator.prepend(note);
 	} else {
 		paginator.enqueue(note);
@@ -281,75 +297,97 @@ function prepend(note: Misskey.entities.Note) {
 	}
 }
 
-let connection: Misskey.ChannelConnection | null = null;
-let connection2: Misskey.ChannelConnection | null = null;
-
 const stream = store.s.realtimeMode ? useStream() : null;
 
+const connections = {
+	antenna: null as Misskey.IChannelConnection<Misskey.Channels['antenna']> | null,
+	homeTimeline: null as Misskey.IChannelConnection<Misskey.Channels['homeTimeline']> | null,
+	localTimeline: null as Misskey.IChannelConnection<Misskey.Channels['localTimeline']> | null,
+	hybridTimeline: null as Misskey.IChannelConnection<Misskey.Channels['hybridTimeline']> | null,
+	globalTimeline: null as Misskey.IChannelConnection<Misskey.Channels['globalTimeline']> | null,
+	main: null as Misskey.IChannelConnection<Misskey.Channels['main']> | null,
+	userList: null as Misskey.IChannelConnection<Misskey.Channels['userList']> | null,
+	channel: null as Misskey.IChannelConnection<Misskey.Channels['channel']> | null,
+	roleTimeline: null as Misskey.IChannelConnection<Misskey.Channels['roleTimeline']> | null,
+};
+
 function connectChannel() {
+	if (stream == null) return;
 	if (props.src === 'antenna') {
 		if (props.antenna == null) return;
-		connection = stream.useChannel('antenna', {
+		connections.antenna = stream.useChannel('antenna', {
 			antennaId: props.antenna,
 		});
+		connections.antenna.on('note', prepend);
 	} else if (props.src === 'home') {
-		connection = stream.useChannel('homeTimeline', {
+		connections.homeTimeline = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 		});
-		connection2 = stream.useChannel('main');
+		connections.main = stream.useChannel('main');
+		connections.homeTimeline.on('note', prepend);
 	} else if (props.src === 'local') {
-		connection = stream.useChannel('localTimeline', {
+		connections.localTimeline = stream.useChannel('localTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
 		});
+		connections.localTimeline.on('note', prepend);
 	} else if (props.src === 'social') {
-		connection = stream.useChannel('hybridTimeline', {
+		connections.hybridTimeline = stream.useChannel('hybridTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
 		});
+		connections.hybridTimeline.on('note', prepend);
 	} else if (props.src === 'global') {
-		connection = stream.useChannel('globalTimeline', {
+		connections.globalTimeline = stream.useChannel('globalTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 		});
+		connections.globalTimeline.on('note', prepend);
 	} else if (props.src === 'mentions') {
-		connection = stream.useChannel('main');
-		connection.on('mention', prepend);
+		connections.main = stream.useChannel('main');
+		connections.main.on('mention', prepend);
 	} else if (props.src === 'directs') {
 		const onNote = note => {
 			if (note.visibility === 'specified') {
 				prepend(note);
 			}
 		};
-		connection = stream.useChannel('main');
-		connection.on('mention', onNote);
+		connections.main = stream.useChannel('main');
+		connections.main.on('mention', onNote);
 	} else if (props.src === 'list') {
 		if (props.list == null) return;
-		connection = stream.useChannel('userList', {
+		connections.userList = stream.useChannel('userList', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
 		});
+		connections.userList.on('note', prepend);
 	} else if (props.src === 'channel') {
 		if (props.channel == null) return;
-		connection = stream.useChannel('channel', {
+		connections.channel = stream.useChannel('channel', {
 			channelId: props.channel,
 		});
+		connections.channel.on('note', prepend);
 	} else if (props.src === 'role') {
 		if (props.role == null) return;
-		connection = stream.useChannel('roleTimeline', {
+		connections.roleTimeline = stream.useChannel('roleTimeline', {
 			roleId: props.role,
 		});
+		connections.roleTimeline.on('note', prepend);
 	}
-	if (props.src !== 'directs' && props.src !== 'mentions') connection?.on('note', prepend);
 }
 
 function disconnectChannel() {
-	if (connection) connection.dispose();
-	if (connection2) connection2.dispose();
+	for (const key in connections) {
+		const conn = connections[key as keyof typeof connections];
+		if (conn != null) {
+			conn.dispose();
+			connections[key as keyof typeof connections] = null;
+		}
+	}
 }
 
 if (store.s.realtimeMode) {
@@ -507,7 +545,6 @@ defineExpose({
 	align-items: center;
 	justify-content: center;
 	gap: 1em;
-	opacity: 0.75;
 	padding: 8px 8px;
 	margin: 0 auto;
 	border-bottom: solid 0.5px var(--MI_THEME-divider);

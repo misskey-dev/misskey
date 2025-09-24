@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
-								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
+								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItems.includes(item.id) }]">
 									<div :class="$style.userItemMain">
 										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
 											<MkUserCardMini :user="item.user"/>
@@ -71,24 +71,28 @@ import { Paginator } from '@/utility/paginator.js';
 const router = useRouter();
 
 const props = defineProps<{
-	id?: string;
+	id: string;
 }>();
 
 const usersPaginator = markRaw(new Paginator('admin/roles/users', {
 	limit: 20,
-	computedParams: computed(() => ({
+	computedParams: computed(() => props.id ? ({
 		roleId: props.id,
-	})),
+	}) : undefined),
 }));
 
-const expandedItems = ref([]);
+const expandedItems = ref<string[]>([]);
 
 const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
 }));
 
 function edit() {
-	router.push('/admin/roles/' + role.id + '/edit');
+	router.push('/admin/roles/:id/edit', {
+		params: {
+			id: role.id,
+		}
+	});
 }
 
 async function del() {
@@ -111,15 +115,15 @@ async function assign() {
 	const { canceled: canceled2, result: period } = await os.select({
 		title: i18n.ts.period + ': ' + role.name,
 		items: [{
-			value: 'indefinitely', text: i18n.ts.indefinitely,
+			value: 'indefinitely', label: i18n.ts.indefinitely,
 		}, {
-			value: 'oneHour', text: i18n.ts.oneHour,
+			value: 'oneHour', label: i18n.ts.oneHour,
 		}, {
-			value: 'oneDay', text: i18n.ts.oneDay,
+			value: 'oneDay', label: i18n.ts.oneDay,
 		}, {
-			value: 'oneWeek', text: i18n.ts.oneWeek,
+			value: 'oneWeek', label: i18n.ts.oneWeek,
 		}, {
-			value: 'oneMonth', text: i18n.ts.oneMonth,
+			value: 'oneMonth', label: i18n.ts.oneMonth,
 		}],
 		default: 'indefinitely',
 	});
@@ -199,7 +203,7 @@ definePage(() => ({
 	transition: transform 0.1s ease-out;
 }
 
-.userItem.userItemOpend {
+.userItem.userItemOpened {
 	.chevron {
 		transform: rotateX(180deg);
 	}
