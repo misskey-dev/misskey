@@ -98,7 +98,7 @@ export class NoteDraftService {
 
 		appliedDraft.id = this.idService.gen();
 		appliedDraft.userId = me.id;
-		const draft = this.noteDraftsRepository.save(appliedDraft);
+		const draft = this.noteDraftsRepository.insertOne(appliedDraft);
 
 		return draft;
 	}
@@ -126,7 +126,12 @@ export class NoteDraftService {
 
 		const appliedDraft = await this.checkAndSetDraftNoteOptions(me, draft, data);
 
-		return await this.noteDraftsRepository.save(appliedDraft);
+		await this.noteDraftsRepository.update(draftId, appliedDraft);
+
+		return {
+			...draft,
+			...appliedDraft,
+		};
 	}
 
 	@bindThis
