@@ -10329,6 +10329,10 @@ export interface Locale extends ILocale {
          */
         "pollEnded": string;
         /**
+         * 予約ノートが投稿されました
+         */
+        "scheduledNotePosted": string;
+        /**
          * 新しい投稿
          */
         "newNote": string;
