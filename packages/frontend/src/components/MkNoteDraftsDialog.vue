@@ -219,6 +219,16 @@ async function deleteDraft(draft: Misskey.entities.NoteDraft) {
 		draftsPaginator.reload();
 	});
 }
+
+async function cancelSchedule(draft: Misskey.entities.NoteDraft) {
+	os.apiWithDialog('notes/drafts/update', {
+		draftId: draft.id,
+		isActuallyScheduled: false,
+		scheduledAt: null,
+	}).then(() => {
+		scheduledPaginator.reload();
+	});
+}
 </script>
 
 <style lang="scss" module>

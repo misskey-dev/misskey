@@ -17,22 +17,23 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isRenote, isQuote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
+import { deepClone } from '@/misc/clone.js';
 
 export type NoteDraftOptions = {
-	replyId?: MiNote['id'] | null;
-	renoteId?: MiNote['id'] | null;
-	text?: string | null;
-	cw?: string | null;
-	localOnly?: boolean | null;
-	reactionAcceptance?: typeof noteReactionAcceptances[number];
-	visibility?: typeof noteVisibilities[number];
-	fileIds?: MiDriveFile['id'][];
-	visibleUserIds?: MiUser['id'][];
-	hashtag?: string;
-	channelId?: MiChannel['id'] | null;
-	poll?: (IPoll & { expiredAfter?: number | null }) | null;
-	scheduledAt?: Date | null;
-	isActuallyScheduled?: boolean;
+	replyId: MiNote['id'] | null;
+	renoteId: MiNote['id'] | null;
+	text: string | null;
+	cw: string | null;
+	localOnly: boolean | null;
+	reactionAcceptance: typeof noteReactionAcceptances[number];
+	visibility: typeof noteVisibilities[number];
+	fileIds: MiDriveFile['id'][];
+	visibleUserIds: MiUser['id'][];
+	hashtag: string | null;
+	channelId: MiChannel['id'] | null;
+	poll: (IPoll & { expiredAfter?: number | null }) | null;
+	scheduledAt: Date | null;
+	isActuallyScheduled: boolean;
 };
 
 @Injectable()
@@ -109,7 +110,7 @@ export class NoteDraftService {
 	}
 
 	@bindThis
-	public async update(me: MiLocalUser, draftId: MiNoteDraft['id'], data: NoteDraftOptions): Promise<MiNoteDraft> {
+	public async update(me: MiLocalUser, draftId: MiNoteDraft['id'], data: Partial<NoteDraftOptions>): Promise<MiNoteDraft> {
 		const draft = await this.noteDraftsRepository.findOneBy({
 			id: draftId,
 			userId: me.id,
@@ -180,7 +181,7 @@ export class NoteDraftService {
 	public async checkAndSetDraftNoteOptions(
 		me: MiLocalUser,
 		draft: MiNoteDraft,
-		data: NoteDraftOptions,
+		data: Partial<NoteDraftOptions>,
 	): Promise<MiNoteDraft> {
 		data.visibility ??= 'public';
 		data.localOnly ??= false;
@@ -190,8 +191,6 @@ export class NoteDraftService {
 			data.visibleUserIds = [];
 			data.localOnly = true;
 		}
-
-		let appliedDraft = draft;
 
 		//#region visibleUsers
 		let visibleUsers: MiUser[] = [];
@@ -205,7 +204,7 @@ export class NoteDraftService {
 		//#region files
 		let files: MiDriveFile[] = [];
 		const fileIds = data.fileIds ?? null;
-		if (fileIds != null) {
+		if (fileIds != null && fileIds.length > 0) {
 			files = await this.driveFilesRepository.createQueryBuilder('file')
 				.where('file.userId = :userId AND file.id IN (:...fileIds)', {
 					userId: me.id,
@@ -310,8 +309,8 @@ export class NoteDraftService {
 		}
 		//#endregion
 
-		appliedDraft = {
-			...appliedDraft,
+		return {
+			...draft,
 			visibility: data.visibility,
 			cw: data.cw ?? null,
 			fileIds: fileIds ?? [],
@@ -331,8 +330,6 @@ export class NoteDraftService {
 			scheduledAt: data.scheduledAt ?? null,
 			isActuallyScheduled: data.isActuallyScheduled ?? false,
 		} satisfies MiNoteDraft;
-
-		return appliedDraft;
 	}
 
 	@bindThis

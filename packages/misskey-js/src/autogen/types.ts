@@ -29180,34 +29180,34 @@ export interface operations {
                      * @default public
                      * @enum {string}
                      */
-                    visibility?: 'public' | 'home' | 'followers' | 'specified';
-                    visibleUserIds?: string[];
-                    cw?: string | null;
-                    hashtag?: string | null;
+                    visibility: 'public' | 'home' | 'followers' | 'specified';
+                    visibleUserIds: string[];
+                    cw: string | null;
+                    hashtag: string | null;
                     /** @default false */
-                    localOnly?: boolean;
+                    localOnly: boolean;
                     /**
                      * @default null
                      * @enum {string|null}
                      */
-                    reactionAcceptance?: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
+                    reactionAcceptance: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
                     /** Format: misskey:id */
-                    replyId?: string | null;
+                    replyId: string | null;
                     /** Format: misskey:id */
-                    renoteId?: string | null;
+                    renoteId: string | null;
                     /** Format: misskey:id */
-                    channelId?: string | null;
-                    text?: string | null;
-                    fileIds?: string[];
-                    poll?: {
+                    channelId: string | null;
+                    text: string | null;
+                    fileIds: string[];
+                    poll: {
                         choices: string[];
                         multiple?: boolean;
                         expiresAt?: number | null;
                         expiredAfter?: number | null;
                     } | null;
-                    scheduledAt?: number | null;
+                    scheduledAt: number | null;
                     /** @default false */
-                    isActuallyScheduled?: boolean;
+                    isActuallyScheduled: boolean;
                 };
             };
         };
@@ -29421,20 +29421,13 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     draftId: string;
-                    /**
-                     * @default public
-                     * @enum {string}
-                     */
+                    /** @enum {string} */
                     visibility?: 'public' | 'home' | 'followers' | 'specified';
                     visibleUserIds?: string[];
                     cw?: string | null;
                     hashtag?: string | null;
-                    /** @default false */
                     localOnly?: boolean;
-                    /**
-                     * @default null
-                     * @enum {string|null}
-                     */
+                    /** @enum {string|null} */
                     reactionAcceptance?: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
                     /** Format: misskey:id */
                     replyId?: string | null;
@@ -29451,7 +29444,6 @@ export interface operations {
                         expiredAfter?: number | null;
                     } | null;
                     scheduledAt?: number | null;
-                    /** @default false */
                     isActuallyScheduled?: boolean;
                 };
             };

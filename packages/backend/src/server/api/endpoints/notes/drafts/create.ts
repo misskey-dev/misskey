@@ -162,7 +162,7 @@ export const paramDef = {
 		fileIds: {
 			type: 'array',
 			uniqueItems: true,
-			minItems: 1,
+			minItems: 0,
 			maxItems: 16,
 			items: { type: 'string', format: 'misskey:id' },
 		},
@@ -186,7 +186,7 @@ export const paramDef = {
 		scheduledAt: { type: 'integer', nullable: true },
 		isActuallyScheduled: { type: 'boolean', default: false },
 	},
-	required: [],
+	required: ['visibility', 'visibleUserIds', 'cw', 'hashtag', 'localOnly', 'reactionAcceptance', 'replyId', 'renoteId', 'channelId', 'text', 'fileIds', 'poll', 'scheduledAt', 'isActuallyScheduled'],
 } as const;
 
 @Injectable()
@@ -203,19 +203,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					multiple: ps.poll.multiple ?? false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 					expiredAfter: ps.poll.expiredAfter ?? null,
-				} : undefined,
-				text: ps.text ?? null,
-				replyId: ps.replyId ?? undefined,
-				renoteId: ps.renoteId ?? undefined,
-				cw: ps.cw ?? null,
-				...(ps.hashtag ? { hashtag: ps.hashtag } : {}),
+				} : null,
+				text: ps.text,
+				replyId: ps.replyId,
+				renoteId: ps.renoteId,
+				cw: ps.cw,
+				hashtag: ps.hashtag,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
-				visibleUserIds: ps.visibleUserIds ?? [],
-				channelId: ps.channelId ?? undefined,
+				visibleUserIds: ps.visibleUserIds,
+				channelId: ps.channelId,
 				scheduledAt: ps.scheduledAt ? new Date(ps.scheduledAt) : null,
-				isActuallyScheduled: ps.isActuallyScheduled ?? false,
+				isActuallyScheduled: ps.isActuallyScheduled,
 			}).catch((err) => {
 				if (err instanceof IdentifiableError) {
 					switch (err.id) {
