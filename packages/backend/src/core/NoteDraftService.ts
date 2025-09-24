@@ -16,6 +16,7 @@ import { IPoll } from '@/models/Poll.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isRenote, isQuote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export type NoteDraftOptions = {
 	replyId?: MiNote['id'] | null;
@@ -56,6 +57,7 @@ export class NoteDraftService {
 		private roleService: RoleService,
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
+		private queueService: QueueService,
 	) {
 	}
 
@@ -310,5 +312,23 @@ export class NoteDraftService {
 		} satisfies MiNoteDraft;
 
 		return appliedDraft;
+	}
+
+	@bindThis
+	public async schedule(draft: MiNoteDraft, scheduledAt: Date): Promise<void> {
+		const delay = scheduledAt.getTime() - Date.now();
+		this.queueService.deleteUserMutingQueue.add(draft.id, {
+			noteDraftId: draft.id,
+		}, {
+			delay,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
+		});
 	}
 }

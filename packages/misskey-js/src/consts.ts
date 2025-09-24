@@ -233,6 +233,7 @@ export const rolePolicies = [
 export const queueTypes = [
 	'system',
 	'endedPollNotification',
+	'postScheduledNote',
 	'deliver',
 	'inbox',
 	'db',
