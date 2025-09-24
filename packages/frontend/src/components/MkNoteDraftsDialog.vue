@@ -95,11 +95,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{{ i18n.ts._drafts.restore }}
 							</MkButton>
 							<MkButton
+								:class="$style.itemButton"
+								small
+								@click="schedule(draft)"
+							>
+								<i class="ti ti-calendar-time"></i>
+								{{ i18n.ts._drafts.schedule }}
+							</MkButton>
+							<MkButton
 								v-tooltip="i18n.ts._drafts.delete"
 								danger
 								small
 								:iconOnly="true"
 								:class="$style.itemButton"
+								style="margin-left: auto;"
 								@click="deleteDraft(draft)"
 							>
 								<i class="ti ti-trash"></i>

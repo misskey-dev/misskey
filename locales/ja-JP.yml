@@ -3386,6 +3386,7 @@ _drafts:
   restoreFromDraft: "下書きから復元"
   restore: "復元"
   listDrafts: "下書き一覧"
+  schedule: "投稿予約"
 
 qr: "二次元コード"
 _qr:

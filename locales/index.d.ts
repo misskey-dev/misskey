@@ -12645,6 +12645,10 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+        /**
+         * 投稿予約
+         */
+        "schedule": string;
     };
     /**
      * 二次元コード
