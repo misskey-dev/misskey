@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -216,6 +216,10 @@ const postFormActions = getPluginHandlers('post_form_action');
 
 const uploader = useUploader({
 	multiple: true,
+});
+
+onUnmounted(() => {
+	uploader.dispose();
 });
 
 uploader.events.on('itemUploaded', ctx => {
@@ -1300,6 +1304,7 @@ async function canClose() {
 
 defineExpose({
 	clear,
+	abortUploader: () => uploader.abortAll(),
 	canClose,
 });
 </script>

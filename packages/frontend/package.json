@@ -57,6 +57,7 @@
 		"json5": "2.2.3",
 		"magic-string": "0.30.18",
 		"matter-js": "0.20.0",
+		"mediabunny": "1.15.1",
 		"mfm-js": "0.25.0",
 		"misskey-bubble-game": "workspace:*",
 		"misskey-js": "workspace:*",

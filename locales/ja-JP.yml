@@ -253,6 +253,7 @@ noteDeleteConfirm: "このノートを削除しますか？"
 pinLimitExceeded: "これ以上ピン留めできません"
 done: "完了"
 processing: "処理中"
+preprocessing: "準備中"
 preview: "プレビュー"
 default: "デフォルト"
 defaultValueIs: "デフォルト: {value}"
@@ -1372,6 +1373,8 @@ redisplayAllTips: "全ての「ヒントとコツ」を再表示"
 hideAllTips: "全ての「ヒントとコツ」を非表示"
 defaultImageCompressionLevel: "デフォルトの画像圧縮度"
 defaultImageCompressionLevel_description: "低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。"
+defaultCompressionLevel: "デフォルトの圧縮度"
+defaultCompressionLevel_description: "低くすると品質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、品質は低下します。"
 inMinutes: "分"
 inDays: "日"
 safeModeEnabled: "セーフモードが有効です"
@@ -1380,6 +1383,16 @@ customCssIsDisabledBecauseSafeMode: "セーフモードが有効なため、カ�
 themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。"
 thankYouForTestingBeta: "ベータ版の検証にご協力いただきありがとうございます！"
 createUserSpecifiedNote: "ユーザー指定ノートを作成"
+
+_compression:
+  _quality:
+    high: "高品質"
+    medium: "中品質"
+    low: "低品質"
+  _size:
+    large: "サイズ大"
+    medium: "サイズ中"
+    small: "サイズ小"
 
 _order:
   newest: "新しい順"
