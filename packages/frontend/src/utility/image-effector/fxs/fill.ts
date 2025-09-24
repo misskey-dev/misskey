@@ -18,6 +18,7 @@ uniform sampler2D in_texture;
 uniform vec2 in_resolution;
 uniform vec2 u_offset;
 uniform vec2 u_scale;
+uniform bool u_ellipse;
 uniform float u_angle;
 uniform vec3 u_color;
 uniform float u_opacity;
@@ -35,7 +36,13 @@ void main() {
 		centeredUv.x * sin(angle) + centeredUv.y * cos(angle)
 	) + u_offset;
 
-	bool isInside = rotatedUV.x > u_offset.x - u_scale.x && rotatedUV.x < u_offset.x + u_scale.x && rotatedUV.y > u_offset.y - u_scale.y && rotatedUV.y < u_offset.y + u_scale.y;
+	bool isInside = false;
+	if (u_ellipse) {
+		vec2 norm = (rotatedUV - u_offset) / u_scale;
+		isInside = dot(norm, norm) <= 1.0;
+	} else {
+		isInside = rotatedUV.x > u_offset.x - u_scale.x && rotatedUV.x < u_offset.x + u_scale.x && rotatedUV.y > u_offset.y - u_scale.y && rotatedUV.y < u_offset.y + u_scale.y;
+	}
 
 	out_color = isInside ? vec4(
 		mix(in_color.r, u_color.r, u_opacity),
@@ -46,11 +53,11 @@ void main() {
 }
 `;
 
-export const FX_fillSquare = defineImageEffectorFx({
-	id: 'fillSquare',
-	name: i18n.ts._imageEffector._fxs.fillSquare,
+export const FX_fill = defineImageEffectorFx({
+	id: 'fill',
+	name: i18n.ts._imageEffector._fxs.fill,
 	shader,
-	uniforms: ['offset', 'scale', 'angle', 'color', 'opacity'] as const,
+	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'color', 'opacity'] as const,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',
@@ -71,7 +78,7 @@ export const FX_fillSquare = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		scaleX: {
-			label: i18n.ts._imageEffector._fxProps.scale + ' X',
+			label: i18n.ts._imageEffector._fxProps.scale + ' W',
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
@@ -80,13 +87,18 @@ export const FX_fillSquare = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		scaleY: {
-			label: i18n.ts._imageEffector._fxProps.scale + ' Y',
+			label: i18n.ts._imageEffector._fxProps.scale + ' H',
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 			toViewValue: v => Math.round(v * 100) + '%',
+		},
+		ellipse: {
+			label: i18n.ts._imageEffector._fxProps.circle,
+			type: 'boolean',
+			default: false,
 		},
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
@@ -115,6 +127,7 @@ export const FX_fillSquare = defineImageEffectorFx({
 	main: ({ gl, u, params }) => {
 		gl.uniform2f(u.offset, params.offsetX / 2, params.offsetY / 2);
 		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
+		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
 		gl.uniform1f(u.angle, params.angle / 2);
 		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
 		gl.uniform1f(u.opacity, params.opacity);

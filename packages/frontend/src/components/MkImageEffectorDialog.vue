@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.editControls">
-						<button class="_button" :class="[$style.previewControlsButton, fillSquare ? $style.active : null]" @click="fillSquare = true"><i class="ti ti-pencil"></i></button>
+						<button class="_button" :class="[$style.previewControlsButton, penMode != null ? $style.active : null]" @click="showPenMenu"><i class="ti ti-pencil"></i></button>
 					</div>
 					<div class="_acrylic" :class="$style.previewControls">
 						<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
@@ -216,10 +216,24 @@ watch(enabled, () => {
 	}
 });
 
-const fillSquare = ref(false);
+const penMode = ref<'fill' | 'blur' | null>(null);
+
+function showPenMenu(ev: MouseEvent) {
+	os.popupMenu([{
+		text: i18n.ts._imageEffector._fxs.fill,
+		action: () => {
+			penMode.value = 'fill';
+		},
+	}, {
+		text: i18n.ts._imageEffector._fxs.blur,
+		action: () => {
+			penMode.value = 'blur';
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 
 function onImagePointerdown(ev: PointerEvent) {
-	if (canvasEl.value == null || imageBitmap == null || !fillSquare.value) return;
+	if (canvasEl.value == null || imageBitmap == null || penMode.value == null) return;
 
 	const AW = canvasEl.value.clientWidth;
 	const AH = canvasEl.value.clientHeight;
@@ -250,19 +264,34 @@ function onImagePointerdown(ev: PointerEvent) {
 	}
 
 	const id = genId();
-	layers.push({
-		id,
-		fxId: 'fillSquare',
-		params: {
-			offsetX: 0,
-			offsetY: 0,
-			scaleX: 0.1,
-			scaleY: 0.1,
-			angle: 0,
-			opacity: 1,
-			color: [1, 1, 1],
-		},
-	});
+	if (penMode.value === 'fill') {
+		layers.push({
+			id,
+			fxId: 'fill',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				opacity: 1,
+				color: [1, 1, 1],
+			},
+		});
+	} else if (penMode.value === 'blur') {
+		layers.push({
+			id,
+			fxId: 'blur',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				radius: 3,
+			},
+		});
+	}
 
 	_move(ev.offsetX, ev.offsetY);
 
@@ -302,7 +331,7 @@ function onImagePointerdown(ev: PointerEvent) {
 		canvasEl.value?.removeEventListener('pointercancel', up);
 		canvasEl.value?.releasePointerCapture(ev.pointerId);
 
-		fillSquare.value = false;
+		penMode.value = null;
 	}
 
 	canvasEl.value.addEventListener('pointermove', move);

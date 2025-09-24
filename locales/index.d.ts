@@ -1047,6 +1047,10 @@ export interface Locale extends ILocale {
      */
     "processing": string;
     /**
+     * 準備中
+     */
+    "preprocessing": string;
+    /**
      * プレビュー
      */
     "preview": string;
@@ -5526,6 +5530,14 @@ export interface Locale extends ILocale {
      */
     "defaultImageCompressionLevel_description": string;
     /**
+     * デフォルトの圧縮度
+     */
+    "defaultCompressionLevel": string;
+    /**
+     * 低くすると品質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、品質は低下します。
+     */
+    "defaultCompressionLevel_description": string;
+    /**
      * 分
      */
     "inMinutes": string;
@@ -5569,6 +5581,36 @@ export interface Locale extends ILocale {
      * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。
      */
     "prohibitSkippingInitialTutorialDescription": string;
+    "_compression": {
+        "_quality": {
+            /**
+             * 高品質
+             */
+            "high": string;
+            /**
+             * 中品質
+             */
+            "medium": string;
+            /**
+             * 低品質
+             */
+            "low": string;
+        };
+        "_size": {
+            /**
+             * サイズ大
+             */
+            "large": string;
+            /**
+             * サイズ中
+             */
+            "medium": string;
+            /**
+             * サイズ小
+             */
+            "small": string;
+        };
+    };
     "_order": {
         /**
          * 新しい順
@@ -12383,9 +12425,17 @@ export interface Locale extends ILocale {
          */
         "text": string;
         /**
+         * 二次元コード
+         */
+        "qr": string;
+        /**
          * 位置
          */
         "position": string;
+        /**
+         * マージン
+         */
+        "margin": string;
         /**
          * タイプ
          */
@@ -12442,6 +12492,10 @@ export interface Locale extends ILocale {
          * サブドットの数
          */
         "polkadotSubDotDivisions": string;
+        /**
+         * 空欄にするとアカウントのURLになります
+         */
+        "leaveBlankToAccountUrl": string;
     };
     "_imageEffector": {
         /**
@@ -12481,6 +12535,10 @@ export interface Locale extends ILocale {
              * 白黒
              */
             "grayscale": string;
+            /**
+             * ぼかし
+             */
+            "blur": string;
             /**
              * 色調補正
              */
@@ -12526,9 +12584,9 @@ export interface Locale extends ILocale {
              */
             "tearing": string;
             /**
-             * 塗りつぶし(四角)
+             * 塗りつぶし
              */
-            "fillSquare": string;
+            "fill": string;
         };
         "_fxProps": {
             /**
@@ -12543,6 +12601,14 @@ export interface Locale extends ILocale {
              * サイズ
              */
             "size": string;
+            /**
+             * 半径
+             */
+            "radius": string;
+            /**
+             * サンプル数
+             */
+            "samples": string;
             /**
              * 位置
              */
@@ -12659,6 +12725,10 @@ export interface Locale extends ILocale {
              * 黒色にする
              */
             "zoomLinesBlack": string;
+            /**
+             * 円形
+             */
+            "circle": string;
         };
     };
     /**
@@ -12718,6 +12788,68 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+    };
+    /**
+     * 二次元コード
+     */
+    "qr": string;
+    "_qr": {
+        /**
+         * 表示
+         */
+        "showTabTitle": string;
+        /**
+         * 読み取る
+         */
+        "readTabTitle": string;
+        /**
+         * {name} {acct}
+         */
+        "shareTitle": ParameterizedString<"name" | "acct">;
+        /**
+         * Fediverseで私をフォローしてください！
+         */
+        "shareText": string;
+        /**
+         * カメラを選択
+         */
+        "chooseCamera": string;
+        /**
+         * ライト選択不可
+         */
+        "cannotToggleFlash": string;
+        /**
+         * ライトをオンにする
+         */
+        "turnOnFlash": string;
+        /**
+         * ライトをオフにする
+         */
+        "turnOffFlash": string;
+        /**
+         * コードリーダーを再開
+         */
+        "startQr": string;
+        /**
+         * コードリーダーを停止
+         */
+        "stopQr": string;
+        /**
+         * QRコードが見つかりません
+         */
+        "noQrCodeFound": string;
+        /**
+         * 端末の画像をスキャン
+         */
+        "scanFile": string;
+        /**
+         * テキスト
+         */
+        "raw": string;
+        /**
+         * MFM
+         */
+        "mfm": string;
     };
     "_hana": {
         /**

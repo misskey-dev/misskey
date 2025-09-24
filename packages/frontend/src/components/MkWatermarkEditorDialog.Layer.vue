@@ -19,6 +19,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSlot>
 
 		<MkRange
+			:modelValue="layer.align.margin ?? 0"
+			:min="0"
+			:max="0.25"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'text' }>).align.margin = v"
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+		</MkRange>
+
+		<MkRange
 			v-model="layer.scale"
 			:min="0"
 			:max="1"
@@ -67,6 +79,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSlot>
 
 		<MkRange
+			:modelValue="layer.align.margin ?? 0"
+			:min="0"
+			:max="0.25"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'image' }>).align.margin = v"
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+		</MkRange>
+
+		<MkRange
 			v-model="layer.scale"
 			:min="0"
 			:max="1"
@@ -105,6 +129,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="layer.cover">
 			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
 		</MkSwitch>
+	</template>
+
+	<template v-else-if="layer.type === 'qr'">
+		<MkInput v-model="layer.data" debounce>
+			<template #label>{{ i18n.ts._watermarkEditor.text }}</template>
+			<template #caption>{{ i18n.ts._watermarkEditor.leaveBlankToAccountUrl }}</template>
+		</MkInput>
+
+		<FormSlot>
+			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
+			<MkPositionSelector
+				v-model:x="layer.align.x"
+				v-model:y="layer.align.y"
+			></MkPositionSelector>
+		</FormSlot>
+
+		<MkRange
+			:modelValue="layer.align.margin ?? 0"
+			:min="0"
+			:max="0.25"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'qr' }>).align.margin = v"
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.scale"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.opacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+		</MkRange>
 	</template>
 
 	<template v-else-if="layer.type === 'stripe'">
