@@ -5553,6 +5553,10 @@ export interface Locale extends ILocale {
      * ユーザー指定ノートを作成
      */
     "createUserSpecifiedNote": string;
+    /**
+     * 投稿を予約
+     */
+    "schedulePost": string;
     "_compression": {
         "_quality": {
             /**

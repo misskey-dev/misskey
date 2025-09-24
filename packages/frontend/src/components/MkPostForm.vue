@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.headerLeft">
 			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
 			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-				<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
+				<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
 			</button>
 			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draft" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-pencil-minus"></i></button>
 		</div>
@@ -199,6 +199,7 @@ if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(store.s.reactionAcceptance);
+const scheduledAt = ref<number | null>(null);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
@@ -414,6 +415,7 @@ function watchForDraft() {
 	watch(localOnly, () => saveDraft());
 	watch(quoteId, () => saveDraft());
 	watch(reactionAcceptance, () => saveDraft());
+	watch(scheduledAt, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -604,6 +606,12 @@ function showOtherSettings() {
 		text: i18n.ts.reactionAcceptance,
 		action: () => {
 			toggleReactionAcceptance();
+		},
+	}, {
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.schedulePost + '...',
+		action: () => {
+			schedule();
 		},
 	}, { type: 'divider' }, {
 		type: 'switch',
@@ -809,6 +817,7 @@ function saveDraft() {
 			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			quoteId: quoteId.value,
 			reactionAcceptance: reactionAcceptance.value,
+			scheduledAt: scheduledAt.value,
 		},
 	};
 
@@ -838,6 +847,7 @@ async function saveServerDraft(clearLocal = false) {
 		replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 		channelId: targetChannel.value ? targetChannel.value.id : undefined,
 		reactionAcceptance: reactionAcceptance.value,
+		scheduledAt: scheduledAt.value,
 	}).then(() => {
 		if (clearLocal) {
 			clear();
@@ -1175,6 +1185,7 @@ function showDraftMenu(ev: MouseEvent) {
 				renoteTargetNote.value = draft.renote;
 				replyTargetNote.value = draft.reply;
 				reactionAcceptance.value = draft.reactionAcceptance;
+				scheduledAt.value = draft.scheduledAt ?? null;
 				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
 
 				visibleUsers.value = [];
@@ -1220,6 +1231,13 @@ function showDraftMenu(ev: MouseEvent) {
 	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
+async function schedule() {
+	const { canceled, result } = await os.inputDate({
+		title: i18n.ts.schedulePost,
+	});
+	if (canceled) return;
+}
+
 onMounted(() => {
 	if (props.autofocus) {
 		focus();
@@ -1255,6 +1273,7 @@ onMounted(() => {
 				}
 				quoteId.value = draft.data.quoteId;
 				reactionAcceptance.value = draft.data.reactionAcceptance;
+				scheduledAt.value = draft.data.scheduledAt ?? null;
 			}
 		}
 
