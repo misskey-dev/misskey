@@ -98,7 +98,11 @@ export class NoteDraftService {
 
 		appliedDraft.id = this.idService.gen();
 		appliedDraft.userId = me.id;
-		const draft = this.noteDraftsRepository.insertOne(appliedDraft);
+		const draft = await this.noteDraftsRepository.insertOne(appliedDraft);
+
+		if (draft.scheduledAt) {
+			this.schedule(draft);
+		}
 
 		return draft;
 	}
@@ -128,6 +132,12 @@ export class NoteDraftService {
 
 		await this.noteDraftsRepository.update(draftId, appliedDraft);
 
+		this.clearSchedule(draft).then(() => {
+			if (appliedDraft.scheduledAt) {
+				this.schedule(draft);
+			}
+		});
+
 		return {
 			...draft,
 			...appliedDraft,
@@ -146,6 +156,8 @@ export class NoteDraftService {
 		}
 
 		await this.noteDraftsRepository.delete(draft.id);
+
+		this.clearSchedule(draft);
 	}
 
 	@bindThis
@@ -322,8 +334,11 @@ export class NoteDraftService {
 	}
 
 	@bindThis
-	public async schedule(draft: MiNoteDraft, scheduledAt: Date): Promise<void> {
-		const delay = scheduledAt.getTime() - Date.now();
+	public async schedule(draft: MiNoteDraft): Promise<void> {
+		if (draft.scheduledAt == null) return;
+		if (draft.scheduledAt.getTime() <= Date.now()) return;
+
+		const delay = draft.scheduledAt.getTime() - Date.now();
 		this.queueService.postScheduledNoteQueue.add(draft.id, {
 			noteDraftId: draft.id,
 		}, {
@@ -337,5 +352,15 @@ export class NoteDraftService {
 				count: 100,
 			},
 		});
+	}
+
+	@bindThis
+	public async clearSchedule(draft: MiNoteDraft): Promise<void> {
+		const jobs = await this.queueService.postScheduledNoteQueue.getJobs(['delayed', 'waiting', 'active']);
+		for (const job of jobs) {
+			if (job.data.noteDraftId === draft.id) {
+				await job.remove();
+			}
+		}
 	}
 }
