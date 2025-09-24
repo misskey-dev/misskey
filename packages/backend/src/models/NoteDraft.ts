@@ -153,6 +153,12 @@ export class MiNoteDraft {
 
 	// ここまで追加
 
+	// 予約投稿
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public scheduledAt: Date | null;
+
 	constructor(data: Partial<MiNoteDraft>) {
 		if (data == null) return;
 
