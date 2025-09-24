@@ -18,22 +18,7 @@ import { isRenote, isQuote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 
-export type NoteDraftOptions = {
-	replyId: MiNote['id'] | null;
-	renoteId: MiNote['id'] | null;
-	text: string | null;
-	cw: string | null;
-	localOnly: boolean;
-	reactionAcceptance: typeof noteReactionAcceptances[number];
-	visibility: typeof noteVisibilities[number];
-	fileIds: MiDriveFile['id'][];
-	visibleUserIds: MiUser['id'][];
-	hashtag: string | null;
-	channelId: MiChannel['id'] | null;
-	poll: (IPoll & { expiredAfter?: number | null }) | null;
-	scheduledAt: Date | null;
-	isActuallyScheduled: boolean;
-};
+export type NoteDraftOptions = MiNoteDraft;
 
 @Injectable()
 export class NoteDraftService {
@@ -84,16 +69,6 @@ export class NoteDraftService {
 		}
 		//#endregion
 
-		if (data.poll) {
-			if (typeof data.poll.expiresAt === 'number') {
-				if (data.poll.expiresAt < Date.now()) {
-					throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
-				}
-			} else if (typeof data.poll.expiredAfter === 'number') {
-				data.poll.expiresAt = new Date(Date.now() + data.poll.expiredAfter);
-			}
-		}
-
 		await this.validate(me, data);
 
 		const draft = await this.noteDraftsRepository.insertOne({
@@ -118,16 +93,6 @@ export class NoteDraftService {
 
 		if (draft == null) {
 			throw new IdentifiableError('49cd6b9d-848e-41ee-b0b9-adaca711a6b1', 'No such note draft');
-		}
-
-		if (data.poll) {
-			if (typeof data.poll.expiresAt === 'number') {
-				if (data.poll.expiresAt < Date.now()) {
-					throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
-				}
-			} else if (typeof data.poll.expiredAfter === 'number') {
-				data.poll.expiresAt = new Date(Date.now() + data.poll.expiredAfter);
-			}
 		}
 
 		await this.validate(me, data);
@@ -181,6 +146,12 @@ export class NoteDraftService {
 		me: MiLocalUser,
 		data: Partial<NoteDraftOptions>,
 	): Promise<void> {
+		if (data.pollExpiresAt != null) {
+			if (data.pollExpiresAt.getTime() < Date.now()) {
+				throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
+			}
+		}
+
 		//#region visibleUsers
 		let visibleUsers: MiUser[] = [];
 		if (data.visibleUserIds != null && data.visibleUserIds.length > 0) {
