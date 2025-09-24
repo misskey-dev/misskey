@@ -1271,6 +1271,7 @@ async function schedule() {
 		title: i18n.ts.schedulePost,
 	});
 	if (canceled) return;
+	if (result.getTime() <= Date.now()) return;
 
 	scheduledAt.value = result.getTime();
 }
