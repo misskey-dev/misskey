@@ -5569,6 +5569,10 @@ export interface Locale extends ILocale {
      * 予約
      */
     "schedule": string;
+    /**
+     * 予約
+     */
+    "scheduled": string;
     "_compression": {
         "_quality": {
             /**
