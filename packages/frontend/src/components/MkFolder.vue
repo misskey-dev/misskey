@@ -96,10 +96,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
 import { getBgColor } from '@/utility/get-bg-color.js';
-import { pageFolderTeleportCount, popup } from '@/os.js';
+import { popup } from '@/os.js';
+import { pageFolderTeleportedIds } from '@/utility/folder-page.js';
+import { genId } from '@/utility/id.js';
 import MkFolderPage from '@/components/MkFolderPage.vue';
 import { deviceKind } from '@/utility/device-kind.js';
 
@@ -123,6 +125,8 @@ const rootEl = useTemplateRef('rootEl');
 const asPage = props.canPage && deviceKind === 'smartphone' && prefer.s['experimental.enableFolderPageView'];
 const bgSame = ref(false);
 const opened = ref(asPage ? false : props.defaultOpen);
+const pageShowing = ref(false);
+const pageId = ref(genId());
 const openedAtLeastOnce = ref(opened.value);
 
 //#region interpolate-sizeに対応していないブラウザ向け（TODO: 主要ブラウザが対応したら消す）
@@ -161,17 +165,24 @@ function afterLeave(el: Element) {
 }
 //#endregion
 
-let pageId = pageFolderTeleportCount.value;
-pageFolderTeleportCount.value += 1000;
-
 async function toggle() {
-	if (asPage && !opened.value) {
-		pageId++;
-		const { dispose } = await popup(MkFolderPage, {
+	if (asPage && !opened.value && !pageShowing.value) {
+		if (pageFolderTeleportedIds.value.includes(pageId.value)) {
+			return;
+		}
+
+		pageShowing.value = true;
+		pageId.value = genId();
+		pageFolderTeleportedIds.value.push(pageId.value);
+
+		const { dispose } = popup(MkFolderPage, {
 			pageId,
+			showing: pageShowing,
 		}, {
 			closed: () => {
 				opened.value = false;
+				pageShowing.value = false;
+				pageFolderTeleportedIds.value = pageFolderTeleportedIds.value.filter((v) => v !== pageId.value);
 				dispose();
 			},
 		});
@@ -185,6 +196,12 @@ async function toggle() {
 		opened.value = !opened.value;
 	});
 }
+
+watch(pageFolderTeleportedIds, (newVal) => {
+	if (!newVal.includes(pageId.value) && pageShowing.value) {
+		pageShowing.value = false;
+	}
+}, { deep: true });
 
 onMounted(() => {
 	const computedStyle = getComputedStyle(window.document.documentElement);

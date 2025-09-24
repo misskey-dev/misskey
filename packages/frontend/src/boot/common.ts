@@ -106,6 +106,11 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		window.history.replaceState(null, '', window.location.href.replace('#pswp', ''));
 	}
 
+	// URLにfolderPageのhashが含まれる場合は取り除く
+	if (window.location.hash.startsWith('#fp_')) {
+		window.history.replaceState(null, '', window.location.href.replace(window.location.hash, ''));
+	}
+
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
 		if (path !== null) window.location.href = path;
