@@ -2735,6 +2735,7 @@ _notification:
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   pollEnded: "アンケートの結果が出ました"
   scheduledNotePosted: "予約ノートが投稿されました"
+  scheduledNotePostFailed: "予約ノートの投稿に失敗しました"
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
   roleAssigned: "ロールが付与されました"

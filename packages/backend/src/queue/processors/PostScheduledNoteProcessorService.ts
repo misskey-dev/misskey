@@ -36,12 +36,20 @@ export class PostScheduledNoteProcessorService {
 			return;
 		}
 
-		const note = await this.noteCreateService.create(draft.user, draft);
+		try {
+			const note = await this.noteCreateService.create(draft.user, draft);
 
-		this.noteDraftsRepository.remove(draft);
+			// await不要
+			this.noteDraftsRepository.remove(draft);
 
-		this.notificationService.createNotification(draft.userId, 'scheduledNotePosted', {
-			noteId: note.id,
-		});
+			// await不要
+			this.notificationService.createNotification(draft.userId, 'scheduledNotePosted', {
+				noteId: note.id,
+			});
+		} catch (err) {
+			this.notificationService.createNotification(draft.userId, 'scheduledNotePostFailed', {
+				noteDraftId: draft.id,
+			});
+		}
 	}
 }
