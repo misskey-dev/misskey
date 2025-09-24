@@ -230,6 +230,16 @@ function clear() {
 	deleteDraft();
 }
 
+// 要素の高さをリセットする共通関数
+function resetElementHeights(parentParent: HTMLElement | null, gaps: HTMLElement | null) {
+	if (parentParent) {
+		parentParent.style.setProperty('height', 'initial');
+	}
+	if (gaps) {
+		gaps.style.setProperty('height', 'initial');
+	}
+}
+
 // テキストエリアを再レンダリング
 function refreshTextarea() {
 	if (textareaEl.value == null) return;
@@ -248,23 +258,30 @@ function refreshTextarea() {
 	parent.style.setProperty('z-index', randomZIndex.toString());
 
 	if (parentParent) {
+		const currentHeight = getComputedStyle(parentParent).height;
 		parentParent.style.setProperty('z-index', randomZIndex.toString());
-		parentParent.style.setProperty('height', '0');
+		parentParent.style.setProperty('height', `calc(${currentHeight} - 1px)`);
 	}
 
 	if (gaps) {
+		const currentHeight = getComputedStyle(gaps).height;
 		gaps.style.setProperty('z-index', randomZIndex.toString());
-		gaps.style.setProperty('height', '0');
+		gaps.style.setProperty('height', `calc(${currentHeight} - 1px)`);
 	}
 
 	setTimeout(() => {
-		// 同じzIndex値を使用して一貫性を保つ
-		if (parentParent) {
-			parentParent.style.setProperty('height', 'initial');
-		}
-		if (gaps) {
-			gaps.style.setProperty('height', 'initial');
-		}
+		// 共通関数を使用して高さをリセット
+		resetElementHeights(parentParent, gaps);
+	}, 100);
+
+	setTimeout(() => {
+		// 共通関数を使用して高さをリセット
+		resetElementHeights(parentParent, gaps);
+	}, 300);
+
+	setTimeout(() => {
+		// 共通関数を使用して高さをリセット
+		resetElementHeights(parentParent, gaps);
 	}, 500);
 }
 
