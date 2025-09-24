@@ -126,7 +126,7 @@ export class MiNoteDraft {
 	@JoinColumn()
 	public channel: MiChannel | null;
 
-	// 以下、Pollについて追加
+	//#region 以下、Pollについて追加
 
 	@Column('boolean', {
 		default: false,
@@ -151,7 +151,7 @@ export class MiNoteDraft {
 	})
 	public pollExpiredAfter: number | null;
 
-	// ここまで追加
+	//#endregion
 
 	// 予約投稿
 	@Column('timestamp with time zone', {
