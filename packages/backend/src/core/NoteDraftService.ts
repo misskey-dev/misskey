@@ -17,14 +17,13 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isRenote, isQuote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
-import { deepClone } from '@/misc/clone.js';
 
 export type NoteDraftOptions = {
 	replyId: MiNote['id'] | null;
 	renoteId: MiNote['id'] | null;
 	text: string | null;
 	cw: string | null;
-	localOnly: boolean | null;
+	localOnly: boolean;
 	reactionAcceptance: typeof noteReactionAcceptances[number];
 	visibility: typeof noteVisibilities[number];
 	fileIds: MiDriveFile['id'][];
@@ -77,7 +76,6 @@ export class NoteDraftService {
 	@bindThis
 	public async create(me: MiLocalUser, data: NoteDraftOptions): Promise<MiNoteDraft> {
 		//#region check draft limit
-
 		const currentCount = await this.noteDraftsRepository.countBy({
 			userId: me.id,
 		});
@@ -96,11 +94,13 @@ export class NoteDraftService {
 			}
 		}
 
-		const appliedDraft = await this.checkAndSetDraftNoteOptions(me, this.noteDraftsRepository.create(), data);
+		await this.validate(me, data);
 
-		appliedDraft.id = this.idService.gen();
-		appliedDraft.userId = me.id;
-		const draft = await this.noteDraftsRepository.insertOne(appliedDraft);
+		const draft = await this.noteDraftsRepository.insertOne({
+			...data,
+			id: this.idService.gen(),
+			userId: me.id,
+		});
 
 		if (draft.scheduledAt && draft.isActuallyScheduled) {
 			this.schedule(draft);
@@ -130,19 +130,19 @@ export class NoteDraftService {
 			}
 		}
 
-		const appliedDraft = await this.checkAndSetDraftNoteOptions(me, draft, data);
+		await this.validate(me, data);
 
-		await this.noteDraftsRepository.update(draftId, appliedDraft);
+		await this.noteDraftsRepository.update(draftId, data);
 
 		this.clearSchedule(draft).then(() => {
-			if (appliedDraft.scheduledAt != null && appliedDraft.isActuallyScheduled) {
+			if (data.scheduledAt != null && data.isActuallyScheduled) {
 				this.schedule(draft);
 			}
 		});
 
 		return {
 			...draft,
-			...appliedDraft,
+			...data,
 		};
 	}
 
@@ -176,25 +176,14 @@ export class NoteDraftService {
 		return draft;
 	}
 
-	// 関連エンティティを取得し紐づける部分を共通化する
 	@bindThis
-	public async checkAndSetDraftNoteOptions(
+	public async validate(
 		me: MiLocalUser,
-		draft: MiNoteDraft,
 		data: Partial<NoteDraftOptions>,
-	): Promise<MiNoteDraft> {
-		data.visibility ??= 'public';
-		data.localOnly ??= false;
-		if (data.reactionAcceptance === undefined) data.reactionAcceptance = null;
-		if (data.channelId != null) {
-			data.visibility = 'public';
-			data.visibleUserIds = [];
-			data.localOnly = true;
-		}
-
+	): Promise<void> {
 		//#region visibleUsers
 		let visibleUsers: MiUser[] = [];
-		if (data.visibleUserIds != null) {
+		if (data.visibleUserIds != null && data.visibleUserIds.length > 0) {
 			visibleUsers = await this.usersRepository.findBy({
 				id: In(data.visibleUserIds),
 			});
@@ -308,28 +297,6 @@ export class NoteDraftService {
 			}
 		}
 		//#endregion
-
-		return {
-			...draft,
-			visibility: data.visibility,
-			cw: data.cw ?? null,
-			fileIds: fileIds ?? [],
-			replyId: data.replyId ?? null,
-			renoteId: data.renoteId ?? null,
-			channelId: data.channelId ?? null,
-			text: data.text ?? null,
-			hashtag: data.hashtag ?? null,
-			hasPoll: data.poll != null,
-			pollChoices: data.poll ? data.poll.choices : [],
-			pollMultiple: data.poll ? data.poll.multiple : false,
-			pollExpiresAt: data.poll ? data.poll.expiresAt : null,
-			pollExpiredAfter: data.poll ? data.poll.expiredAfter ?? null : null,
-			visibleUserIds: data.visibleUserIds ?? [],
-			localOnly: data.localOnly,
-			reactionAcceptance: data.reactionAcceptance,
-			scheduledAt: data.scheduledAt ?? null,
-			isActuallyScheduled: data.isActuallyScheduled ?? false,
-		} satisfies MiNoteDraft;
 	}
 
 	@bindThis
