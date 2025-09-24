@@ -31,6 +31,7 @@ import type {
 	DbQueue,
 	DeliverQueue,
 	EndedPollNotificationQueue,
+	DeleteUserMutingQueue,
 	InboxQueue,
 	ObjectStorageQueue,
 	RelationshipQueue,
@@ -44,6 +45,7 @@ import type * as Bull from 'bullmq';
 export const QUEUE_TYPES = [
 	'system',
 	'endedPollNotification',
+	'deleteUserMuting',
 	'deliver',
 	'inbox',
 	'db',
@@ -70,18 +72,16 @@ const REPEATABLE_SYSTEM_JOB_DEF = [{
 	pattern: '0 0 * * *',
 }, {
 	name: 'checkExpiredMutings',
-	pattern: '*/5 * * * *',
+	pattern: '0 */3 * * *', // 3時間ごと
 }, {
 	name: 'bakeBufferedReactions',
 	pattern: '0 0 * * *',
 }, {
 	name: 'checkModeratorsActivity',
-	// 毎時30分に起動
-	pattern: '30 * * * *',
+	pattern: '30 * * * *', // 毎時30分に起動
 }, {
 	name: 'cleanRemoteNotes',
-	// 毎日午前4時に起動(最も人の少ない時間帯)
-	pattern: '0 4 * * *',
+	pattern: '0 4 * * *', // 毎日午前4時に起動(最も人の少ない時間帯)
 }];
 
 @Injectable()
@@ -92,6 +92,7 @@ export class QueueService {
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
+		@Inject('queue:deleteUserMutingQueue') public deleteUserMutingQueue: DeleteUserMutingQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
@@ -717,6 +718,7 @@ export class QueueService {
 		switch (type) {
 			case 'system': return this.systemQueue;
 			case 'endedPollNotification': return this.endedPollNotificationQueue;
+			case 'deleteUserMuting': return this.deleteUserMutingQueue;
 			case 'deliver': return this.deliverQueue;
 			case 'inbox': return this.inboxQueue;
 			case 'db': return this.dbQueue;
