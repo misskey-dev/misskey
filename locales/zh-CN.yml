@@ -1668,7 +1668,7 @@ _serverSettings:
   restartServerSetupWizardConfirm_text: "现有的部分设定将重置。"
   entrancePageStyle: "入口页面样式"
   showTimelineForVisitor: "显示时间线"
-  showActivityiesForVisitor: "显示活动"
+  showActivitiesForVisitor: "显示活动"
   _userGeneratedContentsVisibilityForVisitor:
     all: "全部公开"
     localOnly: "仅公开本地内容，隐藏远程内容"

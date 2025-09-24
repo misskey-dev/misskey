@@ -3949,7 +3949,7 @@ export type components = {
              */
             host: string | null;
             /** Format: url */
-            avatarUrl: string | null;
+            avatarUrl: string;
             avatarBlurhash: string | null;
             avatarDecorations: {
                 /** Format: id */
@@ -4058,8 +4058,8 @@ export type components = {
             /** Format: id */
             bannerId: string | null;
             followedMessage: string | null;
-            isModerator: boolean | null;
-            isAdmin: boolean | null;
+            isModerator: boolean;
+            isAdmin: boolean;
             injectFeaturedNote: boolean;
             receiveAnnouncementEmail: boolean;
             alwaysMarkNsfw: boolean;
@@ -4085,7 +4085,7 @@ export type components = {
             unreadNotificationsCount: number;
             mutedWords: string[][];
             hardMutedWords: string[][];
-            mutedInstances: string[] | null;
+            mutedInstances: string[];
             notificationRecieveConfig: {
                 note?: {
                     /** @enum {string} */
@@ -4285,6 +4285,7 @@ export type components = {
             imageUrl: string;
             memo: string;
             dayOfWeek: number;
+            isSensitive: boolean;
         };
         Announcement: {
             /**
@@ -4454,15 +4455,21 @@ export type components = {
             reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
         };
         NoteReaction: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
+            /** Format: id */
             id: string;
             /** Format: date-time */
             createdAt: string;
             user: components['schemas']['UserLite'];
             type: string;
+        };
+        NoteReactionWithNote: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            user: components['schemas']['UserLite'];
+            type: string;
+            note: components['schemas']['Note'];
         };
         NoteFavorite: {
             /**
@@ -5375,6 +5382,7 @@ export type components = {
                 /** Format: url */
                 imageUrl: string;
                 dayOfWeek: number;
+                isSensitive?: boolean;
             }[];
             /** @default 0 */
             notesPerOneAd: number;
@@ -5437,6 +5445,20 @@ export type components = {
             cacheRemoteSensitiveFiles: boolean;
         };
         MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+        UserWebhook: {
+            /** Format: id */
+            id: string;
+            /** Format: id */
+            userId: string;
+            name: string;
+            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+            url: string;
+            secret: string;
+            active: boolean;
+            /** Format: date-time */
+            latestSentAt: string | null;
+            latestStatus: number | null;
+        };
         SystemWebhook: {
             id: string;
             isActive: boolean;
@@ -6029,7 +6051,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['MeDetailed'];
+                    'application/json': components['schemas']['MeDetailed'] & {
+                        token: string;
+                    };
                 };
             };
             /** @description Client error */
@@ -6220,6 +6244,7 @@ export interface operations {
                     startsAt: number;
                     imageUrl: string;
                     dayOfWeek: number;
+                    isSensitive?: boolean;
                 };
             };
         };
@@ -6432,6 +6457,7 @@ export interface operations {
                     expiresAt?: number;
                     startsAt?: number;
                     dayOfWeek?: number;
+                    isSensitive?: boolean;
                 };
             };
         };
@@ -6694,6 +6720,13 @@ export interface operations {
                         updatedAt: string | null;
                         text: string;
                         title: string;
+                        icon: string | null;
+                        display: string;
+                        isActive: boolean;
+                        forExistingUsers: boolean;
+                        silence: boolean;
+                        needConfirmationToRead: boolean;
+                        userId: string | null;
                         imageUrl: string | null;
                         reads: number;
                     }[];
@@ -7655,6 +7688,10 @@ export interface operations {
                         folderId: string | null;
                         isSensitive: boolean;
                         isLink: boolean;
+                        maybeSensitive: boolean;
+                        maybePorn: boolean;
+                        requestIp: string | null;
+                        requestHeaders: Record<string, never> | null;
                     };
                 };
             };
@@ -9298,8 +9335,10 @@ export interface operations {
                         mcaptchaSecretKey: string | null;
                         recaptchaSecretKey: string | null;
                         turnstileSecretKey: string | null;
-                        sensitiveMediaDetection: string;
-                        sensitiveMediaDetectionSensitivity: string;
+                        /** @enum {string} */
+                        sensitiveMediaDetection: 'none' | 'all' | 'local' | 'remote';
+                        /** @enum {string} */
+                        sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
                         setSensitiveFlagAutomatically: boolean;
                         enableSensitiveMediaDetectionForVideos: boolean;
                         /** Format: id */
@@ -9362,6 +9401,7 @@ export interface operations {
                         privacyPolicyUrl: string | null;
                         inquiryUrl: string | null;
                         repositoryUrl: string | null;
+                        feedbackUrl: string | null;
                         /**
                          * @deprecated
                          * @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead.
@@ -24401,6 +24441,8 @@ export interface operations {
                         /** Format: date-time */
                         lastUsedAt?: string;
                         permission: string[];
+                        iconUrl?: string | null;
+                        description?: string | null;
                     }[];
                 };
             };
@@ -27636,20 +27678,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: misskey:id */
-                        id: string;
-                        /** Format: misskey:id */
-                        userId: string;
-                        name: string;
-                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-                        url: string;
-                        secret: string;
-                        active: boolean;
-                        /** Format: date-time */
-                        latestSentAt: string | null;
-                        latestStatus: number | null;
-                    }[];
+                    'application/json': components['schemas']['UserWebhook'][];
                 };
             };
             /** @description Client error */
@@ -27715,20 +27744,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: misskey:id */
-                        id: string;
-                        /** Format: misskey:id */
-                        userId: string;
-                        name: string;
-                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-                        url: string;
-                        secret: string;
-                        active: boolean;
-                        /** Format: date-time */
-                        latestSentAt: string | null;
-                        latestStatus: number | null;
-                    };
+                    'application/json': components['schemas']['UserWebhook'];
                 };
             };
             /** @description Client error */
@@ -35323,7 +35339,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserList'];
+                    'application/json': components['schemas']['UserList'] & {
+                        likedCount?: number;
+                        isLiked?: boolean;
+                    };
                 };
             };
             /** @description Client error */
@@ -35752,7 +35771,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['NoteReaction'][];
+                    'application/json': components['schemas']['NoteReactionWithNote'][];
                 };
             };
             /** @description Client error */

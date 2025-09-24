@@ -152,7 +152,7 @@ const props = withDefaults(defineProps<{
 	asDrawer?: boolean;
 	asWindow?: boolean;
 	asReactionPicker?: boolean; // 今は使われてないが将来的に使いそう
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 }>(), {
 	showPinned: true,
 });
@@ -528,6 +528,14 @@ defineExpose({
 
 	&.s3 {
 		--eachSize: 50px;
+	}
+
+	&.s4 {
+		--eachSize: 55px;
+	}
+
+	&.s5 {
+		--eachSize: 60px;
 	}
 
 	&.w1 {

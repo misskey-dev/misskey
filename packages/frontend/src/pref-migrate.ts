@@ -33,11 +33,14 @@ export async function migrateOldSettings() {
 		}));
 
 		const plugins = ColdDeviceStorage.get('plugins');
-		prefer.commit('plugins', plugins.map(p => ({
-			...p,
-			installId: (p as any).id,
-			id: undefined,
-		})));
+		prefer.commit('plugins', plugins.map(p => {
+			const { id, ...rest } = p;
+			return {
+				...rest,
+				config: rest.config ?? {},
+				installId: id,
+			};
+		}));
 
 		prefer.commit('deck.profile', deckStore.s.profile);
 		migrationPromises.push(misskeyApi('i/registry/keys', {
@@ -123,7 +126,13 @@ export async function migrateOldSettings() {
 		prefer.commit('enableCondensedLine', store.s.enableCondensedLine);
 		prefer.commit('keepScreenOn', store.s.keepScreenOn);
 		prefer.commit('useGroupedNotifications', store.s.useGroupedNotifications);
-		prefer.commit('dataSaver', store.s.dataSaver);
+		prefer.commit('dataSaver', {
+			...prefer.s.dataSaver,
+			media: store.s.dataSaver.media,
+			avatar: store.s.dataSaver.avatar,
+			urlPreviewThumbnail: store.s.dataSaver.urlPreview,
+			code: store.s.dataSaver.code,
+		});
 		prefer.commit('enableSeasonalScreenEffect', store.s.enableSeasonalScreenEffect);
 		prefer.commit('enableHorizontalSwipe', store.s.enableHorizontalSwipe);
 		prefer.commit('useNativeUiForVideoAudioPlayer', store.s.useNativeUIForVideoAudioPlayer);

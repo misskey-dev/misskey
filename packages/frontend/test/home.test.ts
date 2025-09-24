@@ -15,7 +15,7 @@ import 'intersection-observer';
 describe('XHome', () => {
 	const renderHome = (user: Partial<Misskey.entities.UserDetailed>): RenderResult => {
 		return render(XHome, {
-			props: { user, disableNotes: true },
+			props: { user: user as Misskey.entities.UserDetailed, disableNotes: true },
 			global: { directives, components },
 		});
 	};

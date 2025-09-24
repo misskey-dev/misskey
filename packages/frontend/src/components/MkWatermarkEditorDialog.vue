@@ -30,22 +30,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<MkSelect v-model="type" :items="[{ label: i18n.ts._watermarkEditor.text, value: 'text' }, { label: i18n.ts._watermarkEditor.image, value: 'image' }, { label: i18n.ts._watermarkEditor.advanced, value: 'advanced' }]">
-						<template #label>{{ i18n.ts._watermarkEditor.type }}</template>
-					</MkSelect>
-
-					<div v-if="type === 'text' || type === 'image'">
-						<XLayer
-							v-for="(layer, i) in preset.layers"
-							:key="layer.id"
-							v-model:layer="preset.layers[i]"
-						></XLayer>
-					</div>
-					<div v-else-if="type === 'advanced'" class="_gaps_s">
+					<div class="_gaps_s">
 						<MkFolder v-for="(layer, i) in preset.layers" :key="layer.id" :defaultOpen="false" :canPage="false">
 							<template #label>
 								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
 								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
+								<div v-if="layer.type === 'qr'">{{ i18n.ts._watermarkEditor.qr }}</div>
 								<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
 								<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
 								<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
@@ -86,6 +76,7 @@ import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const $i = ensureSignin();
 
@@ -94,7 +85,7 @@ function createTextLayer(): WatermarkPreset['layers'][number] {
 		id: genId(),
 		type: 'text',
 		text: `(c) @${$i.username}`,
-		align: { x: 'right', y: 'bottom' },
+		align: { x: 'right', y: 'bottom', margin: 0 },
 		scale: 0.3,
 		angle: 0,
 		opacity: 0.75,
@@ -108,12 +99,23 @@ function createImageLayer(): WatermarkPreset['layers'][number] {
 		type: 'image',
 		imageId: null,
 		imageUrl: null,
-		align: { x: 'right', y: 'bottom' },
+		align: { x: 'right', y: 'bottom', margin: 0 },
 		scale: 0.3,
 		angle: 0,
 		opacity: 0.75,
 		repeat: false,
 		cover: false,
+	};
+}
+
+function createQrLayer(): WatermarkPreset['layers'][number] {
+	return {
+		id: genId(),
+		type: 'qr',
+		data: '',
+		align: { x: 'right', y: 'bottom', margin: 0 },
+		scale: 0.3,
+		opacity: 1,
 	};
 }
 
@@ -164,7 +166,7 @@ const props = defineProps<{
 const preset = reactive<WatermarkPreset>(deepClone(props.preset) ?? {
 	id: genId(),
 	name: '',
-	layers: [createTextLayer()],
+	layers: [],
 });
 
 const emit = defineEmits<{
@@ -185,17 +187,6 @@ async function cancel() {
 	emit('cancel');
 	dialog.value?.close();
 }
-
-const type = ref(preset.layers.length > 1 ? 'advanced' : preset.layers[0].type);
-watch(type, () => {
-	if (type.value === 'text') {
-		preset.layers = [createTextLayer()];
-	} else if (type.value === 'image') {
-		preset.layers = [createImageLayer()];
-	} else if (type.value === 'advanced') {
-		// nop
-	}
-});
 
 watch(preset, async (newValue, oldValue) => {
 	if (renderer != null) {
@@ -325,6 +316,11 @@ function addLayer(ev: MouseEvent) {
 		text: i18n.ts._watermarkEditor.image,
 		action: () => {
 			preset.layers.push(createImageLayer());
+		},
+	}, {
+		text: i18n.ts._watermarkEditor.qr,
+		action: () => {
+			preset.layers.push(createQrLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.stripe,
