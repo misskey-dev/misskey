@@ -371,10 +371,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		return this.create(user, {
-			createdAt: new Date(),
+			createdAt: data.createdAt,
 			files: files,
 			poll: data.poll,
-			text: data.text ?? undefined,
+			text: data.text,
 			reply,
 			renote,
 			cw: data.cw,
