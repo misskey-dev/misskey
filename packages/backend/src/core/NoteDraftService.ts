@@ -59,11 +59,23 @@ export class NoteDraftService {
 	@bindThis
 	public async create(me: MiLocalUser, data: NoteDraftOptions): Promise<MiNoteDraft> {
 		//#region check draft limit
+		const policies = await this.roleService.getUserPolicies(me.id);
+
 		const currentCount = await this.noteDraftsRepository.countBy({
 			userId: me.id,
 		});
-		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).noteDraftLimit) {
+		if (currentCount >= policies.noteDraftLimit) {
 			throw new IdentifiableError('9ee33bbe-fde3-4c71-9b51-e50492c6b9c8', 'Too many drafts');
+		}
+
+		if (data.isActuallyScheduled) {
+			const currentScheduledCount = await this.noteDraftsRepository.countBy({
+				userId: me.id,
+				isActuallyScheduled: true,
+			});
+			if (currentScheduledCount >= policies.scheduledNoteLimit) {
+				throw new IdentifiableError('c3275f19-4558-4c59-83e1-4f684b5fab66', 'Too many scheduled notes');
+			}
 		}
 		//#endregion
 
@@ -92,6 +104,20 @@ export class NoteDraftService {
 		if (draft == null) {
 			throw new IdentifiableError('49cd6b9d-848e-41ee-b0b9-adaca711a6b1', 'No such note draft');
 		}
+
+		//#region check draft limit
+		const policies = await this.roleService.getUserPolicies(me.id);
+
+		if (!draft.isActuallyScheduled && data.isActuallyScheduled) {
+			const currentScheduledCount = await this.noteDraftsRepository.countBy({
+				userId: me.id,
+				isActuallyScheduled: true,
+			});
+			if (currentScheduledCount >= policies.scheduledNoteLimit) {
+				throw new IdentifiableError('bacdf856-5c51-4159-b88a-804fa5103be5', 'Too many scheduled notes');
+			}
+		}
+		//#endregion
 
 		await this.validate(me, data);
 
