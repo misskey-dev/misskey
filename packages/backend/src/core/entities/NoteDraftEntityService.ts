@@ -129,6 +129,12 @@ export class NoteDraftEntityService implements OnModuleInit {
 				allowRenoteToExternal: channel.allowRenoteToExternal,
 				userId: channel.userId,
 			} : undefined,
+			poll: noteDraft.hasPoll ? {
+				choices: noteDraft.pollChoices,
+				multiple: noteDraft.pollMultiple,
+				expiresAt: noteDraft.pollExpiresAt?.toISOString(),
+				expiredAfter: noteDraft.pollExpiredAfter,
+			} : null,
 
 			...(opts.detail ? {
 				reply: noteDraft.replyId ? nullIfEntityNotFound(this.noteEntityService.pack(noteDraft.replyId, me, {
@@ -140,13 +146,6 @@ export class NoteDraftEntityService implements OnModuleInit {
 					detail: true,
 					skipHide: opts.skipHide,
 				})) : undefined,
-
-				poll: noteDraft.hasPoll ? {
-					choices: noteDraft.pollChoices,
-					multiple: noteDraft.pollMultiple,
-					expiresAt: noteDraft.pollExpiresAt?.toISOString(),
-					expiredAfter: noteDraft.pollExpiredAfter,
-				} : undefined,
 			} : {} ),
 		});
 
