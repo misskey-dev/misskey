@@ -245,7 +245,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		visibility: string;
 		visibleUserIds: MiUser['id'][];
 		channelId: MiChannel['id'] | null;
-		localOnly: boolean | null;
+		localOnly: boolean;
 		reactionAcceptance: MiNote['reactionAcceptance'];
 		poll: IPoll | null;
 		apMentions?: MinimumUser[] | null;
