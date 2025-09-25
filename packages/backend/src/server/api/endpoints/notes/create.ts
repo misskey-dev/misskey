@@ -6,17 +6,10 @@
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUser } from '@/models/User.js';
-import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
-import type { MiChannel } from '@/models/Channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
-import { DI } from '@/di-symbols.js';
-import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 
@@ -223,152 +216,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
-
-		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
-
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let visibleUsers: MiUser[] = [];
-			if (ps.visibleUserIds) {
-				visibleUsers = await this.usersRepository.findBy({
-					id: In(ps.visibleUserIds),
-				});
-			}
-
-			let files: MiDriveFile[] = [];
-			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
-			if (fileIds != null) {
-				files = await this.driveFilesRepository.createQueryBuilder('file')
-					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
-						userId: me.id,
-						fileIds,
-					})
-					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
-					.setParameters({ fileIds })
-					.getMany();
-
-				if (files.length !== fileIds.length) {
-					throw new ApiError(meta.errors.noSuchFile);
-				}
-			}
-
-			let renote: MiNote | null = null;
-			if (ps.renoteId != null) {
-				// Fetch renote to note
-				renote = await this.notesRepository.findOne({
-					where: { id: ps.renoteId },
-					relations: ['user', 'renote', 'reply'],
-				});
-
-				if (renote == null) {
-					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (isRenote(renote) && !isQuote(renote)) {
-					throw new ApiError(meta.errors.cannotReRenote);
-				}
-
-				// Check blocking
-				if (renote.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exists({
-						where: {
-							blockerId: renote.userId,
-							blockeeId: me.id,
-						},
-					});
-					if (blockExist) {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					}
-				}
-
-				if (renote.visibility === 'followers' && renote.userId !== me.id) {
-					// 他人のfollowers noteはreject
-					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-				} else if (renote.visibility === 'specified') {
-					// specified / direct noteはreject
-					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-				}
-
-				if (renote.channelId && renote.channelId !== ps.channelId) {
-					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
-					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
-					const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
-					if (renoteChannel == null) {
-						// リノートしたいノートが書き込まれているチャンネルが無い
-						throw new ApiError(meta.errors.noSuchChannel);
-					} else if (!renoteChannel.allowRenoteToExternal) {
-						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
-						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
-					}
-				}
-			}
-
-			let reply: MiNote | null = null;
-			if (ps.replyId != null) {
-				// Fetch reply
-				reply = await this.notesRepository.findOne({
-					where: { id: ps.replyId },
-					relations: ['user'],
-				});
-
-				if (reply == null) {
-					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (isRenote(reply) && !isQuote(reply)) {
-					throw new ApiError(meta.errors.cannotReplyToPureRenote);
-				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
-					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
-				} else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
-					throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
-				}
-
-				// Check blocking
-				if (reply.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exists({
-						where: {
-							blockerId: reply.userId,
-							blockeeId: me.id,
-						},
-					});
-					if (blockExist) {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					}
-				}
-			}
-
-			if (ps.poll) {
-				if (typeof ps.poll.expiresAt === 'number') {
-					if (ps.poll.expiresAt < Date.now()) {
-						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
-					}
-				} else if (typeof ps.poll.expiredAfter === 'number') {
-					ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
-				}
-			}
-
-			let channel: MiChannel | null = null;
-			if (ps.channelId != null) {
-				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
-
-				if (channel == null) {
-					throw new ApiError(meta.errors.noSuchChannel);
-				}
-			}
-
-			// 投稿を作成
 			try {
-				const note = await this.noteCreateService.create(me, {
+				const note = await this.noteCreateService.fetchAndCreate(me, {
 					createdAt: new Date(),
 					files: files,
 					poll: ps.poll ? {

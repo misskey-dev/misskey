@@ -37,7 +37,27 @@ export class PostScheduledNoteProcessorService {
 		}
 
 		try {
-			const note = await this.noteCreateService.create(draft.user, draft);
+			const note = await this.noteCreateService.fetchAndCreate(draft.user, {
+				createdAt: new Date(),
+				files: files,
+				poll: ps.poll ? {
+					choices: ps.poll.choices,
+					multiple: ps.poll.multiple ?? false,
+					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+				} : undefined,
+				text: draft.text ?? undefined,
+				reply,
+				renote,
+				cw: draft.cw,
+				localOnly: draft.localOnly,
+				reactionAcceptance: draft.reactionAcceptance,
+				visibility: draft.visibility,
+				visibleUsers,
+				channel,
+				apMentions: draft.noExtractMentions ? [] : undefined,
+				apHashtags: draft.noExtractHashtags ? [] : undefined,
+				apEmojis: draft.noExtractEmojis ? [] : undefined,
+			});
 
 			// await不要
 			this.noteDraftsRepository.remove(draft);
