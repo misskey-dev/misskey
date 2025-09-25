@@ -5,14 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { noteVisibilities, noteReactionAcceptances } from '@/types.js';
 import { DI } from '@/di-symbols.js';
 import type { MiNoteDraft, NoteDraftsRepository, MiNote, MiDriveFile, MiChannel, UsersRepository, DriveFilesRepository, NotesRepository, BlockingsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { IPoll } from '@/models/Poll.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isRenote, isQuote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
