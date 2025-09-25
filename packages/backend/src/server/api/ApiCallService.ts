@@ -13,7 +13,7 @@ import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type Logger from '@/logger.js';
-import type { MiMeta, UserIpsRepository } from '@/models/_.js';
+import type { MiMeta, UserIpsRepository, UserProfilesRepository } from '@/models/_.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -47,6 +47,9 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
 		private authenticateService: AuthenticateService,
 		private rateLimiterService: RateLimiterService,
@@ -257,6 +260,7 @@ export class ApiCallService implements OnApplicationShutdown {
 					id: y!.id,
 					kind: y!.kind,
 					...(y!.info ? { info: y!.info } : {}),
+					...(y!.reason ? { reason: y!.reason } : {}),
 				},
 			});
 		} else {

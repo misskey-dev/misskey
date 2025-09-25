@@ -3,7 +3,7 @@
 # 完璧ゼロダウンタイムデプロイスクリプト v2.0
 # 10秒のダウンタイムも発生させない最適化された手順
 
-set -eux
+set -eu
 
 LOCK_FILE="/tmp/misskey-deploy.lock"
 LOG_FILE="/tmp/misskey-deploy.log"

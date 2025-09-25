@@ -56,6 +56,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 			</MkTextarea>
 
+			<MkTextarea v-if="!isSystem" v-model="suspendedReason" manualSave>
+				<template #label>{{ i18n.ts.suspendedReason || 'Suspended Reason' }}</template>
+				<template #caption>{{ i18n.ts.suspendedReasonDescription || 'The reason why this user was suspended' }}</template>
+			</MkTextarea>
+
 			<!--
 				<FormSection>
 					<template #label>ActivityPub</template>
@@ -263,6 +268,7 @@ const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
 const moderationNote = ref(info.value.moderationNote);
+const suspendedReason = ref(info.value.suspendedReason);
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({
@@ -309,6 +315,11 @@ watch(moderationNote, async () => {
 	await refreshUser();
 });
 
+watch(suspendedReason, async () => {
+	await misskeyApi('admin/update-user-suspended-reason', { userId: user.value.id, text: suspendedReason.value });
+	await refreshUser();
+});
+
 async function refreshUser() {
 	const result = await _fetch_();
 	user.value = result.user;
@@ -319,6 +330,7 @@ async function refreshUser() {
 	suspended.value = info.value.isSuspended;
 	isSystem.value = user.value.host == null && user.value.username.includes('.');
 	moderationNote.value = info.value.moderationNote;
+	suspendedReason.value = info.value.suspendedReason;
 }
 
 async function updateRemoteUser() {
@@ -345,6 +357,15 @@ async function resetPassword() {
 }
 
 async function toggleSuspend(v) {
+	if (v && (!suspendedReason.value || suspendedReason.value.trim() === '')) {
+		suspended.value = !v;
+		os.alert({
+			type: 'error',
+			text: 'Suspend reason is required before suspending a user.',
+		});
+		return;
+	}
+
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: v ? i18n.ts.suspendConfirm : i18n.ts.unsuspendConfirm,

@@ -124,12 +124,6 @@ export class SigninApiService {
 			});
 		}
 
-		if (user.isSuspended) {
-			return error(403, {
-				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
-			});
-		}
-
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
 
@@ -203,6 +197,16 @@ export class SigninApiService {
 			}
 
 			if (same) {
+				// Check if user is suspended after password verification
+				if (user.isSuspended) {
+					const errorResponse: any = {
+						id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
+					};
+					if (profile.suspendedReason) {
+						errorResponse.reason = profile.suspendedReason;
+					}
+					return error(403, errorResponse);
+				}
 				return this.signinService.signin(request, reply, user);
 			} else {
 				return await fail(403, {
@@ -226,6 +230,16 @@ export class SigninApiService {
 				});
 			}
 
+			// Check if user is suspended after 2FA verification
+			if (user.isSuspended) {
+				const errorResponse: any = {
+					id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
+				};
+				if (profile.suspendedReason) {
+					errorResponse.reason = profile.suspendedReason;
+				}
+				return error(403, errorResponse);
+			}
 			return this.signinService.signin(request, reply, user);
 		} else if (body.credential) {
 			if (!same && !profile.usePasswordLessLogin) {
@@ -237,6 +251,16 @@ export class SigninApiService {
 			const authorized = await this.webAuthnService.verifyAuthentication(user.id, body.credential);
 
 			if (authorized) {
+				// Check if user is suspended after WebAuthn verification
+				if (user.isSuspended) {
+					const errorResponse: any = {
+						id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
+					};
+					if (profile.suspendedReason) {
+						errorResponse.reason = profile.suspendedReason;
+					}
+					return error(403, errorResponse);
+				}
 				return this.signinService.signin(request, reply, user);
 			} else {
 				return await fail(403, {
