@@ -236,24 +236,25 @@ export class NoteCreateService implements OnApplicationShutdown {
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
 	}, data: {
+		createdAt: Date;
 		replyId: MiNote['id'] | null;
 		renoteId: MiNote['id'] | null;
 		fileIds: MiDriveFile['id'][];
 		text: string | null;
 		cw: string | null;
-		visibility: string | null;
+		visibility: string;
 		visibleUserIds: MiUser['id'][];
 		channelId: MiChannel['id'] | null;
 		localOnly: boolean | null;
 		reactionAcceptance: MiNote['reactionAcceptance'];
-
+		poll: IPoll | null;
+		apMentions?: MinimumUser[] | null;
+		apHashtags?: string[] | null;
+		apEmojis?: string[] | null;
 	}): Promise<MiNote> {
-		let visibleUsers: MiUser[] = [];
-		if (data.visibleUserIds) {
-			visibleUsers = await this.usersRepository.findBy({
-				id: In(data.visibleUserIds),
-			});
-		}
+		const visibleUsers = data.visibleUserIds.length > 0 ? await this.usersRepository.findBy({
+			id: In(data.visibleUserIds),
+		}) : [];
 
 		let files: MiDriveFile[] = [];
 		if (data.fileIds.length > 0) {
@@ -354,7 +355,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.poll) {
 			if (data.poll.expiresAt != null) {
-				if (ps.poll.expiresAt < Date.now()) {
+				if (data.poll.expiresAt.getTime() < Date.now()) {
 					throw new IdentifiableError('0c11c11e-0c8d-48e7-822c-76ccef660068', 'Poll expiration must be future time');
 				}
 			}
@@ -372,11 +373,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		return this.create(user, {
 			createdAt: new Date(),
 			files: files,
-			poll: ps.poll ? {
-				choices: ps.poll.choices,
-				multiple: ps.poll.multiple ?? false,
-				expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-			} : undefined,
+			poll: data.poll,
 			text: data.text ?? undefined,
 			reply,
 			renote,
@@ -386,9 +383,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			visibility: data.visibility,
 			visibleUsers,
 			channel,
-			apMentions: data.noExtractMentions ? [] : undefined,
-			apHashtags: data.noExtractHashtags ? [] : undefined,
-			apEmojis: data.noExtractEmojis ? [] : undefined,
+			apMentions: data.apMentions,
+			apHashtags: data.apHashtags,
+			apEmojis: data.apEmojis,
 		});
 	}
 

@@ -54,9 +54,6 @@ export class PostScheduledNoteProcessorService {
 				visibility: draft.visibility,
 				visibleUserIds: draft.visibleUserIds,
 				channelId: draft.channelId,
-				apMentions: draft.noExtractMentions ? [] : undefined,
-				apHashtags: draft.noExtractHashtags ? [] : undefined,
-				apEmojis: draft.noExtractEmojis ? [] : undefined,
 			});
 
 			// await不要
