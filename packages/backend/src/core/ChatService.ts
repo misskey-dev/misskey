@@ -1053,7 +1053,7 @@ export class ChatService {
 				isSecretMessageMode: isSecretMessageMode,
 			} as Record<string, any>,
 			reads: [],
-			expiresAt: null,
+			expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // システムメッセージも24時間後に削除
 		} satisfies Partial<MiChatMessage>;
 
 		const inserted = await this.chatMessagesRepository.insertOne(systemMessage);
@@ -1086,7 +1086,7 @@ export class ChatService {
 				isSecretMessageMode: isSecretMessageMode,
 			} as Record<string, any>,
 			reads: [],
-			expiresAt: null,
+			expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // システムメッセージも24時間後に削除
 		} satisfies Partial<MiChatMessage>;
 
 		const inserted = await this.chatMessagesRepository.insertOne(systemMessage);
