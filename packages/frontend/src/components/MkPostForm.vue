@@ -1181,8 +1181,10 @@ function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent)
 }
 
 function showDraftMenu(ev: MouseEvent) {
-	function showDraftsDialog() {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {}, {
+	function showDraftsDialog(scheduled: boolean) {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {
+			scheduled,
+		}, {
 			restore: async (draft: Misskey.entities.NoteDraft) => {
 				text.value = draft.text ?? '';
 				useCw.value = draft.cw != null;
@@ -1254,14 +1256,14 @@ function showDraftMenu(ev: MouseEvent) {
 		text: i18n.ts._drafts.listDrafts,
 		icon: 'ti ti-cloud-download',
 		action: () => {
-			showDraftsDialog();
+			showDraftsDialog(false);
 		},
 	}, { type: 'divider' }, {
 		type: 'button',
 		text: i18n.ts._drafts.listScheduledNotes,
 		icon: 'ti ti-clock-down',
 		action: () => {
-			showDraftsDialog();
+			showDraftsDialog(true);
 		},
 	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
