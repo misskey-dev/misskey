@@ -117,7 +117,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 		'audio/*',
 	],
 	noteDraftLimit: 10,
-	scheduledNoteLimit: 0,
+	scheduledNoteLimit: 1,
 	watermarkAvailable: true,
 };
 
