@@ -357,8 +357,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				if (ps.poll.expiresAt < Date.now()) {
 					throw new IdentifiableError('0c11c11e-0c8d-48e7-822c-76ccef660068', 'Poll expiration must be future time');
 				}
-			} else if (typeof ps.poll.expiredAfter === 'number') {
-				ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
 			}
 		}
 

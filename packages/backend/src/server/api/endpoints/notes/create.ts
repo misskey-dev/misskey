@@ -227,8 +227,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					poll: ps.poll ? {
 						choices: ps.poll.choices,
 						multiple: ps.poll.multiple ?? false,
-						expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-					} : undefined,
+						expiresAt: ps.poll.expiredAfter ? new Date(Date.now() + ps.poll.expiredAfter) : ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+					} : null,
 					text: ps.text ?? null,
 					replyId: ps.replyId ?? null,
 					renoteId: ps.renoteId ?? null,

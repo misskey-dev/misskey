@@ -40,11 +40,11 @@ export class PostScheduledNoteProcessorService {
 			const note = await this.noteCreateService.fetchAndCreate(draft.user, {
 				createdAt: new Date(),
 				fileIds: draft.fileIds,
-				poll: ps.poll ? {
-					choices: ps.poll.choices,
-					multiple: ps.poll.multiple ?? false,
-					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-				} : undefined,
+				poll: draft.hasPoll ? {
+					choices: draft.pollChoices,
+					multiple: draft.pollMultiple,
+					expiresAt: draft.pollExpiredAfter ? new Date(Date.now() + draft.pollExpiredAfter) : draft.pollExpiresAt ? new Date(draft.pollExpiresAt) : null,
+				} : null,
 				text: draft.text ?? null,
 				replyId: draft.replyId,
 				renoteId: draft.renoteId,
