@@ -491,7 +491,7 @@ export const PREF_DEF = definePreferences({
 	},
 
 	'chat.showSenderName': {
-		default: false,
+		default: true,
 	},
 	'chat.sendOnEnter': {
 		default: false,
