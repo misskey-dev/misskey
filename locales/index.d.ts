@@ -7958,6 +7958,10 @@ export interface Locale extends ILocale {
              */
             "noteDraftLimit": string;
             /**
+             * 予約投稿の同時作成可能数
+             */
+            "scheduledNoteLimit": string;
+            /**
              * ウォーターマーク機能の使用可否
              */
             "watermarkAvailable": string;
