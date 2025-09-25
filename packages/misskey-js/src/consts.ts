@@ -229,6 +229,7 @@ export const rolePolicies = [
 	'chatAvailability',
 	'uploadableFileTypes',
 	'noteDraftLimit',
+	'scheduledNoteLimit',
 	'watermarkAvailable',
 ] as const;
 

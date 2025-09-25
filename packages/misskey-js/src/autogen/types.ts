@@ -5278,6 +5278,7 @@ export type components = {
             /** @enum {string} */
             chatAvailability: 'available' | 'readonly' | 'unavailable';
             noteDraftLimit: number;
+            scheduledNoteLimit: number;
             watermarkAvailable: boolean;
         };
         ReversiGameLite: {
