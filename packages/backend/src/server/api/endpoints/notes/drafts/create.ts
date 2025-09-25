@@ -124,6 +124,12 @@ export const meta = {
 			id: '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8',
 		},
 
+		tooManyScheduledNotes: {
+			message: 'You cannot create scheduled notes any more.',
+			code: 'TOO_MANY_SCHEDULED_NOTES',
+			id: '22ae69eb-09e3-4541-a850-773cfa45e693',
+		},
+
 		cannotRenoteToExternal: {
 			message: 'Cannot Renote to External.',
 			code: 'CANNOT_RENOTE_TO_EXTERNAL',
@@ -244,6 +250,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 						case '215dbc76-336c-4d2a-9605-95766ba7dab0':
 							throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
+						case 'c3275f19-4558-4c59-83e1-4f684b5fab66':
+							throw new ApiError(meta.errors.tooManyScheduledNotes);
 						default:
 							throw err;
 					}

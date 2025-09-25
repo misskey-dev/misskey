@@ -159,6 +159,12 @@ export const meta = {
 			code: 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY',
 			id: '215dbc76-336c-4d2a-9605-95766ba7dab0',
 		},
+
+		tooManyScheduledNotes: {
+			message: 'You cannot create scheduled notes any more.',
+			code: 'TOO_MANY_SCHEDULED_NOTES',
+			id: '02f5df79-08ae-4a33-8524-f1503c8f6212',
+		},
 	},
 
 	limit: {
@@ -287,6 +293,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							throw new ApiError(meta.errors.containsProhibitedWords);
 						case '4de0363a-3046-481b-9b0f-feff3e211025':
 							throw new ApiError(meta.errors.containsTooManyMentions);
+						case 'bacdf856-5c51-4159-b88a-804fa5103be5':
+							throw new ApiError(meta.errors.tooManyScheduledNotes);
 						default:
 							throw err;
 					}
