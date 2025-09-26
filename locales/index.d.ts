@@ -12429,6 +12429,10 @@ export interface Locale extends ILocale {
              */
             "blur": string;
             /**
+             * モザイク
+             */
+            "pixelate": string;
+            /**
              * 色調補正
              */
             "colorAdjust": string;

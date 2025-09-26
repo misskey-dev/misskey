@@ -216,7 +216,7 @@ watch(enabled, () => {
 	}
 });
 
-const penMode = ref<'fill' | 'blur' | null>(null);
+const penMode = ref<'fill' | 'blur' | 'pixelate' | null>(null);
 
 function showPenMenu(ev: MouseEvent) {
 	os.popupMenu([{
@@ -228,6 +228,11 @@ function showPenMenu(ev: MouseEvent) {
 		text: i18n.ts._imageEffector._fxs.blur,
 		action: () => {
 			penMode.value = 'blur';
+		},
+	}, {
+		text: i18n.ts._imageEffector._fxs.pixelate,
+		action: () => {
+			penMode.value = 'pixelate';
 		},
 	}], ev.currentTarget ?? ev.target);
 }
@@ -289,6 +294,19 @@ function onImagePointerdown(ev: PointerEvent) {
 				scaleY: 0.1,
 				angle: 0,
 				radius: 3,
+			},
+		});
+	} else if (penMode.value === 'pixelate') {
+		layers.push({
+			id,
+			fxId: 'pixelate',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				strength: 0.2,
 			},
 		});
 	}
