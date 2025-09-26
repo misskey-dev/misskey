@@ -54,7 +54,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:class="[$style.draft]"
 						>
 							<div :class="$style.draftBody" class="_gaps_s">
-								<MkInfo v-if="draft.scheduledAt != null && draft.isActuallyScheduled">{{ i18n.tsx.scheduledToPostOnX({ x: new Date(draft.scheduledAt).toLocaleString() }) }}</MkInfo>
+								<MkInfo v-if="draft.scheduledAt != null && draft.isActuallyScheduled">
+									<I18n :src="i18n.ts.scheduledToPostOnX" tag="span">
+										<template #x>
+											<MkTime :time="draft.scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
+										</template>
+									</I18n>
+								</MkInfo>
 								<div :class="$style.draftInfo">
 									<div :class="$style.draftMeta">
 										<div v-if="draft.reply" class="_nowrap">

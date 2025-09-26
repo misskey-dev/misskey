@@ -61,7 +61,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
-	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">{{ i18n.tsx.scheduleToPostOnX({ x: new Date(scheduledAt).toLocaleString() }) }} - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button></MkInfo>
+	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">
+		<I18n :src="i18n.ts.scheduleToPostOnX" tag="span">
+			<template #x>
+				<MkTime :time="scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
+			</template>
+		</I18n> - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button>
+	</MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
