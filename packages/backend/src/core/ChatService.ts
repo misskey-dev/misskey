@@ -767,6 +767,18 @@ export class ChatService {
 		// TODO: transaction
 		await this.chatRoomMembershipsRepository.insertOne(membership);
 		await this.chatRoomInvitationsRepository.delete(invitation.id);
+
+		// Publish room join event to all room members
+		this.globalEventService.publishChatRoomStream(roomId, 'joined', {
+			userId: userId,
+			membershipId: membership.id,
+		});
+
+		// Publish main stream event to the user who joined
+		this.globalEventService.publishMainStream(userId, 'chatRoomJoined', {
+			roomId: roomId,
+			membershipId: membership.id,
+		});
 	}
 
 	@bindThis
