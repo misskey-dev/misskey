@@ -132,6 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 						<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
 					</div>
+					<MkButton v-if="$i.isAdmin" inline danger style="margin-right: 8px;" @click="unfollowAll">{{ i18n.ts.unfollowAll }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
 			</FormSection>
@@ -433,6 +434,30 @@ async function deleteAllFiles() {
 		});
 	});
 	await refreshUser();
+}
+
+async function unfollowAll() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unfollowAllConfirm,
+	});
+	if (confirm.canceled) return;
+
+	const typed = await os.inputText({
+		text: i18n.tsx.typeToConfirm({ x: user.value?.username }),
+	});
+	if (typed.canceled) return;
+
+	if (typed.result === user.value?.username) {
+		await os.apiWithDialog('admin/federation/remove-all-following-by-user-id', {
+			userId: user.value.id,
+		});
+	} else {
+		os.alert({
+			type: 'error',
+			text: 'input not match',
+		});
+	}
 }
 
 async function deleteAccount() {

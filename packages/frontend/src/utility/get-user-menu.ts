@@ -297,46 +297,48 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	async function assignRole() {
+		const roles = await rolesCache.fetch();
+
+		const { canceled, result: roleId } = await os.select({
+			title: i18n.ts._role.chooseRoleToAssign,
+			items: roles.filter(r => r.target === 'manual').map((r) => ({ text: r.name, value: r.id })),
+		});
+		if (canceled) return;
+
+		const { canceled: canceled2, result: period } = await os.select({
+			title: i18n.ts.period,
+			items: [{
+				value: 'indefinitely', label: i18n.ts.indefinitely,
+			}, {
+				value: 'oneHour', label: i18n.ts.oneHour,
+			}, {
+				value: 'oneDay', label: i18n.ts.oneDay,
+			}, {
+				value: 'oneWeek', label: i18n.ts.oneWeek,
+			}, {
+				value: 'oneMonth', label: i18n.ts.oneMonth,
+			}],
+			default: 'indefinitely',
+		});
+		if (canceled2) return;
+
+		const expiresAt = period === 'indefinitely' ? null
+			: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
+			: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
+			: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
+			: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
+			: null;
+
+		await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.id, expiresAt });
+	}
+
 	if ($i && meId !== user.id) {
 		if (iAmModerator) {
 			menuItems.push({
-				type: 'parent',
 				icon: 'ti ti-badges',
-				text: i18n.ts.roles,
-				children: async () => {
-					const roles = await rolesCache.fetch();
-
-					return roles.filter(r => r.target === 'manual').map(r => ({
-						text: r.name,
-						action: async () => {
-							const { canceled, result: period } = await os.select({
-								title: i18n.ts.period + ': ' + r.name,
-								items: [{
-									value: 'indefinitely', label: i18n.ts.indefinitely,
-								}, {
-									value: 'oneHour', label: i18n.ts.oneHour,
-								}, {
-									value: 'oneDay', label: i18n.ts.oneDay,
-								}, {
-									value: 'oneWeek', label: i18n.ts.oneWeek,
-								}, {
-									value: 'oneMonth', label: i18n.ts.oneMonth,
-								}],
-								default: 'indefinitely',
-							});
-							if (canceled) return;
-
-							const expiresAt = period === 'indefinitely' ? null
-								: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-								: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-								: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
-								: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
-								: null;
-
-							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id, expiresAt });
-						},
-					}));
-				},
+				text: i18n.ts.assignRole,
+				action: assignRole,
 			});
 		}
 
