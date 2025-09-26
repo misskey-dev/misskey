@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
-				<MkInput v-model="category" :datalist="customEmojiCategories">
+				<MkInput v-model="category" :datalist="customEmojiCategories.filter(x => x != null)">
 					<template #label>{{ i18n.ts.category }}</template>
 				</MkInput>
 				<MkInput v-model="aliases" autocapitalize="off">

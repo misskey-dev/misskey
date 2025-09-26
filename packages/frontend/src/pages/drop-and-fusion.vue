@@ -48,8 +48,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode.toUpperCase() }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
-									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
-									<MkUserName :user="r.user" :nowrap="true"/>
+									<MkAvatar v-if="r.user" :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
+									<MkUserName v-if="r.user" :user="r.user" :nowrap="true"/>
 									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} {{ getScoreUnit(gameMode) }}</b>
 								</div>
 							</div>
@@ -87,6 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XGame from './drop-and-fusion.game.vue';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
@@ -98,7 +99,7 @@ import { misskeyApiGet } from '@/utility/misskey-api.js';
 const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
 const gameStarted = ref(false);
 const mute = ref(false);
-const ranking = ref(null);
+const ranking = ref<Misskey.entities.BubbleGameRankingResponse | null>(null);
 
 watch(gameMode, async () => {
 	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });

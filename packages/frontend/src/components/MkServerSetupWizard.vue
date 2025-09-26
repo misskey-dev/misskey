@@ -134,7 +134,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div>
 				<div><b>{{ i18n.ts._serverSettings.entrancePageStyle }}:</b></div>
-				<div>{{ serverSettings.clientOptions.entrancePageStyle }}</div>
+				<div>{{ serverSettings.clientOptions?.entrancePageStyle }}</div>
 			</div>
 
 			<div>
@@ -191,7 +191,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { ROLE_POLICIES } from '@@/js/const.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
@@ -240,12 +239,12 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 		enableReactionsBuffering,
 		clientOptions: {
 			entrancePageStyle: q_use.value === 'open' ? 'classic' : 'simple',
-		},
+		} as any,
 	};
 });
 
-const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], any>>>(() => {
-	let driveCapacityMb;
+const defaultPolicies = computed<Partial<Misskey.entities.RolePolicies>>(() => {
+	let driveCapacityMb: Misskey.entities.RolePolicies['driveCapacityMb'] | undefined;
 	if (q_use.value === 'single') {
 		driveCapacityMb = 8192;
 	} else if (q_use.value === 'group') {
@@ -254,7 +253,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		driveCapacityMb = 100;
 	}
 
-	let rateLimitFactor;
+	let rateLimitFactor: Misskey.entities.RolePolicies['rateLimitFactor'] | undefined;
 	if (q_use.value === 'single') {
 		rateLimitFactor = 0.3;
 	} else if (q_use.value === 'group') {
@@ -269,7 +268,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		}
 	}
 
-	let userListLimit;
+	let userListLimit: Misskey.entities.RolePolicies['userListLimit'] | undefined;
 	if (q_use.value === 'single') {
 		userListLimit = 100;
 	} else if (q_use.value === 'group') {
@@ -278,7 +277,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		userListLimit = 3;
 	}
 
-	let antennaLimit;
+	let antennaLimit: Misskey.entities.RolePolicies['antennaLimit'] | undefined;
 	if (q_use.value === 'single') {
 		antennaLimit = 100;
 	} else if (q_use.value === 'group') {
@@ -287,7 +286,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		antennaLimit = 0;
 	}
 
-	let webhookLimit;
+	let webhookLimit: Misskey.entities.RolePolicies['webhookLimit'] | undefined;
 	if (q_use.value === 'single') {
 		webhookLimit = 100;
 	} else if (q_use.value === 'group') {
@@ -296,35 +295,35 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		webhookLimit = 0;
 	}
 
-	let canImportFollowing;
+	let canImportFollowing: Misskey.entities.RolePolicies['canImportFollowing'];
 	if (q_use.value === 'single') {
 		canImportFollowing = true;
 	} else {
 		canImportFollowing = false;
 	}
 
-	let canImportMuting;
+	let canImportMuting: Misskey.entities.RolePolicies['canImportMuting'];
 	if (q_use.value === 'single') {
 		canImportMuting = true;
 	} else {
 		canImportMuting = false;
 	}
 
-	let canImportBlocking;
+	let canImportBlocking: Misskey.entities.RolePolicies['canImportBlocking'];
 	if (q_use.value === 'single') {
 		canImportBlocking = true;
 	} else {
 		canImportBlocking = false;
 	}
 
-	let canImportUserLists;
+	let canImportUserLists: Misskey.entities.RolePolicies['canImportUserLists'];
 	if (q_use.value === 'single') {
 		canImportUserLists = true;
 	} else {
 		canImportUserLists = false;
 	}
 
-	let canImportAntennas;
+	let canImportAntennas: Misskey.entities.RolePolicies['canImportAntennas'];
 	if (q_use.value === 'single') {
 		canImportAntennas = true;
 	} else {
@@ -355,6 +354,7 @@ function applySettings() {
 			maintainerEmail: q_adminEmail.value === '' ? undefined : q_adminEmail.value,
 		}, props.token),
 		misskeyApi('admin/roles/update-default-policies', {
+			// @ts-expect-error バックエンド側の型
 			policies: defaultPolicies.value,
 		}, props.token),
 	]).then(() => {

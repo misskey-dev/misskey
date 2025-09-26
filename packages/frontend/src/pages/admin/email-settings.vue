@@ -107,7 +107,7 @@ const smtpPass = ref(meta.smtpPass);
 
 async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({
-		title: i18n.ts.destination,
+		title: 'To',
 		type: 'email',
 		default: instance.maintainerEmail ?? '',
 		placeholder: 'test@example.com',
