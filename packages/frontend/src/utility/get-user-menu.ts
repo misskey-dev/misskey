@@ -376,6 +376,66 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 		if ($i.policies.chatAvailability === 'available' && user.canChat && user.host == null) {
 			menuItems.push({
+				type: 'parent',
+				icon: 'ti ti-messages',
+				text: i18n.ts.inviteToRoomChat,
+				children: async () => {
+					try {
+						const ownedRooms = await misskeyApi('chat/rooms/owned', {
+							limit: 100,
+						});
+
+						if (!ownedRooms || ownedRooms.length === 0) {
+							return [{
+								text: i18n.ts.noRoomsOwned || 'チャットルームを作成してください',
+								action: () => {
+									// Do nothing
+								},
+							}];
+						}
+
+						return ownedRooms.map(room => ({
+							text: room.name || 'Unnamed Room',
+							action: async () => {
+								try {
+									await os.apiWithDialog('chat/rooms/invitations/create', {
+										roomId: room.id,
+										userId: user.id,
+									});
+									os.success();
+								} catch (error: any) {
+									if (error.id === '916f9507-49ba-4e90-b57f-1fd4deaa47a5') {
+										os.alert({
+											type: 'error',
+											text: i18n.ts.noSuchRoom || 'No such room.',
+										});
+									} else if (error.id === '5c7b8a9d-6e0f-1a2b-3c4d-5e6f7a8b9c0d') {
+										os.alert({
+											type: 'info',
+											text: '既に招待済みです。',
+										});
+									} else {
+										os.alert({
+											type: 'error',
+											text: error.message || 'An error occurred.',
+										});
+									}
+								}
+							},
+						}));
+					} catch (error: any) {
+						return [{
+							text: 'エラーが発生しました',
+							action: () => {
+								os.alert({
+									type: 'error',
+									text: `API エラー: ${error.message || 'Unknown error'}`,
+								});
+							},
+						}];
+					}
+				},
+			}, {
 				type: 'link',
 				icon: 'ti ti-messages',
 				text: i18n.ts._chat.chatWithThisUser,
