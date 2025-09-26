@@ -3223,6 +3223,7 @@ _imageEffector:
     invert: "反轉色彩"
     grayscale: "黑白"
     blur: "模糊"
+    pixelate: "馬賽克"
     colorAdjust: "色彩校正"
     colorClamp: "壓縮色彩"
     colorClampAdvanced: "壓縮色彩（進階）"
