@@ -40,9 +40,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onDeactivated, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useInterval } from '@@/js/use-interval.js';
 import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -121,8 +120,17 @@ async function search() {
 	searched.value = true;
 }
 
-onMounted(() => {
-	updateCurrentAccountPartial({ hasUnreadChatMessages: false });
+onMounted(async () => {
+	// チャットページを開いた時に、すべてのチャットメッセージを既読にする
+	// フロントエンドの状態だけでなく、バックエンドのRedisキーもクリアする必要がある
+	try {
+		await misskeyApi('chat/read-all', {});
+		updateCurrentAccountPartial({ hasUnreadChatMessages: false });
+	} catch (error) {
+		console.error('Failed to mark chat messages as read:', error);
+		// エラーが発生してもフロントエンドの状態は更新する（UX考慮）
+		updateCurrentAccountPartial({ hasUnreadChatMessages: false });
+	}
 });
 </script>
 
