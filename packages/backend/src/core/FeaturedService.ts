@@ -142,4 +142,20 @@ export class FeaturedService {
 	public removeHashtagsFromRanking(hashtag: string): Promise<void> {
 		return this.removeFromRanking('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, hashtag);
 	}
+
+	@bindThis
+	public async getGlobalNotesScore(noteId: MiNote['id']): Promise<number> {
+		const currentWindow = this.getCurrentWindow(GLOBAL_NOTES_RANKING_WINDOW);
+		const previousWindow = currentWindow - 1;
+
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.zscore(`featuredGlobalNotesRanking:${currentWindow}`, noteId);
+		redisPipeline.zscore(`featuredGlobalNotesRanking:${previousWindow}`, noteId);
+		const [currentScore, previousScore] = await redisPipeline.exec().then(result =>
+			result ? result.map(r => r[1] ? parseInt(r[1] as string, 10) : 0) : [0, 0]
+		);
+
+		// 現在のウィンドウと前のウィンドウのスコアを合算（前のウィンドウは平均化）
+		return currentScore + (previousScore / 2);
+	}
 }
