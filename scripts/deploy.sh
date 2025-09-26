@@ -93,6 +93,25 @@ else
     log "⚠️  ビルドキャッシュクリーンアップ失敗（続行）"
 fi
 
+# 未使用イメージのクリーンアップ（エラーでも続行）
+log "🧹 古い未使用イメージクリーンアップ開始"
+if docker image prune -f --filter "until=24h" > /dev/null 2>&1; then
+    log "✅ 古い未使用イメージクリーンアップ完了"
+
+    # <none>タグのdanglingイメージも削除
+    if docker images -f "dangling=true" -q | wc -l | grep -v "^0$" > /dev/null 2>&1; then
+        if docker rmi $(docker images -f "dangling=true" -q) > /dev/null 2>&1; then
+            log "✅ danglingイメージクリーンアップ完了"
+        else
+            log "⚠️  danglingイメージクリーンアップ一部失敗（続行）"
+        fi
+    else
+        log "📝 削除対象のdanglingイメージなし"
+    fi
+else
+    log "⚠️  古い未使用イメージクリーンアップ失敗（続行）"
+fi
+
 log "🚀 完璧ゼロダウンタイムデプロイ開始"
 
 # パラメータ処理
