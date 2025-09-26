@@ -63,6 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRoom);
 			}
 			const invitation = await this.chatService.createRoomInvitation(me.id, room.id, ps.userId);
+
 			return await this.chatEntityService.packRoomInvitation(invitation, me);
 		});
 	}
