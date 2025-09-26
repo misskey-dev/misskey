@@ -1317,6 +1317,7 @@ acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします�
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 draft: "下書き"
+draftsAndScheduledNotes: "下書きと予約投稿"
 confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
@@ -1383,6 +1384,11 @@ customCssIsDisabledBecauseSafeMode: "セーフモードが有効なため、カ�
 themeIsDefaultBecauseSafeMode: "セーフモードが有効な間はデフォルトのテーマが使用されます。セーフモードをオフにすると元に戻ります。"
 thankYouForTestingBeta: "ベータ版の検証にご協力いただきありがとうございます！"
 createUserSpecifiedNote: "ユーザー指定ノートを作成"
+schedulePost: "投稿を予約"
+scheduleToPostOnX: "{x}に投稿を予約します"
+scheduledToPostOnX: "{x}に投稿が予約されています"
+schedule: "予約"
+scheduled: "予約"
 
 _compression:
   _quality:
@@ -2056,6 +2062,7 @@ _role:
     uploadableFileTypes_caption: "MIMEタイプを指定します。改行で区切って複数指定できるほか、アスタリスク(*)でワイルドカード指定できます。(例: image/*)"
     uploadableFileTypes_caption2: "ファイルによっては種別を判定できないことがあります。そのようなファイルを許可する場合は {x} を指定に追加してください。"
     noteDraftLimit: "サーバーサイドのノートの下書きの作成可能数"
+    scheduledNoteLimit: "予約投稿の同時作成可能数"
     watermarkAvailable: "ウォーターマーク機能の使用可否"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
@@ -2728,6 +2735,8 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   pollEnded: "アンケートの結果が出ました"
+  scheduledNotePosted: "予約ノートが投稿されました"
+  scheduledNotePostFailed: "予約ノートの投稿に失敗しました"
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
   roleAssigned: "ロールが付与されました"
@@ -3385,6 +3394,9 @@ _drafts:
   restoreFromDraft: "下書きから復元"
   restore: "復元"
   listDrafts: "下書き一覧"
+  schedule: "投稿予約"
+  listScheduledNotes: "予約投稿一覧"
+  cancelSchedule: "予約解除"
 
 qr: "二次元コード"
 _qr:

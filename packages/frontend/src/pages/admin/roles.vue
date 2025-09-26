@@ -304,6 +304,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 					</MkFolder>
 
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.scheduledNoteLimit, 'scheduledNoteLimit'])">
+						<template #label>{{ i18n.ts._role._options.scheduledNoteLimit }}</template>
+						<template #suffix>{{ policies.scheduledNoteLimit }}</template>
+						<MkInput v-model="policies.scheduledNoteLimit" type="number" :min="0">
+						</MkInput>
+					</MkFolder>
+
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.watermarkAvailable, 'watermarkAvailable'])">
 						<template #label>{{ i18n.ts._role._options.watermarkAvailable }}</template>
 						<template #suffix>{{ policies.watermarkAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
