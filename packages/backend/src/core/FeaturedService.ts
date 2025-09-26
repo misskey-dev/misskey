@@ -58,29 +58,42 @@ export class FeaturedService {
 		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => (r[1] ?? []) as string[]) : [[], []]);
 
 		const ranking = new Map<string, number>();
+		const currentScores = new Map<string, number>();
+
+		// 現在窓のスコアを一旦全て保存（フィルタリングしない）
 		for (let i = 0; i < currentRankingResult.length; i += 2) {
 			const noteId = currentRankingResult[i];
 			const score = parseInt(currentRankingResult[i + 1], 10);
-			// スコアが20以上のもののみ追加
-			if (score >= 20) {
-				ranking.set(noteId, score);
-			}
+			currentScores.set(noteId, score);
 		}
+
+		// 前窓のスコアと合算して最終的なフィルタリング
 		for (let i = 0; i < previousRankingResult.length; i += 2) {
 			const noteId = previousRankingResult[i];
-			const score = parseInt(previousRankingResult[i + 1], 10);
-			const exist = ranking.get(noteId);
-			if (exist != null) {
-				const finalScore = (exist + score) / 2;
-				// 平均スコアが20以上のもののみ保持
+			const previousScore = parseInt(previousRankingResult[i + 1], 10);
+			const currentScore = currentScores.get(noteId);
+
+			if (currentScore != null) {
+				// 現在窓と前窓の両方にある場合：平均を計算
+				const finalScore = (currentScore + previousScore) / 2;
 				if (finalScore >= 20) {
 					ranking.set(noteId, finalScore);
-				} else {
-					ranking.delete(noteId);
 				}
-			} else if (score >= 20) {
-				// 前の窓のみのスコアも20以上チェック
-				ranking.set(noteId, score);
+			} else {
+				// 前窓のみにある場合：前窓のスコアをチェック
+				if (previousScore >= 20) {
+					ranking.set(noteId, previousScore);
+				}
+			}
+		}
+
+		// 現在窓のみにあるノートをチェック
+		for (const [noteId, currentScore] of currentScores) {
+			if (!ranking.has(noteId)) {
+				// 現在窓のみにある場合：現在窓のスコアをチェック
+				if (currentScore >= 20) {
+					ranking.set(noteId, currentScore);
+				}
 			}
 		}
 
