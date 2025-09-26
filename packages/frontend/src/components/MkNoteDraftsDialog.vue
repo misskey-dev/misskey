@@ -116,23 +116,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<div :class="$style.draftActions" class="_buttons">
-								<MkButton
-									v-if="draft.scheduledAt != null && draft.isActuallyScheduled"
-									:class="$style.itemButton"
-									small
-									@click="cancelSchedule(draft)"
-								>
-									<i class="ti ti-calendar-x"></i>
-									{{ i18n.ts._drafts.cancelSchedule }}
-								</MkButton>
+								<template v-if="draft.scheduledAt != null && draft.isActuallyScheduled">
+									<MkButton
+										:class="$style.itemButton"
+										small
+										@click="cancelSchedule(draft)"
+									>
+										<i class="ti ti-calendar-x"></i> {{ i18n.ts._drafts.cancelSchedule }}
+									</MkButton>
+									<!-- TODO
+									<MkButton
+										:class="$style.itemButton"
+										small
+										@click="reSchedule(draft)"
+									>
+										<i class="ti ti-calendar-time"></i> {{ i18n.ts._drafts.reSchedule }}
+									</MkButton>
+									-->
+								</template>
 								<MkButton
 									v-else
 									:class="$style.itemButton"
 									small
 									@click="restoreDraft(draft)"
 								>
-									<i class="ti ti-corner-up-left"></i>
-									{{ i18n.ts._drafts.restore }}
+									<i class="ti ti-corner-up-left"></i> {{ i18n.ts._drafts.restore }}
 								</MkButton>
 								<MkButton
 									v-tooltip="i18n.ts._drafts.delete"
