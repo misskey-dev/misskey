@@ -61,6 +61,9 @@ async function join(invitation: Misskey.entities.ChatRoomInvitation) {
 		roomId: invitation.room.id,
 	});
 
+	// Remove the invitation from the list immediately
+	invitations.value = invitations.value.filter(i => i.id !== invitation.id);
+
 	router.push('/chat/room/:roomId', {
 		params: {
 			roomId: invitation.room.id,
