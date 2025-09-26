@@ -209,9 +209,10 @@ export class ReactionService {
 				.execute();
 		}
 
-		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		// スコア20以上、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		const currentScore = await this.featuredService.getGlobalNotesScore(note.id);
 		if (
-			Math.random() < 0.3 &&
+			currentScore >= 20 &&
 			note.userId !== user.id &&
 			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
 		) {
