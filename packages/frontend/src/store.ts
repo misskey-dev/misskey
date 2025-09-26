@@ -441,15 +441,31 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	sound_note: {
 		where: 'device',
-		default: { type: 'syuilo/n-aec', volume: 1 },
+		default: { type: 'syuilo/down', volume: 1 },
 	},
 	sound_noteMy: {
 		where: 'device',
-		default: { type: 'syuilo/n-cea-4va', volume: 1 },
+		default: { type: 'syuilo/up', volume: 1 },
 	},
 	sound_notification: {
 		where: 'device',
-		default: { type: 'syuilo/n-ea', volume: 1 },
+		default: { type: 'syuilo/pope2', volume: 1 },
+	},
+	sound_chat: {
+		where: 'device',
+		default: { type: 'syuilo/pope1', volume: 1 },
+	},
+	sound_chatBg: {
+		where: 'device',
+		default: { type: 'syuilo/waon', volume: 1 },
+	},
+	sound_antenna: {
+		where: 'device',
+		default: { type: 'syuilo/triple', volume: 1 },
+	},
+	sound_channel: {
+		where: 'device',
+		default: { type: 'syuilo/square-pico', volume: 1 },
 	},
 	sound_reaction: {
 		where: 'device',
