@@ -108,6 +108,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-else-if="notification.type === 'chatRoomInvitationReceived'" :class="$style.text">
 				{{ notification.invitation.room.name }}
+				<div v-if="full && !chatInvitationDone" :class="$style.followRequestCommands">
+					<MkButton :class="$style.followRequestCommandButton" rounded primary @click="acceptChatInvitation()"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
+					<MkButton :class="$style.followRequestCommandButton" rounded danger @click="rejectChatInvitation()"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
+				</div>
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
@@ -202,6 +206,7 @@ const exportEntityName = {
 } as const satisfies Record<ExportCompletedNotification['exportedEntity'], string>;
 
 const followRequestDone = ref(false);
+const chatInvitationDone = ref(false);
 
 const acceptFollowRequest = () => {
 	if (!('user' in props.notification)) return;
@@ -213,6 +218,26 @@ const rejectFollowRequest = () => {
 	if (!('user' in props.notification)) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
+};
+
+const acceptChatInvitation = async () => {
+	if (props.notification.type !== 'chatRoomInvitationReceived') return;
+	chatInvitationDone.value = true;
+
+	try {
+		await misskeyApi('chat/rooms/join', { roomId: props.notification.invitation.room.id });
+		// 承認後にチャットルームに遷移
+		window.location.href = `/chat/room/${props.notification.invitation.room.id}`;
+	} catch (error) {
+		console.error('Failed to join chat room:', error);
+		chatInvitationDone.value = false;
+	}
+};
+
+const rejectChatInvitation = () => {
+	if (props.notification.type !== 'chatRoomInvitationReceived') return;
+	chatInvitationDone.value = true;
+	misskeyApi('chat/rooms/invitations/ignore', { invitationId: props.notification.invitationId });
 };
 
 function getActualReactedUsersCount(notification: Misskey.entities.Notification) {
