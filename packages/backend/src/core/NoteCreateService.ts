@@ -573,7 +573,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.renote && data.renote.userId !== user.id && !user.isBot) {
-			this.incRenoteCount(data.renote);
+			this.incRenoteCount(data.renote, user);
 		}
 
 		if (data.poll && data.poll.expiresAt) {
@@ -724,7 +724,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private incRenoteCount(renote: MiNote) {
+	private incRenoteCount(renote: MiNote, user: MiUser) {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
 				renoteCount: () => '"renoteCount" + 1',
@@ -732,13 +732,18 @@ export class NoteCreateService implements OnApplicationShutdown {
 			.where('id = :id', { id: renote.id })
 			.execute();
 
-		// 30%の確率、3日以内に投稿されたノートの場合ハイライト用ランキング更新
-		if (Math.random() < 0.3 && (Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3) {
+		// リノート時のfeaturedランキング更新（スコア+5、セルフ以外・3日間の時間窓内）
+		if (
+			renote.userId !== user.id &&
+			(Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
+		) {
 			if (renote.channelId != null) {
-				if (renote.replyId == null) {
+				// チャンネル内ノート：パブリック・ローカルユーザー・非リプライの条件で更新
+				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
 					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
 				}
 			} else {
+				// グローバルノート：パブリック・ローカルユーザー・非リプライの条件で更新
 				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
 					this.featuredService.updateGlobalNotesRanking(renote.id, 5);
 					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
