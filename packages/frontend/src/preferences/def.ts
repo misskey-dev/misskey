@@ -304,7 +304,7 @@ export const PREF_DEF = definePreferences({
 		default: 'medium' as 'small' | 'medium' | 'large',
 	},
 	limitWidthOfReaction: {
-		default: true,
+		default: false,
 	},
 	forceShowAds: {
 		default: false,

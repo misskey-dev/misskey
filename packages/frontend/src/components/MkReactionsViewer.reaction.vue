@@ -310,7 +310,7 @@ if (!mock) {
 }
 
 .limitWidth {
-	max-width: 70px;
+	max-width: 200px;
 	object-fit: contain;
 }
 
