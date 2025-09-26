@@ -61,15 +61,25 @@ export class FeaturedService {
 		for (let i = 0; i < currentRankingResult.length; i += 2) {
 			const noteId = currentRankingResult[i];
 			const score = parseInt(currentRankingResult[i + 1], 10);
-			ranking.set(noteId, score);
+			// スコアが20以上のもののみ追加
+			if (score >= 20) {
+				ranking.set(noteId, score);
+			}
 		}
 		for (let i = 0; i < previousRankingResult.length; i += 2) {
 			const noteId = previousRankingResult[i];
 			const score = parseInt(previousRankingResult[i + 1], 10);
 			const exist = ranking.get(noteId);
 			if (exist != null) {
-				ranking.set(noteId, (exist + score) / 2);
-			} else {
+				const finalScore = (exist + score) / 2;
+				// 平均スコアが20以上のもののみ保持
+				if (finalScore >= 20) {
+					ranking.set(noteId, finalScore);
+				} else {
+					ranking.delete(noteId);
+				}
+			} else if (score >= 20) {
+				// 前の窓のみのスコアも20以上チェック
 				ranking.set(noteId, score);
 			}
 		}
