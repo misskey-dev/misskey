@@ -285,13 +285,14 @@ if (!mock) {
 	}
 
 	&.large {
-		height: 38px;
-		font-size: 1.2em;
-		border-radius: 5px;
+		height: 42px;
+		font-size: 1.5em;
+		border-radius: 6px;
+		padding: 0 6px;
 
 		> .count {
-			font-size: 0.75em;
-			line-height: 38px;
+			font-size: 0.7em;
+			line-height: 42px;
 		}
 	}
 
