@@ -260,6 +260,10 @@ export const packedNoteSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		scheduled: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 
 		myReaction: {
 			type: 'string',

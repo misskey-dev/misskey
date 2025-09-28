@@ -137,6 +137,7 @@ type Option = {
 	visibility?: string;
 	visibleUsers?: MinimumUser[] | null;
 	channel?: MiChannel | null;
+	scheduled?: boolean;
 	apMentions?: MinimumUser[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
@@ -248,6 +249,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		localOnly: boolean;
 		reactionAcceptance: MiNote['reactionAcceptance'];
 		poll: IPoll | null;
+		scheduled?: boolean;
 		apMentions?: MinimumUser[] | null;
 		apHashtags?: string[] | null;
 		apEmojis?: string[] | null;
@@ -383,6 +385,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			visibility: data.visibility,
 			visibleUsers,
 			channel,
+			scheduled: data.scheduled,
 			apMentions: data.apMentions,
 			apHashtags: data.apHashtags,
 			apEmojis: data.apEmojis,
@@ -596,6 +599,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					? data.visibleUsers.map(u => u.id)
 					: []
 				: [],
+			scheduled: data.scheduled,
 
 			attachedFileTypes: data.files ? data.files.map(file => file.type) : [],
 

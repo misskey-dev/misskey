@@ -1317,6 +1317,7 @@ acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします�
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 draft: "下書き"
+scheduledNote: "予約投稿"
 draftsAndScheduledNotes: "下書きと予約投稿"
 confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"

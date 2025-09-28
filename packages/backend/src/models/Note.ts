@@ -200,6 +200,12 @@ export class MiNote {
 	})
 	public hasPoll: boolean;
 
+	/** Misskeyの予約投稿経由で投稿されたかどうか */
+	@Column('boolean', {
+		default: false,
+	})
+	public scheduled: boolean;
+
 	@Index()
 	@Column({
 		...id(),

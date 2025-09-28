@@ -4413,6 +4413,7 @@ export type components = {
             reactionAndUserPairCache?: string[];
             clippedCount?: number;
             hasPoll?: boolean;
+            scheduled?: boolean;
             myReaction?: string | null;
         };
         NoteDraft: {
