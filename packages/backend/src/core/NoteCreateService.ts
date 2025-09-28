@@ -740,13 +740,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (renote.channelId != null) {
 				// チャンネル内ノート：パブリック・ローカルユーザー・非リプライの条件で更新
 				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
-					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);
+					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 1);
 				}
 			} else {
 				// グローバルノート：パブリック・ローカルユーザー・非リプライの条件で更新
 				if (renote.visibility === 'public' && renote.userHost == null && renote.replyId == null) {
-					this.featuredService.updateGlobalNotesRanking(renote.id, 5);
-					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 5);
+					this.featuredService.updateGlobalNotesRanking(renote.id, 1);
+					this.featuredService.updatePerUserNotesRanking(renote.userId, renote.id, 1);
 				}
 			}
 		}
