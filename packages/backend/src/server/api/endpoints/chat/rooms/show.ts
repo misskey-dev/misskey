@@ -29,6 +29,11 @@ export const meta = {
 			code: 'NO_SUCH_ROOM',
 			id: '857ae02f-8759-4d20-9adb-6e95fffe4fd7',
 		},
+		accessDenied: {
+			message: 'Access denied. You are not a member of this room.',
+			code: 'ACCESS_DENIED',
+			id: 'f2d8b1a3-4c7e-4f9b-8a2d-3e5f6c8d9a0b',
+		},
 	},
 } as const;
 
@@ -52,6 +57,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const room = await this.chatService.findRoomById(ps.roomId);
 			if (room == null) {
 				throw new ApiError(meta.errors.noSuchRoom);
+			}
+
+			const isMember = await this.chatService.isRoomMember(room, me.id);
+			if (!isMember) {
+				throw new ApiError(meta.errors.accessDenied);
 			}
 
 			return this.chatEntityService.packRoom(room, me);
