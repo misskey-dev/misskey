@@ -46,7 +46,7 @@ export const avifDefault: sharp.AvifOptions = {
 export const jxlDefault: sharp.JxlOptions = {
 	quality: 100,
 	lossless: true,
-	effort: 10,
+	effort: 9,
 	distance: 0,
 };
 
