@@ -407,3 +407,5 @@ _search:
   searchScopeLocal: "Τοπικό"
 _watermarkEditor:
   image: "Εικόνες"
+assignRole: "Ανατέθηκε ρόλος"
+unassignRole: "Αφαιρέθηκε από ρόλο"

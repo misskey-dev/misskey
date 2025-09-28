@@ -388,6 +388,89 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async readMessage(
+		messageId: MiChatMessage['id'],
+		readerId: MiUser['id'],
+	): Promise<void> {
+		// メッセージを取得
+		const message = await this.chatMessagesRepository.findOne({
+			where: { id: messageId },
+			relations: ['toUser', 'toRoom'],
+		});
+
+		if (!message) {
+			throw new Error('Message not found');
+		}
+
+		// 既読権限チェック
+		if (message.toUserId) {
+			// 1対1チャットの場合: 送信者と受信者のみが既読可能
+			if (readerId !== message.fromUserId && readerId !== message.toUserId) {
+				throw new Error('Permission denied: You cannot read this message');
+			}
+		} else if (message.toRoomId) {
+			// ルームチャットの場合: ルームメンバーまたはオーナーのみが既読可能
+			const room = message.toRoom;
+			if (!room) {
+				throw new Error('Room not found');
+			}
+
+			// オーナーかどうかチェック
+			if (readerId === room.ownerId) {
+				// オーナーなら既読可能
+			} else {
+				// メンバーかどうかチェック
+				const membership = await this.chatRoomMembershipsRepository.findOne({
+					where: { roomId: message.toRoomId, userId: readerId },
+				});
+				if (!membership) {
+					throw new Error('Permission denied: You are not a member of this room');
+				}
+			}
+		}
+
+		// 既読リストに追加（重複を避ける）
+		if (!message.reads.includes(readerId)) {
+			await this.chatMessagesRepository.update(messageId, {
+				reads: [...message.reads, readerId],
+			});
+		}
+
+		// Redisキャッシュも更新
+		if (message.toUserId) {
+			// 1対1チャットの場合
+			await this.readUserChatMessage(readerId, message.fromUserId);
+		} else if (message.toRoomId) {
+			// ルームチャットの場合
+			await this.readRoomChatMessage(readerId, message.toRoomId);
+		}
+
+		// WebSocketで既読通知を送信
+		if (message.toRoomId) {
+			// ルームチャットの場合
+			this.globalEventService.publishChatRoomStream(
+				message.toRoomId,
+				'read',
+				{
+					messageId: messageId,
+					readerId: readerId,
+				},
+			);
+		} else {
+			// 1対1チャットの場合
+			this.globalEventService.publishChatUserStream(
+				message.fromUserId,
+				readerId,
+				'read',
+				{
+					messageId: messageId,
+					readerId: readerId,
+				},
+			);
+		}
+	}
+
+	@bindThis
 	public findMessageById(messageId: MiChatMessage['id']) {
 		return this.chatMessagesRepository.findOneBy({ id: messageId });
 	}

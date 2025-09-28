@@ -337,7 +337,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		if (iAmModerator) {
 			menuItems.push({
 				icon: 'ti ti-badges',
-				text: i18n.ts.assignRole as string,
+				text: i18n.ts.roles,
 				action: assignRole,
 			});
 		}

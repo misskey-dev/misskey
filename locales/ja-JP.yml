@@ -1042,6 +1042,7 @@ correspondingSourceIsAvailable: "対応するソースコードは{anchor}から
 roles: "ロール"
 role: "ロール"
 noRole: "ロールはありません"
+assignRole: "ロールへアサイン"
 normalUser: "一般ユーザー"
 undefined: "未定義"
 assign: "アサイン"

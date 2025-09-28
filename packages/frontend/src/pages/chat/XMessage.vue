@@ -38,6 +38,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<button class="_textButton" style="color: currentColor;" @click="showMenu"><i class="ti ti-dots-circle-horizontal"></i></button>
 			<MkTime :class="$style.time" :time="message.createdAt"/>
+			<!-- 既読表示 -->
+			<div v-if="isMe && message.reads && message.reads.length > 0" :class="$style.readStatus" @click="showReadUsers">
+				<i class="ti ti-checks" :class="$style.readIcon"></i>
+				<span>既読 {{ message.reads.length }}</span>
+			</div>
 			<MkA v-if="isSearchResult && 'toRoom' in message && message.toRoom != null" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom.name }}</MkA>
 			<MkA v-if="isSearchResult && 'toUser' in message && message.toUser != null && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser.username }}</MkA>
 		</div>
@@ -98,6 +103,16 @@ const isMe = computed(() => props.message.fromUserId === $i.id);
 const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 const isSecretMessage = computed(() => (props.message as any).expiresAt != null);
 
+// デバッグ用ログ
+console.log('🔍 [DEBUG] XMessage.vue - Message debug:', {
+	messageId: props.message.id,
+	isMe: isMe.value,
+	reads: props.message.reads,
+	readsLength: props.message.reads?.length || 0,
+	fromUserId: props.message.fromUserId,
+	currentUserId: $i.id,
+});
+
 provide(DI.mfmEmojiReactCallback, (reaction) => {
 	if ($i.policies.chatAvailability !== 'available') return;
 
@@ -147,6 +162,42 @@ function onContextmenu(ev: MouseEvent) {
 	if (window.getSelection()?.toString() !== '') return;
 
 	showMenu(ev, true);
+}
+
+async function showReadUsers() {
+	if (!props.message.reads || props.message.reads.length === 0) return;
+
+	try {
+		const readUsers = await misskeyApi('chat/messages/read-users', {
+			messageId: props.message.id,
+		});
+
+		if (readUsers.length === 0) {
+			os.alert({
+				type: 'info',
+				text: '既読したユーザーがいません',
+			});
+			return;
+		}
+
+		// ユーザー一覧をMisskey標準のアラートダイアログで表示
+		const userListText = readUsers.map(user =>
+			`• ${user.name ? user.name : user.username} (@${user.username})`
+		).join('\n');
+
+		os.alert({
+			type: 'info',
+			title: `${readUsers.length}人が既読`,
+			text: userListText,
+		});
+	} catch (error) {
+		console.error('Failed to fetch read users:', error);
+		// フォールバック: 既読数のみ表示
+		os.alert({
+			type: 'info',
+			text: `${props.message.reads.length}人が既読`,
+		});
+	}
 }
 
 function showMenu(ev: MouseEvent, contextmenu = false) {
@@ -340,6 +391,24 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 
 .time {
 	opacity: 0.5;
+}
+
+.readStatus {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	font-size: 0.8em;
+	opacity: 0.7;
+	cursor: pointer;
+	color: var(--MI_THEME-accent);
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.readIcon {
+	font-size: 1.1em;
 }
 
 .reactions {

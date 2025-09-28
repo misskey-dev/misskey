@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
+import { ref, useTemplateRef, computed, watch, onMounted, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import XMessage from './XMessage.vue';
@@ -127,6 +127,7 @@ export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'from
 	reactions: (Misskey.entities.ChatMessageLite['reactions'][number] & {
 		user: Misskey.entities.UserLite;
 	})[];
+	reads?: string[]; // 既読ユーザーIDの配列
 	expiresAt?: string | null;
 	isSystemMessage?: boolean;
 	meta?: Record<string, any> | null;
@@ -154,17 +155,21 @@ useMutationObserver(timelineEl, {
 	attributes: false,
 }, () => {
 	const scrollContainer = getScrollContainer(timelineEl.value)!;
-	// column-reverseなのでscrollTopは負になる
-	if (-scrollContainer.scrollTop < SCROLL_HEAD_THRESHOLD) {
-		scrollContainer.scrollTo({
-			top: 0,
-			behavior: 'instant',
-		});
+
+	if (scrollContainer !== null && scrollContainer !== undefined && 
+	scrollContainer.scrollTop !== null && scrollContainer.scrollTop !== undefined) {
+		// column-reverseなのでscrollTopは負になる
+		if (-scrollContainer.scrollTop < SCROLL_HEAD_THRESHOLD) {
+			scrollContainer.scrollTo({
+				top: 0,
+				behavior: 'instant',
+			});
+		}
 	}
 });
 
-function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage): NormalizedChatMessage {
-	return {
+function normalizeMessage(message: (Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage) & { reads?: string[] }): NormalizedChatMessage {
+	const normalized = {
 		...message,
 		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user.value!),
 		reactions: message.reactions.map(record => ({
@@ -172,6 +177,16 @@ function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.en
 			user: record.user ?? (message.fromUserId === $i.id ? user.value! : $i),
 		})),
 	};
+
+	console.log('🔍 [DEBUG] normalizeMessage:', {
+		originalReads: message.reads,
+		normalizedReads: normalized.reads,
+		messageId: message.id,
+		hasReads: !!normalized.reads,
+		readsLength: normalized.reads?.length || 0
+	});
+
+	return normalized;
 }
 
 async function loadSecretMode() {
@@ -210,6 +225,77 @@ async function toggleSecretMode() {
 	}
 }
 
+// 表示されている全てのメッセージを既読にする関数
+function markAllVisibleMessagesAsRead() {
+	if (window.document.hidden) {
+		console.log('🔍 [DEBUG] Skipping read mark on initialization: document hidden');
+		return;
+	}
+
+	// 自分以外からの全てのメッセージを既読にする（既読済みでも再実行）
+	const othersMessages = messages.value.filter(message =>
+		message.fromUserId !== $i.id
+	);
+
+	console.log('🔍 [DEBUG] Marking ALL visible messages as read on initialization:', {
+		totalMessages: messages.value.length,
+		othersMessagesCount: othersMessages.length,
+		messageIds: othersMessages.map(m => m.id)
+	});
+
+	othersMessages.forEach(message => {
+		// WebSocket経由で既読通知
+		connection.value?.send('read', {
+			id: message.id,
+		});
+
+		// APIで既読状態を更新
+		misskeyApi('chat/messages/read', {
+			messageId: message.id,
+		}).then(() => {
+			console.log('🔍 [DEBUG] Successfully marked message as read on initialization:', message.id);
+		}).catch(err => {
+			console.error('🔍 [DEBUG] Failed to mark message as read on initialization:', err);
+		});
+	});
+}
+
+// 未読メッセージのみを既読にする関数（ページアクティベート時用）
+function markUnreadMessagesAsRead() {
+	if (window.document.hidden) {
+		console.log('🔍 [DEBUG] Skipping read mark: document hidden');
+		return;
+	}
+
+	// 自分以外からのメッセージで、まだ既読していないもののみを既読にする
+	const unreadMessages = messages.value.filter(message =>
+		message.fromUserId !== $i.id &&
+		(!message.reads || !message.reads.includes($i.id))
+	);
+
+	console.log('🔍 [DEBUG] Marking unread messages as read:', {
+		totalMessages: messages.value.length,
+		unreadCount: unreadMessages.length,
+		unreadMessageIds: unreadMessages.map(m => m.id)
+	});
+
+	unreadMessages.forEach(message => {
+		// WebSocket経由で既読通知
+		connection.value?.send('read', {
+			id: message.id,
+		});
+
+		// APIで既読状態を更新
+		misskeyApi('chat/messages/read', {
+			messageId: message.id,
+		}).then(() => {
+			console.log('🔍 [DEBUG] Successfully marked message as read:', message.id);
+		}).catch(err => {
+			console.error('🔍 [DEBUG] Failed to mark message as read:', err);
+		});
+	});
+}
+
 async function initialize() {
 	const LIMIT = 20;
 
@@ -238,6 +324,7 @@ async function initialize() {
 		connection.value.on('deleted', onDeleted);
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
+		connection.value.on('read', onRead);
 	} else if (props.roomId) {
 		const [rResult, mResult] = await Promise.allSettled([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
@@ -289,11 +376,15 @@ async function initialize() {
 		connection.value.on('deleted', onDeleted);
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
+		connection.value.on('read', onRead);
 	}
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
 
 	await loadSecretMode();
+
+	// 画面表示時に表示されている全てのメッセージを既読にする
+	markAllVisibleMessagesAsRead();
 
 	initialized.value = true;
 	initializing.value = false;
@@ -347,8 +438,34 @@ function onMessage(message: Misskey.entities.ChatMessageLite) {
 
 	// TODO: DOM的にバックグラウンドになっていないかどうかも考慮する
 	if (message.fromUserId !== $i.id && !window.document.hidden && isActivated) {
+		console.log('🔍 [DEBUG] Marking message as read:', {
+			messageId: message.id,
+			fromUserId: message.fromUserId,
+			currentUserId: $i.id,
+			isActivated,
+			documentHidden: window.document.hidden
+		});
+
 		connection.value?.send('read', {
 			id: message.id,
+		});
+
+		// APIで既読状態を更新
+		misskeyApi('chat/messages/read', {
+			messageId: message.id,
+		}).then(() => {
+			console.log('🔍 [DEBUG] Successfully marked message as read:', message.id);
+		}).catch(err => {
+			console.error('🔍 [DEBUG] Failed to mark message as read:', err);
+		});
+	} else {
+		console.log('🔍 [DEBUG] Skipping read mark:', {
+			messageId: message.id,
+			fromUserId: message.fromUserId,
+			currentUserId: $i.id,
+			isOwnMessage: message.fromUserId === $i.id,
+			documentHidden: window.document.hidden,
+			isActivated
 		});
 	}
 
@@ -391,6 +508,27 @@ function onUnreact(ctx: Parameters<Misskey.Channels['chatUser']['events']['unrea
 	}
 }
 
+function onRead(ctx: { messageId: string; readerId: string }) {
+	console.log('🔍 [DEBUG] onRead called:', ctx);
+
+	const message = messages.value.find(m => m.id === ctx.messageId);
+	console.log('🔍 [DEBUG] Found message:', message ? {
+		id: message.id,
+		reads: message.reads,
+		readsLength: message.reads?.length || 0
+	} : 'not found');
+
+	if (message && message.reads) {
+		// 既読リストに追加（重複チェック）
+		if (!message.reads.includes(ctx.readerId)) {
+			message.reads.push(ctx.readerId);
+			console.log('🔍 [DEBUG] Added reader, new reads:', message.reads);
+		} else {
+			console.log('🔍 [DEBUG] Reader already exists in reads list');
+		}
+	}
+}
+
 function onIndicatorClick() {
 	showIndicator.value = false;
 }
@@ -401,7 +539,8 @@ function notifyNewMessage() {
 
 function onVisibilitychange() {
 	if (window.document.hidden) return;
-	// TODO
+	// ページが表示状態になった時に未読メッセージを既読にする
+	markUnreadMessagesAsRead();
 }
 
 onMounted(() => {
@@ -411,6 +550,9 @@ onMounted(() => {
 onActivated(() => {
 	if (!initialized.value) {
 		initialize();
+	} else {
+		// ページが再度アクティブになった時も未読メッセージを既読にする
+		markUnreadMessagesAsRead();
 	}
 });
 

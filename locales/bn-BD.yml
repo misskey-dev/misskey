@@ -1364,3 +1364,5 @@ _imageEffector:
     color: "রং"
     opacity: "অস্বচ্ছতা"
     lightness: "উজ্জ্বল করুন"
+assignRole: "ভূমিকায় নিয়োগ দিন"
+unassignRole: "ভূমিকা থেকে সরান"

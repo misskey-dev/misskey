@@ -747,3 +747,5 @@ _imageEffector:
     scale: "Størrelse"
     size: "Størrelse"
     color: "Farge"
+assignRole: "Tildelt rolle"
+unassignRole: "Fjernet fra rolle"

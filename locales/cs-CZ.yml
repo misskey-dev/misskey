@@ -2060,3 +2060,5 @@ _imageEffector:
     color: "Barva"
     opacity: "Průhlednost"
     lightness: "Zesvětlit"
+assignRole: "Přiřazeno k roli"
+unassignRole: "Odstraněno z role"

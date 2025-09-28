@@ -216,6 +216,18 @@ fi
 
 log "✅ サービス稼働中 - ゼロダウンタイムデプロイを実行"
 
+# ロケールチェックを行う
+log "🌐 ロケール型定義チェック中..."
+cd locales
+if node generateDTS.js; then
+    log "✅ ロケール型定義生成成功"
+else
+    log "❌ ロケール型定義生成失敗"
+    exit 1
+fi
+cd ..
+
+
 # ビルド実行（既存コンテナ稼働中に並行実行）
 log "🔨 新しいイメージをビルド中..."
 BUILD_START_TIME=$(date +%s)

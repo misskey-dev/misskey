@@ -1041,6 +1041,8 @@ pleaseDonate: "{host} uses the free software, Misskey. We would highly appreciat
 correspondingSourceIsAvailable: "The corresponding source code is available at {anchor}"
 roles: "Roles"
 role: "Role"
+assignRole: "Assign to Role"
+unassignRole: "Unassign from Role"
 noRole: "Role not found"
 normalUser: "Normal user"
 undefined: "Undefined"
