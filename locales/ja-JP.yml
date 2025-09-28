@@ -2523,6 +2523,8 @@ _widgets:
   onlineUsers: "オンラインユーザー"
   jobQueue: "ジョブキュー"
   serverMetric: "サーバーメトリクス"
+  _serverMetric:
+    notAvailable: "このサーバーではメトリクスが利用できません"
   aiscript: "AiScriptコンソール"
   aiscriptApp: "AiScript App"
   aichan: "藍"

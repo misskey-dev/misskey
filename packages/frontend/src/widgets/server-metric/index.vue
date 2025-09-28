@@ -10,7 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
 	<div v-if="meta" data-cy-mkw-serverMetric class="mkw-serverMetric">
-		<XCpuMemory v-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>
+		<div v-if="!instance.enableServerMachineStats" :class="$style.notAvailable">{{ i18n.ts._widgets._serverMetric.notAvailable }}</div>
+		<XCpuMemory v-else-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>
 		<XNet v-else-if="widgetProps.view === 1" :connection="connection" :meta="meta"/>
 		<XCpu v-else-if="widgetProps.view === 2" :connection="connection" :meta="meta"/>
 		<XMemory v-else-if="widgetProps.view === 3" :connection="connection" :meta="meta"/>
@@ -34,6 +35,7 @@ import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 const name = 'serverMetric';
 
@@ -90,3 +92,12 @@ defineExpose<WidgetComponentExpose>({
 	id: props.widget ? props.widget.id : null,
 });
 </script>
+
+<style module>
+.notAvailable {
+	text-align: center;
+	padding: 32px 16px;
+	color: var(--text-muted);
+	font-size: 0.9em;
+}
+</style>
