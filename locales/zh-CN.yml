@@ -2286,7 +2286,7 @@ _ago:
   invalid: "没有"
 _timeIn:
   seconds: "{n}秒后"
-  minutes: "{n} 分后"
+  minutes: "{n}分钟后"
   hours: "{n} 小时后"
   days: "{n}天后"
   weeks: "{n} 周后"
