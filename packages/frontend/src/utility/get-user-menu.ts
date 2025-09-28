@@ -302,7 +302,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 		const { canceled, result: roleId } = await os.select({
 			title: i18n.ts._role.chooseRoleToAssign,
-			items: roles.filter(r => r.target === 'manual').map((r) => ({ text: r.name, value: r.id })),
+			items: roles.filter(r => r.target === 'manual').map((r) => ({ label: r.name, value: r.id })),
 		});
 		if (canceled) return;
 
@@ -337,7 +337,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		if (iAmModerator) {
 			menuItems.push({
 				icon: 'ti ti-badges',
-				text: i18n.ts.assignRole,
+				text: i18n.ts.assignRole as string,
 				action: assignRole,
 			});
 		}
@@ -380,7 +380,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			menuItems.push({
 				type: 'parent',
 				icon: 'ti ti-messages',
-				text: i18n.ts.inviteToRoomChat,
+				text: i18n.ts.inviteToRoomChat as string,
 				children: async () => {
 					try {
 						const ownedRooms = await misskeyApi('chat/rooms/owned', {
@@ -389,7 +389,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 						if (!ownedRooms || ownedRooms.length === 0) {
 							return [{
-								text: i18n.ts.noRoomsOwned || 'チャットルームを作成してください',
+								text: (i18n.ts.noRoomsOwned as string) || 'チャットルームを作成してください',
 								action: () => {
 									// Do nothing
 								},
@@ -409,7 +409,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 									if (error.id === '916f9507-49ba-4e90-b57f-1fd4deaa47a5') {
 										os.alert({
 											type: 'error',
-											text: i18n.ts.noSuchRoom || 'No such room.',
+											text: (i18n.ts.noSuchRoom as string) || 'No such room.',
 										});
 									} else if (error.id === '5c7b8a9d-6e0f-1a2b-3c4d-5e6f7a8b9c0d') {
 										os.alert({
