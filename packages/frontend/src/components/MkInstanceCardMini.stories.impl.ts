@@ -39,7 +39,7 @@ export const Default = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				http.get('/undefined/preview.webp', async ({ request }) => {
+				http.get('/undefined/preview.jxl', async ({ request }) => {
 					const urlStr = new URL(request.url).searchParams.get('url');
 					if (urlStr == null) {
 						return new HttpResponse(null, { status: 404 });

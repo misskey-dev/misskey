@@ -12,7 +12,7 @@ import type { MenuItem } from '@/types/menu.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { isWebpSupported } from '@/utility/isWebpSupported.js';
+import { isJxlSupported } from '@/utility/isJxlSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
@@ -52,7 +52,7 @@ const IMAGE_PREPROCESS_NEEDED_TYPES = [
 ];
 
 const mimeTypeMap = {
-	'image/webp': 'webp',
+	'image/jxl': 'jxl',
 	'image/jpeg': 'jpg',
 	'image/png': 'png',
 } as const;
@@ -534,17 +534,17 @@ export function useUploader(options: {
 
 		if (needsCompress) {
 			const config = {
-				mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
+				mimeType: isJxlSupported() ? 'image/jxl' : 'image/jpeg',
 				maxWidth: compressionSettings.maxWidth,
 				maxHeight: compressionSettings.maxHeight,
-				quality: isWebpSupported() ? 0.85 : 0.8,
+				quality: isJxlSupported() ? 1.0 : 0.8,
 			};
 
 			try {
 				const result = await readAndCompressImage(preprocessedFile, config);
-				if (result.size < preprocessedFile.size || preprocessedFile.type === 'image/webp') {
+				if (result.size < preprocessedFile.size || preprocessedFile.type === 'image/jxl') {
 					// The compression may not always reduce the file size
-					// (and WebP is not browser safe yet)
+					// (and JXL is not browser safe yet)
 					preprocessedFile = result;
 					item.compressedSize = result.size;
 					item.uploadName = preprocessedFile.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;

@@ -81,6 +81,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         "image/jpeg",
         "image/webp",
         "image/avif",
+        "image/jxl",
         "image/png",
         "image/gif",
         "image/apng",
@@ -193,7 +194,7 @@ const index_photos = defineComponent({
       return store.s.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
     }
     onMounted(() => {
-      const image = ["image/jpeg", "image/webp", "image/avif", "image/png", "image/gif", "image/apng", "image/vnd.mozilla.apng"];
+      const image = ["image/jpeg", "image/webp", "image/avif", "image/jxl", "image/png", "image/gif", "image/apng", "image/vnd.mozilla.apng"];
       api("users/notes", {
         userId: props.user.id,
         fileType: image,

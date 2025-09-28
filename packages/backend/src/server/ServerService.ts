@@ -155,12 +155,12 @@ export class ServerService implements OnApplicationShutdown {
 
 			reply.header('Cache-Control', 'public, max-age=86400');
 
-			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
+			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.jxl$/)) {
 				reply.code(404);
 				return;
 			}
 
-			const emojiPath = path.replace(/\.webp$/i, '');
+			const emojiPath = path.replace(/\.jxl$/i, '');
 			const pathChunks = emojiPath.split('@');
 
 			if (pathChunks.length > 2) {
@@ -195,7 +195,7 @@ export class ServerService implements OnApplicationShutdown {
 				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 				url.searchParams.set('badge', '1');
 			} else {
-				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
+				url = new URL(`${this.config.mediaProxy}/emoji.jxl`);
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 				url.searchParams.set('emoji', '1');

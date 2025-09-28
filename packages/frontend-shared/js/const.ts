@@ -13,6 +13,7 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'image/jpeg',
 	'image/webp',
 	'image/avif',
+	'image/jxl',
 	'image/apng',
 	'image/bmp',
 	'image/tiff',

@@ -147,7 +147,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
 						const name = reaction.substring(1, reaction.length - 1);
-						const badgeUrl = new URL(`/emoji/${name}.webp`, origin);
+						const badgeUrl = new URL(`/emoji/${name}.jxl`, origin);
 						badgeUrl.searchParams.set('badge', '1');
 						badge = badgeUrl.href;
 						reaction = name.split('@')[0];
