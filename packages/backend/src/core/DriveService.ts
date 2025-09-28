@@ -353,7 +353,7 @@ export class DriveService {
 
 		try {
 			if (isAnimated) {
-				thumbnail = await this.imageProcessingService.convertSharpToJxl(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
+				thumbnail = await this.imageProcessingService.convertSharpToJxl(sharp(path, { animated: true }), 374, 317, { quality: 100, lossless: true, effort: 9, distance: 0 });
 			} else {
 				thumbnail = await this.imageProcessingService.convertSharpToJxl(img, 498, 422);
 			}

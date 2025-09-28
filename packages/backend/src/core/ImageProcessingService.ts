@@ -46,7 +46,8 @@ export const avifDefault: sharp.AvifOptions = {
 export const jxlDefault: sharp.JxlOptions = {
 	quality: 100,
 	lossless: true,
-	effort: 9,
+	effort: 10,
+	distance: 0,
 };
 
 import { bindThis } from '@/decorators.js';
@@ -152,7 +153,7 @@ export class ImageProcessingService {
 	}
 
 	@bindThis
-	public async convertSharpToJxl(sharp: sharp.Sharp, width: number, height: number, options: sharp.jxlOptions = jxlDefault): Promise<IImage> {
+	public async convertSharpToJxl(sharp: sharp.Sharp, width: number, height: number, options: sharp.JxlOptions = jxlDefault): Promise<IImage> {
 		const result = this.convertSharpToJxlStream(sharp, width, height, options);
 
 		return {
