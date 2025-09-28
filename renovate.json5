@@ -15,6 +15,7 @@
 	dependencyDashboardAutoclose: true,
 	osvVulnerabilityAlerts: true,
 	dependencyDashboardOSVVulnerabilitySummary: 'unresolved',
+	minimumReleaseAge: '7 days',
 	ignoreDeps: [
 		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
 		'@typescript/lib-webworker',
