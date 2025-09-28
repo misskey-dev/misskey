@@ -99,6 +99,7 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		emojis: [],
 		tags: [],
 		hasPoll: false,
+		scheduled: false,
 		channelId: null,
 		channel: null,
 		userHost: null,
