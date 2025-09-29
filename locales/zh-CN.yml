@@ -87,7 +87,7 @@ exportRequested: "导出请求已提交，这可能需要花一些时间，导�
 importRequested: "导入请求已提交，这可能需要花一点时间。"
 lists: "列表"
 noLists: "列表为空"
-note: "发帖"
+note: "发布"
 notes: "帖子"
 following: "关注中"
 followers: "关注者"
@@ -1384,7 +1384,7 @@ customCssIsDisabledBecauseSafeMode: "因启用了安全模式，无法应用自�
 themeIsDefaultBecauseSafeMode: "启用安全模式时将使用默认主题。关闭安全模式后将还原。"
 thankYouForTestingBeta: "感谢您协助测试 beta 版！"
 createUserSpecifiedNote: "创建指定用户的帖子"
-schedulePost: "定时发帖"
+schedulePost: "定时发布"
 scheduleToPostOnX: "预定在 {x} 发出"
 scheduledToPostOnX: "已预定在 {x} 发出"
 schedule: "定时"
@@ -1893,7 +1893,7 @@ _achievements:
       flavor: "差不多该去睡了喔。"
     _postedAt0min0sec:
       title: "报时"
-      description: "在0点发布一篇帖子"
+      description: "在 0 点发布一篇帖子"
       flavor: "嘟 · 嘟 · 嘟 · 哔——"
     _selfQuote:
       title: "自我引用"
@@ -1921,7 +1921,7 @@ _achievements:
       description: "点了这里"
     _justPlainLucky:
       title: "超高校级的幸运"
-      description: "每10秒有0.005%的概率自动获得"
+      description: "每 10 秒有 0.005% 的概率自动获得"
     _setNameToSyuilo:
       title: "上帝情结"
       description: "将名称设定为 syuilo"
@@ -2279,7 +2279,7 @@ _soundSettings:
   driveFileError: "无法读取声音。请更改设置。"
 _ago:
   future: "未来"
-  justNow: "最近"
+  justNow: "刚刚"
   secondsAgo: "{n}秒前"
   minutesAgo: "{n}分钟前"
   hoursAgo: "{n}小时前"
@@ -3287,8 +3287,8 @@ _drafts:
   restoreFromDraft: "从草稿恢复"
   restore: "恢复"
   listDrafts: "草稿一览"
-  schedule: "定时发帖"
-  listScheduledNotes: "查看定时帖子"
+  schedule: "定时发布"
+  listScheduledNotes: "定时发布列表"
   cancelSchedule: "取消定时"
 qr: "二维码"
 _qr:
