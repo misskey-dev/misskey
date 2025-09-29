@@ -1190,4 +1190,114 @@ export class ChatService {
 		const packedMessage = await this.chatEntityService.packMessageLiteForRoom(inserted);
 		this.globalEventService.publishChatRoomStream(roomId, 'message', packedMessage);
 	}
+
+	@bindThis
+	public async notifyUserTyping(fromUserId: MiUser['id'], toUserId: MiUser['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyUserTyping called: ${fromUserId} -> ${toUserId}`);
+
+		// セキュリティ: 送信者ユーザーの存在・有効性確認
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] Typing event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		if (fromUser.isSuspended || fromUser.isDeleted) {
+			console.warn(`🔍 [SECURITY] Typing event from suspended/deleted user: ${fromUserId}`);
+			return;
+		}
+
+		const packedUser = await this.userEntityService.pack(fromUser, null, { detail: false });
+		console.log(`🔍 [DEBUG] Publishing chatUserStream typing event for ${fromUser.username}`);
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatUserStream(fromUserId, toUserId, 'typing', {
+			userId: fromUserId,
+			user: packedUser,
+		});
+	}
+
+	@bindThis
+	public async notifyRoomTyping(fromUserId: MiUser['id'], roomId: MiChatRoom['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyRoomTyping called: ${fromUserId} in room ${roomId}`);
+
+		// セキュリティ: 送信者ユーザーの存在・有効性確認
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] Typing event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		if (fromUser.isSuspended || fromUser.isDeleted) {
+			console.warn(`🔍 [SECURITY] Typing event from suspended/deleted user: ${fromUserId}`);
+			return;
+		}
+
+		// セキュリティ: ルームメンバーシップ確認
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] Typing event for non-existent room: ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] Typing event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		const packedUser = await this.userEntityService.pack(fromUser, null, { detail: false });
+		console.log(`🔍 [DEBUG] Publishing chatRoomStream typing event for ${fromUser.username}`);
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatRoomStream(roomId, 'typing', {
+			userId: fromUserId,
+			user: packedUser,
+		});
+	}
+
+	@bindThis
+	public async notifyUserTypingStop(fromUserId: MiUser['id'], toUserId: MiUser['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyUserTypingStop called: ${fromUserId} -> ${toUserId}`);
+
+		// セキュリティ: 送信者ユーザーの存在確認（軽量チェック）
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] TypingStop event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatUserStream(fromUserId, toUserId, 'typingStop', {
+			userId: fromUserId,
+		});
+	}
+
+	@bindThis
+	public async notifyRoomTypingStop(fromUserId: MiUser['id'], roomId: MiChatRoom['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyRoomTypingStop called: ${fromUserId} in room ${roomId}`);
+
+		// セキュリティ: 送信者ユーザーの存在確認（軽量チェック）
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] TypingStop event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		// セキュリティ: ルームメンバーシップ確認
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] TypingStop event for non-existent room: ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] TypingStop event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatRoomStream(roomId, 'typingStop', {
+			userId: fromUserId,
+		});
+	}
 }

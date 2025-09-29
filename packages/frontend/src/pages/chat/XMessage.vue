@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- 既読表示 -->
 			<div v-if="isMe && message.reads && message.reads.length > 0" :class="$style.readStatus" @click="showReadUsers">
 				<i class="ti ti-checks" :class="$style.readIcon"></i>
-				<span>既読 {{ message.reads.length }}</span>
+				<span>{{ i18n.ts.nUsersRead.replace('{n}', message.reads.length.toString()) }}</span>
 			</div>
 			<MkA v-if="isSearchResult && 'toRoom' in message && message.toRoom != null" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom.name }}</MkA>
 			<MkA v-if="isSearchResult && 'toUser' in message && message.toUser != null && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser.username }}</MkA>
@@ -175,7 +175,7 @@ async function showReadUsers() {
 		if (readUsers.length === 0) {
 			os.alert({
 				type: 'info',
-				text: '既読したユーザーがいません',
+				text: 'No users have read this message',
 			});
 			return;
 		}
@@ -187,7 +187,7 @@ async function showReadUsers() {
 
 		os.alert({
 			type: 'info',
-			title: `${readUsers.length}人が既読`,
+			title: i18n.ts.nUsersRead.replace('{n}', readUsers.length.toString()),
 			text: userListText,
 		});
 	} catch (error) {
@@ -195,7 +195,7 @@ async function showReadUsers() {
 		// フォールバック: 既読数のみ表示
 		os.alert({
 			type: 'info',
-			text: `${props.message.reads.length}人が既読`,
+			text: i18n.ts.nUsersRead.replace('{n}', props.message.reads.length.toString()),
 		});
 	}
 }

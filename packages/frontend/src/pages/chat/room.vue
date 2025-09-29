@@ -73,6 +73,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div v-if="tab === 'chat'" :class="$style.footer">
 			<div class="_gaps">
+				<div v-if="typingUsers.length > 0" :class="$style.typing">
+					<template v-if="typingUsers.length <= 2">
+						<I18n :src="i18n.ts.typingUsers" text-tag="span">
+							<template #users>
+								<b v-for="typer in typingUsers" :key="typer.id" :class="$style.user">
+									<MkUserName class="name" :user="typer" />
+								</b>
+							</template>
+						</I18n>
+					</template>
+					<template v-else>
+						<span>{{ i18n.ts.multipleUsersTyping }}</span>
+					</template>
+					<MkEllipsis />
+				</div>
 				<Transition name="fade">
 					<div v-show="showIndicator" :class="$style.new">
 						<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
@@ -80,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</button>
 					</div>
 				</Transition>
-				<XForm v-if="initialized" :user="user" :room="room" :isSecretMessageMode="isSecretMessageMode" :class="$style.form"/>
+				<XForm v-if="initialized" :user="user" :room="room" :isSecretMessageMode="isSecretMessageMode" :onTyping="handleTyping" :onTypingStop="handleTypingStop" :class="$style.form"/>
 			</div>
 		</div>
 	</template>
@@ -111,6 +126,9 @@ import { useRouter } from '@/router.js';
 import { useMutationObserver } from '@/composables/use-mutation-observer.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import I18n from '@/components/global/I18n.vue';
+import MkUserName from '@/components/global/MkUserName.vue';
+import MkEllipsis from '@/components/global/MkEllipsis.vue';
 
 const $i = ensureSignin();
 const router = useRouter();
@@ -135,13 +153,22 @@ export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'from
 
 const initializing = ref(false);
 const initialized = ref(false);
+const initializeId = ref(0); // 初期化IDで重複防止
 const moreFetching = ref(false);
 const messages = ref<NormalizedChatMessage[]>([]);
 const canFetchMore = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
 const connection = ref<Misskey.IChannelConnection<Misskey.Channels['chatUser']> | Misskey.IChannelConnection<Misskey.Channels['chatRoom']> | null>(null);
+const streamInstance = ref<any>(null); // ストリームインスタンスを保持
 const showIndicator = ref(false);
+const typingUsers = ref<Misskey.entities.UserLite[]>([]);
+const typingTimers = new Map<string, ReturnType<typeof setTimeout>>();
+// 重複イベント防止用のSets
+const processedMessageIds = new Set<string>();
+const processedReactionIds = new Set<string>();
+const processedDeleteIds = new Set<string>();
+const processedReadIds = new Set<string>();
 const timelineEl = useTemplateRef('timelineEl');
 const timeline = makeDateSeparatedTimelineComputedRef(messages);
 
@@ -296,13 +323,89 @@ function markUnreadMessagesAsRead() {
 	});
 }
 
+// 既存接続と状態をクリーンアップする関数
+function cleanup() {
+	console.log('🔍 [DEBUG] Cleaning up existing connection and state');
+
+	// 既存接続を破棄（明示的にイベントリスナーを削除）
+	if (connection.value) {
+		try {
+			// 明示的にイベントリスナーを削除
+			connection.value.off('message', onMessage);
+			connection.value.off('deleted', onDeleted);
+			connection.value.off('react', onReact);
+			connection.value.off('unreact', onUnreact);
+			connection.value.off('read', onRead);
+			connection.value.off('typing', onTyping);
+			connection.value.off('typingStop', onTypingStop);
+			console.log('🔍 [DEBUG] Explicitly removed all event listeners');
+		} catch (e) {
+			console.warn('🔍 [DEBUG] Error removing event listeners:', e);
+		}
+
+		connection.value.dispose();
+		connection.value = null;
+	}
+
+	// ストリームインスタンスもクリーンアップ
+	if (streamInstance.value) {
+		try {
+			streamInstance.value = null;
+			console.log('🔍 [DEBUG] Cleared stream instance');
+		} catch (e) {
+			console.warn('🔍 [DEBUG] Error clearing stream instance:', e);
+		}
+	}
+
+	// タイマーをすべてクリア
+	for (const timer of typingTimers.values()) {
+		clearTimeout(timer);
+	}
+	typingTimers.clear();
+	console.log('🔍 [DEBUG] Cleared all typing timers');
+
+	// 状態をリセット
+	messages.value = [];
+	user.value = null;
+	room.value = null;
+	typingUsers.value = [];
+	canFetchMore.value = false;
+	showIndicator.value = false;
+	// 重複チェック用Setもすべてクリア
+	processedMessageIds.clear();
+	processedReactionIds.clear();
+	processedDeleteIds.clear();
+	processedReadIds.clear();
+
+	// イベントリスナーを削除（存在する場合のみ）
+	try {
+		window.document.removeEventListener('visibilitychange', onVisibilitychange);
+	} catch (e) {
+		// イベントリスナーが存在しない場合は無視
+	}
+}
+
 async function initialize() {
 	const LIMIT = 20;
 
-	if (initializing.value) return;
+	if (initializing.value) {
+		console.log('🔍 [DEBUG] Already initializing, skipping duplicate request');
+		return;
+	}
+
+	// 新しい初期化IDを生成して重複防止
+	const currentInitId = ++initializeId.value;
+	console.log('🔍 [DEBUG] Initializing chat:', {
+		userId: props.userId,
+		roomId: props.roomId,
+		initId: currentInitId
+	});
 
 	initializing.value = true;
 	initialized.value = false;
+
+	// 既存の接続と状態をクリーンアップ
+	cleanup();
 
 	if (props.userId) {
 		const [u, m] = await Promise.all([
@@ -317,7 +420,19 @@ async function initialize() {
 			canFetchMore.value = true;
 		}
 
-		connection.value = useStream().useChannel('chatUser', {
+		// 初期化途中で別のinitializeが呼ばれた場合は中断
+		if (currentInitId !== initializeId.value) {
+			console.log('🔍 [DEBUG] Initialize cancelled due to newer request:', currentInitId);
+			initializing.value = false;
+			return;
+		}
+
+		// ストリームインスタンスを取得・保持
+		if (!streamInstance.value) {
+			streamInstance.value = useStream();
+		}
+
+		connection.value = streamInstance.value.useChannel('chatUser', {
 			otherId: user.value.id,
 		});
 		connection.value.on('message', onMessage);
@@ -325,6 +440,10 @@ async function initialize() {
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
 		connection.value.on('read', onRead);
+		connection.value.on('typing', onTyping);
+		connection.value.on('typingStop', onTypingStop);
+
+		console.log('🔍 [DEBUG] Set up chatUser connection with listeners');
 	} else if (props.roomId) {
 		const [rResult, mResult] = await Promise.allSettled([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
@@ -342,6 +461,13 @@ async function initialize() {
 
 		const r = rResult.value as Misskey.entities.ChatRoomsShowResponse;
 
+		// 初期化途中で別のinitializeが呼ばれた場合は中断
+		if (currentInitId !== initializeId.value) {
+			console.log('🔍 [DEBUG] Initialize cancelled due to newer request:', currentInitId);
+			initializing.value = false;
+			return;
+		}
+
 		if (r.invitationExists) {
 			const confirm = await os.confirm({
 				type: 'question',
@@ -355,7 +481,8 @@ async function initialize() {
 			} else {
 				await os.apiWithDialog('chat/rooms/join', { roomId: r.id });
 				initializing.value = false;
-				initialize();
+				// 再帰ではなく、フラグをリセットしてからinitializeを呼ぶ
+				setTimeout(() => initialize(), 100);
 				return;
 			}
 		}
@@ -369,7 +496,19 @@ async function initialize() {
 			canFetchMore.value = true;
 		}
 
-		connection.value = useStream().useChannel('chatRoom', {
+		// 初期化途中で別のinitializeが呼ばれた場合は中断
+		if (currentInitId !== initializeId.value) {
+			console.log('🔍 [DEBUG] Initialize cancelled due to newer request:', currentInitId);
+			initializing.value = false;
+			return;
+		}
+
+		// ストリームインスタンスを取得・保持
+		if (!streamInstance.value) {
+			streamInstance.value = useStream();
+		}
+
+		connection.value = streamInstance.value.useChannel('chatRoom', {
 			roomId: room.value.id,
 		});
 		connection.value.on('message', onMessage);
@@ -377,9 +516,22 @@ async function initialize() {
 		connection.value.on('react', onReact);
 		connection.value.on('unreact', onUnreact);
 		connection.value.on('read', onRead);
+		connection.value.on('typing', onTyping);
+		connection.value.on('typingStop', onTypingStop);
+
+		console.log('🔍 [DEBUG] Set up chatRoom connection with listeners');
 	}
 
+	// visibilitychangeイベントリスナーを追加（重複を避けるため一度削除してから追加）
+	window.document.removeEventListener('visibilitychange', onVisibilitychange);
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
+
+	// 最終チェック：初期化完了直前でも別のinitializeが呼ばれた場合は中断
+	if (currentInitId !== initializeId.value) {
+		console.log('🔍 [DEBUG] Initialize cancelled during final step:', currentInitId);
+		initializing.value = false;
+		return;
+	}
 
 	await loadSecretMode();
 
@@ -388,6 +540,7 @@ async function initialize() {
 
 	initialized.value = true;
 	initializing.value = false;
+	console.log('🔍 [DEBUG] Initialize completed successfully:', currentInitId);
 }
 
 let isActivated = true;
@@ -421,7 +574,27 @@ async function fetchMore() {
 	moreFetching.value = false;
 }
 
+
 function onMessage(message: Misskey.entities.ChatMessageLite) {
+	console.debug('🔍 [DEBUG] onMessage called with message:', message.id);
+
+	// 重複チェック
+	if (processedMessageIds.has(message.id)) {
+		console.warn('🔍 [DEBUG] Duplicate message received, ignoring:', message.id);
+		return;
+	}
+
+	// メッセージIDを記録
+	processedMessageIds.add(message.id);
+
+	// 古いメッセージIDを削除（メモリリーク防止、最新1000件保持）
+	if (processedMessageIds.size > 1000) {
+		const idsArray = Array.from(processedMessageIds);
+		for (let i = 0; i < 100; i++) {
+			processedMessageIds.delete(idsArray[i]);
+		}
+	}
+
 	sound.playMisskeySfx('chatMessage');
 
 	console.debug('New message:', message);
@@ -475,6 +648,23 @@ function onMessage(message: Misskey.entities.ChatMessageLite) {
 }
 
 function onDeleted(id: string) {
+	// 重複チェック
+	if (processedDeleteIds.has(id)) {
+		console.warn('🔍 [DEBUG] Duplicate delete event received, ignoring:', id);
+		return;
+	}
+
+	// 削除IDを記録
+	processedDeleteIds.add(id);
+
+	// 古い削除IDを削除（メモリリーク防止）
+	if (processedDeleteIds.size > 1000) {
+		const idsArray = Array.from(processedDeleteIds);
+		for (let i = 0; i < 100; i++) {
+			processedDeleteIds.delete(idsArray[i]);
+		}
+	}
+
 	const index = messages.value.findIndex(m => m.id === id);
 	if (index !== -1) {
 		messages.value.splice(index, 1);
@@ -482,6 +672,26 @@ function onDeleted(id: string) {
 }
 
 function onReact(ctx: Parameters<Misskey.Channels['chatUser']['events']['react']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['react']>[0]) {
+	// 重複チェック用のユニークID生成
+	const reactionId = `${ctx.messageId}-${ctx.reaction}-${ctx.user?.id || 'self'}-react`;
+
+	// 重複チェック
+	if (processedReactionIds.has(reactionId)) {
+		console.warn('🔍 [DEBUG] Duplicate reaction event received, ignoring:', reactionId);
+		return;
+	}
+
+	// リアクションIDを記録
+	processedReactionIds.add(reactionId);
+
+	// 古いリアクションIDを削除（メモリリーク防止）
+	if (processedReactionIds.size > 1000) {
+		const idsArray = Array.from(processedReactionIds);
+		for (let i = 0; i < 100; i++) {
+			processedReactionIds.delete(idsArray[i]);
+		}
+	}
+
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	if (message) {
 		if (room.value == null) { // 1on1の時はuserは省略される
@@ -499,6 +709,26 @@ function onReact(ctx: Parameters<Misskey.Channels['chatUser']['events']['react']
 }
 
 function onUnreact(ctx: Parameters<Misskey.Channels['chatUser']['events']['unreact']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['unreact']>[0]) {
+	// 重複チェック用のユニークID生成
+	const unreactionId = `${ctx.messageId}-${ctx.reaction}-${ctx.user?.id || 'self'}-unreact`;
+
+	// 重複チェック
+	if (processedReactionIds.has(unreactionId)) {
+		console.warn('🔍 [DEBUG] Duplicate unreaction event received, ignoring:', unreactionId);
+		return;
+	}
+
+	// リアクションIDを記録
+	processedReactionIds.add(unreactionId);
+
+	// 古いリアクションIDを削除（メモリリーク防止）
+	if (processedReactionIds.size > 1000) {
+		const idsArray = Array.from(processedReactionIds);
+		for (let i = 0; i < 100; i++) {
+			processedReactionIds.delete(idsArray[i]);
+		}
+	}
+
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	if (message) {
 		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user!.id);
@@ -510,6 +740,26 @@ function onUnreact(ctx: Parameters<Misskey.Channels['chatUser']['events']['unrea
 
 function onRead(ctx: { messageId: string; readerId: string }) {
 	console.log('🔍 [DEBUG] onRead called:', ctx);
+
+	// 重複チェック用のユニークID生成
+	const readId = `${ctx.messageId}-${ctx.readerId}-read`;
+
+	// 重複チェック
+	if (processedReadIds.has(readId)) {
+		console.warn('🔍 [DEBUG] Duplicate read event received, ignoring:', readId);
+		return;
+	}
+
+	// 既読IDを記録
+	processedReadIds.add(readId);
+
+	// 古い既読IDを削除（メモリリーク防止）
+	if (processedReadIds.size > 1000) {
+		const idsArray = Array.from(processedReadIds);
+		for (let i = 0; i < 100; i++) {
+			processedReadIds.delete(idsArray[i]);
+		}
+	}
 
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	console.log('🔍 [DEBUG] Found message:', message ? {
@@ -529,6 +779,161 @@ function onRead(ctx: { messageId: string; readerId: string }) {
 	}
 }
 
+function addTypingUser(typingUser: Misskey.entities.UserLite) {
+	console.log('🔍 [DEBUG] addTypingUser called:', typingUser.username);
+	// 自分は除外
+	if (typingUser.id === $i.id) {
+		console.log('🔍 [DEBUG] Skipping own user ID');
+		return;
+	}
+
+	// 既存のタイマーをクリア
+	const existingTimer = typingTimers.get(typingUser.id);
+	if (existingTimer) {
+		clearTimeout(existingTimer);
+	}
+
+	// 既に存在する場合は追加しない
+	const exists = typingUsers.value.find(u => u.id === typingUser.id);
+	if (!exists) {
+		typingUsers.value.push(typingUser);
+		console.log('🔍 [DEBUG] Added typing user:', typingUser.username);
+	}
+
+	// 5秒後に自動的に削除するタイマーを設定
+	const timer = setTimeout(() => {
+		console.log('🔍 [DEBUG] Auto-removing typing user after timeout:', typingUser.username);
+		removeTypingUser(typingUser.id);
+		typingTimers.delete(typingUser.id);
+	}, 5000);
+
+	typingTimers.set(typingUser.id, timer);
+}
+
+function removeTypingUser(userId: string) {
+	console.log('🔍 [DEBUG] removeTypingUser called:', userId);
+
+	// タイマーをクリア
+	const timer = typingTimers.get(userId);
+	if (timer) {
+		clearTimeout(timer);
+		typingTimers.delete(userId);
+	}
+
+	const index = typingUsers.value.findIndex(u => u.id === userId);
+	if (index !== -1) {
+		const removedUser = typingUsers.value.splice(index, 1)[0];
+		console.log('🔍 [DEBUG] Removed typing user:', removedUser.username);
+	} else {
+		console.log('🔍 [DEBUG] Typing user not found for removal:', userId);
+	}
+}
+
+function onTyping(ctx: { userId: string; user?: Misskey.entities.UserLite }) {
+	console.log('🔍 [DEBUG] onTyping called:', ctx);
+	console.log('🔍 [DEBUG] Current user ID:', $i.id);
+
+	// セキュリティ: 基本的なバリデーション
+	if (!ctx.userId || typeof ctx.userId !== 'string') {
+		console.warn('🔍 [SECURITY] Invalid userId in typing event');
+		return;
+	}
+
+	// 自分は除外
+	if (ctx.userId === $i.id) {
+		console.log('🔍 [DEBUG] Skipping own user ID');
+		return;
+	}
+
+	let typingUser: Misskey.entities.UserLite | null = null;
+
+	// userオブジェクトが含まれている場合は使用
+	if (ctx.user) {
+		// セキュリティ: userオブジェクトのIDとctx.userIdの一致確認
+		if (ctx.user.id !== ctx.userId) {
+			console.warn('🔍 [SECURITY] Mismatched userId and user.id in typing event');
+			return;
+		}
+		typingUser = ctx.user;
+		console.log('🔍 [DEBUG] Using provided user object:', typingUser.username);
+	}
+	// 1on1チャットの場合は相手ユーザー
+	else if (user.value && ctx.userId === user.value.id) {
+		typingUser = user.value;
+		console.log('🔍 [DEBUG] Found 1on1 chat partner:', typingUser.username);
+	}
+	// ルームチャットの場合は過去のメッセージから検索
+	else {
+		const foundMessage = messages.value.find(m => m.fromUserId === ctx.userId);
+		if (foundMessage) {
+			typingUser = foundMessage.fromUser;
+			console.log('🔍 [DEBUG] Found room user from messages:', typingUser.username);
+		} else {
+			console.warn('🔍 [DEBUG] User not found in messages:', ctx.userId);
+		}
+	}
+
+	if (typingUser) {
+		addTypingUser(typingUser);
+	}
+}
+
+function onTypingStop(ctx: { userId: string }) {
+	console.log('🔍 [DEBUG] onTypingStop called:', ctx);
+	console.log('🔍 [DEBUG] Current user ID:', $i.id);
+
+	// セキュリティ: 基本的なバリデーション
+	if (!ctx.userId || typeof ctx.userId !== 'string') {
+		console.warn('🔍 [SECURITY] Invalid userId in typingStop event');
+		return;
+	}
+
+	if (ctx.userId !== $i.id) {
+		removeTypingUser(ctx.userId);
+	}
+}
+
+// form コンポーネント用のタイピングハンドラー関数
+function handleTyping() {
+	console.log('🔍 [DEBUG] handleTyping called from form component');
+	if (!connection.value) {
+		console.warn('🔍 [DEBUG] No connection available for typing event');
+		return;
+	}
+
+	// 部屋またはユーザー情報を含めてイベント送信
+	const eventData: any = {};
+	if (room.value) {
+		eventData.roomId = room.value.id;
+		console.log('🔍 [DEBUG] Sending room typing event for room:', room.value.id);
+	} else if (user.value) {
+		// ユーザー対ユーザーチャットでは相手のIDではなく、空のオブジェクトを送信
+		// バックエンドで認証済みユーザーIDが自動設定される
+		console.log('🔍 [DEBUG] Sending user typing event for user:', user.value.id);
+	}
+
+	(connection.value as any).send('typing', eventData);
+}
+
+function handleTypingStop() {
+	console.log('🔍 [DEBUG] handleTypingStop called from form component');
+	if (!connection.value) {
+		console.warn('🔍 [DEBUG] No connection available for typingStop event');
+		return;
+	}
+
+	// 部屋またはユーザー情報を含めてイベント送信
+	const eventData: any = {};
+	if (room.value) {
+		eventData.roomId = room.value.id;
+		console.log('🔍 [DEBUG] Sending room typingStop event for room:', room.value.id);
+	} else if (user.value) {
+		console.log('🔍 [DEBUG] Sending user typingStop event for user:', user.value.id);
+	}
+
+	(connection.value as any).send('typingStop', eventData);
+}
+
 function onIndicatorClick() {
 	showIndicator.value = false;
 }
@@ -543,22 +948,41 @@ function onVisibilitychange() {
 	markUnreadMessagesAsRead();
 }
 
+// props変更を監視してチャットルーム切り替えに対応
+watch([() => props.userId, () => props.roomId], ([newUserId, newRoomId], [oldUserId, oldRoomId]) => {
+	console.log('🔍 [DEBUG] Props changed:', {
+		oldUserId, newUserId,
+		oldRoomId, newRoomId,
+		shouldReinitialize: (newUserId !== oldUserId) || (newRoomId !== oldRoomId)
+	});
+
+	// userIdまたはroomIdが変更された場合、再初期化（デバウンス付き）
+	if ((newUserId !== oldUserId) || (newRoomId !== oldRoomId)) {
+		console.log('🔍 [DEBUG] Reinitializing due to props change');
+		// 短時間での重複初期化を防ぐため、少し遅延させる
+		setTimeout(() => {
+			initialize();
+		}, 50);
+	}
+}, { immediate: false }); // immediate: false で初回マウント時は実行しない
+
 onMounted(() => {
 	initialize();
 });
 
 onActivated(() => {
-	if (!initialized.value) {
-		initialize();
-	} else {
-		// ページが再度アクティブになった時も未読メッセージを既読にする
+	// 既に初期化済みまたは初期化中の場合は、既読処理のみ実行
+	if (initialized.value || initializing.value) {
+		// ページが再度アクティブになった時は未読メッセージを既読にする
 		markUnreadMessagesAsRead();
+	} else {
+		// 未初期化かつ初期化中でない場合のみinitializeを実行
+		initialize();
 	}
 });
 
 onBeforeUnmount(() => {
-	connection.value?.dispose();
-	window.document.removeEventListener('visibilitychange', onVisibilitychange);
+	cleanup();
 });
 
 async function inviteUser() {
@@ -729,6 +1153,30 @@ definePage(computed(() => {
 .footer {
 	width: 100%;
 	padding-top: 8px;
+	position: relative;
+}
+
+.typing {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 100%;
+	max-width: 700px;
+	padding: 0 var(--MI_SPACER-h, 16px);
+	font-size: 0.9em;
+	color: var(--MI_THEME-fgTransparentWeak);
+	box-sizing: border-box;
+}
+
+.user + .user:before {
+	content: ', ';
+	font-weight: normal;
+}
+
+.user:last-of-type:after {
+	content: ' ';
 }
 
 .new {

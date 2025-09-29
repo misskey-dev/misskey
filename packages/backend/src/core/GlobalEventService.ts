@@ -172,6 +172,17 @@ export interface ChatEventTypes {
 		user?: Packed<'UserLite'>;
 		messageId: MiChatMessage['id'];
 	};
+	read: {
+		messageId: MiChatMessage['id'];
+		readerId: MiUser['id'];
+	};
+	typing: {
+		userId: MiUser['id'];
+		user?: Packed<'UserLite'>;
+	};
+	typingStop: {
+		userId: MiUser['id'];
+	};
 }
 
 export interface ReversiEventTypes {
@@ -414,7 +425,9 @@ export class GlobalEventService {
 
 	@bindThis
 	public publishChatUserStream<K extends keyof ChatEventTypes>(fromUserId: MiUser['id'], toUserId: MiUser['id'], type: K, value?: ChatEventTypes[K]): void {
-		this.publish(`chatUserStream:${fromUserId}-${toUserId}`, type, typeof value === 'undefined' ? null : value);
+		// IDをソートして統一的なチャンネル名を作成
+		const sortedIds = [fromUserId, toUserId].sort();
+		this.publish(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis
