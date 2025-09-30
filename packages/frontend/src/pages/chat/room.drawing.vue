@@ -351,9 +351,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
+		<!-- レイヤーキャンバス（レイヤー3が一番下、レイヤー1が一番上） -->
 		<canvas
-			ref="canvasEl"
-			:class="$style.canvas"
+			v-for="layerIndex in [2, 1, 0]"
+			:key="`layer-${layerIndex}`"
+			:ref="el => { if (el) layerCanvases[layerIndex] = el as HTMLCanvasElement }"
+			:class="[$style.canvas, $style.layerCanvas]"
 			:width="canvasWidth"
 			:height="canvasHeight"
 			:style="{
@@ -361,7 +364,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				height: displayHeight + 'px',
 				transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
 				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
-				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease'
+				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease',
+				zIndex: layerIndex + 1,
+				opacity: layerVisible[layerIndex] ? layerOpacity[layerIndex] : 0,
+				pointerEvents: layerIndex === currentLayer ? 'auto' : 'none'
 			}"
 			@mousedown="startDrawing"
 			@mousemove="draw"
@@ -676,45 +682,46 @@ const chatOverlay = ref<{
 let currentPath: Array<{ x: number; y: number }> = [];
 
 onMounted(() => {
-	if (canvasEl.value) {
-		// 高解像度キャンバス設定（デバイスピクセル比対応）
-		const dpr = window.devicePixelRatio || 1;
+	// レイヤーキャンバスの初期化
+	const dpr = window.devicePixelRatio || 1;
 
-		// 物理サイズを設定
-		canvasEl.value.width = canvasWidth.value * dpr;
-		canvasEl.value.height = canvasHeight.value * dpr;
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const canvas = layerCanvases.value[i];
+		if (canvas) {
+			// 高解像度キャンバス設定
+			canvas.width = canvasWidth.value * dpr;
+			canvas.height = canvasHeight.value * dpr;
 
-		// CSS表示サイズを維持
-		canvasEl.value.style.width = displayWidth.value + 'px';
-		canvasEl.value.style.height = displayHeight.value + 'px';
+			const context = canvas.getContext('2d', {
+				alpha: true,
+				desynchronized: false,
+				colorSpace: 'srgb',
+				willReadFrequently: false
+			});
 
-		ctx = canvasEl.value.getContext('2d', {
-			alpha: true,
-			desynchronized: false,
-			colorSpace: 'srgb',
-			willReadFrequently: false
-		});
+			if (context) {
+				// DPR対応でスケール調整
+				context.scale(dpr, dpr);
 
-		if (ctx) {
-			// DPR対応でスケール調整
-			ctx.scale(dpr, dpr);
+				// 最高品質のアンチエイリアス設定
+				context.lineCap = 'round';
+				context.lineJoin = 'round';
+				context.imageSmoothingEnabled = true;
+				context.imageSmoothingQuality = 'high';
 
-			// 最高品質のアンチエイリアス設定
-			ctx.lineCap = 'round';
-			ctx.lineJoin = 'round';
-			ctx.imageSmoothingEnabled = true;
-			ctx.imageSmoothingQuality = 'high';
+				// より滑らかな描画のための最適化設定
+				context.globalCompositeOperation = 'source-over';
+				context.miterLimit = 10;
+				context.lineWidth = 2;
+				context.filter = 'none';
 
-			// より滑らかな描画のための最適化設定
-			ctx.globalCompositeOperation = 'source-over';
-			ctx.miterLimit = 10; // より滑らかなジョイント
-			ctx.lineWidth = 2; // デフォルト線幅
-
-			// サブピクセルレンダリング最適化（整数座標の場合のみ）
-			// ctx.translate(0.5, 0.5); // モバイルで座標ずれが発生するためコメントアウト
-			ctx.filter = 'none'; // フィルターをクリア
+				layerContexts.value[i] = context;
+			}
 		}
 	}
+
+	// 現在のレイヤーのコンテキストを設定
+	ctx = layerContexts.value[currentLayer.value];
 
 	// タッチデバイス検出
 	isTouchDevice.value = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -1973,19 +1980,10 @@ function redo() {
 function switchLayer(layerIndex: number) {
 	if (layerIndex < 0 || layerIndex >= MAX_LAYERS) return;
 
-	// 現在のレイヤーの履歴を保存
-	layerStrokeHistory.value[currentLayer.value] = [...strokeHistory.value];
-
 	// 新しいレイヤーに切り替え
 	currentLayer.value = layerIndex;
+	ctx = layerContexts.value[layerIndex];
 	console.log('🎨 [LAYER] Switched to layer', layerIndex);
-
-	// 新しいレイヤーの履歴を読み込んで再描画
-	strokeHistory.value = [...layerStrokeHistory.value[layerIndex]];
-	if (ctx) {
-		ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-		redrawCanvasFromHistory();
-	}
 }
 
 // レイヤーメニューを表示
@@ -2814,21 +2812,28 @@ function performAdvancedUndo() {
 
 // 履歴からキャンバスを再描画
 function redrawCanvasFromHistory() {
-	if (!ctx) return;
+	// 全レイヤーを再描画
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const layerCtx = layerContexts.value[i];
+		if (!layerCtx) continue;
 
-	// キャンバスをクリア
-	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+		// レイヤーをクリア
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 
-	// 履歴からすべてのストロークを再描画
-	for (const stroke of strokeHistory.value) {
-		// 高品質な滑らかな描画で再描画
-		drawSmoothPath(
-			stroke.points,
-			stroke.strokeWidth,
-			stroke.color,
-			stroke.opacity,
-			stroke.tool === 'eraser'
-		);
+		// このレイヤーの履歴から再描画
+		for (const stroke of layerStrokeHistory.value[i]) {
+			// 一時的にコンテキストを切り替えて描画
+			const originalCtx = ctx;
+			ctx = layerCtx;
+			drawSmoothPath(
+				stroke.points,
+				stroke.strokeWidth,
+				stroke.color,
+				stroke.opacity,
+				stroke.tool === 'eraser'
+			);
+			ctx = originalCtx;
+		}
 	}
 }
 
@@ -3404,6 +3409,13 @@ function adjustCanvasForMobile() {
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	background: #ffffff;
+}
+
+.layerCanvas {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform-origin: center;
 }
 
 @container (max-width: 600px) {
