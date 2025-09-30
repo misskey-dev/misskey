@@ -3410,9 +3410,6 @@ function adjustCanvasForMobile() {
 
 .layerCanvas {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform-origin: center;
 }
 
 @container (max-width: 600px) {
