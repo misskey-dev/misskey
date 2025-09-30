@@ -104,25 +104,40 @@ export function screenToCanvasCoordinates(
 	const originX = isTouchDevice ? zoomCenter.x : logicalWidth / 2;
 	const originY = isTouchDevice ? zoomCenter.y : logicalHeight / 2;
 
-	// 6. 正規化座標を表示座標系に変換（transform前の論理表示サイズを使用）
-	const displayX = normalizedX * logicalWidth;
-	const displayY = normalizedY * logicalHeight;
+	// 6. 正規化座標をtransform適用後のサイズで変換
+	// getBoundingRect()はtransform適用後の座標なので、まずそこに戻す
+	const transformedX = normalizedX * transformedWidth;
+	const transformedY = normalizedY * transformedHeight;
 
-	// 7. ズームの逆変換（先にズームを戻す）
-	// transform: translate(pan) scale(zoom) なので、逆変換は zoom → pan の順
-	const fromOriginX = displayX - originX;
-	const fromOriginY = displayY - originY;
-	const unscaledX = fromOriginX / zoomLevel + originX;
-	const unscaledY = fromOriginY / zoomLevel + originY;
+	// 7. CSS transform逆変換
+	// CSS: transform: translate(panX, panY) scale(zoom)
+	// CSSは右から左に適用される: 実際の適用順は scale → translate
+	// 逆変換は適用の逆順: translate逆変換 → scale逆変換
 
-	// 8. パンの逆変換（ズーム逆変換後にパンを戻す）
-	const afterUntranslateX = unscaledX - panOffset.x;
-	const afterUntranslateY = unscaledY - panOffset.y;
+	// まず、transform-originを考慮してtransform中心を計算
+	// transform-originは論理サイズ（displayWidth/Height）ベース
+	const transformOriginX = isTouchDevice ? (zoomCenter.x / logicalWidth) * transformedWidth : transformedWidth / 2;
+	const transformOriginY = isTouchDevice ? (zoomCenter.y / logicalHeight) * transformedHeight : transformedHeight / 2;
+
+	// translate逆変換: パンオフセットを打ち消す
+	// パンオフセットはscale適用後に加算されているので、現在のスケールで調整
+	const afterUntranslateX = transformedX - (panOffset.x * zoomLevel);
+	const afterUntranslateY = transformedY - (panOffset.y * zoomLevel);
+
+	// scale逆変換: transform-originを基準にスケールを戻す
+	const fromOriginX = afterUntranslateX - transformOriginX;
+	const fromOriginY = afterUntranslateY - transformOriginY;
+	const unscaledX = fromOriginX / zoomLevel + transformOriginX;
+	const unscaledY = fromOriginY / zoomLevel + transformOriginY;
+
+	// 8. 論理表示サイズにスケーリング
+	const displayX = (unscaledX / transformedWidth) * logicalWidth;
+	const displayY = (unscaledY / transformedHeight) * logicalHeight;
 
 	// 9. 論理キャンバス座標に変換
 	const scale = logicalWidth / canvasWidth;
-	let logicalX = afterUntranslateX / scale;
-	let logicalY = afterUntranslateY / scale;
+	let logicalX = displayX / scale;
+	let logicalY = displayY / scale;
 
 	// 10. 詳細なサイズ情報を取得（デバッグ用）
 	const physicalWidth = canvasEl.width;
