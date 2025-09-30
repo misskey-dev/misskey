@@ -2055,24 +2055,16 @@ function screenToCanvasCoordinates(clientX: number, clientY: number): { x: numbe
 
 	// 7. CSSトランスフォームの逆変換（必要な場合のみ）
 	if (zoomLevel.value !== 1.0 || panOffset.value.x !== 0 || panOffset.value.y !== 0) {
-		// ズーム中心点を論理キャンバス座標で取得
-		let originX, originY;
-		if (isTouchDevice.value && (zoomCenter.value.x !== 0 || zoomCenter.value.y !== 0)) {
-			// モバイル: 実際のピンチ中心（論理座標系）
-			originX = zoomCenter.value.x;
-			originY = zoomCenter.value.y;
-		} else {
-			// デスクトップ: キャンバス中央（論理座標系）
-			originX = canvasWidth.value / 2;
-			originY = canvasHeight.value / 2;
-		}
+		// transform-origin: center を基準とした逆変換
+		// キャンバス中央（論理座標系）
+		const originX = canvasWidth.value / 2;
+		const originY = canvasHeight.value / 2;
 
 		// Step 1: パンオフセットの逆変換
-		// パンオフセットは描画エリアのスケールで正規化済みなので、直接適用
 		const afterUntranslateX = logicalX - panOffset.value.x;
 		const afterUntranslateY = logicalY - panOffset.value.y;
 
-		// Step 2: ズームの逆変換（transform-origin基準）
+		// Step 2: ズームの逆変換（transform-origin: center 基準）
 		const fromOriginX = afterUntranslateX - originX;
 		const fromOriginY = afterUntranslateY - originY;
 		const unscaledFromOriginX = fromOriginX / zoomLevel.value;
@@ -2709,6 +2701,11 @@ function adjustCanvasForMobile() {
 		height: 28px;
 	}
 
+	.colorPickerButton {
+		width: 28px;
+		height: 28px;
+	}
+
 	.fullscreenButton,
 	.saveButton,
 	.clearButton {
@@ -2769,6 +2766,29 @@ function adjustCanvasForMobile() {
 	&.activeColor {
 		border-color: var(--MI_THEME-accent);
 		box-shadow: 0 0 0 2px var(--MI_THEME-accent);
+	}
+}
+
+.colorPickerButton {
+	width: 24px;
+	height: 24px;
+	border: 2px solid var(--MI_THEME-divider);
+	border-radius: 4px;
+	cursor: pointer;
+	background: var(--MI_THEME-buttonBg);
+	color: var(--MI_THEME-fg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s;
+
+	i {
+		font-size: 14px;
+	}
+
+	&:hover {
+		transform: scale(1.1);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 }
 
