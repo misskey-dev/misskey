@@ -131,6 +131,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 
+		<!-- ウォーターマークボタン（モバイル版） -->
+		<div :class="$style.watermarkGroup" v-if="isTouchDevice">
+			<button
+				:class="[$style.actionButton, { [$style.active]: showWatermark }]"
+				@click="showWatermark = !showWatermark"
+				title="ウォーターマーク"
+			>
+				<i class="ti ti-photo-shield"></i>
+				<span>WM</span>
+			</button>
+		</div>
+
 		<!-- Undo/Redoボタン -->
 		<div :class="$style.undoRedoGroup">
 			<button
@@ -180,6 +192,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<!-- アクションボタン -->
 		<div :class="$style.actionGroup">
+			<button
+				:class="[$style.actionButton, { [$style.active]: showWatermark }]"
+				@click="showWatermark = !showWatermark"
+				title="ウォーターマーク"
+			>
+				<i class="ti ti-photo-shield"></i>
+				<span v-if="!isTouchDevice">WM</span>
+			</button>
 			<button :class="$style.fullscreenButton" @click="toggleFullscreen" :title="isFullscreen ? '全画面を終了' : '全画面モード'">
 				<i :class="isFullscreen ? 'ti ti-minimize' : 'ti ti-maximize'"></i>
 				<span v-if="!isTouchDevice">{{ isFullscreen ? '終了' : '全画面' }}</span>
@@ -352,6 +372,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@touchend="handleTouchEnd"
 		></canvas>
 
+		<!-- ウォーターマーク（並べて表示） -->
+		<div v-if="showWatermark" :class="$style.watermarkOverlay">
+			<div :class="$style.watermarkTiles">
+				<img
+					v-for="i in 50"
+					:key="i"
+					:src="watermarkUrl"
+					:class="$style.watermarkImage"
+					alt="Oranski Nocturne"
+				/>
+			</div>
+		</div>
+
 		<!-- 他のユーザーのカーソル -->
 		<div
 			v-for="cursor in otherCursors"
@@ -448,6 +481,10 @@ const drawingTraceLog = ref<Array<{
 	zoomLevel: number;
 	panOffset: { x: number; y: number };
 }>>([]);
+
+// ウォーターマーク設定
+const showWatermark = ref(false);
+const watermarkUrl = 'https://noc.ski/files/5f672682-73ab-484f-adb8-37e7e4bc0a4c';
 
 // 通信ログ用
 const showCommLogPanel = ref(false);
@@ -3860,6 +3897,50 @@ function adjustCanvasForMobile() {
 	pre {
 		margin: 0;
 	}
+}
+
+/* ウォーターマーク関連 */
+.watermarkGroup {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 12px;
+	background: var(--MI_THEME-panel);
+	border-radius: 8px;
+	margin: 4px 0;
+}
+
+.watermarkOverlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	overflow: hidden;
+	z-index: 5;
+}
+
+.watermarkTiles {
+	position: absolute;
+	top: -100px;
+	left: -100px;
+	width: calc(100% + 200px);
+	height: calc(100% + 200px);
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 20px;
+	padding: 20px;
+	transform: rotate(-15deg);
+}
+
+.watermarkImage {
+	width: 100%;
+	height: auto;
+	opacity: 0.3;
+	object-fit: contain;
+	user-select: none;
+	pointer-events: none;
 }
 
 .commLogButton {
