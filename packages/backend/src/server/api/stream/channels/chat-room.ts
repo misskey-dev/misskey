@@ -185,6 +185,7 @@ class ChatRoomChannel extends Channel {
 					color: body.color,
 					strokeWidth: Math.min(body.strokeWidth || 2, 100),
 					opacity: Math.min(Math.max(body.opacity || 1, 0.1), 1),
+					layer: typeof body.layer === 'number' ? body.layer : 0,
 					timestamp: now,
 				};
 
@@ -220,11 +221,13 @@ class ChatRoomChannel extends Channel {
 					points: body.points.map((p: any) => ({
 						x: Math.round(p.x),
 						y: Math.round(p.y),
+						pressure: p.pressure !== undefined ? p.pressure : 1.0,
 					})),
 					tool: body.tool,
 					color: body.color,
 					strokeWidth: body.strokeWidth,
 					opacity: body.opacity,
+					layer: typeof body.layer === 'number' ? body.layer : 0,
 					timestamp: progressNow,
 				};
 
