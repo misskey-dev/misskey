@@ -660,7 +660,7 @@ const colors = [
 const opacityLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
 // 線の太さレベル
-const strokeWidthLevels = [1, 2, 3, 10, 50, 100];
+const strokeWidthLevels = [1, 1.5, 2, 10, 50, 100];
 
 // パフォーマンス管理
 const maxUndoHistory = 20; // アンドゥ履歴の最大数
