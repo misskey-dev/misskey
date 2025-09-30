@@ -115,6 +115,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
+		<!-- レイヤー切り替え（モバイル版） -->
+		<div :class="$style.layerGroup" v-if="isTouchDevice">
+			<span :class="$style.label">レイヤー:</span>
+			<button
+				v-for="layer in MAX_LAYERS"
+				:key="layer"
+				:class="[$style.layerButton, { [$style.active]: currentLayer === layer - 1 }]"
+				@click="switchLayer(layer - 1)"
+			>
+				{{ layer }}
+			</button>
+			<button :class="$style.layerMenuButton" @click="showLayerMenu" title="レイヤーメニュー">
+				<i class="ti ti-dots-vertical"></i>
+			</button>
+		</div>
+
 		<!-- Undo/Redoボタン -->
 		<div :class="$style.undoRedoGroup">
 			<button
@@ -143,6 +159,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}%</span>
 			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット (Ctrl+0)">
 				<i class="ti ti-zoom-reset"></i>
+			</button>
+		</div>
+
+		<!-- レイヤー切り替え（PC版） -->
+		<div :class="$style.layerGroup" v-if="!isTouchDevice">
+			<span :class="$style.label">レイヤー:</span>
+			<button
+				v-for="layer in MAX_LAYERS"
+				:key="layer"
+				:class="[$style.layerButton, { [$style.active]: currentLayer === layer - 1 }]"
+				@click="switchLayer(layer - 1)"
+			>
+				{{ layer }}
+			</button>
+			<button :class="$style.layerMenuButton" @click="showLayerMenu" title="レイヤーメニュー">
+				<i class="ti ti-dots-vertical"></i>
 			</button>
 		</div>
 
@@ -566,6 +598,15 @@ const undoStack = ref<Array<any>>([]); // 元に戻す用のスタック
 const redoStack = ref<Array<any>>([]); // やり直す用のスタック
 const canUndo = computed(() => undoStack.value.length > 0);
 const canRedo = computed(() => redoStack.value.length > 0);
+
+// レイヤー管理（3レイヤー）
+const MAX_LAYERS = 3;
+const currentLayer = ref(0); // 現在のレイヤー (0, 1, 2)
+const layerCanvases = ref<Array<HTMLCanvasElement | null>>([null, null, null]); // 各レイヤーのキャンバス
+const layerContexts = ref<Array<CanvasRenderingContext2D | null>>([null, null, null]); // 各レイヤーのコンテキスト
+const layerVisible = ref<Array<boolean>>([true, true, true]); // 各レイヤーの表示状態
+const layerOpacity = ref<Array<number>>([1.0, 1.0, 1.0]); // 各レイヤーの透明度
+const layerStrokeHistory = ref<Array<Array<any>>>([[], [], []]); // 各レイヤーのストローク履歴
 
 // WebSocket接続
 const connection = ref<any>();
@@ -1530,7 +1571,8 @@ function sendDrawingStroke() {
 			tool: currentTool.value,
 			color: currentColor.value,
 			strokeWidth: strokeWidth.value,
-			opacity: currentOpacity.value
+			opacity: currentOpacity.value,
+			layer: currentLayer.value // レイヤー情報を追加
 		};
 		connection.value.send('drawingStroke', data);
 		recordCommLog('send', 'drawingStroke', data);
@@ -1554,7 +1596,8 @@ function sendDrawingProgress() {
 			color: currentColor.value,
 			strokeWidth: strokeWidth.value,
 			opacity: currentOpacity.value,
-			isComplete: false
+			isComplete: false,
+			layer: currentLayer.value // レイヤー情報を追加
 		};
 		connection.value.send('drawingProgress', data);
 		recordCommLog('send', 'drawingProgress', data);
@@ -1887,6 +1930,190 @@ function redo() {
 		redoStackSize: redoStack.value.length,
 		strokeCount: strokeHistory.value.length
 	});
+}
+
+// レイヤー切り替え
+function switchLayer(layerIndex: number) {
+	if (layerIndex < 0 || layerIndex >= MAX_LAYERS) return;
+
+	// 現在のレイヤーの履歴を保存
+	layerStrokeHistory.value[currentLayer.value] = [...strokeHistory.value];
+
+	// 新しいレイヤーに切り替え
+	currentLayer.value = layerIndex;
+	console.log('🎨 [LAYER] Switched to layer', layerIndex);
+
+	// 新しいレイヤーの履歴を読み込んで再描画
+	strokeHistory.value = [...layerStrokeHistory.value[layerIndex]];
+	if (ctx) {
+		ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+		redrawCanvasFromHistory();
+	}
+}
+
+// レイヤーメニューを表示
+async function showLayerMenu() {
+	const items = [
+		{ text: 'レイヤーを結合', value: 'merge' },
+		{ text: 'レイヤーを移動', value: 'move' },
+		{ text: 'レイヤーをクリア', value: 'clear' },
+	];
+
+	const { canceled, result } = await os.select({
+		title: 'レイヤー操作',
+		items
+	});
+
+	if (canceled) return;
+
+	switch (result) {
+		case 'merge':
+			await mergeLayersDialog();
+			break;
+		case 'move':
+			await moveLayerDialog();
+			break;
+		case 'clear':
+			await clearLayerDialog();
+			break;
+	}
+}
+
+// レイヤー結合ダイアログ
+async function mergeLayersDialog() {
+	const items = [];
+	for (let i = 0; i < MAX_LAYERS - 1; i++) {
+		items.push({
+			text: `レイヤー${i + 1}とレイヤー${i + 2}を結合`,
+			value: i
+		});
+	}
+
+	const { canceled, result } = await os.select({
+		title: 'レイヤー結合',
+		items
+	});
+
+	if (canceled) return;
+
+	await mergeLayers(result, result + 1);
+}
+
+// レイヤー結合を実行
+async function mergeLayers(fromLayer: number, toLayer: number) {
+	if (fromLayer < 0 || fromLayer >= MAX_LAYERS || toLayer < 0 || toLayer >= MAX_LAYERS) return;
+	if (fromLayer === toLayer) return;
+
+	// fromLayerの内容をtoLayerに結合
+	layerStrokeHistory.value[toLayer] = [
+		...layerStrokeHistory.value[toLayer],
+		...layerStrokeHistory.value[fromLayer]
+	];
+
+	// fromLayerをクリア
+	layerStrokeHistory.value[fromLayer] = [];
+
+	// 現在のレイヤーを再描画
+	if (currentLayer.value === fromLayer || currentLayer.value === toLayer) {
+		strokeHistory.value = layerStrokeHistory.value[currentLayer.value];
+		if (ctx) {
+			ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+			redrawCanvasFromHistory();
+		}
+	}
+
+	os.toast(`レイヤー${fromLayer + 1}とレイヤー${toLayer + 1}を結合しました`);
+	console.log('🎨 [LAYER] Merged layers', { from: fromLayer, to: toLayer });
+}
+
+// レイヤー移動ダイアログ
+async function moveLayerDialog() {
+	const items = [];
+	for (let from = 0; from < MAX_LAYERS; from++) {
+		for (let to = 0; to < MAX_LAYERS; to++) {
+			if (from !== to) {
+				items.push({
+					text: `レイヤー${from + 1}の内容をレイヤー${to + 1}に移動`,
+					value: { from, to }
+				});
+			}
+		}
+	}
+
+	const { canceled, result } = await os.select({
+		title: 'レイヤー移動',
+		items
+	});
+
+	if (canceled) return;
+
+	await moveLayer(result.from, result.to);
+}
+
+// レイヤー移動を実行
+async function moveLayer(fromLayer: number, toLayer: number) {
+	if (fromLayer < 0 || fromLayer >= MAX_LAYERS || toLayer < 0 || toLayer >= MAX_LAYERS) return;
+	if (fromLayer === toLayer) return;
+
+	// fromLayerの内容をtoLayerに移動
+	layerStrokeHistory.value[toLayer] = [...layerStrokeHistory.value[fromLayer]];
+	layerStrokeHistory.value[fromLayer] = [];
+
+	// 現在のレイヤーを再描画
+	if (currentLayer.value === fromLayer || currentLayer.value === toLayer) {
+		strokeHistory.value = layerStrokeHistory.value[currentLayer.value];
+		if (ctx) {
+			ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+			redrawCanvasFromHistory();
+		}
+	}
+
+	os.toast(`レイヤー${fromLayer + 1}の内容をレイヤー${toLayer + 1}に移動しました`);
+	console.log('🎨 [LAYER] Moved layer', { from: fromLayer, to: toLayer });
+}
+
+// レイヤークリアダイアログ
+async function clearLayerDialog() {
+	const items = [];
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		items.push({
+			text: `レイヤー${i + 1}をクリア`,
+			value: i
+		});
+	}
+
+	const { canceled, result } = await os.select({
+		title: 'レイヤークリア',
+		items
+	});
+
+	if (canceled) return;
+
+	const { canceled: confirmCanceled } = await os.confirm({
+		type: 'warning',
+		text: `レイヤー${result + 1}の内容をすべて削除しますか？`
+	});
+
+	if (confirmCanceled) return;
+
+	clearLayer(result);
+}
+
+// レイヤーをクリア
+function clearLayer(layerIndex: number) {
+	if (layerIndex < 0 || layerIndex >= MAX_LAYERS) return;
+
+	layerStrokeHistory.value[layerIndex] = [];
+
+	if (currentLayer.value === layerIndex) {
+		strokeHistory.value = [];
+		if (ctx) {
+			ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+		}
+	}
+
+	os.toast(`レイヤー${layerIndex + 1}をクリアしました`);
+	console.log('🎨 [LAYER] Cleared layer', layerIndex);
 }
 
 // デバッグログを出力（軌跡記録付き）
@@ -2432,6 +2659,9 @@ function addStrokeToHistory(strokeData: any) {
 
 	strokeHistory.value.push(strokeData);
 
+	// レイヤー履歴にも追加
+	layerStrokeHistory.value[currentLayer.value].push(strokeData);
+
 	// アンドゥ履歴の制限
 	if (strokeHistory.value.length > maxUndoHistory) {
 		// 古いストロークを削除し、必要に応じてラスタライズ
@@ -2906,6 +3136,64 @@ function adjustCanvasForMobile() {
 		i {
 			font-size: 14px;
 		}
+	}
+}
+
+.layerGroup {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-right: 8px;
+
+	.label {
+		font-size: 12px;
+		color: var(--MI_THEME-fg);
+		font-weight: 500;
+	}
+}
+
+.layerButton {
+	padding: 4px 12px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: bold;
+	color: var(--MI_THEME-fg);
+	transition: all 0.2s ease;
+	min-width: 32px;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	&.active {
+		background: var(--MI_THEME-accent);
+		color: var(--MI_THEME-fgOnAccent);
+		border-color: var(--MI_THEME-accent);
+	}
+}
+
+.layerMenuButton {
+	padding: 4px 8px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--MI_THEME-fg);
+	transition: all 0.2s ease;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+		color: var(--MI_THEME-accent);
+	}
+
+	i {
+		font-size: 16px;
 	}
 }
 
