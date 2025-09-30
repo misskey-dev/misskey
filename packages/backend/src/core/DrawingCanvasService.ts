@@ -341,15 +341,26 @@ export class DrawingCanvasService {
 				return;
 			}
 
-			// ルーム情報を取得
-			const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
-			if (!room) {
-				console.warn(`🎨 [WARN] Room ${roomId} not found for auto-save`);
-				return;
+			// ユーザー間チャットかルームチャットかで処理を分岐
+			if (this.isUserToUserChatId(roomId)) {
+				// ユーザー間チャット: user-userId1-userId2 形式
+				const parts = roomId.split('-');
+				if (parts.length === 3) {
+					const [, userId1, userId2] = parts;
+					// 両ユーザーのDriveに保存
+					await this.saveCanvasToImage(roomId, strokes, userId1);
+					await this.saveCanvasToImage(roomId, strokes, userId2);
+					console.log(`🎨 [DEBUG] Saved canvas ${roomId} to both users' Drives: ${userId1}, ${userId2}`);
+				}
+			} else {
+				// ルームチャット: ルームオーナーのDriveに保存
+				const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+				if (!room) {
+					console.warn(`🎨 [WARN] Room ${roomId} not found for auto-save`);
+					return;
+				}
+				await this.saveCanvasToImage(roomId, strokes, room.ownerId);
 			}
-
-			// キャンバスを画像として生成・保存
-			await this.saveCanvasToImage(roomId, strokes, room.ownerId);
 
 			// Redisからキャンバスデータを削除（保存後クリーンアップ）
 			await this.cleanupCanvasData(roomId);

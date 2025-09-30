@@ -108,20 +108,21 @@ export function screenToCanvasCoordinates(
 	const displayX = normalizedX * logicalWidth;
 	const displayY = normalizedY * logicalHeight;
 
-	// 7. パンの逆変換
-	const afterUntranslateX = displayX - panOffset.x;
-	const afterUntranslateY = displayY - panOffset.y;
-
-	// 8. ズームの逆変換（transform-origin基準）
-	const fromOriginX = afterUntranslateX - originX;
-	const fromOriginY = afterUntranslateY - originY;
+	// 7. ズームの逆変換（先にズームを戻す）
+	// transform: translate(pan) scale(zoom) なので、逆変換は zoom → pan の順
+	const fromOriginX = displayX - originX;
+	const fromOriginY = displayY - originY;
 	const unscaledX = fromOriginX / zoomLevel + originX;
 	const unscaledY = fromOriginY / zoomLevel + originY;
 
+	// 8. パンの逆変換（ズーム逆変換後にパンを戻す）
+	const afterUntranslateX = unscaledX - panOffset.x;
+	const afterUntranslateY = unscaledY - panOffset.y;
+
 	// 9. 論理キャンバス座標に変換
 	const scale = logicalWidth / canvasWidth;
-	let logicalX = unscaledX / scale;
-	let logicalY = unscaledY / scale;
+	let logicalX = afterUntranslateX / scale;
+	let logicalY = afterUntranslateY / scale;
 
 	// 10. 詳細なサイズ情報を取得（デバッグ用）
 	const physicalWidth = canvasEl.width;

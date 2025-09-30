@@ -1879,20 +1879,25 @@ function getContrastColorLocal(backgroundColor: string): string {
 function updateOtherCursor(data: any) {
 	if (data.userId === $i.id) return;
 
+	// ユーザー固有の色を取得
+	const userColor = getUserCursorColorLocal(data.userId);
+
 	const index = otherCursors.value.findIndex(c => c.userId === data.userId);
 	if (index >= 0) {
 		otherCursors.value[index] = {
 			userId: data.userId,
 			userName: data.userName,
 			x: data.x,
-			y: data.y
+			y: data.y,
+			color: userColor
 		};
 	} else {
 		otherCursors.value.push({
 			userId: data.userId,
 			userName: data.userName,
 			x: data.x,
-			y: data.y
+			y: data.y,
+			color: userColor
 		});
 	}
 
