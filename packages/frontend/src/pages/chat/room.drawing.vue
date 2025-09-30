@@ -493,6 +493,18 @@ import { useDrawingHandlers } from './room.drawing.handlers.js';
 import { useDrawingRender } from './room.drawing.render.js';
 import { useDrawingLayers } from './room.drawing.layers.js';
 import { useDrawingNetwork } from './room.drawing.network.js';
+// ユーティリティ関数をインポート
+import {
+	applyHandShakeCorrection as applyHandShakeCorrectionUtil,
+	calculatePressure as calculatePressureUtil,
+	simplifyPath as simplifyPathUtil,
+	smoothPoints as smoothPointsUtil,
+	getAccurateCoordinates as getAccurateCoordinatesUtil,
+	formatTime as formatTimeUtil,
+	formatLogData as formatLogDataUtil,
+} from './room.drawing.utils.js';
+// キャンバスエリアコンポーネントをインポート
+import DrawingCanvasArea from './room.drawing.canvas-area.vue';
 // 分離したComposableをインポート
 import {
 	useDrawing,
