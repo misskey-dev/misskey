@@ -183,6 +183,35 @@ export interface ChatEventTypes {
 	typingStop: {
 		userId: MiUser['id'];
 	};
+	drawingStroke: {
+		id: string;
+		userId: MiUser['id'];
+		userName: string;
+		points: Array<{ x: number; y: number }>;
+		tool: 'pen' | 'eraser' | 'eyedropper';
+		color: string;
+		strokeWidth: number;
+		opacity: number;
+		timestamp: number;
+	};
+	cursorMove: {
+		userId: MiUser['id'];
+		userName: string;
+		x: number;
+		y: number;
+		timestamp: number;
+	};
+	clearCanvas: {
+		userId: MiUser['id'];
+		userName: string;
+		timestamp: number;
+	};
+	undoStroke: {
+		userId: MiUser['id'];
+		userName: string;
+		strokeId: string;
+		timestamp: number;
+	};
 }
 
 export interface ReversiEventTypes {

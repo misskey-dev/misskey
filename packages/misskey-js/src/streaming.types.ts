@@ -278,10 +278,72 @@ export type Channels = {
 				user?: UserLite;
 				messageId: ChatMessageLite['id'];
 			}) => void;
+			read: (payload: {
+				messageId: ChatMessageLite['id'];
+				readerId: User['id'];
+			}) => void;
+			typing: (payload: {
+				userId: User['id'];
+				user?: UserLite;
+			}) => void;
+			typingStop: (payload: {
+				userId: User['id'];
+			}) => void;
+			drawingStroke: (payload: {
+				id: string;
+				userId: User['id'];
+				userName: string;
+				points: Array<{ x: number; y: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth: number;
+				opacity: number;
+				timestamp: number;
+			}) => void;
+			cursorMove: (payload: {
+				userId: User['id'];
+				userName: string;
+				x: number;
+				y: number;
+				timestamp: number;
+			}) => void;
+			clearCanvas: (payload: {
+				userId: User['id'];
+				userName: string;
+				timestamp: number;
+			}) => void;
+			undoStroke: (payload: {
+				userId: User['id'];
+				userName: string;
+				strokeId: string;
+				timestamp: number;
+			}) => void;
 		};
 		receives: {
 			read: {
 				id: ChatMessageLite['id'];
+			};
+			typing: {
+				roomId?: string;
+			};
+			typingStop: {
+				roomId?: string;
+			};
+			drawingStroke: {
+				points: Array<{ x: number; y: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+			};
+			cursorMove: {
+				x: number;
+				y: number;
+			};
+			clearCanvas: null | Record<string, never>;
+			undoStroke: {
+				userId: User['id'];
+				timestamp: number;
 			};
 		};
 	};

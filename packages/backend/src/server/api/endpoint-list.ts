@@ -446,4 +446,6 @@ export * as 'chat/get-secret-mode-for-user' from './endpoints/chat/get-secret-mo
 export * as 'chat/set-secret-mode-for-user' from './endpoints/chat/set-secret-mode-for-user.js';
 export * as 'chat/rooms/get-secret-mode' from './endpoints/chat/rooms/get-secret-mode.js';
 export * as 'chat/rooms/set-secret-mode' from './endpoints/chat/rooms/set-secret-mode.js';
+export * as 'drawing/canvas' from './endpoints/drawing/canvas.js';
+export * as 'drawing/save' from './endpoints/drawing/save.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';

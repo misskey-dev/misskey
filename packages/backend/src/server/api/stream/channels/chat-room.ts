@@ -8,6 +8,9 @@ import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
+import { DrawingCanvasService } from '@/core/DrawingCanvasService.js';
+import { DI } from '@/di-symbols.js';
+import type { ChatRoomsRepository } from '@/models/_.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ChatRoomChannel extends Channel {
@@ -19,8 +22,15 @@ class ChatRoomChannel extends Channel {
 	private typers: Record<string, Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
+	// レート制限用
+	private lastDrawingStroke: number = 0;
+	private lastCursorMove: number = 0;
+	private drawingStrokeCount: number = 0;
+	private cursorMoveCount: number = 0;
+
 	constructor(
 		private chatService: ChatService,
+		private drawingCanvasService: DrawingCanvasService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -32,6 +42,32 @@ class ChatRoomChannel extends Channel {
 	public async init(params: JsonObject) {
 		if (typeof params.roomId !== 'string') return;
 		this.roomId = params.roomId;
+
+		// セキュリティ: ルーム参加権限の確認
+		if (!this.user) {
+			console.warn(`🔍 [SECURITY] Unauthenticated user attempting to access room ${this.roomId}`);
+			return;
+		}
+
+		try {
+			// メンバーシップ確認（ルーム存在確認も含む）
+			const room = await this.chatService.chatRoomsRepository.findOneBy({ id: this.roomId });
+			if (!room) {
+				console.warn(`🔍 [SECURITY] User ${this.user.id} attempting to access non-existent room ${this.roomId}`);
+				return;
+			}
+
+			const isMember = await this.chatService.isRoomMember(room, this.user.id);
+			if (!isMember) {
+				console.warn(`🔍 [SECURITY] User ${this.user.id} denied access to room ${this.roomId} - not a member`);
+				return;
+			}
+
+			console.log(`🔍 [DEBUG] User ${this.user.id} granted access to room ${this.roomId}`);
+		} catch (error) {
+			console.error(`🔍 [ERROR] Failed to verify room access for user ${this.user.id} to room ${this.roomId}:`, error);
+			return;
+		}
 
 		// oranski方式の定期的なemitTypersは無効化
 		// this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
@@ -63,7 +99,7 @@ class ChatRoomChannel extends Channel {
 	}
 
 	@bindThis
-	public onMessage(type: string, body: any) {
+	public async onMessage(type: string, body: any) {
 		console.log(`🔍 [DEBUG] ChatRoomChannel received message - type: ${type}, userId: ${this.user!.id}, roomId: ${this.roomId}`);
 
 		// セキュリティ: ユーザー認証確認
@@ -104,6 +140,158 @@ class ChatRoomChannel extends Channel {
 				// セキュリティ: typingStop送信者を認証済みユーザーIDに強制設定
 				if (this.roomId) {
 					this.chatService.notifyRoomTypingStop(this.user.id, this.roomId);
+				}
+				break;
+			case 'drawingStroke':
+				console.log(`🔍 [DEBUG] Processing drawing stroke for room ${this.roomId} from user ${this.user.id}`);
+
+				// レート制限: 100ms間隔制限 & 1秒間に10回まで
+				const now = Date.now();
+				if (now - this.lastDrawingStroke < 100) {
+					console.warn(`🔍 [SECURITY] Drawing stroke rate limit exceeded by user ${this.user.id}`);
+					return;
+				}
+				if (now - this.lastDrawingStroke < 1000) {
+					this.drawingStrokeCount++;
+					if (this.drawingStrokeCount > 10) {
+						console.warn(`🔍 [SECURITY] Drawing stroke burst limit exceeded by user ${this.user.id}`);
+						return;
+					}
+				} else {
+					this.drawingStrokeCount = 1;
+				}
+				this.lastDrawingStroke = now;
+
+				// セキュリティ: 描画データの詳細検証
+				if (!body || typeof body !== 'object') return;
+				if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 1000) return;
+				if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
+				if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
+				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 50) return;
+				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
+
+				// 座標の検証
+				for (const point of body.points) {
+					if (typeof point.x !== 'number' || typeof point.y !== 'number') return;
+					if (point.x < 0 || point.x > 800 || point.y < 0 || point.y > 600) return; // キャンバスサイズ制限 (800x600)
+				}
+
+				const strokeData = {
+					id: crypto.randomUUID(), // 一意のストロークID
+					userId: this.user.id,
+					userName: this.user.name || this.user.username,
+					points: body.points,
+					tool: body.tool,
+					color: body.color,
+					strokeWidth: Math.min(body.strokeWidth || 2, 50),
+					opacity: Math.min(Math.max(body.opacity || 1, 0.1), 1),
+					timestamp: now,
+				};
+
+				// キャンバスデータをRedisに保存
+				await this.drawingCanvasService.addStroke(this.roomId, strokeData);
+
+				// 描画ストロークをルーム内の他のユーザーに配信
+				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+					type: 'drawingStroke',
+					body: strokeData,
+				});
+				break;
+			case 'drawingProgress':
+				console.log(`🔍 [DEBUG] Processing drawing progress for room ${this.roomId} from user ${this.user.id}`);
+
+				// レート制限: 50ms間隔制限（進行状況は高頻度）
+				const progressNow = Date.now();
+				if (progressNow - this.lastDrawingStroke < 50) return; // 無言で制限（ログなし）
+				this.lastDrawingStroke = progressNow;
+
+				// セキュリティ: 描画データの詳細検証
+				if (!body || typeof body !== 'object') return;
+				if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 500) return; // 進行中は点数制限緩和
+				if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
+				if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
+				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 50) return;
+				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
+
+				// 進行状況データ作成
+				const progressData = {
+					userId: this.user.id,
+					userName: this.user.name || this.user.username,
+					points: body.points.map((p: any) => ({
+						x: Math.round(p.x),
+						y: Math.round(p.y),
+					})),
+					tool: body.tool,
+					color: body.color,
+					strokeWidth: body.strokeWidth,
+					opacity: body.opacity,
+					timestamp: progressNow,
+				};
+
+				// 描画進行状況をルーム内の他のユーザーに配信
+				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+					type: 'drawingProgress',
+					body: progressData,
+				});
+				break;
+			case 'cursorMove':
+				// レート制限: 50ms間隔制限（カーソルは高頻度）
+				const cursorNow = Date.now();
+				if (cursorNow - this.lastCursorMove < 50) return; // 無言で制限（ログなし）
+				this.lastCursorMove = cursorNow;
+
+				// セキュリティ: カーソル位置の検証
+				if (!body || typeof body.x !== 'number' || typeof body.y !== 'number') return;
+				if (body.x < 0 || body.x > 800 || body.y < 0 || body.y > 600) return; // キャンバスサイズ制限 (800x600)
+
+				// カーソル位置をルーム内の他のユーザーに配信
+				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+					type: 'cursorMove',
+					body: {
+						userId: this.user.id,
+						userName: this.user.name || this.user.username,
+						x: Math.round(body.x * 10) / 10,
+						y: Math.round(body.y * 10) / 10,
+						timestamp: cursorNow,
+					},
+				});
+				break;
+			case 'clearCanvas':
+				console.log(`🔍 [DEBUG] Processing canvas clear for room ${this.roomId} from user ${this.user.id}`);
+
+				// Redisからキャンバスデータをクリア
+				await this.drawingCanvasService.clearCanvas(this.roomId, this.user.id);
+
+				// キャンバスクリアをルーム内の他のユーザーに配信
+				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+					type: 'clearCanvas',
+					body: {
+						userId: this.user.id,
+						userName: this.user.name || this.user.username,
+						timestamp: Date.now(),
+					},
+				});
+				break;
+			case 'undoStroke':
+				console.log(`🔍 [DEBUG] Processing undo stroke for room ${this.roomId} from user ${this.user.id}`);
+
+				// ユーザーの最新ストロークをアンドゥ
+				const undoneStroke = await this.drawingCanvasService.performUndo(this.roomId, this.user.id);
+
+				if (undoneStroke) {
+					// アンドゥ成功をルーム内の他のユーザーに配信
+					this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+						type: 'undoStroke',
+						body: {
+							userId: this.user.id,
+							userName: this.user.name || this.user.username,
+							strokeId: undoneStroke.id,
+							timestamp: Date.now(),
+						},
+					});
+					console.log(`🎨 [DEBUG] Successfully undid stroke ${undoneStroke.id} for user ${this.user.id}`);
+				} else {
+					console.log(`🎨 [DEBUG] No stroke to undo for user ${this.user.id} in room ${this.roomId}`);
 				}
 				break;
 		}
@@ -148,6 +336,7 @@ export class ChatRoomChannelService implements MiChannelService<true> {
 
 	constructor(
 		private chatService: ChatService,
+		private drawingCanvasService: DrawingCanvasService,
 	) {
 	}
 
@@ -155,6 +344,7 @@ export class ChatRoomChannelService implements MiChannelService<true> {
 	public create(id: string, connection: Channel['connection']): ChatRoomChannel {
 		return new ChatRoomChannel(
 			this.chatService,
+			this.drawingCanvasService,
 			id,
 			connection,
 		);

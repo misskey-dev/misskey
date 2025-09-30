@@ -8,6 +8,7 @@ import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
+import { DrawingCanvasService } from '@/core/DrawingCanvasService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ChatUserChannel extends Channel {
@@ -19,8 +20,15 @@ class ChatUserChannel extends Channel {
 	private typers: Record<string, Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
+	// レート制限用（お絵描き機能）
+	private lastDrawingStroke: number = 0;
+	private lastCursorMove: number = 0;
+	private drawingStrokeCount: number = 0;
+	private cursorMoveCount: number = 0;
+
 	constructor(
 		private chatService: ChatService,
+		private drawingCanvasService: DrawingCanvasService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -65,7 +73,7 @@ class ChatUserChannel extends Channel {
 	}
 
 	@bindThis
-	public onMessage(type: string, body: any) {
+	public async onMessage(type: string, body: any) {
 		console.log(`🔍 [DEBUG] ChatUserChannel received message - type: ${type}, userId: ${this.user!.id}, otherId: ${this.otherId}`);
 
 		// セキュリティ: ユーザー認証確認
@@ -98,6 +106,188 @@ class ChatUserChannel extends Channel {
 					this.chatService.notifyUserTypingStop(this.user.id, this.otherId);
 				}
 				break;
+
+			// お絵描き機能
+			case 'drawingStroke':
+				await this.handleDrawingStroke(body);
+				break;
+			case 'drawingProgress':
+				await this.handleDrawingProgress(body);
+				break;
+			case 'cursorMove':
+				await this.handleCursorMove(body);
+				break;
+			case 'clearCanvas':
+				await this.handleClearCanvas(body);
+				break;
+			case 'undoStroke':
+				await this.handleUndoStroke(body);
+				break;
+		}
+	}
+
+	// お絵描きストロークの処理
+	@bindThis
+	private async handleDrawingStroke(body: any) {
+		const now = Date.now();
+		const DRAWING_STROKE_RATE_LIMIT = 100; // 100ms間隔
+		const DRAWING_STROKE_BURST_LIMIT = 10; // 1秒間に10回まで
+
+		// レート制限チェック
+		if (now - this.lastDrawingStroke < DRAWING_STROKE_RATE_LIMIT) {
+			return; // レート制限によりスキップ
+		}
+
+		// バースト制限チェック
+		if (now - this.lastDrawingStroke < 1000) {
+			this.drawingStrokeCount++;
+			if (this.drawingStrokeCount > DRAWING_STROKE_BURST_LIMIT) {
+				return; // バースト制限によりスキップ
+			}
+		} else {
+			this.drawingStrokeCount = 1;
+		}
+
+		this.lastDrawingStroke = now;
+
+		try {
+			// ユーザー間チャット用のdrawingIdを生成
+			const sortedIds = [this.user!.id, this.otherId].sort();
+			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
+
+			// ユーザー名を設定
+			body.userName = this.user!.username || this.user!.name || 'Unknown';
+			body.userId = this.user!.id;
+
+			// Redisにストロークを保存
+			await this.drawingCanvasService.addStroke(drawingId, body);
+
+			// 他の参加者に配信（自分以外）
+			this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+				type: 'drawingStroke',
+				body: body,
+			});
+		} catch (error) {
+			console.error('Drawing stroke error:', error);
+		}
+	}
+
+	// お絵描き進行状況の処理
+	@bindThis
+	private async handleDrawingProgress(body: any) {
+		const now = Date.now();
+		const DRAWING_PROGRESS_RATE_LIMIT = 50; // 50ms間隔（進行状況は高頻度）
+
+		// レート制限チェック
+		if (now - this.lastDrawingStroke < DRAWING_PROGRESS_RATE_LIMIT) {
+			return; // レート制限によりスキップ
+		}
+
+		this.lastDrawingStroke = now;
+
+		try {
+			// セキュリティ: 描画データの詳細検証
+			if (!body || typeof body !== 'object') return;
+			if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 500) return; // 進行中は点数制限緩和
+			if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
+			if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
+			if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 50) return;
+			if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
+
+			// ユーザー名を設定
+			body.userName = this.user!.username || this.user!.name || 'Unknown';
+			body.userId = this.user!.id;
+			body.timestamp = now;
+
+			// 他の参加者に配信（リアルタイム、Redisには保存しない）
+			const sortedIds = [this.user!.id, this.otherId].sort();
+			this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+				type: 'drawingProgress',
+				body: body,
+			});
+		} catch (error) {
+			console.error('Drawing progress error:', error);
+		}
+	}
+
+	// カーソル移動の処理
+	@bindThis
+	private async handleCursorMove(body: any) {
+		const now = Date.now();
+		const CURSOR_MOVE_RATE_LIMIT = 50; // 50ms間隔
+
+		// レート制限チェック
+		if (now - this.lastCursorMove < CURSOR_MOVE_RATE_LIMIT) {
+			return; // レート制限によりスキップ
+		}
+
+		// セキュリティ: カーソル位置の検証
+		if (!body || typeof body.x !== 'number' || typeof body.y !== 'number') return;
+		if (body.x < 0 || body.x > 800 || body.y < 0 || body.y > 600) return; // キャンバスサイズ制限 (800x600)
+
+		this.lastCursorMove = now;
+
+		// カーソル位置データを構成
+		const cursorData = {
+			userId: this.user!.id,
+			userName: this.user!.username || this.user!.name || 'Unknown',
+			x: Math.round(body.x * 10) / 10, // 高精度座標
+			y: Math.round(body.y * 10) / 10,
+			timestamp: Date.now(),
+		};
+
+		// 他の参加者に配信（リアルタイム）
+		const sortedIds = [this.user!.id, this.otherId].sort();
+		this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+			type: 'cursorMove',
+			body: cursorData,
+		});
+	}
+
+	// キャンバスクリアの処理
+	@bindThis
+	private async handleClearCanvas(body: any) {
+		try {
+			// ユーザー間チャット用のdrawingIdを生成
+			const sortedIds = [this.user!.id, this.otherId].sort();
+			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
+
+			// キャンバスをクリア
+			await this.drawingCanvasService.clearCanvas(drawingId, this.user!.id);
+
+			// 他の参加者に配信
+			this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+				type: 'clearCanvas',
+				body: {},
+			});
+		} catch (error) {
+			console.error('Clear canvas error:', error);
+		}
+	}
+
+	// アンドゥの処理
+	@bindThis
+	private async handleUndoStroke(body: any) {
+		try {
+			// ユーザー間チャット用のdrawingIdを生成
+			const sortedIds = [this.user!.id, this.otherId].sort();
+			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
+
+			// アンドゥを実行
+			const undoneStroke = await this.drawingCanvasService.performUndo(drawingId, this.user!.id);
+
+			if (undoneStroke) {
+				// 他の参加者に配信
+				this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+					type: 'undoStroke',
+					body: {
+						strokeId: undoneStroke.id,
+						userId: this.user!.id,
+					},
+				});
+			}
+		} catch (error) {
+			console.error('Undo stroke error:', error);
 		}
 	}
 
@@ -136,6 +326,7 @@ export class ChatUserChannelService implements MiChannelService<true> {
 
 	constructor(
 		private chatService: ChatService,
+		private drawingCanvasService: DrawingCanvasService,
 	) {
 	}
 
@@ -143,6 +334,7 @@ export class ChatUserChannelService implements MiChannelService<true> {
 	public create(id: string, connection: Channel['connection']): ChatUserChannel {
 		return new ChatUserChannel(
 			this.chatService,
+			this.drawingCanvasService,
 			id,
 			connection,
 		);
