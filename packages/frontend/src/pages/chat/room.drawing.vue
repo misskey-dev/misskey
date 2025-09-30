@@ -79,6 +79,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.debugButton" @click="showDebugPanel = !showDebugPanel" title="デバッグ情報">
 				<i class="ti ti-bug"></i>
 			</button>
+			<button :class="$style.commLogButton" @click="showCommLogPanel = !showCommLogPanel" title="通信ログ">
+				<i class="ti ti-antenna-bars"></i>
+			</button>
 		</div>
 
 		<!-- 手ブレ補正設定（モバイル版） -->
@@ -127,6 +130,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 
+		<!-- ズームグループ（PC版） -->
+		<div :class="$style.zoomGroup" v-if="!isTouchDevice">
+			<span :class="$style.label">倍率:</span>
+			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}%</span>
+			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット (Ctrl+0)">
+				<i class="ti ti-zoom-reset"></i>
+			</button>
+		</div>
+
 		<!-- アクションボタン -->
 		<div :class="$style.actionGroup">
 			<button :class="$style.fullscreenButton" @click="toggleFullscreen" :title="isFullscreen ? '全画面を終了' : '全画面モード'">
@@ -140,6 +152,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.debugExportButton" @click="exportDebugLog" title="デバッグログ出力（軌跡記録）">
 				<i class="ti ti-file-export"></i>
 				<span v-if="!isTouchDevice">ログ出力</span>
+			</button>
+			<button :class="$style.commLogButton" @click="showCommLogPanel = !showCommLogPanel" title="通信ログ">
+				<i class="ti ti-antenna-bars"></i>
+				<span v-if="!isTouchDevice">通信ログ</span>
 			</button>
 			<button :class="$style.saveButton" @click="saveCanvas" title="キャンバスを保存">
 				<i class="ti ti-device-floppy"></i>
@@ -243,6 +259,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.debugSection">
 					<h5>🕒 更新: {{ debugInfo.lastUpdate }}</h5>
+				</div>
+			</div>
+		</div>
+
+		<!-- 通信ログパネル -->
+		<div v-if="showCommLogPanel" :class="$style.commLogPanel">
+			<div :class="$style.commLogHeader">
+				<h4>通信ログ</h4>
+				<div :class="$style.commLogActions">
+					<button @click="clearCommLog" :class="$style.commLogClearButton">クリア</button>
+					<button @click="showCommLogPanel = false" :class="$style.commLogCloseButton">×</button>
+				</div>
+			</div>
+			<div :class="$style.commLogContent">
+				<div v-if="communicationLog.length === 0" :class="$style.commLogEmpty">
+					通信ログがありません
+				</div>
+				<div
+					v-for="(log, index) in communicationLog.slice().reverse()"
+					:key="index"
+					:class="[$style.commLogEntry, $style[`commLog${log.direction}`]]"
+				>
+					<div :class="$style.commLogTime">{{ formatTime(log.timestamp) }}</div>
+					<div :class="$style.commLogType">
+						<span :class="$style.commLogDirection">{{ log.direction === 'send' ? '送信' : '受信' }}</span>
+						<span :class="$style.commLogEventType">{{ log.type }}</span>
+					</div>
+					<div :class="$style.commLogData">
+						<pre>{{ formatLogData(log.data) }}</pre>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -363,6 +409,16 @@ const drawingTraceLog = ref<Array<{
 	zoomLevel: number;
 	panOffset: { x: number; y: number };
 }>>([]);
+
+// 通信ログ用
+const showCommLogPanel = ref(false);
+const communicationLog = ref<Array<{
+	timestamp: number;
+	direction: 'send' | 'receive';
+	type: string;
+	data: any;
+}>>([]);
+const MAX_COMM_LOG_ENTRIES = 100;
 
 // 描画状態
 const isDrawing = ref(false);
@@ -657,20 +713,32 @@ onMounted(() => {
 
 			if (newZoom !== zoomLevel.value) {
 				// マウス位置を中心にズーム
-				if (canvasEl.value) {
-					const rect = canvasEl.value.getBoundingClientRect();
-					const mouseX = e.clientX - rect.left;
-					const mouseY = e.clientY - rect.top;
+				// 現在のズーム前の論理座標を取得
+				const beforeZoomCoords = screenToCanvasCoordinates(e.clientX, e.clientY);
 
-					// 論理座標に変換
-					const logicalX = mouseX * (canvasWidth.value / rect.width);
-					const logicalY = mouseY * (canvasHeight.value / rect.height);
-
-					zoomCenter.value = { x: logicalX, y: logicalY };
-				}
-
+				// ズームレベルを更新
+				const oldZoom = zoomLevel.value;
 				zoomLevel.value = newZoom;
-				console.log('🎨 [ZOOM] Wheel zoom:', { level: newZoom });
+
+				// ズーム後の論理座標を取得
+				const afterZoomCoords = screenToCanvasCoordinates(e.clientX, e.clientY);
+
+				// マウス位置が変わらないようにパンオフセットを調整
+				const offsetDeltaX = afterZoomCoords.x - beforeZoomCoords.x;
+				const offsetDeltaY = afterZoomCoords.y - beforeZoomCoords.y;
+
+				panOffset.value = {
+					x: panOffset.value.x - offsetDeltaX,
+					y: panOffset.value.y - offsetDeltaY
+				};
+
+				console.log('🎨 [ZOOM] Wheel zoom:', {
+					level: newZoom,
+					mouse: { x: e.clientX, y: e.clientY },
+					beforeCoords: beforeZoomCoords,
+					afterCoords: afterZoomCoords,
+					offsetDelta: { x: offsetDeltaX, y: offsetDeltaY }
+				});
 			}
 		}
 	};
@@ -737,22 +805,27 @@ function connectToChatRoomChannel() {
 
 	// お絵かき関連イベント
 	connection.value.on('drawingStroke', (data: any) => {
+		recordCommLog('receive', 'drawingStroke', data);
 		drawRemoteStroke(data);
 	});
 
 	connection.value.on('drawingProgress', (data: any) => {
+		recordCommLog('receive', 'drawingProgress', data);
 		drawRemoteProgress(data);
 	});
 
 	connection.value.on('cursorMove', (data: any) => {
+		recordCommLog('receive', 'cursorMove', data);
 		updateOtherCursor(data);
 	});
 
 	connection.value.on('clearCanvas', () => {
+		recordCommLog('receive', 'clearCanvas', {});
 		clearCanvasLocal();
 	});
 
 	connection.value.on('undoStroke', (data: any) => {
+		recordCommLog('receive', 'undoStroke', data);
 		handleUndoStroke(data);
 	});
 
@@ -999,14 +1072,15 @@ function applyHandShakeCorrection(rawPoint: { x: number; y: number }): { x: numb
 function calculatePressure(): number {
 	if (!handShakeCorrection.pressureSimulation.value) return 1.0;
 
+	// 速度履歴が少ない場合（描画開始直後）は標準の太さ
+	if (velocityHistory.length < 2) return 1.0;
+
 	// 速度に基づいて筆圧を計算
-	const avgVelocity = velocityHistory.length > 0
-		? velocityHistory.reduce((a, b) => a + b, 0) / velocityHistory.length
-		: 0;
+	const avgVelocity = velocityHistory.reduce((a, b) => a + b, 0) / velocityHistory.length;
 
 	// 速度が高いほど筆圧が低く（線が細く）、遅いほど筆圧が高く（線が太く）
 	const normalizedVelocity = Math.min(avgVelocity / 2, 1); // 正規化
-	const pressure = Math.max(0.3, 1.2 - normalizedVelocity); // 0.3-1.2の範囲
+	const pressure = Math.max(0.7, 1.1 - normalizedVelocity * 0.3); // 0.7-1.1の範囲に抑制
 
 	return pressure;
 }
@@ -1408,13 +1482,15 @@ function sendDrawingStroke() {
 	if (currentPath.length === 0 || !connection.value) return;
 
 	try {
-		connection.value.send('drawingStroke', {
+		const data = {
 			points: currentPath,
 			tool: currentTool.value,
 			color: currentColor.value,
 			strokeWidth: strokeWidth.value,
 			opacity: currentOpacity.value
-		});
+		};
+		connection.value.send('drawingStroke', data);
+		recordCommLog('send', 'drawingStroke', data);
 	} catch (error) {
 		console.warn('🎨 [WARN] Failed to send drawing stroke:', error);
 	}
@@ -1429,14 +1505,16 @@ function sendDrawingProgress() {
 	lastProgressSent = now;
 
 	try {
-		connection.value.send('drawingProgress', {
+		const data = {
 			points: currentPath.slice(), // 現在の描画パスをコピー
 			tool: currentTool.value,
 			color: currentColor.value,
 			strokeWidth: strokeWidth.value,
 			opacity: currentOpacity.value,
 			isComplete: false
-		});
+		};
+		connection.value.send('drawingProgress', data);
+		recordCommLog('send', 'drawingProgress', data);
 	} catch (error) {
 		console.warn('🎨 [WARN] Failed to send drawing progress:', error);
 	}
@@ -1447,10 +1525,12 @@ function sendCursorPosition(point: { x: number; y: number }) {
 	if (!connection.value) return;
 
 	try {
-		connection.value.send('cursorMove', {
+		const data = {
 			x: point.x,
 			y: point.y
-		});
+		};
+		connection.value.send('cursorMove', data);
+		recordCommLog('send', 'cursorMove', data);
 	} catch (error) {
 		console.warn('🎨 [WARN] Failed to send cursor position:', error);
 	}
@@ -1634,55 +1714,34 @@ function resetZoom() {
 
 // キャンバスサイズ変更ダイアログを表示
 async function showCanvasSizeDialog() {
-	const items = canvasSizePresets.map(preset => ({
-		text: preset.name,
-		value: preset
-	}));
-
-	items.push({
-		text: 'カスタムサイズ...',
-		value: null
+	// Width入力
+	const { canceled: widthCanceled, result: width } = await os.inputText({
+		title: '幅 (Width) を入力',
+		placeholder: '800',
+		default: String(canvasWidth.value)
 	});
+	if (widthCanceled) return;
 
-	const { canceled, result } = await os.select({
-		title: 'キャンバスサイズを選択',
-		items,
-		default: items.find(item => item.value?.width === canvasWidth.value && item.value?.height === canvasHeight.value)?.value
+	// Height入力
+	const { canceled: heightCanceled, result: height } = await os.inputText({
+		title: '高さ (Height) を入力',
+		placeholder: '600',
+		default: String(canvasHeight.value)
 	});
+	if (heightCanceled) return;
 
-	if (canceled) return;
+	const w = parseInt(width);
+	const h = parseInt(height);
 
-	if (result === null) {
-		// カスタムサイズ入力
-		const { canceled: widthCanceled, result: width } = await os.inputText({
-			title: '幅を入力',
-			placeholder: '800',
-			default: String(canvasWidth.value)
+	if (isNaN(w) || isNaN(h) || w < 100 || h < 100 || w > 4000 || h > 4000) {
+		os.alert({
+			type: 'error',
+			text: 'サイズは100〜4000の範囲で指定してください'
 		});
-		if (widthCanceled) return;
-
-		const { canceled: heightCanceled, result: height } = await os.inputText({
-			title: '高さを入力',
-			placeholder: '600',
-			default: String(canvasHeight.value)
-		});
-		if (heightCanceled) return;
-
-		const w = parseInt(width);
-		const h = parseInt(height);
-
-		if (isNaN(w) || isNaN(h) || w < 100 || h < 100 || w > 4000 || h > 4000) {
-			os.alert({
-				type: 'error',
-				text: 'サイズは100〜4000の範囲で指定してください'
-			});
-			return;
-		}
-
-		await changeCanvasSize(w, h);
-	} else {
-		await changeCanvasSize(result.width, result.height);
+		return;
 	}
+
+	await changeCanvasSize(w, h);
 }
 
 // キャンバスサイズを変更
@@ -1829,6 +1888,52 @@ async function exportDebugLog() {
 
 	os.toast('デバッグログを出力しました');
 	console.log('🎨 [DEBUG] Debug log exported:', debugData);
+}
+
+// 通信ログを記録
+function recordCommLog(direction: 'send' | 'receive', type: string, data: any) {
+	communicationLog.value.push({
+		timestamp: Date.now(),
+		direction,
+		type,
+		data
+	});
+
+	// 最大エントリ数を超えたら古いログを削除
+	if (communicationLog.value.length > MAX_COMM_LOG_ENTRIES) {
+		communicationLog.value.shift();
+	}
+}
+
+// 通信ログをクリア
+function clearCommLog() {
+	communicationLog.value = [];
+	os.toast('通信ログをクリアしました');
+}
+
+// タイムスタンプをフォーマット
+function formatTime(timestamp: number): string {
+	const date = new Date(timestamp);
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const seconds = String(date.getSeconds()).padStart(2, '0');
+	const ms = String(date.getMilliseconds()).padStart(3, '0');
+	return `${hours}:${minutes}:${seconds}.${ms}`;
+}
+
+// ログデータをフォーマット
+function formatLogData(data: any): string {
+	if (typeof data === 'object') {
+		// オブジェクトの場合は主要な情報だけ抽出
+		if (data.points && Array.isArray(data.points)) {
+			return `points: ${data.points.length}個, tool: ${data.tool}, color: ${data.color}`;
+		} else if (data.x !== undefined && data.y !== undefined) {
+			return `x: ${data.x.toFixed(1)}, y: ${data.y.toFixed(1)}`;
+		} else {
+			return JSON.stringify(data, null, 2);
+		}
+	}
+	return String(data);
 }
 
 // 実際の描画可能領域を計算
@@ -3246,6 +3351,199 @@ function adjustCanvasForMobile() {
 		h5 {
 			font-size: 11px;
 		}
+	}
+}
+
+// 通信ログパネル
+.commLogPanel {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background: var(--MI_THEME-panel);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 8px;
+	width: 420px;
+	max-height: 80vh;
+	overflow-y: hidden;
+	z-index: 1000;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+}
+
+.commLogHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-bg);
+	flex-shrink: 0;
+
+	h4 {
+		margin: 0;
+		font-size: 14px;
+		font-weight: bold;
+		color: var(--MI_THEME-fg);
+	}
+}
+
+.commLogActions {
+	display: flex;
+	gap: 8px;
+}
+
+.commLogClearButton {
+	background: var(--MI_THEME-buttonBg);
+	border: 1px solid var(--MI_THEME-buttonBorder);
+	color: var(--MI_THEME-fg);
+	cursor: pointer;
+	font-size: 12px;
+	padding: 4px 12px;
+	border-radius: 4px;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+}
+
+.commLogCloseButton {
+	background: none;
+	border: none;
+	color: var(--MI_THEME-fg);
+	cursor: pointer;
+	font-size: 18px;
+	padding: 2px 6px;
+	border-radius: 4px;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+}
+
+.commLogContent {
+	padding: 8px;
+	font-size: 11px;
+	line-height: 1.3;
+	overflow-y: auto;
+	flex: 1;
+	min-height: 0;
+}
+
+.commLogEmpty {
+	color: var(--MI_THEME-fgTransparentWeak);
+	text-align: center;
+	padding: 20px;
+}
+
+.commLogEntry {
+	margin-bottom: 8px;
+	padding: 8px;
+	border-radius: 4px;
+	border-left: 3px solid;
+	background: var(--MI_THEME-bg);
+}
+
+.commLogsend {
+	border-left-color: #4caf50;
+	background: rgba(76, 175, 80, 0.05);
+}
+
+.commLogreceive {
+	border-left-color: #2196f3;
+	background: rgba(33, 150, 243, 0.05);
+}
+
+.commLogTime {
+	font-size: 10px;
+	color: var(--MI_THEME-fgTransparentWeak);
+	margin-bottom: 4px;
+	font-family: monospace;
+}
+
+.commLogType {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.commLogDirection {
+	font-weight: bold;
+	font-size: 10px;
+	padding: 2px 6px;
+	border-radius: 3px;
+
+	.commLogsend & {
+		background: #4caf50;
+		color: white;
+	}
+
+	.commLogreceive & {
+		background: #2196f3;
+		color: white;
+	}
+}
+
+.commLogEventType {
+	font-family: monospace;
+	font-size: 11px;
+	color: var(--MI_THEME-fg);
+}
+
+.commLogData {
+	margin-top: 4px;
+	font-family: monospace;
+	font-size: 10px;
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	padding: 4px 6px;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	word-break: break-all;
+
+	pre {
+		margin: 0;
+	}
+}
+
+.commLogButton {
+	background: var(--MI_THEME-buttonBg);
+	border: 1px solid var(--MI_THEME-buttonBorder);
+	color: var(--MI_THEME-fg);
+	padding: 8px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 14px;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	i {
+		font-size: 16px;
+	}
+}
+
+@container (max-width: 500px) {
+	.commLogPanel {
+		width: calc(100vw - 20px);
+		left: 10px;
+		top: 10px;
+		max-height: 60vh;
+	}
+
+	.commLogContent {
+		font-size: 10px;
+		padding: 6px;
+	}
+
+	.commLogEntry {
+		margin-bottom: 6px;
+		padding: 6px;
 	}
 }
 </style>

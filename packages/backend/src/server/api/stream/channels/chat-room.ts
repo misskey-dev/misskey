@@ -167,13 +167,13 @@ class ChatRoomChannel extends Channel {
 				if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 1000) return;
 				if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
 				if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
-				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 50) return;
+				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 100) return;
 				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
 
-				// 座標の検証
+				// 座標の検証（可変キャンバスサイズに対応）
 				for (const point of body.points) {
 					if (typeof point.x !== 'number' || typeof point.y !== 'number') return;
-					if (point.x < 0 || point.x > 800 || point.y < 0 || point.y > 600) return; // キャンバスサイズ制限 (800x600)
+					if (point.x < 0 || point.x > 4000 || point.y < 0 || point.y > 4000) return; // 最大4000x4000まで許可
 				}
 
 				const strokeData = {
@@ -183,7 +183,7 @@ class ChatRoomChannel extends Channel {
 					points: body.points,
 					tool: body.tool,
 					color: body.color,
-					strokeWidth: Math.min(body.strokeWidth || 2, 50),
+					strokeWidth: Math.min(body.strokeWidth || 2, 100),
 					opacity: Math.min(Math.max(body.opacity || 1, 0.1), 1),
 					timestamp: now,
 				};
@@ -210,7 +210,7 @@ class ChatRoomChannel extends Channel {
 				if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 500) return; // 進行中は点数制限緩和
 				if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
 				if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
-				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 50) return;
+				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 100) return;
 				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
 
 				// 進行状況データ作成
@@ -240,9 +240,9 @@ class ChatRoomChannel extends Channel {
 				if (cursorNow - this.lastCursorMove < 50) return; // 無言で制限（ログなし）
 				this.lastCursorMove = cursorNow;
 
-				// セキュリティ: カーソル位置の検証
+				// セキュリティ: カーソル位置の検証（可変キャンバスサイズに対応）
 				if (!body || typeof body.x !== 'number' || typeof body.y !== 'number') return;
-				if (body.x < 0 || body.x > 800 || body.y < 0 || body.y > 600) return; // キャンバスサイズ制限 (800x600)
+				if (body.x < -100 || body.x > 4100 || body.y < -100 || body.y > 4100) return; // 最大4000x4000 + マージン
 
 				// カーソル位置をルーム内の他のユーザーに配信
 				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
