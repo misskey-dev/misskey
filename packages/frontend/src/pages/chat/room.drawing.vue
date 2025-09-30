@@ -351,6 +351,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
+		<!-- 背景白レイヤー（操作不可） -->
+		<div
+			:class="$style.backgroundLayer"
+			:style="{
+				width: displayWidth + 'px',
+				height: displayHeight + 'px',
+				transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
+				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease'
+			}"
+		></div>
 		<!-- レイヤーキャンバス（レイヤー3が一番下、レイヤー1が一番上） -->
 		<canvas
 			v-for="layerIndex in [2, 1, 0]"
@@ -432,6 +443,7 @@ import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
 import { useStream } from '@/stream.js';
 import { ensureSignin } from '@/i.js';
 import * as os from '@/os.js';
+import { defineAsyncComponent } from 'vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
 
 const props = defineProps<{
@@ -682,6 +694,10 @@ const chatOverlay = ref<{
 let currentPath: Array<{ x: number; y: number }> = [];
 
 onMounted(() => {
+	// displayサイズを論理サイズに同期
+	displayWidth.value = canvasWidth.value;
+	displayHeight.value = canvasHeight.value;
+
 	// レイヤーキャンバスの初期化
 	const dpr = window.devicePixelRatio || 1;
 
@@ -1299,7 +1315,13 @@ function recordTraceLog(
 		color: currentColor.value,
 		strokeWidth: strokeWidth.value,
 		zoomLevel: zoomLevel.value,
-		panOffset: { ...panOffset.value }
+		panOffset: { ...panOffset.value },
+		canvasSize: {
+			width: canvasWidth.value,
+			height: canvasHeight.value,
+			displayWidth: displayWidth.value,
+			displayHeight: displayHeight.value
+		}
 	});
 }
 
@@ -2016,18 +2038,16 @@ function switchLayer(layerIndex: number) {
 
 // レイヤーメニューを表示
 async function showLayerMenu() {
-	const items = [
-		{ text: 'レイヤーを結合', value: 'merge' },
-		{ text: 'レイヤーを移動', value: 'move' },
-		{ text: 'レイヤーをクリア', value: 'clear' },
-	];
-
 	const { canceled, result } = await os.select({
 		title: 'レイヤー操作',
-		items
+		items: [
+			{ text: 'レイヤーを結合', value: 'merge' },
+			{ text: 'レイヤーを移動', value: 'move' },
+			{ text: 'レイヤーをクリア', value: 'clear' },
+		]
 	});
 
-	if (canceled) return;
+	if (canceled || !result) return;
 
 	switch (result) {
 		case 'merge':
@@ -2044,20 +2064,15 @@ async function showLayerMenu() {
 
 // レイヤー結合ダイアログ
 async function mergeLayersDialog() {
-	const items = [];
-	for (let i = 0; i < MAX_LAYERS - 1; i++) {
-		items.push({
-			text: `レイヤー${i + 1}とレイヤー${i + 2}を結合`,
-			value: i
-		});
-	}
-
 	const { canceled, result } = await os.select({
 		title: 'レイヤー結合',
-		items
+		items: [
+			{ text: 'レイヤー1とレイヤー2を結合', value: 0 },
+			{ text: 'レイヤー2とレイヤー3を結合', value: 1 },
+		]
 	});
 
-	if (canceled) return;
+	if (canceled || result === undefined) return;
 
 	await mergeLayers(result, result + 1);
 }
@@ -2091,24 +2106,19 @@ async function mergeLayers(fromLayer: number, toLayer: number) {
 
 // レイヤー移動ダイアログ
 async function moveLayerDialog() {
-	const items = [];
-	for (let from = 0; from < MAX_LAYERS; from++) {
-		for (let to = 0; to < MAX_LAYERS; to++) {
-			if (from !== to) {
-				items.push({
-					text: `レイヤー${from + 1}の内容をレイヤー${to + 1}に移動`,
-					value: { from, to }
-				});
-			}
-		}
-	}
-
 	const { canceled, result } = await os.select({
 		title: 'レイヤー移動',
-		items
+		items: [
+			{ text: 'レイヤー1の内容をレイヤー2に移動', value: { from: 0, to: 1 } },
+			{ text: 'レイヤー1の内容をレイヤー3に移動', value: { from: 0, to: 2 } },
+			{ text: 'レイヤー2の内容をレイヤー1に移動', value: { from: 1, to: 0 } },
+			{ text: 'レイヤー2の内容をレイヤー3に移動', value: { from: 1, to: 2 } },
+			{ text: 'レイヤー3の内容をレイヤー1に移動', value: { from: 2, to: 0 } },
+			{ text: 'レイヤー3の内容をレイヤー2に移動', value: { from: 2, to: 1 } },
+		]
 	});
 
-	if (canceled) return;
+	if (canceled || !result) return;
 
 	await moveLayer(result.from, result.to);
 }
@@ -2137,20 +2147,16 @@ async function moveLayer(fromLayer: number, toLayer: number) {
 
 // レイヤークリアダイアログ
 async function clearLayerDialog() {
-	const items = [];
-	for (let i = 0; i < MAX_LAYERS; i++) {
-		items.push({
-			text: `レイヤー${i + 1}をクリア`,
-			value: i
-		});
-	}
-
 	const { canceled, result } = await os.select({
 		title: 'レイヤークリア',
-		items
+		items: [
+			{ text: 'レイヤー1をクリア', value: 0 },
+			{ text: 'レイヤー2をクリア', value: 1 },
+			{ text: 'レイヤー3をクリア', value: 2 },
+		]
 	});
 
-	if (canceled) return;
+	if (canceled || result === undefined) return;
 
 	const { canceled: confirmCanceled } = await os.confirm({
 		type: 'warning',
@@ -3438,11 +3444,22 @@ function adjustCanvasForMobile() {
 	max-height: 100%;
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	background: transparent;
+}
+
+.backgroundLayer {
+	position: absolute;
 	background: #ffffff;
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	pointer-events: none;
+	z-index: 0;
 }
 
 .layerCanvas {
 	position: absolute;
+	background: transparent;
 }
 
 @container (max-width: 600px) {
@@ -3997,12 +4014,13 @@ function adjustCanvasForMobile() {
 	gap: 20px;
 	padding: 20px;
 	transform: rotate(-15deg);
+	pointer-events: none;
 }
 
 .watermarkImage {
 	width: 100%;
 	height: auto;
-	opacity: 0.3;
+	opacity: 0.1;
 	object-fit: contain;
 	user-select: none;
 	pointer-events: none;
