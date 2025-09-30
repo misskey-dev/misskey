@@ -971,24 +971,21 @@ function setColor(color: string) {
 
 // カラーピッカーを開く
 async function openColorPicker() {
-	const { canceled, result } = await os.inputText({
-		title: 'カラーコードを入力',
-		placeholder: '#000000',
-		default: currentColor.value
-	});
+	// iro.jsカラーピッカーダイアログを表示
+	const { canceled, result } = await os.popup(
+		defineAsyncComponent(() => import('@/components/MkColorPickerDialog.vue')),
+		{
+			currentColor: currentColor.value,
+		},
+		{
+			type: 'dialog',
+		}
+	);
 
 	if (canceled || !result) return;
 
-	// HEXカラーコードの検証
-	const hexColorPattern = /^#[0-9A-Fa-f]{6}$/;
-	if (hexColorPattern.test(result)) {
-		setColor(result.toUpperCase());
-	} else {
-		os.alert({
-			type: 'error',
-			text: '正しいHEXカラーコード（例: #FF5733）を入力してください'
-		});
-	}
+	// 選択された色を設定
+	setColor(result);
 }
 
 function setOpacity(opacity: number) {
