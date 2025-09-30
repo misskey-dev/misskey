@@ -429,15 +429,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				top: ((cursor.y / canvasHeight * displayHeight) * zoomLevel + panOffset.y) + 'px',
 				transform: `scale(${1 / zoomLevel})`,
 				transformOrigin: 'top left',
-				color: getUserCursorColor(cursor.userId)
+				color: getUserCursorColorLocal(cursor.userId)
 			}"
 		>
 			<i class="ti ti-hand-click"></i>
 			<span
 				:class="$style.cursorUser"
 				:style="{
-					background: getUserCursorColor(cursor.userId),
-					color: getContrastColor(getUserCursorColor(cursor.userId))
+					background: getUserCursorColorLocal(cursor.userId),
+					color: getContrastColorLocal(getUserCursorColorLocal(cursor.userId))
 				}"
 			>
 				{{ cursor.userName }}
@@ -488,6 +488,21 @@ import {
 	getUserCursorColor,
 	getContrastColor,
 } from './room.drawing.canvas.js';
+// 分離したComposableをインポート
+import {
+	useDrawing,
+	useDrawingConnection,
+	useCanvasOperations,
+	useZoomPan,
+	useUndoRedo,
+	useDrawingUtils,
+	useToolState,
+} from './room.drawing.composables.js';
+import {
+	useGestures,
+	useKeyboard,
+	useWheel,
+} from './room.drawing.gestures.js';
 
 const props = defineProps<{
 	roomId?: string;
@@ -579,7 +594,7 @@ const isTouchDevice = ref(false);
 // デバッグ用状態
 let debugLogCount = 0;
 const showDebugPanel = ref(false);
-const debugInfo = ref({
+const debugInfo = ref<DebugInfo>({
 	device: {},
 	sizes: {},
 	input: {},
@@ -899,14 +914,38 @@ onMounted(() => {
 			if (newZoom !== zoomLevel.value) {
 				// マウス位置を中心にズーム
 				// 現在のズーム前の論理座標を取得
-				const beforeZoomCoords = screenToCanvasCoordinates(e.clientX, e.clientY);
+				const beforeZoomCoords = screenToCanvasCoordinates(
+				e.clientX,
+				e.clientY,
+				canvasEl.value || null,
+				canvasWidth.value,
+				canvasHeight.value,
+				displayWidth.value,
+				displayHeight.value,
+				panOffset.value,
+				zoomLevel.value,
+				zoomCenter.value,
+				isTouchDevice.value
+			);
 
 				// ズームレベルを更新
 				const oldZoom = zoomLevel.value;
 				zoomLevel.value = newZoom;
 
 				// ズーム後の論理座標を取得
-				const afterZoomCoords = screenToCanvasCoordinates(e.clientX, e.clientY);
+				const afterZoomCoords = screenToCanvasCoordinates(
+					e.clientX,
+					e.clientY,
+					canvasEl.value || null,
+					canvasWidth.value,
+					canvasHeight.value,
+					displayWidth.value,
+					displayHeight.value,
+					panOffset.value,
+					zoomLevel.value,
+					zoomCenter.value,
+					isTouchDevice.value
+				);
 
 				// マウス位置が変わらないようにパンオフセットを調整
 				const offsetDeltaX = afterZoomCoords.x - beforeZoomCoords.x;
@@ -1056,7 +1095,7 @@ function setColor(color: string) {
 // カラーピッカーを開く
 async function openColorPicker() {
 	// iro.jsカラーピッカーダイアログを表示
-	const { canceled, result } = await os.popup(
+	const result = await os.popup(
 		defineAsyncComponent(() => import('@/components/MkColorPickerDialog.vue')),
 		{
 			currentColor: currentColor.value,
@@ -1064,12 +1103,14 @@ async function openColorPicker() {
 		{
 			type: 'dialog',
 		}
-	);
+	) as { canceled: boolean; result: string } | { dispose: () => void };
 
-	if (canceled || !result) return;
+	if (!('canceled' in result) || result.canceled || !result.result) return;
 
 	// 選択された色を設定
-	setColor(result);
+	if ('result' in result) {
+		setColor(result.result);
+	}
 }
 
 function setOpacity(opacity: number) {
@@ -1108,7 +1149,8 @@ function startDrawing(event: MouseEvent | TouchEvent) {
 
 	const point = getEventPoint(event);
 	const pressure = calculatePressure(); // 初期筆圧を計算
-	currentPath = [{ ...point, pressure }];
+	const pressurePoint: PressurePoint = { x: point.x, y: point.y, pressure };
+	currentPath = [pressurePoint];
 
 	// 軌跡ログを記録
 	let clientX: number, clientY: number;
@@ -1174,7 +1216,8 @@ function draw(event: MouseEvent | TouchEvent) {
 	if (!isDrawing.value || currentTool.value === 'eyedropper') return;
 
 	const pressure = calculatePressure(); // 現在の筆圧を計算
-	currentPath.push({ ...point, pressure });
+	const pressurePoint: PressurePoint = { x: point.x, y: point.y, pressure };
+	currentPath.push(pressurePoint);
 
 	// ローカル描画
 	drawLine(point);
@@ -1221,7 +1264,7 @@ function stopDrawing() {
 }
 
 // 手ブレ補正関数
-function applyHandShakeCorrection(rawPoint: { x: number; y: number }): { x: number; y: number } {
+function applyHandShakeCorrectionLocal(rawPoint: { x: number; y: number }): { x: number; y: number } {
 	if (!handShakeCorrection.enabled.value) return rawPoint;
 
 	const currentTime = Date.now();
@@ -1351,14 +1394,26 @@ function getEventPoint(event: MouseEvent | TouchEvent): { x: number; y: number }
 	}
 
 	// パン/ズーム変換を考慮した座標計算を使用
-	let coordinates = screenToCanvasCoordinates(clientX, clientY);
+	let coordinates = screenToCanvasCoordinates(
+		clientX,
+		clientY,
+		canvasEl.value || null,
+		canvasWidth.value,
+		canvasHeight.value,
+		displayWidth.value,
+		displayHeight.value,
+		panOffset.value,
+		zoomLevel.value,
+		zoomCenter.value,
+		isTouchDevice.value
+	);
 
 	// キャンバス範囲内にクランプ
 	coordinates.x = Math.max(0, Math.min(canvasWidth.value, coordinates.x));
 	coordinates.y = Math.max(0, Math.min(canvasHeight.value, coordinates.y));
 
 	// 手ブレ補正を適用
-	return applyHandShakeCorrection(coordinates);
+	return applyHandShakeCorrectionLocal(coordinates);
 }
 
 // 軌跡ログを記録
@@ -1385,13 +1440,7 @@ function recordTraceLog(
 		color: currentColor.value,
 		strokeWidth: strokeWidth.value,
 		zoomLevel: zoomLevel.value,
-		panOffset: { ...panOffset.value },
-		canvasSize: {
-			width: canvasWidth.value,
-			height: canvasHeight.value,
-			displayWidth: displayWidth.value,
-			displayHeight: displayHeight.value
-		}
+		panOffset: { ...panOffset.value }
 	});
 }
 
@@ -1486,7 +1535,7 @@ function smoothPoints(points: Array<{ x: number; y: number }>, windowSize: numbe
 }
 
 // 最高品質スムーズパス描画（複数アルゴリズム組み合わせ + 筆圧対応）
-function drawSmoothPath(points: Array<{ x: number; y: number; pressure?: number }>, strokeWidth?: number, color?: string, opacity?: number, isEraser: boolean = false) {
+function drawSmoothPathLocal(points: Array<{ x: number; y: number; pressure?: number }>, strokeWidth?: number, color?: string, opacity?: number, isEraser: boolean = false) {
 	if (!ctx || points.length < 2) return;
 
 	ctx.save();
@@ -1624,7 +1673,7 @@ function drawRemoteStroke(data: any) {
 	ctx.lineJoin = 'round';
 
 	// 最高品質な滑らかな描画を適用
-	drawSmoothPath(
+	drawSmoothPathLocal(
 		data.points,
 		data.strokeWidth,
 		data.color,
@@ -1786,7 +1835,7 @@ const cursorTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const userCursorColors = new Map<string, string>();
 
 // ユーザーのカーソル色を取得（ランダム生成＆キャッシュ）
-function getUserCursorColor(userId: string): string {
+function getUserCursorColorLocal(userId: string): string {
 	if (!userCursorColors.has(userId)) {
 		// ユーザーIDをベースにした一意で鮮やかな色を生成
 		const hue = (userId.charCodeAt(0) + userId.charCodeAt(userId.length - 1)) % 360;
@@ -1799,7 +1848,7 @@ function getUserCursorColor(userId: string): string {
 }
 
 // 背景色に対する適切なコントラスト色を計算
-function getContrastColor(backgroundColor: string): string {
+function getContrastColorLocal(backgroundColor: string): string {
 	// HSL色をRGBに変換して明度を判定
 	const hslMatch = backgroundColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
 	if (hslMatch) {
@@ -2218,9 +2267,9 @@ async function showLayerMenu() {
 	const { canceled, result } = await os.select({
 		title: 'レイヤー操作',
 		items: [
-			{ text: 'レイヤーを結合', value: 'merge' },
-			{ text: 'レイヤーを移動', value: 'move' },
-			{ text: 'レイヤーをクリア', value: 'clear' },
+			{ label: 'レイヤーを結合', value: 'merge' },
+			{ label: 'レイヤーを移動', value: 'move' },
+			{ label: 'レイヤーをクリア', value: 'clear' },
 		]
 	});
 
@@ -2244,14 +2293,15 @@ async function mergeLayersDialog() {
 	const { canceled, result } = await os.select({
 		title: 'レイヤー結合',
 		items: [
-			{ text: 'レイヤー1とレイヤー2を結合', value: 0 },
-			{ text: 'レイヤー2とレイヤー3を結合', value: 1 },
+			{ label: 'レイヤー1とレイヤー2を結合', value: 0 },
+			{ label: 'レイヤー2とレイヤー3を結合', value: 1 },
 		]
 	});
 
-	if (canceled || result === undefined) return;
+	if (canceled || result === undefined || result === null) return;
 
-	await mergeLayers(result, result + 1);
+	const layerIndex = typeof result === 'number' ? result : 0;
+	await mergeLayers(layerIndex, layerIndex + 1);
 }
 
 // レイヤー結合を実行
@@ -2286,18 +2336,19 @@ async function moveLayerDialog() {
 	const { canceled, result } = await os.select({
 		title: 'レイヤー移動',
 		items: [
-			{ text: 'レイヤー1の内容をレイヤー2に移動', value: { from: 0, to: 1 } },
-			{ text: 'レイヤー1の内容をレイヤー3に移動', value: { from: 0, to: 2 } },
-			{ text: 'レイヤー2の内容をレイヤー1に移動', value: { from: 1, to: 0 } },
-			{ text: 'レイヤー2の内容をレイヤー3に移動', value: { from: 1, to: 2 } },
-			{ text: 'レイヤー3の内容をレイヤー1に移動', value: { from: 2, to: 0 } },
-			{ text: 'レイヤー3の内容をレイヤー2に移動', value: { from: 2, to: 1 } },
+			{ label: 'レイヤー1の内容をレイヤー2に移動', value: '0-1' },
+			{ label: 'レイヤー1の内容をレイヤー3に移動', value: '0-2' },
+			{ label: 'レイヤー2の内容をレイヤー1に移動', value: '1-0' },
+			{ label: 'レイヤー2の内容をレイヤー3に移動', value: '1-2' },
+			{ label: 'レイヤー3の内容をレイヤー1に移動', value: '2-0' },
+			{ label: 'レイヤー3の内容をレイヤー2に移動', value: '2-1' },
 		]
 	});
 
 	if (canceled || !result) return;
 
-	await moveLayer(result.from, result.to);
+	const [from, to] = (typeof result === 'string' ? result : '0-1').split('-').map(Number);
+	await moveLayer(from, to);
 }
 
 // レイヤー移動を実行
@@ -2327,22 +2378,24 @@ async function clearLayerDialog() {
 	const { canceled, result } = await os.select({
 		title: 'レイヤークリア',
 		items: [
-			{ text: 'レイヤー1をクリア', value: 0 },
-			{ text: 'レイヤー2をクリア', value: 1 },
-			{ text: 'レイヤー3をクリア', value: 2 },
+			{ label: 'レイヤー1をクリア', value: 0 },
+			{ label: 'レイヤー2をクリア', value: 1 },
+			{ label: 'レイヤー3をクリア', value: 2 },
 		]
 	});
 
-	if (canceled || result === undefined) return;
+	if (canceled || result === undefined || result === null) return;
+
+	const layerIndex = typeof result === 'number' ? result : 0;
 
 	const { canceled: confirmCanceled } = await os.confirm({
 		type: 'warning',
-		text: `レイヤー${result + 1}の内容をすべて削除しますか？`
+		text: `レイヤー${layerIndex + 1}の内容をすべて削除しますか？`
 	});
 
 	if (confirmCanceled) return;
 
-	clearLayer(result);
+	clearLayer(layerIndex);
 }
 
 // レイヤーをクリア
@@ -2483,7 +2536,7 @@ function screenToCanvas(clientX: number, clientY: number): Point {
 	return screenToCanvasCoordinates(
 		clientX,
 		clientY,
-		canvasEl.value,
+		canvasEl.value || null,
 		canvasWidth.value,
 		canvasHeight.value,
 		displayWidth.value,
@@ -2499,7 +2552,7 @@ function screenToCanvas(clientX: number, clientY: number): Point {
 // ラッパー関数: インポートした描画領域計算関数を使用
 function getDrawingArea() {
 	return getActualDrawingArea(
-		canvasEl.value,
+		canvasEl.value || null,
 		canvasWidth.value,
 		canvasHeight.value
 	);
@@ -2576,7 +2629,7 @@ function handleTouchStart(e: TouchEvent) {
 		panStart.value = { x: centerX, y: centerY };
 
 		// ズーム中心点を論理座標系に直接変換して記録
-		const drawingArea = getActualDrawingArea();
+		const drawingArea = getActualDrawingArea(canvasEl.value || null, canvasWidth.value, canvasHeight.value);
 		const elementX = centerX - (canvasEl.value?.getBoundingClientRect().left || 0);
 		const elementY = centerY - (canvasEl.value?.getBoundingClientRect().top || 0);
 		const drawingX = elementX - drawingArea.x;
@@ -2675,7 +2728,7 @@ function handleTouchMove(e: TouchEvent) {
 		if (gestureState.value === 'pan' || gestureState.value === 'hybrid') {
 			if (Math.abs(panDeltaX) > 1 || Math.abs(panDeltaY) > 1) {
 				// 描画エリアのスケールに合わせてパンオフセットを調整
-				const drawingArea = getActualDrawingArea();
+				const drawingArea = getActualDrawingArea(canvasEl.value || null, canvasWidth.value, canvasHeight.value);
 				const scaledPanDeltaX = panDeltaX / drawingArea.scale;
 				const scaledPanDeltaY = panDeltaY / drawingArea.scale;
 
@@ -2916,7 +2969,7 @@ function redrawCanvasFromHistory() {
 			// 一時的にコンテキストを切り替えて描画
 			const originalCtx = ctx;
 			ctx = layerCtx;
-			drawSmoothPath(
+			drawSmoothPathLocal(
 				stroke.points,
 				stroke.strokeWidth,
 				stroke.color,
