@@ -1204,8 +1204,12 @@ function calculatePressure(): number {
 	const avgVelocity = velocityHistory.reduce((a, b) => a + b, 0) / velocityHistory.length;
 
 	// 速度が高いほど筆圧が低く（線が細く）、遅いほど筆圧が高く（線が太く）
-	const normalizedVelocity = Math.min(avgVelocity / 2, 1); // 正規化
-	const pressure = Math.max(0.7, 1.1 - normalizedVelocity * 0.3); // 0.7-1.1の範囲に抑制
+	// 速度の正規化: 0.5以下は遅い（太い）、1.5以上は速い（細い）
+	const normalizedVelocity = Math.min(avgVelocity / 1.0, 2.0); // 0〜2.0に正規化
+
+	// より大きな変化幅を持たせる: 0.3〜1.2の範囲
+	// 遅い速度（0）→ 1.2（太い）、速い速度（2.0）→ 0.3（細い）
+	const pressure = Math.max(0.3, Math.min(1.2, 1.2 - normalizedVelocity * 0.45));
 
 	return pressure;
 }
