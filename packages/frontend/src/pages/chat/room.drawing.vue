@@ -815,6 +815,21 @@ onMounted(() => {
 				canvasEl.value.style.cursor = 'grab';
 			}
 		}
+		// P: ペンツール
+		else if (e.key === 'p' || e.key === 'P') {
+			e.preventDefault();
+			setTool('pen');
+		}
+		// E: 消しゴムツール
+		else if (e.key === 'e' || e.key === 'E') {
+			e.preventDefault();
+			setTool('eraser');
+		}
+		// I: スポイトツール
+		else if (e.key === 'i' || e.key === 'I') {
+			e.preventDefault();
+			setTool('eyedropper');
+		}
 		// Ctrl+Z / Cmd+Z: Undo
 		else if (ctrlKey && e.key === 'z' && !e.shiftKey) {
 			e.preventDefault();
@@ -3578,8 +3593,6 @@ function adjustCanvasForMobile() {
 .canvas {
 	border: 1px solid var(--MI_THEME-divider);
 	touch-action: none;
-	max-width: 100%;
-	max-height: 100%;
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	background: transparent;
