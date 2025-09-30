@@ -370,8 +370,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<!-- 背景白レイヤー（操作不可） -->
-		<div
-			:class="$style.backgroundLayer"
+		<canvas
+			:class="[$style.canvas, $style.backgroundLayer]"
+			:width="canvasWidth"
+			:height="canvasHeight"
 			:style="{
 				width: displayWidth + 'px',
 				height: displayHeight + 'px',
@@ -379,7 +381,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
 				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease'
 			}"
-		></div>
+		></canvas>
 		<!-- レイヤーキャンバス（レイヤー3が一番下、レイヤー1が一番上） -->
 		<canvas
 			v-for="layerIndex in [2, 1, 0]"
@@ -394,7 +396,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
 				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
 				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease',
-				zIndex: layerIndex + 1,
+				zIndex: MAX_LAYERS - layerIndex,
 				opacity: layerVisible[layerIndex] ? layerOpacity[layerIndex] : 0,
 				pointerEvents: layerIndex === currentLayer ? 'auto' : 'none'
 			}"
@@ -793,6 +795,11 @@ onMounted(() => {
 			}
 		});
 		resizeObserver.observe(canvasEl.value);
+	}
+
+	// デフォルトカーソルを設定
+	if (canvasEl.value) {
+		canvasEl.value.style.cursor = 'crosshair';
 	}
 
 	// キーボードショートカット
@@ -2501,9 +2508,9 @@ function screenToCanvasCoordinates(clientX: number, clientY: number): { x: numbe
 	const originX = isTouchDevice.value ? zoomCenter.value.x : logicalWidth / 2;
 	const originY = isTouchDevice.value ? zoomCenter.value.y : logicalHeight / 2;
 
-	// 6. 正規化座標を論理座標系に変換（transform前）
-	const displayX = normalizedX * transformedWidth;
-	const displayY = normalizedY * transformedHeight;
+	// 6. 正規化座標を表示座標系に変換（transform前の論理表示サイズを使用）
+	const displayX = normalizedX * logicalWidth;
+	const displayY = normalizedY * logicalHeight;
 
 	// 7. パンの逆変換
 	const afterUntranslateX = displayX - panOffset.value.x;
@@ -3570,21 +3577,17 @@ function adjustCanvasForMobile() {
 
 .canvas {
 	border: 1px solid var(--MI_THEME-divider);
-	cursor: crosshair;
 	touch-action: none;
 	max-width: 100%;
 	max-height: 100%;
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	background: transparent;
+	box-sizing: border-box;
 }
 
 .backgroundLayer {
-	position: absolute;
 	background: #ffffff;
-	border: 1px solid var(--MI_THEME-divider);
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	pointer-events: none;
 	z-index: 0;
 }
