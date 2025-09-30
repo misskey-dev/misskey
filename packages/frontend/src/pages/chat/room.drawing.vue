@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.debugButton" @click="showDebugPanel = !showDebugPanel" title="デバッグ情報">
 				<i class="ti ti-bug"></i>
 			</button>
-			<button :class="$style.commLogButton" @click="showCommLogPanel = !showCommLogPanel" title="通信ログ">
+			<button :class="$style.commLogButton" @click="exportCommLog" title="通信ログ出力">
 				<i class="ti ti-antenna-bars"></i>
 			</button>
 		</div>
@@ -212,7 +212,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-file-export"></i>
 				<span v-if="!isTouchDevice">ログ出力</span>
 			</button>
-			<button :class="$style.commLogButton" @click="showCommLogPanel = !showCommLogPanel" title="通信ログ">
+			<button :class="$style.commLogButton" @click="exportCommLog" title="通信ログ出力">
 				<i class="ti ti-antenna-bars"></i>
 				<span v-if="!isTouchDevice">通信ログ</span>
 			</button>
@@ -2216,6 +2216,32 @@ function recordCommLog(direction: 'send' | 'receive', type: string, data: any) {
 function clearCommLog() {
 	communicationLog.value = [];
 	os.toast('通信ログをクリアしました');
+}
+
+// 通信ログを出力
+async function exportCommLog() {
+	const commLogData = {
+		timestamp: new Date().toISOString(),
+		logCount: communicationLog.value.length,
+		logs: communicationLog.value.map(log => ({
+			timestamp: new Date(log.timestamp).toISOString(),
+			direction: log.direction,
+			type: log.type,
+			data: log.data
+		}))
+	};
+
+	// JSON形式でダウンロード
+	const json = JSON.stringify(commLogData, null, 2);
+	const blob = new Blob([json], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = `comm-log-${Date.now()}.json`;
+	a.click();
+	URL.revokeObjectURL(url);
+
+	os.toast('通信ログを出力しました');
 }
 
 // タイムスタンプをフォーマット
