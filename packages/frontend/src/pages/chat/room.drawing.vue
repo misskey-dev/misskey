@@ -266,7 +266,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<!-- キャンバス -->
-	<div :class="$style.canvasContainer">
+	<div
+		:class="$style.canvasContainer"
+		@mousemove="draw"
+		@mouseup="stopDrawing"
+		@mouseleave="stopDrawing"
+	>
 		<!-- デバッグパネル -->
 		<div v-if="showDebugPanel" :class="$style.debugPanel">
 			<div :class="$style.debugHeader">
@@ -381,9 +386,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				pointerEvents: layerIndex === currentLayer ? 'auto' : 'none'
 			}"
 			@mousedown="startDrawing"
-			@mousemove="draw"
-			@mouseup="stopDrawing"
-			@mouseleave="stopDrawing"
 			@touchstart="handleTouchStart"
 			@touchmove="handleTouchMove"
 			@touchend="handleTouchEnd"
