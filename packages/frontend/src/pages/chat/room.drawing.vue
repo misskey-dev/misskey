@@ -80,8 +80,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.zoomGroup" v-if="isTouchDevice">
 			<span :class="$style.label">倍率:</span>
 			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}% ({{ Math.round(displayWidth * zoomLevel) }}×{{ Math.round(displayHeight * zoomLevel) }})</span>
+			<button :class="$style.zoomButton" @click="zoomOut" title="縮小 (-)">
+				<i class="ti ti-zoom-out"></i>
+			</button>
 			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット">
 				<i class="ti ti-zoom-reset"></i>
+			</button>
+			<button :class="$style.zoomButton" @click="zoomIn" title="拡大 (+)">
+				<i class="ti ti-zoom-in"></i>
 			</button>
 			<button :class="$style.debugButton" @click="showDebugPanel = !showDebugPanel" title="デバッグ情報">
 				<i class="ti ti-bug"></i>
@@ -169,8 +175,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.zoomGroup" v-if="!isTouchDevice">
 			<span :class="$style.label">倍率:</span>
 			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}%</span>
+			<button :class="$style.zoomButton" @click="zoomOut" title="縮小 (-)">
+				<i class="ti ti-zoom-out"></i>
+			</button>
 			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット (Ctrl+0)">
 				<i class="ti ti-zoom-reset"></i>
+			</button>
+			<button :class="$style.zoomButton" @click="zoomIn" title="拡大 (+)">
+				<i class="ti ti-zoom-in"></i>
 			</button>
 		</div>
 
@@ -271,6 +283,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@mousemove="draw"
 		@mouseup="stopDrawing"
 		@mouseleave="stopDrawing"
+		@wheel="handleWheel"
 	>
 		<!-- デバッグパネル -->
 		<div v-if="showDebugPanel" :class="$style.debugPanel">
@@ -410,8 +423,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="cursor.userId"
 			:class="$style.cursor"
 			:style="{
-				left: (cursor.x + panOffset.x) + 'px',
-				top: (cursor.y + panOffset.y) + 'px',
+				left: (cursor.x * zoomLevel + panOffset.x) + 'px',
+				top: (cursor.y * zoomLevel + panOffset.y) + 'px',
+				transform: `scale(${1 / zoomLevel})`,
+				transformOrigin: 'top left',
 				color: getUserCursorColor(cursor.userId)
 			}"
 		>
@@ -950,7 +965,12 @@ function connectToChatRoomChannel() {
 
 	connection.value.on('undoStroke', (data: any) => {
 		recordCommLog('receive', 'undoStroke', data);
-		handleUndoStroke(data);
+		handleRemoteUndo(data);
+	});
+
+	connection.value.on('redoStroke', (data: any) => {
+		recordCommLog('receive', 'redoStroke', data);
+		handleRemoteRedo(data);
 	});
 
 	// チャットオーバーレイ用
@@ -1041,7 +1061,8 @@ function startDrawing(event: MouseEvent | TouchEvent) {
 	pointBuffer.length = 0;
 
 	const point = getEventPoint(event);
-	currentPath = [point];
+	const pressure = calculatePressure(); // 初期筆圧を計算
+	currentPath = [{ ...point, pressure }];
 
 	// 軌跡ログを記録
 	let clientX: number, clientY: number;
@@ -1106,7 +1127,8 @@ function draw(event: MouseEvent | TouchEvent) {
 
 	if (!isDrawing.value || currentTool.value === 'eyedropper') return;
 
-	currentPath.push(point);
+	const pressure = calculatePressure(); // 現在の筆圧を計算
+	currentPath.push({ ...point, pressure });
 
 	// ローカル描画
 	drawLine(point);
@@ -1417,16 +1439,14 @@ function smoothPoints(points: Array<{ x: number; y: number }>, windowSize: numbe
 	return smoothed;
 }
 
-// 最高品質スムーズパス描画（複数アルゴリズム組み合わせ）
-function drawSmoothPath(points: Array<{ x: number; y: number }>, strokeWidth?: number, color?: string, opacity?: number, isEraser: boolean = false) {
+// 最高品質スムーズパス描画（複数アルゴリズム組み合わせ + 筆圧対応）
+function drawSmoothPath(points: Array<{ x: number; y: number; pressure?: number }>, strokeWidth?: number, color?: string, opacity?: number, isEraser: boolean = false) {
 	if (!ctx || points.length < 2) return;
 
 	ctx.save();
 
 	// パラメータが指定された場合は描画設定を更新
-	if (strokeWidth !== undefined) {
-		ctx.lineWidth = strokeWidth;
-	}
+	const baseStrokeWidth = strokeWidth !== undefined ? strokeWidth : ctx.lineWidth;
 	if (color !== undefined) {
 		ctx.strokeStyle = color;
 	}
@@ -1440,49 +1460,71 @@ function drawSmoothPath(points: Array<{ x: number; y: number }>, strokeWidth?: n
 	ctx.imageSmoothingEnabled = true;
 	ctx.imageSmoothingQuality = 'high';
 
-	// 1. 移動平均によるスムージング
-	let processedPoints = smoothPoints(points, 3);
+	// 筆圧情報があるかチェック
+	const hasPressure = points.some(p => p.pressure !== undefined);
 
-	// 2. ダグラス・ピューカー法による最適化（点が多い場合のみ）
-	if (processedPoints.length > 4) {
-		processedPoints = simplifyPath(processedPoints, 0.5);
-	}
+	if (hasPressure) {
+		// 筆圧対応：各セグメントごとに描画
+		for (let i = 0; i < points.length - 1; i++) {
+			const p1 = points[i];
+			const p2 = points[i + 1];
+			const pressure = p2.pressure || 1.0;
 
-	// 3. 高品質ベジェ曲線描画
-	ctx.beginPath();
-	ctx.moveTo(processedPoints[0].x, processedPoints[0].y);
-
-	if (processedPoints.length === 2) {
-		ctx.lineTo(processedPoints[1].x, processedPoints[1].y);
-	} else if (processedPoints.length === 3) {
-		// 3点の場合は2次ベジェ曲線
-		const cp = {
-			x: (processedPoints[0].x + processedPoints[2].x) / 2,
-			y: (processedPoints[0].y + processedPoints[2].y) / 2
-		};
-		ctx.quadraticCurveTo(processedPoints[1].x, processedPoints[1].y, cp.x, cp.y);
-		ctx.lineTo(processedPoints[2].x, processedPoints[2].y);
-	} else {
-		// 4点以上の場合は改良されたキャットマル・ロム・スプライン
-		for (let i = 0; i < processedPoints.length - 1; i++) {
-			const p0 = processedPoints[Math.max(0, i - 1)];
-			const p1 = processedPoints[i];
-			const p2 = processedPoints[i + 1];
-			const p3 = processedPoints[Math.min(processedPoints.length - 1, i + 2)];
-
-			// より滑らかな制御点計算
-			const tension = 0.25; // 張力パラメータ
-			const cp1x = p1.x + (p2.x - p0.x) * tension;
-			const cp1y = p1.y + (p2.y - p0.y) * tension;
-			const cp2x = p2.x - (p3.x - p1.x) * tension;
-			const cp2y = p2.y - (p3.y - p1.y) * tension;
-
-			// 3次ベジェ曲線で描画
-			ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+			ctx.lineWidth = baseStrokeWidth * pressure;
+			ctx.beginPath();
+			ctx.moveTo(p1.x, p1.y);
+			ctx.lineTo(p2.x, p2.y);
+			ctx.stroke();
 		}
+	} else {
+		// 筆圧なし：従来の描画
+		ctx.lineWidth = baseStrokeWidth;
+
+		// 1. 移動平均によるスムージング
+		let processedPoints = smoothPoints(points, 3);
+
+		// 2. ダグラス・ピューカー法による最適化（点が多い場合のみ）
+		if (processedPoints.length > 4) {
+			processedPoints = simplifyPath(processedPoints, 0.5);
+		}
+
+		// 3. 高品質ベジェ曲線描画
+		ctx.beginPath();
+		ctx.moveTo(processedPoints[0].x, processedPoints[0].y);
+
+		if (processedPoints.length === 2) {
+			ctx.lineTo(processedPoints[1].x, processedPoints[1].y);
+		} else if (processedPoints.length === 3) {
+			// 3点の場合は2次ベジェ曲線
+			const cp = {
+				x: (processedPoints[0].x + processedPoints[2].x) / 2,
+				y: (processedPoints[0].y + processedPoints[2].y) / 2
+			};
+			ctx.quadraticCurveTo(processedPoints[1].x, processedPoints[1].y, cp.x, cp.y);
+			ctx.lineTo(processedPoints[2].x, processedPoints[2].y);
+		} else {
+			// 4点以上の場合は改良されたキャットマル・ロム・スプライン
+			for (let i = 0; i < processedPoints.length - 1; i++) {
+				const p0 = processedPoints[Math.max(0, i - 1)];
+				const p1 = processedPoints[i];
+				const p2 = processedPoints[i + 1];
+				const p3 = processedPoints[Math.min(processedPoints.length - 1, i + 2)];
+
+				// より滑らかな制御点計算
+				const tension = 0.25; // 張力パラメータ
+				const cp1x = p1.x + (p2.x - p0.x) * tension;
+				const cp1y = p1.y + (p2.y - p0.y) * tension;
+				const cp2x = p2.x - (p3.x - p1.x) * tension;
+				const cp2y = p2.y - (p3.y - p1.y) * tension;
+
+				// 3次ベジェ曲線で描画
+				ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+			}
+		}
+
+		ctx.stroke();
 	}
 
-	ctx.stroke();
 	ctx.restore();
 }
 
@@ -1867,6 +1909,35 @@ function resetZoom() {
 	console.log('🎨 [DEBUG] Zoom reset to 100%');
 }
 
+// ズームイン（拡大）
+function zoomIn() {
+	const newZoom = Math.min(zoomLevel.value * 1.2, 5.0);
+	zoomLevel.value = newZoom;
+	console.log('🎨 [DEBUG] Zoom in:', Math.round(newZoom * 100) + '%');
+}
+
+// ズームアウト（縮小）
+function zoomOut() {
+	const newZoom = Math.max(zoomLevel.value / 1.2, 0.1);
+	zoomLevel.value = newZoom;
+	console.log('🎨 [DEBUG] Zoom out:', Math.round(newZoom * 100) + '%');
+}
+
+// マウスホイールによるズーム
+function handleWheel(event: WheelEvent) {
+	// Ctrlキーが押されている場合のみズーム
+	if (event.ctrlKey || event.metaKey) {
+		event.preventDefault();
+
+		const delta = -event.deltaY;
+		const zoomFactor = delta > 0 ? 1.1 : 0.9;
+		const newZoom = Math.max(0.1, Math.min(5.0, zoomLevel.value * zoomFactor));
+
+		zoomLevel.value = newZoom;
+		console.log('🎨 [DEBUG] Wheel zoom:', Math.round(newZoom * 100) + '%');
+	}
+}
+
 // キャンバスサイズ変更ダイアログを表示
 async function showCanvasSizeDialog() {
 	// Width入力
@@ -1995,6 +2066,17 @@ function undo() {
 		redoStackSize: redoStack.value.length,
 		strokeCount: strokeHistory.value.length
 	});
+
+	// 他のユーザーにundoイベントを送信
+	if (connection.value) {
+		const data = {
+			layer: currentLayer.value,
+			userId: $i?.id,
+			userName: $i?.username
+		};
+		connection.value.send('undoStroke', data);
+		recordCommLog('send', 'undoStroke', data);
+	}
 }
 
 // Redo（やり直す）
@@ -2026,6 +2108,53 @@ function redo() {
 		redoStackSize: redoStack.value.length,
 		strokeCount: strokeHistory.value.length
 	});
+
+	// 他のユーザーにredoイベントを送信
+	if (connection.value) {
+		const data = {
+			layer: currentLayer.value,
+			userId: $i?.id,
+			userName: $i?.username
+		};
+		connection.value.send('redoStroke', data);
+		recordCommLog('send', 'redoStroke', data);
+	}
+}
+
+// リモートユーザーのUndoイベントを処理
+function handleRemoteUndo(data: any) {
+	if (!ctx || data.userId === $i.id) return;
+
+	console.log('🎨 [REMOTE-UNDO] Remote undo received from:', data.userName, 'layer:', data.layer);
+
+	// 指定レイヤーの最後のストロークを削除
+	const targetLayer = data.layer;
+	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) return;
+
+	// レイヤーストローク履歴から最後の1つを削除
+	if (layerStrokeHistory.value[targetLayer].length > 0) {
+		layerStrokeHistory.value[targetLayer].pop();
+	}
+
+	// 現在のレイヤーが対象レイヤーの場合、再描画
+	if (currentLayer.value === targetLayer) {
+		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+		redrawCanvasFromHistory();
+	}
+
+	console.log('🎨 [REMOTE-UNDO] Undo applied, remaining strokes:', layerStrokeHistory.value[targetLayer].length);
+}
+
+// リモートユーザーのRedoイベントを処理
+function handleRemoteRedo(data: any) {
+	if (!ctx || data.userId === $i.id) return;
+
+	console.log('🎨 [REMOTE-REDO] Remote redo received from:', data.userName, 'layer:', data.layer);
+
+	// 注意: Redoは単純な実装では履歴がないため実装困難
+	// より高度な実装では、undo/redoスタックをサーバーで管理する必要がある
+	// 現時点では、リモートredoは未対応として警告のみ出力
+	console.warn('🎨 [REMOTE-REDO] Remote redo is not fully supported yet. Requires server-side undo/redo stack management.');
 }
 
 // レイヤー切り替え
@@ -2346,53 +2475,52 @@ function getActualDrawingArea() {
 function screenToCanvasCoordinates(clientX: number, clientY: number): { x: number; y: number } {
 	if (!canvasEl.value) return { x: clientX, y: clientY };
 
-	// 要素の境界取得
+	// 要素の境界取得（CSS transform適用後）
 	const rect = canvasEl.value.getBoundingClientRect();
 
 	// 1. スクリーン座標をキャンバス要素内の相対位置に変換
 	const elementX = clientX - rect.left;
 	const elementY = clientY - rect.top;
 
-	// 2. 実際の描画可能領域を取得
-	const drawingArea = getActualDrawingArea();
+	// 2. displayWidth/displayHeightベースで計算（transformを考慮しない論理サイズ）
+	// CSS transformが適用されているため、実際の表示サイズではなく論理サイズを使用
+	const logicalWidth = displayWidth.value;
+	const logicalHeight = displayHeight.value;
 
-	// 3. 描画領域内の座標かチェック
-	const drawingX = elementX - drawingArea.x;
-	const drawingY = elementY - drawingArea.y;
+	// 3. rectはtransform後のサイズなので、transform前のサイズを計算
+	// transform: translate(pan) scale(zoom) が適用されている
+	const transformedWidth = rect.width;
+	const transformedHeight = rect.height;
 
-	// 4. 描画領域外の場合は境界に制限
-	const clampedX = Math.max(0, Math.min(drawingArea.width, drawingX));
-	const clampedY = Math.max(0, Math.min(drawingArea.height, drawingY));
+	// 4. 要素内座標を0-1の正規化座標に変換
+	const normalizedX = elementX / transformedWidth;
+	const normalizedY = elementY / transformedHeight;
 
-	// 5. CSSトランスフォームの逆変換（ズーム・パン適用前の表示座標系で処理）
-	let transformedX = clampedX;
-	let transformedY = clampedY;
+	// 5. transform-originを考慮した逆変換
+	// transform-origin: center の場合、中心を基準にスケールされる
+	const originX = isTouchDevice.value ? zoomCenter.value.x : logicalWidth / 2;
+	const originY = isTouchDevice.value ? zoomCenter.value.y : logicalHeight / 2;
 
-	if (zoomLevel.value !== 1.0 || panOffset.value.x !== 0 || panOffset.value.y !== 0) {
-		// transform-origin: center を基準とした逆変換
-		// 表示座標系での中心点
-		const centerX = drawingArea.width / 2;
-		const centerY = drawingArea.height / 2;
+	// 6. 正規化座標を論理座標系に変換（transform前）
+	const displayX = normalizedX * transformedWidth;
+	const displayY = normalizedY * transformedHeight;
 
-		// Step 1: パンの逆変換（表示座標系）
-		const afterUntranslateX = transformedX - panOffset.value.x;
-		const afterUntranslateY = transformedY - panOffset.value.y;
+	// 7. パンの逆変換
+	const afterUntranslateX = displayX - panOffset.value.x;
+	const afterUntranslateY = displayY - panOffset.value.y;
 
-		// Step 2: ズームの逆変換（transform-origin: center 基準、表示座標系）
-		const fromCenterX = afterUntranslateX - centerX;
-		const fromCenterY = afterUntranslateY - centerY;
-		const unscaledFromCenterX = fromCenterX / zoomLevel.value;
-		const unscaledFromCenterY = fromCenterY / zoomLevel.value;
+	// 8. ズームの逆変換（transform-origin基準）
+	const fromOriginX = afterUntranslateX - originX;
+	const fromOriginY = afterUntranslateY - originY;
+	const unscaledX = fromOriginX / zoomLevel.value + originX;
+	const unscaledY = fromOriginY / zoomLevel.value + originY;
 
-		transformedX = unscaledFromCenterX + centerX;
-		transformedY = unscaledFromCenterY + centerY;
-	}
+	// 9. 論理キャンバス座標に変換
+	const scale = logicalWidth / canvasWidth.value;
+	let logicalX = unscaledX / scale;
+	let logicalY = unscaledY / scale;
 
-	// 6. 論理キャンバス座標に変換
-	let logicalX = transformedX / drawingArea.scale;
-	let logicalY = transformedY / drawingArea.scale;
-
-	// 7. 詳細なサイズ情報を取得（デバッグ用）
+	// 10. 詳細なサイズ情報を取得（デバッグ用）
 	const physicalWidth = canvasEl.value.width;
 	const physicalHeight = canvasEl.value.height;
 	const cssWidth = parseFloat(canvasEl.value.style.width || '0');
@@ -2401,7 +2529,7 @@ function screenToCanvasCoordinates(clientX: number, clientY: number): { x: numbe
 	const actualDisplayHeight = rect.height;
 	const dpr = window.devicePixelRatio || 1;
 
-	// 8. 最終座標を論理キャンバス範囲内にクランプ
+	// 11. 最終座標を論理キャンバス範囲内にクランプ
 	const beforeClampX = logicalX;
 	const beforeClampY = logicalY;
 	logicalX = Math.max(0, Math.min(canvasWidth.value, logicalX));
@@ -2419,25 +2547,26 @@ function screenToCanvasCoordinates(clientX: number, clientY: number): { x: numbe
 			cssStyle: `${cssWidth.toFixed(1)}×${cssHeight.toFixed(1)}`,
 			actualDisplay: `${actualDisplayWidth.toFixed(1)}×${actualDisplayHeight.toFixed(1)}`,
 			logical: `${canvasWidth.value}×${canvasHeight.value}`,
-			drawingArea: `${drawingArea.width.toFixed(1)}×${drawingArea.height.toFixed(1)}`
+			displaySize: `${logicalWidth}×${logicalHeight}`
 		},
 		input: {
 			screen: `(${clientX.toFixed(1)}, ${clientY.toFixed(1)})`,
 			element: `(${elementX.toFixed(1)}, ${elementY.toFixed(1)})`,
-			drawing: `(${drawingX.toFixed(1)}, ${drawingY.toFixed(1)})`,
-			clamped: `(${clampedX.toFixed(1)}, ${clampedY.toFixed(1)})`,
-			logical: `(${beforeClampX.toFixed(1)}, ${beforeClampY.toFixed(1)})`
+			normalized: `(${normalizedX.toFixed(3)}, ${normalizedY.toFixed(3)})`,
+			display: `(${displayX.toFixed(1)}, ${displayY.toFixed(1)})`,
+			afterUntranslate: `(${afterUntranslateX.toFixed(1)}, ${afterUntranslateY.toFixed(1)})`
 		},
 		scales: {
-			drawingScale: drawingArea.scale.toFixed(3),
-			aspectRatio: `${canvasWidth.value}:${canvasHeight.value} vs ${actualDisplayWidth.toFixed(0)}:${actualDisplayHeight.toFixed(0)}`,
-			offset: `(${drawingArea.x.toFixed(1)}, ${drawingArea.y.toFixed(1)})`
+			scale: scale.toFixed(3),
+			transformedSize: `${transformedWidth.toFixed(1)}×${transformedHeight.toFixed(1)}`,
+			aspectRatio: `${canvasWidth.value}:${canvasHeight.value}`
 		},
 		transform: {
 			panOffset: `(${panOffset.value.x.toFixed(1)}, ${panOffset.value.y.toFixed(1)})`,
 			zoomLevel: `${zoomLevel.value.toFixed(2)}x`,
 			zoomCenter: `(${zoomCenter.value.x.toFixed(1)}, ${zoomCenter.value.y.toFixed(1)})`,
-			transformOrigin: isTouchDevice.value ? `${zoomCenter.value.x.toFixed(1)}, ${zoomCenter.value.y.toFixed(1)}` : 'center'
+			origin: `(${originX.toFixed(1)}, ${originY.toFixed(1)})`,
+			unscaled: `(${unscaledX.toFixed(1)}, ${unscaledY.toFixed(1)})`
 		},
 		final: {
 			coordinates: `(${Math.round(logicalX)}, ${Math.round(logicalY)})`,
@@ -2948,8 +3077,8 @@ function adjustCanvasForMobile() {
 .root {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
-	max-height: 100vh;
+	height: calc(100vh - 100px);
+	max-height: calc(100vh - 100px);
 	overflow: hidden;
 	background: var(--MI_THEME-panel);
 
@@ -3221,6 +3350,7 @@ function adjustCanvasForMobile() {
 		text-align: center;
 	}
 
+	.zoomButton,
 	.zoomResetButton {
 		padding: 4px 8px;
 		border: 1px solid var(--MI_THEME-divider);
@@ -4012,15 +4142,15 @@ function adjustCanvasForMobile() {
 	width: calc(100% + 200px);
 	height: calc(100% + 200px);
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	gap: 20px;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 30px;
 	padding: 20px;
 	transform: rotate(-15deg);
 	pointer-events: none;
 }
 
 .watermarkImage {
-	width: 100%;
+	width: 60px;
 	height: auto;
 	opacity: 0.1;
 	object-fit: contain;
