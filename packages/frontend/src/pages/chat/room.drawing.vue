@@ -425,8 +425,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="cursor.userId"
 			:class="$style.cursor"
 			:style="{
-				left: (cursor.x * zoomLevel + panOffset.x) + 'px',
-				top: (cursor.y * zoomLevel + panOffset.y) + 'px',
+				left: ((cursor.x / canvasWidth * displayWidth) * zoomLevel + panOffset.x) + 'px',
+				top: ((cursor.y / canvasHeight * displayHeight) * zoomLevel + panOffset.y) + 'px',
 				transform: `scale(${1 / zoomLevel})`,
 				transformOrigin: 'top left',
 				color: getUserCursorColor(cursor.userId)
