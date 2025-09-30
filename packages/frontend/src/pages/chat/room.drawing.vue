@@ -2914,6 +2914,8 @@ function adjustCanvasForMobile() {
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
+	max-height: 100vh;
+	overflow: hidden;
 	background: var(--MI_THEME-panel);
 
 	&:fullscreen {
