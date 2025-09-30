@@ -488,6 +488,11 @@ import {
 	getUserCursorColor,
 	getContrastColor,
 } from './room.drawing.canvas.js';
+// 新規作成したComposableをインポート
+import { useDrawingHandlers } from './room.drawing.handlers.js';
+import { useDrawingRender } from './room.drawing.render.js';
+import { useDrawingLayers } from './room.drawing.layers.js';
+import { useDrawingNetwork } from './room.drawing.network.js';
 // 分離したComposableをインポート
 import {
 	useDrawing,
