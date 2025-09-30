@@ -72,9 +72,58 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- 拡大縮小グループ -->
 		<div :class="$style.zoomGroup" v-if="isTouchDevice">
 			<span :class="$style.label">倍率:</span>
-			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}%</span>
+			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}% ({{ Math.round(displayWidth * zoomLevel) }}×{{ Math.round(displayHeight * zoomLevel) }})</span>
 			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット">
 				<i class="ti ti-zoom-reset"></i>
+			</button>
+			<button :class="$style.debugButton" @click="showDebugPanel = !showDebugPanel" title="デバッグ情報">
+				<i class="ti ti-bug"></i>
+			</button>
+		</div>
+
+		<!-- 手ブレ補正設定（モバイル版） -->
+		<div :class="$style.touchCorrectionGroup" v-if="isTouchDevice">
+			<span :class="$style.label">手ブレ補正:</span>
+			<button
+				:class="[$style.correctionButton, { [$style.active]: handShakeCorrection.enabled.value }]"
+				@click="handShakeCorrection.enabled.value = !handShakeCorrection.enabled.value"
+				title="手ブレスムージング"
+			>
+				<i class="ti ti-wand"></i>
+			</button>
+			<div :class="$style.correctionLevelGroup" v-if="handShakeCorrection.enabled.value">
+				<span :class="$style.levelLabel">Lv:</span>
+				<button
+					v-for="level in correctionLevels"
+					:key="level.level"
+					:class="[$style.levelButton, { [$style.active]: handShakeCorrection.level.value === level.level }]"
+					@click="handShakeCorrection.level.value = level.level"
+					:title="`補正レベル ${level.level} (${level.name})`"
+				>
+					{{ level.level }}
+				</button>
+			</div>
+		</div>
+
+		<!-- Undo/Redoボタン -->
+		<div :class="$style.undoRedoGroup">
+			<button
+				:class="[$style.undoButton, { [$style.disabled]: !canUndo }]"
+				@click="undo"
+				:disabled="!canUndo"
+				title="戻す (Ctrl+Z)"
+			>
+				<i class="ti ti-arrow-back-up"></i>
+				<span v-if="!isTouchDevice">戻す</span>
+			</button>
+			<button
+				:class="[$style.redoButton, { [$style.disabled]: !canRedo }]"
+				@click="redo"
+				:disabled="!canRedo"
+				title="やり直す (Ctrl+Y)"
+			>
+				<i class="ti ti-arrow-forward-up"></i>
+				<span v-if="!isTouchDevice">やり直す</span>
 			</button>
 		</div>
 
@@ -83,6 +132,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.fullscreenButton" @click="toggleFullscreen" :title="isFullscreen ? '全画面を終了' : '全画面モード'">
 				<i :class="isFullscreen ? 'ti ti-minimize' : 'ti ti-maximize'"></i>
 				<span v-if="!isTouchDevice">{{ isFullscreen ? '終了' : '全画面' }}</span>
+			</button>
+			<button :class="$style.settingsButton" @click="showCanvasSizeDialog" title="キャンバスサイズ変更">
+				<i class="ti ti-adjustments"></i>
+				<span v-if="!isTouchDevice">サイズ</span>
+			</button>
+			<button :class="$style.debugExportButton" @click="exportDebugLog" title="デバッグログ出力（軌跡記録）">
+				<i class="ti ti-file-export"></i>
+				<span v-if="!isTouchDevice">ログ出力</span>
 			</button>
 			<button :class="$style.saveButton" @click="saveCanvas" title="キャンバスを保存">
 				<i class="ti ti-device-floppy"></i>
@@ -104,6 +161,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<i class="ti ti-wand"></i>
 			</button>
+			<div :class="$style.correctionLevelGroup" v-if="handShakeCorrection.enabled.value">
+				<span :class="$style.levelLabel">レベル:</span>
+				<button
+					v-for="level in correctionLevels"
+					:key="level.level"
+					:class="[$style.levelButton, { [$style.active]: handShakeCorrection.level.value === level.level }]"
+					@click="handShakeCorrection.level.value = level.level"
+					:title="`補正レベル ${level.level} (${level.name})`"
+				>
+					{{ level.level }}
+				</button>
+			</div>
 			<button
 				:class="[$style.correctionButton, { [$style.active]: handShakeCorrection.pressureSimulation.value }]"
 				@click="handShakeCorrection.pressureSimulation.value = !handShakeCorrection.pressureSimulation.value"
@@ -123,6 +192,60 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<!-- キャンバス -->
 	<div :class="$style.canvasContainer">
+		<!-- デバッグパネル -->
+		<div v-if="showDebugPanel" :class="$style.debugPanel">
+			<div :class="$style.debugHeader">
+				<h4>デバッグ情報</h4>
+				<button @click="showDebugPanel = false" :class="$style.debugCloseButton">×</button>
+			</div>
+			<div :class="$style.debugContent">
+				<div :class="$style.debugSection">
+					<h5>📱 デバイス</h5>
+					<p>DPR: {{ debugInfo.device.devicePixelRatio }}</p>
+					<p>Type: {{ debugInfo.device.userAgent }}</p>
+					<p>Touch: {{ debugInfo.device.touchDevice }}</p>
+				</div>
+				<div :class="$style.debugSection">
+					<h5>📐 サイズ</h5>
+					<p>物理: {{ debugInfo.sizes.physical }}</p>
+					<p>CSS: {{ debugInfo.sizes.cssStyle }}</p>
+					<p>表示: {{ debugInfo.sizes.actualDisplay }}</p>
+					<p>論理: {{ debugInfo.sizes.logical }}</p>
+					<p>描画域: {{ debugInfo.sizes.drawingArea }}</p>
+				</div>
+				<div :class="$style.debugSection">
+					<h5>🎯 座標変換</h5>
+					<p>スクリーン: {{ debugInfo.input.screen }}</p>
+					<p>要素内: {{ debugInfo.input.element }}</p>
+					<p>描画域: {{ debugInfo.input.drawing }}</p>
+					<p>制限後: {{ debugInfo.input.clamped }}</p>
+					<p>論理: {{ debugInfo.input.logical }}</p>
+					<p>最終: {{ debugInfo.final.coordinates }}</p>
+				</div>
+				<div :class="$style.debugSection">
+					<h5>⚖️ スケール・比率</h5>
+					<p>描画スケール: {{ debugInfo.scales.drawingScale }}</p>
+					<p>比率: {{ debugInfo.scales.aspectRatio }}</p>
+					<p>オフセット: {{ debugInfo.scales.offset }}</p>
+				</div>
+				<div :class="$style.debugSection">
+					<h5>🔄 変換</h5>
+					<p>パン: {{ debugInfo.transform.panOffset }}</p>
+					<p>ズーム: {{ debugInfo.transform.zoomLevel }}</p>
+					<p>中心: {{ debugInfo.transform.zoomCenter }}</p>
+					<p>基点: {{ debugInfo.transform.transformOrigin }}</p>
+				</div>
+				<div :class="$style.debugSection">
+					<h5>👆 リアルタイム座標</h5>
+					<p>状態: {{ realtimeCoords.isActive ? 'タッチ中' : '待機中' }}</p>
+					<p>スクリーン: {{ realtimeCoords.screen }}</p>
+					<p>キャンバス: {{ realtimeCoords.canvas }}</p>
+				</div>
+				<div :class="$style.debugSection">
+					<h5>🕒 更新: {{ debugInfo.lastUpdate }}</h5>
+				</div>
+			</div>
+		</div>
 		<canvas
 			ref="canvasEl"
 			:class="$style.canvas"
@@ -209,11 +332,37 @@ const drawingId = computed(() => {
 
 // キャンバス関連
 const canvasEl = ref<HTMLCanvasElement>();
-const canvasWidth = 800; // 800x600の標準サイズ
-const canvasHeight = 600;
-const displayWidth = 800; // 表示サイズ（キャンバスサイズと同じ）
-const displayHeight = 600;
+const canvasWidth = ref(800); // 800x600の標準サイズ（可変）
+const canvasHeight = ref(600);
+const displayWidth = ref(800); // 表示サイズ（固定）
+const displayHeight = ref(600);
 let ctx: CanvasRenderingContext2D | null = null;
+
+// キャンバスサイズプリセット
+const canvasSizePresets = [
+	{ name: '標準 (800×600)', width: 800, height: 600 },
+	{ name: '正方形小 (600×600)', width: 600, height: 600 },
+	{ name: '正方形大 (1000×1000)', width: 1000, height: 1000 },
+	{ name: 'HD (1280×720)', width: 1280, height: 720 },
+	{ name: 'Full HD (1920×1080)', width: 1920, height: 1080 },
+	{ name: 'A4縦 (595×842)', width: 595, height: 842 },
+	{ name: 'A4横 (842×595)', width: 842, height: 595 },
+];
+
+// 軌跡記録用のログ
+const drawingTraceLog = ref<Array<{
+	timestamp: number;
+	type: 'touchstart' | 'touchmove' | 'touchend' | 'mousedown' | 'mousemove' | 'mouseup';
+	screenX: number;
+	screenY: number;
+	canvasX: number;
+	canvasY: number;
+	tool: string;
+	color: string;
+	strokeWidth: number;
+	zoomLevel: number;
+	panOffset: { x: number; y: number };
+}>>([]);
 
 // 描画状態
 const isDrawing = ref(false);
@@ -234,11 +383,33 @@ const isFullscreen = ref(false);
 // タッチデバイス検出
 const isTouchDevice = ref(false);
 
+// デバッグ用状態
+let debugLogCount = 0;
+const showDebugPanel = ref(false);
+const debugInfo = ref({
+	device: {},
+	sizes: {},
+	input: {},
+	scales: {},
+	transform: {},
+	final: {},
+	lastUpdate: ''
+});
+
+// リアルタイム座標表示用
+const realtimeCoords = ref({
+	screen: '(0, 0)',
+	canvas: '(0, 0)',
+	isActive: false
+});
+
 // パン（移動）状態
 const isPanning = ref(false);
 const panOffset = ref({ x: 0, y: 0 });
 const panStart = ref({ x: 0, y: 0 });
 const lastTouchDistance = ref(0);
+const isSpaceKeyPressed = ref(false); // スペースキー押下状態
+const isPanningWithSpace = ref(false); // スペースキーでのパン中
 
 // ズーム（拡大縮小）状態
 const zoomLevel = ref(1);
@@ -261,11 +432,23 @@ const twoFingerTapTimeout = 300; // ダブルタップの間隔（ms）
 // 手ブレ補正設定
 const handShakeCorrection = {
 	enabled: ref(true),
-	factor: 0.85, // スムージング係数 (0-1, 高いほど滑らか)
-	minDistance: 1, // 最小移動距離（手ぶれ補正）
-	velocitySmoothing: 0.7, // 速度スムージング係数
+	level: ref(3), // 補正レベル 1-5 (1:最弱, 5:最強)
 	pressureSimulation: ref(true), // 筆圧シミュレーション
 	stabilization: ref(true), // 手ぶれ補正
+};
+
+// 手ブレ補正レベル設定
+const correctionLevels = [
+	{ level: 1, name: '最弱', factor: 0.3, minDistance: 0.5, velocitySmoothing: 0.3 },
+	{ level: 2, name: '弱', factor: 0.5, minDistance: 1, velocitySmoothing: 0.5 },
+	{ level: 3, name: '標準', factor: 0.7, minDistance: 1.5, velocitySmoothing: 0.7 },
+	{ level: 4, name: '強', factor: 0.85, minDistance: 2, velocitySmoothing: 0.85 },
+	{ level: 5, name: '最強', factor: 0.95, minDistance: 3, velocitySmoothing: 0.95 },
+];
+
+// 現在の補正レベル設定を取得
+const getCurrentCorrectionSettings = () => {
+	return correctionLevels[handShakeCorrection.level.value - 1];
 };
 
 // 手ブレ補正用の状態
@@ -294,12 +477,18 @@ const colors = [
 const opacityLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
 // 線の太さレベル
-const strokeWidthLevels = [1, 2, 4, 6, 8, 12];
+const strokeWidthLevels = [1, 3, 10, 30, 50, 100];
 
 // パフォーマンス管理
 const maxUndoHistory = 20; // アンドゥ履歴の最大数
 const strokeHistory = ref<Array<any>>([]); // ストローク履歴
 const rasterizeThreshold = 50; // ラスタライズを実行するストローク数
+
+// Undo/Redo管理
+const undoStack = ref<Array<any>>([]); // 元に戻す用のスタック
+const redoStack = ref<Array<any>>([]); // やり直す用のスタック
+const canUndo = computed(() => undoStack.value.length > 0);
+const canRedo = computed(() => redoStack.value.length > 0);
 
 // WebSocket接続
 const connection = ref<any>();
@@ -337,12 +526,12 @@ onMounted(() => {
 		const dpr = window.devicePixelRatio || 1;
 
 		// 物理サイズを設定
-		canvasEl.value.width = canvasWidth * dpr;
-		canvasEl.value.height = canvasHeight * dpr;
+		canvasEl.value.width = canvasWidth.value * dpr;
+		canvasEl.value.height = canvasHeight.value * dpr;
 
 		// CSS表示サイズを維持
-		canvasEl.value.style.width = canvasWidth + 'px';
-		canvasEl.value.style.height = canvasHeight + 'px';
+		canvasEl.value.style.width = displayWidth.value + 'px';
+		canvasEl.value.style.height = displayHeight.value + 'px';
 
 		ctx = canvasEl.value.getContext('2d', {
 			alpha: true,
@@ -396,10 +585,100 @@ onMounted(() => {
 		canvasRect.value = canvasEl.value.getBoundingClientRect();
 		resizeObserver = new ResizeObserver(() => {
 			if (canvasEl.value) {
-				canvasRect.value = canvasEl.value.getBoundingClientRect();
+				const rect = canvasEl.value.getBoundingClientRect();
+				canvasRect.value = rect;
+				// displayWidth/displayHeightは固定値を維持し、ResizeObserverでは更新しない
+				// transformによるサイズ変化を拾わないようにする
+				console.log('📐 [RESIZE] Canvas rect updated:', {
+					rectWidth: rect.width,
+					rectHeight: rect.height,
+					displayWidth: displayWidth.value,
+					displayHeight: displayHeight.value
+				});
 			}
 		});
 		resizeObserver.observe(canvasEl.value);
+	}
+
+	// キーボードショートカット
+	const handleKeyDown = (e: KeyboardEvent) => {
+		const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+		const ctrlKey = isMac ? e.metaKey : e.ctrlKey;
+
+		// スペースキー: パンモード開始
+		if (e.key === ' ' && !e.repeat && !isTouchDevice.value) {
+			e.preventDefault();
+			isSpaceKeyPressed.value = true;
+			if (canvasEl.value) {
+				canvasEl.value.style.cursor = 'grab';
+			}
+		}
+		// Ctrl+Z / Cmd+Z: Undo
+		else if (ctrlKey && e.key === 'z' && !e.shiftKey) {
+			e.preventDefault();
+			undo();
+		}
+		// Ctrl+Y / Cmd+Y または Ctrl+Shift+Z / Cmd+Shift+Z: Redo
+		else if (ctrlKey && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+			e.preventDefault();
+			redo();
+		}
+		// Ctrl+0 / Cmd+0: ズームをリセット
+		else if (ctrlKey && e.key === '0') {
+			e.preventDefault();
+			resetZoom();
+		}
+	};
+
+	const handleKeyUp = (e: KeyboardEvent) => {
+		// スペースキー: パンモード終了
+		if (e.key === ' ' && !isTouchDevice.value) {
+			isSpaceKeyPressed.value = false;
+			isPanningWithSpace.value = false;
+			if (canvasEl.value) {
+				canvasEl.value.style.cursor = 'crosshair';
+			}
+		}
+	};
+
+	// マウスホイールでズーム（PC版のみ）
+	const handleWheel = (e: WheelEvent) => {
+		if (isTouchDevice.value) return;
+
+		const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+		const ctrlKey = isMac ? e.metaKey : e.ctrlKey;
+
+		// Ctrl/Cmdキーを押しながらホイール操作でズーム
+		if (ctrlKey) {
+			e.preventDefault();
+
+			const delta = e.deltaY > 0 ? -0.1 : 0.1;
+			const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomLevel.value + delta));
+
+			if (newZoom !== zoomLevel.value) {
+				// マウス位置を中心にズーム
+				if (canvasEl.value) {
+					const rect = canvasEl.value.getBoundingClientRect();
+					const mouseX = e.clientX - rect.left;
+					const mouseY = e.clientY - rect.top;
+
+					// 論理座標に変換
+					const logicalX = mouseX * (canvasWidth.value / rect.width);
+					const logicalY = mouseY * (canvasHeight.value / rect.height);
+
+					zoomCenter.value = { x: logicalX, y: logicalY };
+				}
+
+				zoomLevel.value = newZoom;
+				console.log('🎨 [ZOOM] Wheel zoom:', { level: newZoom });
+			}
+		}
+	};
+
+	document.addEventListener('keydown', handleKeyDown);
+	document.addEventListener('keyup', handleKeyUp);
+	if (canvasEl.value) {
+		canvasEl.value.addEventListener('wheel', handleWheel, { passive: false });
 	}
 
 	// 定期的なパフォーマンス監視（30秒間隔）
@@ -410,6 +689,11 @@ onMounted(() => {
 	// コンポーネント終了時にクリア
 	onBeforeUnmount(() => {
 		clearInterval(performanceMonitor);
+		document.removeEventListener('keydown', handleKeyDown);
+		document.removeEventListener('keyup', handleKeyUp);
+		if (canvasEl.value) {
+			canvasEl.value.removeEventListener('wheel', handleWheel);
+		}
 	});
 });
 
@@ -523,6 +807,16 @@ function setStrokeWidth(width: number) {
 function startDrawing(event: MouseEvent | TouchEvent) {
 	if (!ctx) return;
 
+	// スペースキーが押されている場合はパンモード
+	if (isSpaceKeyPressed.value && event instanceof MouseEvent) {
+		isPanningWithSpace.value = true;
+		panStart.value = { x: event.clientX, y: event.clientY };
+		if (canvasEl.value) {
+			canvasEl.value.style.cursor = 'grabbing';
+		}
+		return;
+	}
+
 	isDrawing.value = true;
 
 	// マウス補正状態をリセット
@@ -532,6 +826,18 @@ function startDrawing(event: MouseEvent | TouchEvent) {
 
 	const point = getEventPoint(event);
 	currentPath = [point];
+
+	// 軌跡ログを記録
+	let clientX: number, clientY: number;
+	if (event instanceof MouseEvent) {
+		clientX = event.clientX;
+		clientY = event.clientY;
+		recordTraceLog('mousedown', clientX, clientY, point.x, point.y);
+	} else if (event.touches.length > 0) {
+		clientX = event.touches[0].clientX;
+		clientY = event.touches[0].clientY;
+		recordTraceLog('touchstart', clientX, clientY, point.x, point.y);
+	}
 
 	if (currentTool.value === 'eyedropper') {
 		eyedropColor(point);
@@ -547,7 +853,37 @@ function startDrawing(event: MouseEvent | TouchEvent) {
 function draw(event: MouseEvent | TouchEvent) {
 	if (!ctx) return;
 
+	// スペースキーでのパン中
+	if (isPanningWithSpace.value && event instanceof MouseEvent) {
+		const deltaX = event.clientX - panStart.value.x;
+		const deltaY = event.clientY - panStart.value.y;
+
+		panOffset.value = {
+			x: panOffset.value.x + deltaX,
+			y: panOffset.value.y + deltaY
+		};
+
+		panStart.value = { x: event.clientX, y: event.clientY };
+		return;
+	}
+
 	const point = getEventPoint(event);
+
+	// 軌跡ログを記録
+	let clientX: number, clientY: number;
+	if (event instanceof MouseEvent) {
+		clientX = event.clientX;
+		clientY = event.clientY;
+		if (isDrawing.value) {
+			recordTraceLog('mousemove', clientX, clientY, point.x, point.y);
+		}
+	} else if (event.touches.length > 0) {
+		clientX = event.touches[0].clientX;
+		clientY = event.touches[0].clientY;
+		if (isDrawing.value) {
+			recordTraceLog('touchmove', clientX, clientY, point.x, point.y);
+		}
+	}
 
 	// カーソル位置を他のユーザーに送信
 	sendCursorPosition(point);
@@ -565,24 +901,23 @@ function draw(event: MouseEvent | TouchEvent) {
 
 // 描画終了
 function stopDrawing() {
+	// スペースキーでのパン終了
+	if (isPanningWithSpace.value) {
+		isPanningWithSpace.value = false;
+		if (canvasEl.value && isSpaceKeyPressed.value) {
+			canvasEl.value.style.cursor = 'grab';
+		} else if (canvasEl.value) {
+			canvasEl.value.style.cursor = 'crosshair';
+		}
+		return;
+	}
+
 	if (!isDrawing.value || currentPath.length === 0) return;
 
 	isDrawing.value = false;
 
-	// 滑らかな線描画で最終的な描画を実行
-	if (currentPath.length > 2) {
-		// 現在のパスを一度クリアして滑らかに再描画
-		const tempPath = [...currentPath];
-
-		// 高品質な滑らかな曲線で最終描画
-		drawSmoothPath(
-			tempPath,
-			strokeWidth.value,
-			currentColor.value,
-			currentOpacity.value,
-			currentTool.value === 'eraser'
-		);
-	}
+	// リアルタイム描画で既に描画済みなので、ここでの再描画は不要
+	// 再描画すると線が重なって太くなってしまう
 
 	// ストローク履歴に追加
 	const strokeData = {
@@ -622,15 +957,18 @@ function applyHandShakeCorrection(rawPoint: { x: number; y: number }): { x: numb
 	);
 	const timeDelta = currentTime - lastTime;
 
-	// 手ぶれ補正: 最小移動距離未満の場合は前の点を返す
-	if (handShakeCorrection.stabilization.value && distance < handShakeCorrection.minDistance) {
+	// 現在の補正レベル設定を取得
+	const settings = getCurrentCorrectionSettings();
+
+	// 手ぶれ補正: 最小移動距離未満の場合は前の点を返す（レベルに応じて閾値変更）
+	if (handShakeCorrection.stabilization.value && distance < settings.minDistance) {
 		return smoothedPoint;
 	}
 
-	// 速度計算
+	// 速度計算（レベルに応じてスムージング係数変更）
 	if (timeDelta > 0) {
 		const currentVelocity = distance / timeDelta;
-		velocity = velocity * handShakeCorrection.velocitySmoothing + currentVelocity * (1 - handShakeCorrection.velocitySmoothing);
+		velocity = velocity * settings.velocitySmoothing + currentVelocity * (1 - settings.velocitySmoothing);
 
 		// 速度履歴を更新（最新5つを保持）
 		velocityHistory.push(velocity);
@@ -639,10 +977,10 @@ function applyHandShakeCorrection(rawPoint: { x: number; y: number }): { x: numb
 		}
 	}
 
-	// スムージング適用
+	// スムージング適用（レベルに応じて補正強度変更）
 	smoothedPoint = {
-		x: smoothedPoint.x * handShakeCorrection.factor + rawPoint.x * (1 - handShakeCorrection.factor),
-		y: smoothedPoint.y * handShakeCorrection.factor + rawPoint.y * (1 - handShakeCorrection.factor)
+		x: smoothedPoint.x * settings.factor + rawPoint.x * (1 - settings.factor),
+		y: smoothedPoint.y * settings.factor + rawPoint.y * (1 - settings.factor)
 	};
 
 	// バッファに追加（予測描画用）
@@ -683,8 +1021,8 @@ function getAccurateCoordinates(canvas: HTMLCanvasElement, clientX: number, clie
 	const cssY = clientY - rect.top;
 
 	// CSS座標をキャンバス座標にスケール
-	const scaleX = canvasWidth / rect.width;
-	const scaleY = canvasHeight / rect.height;
+	const scaleX = canvasWidth.value / rect.width;
+	const scaleY = canvasHeight.value / rect.height;
 
 	let canvasX = cssX * scaleX;
 	let canvasY = cssY * scaleY;
@@ -700,8 +1038,8 @@ function getAccurateCoordinates(canvas: HTMLCanvasElement, clientX: number, clie
 	}
 
 	// キャンバス境界内に制限
-	const clampedX = Math.max(0, Math.min(canvasWidth, canvasX));
-	const clampedY = Math.max(0, Math.min(canvasHeight, canvasY));
+	const clampedX = Math.max(0, Math.min(canvasWidth.value, canvasX));
+	const clampedY = Math.max(0, Math.min(canvasHeight.value, canvasY));
 
 	return {
 		x: clampedX,
@@ -727,11 +1065,39 @@ function getEventPoint(event: MouseEvent | TouchEvent): { x: number; y: number }
 	let coordinates = screenToCanvasCoordinates(clientX, clientY);
 
 	// キャンバス範囲内にクランプ
-	coordinates.x = Math.max(0, Math.min(canvasWidth, coordinates.x));
-	coordinates.y = Math.max(0, Math.min(canvasHeight, coordinates.y));
+	coordinates.x = Math.max(0, Math.min(canvasWidth.value, coordinates.x));
+	coordinates.y = Math.max(0, Math.min(canvasHeight.value, coordinates.y));
 
 	// 手ブレ補正を適用
 	return applyHandShakeCorrection(coordinates);
+}
+
+// 軌跡ログを記録
+function recordTraceLog(
+	type: 'touchstart' | 'touchmove' | 'touchend' | 'mousedown' | 'mousemove' | 'mouseup',
+	screenX: number,
+	screenY: number,
+	canvasX: number,
+	canvasY: number
+) {
+	// ログが大きくなりすぎないよう、最大1000件に制限
+	if (drawingTraceLog.value.length >= 1000) {
+		drawingTraceLog.value.shift();
+	}
+
+	drawingTraceLog.value.push({
+		timestamp: Date.now(),
+		type,
+		screenX,
+		screenY,
+		canvasX,
+		canvasY,
+		tool: currentTool.value,
+		color: currentColor.value,
+		strokeWidth: strokeWidth.value,
+		zoomLevel: zoomLevel.value,
+		panOffset: { ...panOffset.value }
+	});
 }
 
 // ダグラス・ピューカー法による線の簡素化
@@ -995,7 +1361,7 @@ function redrawWithActiveStrokes() {
 	if (!ctx) return;
 
 	// 現在のキャンバス状態を保存
-	const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+	const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value);
 
 	// 進行中の描画を一時的に描画
 	for (const [, strokeData] of otherActiveStrokes.value) {
@@ -1255,7 +1621,7 @@ async function clearCanvas() {
 
 function clearCanvasLocal() {
 	if (!ctx) return;
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 }
 
 // ズームをリセット
@@ -1266,37 +1632,385 @@ function resetZoom() {
 	console.log('🎨 [DEBUG] Zoom reset to 100%');
 }
 
-// スクリーン座標をキャンバス座標に変換（ズーム・パン考慮）
-function screenToCanvasCoordinates(clientX: number, clientY: number): { x: number; y: number } {
-	// キャンバス要素から最新のBoundingRectを取得
-	if (!canvasEl.value) return { x: clientX, y: clientY };
+// キャンバスサイズ変更ダイアログを表示
+async function showCanvasSizeDialog() {
+	const items = canvasSizePresets.map(preset => ({
+		text: preset.name,
+		value: preset
+	}));
 
-	const rect = canvasEl.value.getBoundingClientRect();
+	items.push({
+		text: 'カスタムサイズ...',
+		value: null
+	});
 
-	// キャンバス要素の相対座標を取得
-	const canvasX = clientX - rect.left;
-	const canvasY = clientY - rect.top;
+	const { canceled, result } = await os.select({
+		title: 'キャンバスサイズを選択',
+		items,
+		default: items.find(item => item.value?.width === canvasWidth.value && item.value?.height === canvasHeight.value)?.value
+	});
 
-	// CSSのtransformが適用されているため、逆変換を行う
-	// transform: translate(panX, panY) scale(zoom)の逆変換
-	// 1. パン補正を逆算
-	const unPannedX = canvasX - panOffset.value.x;
-	const unPannedY = canvasY - panOffset.value.y;
+	if (canceled) return;
 
-	// 2. スケール補正を逆算
-	const unScaledX = unPannedX / zoomLevel.value;
-	const unScaledY = unPannedY / zoomLevel.value;
+	if (result === null) {
+		// カスタムサイズ入力
+		const { canceled: widthCanceled, result: width } = await os.inputText({
+			title: '幅を入力',
+			placeholder: '800',
+			default: String(canvasWidth.value)
+		});
+		if (widthCanceled) return;
 
-	return { x: unScaledX, y: unScaledY };
+		const { canceled: heightCanceled, result: height } = await os.inputText({
+			title: '高さを入力',
+			placeholder: '600',
+			default: String(canvasHeight.value)
+		});
+		if (heightCanceled) return;
+
+		const w = parseInt(width);
+		const h = parseInt(height);
+
+		if (isNaN(w) || isNaN(h) || w < 100 || h < 100 || w > 4000 || h > 4000) {
+			os.alert({
+				type: 'error',
+				text: 'サイズは100〜4000の範囲で指定してください'
+			});
+			return;
+		}
+
+		await changeCanvasSize(w, h);
+	} else {
+		await changeCanvasSize(result.width, result.height);
+	}
 }
 
-// キャンバス座標をスクリーン座標に変換（ズーム・パン考慮）
+// キャンバスサイズを変更
+async function changeCanvasSize(newWidth: number, newHeight: number) {
+	if (!ctx || !canvasEl.value) return;
+
+	// 現在の描画内容を保存
+	const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value);
+
+	// 新しいサイズを設定
+	canvasWidth.value = newWidth;
+	canvasHeight.value = newHeight;
+
+	// DPRを考慮してキャンバスを再初期化
+	const dpr = window.devicePixelRatio || 1;
+	canvasEl.value.width = newWidth * dpr;
+	canvasEl.value.height = newHeight * dpr;
+	canvasEl.value.style.width = displayWidth.value + 'px';
+	canvasEl.value.style.height = displayHeight.value + 'px';
+
+	// コンテキストを再取得
+	ctx = canvasEl.value.getContext('2d', {
+		willReadFrequently: false,
+		alpha: true
+	});
+
+	if (!ctx) return;
+
+	ctx.scale(dpr, dpr);
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'round';
+
+	// 以前の描画を復元
+	ctx.putImageData(imageData, 0, 0);
+
+	// ズームをリセット
+	resetZoom();
+
+	os.toast(`キャンバスサイズを ${newWidth}×${newHeight} に変更しました`);
+	console.log('🎨 [SIZE] Canvas size changed:', { width: newWidth, height: newHeight });
+}
+
+// Undo（元に戻す）
+function undo() {
+	if (!canUndo.value || !ctx) return;
+
+	// 現在の状態をredoスタックに保存
+	const currentState = {
+		history: [...strokeHistory.value],
+		imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
+	};
+	redoStack.value.push(currentState);
+
+	// undoスタックから前の状態を取得
+	const previousState = undoStack.value.pop();
+	if (!previousState) return;
+
+	// strokeHistoryを復元
+	strokeHistory.value = [...previousState.history];
+
+	// キャンバスをクリアして再描画
+	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+	// 履歴から再描画
+	redrawCanvasFromHistory();
+
+	console.log('🎨 [UNDO] Undo performed', {
+		undoStackSize: undoStack.value.length,
+		redoStackSize: redoStack.value.length,
+		strokeCount: strokeHistory.value.length
+	});
+}
+
+// Redo（やり直す）
+function redo() {
+	if (!canRedo.value || !ctx) return;
+
+	// 現在の状態をundoスタックに保存
+	const currentState = {
+		history: [...strokeHistory.value],
+		imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
+	};
+	undoStack.value.push(currentState);
+
+	// redoスタックから次の状態を取得
+	const nextState = redoStack.value.pop();
+	if (!nextState) return;
+
+	// strokeHistoryを復元
+	strokeHistory.value = [...nextState.history];
+
+	// キャンバスをクリアして再描画
+	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+	// 履歴から再描画
+	redrawCanvasFromHistory();
+
+	console.log('🎨 [REDO] Redo performed', {
+		undoStackSize: undoStack.value.length,
+		redoStackSize: redoStack.value.length,
+		strokeCount: strokeHistory.value.length
+	});
+}
+
+// デバッグログを出力（軌跡記録付き）
+async function exportDebugLog() {
+	const debugData = {
+		timestamp: new Date().toISOString(),
+		canvasInfo: {
+			canvasWidth: canvasWidth.value,
+			canvasHeight: canvasHeight.value,
+			displayWidth: displayWidth.value,
+			displayHeight: displayHeight.value,
+			devicePixelRatio: window.devicePixelRatio
+		},
+		currentState: {
+			tool: currentTool.value,
+			color: currentColor.value,
+			strokeWidth: strokeWidth.value,
+			opacity: currentOpacity.value,
+			zoomLevel: zoomLevel.value,
+			panOffset: panOffset.value
+		},
+		traceLog: drawingTraceLog.value,
+		strokeHistory: strokeHistory.value.map(stroke => ({
+			tool: stroke.tool,
+			color: stroke.color,
+			strokeWidth: stroke.strokeWidth,
+			pointCount: stroke.points.length
+		})),
+		debugInfo: debugInfo.value,
+		performance: monitorPerformance()
+	};
+
+	// JSON形式でダウンロード
+	const json = JSON.stringify(debugData, null, 2);
+	const blob = new Blob([json], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = `drawing-debug-${Date.now()}.json`;
+	a.click();
+	URL.revokeObjectURL(url);
+
+	os.toast('デバッグログを出力しました');
+	console.log('🎨 [DEBUG] Debug log exported:', debugData);
+}
+
+// 実際の描画可能領域を計算
+function getActualDrawingArea() {
+	if (!canvasEl.value) return { x: 0, y: 0, width: 800, height: 600, scale: 1 };
+
+	const rect = canvasEl.value.getBoundingClientRect();
+	const containerWidth = rect.width;
+	const containerHeight = rect.height;
+
+	// 論理キャンバスの縦横比
+	const canvasAspect = canvasWidth.value / canvasHeight.value;
+	const containerAspect = containerWidth / containerHeight;
+
+	let actualWidth, actualHeight, offsetX, offsetY, scale;
+
+	if (containerAspect > canvasAspect) {
+		// コンテナが横長の場合、高さに合わせる
+		actualHeight = containerHeight;
+		actualWidth = actualHeight * canvasAspect;
+		offsetX = (containerWidth - actualWidth) / 2;
+		offsetY = 0;
+		scale = actualHeight / canvasHeight.value;
+	} else {
+		// コンテナが縦長の場合、幅に合わせる
+		actualWidth = containerWidth;
+		actualHeight = actualWidth / canvasAspect;
+		offsetX = 0;
+		offsetY = (containerHeight - actualHeight) / 2;
+		scale = actualWidth / canvasWidth.value;
+	}
+
+	return {
+		x: offsetX,
+		y: offsetY,
+		width: actualWidth,
+		height: actualHeight,
+		scale: scale
+	};
+}
+
+// スクリーン座標をキャンバス座標に変換（アスペクト比対応版）
+function screenToCanvasCoordinates(clientX: number, clientY: number): { x: number; y: number } {
+	if (!canvasEl.value) return { x: clientX, y: clientY };
+
+	// 要素の境界取得
+	const rect = canvasEl.value.getBoundingClientRect();
+
+	// 1. スクリーン座標をキャンバス要素内の相対位置に変換
+	const elementX = clientX - rect.left;
+	const elementY = clientY - rect.top;
+
+	// 2. 実際の描画可能領域を取得
+	const drawingArea = getActualDrawingArea();
+
+	// 3. 描画領域内の座標かチェック
+	const drawingX = elementX - drawingArea.x;
+	const drawingY = elementY - drawingArea.y;
+
+	// 4. 描画領域外の場合は境界に制限
+	const clampedX = Math.max(0, Math.min(drawingArea.width, drawingX));
+	const clampedY = Math.max(0, Math.min(drawingArea.height, drawingY));
+
+	// 5. 論理キャンバス座標に変換
+	let logicalX = clampedX / drawingArea.scale;
+	let logicalY = clampedY / drawingArea.scale;
+
+	// 6. 詳細なサイズ情報を取得（デバッグ用）
+	const physicalWidth = canvasEl.value.width;
+	const physicalHeight = canvasEl.value.height;
+	const cssWidth = parseFloat(canvasEl.value.style.width || '0');
+	const cssHeight = parseFloat(canvasEl.value.style.height || '0');
+	const actualDisplayWidth = rect.width;
+	const actualDisplayHeight = rect.height;
+	const dpr = window.devicePixelRatio || 1;
+
+	// 7. CSSトランスフォームの逆変換（必要な場合のみ）
+	if (zoomLevel.value !== 1.0 || panOffset.value.x !== 0 || panOffset.value.y !== 0) {
+		// ズーム中心点を論理キャンバス座標で取得
+		let originX, originY;
+		if (isTouchDevice.value && (zoomCenter.value.x !== 0 || zoomCenter.value.y !== 0)) {
+			// モバイル: 実際のピンチ中心（論理座標系）
+			originX = zoomCenter.value.x;
+			originY = zoomCenter.value.y;
+		} else {
+			// デスクトップ: キャンバス中央（論理座標系）
+			originX = canvasWidth.value / 2;
+			originY = canvasHeight.value / 2;
+		}
+
+		// Step 1: パンオフセットの逆変換
+		// パンオフセットは描画エリアのスケールで正規化済みなので、直接適用
+		const afterUntranslateX = logicalX - panOffset.value.x;
+		const afterUntranslateY = logicalY - panOffset.value.y;
+
+		// Step 2: ズームの逆変換（transform-origin基準）
+		const fromOriginX = afterUntranslateX - originX;
+		const fromOriginY = afterUntranslateY - originY;
+		const unscaledFromOriginX = fromOriginX / zoomLevel.value;
+		const unscaledFromOriginY = fromOriginY / zoomLevel.value;
+
+		logicalX = unscaledFromOriginX + originX;
+		logicalY = unscaledFromOriginY + originY;
+	}
+
+	// 8. 最終座標を論理キャンバス範囲内にクランプ
+	const beforeClampX = logicalX;
+	const beforeClampY = logicalY;
+	logicalX = Math.max(0, Math.min(canvasWidth.value, logicalX));
+	logicalY = Math.max(0, Math.min(canvasHeight.value, logicalY));
+
+	// デバッグ情報を更新（新しい計算方法対応）
+	debugInfo.value = {
+		device: {
+			devicePixelRatio: dpr.toFixed(2),
+			userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop',
+			touchDevice: isTouchDevice.value ? 'Yes' : 'No'
+		},
+		sizes: {
+			physical: `${physicalWidth}×${physicalHeight}`,
+			cssStyle: `${cssWidth.toFixed(1)}×${cssHeight.toFixed(1)}`,
+			actualDisplay: `${actualDisplayWidth.toFixed(1)}×${actualDisplayHeight.toFixed(1)}`,
+			logical: `${canvasWidth.value}×${canvasHeight.value}`,
+			drawingArea: `${drawingArea.width.toFixed(1)}×${drawingArea.height.toFixed(1)}`
+		},
+		input: {
+			screen: `(${clientX.toFixed(1)}, ${clientY.toFixed(1)})`,
+			element: `(${elementX.toFixed(1)}, ${elementY.toFixed(1)})`,
+			drawing: `(${drawingX.toFixed(1)}, ${drawingY.toFixed(1)})`,
+			clamped: `(${clampedX.toFixed(1)}, ${clampedY.toFixed(1)})`,
+			logical: `(${beforeClampX.toFixed(1)}, ${beforeClampY.toFixed(1)})`
+		},
+		scales: {
+			drawingScale: drawingArea.scale.toFixed(3),
+			aspectRatio: `${canvasWidth.value}:${canvasHeight.value} vs ${actualDisplayWidth.toFixed(0)}:${actualDisplayHeight.toFixed(0)}`,
+			offset: `(${drawingArea.x.toFixed(1)}, ${drawingArea.y.toFixed(1)})`
+		},
+		transform: {
+			panOffset: `(${panOffset.value.x.toFixed(1)}, ${panOffset.value.y.toFixed(1)})`,
+			zoomLevel: `${zoomLevel.value.toFixed(2)}x`,
+			zoomCenter: `(${zoomCenter.value.x.toFixed(1)}, ${zoomCenter.value.y.toFixed(1)})`,
+			transformOrigin: isTouchDevice.value ? `${zoomCenter.value.x.toFixed(1)}, ${zoomCenter.value.y.toFixed(1)}` : 'center'
+		},
+		final: {
+			coordinates: `(${Math.round(logicalX)}, ${Math.round(logicalY)})`,
+			beforeClamp: `(${beforeClampX.toFixed(1)}, ${beforeClampY.toFixed(1)})`,
+			afterClamp: `(${logicalX.toFixed(1)}, ${logicalY.toFixed(1)})`
+		},
+		lastUpdate: new Date().toLocaleTimeString()
+	};
+
+	return { x: Math.round(logicalX), y: Math.round(logicalY) };
+}
+
+// キャンバス座標をスクリーン座標に変換（スマホ向け高精度変換）
 function canvasToScreenCoordinates(canvasX: number, canvasY: number): { x: number; y: number } {
 	if (!canvasRect.value) return { x: canvasX, y: canvasY };
 
-	// ズームとパンを適用
-	const screenX = (canvasX * zoomLevel.value) + panOffset.value.x + canvasRect.value.left;
-	const screenY = (canvasY * zoomLevel.value) + panOffset.value.y + canvasRect.value.top;
+	// CSS Transformを考慮した順変換
+	// transform: translate(panX, panY) scale(zoom) の順変換
+
+	// 1. Transform Origin (基準点) を取得
+	const originX = isTouchDevice.value ? zoomCenter.value.x : displayWidth.value / 2;
+	const originY = isTouchDevice.value ? zoomCenter.value.y : displayHeight.value / 2;
+
+	// 2. Scale（拡大縮小）の適用（基準点中心）
+	const fromOriginX = canvasX - originX;
+	const fromOriginY = canvasY - originY;
+
+	const scaledFromOriginX = fromOriginX * zoomLevel.value;
+	const scaledFromOriginY = fromOriginY * zoomLevel.value;
+
+	const afterScaleX = scaledFromOriginX + originX;
+	const afterScaleY = scaledFromOriginY + originY;
+
+	// 3. Translate（平行移動）の適用
+	const afterTranslateX = afterScaleX + panOffset.value.x;
+	const afterTranslateY = afterScaleY + panOffset.value.y;
+
+	// 4. スクリーン座標に変換
+	const screenX = afterTranslateX + canvasRect.value.left;
+	const screenY = afterTranslateY + canvasRect.value.top;
 
 	return { x: screenX, y: screenY };
 }
@@ -1338,7 +2052,27 @@ function handleTouchStart(e: TouchEvent) {
 		const centerY = (touch1.clientY + touch2.clientY) / 2;
 
 		panStart.value = { x: centerX, y: centerY };
-		zoomCenter.value = { x: centerX, y: centerY };
+
+		// ズーム中心点を論理座標系に直接変換して記録
+		const drawingArea = getActualDrawingArea();
+		const elementX = centerX - (canvasEl.value?.getBoundingClientRect().left || 0);
+		const elementY = centerY - (canvasEl.value?.getBoundingClientRect().top || 0);
+		const drawingX = elementX - drawingArea.x;
+		const drawingY = elementY - drawingArea.y;
+
+		// 描画領域内に制限
+		const clampedDrawingX = Math.max(0, Math.min(drawingArea.width, drawingX));
+		const clampedDrawingY = Math.max(0, Math.min(drawingArea.height, drawingY));
+
+		// 論理座標に変換（ズーム・パン未適用状態）
+		const logicalX = clampedDrawingX / drawingArea.scale;
+		const logicalY = clampedDrawingY / drawingArea.scale;
+
+		// 論理キャンバス範囲内に制限
+		const finalX = Math.max(0, Math.min(canvasWidth.value, logicalX));
+		const finalY = Math.max(0, Math.min(canvasHeight.value, logicalY));
+
+		zoomCenter.value = { x: finalX, y: finalY };
 
 		// 初期距離を記録
 		const dx = touch1.clientX - touch2.clientX;
@@ -1418,10 +2152,15 @@ function handleTouchMove(e: TouchEvent) {
 		// パン処理
 		if (gestureState.value === 'pan' || gestureState.value === 'hybrid') {
 			if (Math.abs(panDeltaX) > 1 || Math.abs(panDeltaY) > 1) {
+				// 描画エリアのスケールに合わせてパンオフセットを調整
+				const drawingArea = getActualDrawingArea();
+				const scaledPanDeltaX = panDeltaX / drawingArea.scale;
+				const scaledPanDeltaY = panDeltaY / drawingArea.scale;
+
 				requestAnimationFrame(() => {
 					panOffset.value = {
-						x: panOffset.value.x + panDeltaX,
-						y: panOffset.value.y + panDeltaY
+						x: panOffset.value.x + scaledPanDeltaX,
+						y: panOffset.value.y + scaledPanDeltaY
 					};
 				});
 			}
@@ -1472,7 +2211,7 @@ function handleTouchEnd(e: TouchEvent) {
 function monitorPerformance() {
 	const stats = {
 		strokeCount: strokeHistory.value.length,
-		canvasSize: `${canvasWidth}x${canvasHeight}`,
+		canvasSize: `${canvasWidth.value}x${canvasHeight.value}`,
 		memoryUsage: (performance as any).memory ? {
 			used: Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024),
 			total: Math.round((performance as any).memory.totalJSHeapSize / 1024 / 1024),
@@ -1534,6 +2273,23 @@ async function loadCanvasData() {
 
 // ストローク履歴管理
 function addStrokeToHistory(strokeData: any) {
+	// 新しいストロークを追加する前に、現在の状態をundoスタックに保存
+	if (ctx) {
+		const currentState = {
+			history: [...strokeHistory.value],
+			imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
+		};
+		undoStack.value.push(currentState);
+
+		// undoスタックのサイズ制限
+		if (undoStack.value.length > maxUndoHistory) {
+			undoStack.value.shift();
+		}
+	}
+
+	// 新しいストロークを追加したらredoスタックをクリア
+	redoStack.value = [];
+
 	strokeHistory.value.push(strokeData);
 
 	// アンドゥ履歴の制限
@@ -1562,7 +2318,7 @@ function performRasterization() {
 		const imageData = canvasEl.value.toDataURL();
 
 		// キャンバスをクリアして再描画
-		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+		ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 
 		// 保存した画像を背景として描画
 		const img = new Image();
@@ -1625,7 +2381,7 @@ function redrawCanvasFromHistory() {
 	if (!ctx) return;
 
 	// キャンバスをクリア
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 
 	// 履歴からすべてのストロークを再描画
 	for (const stroke of strokeHistory.value) {
@@ -1697,7 +2453,7 @@ function adjustCanvasForMobile() {
 	const maxHeight = containerRect.height - 32;
 
 	// アスペクト比を維持しながらリサイズ
-	const aspectRatio = canvasWidth / canvasHeight;
+	const aspectRatio = canvasWidth.value / canvasHeight.value;
 	let newWidth = maxWidth;
 	let newHeight = maxWidth / aspectRatio;
 
@@ -1985,6 +2741,35 @@ function adjustCanvasForMobile() {
 	}
 }
 
+.undoRedoGroup {
+	display: flex;
+	gap: 4px;
+	margin-right: 8px;
+}
+
+.undoButton,
+.redoButton {
+	padding: 6px 12px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--MI_THEME-fg);
+	transition: all 0.2s;
+
+	&:hover:not(.disabled) {
+		background: var(--MI_THEME-accentedBg);
+	}
+
+	&.disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+}
+
 .actionGroup {
 	margin-left: auto;
 	display: flex;
@@ -2001,6 +2786,40 @@ function adjustCanvasForMobile() {
 	align-items: center;
 	gap: 4px;
 	color: var(--MI_THEME-accent);
+	transition: all 0.2s;
+
+	&:hover {
+		background: var(--MI_THEME-accentedBg);
+	}
+}
+
+.settingsButton {
+	padding: 6px 12px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--MI_THEME-fg);
+	transition: all 0.2s;
+
+	&:hover {
+		background: var(--MI_THEME-accentedBg);
+	}
+}
+
+.debugExportButton {
+	padding: 6px 12px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--MI_THEME-fg);
 	transition: all 0.2s;
 
 	&:hover {
@@ -2235,8 +3054,60 @@ function adjustCanvasForMobile() {
 	}
 }
 
+.touchCorrectionGroup {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	background: var(--MI_THEME-buttonBg);
+	border-radius: 6px;
+}
+
+.correctionLevelGroup {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	margin-left: 4px;
+}
+
+.levelLabel {
+	font-size: 10px;
+	color: var(--MI_THEME-fgTransparentWeak);
+	margin-right: 2px;
+}
+
+.levelButton {
+	background: transparent;
+	border: 1px solid var(--MI_THEME-divider);
+	color: var(--MI_THEME-fg);
+	padding: 4px;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 11px;
+	font-weight: bold;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+		border-color: var(--MI_THEME-accent);
+		color: var(--MI_THEME-accent);
+	}
+
+	&.active {
+		background: var(--MI_THEME-accent);
+		color: var(--MI_THEME-accentFg);
+		border-color: var(--MI_THEME-accent);
+		box-shadow: 0 0 4px rgba(var(--MI_THEME-accent-rgb), 0.3);
+	}
+}
+
 @container (max-width: 500px) {
-	.mouseCorrectionGroup {
+	.mouseCorrectionGroup, .touchCorrectionGroup {
 		gap: 2px;
 	}
 
@@ -2247,6 +3118,133 @@ function adjustCanvasForMobile() {
 
 		i {
 			font-size: 10px;
+		}
+	}
+
+	.levelButton {
+		width: 20px;
+		height: 20px;
+		font-size: 9px;
+	}
+
+	.levelLabel {
+		font-size: 8px;
+	}
+}
+
+.debugButton {
+	padding: 4px 8px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--MI_THEME-fg);
+	transition: all 0.2s ease;
+	margin-left: 4px;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+		color: var(--MI_THEME-accent);
+		border-color: var(--MI_THEME-accent);
+	}
+
+	i {
+		font-size: 16px;
+	}
+}
+
+.debugPanel {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background: var(--MI_THEME-panel);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 8px;
+	width: 320px;
+	max-height: 80vh;
+	overflow-y: auto;
+	z-index: 1000;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.debugHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-bg);
+
+	h4 {
+		margin: 0;
+		font-size: 14px;
+		font-weight: bold;
+		color: var(--MI_THEME-fg);
+	}
+}
+
+.debugCloseButton {
+	background: none;
+	border: none;
+	color: var(--MI_THEME-fg);
+	cursor: pointer;
+	font-size: 18px;
+	padding: 2px 6px;
+	border-radius: 4px;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+}
+
+.debugContent {
+	padding: 8px 12px;
+	font-size: 11px;
+	line-height: 1.3;
+}
+
+.debugSection {
+	margin-bottom: 12px;
+
+	h5 {
+		margin: 0 0 4px 0;
+		font-size: 12px;
+		font-weight: bold;
+		color: var(--MI_THEME-accent);
+	}
+
+	p {
+		margin: 2px 0;
+		color: var(--MI_THEME-fg);
+		font-family: monospace;
+		background: var(--MI_THEME-bg);
+		padding: 2px 4px;
+		border-radius: 2px;
+		word-break: break-all;
+	}
+}
+
+@container (max-width: 500px) {
+	.debugPanel {
+		width: 280px;
+		right: 5px;
+		top: 5px;
+		max-height: 70vh;
+	}
+
+	.debugContent {
+		font-size: 10px;
+		padding: 6px 8px;
+	}
+
+	.debugSection {
+		margin-bottom: 8px;
+
+		h5 {
+			font-size: 11px;
 		}
 	}
 }
