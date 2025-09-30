@@ -2267,11 +2267,35 @@ function screenToCanvasCoordinates(clientX: number, clientY: number): { x: numbe
 	const clampedX = Math.max(0, Math.min(drawingArea.width, drawingX));
 	const clampedY = Math.max(0, Math.min(drawingArea.height, drawingY));
 
-	// 5. 論理キャンバス座標に変換
-	let logicalX = clampedX / drawingArea.scale;
-	let logicalY = clampedY / drawingArea.scale;
+	// 5. CSSトランスフォームの逆変換（ズーム・パン適用前の表示座標系で処理）
+	let transformedX = clampedX;
+	let transformedY = clampedY;
 
-	// 6. 詳細なサイズ情報を取得（デバッグ用）
+	if (zoomLevel.value !== 1.0 || panOffset.value.x !== 0 || panOffset.value.y !== 0) {
+		// transform-origin: center を基準とした逆変換
+		// 表示座標系での中心点
+		const centerX = drawingArea.width / 2;
+		const centerY = drawingArea.height / 2;
+
+		// Step 1: パンの逆変換（表示座標系）
+		const afterUntranslateX = transformedX - panOffset.value.x;
+		const afterUntranslateY = transformedY - panOffset.value.y;
+
+		// Step 2: ズームの逆変換（transform-origin: center 基準、表示座標系）
+		const fromCenterX = afterUntranslateX - centerX;
+		const fromCenterY = afterUntranslateY - centerY;
+		const unscaledFromCenterX = fromCenterX / zoomLevel.value;
+		const unscaledFromCenterY = fromCenterY / zoomLevel.value;
+
+		transformedX = unscaledFromCenterX + centerX;
+		transformedY = unscaledFromCenterY + centerY;
+	}
+
+	// 6. 論理キャンバス座標に変換
+	let logicalX = transformedX / drawingArea.scale;
+	let logicalY = transformedY / drawingArea.scale;
+
+	// 7. 詳細なサイズ情報を取得（デバッグ用）
 	const physicalWidth = canvasEl.value.width;
 	const physicalHeight = canvasEl.value.height;
 	const cssWidth = parseFloat(canvasEl.value.style.width || '0');
@@ -2279,27 +2303,6 @@ function screenToCanvasCoordinates(clientX: number, clientY: number): { x: numbe
 	const actualDisplayWidth = rect.width;
 	const actualDisplayHeight = rect.height;
 	const dpr = window.devicePixelRatio || 1;
-
-	// 7. CSSトランスフォームの逆変換（必要な場合のみ）
-	if (zoomLevel.value !== 1.0 || panOffset.value.x !== 0 || panOffset.value.y !== 0) {
-		// transform-origin: center を基準とした逆変換
-		// キャンバス中央（論理座標系）
-		const originX = canvasWidth.value / 2;
-		const originY = canvasHeight.value / 2;
-
-		// Step 1: パンオフセットの逆変換
-		const afterUntranslateX = logicalX - panOffset.value.x;
-		const afterUntranslateY = logicalY - panOffset.value.y;
-
-		// Step 2: ズームの逆変換（transform-origin: center 基準）
-		const fromOriginX = afterUntranslateX - originX;
-		const fromOriginY = afterUntranslateY - originY;
-		const unscaledFromOriginX = fromOriginX / zoomLevel.value;
-		const unscaledFromOriginY = fromOriginY / zoomLevel.value;
-
-		logicalX = unscaledFromOriginX + originX;
-		logicalY = unscaledFromOriginY + originY;
-	}
 
 	// 8. 最終座標を論理キャンバス範囲内にクランプ
 	const beforeClampX = logicalX;
@@ -3324,7 +3327,7 @@ function adjustCanvasForMobile() {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #ffffff;
+	background: #f5f5f5;
 	padding: 16px;
 	touch-action: none; /* ネイティブタッチ操作を無効化 */
 }
@@ -3337,6 +3340,7 @@ function adjustCanvasForMobile() {
 	max-height: 100%;
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	background: #ffffff;
 }
 
 @container (max-width: 600px) {
