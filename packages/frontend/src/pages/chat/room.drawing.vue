@@ -464,6 +464,30 @@ import { ensureSignin } from '@/i.js';
 import * as os from '@/os.js';
 import { defineAsyncComponent } from 'vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
+// 分離したコンポーネントをインポート
+import DrawingToolbar from './room.drawing.toolbar.vue';
+import DrawingDebugPanel from './room.drawing.debug.vue';
+// 分離したモジュールをインポート
+import type {
+	ToolType,
+	Point,
+	PressurePoint,
+	StrokeData,
+	DrawingTraceLog,
+	CommunicationLog,
+	CanvasSize,
+	DebugInfo,
+	RealtimeCoords,
+	CorrectionLevel,
+} from './room.drawing.types.js';
+import { screenToCanvasCoordinates, getActualDrawingArea } from './room.drawing.coordinates.js';
+import {
+	drawSmoothPath,
+	applyHandShakeCorrection,
+	simulatePressureFromVelocity,
+	getUserCursorColor,
+	getContrastColor,
+} from './room.drawing.canvas.js';
 
 const props = defineProps<{
 	roomId?: string;
@@ -2454,151 +2478,31 @@ function formatLogData(data: any): string {
 	return String(data);
 }
 
-// 実際の描画可能領域を計算
-function getActualDrawingArea() {
-	if (!canvasEl.value) return { x: 0, y: 0, width: 800, height: 600, scale: 1 };
-
-	const rect = canvasEl.value.getBoundingClientRect();
-	const containerWidth = rect.width;
-	const containerHeight = rect.height;
-
-	// 論理キャンバスの縦横比
-	const canvasAspect = canvasWidth.value / canvasHeight.value;
-	const containerAspect = containerWidth / containerHeight;
-
-	let actualWidth, actualHeight, offsetX, offsetY, scale;
-
-	if (containerAspect > canvasAspect) {
-		// コンテナが横長の場合、高さに合わせる
-		actualHeight = containerHeight;
-		actualWidth = actualHeight * canvasAspect;
-		offsetX = (containerWidth - actualWidth) / 2;
-		offsetY = 0;
-		scale = actualHeight / canvasHeight.value;
-	} else {
-		// コンテナが縦長の場合、幅に合わせる
-		actualWidth = containerWidth;
-		actualHeight = actualWidth / canvasAspect;
-		offsetX = 0;
-		offsetY = (containerHeight - actualHeight) / 2;
-		scale = actualWidth / canvasWidth.value;
-	}
-
-	return {
-		x: offsetX,
-		y: offsetY,
-		width: actualWidth,
-		height: actualHeight,
-		scale: scale
-	};
+// ラッパー関数: インポートした座標変換関数を使用
+function screenToCanvas(clientX: number, clientY: number): Point {
+	return screenToCanvasCoordinates(
+		clientX,
+		clientY,
+		canvasEl.value,
+		canvasWidth.value,
+		canvasHeight.value,
+		displayWidth.value,
+		displayHeight.value,
+		panOffset.value,
+		zoomLevel.value,
+		zoomCenter.value,
+		isTouchDevice.value,
+		debugInfo
+	);
 }
 
-// スクリーン座標をキャンバス座標に変換（アスペクト比対応版）
-function screenToCanvasCoordinates(clientX: number, clientY: number): { x: number; y: number } {
-	if (!canvasEl.value) return { x: clientX, y: clientY };
-
-	// 要素の境界取得（CSS transform適用後）
-	const rect = canvasEl.value.getBoundingClientRect();
-
-	// 1. スクリーン座標をキャンバス要素内の相対位置に変換
-	const elementX = clientX - rect.left;
-	const elementY = clientY - rect.top;
-
-	// 2. displayWidth/displayHeightベースで計算（transformを考慮しない論理サイズ）
-	// CSS transformが適用されているため、実際の表示サイズではなく論理サイズを使用
-	const logicalWidth = displayWidth.value;
-	const logicalHeight = displayHeight.value;
-
-	// 3. rectはtransform後のサイズなので、transform前のサイズを計算
-	// transform: translate(pan) scale(zoom) が適用されている
-	const transformedWidth = rect.width;
-	const transformedHeight = rect.height;
-
-	// 4. 要素内座標を0-1の正規化座標に変換
-	const normalizedX = elementX / transformedWidth;
-	const normalizedY = elementY / transformedHeight;
-
-	// 5. transform-originを考慮した逆変換
-	// transform-origin: center の場合、中心を基準にスケールされる
-	const originX = isTouchDevice.value ? zoomCenter.value.x : logicalWidth / 2;
-	const originY = isTouchDevice.value ? zoomCenter.value.y : logicalHeight / 2;
-
-	// 6. 正規化座標を表示座標系に変換（transform前の論理表示サイズを使用）
-	const displayX = normalizedX * logicalWidth;
-	const displayY = normalizedY * logicalHeight;
-
-	// 7. パンの逆変換
-	const afterUntranslateX = displayX - panOffset.value.x;
-	const afterUntranslateY = displayY - panOffset.value.y;
-
-	// 8. ズームの逆変換（transform-origin基準）
-	const fromOriginX = afterUntranslateX - originX;
-	const fromOriginY = afterUntranslateY - originY;
-	const unscaledX = fromOriginX / zoomLevel.value + originX;
-	const unscaledY = fromOriginY / zoomLevel.value + originY;
-
-	// 9. 論理キャンバス座標に変換
-	const scale = logicalWidth / canvasWidth.value;
-	let logicalX = unscaledX / scale;
-	let logicalY = unscaledY / scale;
-
-	// 10. 詳細なサイズ情報を取得（デバッグ用）
-	const physicalWidth = canvasEl.value.width;
-	const physicalHeight = canvasEl.value.height;
-	const cssWidth = parseFloat(canvasEl.value.style.width || '0');
-	const cssHeight = parseFloat(canvasEl.value.style.height || '0');
-	const actualDisplayWidth = rect.width;
-	const actualDisplayHeight = rect.height;
-	const dpr = window.devicePixelRatio || 1;
-
-	// 11. 最終座標を論理キャンバス範囲内にクランプ
-	const beforeClampX = logicalX;
-	const beforeClampY = logicalY;
-	logicalX = Math.max(0, Math.min(canvasWidth.value, logicalX));
-	logicalY = Math.max(0, Math.min(canvasHeight.value, logicalY));
-
-	// デバッグ情報を更新（新しい計算方法対応）
-	debugInfo.value = {
-		device: {
-			devicePixelRatio: dpr.toFixed(2),
-			userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop',
-			touchDevice: isTouchDevice.value ? 'Yes' : 'No'
-		},
-		sizes: {
-			physical: `${physicalWidth}×${physicalHeight}`,
-			cssStyle: `${cssWidth.toFixed(1)}×${cssHeight.toFixed(1)}`,
-			actualDisplay: `${actualDisplayWidth.toFixed(1)}×${actualDisplayHeight.toFixed(1)}`,
-			logical: `${canvasWidth.value}×${canvasHeight.value}`,
-			displaySize: `${logicalWidth}×${logicalHeight}`
-		},
-		input: {
-			screen: `(${clientX.toFixed(1)}, ${clientY.toFixed(1)})`,
-			element: `(${elementX.toFixed(1)}, ${elementY.toFixed(1)})`,
-			normalized: `(${normalizedX.toFixed(3)}, ${normalizedY.toFixed(3)})`,
-			display: `(${displayX.toFixed(1)}, ${displayY.toFixed(1)})`,
-			afterUntranslate: `(${afterUntranslateX.toFixed(1)}, ${afterUntranslateY.toFixed(1)})`
-		},
-		scales: {
-			scale: scale.toFixed(3),
-			transformedSize: `${transformedWidth.toFixed(1)}×${transformedHeight.toFixed(1)}`,
-			aspectRatio: `${canvasWidth.value}:${canvasHeight.value}`
-		},
-		transform: {
-			panOffset: `(${panOffset.value.x.toFixed(1)}, ${panOffset.value.y.toFixed(1)})`,
-			zoomLevel: `${zoomLevel.value.toFixed(2)}x`,
-			zoomCenter: `(${zoomCenter.value.x.toFixed(1)}, ${zoomCenter.value.y.toFixed(1)})`,
-			origin: `(${originX.toFixed(1)}, ${originY.toFixed(1)})`,
-			unscaled: `(${unscaledX.toFixed(1)}, ${unscaledY.toFixed(1)})`
-		},
-		final: {
-			coordinates: `(${Math.round(logicalX)}, ${Math.round(logicalY)})`,
-			beforeClamp: `(${beforeClampX.toFixed(1)}, ${beforeClampY.toFixed(1)})`,
-			afterClamp: `(${logicalX.toFixed(1)}, ${logicalY.toFixed(1)})`
-		},
-		lastUpdate: new Date().toLocaleTimeString()
-	};
-
-	return { x: Math.round(logicalX), y: Math.round(logicalY) };
+// ラッパー関数: インポートした描画領域計算関数を使用
+function getDrawingArea() {
+	return getActualDrawingArea(
+		canvasEl.value,
+		canvasWidth.value,
+		canvasHeight.value
+	);
 }
 
 // キャンバス座標をスクリーン座標に変換（スマホ向け高精度変換）
