@@ -40,6 +40,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:style="{ backgroundColor: color }"
 				@click="setColor(color)"
 			></button>
+			<button
+				:class="$style.colorPickerButton"
+				@click="openColorPicker"
+				title="カラーピッカーを開く"
+			>
+				<i class="ti ti-palette"></i>
+			</button>
 		</div>
 
 		<!-- 線の太さ調整 -->
@@ -523,10 +530,24 @@ const progressSendInterval = 50; // 50ms間隔で進行状況を送信
 let canvasRect = ref<DOMRect | null>(null);
 let resizeObserver: ResizeObserver | null = null;
 
-// カラーパレット（少し濃いめのパステル調）
+// カラーパレット（濃いめ）
 const colors = [
-	'#2D2D2D', '#F5F5F5', '#E8A5A5', '#A5E8B0', '#A5C8E8', '#E8E8A5', '#D5A5E8', '#A5E8E8',
-	'#E8C5A8', '#C5E8C5', '#C5D5E8', '#E8E5C5', '#DCC5E8', '#C5E8E5', '#D8D8D8', '#B0B0B0'
+	'#000000', // 黒
+	'#FFFFFF', // 白
+	'#E74C3C', // 赤
+	'#27AE60', // 緑
+	'#3498DB', // 青
+	'#F39C12', // オレンジ
+	'#9B59B6', // 紫
+	'#1ABC9C', // ターコイズ
+	'#E67E22', // カロット
+	'#2ECC71', // エメラルド
+	'#5DADE2', // スカイブルー
+	'#F4D03F', // 黄色
+	'#AF7AC5', // アメジスト
+	'#48C9B0', // アクアマリン
+	'#95A5A6', // グレー
+	'#7F8C8D'  // ダークグレー
 ];
 
 // 透明度レベル
@@ -860,6 +881,28 @@ function setColor(color: string) {
 	currentColor.value = color;
 	if (currentTool.value === 'eraser') {
 		currentTool.value = 'pen';
+	}
+}
+
+// カラーピッカーを開く
+async function openColorPicker() {
+	const { canceled, result } = await os.inputText({
+		title: 'カラーコードを入力',
+		placeholder: '#000000',
+		default: currentColor.value
+	});
+
+	if (canceled || !result) return;
+
+	// HEXカラーコードの検証
+	const hexColorPattern = /^#[0-9A-Fa-f]{6}$/;
+	if (hexColorPattern.test(result)) {
+		setColor(result.toUpperCase());
+	} else {
+		os.alert({
+			type: 'error',
+			text: '正しいHEXカラーコード（例: #FF5733）を入力してください'
+		});
 	}
 }
 
