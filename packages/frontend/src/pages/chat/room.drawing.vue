@@ -623,7 +623,7 @@ const colors = [
 const opacityLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
 // 線の太さレベル
-const strokeWidthLevels = [1, 3, 10, 30, 50, 100];
+const strokeWidthLevels = [1, 2, 3, 10, 50, 100];
 
 // パフォーマンス管理
 const maxUndoHistory = 20; // アンドゥ履歴の最大数
@@ -3944,23 +3944,19 @@ function adjustCanvasForMobile() {
 }
 
 .commLogButton {
-	background: var(--MI_THEME-buttonBg);
-	border: 1px solid var(--MI_THEME-buttonBorder);
-	color: var(--MI_THEME-fg);
-	padding: 8px 12px;
-	border-radius: 8px;
+	padding: 6px 12px;
+	border: 1px solid var(--MI_THEME-divider);
+	background: var(--MI_THEME-panel);
+	border-radius: 6px;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	font-size: 14px;
+	gap: 4px;
+	color: var(--MI_THEME-fg);
+	transition: all 0.2s;
 
 	&:hover {
-		background: var(--MI_THEME-buttonHoverBg);
-	}
-
-	i {
-		font-size: 16px;
+		background: var(--MI_THEME-accentedBg);
 	}
 }
 
