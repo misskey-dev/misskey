@@ -1877,36 +1877,63 @@ async function showCanvasSizeDialog() {
 
 // キャンバスサイズを変更
 async function changeCanvasSize(newWidth: number, newHeight: number) {
-	if (!ctx || !canvasEl.value) return;
-
-	// 現在の描画内容を保存
-	const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value);
+	// 全レイヤーの描画内容を保存
+	const layerImageData: Array<ImageData | null> = [];
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const layerCtx = layerContexts.value[i];
+		if (layerCtx) {
+			layerImageData[i] = layerCtx.getImageData(0, 0, canvasWidth.value, canvasHeight.value);
+		} else {
+			layerImageData[i] = null;
+		}
+	}
 
 	// 新しいサイズを設定
 	canvasWidth.value = newWidth;
 	canvasHeight.value = newHeight;
+	displayWidth.value = newWidth;
+	displayHeight.value = newHeight;
 
-	// DPRを考慮してキャンバスを再初期化
+	// DPRを考慮して全レイヤーのキャンバスを再初期化
 	const dpr = window.devicePixelRatio || 1;
-	canvasEl.value.width = newWidth * dpr;
-	canvasEl.value.height = newHeight * dpr;
-	canvasEl.value.style.width = displayWidth.value + 'px';
-	canvasEl.value.style.height = displayHeight.value + 'px';
 
-	// コンテキストを再取得
-	ctx = canvasEl.value.getContext('2d', {
-		willReadFrequently: false,
-		alpha: true
-	});
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const canvas = layerCanvases.value[i];
+		if (!canvas) continue;
 
-	if (!ctx) return;
+		canvas.width = newWidth * dpr;
+		canvas.height = newHeight * dpr;
 
-	ctx.scale(dpr, dpr);
-	ctx.lineCap = 'round';
-	ctx.lineJoin = 'round';
+		// コンテキストを再取得
+		const context = canvas.getContext('2d', {
+			alpha: true,
+			desynchronized: false,
+			colorSpace: 'srgb',
+			willReadFrequently: false
+		});
 
-	// 以前の描画を復元
-	ctx.putImageData(imageData, 0, 0);
+		if (context) {
+			context.scale(dpr, dpr);
+			context.lineCap = 'round';
+			context.lineJoin = 'round';
+			context.imageSmoothingEnabled = true;
+			context.imageSmoothingQuality = 'high';
+			context.globalCompositeOperation = 'source-over';
+			context.miterLimit = 10;
+			context.lineWidth = 2;
+			context.filter = 'none';
+
+			layerContexts.value[i] = context;
+
+			// 以前の描画を復元
+			if (layerImageData[i]) {
+				context.putImageData(layerImageData[i]!, 0, 0);
+			}
+		}
+	}
+
+	// 現在のレイヤーのコンテキストを更新
+	ctx = layerContexts.value[currentLayer.value];
 
 	// ズームをリセット
 	resetZoom();
