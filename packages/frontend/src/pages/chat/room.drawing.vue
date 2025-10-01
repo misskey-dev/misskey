@@ -289,6 +289,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<!-- キャンバス -->
 	<div
+		ref="canvasContainerEl"
 		:class="$style.canvasContainer"
 		@mousemove="draw"
 		@mouseup="stopDrawing"
@@ -382,12 +383,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- 背景白レイヤー（操作不可） -->
 		<canvas
 			:class="[$style.canvas, $style.backgroundLayer]"
-			:width="canvasWidth"
-			:height="canvasHeight"
+			:width="physicalCanvasWidth"
+			:height="physicalCanvasHeight"
 			:style="{
 				width: displayWidth + 'px',
 				height: displayHeight + 'px',
-				transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+				transform: `translate(-50%, -50%) translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
 				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
 				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease'
 			}"
@@ -398,12 +399,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="`layer-${layerIndex}`"
 			:ref="el => { if (el) layerCanvases[layerIndex] = el as HTMLCanvasElement }"
 			:class="[$style.canvas, $style.layerCanvas]"
-			:width="canvasWidth"
-			:height="canvasHeight"
+			:width="physicalCanvasWidth"
+			:height="physicalCanvasHeight"
 			:style="{
 				width: displayWidth + 'px',
 				height: displayHeight + 'px',
-				transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+				transform: `translate(-50%, -50%) translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
 				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
 				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease',
 				zIndex: MAX_LAYERS - layerIndex,
@@ -553,10 +554,22 @@ const drawingId = computed(() => {
 
 // キャンバス関連
 const canvasEl = ref<HTMLCanvasElement>();
+const canvasContainerEl = ref<HTMLDivElement>();
 const canvasWidth = ref(800); // 800x600の標準サイズ（可変）
 const canvasHeight = ref(600);
 const displayWidth = ref(800); // 表示サイズ（固定）
 const displayHeight = ref(600);
+
+// DPR考慮した物理サイズ（テンプレートバインド用）
+const physicalCanvasWidth = computed(() => {
+	const dpr = window.devicePixelRatio || 1;
+	return canvasWidth.value * dpr;
+});
+const physicalCanvasHeight = computed(() => {
+	const dpr = window.devicePixelRatio || 1;
+	return canvasHeight.value * dpr;
+});
+
 let ctx: CanvasRenderingContext2D | null = null;
 
 // キャンバスサイズプリセット
@@ -781,10 +794,12 @@ const chatOverlay = ref<{
 // 現在の描画パス
 let currentPath: Array<{ x: number; y: number }> = [];
 
-onMounted(() => {
-	// displayサイズを論理サイズに同期
-	displayWidth.value = canvasWidth.value;
-	displayHeight.value = canvasHeight.value;
+onMounted(async () => {
+	// 次のフレームで実行（テンプレートのバインディングが適用された後）
+	await nextTick();
+
+	// コンテナサイズに合わせてdisplayサイズを更新
+	updateDisplaySize();
 
 	// レイヤーキャンバスの初期化
 	const dpr = window.devicePixelRatio || 1;
@@ -796,10 +811,6 @@ onMounted(() => {
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const canvas = layerCanvases.value[i];
 		if (canvas) {
-			// 高解像度キャンバス設定
-			canvas.width = canvasWidth.value * dpr;
-			canvas.height = canvasHeight.value * dpr;
-
 			const context = canvas.getContext('2d', {
 				alpha: true,
 				desynchronized: false,
@@ -1007,6 +1018,9 @@ onMounted(() => {
 		canvasEl.value.addEventListener('wheel', handleWheel, { passive: false });
 	}
 
+	// ウィンドウリサイズ時にdisplayサイズを更新
+	window.addEventListener('resize', updateDisplaySize);
+
 	// 定期的なパフォーマンス監視（30秒間隔）
 	const performanceMonitor = setInterval(() => {
 		monitorPerformance();
@@ -1017,6 +1031,7 @@ onMounted(() => {
 		clearInterval(performanceMonitor);
 		document.removeEventListener('keydown', handleKeyDown);
 		document.removeEventListener('keyup', handleKeyUp);
+		window.removeEventListener('resize', updateDisplaySize);
 		if (canvasEl.value) {
 			canvasEl.value.removeEventListener('wheel', handleWheel);
 		}
@@ -2105,6 +2120,41 @@ async function showCanvasSizeDialog() {
 	await changeCanvasSize(w, h);
 }
 
+// コンテナサイズに合わせてdisplayサイズを更新
+function updateDisplaySize() {
+	if (!canvasContainerEl.value) return;
+
+	const container = canvasContainerEl.value;
+	const containerRect = container.getBoundingClientRect();
+
+	// パディングを考慮（CSS: padding: 16px）
+	const padding = 32; // 16px × 2
+	const containerWidth = containerRect.width - padding;
+	const containerHeight = containerRect.height - padding;
+
+	// キャンバスのアスペクト比
+	const canvasAspect = canvasWidth.value / canvasHeight.value;
+	const containerAspect = containerWidth / containerHeight;
+
+	// コンテナに収まるようにdisplayサイズを計算
+	if (containerAspect > canvasAspect) {
+		// コンテナが横長 → 高さに合わせる
+		displayHeight.value = containerHeight;
+		displayWidth.value = containerHeight * canvasAspect;
+	} else {
+		// コンテナが縦長 → 幅に合わせる
+		displayWidth.value = containerWidth;
+		displayHeight.value = containerWidth / canvasAspect;
+	}
+
+	console.log('📐 [DISPLAY] Display size updated:', {
+		container: `${containerWidth.toFixed(1)}×${containerHeight.toFixed(1)}`,
+		canvas: `${canvasWidth.value}×${canvasHeight.value}`,
+		display: `${displayWidth.value.toFixed(1)}×${displayHeight.value.toFixed(1)}`,
+		aspect: { canvas: canvasAspect.toFixed(3), container: containerAspect.toFixed(3) }
+	});
+}
+
 // キャンバスサイズを変更
 async function changeCanvasSize(newWidth: number, newHeight: number) {
 	// 全レイヤーの描画内容を保存
@@ -2121,18 +2171,41 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	// 新しいサイズを設定
 	canvasWidth.value = newWidth;
 	canvasHeight.value = newHeight;
-	displayWidth.value = newWidth;
-	displayHeight.value = newHeight;
+
+	// コンテナサイズに合わせてdisplayサイズを更新
+	updateDisplaySize();
+
+	console.log('🎨 [SIZE] Updated canvas size:', {
+		canvasWidth: canvasWidth.value,
+		canvasHeight: canvasHeight.value,
+		displayWidth: displayWidth.value,
+		displayHeight: displayHeight.value,
+		physicalWidth: physicalCanvasWidth.value,
+		physicalHeight: physicalCanvasHeight.value
+	});
 
 	// DPRを考慮して全レイヤーのキャンバスを再初期化
 	const dpr = window.devicePixelRatio || 1;
 
+	// 次のフレームで実行（テンプレートのバインディングが適用された後）
+	await nextTick();
+
+	// 実際のcanvas要素のサイズを確認
+	const firstCanvas = layerCanvases.value[0];
+	if (firstCanvas) {
+		console.log('🎨 [SIZE] Actual canvas element:', {
+			cssWidth: firstCanvas.style.width,
+			cssHeight: firstCanvas.style.height,
+			attrWidth: firstCanvas.width,
+			attrHeight: firstCanvas.height,
+			clientWidth: firstCanvas.clientWidth,
+			clientHeight: firstCanvas.clientHeight
+		});
+	}
+
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const canvas = layerCanvases.value[i];
 		if (!canvas) continue;
-
-		canvas.width = newWidth * dpr;
-		canvas.height = newHeight * dpr;
 
 		// コンテキストを再取得
 		const context = canvas.getContext('2d', {
@@ -3661,6 +3734,9 @@ function adjustCanvasForMobile() {
 }
 
 .canvas {
+	position: absolute;
+	top: 50%;
+	left: 50%;
 	border: 1px solid var(--MI_THEME-divider);
 	touch-action: none;
 	border-radius: 8px;
@@ -3676,7 +3752,6 @@ function adjustCanvasForMobile() {
 }
 
 .layerCanvas {
-	position: absolute;
 	background: transparent;
 }
 
