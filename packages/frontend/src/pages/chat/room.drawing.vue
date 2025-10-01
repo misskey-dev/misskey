@@ -789,6 +789,10 @@ onMounted(() => {
 	// レイヤーキャンバスの初期化
 	const dpr = window.devicePixelRatio || 1;
 
+	// canvasElに現在のアクティブレイヤーのcanvasを設定
+	// （イベントリスナーやカーソルスタイル変更用）
+	canvasEl.value = layerCanvases.value[currentLayer.value];
+
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const canvas = layerCanvases.value[i];
 		if (canvas) {
@@ -947,7 +951,7 @@ onMounted(() => {
 				const beforeZoomCoords = screenToCanvasCoordinates(
 				e.clientX,
 				e.clientY,
-				canvasEl.value || null,
+				layerCanvases.value[currentLayer.value] || null,
 				canvasWidth.value,
 				canvasHeight.value,
 				displayWidth.value,
@@ -966,7 +970,7 @@ onMounted(() => {
 				const afterZoomCoords = screenToCanvasCoordinates(
 					e.clientX,
 					e.clientY,
-					canvasEl.value || null,
+					layerCanvases.value[currentLayer.value] || null,
 					canvasWidth.value,
 					canvasHeight.value,
 					displayWidth.value,
@@ -1411,7 +1415,8 @@ function getAccurateCoordinates(canvas: HTMLCanvasElement, clientX: number, clie
 
 // イベントから座標を取得
 function getEventPoint(event: MouseEvent | TouchEvent): { x: number; y: number } {
-	const canvas = canvasEl.value!;
+	// 現在のアクティブレイヤーのcanvas要素を取得
+	const canvas = layerCanvases.value[currentLayer.value];
 
 	let clientX: number, clientY: number;
 	if (event instanceof MouseEvent) {
@@ -1427,7 +1432,7 @@ function getEventPoint(event: MouseEvent | TouchEvent): { x: number; y: number }
 	let coordinates = screenToCanvasCoordinates(
 		clientX,
 		clientY,
-		canvasEl.value || null,
+		canvas || null,
 		canvasWidth.value,
 		canvasHeight.value,
 		displayWidth.value,
@@ -2294,6 +2299,8 @@ function switchLayer(layerIndex: number) {
 	// 新しいレイヤーに切り替え
 	currentLayer.value = layerIndex;
 	ctx = layerContexts.value[layerIndex];
+	// canvasElも更新（イベントリスナーやカーソルスタイル変更用）
+	canvasEl.value = layerCanvases.value[layerIndex];
 	console.log('🎨 [LAYER] Switched to layer', layerIndex);
 }
 
@@ -2568,10 +2575,12 @@ function formatLogData(data: any): string {
 
 // ラッパー関数: インポートした座標変換関数を使用
 function screenToCanvas(clientX: number, clientY: number): Point {
+	// 現在のアクティブレイヤーのcanvas要素を取得
+	const canvas = layerCanvases.value[currentLayer.value];
 	return screenToCanvasCoordinates(
 		clientX,
 		clientY,
-		canvasEl.value || null,
+		canvas || null,
 		canvasWidth.value,
 		canvasHeight.value,
 		displayWidth.value,
@@ -2586,8 +2595,10 @@ function screenToCanvas(clientX: number, clientY: number): Point {
 
 // ラッパー関数: インポートした描画領域計算関数を使用
 function getDrawingArea() {
+	// 現在のアクティブレイヤーのcanvas要素を取得
+	const canvas = layerCanvases.value[currentLayer.value];
 	return getActualDrawingArea(
-		canvasEl.value || null,
+		canvas || null,
 		canvasWidth.value,
 		canvasHeight.value
 	);

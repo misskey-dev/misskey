@@ -103,21 +103,18 @@ export function screenToCanvasCoordinates(
 	const transformedHeight = canvasRect.height;
 
 	// 正規化座標（0-1）に変換
+	// transformedWidth/Height = displayWidth/Height × zoomLevel
 	const normalizedX = canvasRelativeX / transformedWidth;
 	const normalizedY = canvasRelativeY / transformedHeight;
 
-	// zoom適用前の論理表示サイズでの座標に変換
-	const beforeZoomX = normalizedX * displayWidth;
-	const beforeZoomY = normalizedY * displayHeight;
-
-	// pan逆適用: translate(panOffset.x, panOffset.y)を打ち消す
-	const beforePanX = beforeZoomX - panOffset.x;
-	const beforePanY = beforeZoomY - panOffset.y;
-
-	// 4. 論理キャンバス座標に変換
-	const scale = displayWidth / canvasWidth;
-	let logicalX = beforePanX / scale;
-	let logicalY = beforePanY / scale;
+	// 論理キャンバス座標に直接変換
+	// normalizedX × canvasWidth = (canvasRelativeX / (displayWidth × zoom)) × canvasWidth
+	// displayWidth = canvasWidth の場合、これは canvasRelativeX / zoom と同じ
+	// つまり、zoom の逆変換が自動的に行われる
+	// pan の影響は、rect.left/top がすでに translate(pan) を含んでいるため、
+	// canvasRelativeX = clientX - rect.left の時点で自動的に除去されている
+	let logicalX = normalizedX * canvasWidth;
+	let logicalY = normalizedY * canvasHeight;
 
 	// 5. 詳細なサイズ情報を取得（デバッグ用）
 	const physicalWidth = canvasEl.width;
@@ -145,46 +142,31 @@ export function screenToCanvasCoordinates(
 		top: canvasRect.top.toFixed(1),
 		width: canvasRect.width.toFixed(1),
 		height: canvasRect.height.toFixed(1),
+		説明: `transform適用後のサイズ = displaySize × zoom`,
 	});
 	console.log('📊 Canvas相対座標:', {
 		canvasRelativeX: canvasRelativeX.toFixed(1),
 		canvasRelativeY: canvasRelativeY.toFixed(1),
 		計算式: `client - rect.left/top`,
+		説明: `panの影響は自動除去済み`,
 	});
 	console.log('🔢 正規化座標 (0-1):', {
 		normalizedX: normalizedX.toFixed(4),
 		normalizedY: normalizedY.toFixed(4),
 		計算式: `canvasRelative / transformedSize`,
 	});
-	console.log('🎨 論理表示サイズ:', {
-		displayWidth,
-		displayHeight,
-	});
-	console.log('🔍 Zoom適用前座標:', {
-		beforeZoomX: beforeZoomX.toFixed(1),
-		beforeZoomY: beforeZoomY.toFixed(1),
-		計算式: `normalized * displaySize`,
-	});
-	console.log('➡️ Pan逆適用:', {
-		panOffsetX: panOffset.x.toFixed(1),
-		panOffsetY: panOffset.y.toFixed(1),
-		beforePanX: beforePanX.toFixed(1),
-		beforePanY: beforePanY.toFixed(1),
-		計算式: `beforeZoom - panOffset`,
-	});
-	console.log('⚖️ スケール変換:', {
-		scale: scale.toFixed(4),
-		計算式: `displayWidth / canvasWidth = ${displayWidth} / ${canvasWidth}`,
-	});
 	console.log('✅ 最終論理座標:', {
 		beforeClamp: `(${beforeClampX.toFixed(1)}, ${beforeClampY.toFixed(1)})`,
 		afterClamp: `(${logicalX.toFixed(1)}, ${logicalY.toFixed(1)})`,
-		計算式: `beforePan / scale`,
+		計算式: `normalized × canvasSize`,
+		説明: `zoomの逆変換は自動適用済み`,
 	});
 	console.log('🔧 Transform状態:', {
-		zoomLevel: zoomLevel.toFixed(2) + 'x',
+		zoomLevel: zoomLevel.toFixed(3) + 'x',
 		panOffset: `(${panOffset.x.toFixed(1)}, ${panOffset.y.toFixed(1)})`,
-		zoomCenter: `(${zoomCenter.x.toFixed(1)}, ${zoomCenter.y.toFixed(1)})`,
+		canvasSize: `${canvasWidth}×${canvasHeight}`,
+		displaySize: `${displayWidth}×${displayHeight}`,
+		transformedSize: `${transformedWidth.toFixed(1)}×${transformedHeight.toFixed(1)}`,
 	});
 	console.log('===========================================================');
 
@@ -207,13 +189,11 @@ export function screenToCanvasCoordinates(
 				screen: `(${clientX.toFixed(1)}, ${clientY.toFixed(1)})`,
 				canvasRelative: `(${canvasRelativeX.toFixed(1)}, ${canvasRelativeY.toFixed(1)})`,
 				normalized: `(${normalizedX.toFixed(3)}, ${normalizedY.toFixed(3)})`,
-				beforeZoom: `(${beforeZoomX.toFixed(1)}, ${beforeZoomY.toFixed(1)})`,
-				beforePan: `(${beforePanX.toFixed(1)}, ${beforePanY.toFixed(1)})`,
 			},
 			scales: {
-				scale: scale.toFixed(3),
 				transformedSize: `${transformedWidth.toFixed(1)}×${transformedHeight.toFixed(1)}`,
 				aspectRatio: `${canvasWidth}:${canvasHeight}`,
+				zoomLevel: zoomLevel.toFixed(3),
 			},
 			transform: {
 				panOffset: `(${panOffset.x.toFixed(1)}, ${panOffset.y.toFixed(1)})`,

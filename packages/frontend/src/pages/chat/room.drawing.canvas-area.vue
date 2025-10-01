@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			width: displayWidth + 'px',
 			height: displayHeight + 'px',
 			transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
-			transformOrigin: `${zoomCenter.x}px ${zoomCenter.y}px`
+			transformOrigin: transformOrigin
 		}"
 	></canvas>
 
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			width: displayWidth + 'px',
 			height: displayHeight + 'px',
 			transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
-			transformOrigin: `${zoomCenter.x}px ${zoomCenter.y}px`
+			transformOrigin: transformOrigin
 		}"
 		@mousedown="handleMouseDown"
 		@touchstart="handleTouchStart"
@@ -80,6 +80,7 @@ const props = defineProps<{
 	panOffset: Point;
 	zoomLevel: number;
 	zoomCenter: Point;
+	isTouchDevice: boolean;
 	otherCursors: Array<{
 		userId: string;
 		userName: string;
@@ -90,6 +91,11 @@ const props = defineProps<{
 	showWatermark: boolean;
 	watermarkText: string;
 }>();
+
+// Computed transform origin
+const transformOrigin = computed(() => {
+	return props.isTouchDevice ? `${props.zoomCenter.x}px ${props.zoomCenter.y}px` : 'center';
+});
 
 // Emits
 const emit = defineEmits<{
