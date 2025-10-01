@@ -295,6 +295,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@mouseup="stopDrawing"
 		@mouseleave="stopDrawing"
 		@wheel="handleWheel"
+		@touchstart="handleContainerTouchStart"
+		@touchmove="handleContainerTouchMove"
+		@touchend="handleContainerTouchEnd"
 	>
 		<!-- デバッグパネル -->
 		<div v-if="showDebugPanel" :class="$style.debugPanel">
@@ -389,7 +392,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				width: displayWidth + 'px',
 				height: displayHeight + 'px',
 				transform: `translate(-50%, -50%) translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
-				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
+				transformOrigin: 'center',
 				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease'
 			}"
 		></canvas>
@@ -405,7 +408,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				width: displayWidth + 'px',
 				height: displayHeight + 'px',
 				transform: `translate(-50%, -50%) translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
-				transformOrigin: isTouchDevice ? `${zoomCenter.x}px ${zoomCenter.y}px` : 'center',
+				transformOrigin: 'center',
 				transition: (isPanning || isZooming) ? 'none' : 'transform 0.2s ease',
 				zIndex: MAX_LAYERS - layerIndex,
 				opacity: layerVisible[layerIndex] ? layerOpacity[layerIndex] : 0,
@@ -2731,6 +2734,11 @@ function handleTouchStart(e: TouchEvent) {
 			console.log('🎨 [DEBUG] Two-finger double tap detected, performing advanced undo');
 			performAdvancedUndo();
 			lastTwoFingerTap.value = 0; // リセット
+			// すべてのジェスチャー状態をリセット
+			isPanning.value = false;
+			isZooming.value = false;
+			gestureState.value = 'none';
+			distanceHistory.value = [];
 			return;
 		}
 
@@ -2747,26 +2755,34 @@ function handleTouchStart(e: TouchEvent) {
 
 		panStart.value = { x: centerX, y: centerY };
 
-		// ズーム中心点を論理座標系に直接変換して記録
-		const drawingArea = getActualDrawingArea(canvasEl.value || null, canvasWidth.value, canvasHeight.value);
-		const elementX = centerX - (canvasEl.value?.getBoundingClientRect().left || 0);
-		const elementY = centerY - (canvasEl.value?.getBoundingClientRect().top || 0);
-		const drawingX = elementX - drawingArea.x;
-		const drawingY = elementY - drawingArea.y;
+		// ズーム中心点を論理座標系に変換
+		if (canvasEl.value) {
+			const canvasRect = canvasEl.value.getBoundingClientRect();
 
-		// 描画領域内に制限
-		const clampedDrawingX = Math.max(0, Math.min(drawingArea.width, drawingX));
-		const clampedDrawingY = Math.max(0, Math.min(drawingArea.height, drawingY));
+			// canvas要素内の相対座標
+			const canvasRelativeX = centerX - canvasRect.left;
+			const canvasRelativeY = centerY - canvasRect.top;
 
-		// 論理座標に変換（ズーム・パン未適用状態）
-		const logicalX = clampedDrawingX / drawingArea.scale;
-		const logicalY = clampedDrawingY / drawingArea.scale;
+			// transform適用後のサイズ
+			const transformedWidth = canvasRect.width;
+			const transformedHeight = canvasRect.height;
 
-		// 論理キャンバス範囲内に制限
-		const finalX = Math.max(0, Math.min(canvasWidth.value, logicalX));
-		const finalY = Math.max(0, Math.min(canvasHeight.value, logicalY));
+			// 正規化座標（0-1）
+			const normalizedX = canvasRelativeX / transformedWidth;
+			const normalizedY = canvasRelativeY / transformedHeight;
 
-		zoomCenter.value = { x: finalX, y: finalY };
+			// 論理キャンバス座標に変換
+			let logicalX = normalizedX * canvasWidth.value;
+			let logicalY = normalizedY * canvasHeight.value;
+
+			// 論理キャンバス範囲内に制限
+			logicalX = Math.max(0, Math.min(canvasWidth.value, logicalX));
+			logicalY = Math.max(0, Math.min(canvasHeight.value, logicalY));
+
+			zoomCenter.value = { x: logicalX, y: logicalY };
+
+			console.log('🎨 [DEBUG] Zoom center:', Math.round(logicalX), Math.round(logicalY));
+		}
 
 		// 初期距離を記録
 		const dx = touch1.clientX - touch2.clientX;
@@ -2838,6 +2854,25 @@ function handleTouchMove(e: TouchEvent) {
 			const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomLevel.value * zoomFactor));
 
 			if (Math.abs(newZoom - zoomLevel.value) > 0.01) {
+				// ズーム中心を維持するためのパンオフセット調整
+				// ズーム中心（論理座標）をピクセル座標に変換
+				const centerPixelX = (zoomCenter.value.x / canvasWidth.value) * displayWidth.value;
+				const centerPixelY = (zoomCenter.value.y / canvasHeight.value) * displayHeight.value;
+
+				// transformOriginが'center'なので、中心からの相対位置を計算
+				const relativeCenterX = centerPixelX - displayWidth.value / 2;
+				const relativeCenterY = centerPixelY - displayHeight.value / 2;
+
+				// ズーム中心のスクリーン位置を維持するためのパンオフセット調整
+				// oldScreenPos = relativeCenterX * oldZoom + oldPanX
+				// newScreenPos = relativeCenterX * newZoom + newPanX
+				// oldScreenPos = newScreenPos より:
+				// newPanX = oldPanX + relativeCenterX * (oldZoom - newZoom)
+				panOffset.value = {
+					x: panOffset.value.x + relativeCenterX * (zoomLevel.value - newZoom),
+					y: panOffset.value.y + relativeCenterY * (zoomLevel.value - newZoom)
+				};
+
 				zoomLevel.value = newZoom;
 				console.log('🎨 [DEBUG] Zoom level:', Math.round(newZoom * 100) + '%');
 			}
@@ -2846,17 +2881,12 @@ function handleTouchMove(e: TouchEvent) {
 		// パン処理
 		if (gestureState.value === 'pan' || gestureState.value === 'hybrid') {
 			if (Math.abs(panDeltaX) > 1 || Math.abs(panDeltaY) > 1) {
-				// 描画エリアのスケールに合わせてパンオフセットを調整
-				const drawingArea = getActualDrawingArea(canvasEl.value || null, canvasWidth.value, canvasHeight.value);
-				const scaledPanDeltaX = panDeltaX / drawingArea.scale;
-				const scaledPanDeltaY = panDeltaY / drawingArea.scale;
-
-				requestAnimationFrame(() => {
-					panOffset.value = {
-						x: panOffset.value.x + scaledPanDeltaX,
-						y: panOffset.value.y + scaledPanDeltaY
-					};
-				});
+				// panOffsetはピクセル単位なので、そのまま加算
+				panOffset.value = {
+					x: panOffset.value.x + panDeltaX,
+					y: panOffset.value.y + panDeltaY
+				};
+				console.log('🎨 [DEBUG] Pan offset:', Math.round(panOffset.value.x), Math.round(panOffset.value.y));
 			}
 		}
 
@@ -2899,6 +2929,31 @@ function handleTouchEnd(e: TouchEvent) {
 		// 残った1本指で描画を開始
 		startDrawing(e);
 	}
+}
+
+// コンテナレベルのタッチハンドラ（キャンバス外でも2本指操作を可能にする）
+function handleContainerTouchStart(e: TouchEvent) {
+	if (e.touches.length === 2) {
+		// 2本指の場合は常に処理（キャンバス外でもOK）
+		handleTouchStart(e);
+	}
+	// 1本指の場合はcanvas要素のhandleTouchStartに任せる（描画用）
+}
+
+function handleContainerTouchMove(e: TouchEvent) {
+	if (e.touches.length === 2 && (isPanning.value || isZooming.value)) {
+		// 2本指ジェスチャー中は常に処理
+		handleTouchMove(e);
+	}
+	// 1本指の場合はcanvas要素のhandleTouchMoveに任せる
+}
+
+function handleContainerTouchEnd(e: TouchEvent) {
+	if (isPanning.value || isZooming.value) {
+		// ジェスチャー中の場合は常に処理
+		handleTouchEnd(e);
+	}
+	// それ以外はcanvas要素のhandleTouchEndに任せる
 }
 
 // パフォーマンス監視
