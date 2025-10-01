@@ -415,9 +415,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				pointerEvents: layerIndex === currentLayer ? 'auto' : 'none'
 			}"
 			@mousedown="startDrawing"
-			@touchstart="handleTouchStart"
-			@touchmove="handleTouchMove"
-			@touchend="handleTouchEnd"
 		></canvas>
 
 		<!-- ウォーターマーク（並べて表示） -->
@@ -669,7 +666,7 @@ const isPanningWithSpace = ref(false); // スペースキーでのパン中
 const zoomLevel = ref(1);
 const zoomCenter = ref({ x: 0, y: 0 });
 const minZoom = 0.5;
-const maxZoom = 3.0;
+const maxZoom = 10.0;
 const isZooming = ref(false);
 
 // ジェスチャー状態管理
@@ -681,7 +678,9 @@ const zoomThreshold = 15; // ズーム開始の最小距離変化
 
 // アンドゥ用ダブルタップ検出
 const lastTwoFingerTap = ref(0);
-const twoFingerTapTimeout = 300; // ダブルタップの間隔（ms）
+const twoFingerTapTimeout = 500; // ダブルタップの間隔（ms）
+const twoFingerTapStartPos = ref<Point | null>(null);
+const tapMoveThreshold = 20; // タップ判定の最大移動距離（ピクセル）
 
 // 手ブレ補正設定
 const handShakeCorrection = {
@@ -1155,13 +1154,17 @@ async function openColorPicker() {
 		{
 			type: 'dialog',
 		}
-	) as { canceled: boolean; result: string } | { dispose: () => void };
+	);
 
-	if (!('canceled' in result) || result.canceled || !result.result) return;
+	// デバッグ: 返却値の中身を確認
+	console.log('🎨 [DEBUG] ColorPicker result:', result);
+	console.log('🎨 [DEBUG] result type:', typeof result);
+	console.log('🎨 [DEBUG] result keys:', result ? Object.keys(result) : 'null');
 
-	// 選択された色を設定
-	if ('result' in result) {
-		setColor(result.result);
+	// MkModalWindowのemit('ok', value)は直接値として返される
+	if (result && typeof result === 'string') {
+		setColor(result);
+		console.log('🎨 [DEBUG] Color set to:', result);
 	}
 }
 
@@ -2064,7 +2067,7 @@ function resetZoom() {
 
 // ズームイン（拡大）
 function zoomIn() {
-	const newZoom = Math.min(zoomLevel.value * 1.2, 5.0);
+	const newZoom = Math.min(zoomLevel.value * 1.2, maxZoom);
 	zoomLevel.value = newZoom;
 	console.log('🎨 [DEBUG] Zoom in:', Math.round(newZoom * 100) + '%');
 }
@@ -2084,7 +2087,7 @@ function handleWheel(event: WheelEvent) {
 
 		const delta = -event.deltaY;
 		const zoomFactor = delta > 0 ? 1.1 : 0.9;
-		const newZoom = Math.max(0.1, Math.min(5.0, zoomLevel.value * zoomFactor));
+		const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomLevel.value * zoomFactor));
 
 		zoomLevel.value = newZoom;
 		console.log('🎨 [DEBUG] Wheel zoom:', Math.round(newZoom * 100) + '%');
@@ -2723,27 +2726,10 @@ function handleTouchStart(e: TouchEvent) {
 		// 1本指の場合は通常の描画
 		startDrawing(e);
 	} else if (e.touches.length === 2) {
-		// 2本指の場合: ダブルタップ検出またはパン開始
+		// 2本指の場合: パン/ズーム開始
 		isDrawing.value = false; // 描画モードを終了
 
-		const now = Date.now();
-		const timeSinceLastTap = now - lastTwoFingerTap.value;
-
-		if (timeSinceLastTap < twoFingerTapTimeout) {
-			// ダブルタップ検出: 高度なアンドゥ実行
-			console.log('🎨 [DEBUG] Two-finger double tap detected, performing advanced undo');
-			performAdvancedUndo();
-			lastTwoFingerTap.value = 0; // リセット
-			// すべてのジェスチャー状態をリセット
-			isPanning.value = false;
-			isZooming.value = false;
-			gestureState.value = 'none';
-			distanceHistory.value = [];
-			return;
-		}
-
 		// 2本指ジェスチャー開始
-		lastTwoFingerTap.value = now;
 		isPanning.value = true;
 		isZooming.value = false;
 		gestureState.value = 'none';
@@ -2752,6 +2738,9 @@ function handleTouchStart(e: TouchEvent) {
 		const touch2 = e.touches[1];
 		const centerX = (touch1.clientX + touch2.clientX) / 2;
 		const centerY = (touch1.clientY + touch2.clientY) / 2;
+
+		// タップ判定用に開始位置を記録
+		twoFingerTapStartPos.value = { x: centerX, y: centerY };
 
 		panStart.value = { x: centerX, y: centerY };
 
@@ -2841,9 +2830,11 @@ function handleTouchMove(e: TouchEvent) {
 			if (distanceFromInitial > zoomThreshold) {
 				gestureState.value = 'zoom';
 				isZooming.value = true;
+				twoFingerTapStartPos.value = null; // タップ判定をキャンセル
 				console.log('🎨 [DEBUG] Zoom gesture detected');
 			} else if (panDistance > panThreshold) {
 				gestureState.value = 'pan';
+				twoFingerTapStartPos.value = null; // タップ判定をキャンセル
 				console.log('🎨 [DEBUG] Pan gesture detected');
 			}
 		}
@@ -2893,9 +2884,11 @@ function handleTouchMove(e: TouchEvent) {
 		// ハイブリッド状態の判定（パンとズームが同時に発生）
 		if (gestureState.value === 'zoom' && panDistance > panThreshold * 2) {
 			gestureState.value = 'hybrid';
+			twoFingerTapStartPos.value = null; // タップ判定をキャンセル
 			console.log('🎨 [DEBUG] Hybrid gesture (pan + zoom)');
 		} else if (gestureState.value === 'pan' && distanceFromInitial > zoomThreshold * 0.5) {
 			gestureState.value = 'hybrid';
+			twoFingerTapStartPos.value = null; // タップ判定をキャンセル
 			console.log('🎨 [DEBUG] Hybrid gesture (zoom + pan)');
 		}
 
@@ -2913,6 +2906,40 @@ function handleTouchEnd(e: TouchEvent) {
 
 	if (e.touches.length === 0) {
 		// すべての指が離れた場合
+
+		// 2本指タップ判定（パン/ズームが発生していない場合）
+		if (isPanning.value && twoFingerTapStartPos.value && gestureState.value === 'none') {
+			// 移動量を計算
+			const touch1 = e.changedTouches[0];
+			const touch2 = e.changedTouches[1];
+			if (touch1 && touch2) {
+				const endCenterX = (touch1.clientX + touch2.clientX) / 2;
+				const endCenterY = (touch1.clientY + touch2.clientY) / 2;
+				const moveDistance = Math.sqrt(
+					Math.pow(endCenterX - twoFingerTapStartPos.value.x, 2) +
+					Math.pow(endCenterY - twoFingerTapStartPos.value.y, 2)
+				);
+
+				if (moveDistance < tapMoveThreshold) {
+					// タップとして認識
+					const now = Date.now();
+					const timeSinceLastTap = now - lastTwoFingerTap.value;
+
+					if (timeSinceLastTap < twoFingerTapTimeout && lastTwoFingerTap.value > 0) {
+						// ダブルタップ検出: アンドゥ実行
+						console.log('🎨 [DEBUG] Two-finger double tap detected, performing undo');
+						performAdvancedUndo();
+						lastTwoFingerTap.value = 0; // リセット
+					} else {
+						// 最初のタップ
+						console.log('🎨 [DEBUG] Two-finger tap detected');
+						lastTwoFingerTap.value = now;
+					}
+				}
+			}
+		}
+
+		twoFingerTapStartPos.value = null;
 		isPanning.value = false;
 		isZooming.value = false;
 		gestureState.value = 'none';
@@ -2921,6 +2948,7 @@ function handleTouchEnd(e: TouchEvent) {
 		stopDrawing();
 	} else if (e.touches.length === 1 && isPanning.value) {
 		// 2本指から1本指になった場合
+		twoFingerTapStartPos.value = null;
 		isPanning.value = false;
 		isZooming.value = false;
 		gestureState.value = 'none';
@@ -2933,27 +2961,20 @@ function handleTouchEnd(e: TouchEvent) {
 
 // コンテナレベルのタッチハンドラ（キャンバス外でも2本指操作を可能にする）
 function handleContainerTouchStart(e: TouchEvent) {
-	if (e.touches.length === 2) {
-		// 2本指の場合は常に処理（キャンバス外でもOK）
-		handleTouchStart(e);
-	}
-	// 1本指の場合はcanvas要素のhandleTouchStartに任せる（描画用）
+	// すべてのタッチをhandleTouchStartで処理
+	// 1本指: 描画
+	// 2本指: パン/ズーム
+	handleTouchStart(e);
 }
 
 function handleContainerTouchMove(e: TouchEvent) {
-	if (e.touches.length === 2 && (isPanning.value || isZooming.value)) {
-		// 2本指ジェスチャー中は常に処理
-		handleTouchMove(e);
-	}
-	// 1本指の場合はcanvas要素のhandleTouchMoveに任せる
+	// すべてのタッチムーブをhandleTouchMoveで処理
+	handleTouchMove(e);
 }
 
 function handleContainerTouchEnd(e: TouchEvent) {
-	if (isPanning.value || isZooming.value) {
-		// ジェスチャー中の場合は常に処理
-		handleTouchEnd(e);
-	}
-	// それ以外はcanvas要素のhandleTouchEndに任せる
+	// すべてのタッチ終了をhandleTouchEndで処理
+	handleTouchEnd(e);
 }
 
 // パフォーマンス監視
