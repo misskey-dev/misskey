@@ -5,8 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, 'drawing-root']">
+	<!-- モバイル用ツールバー開閉ボタン -->
+	<button
+		v-if="isTouchDevice"
+		:class="[$style.toolbarToggle, { [$style.toolbarToggleOpen]: isToolbarOpen }]"
+		@click="isToolbarOpen = !isToolbarOpen"
+		title="ツールバー"
+	>
+		<i :class="isToolbarOpen ? 'ti ti-x' : 'ti ti-tools'"></i>
+	</button>
+
 	<!-- ツールバー -->
-	<div :class="$style.toolbar">
+	<div :class="[$style.toolbar, { [$style.toolbarMobile]: isTouchDevice, [$style.toolbarMobileOpen]: isTouchDevice && isToolbarOpen }]">
 		<div :class="$style.toolGroup">
 			<button
 				:class="[$style.toolButton, { [$style.active]: currentTool === 'pen' }]"
@@ -607,6 +617,9 @@ const isFullscreen = ref(false);
 
 // タッチデバイス検出
 const isTouchDevice = ref(false);
+
+// ツールバー開閉状態（モバイル専用）
+const isToolbarOpen = ref(false);
 
 // デバッグ用状態
 let debugLogCount = 0;
@@ -3099,6 +3112,48 @@ function adjustCanvasForMobile() {
 	}
 }
 
+// モバイル用ツールバー開閉ボタン
+.toolbarToggle {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-accentForeground);
+	border: none;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	cursor: pointer;
+	z-index: 1000;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+	&:hover {
+		transform: scale(1.1);
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
+
+	i {
+		transition: transform 0.3s ease;
+	}
+
+	&.toolbarToggleOpen {
+		background: var(--MI_THEME-error);
+
+		i {
+			transform: rotate(90deg);
+		}
+	}
+}
+
 .toolbar {
 	display: flex;
 	align-items: center;
@@ -3113,6 +3168,31 @@ function adjustCanvasForMobile() {
 
 	&::-webkit-scrollbar {
 		display: none;
+	}
+
+	// モバイル用フローティングツールバー
+	&.toolbarMobile {
+		position: fixed;
+		bottom: 90px;
+		left: 50%;
+		transform: translateX(-50%) translateY(150%);
+		width: 90%;
+		max-width: 500px;
+		max-height: 60vh;
+		overflow-y: auto;
+		border-radius: 16px;
+		border: 1px solid var(--MI_THEME-divider);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(12px);
+		background: rgba(var(--MI_THEME-panel-rgb), 0.95);
+		z-index: 999;
+		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		padding: 16px;
+		gap: 12px;
+
+		&.toolbarMobileOpen {
+			transform: translateX(-50%) translateY(0);
+		}
 	}
 }
 

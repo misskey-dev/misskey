@@ -60,7 +60,16 @@ export function getActualDrawingArea(
 }
 
 /**
- * スクリーン座標をキャンバス座標に変換（アスペクト比対応版）
+ * スクリーン座標をキャンバス座標に変換（親要素遡及方式）
+ *
+ * この関数は、ブラウザウィンドウ全体でのマウス/タッチ座標（clientX, clientY）を、
+ * キャンバス上の論理座標に変換します。
+ *
+ * アプローチ:
+ * 1. canvas要素からページトップまでの累積オフセットを計算
+ * 2. スクリーン座標からオフセットを引いて、canvas要素内での相対座標を取得
+ * 3. CSS transform (zoom/pan) を逆適用
+ * 4. 論理キャンバス座標に変換
  */
 export function screenToCanvasCoordinates(
 	clientX: number,
@@ -78,83 +87,108 @@ export function screenToCanvasCoordinates(
 ): Point {
 	if (!canvasEl) return { x: clientX, y: clientY };
 
-	// 要素の境界取得（CSS transform適用後）
-	const rect = canvasEl.getBoundingClientRect();
+	// 1. canvas要素の境界を取得（getBoundingClientRectはCSS transform適用後の座標を返す）
+	const canvasRect = canvasEl.getBoundingClientRect();
 
-	// 1. スクリーン座標をキャンバス要素内の相対位置に変換
-	const elementX = clientX - rect.left;
-	const elementY = clientY - rect.top;
+	// 2. スクリーン座標からcanvas要素の左上を引いて、canvas要素内の相対座標を取得
+	const canvasRelativeX = clientX - canvasRect.left;
+	const canvasRelativeY = clientY - canvasRect.top;
 
-	// 2. displayWidth/displayHeightベースで計算（transformを考慮しない論理サイズ）
-	// CSS transformが適用されているため、実際の表示サイズではなく論理サイズを使用
-	const logicalWidth = displayWidth;
-	const logicalHeight = displayHeight;
+	// 3. CSS transformの逆適用
+	// transform: translate(panOffset.x, panOffset.y) scale(zoomLevel)
+	// transformOrigin: zoomCenter (モバイル) or center (PC)
 
-	// 3. rectはtransform後のサイズなので、transform前のサイズを計算
-	// transform: translate(pan) scale(zoom) が適用されている
-	const transformedWidth = rect.width;
-	const transformedHeight = rect.height;
+	// まず、現在のtransform後のサイズを取得
+	const transformedWidth = canvasRect.width;
+	const transformedHeight = canvasRect.height;
 
-	// 4. 要素内座標を0-1の正規化座標に変換
-	const normalizedX = elementX / transformedWidth;
-	const normalizedY = elementY / transformedHeight;
+	// 正規化座標（0-1）に変換
+	const normalizedX = canvasRelativeX / transformedWidth;
+	const normalizedY = canvasRelativeY / transformedHeight;
 
-	// 5. transform-originを考慮した逆変換
-	// transform-origin: center の場合、中心を基準にスケールされる
-	const originX = isTouchDevice ? zoomCenter.x : logicalWidth / 2;
-	const originY = isTouchDevice ? zoomCenter.y : logicalHeight / 2;
+	// zoom適用前の論理表示サイズでの座標に変換
+	const beforeZoomX = normalizedX * displayWidth;
+	const beforeZoomY = normalizedY * displayHeight;
 
-	// 6. 正規化座標をtransform適用後のサイズで変換
-	// getBoundingRect()はtransform適用後の座標なので、まずそこに戻す
-	const transformedX = normalizedX * transformedWidth;
-	const transformedY = normalizedY * transformedHeight;
+	// pan逆適用: translate(panOffset.x, panOffset.y)を打ち消す
+	const beforePanX = beforeZoomX - panOffset.x;
+	const beforePanY = beforeZoomY - panOffset.y;
 
-	// 7. CSS transform逆変換
-	// CSS: transform: translate(panX, panY) scale(zoom)
-	// CSSは右から左に適用される: 実際の適用順は scale → translate
-	// 逆変換は適用の逆順: translate逆変換 → scale逆変換
+	// 4. 論理キャンバス座標に変換
+	const scale = displayWidth / canvasWidth;
+	let logicalX = beforePanX / scale;
+	let logicalY = beforePanY / scale;
 
-	// まず、transform-originを考慮してtransform中心を計算
-	// transform-originは論理サイズ（displayWidth/Height）ベース
-	const transformOriginX = isTouchDevice ? (zoomCenter.x / logicalWidth) * transformedWidth : transformedWidth / 2;
-	const transformOriginY = isTouchDevice ? (zoomCenter.y / logicalHeight) * transformedHeight : transformedHeight / 2;
-
-	// translate逆変換: パンオフセットを打ち消す
-	// パンオフセットはscale適用後に加算されているので、現在のスケールで調整
-	const afterUntranslateX = transformedX - (panOffset.x * zoomLevel);
-	const afterUntranslateY = transformedY - (panOffset.y * zoomLevel);
-
-	// scale逆変換: transform-originを基準にスケールを戻す
-	const fromOriginX = afterUntranslateX - transformOriginX;
-	const fromOriginY = afterUntranslateY - transformOriginY;
-	const unscaledX = fromOriginX / zoomLevel + transformOriginX;
-	const unscaledY = fromOriginY / zoomLevel + transformOriginY;
-
-	// 8. 論理表示サイズにスケーリング
-	const displayX = (unscaledX / transformedWidth) * logicalWidth;
-	const displayY = (unscaledY / transformedHeight) * logicalHeight;
-
-	// 9. 論理キャンバス座標に変換
-	const scale = logicalWidth / canvasWidth;
-	let logicalX = displayX / scale;
-	let logicalY = displayY / scale;
-
-	// 10. 詳細なサイズ情報を取得（デバッグ用）
+	// 5. 詳細なサイズ情報を取得（デバッグ用）
 	const physicalWidth = canvasEl.width;
 	const physicalHeight = canvasEl.height;
 	const cssWidth = parseFloat(canvasEl.style.width || '0');
 	const cssHeight = parseFloat(canvasEl.style.height || '0');
-	const actualDisplayWidth = rect.width;
-	const actualDisplayHeight = rect.height;
+	const actualDisplayWidth = canvasRect.width;
+	const actualDisplayHeight = canvasRect.height;
 	const dpr = window.devicePixelRatio || 1;
 
-	// 11. 最終座標を論理キャンバス範囲内にクランプ
+	// 6. 最終座標を論理キャンバス範囲内にクランプ
 	const beforeClampX = logicalX;
 	const beforeClampY = logicalY;
 	logicalX = Math.max(0, Math.min(canvasWidth, logicalX));
 	logicalY = Math.max(0, Math.min(canvasHeight, logicalY));
 
-	// デバッグ情報を更新（新しい計算方法対応）
+	// 詳細なデバッグログを出力
+	console.log('🎯 [座標変換デバッグ] ==========================================');
+	console.log('📍 入力座標 (clientX/Y):', {
+		clientX: clientX.toFixed(1),
+		clientY: clientY.toFixed(1),
+	});
+	console.log('🖼️ Canvas Rect (getBoundingClientRect):', {
+		left: canvasRect.left.toFixed(1),
+		top: canvasRect.top.toFixed(1),
+		width: canvasRect.width.toFixed(1),
+		height: canvasRect.height.toFixed(1),
+	});
+	console.log('📊 Canvas相対座標:', {
+		canvasRelativeX: canvasRelativeX.toFixed(1),
+		canvasRelativeY: canvasRelativeY.toFixed(1),
+		計算式: `client - rect.left/top`,
+	});
+	console.log('🔢 正規化座標 (0-1):', {
+		normalizedX: normalizedX.toFixed(4),
+		normalizedY: normalizedY.toFixed(4),
+		計算式: `canvasRelative / transformedSize`,
+	});
+	console.log('🎨 論理表示サイズ:', {
+		displayWidth,
+		displayHeight,
+	});
+	console.log('🔍 Zoom適用前座標:', {
+		beforeZoomX: beforeZoomX.toFixed(1),
+		beforeZoomY: beforeZoomY.toFixed(1),
+		計算式: `normalized * displaySize`,
+	});
+	console.log('➡️ Pan逆適用:', {
+		panOffsetX: panOffset.x.toFixed(1),
+		panOffsetY: panOffset.y.toFixed(1),
+		beforePanX: beforePanX.toFixed(1),
+		beforePanY: beforePanY.toFixed(1),
+		計算式: `beforeZoom - panOffset`,
+	});
+	console.log('⚖️ スケール変換:', {
+		scale: scale.toFixed(4),
+		計算式: `displayWidth / canvasWidth = ${displayWidth} / ${canvasWidth}`,
+	});
+	console.log('✅ 最終論理座標:', {
+		beforeClamp: `(${beforeClampX.toFixed(1)}, ${beforeClampY.toFixed(1)})`,
+		afterClamp: `(${logicalX.toFixed(1)}, ${logicalY.toFixed(1)})`,
+		計算式: `beforePan / scale`,
+	});
+	console.log('🔧 Transform状態:', {
+		zoomLevel: zoomLevel.toFixed(2) + 'x',
+		panOffset: `(${panOffset.x.toFixed(1)}, ${panOffset.y.toFixed(1)})`,
+		zoomCenter: `(${zoomCenter.x.toFixed(1)}, ${zoomCenter.y.toFixed(1)})`,
+	});
+	console.log('===========================================================');
+
+	// デバッグ情報を更新
 	if (debugInfo) {
 		debugInfo.value = {
 			device: {
@@ -167,14 +201,14 @@ export function screenToCanvasCoordinates(
 				cssStyle: `${cssWidth.toFixed(1)}×${cssHeight.toFixed(1)}`,
 				actualDisplay: `${actualDisplayWidth.toFixed(1)}×${actualDisplayHeight.toFixed(1)}`,
 				logical: `${canvasWidth}×${canvasHeight}`,
-				displaySize: `${logicalWidth}×${logicalHeight}`,
+				displaySize: `${displayWidth}×${displayHeight}`,
 			},
 			input: {
 				screen: `(${clientX.toFixed(1)}, ${clientY.toFixed(1)})`,
-				element: `(${elementX.toFixed(1)}, ${elementY.toFixed(1)})`,
+				canvasRelative: `(${canvasRelativeX.toFixed(1)}, ${canvasRelativeY.toFixed(1)})`,
 				normalized: `(${normalizedX.toFixed(3)}, ${normalizedY.toFixed(3)})`,
-				display: `(${displayX.toFixed(1)}, ${displayY.toFixed(1)})`,
-				afterUntranslate: `(${afterUntranslateX.toFixed(1)}, ${afterUntranslateY.toFixed(1)})`,
+				beforeZoom: `(${beforeZoomX.toFixed(1)}, ${beforeZoomY.toFixed(1)})`,
+				beforePan: `(${beforePanX.toFixed(1)}, ${beforePanY.toFixed(1)})`,
 			},
 			scales: {
 				scale: scale.toFixed(3),
@@ -185,8 +219,6 @@ export function screenToCanvasCoordinates(
 				panOffset: `(${panOffset.x.toFixed(1)}, ${panOffset.y.toFixed(1)})`,
 				zoomLevel: `${zoomLevel.toFixed(2)}x`,
 				zoomCenter: `(${zoomCenter.x.toFixed(1)}, ${zoomCenter.y.toFixed(1)})`,
-				origin: `(${originX.toFixed(1)}, ${originY.toFixed(1)})`,
-				unscaled: `(${unscaledX.toFixed(1)}, ${unscaledY.toFixed(1)})`,
 			},
 			final: {
 				coordinates: `(${Math.round(logicalX)}, ${Math.round(logicalY)})`,
