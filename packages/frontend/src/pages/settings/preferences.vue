@@ -948,6 +948,7 @@ watch([
 	chatShowSenderName,
 	useStickyIcons,
 	enableHighQualityImagePlaceholders,
+	disableShowingAnimatedImages,
 	keepScreenOn,
 	contextMenu,
 	fontSize,
@@ -958,6 +959,8 @@ watch([
 	enablePullToRefresh,
 	reduceAnimation,
 	showAvailableReactionsFirstInNote,
+	animatedMfm,
+	advancedMfm,
 ], () => {
 	suggestReload();
 });
