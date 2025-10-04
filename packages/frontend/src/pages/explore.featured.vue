@@ -13,8 +13,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		]"
 		style="margin-bottom: var(--MI-margin);"
 	>
-		<option value="notes">{{ i18n.ts.notes }}</option>
-		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>
 	<MkNotesTimeline v-if="tab === 'notes'" :paginator="paginatorForNotes"/>
 	<MkNotesTimeline v-else-if="tab === 'polls'" :paginator="paginatorForPolls"/>
