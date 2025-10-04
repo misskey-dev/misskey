@@ -23,7 +23,7 @@ export async function getUserEnvironment(): Promise<UserEnvironment> {
 		if (uaData.platform === 'Windows' && uaData.platformVersion != null) {
 			// https://learn.microsoft.com/ja-jp/microsoft-edge/web-platform/how-to-detect-win11
 			const majorPlatformVersion = parseInt(uaData.platformVersion.split('.')[0]);
-			if(majorPlatformVersion >= 13) {
+			if (majorPlatformVersion >= 13) {
 				osVersion = '11 or later';
 			} else if (majorPlatformVersion > 0) {
 				osVersion = '10';
