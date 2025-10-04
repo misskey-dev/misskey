@@ -156,7 +156,6 @@ onMounted(() => {
 		});
 	});
 
-
 	const modalTransitioningWatchStop = watch(modalTransitioning, (to) => {
 		if (!to) {
 			entering = false;
