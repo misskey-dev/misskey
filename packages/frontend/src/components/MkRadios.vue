@@ -3,99 +3,110 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
+<template>
+<div :class="{ [$style.vertical]: vertical }">
+	<div :class="$style.label">
+		<slot name="label"></slot>
+	</div>
+	<div :class="$style.body">
+		<MkRadio
+			v-for="option in options"
+			v-model="model"
+			:key="getKey(option.value)"
+			:disabled="option.disabled"
+			:value="option.value"
+		>
+			<div :class="$style.optionContent">
+				<i v-if="option.icon" :class="[$style.optionIcon, option.icon]" :style="option.iconStyle"></i>
+				<div>
+					<div :style="option.labelStyle">{{ option.label ?? option.value }}</div>
+					<div v-if="option.caption" :class="$style.optionCaption">{{ option.caption }}</div>
+				</div>
+			</div>
+		</MkRadio>
+	</div>
+	<div :class="$style.caption">
+		<slot name="caption"></slot>
+	</div>
+</div>
+</template>
+
 <script lang="ts">
-import { defineComponent, h, ref, watch } from 'vue';
-import MkRadio from './MkRadio.vue';
-import type { VNode } from 'vue';
+import type { StyleValue } from 'vue';
+import type { OptionValue } from '@/types/option-value.js';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			required: false,
-		},
-		vertical: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props, context) {
-		const value = ref(props.modelValue);
-		watch(value, () => {
-			context.emit('update:modelValue', value.value);
-		});
-		watch(() => props.modelValue, v => {
-			value.value = v;
-		});
-		if (!context.slots.default) return null;
-		let options = context.slots.default();
-		const label = context.slots.label && context.slots.label();
-		const caption = context.slots.caption && context.slots.caption();
-
-		// なぜかFragmentになることがあるため
-		if (options.length === 1 && options[0].props == null) options = options[0].children as VNode[];
-
-		// vnodeのうちv-if=falseなものを除外する(trueになるものはoptionなど他typeになる)
-		options = options.filter(vnode => !(typeof vnode.type === 'symbol' && vnode.type.description === 'v-cmt' && vnode.children === 'v-if'));
-
-		return () => h('div', {
-			class: [
-				'novjtcto',
-				...(props.vertical ? ['vertical'] : []),
-			],
-		}, [
-			...(label ? [h('div', {
-				class: 'label',
-			}, label)] : []),
-			h('div', {
-				class: 'body',
-			}, options.map(option => h(MkRadio, {
-				key: option.key as string,
-				value: option.props?.value,
-				disabled: option.props?.disabled,
-				modelValue: value.value,
-				'onUpdate:modelValue': _v => value.value = _v,
-			}, () => option.children)),
-			),
-			...(caption ? [h('div', {
-				class: 'caption',
-			}, caption)] : []),
-		]);
-	},
-});
+export type RadioOption<T = OptionValue> = {
+	value: T;
+	label?: string;
+	labelStyle?: StyleValue;
+	icon?: string;
+	iconStyle?: StyleValue;
+	caption?: string;
+	disabled?: boolean;
+};
 </script>
 
-<style lang="scss">
-.novjtcto {
-	> .label {
-		font-size: 0.85em;
-		padding: 0 0 8px 0;
-		user-select: none;
+<script setup lang="ts" generic="const T extends RadioOption">
+import MkRadio from './MkRadio.vue';
 
-		&:empty {
-			display: none;
-		}
+defineProps<{
+	options: T[];
+	vertical?: boolean;
+}>();
+
+const model = defineModel<T['value']>({ required: true });
+
+function getKey(value: OptionValue): PropertyKey {
+	if (value === null) return 'null';
+	return value;
+}
+</script>
+
+<style lang="scss" module>
+.label {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
+
+	&:empty {
+		display: none;
 	}
+}
 
-	> .body {
-		display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+.body {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.caption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+
+	&:empty {
+		display: none;
 	}
+}
 
-	> .caption {
-		font-size: 0.85em;
-		padding: 8px 0 0 0;
-		color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+.optionContent {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	line-height: 1.1;
+}
 
-		&:empty {
-			display: none;
-		}
-	}
+.optionCaption {
+	font-size: 0.85em;
+	padding: 4px 0 0 0;
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+}
 
-	&.vertical {
-		> .body {
-			flex-direction: column;
-		}
-	}
+.optionIcon {
+	flex-shrink: 0;
+}
+
+.vertical > .body {
+	flex-direction: column;
 }
 </style>

@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-export type OptionValue = string | number | null;
+import type { OptionValue } from '@/types/option-value.js';
 
 export type ItemOption<T extends OptionValue = OptionValue> = {
 	type?: 'option';

@@ -5,7 +5,8 @@
 
 import { ref } from 'vue';
 import type { Ref, MaybeRefOrGetter } from 'vue';
-import type { MkSelectItem, OptionValue, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+import type { OptionValue } from '@/types/option-value.js';
 
 type UnwrapReadonlyItems<T> = T extends readonly (infer U)[] ? U[] : T;
 

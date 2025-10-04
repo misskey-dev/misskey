@@ -24,7 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup generic="T extends unknown">
+<script lang="ts" setup generic="T extends OptionValue | null">
+import type { OptionValue } from '@/types/option-value.js';
 import { computed } from 'vue';
 
 const props = defineProps<{
