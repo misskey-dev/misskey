@@ -117,8 +117,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import XPalette from './emoji-palette.palette.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { RadioOption } from '@/components/MkRadios.vue';
 import { genId } from '@/utility/id.js';
-import MkRadios, { type RadioOption } from '@/components/MkRadios.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';

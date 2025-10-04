@@ -113,12 +113,13 @@ import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
-import MkRadios, { type RadioOption } from '@/components/MkRadios.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkRadios2 from '@/components/MkRadios2.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { RadioOption } from '@/components/MkRadios.vue';
 import { useRouter } from '@/router.js';
 
 const $i = ensureSignin();

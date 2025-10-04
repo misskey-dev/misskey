@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.body">
 		<MkRadio
 			v-for="option in options"
-			v-model="model"
 			:key="getKey(option.value)"
+			v-model="model"
 			:disabled="option.disabled"
 			:value="option.value"
 		>

@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['entrance', 'welcome', 'landing', 'front', 'home', 'page', 'style']">
 					<MkRadios
+						v-model="entrancePageStyle"
 						:options="[
 							{ value: 'classic' },
 							{ value: 'simple' },
 						]"
-						v-model="entrancePageStyle"
 					>
 						<template #label><SearchLabel>{{ i18n.ts._serverSettings.entrancePageStyle }}</SearchLabel></template>
 					</MkRadios>
