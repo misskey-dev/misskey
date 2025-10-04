@@ -24,7 +24,7 @@ export const globalEvents = new EventEmitter<Events>();
 
 export function useGlobalEvent<T extends keyof Events>(
 	event: T,
-	callback: Events[T],
+	callback: EventEmitter.EventListener<Events, T>,
 ): void {
 	globalEvents.on(event, callback);
 	onBeforeUnmount(() => {

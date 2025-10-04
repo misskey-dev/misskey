@@ -41,6 +41,14 @@ export type StatusbarStore = {
 	props: Record<string, any>;
 };
 
+export type DataSaverStore = {
+	media: boolean;
+	avatar: boolean;
+	urlPreviewThumbnail: boolean;
+	disableUrlPreview: boolean;
+	code: boolean;
+};
+
 type OmitStrict<T, K extends keyof T> = T extends any ? Pick<T, Exclude<keyof T, K>> : never;
 
 // NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
@@ -332,7 +340,7 @@ export const PREF_DEF = definePreferences({
 			urlPreviewThumbnail: false,
 			disableUrlPreview: false,
 			code: false,
-		} satisfies Record<string, boolean>,
+		} as DataSaverStore,
 	},
 	hemisphere: {
 		default: hemisphere as 'N' | 'S',
@@ -429,6 +437,9 @@ export const PREF_DEF = definePreferences({
 		default: null as WatermarkPreset['id'] | null,
 	},
 	defaultImageCompressionLevel: {
+		default: 2 as 0 | 1 | 2 | 3,
+	},
+	defaultVideoCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},
 
