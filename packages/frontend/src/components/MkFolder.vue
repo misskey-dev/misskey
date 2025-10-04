@@ -119,6 +119,10 @@ const props = withDefaults(defineProps<{
 	canPage: true,
 });
 
+const emit = defineEmits<{
+	(ev: 'headerClicked'): void;
+}>();
+
 const rootEl = useTemplateRef('rootEl');
 const asPage = props.canPage && deviceKind === 'smartphone' && prefer.s['experimental.enableFolderPageView'];
 const bgSame = ref(false);
@@ -165,6 +169,8 @@ let pageId = pageFolderTeleportCount.value;
 pageFolderTeleportCount.value += 1000;
 
 async function toggle() {
+	emit('headerClicked');
+
 	if (asPage && !opened.value) {
 		pageId++;
 		const { dispose } = await popup(MkFolderPage, {

@@ -757,6 +757,9 @@ importers:
       astring:
         specifier: 1.9.0
         version: 1.9.0
+      bowser:
+        specifier: 2.12.1
+        version: 2.12.1
       broadcast-channel:
         specifier: 7.1.0
         version: 7.1.0
@@ -968,6 +971,9 @@ importers:
       '@testing-library/vue':
         specifier: 8.1.0
         version: 8.1.0(@vue/compiler-sfc@3.5.22)(@vue/server-renderer@3.5.22(vue@3.5.22(typescript@5.9.2)))(vue@3.5.22(typescript@5.9.2))
+      '@types/bowser':
+        specifier: 1.1.5
+        version: 1.1.5
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
@@ -4592,6 +4598,10 @@ packages:
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
+  '@types/bowser@1.1.5':
+    resolution: {integrity: sha512-7qUcVaL3NZ40tLPPlbk9fKL++vT/BBT0vbq+R97KH1lnZQmcZwvqa3rnAcCE48ai2dZm9ETr9TnQXhztGsvPIw==}
+    deprecated: This is a stub types definition. bowser provides its own type definitions, so you do not need this installed.
+
   '@types/braces@3.0.1':
     resolution: {integrity: sha512-+euflG6ygo4bn0JHtn4pYqcXwRtLvElQ7/nnjDu7iYG56H0+OhCd7d6Ug0IE3WcFpZozBKW2+80FUbv5QGk5AQ==}
 
@@ -5552,8 +5562,8 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
-  bowser@2.11.0:
-    resolution: {integrity: sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA==}
+  bowser@2.12.1:
+    resolution: {integrity: sha512-z4rE2Gxh7tvshQ4hluIT7XcFrgLIQaw9X3A+kTTRdovCz5PMukm/0QC/BKSYPj3omF5Qfypn9O/c5kgpmvYUCw==}
 
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -12101,14 +12111,14 @@ snapshots:
     dependencies:
       '@aws-sdk/types': 3.862.0
       '@smithy/types': 4.4.0
-      bowser: 2.11.0
+      bowser: 2.12.1
       tslib: 2.8.1
 
   '@aws-sdk/util-user-agent-browser@3.893.0':
     dependencies:
       '@aws-sdk/types': 3.893.0
       '@smithy/types': 4.5.0
-      bowser: 2.11.0
+      bowser: 2.12.1
       tslib: 2.8.1
 
   '@aws-sdk/util-user-agent-node@3.873.0':
@@ -14668,7 +14678,7 @@ snapshots:
       '@smithy/property-provider': 4.1.0
       '@smithy/smithy-client': 4.6.0
       '@smithy/types': 4.4.0
-      bowser: 2.11.0
+      bowser: 2.12.1
       tslib: 2.8.1
 
   '@smithy/util-defaults-mode-browser@4.1.4':
@@ -14676,7 +14686,7 @@ snapshots:
       '@smithy/property-provider': 4.1.1
       '@smithy/smithy-client': 4.6.4
       '@smithy/types': 4.5.0
-      bowser: 2.11.0
+      bowser: 2.12.1
       tslib: 2.8.1
 
   '@smithy/util-defaults-mode-node@4.1.0':
@@ -15394,6 +15404,10 @@ snapshots:
     dependencies:
       '@types/connect': 3.4.36
       '@types/node': 22.18.6
+
+  '@types/bowser@1.1.5':
+    dependencies:
+      bowser: 2.12.1
 
   '@types/braces@3.0.1': {}
 
@@ -16578,7 +16592,7 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  bowser@2.11.0: {}
+  bowser@2.12.1: {}
 
   brace-expansion@1.1.11:
     dependencies:

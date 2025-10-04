@@ -5577,6 +5577,14 @@ export interface Locale extends ILocale {
      * 予約
      */
     "scheduled": string;
+    /**
+     * デバイス情報
+     */
+    "deviceInfo": string;
+    /**
+     * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
+     */
+    "deviceInfoDescription": string;
     "_compression": {
         "_quality": {
             /**
