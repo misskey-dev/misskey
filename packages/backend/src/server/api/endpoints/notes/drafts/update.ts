@@ -159,6 +159,12 @@ export const meta = {
 			code: 'CANNOT_REPLY_TO_SPECIFIED_VISIBILITY_NOTE_WITH_EXTENDED_VISIBILITY',
 			id: '215dbc76-336c-4d2a-9605-95766ba7dab0',
 		},
+
+		tooManyScheduledNotes: {
+			message: 'You cannot create scheduled notes any more.',
+			code: 'TOO_MANY_SCHEDULED_NOTES',
+			id: '02f5df79-08ae-4a33-8524-f1503c8f6212',
+		},
 	},
 
 	limit: {
@@ -171,14 +177,14 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		draftId: { type: 'string', nullable: false, format: 'misskey:id' },
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: 'public' },
+		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'] },
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
 		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
 		hashtag: { type: 'string', nullable: true, maxLength: 200 },
-		localOnly: { type: 'boolean', default: false },
-		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
+		localOnly: { type: 'boolean' },
+		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'] },
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
 		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true },
@@ -194,7 +200,7 @@ export const paramDef = {
 		fileIds: {
 			type: 'array',
 			uniqueItems: true,
-			minItems: 1,
+			minItems: 0,
 			maxItems: 16,
 			items: { type: 'string', format: 'misskey:id' },
 		},
@@ -215,6 +221,8 @@ export const paramDef = {
 			},
 			required: ['choices'],
 		},
+		scheduledAt: { type: 'integer', nullable: true },
+		isActuallyScheduled: { type: 'boolean' },
 	},
 	required: ['draftId'],
 } as const;
@@ -228,22 +236,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const draft = await this.noteDraftService.update(me, ps.draftId, {
 				fileIds: ps.fileIds,
-				poll: ps.poll ? {
-					choices: ps.poll.choices,
-					multiple: ps.poll.multiple ?? false,
-					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-					expiredAfter: ps.poll.expiredAfter ?? null,
-				} : undefined,
-				text: ps.text ?? null,
-				replyId: ps.replyId ?? undefined,
-				renoteId: ps.renoteId ?? undefined,
-				cw: ps.cw ?? null,
-				...(ps.hashtag ? { hashtag: ps.hashtag } : {}),
+				pollChoices: ps.poll?.choices,
+				pollMultiple: ps.poll?.multiple,
+				pollExpiresAt: ps.poll?.expiresAt ? new Date(ps.poll.expiresAt) : null,
+				pollExpiredAfter: ps.poll?.expiredAfter,
+				text: ps.text,
+				replyId: ps.replyId,
+				renoteId: ps.renoteId,
+				cw: ps.cw,
+				hashtag: ps.hashtag,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
-				visibleUserIds: ps.visibleUserIds ?? [],
-				channelId: ps.channelId ?? undefined,
+				visibleUserIds: ps.visibleUserIds,
+				channelId: ps.channelId,
+				scheduledAt: ps.scheduledAt ? new Date(ps.scheduledAt) : null,
+				isActuallyScheduled: ps.isActuallyScheduled,
 			}).catch((err) => {
 				if (err instanceof IdentifiableError) {
 					switch (err.id) {
@@ -285,6 +293,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							throw new ApiError(meta.errors.containsProhibitedWords);
 						case '4de0363a-3046-481b-9b0f-feff3e211025':
 							throw new ApiError(meta.errors.containsTooManyMentions);
+						case 'bacdf856-5c51-4159-b88a-804fa5103be5':
+							throw new ApiError(meta.errors.tooManyScheduledNotes);
 						default:
 							throw err;
 					}

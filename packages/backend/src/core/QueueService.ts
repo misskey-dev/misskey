@@ -31,6 +31,7 @@ import type {
 	DbQueue,
 	DeliverQueue,
 	EndedPollNotificationQueue,
+	PostScheduledNoteQueue,
 	InboxQueue,
 	ObjectStorageQueue,
 	RelationshipQueue,
@@ -45,6 +46,7 @@ import { MiNote } from '@/models/Note.js';
 export const QUEUE_TYPES = [
 	'system',
 	'endedPollNotification',
+	'postScheduledNote',
 	'deliver',
 	'inbox',
 	'db',
@@ -93,6 +95,7 @@ export class QueueService {
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
+		@Inject('queue:postScheduledNote') public postScheduledNoteQueue: PostScheduledNoteQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
@@ -766,6 +769,7 @@ export class QueueService {
 		switch (type) {
 			case 'system': return this.systemQueue;
 			case 'endedPollNotification': return this.endedPollNotificationQueue;
+			case 'postScheduledNote': return this.postScheduledNoteQueue;
 			case 'deliver': return this.deliverQueue;
 			case 'inbox': return this.inboxQueue;
 			case 'db': return this.dbQueue;
