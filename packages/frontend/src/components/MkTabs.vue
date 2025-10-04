@@ -7,9 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.tabs, { [$style.centered]: props.centered }]">
 	<div :class="$style.tabsInner">
 		<button
-			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: prefer.s.animation }]"
-			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
+			v-for="t in tabs"
+			:ref="(el) => tabRefs[t.key] = (el as HTMLElement)"
+			v-tooltip.noDelay="t.title"
+			class="_button"
+			:class="[$style.tab, {
+				[$style.active]: t.key != null && t.key === tab,
+				[$style.animate]: prefer.s.animation,
+			}]"
+			@mousedown="(ev) => onTabMousedown(t, ev)"
+			@click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
 				<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
@@ -36,8 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-export type Tab = {
-	key: string;
+export type Tab<K = string> = {
+	key: K;
 	onClick?: (ev: MouseEvent) => void;
 	iconOnly?: boolean;
 	title: string;
@@ -45,23 +52,27 @@ export type Tab = {
 };
 </script>
 
-<script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
+<script lang="ts" setup generic="const T extends Tab">
+import { nextTick, onMounted, onUnmounted, useTemplateRef, ref, watch, inject } from 'vue';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
-	tabs?: Tab[];
-	tab?: string;
+	tabs?: T[];
 	centered?: boolean;
 	tabHighlightUpper?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[]),
+	tabs: () => ([] as T[]),
 });
 
 const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 	(ev: 'tabClick', key: string);
 }>();
+
+const tab = defineModel<T['key']>('tab');
+
+const modalTransitioning = inject(DI.modalTransitioning, ref(false));
 
 const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
@@ -88,7 +99,7 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 }
 
 function renderTab() {
-	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
+	const tabEl = tab.value ? tabRefs[tab.value] : undefined;
 	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
@@ -99,7 +110,7 @@ function renderTab() {
 	}
 }
 
-let entering = false;
+let entering = true;
 
 async function enter(el: Element) {
 	if (!(el instanceof HTMLElement)) return;
@@ -138,14 +149,21 @@ function afterLeave(el: Element) {
 }
 
 onMounted(() => {
-	watch([() => props.tab, () => props.tabs], () => {
+	watch([tab, () => props.tabs], () => {
 		nextTick(() => {
 			if (entering) return;
 			renderTab();
 		});
-	}, {
-		immediate: true,
 	});
+
+
+	const modalTransitioningWatchStop = watch(modalTransitioning, (to) => {
+		if (!to) {
+			entering = false;
+			renderTab();
+			modalTransitioningWatchStop();
+		}
+	}, { immediate: true });
 });
 
 onUnmounted(() => {

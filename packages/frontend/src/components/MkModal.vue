@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.transition_modal_leaveTo]: transitionName === 'modal',
 		[$style.transition_send_leaveTo]: transitionName === 'send',
 	})"
-	:duration="transitionDuration" appear @afterLeave="onClosed" @enter="emit('opening')" @afterEnter="onOpened"
+	:duration="transitionDuration" appear @afterLeave="onClosed" @enter="onOpening" @afterEnter="onOpened"
 >
 	<div v-show="manualShowing != null ? manualShowing : showing" ref="modalRootEl" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
@@ -96,6 +96,14 @@ const emit = defineEmits<{
 }>();
 
 provide(DI.inModal, true);
+
+const isTransitioning = ref((() => {
+	if (!prefer.s.animation) return false;
+	if (props.manualShowing === false) return false;
+	return true;
+})());
+
+provide(DI.modalTransitioning, isTransitioning);
 
 const maxHeight = ref<number>();
 const fixed = ref(false);
@@ -285,8 +293,14 @@ const align = () => {
 	content.value.style.top = top + 'px';
 };
 
+const onOpening = () => {
+	emit('opening');
+	isTransitioning.value = true;
+};
+
 const onOpened = () => {
 	emit('opened');
+	isTransitioning.value = false;
 
 	// contentの子要素にアクセスするためレンダリングの完了を待つ必要がある（nextTickが必要）
 	nextTick(() => {

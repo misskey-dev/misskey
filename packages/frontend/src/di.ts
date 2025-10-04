@@ -16,5 +16,6 @@ export const DI = {
 	currentStickyBottom: Symbol() as InjectionKey<Ref<number>>,
 	mfmEmojiReactCallback: Symbol() as InjectionKey<(emoji: string) => void>,
 	inModal: Symbol() as InjectionKey<boolean>,
+	modalTransitioning: Symbol() as InjectionKey<Ref<boolean>>,
 	inAppSearchMarkerId: Symbol() as InjectionKey<Ref<string | null>>,
 };
