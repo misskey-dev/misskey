@@ -530,6 +530,14 @@ defineExpose({
 		--eachSize: 50px;
 	}
 
+	&.s4 {
+		--eachSize: 55px;
+	}
+
+	&.s5 {
+		--eachSize: 60px;
+	}
+
 	&.w1 {
 		width: calc((var(--eachSize) * 5) + (#{$pad} * 2));
 		--columns: 1fr 1fr 1fr 1fr 1fr;

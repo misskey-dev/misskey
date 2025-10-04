@@ -5,9 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="type">
+	<MkSelect v-model="type" :items="typeDef">
 		<template #label>{{ i18n.ts.sound }}</template>
-		<option v-for="x in soundsTypes" :key="x ?? 'null'" :value="x">{{ getSoundTypeName(x) }}</option>
 	</MkSelect>
 	<div v-if="type === '_driveFile_' && driveFileError === true" :class="$style.fileSelectorRoot">
 		<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="selectSound">{{ i18n.ts.selectFile }}</MkButton>
@@ -38,28 +37,36 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/utility/sound.js';
 import { selectFile } from '@/utility/drive.js';
+import type { SoundStore } from '@/preferences/def.js';
 
 const props = defineProps<{
-	type: SoundType;
-	fileId?: string;
-	fileUrl?: string;
-	volume: number;
+	def: SoundStore;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update', result: { type: SoundType; fileId?: string; fileUrl?: string; volume: number; }): void;
 }>();
 
-const type = ref<SoundType>(props.type);
-const fileId = ref(props.fileId);
-const fileUrl = ref(props.fileUrl);
+const {
+	model: type,
+	def: typeDef,
+} = useMkSelect({
+	items: soundsTypes.map((x) => ({
+		label: getSoundTypeName(x),
+		value: x,
+	})),
+	initialValue: props.def.type,
+});
+const fileId = ref('fileId' in props.def ? props.def.fileId : undefined);
+const fileUrl = ref('fileUrl' in props.def ? props.def.fileUrl : undefined);
 const fileName = ref<string>('');
 const driveFileError = ref(false);
 const hasChanged = ref(false);
-const volume = ref(props.volume);
+const volume = ref(props.def.volume);
 
 if (type.value === '_driveFile_' && fileId.value) {
 	await misskeyApi('drive/files/show', {

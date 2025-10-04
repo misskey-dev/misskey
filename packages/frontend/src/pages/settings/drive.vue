@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink @click="chooseUploadFolder()">
 							<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
 							<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-							<template #suffixIcon><i class="ti ti-folder"></i></template>
+							<template #icon><i class="ti ti-folder"></i></template>
 						</FormLink>
 					</SearchMarker>
 
@@ -129,13 +129,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSelect
 								v-model="defaultImageCompressionLevel" :items="[
 									{ label: i18n.ts.none, value: 0 },
-									{ label: i18n.ts.low, value: 1 },
-									{ label: i18n.ts.medium, value: 2 },
-									{ label: i18n.ts.high, value: 3 },
+									{ label: `${i18n.ts.low} (${i18n.ts._compression._quality.high}; ${i18n.ts._compression._size.large})`, value: 1 },
+									{ label: `${i18n.ts.medium} (${i18n.ts._compression._quality.medium}; ${i18n.ts._compression._size.medium})`, value: 2 },
+									{ label: `${i18n.ts.high} (${i18n.ts._compression._quality.low}; ${i18n.ts._compression._size.small})`, value: 3 },
 								]"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.defaultImageCompressionLevel }}</SearchLabel></template>
-								<template #caption><div v-html="i18n.ts.defaultImageCompressionLevel_description"></div></template>
+								<template #label><SearchLabel>{{ i18n.ts.defaultCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="i18n.ts.defaultCompressionLevel_description"></div></template>
+							</MkSelect>
+						</MkPreferenceContainer>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['video']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.video }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<SearchMarker :keywords="['default', 'video', 'compression']">
+						<MkPreferenceContainer k="defaultVideoCompressionLevel">
+							<MkSelect
+								v-model="defaultVideoCompressionLevel" :items="[
+									{ label: i18n.ts.none, value: 0 },
+									{ label: `${i18n.ts.low} (${i18n.ts._compression._quality.high}; ${i18n.ts._compression._size.large})`, value: 1 },
+									{ label: `${i18n.ts.medium} (${i18n.ts._compression._quality.medium}; ${i18n.ts._compression._size.medium})`, value: 2 },
+									{ label: `${i18n.ts.high} (${i18n.ts._compression._quality.low}; ${i18n.ts._compression._size.small})`, value: 3 },
+								]"
+							>
+								<template #label><SearchLabel>{{ i18n.ts.defaultCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="i18n.ts.defaultCompressionLevel_description"></div></template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -196,6 +220,7 @@ const meterStyle = computed(() => {
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
 const defaultWatermarkPresetId = prefer.model('defaultWatermarkPresetId');
 const defaultImageCompressionLevel = prefer.model('defaultImageCompressionLevel');
+const defaultVideoCompressionLevel = prefer.model('defaultVideoCompressionLevel');
 
 const watermarkPresetsSyncEnabled = ref(prefer.isSyncEnabled('watermarkPresets'));
 
