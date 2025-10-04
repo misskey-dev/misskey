@@ -2,11 +2,13 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type * as Bowser_TR from 'bowser';
 
-type Bowser_TypeReferenceOnly = typeof Bowser_TR;
+// Type Reference Only import （実物はlazy-loadされる）
+import type * as BowserTypeReferenceOnly from 'bowser';
 
-let Bowser: Bowser_TypeReferenceOnly | null = null;
+type BowserTypeTypeReferenceOnly = typeof BowserTypeReferenceOnly;
+
+let Bowser: BowserTypeTypeReferenceOnly | null = null;
 
 export type UserEnvironment = {
 	os: string;
