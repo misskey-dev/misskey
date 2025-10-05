@@ -233,7 +233,7 @@ function select(anchorElement: HTMLElement | EventTarget | null, label: string |
 		os.popupMenu([label ? {
 			text: label,
 			type: 'label',
-		} : undefined, {
+		} : null, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
 			action: () => chooseFileFromPcAndUpload({ multiple, features }).then(files => res(files)),
@@ -300,15 +300,13 @@ export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFi
 	});
 }
 
-export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<Misskey.entities.DriveFolder[]> {
+export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<(Misskey.entities.DriveFolder | null)[]> {
 	return new Promise(async resolve => {
 		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkDriveFolderSelectDialog.vue').then(x => x.default), {
 			initialFolder,
 		}, {
 			done: folders => {
-				if (folders) {
-					resolve(folders);
-				}
+				resolve(folders);
 			},
 			closed: () => dispose(),
 		});

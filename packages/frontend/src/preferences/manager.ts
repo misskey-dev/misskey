@@ -109,10 +109,11 @@ export function definePreferences<T extends Record<string, unknown>>(x: {
 }
 
 export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
-	if (typeof PREF_DEF[k].default === 'function') { // factory
-		return PREF_DEF[k].default();
+	const _default = PREF_DEF[k as string].default;
+	if (typeof _default === 'function') { // factory
+		return _default();
 	} else {
-		return PREF_DEF[k].default;
+		return _default;
 	}
 }
 
@@ -446,16 +447,16 @@ export class PreferencesManager {
 				title: i18n.ts.preferenceSyncConflictTitle,
 				text: i18n.ts.preferenceSyncConflictText,
 				items: [...(mergedValue !== undefined ? [{
-					text: i18n.ts.preferenceSyncConflictChoiceMerge,
-					value: 'merge',
+					label: i18n.ts.preferenceSyncConflictChoiceMerge,
+					value: 'merge' as const,
 				}] : []), {
-					text: i18n.ts.preferenceSyncConflictChoiceServer,
-					value: 'remote',
+					label: i18n.ts.preferenceSyncConflictChoiceServer,
+					value: 'remote' as const,
 				}, {
-					text: i18n.ts.preferenceSyncConflictChoiceDevice,
-					value: 'local',
+					label: i18n.ts.preferenceSyncConflictChoiceDevice,
+					value: 'local' as const,
 				}, {
-					text: i18n.ts.preferenceSyncConflictChoiceCancel,
+					label: i18n.ts.preferenceSyncConflictChoiceCancel,
 					value: null,
 				}],
 				default: mergedValue !== undefined ? 'merge' : 'remote',
@@ -468,6 +469,8 @@ export class PreferencesManager {
 				return local;
 			} else if (choice === 'merge') {
 				return mergedValue!;
+			} else { // TSを黙らすため
+				return undefined;
 			}
 		}
 

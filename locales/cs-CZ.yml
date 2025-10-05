@@ -2053,3 +2053,14 @@ _watermarkEditor:
   type: "Typ"
   image: "Obrázky"
   advanced: "Pokročilé"
+_imageEffector:
+  _fxProps:
+    scale: "Velikost"
+    size: "Velikost"
+    offset: "Pozice"
+    color: "Barva"
+    opacity: "Průhlednost"
+    lightness: "Zesvětlit"
+_qr:
+  showTabTitle: "Zobrazit"
+  raw: "Text"

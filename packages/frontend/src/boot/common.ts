@@ -29,6 +29,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
+import { launchPlugins } from '@/plugin.js';
 
 export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);
@@ -150,7 +151,21 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 	//#endregion
 
+	//#region Sync dark mode
+	if (prefer.s.syncDeviceDarkMode) {
+		store.set('darkMode', isDeviceDarkmode());
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
+		if (prefer.s.syncDeviceDarkMode) {
+			store.set('darkMode', mql.matches);
+		}
+	});
+	//#endregion
+
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
+	// NOTE: この処理は必ずダークモード判定処理より後に来ること(初回のテーマ適用のため)
+	// see: https://github.com/misskey-dev/misskey/issues/16562
 	watch(store.r.darkMode, (darkMode) => {
 		const theme = (() => {
 			if (darkMode) {
@@ -181,18 +196,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 			}
 		});
 	}
-
-	//#region Sync dark mode
-	if (prefer.s.syncDeviceDarkMode) {
-		store.set('darkMode', isDeviceDarkmode());
-	}
-
-	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (prefer.s.syncDeviceDarkMode) {
-			store.set('darkMode', mql.matches);
-		}
-	});
-	//#endregion
 
 	if (!isSafeMode) {
 		if (prefer.s.darkTheme && store.s.darkMode) {
@@ -336,6 +339,12 @@ export async function common(createVue: () => Promise<App<Element>>) {
 
 			...instance.sentryForFrontend.options,
 		});
+	}
+
+	try {
+		await launchPlugins();
+	} catch (error) {
+		console.error('Failed to launch plugins:', error);
 	}
 
 	app.mount(rootEl);

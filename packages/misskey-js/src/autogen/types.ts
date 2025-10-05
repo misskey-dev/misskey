@@ -3906,6 +3906,15 @@ export type paths = {
          */
         post: operations['v2___admin___emoji___list'];
     };
+    '/verify-email': {
+        /**
+         * verify-email
+         * @description No description provided.
+         *
+         *     **Credential required**: *No*
+         */
+        post: operations['verify-email'];
+    };
 };
 export type webhooks = Record<string, never>;
 export type components = {
@@ -3940,7 +3949,7 @@ export type components = {
              */
             host: string | null;
             /** Format: url */
-            avatarUrl: string | null;
+            avatarUrl: string;
             avatarBlurhash: string | null;
             avatarDecorations: {
                 /** Format: id */
@@ -4049,8 +4058,8 @@ export type components = {
             /** Format: id */
             bannerId: string | null;
             followedMessage: string | null;
-            isModerator: boolean | null;
-            isAdmin: boolean | null;
+            isModerator: boolean;
+            isAdmin: boolean;
             injectFeaturedNote: boolean;
             receiveAnnouncementEmail: boolean;
             alwaysMarkNsfw: boolean;
@@ -4076,7 +4085,7 @@ export type components = {
             unreadNotificationsCount: number;
             mutedWords: string[][];
             hardMutedWords: string[][];
-            mutedInstances: string[] | null;
+            mutedInstances: string[];
             notificationRecieveConfig: {
                 note?: {
                     /** @enum {string} */
@@ -4142,6 +4151,24 @@ export type components = {
                     userListId: string;
                 };
                 pollEnded?: {
+                    /** @enum {string} */
+                    type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                } | {
+                    /** @enum {string} */
+                    type: 'list';
+                    /** Format: misskey:id */
+                    userListId: string;
+                };
+                scheduledNotePosted?: {
+                    /** @enum {string} */
+                    type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                } | {
+                    /** @enum {string} */
+                    type: 'list';
+                    /** Format: misskey:id */
+                    userListId: string;
+                };
+                scheduledNotePostFailed?: {
                     /** @enum {string} */
                     type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
                 } | {
@@ -4276,6 +4303,7 @@ export type components = {
             imageUrl: string;
             memo: string;
             dayOfWeek: number;
+            isSensitive: boolean;
         };
         Announcement: {
             /**
@@ -4396,42 +4424,31 @@ export type components = {
             /** Format: date-time */
             createdAt: string;
             text: string | null;
-            cw?: string | null;
+            cw: string | null;
             /** Format: id */
             userId: string;
             user: components['schemas']['UserLite'];
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            replyId?: string | null;
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            renoteId?: string | null;
-            /** @description The reply target note contents if exists. If the reply target has been deleted since the draft was created, this will be null while replyId is not null. */
+            /** Format: id */
+            replyId: string | null;
+            /** Format: id */
+            renoteId: string | null;
             reply?: components['schemas']['Note'] | null;
-            /** @description The renote target note contents if exists. If the renote target has been deleted since the draft was created, this will be null while renoteId is not null. */
             renote?: components['schemas']['Note'] | null;
             /** @enum {string} */
             visibility: 'public' | 'home' | 'followers' | 'specified';
-            visibleUserIds?: string[];
-            fileIds?: string[];
+            visibleUserIds: string[];
+            fileIds: string[];
             files?: components['schemas']['DriveFile'][];
-            hashtag?: string;
-            poll?: {
+            hashtag: string | null;
+            poll: {
                 /** Format: date-time */
                 expiresAt?: string | null;
                 expiredAfter?: number | null;
                 multiple: boolean;
                 choices: string[];
             } | null;
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            channelId?: string | null;
+            /** Format: id */
+            channelId: string | null;
             channel?: {
                 id: string;
                 name: string;
@@ -4440,20 +4457,28 @@ export type components = {
                 allowRenoteToExternal: boolean;
                 userId: string | null;
             } | null;
-            localOnly?: boolean;
+            localOnly: boolean;
             /** @enum {string|null} */
             reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+            scheduledAt: number | null;
+            isActuallyScheduled: boolean;
         };
         NoteReaction: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
+            /** Format: id */
             id: string;
             /** Format: date-time */
             createdAt: string;
             user: components['schemas']['UserLite'];
             type: string;
+        };
+        NoteReactionWithNote: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            user: components['schemas']['UserLite'];
+            type: string;
+            note: components['schemas']['Note'];
         };
         NoteFavorite: {
             /**
@@ -4545,6 +4570,22 @@ export type components = {
             /** Format: id */
             userId: string;
             note: components['schemas']['Note'];
+        } | {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** @enum {string} */
+            type: 'scheduledNotePosted';
+            note: components['schemas']['Note'];
+        } | {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** @enum {string} */
+            type: 'scheduledNotePostFailed';
+            noteDraft: components['schemas']['NoteDraft'];
         } | {
             /** Format: id */
             id: string;
@@ -5211,6 +5252,7 @@ export type components = {
             canManageCustomEmojis: boolean;
             canManageAvatarDecorations: boolean;
             canSearchNotes: boolean;
+            canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
             driveCapacityMb: number;
@@ -5236,6 +5278,7 @@ export type components = {
             /** @enum {string} */
             chatAvailability: 'available' | 'readonly' | 'unavailable';
             noteDraftLimit: number;
+            scheduledNoteLimit: number;
             watermarkAvailable: boolean;
         };
         ReversiGameLite: {
@@ -5329,6 +5372,7 @@ export type components = {
             feedbackUrl: string | null;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
+            clientOptions: Record<string, never>;
             disableRegistration: boolean;
             emailRequiredForSignup: boolean;
             enableHcaptcha: boolean;
@@ -5364,6 +5408,7 @@ export type components = {
                 /** Format: url */
                 imageUrl: string;
                 dayOfWeek: number;
+                isSensitive?: boolean;
             }[];
             /** @default 0 */
             notesPerOneAd: number;
@@ -5426,6 +5471,20 @@ export type components = {
             cacheRemoteSensitiveFiles: boolean;
         };
         MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+        UserWebhook: {
+            /** Format: id */
+            id: string;
+            /** Format: id */
+            userId: string;
+            name: string;
+            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
+            url: string;
+            secret: string;
+            active: boolean;
+            /** Format: date-time */
+            latestSentAt: string | null;
+            latestStatus: number | null;
+        };
         SystemWebhook: {
             id: string;
             isActive: boolean;
@@ -6018,7 +6077,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['MeDetailed'];
+                    'application/json': components['schemas']['MeDetailed'] & {
+                        token: string;
+                    };
                 };
             };
             /** @description Client error */
@@ -6209,6 +6270,7 @@ export interface operations {
                     startsAt: number;
                     imageUrl: string;
                     dayOfWeek: number;
+                    isSensitive?: boolean;
                 };
             };
         };
@@ -6421,6 +6483,7 @@ export interface operations {
                     expiresAt?: number;
                     startsAt?: number;
                     dayOfWeek?: number;
+                    isSensitive?: boolean;
                 };
             };
         };
@@ -6683,6 +6746,13 @@ export interface operations {
                         updatedAt: string | null;
                         text: string;
                         title: string;
+                        icon: string | null;
+                        display: string;
+                        isActive: boolean;
+                        forExistingUsers: boolean;
+                        silence: boolean;
+                        needConfirmationToRead: boolean;
+                        userId: string | null;
                         imageUrl: string | null;
                         reads: number;
                     }[];
@@ -7644,6 +7714,10 @@ export interface operations {
                         folderId: string | null;
                         isSensitive: boolean;
                         isLink: boolean;
+                        maybeSensitive: boolean;
+                        maybePorn: boolean;
+                        requestIp: string | null;
+                        requestHeaders: Record<string, never> | null;
                     };
                 };
             };
@@ -9287,8 +9361,10 @@ export interface operations {
                         mcaptchaSecretKey: string | null;
                         recaptchaSecretKey: string | null;
                         turnstileSecretKey: string | null;
-                        sensitiveMediaDetection: string;
-                        sensitiveMediaDetectionSensitivity: string;
+                        /** @enum {string} */
+                        sensitiveMediaDetection: 'none' | 'all' | 'local' | 'remote';
+                        /** @enum {string} */
+                        sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
                         setSensitiveFlagAutomatically: boolean;
                         enableSensitiveMediaDetectionForVideos: boolean;
                         /** Format: id */
@@ -9339,6 +9415,7 @@ export interface operations {
                         deeplIsPro: boolean;
                         defaultDarkTheme: string | null;
                         defaultLightTheme: string | null;
+                        clientOptions: Record<string, never>;
                         description: string | null;
                         disableRegistration: boolean;
                         impressumUrl: string | null;
@@ -9350,6 +9427,7 @@ export interface operations {
                         privacyPolicyUrl: string | null;
                         inquiryUrl: string | null;
                         repositoryUrl: string | null;
+                        feedbackUrl: string | null;
                         /**
                          * @deprecated
                          * @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead.
@@ -9501,7 +9579,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     /** @enum {string} */
                     state: '*' | 'completed' | 'wait' | 'active' | 'paused' | 'prioritized' | 'delayed' | 'failed';
                 };
@@ -9688,7 +9766,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     state: ('active' | 'wait' | 'delayed' | 'completed' | 'failed' | 'paused')[];
                     search?: string;
                 };
@@ -9756,7 +9834,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                 };
             };
         };
@@ -9819,7 +9897,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                 };
             };
         };
@@ -9832,7 +9910,7 @@ export interface operations {
                 content: {
                     'application/json': {
                         /** @enum {string} */
-                        name: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                        name: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                         qualifiedName: string;
                         counts: {
                             [key: string]: number;
@@ -9922,7 +10000,7 @@ export interface operations {
                 content: {
                     'application/json': {
                         /** @enum {string} */
-                        name: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                        name: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                         counts: {
                             [key: string]: number;
                         };
@@ -9986,7 +10064,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     jobId: string;
                 };
             };
@@ -10050,7 +10128,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     jobId: string;
                 };
             };
@@ -10114,7 +10192,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     jobId: string;
                 };
             };
@@ -10181,7 +10259,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+                    queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
                     jobId: string;
                 };
             };
@@ -11601,6 +11679,24 @@ export interface operations {
                                 /** Format: misskey:id */
                                 userListId: string;
                             };
+                            scheduledNotePosted?: {
+                                /** @enum {string} */
+                                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                            } | {
+                                /** @enum {string} */
+                                type: 'list';
+                                /** Format: misskey:id */
+                                userListId: string;
+                            };
+                            scheduledNotePostFailed?: {
+                                /** @enum {string} */
+                                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                            } | {
+                                /** @enum {string} */
+                                type: 'list';
+                                /** Format: misskey:id */
+                                userListId: string;
+                            };
                             receiveFollowRequest?: {
                                 /** @enum {string} */
                                 type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
@@ -12574,6 +12670,7 @@ export interface operations {
                     description?: string | null;
                     defaultLightTheme?: string | null;
                     defaultDarkTheme?: string | null;
+                    clientOptions?: Record<string, never>;
                     cacheRemoteFiles?: boolean;
                     cacheRemoteSensitiveFiles?: boolean;
                     emailRequiredForSignup?: boolean;
@@ -18250,6 +18347,20 @@ export interface operations {
         };
     };
     clips___list: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 10 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                };
+            };
+        };
         responses: {
             /** @description OK (with results) */
             200: {
@@ -24374,6 +24485,8 @@ export interface operations {
                         /** Format: date-time */
                         lastUsedAt?: string;
                         permission: string[];
+                        iconUrl?: string | null;
+                        description?: string | null;
                     }[];
                 };
             };
@@ -25885,8 +25998,8 @@ export interface operations {
                     untilDate?: number;
                     /** @default true */
                     markAsRead?: boolean;
-                    includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-                    excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+                    includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'scheduledNotePosted' | 'scheduledNotePostFailed' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+                    excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'scheduledNotePosted' | 'scheduledNotePostFailed' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
                 };
             };
         };
@@ -25970,8 +26083,8 @@ export interface operations {
                     untilDate?: number;
                     /** @default true */
                     markAsRead?: boolean;
-                    includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-                    excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+                    includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'scheduledNotePosted' | 'scheduledNotePostFailed' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+                    excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'scheduledNotePosted' | 'scheduledNotePostFailed' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
                 };
             };
         };
@@ -27245,6 +27358,24 @@ export interface operations {
                             /** Format: misskey:id */
                             userListId: string;
                         };
+                        scheduledNotePosted?: {
+                            /** @enum {string} */
+                            type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                        } | {
+                            /** @enum {string} */
+                            type: 'list';
+                            /** Format: misskey:id */
+                            userListId: string;
+                        };
+                        scheduledNotePostFailed?: {
+                            /** @enum {string} */
+                            type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                        } | {
+                            /** @enum {string} */
+                            type: 'list';
+                            /** Format: misskey:id */
+                            userListId: string;
+                        };
                         receiveFollowRequest?: {
                             /** @enum {string} */
                             type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
@@ -27609,20 +27740,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: misskey:id */
-                        id: string;
-                        /** Format: misskey:id */
-                        userId: string;
-                        name: string;
-                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-                        url: string;
-                        secret: string;
-                        active: boolean;
-                        /** Format: date-time */
-                        latestSentAt: string | null;
-                        latestStatus: number | null;
-                    }[];
+                    'application/json': components['schemas']['UserWebhook'][];
                 };
             };
             /** @description Client error */
@@ -27688,20 +27806,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: misskey:id */
-                        id: string;
-                        /** Format: misskey:id */
-                        userId: string;
-                        name: string;
-                        on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-                        url: string;
-                        secret: string;
-                        active: boolean;
-                        /** Format: date-time */
-                        latestSentAt: string | null;
-                        latestStatus: number | null;
-                    };
+                    'application/json': components['schemas']['UserWebhook'];
                 };
             };
             /** @description Client error */
@@ -29100,31 +29205,34 @@ export interface operations {
                      * @default public
                      * @enum {string}
                      */
-                    visibility?: 'public' | 'home' | 'followers' | 'specified';
-                    visibleUserIds?: string[];
-                    cw?: string | null;
-                    hashtag?: string | null;
+                    visibility: 'public' | 'home' | 'followers' | 'specified';
+                    visibleUserIds: string[];
+                    cw: string | null;
+                    hashtag: string | null;
                     /** @default false */
-                    localOnly?: boolean;
+                    localOnly: boolean;
                     /**
                      * @default null
                      * @enum {string|null}
                      */
-                    reactionAcceptance?: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
+                    reactionAcceptance: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
                     /** Format: misskey:id */
-                    replyId?: string | null;
+                    replyId: string | null;
                     /** Format: misskey:id */
-                    renoteId?: string | null;
+                    renoteId: string | null;
                     /** Format: misskey:id */
-                    channelId?: string | null;
-                    text?: string | null;
-                    fileIds?: string[];
-                    poll?: {
+                    channelId: string | null;
+                    text: string | null;
+                    fileIds: string[];
+                    poll: {
                         choices: string[];
                         multiple?: boolean;
                         expiresAt?: number | null;
                         expiredAfter?: number | null;
                     } | null;
+                    scheduledAt: number | null;
+                    /** @default false */
+                    isActuallyScheduled: boolean;
                 };
             };
         };
@@ -29271,6 +29379,7 @@ export interface operations {
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
+                    scheduled?: boolean | null;
                 };
             };
         };
@@ -29337,20 +29446,13 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     draftId: string;
-                    /**
-                     * @default public
-                     * @enum {string}
-                     */
+                    /** @enum {string} */
                     visibility?: 'public' | 'home' | 'followers' | 'specified';
                     visibleUserIds?: string[];
                     cw?: string | null;
                     hashtag?: string | null;
-                    /** @default false */
                     localOnly?: boolean;
-                    /**
-                     * @default null
-                     * @enum {string|null}
-                     */
+                    /** @enum {string|null} */
                     reactionAcceptance?: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
                     /** Format: misskey:id */
                     replyId?: string | null;
@@ -29366,6 +29468,8 @@ export interface operations {
                         expiresAt?: number | null;
                         expiredAfter?: number | null;
                     } | null;
+                    scheduledAt?: number | null;
+                    isActuallyScheduled?: boolean;
                 };
             };
         };
@@ -35296,7 +35400,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserList'];
+                    'application/json': components['schemas']['UserList'] & {
+                        likedCount?: number;
+                        isLiked?: boolean;
+                    };
                 };
             };
             /** @description Client error */
@@ -35725,7 +35832,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['NoteReaction'][];
+                    'application/json': components['schemas']['NoteReactionWithNote'][];
                 };
             };
             /** @description Client error */
@@ -36334,6 +36441,68 @@ export interface operations {
                         allCount: number;
                         allPages: number;
                     };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'verify-email': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    code: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
                 };
             };
             /** @description Client error */

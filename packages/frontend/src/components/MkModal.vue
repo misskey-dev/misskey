@@ -91,7 +91,7 @@ const emit = defineEmits<{
 	(ev: 'opened'): void;
 	(ev: 'click'): void;
 	(ev: 'esc'): void;
-	(ev: 'close'): void;
+	(ev: 'close'): void; // TODO: (refactor) closing に改名する
 	(ev: 'closed'): void;
 }>();
 
@@ -148,7 +148,6 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 		useSendAnime.value = true;
 	}
 
-	// eslint-disable-next-line vue/no-mutating-props
 	if (props.anchorElement) props.anchorElement.style.pointerEvents = 'auto';
 	showing.value = false;
 	emit('close');
@@ -319,7 +318,6 @@ const alignObserver = new ResizeObserver((entries, observer) => {
 onMounted(() => {
 	watch(() => props.anchorElement, async () => {
 		if (props.anchorElement) {
-			// eslint-disable-next-line vue/no-mutating-props
 			props.anchorElement.style.pointerEvents = 'none';
 		}
 		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.anchorElement) != null);

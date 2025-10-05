@@ -4,10 +4,13 @@
  */
 
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import { GLSL_LIB_SNOISE } from '@/utility/webgl.js';
 import { i18n } from '@/i18n.js';
 
 const shader = `#version 300 es
 precision mediump float;
+
+${GLSL_LIB_SNOISE}
 
 in vec2 in_uv;
 uniform sampler2D in_texture;
@@ -22,10 +25,22 @@ out vec4 out_color;
 
 void main() {
 	vec4 in_color = texture(in_texture, in_uv);
-	float angle = atan(-u_pos.y + (in_uv.y), -u_pos.x + (in_uv.x));
-	float t = (1.0 + sin(angle * u_frequency)) / 2.0;
+	vec2 centeredUv = (in_uv - vec2(0.5, 0.5));
+	vec2 uv = centeredUv;
+
+	float seed = 1.0;
+	float time = 0.0;
+
+	vec2 noiseUV = (uv - u_pos) / distance((uv - u_pos), vec2(0.0));
+	float noiseX = (noiseUV.x + seed) * u_frequency;
+	float noiseY = (noiseUV.y + seed) * u_frequency;
+  float noise = (1.0 + snoise(vec3(noiseX, noiseY, time))) / 2.0;
+
+	float t = noise;
 	if (u_thresholdEnabled) t = t < u_threshold ? 1.0 : 0.0;
-	float d = distance(in_uv * vec2(2.0, 2.0), u_pos * vec2(2.0, 2.0));
+
+	// TODO: マスクの形自体も揺らぎを与える
+	float d = distance(uv * vec2(2.0, 2.0), u_pos * vec2(2.0, 2.0));
 	float mask = d < u_maskSize ? 0.0 : ((d - u_maskSize) * (1.0 + (u_maskSize * 2.0)));
 	out_color = vec4(
 		mix(in_color.r, u_black ? 0.0 : 1.0, t * mask),
@@ -37,59 +52,68 @@ void main() {
 `;
 
 export const FX_zoomLines = defineImageEffectorFx({
-	id: 'zoomLines' as const,
+	id: 'zoomLines',
 	name: i18n.ts._imageEffector._fxs.zoomLines,
 	shader,
 	uniforms: ['pos', 'frequency', 'thresholdEnabled', 'threshold', 'maskSize', 'black'] as const,
 	params: {
 		x: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.centerX,
+			type: 'number',
 			default: 0.0,
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		y: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.centerY,
+			type: 'number',
 			default: 0.0,
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		frequency: {
-			type: 'number' as const,
-			default: 30.0,
-			min: 1.0,
-			max: 200.0,
+			label: i18n.ts._imageEffector._fxProps.frequency,
+			type: 'number',
+			default: 5.0,
+			min: 0.0,
+			max: 15.0,
 			step: 0.1,
 		},
-		thresholdEnabled: {
-			type: 'boolean' as const,
-			default: true,
+		smoothing: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesSmoothing,
+			caption: i18n.ts._imageEffector._fxProps.zoomLinesSmoothingDescription,
+			type: 'boolean',
+			default: false,
 		},
 		threshold: {
-			type: 'number' as const,
-			default: 0.2,
+			label: i18n.ts._imageEffector._fxProps.zoomLinesThreshold,
+			type: 'number',
+			default: 0.5,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		maskSize: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.zoomLinesMaskSize,
+			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
 		},
 		black: {
-			type: 'boolean' as const,
+			label: i18n.ts._imageEffector._fxProps.zoomLinesBlack,
+			type: 'boolean',
 			default: false,
 		},
 	},
 	main: ({ gl, u, params }) => {
-		gl.uniform2f(u.pos, (1.0 + params.x) / 2.0, (1.0 + params.y) / 2.0);
-		gl.uniform1f(u.frequency, params.frequency);
-		gl.uniform1i(u.thresholdEnabled, params.thresholdEnabled ? 1 : 0);
+		gl.uniform2f(u.pos, params.x / 2, params.y / 2);
+		gl.uniform1f(u.frequency, params.frequency * params.frequency);
+		// thresholdの調整が有効な間はsmoothingが利用できない
+		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
 		gl.uniform1f(u.threshold, params.threshold);
 		gl.uniform1f(u.maskSize, params.maskSize);
 		gl.uniform1i(u.black, params.black ? 1 : 0);

@@ -46,6 +46,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { haptic } from '@/utility/haptic.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -83,6 +84,8 @@ async function onClick() {
 	pleaseLogin({ openOnRemote: { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` } });
 
 	wait.value = true;
+
+	haptic();
 
 	try {
 		if (isFollowing.value) {

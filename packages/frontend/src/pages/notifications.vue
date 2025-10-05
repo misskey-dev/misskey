@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref } from 'vue';
-import { notificationTypes } from '@@/js/const.js';
+import { notificationTypes } from 'misskey-js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import * as os from '@/os.js';
@@ -31,7 +31,7 @@ import { Paginator } from '@/utility/paginator.js';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
-const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value.includes(t)) : null);
+const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value!.includes(t)) : null);
 
 const mentionsPaginator = markRaw(new Paginator('notes/mentions', {
 	limit: 10,
@@ -71,7 +71,7 @@ const headerActions = computed(() => [tab.value === 'all' ? {
 	text: i18n.ts.markAllAsRead,
 	icon: 'ti ti-check',
 	handler: () => {
-		os.apiWithDialog('notifications/mark-all-as-read');
+		os.apiWithDialog('notifications/mark-all-as-read', {});
 	},
 } : undefined].filter(x => x !== undefined));
 

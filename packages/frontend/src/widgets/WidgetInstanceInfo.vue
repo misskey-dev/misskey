@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_panel">
 	<div :class="$style.container" :style="{ backgroundImage: instance.bannerUrl ? `url(${ instance.bannerUrl })` : undefined }">
 		<div :class="$style.iconContainer">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.icon"/>
+			<img :src="instance.iconUrl ?? '/favicon.ico'" alt="" :class="$style.icon"/>
 		</div>
 		<div :class="$style.bodyContainer">
 			<div :class="$style.body">
@@ -20,10 +20,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { host } from '@@/js/config.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
-import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 
 const name = 'instanceInfo';
