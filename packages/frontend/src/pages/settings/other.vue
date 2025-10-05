@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>Enable haptic feedback</template>
 						</MkSwitch>
 						<MkSwitch v-model="enableWebTranslatorApi">
-							<template #label>Enable in-browser translation API</template>
+							<template #label>Enable in-browser translator API</template>
 						</MkSwitch>
 					</div>
 				</MkFolder>
