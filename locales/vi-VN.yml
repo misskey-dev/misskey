@@ -1816,7 +1816,6 @@ _widgets:
   _userList:
     chooseList: "Chọn danh sách"
   clicker: "clicker"
-  chat: "Trò chuyện"
 _cw:
   hide: "Ẩn"
   show: "Tải thêm"
@@ -2042,7 +2041,6 @@ _deck:
     channel: "Kênh"
     mentions: "Lượt nhắc"
     direct: "Nhắn riêng"
-    chat: "Trò chuyện"
 _dialog:
   charactersExceeded: "Bạn nhắn quá giới hạn ký tự!! Hiện nay {current} / giới hạn {max}"
   charactersBelow: "Bạn nhắn quá ít tối thiểu ký tự!! Hiện nay {current} / Tối thiểu {min}"
@@ -2095,6 +2093,10 @@ _imageEffector:
     angle: "Góc"
     scale: "Kích thước"
     size: "Kích thước"
+    offset: "Vị trí"
     color: "Màu sắc"
     opacity: "Độ trong suốt"
     lightness: "Độ sáng"
+_qr:
+  showTabTitle: "Hiển thị"
+  raw: "Văn bản"

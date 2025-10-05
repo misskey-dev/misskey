@@ -1655,3 +1655,6 @@ _imageEffector:
     color: "Колір"
     opacity: "Непрозорість"
     lightness: "Яскравість"
+_qr:
+  showTabTitle: "Відображення"
+  raw: "Текст"
