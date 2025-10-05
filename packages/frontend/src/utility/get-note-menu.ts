@@ -292,7 +292,7 @@ export function getNoteMenu(props: {
 		if (prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable && appearNote.text != null) {
 			props.translating.value = true;
 			try {
-				// @ts-expect-error
+				// @ts-expect-error 実験的なAPIなので型定義がない
 				const detector = await LanguageDetector.create();
 				const langResult = await detector.detect(appearNote.text);
 				let localStorageLang = miLocalStorage.getItem('lang');
@@ -309,7 +309,7 @@ export function getNoteMenu(props: {
 					return;
 				}
 
-				// @ts-expect-error
+				// @ts-expect-error 実験的なAPIなので型定義がない
 				const translator = await Translator.create({
 					sourceLanguage: langResult[0]?.detectedLanguage,
 					targetLanguage: localStorageLang ?? navigator.language,
