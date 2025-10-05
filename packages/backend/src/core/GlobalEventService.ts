@@ -20,7 +20,7 @@ import type { MiPage } from '@/models/Page.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import type { MiMeta } from '@/models/Meta.js';
-import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
+import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiChatRoomMembership, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -93,6 +93,10 @@ export interface MainEventTypes {
 	receiveFollowRequest: Packed<'UserLite'>;
 	announcementCreated: {
 		announcement: Packed<'Announcement'>;
+	};
+	chatRoomJoined: {
+		roomId: MiChatRoom['id'];
+		membershipId: MiChatRoomMembership['id'];
 	};
 }
 
@@ -171,6 +175,10 @@ export interface ChatEventTypes {
 		reaction: string;
 		user?: Packed<'UserLite'>;
 		messageId: MiChatMessage['id'];
+	};
+	joined: {
+		userId: MiUser['id'];
+		membershipId: MiChatRoomMembership['id'];
 	};
 	read: {
 		messageId: MiChatMessage['id'];

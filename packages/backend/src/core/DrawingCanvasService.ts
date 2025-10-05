@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import * as Redis from 'ioredis';
 import { Like } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -14,16 +15,23 @@ import { ChatService } from '@/core/ChatService.js';
 import type { MiUser, MiChatRoom, DriveFilesRepository, ChatRoomsRepository } from '@/models/_.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 
+interface DrawingPoint {
+	x: number;
+	y: number;
+	pressure?: number;
+}
+
 interface DrawingStroke {
 	id: string; // ストロークの一意ID
 	userId: string;
 	userName: string;
-	points: Array<{ x: number; y: number }>;
+	points: DrawingPoint[];
 	tool: 'pen' | 'eraser' | 'eyedropper';
 	color: string;
 	strokeWidth: number;
 	opacity: number;
 	timestamp: number;
+	layer: number;
 }
 
 interface CanvasData {
@@ -36,6 +44,9 @@ interface CanvasData {
 export class DrawingCanvasService {
 	private readonly CANVAS_EXPIRY = 7 * 24 * 60 * 60; // 7日間（秒）
 	private readonly AUTO_SAVE_THRESHOLD = 30 * 60 * 1000; // 30分間非アクティブで自動保存（ミリ秒）
+	private readonly MAX_LAYER_INDEX = 2;
+	private readonly MAX_POINTS_PER_STROKE = 1024;
+	private readonly MAX_COORDINATE = 4000;
 	private readonly canvasCache = new Map<string, CanvasData>();
 	private readonly saveTimers = new Map<string, NodeJS.Timeout>();
 
@@ -109,11 +120,20 @@ export class DrawingCanvasService {
 	@bindThis
 	public async addStroke(roomId: string, stroke: DrawingStroke): Promise<void> {
 		try {
+			const normalizedStroke: DrawingStroke = {
+				...stroke,
+				layer: this.clampLayerIndex(stroke.layer),
+				points: stroke.points.map(point => ({
+					x: this.clampCoordinate(point.x),
+					y: this.clampCoordinate(point.y),
+					pressure: typeof point.pressure === 'number' ? Math.min(Math.max(point.pressure, 0), 1) : undefined,
+				})),
+			};
 			// Redisにストロークを追加
 			const canvasKey = this.getCanvasKey(roomId);
 			const metaKey = this.getMetaKey(roomId);
 
-			await this.redisClient.lpush(canvasKey, JSON.stringify(stroke));
+			await this.redisClient.lpush(canvasKey, JSON.stringify(normalizedStroke));
 			await this.redisClient.expire(canvasKey, this.CANVAS_EXPIRY);
 
 			// メタデータ更新
@@ -122,26 +142,113 @@ export class DrawingCanvasService {
 				participantCount: await this.redisClient.scard(`${metaKey}:participants`),
 			};
 
-			await this.redisClient.sadd(`${metaKey}:participants`, stroke.userId);
+			await this.redisClient.sadd(`${metaKey}:participants`, normalizedStroke.userId);
 			await this.redisClient.hmset(metaKey, metaData);
 			await this.redisClient.expire(metaKey, this.CANVAS_EXPIRY);
 
 			// ユーザー別アンドゥバッファに追加（最新10ストロークを保持）
-			const undoBufferKey = this.getUndoBufferKey(roomId, stroke.userId);
-			await this.redisClient.lpush(undoBufferKey, JSON.stringify(stroke));
+			const undoBufferKey = this.getUndoBufferKey(roomId, normalizedStroke.userId);
+			await this.redisClient.lpush(undoBufferKey, JSON.stringify(normalizedStroke));
 			await this.redisClient.ltrim(undoBufferKey, 0, 9); // 最新10ストロークのみ保持
 			await this.redisClient.expire(undoBufferKey, this.CANVAS_EXPIRY);
 
 			// ローカルキャッシュ更新
-			this.updateLocalCache(roomId, stroke);
+			this.updateLocalCache(roomId, normalizedStroke);
 
 			// 自動保存タイマーをリセット
 			this.resetAutoSaveTimer(roomId);
 
-			console.log(`🎨 [DEBUG] Added stroke to canvas ${roomId} by user ${stroke.userId}`);
+			console.log(`🎨 [DEBUG] Added stroke to canvas ${roomId} by user ${normalizedStroke.userId}`);
 		} catch (error) {
 			console.error(`🎨 [ERROR] Failed to add stroke to canvas ${roomId}:`, error);
 		}
+	}
+
+	public getMaxLayerIndex(): number {
+		return this.MAX_LAYER_INDEX;
+	}
+
+	@bindThis
+	public normalizeStrokeData(roomId: string, user: Pick<MiUser, 'id' | 'username' | 'name'>, payload: any): DrawingStroke | null {
+		if (!payload || typeof payload !== 'object') {
+			console.warn(`🎨 [WARN] Invalid stroke payload received for ${roomId}`);
+			return null;
+		}
+
+		const rawPoints = Array.isArray(payload.points) ? payload.points : null;
+		if (!rawPoints || rawPoints.length === 0 || rawPoints.length > this.MAX_POINTS_PER_STROKE) {
+			console.warn(`🎨 [WARN] Stroke points not valid for ${roomId}`);
+			return null;
+		}
+
+		const points: DrawingPoint[] = [];
+		for (const point of rawPoints) {
+			if (!point || typeof point.x !== 'number' || typeof point.y !== 'number') {
+				console.warn(`🎨 [WARN] Stroke point missing coordinates for ${roomId}`);
+				return null;
+			}
+
+			const normalizedPoint: DrawingPoint = {
+				x: this.clampCoordinate(point.x),
+				y: this.clampCoordinate(point.y),
+			};
+
+			if (typeof point.pressure === 'number' && Number.isFinite(point.pressure)) {
+				normalizedPoint.pressure = Math.min(Math.max(point.pressure, 0), 1);
+			}
+
+			points.push(normalizedPoint);
+		}
+
+		const allowedTools: Array<DrawingStroke['tool']> = ['pen', 'eraser', 'eyedropper'];
+		const tool: DrawingStroke['tool'] = allowedTools.includes(payload.tool) ? payload.tool : 'pen';
+		if (tool === 'eyedropper') {
+			console.warn(`🎨 [WARN] Ignoring eyedropper stroke for ${roomId}`);
+			return null;
+		}
+
+		if (typeof payload.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(payload.color)) {
+			console.warn(`🎨 [WARN] Stroke color invalid for ${roomId}`);
+			return null;
+		}
+
+		if (typeof payload.strokeWidth !== 'number' || !Number.isFinite(payload.strokeWidth)) {
+			console.warn(`🎨 [WARN] Stroke width invalid for ${roomId}`);
+			return null;
+		}
+		const strokeWidth = Math.min(Math.max(payload.strokeWidth, 1), 100);
+
+		if (typeof payload.opacity !== 'number' || !Number.isFinite(payload.opacity)) {
+			console.warn(`🎨 [WARN] Stroke opacity invalid for ${roomId}`);
+			return null;
+		}
+		const opacity = Math.min(Math.max(payload.opacity, 0.05), 1);
+
+		const layer = this.clampLayerIndex(payload.layer);
+		const timestamp = typeof payload.timestamp === 'number' ? payload.timestamp : Date.now();
+
+		return {
+			id: typeof payload.id === 'string' ? payload.id : randomUUID(),
+			userId: user.id,
+			userName: user.username ?? user.name ?? 'Unknown',
+			points,
+			tool,
+			color: payload.color,
+			strokeWidth,
+			opacity,
+			timestamp,
+			layer,
+		};
+	}
+
+	private clampCoordinate(value: number): number {
+		if (!Number.isFinite(value)) return 0;
+		return Math.min(Math.max(value, 0), this.MAX_COORDINATE);
+	}
+
+	private clampLayerIndex(value: number): number {
+		if (!Number.isFinite(value)) return 0;
+		return Math.min(Math.max(Math.floor(value), 0), this.MAX_LAYER_INDEX);
 	}
 
 	@bindThis
@@ -237,27 +344,7 @@ export class DrawingCanvasService {
 
 			// JSONファイルからストロークデータを復元
 			if (latestCanvasFile.type === 'application/json') {
-				// ファイル内容を読み込み
-				// TODO: DriveServiceにgetFileContentメソッドを実装する必要があります
 				console.warn(`🎨 [WARN] Drive file reading not implemented yet for room ${roomId}`);
-				const fileContent = null; // await this.driveService.getFileContent(latestCanvasFile.id);
-				if (fileContent) {
-					const strokesData = JSON.parse(fileContent.toString());
-
-					// Redisに復元データを保存（一時的に）
-					const canvasKey = this.getCanvasKey(roomId);
-					const pipeline = this.redisClient.pipeline();
-
-					for (const stroke of strokesData) {
-						pipeline.lpush(canvasKey, JSON.stringify(stroke));
-					}
-
-					pipeline.expire(canvasKey, this.CANVAS_EXPIRY);
-					await pipeline.exec();
-
-					console.log(`🎨 [DEBUG] Restored ${strokesData.length} strokes from Drive to Redis for room ${roomId}`);
-					return strokesData;
-				}
 			}
 
 			return [];

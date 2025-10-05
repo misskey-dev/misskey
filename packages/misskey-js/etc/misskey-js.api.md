@@ -225,6 +225,9 @@ type AdminFederationDeleteAllFilesRequest = operations['admin___federation___del
 type AdminFederationRefreshRemoteInstanceMetadataRequest = operations['admin___federation___refresh-remote-instance-metadata']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminFederationRemoveAllFollowingByUserIdRequest = operations['admin___federation___remove-all-following-by-user-id']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminFederationRemoveAllFollowingRequest = operations['admin___federation___remove-all-following']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -448,6 +451,9 @@ type AdminUpdateProxyAccountResponse = operations['admin___update-proxy-account'
 
 // @public (undocumented)
 type AdminUpdateUserNoteRequest = operations['admin___update-user-note']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateUserSuspendedReasonRequest = operations['admin___update-user-suspended-reason']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type Announcement = components['schemas']['Announcement'];
@@ -908,10 +914,78 @@ export type Channels = {
                 user?: UserLite;
                 messageId: ChatMessageLite['id'];
             }) => void;
+            read: (payload: {
+                messageId: ChatMessageLite['id'];
+                readerId: User['id'];
+            }) => void;
+            typing: (payload: {
+                userId: User['id'];
+                user?: UserLite;
+            }) => void;
+            typingStop: (payload: {
+                userId: User['id'];
+            }) => void;
+            drawingStroke: (payload: {
+                id: string;
+                userId: User['id'];
+                userName: string;
+                points: Array<{
+                    x: number;
+                    y: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth: number;
+                opacity: number;
+                timestamp: number;
+            }) => void;
+            cursorMove: (payload: {
+                userId: User['id'];
+                userName: string;
+                x: number;
+                y: number;
+                timestamp: number;
+            }) => void;
+            clearCanvas: (payload: {
+                userId: User['id'];
+                userName: string;
+                timestamp: number;
+            }) => void;
+            undoStroke: (payload: {
+                userId: User['id'];
+                userName: string;
+                strokeId: string;
+                timestamp: number;
+            }) => void;
         };
         receives: {
             read: {
                 id: ChatMessageLite['id'];
+            };
+            typing: {
+                roomId?: string;
+            };
+            typingStop: {
+                roomId?: string;
+            };
+            drawingStroke: {
+                points: Array<{
+                    x: number;
+                    y: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth?: number;
+                opacity?: number;
+            };
+            cursorMove: {
+                x: number;
+                y: number;
+            };
+            clearCanvas: null | Record<string, never>;
+            undoStroke: {
+                userId: User['id'];
+                timestamp: number;
             };
         };
     };
@@ -1050,6 +1124,9 @@ type ChartsUsersRequest = operations['charts___users']['requestBody']['content']
 type ChartsUsersResponse = operations['charts___users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChatGetSecretModeForUserRequest = operations['chat___get-secret-mode-for-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type ChatHistoryRequest = operations['chat___history']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1084,6 +1161,15 @@ type ChatMessagesDeleteRequest = operations['chat___messages___delete']['request
 
 // @public (undocumented)
 type ChatMessagesReactRequest = operations['chat___messages___react']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReadRequest = operations['chat___messages___read']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReadUsersRequest = operations['chat___messages___read-users']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReadUsersResponse = operations['chat___messages___read-users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatMessagesRoomTimelineRequest = operations['chat___messages___room-timeline']['requestBody']['content']['application/json'];
@@ -1129,6 +1215,12 @@ type ChatRoomsCreateResponse = operations['chat___rooms___create']['responses'][
 
 // @public (undocumented)
 type ChatRoomsDeleteRequest = operations['chat___rooms___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsGetSecretModeRequest = operations['chat___rooms___get-secret-mode']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsGetSecretModeResponse = operations['chat___rooms___get-secret-mode']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChatRoomsInvitationsCreateRequest = operations['chat___rooms___invitations___create']['requestBody']['content']['application/json'];
@@ -1179,6 +1271,9 @@ type ChatRoomsOwnedRequest = operations['chat___rooms___owned']['requestBody']['
 type ChatRoomsOwnedResponse = operations['chat___rooms___owned']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChatRoomsSetSecretModeRequest = operations['chat___rooms___set-secret-mode']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type ChatRoomsShowRequest = operations['chat___rooms___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1189,6 +1284,9 @@ type ChatRoomsUpdateRequest = operations['chat___rooms___update']['requestBody']
 
 // @public (undocumented)
 type ChatRoomsUpdateResponse = operations['chat___rooms___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatSetSecretModeForUserRequest = operations['chat___set-secret-mode-for-user']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type Clip = components['schemas']['Clip'];
@@ -1243,6 +1341,33 @@ type ClipsUpdateResponse = operations['clips___update']['responses']['200']['con
 
 // @public (undocumented)
 type DateString = string;
+
+// @public (undocumented)
+type DrawingCanvasRequest = operations['drawing___canvas']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingCanvasResponse = operations['drawing___canvas']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSaveRequest = operations['drawing___save']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSettingsRoomGetRequest = operations['drawing___settings___room___get']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSettingsRoomGetResponse = operations['drawing___settings___room___get']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSettingsRoomUpdateRequest = operations['drawing___settings___room___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSettingsUserGetRequest = operations['drawing___settings___user___get']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSettingsUserGetResponse = operations['drawing___settings___user___get']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DrawingSettingsUserUpdateRequest = operations['drawing___settings___user___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFile = components['schemas']['DriveFile'];
@@ -1559,6 +1684,7 @@ declare namespace entities {
         AdminFederationDeleteAllFilesRequest,
         AdminFederationRefreshRemoteInstanceMetadataRequest,
         AdminFederationRemoveAllFollowingRequest,
+        AdminFederationRemoveAllFollowingByUserIdRequest,
         AdminFederationUpdateInstanceRequest,
         AdminForwardAbuseUserReportRequest,
         AdminGetIndexStatsResponse,
@@ -1633,6 +1759,7 @@ declare namespace entities {
         AdminUpdateProxyAccountRequest,
         AdminUpdateProxyAccountResponse,
         AdminUpdateUserNoteRequest,
+        AdminUpdateUserSuspendedReasonRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1715,6 +1842,7 @@ declare namespace entities {
         ChartsUserReactionsResponse,
         ChartsUsersRequest,
         ChartsUsersResponse,
+        ChatGetSecretModeForUserRequest,
         ChatHistoryRequest,
         ChatHistoryResponse,
         ChatMessagesCreateToRoomRequest,
@@ -1723,6 +1851,9 @@ declare namespace entities {
         ChatMessagesCreateToUserResponse,
         ChatMessagesDeleteRequest,
         ChatMessagesReactRequest,
+        ChatMessagesReadRequest,
+        ChatMessagesReadUsersRequest,
+        ChatMessagesReadUsersResponse,
         ChatMessagesRoomTimelineRequest,
         ChatMessagesRoomTimelineResponse,
         ChatMessagesSearchRequest,
@@ -1735,6 +1866,8 @@ declare namespace entities {
         ChatRoomsCreateRequest,
         ChatRoomsCreateResponse,
         ChatRoomsDeleteRequest,
+        ChatRoomsGetSecretModeRequest,
+        ChatRoomsGetSecretModeResponse,
         ChatRoomsInvitationsCreateRequest,
         ChatRoomsInvitationsCreateResponse,
         ChatRoomsInvitationsIgnoreRequest,
@@ -1751,10 +1884,12 @@ declare namespace entities {
         ChatRoomsMuteRequest,
         ChatRoomsOwnedRequest,
         ChatRoomsOwnedResponse,
+        ChatRoomsSetSecretModeRequest,
         ChatRoomsShowRequest,
         ChatRoomsShowResponse,
         ChatRoomsUpdateRequest,
         ChatRoomsUpdateResponse,
+        ChatSetSecretModeForUserRequest,
         ClipsAddNoteRequest,
         ClipsCreateRequest,
         ClipsCreateResponse,
@@ -1771,6 +1906,15 @@ declare namespace entities {
         ClipsUnfavoriteRequest,
         ClipsUpdateRequest,
         ClipsUpdateResponse,
+        DrawingCanvasRequest,
+        DrawingCanvasResponse,
+        DrawingSaveRequest,
+        DrawingSettingsRoomGetRequest,
+        DrawingSettingsRoomGetResponse,
+        DrawingSettingsRoomUpdateRequest,
+        DrawingSettingsUserGetRequest,
+        DrawingSettingsUserGetResponse,
+        DrawingSettingsUserUpdateRequest,
         DriveResponse,
         DriveFilesRequest,
         DriveFilesResponse,

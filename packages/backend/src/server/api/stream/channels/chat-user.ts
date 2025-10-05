@@ -151,21 +151,31 @@ class ChatUserChannel extends Channel {
 		this.lastDrawingStroke = now;
 
 		try {
+			const actor = this.user;
+			if (!actor) return;
+
 			// ユーザー間チャット用のdrawingIdを生成
-			const sortedIds = [this.user!.id, this.otherId].sort();
+			const sortedIds = [actor.id, this.otherId].sort();
 			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
 
-			// ユーザー名を設定
-			body.userName = this.user!.username || this.user!.name || 'Unknown';
-			body.userId = this.user!.id;
+			const strokeData = this.drawingCanvasService.normalizeStrokeData(drawingId, actor, body);
+			if (!strokeData) {
+				console.warn(`🔍 [SECURITY] Invalid drawing stroke payload rejected for user chat ${drawingId}`);
+				return;
+			}
 
-			// Redisにストロークを保存
-			await this.drawingCanvasService.addStroke(drawingId, body);
+			const canAccess = await this.drawingCanvasService.canUserAccessCanvas(drawingId, actor.id);
+			if (!canAccess) {
+				console.warn(`🔍 [SECURITY] User ${actor.id} denied drawing access for ${drawingId}`);
+				return;
+			}
+
+			await this.drawingCanvasService.addStroke(drawingId, strokeData);
 
 			// 他の参加者に配信（自分以外）
-			this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+			(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
 				type: 'drawingStroke',
-				body: body,
+				body: strokeData,
 			});
 		} catch (error) {
 			console.error('Drawing stroke error:', error);
@@ -186,22 +196,31 @@ class ChatUserChannel extends Channel {
 		this.lastDrawingStroke = now;
 
 		try {
-			// セキュリティ: 描画データの詳細検証
+			const actor = this.user;
+			if (!actor) return;
+
 			if (!body || typeof body !== 'object') return;
-			if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 500) return; // 進行中は点数制限緩和
+			if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 500) return;
 			if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
 			if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
-			if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 50) return;
+			if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 100) return;
 			if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
 
-			// ユーザー名を設定
-			body.userName = this.user!.username || this.user!.name || 'Unknown';
-			body.userId = this.user!.id;
-			body.timestamp = now;
+			const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
+			const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
 
-			// 他の参加者に配信（リアルタイム、Redisには保存しない）
-			const sortedIds = [this.user!.id, this.otherId].sort();
-			this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+			body.userName = actor.username || actor.name || 'Unknown';
+			body.userId = actor.id;
+			body.timestamp = now;
+			body.layer = layerIndex;
+			body.points = body.points.map((p: any) => ({
+				x: Math.min(Math.max(Math.round(p.x), 0), 4000),
+				y: Math.min(Math.max(Math.round(p.y), 0), 4000),
+				pressure: typeof p.pressure === 'number' ? Math.min(Math.max(p.pressure, 0), 1) : 1.0,
+			}));
+
+			const sortedIds = [actor.id, this.otherId].sort();
+			(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
 				type: 'drawingProgress',
 				body: body,
 			});
@@ -223,40 +242,46 @@ class ChatUserChannel extends Channel {
 
 		// セキュリティ: カーソル位置の検証
 		if (!body || typeof body.x !== 'number' || typeof body.y !== 'number') return;
-		if (body.x < 0 || body.x > 800 || body.y < 0 || body.y > 600) return; // キャンバスサイズ制限 (800x600)
+		if (body.x < -100 || body.x > 4100 || body.y < -100 || body.y > 4100) return; // 可変キャンバスサイズ対応
 
 		this.lastCursorMove = now;
 
-		// カーソル位置データを構成
-		const cursorData = {
-			userId: this.user!.id,
-			userName: this.user!.username || this.user!.name || 'Unknown',
-			x: Math.round(body.x * 10) / 10, // 高精度座標
-			y: Math.round(body.y * 10) / 10,
-			timestamp: Date.now(),
-		};
+	const actor = this.user;
+	if (!actor) return;
 
-		// 他の参加者に配信（リアルタイム）
-		const sortedIds = [this.user!.id, this.otherId].sort();
-		this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
-			type: 'cursorMove',
-			body: cursorData,
-		});
+	// カーソル位置データを構成
+	const cursorData = {
+		userId: actor.id,
+		userName: actor.username || actor.name || 'Unknown',
+		x: Math.round(body.x * 10) / 10, // 高精度座標
+		y: Math.round(body.y * 10) / 10,
+		timestamp: Date.now(),
+	};
+
+	// 他の参加者に配信（リアルタイム）
+	const sortedIds = [actor.id, this.otherId].sort();
+	(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+		type: 'cursorMove',
+		body: cursorData,
+	});
 	}
 
 	// キャンバスクリアの処理
 	@bindThis
 	private async handleClearCanvas(body: any) {
 		try {
+			const actor = this.user;
+			if (!actor) return;
+
 			// ユーザー間チャット用のdrawingIdを生成
-			const sortedIds = [this.user!.id, this.otherId].sort();
+			const sortedIds = [actor.id, this.otherId].sort();
 			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
 
 			// キャンバスをクリア
-			await this.drawingCanvasService.clearCanvas(drawingId, this.user!.id);
+			await this.drawingCanvasService.clearCanvas(drawingId, actor.id);
 
 			// 他の参加者に配信
-			this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+			(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
 				type: 'clearCanvas',
 				body: {},
 			});
@@ -269,20 +294,23 @@ class ChatUserChannel extends Channel {
 	@bindThis
 	private async handleUndoStroke(body: any) {
 		try {
+			const actor = this.user;
+			if (!actor) return;
+
 			// ユーザー間チャット用のdrawingIdを生成
-			const sortedIds = [this.user!.id, this.otherId].sort();
+			const sortedIds = [actor.id, this.otherId].sort();
 			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
 
 			// アンドゥを実行
-			const undoneStroke = await this.drawingCanvasService.performUndo(drawingId, this.user!.id);
+			const undoneStroke = await this.drawingCanvasService.performUndo(drawingId, actor.id);
 
 			if (undoneStroke) {
 				// 他の参加者に配信
-				this.subscriber.emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
+				(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
 					type: 'undoStroke',
 					body: {
 						strokeId: undoneStroke.id,
-						userId: this.user!.id,
+						userId: actor.id,
 					},
 				});
 			}
@@ -309,9 +337,12 @@ class ChatUserChannel extends Channel {
 
 	@bindThis
 	public dispose() {
+		const actor = this.user;
+		if (!actor) return;
+
 		// IDをソートして統一的なチャンネル名を作成
-		const sortedIds = [this.user!.id, this.otherId].sort();
-		this.subscriber.off(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, this.onEvent);
+		const sortedIds = [actor.id, this.otherId].sort();
+		(this.subscriber as any).off(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, this.onEvent);
 
 		// oranski方式のclearIntervalは無効化
 		// clearInterval(this.emitTypersIntervalId);

@@ -237,7 +237,7 @@ const acceptChatInvitation = async () => {
 const rejectChatInvitation = () => {
 	if (props.notification.type !== 'chatRoomInvitationReceived') return;
 	chatInvitationDone.value = true;
-	misskeyApi('chat/rooms/invitations/ignore', { invitationId: props.notification.invitationId });
+	misskeyApi('chat/rooms/invitations/ignore', { roomId: props.notification.invitation.room.id });
 };
 
 function getActualReactedUsersCount(notification: Misskey.entities.Notification) {

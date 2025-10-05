@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
@@ -31,6 +31,7 @@ class ChatRoomChannel extends Channel {
 	constructor(
 		private chatService: ChatService,
 		private drawingCanvasService: DrawingCanvasService,
+		private chatRoomsRepository: ChatRoomsRepository,
 
 		id: string,
 		connection: Channel['connection'],
@@ -51,7 +52,7 @@ class ChatRoomChannel extends Channel {
 
 		try {
 			// メンバーシップ確認（ルーム存在確認も含む）
-			const room = await this.chatService.chatRoomsRepository.findOneBy({ id: this.roomId });
+			const room = await this.chatRoomsRepository.findOneBy({ id: this.roomId });
 			if (!room) {
 				console.warn(`🔍 [SECURITY] User ${this.user.id} attempting to access non-existent room ${this.roomId}`);
 				return;
@@ -162,41 +163,18 @@ class ChatRoomChannel extends Channel {
 				}
 				this.lastDrawingStroke = now;
 
-				// セキュリティ: 描画データの詳細検証
-				if (!body || typeof body !== 'object') return;
-				if (!Array.isArray(body.points) || body.points.length === 0 || body.points.length > 1000) return;
-				if (!['pen', 'eraser', 'eyedropper'].includes(body.tool)) return;
-				if (typeof body.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(body.color)) return;
-				if (typeof body.strokeWidth !== 'number' || body.strokeWidth < 1 || body.strokeWidth > 100) return;
-				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
+			const strokeData = this.drawingCanvasService.normalizeStrokeData(this.roomId, this.user, body);
+			if (!strokeData) {
+				console.warn(`🔍 [SECURITY] Invalid drawing stroke payload rejected for room ${this.roomId}`);
+				return;
+			}
 
-				// 座標の検証（可変キャンバスサイズに対応）
-				for (const point of body.points) {
-					if (typeof point.x !== 'number' || typeof point.y !== 'number') return;
-					if (point.x < 0 || point.x > 4000 || point.y < 0 || point.y > 4000) return; // 最大4000x4000まで許可
-				}
+			await this.drawingCanvasService.addStroke(this.roomId, strokeData);
 
-				const strokeData = {
-					id: crypto.randomUUID(), // 一意のストロークID
-					userId: this.user.id,
-					userName: this.user.name || this.user.username,
-					points: body.points,
-					tool: body.tool,
-					color: body.color,
-					strokeWidth: Math.min(body.strokeWidth || 2, 100),
-					opacity: Math.min(Math.max(body.opacity || 1, 0.1), 1),
-					layer: typeof body.layer === 'number' ? body.layer : 0,
-					timestamp: now,
-				};
-
-				// キャンバスデータをRedisに保存
-				await this.drawingCanvasService.addStroke(this.roomId, strokeData);
-
-				// 描画ストロークをルーム内の他のユーザーに配信
-				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
-					type: 'drawingStroke',
-					body: strokeData,
-				});
+			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
+				type: 'drawingStroke',
+				body: strokeData,
+			});
 				break;
 			case 'drawingProgress':
 				console.log(`🔍 [DEBUG] Processing drawing progress for room ${this.roomId} from user ${this.user.id}`);
@@ -215,24 +193,26 @@ class ChatRoomChannel extends Channel {
 				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
 
 				// 進行状況データ作成
-				const progressData = {
+			const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
+			const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
+			const progressData = {
 					userId: this.user.id,
 					userName: this.user.name || this.user.username,
 					points: body.points.map((p: any) => ({
-						x: Math.round(p.x),
-						y: Math.round(p.y),
+					x: Math.min(Math.max(Math.round(p.x), 0), 4000),
+					y: Math.min(Math.max(Math.round(p.y), 0), 4000),
 						pressure: p.pressure !== undefined ? p.pressure : 1.0,
 					})),
 					tool: body.tool,
 					color: body.color,
 					strokeWidth: body.strokeWidth,
 					opacity: body.opacity,
-					layer: typeof body.layer === 'number' ? body.layer : 0,
+				layer: layerIndex,
 					timestamp: progressNow,
 				};
 
 				// 描画進行状況をルーム内の他のユーザーに配信
-				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
 					type: 'drawingProgress',
 					body: progressData,
 				});
@@ -248,7 +228,7 @@ class ChatRoomChannel extends Channel {
 				if (body.x < -100 || body.x > 4100 || body.y < -100 || body.y > 4100) return; // 最大4000x4000 + マージン
 
 				// カーソル位置をルーム内の他のユーザーに配信
-				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
 					type: 'cursorMove',
 					body: {
 						userId: this.user.id,
@@ -266,7 +246,7 @@ class ChatRoomChannel extends Channel {
 				await this.drawingCanvasService.clearCanvas(this.roomId, this.user.id);
 
 				// キャンバスクリアをルーム内の他のユーザーに配信
-				this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
 					type: 'clearCanvas',
 					body: {
 						userId: this.user.id,
@@ -283,7 +263,7 @@ class ChatRoomChannel extends Channel {
 
 				if (undoneStroke) {
 					// アンドゥ成功をルーム内の他のユーザーに配信
-					this.subscriber.emit(`chatRoomStream:${this.roomId}`, {
+			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
 						type: 'undoStroke',
 						body: {
 							userId: this.user.id,
@@ -340,6 +320,8 @@ export class ChatRoomChannelService implements MiChannelService<true> {
 	constructor(
 		private chatService: ChatService,
 		private drawingCanvasService: DrawingCanvasService,
+		@Inject(DI.chatRoomsRepository)
+		private chatRoomsRepository: ChatRoomsRepository,
 	) {
 	}
 
@@ -348,6 +330,7 @@ export class ChatRoomChannelService implements MiChannelService<true> {
 		return new ChatRoomChannel(
 			this.chatService,
 			this.drawingCanvasService,
+			this.chatRoomsRepository,
 			id,
 			connection,
 		);

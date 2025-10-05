@@ -59,8 +59,10 @@ import { CacheService } from '@/core/CacheService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
+type NotifierUser = Pick<MiUser, 'id' | 'isBot'>;
+
 class NotificationManager {
-	private notifier: { id: MiUser['id']; };
+	private notifier: NotifierUser;
 	private note: MiNote;
 	private queue: {
 		target: MiLocalUser['id'];
@@ -70,7 +72,7 @@ class NotificationManager {
 	constructor(
 		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
-		notifier: { id: MiUser['id']; },
+		notifier: NotifierUser,
 		note: MiNote,
 	) {
 		this.notifier = notifier;
@@ -222,13 +224,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async create(user: {
-		id: MiUser['id'];
-		username: MiUser['username'];
-		host: MiUser['host'];
-		isBot: MiUser['isBot'];
-		isCat: MiUser['isCat'];
-	}, data: Option, silent = false): Promise<MiNote> {
+	public async create(user: MiUser, data: Option, silent = false): Promise<MiNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -403,7 +399,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
+	private async insertNote(user: MiUser, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new MiNote({
 			id: this.idService.gen(data.createdAt?.getTime()),
 			fileIds: data.files ? data.files.map(file => file.id) : [],
@@ -505,12 +501,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async postNoteCreated(note: MiNote, user: {
-		id: MiUser['id'];
-		username: MiUser['username'];
-		host: MiUser['host'];
-		isBot: MiUser['isBot'];
-	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
+	private async postNoteCreated(note: MiNote, user: MiUser, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		this.notesChart.update(note, true);
 		if (note.visibility !== 'specified' && (this.meta.enableChartsForRemoteUser || (user.host == null))) {
 			this.perUserNotesChart.update(user, note, true);
@@ -605,7 +596,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
-			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user as NotifierUser, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 
@@ -802,7 +793,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private incNotesCountOfUser(user: { id: MiUser['id']; }) {
+	private incNotesCountOfUser(user: MiUser) {
 		this.usersRepository.createQueryBuilder().update()
 			.set({
 				updatedAt: new Date(),
@@ -830,7 +821,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
+	private async pushToTl(note: MiNote, user: MiUser) {
 		if (!this.meta.enableFanoutTimeline) return;
 
 		const r = this.redisForTimelines.pipeline();

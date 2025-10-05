@@ -75,6 +75,7 @@ export function chatRoom(id = 'somechatroomid', name = 'Some Chat Room'): entiti
 		name,
 		description: 'A chat room for testing',
 		isMuted: false,
+		isSecretMessageMode: false,
 	};
 }
 

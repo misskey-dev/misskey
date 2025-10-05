@@ -473,6 +473,7 @@ import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
 import { useStream } from '@/stream.js';
 import { ensureSignin } from '@/i.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { defineAsyncComponent } from 'vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
 // 分離したコンポーネントをインポート
@@ -766,6 +767,104 @@ const layerVisible = ref<Array<boolean>>([true, true, true]); // 各レイヤー
 const layerOpacity = ref<Array<number>>([1.0, 1.0, 1.0]); // 各レイヤーの透明度
 const layerStrokeHistory = ref<Array<Array<any>>>([[], [], []]); // 各レイヤーのストローク履歴
 
+function clampLayerIndex(layer: unknown): number {
+	const numeric = typeof layer === 'number' && Number.isFinite(layer) ? Math.floor(layer) : 0;
+	return Math.min(Math.max(numeric, 0), MAX_LAYERS - 1);
+}
+
+function withLayerContext(layerIndex: number, fn: (context: CanvasRenderingContext2D) => void) {
+	const targetContext = layerContexts.value[layerIndex];
+	if (!targetContext) return;
+	const previousCtx = ctx;
+	ctx = targetContext;
+	try {
+		fn(targetContext);
+	} finally {
+		ctx = previousCtx;
+	}
+}
+
+function normalizeStrokeForHistory(stroke: any) {
+	const layer = clampLayerIndex(stroke?.layer);
+	const rawPoints = Array.isArray(stroke?.points) ? stroke.points : [];
+	const points = rawPoints
+		.filter(point => point && typeof point.x === 'number' && typeof point.y === 'number')
+		.map(point => ({
+			x: point.x,
+			y: point.y,
+			pressure: typeof point.pressure === 'number' ? point.pressure : undefined,
+		}));
+
+	if (points.length === 0) return null;
+
+	const strokeWidth = typeof stroke?.strokeWidth === 'number' && Number.isFinite(stroke.strokeWidth)
+		? Math.max(1, Math.min(100, stroke.strokeWidth))
+		: 1;
+	const opacity = typeof stroke?.opacity === 'number' && Number.isFinite(stroke.opacity)
+		? Math.min(Math.max(stroke.opacity, 0), 1)
+		: 1;
+
+	return {
+		id: typeof stroke?.id === 'string' ? stroke.id : undefined,
+		userId: stroke?.userId ?? null,
+		userName: stroke?.userName ?? null,
+		tool: ['pen', 'eraser', 'eyedropper'].includes(stroke?.tool) ? stroke.tool : 'pen',
+		color: typeof stroke?.color === 'string' ? stroke.color : '#000000',
+		strokeWidth,
+		opacity,
+		timestamp: typeof stroke?.timestamp === 'number' ? stroke.timestamp : Date.now(),
+		layer,
+		points,
+	};
+}
+
+function renderStrokeOnLayer(
+	stroke: any,
+	options: { skipIfSelf?: boolean; updateHistory?: boolean; suppressRender?: boolean } = {}
+) {
+	const normalized = normalizeStrokeForHistory(stroke);
+	if (!normalized) return null;
+
+	if (options.skipIfSelf && normalized.userId && normalized.userId === $i.id) {
+		return null;
+	}
+
+	if (!options.suppressRender) {
+		withLayerContext(normalized.layer, () => {
+			if (!ctx) return;
+			if (normalized.points.length === 1) {
+				const point = normalized.points[0];
+				ctx.save();
+				ctx.globalCompositeOperation = normalized.tool === 'eraser' ? 'destination-out' : 'source-over';
+				ctx.fillStyle = normalized.tool === 'eraser' ? '#000000' : normalized.color;
+				ctx.globalAlpha = normalized.opacity;
+				ctx.beginPath();
+				ctx.arc(point.x, point.y, normalized.strokeWidth / 2, 0, Math.PI * 2);
+				ctx.fill();
+				ctx.restore();
+				return;
+			}
+
+			drawSmoothPathLocal(
+				normalized.points,
+				normalized.strokeWidth,
+				normalized.color,
+				normalized.opacity,
+				normalized.tool === 'eraser'
+			);
+		});
+	}
+
+	if (options.updateHistory !== false) {
+		if (!Array.isArray(layerStrokeHistory.value[normalized.layer])) {
+			layerStrokeHistory.value[normalized.layer] = [];
+		}
+		layerStrokeHistory.value[normalized.layer].push(normalized);
+	}
+
+	return normalized;
+}
+
 // WebSocket接続
 const connection = ref<any>();
 
@@ -796,7 +895,102 @@ const chatOverlay = ref<{
 // 現在の描画パス
 let currentPath: Array<{ x: number; y: number }> = [];
 
+// 設定保存用デバウンスタイマー
+let saveSettingsTimer: number | null = null;
+
+// ユーザー設定を読み込む
+async function loadUserSettings() {
+	try {
+		const settings = await misskeyApi('drawing/settings/user/get', {
+			canvasId: drawingId.value,
+		});
+
+		if (settings) {
+			currentTool.value = settings.currentTool;
+			currentColor.value = settings.currentColor;
+			currentOpacity.value = settings.currentOpacity;
+			strokeWidth.value = settings.strokeWidth;
+			currentLayer.value = settings.currentLayer;
+			layerVisible.value = settings.layerVisible;
+			layerOpacity.value = settings.layerOpacity;
+			zoomLevel.value = settings.zoomLevel;
+			panOffset.value.x = settings.panOffsetX;
+			panOffset.value.y = settings.panOffsetY;
+
+			console.log('✅ [SETTINGS] User settings loaded:', settings);
+		}
+	} catch (error) {
+		console.error('❌ [SETTINGS] Failed to load user settings:', error);
+	}
+}
+
+// ルーム設定を読み込む
+async function loadRoomSettings() {
+	try {
+		const settings = await misskeyApi('drawing/settings/room/get', {
+			canvasId: drawingId.value,
+		});
+
+		if (settings) {
+			canvasWidth.value = settings.canvasWidth;
+			canvasHeight.value = settings.canvasHeight;
+
+			console.log('✅ [SETTINGS] Room settings loaded:', settings);
+		}
+	} catch (error) {
+		console.error('❌ [SETTINGS] Failed to load room settings:', error);
+	}
+}
+
+// ルーム設定を保存する
+async function saveRoomSettings() {
+	try {
+		await misskeyApi('drawing/settings/room/update', {
+			canvasId: drawingId.value,
+			canvasWidth: canvasWidth.value,
+			canvasHeight: canvasHeight.value,
+		});
+
+		console.log('💾 [SETTINGS] Room settings saved');
+	} catch (error) {
+		console.error('❌ [SETTINGS] Failed to save room settings:', error);
+	}
+}
+
+// ユーザー設定を保存する（デバウンス付き）
+function saveUserSettings() {
+	if (saveSettingsTimer !== null) {
+		window.clearTimeout(saveSettingsTimer);
+	}
+
+	saveSettingsTimer = window.setTimeout(async () => {
+		try {
+			await misskeyApi('drawing/settings/user/update', {
+				canvasId: drawingId.value,
+				currentTool: currentTool.value,
+				currentColor: currentColor.value,
+				currentOpacity: currentOpacity.value,
+				strokeWidth: strokeWidth.value,
+				currentLayer: currentLayer.value,
+				layerVisible: layerVisible.value,
+				layerOpacity: layerOpacity.value,
+				zoomLevel: zoomLevel.value,
+				panOffsetX: panOffset.value.x,
+				panOffsetY: panOffset.value.y,
+			});
+
+			console.log('💾 [SETTINGS] User settings saved');
+		} catch (error) {
+			console.error('❌ [SETTINGS] Failed to save user settings:', error);
+		}
+	}, 1000); // 1秒のデバウンス
+}
+
 onMounted(async () => {
+	// ルーム設定を読み込む（キャンバスサイズ）
+	// テンプレートのバインディングが適用される前に読み込む必要がある
+	await loadRoomSettings();
+
 	// 次のフレームで実行（テンプレートのバインディングが適用された後）
 	await nextTick();
 
@@ -859,6 +1053,9 @@ onMounted(async () => {
 
 	// 既存のキャンバスデータを復元
 	loadCanvasData();
+
+	// ユーザー設定を読み込む
+	await loadUserSettings();
 
 	// 全画面モード用のイベントリスナー
 	document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -1134,6 +1331,9 @@ function setTool(tool: 'pen' | 'eraser' | 'eyedropper') {
 	if (tool === 'pen' || tool === 'eraser') {
 		strokeWidth.value = toolStrokeWidths.value[tool];
 	}
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 function setColor(color: string) {
@@ -1141,6 +1341,9 @@ function setColor(color: string) {
 	if (currentTool.value === 'eraser') {
 		currentTool.value = 'pen';
 	}
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 // カラーピッカーを開く
@@ -1170,6 +1373,9 @@ async function openColorPicker() {
 
 function setOpacity(opacity: number) {
 	currentOpacity.value = opacity;
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 function setStrokeWidth(width: number) {
@@ -1179,6 +1385,9 @@ function setStrokeWidth(width: number) {
 	if (currentTool.value === 'pen' || currentTool.value === 'eraser') {
 		toolStrokeWidths.value[currentTool.value] = width;
 	}
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 // 描画開始
@@ -1718,42 +1927,12 @@ function drawLine(point: { x: number; y: number }) {
 
 // リモートストローク描画（滑らか描画対応）
 function drawRemoteStroke(data: any) {
-	if (!ctx || data.userId === $i.id) return;
+	const stroke = renderStrokeOnLayer(data, { skipIfSelf: true });
+	if (!stroke) return;
 
-	ctx.save();
-	ctx.globalCompositeOperation = data.tool === 'eraser' ? 'destination-out' : 'source-over';
-	ctx.strokeStyle = data.color;
-	ctx.globalAlpha = data.opacity;
-	ctx.lineWidth = data.strokeWidth;
-	ctx.lineCap = 'round';
-	ctx.lineJoin = 'round';
-
-	// 最高品質な滑らかな描画を適用
-	drawSmoothPathLocal(
-		data.points,
-		data.strokeWidth,
-		data.color,
-		data.opacity,
-		data.tool === 'eraser'
-	);
-
-	ctx.restore();
-
-	// 進行中の描画があれば完了として削除
-	if (otherActiveStrokes.value.has(data.userId)) {
-		otherActiveStrokes.value.delete(data.userId);
+	if (stroke.userId && otherActiveStrokes.value.has(stroke.userId)) {
+		otherActiveStrokes.value.delete(stroke.userId);
 	}
-
-	// リモートストロークも履歴に追加（自動ラスタライズ管理用）
-	addStrokeToHistory({
-		points: data.points,
-		tool: data.tool,
-		color: data.color,
-		strokeWidth: data.strokeWidth,
-		opacity: data.opacity,
-		timestamp: Date.now(),
-		remote: true // リモートストロークフラグ
-	});
 }
 
 // リモート描画進行状況（描画中）
@@ -2053,8 +2232,18 @@ async function clearCanvas() {
 }
 
 function clearCanvasLocal() {
-	if (!ctx) return;
-	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const layerCtx = layerContexts.value[i];
+		if (layerCtx) {
+			layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+		}
+	}
+	layerStrokeHistory.value = Array.from({ length: MAX_LAYERS }, () => []);
+	strokeHistory.value = [];
+	undoStack.value = [];
+	redoStack.value = [];
+	otherActiveStrokes.value.clear();
+	ctx = layerContexts.value[currentLayer.value] ?? ctx;
 }
 
 // ズームをリセット
@@ -2063,6 +2252,9 @@ function resetZoom() {
 	panOffset.value = { x: 0, y: 0 };
 	zoomCenter.value = { x: 0, y: 0 };
 	console.log('🎨 [DEBUG] Zoom reset to 100%');
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 // ズームイン（拡大）
@@ -2070,6 +2262,9 @@ function zoomIn() {
 	const newZoom = Math.min(zoomLevel.value * 1.2, maxZoom);
 	zoomLevel.value = newZoom;
 	console.log('🎨 [DEBUG] Zoom in:', Math.round(newZoom * 100) + '%');
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 // ズームアウト（縮小）
@@ -2077,6 +2272,9 @@ function zoomOut() {
 	const newZoom = Math.max(zoomLevel.value / 1.2, 0.1);
 	zoomLevel.value = newZoom;
 	console.log('🎨 [DEBUG] Zoom out:', Math.round(newZoom * 100) + '%');
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 // マウスホイールによるズーム
@@ -2091,6 +2289,9 @@ function handleWheel(event: WheelEvent) {
 
 		zoomLevel.value = newZoom;
 		console.log('🎨 [DEBUG] Wheel zoom:', Math.round(newZoom * 100) + '%');
+
+		// 設定を自動保存
+		saveUserSettings();
 	}
 }
 
@@ -2249,6 +2450,9 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 
 	os.toast(`キャンバスサイズを ${newWidth}×${newHeight} に変更しました`);
 	console.log('🎨 [SIZE] Canvas size changed:', { width: newWidth, height: newHeight });
+
+	// ルーム設定を保存
+	await saveRoomSettings();
 }
 
 // Undo（元に戻す）
@@ -2381,6 +2585,9 @@ function switchLayer(layerIndex: number) {
 	// canvasElも更新（イベントリスナーやカーソルスタイル変更用）
 	canvasEl.value = layerCanvases.value[layerIndex];
 	console.log('🎨 [LAYER] Switched to layer', layerIndex);
+
+	// 設定を自動保存
+	saveUserSettings();
 }
 
 // レイヤーメニューを表示
@@ -2940,12 +3147,18 @@ function handleTouchEnd(e: TouchEvent) {
 		}
 
 		twoFingerTapStartPos.value = null;
+		const wasPanningOrZooming = isPanning.value || isZooming.value;
 		isPanning.value = false;
 		isZooming.value = false;
 		gestureState.value = 'none';
 		distanceHistory.value = [];
 		console.log('🎨 [DEBUG] All gestures ended');
 		stopDrawing();
+
+		// パンまたはズームが行われていた場合、設定を自動保存
+		if (wasPanningOrZooming) {
+			saveUserSettings();
+		}
 	} else if (e.touches.length === 1 && isPanning.value) {
 		// 2本指から1本指になった場合
 		twoFingerTapStartPos.value = null;
@@ -2954,6 +3167,10 @@ function handleTouchEnd(e: TouchEvent) {
 		gestureState.value = 'none';
 		distanceHistory.value = [];
 		console.log('🎨 [DEBUG] Switched from gesture to drawing');
+
+		// パンまたはズームが行われていたため、設定を自動保存
+		saveUserSettings();
+
 		// 残った1本指で描画を開始
 		startDrawing(e);
 	}
@@ -3028,13 +3245,27 @@ async function loadCanvasData() {
 		});
 
 		if (response.ok) {
-			const strokes = await response.json();
-			console.log(`🎨 [DEBUG] Loaded ${strokes.length} strokes for canvas`);
+		const strokes = await response.json();
+		console.log(`🎨 [DEBUG] Loaded ${strokes.length} strokes for canvas`);
 
-			// 既存のストロークを復元
-			for (const stroke of strokes) {
-				drawRemoteStroke(stroke);
+		for (let i = 0; i < MAX_LAYERS; i++) {
+			const layerCtx = layerContexts.value[i];
+			if (layerCtx) {
+				layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 			}
+		}
+
+		layerStrokeHistory.value = Array.from({ length: MAX_LAYERS }, () => []);
+		strokeHistory.value = [];
+		undoStack.value = [];
+		redoStack.value = [];
+		otherActiveStrokes.value.clear();
+
+		for (const stroke of strokes) {
+			renderStrokeOnLayer(stroke);
+		}
+
+		ctx = layerContexts.value[currentLayer.value] ?? ctx;
 		}
 	} catch (error) {
 		console.warn('🎨 [WARN] Failed to load canvas data:', error);
@@ -3060,10 +3291,18 @@ function addStrokeToHistory(strokeData: any) {
 	// 新しいストロークを追加したらredoスタックをクリア
 	redoStack.value = [];
 
-	strokeHistory.value.push(strokeData);
-
-	// レイヤー履歴にも追加
-	layerStrokeHistory.value[currentLayer.value].push(strokeData);
+	const layerIndex = clampLayerIndex(currentLayer.value);
+	const strokeWithMeta = {
+		...strokeData,
+		layer: layerIndex,
+		userId: $i.id,
+		userName: $i.username ?? $i.name ?? null
+	};
+	const normalized = renderStrokeOnLayer(strokeWithMeta, { suppressRender: true });
+	if (!normalized) {
+		return;
+	}
+	strokeHistory.value.push(normalized);
 
 	// アンドゥ履歴の制限
 	if (strokeHistory.value.length > maxUndoHistory) {

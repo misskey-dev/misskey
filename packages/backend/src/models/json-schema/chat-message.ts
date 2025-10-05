@@ -78,6 +78,14 @@ export const packedChatMessageSchema = {
 				},
 			},
 		},
+		reads: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
 		expiresAt: {
 			type: 'string',
 			format: 'date-time',
@@ -155,6 +163,14 @@ export const packedChatMessageLiteSchema = {
 				},
 			},
 		},
+		reads: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
 		expiresAt: {
 			type: 'string',
 			format: 'date-time',
@@ -216,6 +232,14 @@ export const packedChatMessageLiteFor1on1Schema = {
 						optional: false, nullable: false,
 					},
 				},
+			},
+		},
+		reads: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
 			},
 		},
 		expiresAt: {
@@ -289,6 +313,14 @@ export const packedChatMessageLiteForRoomSchema = {
 						ref: 'UserLite',
 					},
 				},
+			},
+		},
+		reads: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
 			},
 		},
 		expiresAt: {

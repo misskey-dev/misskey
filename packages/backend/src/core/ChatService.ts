@@ -763,6 +763,11 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async checkMembership(roomId: MiChatRoom['id'], userId: MiUser['id']) {
+		return this.chatRoomMembershipsRepository.findOneBy({ roomId, userId });
+	}
+
+	@bindThis
 	public async createRoomInvitation(inviterId: MiUser['id'], roomId: MiChatRoom['id'], inviteeId: MiUser['id']) {
 		if (inviterId === inviteeId) {
 			throw new Error('yourself');
@@ -1207,7 +1212,7 @@ export class ChatService {
 			return;
 		}
 
-		const packedUser = await this.userEntityService.pack(fromUser, null, { detail: false });
+		const packedUser = await this.userEntityService.pack(fromUser, null, { schema: 'UserLite' });
 		console.log(`🔍 [DEBUG] Publishing chatUserStream typing event for ${fromUser.username}`);
 
 		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
@@ -1245,7 +1250,7 @@ export class ChatService {
 			return;
 		}
 
-		const packedUser = await this.userEntityService.pack(fromUser, null, { detail: false });
+		const packedUser = await this.userEntityService.pack(fromUser, null, { schema: 'UserLite' });
 		console.log(`🔍 [DEBUG] Publishing chatRoomStream typing event for ${fromUser.username}`);
 
 		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用

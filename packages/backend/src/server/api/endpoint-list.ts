@@ -448,4 +448,8 @@ export * as 'chat/rooms/get-secret-mode' from './endpoints/chat/rooms/get-secret
 export * as 'chat/rooms/set-secret-mode' from './endpoints/chat/rooms/set-secret-mode.js';
 export * as 'drawing/canvas' from './endpoints/drawing/canvas.js';
 export * as 'drawing/save' from './endpoints/drawing/save.js';
+export * as 'drawing/settings/room/get' from './endpoints/drawing/settings/room/get.js';
+export * as 'drawing/settings/room/update' from './endpoints/drawing/settings/room/update.js';
+export * as 'drawing/settings/user/get' from './endpoints/drawing/settings/user/get.js';
+export * as 'drawing/settings/user/update' from './endpoints/drawing/settings/user/update.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';

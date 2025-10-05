@@ -77,6 +77,7 @@ import { FanoutTimelineService } from './FanoutTimelineService.js';
 import { ChannelFollowingService } from './ChannelFollowingService.js';
 import { ChatService } from './ChatService.js';
 import { DrawingCanvasService } from './DrawingCanvasService.js';
+import { DrawingSettingsService } from './DrawingSettingsService.js';
 import { RegistryApiService } from './RegistryApiService.js';
 import { ReversiService } from './ReversiService.js';
 import { PageService } from './PageService.js';
@@ -228,6 +229,7 @@ const $FanoutTimelineEndpointService: Provider = { provide: 'FanoutTimelineEndpo
 const $ChannelFollowingService: Provider = { provide: 'ChannelFollowingService', useExisting: ChannelFollowingService };
 const $ChatService: Provider = { provide: 'ChatService', useExisting: ChatService };
 const $DrawingCanvasService: Provider = { provide: 'DrawingCanvasService', useExisting: DrawingCanvasService };
+const $DrawingSettingsService: Provider = { provide: 'DrawingSettingsService', useExisting: DrawingSettingsService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
@@ -382,6 +384,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ChannelFollowingService,
 		ChatService,
 		DrawingCanvasService,
+		DrawingSettingsService,
 		RegistryApiService,
 		ReversiService,
 		PageService,
@@ -532,6 +535,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ChannelFollowingService,
 		$ChatService,
 		$DrawingCanvasService,
+		$DrawingSettingsService,
 		$RegistryApiService,
 		$ReversiService,
 		$PageService,
@@ -683,6 +687,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ChannelFollowingService,
 		ChatService,
 		DrawingCanvasService,
+		DrawingSettingsService,
 		RegistryApiService,
 		ReversiService,
 		PageService,
@@ -831,6 +836,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ChannelFollowingService,
 		$ChatService,
 		$DrawingCanvasService,
+		$DrawingSettingsService,
 		$RegistryApiService,
 		$ReversiService,
 		$PageService,
