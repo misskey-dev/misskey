@@ -5578,6 +5578,10 @@ export interface Locale extends ILocale {
      */
     "scheduled": string;
     /**
+     * ウィジェット
+     */
+    "widgets": string;
+    /**
      * デバイス情報
      */
     "deviceInfo": string;

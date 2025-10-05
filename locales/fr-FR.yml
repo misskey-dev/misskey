@@ -2376,6 +2376,10 @@ _imageEffector:
     angle: "Angle"
     scale: "Taille"
     size: "Taille"
+    offset: "Position"
     color: "Couleur"
     opacity: "Transparence"
     lightness: "Clair"
+_qr:
+  showTabTitle: "Affichage"
+  raw: "Texte"

@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "{x}に投稿を予約します"
 scheduledToPostOnX: "{x}に投稿が予約されています"
 schedule: "予約"
 scheduled: "予約"
+widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
 
