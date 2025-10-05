@@ -259,7 +259,7 @@ onUnmounted(() => {
 	pointer-events: none;
 
 	&.animate {
-		transition: width 0.15s ease-in, left 0.15s ease-in;
+		transition: width 0.15s ease, left 0.15s ease;
 	}
 
 	&.tabHighlightUpper {
