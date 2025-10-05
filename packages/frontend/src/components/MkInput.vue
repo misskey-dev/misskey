@@ -43,7 +43,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+type SupportedTypes = 'text' | 'password' | 'email' | 'url' | 'tel' | 'number' | 'search' | 'date' | 'time' | 'datetime-local' | 'color';
+type ModelValueType<T extends SupportedTypes> =
+	T extends 'number' ? number :
+	T extends 'text' | 'password' | 'email' | 'url' | 'tel' | 'search' | 'date' | 'time' | 'datetime-local' | 'color' ? string :
+	never;
+</script>
+
+<script lang="ts" setup generic="T extends SupportedTypes = 'text'">
 import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
@@ -52,10 +60,11 @@ import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	modelValue: string | number | null;
-	type?: InputHTMLAttributes['type'];
+	modelValue: ModelValueType<T> | null;
+	type?: T;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -82,12 +91,12 @@ const emit = defineEmits<{
 	(ev: 'change', _ev: KeyboardEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter', _ev: KeyboardEvent): void;
-	(ev: 'update:modelValue', value: string | number): void;
+	(ev: 'update:modelValue', value: ModelValueType<T>): void;
 }>();
 
-const { modelValue, type, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
-const id = Math.random().toString(); // TODO: uuid?
+const { modelValue } = toRefs(props);
+const v = ref<ModelValueType<T> | null>(modelValue.value);
+const id = genId();
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
@@ -119,8 +128,8 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 const updated = () => {
 	changed.value = false;
-	if (type.value === 'number') {
-		emit('update:modelValue', typeof v.value === 'number' ? v.value : parseFloat(v.value ?? '0'));
+	if (props.type === 'number') {
+		emit('update:modelValue', typeof v.value === 'number' ? v.value as ModelValueType<T> : parseFloat(v.value ?? '0') as ModelValueType<T>);
 	} else {
 		emit('update:modelValue', v.value ?? '');
 	}
@@ -166,7 +175,7 @@ useInterval(() => {
 
 onMounted(() => {
 	nextTick(() => {
-		if (autofocus.value) {
+		if (props.autofocus) {
 			focus();
 		}
 	});
@@ -201,7 +210,7 @@ defineExpose({
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;

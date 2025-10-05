@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	class="_forceShrinkSpacer"
 	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready, [$style.withWallpaper]: withWallpaper }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
@@ -17,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@dragstart="onDragstart"
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
-		@wheel="emit('headerWheel', $event)"
+		@wheel.passive="emit('headerWheel', $event)"
 	>
 		<svg viewBox="0 0 256 128" :class="$style.tabShape">
 			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
@@ -49,10 +50,11 @@ import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownCo
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
+import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
-provide('forceSpacerMin', true);
 
 const withWallpaper = prefer.s['deck.wallpaper'] != null;
 
@@ -261,7 +263,7 @@ function goTop() {
 
 function onDragstart(ev) {
 	ev.dataTransfer.effectAllowed = 'move';
-	ev.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, props.column.id);
+	setDragData(ev, 'deckColumn', props.column.id);
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -280,7 +282,7 @@ function onDragover(ev) {
 		// 自分自身にはドロップさせない
 		ev.dataTransfer.dropEffect = 'none';
 	} else {
-		const isDeckColumn = ev.dataTransfer.types[0] === _DATA_TRANSFER_DECK_COLUMN_;
+		const isDeckColumn = checkDragDataType(ev, ['deckColumn']);
 
 		ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
@@ -296,8 +298,8 @@ function onDrop(ev) {
 	draghover.value = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 
-	const id = ev.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
-	if (id != null && id !== '') {
+	const id = getDragData(ev, 'deckColumn');
+	if (id != null) {
 		swapColumn(props.column.id, id);
 	}
 }
@@ -366,10 +368,6 @@ function onDrop(ev) {
 		> .body {
 			background: transparent !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-
-			&::-webkit-scrollbar-track {
-				background: transparent;
-			}
 		}
 	}
 
@@ -395,10 +393,6 @@ function onDrop(ev) {
 		> .body {
 			background: var(--MI_THEME-bg) !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-
-			&::-webkit-scrollbar-track {
-				background: inherit;
-			}
 		}
 	}
 }
@@ -413,9 +407,14 @@ function onDrop(ev) {
 	font-size: 0.9em;
 	color: var(--MI_THEME-panelHeaderFg);
 	background: var(--MI_THEME-panelHeaderBg);
-	box-shadow: 0 0.5px 0 0 var(--MI_THEME-panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
+}
+
+@container style(--MI_THEME-panelHeaderBg: var(--MI_THEME-panel)) {
+	.header {
+		box-shadow: 0 0.5px 0 0 light-dark(#0002, #fff2);
+	}
 }
 
 .color {
@@ -480,9 +479,5 @@ function onDrop(ev) {
 	container-type: size;
 	background-color: var(--MI_THEME-bg);
 	scrollbar-color: var(--MI_THEME-scrollbarHandle) var(--MI_THEME-panel);
-
-	&::-webkit-scrollbar-track {
-		background: var(--MI_THEME-panel);
-	}
 }
 </style>

@@ -3,28 +3,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { v4 as uuid } from 'uuid';
 import type { DeckProfile } from '@/deck.js';
+import { genId } from '@/utility/id.js';
 import { ColdDeviceStorage, store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
+	os.waiting({ text: i18n.ts.settingsMigrating });
+
 	store.loaded.then(async () => {
-		const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
-		if (themes.length > 0) {
-			prefer.commit('themes', themes);
-		}
+		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
+			if (themes.length > 0) {
+				prefer.commit('themes', themes);
+			}
+		});
 
 		const plugins = ColdDeviceStorage.get('plugins');
-		prefer.commit('plugins', plugins.map(p => ({
-			...p,
-			installId: (p as any).id,
-			id: undefined,
-		})));
+		prefer.commit('plugins', plugins.map(p => {
+			const { id, ...rest } = p;
+			return {
+				...rest,
+				config: rest.config ?? {},
+				installId: id,
+			};
+		}));
 
 		prefer.commit('deck.profile', deckStore.s.profile);
 		misskeyApi('i/registry/keys', {
@@ -37,7 +45,7 @@ export function migrateOldSettings() {
 					key: key,
 				});
 				profiles.push({
-					id: uuid(),
+					id: genId(),
 					name: key,
 					columns: deck.columns,
 					layout: deck.layout,
@@ -66,7 +74,7 @@ export function migrateOldSettings() {
 		prefer.commit('collapseRenotes', store.s.collapseRenotes);
 		prefer.commit('rememberNoteVisibility', store.s.rememberNoteVisibility);
 		prefer.commit('uploadFolder', store.s.uploadFolder);
-		prefer.commit('menu', store.s.menu);
+		prefer.commit('menu', [...store.s.menu, 'chat']);
 		prefer.commit('statusbars', store.s.statusbars);
 		prefer.commit('pinnedUserLists', store.s.pinnedUserLists);
 		prefer.commit('serverDisconnectedBehavior', store.s.serverDisconnectedBehavior);
@@ -88,7 +96,6 @@ export function migrateOldSettings() {
 		prefer.commit('showFixedPostFormInChannel', store.s.showFixedPostFormInChannel);
 		prefer.commit('enableInfiniteScroll', store.s.enableInfiniteScroll);
 		prefer.commit('useReactionPickerForContextMenu', store.s.useReactionPickerForContextMenu);
-		prefer.commit('showGapBetweenNotesInTimeline', store.s.showGapBetweenNotesInTimeline);
 		prefer.commit('instanceTicker', store.s.instanceTicker);
 		prefer.commit('emojiPickerScale', store.s.emojiPickerScale);
 		prefer.commit('emojiPickerWidth', store.s.emojiPickerWidth);
@@ -110,9 +117,14 @@ export function migrateOldSettings() {
 		prefer.commit('notificationStackAxis', store.s.notificationStackAxis);
 		prefer.commit('enableCondensedLine', store.s.enableCondensedLine);
 		prefer.commit('keepScreenOn', store.s.keepScreenOn);
-		prefer.commit('disableStreamingTimeline', store.s.disableStreamingTimeline);
 		prefer.commit('useGroupedNotifications', store.s.useGroupedNotifications);
-		prefer.commit('dataSaver', store.s.dataSaver);
+		prefer.commit('dataSaver', {
+			...prefer.s.dataSaver,
+			media: store.s.dataSaver.media,
+			avatar: store.s.dataSaver.avatar,
+			urlPreviewThumbnail: store.s.dataSaver.urlPreview,
+			code: store.s.dataSaver.code,
+		});
 		prefer.commit('enableSeasonalScreenEffect', store.s.enableSeasonalScreenEffect);
 		prefer.commit('enableHorizontalSwipe', store.s.enableHorizontalSwipe);
 		prefer.commit('useNativeUiForVideoAudioPlayer', store.s.useNativeUIForVideoAudioPlayer);
@@ -136,6 +148,6 @@ export function migrateOldSettings() {
 
 		window.setTimeout(() => {
 			unisonReload();
-		}, 5000);
+		}, 10000);
 	});
 }

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
+	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="maybeRelativeUrl" :rel="rel ?? 'nofollow noopener'" :target="target"
 	:behavior="props.navigationBehavior"
 	@contextmenu.stop="() => {}"
 >
@@ -28,10 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode.js';
 import { url as local } from '@@/js/config.js';
-import * as os from '@/os.js';
-import { useTooltip } from '@/use/use-tooltip.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { maybeMakeRelative } from '@@/js/url.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
+import * as os from '@/os.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 
 function safeURIDecode(str: string): string {
 	try {
@@ -50,7 +51,8 @@ const props = withDefaults(defineProps<{
 	showUrlPreview: true,
 });
 
-const self = props.url.startsWith(local);
+const maybeRelativeUrl = maybeMakeRelative(props.url, local);
+const self = maybeRelativeUrl !== props.url;
 const url = new URL(props.url);
 if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
 const el = ref();
@@ -60,7 +62,7 @@ if (props.showUrlPreview && isEnabledUrlPreview.value) {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,
 			url: props.url,
-			source: el.value instanceof HTMLElement ? el.value : el.value?.$el,
+			anchorElement: el.value instanceof HTMLElement ? el.value : el.value?.$el,
 		}, {
 			closed: () => dispose(),
 		});
@@ -92,7 +94,7 @@ const target = self ? null : '_blank';
 }
 
 .schema {
-	opacity: 0.5;
+	color: color(from currentcolor srgb r g b / 0.5); // DOMノード全体をopacityで半透明化するより文字色を半透明化した方が若干レンダリングパフォーマンスが良い
 }
 
 .hostname {
@@ -100,11 +102,11 @@ const target = self ? null : '_blank';
 }
 
 .pathname {
-	opacity: 0.8;
+	color: color(from currentcolor srgb r g b / 0.8); // DOMノード全体をopacityで半透明化するより文字色を半透明化した方が若干レンダリングパフォーマンスが良い
 }
 
 .query {
-	opacity: 0.5;
+	color: color(from currentcolor srgb r g b / 0.5); // DOMノード全体をopacityで半透明化するより文字色を半透明化した方が若干レンダリングパフォーマンスが良い
 }
 
 .hash {

@@ -24,23 +24,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XMessage :message="message" :user="message.fromUser" :isSearchResult="true"/>
 			</div>
 		</div>
-		<div v-else class="_fullinfo">
-			<img :src="infoImageUrl" draggable="false"/>
-			<div>{{ i18n.ts.notFound }}</div>
-		</div>
+		<MkResult v-else type="notFound"/>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 

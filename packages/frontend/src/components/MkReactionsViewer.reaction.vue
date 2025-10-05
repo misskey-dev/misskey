@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -22,26 +22,31 @@ import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmoji } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
+import type { MenuItem } from '@/types/menu';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import { useTooltip } from '@/use/use-tooltip.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { claimAchievement } from '@/utility/achievements.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/utility/sound.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
+import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isEmojiMuted } from '@/utility/emoji-mute.js';
+import { haptic } from '@/utility/haptic.js';
 
 const props = defineProps<{
+	noteId: Misskey.entities.Note['id'];
 	reaction: string;
+	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
+	myReaction: Misskey.entities.Note['myReaction'];
 	count: number;
 	isInitial: boolean;
-	note: Misskey.entities.Note;
 }>();
 
 const mock = inject(DI.mock, false);
@@ -53,17 +58,24 @@ const emit = defineEmits<{
 const buttonEl = useTemplateRef('buttonEl');
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
-	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
+	const emoji = customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction);
+
+	// TODO
+	//return !props.reaction.match(/@\w/) && $i && emoji && checkReactionPermissions($i, props.note, emoji);
+	return !props.reaction.match(/@\w/) && $i && emoji;
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
+const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes('@.');
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
+	if ($i == null) return;
 
-	const oldReaction = props.note.myReaction;
+	const me = $i;
+
+	const oldReaction = props.myReaction;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
@@ -73,6 +85,7 @@ async function toggleReaction() {
 
 		if (oldReaction !== props.reaction) {
 			sound.playMisskeySfx('reaction');
+			haptic();
 		}
 
 		if (mock) {
@@ -81,12 +94,24 @@ async function toggleReaction() {
 		}
 
 		misskeyApi('notes/reactions/delete', {
-			noteId: props.note.id,
+			noteId: props.noteId,
 		}).then(() => {
+			noteEvents.emit(`unreacted:${props.noteId}`, {
+				userId: me.id,
+				reaction: oldReaction,
+			});
 			if (oldReaction !== props.reaction) {
 				misskeyApi('notes/reactions/create', {
-					noteId: props.note.id,
+					noteId: props.noteId,
 					reaction: props.reaction,
+				}).then(() => {
+					const emoji = customEmojisMap.get(emojiName.value);
+					if (emoji == null) return;
+					noteEvents.emit(`reacted:${props.noteId}`, {
+						userId: me.id,
+						reaction: props.reaction,
+						emoji: emoji,
+					});
 				});
 			}
 		});
@@ -101,6 +126,7 @@ async function toggleReaction() {
 		}
 
 		sound.playMisskeySfx('reaction');
+		haptic();
 
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
@@ -108,31 +134,75 @@ async function toggleReaction() {
 		}
 
 		misskeyApi('notes/reactions/create', {
-			noteId: props.note.id,
+			noteId: props.noteId,
 			reaction: props.reaction,
+		}).then(() => {
+			const emoji = customEmojisMap.get(emojiName.value);
+			if (emoji == null) return;
+
+			noteEvents.emit(`reacted:${props.noteId}`, {
+				userId: me.id,
+				reaction: props.reaction,
+				emoji: emoji,
+			});
 		});
-		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
-		}
+		// TODO: 上位コンポーネントでやる
+		//if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
+		//	claimAchievement('reactWithoutRead');
+		//}
 	}
 }
 
 async function menu(ev) {
-	if (!canGetInfo.value) return;
+	let menuItems: MenuItem[] = [];
 
-	os.popupMenu([{
-		text: i18n.ts.info,
-		icon: 'ti ti-info-circle',
-		action: async () => {
-			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
-				emoji: await misskeyApiGet('emoji', {
-					name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
-				}),
-			}, {
-				closed: () => dispose(),
-			});
-		},
-	}], ev.currentTarget ?? ev.target);
+	if (canGetInfo.value) {
+		menuItems.push({
+			text: i18n.ts.info,
+			icon: 'ti ti-info-circle',
+			action: async () => {
+				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
+					emoji: await misskeyApiGet('emoji', {
+						name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
+					}),
+				}, {
+					closed: () => dispose(),
+				});
+			},
+		});
+	}
+
+	if (isEmojiMuted(props.reaction).value) {
+		menuItems.push({
+			text: i18n.ts.emojiUnmute,
+			icon: 'ti ti-mood-smile',
+			action: () => {
+				os.confirm({
+					type: 'question',
+					title: i18n.tsx.unmuteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
+				}).then(({ canceled }) => {
+					if (canceled) return;
+					unmuteEmoji(props.reaction);
+				});
+			},
+		});
+	} else {
+		menuItems.push({
+			text: i18n.ts.emojiMute,
+			icon: 'ti ti-mood-off',
+			action: () => {
+				os.confirm({
+					type: 'question',
+					title: i18n.tsx.muteX({ x: isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction }),
+				}).then(({ canceled }) => {
+					if (canceled) return;
+					muteEmoji(props.reaction);
+				});
+			},
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function anime() {
@@ -156,8 +226,10 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
+		if (buttonEl.value == null) return;
+
 		const reactions = await misskeyApiGet('notes/reactions', {
-			noteId: props.note.id,
+			noteId: props.noteId,
 			type: props.reaction,
 			limit: 10,
 			_cacheKey_: props.count,
@@ -170,7 +242,7 @@ if (!mock) {
 			reaction: props.reaction,
 			users,
 			count: props.count,
-			targetElement: buttonEl.value,
+			anchorElement: buttonEl.value,
 		}, {
 			closed: () => dispose(),
 		});
@@ -182,7 +254,6 @@ if (!mock) {
 .root {
 	display: inline-flex;
 	height: 42px;
-	margin: 2px;
 	padding: 0 6px;
 	font-size: 1.5em;
 	border-radius: 6px;

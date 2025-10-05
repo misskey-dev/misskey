@@ -4,66 +4,57 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700">
-			<div class="_gaps">
-				<div class="_buttons">
-					<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
-					<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-				</div>
-				<MkFolder>
-					<template #icon><i class="ti ti-info-circle"></i></template>
-					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :modelValue="role" readonly/>
-				</MkFolder>
-				<MkFolder v-if="role.target === 'manual'" defaultOpen>
-					<template #icon><i class="ti ti-users"></i></template>
-					<template #label>{{ i18n.ts.users }}</template>
-					<template #suffix>{{ role.usersCount }}</template>
-					<div class="_gaps">
-						<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
+		<div class="_gaps">
+			<div class="_buttons">
+				<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
+				<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			</div>
+			<MkFolder>
+				<template #icon><i class="ti ti-info-circle"></i></template>
+				<template #label>{{ i18n.ts.info }}</template>
+				<XEditor :modelValue="role" readonly/>
+			</MkFolder>
+			<MkFolder v-if="role.target === 'manual'" defaultOpen>
+				<template #icon><i class="ti ti-users"></i></template>
+				<template #label>{{ i18n.ts.users }}</template>
+				<template #suffix>{{ role.usersCount }}</template>
+				<div class="_gaps">
+					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-						<MkPagination :pagination="usersPagination">
-							<template #empty>
-								<div class="_fullinfo">
-									<img :src="infoImageUrl" draggable="false"/>
-									<div>{{ i18n.ts.noUsers }}</div>
-								</div>
-							</template>
+					<MkPagination :paginator="usersPaginator">
+						<template #empty><MkResult type="empty" :text="i18n.ts.noUsers"/></template>
 
-							<template #default="{ items }">
-								<div class="_gaps_s">
-									<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
-										<div :class="$style.userItemMain">
-											<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
-												<MkUserCardMini :user="item.user"/>
-											</MkA>
-											<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
-											<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
-										</div>
-										<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
-											<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
-											<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
-											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
-										</div>
+						<template #default="{ items }">
+							<div class="_gaps_s">
+								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItems.includes(item.id) }]">
+									<div :class="$style.userItemMain">
+										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
+											<MkUserCardMini :user="item.user"/>
+										</MkA>
+										<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
+										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
+									</div>
+									<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
+										<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
+										<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
+										<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 									</div>
 								</div>
-							</template>
-						</MkPagination>
-					</div>
-				</MkFolder>
-				<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
-			</div>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+							</div>
+						</template>
+					</MkPagination>
+				</div>
+			</MkFolder>
+			<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
+		</div>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
-import XHeader from './_header_.vue';
+import { computed, markRaw, reactive, ref } from 'vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -74,31 +65,34 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { infoImageUrl } from '@/instance.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
 const props = defineProps<{
-	id?: string;
+	id: string;
 }>();
 
-const usersPagination = {
-	endpoint: 'admin/roles/users' as const,
+const usersPaginator = markRaw(new Paginator('admin/roles/users', {
 	limit: 20,
-	params: computed(() => ({
+	computedParams: computed(() => props.id ? ({
 		roleId: props.id,
-	})),
-};
+	}) : undefined),
+}));
 
-const expandedItems = ref([]);
+const expandedItems = ref<string[]>([]);
 
 const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
 }));
 
 function edit() {
-	router.push('/admin/roles/' + role.id + '/edit');
+	router.push('/admin/roles/:id/edit', {
+		params: {
+			id: role.id,
+		}
+	});
 }
 
 async function del() {
@@ -121,15 +115,15 @@ async function assign() {
 	const { canceled: canceled2, result: period } = await os.select({
 		title: i18n.ts.period + ': ' + role.name,
 		items: [{
-			value: 'indefinitely', text: i18n.ts.indefinitely,
+			value: 'indefinitely', label: i18n.ts.indefinitely,
 		}, {
-			value: 'oneHour', text: i18n.ts.oneHour,
+			value: 'oneHour', label: i18n.ts.oneHour,
 		}, {
-			value: 'oneDay', text: i18n.ts.oneDay,
+			value: 'oneDay', label: i18n.ts.oneDay,
 		}, {
-			value: 'oneWeek', text: i18n.ts.oneWeek,
+			value: 'oneWeek', label: i18n.ts.oneWeek,
 		}, {
-			value: 'oneMonth', text: i18n.ts.oneMonth,
+			value: 'oneMonth', label: i18n.ts.oneMonth,
 		}],
 		default: 'indefinitely',
 	});
@@ -184,7 +178,7 @@ definePage(() => ({
 .userItemSub {
 	padding: 6px 12px;
 	font-size: 85%;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 
 .userItemMainBody {
@@ -209,7 +203,7 @@ definePage(() => ({
 	transition: transform 0.1s ease-out;
 }
 
-.userItem.userItemOpend {
+.userItem.userItemOpened {
 	.chevron {
 		transform: rotateX(180deg);
 	}

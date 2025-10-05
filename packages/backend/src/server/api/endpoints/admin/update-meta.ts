@@ -67,6 +67,7 @@ export const paramDef = {
 		description: { type: 'string', nullable: true },
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
+		clientOptions: { type: 'object', nullable: false },
 		cacheRemoteFiles: { type: 'boolean' },
 		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
@@ -170,6 +171,7 @@ export const paramDef = {
 			description: '[Deprecated] Use "urlPreviewSummaryProxyUrl" instead.',
 		},
 		urlPreviewEnabled: { type: 'boolean' },
+		urlPreviewAllowRedirect: { type: 'boolean' },
 		urlPreviewTimeout: { type: 'integer' },
 		urlPreviewMaximumContentLength: { type: 'integer' },
 		urlPreviewRequireContentLength: { type: 'boolean' },
@@ -185,6 +187,28 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		deliverSuspendedSoftware: {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: {
+					software: { type: 'string' },
+					versionRange: { type: 'string' },
+				},
+				required: ['software', 'versionRange'],
+			},
+		},
+		singleUserMode: { type: 'boolean' },
+		ugcVisibilityForVisitor: {
+			type: 'string',
+			enum: ['all', 'local', 'none'],
+		},
+		proxyRemoteFiles: { type: 'boolean' },
+		signToActivityPubGet: { type: 'boolean' },
+		allowExternalApRedirect: { type: 'boolean' },
+		enableRemoteNotesCleaning: { type: 'boolean' },
+		remoteNotesCleaningExpiryDaysForEachNotes: { type: 'number' },
+		remoteNotesCleaningMaxProcessingDurationInMinutes: { type: 'number' },
 	},
 	required: [],
 } as const;
@@ -301,6 +325,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.defaultDarkTheme !== undefined) {
 				set.defaultDarkTheme = ps.defaultDarkTheme;
+			}
+
+			if (ps.clientOptions !== undefined) {
+				set.clientOptions = ps.clientOptions;
 			}
 
 			if (ps.cacheRemoteFiles !== undefined) {
@@ -645,6 +673,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.urlPreviewEnabled = ps.urlPreviewEnabled;
 			}
 
+			if (ps.urlPreviewAllowRedirect !== undefined) {
+				set.urlPreviewAllowRedirect = ps.urlPreviewAllowRedirect;
+			}
+
 			if (ps.urlPreviewTimeout !== undefined) {
 				set.urlPreviewTimeout = ps.urlPreviewTimeout;
 			}
@@ -671,8 +703,44 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.federation = ps.federation;
 			}
 
+			if (ps.deliverSuspendedSoftware !== undefined) {
+				set.deliverSuspendedSoftware = ps.deliverSuspendedSoftware;
+			}
+
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.singleUserMode !== undefined) {
+				set.singleUserMode = ps.singleUserMode;
+			}
+
+			if (ps.ugcVisibilityForVisitor !== undefined) {
+				set.ugcVisibilityForVisitor = ps.ugcVisibilityForVisitor;
+			}
+
+			if (ps.proxyRemoteFiles !== undefined) {
+				set.proxyRemoteFiles = ps.proxyRemoteFiles;
+			}
+
+			if (ps.signToActivityPubGet !== undefined) {
+				set.signToActivityPubGet = ps.signToActivityPubGet;
+			}
+
+			if (ps.allowExternalApRedirect !== undefined) {
+				set.allowExternalApRedirect = ps.allowExternalApRedirect;
+			}
+
+			if (ps.enableRemoteNotesCleaning !== undefined) {
+				set.enableRemoteNotesCleaning = ps.enableRemoteNotesCleaning;
+			}
+
+			if (ps.remoteNotesCleaningExpiryDaysForEachNotes !== undefined) {
+				set.remoteNotesCleaningExpiryDaysForEachNotes = ps.remoteNotesCleaningExpiryDaysForEachNotes;
+			}
+
+			if (ps.remoteNotesCleaningMaxProcessingDurationInMinutes !== undefined) {
+				set.remoteNotesCleaningMaxProcessingDurationInMinutes = ps.remoteNotesCleaningMaxProcessingDurationInMinutes;
 			}
 
 			const before = await this.metaService.fetch(true);

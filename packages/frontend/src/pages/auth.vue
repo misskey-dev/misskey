@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="500">
+	<div class="_spacer" style="--MI_SPACER-w: 500px;">
 		<div v-if="state == 'fetch-session-error'">
 			<p>{{ i18n.ts.somethingHappened }}</p>
 		</div>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<p :class="$style.loginMessage">{{ i18n.ts._auth.pleaseLogin }}</p>
 			<MkSignin @login="onLogin"/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -75,14 +75,15 @@ onMounted(async () => {
 	if (!$i) return;
 
 	try {
-		session.value = await misskeyApi('auth/session/show', {
+		const result = await misskeyApi('auth/session/show', {
 			token: props.token,
 		});
+		session.value = result;
 
 		// 既に連携していた場合
-		if (session.value.app.isAuthorized) {
+		if (result.app.isAuthorized) {
 			await misskeyApi('auth/accept', {
-				token: session.value.token,
+				token: result.token,
 			});
 			accepted();
 		} else {

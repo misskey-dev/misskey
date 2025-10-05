@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="jqqmcavi">
-			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
+			<MkButton v-if="pageId && author != null" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
 			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ i18n.ts.duplicate }}</MkButton>
 			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -24,16 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 
 				<MkInput v-model="name">
-					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
+					<template #prefix>{{ url }}/@{{ author?.username ?? '???' }}/pages/</template>
 					<template #label>{{ i18n.ts._pages.url }}</template>
 				</MkInput>
 
 				<MkSwitch v-model="alignCenter">{{ i18n.ts._pages.alignCenter }}</MkSwitch>
 
-				<MkSelect v-model="font">
+				<MkSelect v-model="font" :items="fontDef">
 					<template #label>{{ i18n.ts._pages.font }}</template>
-					<option value="serif">{{ i18n.ts._pages.fontSerif }}</option>
-					<option value="sans-serif">{{ i18n.ts._pages.fontSansSerif }}</option>
 				</MkSelect>
 
 				<MkSwitch v-model="hideTitleWhenPinned">{{ i18n.ts._pages.hideTitleWhenPinned }}</MkSwitch>
@@ -55,14 +53,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="!readonly" rounded class="add" @click="add()"><i class="ti ti-plus"></i></MkButton>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import XBlocks from './page-editor.blocks.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -71,11 +69,12 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
 import { mainRouter } from '@/router.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const props = defineProps<{
@@ -85,7 +84,7 @@ const props = defineProps<{
 }>();
 
 const tab = ref('settings');
-const author = ref($i);
+const author = ref<Misskey.entities.User | null>($i);
 const readonly = ref(false);
 const page = ref<Misskey.entities.Page | null>(null);
 const pageId = ref<string | null>(null);
@@ -95,7 +94,16 @@ const summary = ref<string | null>(null);
 const name = ref(Date.now().toString());
 const eyeCatchingImage = ref<Misskey.entities.DriveFile | null>(null);
 const eyeCatchingImageId = ref<string | null>(null);
-const font = ref<'sans-serif' | 'serif'>('sans-serif');
+const {
+	model: font,
+	def: fontDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._pages.fontSansSerif, value: 'sans-serif' },
+		{ label: i18n.ts._pages.fontSerif, value: 'serif' },
+	],
+	initialValue: 'sans-serif',
+});
 const content = ref<Misskey.entities.Page['content']>([]);
 const alignCenter = ref(false);
 const hideTitleWhenPinned = ref(false);
@@ -154,7 +162,11 @@ async function save() {
 
 		pageId.value = created.id;
 		currentName.value = name.value.trim();
-		mainRouter.replace(`/pages/edit/${pageId.value}`);
+		mainRouter.replace('/pages/edit/:initPageId', {
+			params: {
+				initPageId: pageId.value,
+			},
+		});
 	}
 }
 
@@ -189,23 +201,29 @@ async function duplicate() {
 	pageId.value = created.id;
 	currentName.value = name.value.trim();
 
-	mainRouter.push(`/pages/edit/${pageId.value}`);
+	mainRouter.push('/pages/edit/:initPageId', {
+		params: {
+			initPageId: pageId.value,
+		},
+	});
 }
 
 async function add() {
 	const { canceled, result: type } = await os.select({
-		type: null,
 		title: i18n.ts._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
-	if (canceled) return;
+	if (canceled || type == null) return;
 
-	const id = uuid();
+	const id = genId();
 	content.value.push({ id, type });
 }
 
 function setEyeCatchingImage(img: Event) {
-	selectFile(img.currentTarget ?? img.target, null).then(file => {
+	selectFile({
+		anchorElement: img.currentTarget ?? img.target,
+		multiple: false,
+	}).then(file => {
 		eyeCatchingImageId.value = file.id;
 	});
 }
@@ -240,7 +258,7 @@ async function init() {
 		content.value = page.value.content;
 		eyeCatchingImageId.value = page.value.eyeCatchingImageId;
 	} else {
-		const id = uuid();
+		const id = genId();
 		content.value = [{
 			id,
 			type: 'text',

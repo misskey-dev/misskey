@@ -34,21 +34,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly } from 'vue';
+import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
 //import insertTextAtCursor from 'insert-text-at-cursor';
-import { throttle } from 'throttle-debounce';
 import { formatTimeString } from '@/utility/format-time-string.js';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
-import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile } from '@/utility/upload.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
+import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -62,6 +60,7 @@ const text = ref<string>('');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const sending = ref(false);
 const textareaReadOnly = ref(false);
+let autocompleteInstance: Autocomplete | null = null;
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
 
@@ -85,8 +84,11 @@ async function onPaste(ev: ClipboardEvent) {
 			if (!pastedFile) return;
 			const lio = pastedFile.name.lastIndexOf('.');
 			const ext = lio >= 0 ? pastedFile.name.slice(lio) : '';
-			const formatted = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
-			if (formatted) upload(pastedFile, formatted);
+			const formattedName = formatTimeString(new Date(pastedFile.lastModified), pastedFileName).replace(/{{number}}/g, '1') + ext;
+			const renamedFile = new File([pastedFile], formattedName, { type: pastedFile.type });
+			os.launchUploader([renamedFile], { multiple: false }).then(driveFiles => {
+				file.value = driveFiles[0];
+			});
 		}
 	} else {
 		if (items[0].kind === 'file') {
@@ -102,8 +104,7 @@ function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
-	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-	if (isFile || isDriveFile) {
+	if (isFile || checkDragDataType(ev, ['driveFiles'])) {
 		ev.preventDefault();
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
@@ -130,7 +131,7 @@ function onDrop(ev: DragEvent): void {
 	// ファイルだったら
 	if (ev.dataTransfer.files.length === 1) {
 		ev.preventDefault();
-		upload(ev.dataTransfer.files[0]);
+		os.launchUploader([Array.from(ev.dataTransfer.files)[0]], { multiple: false });
 		return;
 	} else if (ev.dataTransfer.files.length > 1) {
 		ev.preventDefault();
@@ -142,10 +143,12 @@ function onDrop(ev: DragEvent): void {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile !== '') {
-		file.value = JSON.parse(driveFile);
-		ev.preventDefault();
+	{
+		const droppedData = getDragData(ev, 'driveFiles');
+		if (droppedData != null) {
+			file.value = droppedData[0];
+			ev.preventDefault();
+		}
 	}
 	//#endregion
 }
@@ -165,19 +168,23 @@ function onKeydown(ev: KeyboardEvent) {
 }
 
 function chooseFile(ev: MouseEvent) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.selectFile).then(selectedFile => {
+	selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+		label: i18n.ts.selectFile,
+	}).then(selectedFile => {
 		file.value = selectedFile;
 	});
 }
 
 function onChangeFile() {
-	if (fileEl.value.files![0]) upload(fileEl.value.files[0]);
-}
+	if (fileEl.value == null || fileEl.value.files == null) return;
 
-function upload(fileToUpload: File, name?: string) {
-	uploadFile(fileToUpload, prefer.s.uploadFolder, name).then(res => {
-		file.value = res;
-	});
+	if (fileEl.value.files[0]) {
+		os.launchUploader(Array.from(fileEl.value.files), { multiple: false }).then(driveFiles => {
+			file.value = driveFiles[0];
+		});
+	}
 }
 
 function send() {
@@ -270,14 +277,22 @@ async function insertEmoji(ev: MouseEvent) {
 }
 
 onMounted(() => {
-	// TODO: detach when unmount
-	new Autocomplete(textareaEl.value, text);
+	if (textareaEl.value != null) {
+		autocompleteInstance = new Autocomplete(textareaEl.value, text);
+	}
 
 	// 書きかけの投稿を復元
 	const draft = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}')[getDraftKey()];
 	if (draft) {
 		text.value = draft.data.text;
 		file.value = draft.data.file;
+	}
+});
+
+onBeforeUnmount(() => {
+	if (autocompleteInstance) {
+		autocompleteInstance.detach();
+		autocompleteInstance = null;
 	}
 });
 </script>

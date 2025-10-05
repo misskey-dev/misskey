@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="{ [$style.done]: closed || isVoted }">
 	<ul :class="$style.choices">
-		<li v-for="(choice, i) in poll.choices" :key="i" :class="$style.choice" @click="vote(i)">
+		<li v-for="(choice, i) in choices" :key="i" :class="$style.choice" @click="vote(i)">
 			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--MI_THEME-accent);"></i></template>
@@ -27,30 +27,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import { useInterval } from '@@/js/use-interval.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import { sum } from '@/utility/array.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
 
 const props = defineProps<{
 	noteId: string;
-	poll: NonNullable<Misskey.entities.Note['poll']>;
+	multiple: NonNullable<Misskey.entities.Note['poll']>['multiple'];
+	expiresAt: NonNullable<Misskey.entities.Note['poll']>['expiresAt'];
+	choices: NonNullable<Misskey.entities.Note['poll']>['choices'];
 	readOnly?: boolean;
 	emojiUrls?: Record<string, string>;
 	author?: Misskey.entities.UserLite;
 }>();
 
-const remaining = ref(-1);
+const now = useLowresTime();
 
-const total = computed(() => sum(props.poll.choices.map(x => x.votes)));
+const expiresAtTime = computed(() => props.expiresAt ? new Date(props.expiresAt).getTime() : null);
+
+const remaining = computed(() => {
+	if (expiresAtTime.value == null) return -1;
+	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
+});
+
+const remainingWatchStop = watch(remaining, (to) => {
+	if (to <= 0) {
+		showResult.value = true;
+		remainingWatchStop();
+	}
+}, { immediate: true });
+
+const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
-const isVoted = computed(() => !props.poll.multiple && props.poll.choices.some(c => c.isVoted));
+const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
 const timer = computed(() => i18n.tsx._poll[
 	remaining.value >= 86400 ? 'remainingDays' :
 	remaining.value >= 3600 ? 'remainingHours' :
@@ -69,29 +85,14 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${props.noteId}`,
 }));
 
-// 期限付きアンケート
-if (props.poll.expiresAt) {
-	const tick = () => {
-		remaining.value = Math.floor(Math.max(new Date(props.poll.expiresAt!).getTime() - Date.now(), 0) / 1000);
-		if (remaining.value === 0) {
-			showResult.value = true;
-		}
-	};
-
-	useInterval(tick, 3000, {
-		immediate: true,
-		afterMounted: false,
-	});
-}
-
-const vote = async (id) => {
+const vote = async (id: number) => {
 	if (props.readOnly || closed.value || isVoted.value) return;
 
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 
 	const { canceled } = await os.confirm({
 		type: 'question',
-		text: i18n.tsx.voteConfirm({ choice: props.poll.choices[id].text }),
+		text: i18n.tsx.voteConfirm({ choice: props.choices[id].text }),
 	});
 	if (canceled) return;
 
@@ -99,7 +100,7 @@ const vote = async (id) => {
 		noteId: props.noteId,
 		choice: id,
 	});
-	if (!showResult.value) showResult.value = !props.poll.multiple;
+	if (!showResult.value) showResult.value = !props.multiple;
 };
 </script>
 

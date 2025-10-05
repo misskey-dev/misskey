@@ -54,12 +54,13 @@ export class ChatEntityService {
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
 
-		const reactions: { user: Packed<'UserLite'>; reaction: string; }[] = [];
+		// userは削除されている可能性があるのでnull許容
+		const reactions: { user: Packed<'UserLite'> | null; reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
 			const [userId, reaction] = record.split('/');
 			reactions.push({
-				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId),
+				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId).catch(() => null),
 				reaction,
 			});
 		}
@@ -76,7 +77,7 @@ export class ChatEntityService {
 			toRoom: message.toRoomId ? (packedRooms?.get(message.toRoomId) ?? await this.packRoom(message.toRoom ?? message.toRoomId, me)) : undefined,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
-			reactions,
+			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
 		};
 	}
 
@@ -108,6 +109,7 @@ export class ChatEntityService {
 			}
 		}
 
+		// TODO: packedUsersに削除されたユーザーもnullとして含める
 		const [packedUsers, packedFiles, packedRooms] = await Promise.all([
 			this.userEntityService.packMany(users, me)
 				.then(users => new Map(users.map(u => [u.id, u]))),
@@ -128,7 +130,7 @@ export class ChatEntityService {
 				packedFiles: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
 			};
 		},
-	): Promise<Packed<'ChatMessageLite'>> {
+	): Promise<Packed<'ChatMessageLiteFor1on1'>> {
 		const packedFiles = options?._hint_?.packedFiles;
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
@@ -147,7 +149,7 @@ export class ChatEntityService {
 			createdAt: this.idService.parse(message.id).date.toISOString(),
 			text: message.text,
 			fromUserId: message.fromUserId,
-			toUserId: message.toUserId,
+			toUserId: message.toUserId!,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions,
@@ -177,18 +179,19 @@ export class ChatEntityService {
 				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 			};
 		},
-	): Promise<Packed<'ChatMessageLite'>> {
+	): Promise<Packed<'ChatMessageLiteForRoom'>> {
 		const packedFiles = options?._hint_?.packedFiles;
 		const packedUsers = options?._hint_?.packedUsers;
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
 
-		const reactions: { user: Packed<'UserLite'>; reaction: string; }[] = [];
+		// userは削除されている可能性があるのでnull許容
+		const reactions: { user: Packed<'UserLite'> | null; reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
 			const [userId, reaction] = record.split('/');
 			reactions.push({
-				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId),
+				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId).catch(() => null),
 				reaction,
 			});
 		}
@@ -199,10 +202,10 @@ export class ChatEntityService {
 			text: message.text,
 			fromUserId: message.fromUserId,
 			fromUser: packedUsers?.get(message.fromUserId) ?? await this.userEntityService.pack(message.fromUser ?? message.fromUserId),
-			toRoomId: message.toRoomId,
+			toRoomId: message.toRoomId!,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
-			reactions,
+			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
 		};
 	}
 
@@ -238,13 +241,15 @@ export class ChatEntityService {
 		options?: {
 			_hint_?: {
 				packedOwners: Map<MiChatRoom['id'], Packed<'UserLite'>>;
-				memberships?: Map<MiChatRoom['id'], MiChatRoomMembership | null | undefined>;
+				myMemberships?: Map<MiChatRoom['id'], MiChatRoomMembership | null | undefined>;
+				myInvitations?: Map<MiChatRoom['id'], MiChatRoomInvitation | null | undefined>;
 			};
 		},
 	): Promise<Packed<'ChatRoom'>> {
 		const room = typeof src === 'object' ? src : await this.chatRoomsRepository.findOneByOrFail({ id: src });
 
-		const membership = me && me.id !== room.ownerId ? (options?._hint_?.memberships?.get(room.id) ?? await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId: me.id })) : null;
+		const membership = me && me.id !== room.ownerId ? (options?._hint_?.myMemberships?.get(room.id) ?? await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId: me.id })) : null;
+		const invitation = me && me.id !== room.ownerId ? (options?._hint_?.myInvitations?.get(room.id) ?? await this.chatRoomInvitationsRepository.findOneBy({ roomId: room.id, userId: me.id })) : null;
 
 		return {
 			id: room.id,
@@ -254,6 +259,7 @@ export class ChatEntityService {
 			ownerId: room.ownerId,
 			owner: options?._hint_?.packedOwners.get(room.ownerId) ?? await this.userEntityService.pack(room.owner ?? room.ownerId, me),
 			isMuted: membership != null ? membership.isMuted : false,
+			invitationExists: invitation != null,
 		};
 	}
 
@@ -278,7 +284,7 @@ export class ChatEntityService {
 
 		const owners = _rooms.map(x => x.owner ?? x.ownerId);
 
-		const [packedOwners, memberships] = await Promise.all([
+		const [packedOwners, myMemberships, myInvitations] = await Promise.all([
 			this.userEntityService.packMany(owners, me)
 				.then(users => new Map(users.map(u => [u.id, u]))),
 			this.chatRoomMembershipsRepository.find({
@@ -287,9 +293,15 @@ export class ChatEntityService {
 					userId: me.id,
 				},
 			}).then(memberships => new Map(_rooms.map(r => [r.id, memberships.find(m => m.roomId === r.id)]))),
+			this.chatRoomInvitationsRepository.find({
+				where: {
+					roomId: In(_rooms.map(x => x.id)),
+					userId: me.id,
+				},
+			}).then(invitations => new Map(_rooms.map(r => [r.id, invitations.find(i => i.roomId === r.id)]))),
 		]);
 
-		return Promise.all(_rooms.map(room => this.packRoom(room, me, { _hint_: { packedOwners, memberships } })));
+		return Promise.all(_rooms.map(room => this.packRoom(room, me, { _hint_: { packedOwners, myMemberships, myInvitations } })));
 	}
 
 	@bindThis

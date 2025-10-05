@@ -66,9 +66,14 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			});
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
+		'Mk:toast': values.FN_NATIVE(async ([text]) => {
+			utils.assertString(text);
+			os.toast(text.value);
+			return values.NULL;
+		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			utils.assertString(ep);
-			if (ep.value.includes('://')) {
+			if (ep.value.includes('://') || ep.value.includes('..')) {
 				throw new errors.AiScriptRuntimeError('invalid endpoint');
 			}
 			if (token) {
@@ -81,7 +86,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 				throw new errors.AiScriptRuntimeError('expected param');
 			}
 			utils.assertObject(param);
-			return misskeyApi(ep.value, utils.valToJs(param) as object, actualToken).then(res => {
+			return misskeyApi(ep.value as keyof Misskey.Endpoints, utils.valToJs(param) as object, actualToken).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));

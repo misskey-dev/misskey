@@ -4,23 +4,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="700">
+<div class="_spacer" style="--MI_SPACER-w: 700px;">
 	<div>
 		<div class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
-			<MkSelect v-model="src">
+			<MkSelect v-model="src" :items="antennaSourcesSelectDef">
 				<template #label>{{ i18n.ts.antennaSource }}</template>
-				<option value="all">{{ i18n.ts._antennaSources.all }}</option>
-				<!--<option value="home">{{ i18n.ts._antennaSources.homeTimeline }}</option>-->
-				<option value="users">{{ i18n.ts._antennaSources.users }}</option>
-				<!--<option value="list">{{ i18n.ts._antennaSources.userList }}</option>-->
-				<option value="users_blacklist">{{ i18n.ts._antennaSources.userBlacklist }}</option>
 			</MkSelect>
-			<MkSelect v-if="src === 'list'" v-model="userListId">
+			<MkSelect v-if="src === 'list'" v-model="userListId" :items="userListsSelectDef">
 				<template #label>{{ i18n.ts.userList }}</template>
-				<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 			</MkSelect>
 			<MkTextarea v-else-if="src === 'users' || src === 'users_blacklist'" v-model="users">
 				<template #label>{{ i18n.ts.users }}</template>
@@ -39,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
+			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.excludeNotesInSensitiveChannel }}</MkSwitch>
 		</div>
 		<div :class="$style.actions">
 			<div class="_buttons">
@@ -47,12 +42,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { DeepPartial } from '@/utility/merge.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -62,7 +58,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/utility/merge.js';
-import type { DeepPartial } from '@/utility/merge.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;
@@ -86,6 +82,7 @@ const initialAntenna = deepMerge<PartialAllowedAntenna>(props.antenna ?? {}, {
 	caseSensitive: false,
 	localOnly: false,
 	withFile: false,
+	excludeNotesInSensitiveChannel: false,
 	isActive: true,
 	hasUnreadNote: false,
 	notify: false,
@@ -97,9 +94,35 @@ const emit = defineEmits<{
 	(ev: 'deleted'): void,
 }>();
 
+const {
+	model: src,
+	def: antennaSourcesSelectDef,
+} = useMkSelect({
+	items: [
+		{ value: 'all', label: i18n.ts._antennaSources.all },
+		//{ value: 'home', label: i18n.ts._antennaSources.homeTimeline },
+		{ value: 'users', label: i18n.ts._antennaSources.users },
+		//{ value: 'list', label: i18n.ts._antennaSources.userList },
+		{ value: 'users_blacklist', label: i18n.ts._antennaSources.userBlacklist },
+	],
+	initialValue: initialAntenna.src,
+});
+
+const {
+	model: userListId,
+	def: userListsSelectDef,
+} = useMkSelect({
+	items: computed(() => {
+		if (userLists.value == null) return [];
+		return userLists.value.map(list => ({
+			value: list.id,
+			label: list.name,
+		}));
+	}),
+	initialValue: initialAntenna.userListId,
+});
+
 const name = ref<string>(initialAntenna.name);
-const src = ref<Misskey.entities.AntennasCreateRequest['src']>(initialAntenna.src);
-const userListId = ref<string | null>(initialAntenna.userListId);
 const users = ref<string>(initialAntenna.users.join('\n'));
 const keywords = ref<string>(initialAntenna.keywords.map(x => x.join(' ')).join('\n'));
 const excludeKeywords = ref<string>(initialAntenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
@@ -108,6 +131,7 @@ const localOnly = ref<boolean>(initialAntenna.localOnly);
 const excludeBots = ref<boolean>(initialAntenna.excludeBots);
 const withReplies = ref<boolean>(initialAntenna.withReplies);
 const withFile = ref<boolean>(initialAntenna.withFile);
+const excludeNotesInSensitiveChannel = ref<boolean>(initialAntenna.excludeNotesInSensitiveChannel);
 const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
@@ -124,6 +148,7 @@ async function saveAntenna() {
 		excludeBots: excludeBots.value,
 		withReplies: withReplies.value,
 		withFile: withFile.value,
+		excludeNotesInSensitiveChannel: excludeNotesInSensitiveChannel.value,
 		caseSensitive: caseSensitive.value,
 		localOnly: localOnly.value,
 		users: users.value.trim().split('\n').map(x => x.trim()),

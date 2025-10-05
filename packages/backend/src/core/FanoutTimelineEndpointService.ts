@@ -8,15 +8,19 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
+import type { MiMeta } from '@/models/Meta.js';
 import { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+
+type NoteFilter = (note: MiNote) => boolean;
 
 type TimelineOptions = {
 	untilId: string | null,
@@ -26,13 +30,15 @@ type TimelineOptions = {
 	me?: { id: MiUser['id'] } | undefined | null,
 	useDbFallback: boolean,
 	redisTimelines: FanoutTimelineName[],
-	noteFilter?: (note: MiNote) => boolean,
+	noteFilter?: NoteFilter,
 	alwaysIncludeMyNotes?: boolean;
 	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
+	ignoreAuthorFromInstanceBlock?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
+	ignoreAuthorFromUserSuspension?: boolean;
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 };
 
@@ -42,9 +48,13 @@ export class FanoutTimelineEndpointService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
 		private fanoutTimelineService: FanoutTimelineService,
+		private utilityService: UtilityService,
 	) {
 	}
 
@@ -54,7 +64,7 @@ export class FanoutTimelineEndpointService {
 	}
 
 	@bindThis
-	private async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
+	async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
@@ -71,7 +81,7 @@ export class FanoutTimelineEndpointService {
 		const shouldFallbackToDb = noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
 
 		if (!shouldFallbackToDb) {
-			let filter = ps.noteFilter ?? (_note => true);
+			let filter = ps.noteFilter ?? (_note => true) as NoteFilter;
 
 			if (ps.alwaysIncludeMyNotes && ps.me) {
 				const me = ps.me;
@@ -112,8 +122,36 @@ export class FanoutTimelineEndpointService {
 				filter = (note) => {
 					if (isUserRelated(note, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
+					if (isUserRelated(note.renote, userIdsWhoBlockingMe, ps.ignoreAuthorFromBlock)) return false;
+					if (isUserRelated(note.renote, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
+
+					return parentFilter(note);
+				};
+			}
+
+			{
+				const parentFilter = filter;
+				filter = (note) => {
+					if (!ps.ignoreAuthorFromInstanceBlock) {
+						if (this.utilityService.isBlockedHost(this.meta.blockedHosts, note.userHost)) return false;
+					}
+					if (note.userId !== note.renoteUserId && this.utilityService.isBlockedHost(this.meta.blockedHosts, note.renoteUserHost)) return false;
+					if (note.userId !== note.replyUserId && this.utilityService.isBlockedHost(this.meta.blockedHosts, note.replyUserHost)) return false;
+
+					return parentFilter(note);
+				};
+			}
+
+			{
+				const parentFilter = filter;
+				filter = (note) => {
+					if (!ps.ignoreAuthorFromUserSuspension) {
+						if (note.user!.isSuspended) return false;
+					}
+					if (note.userId !== note.renoteUserId && note.renote?.user?.isSuspended) return false;
+					if (note.userId !== note.replyUserId && note.reply?.user?.isSuspended) return false;
 
 					return parentFilter(note);
 				};
@@ -160,7 +198,7 @@ export class FanoutTimelineEndpointService {
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
-	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
+	private async getAndFilterFromDb(noteIds: string[], noteFilter: NoteFilter, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
 		const query = this.notesRepository.createQueryBuilder('note')
 			.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 			.innerJoinAndSelect('note.user', 'user')

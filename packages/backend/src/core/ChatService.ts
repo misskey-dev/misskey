@@ -29,7 +29,7 @@ import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
-const MAX_ROOM_MEMBERS = 30;
+const MAX_ROOM_MEMBERS = 50;
 const MAX_REACTIONS_PER_MESSAGE = 100;
 const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
 
@@ -95,11 +95,45 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async getChatAvailability(userId: MiUser['id']): Promise<{ read: boolean; write: boolean; }> {
+		const policies = await this.roleService.getUserPolicies(userId);
+
+		switch (policies.chatAvailability) {
+			case 'available':
+				return {
+					read: true,
+					write: true,
+				};
+			case 'readonly':
+				return {
+					read: true,
+					write: false,
+				};
+			case 'unavailable':
+				return {
+					read: false,
+					write: false,
+				};
+			default:
+				throw new Error('invalid chat availability (unreachable)');
+		}
+	}
+
+	/** getChatAvailabilityの糖衣。主にAPI呼び出し時に走らせて、権限的に問題ない場合はそのまま続行する */
+	@bindThis
+	public async checkChatAvailability(userId: MiUser['id'], permission: 'read' | 'write') {
+		const policy = await this.getChatAvailability(userId);
+		if (policy[permission] === false) {
+			throw new Error('ROLE_PERMISSION_DENIED');
+		}
+	}
+
+	@bindThis
 	public async createMessageToUser(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
+	}): Promise<Packed<'ChatMessageLiteFor1on1'>> {
 		if (fromUser.id === toUser.id) {
 			throw new Error('yourself');
 		}
@@ -140,7 +174,7 @@ export class ChatService {
 			}
 		}
 
-		if (!(await this.roleService.getUserPolicies(toUser.id)).canChat) {
+		if (!(await this.getChatAvailability(toUser.id)).write) {
 			throw new Error('recipient is cannot chat (policy)');
 		}
 
@@ -198,7 +232,7 @@ export class ChatService {
 
 				const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted, toUser);
 				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
-				//this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
+				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
 			}, 3000);
 		}
 
@@ -210,10 +244,16 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
-		const memberships = await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id });
+	}): Promise<Packed<'ChatMessageLiteForRoom'>> {
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id })).map(m => ({
+			userId: m.userId,
+			isMuted: m.isMuted,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: toRoom.ownerId,
+			isMuted: false,
+		});
 
-		if (toRoom.ownerId !== fromUser.id && !memberships.some(member => member.userId === fromUser.id)) {
+		if (!memberships.some(member => member.userId === fromUser.id)) {
 			throw new Error('you are not a member of the room');
 		}
 
@@ -262,7 +302,7 @@ export class ChatService {
 				if (marker == null) continue;
 
 				this.globalEventService.publishMainStream(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
-				//this.pushNotificationService.pushNotification(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
+				this.pushNotificationService.pushNotification(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
 			}
 		}, 3000);
 
@@ -288,6 +328,16 @@ export class ChatService {
 		const redisPipeline = this.redisClient.pipeline();
 		redisPipeline.del(`newRoomChatMessageExists:${readerId}:${roomId}`);
 		redisPipeline.srem(`newChatMessagesExists:${readerId}`, `room:${roomId}`);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
+	public async readAllChatMessages(
+		readerId: MiUser['id'],
+	): Promise<void> {
+		const redisPipeline = this.redisClient.pipeline();
+		// TODO: newUserChatMessageExists とか newRoomChatMessageExists も消したい(けどキーの列挙が必要になって面倒)
+		redisPipeline.del(`newChatMessagesExists:${readerId}`);
 		await redisPipeline.exec();
 	}
 
@@ -538,6 +588,20 @@ export class ChatService {
 
 	@bindThis
 	public async deleteRoom(room: MiChatRoom, deleter?: MiUser) {
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: room.id })).map(m => ({
+			userId: m.userId,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: room.ownerId,
+		});
+
+		// 未読フラグ削除
+		const redisPipeline = this.redisClient.pipeline();
+		for (const membership of memberships) {
+			redisPipeline.del(`newRoomChatMessageExists:${membership.userId}:${room.id}`);
+			redisPipeline.srem(`newChatMessagesExists:${membership.userId}`, `room:${room.id}`);
+		}
+		await redisPipeline.exec();
+
 		await this.chatRoomsRepository.delete(room.id);
 
 		if (deleter) {
@@ -669,6 +733,12 @@ export class ChatService {
 	public async leaveRoom(userId: MiUser['id'], roomId: MiChatRoom['id']) {
 		const membership = await this.chatRoomMembershipsRepository.findOneByOrFail({ roomId, userId });
 		await this.chatRoomMembershipsRepository.delete(membership.id);
+
+		// 未読フラグを消す (「既読にする」というわけでもないのでreadメソッドは使わないでおく)
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.del(`newRoomChatMessageExists:${userId}:${roomId}`);
+		redisPipeline.srem(`newChatMessagesExists:${userId}`, `room:${roomId}`);
+		await redisPipeline.exec();
 	}
 
 	@bindThis

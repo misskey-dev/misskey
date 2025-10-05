@@ -212,6 +212,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canSearchUsers: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canUseTranslator: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -223,6 +227,18 @@ export const packedRolePoliciesSchema = {
 		driveCapacityMb: {
 			type: 'integer',
 			optional: false, nullable: false,
+		},
+		maxFileSizeMb: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		uploadableFileTypes: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 		},
 		alwaysMarkNsfw: {
 			type: 'boolean',
@@ -292,7 +308,20 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		canChat: {
+		chatAvailability: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['available', 'readonly', 'unavailable'],
+		},
+		noteDraftLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		scheduledNoteLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		watermarkAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
@@ -385,6 +414,11 @@ export const packedRoleSchema = {
 					example: false,
 				},
 				asBadge: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					example: false,
+				},
+				preserveAssignmentOnMoveAccount: {
 					type: 'boolean',
 					optional: false, nullable: false,
 					example: false,

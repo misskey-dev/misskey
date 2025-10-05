@@ -9,7 +9,6 @@ import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
-import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
@@ -55,7 +54,6 @@ function initLocalStorage() {
 		...userDetailed(),
 		policies: {},
 	}));
-	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
 initialize({
@@ -83,7 +81,7 @@ queueMicrotask(() => {
 			widgets(app);
 			misskeyOS = os;
 			if (isChromatic()) {
-				prefer.set('animation', false);
+				prefer.commit('animation', false);
 			}
 		});
 	});

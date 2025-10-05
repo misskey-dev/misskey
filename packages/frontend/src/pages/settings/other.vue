@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<SearchMarker :keywords="['account', 'info']">
 				<MkFolder>
-					<template #icon><i class="ti ti-info-circle"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-info-circle"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.accountInfo }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -33,23 +33,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
 						</MkKeyValue>
 
-						<MkFolder>
-							<template #icon><i class="ti ti-badges"></i></template>
-							<template #label><SearchLabel>{{ i18n.ts._role.policies }}</SearchLabel></template>
+						<SearchMarker :keywords="['role', 'policy']">
+							<MkFolder>
+								<template #icon><i class="ti ti-badges"></i></template>
+								<template #label><SearchLabel>{{ i18n.ts._role.policies }}</SearchLabel></template>
 
-							<div class="_gaps_s">
-								<div v-for="policy in Object.keys($i.policies)" :key="policy">
-									{{ policy }} ... {{ $i.policies[policy] }}
+								<div class="_gaps_s">
+									<div v-for="policy in Object.keys($i.policies)" :key="policy">
+										{{ policy }} ... {{ $i.policies[policy] }}
+									</div>
 								</div>
-							</div>
-						</MkFolder>
+							</MkFolder>
+						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
 
 			<SearchMarker :keywords="['roles']">
 				<MkFolder>
-					<template #icon><i class="ti ti-badges"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
 
 					<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
@@ -58,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['account', 'move', 'migration']">
 				<MkFolder>
-					<template #icon><i class="ti ti-plane"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-plane"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.accountMigration }}</SearchLabel></template>
 
 					<XMigration/>
@@ -67,13 +69,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['account', 'close', 'delete']">
 				<MkFolder>
-					<template #icon><i class="ti ti-alert-triangle"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-alert-triangle"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.closeAccount }}</SearchLabel></template>
 
 					<div class="_gaps_m">
 						<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
 						<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
-						<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount"><SearchKeyword>{{ i18n.ts._accountDelete.requestAccountDelete }}</SearchKeyword></MkButton>
+						<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount"><SearchText>{{ i18n.ts._accountDelete.requestAccountDelete }}</SearchText></MkButton>
 						<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
 					</div>
 				</MkFolder>
@@ -81,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['experimental', 'feature', 'flags']">
 				<MkFolder>
-					<template #icon><i class="ti ti-flask"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-flask"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -94,13 +96,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="stackingRouterView">
 							<template #label>Enable stacking router view</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableFolderPageView">
+							<template #label>Enable folder page view</template>
+						</MkSwitch>
+						<MkSwitch v-model="enableHapticFeedback">
+							<template #label>Enable haptic feedback</template>
+						</MkSwitch>
+						<MkSwitch v-model="enableWebTranslatorApi">
+							<template #label>Enable in-browser translator API</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
 
 			<SearchMarker :keywords="['developer', 'mode', 'debug']">
 				<MkFolder>
-					<template #icon><i class="ti ti-code"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-code"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.developer }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -117,6 +128,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
 
 		<hr>
+
+		<MkButton @click="resetAllTips"><i class="ti ti-bulb"></i> {{ i18n.ts.redisplayAllTips }}</MkButton>
+		<MkButton @click="hideAllTips"><i class="ti ti-bulb-off"></i> {{ i18n.ts.hideAllTips }}</MkButton>
+
+		<hr>
+
+		<MkButton @click="forceCloudBackup">Force cloud backup</MkButton>
+
+		<hr>
+
+		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
+			<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+
+			<hr>
+		</template>
 
 		<FormSlot>
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
@@ -141,12 +167,14 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
+import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
+import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
@@ -155,9 +183,12 @@ const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
+const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
+const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
+const enableWebTranslatorApi = prefer.model('experimental.enableWebTranslatorApi');
 
-watch(skipNoteRender, async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+watch(skipNoteRender, () => {
+	suggestReload();
 });
 
 async function deleteAccount() {
@@ -185,8 +216,26 @@ async function deleteAccount() {
 }
 
 function migrate() {
-	os.waiting();
 	migrateOldSettings();
+}
+
+function resetAllTips() {
+	_resetAllTips();
+	os.success();
+}
+
+function hideAllTips() {
+	_hideAllTips();
+	os.success();
+}
+
+function readAllChatMessages() {
+	os.apiWithDialog('chat/read-all', {});
+}
+
+async function forceCloudBackup() {
+	await cloudBackup();
+	os.success();
 }
 
 const headerActions = computed(() => []);

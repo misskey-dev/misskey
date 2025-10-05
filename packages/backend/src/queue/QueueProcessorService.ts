@@ -14,6 +14,7 @@ import { CheckModeratorsActivityProcessorService } from '@/queue/processors/Chec
 import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
 import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
+import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
@@ -43,8 +44,9 @@ import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMu
 import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
+import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
-import { QUEUE, baseQueueOptions } from './const.js';
+import { QUEUE, baseWorkerOptions } from './const.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
@@ -84,6 +86,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private relationshipQueueWorker: Bull.Worker;
 	private objectStorageQueueWorker: Bull.Worker;
 	private endedPollNotificationQueueWorker: Bull.Worker;
+	private postScheduledNoteQueueWorker: Bull.Worker;
 
 	constructor(
 		@Inject(DI.config)
@@ -93,6 +96,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private userWebhookDeliverProcessorService: UserWebhookDeliverProcessorService,
 		private systemWebhookDeliverProcessorService: SystemWebhookDeliverProcessorService,
 		private endedPollNotificationProcessorService: EndedPollNotificationProcessorService,
+		private postScheduledNoteProcessorService: PostScheduledNoteProcessorService,
 		private deliverProcessorService: DeliverProcessorService,
 		private inboxProcessorService: InboxProcessorService,
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
@@ -123,6 +127,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private bakeBufferedReactionsProcessorService: BakeBufferedReactionsProcessorService,
 		private checkModeratorsActivityProcessorService: CheckModeratorsActivityProcessorService,
 		private cleanProcessorService: CleanProcessorService,
+		private cleanRemoteNotesProcessorService: CleanRemoteNotesProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
 
@@ -164,6 +169,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'bakeBufferedReactions': return this.bakeBufferedReactionsProcessorService.process();
 					case 'checkModeratorsActivity': return this.checkModeratorsActivityProcessorService.process();
 					case 'clean': return this.cleanProcessorService.process();
+					case 'cleanRemoteNotes': return this.cleanRemoteNotesProcessorService.process(job);
 					default: throw new Error(`unrecognized job type ${job.name} for system`);
 				}
 			};
@@ -175,7 +181,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return processer(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.SYSTEM),
+				...baseWorkerOptions(this.config, QUEUE.SYSTEM),
 				autorun: false,
 			});
 
@@ -232,7 +238,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return processer(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.DB),
+				...baseWorkerOptions(this.config, QUEUE.DB),
 				autorun: false,
 			});
 
@@ -264,7 +270,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return this.deliverProcessorService.process(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.DELIVER),
+				...baseWorkerOptions(this.config, QUEUE.DELIVER),
 				autorun: false,
 				concurrency: this.config.deliverJobConcurrency ?? 128,
 				limiter: {
@@ -304,7 +310,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return this.inboxProcessorService.process(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.INBOX),
+				...baseWorkerOptions(this.config, QUEUE.INBOX),
 				autorun: false,
 				concurrency: this.config.inboxJobConcurrency ?? 16,
 				limiter: {
@@ -344,7 +350,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return this.userWebhookDeliverProcessorService.process(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
+				...baseWorkerOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
 				autorun: false,
 				concurrency: 64,
 				limiter: {
@@ -384,7 +390,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return this.systemWebhookDeliverProcessorService.process(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
+				...baseWorkerOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
 				autorun: false,
 				concurrency: 16,
 				limiter: {
@@ -434,7 +440,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return processer(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.RELATIONSHIP),
+				...baseWorkerOptions(this.config, QUEUE.RELATIONSHIP),
 				autorun: false,
 				concurrency: this.config.relationshipJobConcurrency ?? 16,
 				limiter: {
@@ -479,7 +485,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return processer(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.OBJECT_STORAGE),
+				...baseWorkerOptions(this.config, QUEUE.OBJECT_STORAGE),
 				autorun: false,
 				concurrency: 16,
 			});
@@ -512,7 +518,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					return this.endedPollNotificationProcessorService.process(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
+				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
+				autorun: false,
+			});
+		}
+		//#endregion
+
+		//#region post scheduled note
+		{
+			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
+				if (this.config.sentryForBackend) {
+					return Sentry.startSpan({ name: 'Queue: PostScheduledNote' }, () => this.postScheduledNoteProcessorService.process(job));
+				} else {
+					return this.postScheduledNoteProcessorService.process(job);
+				}
+			}, {
+				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
 				autorun: false,
 			});
 		}
@@ -531,6 +552,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.relationshipQueueWorker.run(),
 			this.objectStorageQueueWorker.run(),
 			this.endedPollNotificationQueueWorker.run(),
+			this.postScheduledNoteQueueWorker.run(),
 		]);
 	}
 
@@ -546,6 +568,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.relationshipQueueWorker.close(),
 			this.objectStorageQueueWorker.close(),
 			this.endedPollNotificationQueueWorker.close(),
+			this.postScheduledNoteQueueWorker.close(),
 		]);
 	}
 

@@ -5,12 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <SearchMarker path="/settings/theme" :label="i18n.ts.theme" :keywords="['theme']" icon="ti ti-palette">
-	<div class="_gaps_m">
+	<div
+		class="_gaps_m"
+		@dragover.prevent.stop="onDragover"
+		@drop.prevent.stop="onDrop"
+	>
 		<div v-adaptive-border class="rfqxtzch _panel">
 			<div class="toggle">
 				<div class="toggleWrapper">
-					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-					<label for="dn" class="toggle">
+					<div class="toggle" :class="store.r.darkMode.value ? 'checked' : null" @click="toggleDarkMode()">
 						<span class="before">{{ i18n.ts.light }}</span>
 						<span class="after">{{ i18n.ts.dark }}</span>
 						<span class="toggle__handler">
@@ -24,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="star star--4"></span>
 						<span class="star star--5"></span>
 						<span class="star star--6"></span>
-					</label>
+					</div>
 				</div>
 			</div>
 			<div class="sync">
@@ -36,8 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div class="_gaps">
-			<template v-if="!darkMode">
+		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.themeIsDefaultBecauseSafeMode }}</MkInfo>
+
+		<div v-else class="_gaps">
+			<template v-if="!store.r.darkMode.value">
 				<SearchMarker :keywords="['light', 'theme']">
 					<MkFolder :defaultOpen="true" :max-height="500">
 						<template #icon><i class="ti ti-sun"></i></template>
@@ -57,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceLightTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, instanceLightTheme)" @contextmenu.prevent.stop="onThemeContextmenu(instanceLightTheme, $event)">
 											<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceLightTheme.name }}</div>
 										</label>
@@ -77,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -97,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -128,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="instanceDarkTheme.id"
 										/>
-										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, instanceDarkTheme)" @contextmenu.prevent.stop="onThemeContextmenu(instanceDarkTheme, $event)">
 											<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ instanceDarkTheme.name }}</div>
 										</label>
@@ -148,7 +153,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -168,7 +173,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											:class="$style.themeRadio"
 											:value="theme.id"
 										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button" draggable="true" @dragstart="onThemeDragstart($event, theme)" @contextmenu.prevent.stop="onThemeContextmenu(theme, $event)">
 											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
 											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
 										</label>
@@ -180,6 +185,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 			</template>
 		</div>
+
+		<SearchMarker :keywords="['sync', 'themes', 'devices']">
+			<MkSwitch :modelValue="themesSyncEnabled" @update:modelValue="changeThemesSyncEnabled">
+				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._settings.enableSyncThemesBetweenDevices }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
 
 		<FormSection>
 			<div class="_formLinksGrid">
@@ -198,23 +209,25 @@ import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { isSafeMode } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
+import * as os from '@/os.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
-import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
-import { selectFile } from '@/utility/select-file.js';
+import MkInfo from '@/components/MkInfo.vue';
+import { getBuiltinThemesRef, getThemesRef, installTheme, parseThemeCode, removeTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
 import { definePage } from '@/page.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { checkDragDataType, getDragData, getPlainDragData, setDragData, setPlainDragData } from '@/drag-and-drop.js';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
@@ -254,7 +267,6 @@ const lightThemeId = computed({
 	},
 });
 
-const darkMode = computed(store.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const themesCount = installedThemes.value.length;
 
@@ -263,6 +275,88 @@ watch(syncDeviceDarkMode, () => {
 		store.set('darkMode', isDeviceDarkmode());
 	}
 });
+
+async function toggleDarkMode() {
+	const value = !store.r.darkMode.value;
+	if (syncDeviceDarkMode.value) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+		});
+		if (canceled) return;
+
+		syncDeviceDarkMode.value = false;
+		store.set('darkMode', value);
+	} else {
+		store.set('darkMode', value);
+	}
+}
+
+const themesSyncEnabled = ref(prefer.isSyncEnabled('themes'));
+
+function changeThemesSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('themes').then((res) => {
+			if (res == null) return;
+			if (res.enabled) themesSyncEnabled.value = true;
+		});
+	} else {
+		prefer.disableSync('themes');
+		themesSyncEnabled.value = false;
+	}
+}
+
+function onThemeContextmenu(theme: Theme, ev: MouseEvent) {
+	os.contextMenu([{
+		type: 'label',
+		text: theme.name,
+	}, {
+		icon: 'ti ti-clipboard',
+		text: i18n.ts._theme.copyThemeCode,
+		action: () => {
+			copyToClipboard(JSON5.stringify(theme, null, '\t'));
+		},
+	}, {
+		icon: 'ti ti-trash',
+		text: i18n.ts.delete,
+		danger: true,
+		action: () => {
+			removeTheme(theme);
+		},
+	}], ev);
+}
+
+function onThemeDragstart(ev: DragEvent, theme: Theme) {
+	if (!ev.dataTransfer) return;
+
+	ev.dataTransfer.effectAllowed = 'copy';
+	setPlainDragData(ev, JSON5.stringify(theme, null, '\t'));
+}
+
+function onDragover(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
+
+	if (ev.dataTransfer.types[0] === 'text/plain') {
+		ev.dataTransfer.dropEffect = 'copy';
+	} else {
+		ev.dataTransfer.dropEffect = 'none';
+	}
+
+	return false;
+}
+
+async function onDrop(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
+
+	const code = getPlainDragData(ev);
+	if (code != null) {
+		try {
+			await installTheme(code);
+		} catch (err) {
+			// nop
+		}
+	}
+}
 
 const headerActions = computed(() => []);
 
@@ -348,16 +442,6 @@ definePage(() => ({
 			overflow: clip;
 			padding: 0 100px;
 			vertical-align: bottom;
-
-			input {
-				position: absolute;
-				left: -99em;
-			}
-		}
-
-		.dn:focus-visible ~ .toggle {
-			outline: 2px solid var(--MI_THEME-focus);
-			outline-offset: 2px;
 		}
 
 		.toggle {
@@ -385,6 +469,61 @@ definePage(() => ({
 			> .after {
 				right: -68px;
 				color: var(--MI_THEME-fg);
+			}
+
+			&.checked {
+				background-color: #749DD6;
+
+				> .before {
+					color: var(--MI_THEME-fg);
+				}
+
+				> .after {
+					color: var(--MI_THEME-accent);
+				}
+
+				.toggle__handler {
+					background-color: #FFE5B5;
+					transform: translate3d(40px, 0, 0) rotate(0);
+
+					.crater { opacity: 1; }
+				}
+
+				.star--1 {
+					width: 2px;
+					height: 2px;
+				}
+
+				.star--2 {
+					width: 4px;
+					height: 4px;
+					transform: translate3d(-5px, 0, 0);
+				}
+
+				.star--3 {
+					width: 2px;
+					height: 2px;
+					transform: translate3d(-7px, 0, 0);
+				}
+
+				.star--4,
+				.star--5,
+				.star--6 {
+					opacity: 1;
+					transform: translate3d(0,0,0);
+				}
+
+				.star--4 {
+					transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
+
+				.star--5 {
+					transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
+
+				.star--6 {
+					transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
 			}
 		}
 
@@ -495,63 +634,6 @@ definePage(() => ({
 			width: 2px;
 			height: 2px;
 			transform: translate3d(3px,0,0);
-		}
-
-		input:checked {
-			+ .toggle {
-				background-color: #749DD6;
-
-				> .before {
-					color: var(--MI_THEME-fg);
-				}
-
-				> .after {
-					color: var(--MI_THEME-accent);
-				}
-
-				.toggle__handler {
-					background-color: #FFE5B5;
-					transform: translate3d(40px, 0, 0) rotate(0);
-
-					.crater { opacity: 1; }
-				}
-
-				.star--1 {
-					width: 2px;
-					height: 2px;
-				}
-
-				.star--2 {
-					width: 4px;
-					height: 4px;
-					transform: translate3d(-5px, 0, 0);
-				}
-
-				.star--3 {
-					width: 2px;
-					height: 2px;
-					transform: translate3d(-7px, 0, 0);
-				}
-
-				.star--4,
-				.star--5,
-				.star--6 {
-					opacity: 1;
-					transform: translate3d(0,0,0);
-				}
-
-				.star--4 {
-					transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				}
-
-				.star--5 {
-					transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				}
-
-				.star--6 {
-					transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				}
-			}
 		}
 	}
 

@@ -78,11 +78,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			if (me) {
-				this.queryService.generateMutedUserQueryForNotes(query, me);
-				this.queryService.generateBlockedUserQueryForNotes(query, me);
-				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-			}
+			this.queryService.generateBaseNoteFilteringQuery(query, me);
+			if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
@@ -94,6 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					qb.orWhere(new Brackets(qb => {
 						qb.where('note.text IS NOT NULL');
 						qb.orWhere('note.fileIds != \'{}\'');
+						qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
 					}));
 				}));
 			}

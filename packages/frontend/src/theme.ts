@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref } from 'vue';
+// TODO: (可能な部分を)sharedに抽出して frontend-embed と共通化
+
+import { ref, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
@@ -15,6 +17,7 @@ import { globalEvents } from '@/events.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 export type Theme = {
 	id: string;
@@ -22,6 +25,7 @@ export type Theme = {
 	author: string;
 	desc?: string;
 	base?: 'dark' | 'light';
+	kind?: 'dark' | 'light'; // legacy
 	props: Record<string, string>;
 	codeHighlighter?: {
 		base: BundledTheme;
@@ -88,20 +92,7 @@ export async function removeTheme(theme: Theme): Promise<void> {
 	prefer.commit('themes', themes);
 }
 
-let timeout: number | null = null;
-
-export function applyTheme(theme: Theme, persist = true) {
-	if (timeout) window.clearTimeout(timeout);
-
-	window.document.documentElement.classList.add('_themeChanging_');
-
-	timeout = window.setTimeout(() => {
-		window.document.documentElement.classList.remove('_themeChanging_');
-
-		// 色計算など再度行えるようにクライアント全体に通知
-		globalEvents.emit('themeChanged');
-	}, 1000);
-
+function applyThemeInternal(theme: Theme, persist: boolean) {
 	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
 
 	window.document.documentElement.dataset.colorScheme = colorScheme;
@@ -139,6 +130,36 @@ export function applyTheme(theme: Theme, persist = true) {
 	globalEvents.emit('themeChanging');
 }
 
+let timeout: number | null = null;
+let currentTheme: Theme | null = null;
+
+export function applyTheme(theme: Theme, persist = true) {
+	if (timeout) {
+		window.clearTimeout(timeout);
+		timeout = null;
+	}
+
+	if (deepEqual(currentTheme, theme)) return;
+	// リアクティビティ解除
+	currentTheme = deepClone(theme);
+
+	if (window.document.startViewTransition != null) {
+		window.document.documentElement.classList.add('_themeChanging_');
+		window.document.startViewTransition(async () => {
+			applyThemeInternal(theme, persist);
+			await nextTick();
+		}).finished.then(() => {
+			window.document.documentElement.classList.remove('_themeChanging_');
+			// 色計算など再度行えるようにクライアント全体に通知
+			globalEvents.emit('themeChanged');
+		});
+	} else {
+		applyThemeInternal(theme, persist);
+		// 色計算など再度行えるようにクライアント全体に通知
+		globalEvents.emit('themeChanged');
+	}
+}
+
 export function compile(theme: Theme): Record<string, string> {
 	function getColor(val: string): tinycolor.Instance {
 		if (val[0] === '@') { // ref (prop)
@@ -147,16 +168,21 @@ export function compile(theme: Theme): Record<string, string> {
 			return getColor(theme.props[val]);
 		} else if (val[0] === ':') { // func
 			const parts = val.split('<');
-			const func = parts.shift().substring(1);
-			const arg = parseFloat(parts.shift());
-			const color = getColor(parts.join('<'));
+			const funcTxt = parts.shift();
+			const argTxt = parts.shift();
 
-			switch (func) {
-				case 'darken': return color.darken(arg);
-				case 'lighten': return color.lighten(arg);
-				case 'alpha': return color.setAlpha(arg);
-				case 'hue': return color.spin(arg);
-				case 'saturate': return color.saturate(arg);
+			if (funcTxt && argTxt) {
+				const func = funcTxt.substring(1);
+				const arg = parseFloat(argTxt);
+				const color = getColor(parts.join('<'));
+
+				switch (func) {
+					case 'darken': return color.darken(arg);
+					case 'lighten': return color.lighten(arg);
+					case 'alpha': return color.setAlpha(arg);
+					case 'hue': return color.spin(arg);
+					case 'saturate': return color.saturate(arg);
+				}
 			}
 		}
 

@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else #header>New decoration</template>
 
 	<div style="display: flex; flex-direction: column; min-height: 100%;">
-		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px; flex-grow: 1;">
 			<div class="_gaps_m">
 				<div :class="$style.preview">
 					<div :class="[$style.previewItem, $style.light]">
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkButton v-if="avatarDecoration" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.avatarDecoration ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -86,7 +86,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void
 }>();
 
-const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
+const windowEl = useTemplateRef('windowEl');
 const url = ref<string>(props.avatarDecoration ? props.avatarDecoration.url : '');
 const name = ref<string>(props.avatarDecoration ? props.avatarDecoration.name : '');
 const description = ref<string>(props.avatarDecoration ? props.avatarDecoration.description : '');
@@ -101,12 +101,12 @@ async function addRole() {
 	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisDecoration.value.map(x => x.id);
 
-	const { canceled, result: role } = await os.select({
-		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
+	const { canceled, result: roleId } = await os.select({
+		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ label: r.name, value: r.id })),
 	});
-	if (canceled || role == null) return;
+	if (canceled || roleId == null) return;
 
-	rolesThatCanBeUsedThisDecoration.value.push(role);
+	rolesThatCanBeUsedThisDecoration.value.push(roles.find(r => r.id === roleId)!);
 }
 
 async function removeRole(role, ev) {

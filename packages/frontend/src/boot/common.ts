@@ -5,9 +5,10 @@
 
 import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
@@ -28,6 +29,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
+import { launchPlugins } from '@/plugin.js';
 
 export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);
@@ -79,18 +81,20 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
-	if (localeOutdated) {
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
-		if (res.status === 200) {
-			const newLocale = await res.text();
-			const parsedNewLocale = JSON.parse(newLocale);
-			miLocalStorage.setItem('locale', newLocale);
-			miLocalStorage.setItem('localeVersion', version);
-			updateLocale(parsedNewLocale);
-			updateI18n(parsedNewLocale);
-		}
+	storeBootloaderErrors({ ...i18n.ts._bootErrors, reload: i18n.ts.reload });
+
+	if (import.meta.hot) {
+		import.meta.hot.on('locale-update', async (updatedLang: string) => {
+			console.info(`Locale updated: ${updatedLang}`);
+			if (updatedLang === lang) {
+				await new Promise(resolve => {
+					window.setTimeout(resolve, 500);
+				});
+				// fetch with cache: 'no-store' to ensure the latest locale is fetched
+				await window.fetch(`/assets/locales/${lang}.${version}.json`, { cache: 'no-store' }).then(async res => res.status === 200 && await res.text());
+				window.location.reload();
+			}
+		});
 	}
 	//#endregion
 
@@ -147,31 +151,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 	//#endregion
 
-	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
-	watch(store.r.darkMode, (darkMode) => {
-		applyTheme(darkMode
-			? (prefer.s.darkTheme ?? defaultDarkTheme)
-			: (prefer.s.lightTheme ?? defaultLightTheme),
-		);
-	}, { immediate: miLocalStorage.getItem('theme') == null });
-
-	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
-
-	const darkTheme = prefer.model('darkTheme');
-	const lightTheme = prefer.model('lightTheme');
-
-	watch(darkTheme, (theme) => {
-		if (store.s.darkMode) {
-			applyTheme(theme ?? defaultDarkTheme);
-		}
-	});
-
-	watch(lightTheme, (theme) => {
-		if (!store.s.darkMode) {
-			applyTheme(theme ?? defaultLightTheme);
-		}
-	});
-
 	//#region Sync dark mode
 	if (prefer.s.syncDeviceDarkMode) {
 		store.set('darkMode', isDeviceDarkmode());
@@ -184,17 +163,53 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	});
 	//#endregion
 
-	if (prefer.s.darkTheme && store.s.darkMode) {
-		if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
-	} else if (prefer.s.lightTheme && !store.s.darkMode) {
-		if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
+	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
+	// NOTE: この処理は必ずダークモード判定処理より後に来ること(初回のテーマ適用のため)
+	// see: https://github.com/misskey-dev/misskey/issues/16562
+	watch(store.r.darkMode, (darkMode) => {
+		const theme = (() => {
+			if (darkMode) {
+				return isSafeMode ? defaultDarkTheme : (prefer.s.darkTheme ?? defaultDarkTheme);
+			} else {
+				return isSafeMode ? defaultLightTheme : (prefer.s.lightTheme ?? defaultLightTheme);
+			}
+		})();
+
+		applyTheme(theme);
+	}, { immediate: isSafeMode || miLocalStorage.getItem('theme') == null });
+
+	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
+
+	if (!isSafeMode) {
+		const darkTheme = prefer.model('darkTheme');
+		const lightTheme = prefer.model('lightTheme');
+
+		watch(darkTheme, (theme) => {
+			if (store.s.darkMode) {
+				applyTheme(theme ?? defaultDarkTheme);
+			}
+		});
+
+		watch(lightTheme, (theme) => {
+			if (!store.s.darkMode) {
+				applyTheme(theme ?? defaultLightTheme);
+			}
+		});
 	}
 
-	fetchInstanceMetaPromise.then(() => {
-		// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
-		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
-		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
-	});
+	if (!isSafeMode) {
+		if (prefer.s.darkTheme && store.s.darkMode) {
+			if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
+		} else if (prefer.s.lightTheme && !store.s.darkMode) {
+			if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
+		}
+
+		fetchInstanceMetaPromise.then(() => {
+			// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
+			if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
+			if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
+		});
+	}
 
 	watch(prefer.r.overridedDeviceKind, (kind) => {
 		updateDeviceKind(kind);
@@ -290,6 +305,47 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		window.document.body.appendChild(root);
 		return root;
 	})();
+
+	if (instance.sentryForFrontend) {
+		const Sentry = await import('@sentry/vue');
+		Sentry.init({
+			app,
+			integrations: [
+				...(instance.sentryForFrontend.vueIntegration !== undefined ? [
+					Sentry.vueIntegration(instance.sentryForFrontend.vueIntegration ?? undefined),
+				] : []),
+				...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? [
+					Sentry.browserTracingIntegration(instance.sentryForFrontend.browserTracingIntegration ?? undefined),
+				] : []),
+				...(instance.sentryForFrontend.replayIntegration !== undefined ? [
+					Sentry.replayIntegration(instance.sentryForFrontend.replayIntegration ?? undefined),
+				] : []),
+			],
+
+			// Set tracesSampleRate to 1.0 to capture 100%
+			tracesSampleRate: 1.0,
+
+			// Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+			...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? {
+				tracePropagationTargets: [apiUrl],
+			} : {}),
+
+			// Capture Replay for 10% of all sessions,
+			// plus for 100% of sessions with an error
+			...(instance.sentryForFrontend.replayIntegration !== undefined ? {
+				replaysSessionSampleRate: 0.1,
+				replaysOnErrorSampleRate: 1.0,
+			} : {}),
+
+			...instance.sentryForFrontend.options,
+		});
+	}
+
+	try {
+		await launchPlugins();
+	} catch (error) {
+		console.error('Failed to launch plugins:', error);
+	}
 
 	app.mount(rootEl);
 
