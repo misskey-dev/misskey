@@ -107,7 +107,7 @@ function renderTab() {
 	}
 }
 
-let entering = true;
+let entering = false;
 
 async function enter(el: Element) {
 	if (!(el instanceof HTMLElement)) return;
