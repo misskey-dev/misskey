@@ -120,7 +120,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'headerClicked'): void;
+	(ev: 'headerClicked', ep: MouseEvent): void;
 }>();
 
 const rootEl = useTemplateRef('rootEl');
@@ -168,8 +168,8 @@ function afterLeave(el: Element) {
 let pageId = pageFolderTeleportCount.value;
 pageFolderTeleportCount.value += 1000;
 
-async function toggle() {
-	emit('headerClicked');
+async function toggle(ev: MouseEvent) {
+	emit('headerClicked', ev);
 
 	if (asPage && !opened.value) {
 		pageId++;
