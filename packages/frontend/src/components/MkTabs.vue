@@ -53,9 +53,8 @@ export type Tab<K = string> = {
 </script>
 
 <script lang="ts" setup generic="const T extends Tab">
-import { nextTick, onMounted, onUnmounted, useTemplateRef, ref, watch, inject } from 'vue';
+import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
-import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	tabs?: T[];
@@ -71,8 +70,6 @@ const emit = defineEmits<{
 }>();
 
 const tab = defineModel<T['key']>('tab');
-
-const modalTransitioning = inject(DI.modalTransitioning, ref(false));
 
 const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
@@ -154,14 +151,6 @@ onMounted(() => {
 			if (entering) return;
 			renderTab();
 		});
-	});
-
-	const modalTransitioningWatchStop = watch(modalTransitioning, (to) => {
-		if (!to) {
-			entering = false;
-			renderTab();
-			modalTransitioningWatchStop();
-		}
 	}, { immediate: true });
 });
 
