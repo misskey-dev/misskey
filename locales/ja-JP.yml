@@ -2767,6 +2767,8 @@ _notification:
     quote: "引用"
     reaction: "リアクション"
     pollEnded: "アンケートが終了"
+    scheduledNotePosted: "予約投稿が成功した"
+    scheduledNotePostFailed: "予約投稿が失敗した"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
