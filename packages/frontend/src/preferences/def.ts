@@ -517,4 +517,7 @@ export const PREF_DEF = definePreferences({
 	'experimental.enableHapticFeedback': {
 		default: false,
 	},
+	'experimental.enableWebTranslatorApi': {
+		default: false,
+	},
 });

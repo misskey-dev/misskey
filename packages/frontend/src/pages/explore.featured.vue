@@ -5,9 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 800px;">
-	<MkTab v-model="tab" style="margin-bottom: var(--MI-margin);">
-		<option value="notes">{{ i18n.ts.notes }}</option>
-		<option value="polls">{{ i18n.ts.poll }}</option>
+	<MkTab
+		v-model="tab"
+		:tabs="[
+			{ key: 'notes', label: i18n.ts.notes },
+			{ key: 'polls', label: i18n.ts.poll },
+		]"
+		style="margin-bottom: var(--MI-margin);"
+	>
 	</MkTab>
 	<MkNotesTimeline v-if="tab === 'notes'" :paginator="paginatorForNotes"/>
 	<MkNotesTimeline v-else-if="tab === 'polls'" :paginator="paginatorForPolls"/>
@@ -33,5 +38,5 @@ const paginatorForPolls = markRaw(new Paginator('notes/polls/recommendation', {
 	},
 }));
 
-const tab = ref('notes');
+const tab = ref<'notes' | 'polls'>('notes');
 </script>

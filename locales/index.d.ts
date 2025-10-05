@@ -5594,6 +5594,10 @@ export interface Locale extends ILocale {
      */
     "scheduled": string;
     /**
+     * ウィジェット
+     */
+    "widgets": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;

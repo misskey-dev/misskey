@@ -1466,3 +1466,6 @@ _imageEffector:
     color: "Farba"
     opacity: "Priehľadnosť"
     lightness: "Zosvetliť"
+_qr:
+  showTabTitle: "Zobraziť"
+  raw: "Text"

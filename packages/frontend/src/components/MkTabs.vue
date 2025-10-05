@@ -4,12 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.tabs, { [$style.centered]: props.centered }]">
+<div :class="[$style.tabs, { [$style.centered]: props.centered }]" :style="{ '--tabAnchorName': tabAnchorName }">
 	<div :class="$style.tabsInner">
 		<button
-			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: prefer.s.animation }]"
-			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
+			v-for="t in tabs"
+			:ref="(el) => tabRefs[t.key] = (el as HTMLElement)"
+			v-tooltip.noDelay="t.title"
+			class="_button"
+			:class="[$style.tab, {
+				[$style.active]: t.key != null && t.key === tab,
+				[$style.animate]: prefer.s.animation,
+			}]"
+			:style="getTabStyle(t)"
+			@mousedown="(ev) => onTabMousedown(t, ev)"
+			@click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
 				<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
@@ -20,7 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ t.title }}
 				</div>
 				<Transition
-					v-else mode="in-out" @enter="enter" @afterEnter="afterEnter" @leave="leave"
+					v-else
+					mode="in-out"
+					@enter="enter"
+					@afterEnter="afterEnter"
+					@leave="leave"
 					@afterLeave="afterLeave"
 				>
 					<div v-show="t.key === tab" :class="[$style.tabTitle, $style.animate]">{{ t.title }}</div>
@@ -36,8 +48,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-export type Tab = {
-	key: string;
+export type Tab<K = string> = {
+	key: K;
 	onClick?: (ev: MouseEvent) => void;
 	iconOnly?: boolean;
 	title: string;
@@ -45,31 +57,46 @@ export type Tab = {
 };
 </script>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="const T extends Tab">
 import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
+import { genId } from '@/utility/id.js';
+
+const cssAnchorSupported = CSS.supports('position-anchor', '--anchor-name');
+const tabAnchorName = `--${genId()}-currentTab`;
 
 const props = withDefaults(defineProps<{
-	tabs?: Tab[];
-	tab?: string;
+	tabs?: T[];
 	centered?: boolean;
 	tabHighlightUpper?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[]),
+	tabs: () => ([] as T[]),
 });
 
 const emit = defineEmits<{
-	(ev: 'update:tab', key: string);
 	(ev: 'tabClick', key: string);
 }>();
+
+const tab = defineModel<T['key']>('tab');
 
 const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
 
-function onTabMousedown(tab: Tab, ev: MouseEvent): void {
+function getTabStyle(t: Tab): Record<string, string> {
+	if (!cssAnchorSupported) return {};
+	if (t.key === tab.value) {
+		return {
+			anchorName: tabAnchorName,
+		};
+	} else {
+		return {};
+	}
+}
+
+function onTabMousedown(selectedTab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
-	if (tab.key) {
-		emit('update:tab', tab.key);
+	if (selectedTab.key) {
+		tab.value = selectedTab.key;
 	}
 }
 
@@ -83,12 +110,14 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 	}
 
 	if (t.key) {
-		emit('update:tab', t.key);
+		tab.value = t.key;
 	}
 }
 
 function renderTab() {
-	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
+	if (cssAnchorSupported) return;
+
+	const tabEl = tab.value ? tabRefs[tab.value] : undefined;
 	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
@@ -138,14 +167,14 @@ function afterLeave(el: Element) {
 }
 
 onMounted(() => {
-	watch([() => props.tab, () => props.tabs], () => {
-		nextTick(() => {
-			if (entering) return;
-			renderTab();
-		});
-	}, {
-		immediate: true,
-	});
+	if (!cssAnchorSupported) {
+		watch([tab, () => props.tabs], () => {
+			nextTick(() => {
+				if (entering) return;
+				renderTab();
+			});
+		}, { immediate: true });
+	}
 });
 
 onUnmounted(() => {
@@ -236,6 +265,13 @@ onUnmounted(() => {
 	&.tabHighlightUpper {
 		top: 0;
 		bottom: auto;
+	}
+}
+
+@supports (position-anchor: --anchor-name) {
+	.tabHighlight {
+		left: anchor(var(--tabAnchorName) start);
+		width: anchor-size(var(--tabAnchorName) width);
 	}
 }
 </style>

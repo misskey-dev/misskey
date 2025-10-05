@@ -1600,3 +1600,6 @@ _imageEffector:
     color: "Kolor"
     opacity: "Przezroczystość"
     lightness: "Rozjaśnij"
+_qr:
+  showTabTitle: "Wyświetlanie"
+  raw: "Tekst"

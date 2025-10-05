@@ -2631,6 +2631,10 @@ _imageEffector:
     angle: "Sudut"
     scale: "Ukuran"
     size: "Ukuran"
+    offset: "Posisi"
     color: "Warna"
     opacity: "Opasitas"
     lightness: "Menerangkan"
+_qr:
+  showTabTitle: "Tampilkan"
+  raw: "Teks"
