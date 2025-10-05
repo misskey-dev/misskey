@@ -1042,6 +1042,7 @@ postForm: "Formularz tworzenia wpisu"
 information: "Informacje"
 inMinutes: "minuta"
 inDays: "dzień"
+widgets: "Widżety"
 _chat:
   invitations: "Zaproś"
   noHistory: "Brak historii"
