@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
 	:duration="300" appear @afterLeave="onClosed"
 >
-	<div v-show="showing" :class="[$style.root]" :style="{ zIndex }">
+	<div v-show="actualShowingState" :class="[$style.root]" :style="{ zIndex }">
 		<div :class="[$style.bg]" :style="{ zIndex }"></div>
 		<div :class="[$style.content]" :style="{ zIndex }">
 			<div :class="$style.header">
@@ -27,31 +27,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref, computed } from 'vue';
 import { claimZIndex } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
-const props = withDefaults(defineProps<{
-	pageId: number,
-}>(), {
-	pageId: 0,
-});
+const props = defineProps<{
+	pageId: string;
+	showing: boolean;
+}>();
 
 const emit = defineEmits<{
-	(_: 'closed'): void
+	(_: 'closed'): void;
 }>();
 
 const zIndex = claimZIndex('low');
-const showing = ref(true);
+const manualShowing = ref(true);
+const actualShowingState = computed(() => props.showing && manualShowing.value);
 
 function closePage() {
-	showing.value = false;
+	manualShowing.value = false;
 }
 
 function onClosed() {
 	emit('closed');
 }
-
 </script>
 
 <style lang="scss" module>
