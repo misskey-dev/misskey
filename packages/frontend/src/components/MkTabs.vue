@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.tabs, { [$style.centered]: props.centered }]">
+<div :class="[$style.tabs, { [$style.centered]: props.centered }]" :style="{ '--tabAnchorName': tabAnchorName }">
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs"
@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.active]: t.key != null && t.key === tab,
 				[$style.animate]: prefer.s.animation,
 			}]"
+			:style="getTabStyle(t)"
 			@mousedown="(ev) => onTabMousedown(t, ev)"
 			@click="(ev) => onTabClick(t, ev)"
 		>
@@ -27,7 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ t.title }}
 				</div>
 				<Transition
-					v-else mode="in-out" @enter="enter" @afterEnter="afterEnter" @leave="leave"
+					v-else
+					mode="in-out"
+					@enter="enter"
+					@afterEnter="afterEnter"
+					@leave="leave"
 					@afterLeave="afterLeave"
 				>
 					<div v-show="t.key === tab" :class="[$style.tabTitle, $style.animate]">{{ t.title }}</div>
@@ -55,8 +60,11 @@ export type Tab<K = string> = {
 <script lang="ts" setup generic="const T extends Tab">
 import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
+import { genId } from '@/utility/id.js';
 
 const cssAnchorSupported = CSS.supports('position-anchor', '--anchor-name');
+const tabsComponentId = genId();
+const tabAnchorName = `--${tabsComponentId}-currentTab`;
 
 const props = withDefaults(defineProps<{
 	tabs?: T[];
@@ -74,6 +82,17 @@ const tab = defineModel<T['key']>('tab');
 
 const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
+
+function getTabStyle(t: Tab): Record<string, string> {
+	if (!cssAnchorSupported) return {};
+	if (t.key === tab.value) {
+		return {
+			anchorName: tabAnchorName,
+		};
+	} else {
+		return {};
+	}
+}
 
 function onTabMousedown(selectedTab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
@@ -97,6 +116,8 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 }
 
 function renderTab() {
+	if (cssAnchorSupported) return;
+
 	const tabEl = tab.value ? tabRefs[tab.value] : undefined;
 	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
@@ -147,12 +168,14 @@ function afterLeave(el: Element) {
 }
 
 onMounted(() => {
-	watch([tab, () => props.tabs], () => {
-		nextTick(() => {
-			if (entering) return;
-			renderTab();
-		});
-	}, { immediate: true });
+	if (!cssAnchorSupported) {
+		watch([tab, () => props.tabs], () => {
+			nextTick(() => {
+				if (entering) return;
+				renderTab();
+			});
+		}, { immediate: true });
+	}
 });
 
 onUnmounted(() => {
@@ -243,6 +266,13 @@ onUnmounted(() => {
 	&.tabHighlightUpper {
 		top: 0;
 		bottom: auto;
+	}
+}
+
+@supports (position-anchor: --anchor-name) {
+	.tabHighlight {
+		left: anchor(var(--tabAnchorName) start);
+		width: anchor-size(var(--tabAnchorName) width);
 	}
 }
 </style>
