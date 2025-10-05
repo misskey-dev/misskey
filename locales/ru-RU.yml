@@ -2276,7 +2276,11 @@ _imageEffector:
     angle: "Угол"
     scale: "Размер"
     size: "Размер"
+    offset: "Позиция"
     color: "Цвет"
     opacity: "Непрозрачность"
     lightness: "Осветление"
 drafts: "Черновик"
+_qr:
+  showTabTitle: "Отображение"
+  raw: "Текст"
