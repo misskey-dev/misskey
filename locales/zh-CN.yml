@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "预定在 {x} 发出"
 scheduledToPostOnX: "已预定在 {x} 发出"
 schedule: "定时"
 scheduled: "定时"
+widgets: "小工具"
 _compression:
   _quality:
     high: "高质量"
