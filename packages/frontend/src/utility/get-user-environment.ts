@@ -6,6 +6,7 @@
 export type UserEnvironment = {
 	os: string;
 	browser: string;
+	userAgent: string;
 	screenWidth: number;
 	screenHeight: number;
 	viaGetHighEntropyValues: true;
@@ -42,6 +43,7 @@ export async function getUserEnvironment(): Promise<UserEnvironment> {
 			return {
 				os: `${uaData.platform} ${osVersion}`,
 				browser: browserData ? `${browserData.brand} v${browserData.version}` : 'Unknown',
+				userAgent: navigator.userAgent,
 				screenWidth: window.innerWidth,
 				screenHeight: window.innerHeight,
 				viaGetHighEntropyValues: true,
