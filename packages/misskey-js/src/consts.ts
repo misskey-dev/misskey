@@ -30,7 +30,6 @@ export const notificationTypes = [
 	'scheduledNotePostFailed',
 	'receiveFollowRequest',
 	'followRequestAccepted',
-	'groupInvited',
 	'app',
 	'roleAssigned',
 	'chatRoomInvitationReceived',

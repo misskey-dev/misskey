@@ -10482,6 +10482,14 @@ export interface Locale extends ILocale {
              */
             "pollEnded": string;
             /**
+             * 予約投稿が成功した
+             */
+            "scheduledNotePosted": string;
+            /**
+             * 予約投稿が失敗した
+             */
+            "scheduledNotePostFailed": string;
+            /**
              * フォロー申請を受け取った
              */
             "receiveFollowRequest": string;
