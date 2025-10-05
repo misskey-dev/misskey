@@ -388,8 +388,6 @@ export function getNoteMenu(props: {
 			});
 		}
 
-		console.log(prefer.s['experimental.enableWebTranslatorApi'], isInBrowserTranslationAvailable, $i.policies.canUseTranslator, instance.translatorAvailable);
-
 		if ((prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable) || ($i.policies.canUseTranslator && instance.translatorAvailable)) {
 			menuItems.push({
 				icon: 'ti ti-language-hiragana',
