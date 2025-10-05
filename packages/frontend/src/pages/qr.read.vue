@@ -39,10 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<MkStickyContainer>
 				<template #header>
-					<MkTab v-model="tab" :class="$style.tab">
-						<option value="users">{{ i18n.ts.users }}</option>
-						<option value="notes">{{ i18n.ts.notes }}</option>
-						<option value="all">{{ i18n.ts.all }}</option>
+					<MkTab
+						v-model="tab"
+						:tabs="[
+							{ key: 'users', label: i18n.ts.users },
+							{ key: 'notes', label: i18n.ts.notes },
+							{ key: 'all', label: i18n.ts.all },
+						]"
+						:class="$style.tab"
+					>
 					</MkTab>
 				</template>
 				<div v-if="tab === 'users'" :class="[$style.users, '_margin']" style="padding-bottom: var(--MI-margin);">
