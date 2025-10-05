@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "Programar una nota per {x}"
 scheduledToPostOnX: "S'ha programat la nota per {x}"
 schedule: "Programa"
 scheduled: "Programat"
+widgets: "Ginys"
 _compression:
   _quality:
     high: "Qualitat alta"
