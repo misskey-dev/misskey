@@ -56,6 +56,8 @@ export type Tab<K = string> = {
 import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
 
+const cssAnchorSupported = CSS.supports('position-anchor', '--anchor-name');
+
 const props = withDefaults(defineProps<{
 	tabs?: T[];
 	centered?: boolean;
@@ -65,7 +67,6 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:tab', key: string);
 	(ev: 'tabClick', key: string);
 }>();
 
@@ -74,10 +75,10 @@ const tab = defineModel<T['key']>('tab');
 const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
 
-function onTabMousedown(tab: Tab, ev: MouseEvent): void {
+function onTabMousedown(selectedTab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
-	if (tab.key) {
-		emit('update:tab', tab.key);
+	if (selectedTab.key) {
+		tab.value = selectedTab.key;
 	}
 }
 
@@ -91,7 +92,7 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 	}
 
 	if (t.key) {
-		emit('update:tab', t.key);
+		tab.value = t.key;
 	}
 }
 
