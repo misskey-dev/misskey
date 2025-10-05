@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "กำหนดเวลาให้โพสต์ไว้
 scheduledToPostOnX: "มีการกำหนดเวลาให้โพสต์ไว้ที่ {x}"
 schedule: "กำหนดเวลา"
 scheduled: "กำหนดเวลา"
+widgets: "วิดเจ็ต"
 _compression:
   _quality:
     high: "คุณภาพสูง"
