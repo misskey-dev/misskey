@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "排定在 {x} 發布"
 scheduledToPostOnX: "已排定在 {x} 發布貼文"
 schedule: "排定"
 scheduled: "排定"
+widgets: "小工具"
 _compression:
   _quality:
     high: "高品質"
