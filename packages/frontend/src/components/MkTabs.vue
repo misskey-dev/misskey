@@ -63,8 +63,7 @@ import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';
 
 const cssAnchorSupported = CSS.supports('position-anchor', '--anchor-name');
-const tabsComponentId = genId();
-const tabAnchorName = `--${tabsComponentId}-currentTab`;
+const tabAnchorName = `--${genId()}-currentTab`;
 
 const props = withDefaults(defineProps<{
 	tabs?: T[];
@@ -260,7 +259,7 @@ onUnmounted(() => {
 	pointer-events: none;
 
 	&.animate {
-		transition: width 0.15s ease, left 0.15s ease;
+		transition: width 0.15s ease-in, left 0.15s ease-in;
 	}
 
 	&.tabHighlightUpper {
