@@ -3,19 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// Type Reference Only import （実物はlazy-loadされる）
-import type * as BowserTypeReferenceOnly from 'bowser';
-
-type BowserTypeTypeReferenceOnly = typeof BowserTypeReferenceOnly;
-
-let Bowser: BowserTypeTypeReferenceOnly | null = null;
-
 export type UserEnvironment = {
 	os: string;
 	browser: string;
 	screenWidth: number;
 	screenHeight: number;
-	viaGetHighEntropyValues: boolean;
+	viaGetHighEntropyValues: true;
+} | {
+	userAgent: string;
+	screenWidth: number;
+	screenHeight: number;
+	viaGetHighEntropyValues: false;
 };
 
 export async function getUserEnvironment(): Promise<UserEnvironment> {
@@ -56,14 +54,9 @@ export async function getUserEnvironment(): Promise<UserEnvironment> {
 	}
 }
 
-async function getViaUa(): Promise<UserEnvironment> {
-	if (Bowser == null) {
-		Bowser = (await import('bowser')).default;
-	}
-	const parsed = Bowser.parse(navigator.userAgent);
+function getViaUa(): UserEnvironment {
 	return {
-		os: `${parsed.os.name ?? 'Unknown'} ${parsed.os.version ?? ''} ${parsed.os.versionName ? `(${parsed.os.versionName})` : ''}`.trim(),
-		browser: `${parsed.browser.name ?? 'Unknown'} ${parsed.browser.version ?? ''}`.trim(),
+		userAgent: navigator.userAgent,
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
 		viaGetHighEntropyValues: false,
