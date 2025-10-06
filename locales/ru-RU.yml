@@ -1277,6 +1277,7 @@ textCount: "Количество символов"
 information: "Описание"
 inMinutes: "мин"
 inDays: "сут"
+widgets: "Виджеты"
 _chat:
   invitations: "Пригласить"
   noHistory: "История пока пуста"

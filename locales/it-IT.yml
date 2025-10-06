@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "Pianificare la pubblicazione {x}"
 scheduledToPostOnX: "Pubblicazione pianificata {x}"
 schedule: "Pianificare"
 scheduled: "Pianificata"
+widgets: "Riquadri"
 _compression:
   _quality:
     high: "Alta qualità"

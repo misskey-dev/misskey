@@ -1378,6 +1378,7 @@ pluginsAreDisabledBecauseSafeMode: "Güvenli mod etkinleştirildiği için tüm 
 customCssIsDisabledBecauseSafeMode: "Güvenli mod etkin olduğu için özel CSS uygulanmıyor."
 themeIsDefaultBecauseSafeMode: "Güvenli mod etkinken, varsayılan tema kullanılır. Güvenli modu devre dışı bırakmak bu değişiklikleri geri alır."
 thankYouForTestingBeta: "Beta sürümünü test ettiğin için teşekkür ederiz!"
+widgets: "Widget'lar"
 _order:
   newest: "Önce yeni"
   oldest: "Önce eski"

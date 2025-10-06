@@ -921,6 +921,7 @@ postForm: "Створення нотатки"
 information: "Інформація"
 inMinutes: "х"
 inDays: "д"
+widgets: "Віджети"
 _chat:
   invitations: "Запросити"
   noHistory: "Історія порожня"

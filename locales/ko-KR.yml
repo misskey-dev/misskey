@@ -1389,6 +1389,7 @@ scheduleToPostOnX: "{x}에 게시를 예약합니다."
 scheduledToPostOnX: "{x}에 게시가 예약돼있습니다."
 schedule: "예약"
 scheduled: "예약"
+widgets: "위젯"
 _compression:
   _quality:
     high: "고품질"

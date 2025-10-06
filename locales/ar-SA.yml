@@ -1010,6 +1010,7 @@ postForm: "أنشئ ملاحظة"
 information: "عن"
 inMinutes: "د"
 inDays: "ي"
+widgets: "التطبيقات المُصغّرة"
 _chat:
   invitations: "دعوة"
   noHistory: "السجل فارغ"
