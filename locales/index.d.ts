@@ -1355,6 +1355,10 @@ export interface Locale extends ILocale {
      */
     "selectFolder": string;
     /**
+     * フォルダーの選択を解除
+     */
+    "unselectFolder": string;
+    /**
      * フォルダーを選択
      */
     "selectFolders": string;
@@ -1402,6 +1406,10 @@ export interface Locale extends ILocale {
      * フォルダーは空です
      */
     "emptyFolder": string;
+    /**
+     * ここにファイルをドロップしてアップロード
+     */
+    "dropHereToUpload": string;
     /**
      * 削除できません
      */
@@ -9460,6 +9468,10 @@ export interface Locale extends ILocale {
          * アクセスを許可すると、自動で以下のURLに遷移します
          */
         "byClickingYouWillBeRedirectedToThisUrl": string;
+        /**
+         * このアプリケーションは既にアクセスが許可されています。
+         */
+        "alreadyAuthorized": string;
     };
     "_antennaSources": {
         /**
