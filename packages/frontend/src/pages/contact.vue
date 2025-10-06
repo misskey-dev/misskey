@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 				</template>
 			</MkKeyValue>
-			<MkFolder @headerClicked="onHeaderClicked">
+			<MkFolder @opened="onOpened">
 				<template #icon><i class="ti ti-report-search"></i></template>
 				<template #label>{{ i18n.ts.deviceInfo }}</template>
 				<template #caption>{{ i18n.ts.deviceInfoDescription }}</template>
@@ -54,7 +54,7 @@ import MkCode from '@/components/MkCode.vue';
 
 const userEnv = ref<UserEnvironment | null>(null);
 
-async function onHeaderClicked() {
+async function onOpened() {
 	if (userEnv.value == null) {
 		userEnv.value = await getUserEnvironment();
 	}
