@@ -192,7 +192,7 @@ export const paramDef = {
 		scheduledAt: { type: 'integer', nullable: true },
 		isActuallyScheduled: { type: 'boolean', default: false },
 	},
-	required: ['visibility', 'visibleUserIds', 'cw', 'hashtag', 'localOnly', 'reactionAcceptance', 'replyId', 'renoteId', 'channelId', 'text', 'fileIds', 'poll', 'scheduledAt', 'isActuallyScheduled'],
+	required: [],
 } as const;
 
 @Injectable()
