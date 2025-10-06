@@ -68,7 +68,7 @@ export type GetMkSelectValueTypesFromDef<T extends MkSelectItem[]> = T[number] e
 </script>
 
 <script lang="ts" setup generic="const ITEMS extends MkSelectItem[], MODELT extends OptionValue">
-import { onMounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import { onMounted, nextTick, ref, watch, computed, toRefs, useTemplateRef } from 'vue';
 import { useInterval } from '@@/js/use-interval.js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
@@ -87,8 +87,8 @@ const props = defineProps<{
 
 type ModelTChecked = MODELT & (
 	MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
-	? unknown
-	: 'Error: The type of model does not match the type of items.'
+		? unknown
+		: 'Error: The type of model does not match the type of items.'
 );
 
 const model = defineModel<ModelTChecked>({ required: true });
@@ -97,10 +97,10 @@ const { autofocus } = toRefs(props);
 const focused = ref(false);
 const opening = ref(false);
 const currentValueText = ref<string | null>(null);
-const inputEl = ref<HTMLObjectElement | null>(null);
-const prefixEl = ref<HTMLElement | null>(null);
-const suffixEl = ref<HTMLElement | null>(null);
-const container = ref<HTMLElement | null>(null);
+const inputEl = useTemplateRef('inputEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
+const container = useTemplateRef('container');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :

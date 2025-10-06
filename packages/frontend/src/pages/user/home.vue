@@ -159,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import MkNote from '@/components/MkNote.vue';
@@ -222,9 +222,9 @@ const router = useRouter();
 
 const user = ref(props.user);
 const narrow = ref<null | boolean>(null);
-const rootEl = ref<null | HTMLElement>(null);
-const bannerEl = ref<null | HTMLElement>(null);
-const memoTextareaEl = ref<null | HTMLElement>(null);
+const rootEl = useTemplateRef('rootEl');
+const bannerEl = useTemplateRef('bannerEl');
+const memoTextareaEl = useTemplateRef('memoTextareaEl');
 const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote ?? '');
