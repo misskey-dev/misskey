@@ -743,10 +743,11 @@ export function useUploader(options: {
 	}
 
 	async function dispose() {
+		const opfsRoot = await navigator.storage.getDirectory();
+
 		for (const item of items.value) {
 			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 			if (item.preprocessOpfsFileName != null) {
-				const opfsRoot = await navigator.storage.getDirectory();
 				console.log('Removing OPFS file', item.preprocessOpfsFileName);
 				await opfsRoot.removeEntry(item.preprocessOpfsFileName);
 			}
