@@ -68,11 +68,17 @@ const props = defineProps<{
 }>();
 
 const _widgetDefs = computed(() => {
+	let wd = widgetDefs;
+
 	if (instance.federation === 'none') {
-		return widgetDefs.filter(x => !federationWidgets.includes(x));
-	} else {
-		return widgetDefs;
+		wd = wd.filter(x => !federationWidgets.includes(x));
 	}
+
+	if (!instance.enableServerMachineStats) {
+		wd = wd.filter(x => x !== 'serverMetric');
+	}
+
+	return wd;
 });
 
 const _widgets = computed(() => props.widgets.filter(x => _widgetDefs.value.includes(x.name)));

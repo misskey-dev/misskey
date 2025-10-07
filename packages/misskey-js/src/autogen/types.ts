@@ -5449,6 +5449,7 @@ export type components = {
             maxFileSize: number;
             /** @enum {string} */
             federation: 'all' | 'specified' | 'none';
+            enableServerMachineStats: boolean;
         };
         MetaDetailedOnly: {
             features?: {

@@ -9626,6 +9626,12 @@ export interface Locale extends ILocale {
          * サーバーメトリクス
          */
         "serverMetric": string;
+        "_serverMetric": {
+            /**
+             * このサーバーではメトリクスが利用できません
+             */
+            "notAvailable": string;
+        };
         /**
          * AiScriptコンソール
          */
