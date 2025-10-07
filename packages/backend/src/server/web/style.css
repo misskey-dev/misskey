@@ -68,6 +68,19 @@ html {
 	animation: splashSpinner 0.5s linear infinite;
 }
 
+/* ホーム */
+.xcSej.x3762:has(.ti-home),.xcSej:has(.ti-home) {
+    background-color: rgba(81, 255, 0, 0.05) !important;
+}
+/* フォロワー限定 */
+.xcSej.x3762:has(.ti-lock),.xcSej:has(.ti-lock) {
+    background-color: rgba(255, 0, 255, 0.05) !important;
+}
+/* DM */
+.xcSej.x3762:has(.ti-mail),.xcSej:has(.ti-mail) {
+    background-color: rgba(255, 255, 100, 0.05) !important;
+}
+
 @keyframes splashSpinner {
 	0% {
 		transform: rotate(0deg);
