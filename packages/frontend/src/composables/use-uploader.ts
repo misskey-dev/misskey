@@ -627,7 +627,6 @@ export function useUploader(options: {
 
 			// OPFS Worker初期化
 			let worker: Worker;
-			let useOpfs = false;
 			try {
 				worker = new VideoOpfsWriter();
 				const fileName = `${item.id}.mp4`;
@@ -637,7 +636,6 @@ export function useUploader(options: {
 						const data = ev.data as VideoOpfsResponse;
 						if (data.type === 'init') {
 							if (data.success) {
-								useOpfs = true;
 								item.preprocessOpfsFileName = fileName;
 								resolve(true);
 							} else {
