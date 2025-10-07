@@ -155,6 +155,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix>{{ policies.maxFileSizeMb }}MB</template>
 						<MkInput v-model="policies.maxFileSizeMb" type="number">
 							<template #suffix>MB</template>
+							<template #caption>
+								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._role._options.maxFileSize_caption }}</div>
+							</template>
 						</MkInput>
 					</MkFolder>
 

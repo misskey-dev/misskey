@@ -7870,6 +7870,10 @@ export interface Locale extends ILocale {
              */
             "maxFileSize": string;
             /**
+             * リバースプロキシやCDNなど、前段で別の設定値が存在する場合があります。
+             */
+            "maxFileSize_caption": string;
+            /**
              * ファイルにNSFWを常に付与
              */
             "alwaysMarkNsfw": string;
