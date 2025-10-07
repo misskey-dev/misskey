@@ -2018,6 +2018,7 @@ _role:
     canManageAvatarDecorations: "아바타 꾸미기 관리"
     driveCapacity: "드라이브 용량"
     maxFileSize: "업로드 가능한 최대 파일 크기"
+    maxFileSize_caption: "리버스 프록시나 CDN 등 전단에서 다른 설정값이 존재하는 경우가 있습니다."
     alwaysMarkNsfw: "파일을 항상 NSFW로 지정"
     canUpdateBioMedia: "아바타 및 배너 이미지 변경 허용"
     pinMax: "고정할 수 있는 노트 수"
