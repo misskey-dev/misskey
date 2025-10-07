@@ -2018,6 +2018,7 @@ _role:
     canManageAvatarDecorations: "管理头像挂件"
     driveCapacity: "网盘容量"
     maxFileSize: "可上传的最大文件大小"
+    maxFileSize_caption: "可能在反向代理或 CDN 等前端存在其它设定值。"
     alwaysMarkNsfw: "总是将文件标记为 NSFW"
     canUpdateBioMedia: "可以更新头像和横幅"
     pinMax: "帖子置顶数量限制"
