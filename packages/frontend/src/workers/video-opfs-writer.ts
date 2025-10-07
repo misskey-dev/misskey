@@ -28,7 +28,6 @@ self.onmessage = async (ev) => {
 	} else if (data.type === 'write') {
 		// チャンク書き込み（同期）
 		try {
-			console.log('write chunk', data.type);
 			syncHandle.write(data.chunk.data, { at: data.chunk.position });
 			position += data.chunk.data.byteLength;
 			post({ type: 'write', success: true });
@@ -38,7 +37,6 @@ self.onmessage = async (ev) => {
 	} else if (data.type === 'close') {
 		// 書き込み終了
 		try {
-			console.log('close', data.type);
 			syncHandle.close();
 			syncHandle = null;
 			position = 0;
