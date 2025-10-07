@@ -2018,6 +2018,7 @@ _role:
     canManageAvatarDecorations: "管理頭像裝飾"
     driveCapacity: "雲端硬碟容量"
     maxFileSize: "可上傳的最大檔案大小"
+    maxFileSize_caption: "前端可能還有其他設定值，例如反向代理或 CDN。"
     alwaysMarkNsfw: "總是將檔案標記為NSFW"
     canUpdateBioMedia: "允許更新大頭貼和橫幅"
     pinMax: "置頂貼文的最大數量"
