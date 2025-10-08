@@ -2018,6 +2018,7 @@ _role:
     canManageAvatarDecorations: "Gestiona les decoracions dels avatars "
     driveCapacity: "Capacitat del disc"
     maxFileSize: "Mida màxima de l'arxiu que es pot carregar"
+    maxFileSize_caption: "Pot haver-hi la possibilitat que existeixin altres opcions de configuració de l'etapa anterior, com podria ser el proxy invers i la CDN."
     alwaysMarkNsfw: "Marca sempre els fitxers com a sensibles"
     canUpdateBioMedia: "Permet l'edició d'una icona o un bàner"
     pinMax: "Nombre màxim de notes fixades"
