@@ -172,8 +172,12 @@ export class NoteDraftService {
 		me: MiLocalUser,
 		data: Partial<NoteDraftOptions>,
 	): Promise<void> {
-		if (data.isActuallyScheduled && data.scheduledAt == null) {
-			throw new IdentifiableError('94a89a43-3591-400a-9c17-dd166e71fdfa', 'scheduledAt is required when isActuallyScheduled is true');
+		if (data.isActuallyScheduled) {
+			if (data.scheduledAt == null) {
+				throw new IdentifiableError('94a89a43-3591-400a-9c17-dd166e71fdfa', 'scheduledAt is required when isActuallyScheduled is true');
+			} else if (data.scheduledAt.getTime() < Date.now()) {
+				throw new IdentifiableError('b34d0c1b-996f-4e34-a428-c636d98df457', 'scheduledAt must be in the future');
+			}
 		}
 
 		if (data.pollExpiresAt != null) {
