@@ -12,11 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #caption>{{ i18n.ts._customEmojisManager._local._register.uploadSettingDescription }}</template>
 
 			<div class="_gaps">
-				<MkSelect v-model="selectedFolderId">
+				<MkSelect v-model="selectedFolderId" :items="selectedFolderIdDef">
 					<template #label>{{ i18n.ts.uploadFolder }}</template>
-					<option v-for="folder in uploadFolders" :key="folder.id" :value="folder.id">
-						{{ folder.name }}
-					</option>
 				</MkSelect>
 
 				<MkSwitch v-model="directoryToCategory">
@@ -63,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as Misskey from 'misskey-js';
-import { onMounted, ref, useCssModule } from 'vue';
+import { computed, onMounted, ref, useCssModule } from 'vue';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import type { DroppedFile } from '@/utility/file-drop.js';
@@ -87,6 +84,7 @@ import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 import { prefer } from '@/preferences.js';
 
@@ -229,7 +227,13 @@ function setupGrid(): GridSetting {
 
 const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
-const selectedFolderId = ref(prefer.s.uploadFolder);
+const {
+	model: selectedFolderId,
+	def: selectedFolderIdDef,
+} = useMkSelect({
+	items: computed(() => uploadFolders.value.map(folder => ({ label: folder.name, value: folder.id || '' }))),
+	initialValue: prefer.s.uploadFolder,
+});
 const directoryToCategory = ref<boolean>(false);
 const registerButtonDisabled = ref<boolean>(false);
 const requestLogs = ref<RequestLogItem[]>([]);
@@ -303,8 +307,8 @@ async function onFileSelectClicked() {
 	const driveFiles = await chooseFileFromPcAndUpload({
 		multiple: true,
 		folderId: selectedFolderId.value,
-		// 拡張子は消す
-		nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
+		// // 拡張子は消す
+		// nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
 	});
 
 	gridItems.value.push(...driveFiles.map(fromDriveFile));

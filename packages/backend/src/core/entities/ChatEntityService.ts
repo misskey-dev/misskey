@@ -54,12 +54,13 @@ export class ChatEntityService {
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
 
-		const reactions: { user: Packed<'UserLite'>; reaction: string; }[] = [];
+		// userは削除されている可能性があるのでnull許容
+		const reactions: { user: Packed<'UserLite'> | null; reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
 			const [userId, reaction] = record.split('/');
 			reactions.push({
-				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId),
+				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId).catch(() => null),
 				reaction,
 			});
 		}
@@ -76,7 +77,7 @@ export class ChatEntityService {
 			toRoom: message.toRoomId ? (packedRooms?.get(message.toRoomId) ?? await this.packRoom(message.toRoom ?? message.toRoomId, me)) : undefined,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
-			reactions,
+			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
 		};
 	}
 
@@ -108,6 +109,7 @@ export class ChatEntityService {
 			}
 		}
 
+		// TODO: packedUsersに削除されたユーザーもnullとして含める
 		const [packedUsers, packedFiles, packedRooms] = await Promise.all([
 			this.userEntityService.packMany(users, me)
 				.then(users => new Map(users.map(u => [u.id, u]))),
@@ -183,12 +185,13 @@ export class ChatEntityService {
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
 
-		const reactions: { user: Packed<'UserLite'>; reaction: string; }[] = [];
+		// userは削除されている可能性があるのでnull許容
+		const reactions: { user: Packed<'UserLite'> | null; reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
 			const [userId, reaction] = record.split('/');
 			reactions.push({
-				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId),
+				user: packedUsers?.get(userId) ?? await this.userEntityService.pack(userId).catch(() => null),
 				reaction,
 			});
 		}
@@ -202,7 +205,7 @@ export class ChatEntityService {
 			toRoomId: message.toRoomId!,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
-			reactions,
+			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
 		};
 	}
 

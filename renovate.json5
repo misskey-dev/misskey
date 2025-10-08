@@ -15,6 +15,7 @@
 	dependencyDashboardAutoclose: true,
 	osvVulnerabilityAlerts: true,
 	dependencyDashboardOSVVulnerabilitySummary: 'unresolved',
+	minimumReleaseAge: '7 days',
 	ignoreDeps: [
 		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
 		'@typescript/lib-webworker',
@@ -37,6 +38,7 @@
 				'packages/frontend/**/package.json',
 				'packages/frontend-embed/**/package.json',
 				'packages/frontend-shared/**/package.json',
+				'packages/frontend-builder/**/package.json',
 				'packages/misskey-bubble-game/**/package.json',
 				'packages/misskey-reversi/**/package.json',
 				'packages/sw/**/package.json',

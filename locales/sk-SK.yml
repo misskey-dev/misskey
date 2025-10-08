@@ -915,6 +915,7 @@ postForm: "Napísať poznámku"
 information: "Informácie"
 inMinutes: "min"
 inDays: "dní"
+widgets: "Widgety"
 _chat:
   invitations: "Pozvať"
   noHistory: "Žiadna história"
@@ -1459,3 +1460,13 @@ _watermarkEditor:
   type: "Typ"
   image: "Obrázky"
   advanced: "Rozšírené"
+_imageEffector:
+  _fxProps:
+    scale: "Veľkosť"
+    size: "Veľkosť"
+    color: "Farba"
+    opacity: "Priehľadnosť"
+    lightness: "Zosvetliť"
+_qr:
+  showTabTitle: "Zobraziť"
+  raw: "Text"

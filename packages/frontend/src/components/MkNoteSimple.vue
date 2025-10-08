@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="note" :class="$style.root">
-	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
+	<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
@@ -31,6 +31,7 @@ import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note | null;
@@ -54,9 +55,12 @@ const showContent = ref(false);
 	width: 34px;
 	height: 34px;
 	border-radius: 8px;
-	position: sticky !important;
-	top: calc(16px + var(--MI-stickyTop, 0px));
-	left: 0;
+
+	&.useSticky {
+		position: sticky !important;
+		top: calc(16px + var(--MI-stickyTop, 0px));
+		left: 0;
+	}
 }
 
 .main {

@@ -4,10 +4,11 @@
  */
 
 import * as Misskey from 'misskey-js';
+import type { OptionValue } from '@/components/MkSelect.vue';
 
 export type EnumItem = string | {
 	label: string;
-	value: unknown;
+	value: OptionValue;
 };
 
 type Hidden = boolean | ((v: any) => boolean);
@@ -130,11 +131,11 @@ type GetItemType<Item extends FormItem> =
 	: Item extends RadioFormItem
 		? GetRadioItemType<Item>
 	: Item extends RangeFormItem
-		? NonNullableIfRequired<InferDefault<RangeFormItem, number>, Item>
+		? NonNullableIfRequired<InferDefault<Item, number>, Item>
 	: Item extends EnumFormItem
 		? GetEnumItemType<Item>
 	: Item extends ArrayFormItem
-		? NonNullableIfRequired<InferDefault<ArrayFormItem, unknown[]>, Item>
+		? NonNullableIfRequired<InferDefault<Item, unknown[]>, Item>
 	: Item extends ObjectFormItem
 		? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
 	: Item extends DriveFileFormItem

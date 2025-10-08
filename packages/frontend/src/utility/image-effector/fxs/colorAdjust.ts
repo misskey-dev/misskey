@@ -85,13 +85,14 @@ void main() {
 `;
 
 export const FX_colorAdjust = defineImageEffectorFx({
-	id: 'colorAdjust' as const,
+	id: 'colorAdjust',
 	name: i18n.ts._imageEffector._fxs.colorAdjust,
 	shader,
 	uniforms: ['lightness', 'contrast', 'hue', 'brightness', 'saturation'] as const,
 	params: {
 		lightness: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.lightness,
+			type: 'number',
 			default: 0,
 			min: -1,
 			max: 1,
@@ -99,7 +100,8 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		contrast: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.contrast,
+			type: 'number',
 			default: 1,
 			min: 0,
 			max: 4,
@@ -107,7 +109,8 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		hue: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.hue,
+			type: 'number',
 			default: 0,
 			min: -1,
 			max: 1,
@@ -115,7 +118,8 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 180) + '°',
 		},
 		brightness: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.brightness,
+			type: 'number',
 			default: 1,
 			min: 0,
 			max: 4,
@@ -123,7 +127,8 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 		saturation: {
-			type: 'number' as const,
+			label: i18n.ts._imageEffector._fxProps.saturation,
+			type: 'number',
 			default: 1,
 			min: 0,
 			max: 4,
