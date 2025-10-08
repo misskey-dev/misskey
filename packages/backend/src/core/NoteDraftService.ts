@@ -172,6 +172,10 @@ export class NoteDraftService {
 		me: MiLocalUser,
 		data: Partial<NoteDraftOptions>,
 	): Promise<void> {
+		if (data.isActuallyScheduled && data.scheduledAt == null) {
+			throw new IdentifiableError('94a89a43-3591-400a-9c17-dd166e71fdfa', 'scheduledAt is required when isActuallyScheduled is true');
+		}
+
 		if (data.pollExpiresAt != null) {
 			if (data.pollExpiresAt.getTime() < Date.now()) {
 				throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
