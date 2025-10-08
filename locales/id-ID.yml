@@ -1264,6 +1264,7 @@ postForm: "Buat catatan"
 information: "Informasi"
 inMinutes: "menit"
 inDays: "hari"
+widgets: "Widget"
 _chat:
   invitations: "Undang"
   noHistory: "Tidak ada riwayat"
@@ -2631,6 +2632,10 @@ _imageEffector:
     angle: "Sudut"
     scale: "Ukuran"
     size: "Ukuran"
+    offset: "Posisi"
     color: "Warna"
     opacity: "Opasitas"
     lightness: "Menerangkan"
+_qr:
+  showTabTitle: "Tampilkan"
+  raw: "Teks"

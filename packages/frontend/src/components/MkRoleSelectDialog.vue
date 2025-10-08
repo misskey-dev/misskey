@@ -102,12 +102,12 @@ async function addRole() {
 	const items = roles.value
 		.filter(r => r.isPublic)
 		.filter(r => !selectedRoleIds.value.includes(r.id))
-		.map(r => ({ text: r.name, value: r }));
+		.map(r => ({ label: r.name, value: r.id }));
 
-	const { canceled, result: role } = await os.select({ items });
-	if (canceled || role == null) return;
+	const { canceled, result: roleId } = await os.select({ items });
+	if (canceled || roleId == null) return;
 
-	selectedRoleIds.value.push(role.id);
+	selectedRoleIds.value.push(roleId);
 }
 
 async function removeRole(roleId: string) {

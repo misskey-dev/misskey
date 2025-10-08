@@ -5,11 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="statusbar.type" placeholder="Please select">
+	<MkSelect v-model="statusbar.type" :items="statusbarTypeDef">
 		<template #label>{{ i18n.ts.type }}</template>
-		<option value="rss">RSS</option>
-		<option v-if="instance.federation !== 'none'" value="federation">Federation</option>
-		<option value="userList">User list timeline</option>
 	</MkSelect>
 
 	<MkInput v-model="statusbar.name" manualSave>
@@ -63,9 +60,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
-		<MkSelect v-model="statusbar.props.userListId">
+		<MkSelect v-model="statusbar.props.userListId" :items="userListsDef">
 			<template #label>{{ i18n.ts.userList }}</template>
-			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
@@ -86,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch } from 'vue';
+import { reactive, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -98,13 +94,32 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { StatusbarStore } from '@/preferences/def.js';
 
 const props = defineProps<{
 	_id: string;
 	userLists: Misskey.entities.UserList[] | null;
 }>();
 
-const statusbar = reactive(deepClone(prefer.s.statusbars.find(x => x.id === props._id))!);
+const statusbar = reactive<StatusbarStore>(deepClone(prefer.s.statusbars.find(x => x.id === props._id)!));
+
+const statusbarTypeDef = computed(() => {
+	const items = [
+		{ label: 'RSS', value: 'rss' },
+	] satisfies MkSelectItem[];
+	if (instance.federation !== 'none') {
+		items.push({ label: 'Federation', value: 'federation' });
+	}
+	if (props.userLists != null) {
+		items.push({ label: i18n.ts.userList, value: 'userList' });
+	}
+	return items;
+});
+
+const userListsDef = computed(() => {
+	return (props.userLists ?? []).map(x => ({ label: x.name, value: x.id })) satisfies MkSelectItem[];
+});
 
 watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {

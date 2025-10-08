@@ -151,19 +151,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-else-if="tab === 'announcements'" class="_gaps">
-			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
+			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 
-			<MkSelect v-model="announcementsStatus">
+			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
 				<template #label>{{ i18n.ts.filter }}</template>
-				<option value="active">{{ i18n.ts.active }}</option>
-				<option value="archived">{{ i18n.ts.archived }}</option>
 			</MkSelect>
 
 			<MkPagination :paginator="announcementsPaginator">
 				<template #default="{ items }">
 					<div class="_gaps_s">
 						<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
-							<span style="margin-right: 0.5em;">
+							<span v-if="'icon' in announcement" style="margin-right: 0.5em;">
 								<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
 								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
 								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
@@ -184,8 +182,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'chart'" class="_gaps_m">
 			<div class="cmhjzshm">
 				<div class="selects">
-					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-						<option value="per-user-notes">{{ i18n.ts.notes }}</option>
+					<MkSelect v-model="chartSrc" :items="chartSrcDef" style="margin: 0 10px 0 0; flex: 1;">
 					</MkSelect>
 				</div>
 				<div class="charts">
@@ -229,10 +226,12 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+import type { ChartSrc } from '@/components/MkChart.vue';
 
 const $i = ensureSignin();
 
@@ -246,7 +245,15 @@ const props = withDefaults(defineProps<{
 const result = await _fetch_();
 
 const tab = ref(props.initialTab);
-const chartSrc = ref('per-user-notes');
+const {
+	model: chartSrc,
+	def: chartSrcDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.notes, value: 'per-user-notes' },
+],
+	initialValue: 'per-user-notes',
+});
 const user = ref(result.user);
 const info = ref(result.info);
 const ips = ref(result.ips);
@@ -263,7 +270,16 @@ const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	})),
 }));
 
-const announcementsStatus = ref<'active' | 'archived'>('active');
+const {
+	model: announcementsStatus,
+	def: announcementsStatusDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.active, value: 'active' },
+		{ label: i18n.ts.archived, value: 'archived' },
+	],
+	initialValue: 'active',
+});
 
 const announcementsPaginator = markRaw(new Paginator('admin/announcements/list', {
 	limit: 10,
@@ -427,22 +443,22 @@ async function assignRole() {
 
 	const { canceled, result: roleId } = await os.select({
 		title: i18n.ts._role.chooseRoleToAssign,
-		items: roles.map(r => ({ text: r.name, value: r.id })),
+		items: roles.map(r => ({ label: r.name, value: r.id })),
 	});
-	if (canceled) return;
+	if (canceled || roleId == null) return;
 
 	const { canceled: canceled2, result: period } = await os.select({
 		title: i18n.ts.period + ': ' + roles.find(r => r.id === roleId)!.name,
 		items: [{
-			value: 'indefinitely', text: i18n.ts.indefinitely,
+			value: 'indefinitely', label: i18n.ts.indefinitely,
 		}, {
-			value: 'oneHour', text: i18n.ts.oneHour,
+			value: 'oneHour', label: i18n.ts.oneHour,
 		}, {
-			value: 'oneDay', text: i18n.ts.oneDay,
+			value: 'oneDay', label: i18n.ts.oneDay,
 		}, {
-			value: 'oneWeek', text: i18n.ts.oneWeek,
+			value: 'oneWeek', label: i18n.ts.oneWeek,
 		}, {
-			value: 'oneMonth', text: i18n.ts.oneMonth,
+			value: 'oneMonth', label: i18n.ts.oneMonth,
 		}],
 		default: 'indefinitely',
 	});
