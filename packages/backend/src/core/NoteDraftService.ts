@@ -324,6 +324,7 @@ export class NoteDraftService {
 
 	@bindThis
 	public async clearSchedule(draftId: MiNoteDraft['id']): Promise<void> {
+		// TODO: 線形探索なのをどうにかする
 		const jobs = await this.queueService.postScheduledNoteQueue.getJobs(['delayed', 'waiting', 'active']);
 		for (const job of jobs) {
 			if (job.data.noteDraftId === draftId) {
