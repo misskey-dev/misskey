@@ -170,7 +170,7 @@
 		"sanitize-html": "2.17.0",
 		"secure-json-parse": "4.0.0",
 		"semver": "7.7.2",
-		"sharp": "0.34.4",
+		"sharp": "0.33.5",
 		"slacc": "0.0.10",
 		"strict-event-emitter-types": "2.0.0",
 		"stringz": "2.1.0",
