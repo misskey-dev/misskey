@@ -1009,7 +1009,7 @@ importers:
         version: 8.44.1(eslint@9.36.0)(typescript@5.9.2)
       '@vitest/coverage-v8':
         specifier: 3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       '@vue/compiler-core':
         specifier: 3.5.22
         version: 3.5.22
@@ -1023,8 +1023,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       cypress:
-        specifier: 14.5.4
-        version: 14.5.4
+        specifier: 15.3.0
+        version: 15.3.0
       eslint-plugin-import:
         specifier: 2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.44.1(eslint@9.36.0)(typescript@5.9.2))(eslint@9.36.0)
@@ -1035,8 +1035,8 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
       happy-dom:
-        specifier: 18.0.1
-        version: 18.0.1
+        specifier: 19.0.2
+        version: 19.0.2
       intersection-observer:
         specifier: 0.12.2
         version: 0.12.2
@@ -1084,10 +1084,10 @@ importers:
         version: 1.0.3
       vitest:
         specifier: 3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
       vitest-fetch-mock:
         specifier: 0.4.5
-        version: 0.4.5(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
+        version: 0.4.5(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       vue-component-type-helpers:
         specifier: 3.0.8
         version: 3.0.8
@@ -1201,8 +1201,8 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
       uuid:
-        specifier: 11.1.0
-        version: 11.1.0
+        specifier: 13.0.0
+        version: 13.0.0
       vite:
         specifier: 7.1.7
         version: 7.1.7(@types/node@22.18.6)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
@@ -1245,7 +1245,7 @@ importers:
         version: 8.44.1(eslint@9.36.0)(typescript@5.9.2)
       '@vitest/coverage-v8':
         specifier: 3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       '@vue/runtime-core':
         specifier: 3.5.22
         version: 3.5.22
@@ -1265,8 +1265,8 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
       happy-dom:
-        specifier: 18.0.1
-        version: 18.0.1
+        specifier: 19.0.2
+        version: 19.0.2
       intersection-observer:
         specifier: 0.12.2
         version: 0.12.2
@@ -1438,7 +1438,7 @@ importers:
         version: 8.44.1(eslint@9.36.0)(typescript@5.9.2)
       '@vitest/coverage-v8':
         specifier: 3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       esbuild:
         specifier: 0.25.10
         version: 0.25.10
@@ -1462,10 +1462,10 @@ importers:
         version: 5.9.2
       vitest:
         specifier: 3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
       vitest-websocket-mock:
         specifier: 0.5.0
-        version: 0.5.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
+        version: 0.5.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
 
   packages/misskey-js/generator:
     devDependencies:
@@ -5961,6 +5961,11 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
+  cypress@15.3.0:
+    resolution: {integrity: sha512-g9rDhoK9y8wW4Vx3Ppr8dtfvThXxPL3mJsV5e98fG+6EerrhXKmeRT2sL86cvNRtEZouXJfsuVL1lqiMuGNGcg==}
+    engines: {node: ^20.1.0 || ^22.0.0 || >=24.0.0}
+    hasBin: true
+
   dashdash@1.14.1:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
     engines: {node: '>=0.10'}
@@ -6980,8 +6985,8 @@ packages:
     resolution: {integrity: sha512-n0QrmT9lD81rbpKsyhnlz3DgnMZlaOkJPpgi746doA+HvaMC79bdWkwjrNnGJRvDrWTI8iOcJiVTJ5CdT/AZRw==}
     engines: {node: '>=18.0.0'}
 
-  happy-dom@18.0.1:
-    resolution: {integrity: sha512-qn+rKOW7KWpVTtgIUi6RVmTBZJSe2k0Db0vh1f7CWrWclkkc7/Q+FrOfkZIb2eiErLyqu5AXEzE7XthO9JVxRA==}
+  happy-dom@19.0.2:
+    resolution: {integrity: sha512-831CLbgDyjRbd2lApHZFsBDe56onuFcjsCBPodzWpzedTpeDr8CGZjs7iEIdNW1DVwSFRecfwzLpVyGBPamwGA==}
     engines: {node: '>=20.0.0'}
 
   hard-rejection@2.1.0:
@@ -10167,6 +10172,12 @@ packages:
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
 
+  systeminformation@5.27.7:
+    resolution: {integrity: sha512-saaqOoVEEFaux4v0K8Q7caiauRwjXC4XbD2eH60dxHXbpKxQ8kH9Rf7Jh+nryKpOUSEFxtCdBlSUx0/lO6rwRg==}
+    engines: {node: '>=8.0.0'}
+    os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
+    hasBin: true
+
   tar-fs@2.1.2:
     resolution: {integrity: sha512-EsaAXwxmx8UB7FRKqeozqEPop69DXcmYwTQwXvyAPF352HJsPdkVhvTaDPYqfNgruveJIJy3TA2l+2zj8LJIJA==}
 
@@ -10639,6 +10650,10 @@ packages:
 
   uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
+
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
   uuid@8.3.2:
@@ -15416,7 +15431,7 @@ snapshots:
       vite: 7.1.7(@types/node@22.18.6)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
       vue: 3.5.22(typescript@5.9.2)
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))':
+  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -15431,7 +15446,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
     transitivePeerDependencies:
       - supports-color
 
@@ -16800,6 +16815,52 @@ snapshots:
       untildify: 4.0.0
       yauzl: 2.10.0
 
+  cypress@15.3.0:
+    dependencies:
+      '@cypress/request': 3.0.9
+      '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
+      '@types/sinonjs__fake-timers': 8.1.1
+      '@types/sizzle': 2.3.3
+      '@types/tmp': 0.2.6
+      arch: 2.2.0
+      blob-util: 2.0.2
+      bluebird: 3.7.2
+      buffer: 5.7.1
+      cachedir: 2.3.0
+      chalk: 4.1.2
+      ci-info: 4.1.0
+      cli-cursor: 3.1.0
+      cli-table3: 0.6.1
+      commander: 6.2.1
+      common-tags: 1.8.2
+      dayjs: 1.11.13
+      debug: 4.4.3(supports-color@8.1.1)
+      enquirer: 2.3.6
+      eventemitter2: 6.4.7
+      execa: 4.1.0
+      executable: 4.1.1
+      extract-zip: 2.0.1(supports-color@8.1.1)
+      figures: 3.2.0
+      fs-extra: 9.1.0
+      hasha: 5.2.2
+      is-installed-globally: 0.4.0
+      listr2: 3.14.0(enquirer@2.3.6)
+      lodash: 4.17.21
+      log-symbols: 4.1.0
+      minimist: 1.2.8
+      ospath: 1.2.2
+      pretty-bytes: 5.6.0
+      process: 0.11.10
+      proxy-from-env: 1.0.0
+      request-progress: 3.0.0
+      semver: 7.7.2
+      supports-color: 8.1.1
+      systeminformation: 5.27.7
+      tmp: 0.2.5
+      tree-kill: 1.2.2
+      untildify: 4.0.0
+      yauzl: 2.10.0
+
   dashdash@1.14.1:
     dependencies:
       assert-plus: 1.0.0
@@ -18082,7 +18143,7 @@ snapshots:
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
 
-  happy-dom@18.0.1:
+  happy-dom@19.0.2:
     dependencies:
       '@types/node': 20.19.9
       '@types/whatwg-mimetype': 3.0.2
@@ -21787,6 +21848,8 @@ snapshots:
 
   systeminformation@5.27.10: {}
 
+  systeminformation@5.27.7: {}
+
   tar-fs@2.1.2:
     dependencies:
       chownr: 1.1.4
@@ -22231,6 +22294,8 @@ snapshots:
 
   uuid@11.1.0: {}
 
+  uuid@13.0.0: {}
+
   uuid@8.3.2: {}
 
   uuid@9.0.1: {}
@@ -22313,17 +22378,17 @@ snapshots:
       terser: 5.44.0
       tsx: 4.20.6
 
-  vitest-fetch-mock@0.4.5(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)):
+  vitest-fetch-mock@0.4.5(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)):
     dependencies:
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
 
-  vitest-websocket-mock@0.5.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)):
+  vitest-websocket-mock@0.5.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)):
     dependencies:
       '@vitest/utils': 3.2.4
       mock-socket: 9.3.1
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
 
-  vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@18.0.1)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.6)(happy-dom@19.0.2)(jsdom@26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5))(msw@2.11.3(@types/node@22.18.6)(typescript@5.9.2))(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -22351,7 +22416,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.18.6
-      happy-dom: 18.0.1
+      happy-dom: 19.0.2
       jsdom: 26.1.0(bufferutil@4.0.9)(canvas@3.1.0)(utf-8-validate@6.0.5)
     transitivePeerDependencies:
       - jiti
