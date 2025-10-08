@@ -8,11 +8,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<MkStickyContainer>
 			<template #header>
-				<MkTab v-model="tab" :class="$style.tab">
-					<option value="featured">{{ i18n.ts.featured }}</option>
-					<option value="notes">{{ i18n.ts.notes }}</option>
-					<option value="all">{{ i18n.ts.all }}</option>
-					<option value="files">{{ i18n.ts.withFiles }}</option>
+				<MkTab
+					v-model="tab"
+					:tabs="[
+						{ key: 'featured', label: i18n.ts.featured },
+						{ key: 'notes', label: i18n.ts.notes },
+						{ key: 'all', label: i18n.ts.all },
+						{ key: 'files', label: i18n.ts.withFiles },
+					]"
+					:class="$style.tab"
+				>
 				</MkTab>
 			</template>
 			<MkNotesTimeline v-if="tab === 'featured'" :noGap="true" :paginator="featuredPaginator" :class="$style.tl"/>
@@ -34,7 +39,7 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
-const tab = ref<string>('all');
+const tab = ref<'featured' | 'notes' | 'all' | 'files'>('all');
 
 const featuredPaginator = markRaw(new Paginator('users/featured-notes', {
 	limit: 10,

@@ -58,14 +58,15 @@ watch(soundSetting, v => {
 
 async function setChannel() {
 	const channels = await favoritedChannelsCache.fetch();
-	const { canceled, result: chosenChannel } = await os.select({
+	const { canceled, result: chosenChannelId } = await os.select({
 		title: i18n.ts.selectChannel,
 		items: channels.map(x => ({
-			value: x, text: x.name,
+			value: x.id, label: x.name,
 		})),
 		default: props.column.channelId,
 	});
-	if (canceled || chosenChannel == null) return;
+	if (canceled || chosenChannelId == null) return;
+	const chosenChannel = channels.find(x => x.id === chosenChannelId)!;
 	updateColumn(props.column.id, {
 		channelId: chosenChannel.id,
 		timelineNameCache: chosenChannel.name,

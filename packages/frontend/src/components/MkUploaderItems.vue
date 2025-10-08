@@ -10,7 +10,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:key="item.id"
 		v-panel
 		:class="[$style.item, { [$style.itemWaiting]: item.preprocessing, [$style.itemCompleted]: item.uploaded, [$style.itemFailed]: item.uploadFailed }]"
-		:style="{ '--p': item.progress != null ? `${item.progress.value / item.progress.max * 100}%` : '0%' }"
+		:style="{
+			'--p': item.progress != null ? `${item.progress.value / item.progress.max * 100}%` : '0%',
+			'--pp': item.preprocessProgress != null ? `${item.preprocessProgress * 100}%` : '100%',
+		}"
 		@contextmenu.prevent.stop="onContextmenu(item, $event)"
 	>
 		<div :class="$style.itemInner">
@@ -19,11 +22,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ item.thumbnail })` }" @click="onThumbnailClick(item, $event)"></div>
 			<div :class="$style.itemBody">
-				<div><i v-if="item.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i><MkCondensedLine :minScale="2 / 3">{{ item.name }}</MkCondensedLine></div>
+				<div>
+					<i v-if="item.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i>
+					<MkCondensedLine :minScale="2 / 3">{{ item.name }}</MkCondensedLine>
+				</div>
 				<div :class="$style.itemInfo">
 					<span>{{ item.file.type }}</span>
 					<span v-if="item.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(item.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - item.compressedSize / item.file.size) * 100) }) }})</span>
 					<span v-else>{{ bytes(item.file.size) }}</span>
+					<span v-if="item.preprocessing">{{ i18n.ts.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
 				</div>
 				<div>
 				</div>
@@ -97,7 +104,7 @@ function onThumbnailClick(item: UploaderItem, ev: MouseEvent) {
 			position: absolute;
 			top: 0;
 			left: 0;
-			width: 100%;
+			width: var(--pp, 100%);
 			height: 100%;
 			background: linear-gradient(-45deg, transparent 25%, var(--c) 25%,var(--c) 50%, transparent 50%, transparent 75%, var(--c) 75%, var(--c));
 			background-size: 25px 25px;

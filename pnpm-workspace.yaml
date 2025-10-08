@@ -30,3 +30,4 @@ onlyBuiltDependencies:
   - v-code-diff
   - vue-demi
 ignorePatchFailures: false
+minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack

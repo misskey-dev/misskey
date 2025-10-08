@@ -850,6 +850,7 @@ postForm: "নোট লিখুন"
 information: "আপনার সম্পর্কে"
 inMinutes: "মিনিট"
 inDays: "দিন"
+widgets: "উইজেটগুলি"
 _chat:
   invitations: "আমন্ত্রণ"
   noHistory: "কোনো ইতিহাস নেই"
@@ -1364,3 +1365,6 @@ _imageEffector:
     color: "রং"
     opacity: "অস্বচ্ছতা"
     lightness: "উজ্জ্বল করুন"
+_qr:
+  showTabTitle: "প্রদর্শন"
+  raw: "লেখা"
