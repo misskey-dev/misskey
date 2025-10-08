@@ -1,3 +1,14 @@
+## Unreleased
+
+### General
+-
+
+### Client
+- Fix: aliasesの区切り文字が一致していないのを修正 #15614
+
+### Server
+-
+
 ## 2025.10.0
 
 ### NOTE
