@@ -5,10 +5,11 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import * as Redis from 'ioredis';
 import type { FollowingsRepository, InstancesRepository, MiMeta } from '@/models/_.js';
-import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/federation.js';
@@ -26,16 +27,18 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
-		private appLockService: AppLockService,
 		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
