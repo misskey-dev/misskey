@@ -17,7 +17,7 @@ export function removeDomain(url: string | null): string | null {
 
 	if (url && url.startsWith(config.url)) {
 		return url.slice(config.url.length) || '/';
-	} 
+	}
 	return url;
 }
 
@@ -29,11 +29,13 @@ export type PartialMinote = {
 	files?: {
 		url: string | null;
 		thumbnailUrl: string | null;
-	}[]
+	}[];
 };
 
 // If the domain is not /, rewrite to /
-export async function rewriteMiNote(note: PartialMinote): Promise<PartialMinote> {
+export async function rewriteMiNote(
+	note: PartialMinote,
+): Promise<PartialMinote> {
 	if (note.user) {
 		note.user = await rewriteUser(note.user);
 	}
@@ -52,15 +54,19 @@ export async function rewriteMiNote(note: PartialMinote): Promise<PartialMinote>
 	return note as unknown as PartialMinote;
 }
 
-export async function rewriteUser(user: { avatarUrl: string | null } | null): Promise<{ avatarUrl: string | null } | null> {
+export async function rewriteUser(
+	user: { avatarUrl: string | null } | null,
+): Promise<{ avatarUrl: string | null } | null> {
 	if (user && user.avatarUrl) {
 		user.avatarUrl = removeDomain(user.avatarUrl);
 	}
 	return user;
 }
 
-export async function rewriteMiNotes(notes: PartialMinote[]): Promise<PartialMinote[]> {
-	return Promise.all(notes.map(n => rewriteMiNote(n)));
+export async function rewriteMiNotes(
+	notes: PartialMinote[],
+): Promise<PartialMinote[]> {
+	return Promise.all(notes.map((n) => rewriteMiNote(n)));
 }
 
 // Preprocess a WebSocket message, rewriting URLs as necessary
@@ -73,7 +79,7 @@ export async function PreprocessWebsocketMessage(data: any): Promise<any> {
 			data.message = await rewriteMiNote(data.message);
 		}
 	}
-	
+
 	if (data.channel.startsWith('mainStream:')) {
 		if (data.message) {
 			data.message = await processMainStreamMessage(data.message);
@@ -87,25 +93,22 @@ export async function PreprocessWebsocketMessage(data: any): Promise<any> {
 	}
 
 	return data;
-};
+}
 
 async function processMainStreamMessage(message: any): Promise<any> {
-	if (message.type === 'follow') {
-		if (message.avatarUrl) message.avatarUrl = removeDomain(message.avatarUrl);
-	}
+	if (message.avatarUrl) message.avatarUrl = removeDomain(message.avatarUrl);
 
-	if (message.type === 'notification') {
-		if (message.body) {
-			if (message.body.note) message.body.note = await rewriteMiNote(message.body.note);
-			if (message.body.user) message.body.user = await rewriteUser(message.body.user);
-		}
+	if (message.body) {
+		if (message.body.note) message.body.note = await rewriteMiNote(message.body.note);
+		if (message.body.renote) message.body.renote = await rewriteMiNote(message.body.renote);
+		if (message.body.user) message.body.user = await rewriteUser(message.body.user);
 	}
 
 	return message;
 }
 
 async function processChatMessage(message: any): Promise<any> {
-	if (message.type === 'message') {
+	if (message.body) {
 		if (message.body.file) message.body.file = await processFileObject(message.body.file);
 		if (message.body.fromUser) message.body.fromUser = await rewriteUser(message.body.fromUser);
 		if (message.body.toUser) message.body.toUser = await rewriteUser(message.body.toUser);
