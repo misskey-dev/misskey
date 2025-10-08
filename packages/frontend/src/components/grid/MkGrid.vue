@@ -425,7 +425,7 @@ function onKeyDown(ev: KeyboardEvent) {
 				'left': () => {
 					selectionCell({ col: selectedCellAddress.col - 1, row: selectedCellAddress.row });
 				},
-			}, [""])(ev);
+			}, [])(ev);
 
 			break;
 		}
