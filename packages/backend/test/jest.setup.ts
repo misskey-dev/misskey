@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { protectProperties } from 'jest-util';
+import { initTestDb, sendEnvResetRequest } from './utils.js';
 
-protectProperties(ReadableStreamDefaultReader);
-protectProperties(ReadableStreamBYOBReader);
-protectProperties(WritableStreamDefaultWriter);
+beforeAll(async () => {
+		await initTestDb(false);
+		await sendEnvResetRequest();
+});
+
