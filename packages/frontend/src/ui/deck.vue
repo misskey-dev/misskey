@@ -129,11 +129,19 @@ const columnComponents = {
 	chat: XChatColumn,
 };
 
+// ダブルクリック時には2回クリックされた扱いになるので、2回目抑止するためのタイマー
+// これによりウィンドウが2枚開かれることを防ぐ
+let routerNavTimer: number | null = null;
+
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
-	const noMainColumn = !columns.value.some(x => x.type === 'main');
+	if (routerNavTimer != null) return true;
+	const noMainColumn = !columns.some(x => x.type === 'main');
 	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
+		routerNavTimer = window.setTimeout(() => {
+			routerNavTimer = null;
+		}, 300);
 		return true;
 	}
 	return false;
