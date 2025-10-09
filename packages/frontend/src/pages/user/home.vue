@@ -382,6 +382,7 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 						left: 0;
 						width: 100%;
 						height: 300%;
+						background-size: 100% auto;
 						background-color: #4c5e6d;
 						background-repeat: repeat-y;
 						background-position: center;
