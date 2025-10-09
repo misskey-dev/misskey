@@ -1222,6 +1222,7 @@ migrateOldSettings: "Di chuyển cài đặt cũ"
 migrateOldSettings_description: "Thông thường, quá trình này diễn ra tự động, nhưng nếu vì lý do nào đó mà quá trình di chuyển không thành công, bạn có thể kích hoạt thủ công quy trình di chuyển, quá trình này sẽ ghi đè lên thông tin cấu hình hiện tại của bạn."
 inMinutes: "phút"
 inDays: "ngày"
+widgets: "Tiện ích"
 _chat:
   invitations: "Mời"
   noHistory: "Không có dữ liệu"

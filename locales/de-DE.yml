@@ -1370,6 +1370,7 @@ defaultImageCompressionLevel: "Standard-Bildkomprimierungsstufe"
 defaultImageCompressionLevel_description: "Ein niedrigerer Wert erhält die Bildqualität, erhöht aber die Dateigröße. <br>Höhere Werte reduzieren die Dateigröße, verringern aber die Bildqualität."
 inMinutes: "Minute(n)"
 inDays: "Tag(en)"
+widgets: "Widgets"
 _order:
   newest: "Neueste zuerst"
   oldest: "Älteste zuerst"

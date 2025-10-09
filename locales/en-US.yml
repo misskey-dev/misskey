@@ -1393,6 +1393,7 @@ scheduleToPostOnX: "Scheduled to note on {x}"
 scheduledToPostOnX: "Note is scheduled for {x}"
 schedule: "Schedule"
 scheduled: "Scheduled"
+widgets: "Widgets"
 _compression:
   _quality:
     high: "High quality"

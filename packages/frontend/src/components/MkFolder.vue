@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
 import { getBgColor } from '@/utility/get-bg-color.js';
 import { pageFolderTeleportCount, popup } from '@/os.js';
@@ -118,6 +118,11 @@ const props = withDefaults(defineProps<{
 	spacerMax: 22,
 	canPage: true,
 });
+
+const emit = defineEmits<{
+	(ev: 'opened'): void;
+	(ev: 'closed'): void;
+}>();
 
 const rootEl = useTemplateRef('rootEl');
 const asPage = props.canPage && deviceKind === 'smartphone' && prefer.s['experimental.enableFolderPageView'];
@@ -164,7 +169,7 @@ function afterLeave(el: Element) {
 let pageId = pageFolderTeleportCount.value;
 pageFolderTeleportCount.value += 1000;
 
-async function toggle() {
+async function toggle(ev: MouseEvent) {
 	if (asPage && !opened.value) {
 		pageId++;
 		const { dispose } = await popup(MkFolderPage, {
@@ -192,6 +197,14 @@ onMounted(() => {
 	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
 	bgSame.value = parentBg === myBg;
 });
+
+watch(opened, (isOpened) => {
+	if (isOpened) {
+		emit('opened');
+	} else {
+		emit('closed');
+	}
+}, { flush: 'post' });
 </script>
 
 <style lang="scss" module>

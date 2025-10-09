@@ -1337,6 +1337,7 @@ safeModeEnabled: "セーフモードがオンになってるで"
 pluginsAreDisabledBecauseSafeMode: "セーフモードがオンやから、プラグインは全部無効化されてるで。"
 customCssIsDisabledBecauseSafeMode: "セーフモードがオンやから、カスタムCSSは適用されてへんで。"
 themeIsDefaultBecauseSafeMode: "セーフモードがオンの間はデフォルトのテーマを使うで。セーフモードをオフにれば元に戻るで。"
+widgets: "ウィジェット"
 _chat:
   noMessagesYet: "まだメッセージはあらへんで"
   individualChat_description: "特定のユーザーと一対一でチャットができるで。"

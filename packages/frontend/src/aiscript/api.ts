@@ -66,7 +66,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			});
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
-		'Mk:toast': values.FN_NATIVE(async ([text]) => {
+		'Mk:toast': values.FN_NATIVE(([text]) => {
 			utils.assertString(text);
 			os.toast(text.value);
 			return values.NULL;

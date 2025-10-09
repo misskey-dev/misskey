@@ -1109,6 +1109,7 @@ postForm: "Formulář pro odeslání"
 information: "Informace"
 inMinutes: "Minut"
 inDays: "Dnů"
+widgets: "Widgety"
 _chat:
   invitations: "Pozvat"
   noHistory: "Žádná historie"

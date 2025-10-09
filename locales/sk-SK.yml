@@ -915,6 +915,7 @@ postForm: "Napísať poznámku"
 information: "Informácie"
 inMinutes: "min"
 inDays: "dní"
+widgets: "Widgety"
 _chat:
   invitations: "Pozvať"
   noHistory: "Žiadna história"
