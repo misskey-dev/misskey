@@ -1355,6 +1355,10 @@ export interface Locale extends ILocale {
      */
     "selectFolder": string;
     /**
+     * フォルダーの選択を解除
+     */
+    "unselectFolder": string;
+    /**
      * フォルダーを選択
      */
     "selectFolders": string;
@@ -1402,6 +1406,10 @@ export interface Locale extends ILocale {
      * フォルダーは空です
      */
     "emptyFolder": string;
+    /**
+     * ここにファイルをドロップしてアップロード
+     */
+    "dropHereToUpload": string;
     /**
      * 削除できません
      */
@@ -5287,6 +5295,10 @@ export interface Locale extends ILocale {
      */
     "draft": string;
     /**
+     * 下書きと予約投稿
+     */
+    "draftsAndScheduledNotes": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -5553,6 +5565,38 @@ export interface Locale extends ILocale {
      * ユーザー指定ノートを作成
      */
     "createUserSpecifiedNote": string;
+    /**
+     * 投稿を予約
+     */
+    "schedulePost": string;
+    /**
+     * {x}に投稿を予約します
+     */
+    "scheduleToPostOnX": ParameterizedString<"x">;
+    /**
+     * {x}に投稿が予約されています
+     */
+    "scheduledToPostOnX": ParameterizedString<"x">;
+    /**
+     * 予約
+     */
+    "schedule": string;
+    /**
+     * 予約
+     */
+    "scheduled": string;
+    /**
+     * ウィジェット
+     */
+    "widgets": string;
+    /**
+     * デバイス情報
+     */
+    "deviceInfo": string;
+    /**
+     * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
+     */
+    "deviceInfoDescription": string;
     "_compression": {
         "_quality": {
             /**
@@ -7826,6 +7870,10 @@ export interface Locale extends ILocale {
              */
             "maxFileSize": string;
             /**
+             * リバースプロキシやCDNなど、前段で別の設定値が存在する場合があります。
+             */
+            "maxFileSize_caption": string;
+            /**
              * ファイルにNSFWを常に付与
              */
             "alwaysMarkNsfw": string;
@@ -7933,6 +7981,10 @@ export interface Locale extends ILocale {
              * サーバーサイドのノートの下書きの作成可能数
              */
             "noteDraftLimit": string;
+            /**
+             * 予約投稿の同時作成可能数
+             */
+            "scheduledNoteLimit": string;
             /**
              * ウォーターマーク機能の使用可否
              */
@@ -9428,6 +9480,10 @@ export interface Locale extends ILocale {
          * アクセスを許可すると、自動で以下のURLに遷移します
          */
         "byClickingYouWillBeRedirectedToThisUrl": string;
+        /**
+         * このアプリケーションは既にアクセスが許可されています。
+         */
+        "alreadyAuthorized": string;
     };
     "_antennaSources": {
         /**
@@ -10329,6 +10385,14 @@ export interface Locale extends ILocale {
          */
         "pollEnded": string;
         /**
+         * 予約ノートが投稿されました
+         */
+        "scheduledNotePosted": string;
+        /**
+         * 予約ノートの投稿に失敗しました
+         */
+        "scheduledNotePostFailed": string;
+        /**
          * 新しい投稿
          */
         "newNote": string;
@@ -10441,6 +10505,14 @@ export interface Locale extends ILocale {
              * アンケートが終了
              */
             "pollEnded": string;
+            /**
+             * 予約投稿が成功した
+             */
+            "scheduledNotePosted": string;
+            /**
+             * 予約投稿が失敗した
+             */
+            "scheduledNotePostFailed": string;
             /**
              * フォロー申請を受け取った
              */
@@ -12393,6 +12465,10 @@ export interface Locale extends ILocale {
              */
             "blur": string;
             /**
+             * モザイク
+             */
+            "pixelate": string;
+            /**
              * 色調補正
              */
             "colorAdjust": string;
@@ -12641,6 +12717,18 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+        /**
+         * 投稿予約
+         */
+        "schedule": string;
+        /**
+         * 予約投稿一覧
+         */
+        "listScheduledNotes": string;
+        /**
+         * 予約解除
+         */
+        "cancelSchedule": string;
     };
     /**
      * 二次元コード

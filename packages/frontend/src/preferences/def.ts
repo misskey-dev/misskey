@@ -511,9 +511,12 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	'experimental.enableFolderPageView': {
-		default: true,
+		default: false,
 	},
 	'experimental.enableHapticFeedback': {
+		default: false,
+	},
+	'experimental.enableWebTranslatorApi': {
 		default: false,
 	},
 });

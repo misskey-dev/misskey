@@ -155,6 +155,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix>{{ policies.maxFileSizeMb }}MB</template>
 						<MkInput v-model="policies.maxFileSizeMb" type="number">
 							<template #suffix>MB</template>
+							<template #caption>
+								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._role._options.maxFileSize_caption }}</div>
+							</template>
 						</MkInput>
 					</MkFolder>
 
@@ -301,6 +304,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._role._options.noteDraftLimit }}</template>
 						<template #suffix>{{ policies.noteDraftLimit }}</template>
 						<MkInput v-model="policies.noteDraftLimit" type="number" :min="0">
+						</MkInput>
+					</MkFolder>
+
+					<MkFolder v-if="matchQuery([i18n.ts._role._options.scheduledNoteLimit, 'scheduledNoteLimit'])">
+						<template #label>{{ i18n.ts._role._options.scheduledNoteLimit }}</template>
+						<template #suffix>{{ policies.scheduledNoteLimit }}</template>
+						<MkInput v-model="policies.scheduledNoteLimit" type="number" :min="0">
 						</MkInput>
 					</MkFolder>
 

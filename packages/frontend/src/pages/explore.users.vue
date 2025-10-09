@@ -5,9 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 1200px;">
-	<MkTab v-if="instance.federation !== 'none'" v-model="origin" style="margin-bottom: var(--MI-margin);">
-		<option value="local">{{ i18n.ts.local }}</option>
-		<option value="remote">{{ i18n.ts.remote }}</option>
+	<MkTab
+		v-if="instance.federation !== 'none'"
+		v-model="origin"
+		:tabs="[
+			{ key: 'local', label: i18n.ts.local },
+			{ key: 'remote', label: i18n.ts.remote },
+		]"
+		style="margin-bottom: var(--MI-margin);"
+	>
 	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
@@ -77,7 +83,7 @@ const props = defineProps<{
 	tag?: string;
 }>();
 
-const origin = ref('local');
+const origin = ref<'local' | 'remote'>('local');
 const tagsLocal = ref<Misskey.entities.Hashtag[]>([]);
 const tagsRemote = ref<Misskey.entities.Hashtag[]>([]);
 

@@ -1222,6 +1222,7 @@ migrateOldSettings: "Di chuyển cài đặt cũ"
 migrateOldSettings_description: "Thông thường, quá trình này diễn ra tự động, nhưng nếu vì lý do nào đó mà quá trình di chuyển không thành công, bạn có thể kích hoạt thủ công quy trình di chuyển, quá trình này sẽ ghi đè lên thông tin cấu hình hiện tại của bạn."
 inMinutes: "phút"
 inDays: "ngày"
+widgets: "Tiện ích"
 _chat:
   invitations: "Mời"
   noHistory: "Không có dữ liệu"
@@ -1816,7 +1817,6 @@ _widgets:
   _userList:
     chooseList: "Chọn danh sách"
   clicker: "clicker"
-  chat: "Trò chuyện"
 _cw:
   hide: "Ẩn"
   show: "Tải thêm"
@@ -2042,7 +2042,6 @@ _deck:
     channel: "Kênh"
     mentions: "Lượt nhắc"
     direct: "Nhắn riêng"
-    chat: "Trò chuyện"
 _dialog:
   charactersExceeded: "Bạn nhắn quá giới hạn ký tự!! Hiện nay {current} / giới hạn {max}"
   charactersBelow: "Bạn nhắn quá ít tối thiểu ký tự!! Hiện nay {current} / Tối thiểu {min}"
@@ -2095,6 +2094,10 @@ _imageEffector:
     angle: "Góc"
     scale: "Kích thước"
     size: "Kích thước"
+    offset: "Vị trí"
     color: "Màu sắc"
     opacity: "Độ trong suốt"
     lightness: "Độ sáng"
+_qr:
+  showTabTitle: "Hiển thị"
+  raw: "Văn bản"

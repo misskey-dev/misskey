@@ -20,6 +20,7 @@ import { FX_zoomLines } from './fxs/zoomLines.js';
 import { FX_blockNoise } from './fxs/blockNoise.js';
 import { FX_fill } from './fxs/fill.js';
 import { FX_blur } from './fxs/blur.js';
+import { FX_pixelate } from './fxs/pixelate.js';
 import type { ImageEffectorFx } from './ImageEffector.js';
 
 export const FXS = [
@@ -40,4 +41,5 @@ export const FXS = [
 	FX_blockNoise,
 	FX_fill,
 	FX_blur,
+	FX_pixelate,
 ] as const satisfies ImageEffectorFx<string, any>[];
