@@ -17,8 +17,52 @@ interface SatisfiesExpression extends estree.BaseExpression {
 	reference: estree.Identifier;
 }
 
+interface ImportDeclaration extends estree.ImportDeclaration {
+	kind?: 'type';
+}
+
 const generator = {
 	...GENERATOR,
+	ImportDeclaration(node: ImportDeclaration, state: State) {
+		state.write('import ');
+		if (node.kind === 'type') state.write('type ');
+		const { specifiers } = node;
+		if (specifiers.length > 0) {
+			let i = 0;
+			for (; i < specifiers.length; i++) {
+				if (i > 0) {
+					state.write(', ');
+				}
+				const specifier = specifiers[i]!;
+				if (specifier.type === 'ImportDefaultSpecifier') {
+					state.write(specifier.local.name, specifier);
+				} else if (specifier.type === 'ImportNamespaceSpecifier') {
+					state.write(`* as ${specifier.local.name}`, specifier);
+				} else {
+					break;
+				}
+			}
+			if (i < specifiers.length) {
+				state.write('{');
+				for (; i < specifiers.length; i++) {
+					const specifier = specifiers[i]! as estree.ImportSpecifier;
+					const { name } = specifier.imported as estree.Identifier;
+					state.write(name, specifier);
+					if (name !== specifier.local.name) {
+						state.write(` as ${specifier.local.name}`);
+					}
+					if (i < specifiers.length - 1) {
+						state.write(', ');
+					}
+				}
+				state.write('}');
+			}
+			state.write(' from ');
+		}
+		this.Literal(node.source, state);
+
+		state.write(';');
+	},
 	SatisfiesExpression(node: SatisfiesExpression, state: State) {
 		switch (node.expression.type) {
 			case 'ArrowFunctionExpression': {
@@ -62,7 +106,7 @@ type ToKebab<T extends readonly string[]> = T extends readonly [
 	: T extends readonly [
 			infer XH extends string,
 			...infer XR extends readonly string[]
-	  ]
+		]
 	? `${XH}${XR extends readonly string[] ? `-${ToKebab<XR>}` : ''}`
 	: '';
 
@@ -132,7 +176,7 @@ function toStories(component: string): Promise<string> {
 								kind={'init' as const}
 								shorthand
 							/> as estree.Property,
-					  ]
+						]
 					: []),
 			]}
 		/> as estree.ObjectExpression;
@@ -155,7 +199,8 @@ function toStories(component: string): Promise<string> {
 									/> as estree.ImportSpecifier,
 								]),
 					]}
-				/> as estree.ImportDeclaration,
+					kind={'type'}
+				/> as ImportDeclaration,
 				...(hasMsw
 					? [
 							<import-declaration
@@ -165,8 +210,8 @@ function toStories(component: string): Promise<string> {
 										local={<identifier name='msw' /> as estree.Identifier}
 									/> as estree.ImportNamespaceSpecifier,
 								]}
-							/> as estree.ImportDeclaration,
-					  ]
+							/> as ImportDeclaration,
+						]
 					: []),
 				...(hasImplStories
 					? []
@@ -176,8 +221,8 @@ function toStories(component: string): Promise<string> {
 								specifiers={[
 									<import-default-specifier local={identifier} /> as estree.ImportDefaultSpecifier,
 								]}
-							/> as estree.ImportDeclaration,
-					  ]),
+							/> as ImportDeclaration,
+						]),
 				...(hasMetaStories
 					? [
 							<import-declaration
@@ -187,7 +232,7 @@ function toStories(component: string): Promise<string> {
 										local={<identifier name='storiesMeta' /> as estree.Identifier}
 									/> as estree.ImportNamespaceSpecifier,
 								]}
-							/> as estree.ImportDeclaration,
+							/> as ImportDeclaration,
 						]
 					: []),
 				<variable-declaration

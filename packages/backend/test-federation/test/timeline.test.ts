@@ -24,7 +24,7 @@ describe('Timeline', () => {
 	});
 
 	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');
-	type TimelineEndpoint = keyof Misskey.Endpoints & (`${string}timeline` | 'antennas/notes' | 'roles/notes' | 'notes/search-by-tag');
+	type TimelineEndpoint = keyof Misskey.Endpoints & (`notes/${string}timeline` | 'antennas/notes' | 'roles/notes' | 'notes/search-by-tag');
 	const timelineMap = new Map<TimelineChannel, TimelineEndpoint>([
 		['antenna', 'antennas/notes'],
 		['globalTimeline', 'notes/global-timeline'],

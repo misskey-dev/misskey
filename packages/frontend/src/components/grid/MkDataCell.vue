@@ -39,13 +39,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ cell.value }}
 				</div>
 				<div v-else-if="cellType === 'boolean'">
-					<div :class="[$style.bool, {
-						[$style.boolTrue]: cell.value === true,
-						'ti ti-check': cell.value === true,
-					}]"></div>
+					<div
+						:class="[$style.bool, {
+							[$style.boolTrue]: cell.value === true,
+							'ti ti-check': cell.value === true,
+						}]"
+					></div>
 				</div>
 				<div v-else-if="cellType === 'image'">
 					<img
+						v-if="cell.value && typeof cell.value === 'string'"
 						:src="cell.value"
 						:alt="cell.value"
 						:class="$style.viewImage"
@@ -88,14 +91,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
-import { GridEventEmitter } from '@/components/grid/grid.js';
-import { useTooltip } from '@/scripts/use-tooltip.js';
-import * as os from '@/os.js';
-import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, useTemplateRef, toRefs, watch } from 'vue';
 import type { Size } from '@/components/grid/grid.js';
 import type { CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridRowSetting } from '@/components/grid/row.js';
+import { GridEventEmitter } from '@/components/grid/grid.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
+import * as os from '@/os.js';
+import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -111,9 +114,9 @@ const props = defineProps<{
 
 const { cell, bus } = toRefs(props);
 
-const rootEl = shallowRef<InstanceType<typeof HTMLTableCellElement>>();
-const contentAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
-const inputAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
+const rootEl = useTemplateRef('rootEl');
+const contentAreaEl = useTemplateRef('contentAreaEl');
+const inputAreaEl = useTemplateRef('inputAreaEl');
 
 /** 値が編集中かどうか */
 const editing = ref<boolean>(false);
@@ -298,7 +301,7 @@ useTooltip(rootEl, (showing) => {
 	const result = os.popup(defineAsyncComponent(() => import('@/components/grid/MkCellTooltip.vue')), {
 		showing,
 		content,
-		targetElement: rootEl.value!,
+		anchorElement: rootEl.value!,
 	}, {
 		closed: () => {
 			result.dispose();
@@ -343,7 +346,7 @@ $cellHeight: 28px;
 	border: solid 0.5px transparent;
 
 	&.selected {
-		border: solid 0.5px var(--MI_THEME-accentLighten);
+		border: solid 0.5px hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	}
 
 	&.ranged {

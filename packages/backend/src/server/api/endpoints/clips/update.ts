@@ -39,7 +39,7 @@ export const paramDef = {
 		clipId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		isPublic: { type: 'boolean' },
-		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+		description: { type: 'string', nullable: true, maxLength: 2048 },
 	},
 	required: ['clipId'],
 } as const;
@@ -53,7 +53,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			try {
-				await this.clipService.update(me, ps.clipId, ps.name, ps.isPublic, ps.description);
+				// 空文字列をnullにしたいので??は使わない
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				await this.clipService.update(me, ps.clipId, ps.name, ps.isPublic, ps.description || null);
 			} catch (e) {
 				if (e instanceof ClipService.NoSuchClipError) {
 					throw new ApiError(meta.errors.noSuchClip);

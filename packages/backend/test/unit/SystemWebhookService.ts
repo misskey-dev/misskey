@@ -97,12 +97,12 @@ describe('SystemWebhookService', () => {
 	}
 
 	async function beforeEachImpl() {
-		root = await createUser({ isRoot: true, username: 'root', usernameLower: 'root' });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
 	}
 
 	async function afterEachImpl() {
-		await usersRepository.delete({});
-		await systemWebhooksRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await systemWebhooksRepository.createQueryBuilder().delete().execute();
 	}
 
 	// --------------------------------------------------------------------------------------

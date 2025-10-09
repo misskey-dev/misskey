@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="500">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 500px;">
 		<div v-if="state == 'fetch-session-error'">
 			<p>{{ i18n.ts.somethingHappened }}</p>
 		</div>
@@ -25,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<h1>{{ i18n.ts._auth.denied }}</h1>
 			</div>
 			<div v-if="state == 'accepted' && session">
-				<h1>{{ session.app.isAuthorized ? i18n.ts['already-authorized'] : i18n.ts.allowed }}</h1>
+				<h1>{{ session.app.isAuthorized ? i18n.ts._auth.alreadyAuthorized : i18n.ts._auth.accepted }}</h1>
 				<p v-if="session.app.callbackUrl">
 					{{ i18n.ts._auth.callback }}
 					<MkEllipsis/>
@@ -37,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<p :class="$style.loginMessage">{{ i18n.ts._auth.pleaseLogin }}</p>
 			<MkSignin @login="onLogin"/>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -46,10 +45,11 @@ import { onMounted, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { $i, login } from '@/account.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { $i } from '@/i.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
+import { login } from '@/accounts.js';
 
 const props = defineProps<{
 	token: string;
@@ -63,7 +63,7 @@ function accepted() {
 	if (session.value && session.value.app.callbackUrl) {
 		const url = new URL(session.value.app.callbackUrl);
 		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(url.protocol)) throw new Error('invalid url');
-		location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;
+		window.location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;
 	}
 }
 
@@ -75,14 +75,15 @@ onMounted(async () => {
 	if (!$i) return;
 
 	try {
-		session.value = await misskeyApi('auth/session/show', {
+		const result = await misskeyApi('auth/session/show', {
 			token: props.token,
 		});
+		session.value = result;
 
 		// 既に連携していた場合
-		if (session.value.app.isAuthorized) {
+		if (result.app.isAuthorized) {
 			await misskeyApi('auth/accept', {
-				token: session.value.token,
+				token: result.token,
 			});
 			accepted();
 		} else {
@@ -97,7 +98,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._auth.shareAccessTitle,
 	icon: 'ti ti-apps',
 }));

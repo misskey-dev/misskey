@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, toRefs } from 'vue';
+import { ref, useTemplateRef, toRefs } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -39,7 +39,7 @@ const emit = defineEmits<{
 
 const { modelValue } = toRefs(props);
 const v = ref(modelValue.value);
-const inputEl = shallowRef<HTMLElement>();
+const inputEl = useTemplateRef('inputEl');
 
 const onInput = () => {
 	emit('update:modelValue', v.value ?? '');
@@ -60,7 +60,7 @@ const onInput = () => {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;

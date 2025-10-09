@@ -326,19 +326,15 @@ export class ApiCallService implements OnApplicationShutdown {
 
 			if (factor > 0) {
 				// Rate limit
-				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
-					if ('info' in err) {
-						// errはLimiter.LimiterInfoであることが期待される
-						throw new ApiError({
-							message: 'Rate limit exceeded. Please try again later.',
-							code: 'RATE_LIMIT_EXCEEDED',
-							id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
-							httpStatusCode: 429,
-						}, err.info);
-					} else {
-						throw new TypeError('information must be a rate-limiter information.');
-					}
-				});
+				const rateLimit = await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor);
+				if (rateLimit != null) {
+					throw new ApiError({
+						message: 'Rate limit exceeded. Please try again later.',
+						code: 'RATE_LIMIT_EXCEEDED',
+						id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+						httpStatusCode: 429,
+					}, rateLimit.info);
+				}
 			}
 		}
 
@@ -371,7 +367,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
 				throw new ApiError({
@@ -391,10 +387,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+		if (ep.meta.requiredRolePolicy != null && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			const policies = await this.roleService.getUserPolicies(user!.id);
-			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
+			if (!policies[ep.meta.requiredRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
 					code: 'ROLE_PERMISSION_DENIED',

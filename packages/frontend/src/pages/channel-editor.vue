@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
@@ -64,8 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="channelId" danger @click="archive()"><i class="ti ti-trash"></i> {{ i18n.ts.archive }}</MkButton>
 			</div>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -74,15 +73,15 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -93,7 +92,7 @@ const props = defineProps<{
 }>();
 
 const channel = ref<Misskey.entities.Channel | null>(null);
-const name = ref<string | null>(null);
+const name = ref<string>('');
 const description = ref<string | null>(null);
 const bannerUrl = ref<string | null>(null);
 const bannerId = ref<string | null>(null);
@@ -115,20 +114,22 @@ watch(() => bannerId.value, async () => {
 async function fetchChannel() {
 	if (props.channelId == null) return;
 
-	channel.value = await misskeyApi('channels/show', {
+	const result = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
 
-	name.value = channel.value.name;
-	description.value = channel.value.description;
-	bannerId.value = channel.value.bannerId;
-	bannerUrl.value = channel.value.bannerUrl;
-	isSensitive.value = channel.value.isSensitive;
-	pinnedNotes.value = channel.value.pinnedNoteIds.map(id => ({
+	name.value = result.name;
+	description.value = result.description;
+	bannerId.value = result.bannerId;
+	bannerUrl.value = result.bannerUrl;
+	isSensitive.value = result.isSensitive;
+	pinnedNotes.value = result.pinnedNoteIds.map(id => ({
 		id,
 	}));
-	color.value = channel.value.color;
-	allowRenoteToExternal.value = channel.value.allowRenoteToExternal;
+	color.value = result.color;
+	allowRenoteToExternal.value = result.allowRenoteToExternal;
+
+	channel.value = result;
 }
 
 fetchChannel();
@@ -137,9 +138,10 @@ async function addPinnedNote() {
 	const { canceled, result: value } = await os.inputText({
 		title: i18n.ts.noteIdOrUrl,
 	});
-	if (canceled) return;
+	if (canceled || value == null) return;
+	const fromUrl = value.includes('/') ? value.split('/').pop() : null;
 	const note = await os.apiWithDialog('notes/show', {
-		noteId: value.includes('/') ? value.split('/').pop() : value,
+		noteId: fromUrl ?? value,
 	});
 	pinnedNotes.value = [{
 		id: note.id,
@@ -155,29 +157,36 @@ function save() {
 		name: name.value,
 		description: description.value,
 		bannerId: bannerId.value,
-		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 		color: color.value,
 		isSensitive: isSensitive.value,
 		allowRenoteToExternal: allowRenoteToExternal.value,
-	};
+	} satisfies Misskey.entities.ChannelsCreateRequest;
 
-	if (props.channelId) {
-		params.channelId = props.channelId;
-		os.apiWithDialog('channels/update', params);
+	if (props.channelId != null) {
+		os.apiWithDialog('channels/update', {
+			...params,
+			channelId: props.channelId,
+			pinnedNoteIds: pinnedNotes.value.map(x => x.id),
+		});
 	} else {
 		os.apiWithDialog('channels/create', params).then(created => {
-			router.push(`/channels/${created.id}`);
+			router.push('/channels/:channelId', {
+				params: {
+					channelId: created.id,
+				},
+			});
 		});
 	}
 }
 
 async function archive() {
+	if (props.channelId == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.tsx.channelArchiveConfirmTitle({ name: name.value }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
-
 	if (canceled) return;
 
 	misskeyApi('channels/update', {
@@ -189,7 +198,10 @@ async function archive() {
 }
 
 function setBannerImage(evt) {
-	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
+	selectFile({
+		anchorElement: evt.currentTarget ?? evt.target,
+		multiple: false,
+	}).then(file => {
 		bannerId.value = file.id;
 	});
 }
@@ -202,7 +214,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.channelId ? i18n.ts._channel.edit : i18n.ts._channel.create,
 	icon: 'ti ti-device-tv',
 }));

@@ -4,7 +4,7 @@
  */
 
 import type { Directive } from 'vue';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
 export default {
 	mounted(src, binding, vn) {

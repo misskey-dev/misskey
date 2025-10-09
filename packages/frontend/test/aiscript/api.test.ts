@@ -4,7 +4,7 @@
  */
 
 import { miLocalStorage } from '@/local-storage.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
@@ -33,11 +33,22 @@ async function exe(script: string): Promise<values.Value[]> {
 	return outputs;
 }
 
-let $iMock = vi.hoisted<Partial<typeof import('@/account.js').$i> | null >(
+let $iMock = vi.hoisted<Partial<typeof import('@/i.js').$i> | null >(
 	() => null
 );
 
-vi.mock('@/account.js', () => {
+function errorWithPos<T extends errors.AiScriptError>(
+	error: T,
+	line: number,
+	column: number,
+): T {
+	const pos = { line, column };
+	error.pos = pos;
+	error.message = error.message + `\n  at <root> (Line ${pos.line}, Column ${pos.column})`;
+	return error;
+}
+
+vi.mock('@/i.js', () => {
 	return {
 		get $i() {
 			return $iMock;
@@ -59,7 +70,7 @@ vi.mock('@/os.js', () => {
 
 const misskeyApiMock = vi.hoisted(() => vi.fn());
 
-vi.mock('@/scripts/misskey-api.js', () => {
+vi.mock('@/utility/misskey-api.js', () => {
 	return { misskeyApi: misskeyApiMock };
 });
 
@@ -316,7 +327,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:api('https://example.com/api/ping', {})
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('invalid endpoint'),
+				errorWithPos(new errors.AiScriptRuntimeError('invalid endpoint'), 2, 11),
 			);
 			expect(misskeyApiMock).not.toHaveBeenCalled();
 		});
@@ -325,7 +336,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:api('ping')
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('expected param'),
+				errorWithPos(new errors.AiScriptRuntimeError('expected param'), 2, 11),
 			);
 			expect(misskeyApiMock).not.toHaveBeenCalled();
 		});
@@ -353,7 +364,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:save('key')
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('Expect anything, but got nothing.'),
+				errorWithPos(new errors.AiScriptRuntimeError('Expect anything, but got nothing.'), 2, 12),
 			);
 		});
 

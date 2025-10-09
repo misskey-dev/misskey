@@ -56,7 +56,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { genId } from '@/utility/id.js';
 
 const particles = ref<{
 	id: string,
@@ -66,7 +67,7 @@ const particles = ref<{
 	dur: number,
 	color: string
 }[]>([]);
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 const width = ref(0);
 const height = ref(0);
 const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];
@@ -86,7 +87,7 @@ onMounted(() => {
 		const y = (Math.random() * (height.value - 64));
 		const sizeFactor = Math.random();
 		const particle = {
-			id: Math.random().toString(),
+			id: genId(),
 			x,
 			y,
 			size: 0.2 + ((sizeFactor / 10) * 3),

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</p>
 		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
-	<MkTimeline
+	<MkStreamingNotesTimeline
 		v-else-if="column.tl"
 		ref="timeline"
 		:key="column.tl + withRenotes + withReplies + onlyFiles"
@@ -26,32 +26,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:withReplies="withReplies"
 		:withSensitive="withSensitive"
 		:onlyFiles="onlyFiles"
-		@note="onNote"
+		:sound="true"
+		:customSound="soundSetting"
 	/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed } from 'vue';
+import { onMounted, watch, ref, useTemplateRef, computed } from 'vue';
 import XColumn from './column.vue';
-import { removeColumn, updateColumn } from './deck-store.js';
-import type { Column } from './deck-store.js';
+import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import type { SoundStore } from '@/preferences/def.js';
+import { removeColumn, updateColumn } from '@/deck.js';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import { instance } from '@/instance.js';
-import type { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = useTemplateRef('timeline');
 
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 const withRenotes = ref(props.column.withRenotes ?? true);
@@ -97,13 +96,13 @@ async function setType() {
 	const { canceled, result: src } = await os.select({
 		title: i18n.ts.timeline,
 		items: [{
-			value: 'home' as const, text: i18n.ts._timelines.home,
+			value: 'home', label: i18n.ts._timelines.home,
 		}, {
-			value: 'local' as const, text: i18n.ts._timelines.local,
+			value: 'local', label: i18n.ts._timelines.local,
 		}, {
-			value: 'social' as const, text: i18n.ts._timelines.social,
+			value: 'social', label: i18n.ts._timelines.social,
 		}, {
-			value: 'global' as const, text: i18n.ts._timelines.global,
+			value: 'global', label: i18n.ts._timelines.global,
 		}],
 	});
 	if (canceled) {
@@ -116,10 +115,6 @@ async function setType() {
 	updateColumn(props.column.id, {
 		tl: src ?? undefined,
 	});
-}
-
-function onNote() {
-	sound.playMisskeySfxFile(soundSetting.value);
 }
 
 const menu = computed<MenuItem[]>(() => {

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
+<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :anchorElement="anchorElement" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
 	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts.visibility }}
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, shallowRef, ref, computed } from 'vue';
+import { nextTick, useTemplateRef, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import MkModal from '@/components/MkModal.vue';
@@ -68,14 +68,14 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
-const channelsButton = shallowRef<InstanceType<typeof HTMLButtonElement>>();
+const modal = useTemplateRef('modal');
+const channelsButton = useTemplateRef('channelsButton');
 
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
 	isSilenced: boolean;
 	localOnly: boolean;
-	src?: HTMLElement;
+	anchorElement?: HTMLElement | null;
 	isReplyVisibilitySpecified?: boolean;
 	currentChannel?: Misskey.entities.Channel;
 }>(), {

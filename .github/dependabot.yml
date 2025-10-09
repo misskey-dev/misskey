@@ -24,9 +24,6 @@ updates:
     aws-sdk:
       patterns:
         - "@aws-sdk/*"
-    bull-board:
-      patterns:
-        - "@bull-board/*"
     nestjs:
       patterns:
         - "@nestjs/*"

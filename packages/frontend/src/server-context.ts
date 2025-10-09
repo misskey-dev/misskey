@@ -5,7 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 
-const providedContextEl = document.getElementById('misskey_clientCtx');
+const providedContextEl = window.document.getElementById('misskey_clientCtx');
 
 export type ServerContext = {
 	clip?: Misskey.entities.Clip;

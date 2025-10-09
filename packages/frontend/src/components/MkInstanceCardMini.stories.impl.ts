@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { federationInstance } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import { getChartResolver } from '../../.storybook/charts.js';
 import MkInstanceCardMini from './MkInstanceCardMini.vue';
+import type { StoryObj } from '@storybook/vue3';
 
 export const Default = {
 	render(args) {
@@ -48,7 +47,7 @@ export const Default = {
 					const url = new URL(urlStr);
 
 					if (url.href.startsWith('https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/')) {
-						const image = await (await fetch(`client-assets/${url.pathname.split('/').pop()}`)).blob();
+						const image = await (await window.fetch(`client-assets/${url.pathname.split('/').pop()}`)).blob();
 						return new HttpResponse(image, {
 							headers: {
 								'Content-Type': 'image/jpeg',

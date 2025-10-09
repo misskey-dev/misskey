@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<MkMediaAudio v-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :audio="media"/>
-	<div v-else-if="media.isSensitive && hide" :class="$style.sensitive" @click="show">
+	<div v-else-if="media.isSensitive && hide" :class="$style.sensitive" @click="reveal">
 		<span style="font-size: 1.6em;"><i class="ti ti-alert-triangle"></i></span>
 		<b>{{ i18n.ts.sensitive }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
@@ -27,9 +27,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import MkMediaAudio from '@/components/MkMediaAudio.vue';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	media: Misskey.entities.DriveFile;
@@ -37,8 +37,8 @@ const props = defineProps<{
 
 const hide = ref(true);
 
-async function show() {
-	if (props.media.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+async function reveal() {
+	if (props.media.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.ts.sensitiveMediaRevealConfirm,
