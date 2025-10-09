@@ -14,15 +14,23 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 // TODO: そのうち消す
-export function migrateOldSettings() {
+export async function migrateOldSettings() {
 	os.waiting({ text: i18n.ts.settingsMigrating });
 
-	store.loaded.then(async () => {
-		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
+	const minWait = new Promise<void>(resolve => {
+		window.setTimeout(() => {
+			resolve();
+		}, 5000);
+	});
+
+	const migratePromise = store.loaded.then(async () => {
+		const migrationPromises: Promise<any>[] = [];
+
+		migrationPromises.push(misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
 			if (themes.length > 0) {
 				prefer.commit('themes', themes);
 			}
-		});
+		}));
 
 		const plugins = ColdDeviceStorage.get('plugins');
 		prefer.commit('plugins', plugins.map(p => {
@@ -35,7 +43,7 @@ export function migrateOldSettings() {
 		}));
 
 		prefer.commit('deck.profile', deckStore.s.profile);
-		misskeyApi('i/registry/keys', {
+		migrationPromises.push(misskeyApi('i/registry/keys', {
 			scope: ['client', 'deck', 'profiles'],
 		}).then(async keys => {
 			const profiles: DeckProfile[] = [];
@@ -52,7 +60,7 @@ export function migrateOldSettings() {
 				});
 			}
 			prefer.commit('deck.profiles', profiles);
-		});
+		}));
 
 		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
 		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
@@ -146,8 +154,11 @@ export function migrateOldSettings() {
 		prefer.commit('defaultNoteVisibility', store.s.defaultNoteVisibility);
 		prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
 
-		window.setTimeout(() => {
-			unisonReload();
-		}, 10000);
+		await Promise.all(migrationPromises);
 	});
+
+	// 最低5秒 or 設定移行が完了するまで待つ
+	await Promise.all([migratePromise, minWait]);
+
+	unisonReload();
 }
