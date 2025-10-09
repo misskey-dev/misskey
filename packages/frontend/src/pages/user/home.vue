@@ -372,9 +372,6 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 					overflow: clip;
 					background-size: cover;
 					background-position: center;
-					view-timeline-name: --bannerParallax;
-					view-timeline-inset: var(--bannerParallaxInset, auto);
-					view-timeline-axis: block;
 
 					> .banner {
 						position: absolute;
@@ -387,9 +384,7 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 						background-repeat: repeat-y;
 						background-position: center;
 						will-change: transform;
-						animation: bannerParallaxKeyframes linear both;
-						animation-timeline: --bannerParallax;
-						animation-range: cover;
+						transform: translateY(-50%);
 					}
 
 					> .fade {
@@ -740,6 +735,26 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 			> .contents {
 				> .nav {
 					font-size: 80%;
+				}
+			}
+		}
+	}
+}
+
+@supports (view-timeline-name: --name) {
+	.ftskorzw {
+		> .main {
+			> .profile > .main {
+				> .banner-container {
+					view-timeline-name: --bannerParallax;
+					view-timeline-inset: var(--bannerParallaxInset, auto);
+					view-timeline-axis: block;
+
+					> .banner {
+						animation: bannerParallaxKeyframes linear both;
+						animation-timeline: --bannerParallax;
+						animation-range: cover;
+					}
 				}
 			}
 		}
