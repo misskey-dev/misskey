@@ -113,7 +113,6 @@ import { prefer } from '@/preferences.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { $i } from '@/i.js';
 
-
 const router = useRouter();
 
 const props = defineProps<{
@@ -186,6 +185,10 @@ async function more(ev: MouseEvent) {
 	}, {
 		closed: () => dispose(),
 	});
+}
+
+function menuEdit() {
+	router.push('/settings/navbar');
 }
 
 function post() {
