@@ -30,6 +30,7 @@ export type PartialMinote = {
 		url: string | null;
 		thumbnailUrl: string | null;
 	}[];
+	renote?: PartialMinote | null;
 };
 
 // If the domain is not /, rewrite to /
@@ -50,6 +51,7 @@ export async function rewriteMiNote(
 			}
 		}
 	}
+	if (note.renote) note.renote = await rewriteMiNote(note.renote);
 
 	return note as unknown as PartialMinote;
 }
