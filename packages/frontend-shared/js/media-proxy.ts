@@ -24,6 +24,11 @@ export class MediaProxy {
 			_imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
 		}
 
+		// If image URL is http, change to https (i2p rewrites some urls to http)
+		if (imageUrl.startsWith('http://')) {
+			imageUrl = imageUrl.replace(/^http:\/\//, 'https://');
+		}
+
 		return `${mustOrigin ? localProxy : this.serverMetadata.mediaProxy}/${
 			type === 'preview' ? 'preview.webp'
 			: 'image.webp'
