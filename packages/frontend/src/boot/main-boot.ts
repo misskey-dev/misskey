@@ -25,6 +25,7 @@ import { emojiPicker } from '@/utility/emoji-picker.js';
 import { mainRouter } from '@/router.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { postButtonHandler } from '@/utility/post-button-handler.js';
 import { prefer } from '@/preferences.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
@@ -388,7 +389,7 @@ export async function mainBoot() {
 	const keymap = {
 		'p|n': () => {
 			if ($i == null) return;
-			post();
+			postButtonHandler(mainRouter.currentRef.value);
 		},
 		'd': () => {
 			store.set('darkMode', !store.s.darkMode);

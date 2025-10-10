@@ -133,6 +133,7 @@ watch(() => props.channelId, async () => {
 	});
 	if (channel.value == null) return; // TSを黙らすため
 
+	miLocalStorage.setItem(`channel:${props.channelId}`, JSON.stringify(channel.value));
 	favorited.value = channel.value.isFavorited ?? false;
 	if (favorited.value || channel.value.isFollowing) {
 		tab.value = 'timeline';

@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="iconOnly" v-tooltip.noDelay.right="i18n.ts.realtimeMode" class="_button" :class="[$style.realtimeMode, store.r.realtimeMode.value ? $style.on : null]" @click="toggleRealtimeMode">
 				<i class="ti ti-bolt ti-fw"></i>
 			</button>
-			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
+			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="post">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-if="$i != null" v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
@@ -107,6 +107,7 @@ import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { postButtonHandler } from '@/utility/post-button-handler.js';
 import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
@@ -188,6 +189,10 @@ async function more(ev: MouseEvent) {
 
 function menuEdit() {
 	router.push('/settings/navbar');
+}
+
+function post() {
+	postButtonHandler(router.currentRef.value);
 }
 </script>
 
