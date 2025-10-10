@@ -31,6 +31,11 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
+# The network interface to bind to. By default, Misskey binds to 0.0.0.0 (all interfaces).
+# To improve security, you may want to change this to '127.0.0.1' or '::1' to only listen on localhost.
+# Default: 0.0.0.0
+# bind: 127.0.0.1
+
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 

@@ -273,7 +273,7 @@ export class ServerService implements OnApplicationShutdown {
 				}
 			});
 		} else {
-			fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+			fastify.listen({ port: this.config.port, host: this.config.bind });
 		}
 
 		await fastify.ready();

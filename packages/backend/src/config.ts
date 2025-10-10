@@ -27,6 +27,7 @@ type RedisOptionsSource = Partial<RedisOptions> & {
 type Source = {
 	url?: string;
 	port?: number;
+	bind?: string;
 	socket?: string;
 	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
@@ -119,6 +120,7 @@ type Source = {
 export type Config = {
 	url: string;
 	port: number;
+	bind: string;
 	socket: string | undefined;
 	trustProxy: FastifyServerOptions['trustProxy'];
 	chmodSocket: string | undefined;
@@ -268,6 +270,7 @@ export function loadConfig(): Config {
 		setupPassword: config.setupPassword,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
+		bind: config.bind ?? '0.0.0.0',
 		socket: config.socket,
 		trustProxy: config.trustProxy,
 		chmodSocket: config.chmodSocket,
