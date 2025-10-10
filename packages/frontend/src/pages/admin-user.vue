@@ -113,9 +113,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder>
 						<template #icon><i class="ti ti-password"></i></template>
 						<template #label>IP</template>
-						<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+						<MkInfo v-if="!iAmModerator" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
 						<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
-						<template v-if="iAmAdmin && ips">
+						<template v-if="iAmModerator && ips">
 							<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
 								<span class="date">{{ record.createdAt }}</span>
 								<span class="ip">{{ record.ip }}</span>
@@ -295,7 +295,7 @@ function _fetch_() {
 		userId: props.userId,
 	}), misskeyApi('admin/show-user', {
 		userId: props.userId,
-	}), iAmAdmin ? misskeyApi('admin/get-user-ips', {
+	}), iAmModerator ? misskeyApi('admin/get-user-ips', {
 		userId: props.userId,
 	}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => ({
 		user: _user,
