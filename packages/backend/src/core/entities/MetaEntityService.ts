@@ -16,6 +16,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { envOption } from '@/env.js';
+import { removeDomain } from '@/util.js';
 
 @Injectable()
 export class MetaEntityService {
@@ -78,12 +79,12 @@ export class MetaEntityService {
 			uri: this.config.url,
 			description: instance.description,
 			langs: instance.langs,
-			tosUrl: instance.termsOfServiceUrl,
-			repositoryUrl: instance.repositoryUrl,
-			feedbackUrl: instance.feedbackUrl,
-			impressumUrl: instance.impressumUrl,
-			privacyPolicyUrl: instance.privacyPolicyUrl,
-			inquiryUrl: instance.inquiryUrl,
+			tosUrl: removeDomain(instance.termsOfServiceUrl),
+			repositoryUrl: removeDomain(instance.repositoryUrl),
+			feedbackUrl: removeDomain(instance.feedbackUrl),
+			impressumUrl: removeDomain(instance.impressumUrl),
+			privacyPolicyUrl: removeDomain(instance.privacyPolicyUrl),
+			inquiryUrl: removeDomain(instance.inquiryUrl),
 			disableRegistration: instance.disableRegistration,
 			emailRequiredForSignup: instance.emailRequiredForSignup,
 			enableHcaptcha: envOption.disableCaptcha ? false : instance.enableHcaptcha,
@@ -100,13 +101,13 @@ export class MetaEntityService {
 			swPublickey: instance.swPublicKey,
 			themeColor: instance.themeColor,
 			mascotImageUrl: instance.mascotImageUrl ?? '/assets/ai.png',
-			bannerUrl: instance.bannerUrl,
-			infoImageUrl: instance.infoImageUrl,
+			bannerUrl: removeDomain(instance.bannerUrl),
+			infoImageUrl: removeDomain(instance.infoImageUrl),
 			serverErrorImageUrl: instance.serverErrorImageUrl,
-			notFoundImageUrl: instance.notFoundImageUrl,
-			iconUrl: instance.iconUrl,
-			backgroundImageUrl: instance.backgroundImageUrl,
-			logoImageUrl: instance.logoImageUrl,
+			notFoundImageUrl: removeDomain(instance.notFoundImageUrl),
+			iconUrl: removeDomain(instance.iconUrl),
+			backgroundImageUrl: removeDomain(instance.backgroundImageUrl),
+			logoImageUrl: removeDomain(instance.logoImageUrl),
 			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 			defaultLightTheme,
 			defaultDarkTheme,
