@@ -57,12 +57,6 @@ const remaining = computed(() => {
 	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
 });
 
-const remainingWatchStop = watch(remaining, (to) => {
-	if (to <= 0) {
-		showResult.value = true;
-		remainingWatchStop();
-	}
-}, { immediate: true });
 
 const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
@@ -79,7 +73,12 @@ const timer = computed(() => i18n.tsx._poll[
 }));
 
 const showResult = ref(props.readOnly || isVoted.value);
-
+// watchに immediate オプションがあるので showResult のあとに定義されている必要がある
+watch(remaining, (to) => {
+	if (to <= 0) {
+		showResult.value = true;
+	}
+}, { immediate: true });
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
 	url: `https://${host}/notes/${props.noteId}`,
