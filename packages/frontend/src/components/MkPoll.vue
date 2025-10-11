@@ -57,7 +57,6 @@ const remaining = computed(() => {
 	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
 });
 
-
 const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
