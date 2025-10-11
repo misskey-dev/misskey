@@ -1385,7 +1385,7 @@ pluginsAreDisabledBecauseSafeMode: "El modo seguro está activado, por lo que to
 customCssIsDisabledBecauseSafeMode: "El modo seguro está activado, por lo que no se aplica el CSS personalizado."
 themeIsDefaultBecauseSafeMode: "Mientras el modo seguro esté activado, se utilizará el tema predeterminado. Cuando se desactive el modo seguro, se volverá al tema original."
 thankYouForTestingBeta: "¡Gracias por tu colaboración en la prueba de la versión beta!"
-createUserSpecifiedNote: "Crear notas especificadas por el usuario"
+createUserSpecifiedNote: "Mencionar al usuario (Nota Directa)"
 schedulePost: "Programar una nota"
 scheduleToPostOnX: "Programar una nota para {x}"
 scheduledToPostOnX: "La nota está programada para {x}."
