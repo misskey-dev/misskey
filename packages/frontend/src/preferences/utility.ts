@@ -187,7 +187,7 @@ export async function restoreFromCloudBackup() {
 	const select = await os.select({
 		title: i18n.ts._preferencesBackup.selectBackupToRestore,
 		items: backups.map(backup => ({
-			text: backup.name,
+			label: backup.name,
 			value: backup.name,
 		})),
 	});

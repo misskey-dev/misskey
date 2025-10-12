@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import QRCodeStyling from 'qr-code-styling';
+import { url, host } from '@@/js/config.js';
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { initShaderProgram } from '../webgl.js';
+import { ensureSignin } from '@/i.js';
 
 export type ImageEffectorRGB = [r: number, g: number, b: number];
 
@@ -48,6 +51,7 @@ interface AlignParamDef extends CommonParamDef {
 	default: {
 		x: 'left' | 'center' | 'right';
 		y: 'top' | 'center' | 'bottom';
+		margin?: number;
 	};
 };
 
@@ -58,7 +62,13 @@ interface SeedParamDef extends CommonParamDef {
 
 interface TextureParamDef extends CommonParamDef {
 	type: 'texture';
-	default: { type: 'text'; text: string | null; } | { type: 'url'; url: string | null; } | null;
+	default: {
+		type: 'text'; text: string | null;
+	} | {
+		type: 'url'; url: string | null;
+	} | {
+		type: 'qr'; data: string | null;
+	} | null;
 };
 
 interface ColorParamDef extends CommonParamDef {
@@ -324,7 +334,11 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 
 				if (_DEV_) console.log(`Baking texture of <${textureKey}>...`);
 
-				const texture = v.type === 'text' ? await createTextureFromText(this.gl, v.text) : v.type === 'url' ? await createTextureFromUrl(this.gl, v.url) : null;
+				const texture =
+					v.type === 'text' ? await createTextureFromText(this.gl, v.text) :
+					v.type === 'url' ? await createTextureFromUrl(this.gl, v.url) :
+					v.type === 'qr' ? await createTextureFromQr(this.gl, { data: v.data }) :
+					null;
 				if (texture == null) continue;
 
 				this.paramTextures.set(textureKey, texture);
@@ -352,7 +366,12 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 
 	private getTextureKeyForParam(v: ParamTypeToPrimitive['texture']) {
 		if (v == null) return '';
-		return v.type === 'text' ? `text:${v.text}` : v.type === 'url' ? `url:${v.url}` : '';
+		return (
+			v.type === 'text' ? `text:${v.text}` :
+			v.type === 'url' ? `url:${v.url}` :
+			v.type === 'qr' ? `qr:${v.data}` :
+			''
+		);
 	}
 
 	/*
@@ -466,4 +485,54 @@ async function createTextureFromText(gl: WebGL2RenderingContext, text: string | 
 	ctx.canvas.remove();
 
 	return info;
+}
+
+async function createTextureFromQr(gl: WebGL2RenderingContext, options: { data: string | null }, resolution = 512): Promise<{ texture: WebGLTexture, width: number, height: number } | null> {
+	const $i = ensureSignin();
+
+	const qrCodeInstance = new QRCodeStyling({
+		width: resolution,
+		height: resolution,
+		margin: 42,
+		type: 'canvas',
+		data: options.data == null || options.data === '' ? `${url}/users/${$i.id}` : options.data,
+		image: $i.avatarUrl,
+		qrOptions: {
+			typeNumber: 0,
+			mode: 'Byte',
+			errorCorrectionLevel: 'H',
+		},
+		imageOptions: {
+			hideBackgroundDots: true,
+			imageSize: 0.3,
+			margin: 16,
+			crossOrigin: 'anonymous',
+		},
+		dotsOptions: {
+			type: 'dots',
+		},
+		cornersDotOptions: {
+			type: 'dot',
+		},
+		cornersSquareOptions: {
+			type: 'extra-rounded',
+		},
+	});
+
+	const blob = await qrCodeInstance.getRawData('png') as Blob | null;
+	if (blob == null) return null;
+
+	const image = await window.createImageBitmap(blob);
+
+	const texture = createTexture(gl);
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, resolution, resolution, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	return {
+		texture,
+		width: resolution,
+		height: resolution,
+	};
 }

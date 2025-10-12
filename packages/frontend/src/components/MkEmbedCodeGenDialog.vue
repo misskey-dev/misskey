@@ -52,11 +52,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix>px</template>
 						<template #caption>{{ i18n.ts._embedCodeGen.maxHeightDescription }}</template>
 					</MkInput>
-					<MkSelect v-model="colorMode">
+					<MkSelect v-model="colorMode" :items="colorModeDef">
 						<template #label>{{ i18n.ts.theme }}</template>
-						<option value="auto">{{ i18n.ts.syncDeviceDarkMode }}</option>
-						<option value="light">{{ i18n.ts.light }}</option>
-						<option value="dark">{{ i18n.ts.dark }}</option>
 					</MkSelect>
 					<MkSwitch v-if="isEmbedWithScrollbar" v-model="header">{{ i18n.ts._embedCodeGen.header }}</MkSwitch>
 					<MkSwitch v-model="rounded">{{ i18n.ts._embedCodeGen.rounded }}</MkSwitch>
@@ -105,6 +102,7 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
 
@@ -162,7 +160,18 @@ const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(pro
 const header = ref(props.params?.header ?? true);
 const maxHeight = ref(props.params?.maxHeight !== 0 ? props.params?.maxHeight ?? null : 500);
 
-const colorMode = ref<'light' | 'dark' | 'auto'>(props.params?.colorMode ?? 'auto');
+const {
+	model: colorMode,
+	def: colorModeDef,
+} = useMkSelect({
+	items: [
+		{ value: 'auto', label: i18n.ts.syncDeviceDarkMode },
+		{ value: 'light', label: i18n.ts.light },
+		{ value: 'dark', label: i18n.ts.dark },
+	],
+	initialValue: props.params?.colorMode ?? 'auto',
+});
+
 const rounded = ref(props.params?.rounded ?? true);
 const border = ref(props.params?.border ?? true);
 
