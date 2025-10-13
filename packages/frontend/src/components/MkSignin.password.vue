@@ -62,8 +62,14 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkCaptcha from '@/components/MkCaptcha.vue';
 
+type SigninPasswordUser = {
+	username: string;
+	name: string | null;
+	avatarUrl: string | null;
+};
+
 const props = defineProps<{
-	user: Misskey.entities.UserDetailed;
+	user: SigninPasswordUser;
 	needCaptcha: boolean;
 }>();
 

@@ -6,8 +6,12 @@
 import { render } from 'buraha';
 
 const canvas = new OffscreenCanvas(64, 64);
+const workerScope = self as unknown as {
+	onmessage: (event: MessageEvent) => void;
+	postMessage: (message: unknown, transfer?: Transferable[]) => void;
+};
 
-onmessage = (event) => {
+workerScope.onmessage = (event) => {
 	// console.log(event.data);
 	if (!('id' in event.data && typeof event.data.id === 'string')) {
 		return;
@@ -18,5 +22,7 @@ onmessage = (event) => {
 
 	render(event.data.hash, canvas);
 	const bitmap = canvas.transferToImageBitmap();
-	postMessage({ id: event.data.id, bitmap }, [bitmap]);
+	workerScope.postMessage({ id: event.data.id, bitmap }, [bitmap]);
 };
+
+export {};

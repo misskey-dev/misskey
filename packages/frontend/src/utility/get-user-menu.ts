@@ -25,6 +25,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	const meId = $i ? $i.id : null;
 
 	const cleanups = [] as (() => void)[];
+	const toText = (value: unknown): string => value == null ? '' : String(value);
 
 	async function toggleMute() {
 		if (user.isMuted) {
@@ -156,7 +157,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if (iAmModerator) {
 		menuItems.push({
 			icon: 'ti ti-user-exclamation',
-			text: i18n.ts.moderation,
+			text: toText(i18n.ts.moderation),
 			action: () => {
 				router.push('/admin/user/:userId', {
 					params: {
@@ -169,7 +170,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 	menuItems.push({
 		icon: 'ti ti-at',
-		text: i18n.ts.copyUsername,
+		text: toText(i18n.ts.copyUsername),
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
@@ -177,7 +178,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 	menuItems.push({
 		icon: 'ti ti-share',
-		text: i18n.ts.copyProfileUrl,
+		text: toText(i18n.ts.copyProfileUrl),
 		action: () => {
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
@@ -186,7 +187,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 	menuItems.push({
 		icon: 'ti ti-rss',
-		text: i18n.ts.copyRSS,
+		text: toText(i18n.ts.copyRSS),
 		action: () => {
 			copyToClipboard(`${user.host ?? host}/@${user.username}.atom`);
 		},
@@ -195,7 +196,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if (user.host != null && user.url != null) {
 		menuItems.push({
 			icon: 'ti ti-external-link',
-			text: i18n.ts.showOnRemote,
+			text: toText(i18n.ts.showOnRemote),
 			action: () => {
 				if (user.url == null) return;
 				window.open(user.url, '_blank', 'noopener');
@@ -204,10 +205,10 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	} else {
 		menuItems.push({
 			icon: 'ti ti-code',
-			text: i18n.ts.embed,
+			text: toText(i18n.ts.embed),
 			type: 'parent',
 			children: [{
-				text: i18n.ts.noteOfThisUser,
+				text: toText(i18n.ts.noteOfThisUser),
 				action: () => {
 					genEmbedCode('user-timeline', user.id);
 				},
@@ -218,7 +219,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
 		menuItems.push({
 			icon: 'ti ti-search',
-			text: i18n.ts.searchThisUsersNotes,
+			text: toText(i18n.ts.searchThisUsersNotes),
 			action: () => {
 				router.push('/search', {
 					query: {
@@ -233,12 +234,12 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if ($i) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-pencil',
-			text: i18n.ts.editMemo,
+			text: toText(i18n.ts.editMemo),
 			action: editMemo,
 		}, {
 			type: 'parent',
 			icon: 'ti ti-list',
-			text: i18n.ts.addToList,
+			text: toText(i18n.ts.addToList),
 			children: async () => {
 				const lists = await userListsCache.fetch();
 				return lists.map(list => {
@@ -271,7 +272,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		}, {
 			type: 'parent',
 			icon: 'ti ti-antenna',
-			text: i18n.ts.addToAntenna,
+			text: toText(i18n.ts.addToAntenna),
 			children: async () => {
 				const antennas = await antennasCache.fetch();
 				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
@@ -305,6 +306,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			items: roles.filter(r => r.target === 'manual').map((r) => ({ label: r.name, value: r.id })),
 		});
 		if (canceled) return;
+	if (roleId == null) return;
 
 		const { canceled: canceled2, result: period } = await os.select({
 			title: i18n.ts.period,
@@ -337,7 +339,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		if (iAmModerator) {
 			menuItems.push({
 				icon: 'ti ti-badges',
-				text: i18n.ts.roles,
+				text: toText(i18n.ts.roles),
 				action: assignRole,
 			});
 		}
@@ -349,11 +351,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		menuItems.push({
 			type: 'switch',
 			icon: 'ti ti-messages',
-			text: i18n.ts.showRepliesToOthersInTimeline,
+			text: toText(i18n.ts.showRepliesToOthersInTimeline),
 			ref: withRepliesRef,
 		}, {
 			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
-			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
+			text: user.notify === 'none' ? toText(i18n.ts.notifyNotes) : toText(i18n.ts.unnotifyNotes),
 			action: toggleNotify,
 		});
 
@@ -369,7 +371,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-pencil-heart',
-			text: i18n.ts.createUserSpecifiedNote,
+			text: toText(i18n.ts.createUserSpecifiedNote),
 			action: () => {
 				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
 				os.post({ specified: user, initialText: `${canonical} ` });
@@ -380,16 +382,16 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			menuItems.push({
 				type: 'parent',
 				icon: 'ti ti-messages',
-				text: i18n.ts.inviteToRoomChat as string,
+				text: String(i18n.ts.inviteToRoomChat ?? ''),
 				children: async () => {
 					try {
 						const ownedRooms = await misskeyApi('chat/rooms/owned', {
 							limit: 100,
 						});
 
-						if (!ownedRooms || ownedRooms.length === 0) {
-							return [{
-								text: (i18n.ts.noRoomsOwned as string) || 'チャットルームを作成してください',
+					if (!ownedRooms || ownedRooms.length === 0) {
+					return [{
+						text: String(i18n.ts.noRoomsOwned ?? '') || 'チャットルームを作成してください',
 								action: () => {
 									// Do nothing
 								},
@@ -397,7 +399,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 						}
 
 						return ownedRooms.map(room => ({
-							text: room.name || 'Unnamed Room',
+							text: room.name ?? 'Unnamed Room',
 							action: async () => {
 								try {
 									await os.apiWithDialog('chat/rooms/invitations/create', {
@@ -440,36 +442,36 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			}, {
 				type: 'link',
 				icon: 'ti ti-messages',
-				text: i18n.ts._chat.chatWithThisUser,
+				text: String(i18n.ts._chat.chatWithThisUser ?? ''),
 				to: `/chat/user/${user.id}`,
 			});
 		}
 
 		menuItems.push({ type: 'divider' }, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
-			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
+			text: user.isMuted ? String(i18n.ts.unmute ?? '') : String(i18n.ts.mute ?? ''),
 			action: toggleMute,
 		}, {
 			icon: user.isRenoteMuted ? 'ti ti-repeat' : 'ti ti-repeat-off',
-			text: user.isRenoteMuted ? i18n.ts.renoteUnmute : i18n.ts.renoteMute,
+			text: user.isRenoteMuted ? String(i18n.ts.renoteUnmute ?? '') : String(i18n.ts.renoteMute ?? ''),
 			action: toggleRenoteMute,
 		}, {
 			icon: 'ti ti-ban',
-			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
+			text: user.isBlocking ? String(i18n.ts.unblock ?? '') : String(i18n.ts.block ?? ''),
 			action: toggleBlock,
 		});
 
 		if (user.isFollowed) {
 			menuItems.push({
 				icon: 'ti ti-link-off',
-				text: i18n.ts.breakFollow,
+				text: String(i18n.ts.breakFollow ?? ''),
 				action: invalidateFollow,
 			});
 		}
 
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-exclamation-circle',
-			text: i18n.ts.reportAbuse,
+			text: String(i18n.ts.reportAbuse ?? ''),
 			action: reportAbuse,
 		});
 	}
@@ -477,7 +479,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if (user.host !== null) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-refresh',
-			text: i18n.ts.updateRemoteUser,
+			text: String(i18n.ts.updateRemoteUser ?? ''),
 			action: userInfoUpdate,
 		});
 	}
@@ -485,7 +487,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if (prefer.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-hash',
-			text: i18n.ts.copyUserId,
+			text: String(i18n.ts.copyUserId ?? ''),
 			action: () => {
 				copyToClipboard(user.id);
 			},
@@ -495,7 +497,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	if ($i && meId === user.id) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-pencil',
-			text: i18n.ts.editProfile,
+			text: String(i18n.ts.editProfile ?? ''),
 			action: () => {
 				router.push('/settings/profile');
 			},

@@ -126,8 +126,11 @@ import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 
-function getAppearNote(note: Misskey.entities.Note) {
-	return Misskey.note.isPureRenote(note) ? note.renote : note;
+function getAppearNote(note: Misskey.entities.Note): Misskey.entities.Note {
+	if (Misskey.note.isPureRenote(note) && note.renote != null) {
+		return note.renote;
+	}
+	return note;
 }
 
 const props = withDefaults(defineProps<{
@@ -143,13 +146,13 @@ const emit = defineEmits<{
 
 const inChannel = inject('inChannel', null);
 
-const note = ref((props.note));
+const note = ref(props.note);
 
 const isRenote = Misskey.note.isPureRenote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
-const appearNote = computed(() => getAppearNote(note.value));
+const appearNote = computed<Misskey.entities.Note>(() => getAppearNote(note.value));
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const isLong = shouldCollapsed(appearNote.value, []);

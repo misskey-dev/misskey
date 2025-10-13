@@ -43,4 +43,14 @@ export class MiChatRoom {
 		default: false,
 	})
 	public isSecretMessageMode: boolean;
+
+	@Column('timestamp with time zone', {
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public createdAt: Date;
+
+	@Column('timestamp with time zone', {
+		default: () => 'CURRENT_TIMESTAMP',
+	})
+	public updatedAt: Date;
 }

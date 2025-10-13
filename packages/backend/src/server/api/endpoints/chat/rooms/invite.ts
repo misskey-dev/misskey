@@ -83,7 +83,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				await this.chatService.createRoomInvitation(me.id, ps.roomId, ps.userId);
 
-				// Update room updatedAt
 				await this.chatRoomsRepository.update(ps.roomId, {
 					updatedAt: new Date(),
 				});
