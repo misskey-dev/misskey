@@ -1109,6 +1109,7 @@ postForm: "Formulář pro odeslání"
 information: "Informace"
 inMinutes: "Minut"
 inDays: "Dnů"
+widgets: "Widgety"
 _chat:
   invitations: "Pozvat"
   noHistory: "Žádná historie"
@@ -2057,6 +2058,10 @@ _imageEffector:
   _fxProps:
     scale: "Velikost"
     size: "Velikost"
+    offset: "Pozice"
     color: "Barva"
     opacity: "Průhlednost"
     lightness: "Zesvětlit"
+_qr:
+  showTabTitle: "Zobrazit"
+  raw: "Text"

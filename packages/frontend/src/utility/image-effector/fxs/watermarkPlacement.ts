@@ -23,6 +23,7 @@ uniform float u_opacity;
 uniform bool u_repeat;
 uniform int u_alignX; // 0: left, 1: center, 2: right
 uniform int u_alignY; // 0: top, 1: center, 2: bottom
+uniform float u_alignMargin;
 uniform int u_fitMode; // 0: contain, 1: cover
 out vec4 out_color;
 
@@ -50,6 +51,9 @@ void main() {
 
 	float x_offset = u_alignX == 0 ? x_scale / 2.0 : u_alignX == 2 ? 1.0 - (x_scale / 2.0) : 0.5;
 	float y_offset = u_alignY == 0 ? y_scale / 2.0 : u_alignY == 2 ? 1.0 - (y_scale / 2.0) : 0.5;
+
+	x_offset += (u_alignX == 0 ? 1.0 : u_alignX == 2 ? -1.0 : 0.0) * u_alignMargin;
+	y_offset += (u_alignY == 0 ? 1.0 : u_alignY == 2 ? -1.0 : 0.0) * u_alignMargin;
 
 	float angle = -(u_angle * PI);
 	vec2 center = vec2(x_offset, y_offset);
@@ -86,7 +90,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 	id: 'watermarkPlacement',
 	name: '(internal)',
 	shader,
-	uniforms: ['texture_watermark', 'resolution_watermark', 'scale', 'angle', 'opacity', 'repeat', 'alignX', 'alignY', 'fitMode'] as const,
+	uniforms: ['texture_watermark', 'resolution_watermark', 'scale', 'angle', 'opacity', 'repeat', 'alignX', 'alignY', 'alignMargin', 'fitMode'] as const,
 	params: {
 		cover: {
 			type: 'boolean',
@@ -112,7 +116,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 		},
 		align: {
 			type: 'align',
-			default: { x: 'right', y: 'bottom' },
+			default: { x: 'right', y: 'bottom', margin: 0 },
 		},
 		opacity: {
 			type: 'number',
@@ -143,6 +147,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 		gl.uniform1i(u.repeat, params.repeat ? 1 : 0);
 		gl.uniform1i(u.alignX, params.align.x === 'left' ? 0 : params.align.x === 'right' ? 2 : 1);
 		gl.uniform1i(u.alignY, params.align.y === 'top' ? 0 : params.align.y === 'bottom' ? 2 : 1);
+		gl.uniform1f(u.alignMargin, params.align.margin ?? 0);
 		gl.uniform1i(u.fitMode, params.cover ? 1 : 0);
 	},
 });

@@ -852,3 +852,5 @@ _search:
   searchScopeUser: "사용자 지정"
 _watermarkEditor:
   image: "이미지"
+_qr:
+  showTabTitle: "보기"
