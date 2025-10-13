@@ -36,20 +36,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['main', 'palette']">
 					<MkPreferenceContainer k="emojiPaletteForMain">
-						<MkSelect v-model="emojiPaletteForMain">
+						<MkSelect v-model="emojiPaletteForMain" :items="emojiPaletteForMainDef">
 							<template #label><SearchLabel>{{ i18n.ts._emojiPalette.paletteForMain }}</SearchLabel></template>
-							<option key="-" :value="null">({{ i18n.ts.auto }})</option>
-							<option v-for="palette in prefer.r.emojiPalettes.value" :key="palette.id" :value="palette.id">{{ palette.name === '' ? '(' + i18n.ts.noName + ')' : palette.name }}</option>
 						</MkSelect>
 					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['reaction', 'palette']">
 					<MkPreferenceContainer k="emojiPaletteForReaction">
-						<MkSelect v-model="emojiPaletteForReaction">
+						<MkSelect v-model="emojiPaletteForReaction" :items="emojiPaletteForReactionDef">
 							<template #label><SearchLabel>{{ i18n.ts._emojiPalette.paletteForReaction }}</SearchLabel></template>
-							<option key="-" :value="null">({{ i18n.ts.auto }})</option>
-							<option v-for="palette in prefer.r.emojiPalettes.value" :key="palette.id" :value="palette.id">{{ palette.name === '' ? '(' + i18n.ts.noName + ')' : palette.name }}</option>
 						</MkSelect>
 					</MkPreferenceContainer>
 				</SearchMarker>
@@ -68,6 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option :value="1">{{ i18n.ts.small }}</option>
 								<option :value="2">{{ i18n.ts.medium }}</option>
 								<option :value="3">{{ i18n.ts.large }}</option>
+								<option :value="4">{{ i18n.ts.large }}+</option>
+								<option :value="5">{{ i18n.ts.large }}++</option>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -99,12 +97,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<SearchMarker :keywords="['emoji', 'picker', 'style']">
 						<MkPreferenceContainer k="emojiPickerStyle">
-							<MkSelect v-model="emojiPickerStyle">
+							<MkSelect
+								v-model="emojiPickerStyle" :items="[
+									{ label: i18n.ts.auto, value: 'auto' },
+									{ label: i18n.ts.popup, value: 'popup' },
+									{ label: i18n.ts.drawer, value: 'drawer' },
+								]"
+							>
 								<template #label><SearchLabel>{{ i18n.ts.style }}</SearchLabel></template>
 								<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-								<option value="auto">{{ i18n.ts.auto }}</option>
-								<option value="popup">{{ i18n.ts.popup }}</option>
-								<option value="drawer">{{ i18n.ts.drawer }}</option>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -119,8 +120,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { genId } from '@/utility/id.js';
 import XPalette from './emoji-palette.palette.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import { genId } from '@/utility/id.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
@@ -135,7 +137,21 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 
 const emojiPaletteForReaction = prefer.model('emojiPaletteForReaction');
+const emojiPaletteForReactionDef = computed<MkSelectItem[]>(() => [
+	{ label: `(${i18n.ts.auto})`, value: null },
+	...prefer.s.emojiPalettes.map(palette => ({
+		label: palette.name === '' ? `(${i18n.ts.noName})` : palette.name,
+		value: palette.id,
+	})),
+]);
 const emojiPaletteForMain = prefer.model('emojiPaletteForMain');
+const emojiPaletteForMainDef = computed<MkSelectItem[]>(() => [
+	{ label: `(${i18n.ts.auto})`, value: null },
+	...prefer.s.emojiPalettes.map(palette => ({
+		label: palette.name === '' ? `(${i18n.ts.noName})` : palette.name,
+		value: palette.id,
+	})),
+]);
 const emojiPickerScale = prefer.model('emojiPickerScale');
 const emojiPickerWidth = prefer.model('emojiPickerWidth');
 const emojiPickerHeight = prefer.model('emojiPickerHeight');

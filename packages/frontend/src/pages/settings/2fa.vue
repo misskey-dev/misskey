@@ -196,6 +196,7 @@ async function addSecurityKey() {
 	if (auth.canceled) return;
 
 	const registrationOptions = parseCreationOptionsFromJSON({
+		// @ts-expect-error misskey-js側に型がない
 		publicKey: await os.apiWithDialog('i/2fa/register-key', {
 			password: auth.result.password,
 			token: auth.result.token,
@@ -226,6 +227,7 @@ async function addSecurityKey() {
 		password: auth.result.password,
 		token: auth.result.token,
 		name: name.result,
+		// @ts-expect-error misskey-js側に型がない
 		credential: credential.toJSON(),
 	});
 }

@@ -27,7 +27,7 @@ const canonical = props.host === localHost ? `@${props.username}` : `@${props.us
 
 const url = `/${canonical}`;
 
-const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-mention'));
+const bg = tinycolor(getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-mention'));
 bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
 </script>

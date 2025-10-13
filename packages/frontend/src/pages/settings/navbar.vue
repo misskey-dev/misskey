@@ -86,9 +86,9 @@ async function addItem() {
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
-			value: k, text: navbarItemDef[k].title,
+			value: k, label: navbarItemDef[k].title,
 		})), {
-			value: '-', text: i18n.ts.divider,
+			value: '-', label: i18n.ts.divider,
 		}],
 	});
 	if (canceled || item == null) return;
