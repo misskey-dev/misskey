@@ -79,7 +79,7 @@ function onContextmenu(ev: MouseEvent) {
 
 function onHeaderClick() {
 	if (!rootEl.value) return;
-	const scrollEl = rootEl.value.querySelector<HTMLElement>('._pageScrollable');
+	const scrollEl = rootEl.value.querySelector<HTMLElement>('._pageScrollable,._pageScrollableReversed');
 	if (scrollEl) {
 		scrollEl.scrollTo({
 			top: 0,
