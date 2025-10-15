@@ -67,7 +67,6 @@ import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
-import { PREF_DEF } from '@/preferences/def.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
 import { genId } from '@/utility/id.js';
 
@@ -77,12 +76,13 @@ const items = ref(prefer.s.menu.map(x => ({
 	id: genId(),
 	type: x,
 })));
+const itemTypeValues = computed(() => items.value.map(x => x.type));
 
 const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
 const showNavbarSubButtons = prefer.model('showNavbarSubButtons');
 
 async function addItem() {
-	const menu = Object.keys(navbarItemDef).filter(k => !prefer.s.menu.includes(k));
+	const menu = Object.keys(navbarItemDef).filter(k => !itemTypeValues.value.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
@@ -102,8 +102,9 @@ function removeItem(index: number) {
 	items.value.splice(index, 1);
 }
 
-async function save() {
-	prefer.commit('menu', items.value.map(x => x.type));
+function save() {
+	prefer.commit('menu', itemTypeValues.value);
+	os.success();
 }
 
 function reset() {
