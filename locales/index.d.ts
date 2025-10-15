@@ -5605,6 +5605,10 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * タグセット
+     */
+    "tagset": string;
     "_compression": {
         "_quality": {
             /**
@@ -9673,9 +9677,9 @@ export interface Locale extends ILocale {
          */
         "chat": string;
         /**
-         * 実況用固定タグ
+         * 実況用タグセット
          */
-        "koteitag": string;
+        "tagset": string;
     };
     "_cw": {
         /**
@@ -10897,7 +10901,7 @@ export interface Locale extends ILocale {
             "deleteConfirm": string;
         };
     };
-    "_koteitag": {
+    "_tagset": {
         /**
          * タグをクリア
          */

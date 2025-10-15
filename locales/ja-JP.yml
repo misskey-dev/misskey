@@ -1396,6 +1396,7 @@ scheduled: "予約"
 widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
+tagset: "タグセット"
 
 _compression:
   _quality:
@@ -2542,7 +2543,7 @@ _widgets:
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
   chat: "ダイレクトメッセージ"
-  koteitag: "実況用固定タグ"
+  tagset: "実況用タグセット"
 
 _cw:
   hide: "隠す"
@@ -2887,7 +2888,7 @@ _abuseReport:
     notifiedWebhook: "使用するWebhook"
     deleteConfirm: "通知先を削除しますか？"
 
-_koteitag:
+_tagset:
   clearTags: "タグをクリア"
   air: "エア番組"
   livecure: "実況"

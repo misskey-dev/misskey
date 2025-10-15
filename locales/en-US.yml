@@ -1392,6 +1392,7 @@ scheduledToPostOnX: "Note is scheduled for {x}"
 schedule: "Schedule"
 scheduled: "Scheduled"
 widgets: "Widgets"
+tagset: "Tagset"
 _compression:
   _quality:
     high: "High quality"
@@ -2482,7 +2483,7 @@ _widgets:
   clicker: "Clicker"
   birthdayFollowings: "Today's Birthdays"
   chat: "Chat with user"
-  koteitag: "Koteitag"
+  tagset: "Tagset"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -2787,7 +2788,7 @@ _webhookSettings:
   deleteConfirm: "Are you sure you want to delete the Webhook?"
   testRemarks: "Click the button to the right of the switch to send a test Webhook with dummy data."
 
-_koteitag:
+_tagset:
   clearTags: "Clear Tags"
   air: "Air Program"
   livecure: "Livecure"
