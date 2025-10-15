@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div style="height: 100%;" ref="rootEl">
+	<div ref="rootEl" style="height: 100%;">
 		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" @contextmenu.stop="onContextmenu"/>
 		<RouterView v-else @contextmenu.stop="onContextmenu"/>
 	</div>
