@@ -471,8 +471,8 @@ export class UserEntityService implements OnModuleInit {
 			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : null;
+		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : undefined;
+		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : undefined;
 		const unreadAnnouncements = isMe && isDetailed ?
 			(await this.announcementService.getUnreadAnnouncements(user)).map((announcement) => ({
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
@@ -481,6 +481,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
 
+		// TODO: 例えば avatarUrl: true など間違った型を設定しても型エラーにならないのをどうにかする(ジェネリクス使わない方法で実装するしかなさそう？)
 		const packed = {
 			id: user.id,
 			name: user.name,

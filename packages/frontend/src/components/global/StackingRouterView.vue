@@ -87,7 +87,7 @@ router.useListener('change', ({ resolved }) => {
 	const fullPath = router.getCurrentFullPath();
 
 	if (tabs.value.some(tab => tab.routePath === routePath && deepEqual(resolved.props, tab.props))) {
-		const newTabs = [];
+		const newTabs = [] as typeof tabs.value;
 		for (const tab of tabs.value) {
 			newTabs.push(tab);
 

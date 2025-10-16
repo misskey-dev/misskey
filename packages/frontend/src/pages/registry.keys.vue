@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 			<FormSection v-if="keys">
-				<template #label>{{ i18n.ts.keys }}</template>
+				<template #label>{{ i18n.ts._registry.keys }}</template>
 				<div class="_gaps_s">
 					<FormLink v-for="key in keys" :to="`/registry/value/${props.domain}/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 				</div>

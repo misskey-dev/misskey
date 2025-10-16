@@ -27,16 +27,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import { useInterval } from '@@/js/use-interval.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import { sum } from '@/utility/array.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -48,7 +48,21 @@ const props = defineProps<{
 	author?: Misskey.entities.UserLite;
 }>();
 
-const remaining = ref(-1);
+const now = useLowresTime();
+
+const expiresAtTime = computed(() => props.expiresAt ? new Date(props.expiresAt).getTime() : null);
+
+const remaining = computed(() => {
+	if (expiresAtTime.value == null) return -1;
+	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
+});
+
+const remainingWatchStop = watch(remaining, (to) => {
+	if (to <= 0) {
+		showResult.value = true;
+		remainingWatchStop();
+	}
+}, { immediate: true });
 
 const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
@@ -71,22 +85,7 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${props.noteId}`,
 }));
 
-// 期限付きアンケート
-if (props.expiresAt) {
-	const tick = () => {
-		remaining.value = Math.floor(Math.max(new Date(props.expiresAt!).getTime() - Date.now(), 0) / 1000);
-		if (remaining.value === 0) {
-			showResult.value = true;
-		}
-	};
-
-	useInterval(tick, 3000, {
-		immediate: true,
-		afterMounted: false,
-	});
-}
-
-const vote = async (id) => {
+const vote = async (id: number) => {
 	if (props.readOnly || closed.value || isVoted.value) return;
 
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });

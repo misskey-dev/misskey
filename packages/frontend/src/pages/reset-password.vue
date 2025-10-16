@@ -34,6 +34,7 @@ const props = defineProps<{
 const password = ref('');
 
 async function save() {
+	if (props.token == null) return;
 	await os.apiWithDialog('reset-password', {
 		token: props.token,
 		password: password.value,

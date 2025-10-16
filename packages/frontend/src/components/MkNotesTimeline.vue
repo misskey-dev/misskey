@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination :paginator="paginator" :autoLoad="autoLoad" :pullToRefresh="pullToRefresh" :withControl="withControl">
+<MkPagination :paginator="paginator" :direction="direction" :autoLoad="autoLoad" :pullToRefresh="pullToRefresh" :withControl="withControl">
 	<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
 
 	<template #default="{ items: notes }">
@@ -50,11 +50,14 @@ import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-sep
 const props = withDefaults(defineProps<{
 	paginator: T;
 	noGap?: boolean;
+
+	direction?: 'up' | 'down' | 'both';
 	autoLoad?: boolean;
 	pullToRefresh?: boolean;
 	withControl?: boolean;
 }>(), {
 	autoLoad: true,
+	direction: 'down',
 	pullToRefresh: true,
 	withControl: true,
 });

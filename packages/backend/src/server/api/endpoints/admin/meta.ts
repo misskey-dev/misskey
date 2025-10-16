@@ -223,10 +223,12 @@ export const meta = {
 			sensitiveMediaDetection: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ['none', 'all', 'local', 'remote'],
 			},
 			sensitiveMediaDetectionSensitivity: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
 			},
 			setSensitiveFlagAutomatically: {
 				type: 'boolean',
@@ -470,6 +472,10 @@ export const meta = {
 				optional: false, nullable: true,
 			},
 			repositoryUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			feedbackUrl: {
 				type: 'string',
 				optional: false, nullable: true,
 			},

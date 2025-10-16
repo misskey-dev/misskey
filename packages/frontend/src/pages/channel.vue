@@ -131,6 +131,8 @@ watch(() => props.channelId, async () => {
 	channel.value = await misskeyApi('channels/show', {
 		channelId: props.channelId,
 	});
+	if (channel.value == null) return; // TSを黙らすため
+
 	favorited.value = channel.value.isFavorited ?? false;
 	if (favorited.value || channel.value.isFollowing) {
 		tab.value = 'timeline';
@@ -150,7 +152,7 @@ function edit() {
 	router.push('/channels/:channelId/edit', {
 		params: {
 			channelId: props.channelId,
-		}
+		},
 	});
 }
 

@@ -50,7 +50,7 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         submodules: true
     - name: Setup pnpm
@@ -129,7 +129,7 @@ jobs:
           - 56312:6379
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
         with:
           submodules: true
       - name: Setup pnpm
@@ -173,7 +173,7 @@ jobs:
           POSTGRES_HOST_AUTH_METHOD: trust
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.3.0
         with:
           submodules: true
       - name: Setup pnpm

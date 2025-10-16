@@ -1,8 +1,8 @@
 diff --git a/driver/postgres/PostgresDriver.js b/driver/postgres/PostgresDriver.js
-index 278f29c1f3deec4939bb4ed90e6edae167f704e0..9a84c3098dda915d6c33e24d925a8fa09af9095e 100644
+index e13b903c73b71113bb529552e59fb4ce0ca8af0c..50de6a60120ece7ebf49009eac588a5313343f39 100644
 --- a/driver/postgres/PostgresDriver.js
 +++ b/driver/postgres/PostgresDriver.js
-@@ -785,10 +785,10 @@ class PostgresDriver {
+@@ -819,10 +819,10 @@ class PostgresDriver {
              const tableColumnDefault = typeof tableColumn.default === "string"
                  ? JSON.parse(tableColumn.default.substring(1, tableColumn.default.length - 1))
                  : tableColumn.default;

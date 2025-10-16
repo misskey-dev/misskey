@@ -80,14 +80,14 @@ async function change() {
 		type: 'password',
 		autocomplete: 'new-password',
 	});
-	if (canceled2) return;
+	if (canceled2 || newPassword == null) return;
 
 	const { canceled: canceled3, result: newPassword2 } = await os.inputText({
 		title: i18n.ts.newPasswordRetype,
 		type: 'password',
 		autocomplete: 'new-password',
 	});
-	if (canceled3) return;
+	if (canceled3 || newPassword2 == null) return;
 
 	if (newPassword !== newPassword2) {
 		os.alert({

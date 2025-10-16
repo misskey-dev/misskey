@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkCodeEditor>
 
 	<div class="_buttons">
-		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" inline @click="() => previewTheme(installThemeCode!)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" primary inline @click="() => install(installThemeCode!)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>
@@ -39,7 +39,7 @@ async function install(code: string): Promise<void> {
 		});
 		installThemeCode.value = null;
 		router.push('/settings/theme');
-	} catch (err) {
+	} catch (err: any) {
 		switch (err.message.toLowerCase()) {
 			case 'this theme is already installed':
 				os.alert({

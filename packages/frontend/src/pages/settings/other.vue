@@ -102,6 +102,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableHapticFeedback">
 							<template #label>Enable haptic feedback</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableWebTranslatorApi">
+							<template #label>Enable in-browser translator API</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -128,6 +131,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkButton @click="resetAllTips"><i class="ti ti-bulb"></i> {{ i18n.ts.redisplayAllTips }}</MkButton>
 		<MkButton @click="hideAllTips"><i class="ti ti-bulb-off"></i> {{ i18n.ts.hideAllTips }}</MkButton>
+
+		<hr>
+
+		<MkButton @click="forceCloudBackup">Force cloud backup</MkButton>
 
 		<hr>
 
@@ -167,6 +174,7 @@ import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
+import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
@@ -177,6 +185,7 @@ const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
+const enableWebTranslatorApi = prefer.model('experimental.enableWebTranslatorApi');
 
 watch(skipNoteRender, () => {
 	suggestReload();
@@ -222,6 +231,11 @@ function hideAllTips() {
 
 function readAllChatMessages() {
 	os.apiWithDialog('chat/read-all', {});
+}
+
+async function forceCloudBackup() {
+	await cloudBackup();
+	os.success();
 }
 
 const headerActions = computed(() => []);

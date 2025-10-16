@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
 import type { ClipsRepository } from '@/models/_.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -29,7 +30,13 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
 	required: [],
 } as const;
 
@@ -39,12 +46,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
+		private queryService: QueryService,
 		private clipEntityService: ClipEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clips = await this.clipsRepository.findBy({
-				userId: me.id,
-			});
+			const query = this.queryService.makePaginationQuery(this.clipsRepository.createQueryBuilder('clip'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('clip.userId = :userId', { userId: me.id });
+
+			const clips = await query.limit(ps.limit).getMany();
 
 			return await this.clipEntityService.packMany(clips, me);
 		});

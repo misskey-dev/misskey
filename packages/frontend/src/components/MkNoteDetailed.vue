@@ -302,7 +302,7 @@ if (noteViewInterruptors.length > 0) {
 }
 
 const isRenote = Misskey.note.isPureRenote(note);
-const appearNote = getAppearNote(note);
+const appearNote = getAppearNote(note) ?? note;
 const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
 	note: appearNote,
 	parentNote: note,
@@ -392,6 +392,9 @@ const reactionsPaginator = markRaw(new Paginator('notes/reactions', {
 }));
 
 useTooltip(renoteButton, async (showing) => {
+	const anchorElement = renoteButton.value;
+	if (anchorElement == null) return;
+
 	const renotes = await misskeyApi('notes/renotes', {
 		noteId: appearNote.id,
 		limit: 11,
@@ -405,7 +408,7 @@ useTooltip(renoteButton, async (showing) => {
 		showing,
 		users,
 		count: appearNote.renoteCount,
-		targetElement: renoteButton.value,
+		anchorElement: anchorElement,
 	}, {
 		closed: () => dispose(),
 	});
@@ -428,7 +431,7 @@ if (appearNote.reactionAcceptance === 'likeOnly') {
 			reaction: '❤️',
 			users,
 			count: $appearNote.reactionCount,
-			targetElement: reactButton.value!,
+			anchorElement: reactButton.value!,
 		}, {
 			closed: () => dispose(),
 		});

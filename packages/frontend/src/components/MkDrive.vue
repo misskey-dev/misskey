@@ -35,18 +35,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="select === 'folder'">
 			<template v-if="folder == null">
 				<MkButton v-if="!isRootSelected" @click="isRootSelected = true">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="isRootSelected = false">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
 				</MkButton>
 			</template>
 			<template v-else>
 				<MkButton v-if="!selectedFolders.some(f => f.id === folder!.id)" @click="selectedFolders.push(folder)">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder!.id)">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
 				</MkButton>
 			</template>
 		</div>
@@ -112,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
-				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
+				<div v-if="draghover">{{ i18n.ts.dropHereToUpload }}</div>
 				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong></div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
@@ -152,11 +152,12 @@ import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
+	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
 }>(), {
+	initialFolder: null,
 	multiple: false,
 	select: null,
 });
@@ -293,7 +294,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent) {
+function onDrop(ev: DragEvent): void | boolean {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;
@@ -363,7 +364,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 }
 
-function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder | null) {
+function onUploadRequested(files: File[], folder?: Misskey.entities.DriveFolder | null) {
 	os.launchUploader(files, {
 		folderId: folder?.id ?? null,
 	});
@@ -698,7 +699,7 @@ useGlobalEvent('driveFoldersDeleted', (folders) => {
 	}
 });
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['drive']> | null = null;
 
 onMounted(() => {
 	if (store.s.realtimeMode) {
