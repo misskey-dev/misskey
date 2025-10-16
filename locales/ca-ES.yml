@@ -775,6 +775,7 @@ lockedAccountInfo: "Tret que establiu la visibilitat de la nota a \"Només segui
 alwaysMarkSensitive: "Marcar com a sensible per defecte"
 loadRawImages: "Carregar les imatges originals en comptes de miniatures "
 disableShowingAnimatedImages: "No reproduir imatges animades"
+disableShowingAnimatedImages_caption: "Si les imatges animades no es reprodueixen, independentment d'aquesta configuració, és possible que la configuració d'accessibilitat del navegador i el sistema operatiu, els modes d'estalvi d'energia i similars estiguin interferint."
 highlightSensitiveMedia: "Ressalta els medis marcats com a sensibles"
 verificationEmailSent: "S'ha enviat un correu electrònic de verificació. Fes clic a l'enllaç per completar la verificació."
 notSet: "Sense definir"
