@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
@@ -57,6 +57,7 @@ const remaining = computed(() => {
 	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
 });
 
+
 const total = computed(() => sum(props.choices.map(x => x.votes)));
 const closed = computed(() => remaining.value === 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
@@ -72,12 +73,13 @@ const timer = computed(() => i18n.tsx._poll[
 }));
 
 const showResult = ref(props.readOnly || isVoted.value);
-// watchに immediate オプションがあるので showResult のあとに定義されている必要がある
-watch(remaining, (to) => {
-	if (to <= 0) {
+
+const remainingWatchStop = watchEffect(() => {
+	if (remaining.value <= 0) {
 		showResult.value = true;
+		remainingWatchStop();
 	}
-}, { immediate: true });
+}, {  flush: 'post'});
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
 	url: `https://${host}/notes/${props.noteId}`,
