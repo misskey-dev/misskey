@@ -31,4 +31,4 @@ export const appearDirective = {
 	unmounted(src) {
 		if (src._observer_) src._observer_.disconnect();
 	},
-} satisfies Directive<HTMLElementWithObserver, () => void>;
+} as Directive<HTMLElementWithObserver, () => void>;

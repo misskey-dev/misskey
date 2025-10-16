@@ -128,4 +128,4 @@ export const tooltipDirective = {
 		if (self.checkTimer) window.clearTimeout(self.checkTimer);
 		self.close();
 	},
-} satisfies Directive<TooltipDirectiveElement, string, TooltipDirectiveModifiers, TooltipDirectiveArg>;
+} as Directive<TooltipDirectiveElement, string, TooltipDirectiveModifiers, TooltipDirectiveArg>;

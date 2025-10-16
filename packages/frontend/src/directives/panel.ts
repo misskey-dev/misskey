@@ -18,4 +18,4 @@ export const panelDirective = {
 			src.style.backgroundColor = 'var(--MI_THEME-panel)';
 		}
 	},
-} satisfies Directive<HTMLElement>;
+} as Directive<HTMLElement>;

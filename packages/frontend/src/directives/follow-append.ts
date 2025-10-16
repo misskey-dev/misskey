@@ -41,4 +41,4 @@ export const followAppendDirective = {
 	unmounted(src) {
 		if (src._ro_) src._ro_.unobserve(src);
 	},
-} satisfies Directive<HTMLElementWithRO, boolean>;
+} as Directive<HTMLElementWithRO, boolean>;

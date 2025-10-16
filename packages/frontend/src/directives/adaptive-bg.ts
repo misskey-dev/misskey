@@ -18,4 +18,4 @@ export const adaptiveBgDirective = {
 			src.style.backgroundColor = myBg;
 		}
 	},
-} satisfies Directive<HTMLElement>;
+} as Directive<HTMLElement>;

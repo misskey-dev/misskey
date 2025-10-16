@@ -25,4 +25,4 @@ export const rippleDirective = {
 			});
 		});
 	},
-} satisfies Directive<HTMLElement, boolean | undefined>;
+} as Directive<HTMLElement, boolean | undefined>;

@@ -33,4 +33,4 @@ export const adaptiveBorderDirective = {
 	unmounted(src) {
 		globalEvents.off('themeChanged', handlerMap.get(src));
 	},
-} satisfies Directive<HTMLElement>;
+} as Directive<HTMLElement>;

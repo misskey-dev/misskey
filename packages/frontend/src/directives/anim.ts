@@ -20,4 +20,4 @@ export const animDirective = {
 			src.style.transform = 'none';
 		}, 1);
 	},
-} satisfies Directive<HTMLElement>;
+} as Directive<HTMLElement>;
