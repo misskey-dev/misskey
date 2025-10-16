@@ -380,7 +380,7 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 						background-repeat: repeat-y;
 						background-position-x: center;
 						background-position-y: 50%;
-						will-change: background-position;
+						will-change: background-position-y;
 					}
 
 					> .fade {
