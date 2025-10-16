@@ -62,15 +62,18 @@ const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
 	naked?: boolean;
+	handleScrollToTop?: boolean;
 	menu?: MenuItem[];
 	refresher?: () => Promise<void>;
 }>(), {
 	isStacked: false,
 	naked: false,
+	handleScrollToTop: true,
 });
 
 const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
+	(ev: 'headerClick', ctx: MouseEvent): void;
 }>();
 
 const body = useTemplateRef('body');
@@ -252,7 +255,10 @@ function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
-function goTop() {
+function goTop(ev: MouseEvent) {
+	emit('headerClick', ev);
+	if (!props.handleScrollToTop) return;
+
 	if (body.value) {
 		body.value.scrollTo({
 			top: 0,
