@@ -3119,6 +3119,10 @@ export interface Locale extends ILocale {
      */
     "disableShowingAnimatedImages": string;
     /**
+     * この設定に関わらずアニメーション画像が再生されないときは、ブラウザ・OSのアクセシビリティ設定や省電力設定等が干渉している場合があります。
+     */
+    "disableShowingAnimatedImages_caption": string;
+    /**
      * メディアがセンシティブであることを分かりやすく表示
      */
     "highlightSensitiveMedia": string;
