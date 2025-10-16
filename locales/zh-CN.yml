@@ -775,6 +775,7 @@ lockedAccountInfo: "即使启用该功能，只要帖子可见范围不是「仅
 alwaysMarkSensitive: "默认将媒体文件标记为敏感内容"
 loadRawImages: "添加附件图像的缩略图时使用原始图像质量"
 disableShowingAnimatedImages: "不播放动画"
+disableShowingAnimatedImages_caption: "如果即使关闭了此设置但动画仍无法播放，则可能是浏览器或操作系统的辅助功能设置，又或者是省电设置等产生了干扰。"
 highlightSensitiveMedia: "高亮显示敏感媒体"
 verificationEmailSent: "已发送确认电子邮件。请访问电子邮件中的链接以完成设置。"
 notSet: "未设置"
