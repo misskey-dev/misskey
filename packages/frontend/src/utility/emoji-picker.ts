@@ -76,7 +76,6 @@ class EmojiPicker {
 			if (this.windowShowing) return;
 			this.windowShowing = true;
 			const { dispose, componentRef } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
-				anchorElement: opts.anchorElement,
 				pinnedEmojis: this.emojisRef,
 				asReactionPicker: false,
 			}, {
@@ -89,7 +88,7 @@ class EmojiPicker {
 					dispose();
 				},
 			});
-			this.windowComponentEl.value = componentRef.value;
+			this.windowComponentEl = componentRef;
 		} else {
 			this.anchorElement.value = opts.anchorElement;
 			this.dialogShowing.value = true;

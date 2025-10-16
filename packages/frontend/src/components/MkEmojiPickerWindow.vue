@@ -25,14 +25,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { globalEvents } from '@/events.js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 
 withDefaults(defineProps<{
-	src?: HTMLElement;
 	showPinned?: boolean;
 	pinnedEmojis?: string[];
 	asReactionPicker?: boolean;
