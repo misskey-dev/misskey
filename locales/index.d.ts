@@ -12342,6 +12342,14 @@ export interface Locale extends ILocale {
          */
         "repeat": string;
         /**
+         * 回転した分の面積を確保する
+         */
+        "preserveBoundingRect": string;
+        /**
+         * 通常はオンで問題ありません。ウォーターマークを回転させた際に余白が不自然になった場合はオフにしてみてください。
+         */
+        "preserveBoundingRectDescription": string;
+        /**
          * 不透明度
          */
         "opacity": string;
