@@ -90,6 +90,7 @@ function createTextLayer(): WatermarkPreset['layers'][number] {
 		angle: 0,
 		opacity: 0.75,
 		repeat: false,
+		noBoundingBoxExpansion: false,
 	};
 }
 
@@ -104,6 +105,7 @@ function createImageLayer(): WatermarkPreset['layers'][number] {
 		angle: 0,
 		opacity: 0.75,
 		repeat: false,
+		noBoundingBoxExpansion: false,
 		cover: false,
 	};
 }
