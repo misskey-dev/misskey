@@ -23,7 +23,7 @@ import { MfmService, type Appender } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta } from '@/models/_.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta, MiChatMessage } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { IdService } from '@/core/IdService.js';
@@ -499,6 +499,31 @@ export class ApRendererService {
 			sensitive: note.cw != null || files.some(file => file.isSensitive),
 			tag,
 			...asPoll,
+		};
+	}
+
+	@bindThis
+	public async renderChatMessage(message: MiChatMessage, dive = true): Promise<IPost> {
+		const attributedTo = this.userEntityService.genLocalUserUri(message.fromUserId);
+
+		const file = message.fileId ? await this.driveFilesRepository.findOneBy({ id: message.fileId }) : null;
+
+		const emojis = await this.getEmojis(message.emojis);
+		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
+
+		const tag = [
+			...apemojis,
+		];
+
+		return {
+			id: `${this.config.url}/chat-messages/${message.id}`,
+			type: 'Misskey:ChatMessage',
+			attributedTo,
+			text: message.text,
+			published: this.idService.parse(message.id).date.toISOString(),
+			to: message.toUserId,
+			attachment: file ? [this.renderDocument(file)] : [],
+			tag,
 		};
 	}
 
