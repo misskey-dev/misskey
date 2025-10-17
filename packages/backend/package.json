@@ -145,7 +145,7 @@
 		"nanoid": "5.1.6",
 		"nested-property": "4.0.0",
 		"node-fetch": "3.3.2",
-		"nodemailer": "6.10.1",
+		"nodemailer": "7.0.7",
 		"nsfwjs": "4.2.0",
 		"oauth": "0.10.2",
 		"oauth2orize": "1.12.0",
