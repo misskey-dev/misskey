@@ -324,8 +324,8 @@ importers:
         specifier: 3.3.2
         version: 3.3.2
       nodemailer:
-        specifier: 6.10.1
-        version: 6.10.1
+        specifier: 7.0.7
+        version: 7.0.7
       nsfwjs:
         specifier: 4.2.0
         version: 4.2.0(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3)
@@ -8482,8 +8482,8 @@ packages:
   node-releases@2.0.21:
     resolution: {integrity: sha512-5b0pgg78U3hwXkCM8Z9b2FJdPZlr9Psr9V2gQPESdGHqbntyFJKFW4r5TeWGFzafGY3hzs1JC62VEQMbl1JFkw==}
 
-  nodemailer@6.10.1:
-    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
+  nodemailer@7.0.7:
+    resolution: {integrity: sha512-jGOaRznodf62TVzdyhKt/f1Q/c3kYynk8629sgJHpRzGZj01ezbgMMWJSAjHADcwTKxco3B68/R+KHJY2T5BaA==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -10854,6 +10854,9 @@ packages:
 
   vue-component-type-helpers@3.1.0:
     resolution: {integrity: sha512-cC1pYNRZkSS1iCvdlaMbbg2sjDwxX098FucEjtz9Yig73zYjWzQsnMe5M9H8dRNv55hAIDGUI29hF2BEUA4FMQ==}
+
+  vue-component-type-helpers@3.1.1:
+    resolution: {integrity: sha512-B0kHv7qX6E7+kdc5nsaqjdGZ1KwNKSUQDWGy7XkTYT7wFsOpkEyaJ1Vq79TjwrrtuLRgizrTV7PPuC4rRQo+vw==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -14666,7 +14669,7 @@ snapshots:
       storybook: 9.1.10(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.3(@types/node@22.18.8)(typescript@5.9.3))(prettier@3.6.2)(utf-8-validate@6.0.5)(vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       type-fest: 2.19.0
       vue: 3.5.22(typescript@5.9.3)
-      vue-component-type-helpers: 3.1.0
+      vue-component-type-helpers: 3.1.1
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.36.0)(typescript@5.9.3)':
     dependencies:
@@ -19965,7 +19968,7 @@ snapshots:
 
   node-releases@2.0.21: {}
 
-  nodemailer@6.10.1: {}
+  nodemailer@7.0.7: {}
 
   nodemon@3.1.10:
     dependencies:
@@ -22451,6 +22454,8 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.1.0: {}
+
+  vue-component-type-helpers@3.1.1: {}
 
   vue-demi@0.14.7(vue@3.5.22(typescript@5.9.3)):
     dependencies:
