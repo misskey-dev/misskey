@@ -38,6 +38,7 @@ export type SearchOpts = {
 	userId?: MiNote['userId'] | null;
 	channelId?: MiNote['channelId'] | null;
 	host?: string | null;
+	searchFrom? : string | null;
 };
 
 export type SearchPagination = {
@@ -184,6 +185,7 @@ export class SearchService {
 			case 'sqlPgroonga': {
 				// ほとんど内容に差がないのでsqlLikeとsqlPgroongaを同じ処理にしている.
 				// 今後の拡張で差が出る用であれば関数を分ける.
+
 				return this.searchNoteByLike(q, me, opts, pagination);
 			}
 			case 'meilisearch': {
@@ -220,10 +222,27 @@ export class SearchService {
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
-			query.andWhere('note.text &@~ :q', { q });
+			// pgroonga
+			if(opts.searchFrom === 'textWithCw'){
+				// textWithCwオプション 
+				query.andWhere('(coalesce(note.cw, \'\') || note.text) &@~ :q', { q });
+			}else {
+				// 通常検索
+				query.andWhere('note.text &@~ :q', { q });
+			}
+
+
 		} else {
-			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
-		}
+			// Postgresql 標準
+			if(opts.searchFrom === 'textWithCw'){
+				// textWithCwオプション 
+				query.andWhere('LOWER((coalesce(note.cw, \'\') || note.text)) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
+			}else {
+				// 通常検索
+				query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
+			}
+			
+		} 
 
 		if (opts.host) {
 			if (opts.host === '.') {
