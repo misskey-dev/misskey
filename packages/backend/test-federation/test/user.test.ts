@@ -44,12 +44,11 @@ describe('User', () => {
 					'uri',
 					'createdAt',
 					'lastFetchedAt',
-					'publicReactions',
 				]);
 			});
 		});
 
-		describe('ffVisibility is federated', () => {
+		describe('ff/reactions visibility is federated', () => {
 			let alice: LoginUser, bob: LoginUser;
 			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
@@ -79,6 +78,7 @@ describe('User', () => {
 				])) {
 					strictEqual(user.followersVisibility, 'public');
 					strictEqual(user.followingVisibility, 'public');
+					strictEqual(user.publicReactions, true);
 				}
 			});
 
@@ -112,6 +112,22 @@ describe('User', () => {
 				])) {
 					strictEqual(user.followersVisibility, 'private');
 					strictEqual(user.followingVisibility, 'private');
+				}
+			});
+
+			test.skip('Setting false for publicReactions is federated', async () => {
+				await Promise.all([
+					alice.client.request('i/update', { publicReactions: false }),
+					bob.client.request('i/update', { publicReactions: false }),
+				]);
+				await sleep();
+
+				for (const user of await Promise.all([
+					alice.client.request('users/show', { userId: bobInA.id }),
+					bob.client.request('users/show', { userId: aliceInB.id }),
+				])) {
+					strictEqual(user.publicReactions, false);
+					strictEqual(user.publicReactions, false);
 				}
 			});
 		});
