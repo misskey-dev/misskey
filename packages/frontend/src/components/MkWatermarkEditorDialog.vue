@@ -263,7 +263,7 @@ async function initRenderer() {
 
 	await renderer!.setLayers(preset.layers);
 
-	await renderer!.render();
+	renderer!.render();
 }
 
 onMounted(async () => {
