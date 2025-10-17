@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	:preferType="'dialog'"
 	@click="onBgClick()"
+	@close="onModalClose()"
 	@closed="onModalClosed()"
 	@esc="onEsc"
 >
@@ -26,9 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useTemplateRef } from 'vue';
-import type { PostFormProps } from '@/types/post-form.js';
 import MkModal from '@/components/MkModal.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import type { PostFormProps } from '@/types/post-form.js';
 
 const props = withDefaults(defineProps<PostFormProps & {
 	instant?: boolean;
@@ -49,6 +51,10 @@ function onPosted() {
 	modal.value?.close({
 		useSendAnimation: true,
 	});
+}
+
+function onModalClose() {
+	emojiPicker.closeWindow();
 }
 
 async function _close() {

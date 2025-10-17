@@ -277,6 +277,9 @@ export const PREF_DEF = definePreferences({
 		default: 3,
 	},
 	emojiPickerStyle: {
+		default: 'auto' as 'auto' | 'popup' | 'drawer' | 'window',
+	},
+	reactionPickerStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
 	},
 	squareAvatars: {
