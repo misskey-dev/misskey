@@ -88,6 +88,7 @@ import { validators } from '@/components/grid/cell-validators.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import { selectFile } from '@/utility/drive.js';
+import { deepClone } from '@/utility/clone.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
 import { useLoading } from '@/composables/use-loading.js';
 
@@ -513,7 +514,7 @@ function refreshGridItems() {
 		originalUrl: it.originalUrl,
 		type: it.type,
 	}));
-	originGridItems.value = JSON.parse(JSON.stringify(gridItems.value));
+	originGridItems.value = deepClone(gridItems.value);
 }
 
 onMounted(async () => {
