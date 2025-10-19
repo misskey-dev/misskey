@@ -75,23 +75,22 @@ void main() {
 	vec2 margin = wmSize * u_margin;
 
 	vec4 wmCol = vec4(0.0);
-	bool painted = false;
 
 	if (u_repeat) {
-		// パターンはキャンバス回転と同じ見え方にするため、スクリーン->パターン座標への逆回転を使う
+		// リピートモード: テクスチャのWRAP属性(GL_REPEAT)を利用
+		// スクリーン座標を回転させてタイル空間に変換
 		vec2 center = outSize * 0.5;
 		vec2 q = center + rot(-theta) * (p - center);
-		vec2 tile = wmSize + margin * 2.0;
-		vec2 local = vec2(mod(q.x, tile.x), mod(q.y, tile.y));
 
-		// modは負値で負になる可能性があるため補正
-		local = mix(local, local + tile, step(local, vec2(0.0)));
-		bool inside = all(greaterThanEqual(local, margin)) && all(lessThan(local, margin + wmSize));
-		if (inside) {
-			vec2 uvWm = (local - margin) / wmSize; // 0..1
-			wmCol = texture(u_watermark, uvWm);
-			painted = true;
-		}
+		// タイルサイズ(ウォーターマーク + マージン)で正規化してUV座標に変換
+		vec2 tile = wmSize + margin * 2.0;
+		vec2 uvWm = q / tile;
+
+		// マージン部分を考慮してUVをオフセット・スケール
+		uvWm = (uvWm * tile - margin) / wmSize;
+
+		// テクスチャのWRAP_REPEATにより自動的にタイル化される
+		wmCol = texture(u_watermark, uvWm);
 	} else {
 		// 非リピート: アライメントと回転に従い一枚だけ描画
 		float rotateX = 0.0;
@@ -128,16 +127,11 @@ void main() {
 		if (inside) {
 			vec2 uvWm = (q - rectMin) / wmSize;
 			wmCol = texture(u_watermark, uvWm);
-			painted = true;
 		}
 	}
 
-	if (painted) {
-		float a = clamp(wmCol.a * u_opacity, 0.0, 1.0);
-		out_color = mix(base, vec4(wmCol.rgb, 1.0), a);
-	} else {
-		out_color = base;
-	}
+	float a = clamp(wmCol.a * u_opacity, 0.0, 1.0);
+	out_color = mix(base, vec4(wmCol.rgb, 1.0), a);
 }
 `;
 
@@ -208,6 +202,16 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 		if (wm) {
 			gl.activeTexture(gl.TEXTURE1);
 			gl.bindTexture(gl.TEXTURE_2D, wm.texture);
+
+			// リピートモードに応じてWRAP属性を設定
+			if (params.repeat) {
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+			} else {
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			}
+
 			gl.uniform1i(u.watermark, 1);
 			gl.uniform2f(u.wmResolution, wm.width, wm.height);
 			gl.uniform1i(u.wmEnabled, 1);
