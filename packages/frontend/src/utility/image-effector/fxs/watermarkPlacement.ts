@@ -110,15 +110,25 @@ void main() {
 		// アライメントに基づく中心で回転
 		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
 
-		// タイルサイズ(ウォーターマーク + マージン)で正規化してUV座標に変換
+		// タイルサイズ(ウォーターマーク + マージン)で正規化
 		vec2 tile = wmSize + margin * 2.0;
-		vec2 uvWm = q / tile;
+		vec2 tileUv = q / tile;
 
-		// マージン部分を考慮してUVをオフセット・スケール
-		uvWm = (uvWm * tile - margin) / wmSize;
+		// タイル内のローカル座標(0..1)を取得
+		vec2 localUv = fract(tileUv);
 
-		// テクスチャのWRAP_REPEATにより自動的にタイル化される
-		wmCol = texture(u_watermark, uvWm);
+		// ローカル座標をピクセル単位に変換
+		vec2 localPos = localUv * tile;
+
+		// マージン領域内かチェック
+		bool inMargin = any(lessThan(localPos, margin)) || any(greaterThanEqual(localPos, margin + wmSize));
+
+		if (!inMargin) {
+			// ウォーターマーク領域内: UV座標を計算
+			vec2 uvWm = (localPos - margin) / wmSize;
+			wmCol = texture(u_watermark, uvWm);
+		}
+		// マージン領域の場合は透明(wmCol = vec4(0.0))のまま
 	} else {
 		// アライメントと回転に従い一枚だけ描画
 		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
