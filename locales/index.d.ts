@@ -4723,6 +4723,10 @@ export interface Locale extends ILocale {
      */
     "enableIdenticonGeneration": string;
     /**
+     * リモートユーザーのロールバッジを表示する
+     */
+    "showRoleBadgesOfRemoteUsers": string;
+    /**
      * オフにするとパフォーマンスが向上します。
      */
     "turnOffToImprovePerformance": string;
