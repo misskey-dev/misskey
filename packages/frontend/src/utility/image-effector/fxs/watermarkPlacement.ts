@@ -110,9 +110,13 @@ void main() {
 		// アライメントに基づく中心で回転
 		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
 
+		// タイルグリッドの原点をrectMin（アライメント位置）に設定
+		vec2 gridOrigin = rectMin - margin;
+		vec2 qFromOrigin = q - gridOrigin;
+
 		// タイルサイズ(ウォーターマーク + マージン)で正規化
 		vec2 tile = wmSize + margin * 2.0;
-		vec2 tileUv = q / tile;
+		vec2 tileUv = qFromOrigin / tile;
 
 		// タイル内のローカル座標(0..1)を取得
 		vec2 localUv = fract(tileUv);
