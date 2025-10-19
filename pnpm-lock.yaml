@@ -1079,6 +1079,9 @@ importers:
       tsx:
         specifier: 4.20.6
         version: 4.20.6
+      vite-plugin-glsl:
+        specifier: 1.5.4
+        version: 1.5.4(@rollup/pluginutils@5.3.0(rollup@4.52.3))(esbuild@0.25.10)(vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -10735,6 +10738,19 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
+  vite-plugin-glsl@1.5.4:
+    resolution: {integrity: sha512-EUmwL+IDK+dGDAlaKm89++k8aJ4qmHjLQxrngww3GLOOAQ4aZ48o9YR1ie7XPe08iDWlG+9Uh5V7oiZcXTUbyA==}
+    engines: {node: '>= 20.17.0', npm: '>= 10.8.3'}
+    peerDependencies:
+      '@rollup/pluginutils': ^5.x
+      esbuild: '>= 0.25'
+      vite: '>= 3.x'
+    peerDependenciesMeta:
+      '@rollup/pluginutils':
+        optional: true
+      esbuild:
+        optional: true
+
   vite-plugin-turbosnap@1.0.3:
     resolution: {integrity: sha512-p4D8CFVhZS412SyQX125qxyzOgIFouwOcvjZWk6bQbNPR1wtaEzFT6jZxAjf1dejlGqa6fqHcuCvQea6EWUkUA==}
 
@@ -10854,6 +10870,9 @@ packages:
 
   vue-component-type-helpers@3.1.0:
     resolution: {integrity: sha512-cC1pYNRZkSS1iCvdlaMbbg2sjDwxX098FucEjtz9Yig73zYjWzQsnMe5M9H8dRNv55hAIDGUI29hF2BEUA4FMQ==}
+
+  vue-component-type-helpers@3.1.1:
+    resolution: {integrity: sha512-B0kHv7qX6E7+kdc5nsaqjdGZ1KwNKSUQDWGy7XkTYT7wFsOpkEyaJ1Vq79TjwrrtuLRgizrTV7PPuC4rRQo+vw==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -14666,7 +14685,7 @@ snapshots:
       storybook: 9.1.10(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.3(@types/node@22.18.8)(typescript@5.9.3))(prettier@3.6.2)(utf-8-validate@6.0.5)(vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       type-fest: 2.19.0
       vue: 3.5.22(typescript@5.9.3)
-      vue-component-type-helpers: 3.1.0
+      vue-component-type-helpers: 3.1.1
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.36.0)(typescript@5.9.3)':
     dependencies:
@@ -22347,6 +22366,13 @@ snapshots:
       - tsx
       - yaml
 
+  vite-plugin-glsl@1.5.4(@rollup/pluginutils@5.3.0(rollup@4.52.3))(esbuild@0.25.10)(vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)):
+    dependencies:
+      vite: 7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+    optionalDependencies:
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.3)
+      esbuild: 0.25.10
+
   vite-plugin-turbosnap@1.0.3: {}
 
   vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6):
@@ -22451,6 +22477,8 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.1.0: {}
+
+  vue-component-type-helpers@3.1.1: {}
 
   vue-demi@0.14.7(vue@3.5.22(typescript@5.9.3)):
     dependencies:
