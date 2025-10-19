@@ -74,13 +74,41 @@ void main() {
 	vec2 wmSize = computeWmSize(outSize, u_wmResolution, u_cover, u_scale);
 	vec2 margin = wmSize * u_margin;
 
+	// アライメントに基づく回転中心を計算
+	float rotateX = 0.0;
+	float rotateY = 0.0;
+	if (abs(theta) > 1e-6 && !u_noBBoxExpansion) {
+		rotateX = abs(abs(wmSize.x * cos(theta)) + abs(wmSize.y * sin(theta)) - wmSize.x) * 0.5;
+		rotateY = abs(abs(wmSize.x * sin(theta)) + abs(wmSize.y * cos(theta)) - wmSize.y) * 0.5;
+	}
+
+	float x;
+	if (u_alignX == 1) {
+		x = (outSize.x - wmSize.x) * 0.5;
+	} else if (u_alignX == 0) {
+		x = rotateX + margin.x;
+	} else {
+		x = outSize.x - wmSize.x - margin.x - rotateX;
+	}
+
+	float y;
+	if (u_alignY == 1) {
+		y = (outSize.y - wmSize.y) * 0.5;
+	} else if (u_alignY == 0) {
+		y = rotateY + margin.y;
+	} else {
+		y = outSize.y - wmSize.y - margin.y - rotateY;
+	}
+
+	vec2 rectMin = vec2(x, y);
+	vec2 rectMax = rectMin + wmSize;
+	vec2 rectCenter = (rectMin + rectMax) * 0.5;
+
 	vec4 wmCol = vec4(0.0);
 
 	if (u_repeat) {
-		// リピートモード: テクスチャのWRAP属性(GL_REPEAT)を利用
-		// スクリーン座標を回転させてタイル空間に変換
-		vec2 center = outSize * 0.5;
-		vec2 q = center + rot(-theta) * (p - center);
+		// アライメントに基づく中心で回転
+		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
 
 		// タイルサイズ(ウォーターマーク + マージン)で正規化してUV座標に変換
 		vec2 tile = wmSize + margin * 2.0;
@@ -92,36 +120,7 @@ void main() {
 		// テクスチャのWRAP_REPEATにより自動的にタイル化される
 		wmCol = texture(u_watermark, uvWm);
 	} else {
-		// 非リピート: アライメントと回転に従い一枚だけ描画
-		float rotateX = 0.0;
-		float rotateY = 0.0;
-		if (abs(theta) > 1e-6 && !u_noBBoxExpansion) {
-			rotateX = abs(abs(wmSize.x * cos(theta)) + abs(wmSize.y * sin(theta)) - wmSize.x) * 0.5;
-			rotateY = abs(abs(wmSize.x * sin(theta)) + abs(wmSize.y * cos(theta)) - wmSize.y) * 0.5;
-		}
-
-		float x;
-		if (u_alignX == 1) {
-			x = (outSize.x - wmSize.x) * 0.5;
-		} else if (u_alignX == 0) {
-			x = rotateX + margin.x;
-		} else {
-			x = outSize.x - wmSize.x - margin.x - rotateX;
-		}
-
-		float y;
-		if (u_alignY == 1) {
-			y = (outSize.y - wmSize.y) * 0.5;
-		} else if (u_alignY == 0) {
-			y = rotateY + margin.y;
-		} else {
-			y = outSize.y - wmSize.y - margin.y - rotateY;
-		}
-
-		vec2 rectMin = vec2(x, y);
-		vec2 rectMax = rectMin + wmSize;
-		vec2 rectCenter = (rectMin + rectMax) * 0.5;
-		// 画素をウォーターマークのローカル座標へ(逆回転)
+		// アライメントと回転に従い一枚だけ描画
 		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
 		bool inside = all(greaterThanEqual(q, rectMin)) && all(lessThan(q, rectMax));
 		if (inside) {
