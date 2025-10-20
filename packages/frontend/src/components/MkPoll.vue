@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
@@ -59,7 +59,7 @@ const remaining = computed(() => {
 
 
 const total = computed(() => sum(props.choices.map(x => x.votes)));
-const closed = computed(() => remaining.value === 0);
+const closed = computed(() => remaining.value <= 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
 const timer = computed(() => i18n.tsx._poll[
 	remaining.value >= 86400 ? 'remainingDays' :
@@ -72,14 +72,16 @@ const timer = computed(() => i18n.tsx._poll[
 	d: Math.floor(remaining.value / 86400),
 }));
 
-const showResult = ref(props.readOnly || isVoted.value);
+const showResult = ref(props.readOnly || isVoted.value || closed.value);
 
-const remainingWatchStop = watchEffect(() => {
-	if (remaining.value <= 0) {
-		showResult.value = true;
-		remainingWatchStop();
-	}
-}, {  flush: 'post'});
+if (!closed.value) {
+	const closedWatchStop = watch(closed, (isNowClosed) => {
+		if (isNowClosed) {
+			showResult.value = true;
+			closedWatchStop();
+		}
+	});
+}
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
 	url: `https://${host}/notes/${props.noteId}`,
