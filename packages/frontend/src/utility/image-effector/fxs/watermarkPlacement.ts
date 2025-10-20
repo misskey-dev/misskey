@@ -72,7 +72,7 @@ void main() {
 
 	float theta = u_angle * PI; // ラジアン
 	vec2 wmSize = computeWmSize(outSize, u_wmResolution, u_cover, u_scale);
-	vec2 margin = wmSize * u_margin;
+	vec2 margin = outSize * u_margin;
 
 	// アライメントに基づく回転中心を計算
 	float rotateX = 0.0;
