@@ -238,6 +238,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
+		isInHanaMode: MiUser['isInHanaMode'];
 	}, data: {
 		createdAt: Date;
 		replyId: MiNote['id'] | null;
