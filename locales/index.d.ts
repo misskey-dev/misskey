@@ -12346,10 +12346,6 @@ export interface Locale extends ILocale {
          */
         "preserveBoundingRect": string;
         /**
-         * ウォーターマークを回転させた際に余白が不自然になった場合はオフにしてみてください。
-         */
-        "preserveBoundingRectDescription": string;
-        /**
          * 不透明度
          */
         "opacity": string;

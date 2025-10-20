@@ -134,11 +134,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="layer.cover">
 			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
 		</MkSwitch>
-
-		<MkSwitch v-model="layerPreserveBoundingRect">
-			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
-			<template #caption>{{ i18n.ts._watermarkEditor.preserveBoundingRectDescription }}</template>
-		</MkSwitch>
 	</template>
 
 	<template v-else-if="layer.type === 'qr'">
