@@ -12346,6 +12346,10 @@ export interface Locale extends ILocale {
          */
         "repeat": string;
         /**
+         * 回転時はみ出ないように調整する
+         */
+        "preserveBoundingRect": string;
+        /**
          * 不透明度
          */
         "opacity": string;
