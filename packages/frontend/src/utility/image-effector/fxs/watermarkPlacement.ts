@@ -25,6 +25,7 @@ uniform bool u_repeat;               // タイル敷き詰め
 uniform int u_alignX;                // 0:left 1:center 2:right
 uniform int u_alignY;                // 0:top 1:center 2:bottom
 uniform float u_margin;              // 余白(比率)
+uniform float u_repeatMargin;        // 敷き詰め時の余白(比率)
 uniform bool u_noBBoxExpansion;      // 回転時のBounding Box拡張を抑止
 uniform bool u_wmEnabled;            // watermark有効
 
@@ -72,7 +73,7 @@ void main() {
 
 	float theta = u_angle * PI; // ラジアン
 	vec2 wmSize = computeWmSize(outSize, u_wmResolution, u_cover, u_scale);
-	vec2 margin = outSize * u_margin;
+	vec2 margin = u_repeat ? wmSize * u_repeatMargin : outSize * u_margin;
 
 	// アライメントに基づく回転中心を計算
 	float rotateX = 0.0;
@@ -152,7 +153,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 	id: 'watermarkPlacement',
 	name: '(internal)',
 	shader,
-	uniforms: ['opacity', 'scale', 'angle', 'cover', 'repeat', 'alignX', 'alignY', 'margin', 'noBBoxExpansion', 'wmResolution', 'wmEnabled', 'watermark'] as const,
+	uniforms: ['opacity', 'scale', 'angle', 'cover', 'repeat', 'alignX', 'alignY', 'margin', 'repeatMargin', 'noBBoxExpansion', 'wmResolution', 'wmEnabled', 'watermark'] as const,
 	params: {
 		cover: {
 			type: 'boolean',
@@ -208,6 +209,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 		gl.uniform1i(u.alignX, ax);
 		gl.uniform1i(u.alignY, ay);
 		gl.uniform1f(u.margin, (params.align?.margin ?? 0));
+		gl.uniform1f(u.repeatMargin, (params.align?.margin ?? 0));
 		gl.uniform1i(u.noBBoxExpansion, params.noBoundingBoxExpansion ? 1 : 0);
 
 		// ウォーターマークテクスチャ
