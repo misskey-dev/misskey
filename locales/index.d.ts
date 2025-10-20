@@ -4707,6 +4707,10 @@ export interface Locale extends ILocale {
      */
     "enableIdenticonGeneration": string;
     /**
+     * リモートユーザーに付与したロールバッジを表示する
+     */
+    "showRoleBadgesOfRemoteUsers": string;
+    /**
      * オフにするとパフォーマンスが向上します。
      */
     "turnOffToImprovePerformance": string;
@@ -12341,6 +12345,10 @@ export interface Locale extends ILocale {
          * 敷き詰める
          */
         "repeat": string;
+        /**
+         * 回転時はみ出ないように調整する
+         */
+        "preserveBoundingRect": string;
         /**
          * 不透明度
          */
