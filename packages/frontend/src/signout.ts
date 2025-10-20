@@ -8,7 +8,8 @@ import { cloudBackup } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 import { waiting } from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
-import { clear } from '@/utility/idb-proxy.js';
+import { clear } from '@/utility/idb-keyval.js';
+import { clearEmojiStore } from '@/utility/idb-emoji-store.js';
 import { $i } from '@/i.js';
 
 export async function signout() {
@@ -36,8 +37,10 @@ export async function signout() {
 		await Promise.race([
 			Promise.all([
 				...idbPromises,
-				// idb keyval-storeはidb-keyvalライブラリによる別管理
+				// idb keyval-storeは別管理
 				clear(),
+				// emoji storeも別管理
+				clearEmojiStore(),
 			]),
 			new Promise((_, rej) => idbAbortController.signal.addEventListener('abort', () => rej(new Error('Operation timed out')))),
 		]);

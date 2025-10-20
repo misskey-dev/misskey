@@ -5,17 +5,57 @@
 
 // FirefoxのプライベートモードなどではindexedDBが使用不可能なので、
 // indexedDBが使えない環境ではlocalStorageを使う
-import {
-	get as iget,
-	set as iset,
-	del as idel,
-	clear as iclear,
-} from 'idb-keyval';
+import { openDB } from 'idb';
+import type { IDBPDatabase } from 'idb';
 import { miLocalStorage } from '@/local-storage.js';
 
 const PREFIX = 'idbfallback::';
 
 let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && typeof window.indexedDB.open === 'function') : true;
+let db: IDBPDatabase | null = null;
+
+async function getDB() {
+	if (db) return db;
+	db = await openDB('keyval-store', 1, {
+		upgrade(db) {
+			db.createObjectStore('keyval');
+		},
+	});
+	return db;
+}
+
+async function iset(key: string, val: any) {
+	const database = await getDB();
+	const tx = database.transaction('keyval', 'readwrite');
+	const store = tx.objectStore('keyval');
+	await store.put(val, key);
+	await tx.done;
+}
+
+async function iget(key: string) {
+	const database = await getDB();
+	const tx = database.transaction('keyval', 'readonly');
+	const store = tx.objectStore('keyval');
+	const val = await store.get(key);
+	await tx.done;
+	return val;
+}
+
+async function idel(key: string) {
+	const database = await getDB();
+	const tx = database.transaction('keyval', 'readwrite');
+	const store = tx.objectStore('keyval');
+	await store.delete(key);
+	await tx.done;
+}
+
+async function iclear() {
+	const database = await getDB();
+	const tx = database.transaction('keyval', 'readwrite');
+	const store = tx.objectStore('keyval');
+	await store.clear();
+	await tx.done;
+}
 
 // iframe.contentWindow.indexedDB.deleteDatabase() がchromeのバグで使用できないため、indexedDBを無効化している。
 // バグが治って再度有効化するのであれば、cypressのコマンド内のコメントアウトを外すこと
