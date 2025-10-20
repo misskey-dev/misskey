@@ -108,7 +108,7 @@ void main() {
 
 	if (u_repeat) {
 		// アライメントに基づく中心で回転
-		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
+		vec2 q = rectCenter + rot(theta) * (p - rectCenter);
 
 		// タイルグリッドの原点をrectMin（アライメント位置）に設定
 		vec2 gridOrigin = rectMin - margin;
@@ -135,7 +135,7 @@ void main() {
 		// マージン領域の場合は透明(wmCol = vec4(0.0))のまま
 	} else {
 		// アライメントと回転に従い一枚だけ描画
-		vec2 q = rectCenter + rot(-theta) * (p - rectCenter);
+		vec2 q = rectCenter + rot(theta) * (p - rectCenter);
 		bool inside = all(greaterThanEqual(q, rectMin)) && all(lessThan(q, rectMax));
 		if (inside) {
 			vec2 uvWm = (q - rectMin) / wmSize;
