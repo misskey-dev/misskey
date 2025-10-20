@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2025.10.1-alpha.2",
+	"version": "2025.10.1-alpha.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -85,9 +85,6 @@
 	"pnpm": {
 		"overrides": {
 			"@aiscript-dev/aiscript-languageserver": "-"
-		},
-		"patchedDependencies": {
-			"typeorm": "patches/typeorm.patch"
 		}
 	}
 }
