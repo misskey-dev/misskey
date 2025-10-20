@@ -1074,6 +1074,9 @@ importers:
       tsx:
         specifier: 4.20.6
         version: 4.20.6
+      vite-plugin-glsl:
+        specifier: 1.5.4
+        version: 1.5.4(@rollup/pluginutils@5.3.0(rollup@4.52.3))(esbuild@0.25.10)(vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6))
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -10725,6 +10728,19 @@ packages:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
+
+  vite-plugin-glsl@1.5.4:
+    resolution: {integrity: sha512-EUmwL+IDK+dGDAlaKm89++k8aJ4qmHjLQxrngww3GLOOAQ4aZ48o9YR1ie7XPe08iDWlG+9Uh5V7oiZcXTUbyA==}
+    engines: {node: '>= 20.17.0', npm: '>= 10.8.3'}
+    peerDependencies:
+      '@rollup/pluginutils': ^5.x
+      esbuild: '>= 0.25'
+      vite: '>= 3.x'
+    peerDependenciesMeta:
+      '@rollup/pluginutils':
+        optional: true
+      esbuild:
+        optional: true
 
   vite-plugin-turbosnap@1.0.3:
     resolution: {integrity: sha512-p4D8CFVhZS412SyQX125qxyzOgIFouwOcvjZWk6bQbNPR1wtaEzFT6jZxAjf1dejlGqa6fqHcuCvQea6EWUkUA==}
@@ -22335,6 +22351,13 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vite-plugin-glsl@1.5.4(@rollup/pluginutils@5.3.0(rollup@4.52.3))(esbuild@0.25.10)(vite@7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)):
+    dependencies:
+      vite: 7.1.7(@types/node@22.18.8)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)
+    optionalDependencies:
+      '@rollup/pluginutils': 5.3.0(rollup@4.52.3)
+      esbuild: 0.25.10
 
   vite-plugin-turbosnap@1.0.3: {}
 
