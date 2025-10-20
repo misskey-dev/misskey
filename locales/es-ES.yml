@@ -3201,6 +3201,7 @@ _watermarkEditor:
   title: "Editar la marca de agua"
   cover: "Cubrir todo"
   repeat: "Repetir"
+  preserveBoundingRect: "Ajuste para evitar que se desborde al rotar."
   opacity: "Opacidad"
   scale: "Tamaño"
   text: "Texto"
