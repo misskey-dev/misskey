@@ -23,10 +23,10 @@
 	},
 	"devDependencies": {
 		"@types/matter-js": "0.20.2",
-		"@types/node": "22.18.8",
+		"@types/node": "22.18.10",
 		"@types/seedrandom": "3.0.8",
-		"@typescript-eslint/eslint-plugin": "8.45.0",
-		"@typescript-eslint/parser": "8.45.0",
+		"@typescript-eslint/eslint-plugin": "8.46.0",
+		"@typescript-eslint/parser": "8.46.0",
 		"esbuild": "0.25.10",
 		"execa": "9.6.0",
 		"glob": "11.0.3",
