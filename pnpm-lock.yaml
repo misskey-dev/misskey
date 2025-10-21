@@ -319,8 +319,8 @@ importers:
         specifier: 3.3.2
         version: 3.3.2
       nodemailer:
-        specifier: 7.0.7
-        version: 7.0.7
+        specifier: 7.0.9
+        version: 7.0.9
       nsfwjs:
         specifier: 4.2.0
         version: 4.2.0(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3)
@@ -572,11 +572,11 @@ importers:
         specifier: 8.18.1
         version: 8.18.1
       '@typescript-eslint/eslint-plugin':
-        specifier: 8.46.0
-        version: 8.46.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(typescript@5.9.3)
+        specifier: 8.46.1
+        version: 8.46.1(@typescript-eslint/parser@8.46.1(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(typescript@5.9.3)
       '@typescript-eslint/parser':
-        specifier: 8.46.0
-        version: 8.46.0(eslint@9.37.0)(typescript@5.9.3)
+        specifier: 8.46.1
+        version: 8.46.1(eslint@9.37.0)(typescript@5.9.3)
       aws-sdk-client-mock:
         specifier: 4.1.0
         version: 4.1.0
@@ -585,7 +585,7 @@ importers:
         version: 7.0.3
       eslint-plugin-import:
         specifier: 2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)
+        version: 2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)
       execa:
         specifier: 8.0.1
         version: 8.0.1
@@ -8528,8 +8528,8 @@ packages:
   node-releases@2.0.21:
     resolution: {integrity: sha512-5b0pgg78U3hwXkCM8Z9b2FJdPZlr9Psr9V2gQPESdGHqbntyFJKFW4r5TeWGFzafGY3hzs1JC62VEQMbl1JFkw==}
 
-  nodemailer@7.0.7:
-    resolution: {integrity: sha512-jGOaRznodf62TVzdyhKt/f1Q/c3kYynk8629sgJHpRzGZj01ezbgMMWJSAjHADcwTKxco3B68/R+KHJY2T5BaA==}
+  nodemailer@7.0.9:
+    resolution: {integrity: sha512-9/Qm0qXIByEP8lEV2qOqcAW7bRpL8CR9jcTwk3NBnHJNmP9fIJ86g2fgmIXqHY+nj55ZEMwWqYAT2QTDpRUYiQ==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -14728,7 +14728,7 @@ snapshots:
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.37.0)(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.46.0(eslint@9.37.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.46.1(eslint@9.37.0)(typescript@5.9.3)
       eslint: 9.37.0
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
@@ -15453,8 +15453,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.46.0(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.46.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.46.0
+      '@typescript-eslint/tsconfig-utils': 8.46.1(typescript@5.9.3)
+      '@typescript-eslint/types': 8.46.1
       debug: 4.4.3(supports-color@10.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -20150,7 +20150,7 @@ snapshots:
 
   node-releases@2.0.21: {}
 
-  nodemailer@7.0.7: {}
+  nodemailer@7.0.9: {}
 
   nodemon@3.1.10:
     dependencies:
