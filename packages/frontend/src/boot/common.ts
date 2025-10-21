@@ -166,6 +166,10 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	// NOTE: この処理は必ずダークモード判定処理より後に来ること(初回のテーマ適用のため)
 	// see: https://github.com/misskey-dev/misskey/issues/16562
+	const cachedColorScheme = miLocalStorage.getItem('colorScheme');
+	const currentColorScheme = store.s.darkMode ? 'dark' : 'light';
+	const shouldApplyThemeImmediately = isSafeMode || miLocalStorage.getItem('theme') == null || cachedColorScheme !== currentColorScheme;
+
 	watch(store.r.darkMode, (darkMode) => {
 		const theme = (() => {
 			if (darkMode) {
@@ -176,7 +180,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		})();
 
 		applyTheme(theme);
-	}, { immediate: isSafeMode || miLocalStorage.getItem('theme') == null });
+	}, { immediate: shouldApplyThemeImmediately });
 
 	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
