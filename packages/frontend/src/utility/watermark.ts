@@ -27,6 +27,7 @@ export type WatermarkPreset = {
 		type: 'text';
 		text: string;
 		repeat: boolean;
+		noBoundingBoxExpansion: boolean;
 		scale: number;
 		angle: number;
 		align: Align;
@@ -38,6 +39,7 @@ export type WatermarkPreset = {
 		imageId: string | null;
 		cover: boolean;
 		repeat: boolean;
+		noBoundingBoxExpansion: boolean;
 		scale: number;
 		angle: number;
 		align: Align;
@@ -106,6 +108,7 @@ export class WatermarkRenderer {
 					id: layer.id,
 					params: {
 						repeat: layer.repeat,
+						noBoundingBoxExpansion: layer.noBoundingBoxExpansion,
 						scale: layer.scale,
 						align: layer.align,
 						angle: layer.angle,
@@ -123,6 +126,7 @@ export class WatermarkRenderer {
 					id: layer.id,
 					params: {
 						repeat: layer.repeat,
+						noBoundingBoxExpansion: layer.noBoundingBoxExpansion,
 						scale: layer.scale,
 						align: layer.align,
 						angle: layer.angle,

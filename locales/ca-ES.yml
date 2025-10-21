@@ -3201,6 +3201,7 @@ _watermarkEditor:
   title: "Editar la marca d'aigua "
   cover: "Cobrir-ho tot"
   repeat: "Repetir"
+  preserveBoundingRect: "Ajusta'l per evitar que sobresortir en fer la rotació "
   opacity: "Opacitat"
   scale: "Mida"
   text: "Text"

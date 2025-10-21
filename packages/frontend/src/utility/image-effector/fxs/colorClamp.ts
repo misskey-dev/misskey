@@ -4,32 +4,14 @@
  */
 
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import shader from './colorClamp.glsl';
 import { i18n } from '@/i18n.js';
-
-const shader = `#version 300 es
-precision mediump float;
-
-in vec2 in_uv;
-uniform sampler2D in_texture;
-uniform vec2 in_resolution;
-uniform float u_max;
-uniform float u_min;
-out vec4 out_color;
-
-void main() {
-	vec4 in_color = texture(in_texture, in_uv);
-	float r = min(max(in_color.r, u_min), u_max);
-	float g = min(max(in_color.g, u_min), u_max);
-	float b = min(max(in_color.b, u_min), u_max);
-	out_color = vec4(r, g, b, in_color.a);
-}
-`;
 
 export const FX_colorClamp = defineImageEffectorFx({
 	id: 'colorClamp',
 	name: i18n.ts._imageEffector._fxs.colorClamp,
 	shader,
-	uniforms: ['max', 'min'] as const,
+	uniforms: ['rMax', 'rMin', 'gMax', 'gMin', 'bMax', 'bMin'] as const,
 	params: {
 		max: {
 			label: i18n.ts._imageEffector._fxProps.max,
@@ -51,7 +33,11 @@ export const FX_colorClamp = defineImageEffectorFx({
 		},
 	},
 	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.max, params.max);
-		gl.uniform1f(u.min, 1.0 + params.min);
+		gl.uniform1f(u.rMax, params.max);
+		gl.uniform1f(u.rMin, 1.0 + params.min);
+		gl.uniform1f(u.gMax, params.max);
+		gl.uniform1f(u.gMin, 1.0 + params.min);
+		gl.uniform1f(u.bMax, params.max);
+		gl.uniform1f(u.bMin, 1.0 + params.min);
 	},
 });
