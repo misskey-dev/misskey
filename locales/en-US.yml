@@ -3201,6 +3201,7 @@ _watermarkEditor:
   title: "Edit Watermark"
   cover: "Cover everything"
   repeat: "spread all over"
+  preserveBoundingRect: "Adjust to prevent overflow when rotating"
   opacity: "Opacity"
   scale: "Size"
   text: "Text"
