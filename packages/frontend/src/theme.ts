@@ -131,7 +131,7 @@ function applyThemeInternal(theme: Theme, persist: boolean) {
 }
 
 let timeout: number | null = null;
-let currentTheme: Theme | null = null;
+let currentThemeId = miLocalStorage.getItem('themeId');
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) {
@@ -139,9 +139,8 @@ export function applyTheme(theme: Theme, persist = true) {
 		timeout = null;
 	}
 
-	if (deepEqual(currentTheme, theme)) return;
-	// リアクティビティ解除
-	currentTheme = deepClone(theme);
+	if (theme.id === currentThemeId) return;
+	currentThemeId = theme.id;
 
 	if (window.document.startViewTransition != null) {
 		window.document.documentElement.classList.add('_themeChanging_');
