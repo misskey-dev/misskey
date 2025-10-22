@@ -69,9 +69,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	if (lastVersion !== version) {
 		miLocalStorage.setItem('lastVersion', version);
 
-		// テーマリビルドするため
-		miLocalStorage.removeItem('theme');
-
 		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
 			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 				isClientUpdated = true;
