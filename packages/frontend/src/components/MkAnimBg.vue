@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import isChromatic from 'chromatic/isChromatic';
-import vertexShaderSource from '@/shaders/anim-bg/vertex.glsl';
-import fragmentShaderSource from '@/shaders/anim-bg/fragment.glsl';
+import vertexShaderSource from './MkAnimBg.vertex.glsl';
+import fragmentShaderSource from './MkAnimBg.fragment.glsl';
 import { initShaderProgram } from '@/utility/webgl.js';
 
 const canvasEl = useTemplateRef('canvasEl');

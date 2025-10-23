@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import vertexSource from '@/shaders/snowfall-effect/vertex.glsl';
-import fragmentSource from '@/shaders/snowfall-effect/fragment.glsl';
+import vertexSource from './snowfall-effect.vertex.glsl';
+import fragmentSource from './snowfall-effect.fragment.glsl';
 
 export class SnowfallEffect {
 	private VERTEX_SOURCE = vertexSource;
