@@ -3201,6 +3201,7 @@ _watermarkEditor:
   title: "워터마크 편집"
   cover: "전체에 붙이기"
   repeat: "전면에 깔기"
+  preserveBoundingRect: "회전 시 빠져나오지 않도록 조정"
   opacity: "불투명도"
   scale: "크기"
   text: "텍스트"
