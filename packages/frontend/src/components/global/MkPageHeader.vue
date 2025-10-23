@@ -62,9 +62,10 @@ import { onMounted, onUnmounted, ref, inject, useTemplateRef, computed } from 'v
 import { scrollToTop } from '@@/js/scroll.js';
 import XTabs from './MkPageHeader.tabs.vue';
 import { globalEvents } from '@/events.js';
-import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
 import { DI } from '@/di.js';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<PageHeaderProps>(), {
 	tabs: () => ([] as Tab[]),
@@ -99,10 +100,12 @@ const top = () => {
 	}
 };
 
-function openAccountMenu(ev: MouseEvent) {
-	openAccountMenu_({
+async function openAccountMenu(ev: MouseEvent) {
+	const menuItems = await getAccountMenu({
 		withExtraOperation: true,
-	}, ev);
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function onTabClick(): void {

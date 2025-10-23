@@ -55,7 +55,7 @@ import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
 
@@ -84,10 +84,12 @@ async function more(ev: MouseEvent) {
 	});
 }
 
-function openAccountMenu(ev: MouseEvent) {
-	openAccountMenu_({
+async function openAccountMenu(ev: MouseEvent) {
+	const menuItems = await getAccountMenu({
 		withExtraOperation: true,
-	}, ev);
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 onMounted(() => {
