@@ -18,7 +18,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { generateNativeUserToken } from '@/misc/token.js';
 import { IdService } from '@/core/IdService.js';
-import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
+import { genRSAAndEd25519KeyPair } from '@/misc/gen-key-pair.js';
 
 export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy'] as const;
 
@@ -119,7 +119,7 @@ export class SystemAccountService implements OnApplicationShutdown {
 		// Generate secret
 		const secret = generateNativeUserToken();
 
-		const keyPair = await genRsaKeyPair();
+		const keyPair = await genRSAAndEd25519KeyPair();
 
 		let account!: MiUser;
 
@@ -148,9 +148,8 @@ export class SystemAccountService implements OnApplicationShutdown {
 			}).then(x => transactionalEntityManager.findOneByOrFail(MiUser, x.identifiers[0]));
 
 			await transactionalEntityManager.insert(MiUserKeypair, {
-				publicKey: keyPair.publicKey,
-				privateKey: keyPair.privateKey,
 				userId: account.id,
+				...keyPair,
 			});
 
 			await transactionalEntityManager.insert(MiUserProfile, {
