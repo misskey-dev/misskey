@@ -30,6 +30,26 @@ import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
+async function initialRequestPermissions() {
+	// Storage API（権限許可ダイアログが出るブラウザと出ないブラウザがある）
+	if ('storage' in navigator && 'persist' in navigator.storage) {
+		const isPersisted = await navigator.storage.persisted();
+		if (!isPersisted) {
+			await navigator.storage.persist();
+		}
+	}
+
+	// Notification API
+	if ('Notification' in window) {
+		// 許可を得ていなかったらリクエスト
+		if (Notification.permission === 'default') {
+			await Notification.requestPermission().catch(() => {
+				// 拒否されても無視
+			});
+		}
+	}
+}
+
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
 		let uiStyle = ui;
@@ -303,12 +323,7 @@ export async function mainBoot() {
 			});
 		}
 
-		if ('Notification' in window) {
-			// 許可を得ていなかったらリクエスト
-			if (Notification.permission === 'default') {
-				Notification.requestPermission();
-			}
-		}
+		initialRequestPermissions();
 
 		if (store.s.realtimeMode) {
 			const stream = useStream();
