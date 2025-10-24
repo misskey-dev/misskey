@@ -41,7 +41,9 @@ async function initialRequestPermissions() {
 	if ('storage' in navigator && 'persist' in navigator.storage) {
 		const isPersisted = await navigator.storage.persisted();
 		if (!isPersisted) {
-			await navigator.storage.persist();
+			await navigator.storage.persist().catch(() => {
+				// エラーを無視
+			});
 		}
 	}
 
@@ -50,7 +52,7 @@ async function initialRequestPermissions() {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {
 			await Notification.requestPermission().catch(() => {
-				// 拒否されても無視
+				// エラーを無視
 			});
 		}
 	}
