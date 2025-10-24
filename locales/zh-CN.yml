@@ -3201,6 +3201,7 @@ _watermarkEditor:
   title: "编辑水印"
   cover: "覆盖全体"
   repeat: "平铺"
+  preserveBoundingRect: "调整为旋转时不超出范围"
   opacity: "不透明度"
   scale: "大小"
   text: "文本"
