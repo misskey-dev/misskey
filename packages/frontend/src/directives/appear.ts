@@ -5,6 +5,7 @@
 
 import { throttle } from 'throttle-debounce';
 import type { Directive } from 'vue';
+import type { Awaitable } from '@/types/misc.js';
 
 interface HTMLElementWithObserver extends HTMLElement {
 	_observer_?: IntersectionObserver;
@@ -31,4 +32,4 @@ export const appearDirective = {
 	unmounted(src) {
 		if (src._observer_) src._observer_.disconnect();
 	},
-} as Directive<HTMLElementWithObserver, () => void>;
+} as Directive<HTMLElementWithObserver, (() => Awaitable<void>) | null | undefined>;
