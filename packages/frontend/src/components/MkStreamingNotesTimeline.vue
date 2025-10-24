@@ -500,6 +500,7 @@ defineExpose({
 		rgb(0 0 0 / 95.1%) 42.25%,
 		rgb(0 0 0 / 100%) 50%
 	);
+	pointer-events: none;
 }
 
 .newBg2 {
@@ -517,6 +518,7 @@ defineExpose({
 		rgb(0 0 0 / 95.1%) 91.9%,
 		rgb(0 0 0 / 100%) 100%
 	);
+	pointer-events: none;
 }
 
 .newButton {
