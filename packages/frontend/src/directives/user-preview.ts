@@ -5,18 +5,19 @@
 
 import { defineAsyncComponent, ref } from 'vue';
 import type { Directive } from 'vue';
+import * as Misskey from 'misskey-js';
 import { popup } from '@/os.js';
 import { isTouchUsing } from '@/utility/touch.js';
 
 export class UserPreview {
-	private el;
-	private user;
-	private showTimer;
-	private hideTimer;
-	private checkTimer;
-	private promise;
+	private el: HTMLElement;
+	private user: string | Misskey.entities.UserDetailed;
+	private showTimer: number | null = null;
+	private hideTimer: number | null = null;
+	private checkTimer: number | null = null;
+	private promise: null | { cancel: () => void } = null;
 
-	constructor(el, user) {
+	constructor(el: HTMLElement, user: string | Misskey.entities.UserDetailed) {
 		this.el = el;
 		this.user = user;
 
@@ -43,10 +44,10 @@ export class UserPreview {
 			source: this.el,
 		}, {
 			mouseover: () => {
-				window.clearTimeout(this.hideTimer);
+				if (this.hideTimer) window.clearTimeout(this.hideTimer);
 			},
 			mouseleave: () => {
-				window.clearTimeout(this.showTimer);
+				if (this.showTimer) window.clearTimeout(this.showTimer);
 				this.hideTimer = window.setTimeout(this.close, 500);
 			},
 			closed: () => dispose(),
@@ -60,8 +61,8 @@ export class UserPreview {
 
 		this.checkTimer = window.setInterval(() => {
 			if (!window.document.body.contains(this.el)) {
-				window.clearTimeout(this.showTimer);
-				window.clearTimeout(this.hideTimer);
+				if (this.showTimer) window.clearTimeout(this.showTimer);
+				if (this.hideTimer) window.clearTimeout(this.hideTimer);
 				this.close();
 			}
 		}, 1000);
@@ -69,26 +70,26 @@ export class UserPreview {
 
 	private close() {
 		if (this.promise) {
-			window.clearInterval(this.checkTimer);
+			if (this.checkTimer) window.clearInterval(this.checkTimer);
 			this.promise.cancel();
 			this.promise = null;
 		}
 	}
 
 	private onMouseover() {
-		window.clearTimeout(this.showTimer);
-		window.clearTimeout(this.hideTimer);
+		if (this.showTimer) window.clearTimeout(this.showTimer);
+		if (this.hideTimer) window.clearTimeout(this.hideTimer);
 		this.showTimer = window.setTimeout(this.show, 500);
 	}
 
 	private onMouseleave() {
-		window.clearTimeout(this.showTimer);
-		window.clearTimeout(this.hideTimer);
+		if (this.showTimer) window.clearTimeout(this.showTimer);
+		if (this.hideTimer) window.clearTimeout(this.hideTimer);
 		this.hideTimer = window.setTimeout(this.close, 500);
 	}
 
 	private onClick() {
-		window.clearTimeout(this.showTimer);
+		if (this.showTimer) window.clearTimeout(this.showTimer);
 		this.close();
 	}
 
@@ -105,8 +106,14 @@ export class UserPreview {
 	}
 }
 
-export default {
-	mounted(el: HTMLElement, binding, vn) {
+interface UserPreviewDirectiveElement extends HTMLElement {
+	_userPreviewDirective_?: {
+		preview: UserPreview;
+	};
+}
+
+export const userPreviewDirective = {
+	mounted(el, binding) {
 		if (binding.value == null) return;
 		if (isTouchUsing) return;
 
@@ -117,10 +124,11 @@ export default {
 		self.preview = new UserPreview(el, binding.value);
 	},
 
-	unmounted(el, binding, vn) {
+	unmounted(el, binding) {
 		if (binding.value == null) return;
 
 		const self = el._userPreviewDirective_;
+		if (self == null) return;
 		self.preview.detach();
 	},
-} as Directive;
+} as Directive<UserPreviewDirectiveElement, string | Misskey.entities.UserDetailed | null | undefined>;

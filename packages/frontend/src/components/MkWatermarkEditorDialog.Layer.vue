@@ -65,6 +65,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="layer.repeat">
 			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
 		</MkSwitch>
+
+		<MkSwitch v-model="layerPreserveBoundingRect">
+			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
+		</MkSwitch>
 	</template>
 
 	<template v-else-if="layer.type === 'image'">
@@ -128,6 +132,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkSwitch v-model="layer.cover">
 			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
+		</MkSwitch>
+
+		<MkSwitch v-model="layerPreserveBoundingRect">
+			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
 		</MkSwitch>
 	</template>
 
@@ -335,7 +343,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
@@ -350,6 +358,20 @@ import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
+
+const layerPreserveBoundingRect = computed({
+	get: () => {
+		if (layer.value.type === 'text' || layer.value.type === 'image') {
+			return !layer.value.noBoundingBoxExpansion;
+		}
+		return false;
+	},
+	set: (v: boolean) => {
+		if (layer.value.type === 'text' || layer.value.type === 'image') {
+			layer.value.noBoundingBoxExpansion = !v;
+		}
+	},
+});
 
 const driveFile = ref<Misskey.entities.DriveFile | null>(null);
 const driveFileError = ref(false);
