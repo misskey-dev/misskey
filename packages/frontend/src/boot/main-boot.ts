@@ -30,8 +30,14 @@ import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
+/**
+ * 起動時に必要な権限許可を求める
+ *
+ * 権限許可ダイアログがブラウザによって出ない場合があるもの（※）については、
+ * 確実にダイアログが出る権限リクエストよりも前に実行する
+ */
 async function initialRequestPermissions() {
-	// Storage API（権限許可ダイアログが出るブラウザと出ないブラウザがある）
+	// ※Storage API（ストレージの圧迫で消去されるのを防ぐ）
 	if ('storage' in navigator && 'persist' in navigator.storage) {
 		const isPersisted = await navigator.storage.persisted();
 		if (!isPersisted) {
