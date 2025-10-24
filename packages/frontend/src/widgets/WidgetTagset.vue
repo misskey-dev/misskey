@@ -10,7 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.container">
 		<div>
 			<MkSelect v-model="programSelected" :items="tagsetSelectDef" :class="$style.select">
+				<!--
 				<template #label>{{ i18n.ts.tagset }}</template>
+				-->
 			</MkSelect>
 		</div>
 		<div>
