@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<div :class="$style.container">
 			<div :class="$style.preview">
-				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown="onImagePointerdown"></canvas>
+				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown.prevent.stop="onImagePointerdown"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.editControls">
@@ -257,8 +257,12 @@ function onImagePointerdown(ev: PointerEvent) {
 	xOffset /= 2;
 	yOffset /= 2;
 
-	let startX = ev.offsetX - xOffset;
-	let startY = ev.offsetY - yOffset;
+	const rect = canvasEl.value.getBoundingClientRect();
+	const pointerOffsetX = ev.clientX - rect.left;
+	const pointerOffsetY = ev.clientY - rect.top;
+
+	let startX = pointerOffsetX - xOffset;
+	let startY = pointerOffsetY - yOffset;
 
 	if (AW / AH < BW / BH) { // 横長
 		startX = startX / (Math.max(AW, AH) / Math.max(BH / BW, 1));
@@ -311,9 +315,11 @@ function onImagePointerdown(ev: PointerEvent) {
 		});
 	}
 
-	_move(ev.offsetX, ev.offsetY);
+	_move(ev.clientX, ev.clientY);
 
-	function _move(pointerX: number, pointerY: number) {
+	function _move(pointerClientX: number, pointerClientY: number) {
+		const pointerX = pointerClientX - rect.left;
+		const pointerY = pointerClientY - rect.top;
 		let x = pointerX - xOffset;
 		let y = pointerY - yOffset;
 
@@ -340,7 +346,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	}
 
 	function move(ev: PointerEvent) {
-		_move(ev.offsetX, ev.offsetY);
+		_move(ev.clientX, ev.clientY);
 	}
 
 	function up() {
@@ -448,6 +454,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	margin: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
+	touch-action: none;
 }
 
 .controls {

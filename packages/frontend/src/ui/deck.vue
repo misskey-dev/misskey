@@ -167,7 +167,7 @@ const columnsEl = useTemplateRef('columnsEl');
 const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
-		items: columnTypes.map(column => ({
+		items: columnTypes.filter(column => column !== 'chat' || $i == null || $i.policies.chatAvailability !== 'unavailable').map(column => ({
 			value: column, label: i18n.ts._deck._columns[column],
 		})),
 	});
