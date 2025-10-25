@@ -268,8 +268,8 @@ const moderator = ref(info.value.isModerator);
 const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
-const moderationNote = ref(info.value.moderationNote);
-const suspendedReason = ref(info.value.suspendedReason);
+const moderationNote = ref<string>(info.value.moderationNote ?? '');
+const suspendedReason = ref<string>(info.value.suspendedReason ?? '');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({
@@ -330,8 +330,8 @@ async function refreshUser() {
 	silenced.value = info.value.isSilenced;
 	suspended.value = info.value.isSuspended;
 	isSystem.value = user.value.host == null && user.value.username.includes('.');
-	moderationNote.value = info.value.moderationNote;
-	suspendedReason.value = info.value.suspendedReason;
+	moderationNote.value = info.value.moderationNote ?? '';
+	suspendedReason.value = info.value.suspendedReason ?? '';
 }
 
 async function updateRemoteUser() {
@@ -342,7 +342,7 @@ async function updateRemoteUser() {
 async function resetPassword() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.resetPasswordConfirm,
+		text: String(i18n.ts.resetPasswordConfirm),
 	});
 	if (confirm.canceled) {
 		return;
@@ -382,7 +382,7 @@ async function toggleSuspend(v) {
 async function unsetUserAvatar() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserAvatarConfirm,
+		text: String(i18n.ts.unsetUserAvatarConfirm),
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -401,7 +401,7 @@ async function unsetUserAvatar() {
 async function unsetUserBanner() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserBannerConfirm,
+		text: String(i18n.ts.unsetUserBannerConfirm),
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -420,7 +420,7 @@ async function unsetUserBanner() {
 async function deleteAllFiles() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAllFilesConfirm,
+		text: String(i18n.ts.deleteAllFilesConfirm),
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -439,12 +439,12 @@ async function deleteAllFiles() {
 async function unfollowAll() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unfollowAllConfirm,
+		text: String(i18n.ts.unfollowAllConfirm),
 	});
 	if (confirm.canceled) return;
 
 	const typed = await os.inputText({
-		text: i18n.tsx.typeToConfirm({ x: user.value?.username }),
+		text: String(i18n.tsx.typeToConfirm({ x: user.value?.username })),
 	});
 	if (typed.canceled) return;
 
@@ -463,12 +463,12 @@ async function unfollowAll() {
 async function deleteAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAccountConfirm,
+		text: String(i18n.ts.deleteAccountConfirm),
 	});
 	if (confirm.canceled) return;
 
 	const typed = await os.inputText({
-		text: i18n.tsx.typeToConfirm({ x: user.value?.username }),
+		text: String(i18n.tsx.typeToConfirm({ x: user.value?.username })),
 	});
 	if (typed.canceled) return;
 
@@ -523,7 +523,7 @@ async function assignRole() {
 
 async function unassignRole(role: typeof info.value.roles[number], ev: MouseEvent) {
 	os.popupMenu([{
-		text: i18n.ts.unassign,
+		text: String(i18n.ts.unassign),
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
