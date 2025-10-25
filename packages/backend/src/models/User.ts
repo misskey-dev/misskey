@@ -198,9 +198,8 @@ export class MiUser {
 	@Column('integer', {
 		nullable: true,
 		default: null,
-
 	})
-	public autoDeleteNotesAfterDays: number | null;
+	public autoDeleteNotesAfterDays!: number | null;
 
 	@Column('boolean', {
 		default: true,
