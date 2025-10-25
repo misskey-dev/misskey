@@ -113,17 +113,26 @@ const credentialRequest = shallowRef<CredentialRequestOptions | null>(null);
 const passkeyContext = ref('');
 const doingPasskeyFromInputPage = ref(false);
 
-const userForPasswordScreen = computed(() => {
+type PasswordScreenUser = {
+	username: string;
+	name: string | null;
+	avatarUrl: string | null;
+};
+
+const userForPasswordScreen = computed<PasswordScreenUser>(() => {
 	if (userInfo.value) {
-		return userInfo.value;
+		return {
+			username: userInfo.value.username,
+			name: userInfo.value.name,
+			avatarUrl: userInfo.value.avatarUrl,
+		};
 	}
 	// userInfoがnullの場合（凍結ユーザーなど）のフォールバック
 	return {
-		id: '',
 		username: submittedUsername.value,
 		name: submittedUsername.value,
 		avatarUrl: null,
-	} as Misskey.entities.UserDetailed;
+	};
 });
 
 function onPasskeyLogin(): void {
