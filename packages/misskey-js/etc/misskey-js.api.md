@@ -1906,6 +1906,7 @@ declare namespace entities {
         IAppsResponse,
         IAuthorizedAppsRequest,
         IAuthorizedAppsResponse,
+        IAutoDeleteSettingsResponse,
         IChangePasswordRequest,
         IClaimAchievementRequest,
         IDeleteAccountRequest,
@@ -1955,6 +1956,7 @@ declare namespace entities {
         IUnpinResponse,
         IUpdateRequest,
         IUpdateResponse,
+        IUpdateAutoDeleteSettingsRequest,
         IUpdateEmailRequest,
         IUpdateEmailResponse,
         IWebhooksCreateRequest,
@@ -2535,6 +2537,9 @@ type IAuthorizedAppsRequest = operations['i___authorized-apps']['requestBody']['
 type IAuthorizedAppsResponse = operations['i___authorized-apps']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IAutoDeleteSettingsResponse = operations['i___auto-delete-settings']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type IChangePasswordRequest = operations['i___change-password']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2756,6 +2761,9 @@ type IUnpinRequest = operations['i___unpin']['requestBody']['content']['applicat
 
 // @public (undocumented)
 type IUnpinResponse = operations['i___unpin']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IUpdateAutoDeleteSettingsRequest = operations['i___update-auto-delete-settings']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IUpdateEmailRequest = operations['i___update-email']['requestBody']['content']['application/json'];
