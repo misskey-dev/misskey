@@ -328,11 +328,11 @@ function resetElementHeights(parentParent: HTMLElement | null, gaps: HTMLElement
 function refreshTextarea() {
 	if (textareaEl.value == null) return;
 
-	const parent = textareaEl.value.parentElement;
+	const parent = textareaEl.value.parentElement as HTMLElement | null;
 	if (!parent) return;
 
 	const parentParent = parent.parentElement;
-	const gaps = parent.closest('._gaps');
+	const gaps = parent.closest('._gaps') as HTMLElement | null;
 
 	// 統一されたランダムzIndex値を使用
 	const randomZIndex = Math.floor(Math.random() * 1000) + 1000;

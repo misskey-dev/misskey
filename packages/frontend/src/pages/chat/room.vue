@@ -165,7 +165,8 @@ const messages = ref<NormalizedChatMessage[]>([]);
 const canFetchMore = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
-const connection = ref<Misskey.IChannelConnection<Misskey.Channels['chatUser']> | Misskey.IChannelConnection<Misskey.Channels['chatRoom']> | null>(null);
+type ChatChannel = Misskey.Channels['chatUser'] | Misskey.Channels['chatRoom'];
+const connection = ref<Misskey.IChannelConnection<ChatChannel> | null>(null);
 const streamInstance = ref<any>(null); // ストリームインスタンスを保持
 const showIndicator = ref(false);
 const typingUsers = ref<Misskey.entities.UserLite[]>([]);
@@ -438,16 +439,17 @@ async function initialize() {
 			streamInstance.value = useStream();
 		}
 
-		connection.value = streamInstance.value.useChannel('chatUser', {
-			otherId: user.value.id,
-		});
-		connection.value.on('message', onMessage);
-		connection.value.on('deleted', onDeleted);
-		connection.value.on('react', onReact);
-		connection.value.on('unreact', onUnreact);
-		connection.value.on('read', onRead);
-		connection.value.on('typing', onTyping);
-		connection.value.on('typingStop', onTypingStop);
+	const channel = streamInstance.value.useChannel('chatUser', {
+		otherId: user.value.id,
+	});
+	connection.value = channel;
+	channel.on('message', onMessage);
+	channel.on('deleted', onDeleted);
+	channel.on('react', onReact);
+	channel.on('unreact', onUnreact);
+	channel.on('read', onRead);
+	channel.on('typing', onTyping);
+	channel.on('typingStop', onTypingStop);
 
 		console.log('🔍 [DEBUG] Set up chatUser connection with listeners');
 	} else if (props.roomId) {
@@ -514,16 +516,17 @@ async function initialize() {
 			streamInstance.value = useStream();
 		}
 
-		connection.value = streamInstance.value.useChannel('chatRoom', {
-			roomId: room.value.id,
-		});
-		connection.value.on('message', onMessage);
-		connection.value.on('deleted', onDeleted);
-		connection.value.on('react', onReact);
-		connection.value.on('unreact', onUnreact);
-		connection.value.on('read', onRead);
-		connection.value.on('typing', onTyping);
-		connection.value.on('typingStop', onTypingStop);
+	const channel = streamInstance.value.useChannel('chatRoom', {
+		roomId: room.value.id,
+	});
+	connection.value = channel;
+	channel.on('message', onMessage);
+	channel.on('deleted', onDeleted);
+	channel.on('react', onReact);
+	channel.on('unreact', onUnreact);
+	channel.on('read', onRead);
+	channel.on('typing', onTyping);
+	channel.on('typingStop', onTypingStop);
 
 		console.log('🔍 [DEBUG] Set up chatRoom connection with listeners');
 	}

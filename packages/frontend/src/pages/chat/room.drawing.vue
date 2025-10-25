@@ -761,7 +761,7 @@ const canRedo = computed(() => redoStack.value.length > 0);
 // レイヤー管理（3レイヤー）
 const MAX_LAYERS = 3;
 const currentLayer = ref(0); // 現在のレイヤー (0, 1, 2)
-const layerCanvases = ref<Array<HTMLCanvasElement | null>>([null, null, null]); // 各レイヤーのキャンバス
+const layerCanvases = ref<Array<HTMLCanvasElement | undefined>>([undefined, undefined, undefined]); // 各レイヤーのキャンバス
 const layerContexts = ref<Array<CanvasRenderingContext2D | null>>([null, null, null]); // 各レイヤーのコンテキスト
 const layerVisible = ref<Array<boolean>>([true, true, true]); // 各レイヤーの表示状態
 const layerOpacity = ref<Array<number>>([1.0, 1.0, 1.0]); // 各レイヤーの透明度
@@ -874,6 +874,7 @@ const otherCursors = ref<Array<{
 	userName: string;
 	x: number;
 	y: number;
+	color: string;
 }>>([]);
 
 // 他のユーザーの描画中ストローク
