@@ -5635,6 +5635,7 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
+            reads?: string[];
         };
         ChatMessageLite: {
             id: string;
@@ -5655,6 +5656,7 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
+            reads?: string[];
         };
         ChatMessageLiteFor1on1: {
             id: string;
@@ -5672,6 +5674,7 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
+            reads?: string[];
         };
         ChatMessageLiteForRoom: {
             id: string;
@@ -5691,6 +5694,7 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
+            reads?: string[];
         };
         ChatRoom: {
             id: string;
