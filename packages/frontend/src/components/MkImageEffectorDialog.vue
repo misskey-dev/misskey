@@ -242,35 +242,27 @@ function onImagePointerdown(ev: PointerEvent) {
 
 	const AW = canvasEl.value.clientWidth;
 	const AH = canvasEl.value.clientHeight;
-	const BW = imageBitmap.width;
-	const BH = imageBitmap.height;
+	const BW = canvasEl.value.width; // Canvas intrinsic width (render width)
+	const BH = canvasEl.value.height; // Canvas intrinsic height (render height)
 
-	let xOffset = 0;
-	let yOffset = 0;
-
-	if (AW / AH < BW / BH) { // 横長
-		yOffset = AH - BH * (AW / BW);
-	} else { // 縦長
-		xOffset = AW - BW * (AH / BH);
-	}
-
-	xOffset /= 2;
-	yOffset /= 2;
+	// Calculate the scale factor for object-fit: contain
+	const scale = Math.min(AW / BW, AH / BH);
+	
+	// Calculate the actual rendered size of the canvas content
+	const renderW = BW * scale;
+	const renderH = BH * scale;
+	
+	// Calculate the offset to center the image
+	const xOffset = (AW - renderW) / 2;
+	const yOffset = (AH - renderH) / 2;
 
 	const rect = canvasEl.value.getBoundingClientRect();
 	const pointerOffsetX = ev.clientX - rect.left;
 	const pointerOffsetY = ev.clientY - rect.top;
 
-	let startX = pointerOffsetX - xOffset;
-	let startY = pointerOffsetY - yOffset;
-
-	if (AW / AH < BW / BH) { // 横長
-		startX = startX / (Math.max(AW, AH) / Math.max(BH / BW, 1));
-		startY = startY / (Math.max(AW, AH) / Math.max(BW / BH, 1));
-	} else { // 縦長
-		startX = startX / (Math.min(AW, AH) / Math.max(BH / BW, 1));
-		startY = startY / (Math.min(AW, AH) / Math.max(BW / BH, 1));
-	}
+	// Convert from client coordinates to canvas coordinates
+	let startX = (pointerOffsetX - xOffset) / scale;
+	let startY = (pointerOffsetY - yOffset) / scale;
 
 	const id = genId();
 	if (penMode.value === 'fill') {
@@ -320,16 +312,10 @@ function onImagePointerdown(ev: PointerEvent) {
 	function _move(pointerClientX: number, pointerClientY: number) {
 		const pointerX = pointerClientX - rect.left;
 		const pointerY = pointerClientY - rect.top;
-		let x = pointerX - xOffset;
-		let y = pointerY - yOffset;
-
-		if (AW / AH < BW / BH) { // 横長
-			x = x / (Math.max(AW, AH) / Math.max(BH / BW, 1));
-			y = y / (Math.max(AW, AH) / Math.max(BW / BH, 1));
-		} else { // 縦長
-			x = x / (Math.min(AW, AH) / Math.max(BH / BW, 1));
-			y = y / (Math.min(AW, AH) / Math.max(BW / BH, 1));
-		}
+		
+		// Convert from client coordinates to canvas coordinates
+		let x = (pointerX - xOffset) / scale;
+		let y = (pointerY - yOffset) / scale;
 
 		const scaleX = Math.abs(x - startX);
 		const scaleY = Math.abs(y - startY);
