@@ -207,15 +207,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</FormSection>
 		</SearchMarker>
+
+		<!-- 자동 삭제 섹션 -->
+		<SearchMarker :keywords="['auto', 'delete', 'notes']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.autoDeleteNotes }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<MkInfo>{{ i18n.ts.autoDeleteNotesDescription }}</MkInfo>
+
+					<SearchMarker :keywords="['auto', 'delete', 'enable']">
+						<MkInput
+							v-model="autoDeleteNotesAfterDays"
+							type="number"
+							:min="1"
+							:max="3650"
+							@update:modelValue="saveAutoDelete()"
+						>
+							<template #label><SearchLabel>{{ i18n.ts.autoDeleteNotesAfterDays }}</SearchLabel></template>
+							<template #suffix>{{ i18n.ts._time.day }}</template>
+							<template #caption>{{ i18n.ts.autoDeleteNotesAfterDaysDescription }}</template>
+						</MkInput>
+					</SearchMarker>
+
+					<SearchMarker :keywords="['favorite', 'keep']">
+						<MkSwitch v-model="autoDeleteKeepFavorites" @update:modelValue="saveAutoDelete()">
+							<template #label><SearchLabel>{{ i18n.ts.autoDeleteKeepFavorites }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts.autoDeleteKeepFavoritesDescription }}</SearchText></template>
+						</MkSwitch>
+					</SearchMarker>
+
+					<MkInfo warn>{{ i18n.ts.autoDeleteNotesWarning }}</MkInfo>
+				</div>
+			</FormSection>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -243,6 +277,9 @@ const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
+const autoDeleteNotesAfterDays = ref<number | null>($i?.autoDeleteNotesAfterDays ?? null);
+const autoDeleteKeepFavorites = ref($i?.autoDeleteKeepFavorites ?? false);
+
 const {
 	model: followingVisibility,
 	def: followingVisibilityDef,
@@ -385,6 +422,25 @@ const makeNotesHiddenBefore_customMonths = computed({
 
 watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 	save();
+});
+
+// 자동 삭제 설정 저장
+async function saveAutoDelete() {
+	await misskeyApi('i/update-auto-delete-settings', {
+		autoDeleteNotesAfterDays: autoDeleteNotesAfterDays.value,
+		autoDeleteKeepFavorites: !!autoDeleteKeepFavorites.value,
+	});
+}
+
+// 컴포넌트 마운트 시 설정 불러오기
+onMounted(async () => {
+	try {
+		const settings = await misskeyApi('i/auto-delete-settings');
+		autoDeleteNotesAfterDays.value = settings.autoDeleteNotesAfterDays;
+		autoDeleteKeepFavorites.value = settings.autoDeleteKeepFavorites;
+	} catch (error) {
+		console.error('Failed to load auto-delete settings:', error);
+	}
 });
 
 async function update_requireSigninToViewContents(value: boolean) {

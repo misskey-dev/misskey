@@ -1,0 +1,195 @@
+
+> misskey@2025.10.1-beta.4 dev /workspace
+> node scripts/dev.mjs
+
+
+> misskey@2025.10.1-beta.4 clean /workspace
+> node ./scripts/clean.js
+
+
+> misskey@2025.10.1-beta.4 build-assets /workspace
+> node ./scripts/build-assets.mjs
+
+
+> misskey@2025.10.1-beta.4 build-pre /workspace
+> node ./scripts/build-pre.js
+
+Scope: 3 of 12 workspace projects
+packages/misskey-js build$ node ./build.js
+packages/misskey-reversi build$ node ./build.js
+
+> icons-subsetter@0.0.0 build /workspace/packages/icons-subsetter
+> tsx src/generator.ts
+
+packages/misskey-reversi build: [misskey-reversi] start building...
+packages/misskey-js build: [misskey-js] start building...
+packages/misskey-reversi build: [misskey-reversi] build succeeded.
+packages/misskey-js build: [misskey-js] build succeeded.
+Scanning frontend...
+Scanning frontendEmbed...
+Generating subset 1 of 2...
+Generating subset 2 of 2...
+[WARN] Multiple classes for the same unicode: ti-package, ti-box-seam. Maybe it's deprecated?
+[WARN] Multiple classes for the same unicode: ti-code-asterisk, ti-code-asterix. Maybe it's deprecated?
+[WARN] Multiple classes for the same unicode: ti-number-123, ti-123. Maybe it's deprecated?
+Done in 644.22ms
+packages/misskey-reversi build: [misskey-reversi] finish building.
+packages/misskey-reversi build: Done
+packages/misskey-js build: [misskey-js] finish building.
+packages/misskey-js build: Done
+packages/backend build$ swc src -d built -D --strip-leading-paths
+packages/backend build: Successfully compiled: 913 files, copied 30 files with swc (173.62ms)
+packages/backend build: Done
+
+> frontend-shared@ watch /workspace/packages/frontend-shared
+> nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean
+
+
+> backend@ dev /workspace/packages/backend
+> node ./scripts/dev.mjs
+
+
+> sw@ watch /workspace/packages/sw
+> nodemon -w ../../package.json -e json --exec "node build.js watch"
+
+
+> misskey-bubble-game@0.0.1 watch /workspace/packages/misskey-bubble-game
+> nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean
+
+
+> misskey@2025.10.1-beta.4 build-pre /workspace
+> node ./scripts/build-pre.js --watch
+
+
+> frontend@ watch /workspace/packages/frontend
+> vite
+
+
+> misskey-js@2025.10.1-beta.4 watch /workspace/packages/misskey-js
+> nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean
+
+
+> frontend-embed@ watch /workspace/packages/frontend-embed
+> vite
+
+
+> misskey@2025.10.1-beta.4 build-assets /workspace
+> node ./scripts/build-assets.mjs --watch
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): package.json[39m
+[33m[nodemon] watching extensions: json[39m
+[32m[nodemon] starting `node ./build.js --watch --no-clean`[39m
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): ../../package.json[39m
+[33m[nodemon] watching extensions: json[39m
+[32m[nodemon] starting `node build.js watch`[39m
+
+> misskey-reversi@0.0.1 watch /workspace/packages/misskey-reversi
+> nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): package.json[39m
+[33m[nodemon] watching extensions: json[39m
+[32m[nodemon] starting `node ./build.js --watch --no-clean`[39m
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src/**/*[39m
+[33m[nodemon] watching extensions: ts,js,mjs,cjs,json,pug[39m
+[32m[nodemon] starting `pnpm run build`[39m
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): package.json[39m
+[33m[nodemon] watching extensions: json[39m
+[32m[nodemon] starting `node ./build.js --watch --no-clean`[39m
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): package.json[39m
+[33m[nodemon] watching extensions: json[39m
+[32m[nodemon] starting `node ./build.js --watch --no-clean`[39m
+[misskey-bubble-game] start watching...
+[frontend-shared] start watching...
+[misskey-bubble-game] detect changed...
+[frontend-shared] detect changed...
+[misskey-js] start watching...
+[misskey-reversi] start watching...
+[misskey-js] detect changed...
+[misskey-reversi] detect changed...
+
+> backend@ build /workspace/packages/backend
+> swc src -d built -D --strip-leading-paths
+
+Starting SW building...
+watching...
+error when starting dev server:
+Error: Port 5173 is already in use
+    at Server.onError$1 (file:///workspace/node_modules/.pnpm/vite@7.1.9_@types+node@22.18.10_sass@1.93.2_terser@5.44.0_tsx@4.20.6/node_modules/vite/dist/node/chunks/dep-Chhhsdoe.js:18429:28)
+    at Server.emit (node:events:518:28)
+    at emitErrorNT (node:net:1975:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+Successfully compiled: 913 files, copied 30 files with swc (438.71ms)
+/workspace/packages/frontend:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  frontend@ watch: `vite`
+Exit status 1
+error when starting dev server:
+Error: Port 5174 is already in use
+    at Server.onError$1 (file:///workspace/node_modules/.pnpm/vite@7.1.9_@types+node@22.18.10_sass@1.93.2_terser@5.44.0_tsx@4.20.6/node_modules/vite/dist/node/chunks/dep-Chhhsdoe.js:18429:28)
+    at Server.emit (node:events:518:28)
+    at emitErrorNT (node:net:1975:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[32m[nodemon] clean exit - waiting for changes before restart[39m
+file:///workspace/node_modules/.pnpm/execa@9.6.0/node_modules/execa/lib/return/final-error.js:6
+	return new ErrorClass(message, options);
+	       ^
+
+ExecaError: Command failed with exit code 1: pnpm --filter frontend watch
+    at getFinalError (file:///workspace/node_modules/.pnpm/execa@9.6.0/node_modules/execa/lib/return/final-error.js:6:9)
+    at makeError (file:///workspace/node_modules/.pnpm/execa@9.6.0/node_modules/execa/lib/return/result.js:108:16)
+    at getAsyncResult (file:///workspace/node_modules/.pnpm/execa@9.6.0/node_modules/execa/lib/methods/main-async.js:168:4)
+    at handlePromise (file:///workspace/node_modules/.pnpm/execa@9.6.0/node_modules/execa/lib/methods/main-async.js:151:17) {
+  shortMessage: 'Command failed with exit code 1: pnpm --filter frontend watch',
+  command: 'pnpm --filter frontend watch',
+  escapedCommand: 'pnpm --filter frontend watch',
+  cwd: '/workspace',
+  durationMs: 1166.705352,
+  failed: true,
+  timedOut: false,
+  isCanceled: false,
+  isGracefullyCanceled: false,
+  isTerminated: false,
+  isMaxBuffer: false,
+  isForcefullyTerminated: false,
+  exitCode: 1,
+  stdio: [ undefined, undefined, undefined ],
+  ipcOutput: [],
+  pipedFrom: []
+}
+
+Node.js v22.15.0
+/workspace/packages/frontend-embed:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  frontend-embed@ watch: `vite`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 129.
+ ELIFECYCLE  Command failed with exit code 129.
+/workspace/packages/backend:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  backend@ dev: `node ./scripts/dev.mjs`
+Exit status 129
+/workspace/packages/misskey-js:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  misskey-js@2025.10.1-beta.4 watch: `nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean`
+Exit status 143
+/workspace/packages/frontend-shared:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  frontend-shared@ watch: `nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean`
+Exit status 143
+/workspace/packages/misskey-reversi:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  misskey-reversi@0.0.1 watch: `nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean`
+Exit status 143
+/workspace/packages/sw:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  sw@ watch: `nodemon -w ../../package.json -e json --exec "node build.js watch"`
+Exit status 143
+/workspace/packages/misskey-bubble-game:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  misskey-bubble-game@0.0.1 watch: `nodemon -w package.json -e json --exec "node ./build.js --watch" --no-clean`
+Exit status 143

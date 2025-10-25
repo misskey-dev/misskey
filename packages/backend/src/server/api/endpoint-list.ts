@@ -52,6 +52,8 @@ export * as 'admin/emoji/set-aliases-bulk' from './endpoints/admin/emoji/set-ali
 export * as 'admin/emoji/set-category-bulk' from './endpoints/admin/emoji/set-category-bulk.js';
 export * as 'admin/emoji/set-license-bulk' from './endpoints/admin/emoji/set-license-bulk.js';
 export * as 'admin/emoji/update' from './endpoints/admin/emoji/update.js';
+export * as 'i/auto-delete-settings' from './endpoints/i/auto-delete-settings.js';
+export * as 'i/update-auto-delete-settings' from './endpoints/i/update-auto-delete-settings.js';
 export * as 'admin/federation/delete-all-files' from './endpoints/admin/federation/delete-all-files.js';
 export * as 'admin/federation/refresh-remote-instance-metadata' from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 export * as 'admin/federation/remove-all-following' from './endpoints/admin/federation/remove-all-following.js';

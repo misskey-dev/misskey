@@ -5574,6 +5574,34 @@ export interface Locale extends ILocale {
      */
     "createUserSpecifiedNote": string;
     /**
+     * ノート自動削除
+     */
+    "autoDeleteNotes": string;
+    /**
+     * 指定した期間が経過したノートを自動的に削除します。
+     */
+    "autoDeleteNotesDescription": string;
+    /**
+     * 自動削除期間
+     */
+    "autoDeleteNotesAfterDays": string;
+    /**
+     * この期間が経過したノートが自動的に削除されます。無効にするには空欄にしてください。
+     */
+    "autoDeleteNotesAfterDaysDescription": string;
+    /**
+     * お気に入りのノートを保護
+     */
+    "autoDeleteKeepFavorites": string;
+    /**
+     * お気に入りに追加したノートは自動削除されません。
+     */
+    "autoDeleteKeepFavoritesDescription": string;
+    /**
+     * この操作は取り消せません。削除されたノートは復元できません。
+     */
+    "autoDeleteNotesWarning": string;
+    /**
      * 投稿を予約
      */
     "schedulePost": string;
