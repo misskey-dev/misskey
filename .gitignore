@@ -85,3 +85,21 @@ vite.config.local-dev.ts.timestamp-*
 # VSCode addon
 .favorites.json
 AGENTS.md
+assets/roles/role_ban_icon_credit.png
+assets/roles/role_ban_icon_mudantensai.png
+assets/roles/role_ban_icon_sample_neki.png
+assets/roles/role_ban_mudantensai.png
+assets/roles/role_ban_musabetsu_netosuto.png
+assets/roles/role_ban_narisumashi.png
+assets/roles/role_ban_saisakusei-web.png
+assets/roles/role_ban_web.png
+assets/roles/role_bijutsubu.png
+assets/roles/role_eshi.png
+assets/roles/role_etya_guru.png
+assets/roles/role_etya_haisinsya.png
+assets/roles/role_horror.png
+assets/roles/role_sakka.png
+assets/roles/role_shimoneta.png
+assets/roles/role_suisougakubu.png
+assets/roles/role_utamita_haisinsya.png
+assets/roles/role_yakousei.png

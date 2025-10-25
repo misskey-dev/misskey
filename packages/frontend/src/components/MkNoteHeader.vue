@@ -13,8 +13,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
 	<div :class="$style.username"><MkAcct :user="note.user"/></div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
+	<div
+		v-if="note.user.badgeRoles && !hideRole"
+		:class="[
+			$style.badgeRoles,
+			badgeIconCount >= 3 ? (badgeIconCount >= 6 ? $style.badgeRolesStackForce : $style.badgeRolesStack) : null,
+		]"
+	>
+		<template v-if="badgeIconCount < 3">
+			<template v-for="(role, i) in note.user.badgeRoles" :key="i">
+				<img v-if="role.iconUrl" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
+			</template>
+		</template>
+		<template v-else>
+			<div :class="$style.badgeRolesStackInner">
+				<template v-for="(role, i) in note.user.badgeRoles" :key="i">
+					<img
+						v-if="role.iconUrl"
+						v-tooltip="role.name"
+						:class="[$style.badgeRole, $style.badgeRoleStack]"
+						:src="role.iconUrl"
+					/>
+				</template>
+			</div>
+		</template>
 	</div>
 	<div :class="$style.info">
 		<div v-if="mock">
@@ -35,18 +57,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { DI } from '@/di.js';
 
-defineProps<{
+const props = defineProps<{
 	note: Misskey.entities.Note;
+	pinned?: boolean;
+	hideRole?: boolean;
 }>();
 
 const mock = inject(DI.mock, false);
+
+const badgeIconCount = computed(() => props.note.user.badgeRoles?.filter((role) => role.iconUrl).length ?? 0);
 </script>
 
 <style lang="scss" module>
@@ -54,6 +80,7 @@ const mock = inject(DI.mock, false);
 	display: flex;
 	align-items: baseline;
 	white-space: nowrap;
+	align-items: center;
 }
 
 .name {
@@ -99,6 +126,141 @@ const mock = inject(DI.mock, false);
 	margin: 0 .5em 0 0;
 }
 
+.badgeRolesStack {
+	position: relative;
+	margin: 0 .5em 0 0;
+	width: auto;
+
+	@media (max-width: 1400px) {
+		& {
+			max-width: 67%;
+		}
+	}
+
+	@media (max-width: 1300px) {
+		& {
+			max-width: 67%;
+		}
+	}
+
+	@media (max-width: 800px) {
+		& {
+			max-width: 69%;
+		}
+	}
+
+	@media (max-width: 700px) {
+		& {
+			max-width: 62%;
+		}
+	}
+
+	@media (max-width: 600px) {
+		& {
+			max-width: 170px;
+		}
+	}
+
+	@media (max-width: 421px) {
+		& {
+			max-width: 160px;
+		}
+	}
+
+	@media (max-width: 390px) {
+		& {
+			max-width: 130px;
+		}
+	}
+
+	@media (max-width: 375px) {
+		& {
+			max-width: 100px;
+		}
+	}
+}
+
+.badgeRolesStackForce {
+	position: relative;
+	margin: 0 .5em 0 0;
+	max-width: 67%;
+
+	@media (max-width: 1400px) {
+		& {
+			max-width: 67%;
+		}
+	}
+
+	@media (max-width: 1300px) {
+		& {
+			max-width: 67%;
+		}
+	}
+
+	@media (max-width: 800px) {
+		& {
+			max-width: 69%;
+		}
+	}
+
+	@media (max-width: 700px) {
+		& {
+			max-width: 62%;
+		}
+	}
+
+	@media (max-width: 600px) {
+		& {
+			max-width: 170px;
+		}
+	}
+
+	@media (max-width: 421px) {
+		& {
+			max-width: 160px;
+		}
+	}
+
+	@media (max-width: 390px) {
+		& {
+			max-width: 130px;
+		}
+	}
+
+	@media (max-width: 375px) {
+		& {
+			max-width: 100px;
+		}
+	}
+}
+
+.badgeRolesStackInner {
+	display: flex;
+	overflow-x: auto;
+	width: 100%;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	&::after {
+		content: '';
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		width: 40px;
+		height: 20px;
+		right: -1px;
+		position: absolute;
+		z-index: 9999999;
+		margin-left: auto;
+		top: -1px;
+		background: linear-gradient(to right, #fff0 0, var(--MI_THEME-panel) 40%, var(--MI_THEME-panel) 70%);
+	}
+}
+
 .badgeRole {
 	height: 1.3em;
 	vertical-align: -20%;
@@ -106,5 +268,9 @@ const mock = inject(DI.mock, false);
 	& + .badgeRole {
 		margin-left: 0.2em;
 	}
+}
+
+.badgeRoleStack:last-child {
+	margin-right: 2em;
 }
 </style>
