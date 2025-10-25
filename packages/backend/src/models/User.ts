@@ -198,13 +198,13 @@ export class MiUser {
 	@Column('integer', {
 		nullable: true,
 		default: null,
-		comment: '게시물 자동 삭제: N일 후 삭제 (null이면 비활성화)',
+
 	})
 	public autoDeleteNotesAfterDays: number | null;
 
 	@Column('boolean', {
 		default: true,
-		comment: '자동 삭제 시 즐겨찾기한 게시물 보존',
+
 	})
 	public autoDeleteKeepFavorites: boolean;
 
