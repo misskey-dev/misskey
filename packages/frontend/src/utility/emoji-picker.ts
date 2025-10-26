@@ -15,7 +15,7 @@ import { prefer } from '@/preferences.js';
  * 一度表示したダイアログを連続で使用できることが望ましいシーンでの利用が想定される。
  */
 class EmojiPicker {
-	private src: Ref<HTMLElement | null> = ref(null);
+	private anchorElement: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
 	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
@@ -34,7 +34,7 @@ class EmojiPicker {
 		});
 
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-			src: this.src,
+			anchorElement: this.anchorElement,
 			pinnedEmojis: emojisRef,
 			asReactionPicker: false,
 			manualShowing: this.manualShowing,
@@ -47,18 +47,18 @@ class EmojiPicker {
 				this.manualShowing.value = false;
 			},
 			closed: () => {
-				this.src.value = null;
+				this.anchorElement.value = null;
 				if (this.onClosed) this.onClosed();
 			},
 		});
 	}
 
 	public show(
-		src: HTMLElement,
+		anchorElement: HTMLElement,
 		onChosen?: EmojiPicker['onChosen'],
 		onClosed?: EmojiPicker['onClosed'],
 	) {
-		this.src.value = src;
+		this.anchorElement.value = anchorElement;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;
 		this.onClosed = onClosed;

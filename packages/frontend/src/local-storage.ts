@@ -22,10 +22,10 @@ export type Keys = (
 	'fontSize' |
 	'ui' |
 	'ui_temp' |
-	'locale' |
-	'localeVersion' |
+	'bootloaderLocales' |
 	'theme' |
 	'themeId' |
+	'themeCachedVersion' |
 	'customCss' |
 	'chatMessageDrafts' |
 	'scratchpad' |
@@ -33,6 +33,7 @@ export type Keys = (
 	'preferences' |
 	'latestPreferencesUpdate' |
 	'hidePreferencesRestoreSuggestion' |
+	'isSafeMode' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

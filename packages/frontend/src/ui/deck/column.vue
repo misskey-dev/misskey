@@ -51,6 +51,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -61,15 +62,18 @@ const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
 	naked?: boolean;
+	handleScrollToTop?: boolean;
 	menu?: MenuItem[];
 	refresher?: () => Promise<void>;
 }>(), {
 	isStacked: false,
 	naked: false,
+	handleScrollToTop: true,
 });
 
 const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
+	(ev: 'headerClick', ctx: MouseEvent): void;
 }>();
 
 const body = useTemplateRef('body');
@@ -251,7 +255,10 @@ function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
-function goTop() {
+function goTop(ev: MouseEvent) {
+	emit('headerClick', ev);
+	if (!props.handleScrollToTop) return;
+
 	if (body.value) {
 		body.value.scrollTo({
 			top: 0,
@@ -262,7 +269,7 @@ function goTop() {
 
 function onDragstart(ev) {
 	ev.dataTransfer.effectAllowed = 'move';
-	ev.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, props.column.id);
+	setDragData(ev, 'deckColumn', props.column.id);
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -281,7 +288,7 @@ function onDragover(ev) {
 		// 自分自身にはドロップさせない
 		ev.dataTransfer.dropEffect = 'none';
 	} else {
-		const isDeckColumn = ev.dataTransfer.types[0] === _DATA_TRANSFER_DECK_COLUMN_;
+		const isDeckColumn = checkDragDataType(ev, ['deckColumn']);
 
 		ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
@@ -297,8 +304,8 @@ function onDrop(ev) {
 	draghover.value = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 
-	const id = ev.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
-	if (id != null && id !== '') {
+	const id = getDragData(ev, 'deckColumn');
+	if (id != null) {
 		swapColumn(props.column.id, id);
 	}
 }
@@ -367,10 +374,6 @@ function onDrop(ev) {
 		> .body {
 			background: transparent !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-
-			&::-webkit-scrollbar-track {
-				background: transparent;
-			}
 		}
 	}
 
@@ -396,10 +399,6 @@ function onDrop(ev) {
 		> .body {
 			background: var(--MI_THEME-bg) !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-
-			&::-webkit-scrollbar-track {
-				background: inherit;
-			}
 		}
 	}
 }
@@ -486,9 +485,5 @@ function onDrop(ev) {
 	container-type: size;
 	background-color: var(--MI_THEME-bg);
 	scrollbar-color: var(--MI_THEME-scrollbarHandle) var(--MI_THEME-panel);
-
-	&::-webkit-scrollbar-track {
-		background: var(--MI_THEME-panel);
-	}
 }
 </style>

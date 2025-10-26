@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 		<div style="overflow: clip;">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+			<img :src="instance.iconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
 			<div :class="$style.bannerName">
 				<b>{{ instance.name ?? host }}</b>
 			</div>
@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSection>
 
-	<FormSuspense v-slot="{ result: stats }" :p="initStats">
+	<MkSuspense v-slot="{ result: stats }" :p="initStats">
 		<FormSection>
 			<template #label>{{ i18n.ts.statistics }}</template>
 			<FormSplit>
@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkKeyValue>
 			</FormSplit>
 		</FormSection>
-	</FormSuspense>
+	</MkSuspense>
 
 	<FormSection>
 		<template #label>Well-known resources</template>
@@ -134,7 +134,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';

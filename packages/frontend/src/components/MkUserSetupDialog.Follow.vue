@@ -10,10 +10,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkFolder :defaultOpen="true">
 		<template #label>{{ i18n.ts.recommended }}</template>
 
-		<MkPagination :pagination="pinnedUsers">
+		<MkPagination :paginator="pinnedUsersPaginator">
 			<template #default="{ items }">
 				<div :class="$style.users">
-					<XUser v-for="item in (items as Misskey.entities.UserDetailed[])" :key="item.id" :user="item"/>
+					<XUser v-for="item in items" :key="item.id" :user="item"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkFolder :defaultOpen="true">
 		<template #label>{{ i18n.ts.popularUsers }}</template>
 
-		<MkPagination :pagination="popularUsers">
+		<MkPagination :paginator="popularUsersPaginator">
 			<template #default="{ items }">
 				<div :class="$style.users">
-					<XUser v-for="item in (items as Misskey.entities.UserDetailed[])" :key="item.id" :user="item"/>
+					<XUser v-for="item in items" :key="item.id" :user="item"/>
 				</div>
 			</template>
 		</MkPagination>
@@ -34,21 +34,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
+import { markRaw } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import XUser from '@/components/MkUserSetupDialog.User.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const pinnedUsers: PagingCtx = {
-	endpoint: 'pinned-users',
+const pinnedUsersPaginator = markRaw(new Paginator('pinned-users', {
 	noPaging: true,
 	limit: 10,
-};
+}));
 
-const popularUsers: PagingCtx = {
-	endpoint: 'users',
+const popularUsersPaginator = markRaw(new Paginator('users', {
 	limit: 10,
 	noPaging: true,
 	params: {
@@ -56,7 +54,7 @@ const popularUsers: PagingCtx = {
 		origin: 'local',
 		sort: '+follower',
 	},
-};
+}));
 </script>
 
 <style lang="scss" module>

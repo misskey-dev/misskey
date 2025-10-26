@@ -18,7 +18,7 @@ import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
+	block: Extract<Misskey.entities.PageBlock, { type: 'note' }>,
 	page: Misskey.entities.Page,
 }>();
 

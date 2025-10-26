@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="prefer.s.dataSaver.urlPreview ? '' : { backgroundImage: `url('${thumbnail}')` }">
+		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="prefer.s.dataSaver.urlPreviewThumbnail ? '' : { backgroundImage: `url('${thumbnail}')` }">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
@@ -91,7 +91,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
-import { transformPlayerUrl } from '@/utility/player-url-transform.js';
+import { transformPlayerUrl } from '@/utility/url-preview.js';
 import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { maybeMakeRelative } from '@@/js/url.js';

@@ -133,8 +133,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('renote.user', 'renoteUser')
 			.leftJoinAndSelect('note.channel', 'channel');
 
-		this.queryService.generateBlockedHostQueryForNote(query);
-		this.queryService.generateSuspendedUserQueryForNote(query);
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
+
 		if (me) {
 			const mutingChannelIds = await this.channelMutingService
 				.list({ requestUserId: me.id }, { idOnly: true })
@@ -143,9 +143,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				query.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
 				query.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
 			}
-
-			this.queryService.generateMutedUserQueryForNotes(query, me);
-			this.queryService.generateBlockedUserQueryForNotes(query, me);
 		}
 		//#endregion
 

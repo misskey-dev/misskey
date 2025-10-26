@@ -27,8 +27,8 @@ const props = defineProps<{
 
 const notificationsComponent = useTemplateRef('notificationsComponent');
 
-function func() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSelectWindow.vue')), {
+async function func() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkNotificationSelectWindow.vue').then(x => x.default), {
 		excludeTypes: props.column.excludeTypes,
 	}, {
 		done: async (res) => {

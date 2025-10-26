@@ -20,17 +20,19 @@ import NestedRouterView from './global/NestedRouterView.vue';
 import StackingRouterView from './global/StackingRouterView.vue';
 import MkLoading from './global/MkLoading.vue';
 import MkError from './global/MkError.vue';
+import MkSuspense from './global/MkSuspense.vue';
 import MkAd from './global/MkAd.vue';
 import MkPageHeader from './global/MkPageHeader.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
 import MkResult from './global/MkResult.vue';
 import MkSystemIcon from './global/MkSystemIcon.vue';
+import MkTip from './global/MkTip.vue';
 import PageWithHeader from './global/PageWithHeader.vue';
 import PageWithAnimBg from './global/PageWithAnimBg.vue';
 import SearchMarker from './global/SearchMarker.vue';
 import SearchLabel from './global/SearchLabel.vue';
-import SearchKeyword from './global/SearchKeyword.vue';
+import SearchText from './global/SearchText.vue';
 import SearchIcon from './global/SearchIcon.vue';
 
 import type { App } from 'vue';
@@ -59,17 +61,19 @@ export const components = {
 	MkUrl: MkUrl,
 	MkLoading: MkLoading,
 	MkError: MkError,
+	MkSuspense: MkSuspense,
 	MkAd: MkAd,
 	MkPageHeader: MkPageHeader,
 	MkStickyContainer: MkStickyContainer,
 	MkLazy: MkLazy,
 	MkResult: MkResult,
 	MkSystemIcon: MkSystemIcon,
+	MkTip: MkTip,
 	PageWithHeader: PageWithHeader,
 	PageWithAnimBg: PageWithAnimBg,
 	SearchMarker: SearchMarker,
 	SearchLabel: SearchLabel,
-	SearchKeyword: SearchKeyword,
+	SearchText: SearchText,
 	SearchIcon: SearchIcon,
 };
 
@@ -92,17 +96,19 @@ declare module '@vue/runtime-core' {
 		MkUrl: typeof MkUrl;
 		MkLoading: typeof MkLoading;
 		MkError: typeof MkError;
+		MkSuspense: typeof MkSuspense;
 		MkAd: typeof MkAd;
 		MkPageHeader: typeof MkPageHeader;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
 		MkResult: typeof MkResult;
 		MkSystemIcon: typeof MkSystemIcon;
+		MkTip: typeof MkTip;
 		PageWithHeader: typeof PageWithHeader;
 		PageWithAnimBg: typeof PageWithAnimBg;
 		SearchMarker: typeof SearchMarker;
 		SearchLabel: typeof SearchLabel;
-		SearchKeyword: typeof SearchKeyword;
+		SearchText: typeof SearchText;
 		SearchIcon: typeof SearchIcon;
 	}
 }

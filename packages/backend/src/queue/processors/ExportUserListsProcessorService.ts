@@ -67,10 +67,12 @@ export class ExportUserListsProcessorService {
 				const users = await this.usersRepository.findBy({
 					id: In(memberships.map(j => j.userId)),
 				});
+				const usersWithReplies = new Set(memberships.filter(m => m.withReplies).map(m => m.userId));
 
 				for (const u of users) {
 					const acct = this.utilityService.getFullApAccount(u.username, u.host);
-					const content = `${list.name},${acct}`;
+					// 3rd column and later will be key=value pairs
+					const content = `${list.name},${acct},withReplies=${usersWithReplies.has(u.id)}`;
 					await new Promise<void>((res, rej) => {
 						stream.write(content + '\n', err => {
 							if (err) {
