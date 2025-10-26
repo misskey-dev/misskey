@@ -3200,6 +3200,7 @@ _watermarkEditor:
   title: "編輯浮水印"
   cover: "覆蓋整體"
   repeat: "佈局"
+  preserveBoundingRect: "調整使其在旋轉時不會突出"
   opacity: "透明度"
   scale: "大小"
   text: "文字"

@@ -64,6 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+import type { Awaitable } from '@/types/misc.js';
+
 export type SuperMenuDef = {
 	title?: string;
 	items: ({
@@ -80,7 +82,7 @@ export type SuperMenuDef = {
 		text: string;
 		danger?: boolean;
 		active?: boolean;
-		action: (ev: MouseEvent) => void | Promise<void>;
+		action: (ev: MouseEvent) => Awaitable<void>;
 	} | {
 		type?: 'link';
 		to: string;

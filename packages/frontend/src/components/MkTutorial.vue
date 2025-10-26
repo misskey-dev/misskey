@@ -174,7 +174,7 @@ import { host } from '@@/js/config.js';
 import { claimAchievement } from '@/utility/achievements.js';
 
 import type { Component } from 'vue';
-import type { Tuple } from '@/type.js';
+import type { Tuple } from '@/types/misc.js';
 
 const props = defineProps<{
 	initialPage?: number;
