@@ -5,14 +5,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl" :class="$style.root" :style="{ zIndex }">
+	<div :class="[$style.bg]"></div>
 	<div ref="spotEl" :class="$style.spot"></div>
 	<div ref="bodyEl" :class="$style.body" class="_panel _shadow">
 		<div class="_gaps_s">
 			<div><b>{{ title }}</b></div>
 			<div>{{ description }}</div>
 			<div class="_buttons">
-				<MkButton small @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-				<MkButton small primary @click="next">{{ i18n.ts.next }} <i class="ti ti-arrow-right"></i></MkButton>
+				<MkButton v-if="hasPrev" small @click="prev"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+				<MkButton v-if="hasNext" small primary @click="next">{{ i18n.ts.next }} <i class="ti ti-arrow-right"></i></MkButton>
+				<MkButton v-else small primary @click="next">{{ i18n.ts.done }} <i class="ti ti-check"></i></MkButton>
 			</div>
 		</div>
 	</div>
@@ -33,6 +35,8 @@ const props = withDefaults(defineProps<{
 	x?: number;
 	y?: number;
 	direction?: 'top' | 'bottom' | 'right' | 'left';
+	hasPrev: boolean;
+	hasNext: boolean;
 }>(), {
 	direction: 'top',
 });
@@ -107,9 +111,14 @@ onUnmounted(() => {
 <style lang="scss" module>
 .root {
 	position: absolute;
-	padding: 8px 12px;
-	box-sizing: border-box;
-	border-radius: 4px;
+}
+
+.bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .spot {
@@ -134,7 +143,7 @@ onUnmounted(() => {
 	padding: 16px 20px;
 	box-sizing: border-box;
 	width: max-content;
-	max-width: 500px;
+	max-width: min(500px, 100vw);
 }
 
 @keyframes blink {

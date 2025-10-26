@@ -154,6 +154,7 @@ import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 import { useUploader } from '@/composables/use-uploader.js';
 import { startTour } from '@/utility/tour.js';
+import { closeTip } from '@/tips.js';
 
 const $i = ensureSignin();
 
@@ -1290,31 +1291,35 @@ function cancelSchedule() {
 }
 
 onMounted(() => {
-	startTour([{
-		element: textareaEl.value,
-		title: '本文',
-		description: '投稿する内容を入力します。',
-	}, {
-		element: footerEl.value,
-		title: 'ツールバー',
-		description: 'ファイルやアンケートの添付、注釈やハッシュタグの設定、絵文字やメンションの挿入などが可能です。',
-	}, {
-		element: accountMenuEl.value,
-		title: 'アカウントメニュー',
-		description: '投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。',
-	}, {
-		element: visibilityButton.value,
-		title: '公開範囲',
-		description: 'ノートを公開する範囲の設定が行えます。',
-	}, {
-		element: otherSettingsButton.value,
-		title: 'その他',
-		description: '下書きへの保存、投稿の予約、リアクションの設定など、その他のアクションが行えます。',
-	}, {
-		element: submitButtonEl.value,
-		title: '投稿ボタン',
-		description: 'ノートを投稿します。Ctrl + Enter / Cmd + Enter でも投稿できます。',
-	}]);
+	if (!store.s.tips.postForm) {
+		startTour([{
+			element: textareaEl.value,
+			title: '本文',
+			description: '投稿する内容を入力します。',
+		}, {
+			element: footerEl.value,
+			title: 'ツールバー',
+			description: 'ファイルやアンケートの添付、注釈やハッシュタグの設定、絵文字やメンションの挿入などが可能です。',
+		}, {
+			element: accountMenuEl.value,
+			title: 'アカウントメニュー',
+			description: '投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。',
+		}, {
+			element: visibilityButton.value,
+			title: '公開範囲',
+			description: 'ノートを公開する範囲の設定が行えます。',
+		}, {
+			element: otherSettingsButton.value,
+			title: 'その他',
+			description: '下書きへの保存、投稿の予約、リアクションの設定など、その他のアクションが行えます。',
+		}, {
+			element: submitButtonEl.value,
+			title: '投稿ボタン',
+			description: 'ノートを投稿します。Ctrl + Enter / Cmd + Enter でも投稿できます。',
+		}]).then(() => {
+			closeTip('postForm');
+		});
+	}
 
 	if (props.autofocus) {
 		focus();
