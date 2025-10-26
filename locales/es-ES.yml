@@ -2470,7 +2470,7 @@ _widgets:
   digitalClock: "Reloj digital"
   unixClock: "Reloj UNIX"
   federation: "Federación"
-  instanceCloud: "Nube de palabras de la instancia"
+  instanceCloud: "Nube de Instancias Federadas"
   postForm: "Formulario"
   slideshow: "Diapositivas"
   button: "Botón"
