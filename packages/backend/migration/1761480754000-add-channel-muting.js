@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export class AddChannelMuting1718015380000 {
-	name = 'AddChannelMuting1718015380000'
+export class AddChannelMuting1761480754000 {
+	name = 'AddChannelMuting1761480754000'
 
 	async up(queryRunner) {
 		await queryRunner.query(`
