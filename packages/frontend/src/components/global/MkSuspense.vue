@@ -1,4 +1,3 @@
-@ -1,70 +0,0 @@
 <!--
 SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only

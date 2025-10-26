@@ -36,7 +36,7 @@ jobs:
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4.1.0
+        uses: pnpm/action-setup@v4.2.0
       - name: Get current date
         id: current-date
         run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT

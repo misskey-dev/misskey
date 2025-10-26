@@ -4,37 +4,8 @@
  */
 
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import shader from './zoomLines.glsl';
 import { i18n } from '@/i18n.js';
-
-const shader = `#version 300 es
-precision mediump float;
-
-in vec2 in_uv;
-uniform sampler2D in_texture;
-uniform vec2 in_resolution;
-uniform vec2 u_pos;
-uniform float u_frequency;
-uniform bool u_thresholdEnabled;
-uniform float u_threshold;
-uniform float u_maskSize;
-uniform bool u_black;
-out vec4 out_color;
-
-void main() {
-	vec4 in_color = texture(in_texture, in_uv);
-	float angle = atan(-u_pos.y + (in_uv.y), -u_pos.x + (in_uv.x));
-	float t = (1.0 + sin(angle * u_frequency)) / 2.0;
-	if (u_thresholdEnabled) t = t < u_threshold ? 1.0 : 0.0;
-	float d = distance(in_uv * vec2(2.0, 2.0), u_pos * vec2(2.0, 2.0));
-	float mask = d < u_maskSize ? 0.0 : ((d - u_maskSize) * (1.0 + (u_maskSize * 2.0)));
-	out_color = vec4(
-		mix(in_color.r, u_black ? 0.0 : 1.0, t * mask),
-		mix(in_color.g, u_black ? 0.0 : 1.0, t * mask),
-		mix(in_color.b, u_black ? 0.0 : 1.0, t * mask),
-		in_color.a
-	);
-}
-`;
 
 export const FX_zoomLines = defineImageEffectorFx({
 	id: 'zoomLines',
@@ -61,9 +32,9 @@ export const FX_zoomLines = defineImageEffectorFx({
 		frequency: {
 			label: i18n.ts._imageEffector._fxProps.frequency,
 			type: 'number',
-			default: 30.0,
-			min: 1.0,
-			max: 200.0,
+			default: 5.0,
+			min: 0.0,
+			max: 15.0,
 			step: 0.1,
 		},
 		smoothing: {
@@ -75,7 +46,7 @@ export const FX_zoomLines = defineImageEffectorFx({
 		threshold: {
 			label: i18n.ts._imageEffector._fxProps.zoomLinesThreshold,
 			type: 'number',
-			default: 0.2,
+			default: 0.5,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
@@ -95,8 +66,8 @@ export const FX_zoomLines = defineImageEffectorFx({
 		},
 	},
 	main: ({ gl, u, params }) => {
-		gl.uniform2f(u.pos, (1.0 + params.x) / 2.0, (1.0 + params.y) / 2.0);
-		gl.uniform1f(u.frequency, params.frequency);
+		gl.uniform2f(u.pos, params.x / 2, params.y / 2);
+		gl.uniform1f(u.frequency, params.frequency * params.frequency);
 		// thresholdの調整が有効な間はsmoothingが利用できない
 		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
 		gl.uniform1f(u.threshold, params.threshold);

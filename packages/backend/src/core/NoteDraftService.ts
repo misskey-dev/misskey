@@ -5,32 +5,18 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { noteVisibilities, noteReactionAcceptances } from '@/types.js';
 import { DI } from '@/di-symbols.js';
 import type { MiNoteDraft, NoteDraftsRepository, MiNote, MiDriveFile, MiChannel, UsersRepository, DriveFilesRepository, NotesRepository, BlockingsRepository, ChannelsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { IPoll } from '@/models/Poll.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isRenote, isQuote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { QueueService } from '@/core/QueueService.js';
 
-export type NoteDraftOptions = {
-	replyId?: MiNote['id'] | null;
-	renoteId?: MiNote['id'] | null;
-	text?: string | null;
-	cw?: string | null;
-	localOnly?: boolean | null;
-	reactionAcceptance?: typeof noteReactionAcceptances[number];
-	visibility?: typeof noteVisibilities[number];
-	fileIds?: MiDriveFile['id'][];
-	visibleUserIds?: MiUser['id'][];
-	hashtag?: string;
-	channelId?: MiChannel['id'] | null;
-	poll?: (IPoll & { expiredAfter?: number | null }) | null;
-};
+export type NoteDraftOptions = Omit<MiNoteDraft, 'id' | 'userId' | 'user' | 'reply' | 'renote' | 'channel'>;
 
 @Injectable()
 export class NoteDraftService {
@@ -56,6 +42,7 @@ export class NoteDraftService {
 		private roleService: RoleService,
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
+		private queueService: QueueService,
 	) {
 	}
 
@@ -72,36 +59,43 @@ export class NoteDraftService {
 	@bindThis
 	public async create(me: MiLocalUser, data: NoteDraftOptions): Promise<MiNoteDraft> {
 		//#region check draft limit
+		const policies = await this.roleService.getUserPolicies(me.id);
 
 		const currentCount = await this.noteDraftsRepository.countBy({
 			userId: me.id,
 		});
-		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).noteDraftLimit) {
+		if (currentCount >= policies.noteDraftLimit) {
 			throw new IdentifiableError('9ee33bbe-fde3-4c71-9b51-e50492c6b9c8', 'Too many drafts');
+		}
+
+		if (data.isActuallyScheduled) {
+			const currentScheduledCount = await this.noteDraftsRepository.countBy({
+				userId: me.id,
+				isActuallyScheduled: true,
+			});
+			if (currentScheduledCount >= policies.scheduledNoteLimit) {
+				throw new IdentifiableError('c3275f19-4558-4c59-83e1-4f684b5fab66', 'Too many scheduled notes');
+			}
 		}
 		//#endregion
 
-		if (data.poll) {
-			if (typeof data.poll.expiresAt === 'number') {
-				if (data.poll.expiresAt < Date.now()) {
-					throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
-				}
-			} else if (typeof data.poll.expiredAfter === 'number') {
-				data.poll.expiresAt = new Date(Date.now() + data.poll.expiredAfter);
-			}
+		await this.validate(me, data);
+
+		const draft = await this.noteDraftsRepository.insertOne({
+			...data,
+			id: this.idService.gen(),
+			userId: me.id,
+		});
+
+		if (draft.scheduledAt && draft.isActuallyScheduled) {
+			this.schedule(draft);
 		}
-
-		const appliedDraft = await this.checkAndSetDraftNoteOptions(me, this.noteDraftsRepository.create(), data);
-
-		appliedDraft.id = this.idService.gen();
-		appliedDraft.userId = me.id;
-		const draft = this.noteDraftsRepository.save(appliedDraft);
 
 		return draft;
 	}
 
 	@bindThis
-	public async update(me: MiLocalUser, draftId: MiNoteDraft['id'], data: NoteDraftOptions): Promise<MiNoteDraft> {
+	public async update(me: MiLocalUser, draftId: MiNoteDraft['id'], data: Partial<NoteDraftOptions>): Promise<MiNoteDraft> {
 		const draft = await this.noteDraftsRepository.findOneBy({
 			id: draftId,
 			userId: me.id,
@@ -111,19 +105,36 @@ export class NoteDraftService {
 			throw new IdentifiableError('49cd6b9d-848e-41ee-b0b9-adaca711a6b1', 'No such note draft');
 		}
 
-		if (data.poll) {
-			if (typeof data.poll.expiresAt === 'number') {
-				if (data.poll.expiresAt < Date.now()) {
-					throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
-				}
-			} else if (typeof data.poll.expiredAfter === 'number') {
-				data.poll.expiresAt = new Date(Date.now() + data.poll.expiredAfter);
+		//#region check draft limit
+		const policies = await this.roleService.getUserPolicies(me.id);
+
+		if (!draft.isActuallyScheduled && data.isActuallyScheduled) {
+			const currentScheduledCount = await this.noteDraftsRepository.countBy({
+				userId: me.id,
+				isActuallyScheduled: true,
+			});
+			if (currentScheduledCount >= policies.scheduledNoteLimit) {
+				throw new IdentifiableError('bacdf856-5c51-4159-b88a-804fa5103be5', 'Too many scheduled notes');
 			}
 		}
+		//#endregion
 
-		const appliedDraft = await this.checkAndSetDraftNoteOptions(me, draft, data);
+		await this.validate(me, data);
 
-		return await this.noteDraftsRepository.save(appliedDraft);
+		const updatedDraft = await this.noteDraftsRepository.createQueryBuilder().update()
+			.set(data)
+			.where('id = :id', { id: draftId })
+			.returning('*')
+			.execute()
+			.then((response) => response.raw[0]);
+
+		this.clearSchedule(draftId).then(() => {
+			if (updatedDraft.scheduledAt != null && updatedDraft.isActuallyScheduled) {
+				this.schedule(updatedDraft);
+			}
+		});
+
+		return updatedDraft;
 	}
 
 	@bindThis
@@ -138,6 +149,8 @@ export class NoteDraftService {
 		}
 
 		await this.noteDraftsRepository.delete(draft.id);
+
+		this.clearSchedule(draftId);
 	}
 
 	@bindThis
@@ -154,27 +167,28 @@ export class NoteDraftService {
 		return draft;
 	}
 
-	// 関連エンティティを取得し紐づける部分を共通化する
 	@bindThis
-	public async checkAndSetDraftNoteOptions(
+	public async validate(
 		me: MiLocalUser,
-		draft: MiNoteDraft,
-		data: NoteDraftOptions,
-	): Promise<MiNoteDraft> {
-		data.visibility ??= 'public';
-		data.localOnly ??= false;
-		if (data.reactionAcceptance === undefined) data.reactionAcceptance = null;
-		if (data.channelId != null) {
-			data.visibility = 'public';
-			data.visibleUserIds = [];
-			data.localOnly = true;
+		data: Partial<NoteDraftOptions>,
+	): Promise<void> {
+		if (data.isActuallyScheduled) {
+			if (data.scheduledAt == null) {
+				throw new IdentifiableError('94a89a43-3591-400a-9c17-dd166e71fdfa', 'scheduledAt is required when isActuallyScheduled is true');
+			} else if (data.scheduledAt.getTime() < Date.now()) {
+				throw new IdentifiableError('b34d0c1b-996f-4e34-a428-c636d98df457', 'scheduledAt must be in the future');
+			}
 		}
 
-		let appliedDraft = draft;
+		if (data.pollExpiresAt != null) {
+			if (data.pollExpiresAt.getTime() < Date.now()) {
+				throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
+			}
+		}
 
 		//#region visibleUsers
 		let visibleUsers: MiUser[] = [];
-		if (data.visibleUserIds != null) {
+		if (data.visibleUserIds != null && data.visibleUserIds.length > 0) {
 			visibleUsers = await this.usersRepository.findBy({
 				id: In(data.visibleUserIds),
 			});
@@ -184,7 +198,7 @@ export class NoteDraftService {
 		//#region files
 		let files: MiDriveFile[] = [];
 		const fileIds = data.fileIds ?? null;
-		if (fileIds != null) {
+		if (fileIds != null && fileIds.length > 0) {
 			files = await this.driveFilesRepository.createQueryBuilder('file')
 				.where('file.userId = :userId AND file.id IN (:...fileIds)', {
 					userId: me.id,
@@ -288,27 +302,38 @@ export class NoteDraftService {
 			}
 		}
 		//#endregion
+	}
 
-		appliedDraft = {
-			...appliedDraft,
-			visibility: data.visibility,
-			cw: data.cw ?? null,
-			fileIds: fileIds ?? [],
-			replyId: data.replyId ?? null,
-			renoteId: data.renoteId ?? null,
-			channelId: data.channelId ?? null,
-			text: data.text ?? null,
-			hashtag: data.hashtag ?? null,
-			hasPoll: data.poll != null,
-			pollChoices: data.poll ? data.poll.choices : [],
-			pollMultiple: data.poll ? data.poll.multiple : false,
-			pollExpiresAt: data.poll ? data.poll.expiresAt : null,
-			pollExpiredAfter: data.poll ? data.poll.expiredAfter ?? null : null,
-			visibleUserIds: data.visibleUserIds ?? [],
-			localOnly: data.localOnly,
-			reactionAcceptance: data.reactionAcceptance,
-		} satisfies MiNoteDraft;
+	@bindThis
+	public async schedule(draft: MiNoteDraft): Promise<void> {
+		if (!draft.isActuallyScheduled) return;
+		if (draft.scheduledAt == null) return;
+		if (draft.scheduledAt.getTime() <= Date.now()) return;
 
-		return appliedDraft;
+		const delay = draft.scheduledAt.getTime() - Date.now();
+		this.queueService.postScheduledNoteQueue.add(draft.id, {
+			noteDraftId: draft.id,
+		}, {
+			delay,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
+		});
+	}
+
+	@bindThis
+	public async clearSchedule(draftId: MiNoteDraft['id']): Promise<void> {
+		// TODO: 線形探索なのをどうにかする
+		const jobs = await this.queueService.postScheduledNoteQueue.getJobs(['delayed', 'waiting', 'active']);
+		for (const job of jobs) {
+			if (job.data.noteDraftId === draftId) {
+				await job.remove();
+			}
+		}
 	}
 }

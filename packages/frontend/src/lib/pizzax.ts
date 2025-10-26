@@ -94,7 +94,7 @@ export class Pizzax<T extends StateDef> {
 
 	private mergeState<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			const merged = deepMerge(value, def);
+			const merged = deepMerge<Record<PropertyKey, unknown>>(value, def);
 
 			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
 

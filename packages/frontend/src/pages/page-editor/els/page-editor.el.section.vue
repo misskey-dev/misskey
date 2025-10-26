@@ -71,7 +71,7 @@ async function add() {
 		title: i18n.ts._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
-	if (canceled) return;
+	if (canceled || type == null) return;
 
 	const id = genId();
 	children.value.push({ id, type });

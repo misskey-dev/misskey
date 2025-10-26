@@ -15,9 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.headerLeft">
 			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
 			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-				<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
+				<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
 			</button>
-			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draft" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-pencil-minus"></i></button>
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(targetChannel != null && fixed)">
@@ -43,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : replyTargetNote ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="submitIcon"></i>
 				</div>
 			</button>
 		</div>
@@ -61,6 +60,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
+	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">
+		<I18n :src="i18n.ts.scheduleToPostOnX" tag="span">
+			<template #x>
+				<MkTime :time="scheduledAt" :mode="'detail'" style="font-weight: bold;"/>
+			</template>
+		</I18n> - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button>
+	</MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
@@ -105,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -134,7 +140,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
-import { getAccounts, openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { getAccounts, getAccountMenu } from '@/accounts.js';
 import { deepClone } from '@/utility/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
@@ -199,6 +205,7 @@ if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(store.s.reactionAcceptance);
+const scheduledAt = ref<number | null>(null);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
@@ -216,6 +223,10 @@ const postFormActions = getPluginHandlers('post_form_action');
 
 const uploader = useUploader({
 	multiple: true,
+});
+
+onUnmounted(() => {
+	uploader.dispose();
 });
 
 uploader.events.on('itemUploaded', ctx => {
@@ -258,11 +269,17 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return renoteTargetNote.value
-		? i18n.ts.quote
-		: replyTargetNote.value
-			? i18n.ts.reply
-			: i18n.ts.note;
+	return scheduledAt.value != null
+		? i18n.ts.schedule
+		: renoteTargetNote.value
+			? i18n.ts.quote
+			: replyTargetNote.value
+				? i18n.ts.reply
+				: i18n.ts.note;
+});
+
+const submitIcon = computed((): string => {
+	return posted.value ? 'ti ti-check' : scheduledAt.value != null ? 'ti ti-calendar-time' : replyTargetNote.value ? 'ti ti-arrow-back-up' : renoteTargetNote.value ? 'ti ti-quote' : 'ti ti-send';
 });
 
 const textLength = computed((): number => {
@@ -410,6 +427,7 @@ function watchForDraft() {
 	watch(localOnly, () => saveDraft());
 	watch(quoteId, () => saveDraft());
 	watch(reactionAcceptance, () => saveDraft());
+	watch(scheduledAt, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -567,11 +585,11 @@ async function toggleReactionAcceptance() {
 	const select = await os.select({
 		title: i18n.ts.reactionAcceptance,
 		items: [
-			{ value: null, text: i18n.ts.all },
-			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
-			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
-			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
-			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+			{ value: null, label: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, label: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, label: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, label: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, label: i18n.ts.likeOnly },
 		],
 		default: reactionAcceptance.value,
 	});
@@ -602,6 +620,25 @@ function showOtherSettings() {
 			toggleReactionAcceptance();
 		},
 	}, { type: 'divider' }, {
+		type: 'button',
+		text: i18n.ts._drafts.saveToDraft,
+		icon: 'ti ti-cloud-upload',
+		action: async () => {
+			if (!canSaveAsServerDraft.value) {
+				return os.alert({
+					type: 'error',
+					text: i18n.ts._drafts.cannotCreateDraft,
+				});
+			}
+			saveServerDraft();
+		},
+	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
+		icon: 'ti ti-calendar-time',
+		text: i18n.ts.schedulePost + '...',
+		action: () => {
+			schedule();
+		},
+	}] : []), { type: 'divider' }, {
 		type: 'switch',
 		icon: 'ti ti-eye',
 		text: i18n.ts.preview,
@@ -650,6 +687,7 @@ function clear() {
 	files.value = [];
 	poll.value = null;
 	quoteId.value = null;
+	scheduledAt.value = null;
 }
 
 function onKeydown(ev: KeyboardEvent) {
@@ -805,6 +843,7 @@ function saveDraft() {
 			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			quoteId: quoteId.value,
 			reactionAcceptance: reactionAcceptance.value,
+			scheduledAt: scheduledAt.value,
 		},
 	};
 
@@ -819,29 +858,25 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function saveServerDraft(clearLocal = false) {
+async function saveServerDraft(options: {
+	isActuallyScheduled?: boolean;
+} = {}) {
 	return await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
 		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
 		text: text.value,
-		useCw: useCw.value,
-		cw: cw.value,
+		cw: useCw.value ? cw.value || null : null,
 		visibility: visibility.value,
 		localOnly: localOnly.value,
 		hashtag: hashtags.value,
-		...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
+		fileIds: files.value.map(f => f.id),
 		poll: poll.value,
-		...(visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
-		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
-		replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
-		quoteId: quoteId.value,
-		channelId: targetChannel.value ? targetChannel.value.id : undefined,
+		visibleUserIds: visibleUsers.value.map(x => x.id),
+		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : null,
+		replyId: replyTargetNote.value ? replyTargetNote.value.id : null,
+		channelId: targetChannel.value ? targetChannel.value.id : null,
 		reactionAcceptance: reactionAcceptance.value,
-	}).then(() => {
-		if (clearLocal) {
-			clear();
-			deleteDraft();
-		}
-	}).catch((err) => {
+		scheduledAt: scheduledAt.value,
+		isActuallyScheduled: options.isActuallyScheduled ?? false,
 	});
 }
 
@@ -874,6 +909,21 @@ async function post(ev?: MouseEvent) {
 				end: () => dispose(),
 			});
 		}
+	}
+
+	if (scheduledAt.value != null) {
+		if (uploader.items.value.some(x => x.uploaded == null)) {
+			await uploadFiles();
+
+			// アップロード失敗したものがあったら中止
+			if (uploader.items.value.some(x => x.uploaded == null)) {
+				return;
+			}
+		}
+
+		await postAsScheduled();
+		clear();
+		return;
 	}
 
 	if (props.mock) return;
@@ -1047,6 +1097,14 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
+async function postAsScheduled() {
+	if (props.mock) return;
+
+	await saveServerDraft({
+		isActuallyScheduled: true,
+	});
+}
+
 function cancel() {
 	emit('cancel');
 }
@@ -1113,36 +1171,13 @@ function showActions(ev: MouseEvent) {
 
 const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
-function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: MouseEvent) {
 	if (props.mock) return;
 
-	openAccountMenu_({
-		withExtraOperation: false,
-		includeCurrentAccount: true,
-		active: postAccount.value != null ? postAccount.value.id : $i.id,
-		onChoose: (account) => {
-			if (account.id === $i.id) {
-				postAccount.value = null;
-			} else {
-				postAccount.value = account;
-			}
-		},
-	}, ev);
-}
-
-function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
-	const menu = uploader.getMenu(item);
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
-}
-
-function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
-	const menu = uploader.getMenu(item);
-	os.contextMenu(menu, ev);
-}
-
-function showDraftMenu(ev: MouseEvent) {
-	function showDraftsDialog() {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {}, {
+	function showDraftsDialog(scheduled: boolean) {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {
+			scheduled,
+		}, {
 			restore: async (draft: Misskey.entities.NoteDraft) => {
 				text.value = draft.text ?? '';
 				useCw.value = draft.cw != null;
@@ -1173,6 +1208,7 @@ function showDraftMenu(ev: MouseEvent) {
 				renoteTargetNote.value = draft.renote;
 				replyTargetNote.value = draft.reply;
 				reactionAcceptance.value = draft.reactionAcceptance;
+				scheduledAt.value = draft.scheduledAt ?? null;
 				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
 
 				visibleUsers.value = [];
@@ -1195,27 +1231,58 @@ function showDraftMenu(ev: MouseEvent) {
 		});
 	}
 
-	os.popupMenu([{
-		type: 'button',
-		text: i18n.ts._drafts.saveToDraft,
-		icon: 'ti ti-cloud-upload',
-		action: async () => {
-			if (!canSaveAsServerDraft.value) {
-				return os.alert({
-					type: 'error',
-					text: i18n.ts._drafts.cannotCreateDraft,
-				});
+	const items = await getAccountMenu({
+		withExtraOperation: false,
+		includeCurrentAccount: true,
+		active: postAccount.value != null ? postAccount.value.id : $i.id,
+		onChoose: (account) => {
+			if (account.id === $i.id) {
+				postAccount.value = null;
+			} else {
+				postAccount.value = account;
 			}
-			saveServerDraft();
 		},
-	}, {
+	});
+
+	os.popupMenu([{
 		type: 'button',
 		text: i18n.ts._drafts.listDrafts,
 		icon: 'ti ti-cloud-download',
 		action: () => {
-			showDraftsDialog();
+			showDraftsDialog(false);
 		},
-	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	}, {
+		type: 'button',
+		text: i18n.ts._drafts.listScheduledNotes,
+		icon: 'ti ti-clock-down',
+		action: () => {
+			showDraftsDialog(true);
+		},
+	}, { type: 'divider' }, ...items], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+}
+
+function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.contextMenu(menu, ev);
+}
+
+async function schedule() {
+	const { canceled, result } = await os.inputDatetime({
+		title: i18n.ts.schedulePost,
+	});
+	if (canceled) return;
+	if (result.getTime() <= Date.now()) return;
+
+	scheduledAt.value = result.getTime();
+}
+
+function cancelSchedule() {
+	scheduledAt.value = null;
 }
 
 onMounted(() => {
@@ -1253,6 +1320,7 @@ onMounted(() => {
 				}
 				quoteId.value = draft.data.quoteId;
 				reactionAcceptance.value = draft.data.reactionAcceptance;
+				scheduledAt.value = draft.data.scheduledAt ?? null;
 			}
 		}
 
@@ -1302,6 +1370,7 @@ async function canClose() {
 
 defineExpose({
 	clear,
+	abortUploader: () => uploader.abortAll(),
 	canClose,
 });
 </script>
@@ -1348,20 +1417,6 @@ defineExpose({
 	width: 28px;
 	height: 28px;
 	margin: auto;
-}
-
-.draftButton {
-	padding: 8px;
-	font-size: 90%;
-	border-radius: 6px;
-
-	&:hover {
-		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
-	}
-
-	&:disabled {
-		background: none;
-	}
 }
 
 .headerRight {
@@ -1513,6 +1568,10 @@ html[data-color-scheme=light] .preview {
 }
 
 .hasNotSpecifiedMentions {
+	margin: 0 20px 16px 20px;
+}
+
+.scheduledAt {
 	margin: 0 20px 16px 20px;
 }
 

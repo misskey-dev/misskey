@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { FX_watermarkPlacement } from '@/utility/image-effector/fxs/watermarkPlacement.js';
 import { FX_stripe } from '@/utility/image-effector/fxs/stripe.js';
 import { FX_polkadot } from '@/utility/image-effector/fxs/polkadot.js';
 import { FX_checker } from '@/utility/image-effector/fxs/checker.js';
-import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 
 const WATERMARK_FXS = [
@@ -17,6 +17,8 @@ const WATERMARK_FXS = [
 	FX_checker,
 ] as const satisfies ImageEffectorFx<string, any>[];
 
+type Align = { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; margin?: number; };
+
 export type WatermarkPreset = {
 	id: string;
 	name: string;
@@ -25,9 +27,10 @@ export type WatermarkPreset = {
 		type: 'text';
 		text: string;
 		repeat: boolean;
+		noBoundingBoxExpansion: boolean;
 		scale: number;
 		angle: number;
-		align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom' };
+		align: Align;
 		opacity: number;
 	} | {
 		id: string;
@@ -36,9 +39,17 @@ export type WatermarkPreset = {
 		imageId: string | null;
 		cover: boolean;
 		repeat: boolean;
+		noBoundingBoxExpansion: boolean;
 		scale: number;
 		angle: number;
-		align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom' };
+		align: Align;
+		opacity: number;
+	} | {
+		id: string;
+		type: 'qr';
+		data: string;
+		scale: number;
+		align: Align;
 		opacity: number;
 	} | {
 		id: string;
@@ -97,6 +108,7 @@ export class WatermarkRenderer {
 					id: layer.id,
 					params: {
 						repeat: layer.repeat,
+						noBoundingBoxExpansion: layer.noBoundingBoxExpansion,
 						scale: layer.scale,
 						align: layer.align,
 						angle: layer.angle,
@@ -114,6 +126,7 @@ export class WatermarkRenderer {
 					id: layer.id,
 					params: {
 						repeat: layer.repeat,
+						noBoundingBoxExpansion: layer.noBoundingBoxExpansion,
 						scale: layer.scale,
 						align: layer.align,
 						angle: layer.angle,
@@ -122,6 +135,23 @@ export class WatermarkRenderer {
 						watermark: {
 							type: 'url',
 							url: layer.imageUrl,
+						},
+					},
+				};
+			} else if (layer.type === 'qr') {
+				return {
+					fxId: 'watermarkPlacement',
+					id: layer.id,
+					params: {
+						repeat: false,
+						scale: layer.scale,
+						align: layer.align,
+						angle: 0,
+						opacity: layer.opacity,
+						cover: false,
+						watermark: {
+							type: 'qr',
+							data: layer.data,
 						},
 					},
 				};
@@ -164,7 +194,7 @@ export class WatermarkRenderer {
 					},
 				};
 			} else {
-				throw new Error(`Unknown layer type`);
+				throw new Error(`Unrecognized layer type: ${(layer as any).type}`);
 			}
 		});
 	}

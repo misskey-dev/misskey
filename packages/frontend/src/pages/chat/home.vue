@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<MkPolkadots v-if="tab === 'home'" accented/>
+	<MkPolkadots v-if="tab === 'home'" accented :height="200" style="margin-bottom: -200px;"/>
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XHome v-if="tab === 'home'"/>
 		<XInvitations v-else-if="tab === 'invitations'"/>
@@ -48,7 +48,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePage(() => ({
-	title: i18n.ts.chat + ' (beta)',
+	title: i18n.ts.directMessage,
 	icon: 'ti ti-messages',
 }));
 </script>

@@ -92,18 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'chart'" class="_gaps_m">
 			<div>
 				<div :class="$style.selects">
-					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-						<option value="instance-requests">{{ i18n.ts._instanceCharts.requests }}</option>
-						<option value="instance-users">{{ i18n.ts._instanceCharts.users }}</option>
-						<option value="instance-users-total">{{ i18n.ts._instanceCharts.usersTotal }}</option>
-						<option value="instance-notes">{{ i18n.ts._instanceCharts.notes }}</option>
-						<option value="instance-notes-total">{{ i18n.ts._instanceCharts.notesTotal }}</option>
-						<option value="instance-ff">{{ i18n.ts._instanceCharts.ff }}</option>
-						<option value="instance-ff-total">{{ i18n.ts._instanceCharts.ffTotal }}</option>
-						<option value="instance-drive-usage">{{ i18n.ts._instanceCharts.cacheSize }}</option>
-						<option value="instance-drive-usage-total">{{ i18n.ts._instanceCharts.cacheSizeTotal }}</option>
-						<option value="instance-drive-files">{{ i18n.ts._instanceCharts.files }}</option>
-						<option value="instance-drive-files-total">{{ i18n.ts._instanceCharts.filesTotal }}</option>
+					<MkSelect v-model="chartSrc" :items="chartSrcDef" style="margin: 0 10px 0 0; flex: 1;">
 					</MkSelect>
 				</div>
 				<div>
@@ -154,6 +143,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { dateString } from '@/filters/date.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -163,7 +153,25 @@ const props = defineProps<{
 
 const tab = ref('overview');
 
-const chartSrc = ref<ChartSrc>('instance-requests');
+const {
+	model: chartSrc,
+	def: chartSrcDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._instanceCharts.requests, value: 'instance-requests' },
+		{ label: i18n.ts._instanceCharts.users, value: 'instance-users' },
+		{ label: i18n.ts._instanceCharts.usersTotal, value: 'instance-users-total' },
+		{ label: i18n.ts._instanceCharts.notes, value: 'instance-notes' },
+		{ label: i18n.ts._instanceCharts.notesTotal, value: 'instance-notes-total' },
+		{ label: i18n.ts._instanceCharts.ff, value: 'instance-ff' },
+		{ label: i18n.ts._instanceCharts.ffTotal, value: 'instance-ff-total' },
+		{ label: i18n.ts._instanceCharts.cacheSize, value: 'instance-drive-usage' },
+		{ label: i18n.ts._instanceCharts.cacheSizeTotal, value: 'instance-drive-usage-total' },
+		{ label: i18n.ts._instanceCharts.files, value: 'instance-drive-files' },
+		{ label: i18n.ts._instanceCharts.filesTotal, value: 'instance-drive-files-total' },
+	],
+	initialValue: 'instance-requests',
+});
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
 const instance = ref<Misskey.entities.FederationInstance | null>(null);
 const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding' | 'softwareSuspended'>('none');

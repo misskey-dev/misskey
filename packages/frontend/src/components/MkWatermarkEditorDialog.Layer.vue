@@ -19,6 +19,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSlot>
 
 		<MkRange
+			:modelValue="layer.align.margin ?? 0"
+			:min="0"
+			:max="0.25"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'text' }>).align.margin = v"
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+		</MkRange>
+
+		<MkRange
 			v-model="layer.scale"
 			:min="0"
 			:max="1"
@@ -53,6 +65,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="layer.repeat">
 			<template #label>{{ i18n.ts._watermarkEditor.repeat }}</template>
 		</MkSwitch>
+
+		<MkSwitch v-model="layerPreserveBoundingRect">
+			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
+		</MkSwitch>
 	</template>
 
 	<template v-else-if="layer.type === 'image'">
@@ -65,6 +81,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-model:y="layer.align.y"
 			></MkPositionSelector>
 		</FormSlot>
+
+		<MkRange
+			:modelValue="layer.align.margin ?? 0"
+			:min="0"
+			:max="0.25"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'image' }>).align.margin = v"
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+		</MkRange>
 
 		<MkRange
 			v-model="layer.scale"
@@ -105,6 +133,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="layer.cover">
 			<template #label>{{ i18n.ts._watermarkEditor.cover }}</template>
 		</MkSwitch>
+
+		<MkSwitch v-model="layerPreserveBoundingRect">
+			<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
+		</MkSwitch>
+	</template>
+
+	<template v-else-if="layer.type === 'qr'">
+		<MkInput v-model="layer.data" debounce>
+			<template #label>{{ i18n.ts._watermarkEditor.text }}</template>
+			<template #caption>{{ i18n.ts._watermarkEditor.leaveBlankToAccountUrl }}</template>
+		</MkInput>
+
+		<FormSlot>
+			<template #label>{{ i18n.ts._watermarkEditor.position }}</template>
+			<MkPositionSelector
+				v-model:x="layer.align.x"
+				v-model:y="layer.align.y"
+			></MkPositionSelector>
+		</FormSlot>
+
+		<MkRange
+			:modelValue="layer.align.margin ?? 0"
+			:min="0"
+			:max="0.25"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+			@update:modelValue="(v) => (layer as Extract<WatermarkPreset['layers'][number], { type: 'qr' }>).align.margin = v"
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.margin }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.scale"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.scale }}</template>
+		</MkRange>
+
+		<MkRange
+			v-model="layer.opacity"
+			:min="0"
+			:max="1"
+			:step="0.01"
+			:textConverter="(v) => (v * 100).toFixed(1) + '%'"
+			continuousUpdate
+		>
+			<template #label>{{ i18n.ts._watermarkEditor.opacity }}</template>
+		</MkRange>
 	</template>
 
 	<template v-else-if="layer.type === 'stripe'">
@@ -262,7 +343,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
 import { i18n } from '@/i18n.js';
@@ -277,6 +358,20 @@ import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
+
+const layerPreserveBoundingRect = computed({
+	get: () => {
+		if (layer.value.type === 'text' || layer.value.type === 'image') {
+			return !layer.value.noBoundingBoxExpansion;
+		}
+		return false;
+	},
+	set: (v: boolean) => {
+		if (layer.value.type === 'text' || layer.value.type === 'image') {
+			layer.value.noBoundingBoxExpansion = !v;
+		}
+	},
+});
 
 const driveFile = ref<Misskey.entities.DriveFile | null>(null);
 const driveFileError = ref(false);
