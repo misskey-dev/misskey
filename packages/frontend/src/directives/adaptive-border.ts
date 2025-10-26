@@ -9,8 +9,8 @@ import { globalEvents } from '@/events.js';
 
 const handlerMap = new WeakMap<any, any>();
 
-export default {
-	mounted(src, binding, vn) {
+export const adaptiveBorderDirective = {
+	mounted(src) {
 		function calc() {
 			const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
@@ -30,7 +30,7 @@ export default {
 		globalEvents.on('themeChanged', calc);
 	},
 
-	unmounted(src, binding, vn) {
+	unmounted(src) {
 		globalEvents.off('themeChanged', handlerMap.get(src));
 	},
-} as Directive;
+} as Directive<HTMLElement>;

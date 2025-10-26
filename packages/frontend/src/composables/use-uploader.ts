@@ -634,7 +634,9 @@ export function useUploader(options: {
 					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 				audio: {
-					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
+					// Explicitly keep audio (don't discard) and copy it if possible
+					// without re-encoding to avoid WebCodecs limitations on iOS Safari
+					discard: false,
 				},
 			});
 
