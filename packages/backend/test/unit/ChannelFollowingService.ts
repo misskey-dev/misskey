@@ -137,10 +137,10 @@ describe('ChannelFollowingService', () => {
 	});
 
 	afterEach(async () => {
-		await channelFollowingsRepository.delete({});
-		await channelsRepository.delete({});
-		await userProfilesRepository.delete({});
-		await usersRepository.delete({});
+		await channelFollowingsRepository.deleteAll();
+		await channelsRepository.deleteAll();
+		await userProfilesRepository.deleteAll();
+		await usersRepository.deleteAll();
 	});
 
 	describe('list', () => {

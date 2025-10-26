@@ -12,7 +12,7 @@ import * as assert from 'assert';
 import { setTimeout } from 'node:timers/promises';
 import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';
-import { SignupResponse, Note, UserList } from 'misskey-js/entities.js';
+import { SignupResponse, Note } from 'misskey-js/entities.js';
 import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, UserToken } from '../utils.js';
 import { loadConfig } from '@/config.js';
 
@@ -81,13 +81,13 @@ describe('Timelines', () => {
 		root = await signup({ username: 'root' });
 	}, 1000 * 60 * 2);
 
-	afterEach(async () => {
-		// テスト中に作ったノートをきれいにする。
-		// ユーザも作っているが、時間差で動く通知系処理などがあり、このタイミングで消すとエラー落ちするので消さない（ノートさえ消えていれば支障はない）
-		const db = await initTestDb(true);
-		await db.query('DELETE FROM "note"');
-		await db.query('DELETE FROM "channel"');
-	});
+	// afterEach(async () => {
+	// 	// テスト中に作ったノートをきれいにする。
+	// 	// ユーザも作っているが、時間差で動く通知系処理などがあり、このタイミングで消すとエラー落ちするので消さない（ノートさえ消えていれば支障はない）
+	// 	const db = await initTestDb(true);
+	// 	await db.query('DELETE FROM "note"');
+	// 	await db.query('DELETE FROM "channel"');
+	// });
 
 	describe.each([
 		{ enableFanoutTimeline: true },
@@ -101,7 +101,6 @@ describe('Timelines', () => {
 			await api('admin/update-meta', { enableFanoutTimeline }, root);
 		}, 1000 * 60 * 2);
 
-		describe('Home TL', () => {
 		describe('Home TL', () => {
 			test('自分の visibility: followers なノートが含まれる', async () => {
 				const [alice] = await Promise.all([signup()]);
@@ -1625,8 +1624,6 @@ describe('Timelines', () => {
 			});
 		});
 
-		});
-
 		describe('Social TL', () => {
 			test('ローカルユーザーのノートが含まれる', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -1667,7 +1664,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
+				if (!enableFanoutTimeline) return;
 
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -1703,7 +1701,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
+				if (!enableFanoutTimeline) return;
 
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
@@ -1725,7 +1724,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
+				if (!enableFanoutTimeline) return;
 
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -1801,7 +1801,8 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */ if (!enableFanoutTimeline) return;
+				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
+				if (!enableFanoutTimeline) return;
 
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
@@ -2211,6 +2212,7 @@ describe('Timelines', () => {
 					assert.strictEqual(res.body.some(note => note.id === elleNote.id), true);
 				});
 			});
+		});
 
 		describe('User List TL', () => {
 			test('リスインしているフォローしていないユーザーのノートが含まれる', async () => {
@@ -2761,7 +2763,7 @@ describe('Timelines', () => {
 					assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), false);
 				});
 			});
-	});
+		});
 
 		describe('User TL', () => {
 			test('ノートが含まれる', async () => {
@@ -3118,192 +3120,192 @@ describe('Timelines', () => {
 			});
 		});
 
-			describe('Channel TL', () => {
-				test('閲覧中チャンネルのノートが含まれる', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
+		describe('Channel TL', () => {
+			test('閲覧中チャンネルのノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
 
-					const channel = await createChannel('channel', bob);
+				const channel = await createChannel('channel', bob);
 
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
 
-					await waitForPushToTl();
+				await waitForPushToTl();
 
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
 
-					assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
-					assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-				});
-
-				test('閲覧中チャンネルとは別チャンネルのノートは含まれない', async() => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-					const channel2 = await createChannel('channel', bob);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel2.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
-					assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-				});
-
-				test('閲覧中チャンネルのノートにリノートが含まれる', async() => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
-					const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
-				});
-
-				test('閲覧中チャンネルとは別チャンネルからのリノートが含まれる', async() => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-					const channel2 = await createChannel('channel', bob);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel2.id });
-					const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
-				});
-
-				test('閲覧中チャンネルに自分の他人への返信が含まれる', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
-					const aliceNote = await post(alice, { text: 'hi', replyId: bobNote.id, channelId: channel.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
-				});
-
-				test('閲覧中チャンネルに他人の自分への返信が含まれる', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-
-					const aliceNote = await post(alice, { text: 'hi', channelId: channel.id });
-					const bobNote = await post(bob, { text: 'ok', replyId: aliceNote.id, channelId: channel.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-				});
-
-				test('閲覧中チャンネルにミュートしているユーザのノートは含まれない', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					await api('mute/create', { userId: bob.id }, alice);
-
-					const channel = await createChannel('channel', bob);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
-					assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-				});
-
-				test('閲覧中チャンネルにこちらをブロックしているユーザのノートは含まれない', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					await api('blocking/create', { userId: alice.id }, bob);
-
-					const channel = await createChannel('channel', bob);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
-					assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-				});
-
-				test('閲覧中チャンネルをミュートしていてもノートが含まれる', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-					await muteChannel(channel.id, alice);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
-					assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-				});
-
-				test('閲覧中チャンネルをミュートしていてもリノートが含まれる', async () => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-					await muteChannel(channel.id, alice);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
-					const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
-				});
-
-				test('閲覧中チャンネルとは別チャンネルをミュートしているとき、そのチャンネルからのリノートは含まれない', async() => {
-					const [alice, bob] = await Promise.all([signup(), signup()]);
-
-					const channel = await createChannel('channel', bob);
-					const channel2 = await createChannel('channel', bob);
-					await muteChannel(channel2.id, alice);
-
-					const aliceNote = await post(alice, { text: 'hi' });
-					const bobNote = await post(bob, { text: 'ok', channelId: channel2.id });
-					const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
-
-					await waitForPushToTl();
-
-					const res = await api('channels/timeline', { channelId: channel.id }, alice);
-
-					assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), false);
-				});
+				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			});
+
+			test('閲覧中チャンネルとは別チャンネルのノートは含まれない', async() => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				const channel2 = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel2.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test('閲覧中チャンネルのノートにリノートが含まれる', async() => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+				const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
+			});
+
+			test('閲覧中チャンネルとは別チャンネルからのリノートが含まれる', async() => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				const channel2 = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel2.id });
+				const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
+			});
+
+			test('閲覧中チャンネルに自分の他人への返信が含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+				const aliceNote = await post(alice, { text: 'hi', replyId: bobNote.id, channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
+			});
+
+			test('閲覧中チャンネルに他人の自分への返信が含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi', channelId: channel.id });
+				const bobNote = await post(bob, { text: 'ok', replyId: aliceNote.id, channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			});
+
+			test('閲覧中チャンネルにミュートしているユーザのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				await api('mute/create', { userId: bob.id }, alice);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test('閲覧中チャンネルにこちらをブロックしているユーザのノートは含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				await api('blocking/create', { userId: alice.id }, bob);
+
+				const channel = await createChannel('channel', bob);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			});
+
+			test('閲覧中チャンネルをミュートしていてもノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
+				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			});
+
+			test('閲覧中チャンネルをミュートしていてもリノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+				const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
+			});
+
+			test('閲覧中チャンネルとは別チャンネルをミュートしているとき、そのチャンネルからのリノートは含まれない', async() => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				const channel2 = await createChannel('channel', bob);
+				await muteChannel(channel2.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel2.id });
+				const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), false);
+			});
+		});
 		// TODO: リノートミュート済みユーザーのテスト
 		// TODO: ページネーションのテスト
-		});
+	});
 });

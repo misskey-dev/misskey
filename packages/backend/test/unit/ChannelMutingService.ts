@@ -137,10 +137,10 @@ describe('ChannelMutingService', () => {
 	});
 
 	afterEach(async () => {
-		await channelMutingRepository.delete({});
-		await channelsRepository.delete({});
-		await userProfilesRepository.delete({});
-		await usersRepository.delete({});
+		await channelMutingRepository.deleteAll();
+		await channelsRepository.deleteAll();
+		await userProfilesRepository.deleteAll();
+		await usersRepository.deleteAll();
 	});
 
 	describe('list', () => {
