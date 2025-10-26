@@ -3201,6 +3201,7 @@ _watermarkEditor:
   title: "Modifica la filigrana"
   cover: "Coprire tutto"
   repeat: "Disposizione"
+  preserveBoundingRect: "Fai in modo da non eccedere durante la rotazione"
   opacity: "Opacità"
   scale: "Dimensioni"
   text: "Testo"
