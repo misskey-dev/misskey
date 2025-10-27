@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      pull-requests: write
     steps:
       - name: Reply
         uses: actions/github-script@v6
