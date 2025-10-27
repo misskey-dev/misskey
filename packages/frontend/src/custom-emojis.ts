@@ -15,6 +15,7 @@ import {
 	removeEmojis as removeEmojisFromStore,
 	getLastFetchedAt as getLastFetchedAtFromStore,
 	setLastFetchedAt as setLastFetchedAtToStore,
+	convertToV1Emoji,
 } from '@/utility/idb-emoji-store.js';
 
 // Migration from old keyval store to new dedicated emoji store
@@ -28,7 +29,7 @@ async function migrateFromKeyvalStore(): Promise<Misskey.entities.EmojiSimple[]>
 			if (_DEV_) console.log('Migrating emojis from keyval store to dedicated emoji store...');
 
 			// Migrate emojis to new store
-			await setAllEmojis(oldEmojis);
+			await setAllEmojis(oldEmojis.map(convertToV1Emoji));
 
 			// Migrate lastFetchedAt timestamp
 			if (typeof oldLastFetchedAt === 'number') {
@@ -72,12 +73,12 @@ watch(customEmojis, emojis => {
 
 export async function addCustomEmoji(emoji: Misskey.entities.EmojiSimple) {
 	customEmojis.value = [emoji, ...customEmojis.value];
-	await addEmojiToStore(emoji);
+	await addEmojiToStore(convertToV1Emoji(emoji));
 }
 
 export async function updateCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 	customEmojis.value = customEmojis.value.map(item => emojis.find(search => search.name === item.name) ?? item);
-	await updateEmojisInStore(emojis);
+	await updateEmojisInStore(emojis.map(convertToV1Emoji));
 }
 
 export async function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
@@ -89,7 +90,7 @@ export async function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[])
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
 
-	let res;
+	let res: Misskey.entities.EmojisResponse;
 	if (force) {
 		res = await misskeyApi('emojis', {});
 	} else {
@@ -99,6 +100,6 @@ export async function fetchCustomEmojis(force = false) {
 	}
 
 	customEmojis.value = res.emojis;
-	await setAllEmojis(res.emojis);
+	await setAllEmojis(res.emojis.map(convertToV1Emoji));
 	await setLastFetchedAtToStore(now);
 }

@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as Misskey from 'misskey-js';
 import { openDB } from 'idb';
 import type { IDBPDatabase, DBSchema } from 'idb';
 
-const DB_NAME = 'misskey-emoji-store';
+const DB_NAME = 'misskey-emojis';
 const STORE_NAME = 'emojis';
 const DB_VERSION = 1;
+export const CATEGORY_NONE = '__CATEGORY_NONE__';
 
 export type V1Emoji = {
 	aliases: string[];
 	name: string;
-	category: string | null;
+	category: string | typeof CATEGORY_NONE;
 	url: string;
 	localOnly?: boolean | undefined;
 	isSensitive?: boolean | undefined;
@@ -41,6 +43,18 @@ interface DBV1Schema extends DBSchema {
 interface EmojiDB extends IDBPDatabase<DBV1Schema> {}
 
 let db: EmojiDB | null = null;
+
+export function convertToV1Emoji(emoji: Misskey.entities.EmojiSimple): V1Emoji {
+	return {
+		aliases: emoji.aliases ?? [],
+		name: emoji.name,
+		category: emoji.category ?? CATEGORY_NONE,
+		url: emoji.url,
+		localOnly: emoji.localOnly,
+		isSensitive: emoji.isSensitive,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+	};
+}
 
 function isV1Emoji(value: V1Value): value is V1Emoji {
 	return value.name !== '__lastFetchedAt__';
@@ -101,51 +115,88 @@ export async function getEmojiByName(name: string): Promise<V1Emoji | null> {
 	}
 }
 
-export async function searchEmojis(query: string, limit = 12): Promise<V1Emoji[]> {
+export async function getEmojisByCategory(category: string | typeof CATEGORY_NONE): Promise<V1Emoji[]> {
+	try {
+		const database = await getDB();
+		const tx = database.transaction(STORE_NAME, 'readonly');
+		const store = tx.objectStore(STORE_NAME);
+		const categoryIndex = store.index('category');
+
+		const emojis = await categoryIndex.getAll(category);
+		await tx.done;
+
+		return emojis.filter(emoji => isV1Emoji(emoji));
+	} catch (err) {
+		console.error('Failed to get emojis by category from IndexedDB', err);
+		return [];
+	}
+}
+
+export async function searchEmojis(query: string, max = 12): Promise<V1Emoji[]> {
 	try {
 		const database = await getDB();
 		const tx = database.transaction(STORE_NAME, 'readonly');
 		const store = tx.objectStore(STORE_NAME);
 		const aliasIndex = store.index('aliases');
 
-		// エイリアスで完全一致検索
-		const aliasResults = await aliasIndex.getAll(IDBKeyRange.only(query));
+		const matches = new Map<string, V1Emoji>();
 
-		// 名前で完全一致検索
-		const nameResult = await store.get(query);
+		// 完全一致検索
+		const exactMatch = await store.get(query);
+		if (exactMatch && isV1Emoji(exactMatch)) {
+			matches.set(exactMatch.name, exactMatch);
+		}
 
-		const resultsMap = new Map<string, V1Emoji>();
-
-		for (const emoji of aliasResults) {
+		// エイリアスでの完全一致検索
+		const aliasExactMatches = await aliasIndex.getAll(IDBKeyRange.only(query));
+		for (const emoji of aliasExactMatches) {
 			if (isV1Emoji(emoji)) {
-				resultsMap.set(emoji.name, emoji);
+				matches.set(emoji.name, emoji);
 			}
 		}
 
-		if (nameResult && isV1Emoji(nameResult)) {
-			resultsMap.set(nameResult.name, nameResult);
+		if (matches.size >= max) {
+			await tx.done;
+			return Array.from(matches.values()).slice(0, max);
 		}
 
-		if (resultsMap.size < limit) {
-			// 結果がlimitに満たない場合は部分一致検索も行う
+		if (query.includes(' ')) { // AND検索
+			const keywords = query.split(' ');
 			const cursor = await store.openCursor();
 			while (cursor) {
 				const emoji = cursor.value;
-				if (isV1Emoji(emoji) && (emoji.name.includes(query) || emoji.aliases.some(alias => alias.includes(query)))) {
-					resultsMap.set(emoji.name, emoji);
-					if (resultsMap.size >= limit) {
-						break;
-					}
+				if (
+					isV1Emoji(emoji) &&
+					keywords.every(keyword =>
+						emoji.name.toLowerCase().includes(keyword.toLowerCase()) ||
+						emoji.aliases.some(alias => alias.includes(keyword.toLowerCase()))
+					)
+				) {
+					matches.set(emoji.name, emoji);
 				}
-				await cursor.continue();
+				const end = await cursor.continue();
+				if (!end || matches.size >= max) break;
+			}
+		} else {
+			// 名前またはエイリアスで部分一致検索
+			const cursor = await store.openCursor();
+			while (cursor) {
+				const emoji = cursor.value;
+				if (
+					isV1Emoji(emoji) &&
+					(emoji.name.toLowerCase().includes(query.toLowerCase()) || emoji.aliases.some(alias => alias.toLowerCase().includes(query.toLowerCase())))
+				) {
+					matches.set(emoji.name, emoji);
+				}
+				const end = await cursor.continue();
+				if (!end || matches.size >= max) break;
 			}
 		}
 
 		await tx.done;
-
-		return Array.from(resultsMap.values());
+		return Array.from(matches.values());
 	} catch (err) {
-		console.error('Failed to search emojis in IndexedDB', err);
+		console.error('Failed to search custom emojis in IndexedDB', err);
 		return [];
 	}
 }
