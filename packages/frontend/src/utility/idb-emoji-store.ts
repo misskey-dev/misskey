@@ -40,7 +40,7 @@ interface DBV1Schema extends DBSchema {
 	};
 }
 
-interface EmojiDB extends IDBPDatabase<DBV1Schema> {}
+type EmojiDB = IDBPDatabase<DBV1Schema>;
 
 let db: EmojiDB | null = null;
 
