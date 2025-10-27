@@ -3305,6 +3305,7 @@ _watermarkEditor:
   title: "ウォーターマークの編集"
   cover: "全体に被せる"
   repeat: "敷き詰める"
+  preserveBoundingRect: "回転時はみ出ないように調整する"
   opacity: "不透明度"
   scale: "サイズ"
   text: "テキスト"

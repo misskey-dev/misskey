@@ -131,4 +131,4 @@ export const userPreviewDirective = {
 		if (self == null) return;
 		self.preview.detach();
 	},
-} as Directive<UserPreviewDirectiveElement, string | Misskey.entities.UserDetailed>;
+} as Directive<UserPreviewDirectiveElement, string | Misskey.entities.UserDetailed | null | undefined>;

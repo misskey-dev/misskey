@@ -7,10 +7,10 @@
 		"generate": "tsx src/generator.ts && eslint ./built/**/*.ts --fix"
 	},
 	"devDependencies": {
-		"@readme/openapi-parser": "5.0.1",
-		"@types/node": "22.18.8",
-		"@typescript-eslint/eslint-plugin": "8.45.0",
-		"@typescript-eslint/parser": "8.45.0",
+		"@readme/openapi-parser": "5.0.2",
+		"@types/node": "22.18.10",
+		"@typescript-eslint/eslint-plugin": "8.46.1",
+		"@typescript-eslint/parser": "8.46.1",
 		"openapi-types": "12.1.3",
 		"openapi-typescript": "7.9.1",
 		"ts-case-convert": "2.1.0",
