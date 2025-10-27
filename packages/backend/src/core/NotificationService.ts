@@ -267,7 +267,7 @@ export class NotificationService implements OnApplicationShutdown {
 			excludeTypes?: (MiNotification['type'] | string)[],
 		},
 	): Promise<MiNotification[]> {
-		let sinceTime = sinceId ? this.toXListId(sinceId) : null;
+		let sinceTime = sinceId && sinceId !== '0' ? this.toXListId(sinceId) : null;
 		let untilTime = untilId ? this.toXListId(untilId) : null;
 
 		let notifications: MiNotification[];
@@ -275,10 +275,11 @@ export class NotificationService implements OnApplicationShutdown {
 			let notificationsRes: [id: string, fields: string[]][];
 
 			// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照
-			if (sinceTime && !untilTime) {
+			// sinceId が '0' の場合は最初から古い順で取得
+			if ((sinceTime && !untilTime) || (sinceId === '0' && !untilTime)) {
 				notificationsRes = await this.redisClient.xrange(
 					`notificationTimeline:${userId}`,
-					'(' + sinceTime,
+					sinceTime ? '(' + sinceTime : '-',
 					'+',
 					'COUNT', limit);
 			} else {
@@ -307,7 +308,7 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 
 			// フィルタしたことで通知が0件になった場合、次のページを取得する
-			if (sinceId && !untilId) {
+			if ((sinceId && !untilId) || (sinceId === '0' && !untilId)) {
 				sinceTime = notificationsRes[notificationsRes.length - 1][0];
 			} else {
 				untilTime = notificationsRes[notificationsRes.length - 1][0];
