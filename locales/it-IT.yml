@@ -3121,7 +3121,7 @@ _bootErrors:
 _search:
   searchScopeAll: "Tutte"
   searchScopeLocal: "Locale"
-  searchScopeServer: "Specifiche del server"
+  searchScopeServer: "Server specifico"
   searchScopeUser: "Profilo specifico"
   pleaseEnterServerHost: "Inserire il nome host"
   pleaseSelectUser: "Per favore, seleziona un profilo"
