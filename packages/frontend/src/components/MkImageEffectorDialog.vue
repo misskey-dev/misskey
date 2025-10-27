@@ -257,12 +257,8 @@ function onImagePointerdown(ev: PointerEvent) {
 	xOffset /= 2;
 	yOffset /= 2;
 
-	const rect = canvasEl.value.getBoundingClientRect();
-	const pointerOffsetX = ev.clientX - rect.left;
-	const pointerOffsetY = ev.clientY - rect.top;
-
-	let startX = pointerOffsetX - xOffset;
-	let startY = pointerOffsetY - yOffset;
+	let startX = ev.offsetX - xOffset;
+	let startY = ev.offsetY - yOffset;
 
 	if (AW / AH < BW / BH) { // 横長
 		startX = startX / (Math.max(AW, AH) / Math.max(BH / BW, 1));
@@ -315,11 +311,9 @@ function onImagePointerdown(ev: PointerEvent) {
 		});
 	}
 
-	_move(ev.clientX, ev.clientY);
+	_move(ev.offsetX, ev.offsetY);
 
-	function _move(pointerClientX: number, pointerClientY: number) {
-		const pointerX = pointerClientX - rect.left;
-		const pointerY = pointerClientY - rect.top;
+	function _move(pointerX: number, pointerY: number) {
 		let x = pointerX - xOffset;
 		let y = pointerY - yOffset;
 
@@ -346,7 +340,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	}
 
 	function move(ev: PointerEvent) {
-		_move(ev.clientX, ev.clientY);
+		_move(ev.offsetX, ev.offsetY);
 	}
 
 	function up() {
