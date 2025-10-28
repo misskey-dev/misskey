@@ -10,15 +10,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<div :class="$style.name"><MkCondensedLine :minScale="0.5">{{ decoration.name }}</MkCondensedLine></div>
 	<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: decoration.url, angle, flipH, offsetX, offsetY }]" forceShowDecoration/>
-	<i v-if="decoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => decoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.lock" class="ti ti-lock"></i>
+	<i v-if="locked" :class="$style.lock" class="ti ti-lock"></i>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { signinRequired } from '@/account.js';
+import { computed } from 'vue';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = defineProps<{
 	active?: boolean;
@@ -37,6 +37,8 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'click'): void;
 }>();
+
+const locked = computed(() => props.decoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => props.decoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id)));
 </script>
 
 <style lang="scss" module>
@@ -67,5 +69,6 @@ const emit = defineEmits<{
 	position: absolute;
 	bottom: 12px;
 	right: 12px;
+	color: var(--MI_THEME-warn);
 }
 </style>

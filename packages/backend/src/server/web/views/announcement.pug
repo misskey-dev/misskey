@@ -1,0 +1,21 @@
+extends ./base
+
+block vars
+	- const title = announcement.title;
+	- const description = announcement.text.length > 100 ? announcement.text.slice(0, 100) + '…' : announcement.text;
+	- const url = `${config.url}/announcements/${announcement.id}`;
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content=description)
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content= description)
+	meta(property='og:url'         content= url)
+	if announcement.imageUrl
+		meta(property='og:image' content=announcement.imageUrl)
+		meta(property='twitter:card' content='summary_large_image')

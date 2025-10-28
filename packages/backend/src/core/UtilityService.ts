@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
-import { toASCII } from 'punycode';
+import { URL, domainToASCII } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
+import semver from 'semver';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { MiMeta } from '@/models/Meta.js';
+import { MiMeta, SoftwareSuspension } from '@/models/Meta.js';
+import { MiInstance } from '@/models/Instance.js';
 
 @Injectable()
 export class UtilityService {
@@ -32,6 +33,19 @@ export class UtilityService {
 	public isSelfHost(host: string | null): boolean {
 		if (host == null) return true;
 		return this.toPuny(this.config.host) === this.toPuny(host);
+	}
+
+	@bindThis
+	public isUriLocal(uri: string): boolean {
+		return this.punyHost(uri) === this.toPuny(this.config.host);
+	}
+
+	// メールアドレスのバリデーションを行う
+	// https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+	@bindThis
+	public validateEmailFormat(email: string): boolean {
+		const regexp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+		return regexp.test(email);
 	}
 
 	@bindThis
@@ -96,18 +110,25 @@ export class UtilityService {
 	@bindThis
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
-		return this.toPuny(url.hostname);
+		return this.toPuny(url.host);
 	}
 
 	@bindThis
 	public toPuny(host: string): string {
-		return toASCII(host.toLowerCase());
+		return domainToASCII(host.toLowerCase());
 	}
 
 	@bindThis
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
-		return toASCII(host.toLowerCase());
+		return domainToASCII(host.toLowerCase());
+	}
+
+	@bindThis
+	public punyHost(url: string): string {
+		const urlObj = new URL(url);
+		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		return host;
 	}
 
 	@bindThis
@@ -123,5 +144,21 @@ export class UtilityService {
 	public isFederationAllowedUri(uri: string): boolean {
 		const host = this.extractDbHost(uri);
 		return this.isFederationAllowedHost(host);
+	}
+
+	@bindThis
+	public isDeliverSuspendedSoftware(software: Pick<MiInstance, 'softwareName' | 'softwareVersion'>): SoftwareSuspension | undefined {
+		if (software.softwareName == null) return undefined;
+		if (software.softwareVersion == null) {
+			// software version is null; suspend iff versionRange is *
+			return this.meta.deliverSuspendedSoftware.find(x =>
+				x.software === software.softwareName
+				&& x.versionRange.trim() === '*');
+		} else {
+			const softwareVersion = software.softwareVersion;
+			return this.meta.deliverSuspendedSoftware.find(x =>
+				x.software === software.softwareName
+				&& semver.satisfies(softwareVersion, x.versionRange, { includePrerelease: true }));
+		}
 	}
 }

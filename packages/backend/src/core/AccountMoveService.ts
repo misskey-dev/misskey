@@ -20,10 +20,12 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { AntennaService } from '@/core/AntennaService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -55,12 +57,14 @@ export class AccountMoveService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private globalEventService: GlobalEventService,
-		private proxyAccountService: ProxyAccountService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private federatedInstanceService: FederatedInstanceService,
 		private instanceChart: InstanceChart,
 		private relayService: RelayService,
 		private queueService: QueueService,
+		private systemAccountService: SystemAccountService,
+		private roleService: RoleService,
+		private antennaService: AntennaService,
 	) {
 	}
 
@@ -119,18 +123,20 @@ export class AccountMoveService {
 			await Promise.all([
 				this.copyBlocking(src, dst),
 				this.copyMutings(src, dst),
+				this.copyRoles(src, dst),
 				this.updateLists(src, dst),
+				this.antennaService.onMoveAccount(src, dst),
 			]);
 		} catch {
 			/* skip if any error happens */
 		}
 
 		// follow the new account
-		const proxy = await this.proxyAccountService.fetch();
+		const proxy = await this.systemAccountService.fetch('proxy');
 		const followings = await this.followingsRepository.findBy({
 			followeeId: src.id,
 			followerHost: IsNull(), // follower is local
-			followerId: proxy ? Not(proxy.id) : undefined,
+			followerId: Not(proxy.id),
 		});
 		const followJobs = followings.map(following => ({
 			from: { id: following.followerId },
@@ -201,6 +207,32 @@ export class AccountMoveService {
 		await this.mutingsRepository.insert(arrayToInsert);
 	}
 
+	@bindThis
+	public async copyRoles(src: ThinUser, dst: ThinUser): Promise<void> {
+		// Insert new roles with the same values except userId
+		// role service may have cache for roles so retrieve roles from service
+		const [oldRoleAssignments, roles] = await Promise.all([
+			this.roleService.getUserAssigns(src.id),
+			this.roleService.getRoles(),
+		]);
+
+		if (oldRoleAssignments.length === 0) return;
+
+		// No promise all since the only async operation is writing to the database
+		for (const oldRoleAssignment of oldRoleAssignments) {
+			const role = roles.find(x => x.id === oldRoleAssignment.roleId);
+			if (role == null) continue; // Very unlikely however removing role may cause this case
+			if (!role.preserveAssignmentOnMoveAccount) continue;
+
+			try {
+				await this.roleService.assign(dst.id, role.id, oldRoleAssignment.expiresAt);
+			} catch (e) {
+				if (e instanceof RoleService.AlreadyAssignedError) continue;
+				throw e;
+			}
+		}
+	}
+
 	/**
 	 * Update lists while moving accounts.
 	 *   - No removal of the old account from the lists
@@ -250,10 +282,8 @@ export class AccountMoveService {
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
 		if (this.userEntityService.isRemoteUser(dst)) {
-			const proxy = await this.proxyAccountService.fetch();
-			if (proxy) {
-				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
-			}
+			const proxy = await this.systemAccountService.fetch('proxy');
+			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 		}
 	}
 

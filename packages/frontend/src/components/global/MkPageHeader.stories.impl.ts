@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { waitFor } from '@storybook/test';
-import { StoryObj } from '@storybook/vue3';
 import MkPageHeader from './MkPageHeader.vue';
+import type { StoryObj } from '@storybook/vue3';
 export const Empty = {
 	render(args) {
 		return {
@@ -29,7 +28,7 @@ export const Empty = {
 		};
 	},
 	async play() {
-		const wait = new Promise((resolve) => setTimeout(resolve, 800));
+		const wait = new Promise((resolve) => window.setTimeout(resolve, 800));
 		await waitFor(async () => await wait);
 	},
 	args: {
@@ -60,6 +59,7 @@ export const Icon = {
 			{
 				...OneTab.args.tabs[0],
 				icon: 'ti ti-home',
+				title: 'Home',
 			},
 		],
 	},
@@ -72,6 +72,7 @@ export const IconOnly = {
 			{
 				key: Icon.args.tabs[0].key,
 				icon: Icon.args.tabs[0].icon,
+				title: Icon.args.tabs[0].title,
 				iconOnly: true,
 			},
 		],

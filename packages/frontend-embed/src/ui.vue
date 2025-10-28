@@ -52,8 +52,8 @@ function safeURIDecode(str: string): string {
 	}
 }
 
-const page = location.pathname.split('/')[2];
-const contentId = safeURIDecode(location.pathname.split('/')[3]);
+const page = window.location.pathname.split('/')[2];
+const contentId = safeURIDecode(window.location.pathname.split('/')[3]);
 if (_DEV_) console.log(page, contentId);
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);

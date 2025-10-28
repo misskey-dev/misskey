@@ -33,10 +33,6 @@ async function copyFrontendFonts() {
   await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
 }
 
-async function copyFrontendTablerIcons() {
-  await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont/dist', './built/_frontend_dist_/tabler-icons', { dereference: true, recursive: true });
-}
-
 async function copyFrontendLocales() {
   generateDTS();
 
@@ -60,7 +56,8 @@ async function buildBackendScript() {
     './packages/backend/src/server/web/boot.js',
     './packages/backend/src/server/web/boot.embed.js',
     './packages/backend/src/server/web/bios.js',
-    './packages/backend/src/server/web/cli.js'
+    './packages/backend/src/server/web/cli.js',
+    './packages/backend/src/server/web/error.js',
   ]) {
     let source = await fs.readFile(file, { encoding: 'utf-8' });
     source = source.replaceAll('LANGS', JSON.stringify(Object.keys(locales)));
@@ -88,7 +85,6 @@ async function buildBackendStyle() {
 async function build() {
   await Promise.all([
     copyFrontendFonts(),
-    copyFrontendTablerIcons(),
     copyFrontendLocales(),
     copyBackendViews(),
     buildBackendScript(),

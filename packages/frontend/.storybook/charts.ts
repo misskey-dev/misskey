@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultBodyType, HttpResponse, HttpResponseResolver, JsonBodyType, PathParams, http } from 'msw';
+import { HttpResponse, http } from 'msw';
+import type { DefaultBodyType, HttpResponseResolver, JsonBodyType, PathParams } from 'msw';
 import seedrandom from 'seedrandom';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 
 function getChartArray(seed: string, limit: number, option?: { accumulate?: boolean, mul?: number }): number[] {
 	const rng = seedrandom(seed);

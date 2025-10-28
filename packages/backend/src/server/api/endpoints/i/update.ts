@@ -179,6 +179,9 @@ export const paramDef = {
 		autoAcceptFollowed: { type: 'boolean' },
 		noCrawle: { type: 'boolean' },
 		preventAiLearning: { type: 'boolean' },
+		requireSigninToViewContents: { type: 'boolean' },
+		makeNotesFollowersOnlyBefore: { type: 'integer', nullable: true },
+		makeNotesHiddenBefore: { type: 'integer', nullable: true },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
 		injectFeaturedNote: { type: 'boolean' },
@@ -187,6 +190,7 @@ export const paramDef = {
 		autoSensitive: { type: 'boolean' },
 		followingVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		followersVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
+		chatScope: { type: 'string', enum: ['everyone', 'followers', 'following', 'mutual', 'none'] },
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
 		mutedWords: muteWords,
 		hardMutedWords: muteWords,
@@ -205,9 +209,12 @@ export const paramDef = {
 				quote: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
+				scheduledNotePosted: notificationRecieveConfig,
+				scheduledNotePostFailed: notificationRecieveConfig,
 				receiveFollowRequest: notificationRecieveConfig,
 				followRequestAccepted: notificationRecieveConfig,
 				roleAssigned: notificationRecieveConfig,
+				chatRoomInvitationReceived: notificationRecieveConfig,
 				achievementEarned: notificationRecieveConfig,
 				app: notificationRecieveConfig,
 				test: notificationRecieveConfig,
@@ -285,6 +292,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.followingVisibility !== undefined) profileUpdates.followingVisibility = ps.followingVisibility;
 			if (ps.followersVisibility !== undefined) profileUpdates.followersVisibility = ps.followersVisibility;
+			if (ps.chatScope !== undefined) updates.chatScope = ps.chatScope;
 
 			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
 				// TODO: ちゃんと数える
@@ -334,6 +342,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
+			if (typeof ps.requireSigninToViewContents === 'boolean') updates.requireSigninToViewContents = ps.requireSigninToViewContents;
+			if ((typeof ps.makeNotesFollowersOnlyBefore === 'number') || (ps.makeNotesFollowersOnlyBefore === null)) updates.makeNotesFollowersOnlyBefore = ps.makeNotesFollowersOnlyBefore;
+			if ((typeof ps.makeNotesHiddenBefore === 'number') || (ps.makeNotesHiddenBefore === null)) updates.makeNotesHiddenBefore = ps.makeNotesHiddenBefore;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
@@ -459,6 +470,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const newName = updates.name === undefined ? user.name : updates.name;
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
+			const newFollowedMessage = profileUpdates.followedMessage === undefined ? profile.followedMessage : profileUpdates.followedMessage;
 
 			if (newName != null) {
 				let hasProhibitedWords = false;
@@ -486,6 +498,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					...extractCustomEmojisFromMfm(nameTokens),
 					...extractCustomEmojisFromMfm(valueTokens),
 				]);
+			}
+
+			if (newFollowedMessage != null) {
+				const tokens = mfm.parse(newFollowedMessage);
+				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
 
 			updates.emojis = emojis;
@@ -541,7 +558,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const html = await this.httpRequestService.getHtml(url);
 
 			const { window } = new JSDOM(html);
-			const doc = window.document;
+			const doc: Document = window.document;
 
 			const myLink = `${this.config.url}/@${user.username}`;
 

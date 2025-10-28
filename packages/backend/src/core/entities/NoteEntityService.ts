@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { EntityNotFoundError, In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -22,6 +22,7 @@ import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
+// is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
 	return (
 		note.renote != null &&
@@ -43,6 +44,17 @@ function getAppearNoteIds(notes: MiNote[]): Set<string> {
 		}
 	}
 	return appearNoteIds;
+}
+
+async function nullIfEntityNotFound<T>(promise: Promise<T>): Promise<T | null> {
+	try {
+		return await promise;
+	} catch (err) {
+		if (err instanceof EntityNotFoundError) {
+			return null;
+		}
+		throw err;
+	}
 }
 
 @Injectable()
@@ -101,50 +113,83 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null) {
+	private treatVisibility(packedNote: Packed<'Note'>): Packed<'Note'>['visibility'] {
+		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
+			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
+			if ((followersOnlyBefore != null)
+				&& (
+					(followersOnlyBefore <= 0 && (Date.now() - new Date(packedNote.createdAt).getTime() > 0 - (followersOnlyBefore * 1000)))
+					|| (followersOnlyBefore > 0 && (new Date(packedNote.createdAt).getTime() < followersOnlyBefore * 1000))
+				)
+			) {
+				packedNote.visibility = 'followers';
+			}
+		}
+		return packedNote.visibility;
+	}
+
+	@bindThis
+	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null): Promise<void> {
+		if (meId === packedNote.userId) return;
+
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
-		// visibility が specified かつ自分が指定されていなかったら非表示
-		if (packedNote.visibility === 'specified') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else {
-				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some(id => meId === id);
+		if (packedNote.user.requireSigninToViewContents && meId == null) {
+			hide = true;
+		}
 
-				if (specified) {
-					hide = false;
-				} else {
+		if (!hide) {
+			const hiddenBefore = packedNote.user.makeNotesHiddenBefore;
+			if ((hiddenBefore != null)
+				&& (
+					(hiddenBefore <= 0 && (Date.now() - new Date(packedNote.createdAt).getTime() > 0 - (hiddenBefore * 1000)))
+					|| (hiddenBefore > 0 && (new Date(packedNote.createdAt).getTime() < hiddenBefore * 1000))
+				)
+			) {
+				hide = true;
+			}
+		}
+
+		// visibility が specified かつ自分が指定されていなかったら非表示
+		if (!hide) {
+			if (packedNote.visibility === 'specified') {
+				if (meId == null) {
 					hide = true;
+				} else {
+					// 指定されているかどうか
+					const specified = packedNote.visibleUserIds!.some(id => meId === id);
+
+					if (!specified) {
+						hide = true;
+					}
 				}
 			}
 		}
 
 		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-		if (packedNote.visibility === 'followers') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-				// 自分の投稿に対するリプライ
-				hide = false;
-			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-				// 自分へのメンション
-				hide = false;
-			} else {
-				// フォロワーかどうか
-				const isFollowing = await this.followingsRepository.exists({
-					where: {
-						followeeId: packedNote.userId,
-						followerId: meId,
-					},
-				});
+		if (!hide) {
+			if (packedNote.visibility === 'followers') {
+				if (meId == null) {
+					hide = true;
+				} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
+					// 自分の投稿に対するリプライ
+					hide = false;
+				} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
+					// 自分へのメンション
+					hide = false;
+				} else {
+					// フォロワーかどうか
+					// TODO: 当関数呼び出しごとにクエリが走るのは重そうだからなんとかする
+					const isFollowing = await this.followingsRepository.exists({
+						where: {
+							followeeId: packedNote.userId,
+							followerId: meId,
+						},
+					});
 
-				hide = !isFollowing;
+					hide = !isFollowing;
+				}
 			}
 		}
 
@@ -156,6 +201,7 @@ export class NoteEntityService implements OnModuleInit {
 			packedNote.poll = undefined;
 			packedNote.cw = null;
 			packedNote.isHidden = true;
+			// TODO: hiddenReason みたいなのを提供しても良さそう
 		}
 	}
 
@@ -394,25 +440,28 @@ export class NoteEntityService implements OnModuleInit {
 				userId: channel.userId,
 			} : undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
+			hasPoll: note.hasPoll || undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
 
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
 
-				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
+				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
+				reply: (note.replyId && note.reply === null) ? null : note.replyId ? nullIfEntityNotFound(this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
-				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
+				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
+				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
@@ -425,6 +474,8 @@ export class NoteEntityService implements OnModuleInit {
 				} : {}),
 			} : {}),
 		});
+
+		this.treatVisibility(packed);
 
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);
@@ -553,7 +604,45 @@ export class NoteEntityService implements OnModuleInit {
 	private findNoteOrFail(id: string): Promise<MiNote> {
 		return this.notesRepository.findOneOrFail({
 			where: { id },
-			relations: ['user'],
+			relations: ['user', 'renote', 'reply'],
 		});
+	}
+
+	@bindThis
+	public async fetchDiffs(noteIds: MiNote['id'][]) {
+		if (noteIds.length === 0) return [];
+
+		const notes = await this.notesRepository.find({
+			where: {
+				id: In(noteIds),
+			},
+			select: {
+				id: true,
+				userHost: true,
+				reactions: true,
+				reactionAndUserPairCache: true,
+			},
+		});
+
+		const bufferedReactionsMap = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(noteIds) : null;
+
+		const packings = notes.map(note => {
+			const bufferedReactions = bufferedReactionsMap?.get(note.id);
+			//const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
+
+			const reactions = this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions?.deltas ?? {}));
+
+			const reactionEmojiNames = Object.keys(reactions)
+				.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
+				.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
+
+			return this.customEmojiService.populateEmojis(reactionEmojiNames, note.userHost).then(reactionEmojis => ({
+				id: note.id,
+				reactions,
+				reactionEmojis,
+			}));
+		});
+
+		return await Promise.all(packings);
 	}
 }

@@ -1,6 +1,12 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
 import { UserDetailed } from './autogen/models.js';
-import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest } from './autogen/entities.js';
+import {
+	AdminRolesCreateRequest,
+	AdminRolesCreateResponse,
+	EmptyRequest,
+	EmptyResponse,
+	UsersShowRequest,
+} from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
 	SigninFlowRequest,
@@ -33,14 +39,15 @@ type IsCaseMatched<E extends keyof Endpoints, P extends Endpoints[E]['req'], C e
 	Endpoints[E]['res'] extends SwitchCase
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>> extends false ? true : false
-		: false
+		: false;
 
 type GetCaseResult<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
 	Endpoints[E]['res'] extends SwitchCase
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>[1]
-		: never
+		: never;
 
+/* eslint-disable @stylistic/indent */
 export type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoints[E]['req']> = Endpoints[E]['res'] extends SwitchCase
 	? IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> :
 		IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1> :
@@ -53,6 +60,7 @@ export type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoint
 									IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> :
 										IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> :
 											Endpoints[E]['res']['$switch']['$default'] : Endpoints[E]['res'];
+/* eslint-enable @stylistic/indent */
 
 export type Endpoints = Overwrite<
 	Gen,
@@ -104,6 +112,10 @@ export type Endpoints = Overwrite<
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
 			res: AdminRolesCreateResponse;
-		}
+		},
+		'clear-browser-cache': {
+			req: EmptyRequest;
+			res: EmptyResponse;
+		},
 	}
->
+>;

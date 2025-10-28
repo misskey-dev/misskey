@@ -13,7 +13,7 @@
 	};
 	window.onunhandledrejection = (e) => {
 		console.error(e);
-		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
+		renderError('SOMETHING_HAPPENED_IN_PROMISE', e.reason || e);
 	};
 
 	let forceError = localStorage.getItem('forceError');
@@ -22,62 +22,31 @@
 		return;
 	}
 
-	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
-		const supportedLangs = LANGS;
-		let lang = localStorage.getItem('lang');
-		if (lang == null || !supportedLangs.includes(lang)) {
-			if (supportedLangs.includes(navigator.language)) {
-				lang = navigator.language;
-			} else {
-				lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
-
-				// Fallback
-				if (lang == null) lang = 'en-US';
-			}
-		}
-
-		const metaRes = await window.fetch('/api/meta', {
-			method: 'POST',
-			body: JSON.stringify({}),
-			credentials: 'omit',
-			cache: 'no-cache',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		if (metaRes.status !== 200) {
-			renderError('META_FETCH');
-			return;
-		}
-		const meta = await metaRes.json();
-		const v = meta.version;
-		if (v == null) {
-			renderError('META_FETCH_V');
-			return;
-		}
-
-		// for https://github.com/misskey-dev/misskey/issues/10202
-		if (lang == null || lang.toString == null || lang.toString() === 'null') {
-			console.error('invalid lang value detected!!!', typeof lang, lang);
-			lang = 'en-US';
-		}
-
-		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
-		if (localRes.status === 200) {
-			localStorage.setItem('lang', lang);
-			localStorage.setItem('locale', await localRes.text());
-			localStorage.setItem('localeVersion', v);
+	//#region Detect language
+	const supportedLangs = LANGS;
+	/** @type { string } */
+	let lang = localStorage.getItem('lang');
+	if (lang == null || !supportedLangs.includes(lang)) {
+		if (supportedLangs.includes(navigator.language)) {
+			lang = navigator.language;
 		} else {
-			renderError('LOCALE_FETCH');
-			return;
+			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
+
+			// Fallback
+			if (lang == null) lang = 'en-US';
 		}
+	}
+
+	// for https://github.com/misskey-dev/misskey/issues/10202
+	if (lang == null || lang.toString == null || lang.toString() === 'null') {
+		console.error('invalid lang value detected!!!', typeof lang, lang);
+		lang = 'en-US';
 	}
 	//#endregion
 
 	//#region Script
 	async function importAppScript() {
-		await import(`/vite/${CLIENT_ENTRY}`)
+		await import(CLIENT_ENTRY ? `/vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/vite/src/_boot_.ts')
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);
@@ -94,23 +63,37 @@
 	}
 	//#endregion
 
-	//#region Theme
-	const theme = localStorage.getItem('theme');
-	if (theme) {
-		for (const [k, v] of Object.entries(JSON.parse(theme))) {
-			document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
+	let isSafeMode = (localStorage.getItem('isSafeMode') === 'true');
 
-			// HTMLの theme-color 適用
-			if (k === 'htmlThemeColor') {
-				for (const tag of document.head.children) {
-					if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-						tag.setAttribute('content', v);
-						break;
+	if (!isSafeMode) {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		if (urlParams.has('safemode') && urlParams.get('safemode') === 'true') {
+			localStorage.setItem('isSafeMode', 'true');
+			isSafeMode = true;
+		}
+	}
+
+	//#region Theme
+	if (!isSafeMode) {
+		const theme = localStorage.getItem('theme');
+		if (theme) {
+			for (const [k, v] of Object.entries(JSON.parse(theme))) {
+				document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
+
+				// HTMLの theme-color 適用
+				if (k === 'htmlThemeColor') {
+					for (const tag of document.head.children) {
+						if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+							tag.setAttribute('content', v);
+							break;
+						}
 					}
 				}
 			}
 		}
 	}
+
 	const colorScheme = localStorage.getItem('colorScheme');
 	if (colorScheme) {
 		document.documentElement.style.setProperty('color-scheme', colorScheme);
@@ -127,16 +110,13 @@
 		document.documentElement.classList.add('useSystemFont');
 	}
 
-	const wallpaper = localStorage.getItem('wallpaper');
-	if (wallpaper) {
-		document.documentElement.style.backgroundImage = `url(${wallpaper})`;
-	}
-
-	const customCss = localStorage.getItem('customCss');
-	if (customCss && customCss.length > 0) {
-		const style = document.createElement('style');
-		style.innerHTML = customCss;
-		document.head.appendChild(style);
+	if (!isSafeMode) {
+		const customCss = localStorage.getItem('customCss');
+		if (customCss && customCss.length > 0) {
+			const style = document.createElement('style');
+			style.innerHTML = customCss;
+			document.head.appendChild(style);
+		}
 	}
 
 	async function addStyle(styleText) {
@@ -151,6 +131,42 @@
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
+		let messages = null;
+		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
+		if (bootloaderLocales) {
+			messages = JSON.parse(bootloaderLocales);
+		}
+		if (!messages) {
+			// older version of misskey does not store bootloaderLocales, stores locale as a whole
+			const legacyLocale = localStorage.getItem('locale');
+			if (legacyLocale) {
+				const parsed = JSON.parse(legacyLocale);
+				messages = {
+					...(parsed._bootErrors ?? {}),
+					reload: parsed.reload,
+				};
+			}
+		}
+		if (!messages) messages = {};
+
+		messages = Object.assign({
+			title: 'Failed to initialize Misskey',
+			solution: 'The following actions may solve the problem.',
+			solution1: 'Update your os and browser',
+			solution2: 'Disable an adblocker',
+			solution3: 'Clear the browser cache',
+			solution4: '(Tor Browser) Set dom.webaudio.enabled to true',
+			otherOption: 'Other options',
+			otherOption1: 'Clear preferences and cache',
+			otherOption2: 'Start the simple client',
+			otherOption3: 'Start the repair tool',
+			otherOption4: 'Start Misskey in safe mode',
+			reload: 'Reload',
+		}, messages);
+
+		const safeModeUrl = new URL(window.location.href);
+		safeModeUrl.searchParams.set('safemode', 'true');
+
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
@@ -160,32 +176,38 @@
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
-			<h1>Failed to load<br>読み込みに失敗しました</h1>
+			<h1>${messages.title}</h1>
 			<button class="button-big" onclick="location.reload(true);">
-				<span class="button-label-big">Reload / リロード</span>
+				<span class="button-label-big">${messages?.reload}</span>
 			</button>
-			<p><b>The following actions may solve the problem. / 以下を行うと解決する可能性があります。</b></p>
-			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
-			<p>Disable an adblocker / アドブロッカーを無効にする</p>
-			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
-			<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
+			<p><b>${messages.solution}</b></p>
+			<p>${messages.solution1}</p>
+			<p>${messages.solution2}</p>
+			<p>${messages.solution3}</p>
+			<p>${messages.solution4}</p>
 			<details style="color: #86b300;">
-				<summary>Other options / その他のオプション</summary>
+				<summary>${messages.otherOption}</summary>
+				<a href="${safeModeUrl}">
+					<button class="button-small">
+						<span class="button-label-small">${messages.otherOption4}</span>
+					</button>
+				</a>
+				<br>
 				<a href="/flush">
 					<button class="button-small">
-						<span class="button-label-small">Clear preferences and cache</span>
+						<span class="button-label-small">${messages.otherOption1}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/cli">
 					<button class="button-small">
-						<span class="button-label-small">Start the simple client</span>
+						<span class="button-label-small">${messages.otherOption2}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/bios">
 					<button class="button-small">
-						<span class="button-label-small">Start the repair tool</span>
+						<span class="button-label-small">${messages.otherOption3}</span>
 					</button>
 				</a>
 			</details>

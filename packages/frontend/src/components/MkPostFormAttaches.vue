@@ -29,7 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<p :class="$style.remain">{{ 16 - props.modelValue.length }}/16</p>
+	<p
+		:class="[$style.remain, {
+			[$style.exceeded]: props.modelValue.length > 16,
+		}]"
+	>
+		{{ props.modelValue.length }}/16
+	</p>
 </div>
 </template>
 
@@ -38,25 +44,28 @@ import { defineAsyncComponent, computed, inject, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { animations } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
+import type { MenuItem } from '@/types/menu';
+import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
+import { globalEvents } from '@/events.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
 	detachMediaFn?: (id: string) => void;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;
 	(ev: 'detach', id: string): void;
 	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
 	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
-	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
 }>();
 
 const dndParentEl = shallowRef<HTMLElement>();
@@ -93,12 +102,13 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
-
 	if (canceled) return;
 
-	os.apiWithDialog('drive/files/delete', {
+	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
 function toggleSensitive(file) {
@@ -133,10 +143,10 @@ async function rename(file) {
 	});
 }
 
-async function describe(file) {
+async function describe(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
 	}, {
@@ -151,13 +161,6 @@ async function describe(file) {
 		},
 		closed: () => dispose(),
 	});
-}
-
-async function crop(file: Misskey.entities.DriveFile): Promise<void> {
-	if (mock) return;
-
-	const newFile = await os.cropImage(file, { aspectRatio: NaN });
-	emit('replaceFile', file, newFile);
 }
 
 function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
@@ -183,9 +186,15 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 
 	if (isImage) {
 		menuItems.push({
-			text: i18n.ts.cropImage,
-			icon: 'ti ti-crop',
-			action: () : void => { crop(file); },
+			text: i18n.ts.preview,
+			icon: 'ti ti-photo-search',
+			action: async () => {
+				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImgPreviewDialog.vue').then(x => x.default), {
+					file: file,
+				}, {
+					closed: () => dispose(),
+				});
+			},
 		});
 	}
 
@@ -201,6 +210,16 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
 	});
+
+	if (prefer.s.devMode) {
+		menuItems.push({ type: 'divider' }, {
+			icon: 'ti ti-hash',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(file.id);
+			},
+		});
+	}
 
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
@@ -259,5 +278,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 	margin: 0;
 	padding: 0;
 	font-size: 90%;
+
+	&.exceeded {
+		color: var(--MI_THEME-error);
+	}
 }
 </style>

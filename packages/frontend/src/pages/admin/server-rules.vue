@@ -4,48 +4,47 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
-			<div class="_gaps_m">
-				<div>{{ i18n.ts._serverRules.description }}</div>
-				<div ref="dndParentEl" class="_gaps_m">
-					<div v-for="rule, index in serverRules" :key="rule.id" :class="$style.item">
-						<div :class="$style.itemHeader">
-							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-							<span :class="$style.itemHandle" class="handle"><i class="ti ti-menu"/></span>
-							<button class="_button" :class="$style.itemRemove" @click="remove(rule.id)"><i class="ti ti-x"></i></button>
-						</div>
-						<MkInput v-model="rule.value"/>
+<SearchMarker markerId="serverRules" :keywords="['rules']">
+	<MkFolder>
+		<template #icon><SearchIcon><i class="ti ti-checkbox"></i></SearchIcon></template>
+		<template #label><SearchLabel>{{ i18n.ts.serverRules }}</SearchLabel></template>
+
+		<div class="_gaps_m">
+			<div>{{ i18n.ts._serverRules.description }}</div>
+			<div ref="dndParentEl" class="_gaps_m">
+				<div v-for="rule, index in serverRules" :key="rule.id" :class="$style.item">
+					<div :class="$style.itemHeader">
+						<div :class="$style.itemNumber" v-text="String(index + 1)"/>
+						<span :class="$style.itemHandle" class="handle"><i class="ti ti-menu"/></span>
+						<button class="_button" :class="$style.itemRemove" @click="remove(rule.id)"><i class="ti ti-x"></i></button>
 					</div>
-				</div>
-				<div :class="$style.commands">
-					<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					<MkInput v-model="rule.value"/>
 				</div>
 			</div>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+			<div :class="$style.commands">
+				<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</div>
+		</div>
+	</MkFolder>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { ref, useTemplateRef } from 'vue';
 import { animations } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
-import XHeader from './_header_.vue';
+import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
-const serverRules = ref<{ id: string; value: string; }[]>(instance.serverRules.map((rule: string) => ({ id: uuid(), value: rule })));
+const serverRules = ref<{ id: string; value: string; }[]>(instance.serverRules.map((rule: string) => ({ id: genId(), value: rule })));
 
-const dndParentEl = shallowRef<HTMLElement>();
+const dndParentEl = useTemplateRef('dndParentEl');
 
 dragAndDrop({
 	parent: dndParentEl,
@@ -62,19 +61,12 @@ async function save() {
 }
 
 function add() {
-	serverRules.value.push({ id: uuid(), value: '' });
+	serverRules.value.push({ id: genId(), value: '' });
 }
 
 function remove(id: string) {
 	serverRules.value = serverRules.value.filter(rule => rule.id !== id);
 }
-
-const headerTabs = computed(() => []);
-
-definePageMetadata(() => ({
-	title: i18n.ts.serverRules,
-	icon: 'ti ti-checkbox',
-}));
 </script>
 
 <style lang="scss" module>
@@ -126,7 +118,7 @@ definePageMetadata(() => ({
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--MI_THEME-X5);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 }
 

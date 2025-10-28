@@ -5,16 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="selectedThemeId">
+	<MkSelect v-model="selectedThemeId" :items="selectedThemeIdDef">
 		<template #label>{{ i18n.ts.theme }}</template>
-		<optgroup :label="i18n.ts._theme.installedThemes">
-			<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="i18n.ts._theme.builtinThemes">
-			<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-		</optgroup>
 	</MkSelect>
-	<template v-if="selectedTheme">
+	<template v-if="selectedTheme != null">
 		<MkInput readonly :modelValue="selectedTheme.author">
 			<template #label>{{ i18n.ts.author }}</template>
 		</MkInput>
@@ -25,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._theme.code }}</template>
 			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
 		</MkTextarea>
-		<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+		<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme!.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 	</template>
 </div>
 </template>
@@ -33,20 +27,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
+import type { Theme } from '@/theme.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { getThemes, removeTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 
-const installedThemes = ref(getThemes());
+const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
-const selectedThemeId = ref<string | null>(null);
+const {
+	model: selectedThemeId,
+	def: selectedThemeIdDef,
+} = useMkSelect({
+	items: computed<MkSelectItem<string | null>[]>(() => [{
+		type: 'group',
+		label: i18n.ts._theme.installedThemes,
+		items: installedThemes.value.map(x => ({ label: x.name, value: x.id })),
+	}, {
+		type: 'group',
+		label: i18n.ts._theme.builtinThemes,
+		items: builtinThemes.value.map(x => ({ label: x.name, value: x.id })),
+	}]),
+	initialValue: null,
+});
 
 const themes = computed(() => [...installedThemes.value, ...builtinThemes.value]);
 
@@ -62,7 +72,6 @@ const selectedThemeCode = computed(() => {
 
 function copyThemeCode() {
 	copyToClipboard(selectedThemeCode.value);
-	os.success();
 }
 
 function uninstall() {
@@ -76,7 +85,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._theme.manage,
 	icon: 'ti ti-tool',
 }));

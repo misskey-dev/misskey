@@ -1,3 +1,4 @@
+import { describe, test } from 'vitest';
 import { expectType } from 'tsd';
 import * as Misskey from '../src/index.js';
 
