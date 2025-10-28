@@ -14,7 +14,6 @@
 		"cli": "node ./built/boot/cli.js",
 		"check:connect": "node ./scripts/check_connect.js",
 		"build": "swc src -d built -D --strip-leading-paths",
-		"build:deps": "pnpm --filter backend^... build",
 		"build:test": "swc test-server -d built-test -D --config-file test-server/.swcrc --strip-leading-paths",
 		"watch:swc": "swc src -d built -D -w --strip-leading-paths",
 		"build:tsc": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
