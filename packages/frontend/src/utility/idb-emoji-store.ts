@@ -46,9 +46,22 @@ let db: EmojiDB | null = null;
 
 export function convertToV1Emoji(emoji: Misskey.entities.EmojiSimple): V1Emoji {
 	return {
-		aliases: emoji.aliases ?? [],
+		aliases: emoji.aliases,
 		name: emoji.name,
 		category: emoji.category ?? CATEGORY_NONE,
+		url: emoji.url,
+		localOnly: emoji.localOnly,
+		isSensitive: emoji.isSensitive,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+	};
+}
+
+
+export function convertToMisskeyEntityEmoji(emoji: V1Emoji): Misskey.entities.EmojiSimple {
+	return {
+		aliases: emoji.aliases,
+		name: emoji.name,
+		category: emoji.category === CATEGORY_NONE ? null : emoji.category,
 		url: emoji.url,
 		localOnly: emoji.localOnly,
 		isSensitive: emoji.isSensitive,
