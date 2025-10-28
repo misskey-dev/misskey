@@ -2564,7 +2564,7 @@ _exportOrImport:
   userLists: "Listas"
   excludeMutingUsers: "Excluir usuarios silenciados"
   excludeInactiveUsers: "Excluir usuarios inactivos"
-  withReplies: "Incluir respuestas de los usuarios importados en la línea de tiempo"
+  withReplies: "Si el archivo no incluye información sobre si las respuestas deben incluirse en la línea de tiempo, las respuestas realizadas por el importador deben incluirse en la línea de tiempo."
 _charts:
   federation: "Federación"
   apRequest: "Pedidos"
