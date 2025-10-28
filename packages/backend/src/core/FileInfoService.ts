@@ -20,8 +20,8 @@ import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { PredictionType } from 'nsfwjs';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import type { PredictionType } from 'nsfwjs';
 
 export type FileInfo = {
 	size: number;
@@ -339,7 +339,7 @@ export class FileInfoService {
 	}
 
 	@bindThis
-	public fixMime(mime: string | fileType.MimeType): string {
+	public fixMime(mime: string): string {
 		// see https://github.com/misskey-dev/misskey/pull/10686
 		if (mime === 'audio/x-flac') {
 			return 'audio/flac';
