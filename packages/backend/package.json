@@ -210,7 +210,7 @@
 		"@types/jsrsasign": "10.5.15",
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
-		"@types/node": "22.18.10",
+		"@types/node": "24.9.1",
 		"@types/nodemailer": "6.4.20",
 		"@types/oauth": "0.9.6",
 		"@types/oauth2orize": "1.11.5",
