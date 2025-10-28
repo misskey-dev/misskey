@@ -56,7 +56,6 @@ export function convertToV1Emoji(emoji: Misskey.entities.EmojiSimple): V1Emoji {
 	};
 }
 
-
 export function convertToMisskeyEntityEmoji(emoji: V1Emoji): Misskey.entities.EmojiSimple {
 	return {
 		aliases: emoji.aliases,
