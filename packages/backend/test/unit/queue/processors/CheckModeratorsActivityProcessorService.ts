@@ -142,6 +142,7 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 	beforeEach(async () => {
 		clock = lolex.install({
+			toFake: Object.keys(lolex.timers).filter((key) => !['nextTick', 'queueMicrotask'].includes(key)) as lolex.FakeMethod[],
 			now: new Date(baseDate),
 			shouldClearNativeTimers: true,
 		});
