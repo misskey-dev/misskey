@@ -85,6 +85,9 @@
 	"pnpm": {
 		"overrides": {
 			"@aiscript-dev/aiscript-languageserver": "-"
-		}
+		},
+		"ignoredBuiltDependencies": [
+			"@sentry-internal/node-cpu-profiler"
+		]
 	}
 }
