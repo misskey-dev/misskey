@@ -18,7 +18,7 @@
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
 		"@discordapp/twemoji": "16.0.1",
-		"@formkit/drag-and-drop": "0.2.0",
+		"@formkit/drag-and-drop": "0.5.3",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
