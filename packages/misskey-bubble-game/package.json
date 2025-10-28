@@ -23,7 +23,7 @@
 	},
 	"devDependencies": {
 		"@types/matter-js": "0.20.2",
-		"@types/node": "22.18.10",
+		"@types/node": "24.9.1",
 		"@types/seedrandom": "3.0.8",
 		"@typescript-eslint/eslint-plugin": "8.46.1",
 		"@typescript-eslint/parser": "8.46.1",

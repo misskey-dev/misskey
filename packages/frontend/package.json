@@ -109,7 +109,7 @@
 		"@types/estree": "1.0.8",
 		"@types/matter-js": "0.20.2",
 		"@types/micromatch": "4.0.9",
-		"@types/node": "22.18.10",
+		"@types/node": "24.9.1",
 		"@types/punycode.js": "npm:@types/punycode@2.1.4",
 		"@types/sanitize-html": "2.16.0",
 		"@types/seedrandom": "3.0.8",
