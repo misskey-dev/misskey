@@ -132,6 +132,8 @@ onUnmounted(() => {
 	top: calc(var(--y) - var(--padding));
 	width: calc(var(--width) + var(--padding) * 2);
 	height: calc(var(--height) + var(--padding) * 2);
+	box-sizing: border-box;
+	border: 1px solid transparent;
 	border-radius: 8px;
 	box-shadow: 0 0 0 9999px #000a;
 	transition: left 0.2s ease-out, top 0.2s ease-out, width 0.2s ease-out, height 0.2s ease-out;
