@@ -11,7 +11,7 @@ import { wsOrigin } from '@@/js/config.js';
 //import { StreamMock } from '@/utility/stream-mock.js';
 
 // heart beat interval in ms
-const HEART_BEAT_INTERVAL = 1000 * 60;
+const HEART_BEAT_INTERVAL = 1000 * 20;
 
 let stream: Misskey.IStream | null = null;
 let timeoutHeartBeat: number | null = null;
