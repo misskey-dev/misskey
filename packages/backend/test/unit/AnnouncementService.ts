@@ -5,7 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
+import { describe, expect, beforeEach, afterEach, test, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
@@ -36,8 +37,8 @@ describe('AnnouncementService', () => {
 	let usersRepository: UsersRepository;
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
-	let globalEventService: jest.Mocked<GlobalEventService>;
-	let moderationLogService: jest.Mocked<ModerationLogService>;
+	let globalEventService: Mocked<GlobalEventService>;
+	let moderationLogService: Mocked<ModerationLogService>;
 
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
@@ -76,12 +77,12 @@ describe('AnnouncementService', () => {
 			.useMocker((token) => {
 				if (token === GlobalEventService) {
 					return {
-						publishMainStream: jest.fn(),
-						publishBroadcastStream: jest.fn(),
+						publishMainStream: vi.fn(),
+						publishBroadcastStream: vi.fn(),
 					};
 				} else if (token === ModerationLogService) {
 					return {
-						log: jest.fn(),
+						log: vi.fn(),
 					};
 				} else if (typeof token === 'function') {
 					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
@@ -97,8 +98,8 @@ describe('AnnouncementService', () => {
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
-		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
-		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
+		globalEventService = app.get<GlobalEventService>(GlobalEventService) as Mocked<GlobalEventService>;
+		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as Mocked<ModerationLogService>;
 	});
 
 	afterEach(async () => {

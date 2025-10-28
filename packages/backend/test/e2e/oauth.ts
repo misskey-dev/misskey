@@ -11,6 +11,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { afterAll, beforeAll, beforeEach, describe, test } from 'vitest';
 import {
 	AuthorizationCode,
 	type AuthorizationTokenConfig,

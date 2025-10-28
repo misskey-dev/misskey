@@ -6,6 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { describe, beforeAll, beforeEach, test } from 'vitest';
 import {
 	api,
 	failedApiCall,

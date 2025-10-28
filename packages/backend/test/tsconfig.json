@@ -34,7 +34,7 @@
 		"lib": [
 			"esnext"
 		],
-		"types": ["jest", "node"]
+		"types": ["node"]
 	},
 	"compileOnSave": false,
 	"include": [

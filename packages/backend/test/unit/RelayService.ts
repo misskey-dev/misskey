@@ -5,7 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
+import { afterAll, beforeAll, describe, test, expect, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { ModuleMocker } from 'jest-mock';
 import type { TestingModule } from '@nestjs/testing';
@@ -24,7 +25,7 @@ const moduleMocker = new ModuleMocker(global);
 describe('RelayService', () => {
 	let app: TestingModule;
 	let relayService: RelayService;
-	let queueService: jest.Mocked<QueueService>;
+	let queueService: Mocked<QueueService>;
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -42,7 +43,7 @@ describe('RelayService', () => {
 		})
 			.useMocker((token) => {
 				if (token === QueueService) {
-					return { deliver: jest.fn() };
+					return { deliver: vi.fn() };
 				}
 				if (typeof token === 'function') {
 					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
@@ -55,7 +56,7 @@ describe('RelayService', () => {
 		app.enableShutdownHooks();
 
 		relayService = app.get<RelayService>(RelayService);
-		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
+		queueService = app.get<QueueService>(QueueService) as Mocked<QueueService>;
 	});
 
 	afterAll(async () => {
