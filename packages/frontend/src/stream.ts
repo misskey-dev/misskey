@@ -42,7 +42,7 @@ export function useStream(): Misskey.IStream {
 }
 
 function heartbeat(): void {
-	if (stream != null && window.document.visibilityState === 'visible') {
+	if (stream != null) {
 		stream.heartbeat();
 	}
 	lastHeartbeatCall = Date.now();
