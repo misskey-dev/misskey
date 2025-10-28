@@ -8,10 +8,12 @@
 	"types": "./built/index.d.ts",
 	"exports": {
 		".": {
+			"default": "./built/index.js",
 			"import": "./built/index.js",
 			"types": "./built/index.d.ts"
 		},
 		"./*": {
+			"default": "./built/*",
 			"import": "./built/*",
 			"types": "./built/*"
 		}
