@@ -1,8 +1,6 @@
 ## Unreleased
 
 ### General
-- Enhance: Node.js 24.10.0をサポートするようになりました
-- Enhance: DockerのNode.jsが24.10.0に更新されました
 
 ### Client
 - Fix: 紙吹雪エフェクトがアニメーション設定を考慮せず常に表示される問題を修正
