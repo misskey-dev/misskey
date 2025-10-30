@@ -101,7 +101,7 @@ export class ImageLabelRenderer {
 		const textsMarginRight = textsMarginLeft;
 		const withQrCode = params.withQrCode;
 		const qrSize = labelCanvasCtx.canvas.height * 0.6;
-		const qrMarginX = Math.max((labelCanvasCtx.canvas.height - qrSize) / 2, (imageAreaW * params.frameThickness) / aspectRatio);
+		const qrMarginRight = Math.max((labelCanvasCtx.canvas.height - qrSize) / 2, paddingRight);
 
 		labelCanvasCtx.fillStyle = '#ffffff';
 		labelCanvasCtx.fillRect(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height);
@@ -116,7 +116,7 @@ export class ImageLabelRenderer {
 			labelCanvasCtx.fillText(this.interpolateText(params.title), labelCanvasCtx.canvas.width / 2, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
 		} else {
 			labelCanvasCtx.textAlign = 'left';
-			labelCanvasCtx.fillText(this.interpolateText(params.title), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginX + (fontSize * 1)) : 0));
+			labelCanvasCtx.fillText(this.interpolateText(params.title), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : 0));
 		}
 
 		labelCanvasCtx.fillStyle = '#00000088';
@@ -129,7 +129,7 @@ export class ImageLabelRenderer {
 			labelCanvasCtx.fillText(this.interpolateText(params.text), labelCanvasCtx.canvas.width / 2, textY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
 		} else {
 			labelCanvasCtx.textAlign = 'left';
-			labelCanvasCtx.fillText(this.interpolateText(params.text), textsMarginLeft, textY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginX + (fontSize * 1)) : 0));
+			labelCanvasCtx.fillText(this.interpolateText(params.text), textsMarginLeft, textY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : 0));
 		}
 
 		const $i = ensureSignin();
@@ -172,7 +172,7 @@ export class ImageLabelRenderer {
 
 			labelCanvasCtx.drawImage(
 				qrImageBitmap,
-				labelCanvasCtx.canvas.width - qrSize - qrMarginX,
+				labelCanvasCtx.canvas.width - qrSize - qrMarginRight,
 				(labelCanvasCtx.canvas.height - qrSize) / 2,
 				qrSize,
 				qrSize,

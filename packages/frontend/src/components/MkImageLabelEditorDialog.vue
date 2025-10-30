@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<MkRange v-model="frame.frameThickness" :min="0" :max="0.1" :step="0.01" :continuousUpdate="true">
+					<MkRange v-model="frame.frameThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
 						<template #label>{{ i18n.ts._imageLabelEditor.frameThickness }}</template>
 					</MkRange>
 
