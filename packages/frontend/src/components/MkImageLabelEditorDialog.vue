@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-copyright"></i> {{ i18n.ts._watermarkEditor.title }}</template>
+	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._imageLabelEditor.title }}</template>
 
 	<div :class="$style.root">
 		<div :class="$style.container">
@@ -30,31 +30,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<div class="_gaps_s">
-						<MkFolder v-for="(layer, i) in preset.layers" :key="layer.id" :defaultOpen="false" :canPage="false">
-							<template #label>
-								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
-								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
-								<div v-if="layer.type === 'qr'">{{ i18n.ts._watermarkEditor.qr }}</div>
-								<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
-								<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
-								<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
-							</template>
-							<template #footer>
-								<div class="_buttons">
-									<MkButton iconOnly @click="removeLayer(layer)"><i class="ti ti-trash"></i></MkButton>
-									<MkButton iconOnly @click="swapUpLayer(layer)"><i class="ti ti-arrow-up"></i></MkButton>
-									<MkButton iconOnly @click="swapDownLayer(layer)"><i class="ti ti-arrow-down"></i></MkButton>
-								</div>
-							</template>
+					<MkRange v-model="frame.frameThickness" :min="0" :max="0.1" :step="0.01" :continuousUpdate="true">
+						<template #label>{{ i18n.ts._imageLabelEditor.frameThickness }}</template>
+					</MkRange>
 
-							<XLayer
-								v-model:layer="preset.layers[i]"
-							></XLayer>
-						</MkFolder>
+					<MkSwitch v-model="frame.centered">
+						<template #label>{{ i18n.ts._imageLabelEditor.centered }}</template>
+					</MkSwitch>
 
-						<MkButton rounded primary style="margin: 0 auto;" @click="addLayer"><i class="ti ti-plus"></i></MkButton>
-					</div>
+					<MkInput v-model="frame.title">
+						<template #label>{{ i18n.ts._imageLabelEditor.captionMain }}</template>
+					</MkInput>
+
+					<MkTextarea v-model="frame.text">
+						<template #label>{{ i18n.ts._imageLabelEditor.captionSub }}</template>
+					</MkTextarea>
+
+					<MkSwitch v-model="frame.withQrCode">
+						<template #label>{{ i18n.ts._imageLabelEditor.withQrCode }}</template>
+					</MkSwitch>
+
+					<MkInfo>
+						<div>{{ i18n.ts._imageLabelEditor.availableVariables }}:</div>
+						<div><code class="_selectableAtomic">{date}</code> - 撮影日時</div>
+						<div><code class="_selectableAtomic">{model}</code> - カメラモデル</div>
+						<div><code class="_selectableAtomic">{lensModel}</code> - レンズモデル</div>
+						<div><code class="_selectableAtomic">{mm}</code> - 焦点距離 (例: 50)</div>
+						<div><code class="_selectableAtomic">{f}</code> - 絞り値 (例: 1.8)</div>
+						<div><code class="_selectableAtomic">{s}</code> - シャッタースピード (例: 1/125)</div>
+						<div><code class="_selectableAtomic">{iso}</code> - ISO感度 (例: 100)</div>
+					</MkInfo>
 				</div>
 			</div>
 		</div>
@@ -64,13 +69,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
-import type { WatermarkPreset } from '@/utility/watermark.js';
-import { WatermarkRenderer } from '@/utility/watermark.js';
+import ExifReader from 'exifreader';
+import type { ImageLabelParams } from '@/utility/image-label-renderer.js';
+import { ImageLabelRenderer } from '@/utility/image-label-renderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
@@ -80,99 +91,32 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const $i = ensureSignin();
 
-function createTextLayer(): WatermarkPreset['layers'][number] {
-	return {
-		id: genId(),
-		type: 'text',
-		text: `(c) @${$i.username}`,
-		align: { x: 'right', y: 'bottom', margin: 0 },
-		scale: 0.3,
-		angle: 0,
-		opacity: 0.75,
-		repeat: false,
-		noBoundingBoxExpansion: false,
-	};
-}
-
-function createImageLayer(): WatermarkPreset['layers'][number] {
-	return {
-		id: genId(),
-		type: 'image',
-		imageId: null,
-		imageUrl: null,
-		align: { x: 'right', y: 'bottom', margin: 0 },
-		scale: 0.3,
-		angle: 0,
-		opacity: 0.75,
-		repeat: false,
-		noBoundingBoxExpansion: false,
-		cover: false,
-	};
-}
-
-function createQrLayer(): WatermarkPreset['layers'][number] {
-	return {
-		id: genId(),
-		type: 'qr',
-		data: '',
-		align: { x: 'right', y: 'bottom', margin: 0 },
-		scale: 0.3,
-		opacity: 1,
-	};
-}
-
-function createStripeLayer(): WatermarkPreset['layers'][number] {
-	return {
-		id: genId(),
-		type: 'stripe',
-		angle: 0.5,
-		frequency: 10,
-		threshold: 0.1,
-		color: [1, 1, 1],
-		opacity: 0.75,
-	};
-}
-
-function createPolkadotLayer(): WatermarkPreset['layers'][number] {
-	return {
-		id: genId(),
-		type: 'polkadot',
-		angle: 0.5,
-		scale: 3,
-		majorRadius: 0.1,
-		minorRadius: 0.25,
-		majorOpacity: 0.75,
-		minorOpacity: 0.5,
-		minorDivisions: 4,
-		color: [1, 1, 1],
-		opacity: 0.75,
-	};
-}
-
-function createCheckerLayer(): WatermarkPreset['layers'][number] {
-	return {
-		id: genId(),
-		type: 'checker',
-		angle: 0.5,
-		scale: 3,
-		color: [1, 1, 1],
-		opacity: 0.75,
-	};
-}
+const EXIF_MOCK = {
+	DateTimeOriginal: { description: '2025:01:01 12:00:00' },
+	Model: { description: 'Example camera' },
+	LensModel: { description: 'Example lens 123mm f/1.23' },
+	FocalLength: { description: '123mm' },
+	ExposureTime: { description: '1/234' },
+	FNumber: { description: '1.23' },
+	ISOSpeedRatings: { description: '123' },
+} satisfies ExifReader.Tags;
 
 const props = defineProps<{
-	preset?: WatermarkPreset | null;
+	frame?: ImageLabelParams | null;
 	image?: File | null;
 }>();
 
-const preset = reactive<WatermarkPreset>(deepClone(props.preset) ?? {
-	id: genId(),
-	name: '',
-	layers: [],
+const frame = reactive<ImageLabelParams>(deepClone(props.frame) ?? {
+	style: 'frame',
+	frameThickness: 0.05,
+	title: 'Untitled by @syuilo',
+	text: '{mm}mm   f/{f}   {s}s   ISO{iso}',
+	centered: false,
+	withQrCode: true,
 });
 
 const emit = defineEmits<{
-	(ev: 'ok', preset: WatermarkPreset): void;
+	(ev: 'ok', frame: ImageLabelParams): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -180,19 +124,12 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 
 async function cancel() {
-	const { canceled } = await os.confirm({
-		type: 'question',
-		text: i18n.ts._watermarkEditor.quitWithoutSaveConfirm,
-	});
-	if (canceled) return;
-
-	emit('cancel');
 	dialog.value?.close();
 }
 
-watch(preset, async (newValue, oldValue) => {
+watch(frame, async (newValue, oldValue) => {
 	if (renderer != null) {
-		renderer.setLayers(preset.layers);
+		renderer.update(frame);
 	}
 }, { deep: true });
 
@@ -219,49 +156,38 @@ watch(sampleImageType, async () => {
 	}
 });
 
-let renderer: WatermarkRenderer | null = null;
+let renderer: ImageLabelRenderer | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 async function initRenderer() {
 	if (canvasEl.value == null) return;
 
 	if (sampleImageType.value === '3_2') {
-		renderer = new WatermarkRenderer({
+		renderer = new ImageLabelRenderer({
 			canvas: canvasEl.value,
-			renderWidth: 1500,
-			renderHeight: 1000,
 			image: sampleImage_3_2,
+			exif: EXIF_MOCK,
+			renderAsPreview: true,
 		});
 	} else if (sampleImageType.value === '2_3') {
-		renderer = new WatermarkRenderer({
+		renderer = new ImageLabelRenderer({
 			canvas: canvasEl.value,
-			renderWidth: 1000,
-			renderHeight: 1500,
 			image: sampleImage_2_3,
+			exif: EXIF_MOCK,
+			renderAsPreview: true,
 		});
 	} else if (props.image != null) {
 		imageBitmap = await window.createImageBitmap(props.image);
 
-		const MAX_W = 1000;
-		const MAX_H = 1000;
-		let w = imageBitmap.width;
-		let h = imageBitmap.height;
-
-		if (w > MAX_W || h > MAX_H) {
-			const scale = Math.min(MAX_W / w, MAX_H / h);
-			w = Math.floor(w * scale);
-			h = Math.floor(h * scale);
-		}
-
-		renderer = new WatermarkRenderer({
+		renderer = new ImageLabelRenderer({
 			canvas: canvasEl.value,
-			renderWidth: w,
-			renderHeight: h,
 			image: imageBitmap,
+			exif: EXIF_MOCK,
+			renderAsPreview: true,
 		});
 	}
 
-	await renderer!.setLayers(preset.layers);
+	await renderer!.update(frame);
 
 	renderer!.render();
 }
@@ -306,62 +232,6 @@ async function save() {
 	}
 
 	emit('ok', preset);
-}
-
-function addLayer(ev: MouseEvent) {
-	os.popupMenu([{
-		text: i18n.ts._watermarkEditor.text,
-		action: () => {
-			preset.layers.push(createTextLayer());
-		},
-	}, {
-		text: i18n.ts._watermarkEditor.image,
-		action: () => {
-			preset.layers.push(createImageLayer());
-		},
-	}, {
-		text: i18n.ts._watermarkEditor.qr,
-		action: () => {
-			preset.layers.push(createQrLayer());
-		},
-	}, {
-		text: i18n.ts._watermarkEditor.stripe,
-		action: () => {
-			preset.layers.push(createStripeLayer());
-		},
-	}, {
-		text: i18n.ts._watermarkEditor.polkadot,
-		action: () => {
-			preset.layers.push(createPolkadotLayer());
-		},
-	}, {
-		text: i18n.ts._watermarkEditor.checker,
-		action: () => {
-			preset.layers.push(createCheckerLayer());
-		},
-	}], ev.currentTarget ?? ev.target);
-}
-
-function swapUpLayer(layer: WatermarkPreset['layers'][number]) {
-	const index = preset.layers.findIndex(l => l.id === layer.id);
-	if (index > 0) {
-		const tmp = preset.layers[index - 1];
-		preset.layers[index - 1] = preset.layers[index];
-		preset.layers[index] = tmp;
-	}
-}
-
-function swapDownLayer(layer: WatermarkPreset['layers'][number]) {
-	const index = preset.layers.findIndex(l => l.id === layer.id);
-	if (index < preset.layers.length - 1) {
-		const tmp = preset.layers[index + 1];
-		preset.layers[index + 1] = preset.layers[index];
-		preset.layers[index] = tmp;
-	}
-}
-
-function removeLayer(layer: WatermarkPreset['layers'][number]) {
-	preset.layers = preset.layers.filter(l => l.id !== layer.id);
 }
 </script>
 

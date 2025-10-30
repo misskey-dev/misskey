@@ -5605,6 +5605,36 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    "_imageLabelEditor": {
+        /**
+         * ラベルの編集
+         */
+        "title": string;
+        /**
+         * フレーム
+         */
+        "frameThickness": string;
+        /**
+         * 中央揃え
+         */
+        "centered": string;
+        /**
+         * キャプション(大)
+         */
+        "captionMain": string;
+        /**
+         * キャプション(小)
+         */
+        "captionSub": string;
+        /**
+         * 利用可能な変数
+         */
+        "availableVariables": string;
+        /**
+         * 二次元コード
+         */
+        "withQrCode": string;
+    };
     "_compression": {
         "_quality": {
             /**

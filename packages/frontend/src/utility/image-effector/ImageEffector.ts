@@ -6,7 +6,7 @@
 import QRCodeStyling from 'qr-code-styling';
 import { url, host } from '@@/js/config.js';
 import { getProxiedImageUrl } from '../media-proxy.js';
-import { initShaderProgram } from '../webgl.js';
+import { createTexture, initShaderProgram } from '../webgl.js';
 import { ensureSignin } from '@/i.js';
 
 export type ImageEffectorRGB = [r: number, g: number, b: number];
@@ -71,12 +71,17 @@ interface TextureParamDef extends CommonParamDef {
 	} | null;
 };
 
+interface TextureRefParamDef extends CommonParamDef {
+	type: 'textureRef';
+	default: string;
+};
+
 interface ColorParamDef extends CommonParamDef {
 	type: 'color';
 	default: ImageEffectorRGB;
 };
 
-type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | ColorParamDef;
+type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | TextureRefParamDef | ColorParamDef;
 
 export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
 
@@ -129,27 +134,26 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	private canvas: HTMLCanvasElement | null = null;
 	private renderWidth: number;
 	private renderHeight: number;
-	private originalImage: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
 	private layers: ImageEffectorLayer[] = [];
-	private originalImageTexture: WebGLTexture;
+	private baseTexture: WebGLTexture;
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
 	private nopProgram: WebGLProgram;
 	private fxs: [...IEX];
 	private paramTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
+	private registeredTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
 		renderWidth: number;
 		renderHeight: number;
-		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement;
+		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement | null;
 		fxs: [...IEX];
 	}) {
 		this.canvas = options.canvas;
 		this.renderWidth = options.renderWidth;
 		this.renderHeight = options.renderHeight;
-		this.originalImage = options.image;
 		this.fxs = options.fxs;
 
 		this.canvas.width = this.renderWidth;
@@ -161,9 +165,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			premultipliedAlpha: false,
 		});
 
-		if (gl == null) {
-			throw new Error('Failed to initialize WebGL2 context');
-		}
+		if (gl == null) throw new Error('Failed to initialize WebGL2 context');
 
 		this.gl = gl;
 
@@ -174,11 +176,16 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, VERTICES, gl.STATIC_DRAW);
 
-		this.originalImageTexture = createTexture(gl);
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.originalImage.width, this.originalImage.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.originalImage);
-		gl.bindTexture(gl.TEXTURE_2D, null);
+		if (options.image != null) {
+			this.baseTexture = createTexture(gl);
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, this.baseTexture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, options.image.width, options.image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, options.image);
+			gl.bindTexture(gl.TEXTURE_2D, null);
+		} else {
+			this.baseTexture = createTexture(gl);
+			gl.activeTexture(gl.TEXTURE0);
+		}
 
 		this.nopProgram = initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
@@ -254,11 +261,19 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			height: this.renderHeight,
 			textures: Object.fromEntries(
 				Object.entries(fx.params as ImageEffectorFxParamDefs).map(([k, v]) => {
-					if (v.type !== 'texture') return [k, null];
-					const param = getValue<typeof v.type>(layer.params, k);
-					if (param == null) return [k, null];
-					const texture = this.paramTextures.get(this.getTextureKeyForParam(param)) ?? null;
-					return [k, texture];
+					if (v.type === 'textureRef') {
+						const param = getValue<typeof v.type>(layer.params, k);
+						if (param == null) return [k, null];
+						const texture = this.registeredTextures.get(param) ?? null;
+						return [k, texture];
+					} else if (v.type === 'texture') {
+						const param = getValue<typeof v.type>(layer.params, k);
+						if (param == null) return [k, null];
+						const texture = this.paramTextures.get(this.getTextureKeyForParam(param)) ?? null;
+						return [k, texture];
+					} else {
+						return [k, null];
+					}
 				})),
 		});
 
@@ -271,7 +286,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		// 入力をそのまま出力
 		if (this.layers.length === 0) {
 			gl.activeTexture(gl.TEXTURE0);
-			gl.bindTexture(gl.TEXTURE_2D, this.originalImageTexture);
+			gl.bindTexture(gl.TEXTURE_2D, this.baseTexture);
 
 			gl.useProgram(this.nopProgram);
 			gl.uniform1i(gl.getUniformLocation(this.nopProgram, 'u_texture')!, 0);
@@ -280,7 +295,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			return;
 		}
 
-		let preTexture = this.originalImageTexture;
+		let preTexture = this.baseTexture;
 
 		for (const layer of this.layers) {
 			const isLast = layer === this.layers.at(-1);
@@ -322,7 +337,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 			if (fx == null) continue;
 
 			for (const k of Object.keys(layer.params)) {
-				const paramDef = fx.params[k];
+				const paramDef = (fx.params as ImageEffectorFxParamDefs)[k];
 				if (paramDef == null) continue;
 				if (paramDef.type !== 'texture') continue;
 				const v = getValue<typeof paramDef.type>(layer.params, k);
@@ -352,6 +367,28 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 
 		this.render();
+	}
+
+	public registerTexture(key: string, image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement) {
+		const gl = this.gl;
+
+		if (this.registeredTextures.has(key)) {
+			const existing = this.registeredTextures.get(key)!;
+			gl.deleteTexture(existing.texture);
+			this.registeredTextures.delete(key);
+		}
+
+		const texture = createTexture(gl);
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		this.registeredTextures.set(key, {
+			texture: texture,
+			width: image.width,
+			height: image.height,
+		});
 	}
 
 	public changeResolution(width: number, height: number) {
@@ -400,24 +437,18 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 		this.paramTextures.clear();
 
-		this.gl.deleteTexture(this.originalImageTexture);
+		for (const texture of this.registeredTextures.values()) {
+			this.gl.deleteTexture(texture.texture);
+		}
+		this.registeredTextures.clear();
+
+		this.gl.deleteTexture(this.baseTexture);
 
 		if (disposeCanvas) {
 			const loseContextExt = this.gl.getExtension('WEBGL_lose_context');
 			if (loseContextExt) loseContextExt.loseContext();
 		}
 	}
-}
-
-function createTexture(gl: WebGL2RenderingContext): WebGLTexture {
-	const texture = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	gl.bindTexture(gl.TEXTURE_2D, null);
-	return texture;
 }
 
 async function createTextureFromUrl(gl: WebGL2RenderingContext, imageUrl: string | null): Promise<{ texture: WebGLTexture, width: number, height: number } | null> {

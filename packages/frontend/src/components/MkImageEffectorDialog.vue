@@ -155,8 +155,8 @@ onMounted(async () => {
 
 	if (w > MAX_W || h > MAX_H) {
 		const scale = Math.min(MAX_W / w, MAX_H / h);
-		w *= scale;
-		h *= scale;
+		w = Math.floor(w * scale);
+		h = Math.floor(h * scale);
 	}
 
 	renderer = new ImageEffector({
@@ -373,8 +373,14 @@ function onImagePointerdown(ev: PointerEvent) {
 .preview {
 	position: relative;
 	background-color: var(--MI_THEME-bg);
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
+	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
+	background-size: 20px 20px;
+	animation: bg 1.2s linear infinite;
+}
+
+@keyframes bg {
+	0% { background-position: 0 0; }
+	100% { background-position: -20px -20px; }
 }
 
 .previewContainer {

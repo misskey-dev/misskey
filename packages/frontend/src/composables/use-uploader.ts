@@ -8,6 +8,7 @@ import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import isAnimated from 'is-file-animated';
 import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
+import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
@@ -17,6 +18,7 @@ import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
+import { ImageLabelRenderer } from '@/utility/image-label-renderer.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -570,6 +572,36 @@ export function useUploader(options: {
 				}, 'image/png');
 			});
 		}
+
+		const canvas = window.document.createElement('canvas');
+
+		const exif = await ExifReader.load(await item.file.arrayBuffer());
+
+		const labelRenderer = new ImageLabelRenderer({
+			canvas: canvas,
+			image: await window.createImageBitmap(preprocessedFile),
+			exif,
+		});
+		//await labelRenderer.update({
+		//	title: `${meta_model} + ${meta_lensModel}`,
+		//	text: `${date}   ${meta_mm}mm   f/${meta_f}   ${meta_s}s   ISO${meta_iso}`,
+		//});
+		await labelRenderer.update({
+			title: 'aaaaaaaaaaaaa',
+			text: 'bbbbbbbbbbbbbbbbbbbb',
+		});
+
+		labelRenderer.render();
+
+		preprocessedFile = await new Promise<Blob>((resolve) => {
+			canvas.toBlob((blob) => {
+				if (blob == null) {
+					throw new Error('Failed to convert canvas to blob');
+				}
+				resolve(blob);
+				labelRenderer.destroy();
+			}, 'image/png');
+		});
 
 		const compressionSettings = getCompressionSettings(item.compressionLevel);
 		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
