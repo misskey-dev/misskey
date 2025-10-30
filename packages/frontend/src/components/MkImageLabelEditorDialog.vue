@@ -34,6 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageLabelEditor.frameThickness }}</template>
 					</MkRange>
 
+					<MkRange v-model="frame.labelThickness" :min="0.1" :max="0.3" :step="0.01" :continuousUpdate="true">
+						<template #label>{{ i18n.ts._imageLabelEditor.labelThickness }}</template>
+					</MkRange>
+
 					<MkSwitch v-model="frame.centered">
 						<template #label>{{ i18n.ts._imageLabelEditor.centered }}</template>
 					</MkSwitch>
@@ -109,6 +113,7 @@ const props = defineProps<{
 const frame = reactive<ImageLabelParams>(deepClone(props.frame) ?? {
 	style: 'frame',
 	frameThickness: 0.05,
+	labelThickness: 0.2,
 	title: 'Untitled by @syuilo',
 	text: '{mm}mm   f/{f}   {s}s   ISO{iso}',
 	centered: false,

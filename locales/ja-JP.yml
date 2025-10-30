@@ -1399,7 +1399,8 @@ deviceInfoDescription: "技術的なお問い合わせの際に、以下の情�
 
 _imageLabelEditor:
   title: "ラベルの編集"
-  frameThickness: "フレーム"
+  frameThickness: "フレームの幅"
+  labelThickness: "ラベルの幅"
   centered: "中央揃え"
   captionMain: "キャプション(大)"
   captionSub: "キャプション(小)"

@@ -5611,9 +5611,13 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
-         * フレーム
+         * フレームの幅
          */
         "frameThickness": string;
+        /**
+         * ラベルの幅
+         */
+        "labelThickness": string;
         /**
          * 中央揃え
          */

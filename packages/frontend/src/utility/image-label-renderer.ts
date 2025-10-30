@@ -18,6 +18,7 @@ const FXS = [
 export type ImageLabelParams = {
 	style: 'frame' | 'frameLess';
 	frameThickness: number;
+	labelThickness: number;
 	title: string;
 	text: string;
 	centered: boolean;
@@ -26,11 +27,9 @@ export type ImageLabelParams = {
 
 export class ImageLabelRenderer {
 	private effector: ImageEffector<typeof FXS>;
-	private renderWidth: number;
-	private renderHeight: number;
 	private image: HTMLImageElement | ImageBitmap;
-	private paddingBottom = 0;
 	private exif: ExifReader.Tags;
+	private renderAsPreview = false;
 
 	constructor(options: {
 		canvas: HTMLCanvasElement,
@@ -40,30 +39,13 @@ export class ImageLabelRenderer {
 	}) {
 		this.image = options.image;
 		this.exif = options.exif;
+		this.renderAsPreview = options.renderAsPreview ?? false;
 		console.log(this.exif);
-
-		let w = this.image.width;
-		let h = this.image.height;
-
-		if (options.renderAsPreview) {
-			const MAX_W = 1000;
-			const MAX_H = 1000;
-
-			if (w > MAX_W || h > MAX_H) {
-				const scale = Math.min(MAX_W / w, MAX_H / h);
-				w = Math.floor(w * scale);
-				h = Math.floor(h * scale);
-			}
-		}
-
-		this.paddingBottom = Math.floor(h * 0.2);
-		this.renderWidth = w;
-		this.renderHeight = h + this.paddingBottom;
 
 		this.effector = new ImageEffector({
 			canvas: options.canvas,
-			renderWidth: this.renderWidth,
-			renderHeight: this.renderHeight,
+			renderWidth: 1,
+			renderHeight: 1,
 			image: null,
 			fxs: FXS,
 		});
@@ -89,10 +71,28 @@ export class ImageLabelRenderer {
 	}
 
 	public async update(params: ImageLabelParams): Promise<void> {
-		const aspectRatio = this.renderWidth / this.renderHeight;
+		let w = this.image.width;
+		let h = this.image.height;
+
+		if (this.renderAsPreview) {
+			const MAX_W = 1000;
+			const MAX_H = 1000;
+
+			if (w > MAX_W || h > MAX_H) {
+				const scale = Math.min(MAX_W / w, MAX_H / h);
+				w = Math.floor(w * scale);
+				h = Math.floor(h * scale);
+			}
+		}
+
+		const paddingBottom = Math.floor(h * params.labelThickness);
+		const renderWidth = w;
+		const renderHeight = h + paddingBottom;
+
+		const aspectRatio = renderWidth / renderHeight;
 		const ctx = window.document.createElement('canvas').getContext('2d')!;
-		ctx.canvas.width = this.renderWidth;
-		ctx.canvas.height = this.paddingBottom;
+		ctx.canvas.width = renderWidth;
+		ctx.canvas.height = paddingBottom;
 		const fontSize = ctx.canvas.height / 6;
 		const marginX = Math.max(fontSize * 2, (ctx.canvas.width * params.frameThickness) / aspectRatio);
 		const withQrCode = params.withQrCode;
@@ -184,6 +184,8 @@ export class ImageLabelRenderer {
 
 		await this.effector.registerTexture('label', data);
 
+		this.effector.changeResolution(renderWidth, renderHeight);
+
 		await this.effector.setLayers([{
 			fxId: 'label',
 			id: 'a',
@@ -194,7 +196,6 @@ export class ImageLabelRenderer {
 				imageMarginY: paddingY,
 			},
 		}]);
-		this.render();
 	}
 
 	public render(): void {
