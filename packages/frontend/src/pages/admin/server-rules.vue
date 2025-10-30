@@ -10,30 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label><SearchLabel>{{ i18n.ts.serverRules }}</SearchLabel></template>
 
 		<div class="_gaps_m">
-			<div><SearchText>{{ i18n.ts._serverRules.description }}</SearchText></div>
-
-			<Sortable
-				v-model="serverRules"
-				class="_gaps_m"
-				:itemKey="(_, i) => i"
-				:animation="150"
-				:handle="'.' + $style.itemHandle"
-				@start="e => e.item.classList.add('active')"
-				@end="e => e.item.classList.remove('active')"
-			>
-				<template #item="{element,index}">
-					<div :class="$style.item">
-						<div :class="$style.itemHeader">
-							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-							<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
-							<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
-						</div>
-						<MkInput v-model="serverRules[index]"/>
+			<div>{{ i18n.ts._serverRules.description }}</div>
+			<div ref="dndParentEl" class="_gaps_m">
+				<div v-for="rule, index in serverRules" :key="rule.id" :class="$style.item">
+					<div :class="$style.itemHeader">
+						<div :class="$style.itemNumber" v-text="String(index + 1)"/>
+						<span :class="$style.itemHandle" class="handle"><i class="ti ti-menu"/></span>
+						<button class="_button" :class="$style.itemRemove" @click="remove(rule.id)"><i class="ti ti-x"></i></button>
 					</div>
-				</template>
-			</Sortable>
+					<MkInput v-model="rule.value"/>
+				</div>
+			</div>
 			<div :class="$style.commands">
-				<MkButton rounded @click="serverRules.push('')"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 		</div>
@@ -42,7 +31,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
+import { ref, useTemplateRef } from 'vue';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
+import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -50,20 +42,31 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+const serverRules = ref<{ id: string; value: string; }[]>(instance.serverRules.map((rule: string) => ({ id: genId(), value: rule })));
 
-const serverRules = ref<string[]>(instance.serverRules);
+const dndParentEl = useTemplateRef('dndParentEl');
 
-const save = async () => {
+dragAndDrop({
+	parent: dndParentEl,
+	values: serverRules,
+	plugins: [animations()],
+	dragHandle: '.handle',
+});
+
+async function save() {
 	await os.apiWithDialog('admin/update-meta', {
-		serverRules: serverRules.value,
+		serverRules: serverRules.value.map(rule => rule.value),
 	});
 	fetchInstance(true);
-};
+}
 
-const remove = (index: number): void => {
-	serverRules.value.splice(index, 1);
-};
+function add() {
+	serverRules.value.push({ id: genId(), value: '' });
+}
+
+function remove(id: string) {
+	serverRules.value = serverRules.value.filter(rule => rule.id !== id);
+}
 </script>
 
 <style lang="scss" module>

@@ -41,20 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps">
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
-					<Sortable
-						v-model="pinnedNotes"
-						itemKey="id"
-						:handle="'.' + $style.pinnedNoteHandle"
-						:animation="150"
-					>
-						<template #item="{element,index}">
-							<div :class="$style.pinnedNote">
-								<button class="_button" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
-								{{ element.id }}
-								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
-							</div>
-						</template>
-					</Sortable>
+					<div ref="dndParentEl">
+						<div v-for="pinnedNote, index in pinnedNotes" :key="pinnedNote.id" :class="$style.pinnedNote">
+							<button class="_button handle" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
+							{{ pinnedNote.id }}
+							<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
+						</div>
+					</div>
 				</div>
 			</MkFolder>
 
@@ -68,8 +61,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, ref, shallowRef, watch, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
@@ -82,8 +77,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { useRouter } from '@/router.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const router = useRouter();
 
@@ -100,6 +93,14 @@ const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
 const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
+const dndParentEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: pinnedNotes,
+	dragHandle: '.handle',
+	plugins: [animations()],
+});
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {
