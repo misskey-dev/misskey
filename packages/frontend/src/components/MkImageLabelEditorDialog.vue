@@ -34,8 +34,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageLabelEditor.frameThickness }}</template>
 					</MkRange>
 
-					<MkRange v-model="frame.labelThickness" :min="0.1" :max="0.3" :step="0.01" :continuousUpdate="true">
+					<MkRange v-model="frame.labelThickness" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
 						<template #label>{{ i18n.ts._imageLabelEditor.labelThickness }}</template>
+					</MkRange>
+
+					<MkRange v-model="frame.labelScale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+						<template #label>{{ i18n.ts._imageLabelEditor.labelScale }}</template>
 					</MkRange>
 
 					<MkSwitch v-model="frame.centered">
@@ -74,6 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import ExifReader from 'exifreader';
+import { throttle } from 'throttle-debounce';
 import type { ImageLabelParams } from '@/utility/image-label-renderer.js';
 import { ImageLabelRenderer } from '@/utility/image-label-renderer.js';
 import { i18n } from '@/i18n.js';
@@ -114,6 +119,7 @@ const frame = reactive<ImageLabelParams>(deepClone(props.frame) ?? {
 	style: 'frame',
 	frameThickness: 0.05,
 	labelThickness: 0.2,
+	labelScale: 1.0,
 	title: 'Untitled by @syuilo',
 	text: '{mm}mm   f/{f}   {s}s   ISO{iso}',
 	centered: false,
@@ -132,10 +138,14 @@ async function cancel() {
 	dialog.value?.close();
 }
 
-watch(frame, async (newValue, oldValue) => {
+const updateThrottled = throttle(100, () => {
 	if (renderer != null) {
 		renderer.update(frame);
 	}
+});
+
+watch(frame, async (newValue, oldValue) => {
+	updateThrottled();
 }, { deep: true });
 
 const canvasEl = useTemplateRef('canvasEl');

@@ -19,6 +19,7 @@ export type ImageLabelParams = {
 	style: 'frame' | 'frameLess';
 	frameThickness: number;
 	labelThickness: number;
+	labelScale: number;
 	title: string;
 	text: string;
 	centered: boolean;
@@ -96,11 +97,12 @@ export class ImageLabelRenderer {
 		const labelCanvasCtx = window.document.createElement('canvas').getContext('2d')!;
 		labelCanvasCtx.canvas.width = renderWidth;
 		labelCanvasCtx.canvas.height = paddingBottom;
-		const fontSize = labelCanvasCtx.canvas.height / 6;
+		const scaleBase = imageAreaH * params.labelScale;
+		const fontSize = scaleBase / 30;
 		const textsMarginLeft = Math.max(fontSize * 2, paddingLeft);
 		const textsMarginRight = textsMarginLeft;
 		const withQrCode = params.withQrCode;
-		const qrSize = labelCanvasCtx.canvas.height * 0.6;
+		const qrSize = scaleBase * 0.1;
 		const qrMarginRight = Math.max((labelCanvasCtx.canvas.height - qrSize) / 2, paddingRight);
 
 		labelCanvasCtx.fillStyle = '#ffffff';
@@ -135,49 +137,53 @@ export class ImageLabelRenderer {
 		const $i = ensureSignin();
 
 		if (withQrCode) {
-			const qrCodeInstance = new QRCodeStyling({
-				width: labelCanvasCtx.canvas.height,
-				height: labelCanvasCtx.canvas.height,
-				margin: 0,
-				type: 'canvas',
-				data: `${url}/users/${$i.id}`,
-				//image: $i.avatarUrl,
-				qrOptions: {
-					typeNumber: 0,
-					mode: 'Byte',
-					errorCorrectionLevel: 'H',
-				},
-				imageOptions: {
-					hideBackgroundDots: true,
-					imageSize: 0.3,
-					margin: 16,
-					crossOrigin: 'anonymous',
-				},
-				dotsOptions: {
-					type: 'dots',
-					roundSize: false,
-				},
-				cornersDotOptions: {
-					type: 'dot',
-				},
-				cornersSquareOptions: {
-					type: 'extra-rounded',
-				},
-			});
+			try {
+				const qrCodeInstance = new QRCodeStyling({
+					width: labelCanvasCtx.canvas.height,
+					height: labelCanvasCtx.canvas.height,
+					margin: 0,
+					type: 'canvas',
+					data: `${url}/users/${$i.id}`,
+					//image: $i.avatarUrl,
+					qrOptions: {
+						typeNumber: 0,
+						mode: 'Byte',
+						errorCorrectionLevel: 'H',
+					},
+					imageOptions: {
+						hideBackgroundDots: true,
+						imageSize: 0.3,
+						margin: 16,
+						crossOrigin: 'anonymous',
+					},
+					dotsOptions: {
+						type: 'dots',
+						roundSize: false,
+					},
+					cornersDotOptions: {
+						type: 'dot',
+					},
+					cornersSquareOptions: {
+						type: 'extra-rounded',
+					},
+				});
 
-			const blob = await qrCodeInstance.getRawData('png') as Blob | null;
-			if (blob == null) throw new Error('Failed to generate QR code');
+				const blob = await qrCodeInstance.getRawData('png') as Blob | null;
+				if (blob == null) throw new Error('Failed to generate QR code');
 
-			const qrImageBitmap = await window.createImageBitmap(blob);
+				const qrImageBitmap = await window.createImageBitmap(blob);
 
-			labelCanvasCtx.drawImage(
-				qrImageBitmap,
-				labelCanvasCtx.canvas.width - qrSize - qrMarginRight,
-				(labelCanvasCtx.canvas.height - qrSize) / 2,
-				qrSize,
-				qrSize,
-			);
-			qrImageBitmap.close();
+				labelCanvasCtx.drawImage(
+					qrImageBitmap,
+					labelCanvasCtx.canvas.width - qrSize - qrMarginRight,
+					(labelCanvasCtx.canvas.height - qrSize) / 2,
+					qrSize,
+					qrSize,
+				);
+				qrImageBitmap.close();
+			} catch (err) {
+				// nop
+			}
 		}
 
 		const data = labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height);
@@ -192,8 +198,10 @@ export class ImageLabelRenderer {
 			params: {
 				image: 'image',
 				label: 'label',
-				imageMarginX: paddingLeft / renderWidth,
-				imageMarginY: paddingTop / renderHeight,
+				paddingLeft: paddingLeft / renderWidth,
+				paddingRight: paddingRight / renderWidth,
+				paddingTop: paddingTop / renderHeight,
+				paddingBottom: paddingBottom / renderHeight,
 			},
 		}]);
 	}

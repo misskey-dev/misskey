@@ -1401,6 +1401,7 @@ _imageLabelEditor:
   title: "ラベルの編集"
   frameThickness: "フレームの幅"
   labelThickness: "ラベルの幅"
+  labelScale: "ラベルのスケール"
   centered: "中央揃え"
   captionMain: "キャプション(大)"
   captionSub: "キャプション(小)"
