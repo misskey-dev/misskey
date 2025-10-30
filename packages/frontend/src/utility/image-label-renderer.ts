@@ -71,33 +71,33 @@ export class ImageLabelRenderer {
 	}
 
 	public async update(params: ImageLabelParams): Promise<void> {
-		let w = this.image.width;
-		let h = this.image.height;
+		let imageAreaW = this.image.width;
+		let imageAreaH = this.image.height;
 
 		if (this.renderAsPreview) {
 			const MAX_W = 1000;
 			const MAX_H = 1000;
 
-			if (w > MAX_W || h > MAX_H) {
-				const scale = Math.min(MAX_W / w, MAX_H / h);
-				w = Math.floor(w * scale);
-				h = Math.floor(h * scale);
+			if (imageAreaW > MAX_W || imageAreaH > MAX_H) {
+				const scale = Math.min(MAX_W / imageAreaW, MAX_H / imageAreaH);
+				imageAreaW = Math.floor(imageAreaW * scale);
+				imageAreaH = Math.floor(imageAreaH * scale);
 			}
 		}
 
-		const paddingBottom = Math.floor(h * params.labelThickness);
-		const renderWidth = w;
-		const renderHeight = h + paddingBottom;
+		const paddingBottom = Math.floor(imageAreaH * params.labelThickness);
+		const renderWidth = imageAreaW;
+		const renderHeight = imageAreaH + paddingBottom;
 
 		const aspectRatio = renderWidth / renderHeight;
 		const ctx = window.document.createElement('canvas').getContext('2d')!;
 		ctx.canvas.width = renderWidth;
 		ctx.canvas.height = paddingBottom;
 		const fontSize = ctx.canvas.height / 6;
-		const marginX = Math.max(fontSize * 2, (ctx.canvas.width * params.frameThickness) / aspectRatio);
+		const marginX = Math.max(fontSize * 2, (imageAreaW * params.frameThickness) / aspectRatio);
 		const withQrCode = params.withQrCode;
 		const qrSize = ctx.canvas.height * 0.6;
-		const qrMarginX = Math.max((ctx.canvas.height - qrSize) / 2, (ctx.canvas.width * params.frameThickness) / aspectRatio);
+		const qrMarginX = Math.max((ctx.canvas.height - qrSize) / 2, (imageAreaW * params.frameThickness) / aspectRatio);
 
 		ctx.fillStyle = '#ffffff';
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
