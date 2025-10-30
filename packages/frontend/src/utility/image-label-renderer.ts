@@ -116,7 +116,7 @@ export class ImageLabelRenderer {
 			labelCanvasCtx.fillText(this.interpolateText(params.title), labelCanvasCtx.canvas.width / 2, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
 		} else {
 			labelCanvasCtx.textAlign = 'left';
-			labelCanvasCtx.fillText(this.interpolateText(params.title), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : 0));
+			labelCanvasCtx.fillText(this.interpolateText(params.title), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
 		}
 
 		labelCanvasCtx.fillStyle = '#00000088';
@@ -129,7 +129,7 @@ export class ImageLabelRenderer {
 			labelCanvasCtx.fillText(this.interpolateText(params.text), labelCanvasCtx.canvas.width / 2, textY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
 		} else {
 			labelCanvasCtx.textAlign = 'left';
-			labelCanvasCtx.fillText(this.interpolateText(params.text), textsMarginLeft, textY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : 0));
+			labelCanvasCtx.fillText(this.interpolateText(params.text), textsMarginLeft, textY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
 		}
 
 		const $i = ensureSignin();
