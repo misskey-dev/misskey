@@ -577,6 +577,7 @@ export class ApRendererService {
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
+			suspended: user.isSuspended,
 		};
 
 		if (user.movedToUri) {

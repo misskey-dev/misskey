@@ -11765,6 +11765,7 @@ export interface operations {
                         isModerator: boolean;
                         isSilenced: boolean;
                         isSuspended: boolean;
+                        isRemoteSuspended: boolean;
                         isHibernated: boolean;
                         lastActiveDate: string | null;
                         moderationNote: string;

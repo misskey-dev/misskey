@@ -38,6 +38,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -74,6 +75,7 @@ export class ApPersonService implements OnModuleInit {
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
 	private accountMoveService: AccountMoveService;
+	private userSuspendService: UserSuspendService;
 	private logger: Logger;
 
 	constructor(
@@ -126,6 +128,7 @@ export class ApPersonService implements OnModuleInit {
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.accountMoveService = this.moduleRef.get('AccountMoveService');
+		this.userSuspendService = this.moduleRef.get('UserSuspendService');
 		this.logger = this.apLoggerService.logger;
 	}
 
@@ -393,6 +396,7 @@ export class ApPersonService implements OnModuleInit {
 					makeNotesFollowersOnlyBefore: (person as any).makeNotesFollowersOnlyBefore ?? null,
 					makeNotesHiddenBefore: (person as any).makeNotesHiddenBefore ?? null,
 					emojis,
+					isRemoteSuspended: person.suspended === true,
 				})) as MiRemoteUser;
 
 				let _description: string | null = null;
@@ -570,6 +574,7 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
+			isRemoteSuspended: person.suspended === true,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
@@ -597,6 +602,19 @@ export class ApPersonService implements OnModuleInit {
 		if (!(await this.usersRepository.update({ id: exist.id, isDeleted: false }, updates)).affected) {
 			return 'skip';
 		}
+
+		//#region suspend
+		if (exist.isRemoteSuspended === false && person.suspended === true) {
+			// リモートサーバーでアカウントが凍結された
+			this.logger.info(`Remote User Suspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
+			this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
+		}
+		if (exist.isRemoteSuspended === true && person.suspended === false) {
+			// リモートサーバーでアカウントが解凍された
+			this.logger.info(`Remote User Unsuspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
+			this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
+		}
+		//#endregion
 
 		if (person.publicKey) {
 			await this.userPublickeysRepository.update({ userId: exist.id }, {
