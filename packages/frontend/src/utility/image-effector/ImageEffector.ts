@@ -392,6 +392,8 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 	}
 
 	public changeResolution(width: number, height: number) {
+		if (this.renderWidth === width && this.renderHeight === height) return;
+
 		this.renderWidth = width;
 		this.renderHeight = height;
 		if (this.canvas) {
