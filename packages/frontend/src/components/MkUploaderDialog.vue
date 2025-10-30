@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { UploaderFeatures, UploaderItem } from '@/composables/use-uploader.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -89,6 +89,10 @@ const uploader = useUploader({
 
 onMounted(() => {
 	uploader.addFiles(props.files);
+});
+
+onBeforeUnmount(() => {
+	uploader.dispose();
 });
 
 const items = uploader.items;
