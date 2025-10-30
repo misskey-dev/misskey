@@ -105,6 +105,16 @@ port: 3000
 # socket: /path/to/misskey.sock
 # chmodSocket: '777'
 
+# Proxy trust settings
+#
+# Changes how the server interpret the origin IP of the request.
+#
+# Any format supported by Fastify is accepted.
+# Default: trust all proxies (i.e. trustProxy: true)
+# See: https://fastify.dev/docs/latest/reference/server/#trustproxy
+#
+# trustProxy: 1
+
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 

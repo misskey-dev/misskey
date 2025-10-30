@@ -40,46 +40,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-type ItemOption = {
+export type OptionValue = string | number | null;
+
+export type ItemOption<T extends OptionValue = OptionValue> = {
 	type?: 'option';
-	value: string | number | null;
+	value: T;
 	label: string;
 };
 
-type ItemGroup = {
+export type ItemGroup<T extends OptionValue = OptionValue> = {
 	type: 'group';
-	label: string;
-	items: ItemOption[];
+	label?: string;
+	items: ItemOption<T>[];
 };
 
-export type MkSelectItem = ItemOption | ItemGroup;
+export type MkSelectItem<T extends OptionValue = OptionValue> = ItemOption<T> | ItemGroup<T>;
 
-type ValuesOfItems<T> = T extends (infer U)[]
-	? U extends { type: 'group'; items: infer V }
-		? V extends (infer W)[]
-			? W extends { value: infer X }
-				? X
-				: never
-			: never
-		: U extends { value: infer Y }
-			? Y
-			: never
+export type GetMkSelectValueType<T extends MkSelectItem> = T extends ItemGroup
+	? T['items'][number]['value']
+	: T extends ItemOption
+		? T['value']
+		: never;
+
+export type GetMkSelectValueTypesFromDef<T extends MkSelectItem[]> = T[number] extends MkSelectItem
+	? GetMkSelectValueType<T[number]>
 	: never;
 </script>
 
-<script lang="ts" setup generic="T extends MkSelectItem[]">
-import { onMounted, nextTick, ref, watch, computed, toRefs, useSlots } from 'vue';
+<script lang="ts" setup generic="const ITEMS extends MkSelectItem[], MODELT extends OptionValue">
+import { onMounted, nextTick, ref, watch, computed, toRefs, useTemplateRef } from 'vue';
 import { useInterval } from '@@/js/use-interval.js';
-import type { VNode, VNodeChild } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 
-// TODO: itemsをslot内のoptionで指定する用法は廃止する(props.itemsを必須化する)
-// see: https://github.com/misskey-dev/misskey/issues/15558
-// あと型推論と相性が良くない
-
 const props = defineProps<{
-	modelValue: ValuesOfItems<T>;
+	items: ITEMS;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -88,23 +83,24 @@ const props = defineProps<{
 	inline?: boolean;
 	small?: boolean;
 	large?: boolean;
-	items?: T;
 }>();
 
-const emit = defineEmits<{
-	(ev: 'update:modelValue', value: ValuesOfItems<T>): void;
-}>();
+type ModelTChecked = MODELT & (
+	MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
+		? unknown
+		: 'Error: The type of model does not match the type of items.'
+);
 
-const slots = useSlots();
+const model = defineModel<ModelTChecked>({ required: true });
 
-const { modelValue, autofocus } = toRefs(props);
+const { autofocus } = toRefs(props);
 const focused = ref(false);
 const opening = ref(false);
 const currentValueText = ref<string | null>(null);
-const inputEl = ref<HTMLObjectElement | null>(null);
-const prefixEl = ref<HTMLElement | null>(null);
-const suffixEl = ref<HTMLElement | null>(null);
-const container = ref<HTMLElement | null>(null);
+const inputEl = useTemplateRef('inputEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
+const container = useTemplateRef('container');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
@@ -140,52 +136,26 @@ onMounted(() => {
 	});
 });
 
-watch([modelValue, () => props.items], () => {
-	if (props.items) {
-		let found: ItemOption | null = null;
-		for (const item of props.items) {
-			if (item.type === 'group') {
-				for (const option of item.items) {
-					if (option.value === modelValue.value) {
-						found = option;
-						break;
-					}
-				}
-			} else {
-				if (item.value === modelValue.value) {
-					found = item;
+watch([model, () => props.items], () => {
+	let found: ItemOption | null = null;
+	for (const item of props.items) {
+		if (item.type === 'group') {
+			for (const option of item.items) {
+				if (option.value === model.value) {
+					found = option;
 					break;
 				}
 			}
+		} else {
+			if (item.value === model.value) {
+				found = item;
+				break;
+			}
 		}
-		if (found) {
-			currentValueText.value = found.label;
-		}
-		return;
 	}
-
-	const scanOptions = (options: VNodeChild[]) => {
-		for (const vnode of options) {
-			if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
-			if (vnode.type === 'optgroup') {
-				const optgroup = vnode;
-				if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
-			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
-				const fragment = vnode;
-				if (Array.isArray(fragment.children)) scanOptions(fragment.children);
-			} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
-				// nop?
-			} else {
-				const option = vnode;
-				if (option.props?.value === modelValue.value) {
-					currentValueText.value = option.children as string;
-					break;
-				}
-			}
-		}
-	};
-
-	scanOptions(slots.default!());
+	if (found) {
+		currentValueText.value = found.label;
+	}
 }, { immediate: true, deep: true });
 
 function show() {
@@ -196,68 +166,32 @@ function show() {
 
 	const menu: MenuItem[] = [];
 
-	if (props.items) {
-		for (const item of props.items) {
-			if (item.type === 'group') {
+	for (const item of props.items) {
+		if (item.type === 'group') {
+			if (item.label != null) {
 				menu.push({
 					type: 'label',
 					text: item.label,
 				});
-				for (const option of item.items) {
-					menu.push({
-						text: option.label,
-						active: computed(() => modelValue.value === option.value),
-						action: () => {
-							emit('update:modelValue', option.value);
-						},
-					});
-				}
-			} else {
+			}
+			for (const option of item.items) {
 				menu.push({
-					text: item.label,
-					active: computed(() => modelValue.value === item.value),
+					text: option.label,
+					active: computed(() => model.value === option.value),
 					action: () => {
-						emit('update:modelValue', item.value);
+						model.value = option.value as ModelTChecked;
 					},
 				});
 			}
-		}
-	} else {
-		let options = slots.default!();
-
-		const pushOption = (option: VNode) => {
+		} else {
 			menu.push({
-				text: option.children as string,
-				active: computed(() => modelValue.value === option.props?.value),
+				text: item.label,
+				active: computed(() => model.value === item.value),
 				action: () => {
-					emit('update:modelValue', option.props?.value);
+					model.value = item.value as ModelTChecked;
 				},
 			});
-		};
-
-		const scanOptions = (options: VNodeChild[]) => {
-			for (const vnode of options) {
-				if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
-				if (vnode.type === 'optgroup') {
-					const optgroup = vnode;
-					menu.push({
-						type: 'label',
-						text: optgroup.props?.label,
-					});
-					if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
-				} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
-					const fragment = vnode;
-					if (Array.isArray(fragment.children)) scanOptions(fragment.children);
-				} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
-					// nop?
-				} else {
-					const option = vnode;
-					pushOption(option);
-				}
-			}
-		};
-
-		scanOptions(options);
+		}
 	}
 
 	os.popupMenu(menu, container.value, {

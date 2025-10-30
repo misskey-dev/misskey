@@ -5,16 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="selectedThemeId">
+	<MkSelect v-model="selectedThemeId" :items="selectedThemeIdDef">
 		<template #label>{{ i18n.ts.theme }}</template>
-		<optgroup :label="i18n.ts._theme.installedThemes">
-			<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="i18n.ts._theme.builtinThemes">
-			<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-		</optgroup>
 	</MkSelect>
-	<template v-if="selectedTheme">
+	<template v-if="selectedTheme != null">
 		<MkInput readonly :modelValue="selectedTheme.author">
 			<template #label>{{ i18n.ts.author }}</template>
 		</MkInput>
@@ -43,10 +37,26 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
-const selectedThemeId = ref<string | null>(null);
+const {
+	model: selectedThemeId,
+	def: selectedThemeIdDef,
+} = useMkSelect({
+	items: computed<MkSelectItem<string | null>[]>(() => [{
+		type: 'group',
+		label: i18n.ts._theme.installedThemes,
+		items: installedThemes.value.map(x => ({ label: x.name, value: x.id })),
+	}, {
+		type: 'group',
+		label: i18n.ts._theme.builtinThemes,
+		items: builtinThemes.value.map(x => ({ label: x.name, value: x.id })),
+	}]),
+	initialValue: null,
+});
 
 const themes = computed(() => [...installedThemes.value, ...builtinThemes.value]);
 

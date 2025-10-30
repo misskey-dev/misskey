@@ -30,19 +30,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._role.descriptionOfDisplayOrder }}</template>
 	</MkInput>
 
-	<MkSelect v-model="rolePermission" :readonly="readonly">
+	<MkSelect v-model="rolePermission" :items="rolePermissionDef" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
-		<option value="normal">{{ i18n.ts.normalUser }}</option>
-		<option value="moderator">{{ i18n.ts.moderator }}</option>
-		<option value="administrator">{{ i18n.ts.administrator }}</option>
 	</MkSelect>
 
-	<MkSelect v-model="role.target" :readonly="readonly">
+	<MkSelect v-model="role.target" :items="[{ label: i18n.ts._role.manual, value: 'manual' }, { label: i18n.ts._role.conditional, value: 'conditional' }]" :readonly="readonly">
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._role.assignTarget }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
-		<option value="manual">{{ i18n.ts._role.manual }}</option>
-		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
 	</MkSelect>
 
 	<MkFolder v-if="role.target === 'conditional'" defaultOpen>
@@ -176,11 +171,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.chatAvailability.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSelect v-model="role.policies.chatAvailability.value" :disabled="role.policies.chatAvailability.useDefault" :readonly="readonly">
+					<MkSelect
+						v-model="role.policies.chatAvailability.value"
+						:items="[
+							{ label: i18n.ts.enabled, value: 'available' },
+							{ label: i18n.ts.readonly, value: 'readonly' },
+							{ label: i18n.ts.disabled, value: 'unavailable' },
+						]"
+						:disabled="role.policies.chatAvailability.useDefault"
+						:readonly="readonly"
+					>
 						<template #label>{{ i18n.ts.enable }}</template>
-						<option value="available">{{ i18n.ts.enabled }}</option>
-						<option value="readonly">{{ i18n.ts.readonly }}</option>
-						<option value="unavailable">{{ i18n.ts.disabled }}</option>
 					</MkSelect>
 					<MkRange v-model="role.policies.chatAvailability.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -419,6 +420,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 					<MkInput v-model="role.policies.maxFileSizeMb.value" :disabled="role.policies.maxFileSizeMb.useDefault" type="number" :readonly="readonly">
 						<template #suffix>MB</template>
+						<template #caption>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._role._options.maxFileSize_caption }}</div>
+						</template>
 					</MkInput>
 					<MkRange v-model="role.policies.maxFileSizeMb.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -801,6 +805,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.scheduledNoteLimit, 'scheduledNoteLimit'])">
+				<template #label>{{ i18n.ts._role._options.scheduledNoteLimit }}</template>
+				<template #suffix>
+					<span v-if="role.policies.scheduledNoteLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.scheduledNoteLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.scheduledNoteLimit)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.scheduledNoteLimit.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="role.policies.scheduledNoteLimit.value" :disabled="role.policies.scheduledNoteLimit.useDefault" type="number" :readonly="readonly">
+					</MkInput>
+					<MkRange v-model="role.policies.scheduledNoteLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.watermarkAvailable, 'watermarkAvailable'])">
 				<template #label>{{ i18n.ts._role._options.watermarkAvailable }}</template>
 				<template #suffix>
@@ -830,7 +853,7 @@ import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import * as Misskey from 'misskey-js';
 import RolesEditorFormula from './RolesEditorFormula.vue';
-import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
+import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -871,11 +894,17 @@ function updateAvatarDecorationLimit(value: string | number) {
 	role.value.policies.avatarDecorationLimit.value = limited;
 }
 
-const rolePermission = computed({
+const rolePermissionDef = [
+	{ label: i18n.ts.normalUser, value: 'normal' },
+	{ label: i18n.ts.moderator, value: 'moderator' },
+	{ label: i18n.ts.administrator, value: 'administrator' },
+] as const satisfies MkSelectItem[];
+
+const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissionDef>>({
 	get: () => role.value.isAdministrator ? 'administrator' : role.value.isModerator ? 'moderator' : 'normal',
 	set: (val) => {
-		role.value.isAdministrator = val === 'administrator';
-		role.value.isModerator = val === 'moderator';
+		role.value.isAdministrator = (val === 'administrator');
+		role.value.isModerator = (val === 'moderator');
 	},
 });
 

@@ -6,15 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root]">
 	<div :class="$style.items">
-		<button class="_button" :class="[$style.item, x === 'left' && y === 'top' ? $style.active : null]" @click="() => { x = 'left'; y = 'top'; }"><i class="ti ti-align-box-left-top"></i></button>
-		<button class="_button" :class="[$style.item, x === 'center' && y === 'top' ? $style.active : null]" @click="() => { x = 'center'; y = 'top'; }"><i class="ti ti-align-box-center-top"></i></button>
-		<button class="_button" :class="[$style.item, x === 'right' && y === 'top' ? $style.active : null]" @click="() => { x = 'right'; y = 'top'; }"><i class="ti ti-align-box-right-top"></i></button>
-		<button class="_button" :class="[$style.item, x === 'left' && y === 'center' ? $style.active : null]" @click="() => { x = 'left'; y = 'center'; }"><i class="ti ti-align-box-left-middle"></i></button>
-		<button class="_button" :class="[$style.item, x === 'center' && y === 'center' ? $style.active : null]" @click="() => { x = 'center'; y = 'center'; }"><i class="ti ti-align-box-center-middle"></i></button>
-		<button class="_button" :class="[$style.item, x === 'right' && y === 'center' ? $style.active : null]" @click="() => { x = 'right'; y = 'center'; }"><i class="ti ti-align-box-right-middle"></i></button>
-		<button class="_button" :class="[$style.item, x === 'left' && y === 'bottom' ? $style.active : null]" @click="() => { x = 'left'; y = 'bottom'; }"><i class="ti ti-align-box-left-bottom"></i></button>
-		<button class="_button" :class="[$style.item, x === 'center' && y === 'bottom' ? $style.active : null]" @click="() => { x = 'center'; y = 'bottom'; }"><i class="ti ti-align-box-center-bottom"></i></button>
-		<button class="_button" :class="[$style.item, x === 'right' && y === 'bottom' ? $style.active : null]" @click="() => { x = 'right'; y = 'bottom'; }"><i class="ti ti-align-box-right-bottom"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'left' && y === 'top' ? $style.active : null]" @click="() => { x = 'left'; y = 'top'; }"><i class="ti ti-arrow-up-left"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'center' && y === 'top' ? $style.active : null]" @click="() => { x = 'center'; y = 'top'; }"><i class="ti ti-arrow-up"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'right' && y === 'top' ? $style.active : null]" @click="() => { x = 'right'; y = 'top'; }"><i class="ti ti-arrow-up-right"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'left' && y === 'center' ? $style.active : null]" @click="() => { x = 'left'; y = 'center'; }"><i class="ti ti-arrow-left"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'center' && y === 'center' ? $style.active : null]" @click="() => { x = 'center'; y = 'center'; }"><i class="ti ti-focus-2"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'right' && y === 'center' ? $style.active : null]" @click="() => { x = 'right'; y = 'center'; }"><i class="ti ti-arrow-right"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'left' && y === 'bottom' ? $style.active : null]" @click="() => { x = 'left'; y = 'bottom'; }"><i class="ti ti-arrow-down-left"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'center' && y === 'bottom' ? $style.active : null]" @click="() => { x = 'center'; y = 'bottom'; }"><i class="ti ti-arrow-down"></i></button>
+		<button v-panel class="_button" :class="[$style.item, x === 'right' && y === 'bottom' ? $style.active : null]" @click="() => { x = 'right'; y = 'bottom'; }"><i class="ti ti-arrow-down-right"></i></button>
 	</div>
 </div>
 </template>
