@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<header :class="$style.header">
 		<div :class="$style.headerLeft">
 			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-			<button v-click-anime v-tooltip="i18n.ts.account" :class="$style.account" class="_button" @click="openAccountMenu">
+			<button ref="accountMenuEl" v-click-anime v-tooltip="i18n.ts.account" :class="$style.account" class="_button" @click="openAccountMenu">
 				<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
 			</button>
 		</div>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
 			<button ref="otherSettingsButton" v-tooltip="i18n.ts.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>
-			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+			<button ref="submitButtonEl" v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
@@ -60,6 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
+	<MkInfo v-if="!store.s.tips.postForm"><button class="_textButton" @click="showTour">show tour</button></MkInfo>
 	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">
 		<I18n :src="i18n.ts.scheduleToPostOnX" tag="span">
 			<template #x>
@@ -89,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
-	<footer :class="$style.footer">
+	<footer ref="footerEl" :class="$style.footer">
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
@@ -153,6 +154,8 @@ import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 import { useUploader } from '@/composables/use-uploader.js';
+import { startTour } from '@/utility/tour.js';
+import { closeTip } from '@/tips.js';
 
 const $i = ensureSignin();
 
@@ -186,6 +189,9 @@ const cwInputEl = useTemplateRef('cwInputEl');
 const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
 const visibilityButton = useTemplateRef('visibilityButton');
 const otherSettingsButton = useTemplateRef('otherSettingsButton');
+const accountMenuEl = useTemplateRef('accountMenuEl');
+const footerEl = useTemplateRef('footerEl');
+const submitButtonEl = useTemplateRef('submitButtonEl');
 
 const posting = ref(false);
 const posted = ref(false);
@@ -1285,6 +1291,36 @@ function cancelSchedule() {
 	scheduledAt.value = null;
 }
 
+function showTour() {
+	startTour([{
+		element: textareaEl.value,
+		title: '本文',
+		description: '投稿する内容を入力します。',
+	}, {
+		element: footerEl.value,
+		title: 'ツールバー',
+		description: 'ファイルやアンケートの添付、注釈やハッシュタグの設定、絵文字やメンションの挿入などが可能です。',
+	}, {
+		element: accountMenuEl.value,
+		title: 'アカウントメニュー',
+		description: '投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。',
+	}, {
+		element: visibilityButton.value,
+		title: '公開範囲',
+		description: 'ノートを公開する範囲の設定が行えます。',
+	}, {
+		element: otherSettingsButton.value,
+		title: 'その他',
+		description: '下書きへの保存、投稿の予約、リアクションの設定など、その他のアクションが行えます。',
+	}, {
+		element: submitButtonEl.value,
+		title: '投稿ボタン',
+		description: 'ノートを投稿します。Ctrl + Enter / Cmd + Enter でも投稿できます。',
+	}]).then(() => {
+		closeTip('postForm');
+	});
+}
+
 onMounted(() => {
 	if (props.autofocus) {
 		focus();
@@ -1414,6 +1450,7 @@ defineExpose({
 }
 
 .avatar {
+	display: block;
 	width: 28px;
 	height: 28px;
 	margin: auto;
