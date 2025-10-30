@@ -199,10 +199,9 @@ export class WatermarkRenderer {
 		});
 	}
 
-	public async setLayers(layers: WatermarkPreset['layers']) {
+	public async setLayersAndRender(layers: WatermarkPreset['layers']) {
 		this.layers = layers;
-		await this.effector.setLayers(this.makeImageEffectorLayers());
-		this.render();
+		await this.effector.setLayersAndRender(this.makeImageEffectorLayers());
 	}
 
 	public render(): void {

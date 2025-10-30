@@ -558,9 +558,7 @@ export function useUploader(options: {
 				image: imageBitmap,
 			});
 
-			await renderer.setLayers(preset.layers);
-
-			renderer.render();
+			await renderer.setLayersAndRender(preset.layers);
 
 			preprocessedFile = await new Promise<Blob>((resolve) => {
 				canvas.toBlob((blob) => {

@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
 						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
 						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
+						<button class="_button" :class="[$style.previewControlsButton]" @click="choiceImage"><i class="ti ti-upload"></i></button>
 					</div>
 				</div>
 			</div>
@@ -192,7 +193,7 @@ async function cancel() {
 
 watch(preset, async (newValue, oldValue) => {
 	if (renderer != null) {
-		renderer.setLayers(preset.layers);
+		renderer.setLayersAndRender(preset.layers);
 	}
 }, { deep: true });
 
@@ -212,12 +213,27 @@ const sampleImage_2_3_loading = new Promise<void>(resolve => {
 
 const sampleImageType = ref(props.image != null ? 'provided' : '3_2');
 watch(sampleImageType, async () => {
+	if (sampleImageType.value === 'provided') return;
 	if (renderer != null) {
 		renderer.destroy(false);
 		renderer = null;
 		initRenderer();
 	}
 });
+
+let imageFile = props.image;
+
+async function choiceImage() {
+	const files = await os.chooseFileFromPc({ multiple: false });
+	if (files.length === 0) return;
+	imageFile = files[0];
+	sampleImageType.value = 'provided';
+	if (renderer != null) {
+		renderer.destroy(false);
+		renderer = null;
+		initRenderer();
+	}
+}
 
 let renderer: WatermarkRenderer | null = null;
 let imageBitmap: ImageBitmap | null = null;
@@ -239,8 +255,8 @@ async function initRenderer() {
 			renderHeight: 1500,
 			image: sampleImage_2_3,
 		});
-	} else if (props.image != null) {
-		imageBitmap = await window.createImageBitmap(props.image);
+	} else if (imageFile != null) {
+		imageBitmap = await window.createImageBitmap(imageFile);
 
 		const MAX_W = 1000;
 		const MAX_H = 1000;
@@ -261,9 +277,7 @@ async function initRenderer() {
 		});
 	}
 
-	await renderer!.setLayers(preset.layers);
-
-	renderer!.render();
+	await renderer!.setLayersAndRender(preset.layers);
 }
 
 onMounted(async () => {

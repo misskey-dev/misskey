@@ -94,7 +94,7 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		renderer.setLayers(layers);
+		renderer.setLayersAndRender(layers);
 	}
 }, { deep: true });
 
@@ -167,9 +167,7 @@ onMounted(async () => {
 		fxs: FXS,
 	});
 
-	await renderer.setLayers(layers);
-
-	renderer.render();
+	await renderer.setLayersAndRender(layers);
 
 	closeWaiting();
 });
@@ -208,11 +206,10 @@ const enabled = ref(true);
 watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			renderer.setLayers(layers);
+			renderer.setLayersAndRender(layers);
 		} else {
-			renderer.setLayers([]);
+			renderer.setLayersAndRender([]);
 		}
-		renderer.render();
 	}
 });
 

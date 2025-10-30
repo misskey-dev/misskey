@@ -327,7 +327,7 @@ export class ImageEffector<IEX extends ReadonlyArray<ImageEffectorFx<any, any, a
 		}
 	}
 
-	public async setLayers(layers: ImageEffectorLayer[]) {
+	public async setLayersAndRender(layers: ImageEffectorLayer[]) {
 		this.layers = layers;
 
 		const unused = new Set(this.paramTextures.keys());

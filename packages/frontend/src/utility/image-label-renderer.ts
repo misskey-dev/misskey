@@ -24,6 +24,9 @@ export type ImageLabelParams = {
 	text: string;
 	centered: boolean;
 	withQrCode: boolean;
+	bgColor: [r: number, g: number, b: number];
+	fgColor: [r: number, g: number, b: number];
+	borderRadius: number; // TODO
 };
 
 export class ImageLabelRenderer {
@@ -192,7 +195,7 @@ export class ImageLabelRenderer {
 
 		this.effector.changeResolution(renderWidth, renderHeight);
 
-		await this.effector.setLayers([{
+		await this.effector.setLayersAndRender([{
 			fxId: 'label',
 			id: 'a',
 			params: {
