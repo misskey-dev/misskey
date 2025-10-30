@@ -584,7 +584,7 @@ export function useUploader(options: {
 		//	title: `${meta_model} + ${meta_lensModel}`,
 		//	text: `${date}   ${meta_mm}mm   f/${meta_f}   ${meta_s}s   ISO${meta_iso}`,
 		//});
-		await labelRenderer.update({
+		await labelRenderer.updateAndRender({
 			title: 'aaaaaaaaaaaaa',
 			text: 'bbbbbbbbbbbbbbbbbbbb',
 		});

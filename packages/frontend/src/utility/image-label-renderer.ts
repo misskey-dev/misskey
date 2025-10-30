@@ -74,7 +74,7 @@ export class ImageLabelRenderer {
 		});
 	}
 
-	public async update(params: ImageLabelParams): Promise<void> {
+	public async updateAndRender(params: ImageLabelParams): Promise<void> {
 		let imageAreaW = this.image.width;
 		let imageAreaH = this.image.height;
 
