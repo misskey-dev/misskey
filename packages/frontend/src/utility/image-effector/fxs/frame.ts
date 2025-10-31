@@ -4,7 +4,7 @@
  */
 
 import { defineImageEffectorFx } from '../ImageEffector.js';
-import shader from './label.glsl';
+import shader from './frame.glsl';
 
 export const FX_frame = defineImageEffectorFx({
 	id: 'frame',

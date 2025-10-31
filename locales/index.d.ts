@@ -5605,13 +5605,17 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * フレーム
+     */
+    "frame": string;
     "_imageFrameEditor": {
         /**
-         * ラベルの編集
+         * フレームの編集
          */
         "title": string;
         /**
-         * フレームの幅
+         * フチの幅
          */
         "borderThickness": string;
         /**

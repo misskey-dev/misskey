@@ -575,21 +575,21 @@ export function useUploader(options: {
 
 		const exif = await ExifReader.load(await item.file.arrayBuffer());
 
-		const labelRenderer = new ImageFrameRenderer({
+		const frameRenderer = new ImageFrameRenderer({
 			canvas: canvas,
 			image: await window.createImageBitmap(preprocessedFile),
 			exif,
 		});
-		//await labelRenderer.update({
+		//await frameRenderer.update({
 		//	title: `${meta_model} + ${meta_lensModel}`,
 		//	text: `${date}   ${meta_mm}mm   f/${meta_f}   ${meta_s}s   ISO${meta_iso}`,
 		//});
-		await labelRenderer.updateAndRender({
+		await frameRenderer.updateAndRender({
 			title: 'aaaaaaaaaaaaa',
 			text: 'bbbbbbbbbbbbbbbbbbbb',
 		});
 
-		labelRenderer.render();
+		frameRenderer.render();
 
 		preprocessedFile = await new Promise<Blob>((resolve) => {
 			canvas.toBlob((blob) => {
@@ -597,7 +597,7 @@ export function useUploader(options: {
 					throw new Error('Failed to convert canvas to blob');
 				}
 				resolve(blob);
-				labelRenderer.destroy();
+				frameRenderer.destroy();
 			}, 'image/png');
 		});
 

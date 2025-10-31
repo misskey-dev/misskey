@@ -346,7 +346,7 @@ async function addImageFramePreset() {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
 	}, {
 		ok: (preset: any) => {
-			//prefer.commit('imageLabelPresets', [...prefer.s.imageLabelPresets, preset]);
+			//prefer.commit('imageFramePresets', [...prefer.s.imageFramePresets, preset]);
 		},
 		closed: () => dispose(),
 	});
