@@ -12,7 +12,7 @@ services:
       retries: 20
 
   misskey:
-    image: node:20
+    image: node:${NODE_VERSION}
     env_file:
       - ./.config/docker.env
     environment:
@@ -75,8 +75,8 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
-        source: ../../../scripts/dependency-patches
-        target: /misskey/scripts/dependency-patches
+        source: ../../../patches
+        target: /misskey/patches
         read_only: true
       - type: bind
         source: ./certificates/rootCA.crt

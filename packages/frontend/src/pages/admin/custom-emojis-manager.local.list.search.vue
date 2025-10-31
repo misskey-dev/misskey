@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-search" style="margin-right: 0.5em;"></i> {{ i18n.ts.search }}
 	</template>
 	<div :class="$style.root">
-		<MkSpacer>
+		<div class="_spacer">
 			<div class="_gaps">
 				<div class="_gaps_s">
 					<MkInput
@@ -56,20 +56,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkSelect
 						v-model="model.sensitive"
+						:items="[
+							{ label: '-', value: null },
+							{ label: 'true', value: 'true' },
+							{ label: 'false', value: 'false' },
+						]"
 					>
 						<template #label>sensitive</template>
-						<option :value="null">-</option>
-						<option :value="true">true</option>
-						<option :value="false">false</option>
 					</MkSelect>
 
 					<MkSelect
 						v-model="model.localOnly"
+						:items="[
+							{ label: '-', value: null },
+							{ label: 'true', value: 'true' },
+							{ label: 'false', value: 'false' },
+						]"
 					>
 						<template #label>localOnly</template>
-						<option :value="null">-</option>
-						<option :value="true">true</option>
-						<option :value="false">false</option>
 					</MkSelect>
 					<MkInput
 						v-model="model.updatedAtFrom"
@@ -107,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</MkFolder>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footerActions">
 			<MkButton primary @click="onSearchRequest">
 				{{ i18n.ts.search }}

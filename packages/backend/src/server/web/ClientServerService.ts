@@ -20,17 +20,6 @@ import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
-import type {
-	DbQueue,
-	DeliverQueue,
-	EndedPollNotificationQueue,
-	InboxQueue,
-	ObjectStorageQueue,
-	RelationshipQueue,
-	SystemQueue,
-	UserWebhookDeliverQueue,
-	SystemWebhookDeliverQueue,
-} from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
@@ -129,16 +118,6 @@ export class ClientServerService {
 		private feedService: FeedService,
 		private roleService: RoleService,
 		private clientLoggerService: ClientLoggerService,
-
-		@Inject('queue:system') public systemQueue: SystemQueue,
-		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
-		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
-		@Inject('queue:inbox') public inboxQueue: InboxQueue,
-		@Inject('queue:db') public dbQueue: DbQueue,
-		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
-		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
-		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
-		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -188,6 +167,10 @@ export class ClientServerService {
 					'url': 'url',
 				},
 			},
+			'shortcuts': [{
+				'name': 'Safemode',
+				'url': '/?safemode=true',
+			}],
 		};
 
 		manifest = {
@@ -212,11 +195,14 @@ export class ClientServerService {
 			instanceUrl: this.config.url,
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(meta)),
 			now: Date.now(),
+			federationEnabled: this.meta.federation !== 'none',
 		};
 	}
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+		const configUrl = new URL(this.config.url);
+
 		fastify.register(fastifyView, {
 			root: _dirname + '/views',
 			engine: {
@@ -255,7 +241,6 @@ export class ClientServerService {
 				done();
 			});
 		} else {
-			const configUrl = new URL(this.config.url);
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -513,7 +498,12 @@ export class ClientServerService {
 
 			vary(reply.raw, 'Accept');
 
-			if (user != null) {
+			if (
+				user != null && (
+					this.meta.ugcVisibilityForVisitor === 'all' ||
+						(this.meta.ugcVisibilityForVisitor === 'local' && user.host == null)
+				)
+			) {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 				const me = profile.fields
 					? profile.fields
@@ -534,7 +524,7 @@ export class ClientServerService {
 
 				return await reply.view('user', {
 					user, profile, me,
-					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
+					avatarUrl: _user.avatarUrl,
 					sub: request.params.sub,
 					...await this.generateCommonPugData(this.meta),
 					clientCtx: htmlSafeJsonStringify({
@@ -574,10 +564,16 @@ export class ClientServerService {
 					id: request.params.note,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user'],
+				relations: ['user', 'reply', 'renote'],
 			});
 
-			if (note && !note.user!.requireSigninToViewContents) {
+			if (
+				note &&
+				!note.user!.requireSigninToViewContents &&
+				(this.meta.ugcVisibilityForVisitor === 'all' ||
+					(this.meta.ugcVisibilityForVisitor === 'local' && note.userHost == null)
+				)
+			) {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				reply.header('Cache-Control', 'public, max-age=15');
@@ -809,8 +805,11 @@ export class ClientServerService {
 		fastify.get<{ Params: { note: string; } }>('/embed/notes/:note', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+				},
+				relations: ['user', 'reply', 'renote'],
 			});
 
 			if (note == null) return;
@@ -889,6 +888,22 @@ export class ClientServerService {
 			[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
 		fastify.get('/flush', async (request, reply) => {
+			let sendHeader = true;
+
+			if (request.headers['origin']) {
+				const originURL = new URL(request.headers['origin']);
+				if (originURL.protocol !== 'https:') { // Clear-Site-Data only supports https
+					sendHeader = false;
+				}
+				if (originURL.host !== configUrl.host) {
+					sendHeader = false;
+				}
+			}
+
+			if (sendHeader) {
+				reply.header('Clear-Site-Data', '"*"');
+			}
+			reply.header('Set-Cookie', 'http-flush-failed=1; Path=/flush; Max-Age=60');
 			return await reply.view('flush');
 		});
 

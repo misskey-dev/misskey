@@ -199,8 +199,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}));
 
 		this.queryService.generateVisibilityQuery(query, me);
-		this.queryService.generateMutedUserQueryForNotes(query, me);
-		this.queryService.generateBlockedUserQueryForNotes(query, me);
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
 		this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 		if (ps.includeMyRenotes === false) {
@@ -238,7 +237,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		if (ps.withRenotes === false) {
-			query.andWhere('note.renoteId IS NULL');
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.renoteId IS NULL');
+				qb.orWhere(new Brackets(qb => {
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}));
 		}
 		//#endregion
 

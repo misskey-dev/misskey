@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="1200">
+	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<MkAchievements :user="$i"/>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -16,8 +16,10 @@ import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import MkAchievements from '@/components/MkAchievements.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { claimAchievement } from '@/utility/achievements.js';
+
+const $i = ensureSignin();
 
 let timer: number | null;
 

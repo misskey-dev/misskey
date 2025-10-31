@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { CustomEmojiService, fetchEmojisHostTypes, fetchEmojisSortKeys } from '@/core/CustomEmojiService.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -65,6 +66,8 @@ export const paramDef = {
 		},
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		page: { type: 'integer' },
 		sortKeys: {
@@ -84,8 +87,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private customEmojiService: CustomEmojiService,
 		private emojiEntityService: EmojiEntityService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : undefined);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : undefined);
+
 			const q = ps.query;
 			const result = await this.customEmojiService.fetchEmojis(
 				{
@@ -105,8 +112,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						hostType: q?.hostType,
 						roleIds: q?.roleIds,
 					},
-					sinceId: ps.sinceId,
-					untilId: ps.untilId,
+					sinceId: sinceId,
+					untilId: untilId,
 				},
 				{
 					limit: ps.limit,

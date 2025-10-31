@@ -19,7 +19,6 @@ html(class='embed')
 		meta(name='format-detection' content='telephone=no,date=no,address=no,email=no,url=no')
 		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='apple-touch-icon' href= appleTouchIcon || '/apple-touch-icon.png')
-		link(rel='modulepreload' href=`/embed_vite/${entry.file}`)
 
 		if !config.frontendEmbedManifestExists
 				script(type="module" src="/embed_vite/@vite/client")
@@ -40,7 +39,7 @@ html(class='embed')
 
 		script.
 			var VERSION = "#{version}";
-			var CLIENT_ENTRY = "#{entry.file}";
+			var CLIENT_ENTRY = !{JSON.stringify(entry.file)};
 
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson

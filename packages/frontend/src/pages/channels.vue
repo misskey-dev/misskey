@@ -4,62 +4,60 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="1200">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'search'" :class="$style.searchRoot">
-				<div class="_gaps">
-					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
-						<template #prefix><i class="ti ti-search"></i></template>
-					</MkInput>
-					<MkRadios v-model="searchType" @update:modelValue="search()">
-						<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
-						<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
-					</MkRadios>
-					<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
-				</div>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
+		<div v-if="tab === 'search'" :class="$style.searchRoot">
+			<div class="_gaps">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
+				<MkRadios v-model="searchType" @update:modelValue="search()">
+					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
+					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
+				</MkRadios>
+				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+			</div>
 
-				<MkFoldableSection v-if="channelPagination">
-					<template #header>{{ i18n.ts.searchResult }}</template>
-					<MkChannelList :key="key" :pagination="channelPagination"/>
-				</MkFoldableSection>
-			</div>
-			<div v-if="tab === 'featured'">
-				<MkPagination v-slot="{items}" :pagination="featuredPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'favorites'">
-				<MkPagination v-slot="{items}" :pagination="favoritesPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'following'">
-				<MkPagination v-slot="{items}" :pagination="followingPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'owned'">
-				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-				<MkPagination v-slot="{items}" :pagination="ownedPagination">
-					<div :class="$style.root">
-						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
-					</div>
-				</MkPagination>
-			</div>
-		</MkHorizontalSwipe>
-	</MkSpacer>
+			<MkFoldableSection v-if="channelPaginator">
+				<template #header>{{ i18n.ts.searchResult }}</template>
+				<MkChannelList :key="key" :paginator="channelPaginator"/>
+			</MkFoldableSection>
+		</div>
+		<div v-if="tab === 'featured'">
+			<MkPagination v-slot="{items}" :paginator="featuredPaginator">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'favorites'">
+			<MkPagination v-slot="{items}" :paginator="favoritesPaginator">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'following'">
+			<MkPagination v-slot="{items}" :paginator="followingPaginator">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'owned'">
+			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
+				<div :class="$style.root">
+					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+				</div>
+			</MkPagination>
+		</div>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -67,10 +65,10 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -83,31 +81,27 @@ const key = ref('');
 const tab = ref('featured');
 const searchQuery = ref('');
 const searchType = ref('nameAndDescription');
-const channelPagination = ref();
+const channelPaginator = shallowRef();
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';
 	searchType.value = props.type ?? 'nameAndDescription';
 });
 
-const featuredPagination = {
-	endpoint: 'channels/featured' as const,
+const featuredPaginator = markRaw(new Paginator('channels/featured', {
 	limit: 10,
 	noPaging: true,
-};
-const favoritesPagination = {
-	endpoint: 'channels/my-favorites' as const,
+}));
+const favoritesPaginator = markRaw(new Paginator('channels/my-favorites', {
 	limit: 100,
 	noPaging: true,
-};
-const followingPagination = {
-	endpoint: 'channels/followed' as const,
+}));
+const followingPaginator = markRaw(new Paginator('channels/followed', {
 	limit: 10,
-};
-const ownedPagination = {
-	endpoint: 'channels/owned' as const,
+}));
+const ownedPaginator = markRaw(new Paginator('channels/owned', {
 	limit: 10,
-};
+}));
 
 async function search() {
 	const query = searchQuery.value.toString().trim();
@@ -116,14 +110,18 @@ async function search() {
 
 	const type = searchType.value.toString().trim();
 
-	channelPagination.value = {
-		endpoint: 'channels/search',
+	if (type !== 'nameAndDescription' && type !== 'nameOnly') {
+		console.error(`Unrecognized search type: ${type}`);
+		return;
+	}
+
+	channelPaginator.value = markRaw(new Paginator('channels/search', {
 		limit: 10,
 		params: {
 			query: searchQuery.value,
 			type: type,
 		},
-	};
+	}));
 
 	key.value = query + type;
 }

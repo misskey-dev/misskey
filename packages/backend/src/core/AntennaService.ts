@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { In } from 'typeorm';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -217,6 +218,41 @@ export class AntennaService implements OnApplicationShutdown {
 		}
 
 		return this.antennas;
+	}
+
+	@bindThis
+	public async onMoveAccount(src: MiUser, dst: MiUser): Promise<void> {
+		// There is a possibility for users to add the srcUser to their antennas, but it's low, so we don't check it.
+
+		// Get MiAntenna[] from cache and filter to select antennas with the src user is in the users list
+		const srcUserAcct = this.utilityService.getFullApAccount(src.username, src.host).toLowerCase();
+		const antennasToMigrate = (await this.getAntennas()).filter(antenna => {
+			return antenna.users.some(user => {
+				const { username, host } = Acct.parse(user);
+				return this.utilityService.getFullApAccount(username, host).toLowerCase() === srcUserAcct;
+			});
+		});
+
+		if (antennasToMigrate.length === 0) return;
+
+		const antennaIds = antennasToMigrate.map(x => x.id);
+
+		// Update the antennas by appending dst users acct to the users list
+		const dstUserAcct = '@' + Acct.toString({ username: dst.username, host: dst.host });
+
+		await this.antennasRepository.createQueryBuilder('antenna')
+			.update()
+			.set({
+				users: () => 'array_append(antenna.users, :dstUserAcct)',
+			})
+			.where('antenna.id IN (:...antennaIds)', { antennaIds })
+			.setParameters({ dstUserAcct })
+			.execute();
+
+		// announce update to event
+		for (const newAntenna of await this.antennasRepository.findBy({ id: In(antennaIds) })) {
+			this.globalEventService.publishInternalEvent('antennaUpdated', newAntenna);
+		}
 	}
 
 	@bindThis

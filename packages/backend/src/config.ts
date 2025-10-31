@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
+import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { RedisOptions } from 'ioredis';
@@ -27,6 +28,7 @@ type Source = {
 	url?: string;
 	port?: number;
 	socket?: string;
+	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
 	disableHsts?: boolean;
 	db: {
@@ -79,7 +81,6 @@ type Source = {
 	proxyBypassHosts?: string[];
 
 	allowedPrivateNetworks?: string[];
-	disallowExternalApRedirect?: boolean;
 
 	maxFileSize?: number;
 
@@ -103,10 +104,7 @@ type Source = {
 	inboxJobMaxAttempts?: number;
 
 	mediaProxy?: string;
-	proxyRemoteFiles?: boolean;
 	videoThumbnailGenerator?: string;
-
-	signToActivityPubGet?: boolean;
 
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
@@ -125,6 +123,7 @@ export type Config = {
 	url: string;
 	port: number;
 	socket: string | undefined;
+	trustProxy: FastifyServerOptions['trustProxy'];
 	chmodSocket: string | undefined;
 	disableHsts: boolean | undefined;
 	db: {
@@ -159,7 +158,6 @@ export type Config = {
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
 	allowedPrivateNetworks: string[] | undefined;
-	disallowExternalApRedirect: boolean;
 	maxFileSize: number;
 	clusterLimit: number | undefined;
 	cluster?: {
@@ -176,8 +174,6 @@ export type Config = {
 	relationshipJobPerSec: number | undefined;
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
-	proxyRemoteFiles: boolean | undefined;
-	signToActivityPubGet: boolean | undefined;
 	logging?: {
 		sql?: {
 			disableQueryTruncation?: boolean,
@@ -197,9 +193,9 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	frontendEntry: string;
+	frontendEntry: { file: string | null };
 	frontendManifestExists: boolean;
-	frontendEmbedEntry: string;
+	frontendEmbedEntry: { file: string | null };
 	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
@@ -242,7 +238,7 @@ const dir = `${_dirname}/../../../.config`;
 /**
  * Path of configuration file
  */
-const path = process.env.MISSKEY_CONFIG_YML
+export const path = process.env.MISSKEY_CONFIG_YML
 	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
 	: process.env.NODE_ENV === 'test'
 		? resolve(dir, 'test.yml')
@@ -255,10 +251,10 @@ export function loadConfig(): Config {
 	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
 	const frontendManifest = frontendManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
-		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
+		: { 'src/_boot_.ts': { file: null } };
 	const frontendEmbedManifest = frontendEmbedManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
-		: { 'src/boot.ts': { file: 'src/boot.ts' } };
+		: { 'src/boot.ts': { file: null } };
 
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
@@ -286,6 +282,7 @@ export function loadConfig(): Config {
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,
+		trustProxy: config.trustProxy,
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
 		host,
@@ -313,7 +310,6 @@ export function loadConfig(): Config {
 		proxySmtp: config.proxySmtp,
 		proxyBypassHosts: config.proxyBypassHosts,
 		allowedPrivateNetworks: config.allowedPrivateNetworks,
-		disallowExternalApRedirect: config.disallowExternalApRedirect ?? false,
 		maxFileSize: config.maxFileSize ?? 262144000,
 		clusterLimit: config.clusterLimit,
 		cluster: config.cluster,
@@ -327,8 +323,6 @@ export function loadConfig(): Config {
 		relationshipJobPerSec: config.relationshipJobPerSec,
 		deliverJobMaxAttempts: config.deliverJobMaxAttempts,
 		inboxJobMaxAttempts: config.inboxJobMaxAttempts,
-		proxyRemoteFiles: config.proxyRemoteFiles,
-		signToActivityPubGet: config.signToActivityPubGet ?? true,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
 		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?

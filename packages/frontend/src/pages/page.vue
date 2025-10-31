@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<Transition
 			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
 			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+					<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
 						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
@@ -92,12 +92,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetchPage()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -122,6 +122,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -132,13 +133,12 @@ const props = defineProps<{
 
 const page = ref<Misskey.entities.Page | null>(null);
 const error = ref<any>(null);
-const otherPostsPagination = {
-	endpoint: 'users/pages' as const,
+const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 	limit: 6,
-	params: computed(() => ({
+	computedParams: computed(() => page.value ? ({
 		userId: page.value.user.id,
-	})),
-};
+	}) : undefined),
+}));
 const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
@@ -245,12 +245,12 @@ function pin(pin) {
 	});
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!page.value) return;
 
 	const pageUrl = `${url}/@${props.username}/pages/${props.pageName}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: page.value.user,
 		initialComment: `Page: ${pageUrl}\n-----\n`,
 	}, {
@@ -267,7 +267,11 @@ function showMenu(ev: MouseEvent) {
 		menuItems.push({
 			icon: 'ti ti-pencil',
 			text: i18n.ts.edit,
-			action: () => router.push(`/pages/edit/${page.value.id}`),
+			action: () => router.push('/pages/edit/:initPageId', {
+				params: {
+					initPageId: page.value!.id,
+				},
+			}),
 		});
 
 		if ($i.pinnedPageId === page.value.id) {

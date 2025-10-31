@@ -1,6 +1,7 @@
 import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
+import pluginGlsl from 'vite-plugin-glsl';
 import { defineConfig } from 'vite';
 import type { UserConfig } from 'vite';
 import * as yaml from 'js-yaml';
@@ -13,6 +14,8 @@ import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-modul
 import pluginJson5 from './vite.json5.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
+import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -26,6 +29,11 @@ export const searchIndexes = [{
 	targetFilePaths: ['src/pages/settings/*.vue'],
 	mainVirtualModule: 'search-index:settings',
 	modulesToHmrOnUpdate: ['src/pages/settings/index.vue'],
+	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
+}, {
+	targetFilePaths: ['src/pages/admin/*.vue'],
+	mainVirtualModule: 'search-index:admin',
+	modulesToHmrOnUpdate: ['src/pages/admin/index.vue'],
 	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
 }] satisfies SearchIndexOptions[];
 
@@ -78,12 +86,20 @@ export function toBase62(n: number): string {
 }
 
 export function getConfig(): UserConfig {
+	const localesHash = toBase62(hash(JSON.stringify(locales)));
+
 	return {
 		base: '/vite/',
 
+		// The console is shared with backend, so clearing the console will also clear the backend log.
+		clearScreen: false,
+
 		server: {
-			host,
+			// The backend allows access from any addresses, so vite also allows access from any addresses.
+			host: '0.0.0.0',
+			allowedHosts: host ? [host] : undefined,
 			port: 5173,
+			strictPort: true,
 			hmr: {
 				// バックエンド経由での起動時、Viteは5173経由でアセットを参照していると思い込んでいるが実際は3000から配信される
 				// そのため、バックエンドのWSサーバーにHMRのWSリクエストが吸収されてしまい、正しくHMRが機能しない
@@ -96,10 +112,13 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
+			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
 			pluginVue(),
+			pluginRemoveUnrefI18n(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
+			pluginGlsl({ minify: true }),
 			...process.env.NODE_ENV === 'production'
 				? [
 					pluginReplace({
@@ -148,9 +167,6 @@ export function getConfig(): UserConfig {
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
-			_DATA_TRANSFER_DRIVE_FILE_: JSON.stringify('mk_drive_file'),
-			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
-			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
 			__VUE_OPTIONS_API__: true,
 			__VUE_PROD_DEVTOOLS__: false,
 		},
@@ -164,16 +180,21 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/_boot_.ts',
+					i18n: './src/i18n.ts',
+					entry: './src/_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),
+				preserveEntrySignatures: 'allow-extension',
 				output: {
 					manualChunks: {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
+						// dependencies of i18n.ts
+						'config': ['@@/js/config.js'],
 					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
+					chunkFileNames: `scripts/${localesHash}-[hash:8].js`,
+					assetFileNames: `assets/${localesHash}-[hash:8][extname]`,
 					paths(id) {
 						for (const p of externalPackages) {
 							if (p.match.test(id)) {

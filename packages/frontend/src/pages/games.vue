@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps">
 			<div class="_panel" :class="$style.link">
 				<MkA to="/bubble-game">
@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkA>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

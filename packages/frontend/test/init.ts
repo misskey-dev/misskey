@@ -5,6 +5,8 @@
 
 import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
@@ -27,13 +29,24 @@ export const preferState: Record<string, unknown> = {
 		code: false,
 	},
 
+	mutingEmojis: [],
 };
+
+export let preferReactive: Record<string, Ref<unknown>> = {};
+
+for (const key in preferState) {
+	if (preferState[key] !== undefined) {
+		preferReactive[key] = ref(preferState[key]);
+	}
+}
 
 // XXX: store somehow becomes undefined in vitest?
 vi.mock('@/preferences.js', () => {
+
 	return {
 		prefer: {
 			s: preferState,
+			r: preferReactive,
 		},
 	};
 });

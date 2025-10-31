@@ -121,10 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('renote.user', 'renoteUser')
 			.leftJoinAndSelect('note.channel', 'channel');
 
-		if (me) {
-			this.queryService.generateMutedUserQueryForNotes(query, me);
-			this.queryService.generateBlockedUserQueryForNotes(query, me);
-		}
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
 		//#endregion
 
 		return await query.limit(ps.limit).getMany();
