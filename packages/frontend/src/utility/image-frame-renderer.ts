@@ -62,12 +62,23 @@ export class ImageFrameRenderer {
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
 				case 'date': return date;
-				case 'model': return this.exif.Model ? this.exif.Model.description : '-';
-				case 'lensModel': return this.exif.LensModel ? this.exif.LensModel.description : '-';
-				case 'mm': return this.exif.FocalLength ? this.exif.FocalLength.description.replace(' mm', '').replace('mm', '') : '-';
-				case 'f': return this.exif.FNumber ? this.exif.FNumber.description.replace('f/', '') : '-';
-				case 's': return this.exif.ExposureTime ? this.exif.ExposureTime.description : '-';
-				case 'iso': return this.exif.ISOSpeedRatings ? this.exif.ISOSpeedRatings.description : '-';
+				case 'year': return date.split('/')[0];
+				case 'month': return date.split('/')[1].replace(/^0/, '');
+				case 'day': return date.split('/')[2].replace(/^0/, '');
+				case 'hour': return meta_date.split(' ')[1].split(':')[0].replace(/^0/, '');
+				case 'minute': return meta_date.split(' ')[1].split(':')[1].replace(/^0/, '');
+				case 'second': return meta_date.split(' ')[1].split(':')[2].replace(/^0/, '');
+				case '0month': return date.split('/')[1];
+				case '0day': return date.split('/')[2];
+				case '0hour': return meta_date.split(' ')[1].split(':')[0];
+				case '0minute': return meta_date.split(' ')[1].split(':')[1];
+				case '0second': return meta_date.split(' ')[1].split(':')[2];
+				case 'camera_model': return this.exif.Model ? this.exif.Model.description : '-';
+				case 'camera_lens_model': return this.exif.LensModel ? this.exif.LensModel.description : '-';
+				case 'camera_mm': return this.exif.FocalLength ? this.exif.FocalLength.description.replace(' mm', '').replace('mm', '') : '-';
+				case 'camera_f': return this.exif.FNumber ? this.exif.FNumber.description.replace('f/', '') : '-';
+				case 'camera_s': return this.exif.ExposureTime ? this.exif.ExposureTime.description : '-';
+				case 'camera_iso': return this.exif.ISOSpeedRatings ? this.exif.ISOSpeedRatings.description : '-';
 				default: return '-';
 			}
 		});

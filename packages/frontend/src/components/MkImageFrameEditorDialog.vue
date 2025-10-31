@@ -62,12 +62,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo>
 						<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
 						<div><code class="_selectableAtomic">{date}</code> - 撮影日時</div>
-						<div><code class="_selectableAtomic">{model}</code> - カメラモデル</div>
-						<div><code class="_selectableAtomic">{lensModel}</code> - レンズモデル</div>
-						<div><code class="_selectableAtomic">{mm}</code> - 焦点距離 (例: 50)</div>
-						<div><code class="_selectableAtomic">{f}</code> - 絞り値 (例: 1.8)</div>
-						<div><code class="_selectableAtomic">{s}</code> - シャッタースピード (例: 1/125)</div>
-						<div><code class="_selectableAtomic">{iso}</code> - ISO感度 (例: 100)</div>
+						<div><code class="_selectableAtomic">{camera_model}</code> - カメラモデル</div>
+						<div><code class="_selectableAtomic">{camera_lens_model}</code> - レンズモデル</div>
+						<div><code class="_selectableAtomic">{camera_mm}</code> - 焦点距離 (例: 50)</div>
+						<div><code class="_selectableAtomic">{camera_f}</code> - 絞り値 (例: 1.8)</div>
+						<div><code class="_selectableAtomic">{camera_s}</code> - シャッタースピード (例: 1/125)</div>
+						<div><code class="_selectableAtomic">{camera_iso}</code> - ISO感度 (例: 100)</div>
 					</MkInfo>
 				</div>
 			</div>
@@ -102,7 +102,7 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 const $i = ensureSignin();
 
 const EXIF_MOCK = {
-	DateTimeOriginal: { description: '2025:01:01 12:00:00' },
+	DateTimeOriginal: { description: '2012:03:04 5:06:07' },
 	Model: { description: 'Example camera' },
 	LensModel: { description: 'Example lens 123mm f/1.23' },
 	FocalLength: { description: '123mm' },
@@ -120,10 +120,12 @@ const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
 	borderThickness: 0.05,
 	labelThickness: 0.2,
 	labelScale: 1.0,
-	title: 'Untitled by @syuilo',
-	text: '{mm}mm   f/{f}   {s}s   ISO{iso}',
+	title: '{year}/{0month}/{0day}',
+	text: '{camera_mm}mm   f/{camera_f}   {camera_s}s   ISO{camera_iso}',
 	centered: false,
 	withQrCode: true,
+	bgColor: [255, 255, 255],
+	fgColor: [0, 0, 0],
 });
 
 const emit = defineEmits<{
@@ -138,7 +140,7 @@ async function cancel() {
 	dialog.value?.close();
 }
 
-const updateThrottled = throttle(100, () => {
+const updateThrottled = throttle(50, () => {
 	if (renderer != null) {
 		renderer.updateAndRender(frame);
 	}

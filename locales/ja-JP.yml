@@ -1400,6 +1400,7 @@ frame: "フレーム"
 
 _imageFrameEditor:
   title: "フレームの編集"
+  tip: "画像にフレームやメタデータを含んだラベルを追加して装飾できます。"
   borderThickness: "フチの幅"
   labelThickness: "ラベルの幅"
   labelScale: "ラベルのスケール"
@@ -3310,7 +3311,7 @@ _userLists:
 watermark: "ウォーターマーク"
 defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
-  tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  tip: "画像にクレジット情報などのウォーターマークを追加できます。"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
   driveFileTypeWarn: "このファイルは対応していません"
   driveFileTypeWarnDescription: "画像ファイルを選択してください"

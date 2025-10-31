@@ -128,6 +128,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkFolder>
 							<template #icon><i class="ti ti-photo"></i></template>
 							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts._imageFrameEditor.tip }}</template>
 
 							<div class="_gaps">
 								<div class="_gaps_s">

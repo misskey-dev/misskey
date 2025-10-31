@@ -5615,6 +5615,10 @@ export interface Locale extends ILocale {
          */
         "title": string;
         /**
+         * 画像にフレームやメタデータを含んだラベルを追加して装飾できます。
+         */
+        "tip": string;
+        /**
          * フチの幅
          */
         "borderThickness": string;
@@ -12360,7 +12364,7 @@ export interface Locale extends ILocale {
     "defaultPreset": string;
     "_watermarkEditor": {
         /**
-         * 画像にクレジット情報などのウォーターマークを追加することができます。
+         * 画像にクレジット情報などのウォーターマークを追加できます。
          */
         "tip": string;
         /**
