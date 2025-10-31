@@ -9,10 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker path="/admin/branding" :label="i18n.ts.branding" :keywords="['branding']" icon="ti ti-paint">
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['entrance', 'welcome', 'landing', 'front', 'home', 'page', 'style']">
-					<MkRadios v-model="entrancePageStyle">
+					<MkRadios
+						v-model="entrancePageStyle"
+						:options="[
+							{ value: 'classic' },
+							{ value: 'simple' },
+						]"
+					>
 						<template #label><SearchLabel>{{ i18n.ts._serverSettings.entrancePageStyle }}</SearchLabel></template>
-						<option value="classic">Classic</option>
-						<option value="simple">Simple</option>
 					</MkRadios>
 				</SearchMarker>
 
