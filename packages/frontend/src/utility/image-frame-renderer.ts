@@ -6,18 +6,17 @@
 import QRCodeStyling from 'qr-code-styling';
 import { url } from '@@/js/config.js';
 import ExifReader from 'exifreader';
-import { FX_label } from './image-effector/fxs/label.js';
+import { FX_frame } from './image-effector/fxs/frame.js';
 import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import { ensureSignin } from '@/i.js';
 
 const FXS = [
-	FX_label,
+	FX_frame,
 ] as const satisfies ImageEffectorFx<string, any>[];
 
-export type ImageLabelParams = {
-	style: 'frame' | 'frameLess';
-	frameThickness: number;
+export type ImageFrameParams = {
+	borderThickness: number;
 	labelThickness: number;
 	labelScale: number;
 	title: string;
@@ -29,7 +28,7 @@ export type ImageLabelParams = {
 	borderRadius: number; // TODO
 };
 
-export class ImageLabelRenderer {
+export class ImageFrameRenderer {
 	private effector: ImageEffector<typeof FXS>;
 	private image: HTMLImageElement | ImageBitmap;
 	private exif: ExifReader.Tags;
@@ -74,7 +73,7 @@ export class ImageLabelRenderer {
 		});
 	}
 
-	public async updateAndRender(params: ImageLabelParams): Promise<void> {
+	public async updateAndRender(params: ImageFrameParams): Promise<void> {
 		let imageAreaW = this.image.width;
 		let imageAreaH = this.image.height;
 
@@ -89,9 +88,9 @@ export class ImageLabelRenderer {
 			}
 		}
 
-		const paddingTop = Math.floor(imageAreaH * params.frameThickness);
-		const paddingLeft = Math.floor(imageAreaH * params.frameThickness);
-		const paddingRight = Math.floor(imageAreaH * params.frameThickness);
+		const paddingTop = Math.floor(imageAreaH * params.borderThickness);
+		const paddingLeft = Math.floor(imageAreaH * params.borderThickness);
+		const paddingRight = Math.floor(imageAreaH * params.borderThickness);
 		const paddingBottom = Math.floor(imageAreaH * params.labelThickness);
 		const renderWidth = imageAreaW + paddingLeft + paddingRight;
 		const renderHeight = imageAreaH + paddingTop + paddingBottom;
@@ -196,7 +195,7 @@ export class ImageLabelRenderer {
 		this.effector.changeResolution(renderWidth, renderHeight);
 
 		await this.effector.setLayersAndRender([{
-			fxId: 'label',
+			fxId: 'frame',
 			id: 'a',
 			params: {
 				image: 'image',

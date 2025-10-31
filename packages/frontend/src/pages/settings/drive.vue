@@ -127,7 +127,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['label', 'frame', 'credit', 'metadata']">
 						<MkFolder>
 							<template #icon><i class="ti ti-photo"></i></template>
-							<template #label><SearchLabel>{{ i18n.ts.label }}</SearchLabel></template>
+							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
 
 							<div class="_gaps">
 								<div class="_gaps_s">
@@ -141,7 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									/>
 								-->
 
-									<MkButton iconOnly rounded style="margin: 0 auto;" @click="addImageLabelPreset"><i class="ti ti-plus"></i></MkButton>
+									<MkButton iconOnly rounded style="margin: 0 auto;" @click="addImageFramePreset"><i class="ti ti-plus"></i></MkButton>
 
 									<!--
 									<SearchMarker :keywords="['sync', 'watermark', 'preset', 'devices']">
@@ -342,8 +342,8 @@ function onDeleteWatermarkPreset(id: string) {
 	}
 }
 
-async function addImageLabelPreset() {
-	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageLabelEditorDialog.vue').then(x => x.default), {
+async function addImageFramePreset() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
 	}, {
 		ok: (preset: any) => {
 			//prefer.commit('imageLabelPresets', [...prefer.s.imageLabelPresets, preset]);

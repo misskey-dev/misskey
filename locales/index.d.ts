@@ -5605,7 +5605,7 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
-    "_imageLabelEditor": {
+    "_imageFrameEditor": {
         /**
          * ラベルの編集
          */
@@ -5613,7 +5613,7 @@ export interface Locale extends ILocale {
         /**
          * フレームの幅
          */
-        "frameThickness": string;
+        "borderThickness": string;
         /**
          * ラベルの幅
          */

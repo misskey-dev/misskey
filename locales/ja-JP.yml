@@ -1396,10 +1396,11 @@ scheduled: "予約"
 widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
+frame: "フレーム"
 
-_imageLabelEditor:
-  title: "ラベルの編集"
-  frameThickness: "フレームの幅"
+_imageFrameEditor:
+  title: "フレームの編集"
+  borderThickness: "フチの幅"
   labelThickness: "ラベルの幅"
   labelScale: "ラベルのスケール"
   centered: "中央揃え"

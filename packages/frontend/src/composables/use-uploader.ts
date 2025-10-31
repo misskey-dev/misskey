@@ -18,7 +18,7 @@ import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { WatermarkRenderer } from '@/utility/watermark.js';
-import { ImageLabelRenderer } from '@/utility/image-label-renderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -575,7 +575,7 @@ export function useUploader(options: {
 
 		const exif = await ExifReader.load(await item.file.arrayBuffer());
 
-		const labelRenderer = new ImageLabelRenderer({
+		const labelRenderer = new ImageFrameRenderer({
 			canvas: canvas,
 			image: await window.createImageBitmap(preprocessedFile),
 			exif,

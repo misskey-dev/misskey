@@ -6,8 +6,8 @@
 import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './label.glsl';
 
-export const FX_label = defineImageEffectorFx({
-	id: 'label',
+export const FX_frame = defineImageEffectorFx({
+	id: 'frame',
 	name: '(internal)',
 	shader,
 	uniforms: ['image', 'label', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'] as const,

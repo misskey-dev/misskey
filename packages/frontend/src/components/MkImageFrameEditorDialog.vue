@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._imageLabelEditor.title }}</template>
+	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._imageFrameEditor.title }}</template>
 
 	<div :class="$style.root">
 		<div :class="$style.container">
@@ -31,36 +31,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<MkRange v-model="frame.frameThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
-						<template #label>{{ i18n.ts._imageLabelEditor.frameThickness }}</template>
+					<MkRange v-model="frame.borderThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
+						<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
 					</MkRange>
 
 					<MkRange v-model="frame.labelThickness" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
-						<template #label>{{ i18n.ts._imageLabelEditor.labelThickness }}</template>
+						<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
 					</MkRange>
 
 					<MkRange v-model="frame.labelScale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
-						<template #label>{{ i18n.ts._imageLabelEditor.labelScale }}</template>
+						<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
 					</MkRange>
 
 					<MkSwitch v-model="frame.centered">
-						<template #label>{{ i18n.ts._imageLabelEditor.centered }}</template>
+						<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
 					</MkSwitch>
 
 					<MkInput v-model="frame.title">
-						<template #label>{{ i18n.ts._imageLabelEditor.captionMain }}</template>
+						<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
 					</MkInput>
 
 					<MkTextarea v-model="frame.text">
-						<template #label>{{ i18n.ts._imageLabelEditor.captionSub }}</template>
+						<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
 					</MkTextarea>
 
 					<MkSwitch v-model="frame.withQrCode">
-						<template #label>{{ i18n.ts._imageLabelEditor.withQrCode }}</template>
+						<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
 					</MkSwitch>
 
 					<MkInfo>
-						<div>{{ i18n.ts._imageLabelEditor.availableVariables }}:</div>
+						<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
 						<div><code class="_selectableAtomic">{date}</code> - 撮影日時</div>
 						<div><code class="_selectableAtomic">{model}</code> - カメラモデル</div>
 						<div><code class="_selectableAtomic">{lensModel}</code> - レンズモデル</div>
@@ -80,8 +80,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
-import type { ImageLabelParams } from '@/utility/image-label-renderer.js';
-import { ImageLabelRenderer } from '@/utility/image-label-renderer.js';
+import type { ImageFrameParams } from '@/utility/image-frame-renderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -112,13 +112,12 @@ const EXIF_MOCK = {
 } satisfies ExifReader.Tags;
 
 const props = defineProps<{
-	frame?: ImageLabelParams | null;
+	frame?: ImageFrameParams | null;
 	image?: File | null;
 }>();
 
-const frame = reactive<ImageLabelParams>(deepClone(props.frame) ?? {
-	style: 'frame',
-	frameThickness: 0.05,
+const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
+	borderThickness: 0.05,
 	labelThickness: 0.2,
 	labelScale: 1.0,
 	title: 'Untitled by @syuilo',
@@ -128,7 +127,7 @@ const frame = reactive<ImageLabelParams>(deepClone(props.frame) ?? {
 });
 
 const emit = defineEmits<{
-	(ev: 'ok', frame: ImageLabelParams): void;
+	(ev: 'ok', frame: ImageFrameParams): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -187,21 +186,21 @@ async function choiceImage() {
 	}
 }
 
-let renderer: ImageLabelRenderer | null = null;
+let renderer: ImageFrameRenderer | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 async function initRenderer() {
 	if (canvasEl.value == null) return;
 
 	if (sampleImageType.value === '3_2') {
-		renderer = new ImageLabelRenderer({
+		renderer = new ImageFrameRenderer({
 			canvas: canvasEl.value,
 			image: sampleImage_3_2,
 			exif: EXIF_MOCK,
 			renderAsPreview: true,
 		});
 	} else if (sampleImageType.value === '2_3') {
-		renderer = new ImageLabelRenderer({
+		renderer = new ImageFrameRenderer({
 			canvas: canvasEl.value,
 			image: sampleImage_2_3,
 			exif: EXIF_MOCK,
@@ -212,7 +211,7 @@ async function initRenderer() {
 
 		const exif = ExifReader.load(await imageFile.arrayBuffer());
 
-		renderer = new ImageLabelRenderer({
+		renderer = new ImageFrameRenderer({
 			canvas: canvasEl.value,
 			image: imageBitmap,
 			exif: exif,
