@@ -126,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<SearchMarker :keywords="['label', 'frame', 'credit', 'metadata']">
 						<MkFolder>
-							<template #icon><i class="ti ti-photo"></i></template>
+							<template #icon><i class="ti ti-device-ipad-horizontal"></i></template>
 							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
 							<template #caption>{{ i18n.ts._imageFrameEditor.tip }}</template>
 

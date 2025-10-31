@@ -85,7 +85,7 @@ export type UploaderItem = {
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
-	watermarkPresetId: string | null;
+	watermarkPresetId: string | null; // そのままpresetを入れてもいいのでは？
 	isSensitive?: boolean;
 	caption?: string | null;
 	abort?: (() => void) | null;
@@ -324,6 +324,58 @@ export function useUploader(options: {
 							ok: (preset) => {
 								prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
 								changeWatermarkPreset(preset.id);
+							},
+							closed: () => dispose(),
+						});
+					},
+				}],
+			});
+		}
+
+		if (
+			uploaderFeatures.value.imageEditing &&
+			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
+			!item.preprocessing &&
+			!item.uploading &&
+			!item.uploaded
+		) {
+			function changePreset(presetId: string | null) {
+				item.imageFramePresetId = presetId;
+				preprocess(item).then(() => {
+					triggerRef(items);
+				});
+			}
+
+			menu.push({
+				icon: 'ti ti-device-ipad-horizontal',
+				text: i18n.ts.frame,
+				//caption: computed(() => item.watermarkPresetId == null ? null : prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId)?.name),
+				type: 'parent',
+				children: [{
+					type: 'radioOption',
+					text: i18n.ts.none,
+					active: computed(() => item.watermarkPresetId == null),
+					action: () => changePreset(null),
+				}, {
+					type: 'divider',
+				}, ...prefer.s.watermarkPresets.map(preset => ({
+					type: 'radioOption' as const,
+					text: preset.name,
+					active: computed(() => item.watermarkPresetId === preset.id),
+					action: () => changePreset(preset.id),
+				})), ...(prefer.s.watermarkPresets.length > 0 ? [{
+					type: 'divider' as const,
+				}] : []), {
+					type: 'button',
+					icon: 'ti ti-plus',
+					text: i18n.ts.add,
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+							image: item.file,
+						}, {
+							ok: (preset) => {
+								prefer.commit('imageFramePresets', [...prefer.s.imageFramePresets, preset]);
+								changePreset(preset.id);
 							},
 							closed: () => dispose(),
 						});

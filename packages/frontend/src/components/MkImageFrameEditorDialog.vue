@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._imageFrameEditor.title }}</template>
+	<template #header><i class="ti ti-device-ipad-horizontal"></i> {{ i18n.ts._imageFrameEditor.title }}</template>
 
 	<div :class="$style.root">
 		<div :class="$style.container">
