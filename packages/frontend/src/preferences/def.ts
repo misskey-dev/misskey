@@ -458,10 +458,6 @@ export const PREF_DEF = definePreferences({
 			return mergedItems;
 		},
 	},
-	defaultImageFramePresetId: {
-		accountDependent: true,
-		default: null as ImageFramePreset['id'] | null,
-	},
 	defaultImageCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},

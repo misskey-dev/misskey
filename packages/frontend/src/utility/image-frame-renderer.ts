@@ -15,6 +15,8 @@ const FXS = [
 	FX_frame,
 ] as const satisfies ImageEffectorFx<string, any>[];
 
+// TODO: 上部にもラベルを配置できるようにする
+
 export type ImageFrameParams = {
 	borderThickness: number;
 	labelThickness: number;

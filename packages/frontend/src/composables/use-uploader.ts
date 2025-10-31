@@ -11,7 +11,7 @@ import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue'
 import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
-import type { ImageFramePreset } from '@/utility/image-frame-renderer.js';
+import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -88,7 +88,7 @@ export type UploaderItem = {
 	preprocessedFile?: Blob | null;
 	file: File;
 	watermarkPreset: WatermarkPreset | null;
-	imageFramePreset: ImageFramePreset | null;
+	imageFrameParams: ImageFrameParams | null;
 	isSensitive?: boolean;
 	caption?: string | null;
 	abort?: (() => void) | null;
@@ -153,7 +153,7 @@ export function useUploader(options: {
 			uploadFailed: false,
 			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
 			watermarkPreset: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null,
-			imageFramePreset: uploaderFeatures.value.imageEditing ? (prefer.s.imageFramePresets.find(p => p.id === prefer.s.defaultImageFramePresetId) ?? null) : null,
+			imageFrameParams: null,
 			file: markRaw(file),
 		});
 		const reactiveItem = items.value.at(-1)!;
@@ -357,7 +357,7 @@ export function useUploader(options: {
 				children: [{
 					type: 'radioOption',
 					text: i18n.ts.none,
-					active: computed(() => item.imageFramePreset == null),
+					active: computed(() => item.imageFrameParams == null),
 					action: () => changePreset(null),
 				}, {
 					type: 'divider',
