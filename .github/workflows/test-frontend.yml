@@ -28,11 +28,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.2.0
     - name: Use Node.js
       uses: actions/setup-node@v4.4.0
       with:
@@ -76,7 +76,7 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v4.3.0
       with:
         submodules: true
     # https://github.com/cypress-io/cypress-docker-images/issues/150
@@ -86,7 +86,7 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.2.0
     - name: Use Node.js
       uses: actions/setup-node@v4.4.0
       with:

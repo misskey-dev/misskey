@@ -8,6 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { SearchService } from '@/core/SearchService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -42,6 +43,8 @@ export const paramDef = {
 		rangeEndAt: { type: 'integer', nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		host: {
@@ -62,8 +65,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private searchService: SearchService,
 		private roleService: RoleService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : undefined);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : undefined);
+
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
 			if (!policies.canSearchNotes) {
 				throw new ApiError(meta.errors.unavailable);
@@ -76,8 +83,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				rangeStartAt: ps.rangeStartAt,
 				rangeEndAt: ps.rangeEndAt,
 			}, {
-				untilId: ps.untilId,
-				sinceId: ps.sinceId,
+				untilId: untilId,
+				sinceId: sinceId,
 				limit: ps.limit,
 			});
 

@@ -62,10 +62,10 @@ const props = defineProps<{
 }>();
 
 const scope = computed(() => props.path.split('/').slice(0, -1));
-const key = computed(() => props.path.split('/').at(-1));
+const key = computed(() => props.path.split('/').at(-1)!);
 
 const value = ref<any>(null);
-const valueForEditor = ref<string | null>(null);
+const valueForEditor = ref<string>('');
 
 function fetchValue() {
 	misskeyApi('i/registry/get-detail', {

@@ -41,7 +41,7 @@ const emit = defineEmits<{
 	(_: 'closed'): void
 }>();
 
-const zIndex = claimZIndex('middle');
+const zIndex = claimZIndex('low');
 const showing = ref(true);
 
 function closePage() {

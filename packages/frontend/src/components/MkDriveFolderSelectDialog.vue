@@ -39,13 +39,13 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', r?: Misskey.entities.DriveFolder[]): void;
+	(ev: 'done', r?: (Misskey.entities.DriveFolder | null)[]): void;
 	(ev: 'closed'): void;
 }>();
 
 const dialog = useTemplateRef('dialog');
 
-const selected = ref<Misskey.entities.DriveFolder[]>([]);
+const selected = ref<(Misskey.entities.DriveFolder | null)[]>([]);
 
 function ok() {
 	emit('done', selected.value);
@@ -57,7 +57,7 @@ function cancel() {
 	dialog.value?.close();
 }
 
-function onChangeSelection(v: Misskey.entities.DriveFolder[]) {
+function onChangeSelection(v: (Misskey.entities.DriveFolder | null)[]) {
 	selected.value = v;
 }
 </script>

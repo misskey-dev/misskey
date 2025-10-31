@@ -10,11 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
 			</MkInput>
-			<MkSelect v-model="visibility">
+			<MkSelect v-model="visibility" :items="visibilityDef">
 				<template #label>{{ i18n.ts.visibility }}</template>
 				<template #caption>{{ i18n.ts._play.visibilityDescription }}</template>
-				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
-				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
 			</MkSelect>
 			<MkTextarea v-model="summary" :mfmAutocomplete="true" :mfmPreview="true">
 				<template #label>{{ i18n.ts._play.summary }}</template>
@@ -52,6 +50,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { useRouter } from '@/router.js';
 
 const PRESET_DEFAULT = `/// @ ${AISCRIPT_VERSION}
@@ -127,7 +126,7 @@ var results = []
 // どれだけ巻き戻しているか
 var cursor = 0
 
-@do() {
+@main() {
 	if (cursor != 0) {
 		results = results.slice(0, (cursor + 1))
 		cursor = 0
@@ -175,7 +174,7 @@ var cursor = 0
 						onClick: forward
 					}, {
 						text: "引き直す"
-						onClick: do
+						onClick: main
 					}]
 				})
 				Ui:C:postFormButton({
@@ -191,7 +190,7 @@ var cursor = 0
 	])
 }
 
-do()
+main()
 `;
 
 const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}
@@ -383,8 +382,17 @@ if (props.id) {
 
 const title = ref(flash.value?.title ?? 'New Play');
 const summary = ref(flash.value?.summary ?? '');
-const permissions = ref(flash.value?.permissions ?? []);
-const visibility = ref<'private' | 'public'>(flash.value?.visibility ?? 'public');
+const permissions = ref([]); // not implemented yet
+const {
+	model: visibility,
+	def: visibilityDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.public, value: 'public' },
+		{ label: i18n.ts.private, value: 'private' },
+	],
+	initialValue: flash.value?.visibility ?? 'public',
+});
 const script = ref(flash.value?.script ?? PRESET_DEFAULT);
 
 function selectPreset(ev: MouseEvent) {
@@ -412,9 +420,9 @@ function selectPreset(ev: MouseEvent) {
 }
 
 async function save() {
-	if (flash.value) {
+	if (flash.value != null) {
 		os.apiWithDialog('flash/update', {
-			flashId: props.id,
+			flashId: flash.value.id,
 			title: title.value,
 			summary: summary.value,
 			permissions: permissions.value,
@@ -429,7 +437,11 @@ async function save() {
 			script: script.value,
 			visibility: visibility.value,
 		});
-		router.push('/play/' + created.id + '/edit');
+		router.push('/play/:id/edit', {
+			params: {
+				id: created.id,
+			},
+		});
 	}
 }
 
@@ -444,6 +456,8 @@ function show() {
 }
 
 async function del() {
+	if (flash.value == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.deleteAreYouSure({ x: flash.value.title }),
@@ -451,7 +465,7 @@ async function del() {
 	if (canceled) return;
 
 	await os.apiWithDialog('flash/delete', {
-		flashId: props.id,
+		flashId: flash.value.id,
 	});
 	router.push('/play');
 }
@@ -464,6 +478,7 @@ definePage(() => ({
 	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>
+
 <style lang="scss" module>
 .footer {
 	backdrop-filter: var(--MI-blur, blur(15px));

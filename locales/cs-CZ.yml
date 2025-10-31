@@ -1107,6 +1107,9 @@ lastNDays: "Posledních {n} dnů"
 surrender: "Zrušit"
 postForm: "Formulář pro odeslání"
 information: "Informace"
+inMinutes: "Minut"
+inDays: "Dnů"
+widgets: "Widgety"
 _chat:
   invitations: "Pozvat"
   noHistory: "Žádná historie"
@@ -2002,7 +2005,7 @@ _deck:
     list: "Seznamy"
     channel: "Kanály"
     mentions: "Zmínění"
-    direct: "Přímý"
+    direct: "Přímé poznámky"
     roleTimeline: "Časová osa role"
 _dialog:
   charactersExceeded: "Překročili jste maximální počet znaků! V současné době je na hodnotě {current} z {max}."
@@ -2043,3 +2046,22 @@ _search:
   searchScopeAll: "Vše"
   searchScopeLocal: "Místní"
   searchScopeUser: "Upřesnit uživatele"
+_watermarkEditor:
+  opacity: "Průhlednost"
+  scale: "Velikost"
+  text: "Text"
+  position: "Pozice"
+  type: "Typ"
+  image: "Obrázky"
+  advanced: "Pokročilé"
+_imageEffector:
+  _fxProps:
+    scale: "Velikost"
+    size: "Velikost"
+    offset: "Pozice"
+    color: "Barva"
+    opacity: "Průhlednost"
+    lightness: "Zesvětlit"
+_qr:
+  showTabTitle: "Zobrazit"
+  raw: "Text"
