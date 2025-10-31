@@ -4,8 +4,9 @@
  */
 
 import { reactive, watch } from 'vue';
+import type { Reactive } from 'vue';
 import { throttle } from 'throttle-debounce';
-import type { Form, GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -28,17 +29,17 @@ export type WidgetComponentExpose = {
 	configure: () => void;
 };
 
-export const useWidgetPropsManager = <F extends Form & Record<string, { default: any; }>>(
+export const useWidgetPropsManager = <F extends FormWithDefault>(
 	name: string,
 	propsDef: F,
 	props: Readonly<WidgetComponentProps<GetFormResultType<F>>>,
 	emit: WidgetComponentEmits<GetFormResultType<F>>,
 ): {
-	widgetProps: GetFormResultType<F>;
+	widgetProps: Reactive<GetFormResultType<F>>;
 	save: () => void;
 	configure: () => void;
 } => {
-	const widgetProps = reactive(props.widget ? deepClone(props.widget.data) : {});
+	const widgetProps = reactive<GetFormResultType<F>>((props.widget ? deepClone(props.widget.data) : {}) as GetFormResultType<F>);
 
 	const mergeProps = () => {
 		for (const prop of Object.keys(propsDef)) {
@@ -47,12 +48,13 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 			}
 		}
 	};
+
 	watch(widgetProps, () => {
 		mergeProps();
 	}, { deep: true, immediate: true });
 
 	const save = throttle(3000, () => {
-		emit('updateProps', widgetProps);
+		emit('updateProps', widgetProps as GetFormResultType<F>);
 	});
 
 	const configure = async () => {

@@ -28,8 +28,8 @@ function rename(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function describe(file: Misskey.entities.DriveFile) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+async function describe(file: Misskey.entities.DriveFile) {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.comment ?? '',
 		file: file,
 	}, {

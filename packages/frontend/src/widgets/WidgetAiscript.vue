@@ -23,27 +23,28 @@ import { ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import { genId } from '@/utility/id.js';
 
 const name = 'aiscript';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
 		default: true,
 	},
 	script: {
-		type: 'string' as const,
+		type: 'string',
 		multiline: true,
 		default: '(1 + 1)',
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -73,7 +74,7 @@ const run = async () => {
 		in: aiScriptReadline,
 		out: (value) => {
 			logs.value.push({
-				id: Math.random().toString(),
+				id: genId(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
 				print: true,
 			});
@@ -81,7 +82,7 @@ const run = async () => {
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
-					id: Math.random().toString(),
+					id: genId(),
 					text: utils.valToString(params.val, true),
 					print: false,
 				}); break;
@@ -105,7 +106,7 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: err,
+			text: err instanceof Error ? err.message : String(err),
 		});
 	}
 };

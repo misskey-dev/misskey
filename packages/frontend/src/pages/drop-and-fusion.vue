@@ -23,12 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame" style="text-align: center;">
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
-							<MkSelect v-model="gameMode">
-								<option value="normal">NORMAL</option>
-								<option value="square">SQUARE</option>
-								<option value="yen">YEN</option>
-								<option value="sweets">SWEETS</option>
-								<!--<option value="space">SPACE</option>-->
+							<MkSelect v-model="gameMode" :items="gameModeDef">
 							</MkSelect>
 							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
@@ -48,8 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div><b>{{ i18n.tsx.lastNDays({ n: 7 }) }} {{ i18n.ts.ranking }}</b> ({{ gameMode.toUpperCase() }})</div>
 							<div v-if="ranking" class="_gaps_s">
 								<div v-for="r in ranking" :key="r.id" :class="$style.rankingRecord">
-									<MkAvatar :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
-									<MkUserName :user="r.user" :nowrap="true"/>
+									<MkAvatar v-if="r.user" :link="true" style="width: 24px; height: 24px; margin-right: 4px;" :user="r.user"/>
+									<MkUserName v-if="r.user" :user="r.user" :nowrap="true"/>
 									<b style="margin-left: auto;">{{ r.score.toLocaleString() }} {{ getScoreUnit(gameMode) }}</b>
 								</div>
 							</div>
@@ -87,18 +82,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XGame from './drop-and-fusion.game.vue';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 
-const gameMode = ref<'normal' | 'square' | 'yen' | 'sweets' | 'space'>('normal');
+const {
+	model: gameMode,
+	def: gameModeDef,
+} = useMkSelect({
+	items: [
+		{ label: 'NORMAL', value: 'normal' },
+		{ label: 'SQUARE', value: 'square' },
+		{ label: 'YEN', value: 'yen' },
+		{ label: 'SWEETS', value: 'sweets' },
+		//{ label: 'SPACE', value: 'space' },
+	],
+	initialValue: 'normal',
+});
 const gameStarted = ref(false);
 const mute = ref(false);
-const ranking = ref(null);
+const ranking = ref<Misskey.entities.BubbleGameRankingResponse | null>(null);
 
 watch(gameMode, async () => {
 	ranking.value = await misskeyApiGet('bubble-game/ranking', { gameMode: gameMode.value });

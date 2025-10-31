@@ -517,40 +517,43 @@ export class DriveService {
 		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
 
 		//#region Check drive usage and mime type
-		if (user && !isLink) {
+		if (user != null && !isLink) {
 			const isLocalUser = this.userEntityService.isLocalUser(user);
-			const policies = await this.roleService.getUserPolicies(user.id);
+			const isModerator = isLocalUser ? await this.roleService.isModerator(user) : false;
+			if (!isModerator) {
+				const policies = await this.roleService.getUserPolicies(user.id);
 
-			const allowedMimeTypes = policies.uploadableFileTypes;
-			const isAllowed = allowedMimeTypes.some((mimeType) => {
-				if (mimeType === '*' || mimeType === '*/*') return true;
-				if (mimeType.endsWith('/*')) return info.type.mime.startsWith(mimeType.slice(0, -1));
-				return info.type.mime === mimeType;
-			});
-			if (!isAllowed) {
-				throw new IdentifiableError('bd71c601-f9b0-4808-9137-a330647ced9b', `Unallowed file type: ${info.type.mime}`);
-			}
-
-			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
-			const maxFileSize = 1024 * 1024 * policies.maxFileSizeMb;
-
-			if (maxFileSize < info.size) {
-				if (isLocalUser) {
-					throw new IdentifiableError('f9e4e5f3-4df4-40b5-b400-f236945f7073', 'Max file size exceeded.');
+				const allowedMimeTypes = policies.uploadableFileTypes;
+				const isAllowed = allowedMimeTypes.some((mimeType) => {
+					if (mimeType === '*' || mimeType === '*/*') return true;
+					if (mimeType.endsWith('/*')) return info.type.mime.startsWith(mimeType.slice(0, -1));
+					return info.type.mime === mimeType;
+				});
+				if (!isAllowed) {
+					throw new IdentifiableError('bd71c601-f9b0-4808-9137-a330647ced9b', `Unallowed file type: ${info.type.mime}`);
 				}
-			}
 
-			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
+				const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
+				const maxFileSize = 1024 * 1024 * policies.maxFileSizeMb;
 
-			this.registerLogger.debug('drive capacity override applied');
-			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
-
-			// If usage limit exceeded
-			if (driveCapacity < usage + info.size) {
-				if (isLocalUser) {
-					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
+				if (maxFileSize < info.size) {
+					if (isLocalUser) {
+						throw new IdentifiableError('f9e4e5f3-4df4-40b5-b400-f236945f7073', 'Max file size exceeded.');
+					}
 				}
-				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as MiRemoteUser, driveCapacity - info.size);
+
+				const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
+
+				this.registerLogger.debug('drive capacity override applied');
+				this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
+
+				// If usage limit exceeded
+				if (driveCapacity < usage + info.size) {
+					if (isLocalUser) {
+						throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
+					}
+					await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as MiRemoteUser, driveCapacity - info.size);
+				}
 			}
 		}
 		//#endregion
@@ -803,14 +806,14 @@ export class DriveService {
 			await Promise.all(promises);
 		}
 
-		this.deletePostProcess(file, isExpired, deleter);
+		await this.deletePostProcess(file, isExpired, deleter);
 	}
 
 	@bindThis
 	private async deletePostProcess(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
-			this.driveFilesRepository.update(file.id, {
+			await this.driveFilesRepository.update(file.id, {
 				isLink: true,
 				url: file.uri,
 				thumbnailUrl: null,
@@ -822,7 +825,7 @@ export class DriveService {
 				webpublicAccessKey: 'webpublic-' + randomUUID(),
 			});
 		} else {
-			this.driveFilesRepository.delete(file.id);
+			await this.driveFilesRepository.delete(file.id);
 		}
 
 		this.driveChart.update(file, false);

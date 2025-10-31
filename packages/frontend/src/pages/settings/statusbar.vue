@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
+import { genId } from '@/utility/id.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -38,7 +38,8 @@ onMounted(() => {
 
 async function add() {
 	prefer.commit('statusbars', [...statusbars.value, {
-		id: uuid(),
+		id: genId(),
+		name: null,
 		type: null,
 		black: false,
 		size: 'medium',

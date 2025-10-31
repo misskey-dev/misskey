@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4.3.0
       - name: Check
         run: |
           counter=0
@@ -50,6 +50,7 @@ jobs:
             "packages/backend/test"
             "packages/frontend-shared/@types"
             "packages/frontend-shared/js"
+            "packages/frontend-builder"
             "packages/frontend/.storybook"
             "packages/frontend/@types"
             "packages/frontend/lib"

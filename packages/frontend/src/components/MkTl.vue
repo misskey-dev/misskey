@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.left">
 			<slot v-if="item.type === 'event'" name="left" :event="item.data" :timestamp="item.timestamp" :delta="item.delta"></slot>
 		</div>
-		<div :class="[$style.center, item.type === 'date' ? $style.date : '']">
+		<div :class="[$style.center, item.type === 'date' ? $style.date : '', i === 0 ? $style.first : '', i === items.length - 1 ? $style.last : '']">
 			<div :class="$style.centerLine"></div>
 			<div :class="$style.centerPoint"></div>
 		</div>
@@ -32,9 +32,12 @@ export type TlEvent<E = any> = {
 <script lang="ts" setup generic="T extends unknown">
 import { computed } from 'vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	events: TlEvent<T>[];
-}>();
+	groupBy?: 'd' | 'h';
+}>(), {
+	groupBy: 'd',
+});
 
 const events = computed(() => {
 	return props.events.toSorted((a, b) => b.timestamp - a.timestamp);
@@ -64,30 +67,41 @@ type TlItem<T> = ({
 });
 
 const items = computed<TlItem<T>[]>(() => {
-		const results: TlItem<T>[] = [];
-		for (let i = 0; i < events.value.length; i++) {
-			const item = events.value[i];
+	const results: TlItem<T>[] = [];
 
-			const date = new Date(item.timestamp);
-			const nextDate = events.value[i + 1] ? new Date(events.value[i + 1].timestamp) : null;
+	for (let i = 0; i < events.value.length; i++) {
+		const item = events.value[i];
 
-			results.push({
-				id: item.id,
-				type: 'event',
-				timestamp: item.timestamp,
-				delta: i === events.value.length - 1 ? 0 : item.timestamp - events.value[i + 1].timestamp,
-				data: item.data,
-			});
+		const date = new Date(item.timestamp);
+		const nextDate = events.value[i + 1] ? new Date(events.value[i + 1].timestamp) : null;
 
-			if (
-				i !== events.value.length - 1 &&
-				nextDate != null && (
+		results.push({
+			id: item.id,
+			type: 'event',
+			timestamp: item.timestamp,
+			delta: i === events.value.length - 1 ? 0 : item.timestamp - events.value[i + 1].timestamp,
+			data: item.data,
+		});
+
+		if (i !== events.value.length - 1 && nextDate != null) {
+			let needsSeparator = false;
+
+			if (props.groupBy === 'd') {
+				needsSeparator = (
+					date.getFullYear() !== nextDate.getFullYear() ||
+					date.getMonth() !== nextDate.getMonth() ||
+					date.getDate() !== nextDate.getDate()
+				);
+			} else if (props.groupBy === 'h') {
+				needsSeparator = (
 					date.getFullYear() !== nextDate.getFullYear() ||
 					date.getMonth() !== nextDate.getMonth() ||
 					date.getDate() !== nextDate.getDate() ||
 					date.getHours() !== nextDate.getHours()
-				)
-			) {
+				);
+			}
+
+			if (needsSeparator) {
 				results.push({
 					id: `date-${item.id}`,
 					type: 'date',
@@ -98,8 +112,10 @@ const items = computed<TlItem<T>[]>(() => {
 				});
 			}
 		}
-		return results;
-	});
+	}
+
+	return results;
+});
 </script>
 
 <style lang="scss" module>
@@ -125,6 +141,22 @@ const items = computed<TlItem<T>[]>(() => {
 			height: 7px;
 			background: var(--MI_THEME-bg);
 			border-radius: 50%;
+		}
+	}
+
+	&.first {
+		.centerLine {
+			height: 50%;
+			top: auto;
+			bottom: 0;
+		}
+	}
+
+	&.last {
+		.centerLine {
+			height: 50%;
+			top: 0;
+			bottom: auto;
 		}
 	}
 }

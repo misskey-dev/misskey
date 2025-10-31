@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<MkPagination ref="paginationComponent" :pagination="pagination">
+	<div :key="tab" class="_spacer" style="--MI_SPACER-w: 800px;">
+		<MkPagination :paginator="paginator">
 			<template #empty><MkResult type="empty" :text="i18n.ts.noFollowRequests"/></template>
 			<template #default="{items}">
 				<div class="mk-follow-requests _gaps">
@@ -35,8 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { useTemplateRef, computed, ref } from 'vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
+import { computed, markRaw, ref, watch } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
@@ -44,32 +43,35 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const paginationComponent = useTemplateRef('paginationComponent');
+const tab = ref($i?.isLocked ? 'list' : 'sent');
 
-const pagination = computed<PagingCtx>(() => tab.value === 'list' ? {
-	endpoint: 'following/requests/list',
-	limit: 10,
-} : {
-	endpoint: 'following/requests/sent',
-	limit: 10,
-});
+let paginator: Paginator<'following/requests/list' | 'following/requests/sent'>;
+
+watch(tab, (newTab) => {
+	if (newTab === 'list') {
+		paginator = markRaw(new Paginator('following/requests/list', { limit: 10 }));
+	} else {
+		paginator = markRaw(new Paginator('following/requests/sent', { limit: 10 }));
+	}
+}, { immediate: true });
 
 function accept(user: Misskey.entities.UserLite) {
 	os.apiWithDialog('following/requests/accept', { userId: user.id }).then(() => {
-		paginationComponent.value?.paginator.reload();
+		paginator.reload();
 	});
 }
 
 function reject(user: Misskey.entities.UserLite) {
 	os.apiWithDialog('following/requests/reject', { userId: user.id }).then(() => {
-		paginationComponent.value?.paginator.reload();
+		paginator.reload();
 	});
 }
 
 function cancel(user: Misskey.entities.UserLite) {
 	os.apiWithDialog('following/requests/cancel', { userId: user.id }).then(() => {
-		paginationComponent.value?.paginator.reload();
+		paginator.reload();
 	});
 }
 
@@ -90,8 +92,6 @@ const headerTabs = computed(() => [
 		icon: 'ti ti-upload',
 	},
 ]);
-
-const tab = ref($i?.isLocked ? 'list' : 'sent');
 
 definePage(() => ({
 	title: i18n.ts.followRequests,

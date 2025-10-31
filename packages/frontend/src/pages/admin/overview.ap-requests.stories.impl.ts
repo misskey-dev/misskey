@@ -5,7 +5,7 @@
 
 import type { StoryObj } from '@storybook/vue3';
 import { http, HttpResponse } from 'msw';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { commonHandlers } from '../../../.storybook/mocks.js';
 import overview_ap_requests from './overview.ap-requests.vue';
 export const Default = {

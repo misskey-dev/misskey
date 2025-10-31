@@ -35,18 +35,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="select === 'folder'">
 			<template v-if="folder == null">
 				<MkButton v-if="!isRootSelected" @click="isRootSelected = true">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="isRootSelected = false">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
 				</MkButton>
 			</template>
 			<template v-else>
 				<MkButton v-if="!selectedFolders.some(f => f.id === folder!.id)" @click="selectedFolders.push(folder)">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder!.id)">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
 				</MkButton>
 			</template>
 		</div>
@@ -112,8 +112,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
-				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
-				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.ts['empty-drive-description'] }}</div>
+				<div v-if="draghover">{{ i18n.ts.dropHereToUpload }}</div>
+				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong></div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
 		</div>
@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -145,18 +145,19 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { store } from '@/store.js';
-import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
-import { usePagination } from '@/composables/use-pagination.js';
+import { makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
+	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
 }>(), {
+	initialFolder: null,
 	multiple: false,
 	select: null,
 });
@@ -185,7 +186,7 @@ const isRootSelected = ref(false);
 
 watch(selectedFiles, () => {
 	emit('changeSelectedFiles', selectedFiles.value);
-});
+}, { deep: true });
 
 watch([selectedFolders, isRootSelected], () => {
 	emit('changeSelectedFolders', isRootSelected.value ? [null, ...selectedFolders.value] : selectedFolders.value);
@@ -195,33 +196,23 @@ const fetching = ref(true);
 
 const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
 
-const filesPaginator = usePagination({
-	ctx: {
-		endpoint: 'drive/files',
-		limit: 30,
-		canFetchDetection: 'limit',
-		params: computed(() => ({
-			folderId: folder.value ? folder.value.id : null,
-			type: props.type,
-			sort: sortModeSelect.value,
-		})),
-	},
-	autoInit: false,
-	autoReInit: false,
-});
+const filesPaginator = markRaw(new Paginator('drive/files', {
+	limit: 30,
+	canFetchDetection: 'limit',
+	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
+		folderId: folder.value ? folder.value.id : null,
+		type: props.type,
+		sort: sortModeSelect.value,
+	}),
+}));
 
-const foldersPaginator = usePagination({
-	ctx: {
-		endpoint: 'drive/folders',
-		limit: 30,
-		canFetchDetection: 'limit',
-		params: computed(() => ({
-			folderId: folder.value ? folder.value.id : null,
-		})),
-	},
-	autoInit: false,
-	autoReInit: false,
-});
+const foldersPaginator = markRaw(new Paginator('drive/folders', {
+	limit: 30,
+	canFetchDetection: 'limit',
+	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
+		folderId: folder.value ? folder.value.id : null,
+	}),
+}));
 
 const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
 
@@ -303,7 +294,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent) {
+function onDrop(ev: DragEvent): void | boolean {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;
@@ -373,7 +364,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 }
 
-function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder | null) {
+function onUploadRequested(files: File[], folder?: Misskey.entities.DriveFolder | null) {
 	os.launchUploader(files, {
 		folderId: folder?.id ?? null,
 	});
@@ -708,7 +699,7 @@ useGlobalEvent('driveFoldersDeleted', (folders) => {
 	}
 });
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['drive']> | null = null;
 
 onMounted(() => {
 	if (store.s.realtimeMode) {

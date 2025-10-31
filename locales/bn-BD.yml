@@ -848,6 +848,9 @@ sourceCode: "সোর্স কোড"
 flip: "উল্টান"
 postForm: "নোট লিখুন"
 information: "আপনার সম্পর্কে"
+inMinutes: "মিনিট"
+inDays: "দিন"
+widgets: "উইজেটগুলি"
 _chat:
   invitations: "আমন্ত্রণ"
   noHistory: "কোনো ইতিহাস নেই"
@@ -1349,3 +1352,19 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "সবগুলো"
   searchScopeLocal: "স্থানীয়"
+_watermarkEditor:
+  opacity: "অস্বচ্ছতা"
+  scale: "আকার"
+  text: "লেখা"
+  image: "ছবি"
+  advanced: "উন্নত"
+_imageEffector:
+  _fxProps:
+    scale: "আকার"
+    size: "আকার"
+    color: "রং"
+    opacity: "অস্বচ্ছতা"
+    lightness: "উজ্জ্বল করুন"
+_qr:
+  showTabTitle: "প্রদর্শন"
+  raw: "লেখা"

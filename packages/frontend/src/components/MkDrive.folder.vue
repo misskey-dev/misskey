@@ -282,8 +282,8 @@ function onContextmenu(ev: MouseEvent) {
 	menu = [{
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',
-		action: () => {
-			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
+		action: async () => {
+			const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkDriveWindow.vue').then(x => x.default), {
 				initialFolder: props.folder,
 			}, {
 				closed: () => dispose(),

@@ -57,6 +57,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
+import { genId } from '@/utility/id.js';
 
 const connection = markRaw(useStream().useChannel('queueStats'));
 
@@ -80,10 +81,10 @@ function onStats(stats: Misskey.entities.QueueStats) {
 	delayed.value = stats[props.domain].delayed;
 	waiting.value = stats[props.domain].waiting;
 
-	chartProcess.value.pushData(stats[props.domain].activeSincePrevTick);
-	chartActive.value.pushData(stats[props.domain].active);
-	chartDelayed.value.pushData(stats[props.domain].delayed);
-	chartWaiting.value.pushData(stats[props.domain].waiting);
+	if (chartProcess.value != null) chartProcess.value.pushData(stats[props.domain].activeSincePrevTick);
+	if (chartActive.value != null) chartActive.value.pushData(stats[props.domain].active);
+	if (chartDelayed.value != null) chartDelayed.value.pushData(stats[props.domain].delayed);
+	if (chartWaiting.value != null) chartWaiting.value.pushData(stats[props.domain].waiting);
 }
 
 function onStatsLog(statsLog: Misskey.entities.QueueStatsLog) {
@@ -99,10 +100,10 @@ function onStatsLog(statsLog: Misskey.entities.QueueStatsLog) {
 		dataWaiting.push(stats[props.domain].waiting);
 	}
 
-	chartProcess.value.setData(dataProcess);
-	chartActive.value.setData(dataActive);
-	chartDelayed.value.setData(dataDelayed);
-	chartWaiting.value.setData(dataWaiting);
+	if (chartProcess.value != null) chartProcess.value.setData(dataProcess);
+	if (chartActive.value != null) chartActive.value.setData(dataActive);
+	if (chartDelayed.value != null) chartDelayed.value.setData(dataDelayed);
+	if (chartWaiting.value != null) chartWaiting.value.setData(dataWaiting);
 }
 
 onMounted(() => {
@@ -113,7 +114,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
 		length: 200,
 	});
 });
