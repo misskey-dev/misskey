@@ -10,6 +10,7 @@ import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
 import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
+import type { WatermarkPreset } from '@/utility/watermark.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -85,7 +86,7 @@ export type UploaderItem = {
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
-	watermarkPresetId: string | null; // そのままpresetを入れてもいいのでは？
+	watermarkPreset: WatermarkPreset | null;
 	isSensitive?: boolean;
 	caption?: string | null;
 	abort?: (() => void) | null;
@@ -149,7 +150,7 @@ export function useUploader(options: {
 			uploaded: null,
 			uploadFailed: false,
 			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
-			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
+			watermarkPreset: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null,
 			file: markRaw(file),
 		});
 		const reactiveItem = items.value.at(-1)!;
@@ -287,8 +288,8 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changeWatermarkPreset(presetId: string | null) {
-				item.watermarkPresetId = presetId;
+			function changeWatermarkPreset(preset: WatermarkPreset | null) {
+				item.watermarkPreset = preset;
 				preprocess(item).then(() => {
 					triggerRef(items);
 				});
@@ -297,20 +298,20 @@ export function useUploader(options: {
 			menu.push({
 				icon: 'ti ti-copyright',
 				text: i18n.ts.watermark,
-				caption: computed(() => item.watermarkPresetId == null ? null : prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId)?.name),
+				caption: computed(() => item.watermarkPreset == null ? null : item.watermarkPreset.name),
 				type: 'parent',
 				children: [{
 					type: 'radioOption',
 					text: i18n.ts.none,
-					active: computed(() => item.watermarkPresetId == null),
+					active: computed(() => item.watermarkPreset == null),
 					action: () => changeWatermarkPreset(null),
 				}, {
 					type: 'divider',
 				}, ...prefer.s.watermarkPresets.map(preset => ({
 					type: 'radioOption' as const,
 					text: preset.name,
-					active: computed(() => item.watermarkPresetId === preset.id),
-					action: () => changeWatermarkPreset(preset.id),
+					active: computed(() => item.watermarkPreset?.id === preset.id),
+					action: () => changeWatermarkPreset(preset),
 				})), ...(prefer.s.watermarkPresets.length > 0 ? [{
 					type: 'divider' as const,
 				}] : []), {
@@ -349,19 +350,18 @@ export function useUploader(options: {
 			menu.push({
 				icon: 'ti ti-device-ipad-horizontal',
 				text: i18n.ts.frame,
-				//caption: computed(() => item.watermarkPresetId == null ? null : prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId)?.name),
 				type: 'parent',
 				children: [{
 					type: 'radioOption',
 					text: i18n.ts.none,
-					active: computed(() => item.watermarkPresetId == null),
+					active: computed(() => item.watermarkPreset == null),
 					action: () => changePreset(null),
 				}, {
 					type: 'divider',
 				}, ...prefer.s.watermarkPresets.map(preset => ({
 					type: 'radioOption' as const,
 					text: preset.name,
-					active: computed(() => item.watermarkPresetId === preset.id),
+					active: computed(() => item.watermarkPreset?.id === preset.id),
 					action: () => changePreset(preset.id),
 				})), ...(prefer.s.watermarkPresets.length > 0 ? [{
 					type: 'divider' as const,
@@ -599,9 +599,8 @@ export function useUploader(options: {
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
-		const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
-		if (needsWatermark && preset != null) {
+		const needsWatermark = item.watermarkPreset != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
+		if (needsWatermark && item.watermarkPreset != null) {
 			const canvas = window.document.createElement('canvas');
 			const renderer = new WatermarkRenderer({
 				canvas: canvas,
@@ -610,7 +609,7 @@ export function useUploader(options: {
 				image: imageBitmap,
 			});
 
-			await renderer.setLayersAndRender(preset.layers);
+			await renderer.setLayersAndRender(item.watermarkPreset.layers);
 
 			preprocessedFile = await new Promise<Blob>((resolve) => {
 				canvas.toBlob((blob) => {
