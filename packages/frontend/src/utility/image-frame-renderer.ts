@@ -28,6 +28,12 @@ export type ImageFrameParams = {
 	borderRadius: number; // TODO
 };
 
+export type ImageFramePreset = {
+	id: string;
+	name: string;
+	params: ImageFrameParams;
+};
+
 export class ImageFrameRenderer {
 	private effector: ImageEffector<typeof FXS>;
 	private image: HTMLImageElement | ImageBitmap;

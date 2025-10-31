@@ -11,6 +11,7 @@ import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue'
 import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
 import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -87,6 +88,7 @@ export type UploaderItem = {
 	preprocessedFile?: Blob | null;
 	file: File;
 	watermarkPreset: WatermarkPreset | null;
+	imageFramePreset: ImageFramePreset | null;
 	isSensitive?: boolean;
 	caption?: string | null;
 	abort?: (() => void) | null;
@@ -151,6 +153,7 @@ export function useUploader(options: {
 			uploadFailed: false,
 			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
 			watermarkPreset: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null,
+			imageFramePreset: uploaderFeatures.value.imageEditing ? (prefer.s.imageFramePresets.find(p => p.id === prefer.s.defaultImageFramePresetId) ?? null) : null,
 			file: markRaw(file),
 		});
 		const reactiveItem = items.value.at(-1)!;
@@ -340,8 +343,8 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changePreset(presetId: string | null) {
-				item.imageFramePresetId = presetId;
+			function changePreset(preset: ImageFramePreset | null) {
+				item.imageFramePreset = preset;
 				preprocess(item).then(() => {
 					triggerRef(items);
 				});
@@ -354,16 +357,16 @@ export function useUploader(options: {
 				children: [{
 					type: 'radioOption',
 					text: i18n.ts.none,
-					active: computed(() => item.watermarkPreset == null),
+					active: computed(() => item.imageFramePreset == null),
 					action: () => changePreset(null),
 				}, {
 					type: 'divider',
-				}, ...prefer.s.watermarkPresets.map(preset => ({
+				}, ...prefer.s.imageFramePresets.map(preset => ({
 					type: 'radioOption' as const,
 					text: preset.name,
-					active: computed(() => item.watermarkPreset?.id === preset.id),
-					action: () => changePreset(preset.id),
-				})), ...(prefer.s.watermarkPresets.length > 0 ? [{
+					active: computed(() => item.imageFramePreset?.id === preset.id),
+					action: () => changePreset(preset),
+				})), ...(prefer.s.imageFramePresets.length > 0 ? [{
 					type: 'divider' as const,
 				}] : []), {
 					type: 'button',
