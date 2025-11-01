@@ -30563,6 +30563,8 @@ export interface operations {
             content: {
                 'application/json': {
                     query: string;
+                    rangeStartAt?: number | null;
+                    rangeEndAt?: number | null;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
