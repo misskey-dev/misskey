@@ -50,7 +50,7 @@
 		"execa": "9.6.0",
 		"frontend-shared": "workspace:*",
 		"icons-subsetter": "workspace:*",
-		"idb-keyval": "6.2.2",
+		"idb": "8.0.3",
 		"insert-text-at-cursor": "0.3.0",
 		"ios-haptics": "0.1.4",
 		"is-file-animated": "1.0.2",
