@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.root">
 		<div :class="$style.container">
 			<div :class="$style.preview">
-				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown="onImagePointerdown"></canvas>
+				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown.prevent.stop="onImagePointerdown"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
 					<div class="_acrylic" :class="$style.editControls">
@@ -448,6 +448,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	margin: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
+	touch-action: none;
 }
 
 .controls {
