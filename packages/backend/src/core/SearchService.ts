@@ -147,8 +147,8 @@ export class SearchService {
 	}
 
 	@bindThis
-	private async addDocument(note: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'channelId' | 'cw' | 'text' | 'tags'>) {
-		return this.meilisearchNoteIndex?.addDocuments([{
+	private async addDocuments(notes: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'channelId' | 'cw' | 'text' | 'tags'>[]) {
+		return this.meilisearchNoteIndex?.addDocuments(notes.map(note => ({
 			id: note.id,
 			createdAt: this.idService.parse(note.id).date.getTime(),
 			userId: note.userId,
@@ -157,7 +157,7 @@ export class SearchService {
 			cw: note.cw,
 			text: note.text,
 			tags: note.tags,
-		}], {
+		})), {
 			primaryKey: 'id',
 		});
 	}
@@ -183,7 +183,7 @@ export class SearchService {
 			}
 		}
 
-		await this.addDocument(note);
+		await this.addDocuments([note]);
 	}
 
 	@bindThis
@@ -271,13 +271,12 @@ export class SearchService {
 				break;
 			}
 
-			for (const note of notes) {
-				try {
-					await this.addDocument(note);
-				} catch (err) {
-					this.logger.error(`-- Failed to index note: ${note.id}`, err as Error);
-					errorNoteIds.push(note.id);
-				}
+			try {
+				await this.addDocuments(notes);
+			} catch (err) {
+				this.logger.error('-- Failed to index note', err as Error);
+				errorNoteIds.push(...notes.map(n => n.id));
+				break;
 			}
 
 			lastNoteId = notes[notes.length - 1].id;
