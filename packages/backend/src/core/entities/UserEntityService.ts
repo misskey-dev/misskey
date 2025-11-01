@@ -512,8 +512,8 @@ export class UserEntityService implements OnModuleInit {
 			} : undefined) : undefined,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
-			// パフォーマンス上の理由でローカルユーザーのみ
-			badgeRoles: user.host == null ? this.roleService.getUserBadgeRoles(user.id).then((rs) => rs
+			// パフォーマンス上の理由で、明示的に設定しない場合はローカルユーザーのみ取得
+			badgeRoles: (this.meta.showRoleBadgesOfRemoteUsers || user.host == null) ? this.roleService.getUserBadgeRoles(user.id).then((rs) => rs
 				.filter((r) => r.isPublic || iAmModerator)
 				.sort((a, b) => b.displayOrder - a.displayOrder)
 				.map((r) => ({

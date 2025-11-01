@@ -33,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<!-- クライアントで検出するMIME typeとサーバーで検出するMIME typeが異なる場合があり、混乱の元になるのでとりあえず隠しとく -->
 			<!-- https://github.com/misskey-dev/misskey/issues/16091 -->
+			<!-- https://github.com/misskey-dev/misskey/issues/16663 -->
 			<!--<div>{{ i18n.ts._uploader.allowedTypes }}: {{ $i.policies.uploadableFileTypes.join(', ') }}</div>-->
 		</div>
 	</div>

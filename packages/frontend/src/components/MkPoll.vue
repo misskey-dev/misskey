@@ -57,15 +57,8 @@ const remaining = computed(() => {
 	return Math.floor(Math.max(expiresAtTime.value - now.value, 0) / 1000);
 });
 
-const remainingWatchStop = watch(remaining, (to) => {
-	if (to <= 0) {
-		showResult.value = true;
-		remainingWatchStop();
-	}
-}, { immediate: true });
-
 const total = computed(() => sum(props.choices.map(x => x.votes)));
-const closed = computed(() => remaining.value === 0);
+const closed = computed(() => props.expiresAt != null && remaining.value <= 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
 const timer = computed(() => i18n.tsx._poll[
 	remaining.value >= 86400 ? 'remainingDays' :
@@ -78,7 +71,16 @@ const timer = computed(() => i18n.tsx._poll[
 	d: Math.floor(remaining.value / 86400),
 }));
 
-const showResult = ref(props.readOnly || isVoted.value);
+const showResult = ref(props.readOnly || isVoted.value || closed.value);
+
+if (!closed.value) {
+	const closedWatchStop = watch(closed, (isNowClosed) => {
+		if (isNowClosed) {
+			showResult.value = true;
+			closedWatchStop();
+		}
+	});
+}
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
