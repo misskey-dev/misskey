@@ -4,14 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<Transition
-			:enterActiveClass="defaultStore.state.animation ? $style.fadeEnterActive : ''"
-			:leaveActiveClass="defaultStore.state.animation ? $style.fadeLeaveActive : ''"
-			:enterFromClass="defaultStore.state.animation ? $style.fadeEnterFrom : ''"
-			:leaveToClass="defaultStore.state.animation ? $style.fadeLeaveTo : ''"
+			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
+			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
+			:enterFromClass="prefer.s.animation ? $style.fadeEnterFrom : ''"
+			:leaveToClass="prefer.s.animation ? $style.fadeLeaveTo : ''"
 			mode="out-in"
 		>
 			<div v-if="announcement" :key="announcement.id" class="_panel" :class="$style.announcement">
@@ -24,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
 						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 					</span>
-					<Mfm :text="announcement.title"/>
+					<Mfm :text="announcement.title" class="_selectable"/>
 				</div>
 				<div :class="$style.content">
-					<Mfm :text="announcement.text"/>
+					<Mfm :text="announcement.text" class="_selectable"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 					<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
 						{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
@@ -40,11 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 				</div>
 			</div>
-			<MkError v-else-if="error" @retry="fetch()"/>
+			<MkError v-else-if="error" @retry="_fetch_()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -52,11 +51,12 @@ import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccountPartial } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const props = defineProps<{
 	announcementId: string;
@@ -66,7 +66,7 @@ const announcement = ref<Misskey.entities.Announcement | null>(null);
 const error = ref<any>(null);
 const path = computed(() => props.announcementId);
 
-function fetch() {
+function _fetch_() {
 	announcement.value = null;
 	misskeyApi('announcements/show', {
 		announcementId: props.announcementId,
@@ -90,19 +90,19 @@ async function read(target: Misskey.entities.Announcement): Promise<void> {
 	target.isRead = true;
 	await misskeyApi('i/read-announcement', { announcementId: target.id });
 	if ($i) {
-		updateAccountPartial({
+		updateCurrentAccountPartial({
 			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== target.id),
 		});
 	}
 }
 
-watch(() => path.value, fetch, { immediate: true });
+watch(() => path.value, _fetch_, { immediate: true });
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: announcement.value ? announcement.value.title : i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));

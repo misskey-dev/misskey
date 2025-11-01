@@ -37,7 +37,6 @@ html
 		link(rel='prefetch' href=serverErrorImageUrl)
 		link(rel='prefetch' href=infoImageUrl)
 		link(rel='prefetch' href=notFoundImageUrl)
-		link(rel='modulepreload' href=`/vite/${entry.file}`)
 
 		if !config.frontendManifestExists
 				script(type="module" src="/vite/@vite/client")
@@ -69,7 +68,7 @@ html
 
 		script.
 			var VERSION = "#{version}";
-			var CLIENT_ENTRY = "#{entry.file}";
+			var CLIENT_ENTRY = !{JSON.stringify(entry.file)};
 
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson

@@ -35,7 +35,7 @@ describe('Abuse report', () => {
 			const reportsInB = await bModerator.client.request('admin/abuse-user-reports', {});
 			const reportInB = reportsInB.filter(report => report.comment.includes(comment))[0];
 			// NOTE: reporter is not Alice, and is not moderator in A
-			strictEqual(reportInB.reporter.url, 'https://a.test/@instance.actor');
+			strictEqual(reportInB.reporter.url, 'https://a.test/@system.actor');
 			strictEqual(reportInB.targetUserId, bob.id);
 
 			// NOTE: cannot forward multiple times

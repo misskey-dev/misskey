@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-if="$i" :class="$style.root">
 	<MkA
 		v-for="announcement in $i.unreadAnnouncements.filter(x => x.display === 'banner')"
 		:key="announcement.id"
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 </script>
 
 <style lang="scss" module>

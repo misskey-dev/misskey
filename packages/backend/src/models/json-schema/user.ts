@@ -65,7 +65,7 @@ export const packedUserLiteSchema = {
 		avatarUrl: {
 			type: 'string',
 			format: 'url',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		avatarBlurhash: {
 			type: 'string',
@@ -358,6 +358,15 @@ export const packedUserDetailedNotMeOnlySchema = {
 			nullable: false, optional: false,
 			enum: ['public', 'followers', 'private'],
 		},
+		chatScope: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['everyone', 'following', 'followers', 'mutual', 'none'],
+		},
+		canChat: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
 		roles: {
 			type: 'array',
 			nullable: false, optional: false,
@@ -456,11 +465,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		isModerator: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		isAdmin: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 		},
 		injectFeaturedNote: {
 			type: 'boolean',
@@ -540,6 +549,10 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		hasUnreadChatMessages: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
 		hasUnreadNotification: {
 			type: 'boolean',
 			nullable: false, optional: false,
@@ -578,7 +591,7 @@ export const packedMeDetailedOnlySchema = {
 		},
 		mutedInstances: {
 			type: 'array',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
 			items: {
 				type: 'string',
 				nullable: false, optional: false,
@@ -596,9 +609,12 @@ export const packedMeDetailedOnlySchema = {
 				quote: { optional: true, ...notificationRecieveConfig },
 				reaction: { optional: true, ...notificationRecieveConfig },
 				pollEnded: { optional: true, ...notificationRecieveConfig },
+				scheduledNotePosted: { optional: true, ...notificationRecieveConfig },
+				scheduledNotePostFailed: { optional: true, ...notificationRecieveConfig },
 				receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
 				followRequestAccepted: { optional: true, ...notificationRecieveConfig },
 				roleAssigned: { optional: true, ...notificationRecieveConfig },
+				chatRoomInvitationReceived: { optional: true, ...notificationRecieveConfig },
 				achievementEarned: { optional: true, ...notificationRecieveConfig },
 				app: { optional: true, ...notificationRecieveConfig },
 				test: { optional: true, ...notificationRecieveConfig },
@@ -616,18 +632,7 @@ export const packedMeDetailedOnlySchema = {
 			type: 'array',
 			nullable: false, optional: false,
 			items: {
-				type: 'object',
-				nullable: false, optional: false,
-				properties: {
-					name: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					unlockedAt: {
-						type: 'number',
-						nullable: false, optional: false,
-					},
-				},
+				ref: 'Achievement',
 			},
 		},
 		loggedInDays: {

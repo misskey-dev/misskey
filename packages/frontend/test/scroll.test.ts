@@ -12,10 +12,10 @@ describe('Scroll', () => {
 		/* 動作しない(happy-domのバグ？)
 		test('Initial onScrollTop callback for connected elements', () => {
 			const { document } = new Window();
-			const div = document.createElement('div');
+			const div = window.document.createElement('div');
 			assert.strictEqual(div.scrollTop, 0);
 
-			document.body.append(div);
+			window.document.body.append(div);
 
 			let called = false;
 			onScrollTop(div as any as HTMLElement, () => called = true);
@@ -26,7 +26,7 @@ describe('Scroll', () => {
 
 		test('No onScrollTop callback for disconnected elements', () => {
 			const { document } = new Window();
-			const div = document.createElement('div');
+			const div = window.document.createElement('div');
 			assert.strictEqual(div.scrollTop, 0);
 
 			let called = false;
@@ -40,10 +40,10 @@ describe('Scroll', () => {
 		/* 動作しない(happy-domのバグ？)
 		test('Initial onScrollBottom callback for connected elements', () => {
 			const { document } = new Window();
-			const div = document.createElement('div');
+			const div = window.document.createElement('div');
 			assert.strictEqual(div.scrollTop, 0);
 
-			document.body.append(div);
+			window.document.body.append(div);
 
 			let called = false;
 			onScrollBottom(div as any as HTMLElement, () => called = true);
@@ -54,7 +54,7 @@ describe('Scroll', () => {
 
 		test('No onScrollBottom callback for disconnected elements', () => {
 			const { document } = new Window();
-			const div = document.createElement('div');
+			const div = window.document.createElement('div');
 			assert.strictEqual(div.scrollTop, 0);
 
 			let called = false;

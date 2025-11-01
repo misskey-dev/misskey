@@ -118,21 +118,25 @@ export class MiUser {
 	@JoinColumn()
 	public banner: MiDriveFile | null;
 
+	// avatarId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは avatarId の non-null チェックをすること
 	@Column('varchar', {
-		length: 512, nullable: true,
+		length: 1024, nullable: true,
 	})
 	public avatarUrl: string | null;
 
+	// bannerId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは bannerId の non-null チェックをすること
 	@Column('varchar', {
 		length: 512, nullable: true,
 	})
 	public bannerUrl: string | null;
 
+	// avatarId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは avatarId の non-null チェックをすること
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
 	public avatarBlurhash: string | null;
 
+	// bannerId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは bannerId の non-null チェックをすること
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
@@ -184,12 +188,6 @@ export class MiUser {
 	})
 	public isCat: boolean;
 
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether the User is the root.',
-	})
-	public isRoot: boolean;
-
 	@Index()
 	@Column('boolean', {
 		default: true,
@@ -230,6 +228,17 @@ export class MiUser {
 		length: 128, array: true, default: '{}',
 	})
 	public emojis: string[];
+
+	// チャットを許可する相手
+	// everyone: 誰からでも
+	// followers: フォロワーのみ
+	// following: フォローしているユーザーのみ
+	// mutual: 相互フォローのみ
+	// none: 誰からも受け付けない
+	@Column('varchar', {
+		length: 128, default: 'mutual',
+	})
+	public chatScope: 'everyone' | 'followers' | 'following' | 'mutual' | 'none';
 
 	@Index()
 	@Column('varchar', {
@@ -288,24 +297,24 @@ export class MiUser {
 export type MiLocalUser = MiUser & {
 	host: null;
 	uri: null;
-}
+};
 
 export type MiPartialLocalUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: null;
 	uri: null;
-}
+};
 
 export type MiRemoteUser = MiUser & {
 	host: string;
 	uri: string;
-}
+};
 
 export type MiPartialRemoteUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: string;
 	uri: string;
-}
+};
 
 export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
 export const passwordSchema = { type: 'string', minLength: 1 } as const;

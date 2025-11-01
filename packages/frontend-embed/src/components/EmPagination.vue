@@ -34,10 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
+import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
-import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
+import { onScrollTop, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scrollInContainer, isTailVisible, isHeadVisible } from '@@/js/scroll.js';
+import type { ComputedRef } from 'vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
@@ -62,8 +63,6 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 	reversed?: boolean;
 
 	offsetMode?: boolean;
-
-	pageEl?: HTMLElement;
 };
 
 type MisskeyEntity = {
@@ -135,8 +134,7 @@ const isBackTop = ref(false);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 
-const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
-const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);
+const scrollableElement = computed(() => rootEl.value ? getScrollContainer(rootEl.value) : window.document.body);
 
 const visibility = useDocumentVisibility();
 
@@ -167,11 +165,11 @@ watch(rootEl, () => {
 	});
 });
 
-watch([backed, contentEl], () => {
+watch([backed, rootEl], () => {
 	if (!backed.value) {
-		if (!contentEl.value) return;
+		if (!rootEl.value) return;
 
-		scrollRemove.value = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl.value, executeQueue, TOLERANCE);
+		scrollRemove.value = (props.pagination.reversed ? onScrollBottom : onScrollTop)(rootEl.value, executeQueue, TOLERANCE);
 	} else {
 		if (scrollRemove.value) scrollRemove.value();
 		scrollRemove.value = null;
@@ -254,7 +252,7 @@ const fetchMore = async (): Promise<void> => {
 
 			return nextTick(() => {
 				if (scrollableElement.value) {
-					scroll(scrollableElement.value, { top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight), behavior: 'instant' });
+					scrollInContainer(scrollableElement.value, { top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight), behavior: 'instant' });
 				} else {
 					window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
 				}
@@ -344,7 +342,7 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl.value!, TOLERANCE);
+const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isTailVisible : isHeadVisible)(rootEl.value!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
@@ -355,7 +353,7 @@ watch(visibility, () => {
 		BACKGROUND_PAUSE_WAIT_SEC * 1000);
 	} else { // 'visible'
 		if (timerForSetPause) {
-			clearTimeout(timerForSetPause);
+			window.clearTimeout(timerForSetPause);
 			timerForSetPause = null;
 		} else {
 			isPausingUpdate = false;
@@ -442,18 +440,18 @@ onDeactivated(() => {
 });
 
 function toBottom() {
-	scrollToBottom(contentEl.value!);
+	scrollToBottom(rootEl.value!);
 }
 
 onBeforeMount(() => {
 	init().then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
-				setTimeout(toBottom, 800);
+				window.setTimeout(toBottom, 800);
 
 				// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
 				// more = trueを遅らせる
-				setTimeout(() => {
+				window.setTimeout(() => {
 					moreFetching.value = false;
 				}, 2000);
 			});
@@ -463,11 +461,11 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
 	if (timerForSetPause) {
-		clearTimeout(timerForSetPause);
+		window.clearTimeout(timerForSetPause);
 		timerForSetPause = null;
 	}
 	if (preventAppearFetchMoreTimer.value) {
-		clearTimeout(preventAppearFetchMoreTimer.value);
+		window.clearTimeout(preventAppearFetchMoreTimer.value);
 		preventAppearFetchMoreTimer.value = null;
 	}
 	scrollObserver.value?.disconnect();

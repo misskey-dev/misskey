@@ -156,8 +156,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		this.queryService.generateVisibilityQuery(query, me);
-		if (me) this.queryService.generateMutedUserQuery(query, me);
-		if (me) this.queryService.generateBlockedUserQuery(query, me);
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
 		if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 		if (ps.withFiles) {

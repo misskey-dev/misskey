@@ -129,6 +129,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimelines,
 				useDbFallback: true,
 				ignoreAuthorFromMute: true,
+				ignoreAuthorFromInstanceBlock: true,
+				ignoreAuthorFromUserSuspension: true,
 				excludeReplies: ps.withChannelNotes && !ps.withReplies, // userTimelineWithChannel may include replies
 				excludeNoFiles: ps.withChannelNotes && ps.withFiles, // userTimelineWithChannel may include notes without files
 				excludePureRenotes: !ps.withRenotes,
@@ -184,10 +186,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		if (me) {
-			this.queryService.generateMutedUserQuery(query, me, { id: ps.userId });
-			this.queryService.generateBlockedUserQuery(query, me);
-		}
+		this.queryService.generateBaseNoteFilteringQuery(query, me, {
+			excludeAuthor: true,
+			excludeUserFromMute: ps.userId,
+		});
 
 		if (ps.withFiles) {
 			query.andWhere('note.fileIds != \'{}\'');

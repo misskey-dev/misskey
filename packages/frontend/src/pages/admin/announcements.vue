@@ -4,17 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="900">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
 			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
-			<MkSelect v-model="announcementsStatus">
+			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
 				<template #label>{{ i18n.ts.filter }}</template>
-				<option value="active">{{ i18n.ts.active }}</option>
-				<option value="archived">{{ i18n.ts.archived }}</option>
 			</MkSelect>
 
 			<MkLoading v-if="loading"/>
@@ -80,13 +77,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</template>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -94,13 +90,24 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { genId } from '@/utility/id.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
-const announcementsStatus = ref<'active' | 'archived'>('active');
+const {
+	model: announcementsStatus,
+	def: announcementsStatusDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.active, value: 'active' },
+		{ label: i18n.ts.archived, value: 'archived' },
+	],
+	initialValue: 'active',
+});
 
 const loading = ref(true);
 const loadingMore = ref(false);
@@ -119,7 +126,7 @@ watch(announcementsStatus, (to) => {
 
 function add() {
 	announcements.value.unshift({
-		_id: Math.random().toString(36),
+		_id: genId(),
 		id: null,
 		title: 'New announcement',
 		text: '',
@@ -199,7 +206,7 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));

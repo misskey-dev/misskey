@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div
-		v-for="x in defaultStore.reactiveState.statusbars.value" :key="x.id" :class="[$style.item, { [$style.black]: x.black,
+		v-for="x in prefer.r.statusbars.value" :key="x.id" :class="[$style.item, { [$style.black]: x.black,
 			[$style.verySmall]: x.size === 'verySmall',
 			[$style.small]: x.size === 'small',
 			[$style.large]: x.size === 'large',
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<span :class="$style.name">{{ x.name }}</span>
 		<XRss v-if="x.type === 'rss'" :class="$style.body" :refreshIntervalSec="x.props.refreshIntervalSec" :marqueeDuration="x.props.marqueeDuration" :marqueeReverse="x.props.marqueeReverse" :display="x.props.display" :url="x.props.url" :shuffle="x.props.shuffle"/>
-		<XFederation v-else-if="x.type === 'federation'" :class="$style.body" :refreshIntervalSec="x.props.refreshIntervalSec" :marqueeDuration="x.props.marqueeDuration" :marqueeReverse="x.props.marqueeReverse" :display="x.props.display" :colored="x.props.colored"/>
+		<XFederation v-else-if="x.type === 'federation' && instance.federation !== 'none'" :class="$style.body" :refreshIntervalSec="x.props.refreshIntervalSec" :marqueeDuration="x.props.marqueeDuration" :marqueeReverse="x.props.marqueeReverse" :display="x.props.display" :colored="x.props.colored"/>
 		<XUserList v-else-if="x.type === 'userList'" :class="$style.body" :refreshIntervalSec="x.props.refreshIntervalSec" :marqueeDuration="x.props.marqueeDuration" :marqueeReverse="x.props.marqueeReverse" :display="x.props.display" :userListId="x.props.userListId"/>
 	</div>
 </div>
@@ -23,7 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import { defaultStore } from '@/store.js';
+import { instance } from '@/instance.js';
+import { prefer } from '@/preferences.js';
 const XRss = defineAsyncComponent(() => import('./statusbar-rss.vue'));
 const XFederation = defineAsyncComponent(() => import('./statusbar-federation.vue'));
 const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue'));

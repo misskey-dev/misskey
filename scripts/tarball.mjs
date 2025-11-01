@@ -9,7 +9,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import glob from 'fast-glob';
 import walk from 'ignore-walk';
-import Pack from 'tar/lib/pack.js';
+import { Pack } from 'tar/pack';
 import meta from '../package.json' with { type: "json" };
 
 const cwd = fileURLToPath(new URL('..', import.meta.url));

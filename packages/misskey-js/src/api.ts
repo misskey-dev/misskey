@@ -44,7 +44,7 @@ export class APIClient {
 		credential?: APIClient['credential'];
 		fetch?: APIClient['fetch'] | null | undefined;
 	}) {
-		this.origin = opts.origin;
+		this.origin = opts.origin.replace(/\/$/, '');
 		this.credential = opts.credential;
 		// ネイティブ関数をそのまま変数に代入して使おうとするとChromiumではIllegal invocationエラーが発生するため、
 		// 環境で実装されているfetchを使う場合は無名関数でラップして使用する
@@ -77,7 +77,7 @@ export class APIClient {
 
 			if (mediaType === 'application/json') {
 				payload = JSON.stringify({
-					...params,
+					...(this.assertIsRecord(params) ? params : {}),
 					i: credential !== undefined ? credential : this.credential,
 				});
 			} else if (mediaType === 'multipart/form-data') {
@@ -106,7 +106,7 @@ export class APIClient {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
 				body: payload,
-				headers: {
+				headers: mediaType === 'multipart/form-data' ? {} : {
 					'Content-Type': mediaType,
 				},
 				credentials: 'omit',

@@ -10,8 +10,8 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -21,6 +21,8 @@
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
@@ -34,6 +36,7 @@
 		],
 		"types": [
 			"vite/client",
+			"vite-plugin-glsl/ext",
 			"vitest/importMeta",
 		],
 		"lib": [
@@ -52,6 +55,6 @@
 		"./@types/**/*.ts"
 	],
 	"exclude": [
-		".storybook/**/*"
+		"./src/**/*.stories.ts"
 	]
 }

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import type { Directive } from 'vue';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
-export default {
-	mounted(src, binding, vn) {
+export const panelDirective = {
+	mounted(src) {
 		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
-		const myBg = getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-panel');
+		const myBg = getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel');
 
 		if (parentBg === myBg) {
 			src.style.backgroundColor = 'var(--MI_THEME-bg)';
@@ -18,4 +18,4 @@ export default {
 			src.style.backgroundColor = 'var(--MI_THEME-panel)';
 		}
 	},
-} as Directive;
+} as Directive<HTMLElement>;

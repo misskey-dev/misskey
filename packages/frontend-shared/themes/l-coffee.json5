@@ -18,5 +18,8 @@
 		mention: '@accent',
 		mentionMe: 'rgb(170, 149, 98)',
 		hashtag: '@accent',
+		error: '#db9184',
+		warn: '#dbc184',
+		success: '#a3c975',
 	},
 }
