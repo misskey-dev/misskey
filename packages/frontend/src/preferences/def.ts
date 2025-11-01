@@ -6,6 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
 import { isTouchUsing } from '@/utility/touch.js';
+import { prefersReducedMotion } from '@@/js/config.js';
 import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
@@ -209,10 +210,10 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	animation: {
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	animatedMfm: {
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	advancedMfm: {
 		default: true,
@@ -230,7 +231,7 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	disableShowingAnimatedImages: {
-		default: window.matchMedia('(prefers-reduced-motion)').matches,
+		default: prefersReducedMotion,
 	},
 	emojiStyle: {
 		default: 'twemoji', // twemoji / fluentEmoji / native
