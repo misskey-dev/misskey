@@ -1396,6 +1396,7 @@ scheduled: "予約"
 widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
+calendarInvalidDateError: "入力が不正なためカレンダーを表示できません"
 
 _compression:
   _quality:
@@ -2508,6 +2509,15 @@ _weekday:
   thursday: "木曜日"
   friday: "金曜日"
   saturday: "土曜日"
+
+_weekdayShort:
+  sunday: "日"
+  monday: "月"
+  tuesday: "火"
+  wednesday: "水"
+  thursday: "木"
+  friday: "金"
+  saturday: "土"
 
 _widgets:
   profile: "プロフィール"

@@ -9,6 +9,7 @@ import { lang } from '@@/js/config.js';
 export const versatileLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 
 let _dateTimeFormat: Intl.DateTimeFormat;
+
 try {
 	_dateTimeFormat = new Intl.DateTimeFormat(versatileLang, {
 		year: 'numeric',
@@ -32,6 +33,7 @@ try {
 		second: 'numeric',
 	});
 }
+
 export const dateTimeFormat = _dateTimeFormat;
 
 export const timeZone = dateTimeFormat.resolvedOptions().timeZone;
