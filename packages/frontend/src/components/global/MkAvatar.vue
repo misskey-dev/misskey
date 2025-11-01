@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars, [$style.mochimochi]: isMochimochi }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<MkImgWithBlurhash v-if="prefer.s.enableHighQualityImagePlaceholders" :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<img v-else :class="$style.inner" :src="url" alt="" decoding="async" style="pointer-events: none;"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
@@ -55,6 +55,7 @@ import { prefer } from '@/preferences.js';
 
 const animation = ref(prefer.s.animation);
 const squareAvatars = ref(prefer.s.squareAvatars);
+const isMochimochi = ref(false);
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -91,6 +92,13 @@ const url = computed(() => {
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
 	emit('click', ev);
+	// Trigger mochimochi animation
+	if (animation.value) {
+		isMochimochi.value = true;
+		setTimeout(() => {
+			isMochimochi.value = false;
+		}, 600);
+	}
 }
 
 function getDecorationUrl(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
@@ -343,5 +351,30 @@ watch(() => props.user.avatarBlurhash, () => {
 	50% {
 		filter: brightness(1);
 	}
+}
+
+@keyframes mochimochi {
+	0% {
+		transform: scale(1, 1);
+	}
+	20% {
+		transform: scale(0.9, 1.1);
+	}
+	40% {
+		transform: scale(1.1, 0.9);
+	}
+	60% {
+		transform: scale(0.95, 1.05);
+	}
+	80% {
+		transform: scale(1.02, 0.98);
+	}
+	100% {
+		transform: scale(1, 1);
+	}
+}
+
+.mochimochi {
+	animation: mochimochi 0.6s ease-in-out;
 }
 </style>
