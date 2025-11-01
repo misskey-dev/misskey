@@ -503,7 +503,7 @@ function refreshGridItems() {
 		name: it.name,
 		host: it.host ?? '',
 		category: it.category ?? '',
-		aliases: it.aliases.join(','),
+		aliases: it.aliases.join(' '),
 		license: it.license ?? '',
 		isSensitive: it.isSensitive,
 		localOnly: it.localOnly,
