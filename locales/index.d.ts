@@ -5605,6 +5605,52 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * フレーム
+     */
+    "frame": string;
+    "_imageFrameEditor": {
+        /**
+         * フレームの編集
+         */
+        "title": string;
+        /**
+         * 画像にフレームやメタデータを含んだラベルを追加して装飾できます。
+         */
+        "tip": string;
+        /**
+         * フチの幅
+         */
+        "borderThickness": string;
+        /**
+         * ラベルの幅
+         */
+        "labelThickness": string;
+        /**
+         * ラベルのスケール
+         */
+        "labelScale": string;
+        /**
+         * 中央揃え
+         */
+        "centered": string;
+        /**
+         * キャプション(大)
+         */
+        "captionMain": string;
+        /**
+         * キャプション(小)
+         */
+        "captionSub": string;
+        /**
+         * 利用可能な変数
+         */
+        "availableVariables": string;
+        /**
+         * 二次元コード
+         */
+        "withQrCode": string;
+    };
     "_compression": {
         "_quality": {
             /**
@@ -12318,7 +12364,7 @@ export interface Locale extends ILocale {
     "defaultPreset": string;
     "_watermarkEditor": {
         /**
-         * 画像にクレジット情報などのウォーターマークを追加することができます。
+         * 画像にクレジット情報などのウォーターマークを追加できます。
          */
         "tip": string;
         /**

@@ -19,6 +19,7 @@ const WATERMARK_FXS = [
 
 type Align = { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; margin?: number; };
 
+// TODO: refactor: watermarkの処理に必要な型だけを別の型に抽出する(プリセットという概念はウォーターマークより上のドメインに属するため)
 export type WatermarkPreset = {
 	id: string;
 	name: string;
@@ -199,10 +200,9 @@ export class WatermarkRenderer {
 		});
 	}
 
-	public async setLayers(layers: WatermarkPreset['layers']) {
+	public async setLayersAndRender(layers: WatermarkPreset['layers']) {
 		this.layers = layers;
-		await this.effector.setLayers(this.makeImageEffectorLayers());
-		this.render();
+		await this.effector.setLayersAndRender(this.makeImageEffectorLayers());
 	}
 
 	public render(): void {

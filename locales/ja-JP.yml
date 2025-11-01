@@ -1396,6 +1396,19 @@ scheduled: "予約"
 widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
+frame: "フレーム"
+
+_imageFrameEditor:
+  title: "フレームの編集"
+  tip: "画像にフレームやメタデータを含んだラベルを追加して装飾できます。"
+  borderThickness: "フチの幅"
+  labelThickness: "ラベルの幅"
+  labelScale: "ラベルのスケール"
+  centered: "中央揃え"
+  captionMain: "キャプション(大)"
+  captionSub: "キャプション(小)"
+  availableVariables: "利用可能な変数"
+  withQrCode: "二次元コード"
 
 _compression:
   _quality:
@@ -3298,7 +3311,7 @@ _userLists:
 watermark: "ウォーターマーク"
 defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
-  tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  tip: "画像にクレジット情報などのウォーターマークを追加できます。"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
   driveFileTypeWarn: "このファイルは対応していません"
   driveFileTypeWarnDescription: "画像ファイルを選択してください"

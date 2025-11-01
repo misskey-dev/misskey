@@ -124,6 +124,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkFolder>
 					</SearchMarker>
 
+					<SearchMarker :keywords="['label', 'frame', 'credit', 'metadata']">
+						<MkFolder>
+							<template #icon><i class="ti ti-device-ipad-horizontal"></i></template>
+							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts._imageFrameEditor.tip }}</template>
+
+							<div class="_gaps">
+								<div class="_gaps_s">
+									<!--
+									<XWatermarkItem
+										v-for="(preset, i) in prefer.r.watermarkPresets.value"
+										:key="preset.id"
+										:preset="preset"
+										@updatePreset="onUpdateWatermarkPreset(preset.id, $event)"
+										@del="onDeleteWatermarkPreset(preset.id)"
+									/>
+								-->
+
+									<MkButton iconOnly rounded style="margin: 0 auto;" @click="addImageFramePreset"><i class="ti ti-plus"></i></MkButton>
+
+									<!--
+									<SearchMarker :keywords="['sync', 'watermark', 'preset', 'devices']">
+										<MkSwitch :modelValue="watermarkPresetsSyncEnabled" @update:modelValue="changeWatermarkPresetsSyncEnabled">
+											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+										</MkSwitch>
+									</SearchMarker>
+								-->
+								</div>
+
+								<hr>
+
+								<!--
+								<SearchMarker :keywords="['default', 'label', 'preset']">
+									<MkPreferenceContainer k="defaultWatermarkPresetId">
+										<MkSelect v-model="defaultWatermarkPresetId" :items="[{ label: i18n.ts.none, value: null }, ...prefer.r.watermarkPresets.value.map(p => ({ label: p.name || i18n.ts.noName, value: p.id }))]">
+											<template #label><SearchLabel>{{ i18n.ts.defaultPreset }}</SearchLabel></template>
+										</MkSelect>
+									</MkPreferenceContainer>
+								</SearchMarker>
+								-->
+							</div>
+						</MkFolder>
+					</SearchMarker>
+
 					<SearchMarker :keywords="['default', 'image', 'compression']">
 						<MkPreferenceContainer k="defaultImageCompressionLevel">
 							<MkSelect
@@ -297,6 +341,16 @@ function onDeleteWatermarkPreset(id: string) {
 			prefer.commit('defaultWatermarkPresetId', null);
 		}
 	}
+}
+
+async function addImageFramePreset() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+	}, {
+		ok: (preset: any) => {
+			//prefer.commit('imageFramePresets', [...prefer.s.imageFramePresets, preset]);
+		},
+		closed: () => dispose(),
+	});
 }
 
 function saveProfile() {
