@@ -5605,6 +5605,10 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * 入力が不正なためカレンダーを表示できません
+     */
+    "calendarInvalidDateError": string;
     "_compression": {
         "_quality": {
             /**
@@ -9542,6 +9546,36 @@ export interface Locale extends ILocale {
         "friday": string;
         /**
          * 土曜日
+         */
+        "saturday": string;
+    };
+    "_weekdayShort": {
+        /**
+         * 日
+         */
+        "sunday": string;
+        /**
+         * 月
+         */
+        "monday": string;
+        /**
+         * 火
+         */
+        "tuesday": string;
+        /**
+         * 水
+         */
+        "wednesday": string;
+        /**
+         * 木
+         */
+        "thursday": string;
+        /**
+         * 金
+         */
+        "friday": string;
+        /**
+         * 土
          */
         "saturday": string;
     };

@@ -46,10 +46,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['birthday', 'birthdate', 'age']">
-			<MkInput v-model="profile.birthday" type="date" manualSave>
+			<MkDateTimeInput v-model="birthday" type="date" manualSave>
 				<template #label><SearchLabel>{{ i18n.ts.birthday }}</SearchLabel></template>
 				<template #prefix><i class="ti ti-cake"></i></template>
-			</MkInput>
+			</MkDateTimeInput>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['language', 'locale']">
@@ -185,6 +185,8 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
+import MkDateTimeInput from '@/components/MkDateTimeInput.vue';
+import type { MkDateTimeInputDateObject } from '@/components/MkDateTimeInput.vue';
 
 const $i = ensureSignin();
 
@@ -205,6 +207,26 @@ const profile = reactive({
 	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
+});
+
+const birthday = computed<MkDateTimeInputDateObject | null>({
+	get: () => {
+		if (!profile.birthday) return null;
+		const [year, month, date] = (profile.birthday ?? '').split('-').map(v => parseInt(v, 10));
+		if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(date)) {
+			return null;
+		}
+		return { year, month, date };
+	},
+	set: (value) => {
+		if (value === null) {
+			profile.birthday = null;
+		} else {
+			const monthStr = value.month.toString().padStart(2, '0');
+			const dayStr = value.date.toString().padStart(2, '0');
+			profile.birthday = `${value.year}-${monthStr}-${dayStr}`;
+		}
+	},
 });
 
 watch(() => profile, () => {
