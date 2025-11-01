@@ -211,7 +211,7 @@ export class SearchService {
 			throw new SearchService.MeilisearchNotActiveError();
 		}
 
-		const fetchNote = (sinceId?: MiNote['id'], untilId?: MiNote['id'], take?: number, limit?: number) => {
+		const fetchNote = (sinceId?: MiNote['id'], untilId?: MiNote['id'], offset?: number, limit?: number) => {
 			const query = this.notesRepository.createQueryBuilder('note')
 				// 速い条件だけ先に
 				.andWhere('note.visibility IN (:...visibilities)', { visibilities: ['home', 'public'] });
@@ -251,8 +251,8 @@ export class SearchService {
 					'note.tags',
 				])
 				.orderBy('note.id', 'DESC')
-				.take(take)
-				.limit(limit)
+				.skip(offset)
+				.take(limit)
 				.getMany();
 		};
 
@@ -312,7 +312,6 @@ export class SearchService {
 				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
 			}
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const typeCheck: never = this.provider;
 				return [];
 			}
