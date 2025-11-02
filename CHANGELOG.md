@@ -5,7 +5,7 @@
 - Enhance: DockerのNode.jsが24.10.0に更新されました
 
 ### Client
-- Feat: 外部サイトへのリンクは移動の前に警告を表示するように  
+- Enhance: 外部サイトへのリンクは移動の前に警告を表示するように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/558 and https://github.com/MisskeyIO/misskey/commit/f7ec503b9ceb34d61a0dbd658858915eb7399c5d)
 - Fix: 紙吹雪エフェクトがアニメーション設定を考慮せず常に表示される問題を修正
 
