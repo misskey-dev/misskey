@@ -19,7 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toRefs, Ref } from 'vue';
+import { toRefs } from 'vue';
+import type { Ref } from 'vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
@@ -41,17 +42,19 @@ const toggle = () => {
 
 <style lang="scss" module>
 .button {
+	--height: 21px;
+
 	position: relative;
 	display: inline-flex;
 	flex-shrink: 0;
 	margin: 0;
 	box-sizing: border-box;
-	width: 32px;
-	height: 23px;
+	width: calc(var(--height) * 1.6);
+	height: calc(var(--height) + 2px); // 枠線
 	outline: none;
-	background: var(--switchOffBg);
+	background: var(--MI_THEME-switchOffBg);
 	background-clip: content-box;
-	border: solid 1px var(--switchOffBg);
+	border: solid 1px var(--MI_THEME-switchOffBg);
 	border-radius: 999px;
 	cursor: pointer;
 	transition: inherit;
@@ -59,8 +62,8 @@ const toggle = () => {
 }
 
 .buttonChecked {
-	background-color: var(--switchOnBg) !important;
-	border-color: var(--switchOnBg) !important;
+	background-color: var(--MI_THEME-switchOnBg) !important;
+	border-color: var(--MI_THEME-switchOnBg) !important;
 }
 
 .buttonDisabled {
@@ -69,20 +72,21 @@ const toggle = () => {
 
 .knob {
 	position: absolute;
+	box-sizing: border-box;
 	top: 3px;
-	width: 15px;
-	height: 15px;
+	width: calc(var(--height) - 6px);
+	height: calc(var(--height) - 6px);
 	border-radius: 999px;
 	transition: all 0.2s ease;
 
 	&:not(.knobChecked) {
 		left: 3px;
-		background: var(--switchOffFg);
+		background: var(--MI_THEME-switchOffFg);
 	}
 }
 
 .knobChecked {
-	left: 12px;
-	background: var(--switchOnFg);
+	left: calc(calc(100% - var(--height)) + 3px);
+	background: var(--MI_THEME-switchOnFg);
 }
 </style>

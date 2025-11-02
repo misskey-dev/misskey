@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_change_leaveTo"
 			mode="default"
 		>
-			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
+			<MkMarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="item in items" :class="$style.item">
 					<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 				</span>
-			</MarqueeText>
+			</MkMarqueeText>
 		</Transition>
 	</template>
 	<template v-else-if="display === 'oneByOne'">
@@ -28,27 +28,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import MarqueeText from '@/components/MkMarquee.vue';
-import { useInterval } from '@/scripts/use-interval.js';
-import { shuffle } from '@/scripts/shuffle.js';
+import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
+import { shuffle } from '@/utility/shuffle.js';
 
 const props = defineProps<{
-	url?: string;
+	url: string;
 	shuffle?: boolean;
 	display?: 'marquee' | 'oneByOne';
 	marqueeDuration?: number;
 	marqueeReverse?: boolean;
 	oneByOneInterval?: number;
-	refreshIntervalSec?: number;
+	refreshIntervalSec: number;
 }>();
 
-const items = ref([]);
+const items = ref<Misskey.entities.FetchRssResponse['items']>([]);
 const fetching = ref(true);
 const key = ref(0);
 
 const tick = () => {
-	window.fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
-		res.json().then(feed => {
+	window.fetch(`/api/fetch-rss?url=${encodeURIComponent(props.url)}`, {}).then(res => {
+		res.json().then((feed: Misskey.entities.FetchRssResponse) => {
 			if (props.shuffle) {
 				shuffle(feed.items);
 			}

@@ -41,17 +41,17 @@ export class ClipService {
 		const currentCount = await this.clipsRepository.countBy({
 			userId: me.id,
 		});
-		if (currentCount > (await this.roleService.getUserPolicies(me.id)).clipLimit) {
+		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).clipLimit) {
 			throw new ClipService.TooManyClipsError();
 		}
 
-		const clip = await this.clipsRepository.insert({
+		const clip = await this.clipsRepository.insertOne({
 			id: this.idService.gen(),
 			userId: me.id,
 			name: name,
 			isPublic: isPublic,
 			description: description,
-		}).then(x => this.clipsRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		return clip;
 	}
@@ -102,7 +102,7 @@ export class ClipService {
 		const currentCount = await this.clipNotesRepository.countBy({
 			clipId: clip.id,
 		});
-		if (currentCount > (await this.roleService.getUserPolicies(me.id)).noteEachClipsLimit) {
+		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).noteEachClipsLimit) {
 			throw new ClipService.TooManyClipNotesError();
 		}
 

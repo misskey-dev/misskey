@@ -15,7 +15,7 @@ import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
+	block: Extract<Misskey.entities.PageBlock, { type: 'image' }>,
 	page: Misskey.entities.Page,
 }>();
 
@@ -28,8 +28,8 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
-	border: 1px solid var(--divider);
-	border-radius: var(--radius);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 	overflow: hidden;
 }
 .mediaList {

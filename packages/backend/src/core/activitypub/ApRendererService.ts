@@ -19,17 +19,18 @@ import type { MiEmoji } from '@/models/Emoji.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiPollVote } from '@/models/PollVote.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
-import { MfmService } from '@/core/MfmService.js';
+import { MfmService, type Appender } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
-import { LdSignatureService } from './LdSignatureService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
+import { CONTEXT } from './misc/contexts.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -37,6 +38,9 @@ export class ApRendererService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -56,11 +60,12 @@ export class ApRendererService {
 		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
-		private ldSignatureService: LdSignatureService,
+		private jsonLdService: JsonLdService,
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
 		private idService: IdService,
+		private utilityService: UtilityService,
 	) {
 	}
 
@@ -166,6 +171,7 @@ export class ApRendererService {
 			mediaType: file.webpublicType ?? file.type,
 			url: this.driveFileEntityService.getPublicUrl(file),
 			name: file.comment,
+			sensitive: file.isSensitive,
 		};
 	}
 
@@ -181,6 +187,9 @@ export class ApRendererService {
 				mediaType: emoji.type ?? 'image/png',
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 				url: emoji.publicUrl || emoji.originalUrl,
+			},
+			_misskey_license: {
+				freeText: emoji.license,
 			},
 		};
 	}
@@ -250,6 +259,38 @@ export class ApRendererService {
 	}
 
 	@bindThis
+	public renderIdenticon(user: MiLocalUser): IApImage {
+		return {
+			type: 'Image',
+			url: this.userEntityService.getIdenticonUrl(user),
+			sensitive: false,
+			name: null,
+		};
+	}
+
+	@bindThis
+	public renderSystemAvatar(user: MiLocalUser): IApImage {
+		if (this.meta.iconUrl == null) return this.renderIdenticon(user);
+		return {
+			type: 'Image',
+			url: this.meta.iconUrl,
+			sensitive: false,
+			name: null,
+		};
+	}
+
+	@bindThis
+	public renderSystemBanner(): IApImage | null {
+		if (this.meta.bannerUrl == null) return null;
+		return {
+			type: 'Image',
+			url: this.meta.bannerUrl,
+			sensitive: false,
+			name: null,
+		};
+	}
+
+	@bindThis
 	public renderKey(user: MiLocalUser, key: MiUserKeypair, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
@@ -315,7 +356,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(isNotNull);
+			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
 		};
 
 		let inReplyTo;
@@ -389,10 +430,24 @@ export class ApRendererService {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
 
-		let apAppend = '';
+		const apAppend: Appender[] = [];
 
 		if (quote) {
-			apAppend += `\n\nRE: ${quote}`;
+			// Append quote link as `<br><br><span class="quote-inline">RE: <a href="...">...</a></span>`
+			// the claas name `quote-inline` is used in non-misskey clients for styling quote notes.
+			// For compatibility, the span part should be kept as possible.
+			apAppend.push((doc, body) => {
+				body.appendChild(doc.createElement('br'));
+				body.appendChild(doc.createElement('br'));
+				const span = doc.createElement('span');
+				span.className = 'quote-inline';
+				span.appendChild(doc.createTextNode('RE: '));
+				const link = doc.createElement('a');
+				link.setAttribute('href', quote);
+				link.textContent = quote;
+				span.appendChild(link);
+				body.appendChild(span);
+			});
 		}
 
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
@@ -458,11 +513,28 @@ export class ApRendererService {
 			this.userProfilesRepository.findOneByOrFail({ userId: user.id }),
 		]);
 
+		const tryRewriteUrl = (maybeUrl: string) => {
+			const urlSafeRegex = /^(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/;
+			try {
+				const match = maybeUrl.match(urlSafeRegex);
+				if (!match) {
+					return maybeUrl;
+				}
+				const urlPart = match[0];
+				const urlPartParsed = new URL(urlPart);
+				const restPart = maybeUrl.slice(match[0].length);
+
+				return `<a href="${urlPartParsed.href}" rel="me nofollow noopener" target="_blank">${urlPart}</a>${restPart}`;
+			} catch (e) {
+				return maybeUrl;
+			}
+		};
+
 		const attachment = profile.fields.map(field => ({
 			type: 'PropertyValue',
 			name: field.name,
 			value: (field.value.startsWith('http://') || field.value.startsWith('https://'))
-				? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
+				? tryRewriteUrl(field.value)
 				: field.value,
 		}));
 
@@ -493,8 +565,12 @@ export class ApRendererService {
 			name: user.name,
 			summary: profile.description ? this.mfmService.toHtml(mfm.parse(profile.description)) : null,
 			_misskey_summary: profile.description,
-			icon: avatar ? this.renderImage(avatar) : null,
-			image: banner ? this.renderImage(banner) : null,
+			_misskey_followedMessage: profile.followedMessage,
+			_misskey_requireSigninToViewContents: user.requireSigninToViewContents,
+			_misskey_makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore,
+			_misskey_makeNotesHiddenBefore: user.makeNotesHiddenBefore,
+			icon: avatar ? this.renderImage(avatar) : isSystem ? this.renderSystemAvatar(user) : this.renderIdenticon(user),
+			image: banner ? this.renderImage(banner) : isSystem ? this.renderSystemBanner() : null,
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
 			discoverable: user.isExplorable,
@@ -569,7 +645,7 @@ export class ApRendererService {
 
 	@bindThis
 	public renderUndo(object: string | IObject, user: { id: MiUser['id'] }): IUndo {
-		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
+		const id = typeof object !== 'string' && typeof object.id === 'string' && this.utilityService.isUriLocal(object.id) ? `${object.id}/undo` : undefined;
 
 		return {
 			type: 'Undo',
@@ -617,48 +693,16 @@ export class ApRendererService {
 			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
-		return Object.assign({
-			'@context': [
-				'https://www.w3.org/ns/activitystreams',
-				'https://w3id.org/security/v1',
-				{
-					Key: 'sec:Key',
-					// as non-standards
-					manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
-					sensitive: 'as:sensitive',
-					Hashtag: 'as:Hashtag',
-					quoteUrl: 'as:quoteUrl',
-					// Mastodon
-					toot: 'http://joinmastodon.org/ns#',
-					Emoji: 'toot:Emoji',
-					featured: 'toot:featured',
-					discoverable: 'toot:discoverable',
-					// schema
-					schema: 'http://schema.org#',
-					PropertyValue: 'schema:PropertyValue',
-					value: 'schema:value',
-					// Misskey
-					misskey: 'https://misskey-hub.net/ns#',
-					'_misskey_content': 'misskey:_misskey_content',
-					'_misskey_quote': 'misskey:_misskey_quote',
-					'_misskey_reaction': 'misskey:_misskey_reaction',
-					'_misskey_votes': 'misskey:_misskey_votes',
-					'_misskey_summary': 'misskey:_misskey_summary',
-					'isCat': 'misskey:isCat',
-					// vcard
-					vcard: 'http://www.w3.org/2006/vcard/ns#',
-				},
-			],
-		}, x as T & { id: string });
+		return Object.assign({ '@context': CONTEXT }, x as T & { id: string });
 	}
 
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const ldSignature = this.ldSignatureService.use();
-		ldSignature.debug = false;
-		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
+		const jsonLd = this.jsonLdService.use();
+		jsonLd.debug = false;
+		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 
 		return activity;
 	}
@@ -716,7 +760,7 @@ export class ApRendererService {
 		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
-		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
+		const emojis = names.map(name => allEmojis.get(name)).filter(x => x != null);
 
 		return emojis;
 	}

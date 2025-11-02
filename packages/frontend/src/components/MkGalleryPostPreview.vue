@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkA :to="`/gallery/${post.id}`" class="ttasepnz _panel" tabindex="-1" @pointerenter="enterHover" @pointerleave="leaveHover">
 	<div class="thumbnail">
 		<Transition>
-			<ImgWithBlurhash
+			<MkImgWithBlurhash
 				class="img layered"
 				:transition="safe ? null : {
 					duration: 500,
@@ -34,15 +34,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
-import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { defaultStore } from '@/store.js';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	post: Misskey.entities.GalleryPost;
 }>();
 
 const hover = ref(false);
-const safe = computed(() => defaultStore.state.nsfw === 'ignore' || defaultStore.state.nsfw === 'respect' && !props.post.isSensitive);
+const safe = computed(() => prefer.s.nsfw === 'ignore' || prefer.s.nsfw === 'respect' && !props.post.isSensitive);
 const show = computed(() => safe.value || hover.value);
 
 function enterHover(): void {
@@ -75,7 +75,7 @@ function leaveHover(): void {
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 
 		> .thumbnail {
 			transform: scale(1.1);
@@ -83,7 +83,7 @@ function leaveHover(): void {
 
 		> article {
 			> footer {
-				&:before {
+				&::before {
 					opacity: 1;
 				}
 			}
@@ -139,7 +139,7 @@ function leaveHover(): void {
 			text-shadow: 0 0 8px #000;
 			background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				position: absolute;

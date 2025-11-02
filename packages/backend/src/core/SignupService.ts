@@ -8,18 +8,19 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
+import type { MiMeta, UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
 import { MiUser } from '@/models/User.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
-import generateUserToken from '@/misc/generate-native-user-token.js';
+import { generateNativeUserToken } from '@/misc/token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { UserService } from '@/core/UserService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
@@ -28,6 +29,9 @@ export class SignupService {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -35,10 +39,11 @@ export class SignupService {
 		private usedUsernamesRepository: UsedUsernamesRepository,
 
 		private utilityService: UtilityService,
+		private userService: UserService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
+		private systemAccountService: SystemAccountService,
 		private metaService: MetaService,
-		private instanceActorService: InstanceActorService,
 		private usersChart: UsersChart,
 	) {
 	}
@@ -71,7 +76,7 @@ export class SignupService {
 		}
 
 		// Generate secret
-		const secret = generateUserToken();
+		const secret = generateNativeUserToken();
 
 		// Check username duplication
 		if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
@@ -83,12 +88,14 @@ export class SignupService {
 			throw new Error('USED_USERNAME');
 		}
 
-		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
-
-		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
-			const instance = await this.metaService.fetch(true);
-			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
+		if (!opts.ignorePreservedUsernames && this.meta.rootUserId != null) {
+			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
+				throw new Error('USED_USERNAME');
+			}
+
+			const hasProhibitedWords = this.utilityService.isKeyWordIncluded(username.toLowerCase(), this.meta.prohibitedWordsForNameOfUser);
+			if (hasProhibitedWords) {
 				throw new Error('USED_USERNAME');
 			}
 		}
@@ -127,7 +134,6 @@ export class SignupService {
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
-				isRoot: isTheFirstUser,
 			}));
 
 			await transactionalEntityManager.save(new MiUserKeypair({
@@ -149,6 +155,11 @@ export class SignupService {
 		});
 
 		this.usersChart.update(account, true);
+		this.userService.notifySystemWebhook(account, 'userCreated');
+
+		if (this.meta.rootUserId == null) {
+			await this.metaService.update({ rootUserId: account.id });
+		}
 
 		return { account, secret };
 	}

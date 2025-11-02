@@ -4,80 +4,67 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
-	<MkSpacer :contentMax="800">
-		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
-			<div :key="src" ref="rootEl" v-hotkey.global="keymap">
-				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
-					{{ i18n.ts._timelineDescription[src] }}
-				</MkInfo>
-				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
-				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-				<div :class="$style.tl">
-					<MkTimeline
-						ref="tlComponent"
-						:key="src + withRenotes + withReplies + onlyFiles"
-						:src="src.split(':')[0]"
-						:list="src.split(':')[1]"
-						:withRenotes="withRenotes"
-						:withReplies="withReplies"
-						:onlyFiles="onlyFiles"
-						:sound="true"
-						@queue="queueUpdated"
-					/>
-				</div>
-			</div>
-		</MkHorizontalSwipe>
-	</MkSpacer>
-</MkStickyContainer>
+<PageWithHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :swipable="true" :displayMyAvatar="true" :canOmitTitle="true">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<MkTip v-if="isBasicTimeline(src)" :k="`tl.${src}`" style="margin-bottom: var(--MI-margin);">
+			{{ i18n.ts._timelineDescription[src] }}
+		</MkTip>
+		<MkPostForm v-if="prefer.r.showFixedPostForm.value" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);"/>
+		<MkStreamingNotesTimeline
+			ref="tlComponent"
+			:key="src + withRenotes + withReplies + onlyFiles + withSensitive"
+			:class="$style.tl"
+			:src="(src.split(':')[0] as (BasicTimelineType | 'list'))"
+			:list="src.split(':')[1]"
+			:withRenotes="withRenotes"
+			:withReplies="withReplies"
+			:withSensitive="withSensitive"
+			:onlyFiles="onlyFiles"
+			:sound="true"
+		/>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref } from 'vue';
+import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
-import MkTimeline from '@/components/MkTimeline.vue';
-import MkInfo from '@/components/MkInfo.vue';
+import type { MenuItem } from '@/types/menu.js';
+import type { BasicTimelineType } from '@/timelines.js';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { scroll } from '@/scripts/scroll.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { $i } from '@/account.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache, userListsCache } from '@/cache.js';
-import { deviceKind } from '@/scripts/device-kind.js';
-import { deepMerge } from '@/scripts/merge.js';
-import { MenuItem } from '@/types/menu.js';
+import { $i } from '@/i.js';
+import { definePage } from '@/page.js';
+import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import { prefer } from '@/preferences.js';
 
-provide('shouldOmitHeaderTitle', true);
+const tlComponent = useTemplateRef('tlComponent');
 
-const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
-const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
-const keymap = {
-	't': focus,
-};
+type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
-const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = shallowRef<HTMLElement>();
-
-const queue = ref(0);
-const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>({
-	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
+const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
+const src = computed<TimelinePageSrc>({
+	get: () => ($i ? store.r.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
 const withRenotes = computed<boolean>({
-	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
+	get: () => store.r.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
-const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>('withReplies');
+const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
+	store.r.tl.value.filter.withReplies ? 'withReplies' :
+	store.r.tl.value.filter.onlyFiles ? 'onlyFiles' :
+	false,
+);
 
 const withReplies = computed<boolean>({
 	get: () => {
@@ -85,7 +72,7 @@ const withReplies = computed<boolean>({
 		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
-			return defaultStore.reactiveState.tl.value.filter.withReplies;
+			return store.r.tl.value.filter.withReplies;
 		}
 	},
 	set: (x) => saveTlFilter('withReplies', x),
@@ -95,7 +82,7 @@ const onlyFiles = computed<boolean>({
 		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
-			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
+			return store.r.tl.value.filter.onlyFiles;
 		}
 	},
 	set: (x) => saveTlFilter('onlyFiles', x),
@@ -112,30 +99,15 @@ watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
 });
 
 const withSensitive = computed<boolean>({
-	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
+	get: () => store.r.tl.value.filter.withSensitive,
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
-watch(src, () => {
-	queue.value = 0;
-});
-
-watch(withSensitive, () => {
-	// これだけはクライアント側で完結する処理なので手動でリロード
-	tlComponent.value?.reloadTimeline();
-});
-
-function queueUpdated(q: number): void {
-	queue.value = q;
-}
-
-function top(): void {
-	if (rootEl.value) scroll(rootEl.value, { top: 0 });
-}
+const showFixedPostForm = prefer.model('showFixedPostForm');
 
 async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
-	const items: MenuItem[] = [
+	const items: (MenuItem | undefined)[] = [
 		...lists.map(list => ({
 			type: 'link' as const,
 			text: list.name,
@@ -149,12 +121,12 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 			to: '/my/lists',
 		},
 	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	const antennas = await antennasCache.fetch();
-	const items: MenuItem[] = [
+	const items: (MenuItem | undefined)[] = [
 		...antennas.map(antenna => ({
 			type: 'link' as const,
 			text: antenna.name,
@@ -169,14 +141,12 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 			to: '/my/antennas',
 		},
 	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await misskeyApi('channels/my-favorites', {
-		limit: 100,
-	});
-	const items: MenuItem[] = [
+	const channels = await favoritedChannelsCache.fetch();
+	const items: (MenuItem | undefined)[] = [
 		...channels.map(channel => {
 			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
 			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
@@ -190,86 +160,98 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 		}),
 		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
-			type: 'link' as const,
+			type: 'link',
 			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
 			to: '/channels',
 		},
 	];
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
-	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
+function saveSrc(newSrc: TimelinePageSrc): void {
+	const out = deepMerge({ src: newSrc }, store.s.tl);
 
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
-		out.userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id) ?? null;
+		out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
 	}
 
-	defaultStore.set('tl', out);
+	store.set('tl', out);
 	if (['local', 'global'].includes(newSrc)) {
 		srcWhenNotSignin.value = newSrc as 'local' | 'global';
 	}
 }
 
-function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
+function saveTlFilter(key: keyof typeof store.s.tl.filter, newValue: boolean) {
 	if (key !== 'withReplies' || $i) {
-		const out = deepMerge({ filter: { [key]: newValue } }, defaultStore.state.tl);
-		defaultStore.set('tl', out);
+		const out = deepMerge({ filter: { [key]: newValue } }, store.s.tl);
+		store.set('tl', out);
 	}
 }
 
-async function timetravel(): Promise<void> {
-	const { canceled, result: date } = await os.inputDate({
-		title: i18n.ts.date,
-	});
-	if (canceled) return;
-
-	tlComponent.value.timetravel(date);
+function switchTlIfNeeded() {
+	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
+		src.value = availableBasicTimelines()[0];
+	}
 }
 
-function focus(): void {
-	tlComponent.value.focus();
-}
-
-function closeTutorial(): void {
-	if (!['home', 'local', 'social', 'global'].includes(src.value)) return;
-	const before = defaultStore.state.timelineTutorials;
-	before[src.value] = true;
-	defaultStore.set('timelineTutorials', before);
-}
+onMounted(() => {
+	switchTlIfNeeded();
+});
+onActivated(() => {
+	switchTlIfNeeded();
+});
 
 const headerActions = computed(() => {
-	const tmp = [
-		{
-			icon: 'ti ti-dots',
-			text: i18n.ts.options,
-			handler: (ev) => {
-				os.popupMenu([{
+	const items = [{
+		icon: 'ti ti-dots',
+		text: i18n.ts.options,
+		handler: (ev) => {
+			const menuItems: MenuItem[] = [];
+
+			menuItems.push({
+				type: 'switch',
+				icon: 'ti ti-repeat',
+				text: i18n.ts.showRenotes,
+				ref: withRenotes,
+			});
+
+			if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
+				menuItems.push({
 					type: 'switch',
-					text: i18n.ts.showRenotes,
-					ref: withRenotes,
-				}, src.value === 'local' || src.value === 'social' ? {
-					type: 'switch',
+					icon: 'ti ti-messages',
 					text: i18n.ts.showRepliesToOthersInTimeline,
 					ref: withReplies,
 					disabled: onlyFiles,
-				} : undefined, {
-					type: 'switch',
-					text: i18n.ts.withSensitive,
-					ref: withSensitive,
-				}, {
-					type: 'switch',
-					text: i18n.ts.fileAttachedOnly,
-					ref: onlyFiles,
-					disabled: src.value === 'local' || src.value === 'social' ? withReplies : false,
-				}], ev.currentTarget ?? ev.target);
-			},
+				});
+			}
+
+			menuItems.push({
+				type: 'switch',
+				icon: 'ti ti-eye-exclamation',
+				text: i18n.ts.withSensitive,
+				ref: withSensitive,
+			}, {
+				type: 'switch',
+				icon: 'ti ti-photo',
+				text: i18n.ts.fileAttachedOnly,
+				ref: onlyFiles,
+				disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
+			}, {
+				type: 'divider',
+			}, {
+				type: 'switch',
+				text: i18n.ts.showFixedPostForm,
+				ref: showFixedPostForm,
+			});
+
+			os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 		},
-	];
+	}];
+
 	if (deviceKind === 'desktop') {
-		tmp.unshift({
+		items.unshift({
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
 			handler: (ev: Event) => {
@@ -277,35 +259,21 @@ const headerActions = computed(() => {
 			},
 		});
 	}
-	return tmp;
+
+	return items;
 });
 
-const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => ({
 	key: 'list:' + l.id,
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: true,
-}))), {
-	key: 'home',
-	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
+}))), ...availableBasicTimelines().map(tl => ({
+	key: tl,
+	title: i18n.ts._timelines[tl],
+	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
-}, ...(isLocalTimelineAvailable ? [{
-	key: 'local',
-	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
-	iconOnly: true,
-}, {
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
-	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
-	key: 'global',
-	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: true,
-}] : []), {
+})), {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
 	iconOnly: true,
@@ -322,54 +290,46 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	onClick: chooseChannel,
 }] as Tab[]);
 
-const headerTabsWhenNotLogin = computed(() => [
-	...(isLocalTimelineAvailable ? [{
-		key: 'local',
-		title: i18n.ts._timelines.local,
-		icon: 'ti ti-planet',
-		iconOnly: true,
-	}] : []),
-	...(isGlobalTimelineAvailable ? [{
-		key: 'global',
-		title: i18n.ts._timelines.global,
-		icon: 'ti ti-whirl',
-		iconOnly: true,
-	}] : []),
-] as Tab[]);
+const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
+	key: tl,
+	title: i18n.ts._timelines[tl],
+	icon: basicTimelineIconClass(tl),
+	iconOnly: true,
+}))] as Tab[]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.timeline,
-	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-whirl' : 'ti ti-home',
+	icon: isBasicTimeline(src.value) ? basicTimelineIconClass(src.value) : 'ti ti-home',
 }));
 </script>
 
 <style lang="scss" module>
 .new {
 	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
+	top: calc(var(--MI-stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
 	margin: calc(-0.675em - 8px) 0;
 
 	&:first-child {
-		margin-top: calc(-0.675em - 8px - var(--margin));
+		margin-top: calc(-0.675em - 8px - var(--MI-margin));
 	}
 }
 
 .newButton {
 	display: block;
-	margin: var(--margin) auto 0 auto;
+	margin: var(--MI-margin) auto 0 auto;
 	padding: 8px 16px;
 	border-radius: 32px;
 }
 
 .postForm {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .tl {
-	background: var(--bg);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-bg);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 </style>

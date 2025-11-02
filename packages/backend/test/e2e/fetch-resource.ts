@@ -6,17 +6,17 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { channel, clip, cookie, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
+import { api, channel, clip, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type { SimpleGetResponse } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
-// Request Accept
+// Request Accept in lowercase
 const ONLY_AP = 'application/activity+json';
 const PREFER_AP = 'application/activity+json, */*';
 const PREFER_HTML = 'text/html, */*';
 const UNSPECIFIED = '*/*';
 
-// Response Content-Type
+// Response Content-Type in lowercase
 const AP = 'application/activity+json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
 const JSON_UTF8 = 'application/json; charset=utf-8';
@@ -44,7 +44,8 @@ describe('Webリソース', () => {
 		const { path, accept, cookie, type } = param;
 		const res = await simpleGet(path, accept, cookie);
 		assert.strictEqual(res.status, 200);
-		assert.strictEqual(res.type, type ?? HTML);
+		// Header values are case-insensitive
+		assert.strictEqual(res.type?.toLowerCase(), (type ?? HTML).toLowerCase());
 		return res;
 	};
 
@@ -77,6 +78,7 @@ describe('Webリソース', () => {
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
+		await api('admin/update-meta', { federation: 'all' }, alice as misskey.entities.SignupResponse);
 		aliceUploadedFile = (await uploadFile(alice)).body;
 		alicesPost = await post(alice, {
 			text: 'test',
@@ -95,8 +97,7 @@ describe('Webリソース', () => {
 	describe.each([
 		{ path: '/', type: HTML },
 		{ path: '/docs/ja-JP/about', type: HTML }, // "指定されたURLに該当するページはありませんでした。"
-		// fastify-static gives charset=UTF-8 instead of utf-8 and that's okay
-		{ path: '/api-doc', type: 'text/html; charset=UTF-8' },
+		{ path: '/api-doc', type: HTML },
 		{ path: '/api.json', type: JSON_UTF8 },
 		{ path: '/api-console', type: HTML },
 		{ path: '/_info_card_', type: HTML },
@@ -153,6 +154,23 @@ describe('Webリソース', () => {
 			path: path('nonexisting'),
 			status: 404,
 		}));
+
+		describe(' has entry such ', () => {
+			beforeEach(() => {
+				post(alice, { text: '**a**' });
+			});
+
+			test('MFMを含まない。', async () => {
+				const content = await simpleGet(path(alice.username), '*/*', undefined, res => res.text());
+				const _body: unknown = content.body;
+				// JSONフィードのときは改めて文字列化する
+				const body: string = typeof (_body) === 'object' ? JSON.stringify(_body) : _body as string;
+
+				if (body.includes('**a**')) {
+					throw new Error('MFM shouldn\'t be included');
+				}
+			});
+		});
 	});
 
 	describe.each([{ path: '/api/foo' }])('$path', ({ path }) => {
@@ -160,24 +178,6 @@ describe('Webリソース', () => {
 			path,
 			status: 404,
 			code: 'UNKNOWN_API_ENDPOINT',
-		}));
-	});
-
-	describe.each([{ path: '/queue' }])('$path', ({ path }) => {
-		test('はログインしないとGETできない。', async () => await notOk({
-			path,
-			status: 401,
-		}));
-
-		test('はadminでなければGETできない。', async () => await notOk({
-			path,
-			cookie: cookie(bob),
-			status: 403,
-		}));
-
-		test('はadminならGETできる。', async () => await ok({
-			path,
-			cookie: cookie(alice),
 		}));
 	});
 
@@ -213,6 +213,7 @@ describe('Webリソース', () => {
 				path: path('xxxxxxxxxx'),
 				type: HTML,
 			}));
+			test.todo('HTMLとしてGETできる。(リモートユーザーでもリダイレクトせず)');
 		});
 
 		describe.each([
@@ -232,6 +233,7 @@ describe('Webリソース', () => {
 				path: path('xxxxxxxxxx'),
 				accept,
 			}));
+			test.todo('はオリジナルにリダイレクトされる。(リモートユーザー)');
 		});
 	});
 

@@ -6,7 +6,8 @@
 import { type SharedOptions, http, HttpResponse } from 'msw';
 
 export const onUnhandledRequest = ((req, print) => {
-	if (req.url.hostname !== 'localhost' || /^\/(?:client-assets\/|fluent-emojis?\/|iframe.html$|node_modules\/|src\/|sb-|static-assets\/|vite\/)/.test(req.url.pathname)) {
+	const url = new URL(req.url);
+	if (url.hostname !== 'localhost' || /^\/(?:client-assets\/|fluent-emojis?\/|iframe.html$|node_modules\/|src\/|sb-|static-assets\/|vite\/)/.test(url.pathname)) {
 		return
 	}
 	print.warning()
@@ -33,7 +34,7 @@ export const commonHandlers = [
 	}),
 	http.get('/twemoji/:codepoints.svg', async ({ params }) => {
 		const { codepoints } = params;
-		const value = await fetch(`https://unpkg.com/@discordapp/twemoji@15.0.2/dist/svg/${codepoints}.svg`).then((response) => response.blob());
+		const value = await fetch(`https://unpkg.com/@discordapp/twemoji@16.0.1/dist/svg/${codepoints}.svg`).then((response) => response.blob());
 		return new HttpResponse(value, {
 			headers: {
 				'Content-Type': 'image/svg+xml',

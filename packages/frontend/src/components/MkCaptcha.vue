@@ -10,15 +10,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div id="mcaptcha__widget-container" class="m-captcha-style"></div>
 		<div ref="captchaEl"></div>
 	</div>
+	<div v-if="props.provider == 'testcaptcha'" style="background: #eee; border: solid 1px #888; padding: 8px; color: #000; max-width: 320px; display: flex; gap: 10px; align-items: center; box-shadow: 2px 2px 6px #0004; border-radius: 4px;">
+		<img src="/client-assets/testcaptcha.png" style="width: 60px; height: 60px; "/>
+		<div v-if="testcaptchaPassed">
+			<div style="color: green;">Test captcha passed!</div>
+		</div>
+		<div v-else>
+			<div style="font-size: 13px; margin-bottom: 4px;">Type "ai-chan-kawaii" to pass captcha</div>
+			<input v-model="testcaptchaInput" data-cy-testcaptcha-input/>
+			<button type="button" data-cy-testcaptcha-submit @click="testcaptchaSubmit">Submit</button>
+		</div>
+	</div>
 	<div v-else ref="captchaEl"></div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
-import { defaultStore } from '@/store.js';
+import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
+import { store } from '@/store.js';
 
 // APIs provided by Captcha services
+// see: https://docs.hcaptcha.com/configuration/#javascript-api
+// see: https://developers.google.com/recaptcha/docs/display?hl=ja
+// see: https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget
 export type Captcha = {
 	render(container: string | Node, options: {
 		readonly [_ in 'sitekey' | 'theme' | 'type' | 'size' | 'tabindex' | 'callback' | 'expired' | 'expired-callback' | 'error-callback' | 'endpoint']?: unknown;
@@ -29,19 +43,22 @@ export type Captcha = {
 	getResponse(id: string): string;
 };
 
-export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile' | 'mcaptcha';
+export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile' | 'mcaptcha' | 'testcaptcha';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;
 };
 
 declare global {
+	// Window を拡張してるため、空ではない
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface Window extends CaptchaContainer { }
 }
 
 const props = defineProps<{
 	provider: CaptchaProvider;
 	sitekey: string | null; // null will show error on request
+	secretKey?: string | null;
 	instanceUrl?: string | null;
 	modelValue?: string | null;
 }>();
@@ -52,7 +69,10 @@ const emit = defineEmits<{
 
 const available = ref(false);
 
-const captchaEl = shallowRef<HTMLDivElement | undefined>();
+const captchaEl = useTemplateRef('captchaEl');
+const captchaWidgetId = ref<string | undefined>(undefined);
+const testcaptchaInput = ref('');
+const testcaptchaPassed = ref(false);
 
 const variable = computed(() => {
 	switch (props.provider) {
@@ -60,6 +80,7 @@ const variable = computed(() => {
 		case 'recaptcha': return 'grecaptcha';
 		case 'turnstile': return 'turnstile';
 		case 'mcaptcha': return 'mcaptcha';
+		case 'testcaptcha': return 'testcaptcha';
 	}
 });
 
@@ -71,6 +92,7 @@ const src = computed(() => {
 		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
 		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 		case 'mcaptcha': return null;
+		case 'testcaptcha': return null;
 	}
 });
 
@@ -78,10 +100,19 @@ const scriptId = computed(() => `script-${props.provider}`);
 
 const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
 
-if (loaded || props.provider === 'mcaptcha') {
+watch(() => [props.instanceUrl, props.sitekey, props.secretKey], async () => {
+	// 変更があったときはリフレッシュと再レンダリングをしておかないと、変更後の値で再検証が出来ない
+	if (available.value) {
+		callback(undefined);
+		clearWidget();
+		await requestRender();
+	}
+});
+
+if (loaded || props.provider === 'mcaptcha' || props.provider === 'testcaptcha') {
 	available.value = true;
 } else if (src.value !== null) {
-	(document.getElementById(scriptId.value) ?? document.head.appendChild(Object.assign(document.createElement('script'), {
+	(window.document.getElementById(scriptId.value) ?? window.document.head.appendChild(Object.assign(window.document.createElement('script'), {
 		async: true,
 		id: scriptId.value,
 		src: src.value,
@@ -90,21 +121,46 @@ if (loaded || props.provider === 'mcaptcha') {
 }
 
 function reset() {
-	if (captcha.value.reset) captcha.value.reset();
+	if (captcha.value.reset && captchaWidgetId.value !== undefined) {
+		try {
+			captcha.value.reset(captchaWidgetId.value);
+		} catch (error: unknown) {
+			// ignore
+			if (_DEV_) console.warn(error);
+		}
+	}
+	testcaptchaPassed.value = false;
+	testcaptchaInput.value = '';
+}
+
+function remove() {
+	if (captcha.value.remove && captchaWidgetId.value) {
+		try {
+			if (_DEV_) console.log('remove', props.provider, captchaWidgetId.value);
+			captcha.value.remove(captchaWidgetId.value);
+		} catch (error: unknown) {
+			// ignore
+			if (_DEV_) console.warn(error);
+		}
+	}
 }
 
 async function requestRender() {
-	if (captcha.value.render && captchaEl.value instanceof Element) {
-		captcha.value.render(captchaEl.value, {
+	if (captcha.value.render && captchaEl.value instanceof Element && props.sitekey) {
+		// reCAPTCHAのレンダリング重複判定を回避するため、captchaEl配下に仮のdivを用意する.
+		// （同じdivに対して複数回renderを呼び出すとreCAPTCHAはエラーを返すので）
+		const elem = window.document.createElement('div');
+		captchaEl.value.appendChild(elem);
+
+		captchaWidgetId.value = captcha.value.render(elem, {
 			sitekey: props.sitekey,
-			theme: defaultStore.state.darkMode ? 'dark' : 'light',
+			theme: store.s.darkMode ? 'dark' : 'light',
 			callback: callback,
-			'expired-callback': callback,
-			'error-callback': callback,
+			'expired-callback': () => callback(undefined),
+			'error-callback': () => callback(undefined),
 		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
-		// @ts-expect-error avoid typecheck error
 		new Widget({
 			siteKey: {
 				instanceUrl: new URL(props.instanceUrl),
@@ -113,6 +169,23 @@ async function requestRender() {
 		});
 	} else {
 		window.setTimeout(requestRender, 1);
+	}
+}
+
+function clearWidget() {
+	if (props.provider === 'mcaptcha') {
+		const container = window.document.getElementById('mcaptcha__widget-container');
+		if (container) {
+			container.innerHTML = '';
+		}
+	} else {
+		reset();
+		remove();
+
+		if (captchaEl.value) {
+			// レンダリング先のコンテナの中身を掃除し、フォームが増殖するのを抑止
+			captchaEl.value.innerHTML = '';
+		}
 	}
 }
 
@@ -126,6 +199,12 @@ function onReceivedMessage(message: MessageEvent) {
 			callback(message.data.token);
 		}
 	}
+}
+
+function testcaptchaSubmit() {
+	testcaptchaPassed.value = testcaptchaInput.value === 'ai-chan-kawaii';
+	callback(testcaptchaPassed.value ? 'testcaptcha-passed' : undefined);
+	if (!testcaptchaPassed.value) testcaptchaInput.value = '';
 }
 
 onMounted(() => {
@@ -142,7 +221,7 @@ onUnmounted(() => {
 });
 
 onBeforeUnmount(() => {
-	reset();
+	clearWidget();
 });
 
 defineExpose({

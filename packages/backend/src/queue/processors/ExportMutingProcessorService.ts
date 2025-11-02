@@ -13,6 +13,7 @@ import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
@@ -32,6 +33,7 @@ export class ExportMutingProcessorService {
 		private utilityService: UtilityService,
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
+		private notificationService: NotificationService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-muting');
 	}
@@ -55,6 +57,10 @@ export class ExportMutingProcessorService {
 
 			let exportedCount = 0;
 			let cursor: MiMuting['id'] | null = null;
+
+			const total = await this.mutingsRepository.countBy({
+				muterId: user.id,
+			});
 
 			while (true) {
 				const mutes = await this.mutingsRepository.find({
@@ -96,11 +102,7 @@ export class ExportMutingProcessorService {
 					exportedCount++;
 				}
 
-				const total = await this.mutingsRepository.countBy({
-					muterId: user.id,
-				});
-
-				job.updateProgress(exportedCount / total);
+				job.updateProgress(exportedCount / total * 100);
 			}
 
 			stream.end();
@@ -110,6 +112,11 @@ export class ExportMutingProcessorService {
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
+
+			this.notificationService.createNotification(user.id, 'exportCompleted', {
+				exportedEntity: 'muting',
+				fileId: driveFile.id,
+			});
 		} finally {
 			cleanup();
 		}

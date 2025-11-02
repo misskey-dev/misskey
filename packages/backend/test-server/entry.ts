@@ -6,11 +6,15 @@ import { MainModule } from '@/MainModule.js';
 import { ServerService } from '@/server/ServerService.js';
 import { loadConfig } from '@/config.js';
 import { NestLogger } from '@/NestLogger.js';
+import { INestApplicationContext } from '@nestjs/common';
 
 const config = loadConfig();
 const originEnv = JSON.stringify(process.env);
 
 process.env.NODE_ENV = 'test';
+
+let app: INestApplicationContext;
+let serverService: ServerService;
 
 /**
  * テスト用のサーバインスタンスを起動する
@@ -20,10 +24,10 @@ async function launch() {
 
 	console.log('starting application...');
 
-	const app = await NestFactory.createApplicationContext(MainModule, {
+	app = await NestFactory.createApplicationContext(MainModule, {
 		logger: new NestLogger(),
 	});
-	const serverService = app.get(ServerService);
+	serverService = app.get(ServerService);
 	await serverService.launch();
 
 	await startControllerEndpoints();
@@ -71,6 +75,20 @@ async function startControllerEndpoints(port = config.port + 1000) {
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
 		process.env = JSON.parse(originEnv);
+
+		await serverService.dispose();
+		await app.close();
+
+		await killTestServer();
+
+		console.log('starting application...');
+
+		app = await NestFactory.createApplicationContext(MainModule, {
+			logger: new NestLogger(),
+		});
+		serverService = app.get(ServerService);
+		await serverService.launch();
+
 		res.code(200).send({ success: true });
 	});
 

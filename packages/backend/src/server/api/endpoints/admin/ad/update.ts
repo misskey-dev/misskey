@@ -39,8 +39,9 @@ export const paramDef = {
 		expiresAt: { type: 'integer' },
 		startsAt: { type: 'integer' },
 		dayOfWeek: { type: 'integer' },
+		isSensitive: { type: 'boolean' },
 	},
-	required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt', 'dayOfWeek'],
+	required: ['id'],
 } as const;
 
 @Injectable()
@@ -63,9 +64,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ratio: ps.ratio,
 				memo: ps.memo,
 				imageUrl: ps.imageUrl,
-				expiresAt: new Date(ps.expiresAt),
-				startsAt: new Date(ps.startsAt),
+				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : undefined,
+				startsAt: ps.startsAt ? new Date(ps.startsAt) : undefined,
 				dayOfWeek: ps.dayOfWeek,
+				isSensitive: ps.isSensitive,
 			});
 
 			const updatedAd = await this.adsRepository.findOneByOrFail({ id: ad.id });

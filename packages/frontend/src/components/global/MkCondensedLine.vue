@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <span :class="$style.container">
-	<span ref="content" :class="$style.content">
+	<span ref="content" :class="$style.content" :style="{ maxWidth: `${100 / minScale}%` }">
 		<slot/>
 	</span>
 </span>

@@ -4,29 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
 
+<script lang="ts">
+export type MkABehavior = 'window' | 'browser' | null;
+</script>
+
 <script lang="ts" setup>
-import { computed, shallowRef } from 'vue';
+import { computed, inject, useTemplateRef } from 'vue';
+import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const props = withDefaults(defineProps<{
 	to: string;
 	activeClass?: null | string;
-	behavior?: null | 'window' | 'browser';
+	behavior?: MkABehavior;
 }>(), {
 	activeClass: null,
 	behavior: null,
 });
 
-const el = shallowRef<HTMLElement>();
+const behavior = props.behavior ?? inject<MkABehavior>('linkNavigationBehavior', null);
+
+const el = useTemplateRef('el');
 
 defineExpose({ $el: el });
 
@@ -58,7 +64,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: () => {
-			router.push(props.to, 'forcePage');
+			router.pushByPath(props.to, 'forcePage');
 		},
 	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
@@ -80,21 +86,24 @@ function openWindow() {
 }
 
 function nav(ev: MouseEvent) {
-	if (props.behavior === 'browser') {
-		location.href = props.to;
+	// 制御キーとの組み合わせは無視（shiftを除く）
+	if (ev.metaKey || ev.altKey || ev.ctrlKey) return;
+
+	ev.preventDefault();
+
+	if (behavior === 'browser') {
+		window.location.href = props.to;
 		return;
 	}
 
-	if (props.behavior) {
-		if (props.behavior === 'window') {
-			return openWindow();
-		}
+	if (behavior === 'window') {
+		return openWindow();
 	}
 
 	if (ev.shiftKey) {
 		return openWindow();
 	}
 
-	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
+	router.pushByPath(props.to, ev.ctrlKey ? 'forcePage' : null);
 }
 </script>

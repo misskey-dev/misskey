@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ props.modelValue.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
@@ -21,25 +21,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-/* eslint-disable vue/no-mutating-props */
+
 import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
-import { v4 as uuid } from 'uuid';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
+import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
+import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
-const props = withDefaults(defineProps<{
-	modelValue: any,
-}>(), {
-	modelValue: {},
-});
+const props = defineProps<{
+	modelValue: Extract<Misskey.entities.PageBlock, { type: 'section'; }>,
+}>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
+	(ev: 'update:modelValue', value: Extract<Misskey.entities.PageBlock, { type: 'section'; }>): void;
+	(ev: 'remove'): void;
 }>();
 
 const children = ref(deepClone(props.modelValue.children ?? []));
@@ -53,14 +54,12 @@ watch(children, () => {
 	deep: true,
 });
 
-const getPageBlockList = inject<(any) => any>('getPageBlockList');
-
 async function rename() {
 	const { canceled, result: title } = await os.inputText({
-		title: 'Enter title',
+		title: i18n.ts._pages.enterSectionTitle,
 		default: props.modelValue.title,
 	});
-	if (canceled) return;
+	if (canceled || title == null) return;
 	emit('update:modelValue', {
 		...props.modelValue,
 		title,
@@ -72,9 +71,9 @@ async function add() {
 		title: i18n.ts._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
-	if (canceled) return;
+	if (canceled || type == null) return;
 
-	const id = uuid();
+	const id = genId();
 	children.value.push({ id, type });
 }
 

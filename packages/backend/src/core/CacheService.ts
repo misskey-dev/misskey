@@ -56,10 +56,10 @@ export class CacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new MemoryKVCache<MiUser>(Infinity);
-		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null>(Infinity);
-		this.localUserByIdCache = new MemoryKVCache<MiLocalUser>(Infinity);
-		this.uriPersonCache = new MemoryKVCache<MiUser | null>(Infinity);
+		this.userByIdCache = new MemoryKVCache<MiUser>(1000 * 60 * 5); // 5m
+		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null>(1000 * 60 * 5); // 5m
+		this.localUserByIdCache = new MemoryKVCache<MiLocalUser>(1000 * 60 * 5); // 5m
+		this.uriPersonCache = new MemoryKVCache<MiUser | null>(1000 * 60 * 5); // 5m
 
 		this.userProfileCache = new RedisKVCache<MiUserProfile>(this.redisClient, 'userProfile', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -135,14 +135,14 @@ export class CacheService implements OnApplicationShutdown {
 					if (user == null) {
 						this.userByIdCache.delete(body.id);
 						this.localUserByIdCache.delete(body.id);
-						for (const [k, v] of this.uriPersonCache.cache.entries()) {
+						for (const [k, v] of this.uriPersonCache.entries) {
 							if (v.value?.id === body.id) {
 								this.uriPersonCache.delete(k);
 							}
 						}
 					} else {
 						this.userByIdCache.set(user.id, user);
-						for (const [k, v] of this.uriPersonCache.cache.entries()) {
+						for (const [k, v] of this.uriPersonCache.entries) {
 							if (v.value?.id === user.id) {
 								this.uriPersonCache.set(k, user);
 							}

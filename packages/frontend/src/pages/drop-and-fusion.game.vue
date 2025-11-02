@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800">
+<div class="_spacer" style="--MI_SPACER-w: 800px;">
 	<div :class="$style.root">
 		<div v-if="!gameLoaded" :class="$style.loadingScreen">
 			<div>{{ i18n.ts.loading }}<MkEllipsis/></div>
@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+				<img v-if="store.s.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 				<canvas ref="canvasEl" :class="$style.canvas"/>
 				<Transition
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="replaying" class="_woodenFrame">
 				<div class="_woodenFrameInner">
 					<div style="background: #0004;">
-						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
+						<div style="height: 10px; background: var(--MI_THEME-accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
 					</div>
 				</div>
 				<div class="_woodenFrameInner">
@@ -187,30 +187,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
-import { DropAndFusionGame, Mono } from 'misskey-bubble-game';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { DropAndFusionGame } from 'misskey-bubble-game';
+import { useInterval } from '@@/js/use-interval.js';
+import { apiUrl } from '@@/js/config.js';
+import type { Mono } from 'misskey-bubble-game';
+import { definePage } from '@/page.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { store } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { apiUrl } from '@/config.js';
-import { $i } from '@/account.js';
-import * as sound from '@/scripts/sound.js';
+import { $i } from '@/i.js';
+import * as sound from '@/utility/sound.js';
 import MkRange from '@/components/MkRange.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -565,8 +567,8 @@ let game = new DropAndFusionGame({
 });
 attachGameEvents();
 
-const containerEl = shallowRef<HTMLElement>();
-const canvasEl = shallowRef<HTMLCanvasElement>();
+const containerEl = useTemplateRef('containerEl');
+const canvasEl = useTemplateRef('canvasEl');
 const dropperX = ref(0);
 const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
 const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
@@ -585,8 +587,8 @@ const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
 const currentFrame = ref(0);
-const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
-const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
+const bgmVolume = ref(prefer.s['game.dropAndFusion'].bgmVolume);
+const sfxVolume = ref(prefer.s['game.dropAndFusion'].sfxVolume);
 
 watch(replayPlaybackRate, (newValue) => {
 	game.replayPlaybackRate = newValue;
@@ -622,7 +624,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -630,7 +632,7 @@ function loadMonoTextures() {
 			src = URL.createObjectURL(monoTextures[mono.img]);
 			monoTextureUrls[mono.img] = src;
 		} else {
-			const res = await fetch(mono.img);
+			const res = await window.fetch(mono.img);
 			const blob = await res.blob();
 			monoTextures[mono.img] = blob;
 			src = URL.createObjectURL(blob);
@@ -648,7 +650,6 @@ function loadMonoTextures() {
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 
@@ -848,17 +849,16 @@ function exportLog() {
 		l: DropAndFusionGame.serializeLogs(logs),
 	});
 	copyToClipboard(data);
-	os.success();
 }
 
 function updateSettings<
-	K extends keyof typeof defaultStore.state.dropAndFusion,
-	V extends typeof defaultStore.state.dropAndFusion[K],
+	K extends keyof typeof prefer.s['game.dropAndFusion'],
+	V extends typeof prefer.s['game.dropAndFusion'][K],
 >(key: K, value: V) {
 	const changes: { [P in K]?: V } = {};
 	changes[key] = value;
-	defaultStore.set('dropAndFusion', {
-		...defaultStore.state.dropAndFusion,
+	prefer.commit('game.dropAndFusion', {
+		...prefer.s['game.dropAndFusion'],
 		...changes,
 	});
 }
@@ -875,7 +875,7 @@ function loadImage(url: string) {
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
-		const dcanvas = document.createElement('canvas');
+		const dcanvas = window.document.createElement('canvas');
 		dcanvas.width = game.GAME_WIDTH;
 		dcanvas.height = game.GAME_HEIGHT;
 		const ctx = dcanvas.getContext('2d');
@@ -908,8 +908,8 @@ function getGameImageDriveFile() {
 				formData.append('name', `bubble-game-${Date.now()}.png`);
 				formData.append('isSensitive', 'false');
 				formData.append('i', $i.token);
-				if (defaultStore.state.uploadFolder) {
-					formData.append('folderId', defaultStore.state.uploadFolder);
+				if (prefer.s.uploadFolder) {
+					formData.append('folderId', prefer.s.uploadFolder);
 				}
 
 				window.fetch(apiUrl + '/drive/files/create', {
@@ -1008,8 +1008,18 @@ function attachGameEvents() {
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
 		const scoreUnit = getScoreUnit(props.gameMode);
-		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {}, 'end');
+
+		{
+			const { dispose } = os.popup(MkRippleEffect, { x: domX, y: domY }, {
+				end: () => dispose(),
+			});
+		}
+
+		{
+			const { dispose } = os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {
+				end: () => dispose(),
+			});
+		}
 
 		if (nextMono) {
 			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;
@@ -1218,7 +1228,7 @@ onDeactivated(() => {
 	bgmNodes?.soundSource.stop();
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-apple',
 }));

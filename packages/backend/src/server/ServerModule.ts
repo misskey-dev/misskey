@@ -8,6 +8,7 @@ import { EndpointsModule } from '@/server/api/EndpointsModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { ApiCallService } from './api/ApiCallService.js';
 import { FileServerService } from './FileServerService.js';
+import { HealthServerService } from './HealthServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ServerService } from './ServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
@@ -43,8 +44,11 @@ import { QueueStatsChannelService } from './api/stream/channels/queue-stats.js';
 import { ServerStatsChannelService } from './api/stream/channels/server-stats.js';
 import { UserListChannelService } from './api/stream/channels/user-list.js';
 import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.js';
+import { ChatUserChannelService } from './api/stream/channels/chat-user.js';
+import { ChatRoomChannelService } from './api/stream/channels/chat-room.js';
 import { ReversiChannelService } from './api/stream/channels/reversi.js';
 import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js';
+import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.js';
 
 @Module({
 	imports: [
@@ -55,6 +59,7 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		ClientServerService,
 		ClientLoggerService,
 		FeedService,
+		HealthServerService,
 		UrlPreviewService,
 		ActivityPubServerService,
 		FileServerService,
@@ -69,6 +74,7 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		AuthenticateService,
 		RateLimiterService,
 		SigninApiService,
+		SigninWithPasskeyApiService,
 		SigninService,
 		SignupApiService,
 		StreamingApiServerService,
@@ -80,6 +86,8 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		GlobalTimelineChannelService,
 		HashtagChannelService,
 		RoleTimelineChannelService,
+		ChatUserChannelService,
+		ChatRoomChannelService,
 		ReversiChannelService,
 		ReversiGameChannelService,
 		HomeTimelineChannelService,

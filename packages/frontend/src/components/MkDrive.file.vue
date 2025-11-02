@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.isSelected]: isSelected }]"
 	draggable="true"
 	:title="title"
-	@click="onClick"
 	@contextmenu.stop="onContextmenu"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
@@ -44,44 +43,26 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
-import { deviceKind } from '@/scripts/device-kind.js';
-import { useRouter } from '@/router/supplier.js';
-
-const router = useRouter();
+import { $i } from '@/i.js';
+import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { setDragData } from '@/drag-and-drop.js';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
 	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
-	selectMode?: boolean;
 }>(), {
 	isSelected: false,
-	selectMode: false,
 });
 
 const emit = defineEmits<{
-	(ev: 'chosen', r: Misskey.entities.DriveFile): void;
-	(ev: 'dragstart'): void;
+	(ev: 'dragstart', dragEvent: DragEvent): void;
 	(ev: 'dragend'): void;
 }>();
 
 const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
-
-function onClick(ev: MouseEvent) {
-	if (props.selectMode) {
-		emit('chosen', props.file);
-	} else {
-		if (deviceKind === 'desktop') {
-			router.push(`/my/drive/file/${props.file.id}`);
-		} else {
-			os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
-		}
-	}
-}
 
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
@@ -90,11 +71,11 @@ function onContextmenu(ev: MouseEvent) {
 function onDragstart(ev: DragEvent) {
 	if (ev.dataTransfer) {
 		ev.dataTransfer.effectAllowed = 'move';
-		ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
+		setDragData(ev, 'driveFiles', [props.file]);
 	}
 	isDragging.value = true;
 
-	emit('dragstart');
+	emit('dragstart', ev);
 }
 
 function onDragend() {
@@ -114,15 +95,15 @@ function onDragend() {
 	&:hover {
 		background: rgba(#000, 0.05);
 
-		> .label {
-			&:before,
-			&:after {
+		.label {
+			&::before,
+			&::after {
 				background: #0b65a5;
 			}
 
 			&.red {
-				&:before,
-				&:after {
+				&::before,
+				&::after {
 					background: #c12113;
 				}
 			}
@@ -132,15 +113,15 @@ function onDragend() {
 	&:active {
 		background: rgba(#000, 0.1);
 
-		> .label {
-			&:before,
-			&:after {
+		.label {
+			&::before,
+			&::after {
 				background: #0b588c;
 			}
 
 			&.red {
-				&:before,
-				&:after {
+				&::before,
+				&::after {
 					background: #ce2212;
 				}
 			}
@@ -148,29 +129,29 @@ function onDragend() {
 	}
 
 	&.isSelected {
-		background: var(--accent);
+		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 
 		&:active {
-			background: var(--accentDarken);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 
-		> .label {
-			&:before,
-			&:after {
+		.label {
+			&::before,
+			&::after {
 				display: none;
 			}
 		}
 
-		> .name {
-			color: #fff;
+		.name {
+			color: var(--MI_THEME-fgOnAccent);
 		}
 
-		> .thumbnail {
-			color: #fff;
+		.thumbnail {
+			color: var(--MI_THEME-fgOnAccent);
 		}
 	}
 }
@@ -181,8 +162,8 @@ function onDragend() {
 	left: 0;
 	pointer-events: none;
 
-	&:before,
-	&:after {
+	&::before,
+	&::after {
 		content: "";
 		display: block;
 		position: absolute;
@@ -190,14 +171,14 @@ function onDragend() {
 		background: #0c7ac9;
 	}
 
-	&:before {
+	&::before {
 		top: 0;
 		left: 57px;
 		width: 28px;
 		height: 8px;
 	}
 
-	&:after {
+	&::after {
 		top: 57px;
 		left: 0;
 		width: 8px;
@@ -205,8 +186,8 @@ function onDragend() {
 	}
 
 	&.red {
-		&:before,
-		&:after {
+		&::before,
+		&::after {
 			background: #c12113;
 		}
 	}
@@ -240,11 +221,12 @@ function onDragend() {
 
 .name {
 	display: block;
-	margin: 4px 0 0 0;
-	font-size: 0.8em;
+	margin: 8px 0 0 0;
+	padding: 0 2px;
+	font-size: 82%;
 	text-align: center;
 	word-break: break-all;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	overflow: hidden;
 }
 </style>

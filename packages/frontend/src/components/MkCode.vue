@@ -5,15 +5,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.codeBlockRoot">
-	<button :class="$style.codeBlockCopyButton" class="_button" @click="copy">
+	<button v-if="copyButton" :class="[$style.codeBlockCopyButton, { [$style.withOuterStyle]: withOuterStyle }]" class="_button" @click="copy">
 		<i class="ti ti-copy"></i>
 	</button>
 	<Suspense>
 		<template #fallback>
-			<MkLoading />
+			<pre
+				class="_selectable"
+				:class="[$style.codeBlockFallbackRoot, {
+					[$style.outerStyle]: withOuterStyle,
+				}]"
+			><code :class="$style.codeBlockFallbackCode">Loading...</code></pre>
 		</template>
-		<XCode v-if="show && lang" :code="code" :lang="lang"/>
-		<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
+		<XCode
+			v-if="show && lang"
+			class="_selectable"
+			:code="code"
+			:lang="lang"
+			:withOuterStyle="withOuterStyle"
+		/>
+		<pre
+			v-else-if="show"
+			class="_selectable"
+			:class="[$style.codeBlockFallbackRoot, {
+				[$style.outerStyle]: withOuterStyle,
+			}]"
+		><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 		<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
 			<div :class="$style.codePlaceholderContainer">
 				<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
@@ -26,24 +43,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
-import * as os from '@/os.js';
-import MkLoading from '@/components/global/MkLoading.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	code: string;
+	forceShow?: boolean;
+	copyButton?: boolean;
+	withOuterStyle?: boolean;
 	lang?: string;
-}>();
+}>(), {
+	copyButton: true,
+	forceShow: false,
+	withOuterStyle: true,
+});
 
-const show = ref(!defaultStore.state.dataSaver.code);
+const show = ref(props.forceShow === true ? true : !prefer.s.dataSaver.code);
 
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
 
 function copy() {
 	copyToClipboard(props.code);
-	os.success();
 }
 </script>
 
@@ -54,9 +75,15 @@ function copy() {
 
 .codeBlockCopyButton {
 	position: absolute;
-	top: 8px;
-	right: 8px;
 	opacity: 0.5;
+
+	top: 0;
+	right: 0;
+
+	&.withOuterStyle {
+		top: 8px;
+		right: 8px;
+	}
 
 	&:hover {
 		opacity: 0.8;
@@ -66,11 +93,15 @@ function copy() {
 .codeBlockFallbackRoot {
 	display: block;
 	overflow-wrap: anywhere;
-	background: var(--bg);
+	overflow: auto;
+}
+
+.outerStyle.codeBlockFallbackRoot {
+	background: var(--MI_THEME-bg);
 	padding: 1em;
 	margin: .5em 0;
-	overflow: auto;
 	border-radius: 8px;
+	border: 1px solid var(--MI_THEME-divider);
 }
 
 .codeBlockFallbackCode {
@@ -80,19 +111,17 @@ function copy() {
 .codePlaceholderRoot {
 	display: block;
 	width: 100%;
-	background: none;
 	border: none;
 	outline: none;
   font: inherit;
-  color: inherit;
 	cursor: pointer;
 
 	box-sizing: border-box;
 	border-radius: 8px;
 	padding: 24px;
 	margin-top: 4px;
-	color: var(--fg);
-	background: var(--bg);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-bg);
 }
 
 .codePlaceholderContainer {

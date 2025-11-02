@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { api, post, signup } from '../utils.js';
+import { api, castAsError, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Block', () => {
@@ -33,7 +33,7 @@ describe('Block', () => {
 		const res = await api('following/create', { userId: alice.id }, bob);
 
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.id, 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0');
+		assert.strictEqual(castAsError(res.body).error.id, 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0');
 	});
 
 	test('ブロックされているユーザーにリアクションできない', async () => {
@@ -42,7 +42,8 @@ describe('Block', () => {
 		const res = await api('notes/reactions/create', { noteId: note.id, reaction: '👍' }, bob);
 
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.id, '20ef5475-9f38-4e4c-bd33-de6d979498ec');
+		assert.ok(res.body);
+		assert.strictEqual(castAsError(res.body).error.id, '20ef5475-9f38-4e4c-bd33-de6d979498ec');
 	});
 
 	test('ブロックされているユーザーに返信できない', async () => {
@@ -51,7 +52,8 @@ describe('Block', () => {
 		const res = await api('notes/create', { replyId: note.id, text: 'yo' }, bob);
 
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
+		assert.ok(res.body);
+		assert.strictEqual(castAsError(res.body).error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
 	});
 
 	test('ブロックされているユーザーのノートをRenoteできない', async () => {
@@ -60,7 +62,7 @@ describe('Block', () => {
 		const res = await api('notes/create', { renoteId: note.id, text: 'yo' }, bob);
 
 		assert.strictEqual(res.status, 400);
-		assert.strictEqual(res.body.error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
+		assert.strictEqual(castAsError(res.body).error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
 	});
 
 	// TODO: ユーザーリストに入れられないテスト

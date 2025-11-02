@@ -7,9 +7,8 @@ import { In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository } from '@/models/_.js';
-import { obsoleteNotificationTypes, notificationTypes, FilterUnionByProperty } from '@/types.js';
+import { FilterUnionByProperty, notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
@@ -45,6 +44,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		markAsRead: { type: 'boolean', default: true },
 		// 後方互換のため、廃止された通知タイプも受け付ける
 		includeTypes: { type: 'array', items: {
@@ -60,18 +61,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private idService: IdService,
 		private notificationEntityService: NotificationEntityService,
 		private notificationService: NotificationService,
-		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : undefined);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : undefined);
+
 			// includeTypes が空の場合はクエリしない
 			if (ps.includeTypes && ps.includeTypes.length === 0) {
 				return [];
@@ -84,41 +81,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 			const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			const notificationsRes = await this.redisClient.xrevrange(
-				`notificationTimeline:${me.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : '-',
-				'COUNT', limit);
-
-			if (notificationsRes.length === 0) {
-				return [];
-			}
-
-			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])).filter(x => x.id !== ps.untilId && x !== ps.sinceId) as MiNotification[];
-
-			if (includeTypes && includeTypes.length > 0) {
-				notifications = notifications.filter(notification => includeTypes.includes(notification.type));
-			} else if (excludeTypes && excludeTypes.length > 0) {
-				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
-			}
-
-			if (notifications.length === 0) {
-				return [];
-			}
+			const notifications = await this.notificationService.getNotifications(me.id, {
+				sinceId: sinceId,
+				untilId: untilId,
+				limit: ps.limit,
+				includeTypes,
+				excludeTypes,
+			});
 
 			// Mark all as read
 			if (ps.markAsRead) {
 				this.notificationService.readAllNotification(me.id);
-			}
-
-			const noteIds = notifications
-				.filter((notification): notification is FilterUnionByProperty<MiNotification, 'type', 'mention' | 'reply' | 'quote'> => ['mention', 'reply', 'quote'].includes(notification.type))
-				.map(notification => notification.noteId);
-
-			if (noteIds.length > 0) {
-				const notes = await this.notesRepository.findBy({ id: In(noteIds) });
-				this.noteReadService.read(me.id, notes);
 			}
 
 			return await this.notificationEntityService.packMany(notifications, me.id);

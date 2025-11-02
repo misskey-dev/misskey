@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :anchorElement="anchorElement" :maxWidth="340" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.reaction">
 			<MkReactionIcon :reaction="reaction" :class="$style.reactionIcon" :noStyle="true"/>
@@ -23,16 +23,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
+import * as Misskey from 'misskey-js';
+import { getEmojiName } from '@@/js/emojilist.js';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist.js';
 
 defineProps<{
 	showing: boolean;
 	reaction: string;
-	users: any[]; // TODO
+	users: Misskey.entities.UserLite[];
 	count: number;
-	targetElement: HTMLElement;
+	anchorElement: HTMLElement;
 }>();
 
 const emit = defineEmits<{
@@ -57,12 +58,13 @@ function getReactionName(reaction: string): string {
 	max-width: 100px;
 	padding-right: 10px;
 	text-align: center;
-	border-right: solid 0.5px var(--divider);
+	border-right: solid 0.5px var(--MI_THEME-divider);
 }
 
 .reactionIcon {
 	display: block;
 	width: 60px;
+	max-height: 60px;
 	font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
 	object-fit: contain;
 	margin: 0 auto;
@@ -81,6 +83,7 @@ function getReactionName(reaction: string): string {
 }
 
 .user {
+	display: flex;
 	line-height: 24px;
 	padding-top: 4px;
 	white-space: nowrap;

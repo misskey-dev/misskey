@@ -34,6 +34,12 @@ export const meta = {
 			code: 'TOO_MANY_ANTENNAS',
 			id: 'faf47050-e8b5-438c-913c-db2b1576fde4',
 		},
+
+		emptyKeyword: {
+			message: 'Either keywords or excludeKeywords is required.',
+			code: 'EMPTY_KEYWORD',
+			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a',
+		},
 	},
 
 	res: {
@@ -67,9 +73,9 @@ export const paramDef = {
 		excludeBots: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
-		notify: { type: 'boolean' },
+		excludeNotesInSensitiveChannel: { type: 'boolean' },
 	},
-	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
 } as const;
 
 @Injectable()
@@ -88,13 +94,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.keywords.flat().every(x => x === '') && ps.excludeKeywords.flat().every(x => x === '')) {
-				throw new Error('either keywords or excludeKeywords is required.');
+				throw new ApiError(meta.errors.emptyKeyword);
 			}
 
 			const currentAntennasCount = await this.antennasRepository.countBy({
 				userId: me.id,
 			});
-			if (currentAntennasCount > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
+			if (currentAntennasCount >= (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
 				throw new ApiError(meta.errors.tooManyAntennas);
 			}
 
@@ -113,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const now = new Date();
 
-			const antenna = await this.antennasRepository.insert({
+			const antenna = await this.antennasRepository.insertOne({
 				id: this.idService.gen(now.getTime()),
 				lastUsedAt: now,
 				userId: me.id,
@@ -128,8 +134,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludeBots: ps.excludeBots,
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
-				notify: ps.notify,
-			}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
+				excludeNotesInSensitiveChannel: ps.excludeNotesInSensitiveChannel,
+			});
 
 			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
 

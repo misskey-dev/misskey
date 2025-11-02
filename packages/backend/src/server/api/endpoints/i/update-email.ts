@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfilesRepository } from '@/models/_.js';
+import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import type { Config } from '@/config.js';
@@ -39,6 +39,12 @@ export const meta = {
 			code: 'UNAVAILABLE',
 			id: 'a2defefb-f220-8849-0af6-17f816099323',
 		},
+
+		emailRequired: {
+			message: 'Email address is required.',
+			code: 'EMAIL_REQUIRED',
+			id: '324c7a88-59f2-492f-903f-89134f93e47e',
+		},
 	},
 
 	res: {
@@ -62,6 +68,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -97,6 +106,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (!res.available) {
 					throw new ApiError(meta.errors.unavailable);
 				}
+			} else if (this.serverSettings.emailRequiredForSignup) {
+				throw new ApiError(meta.errors.emailRequired);
 			}
 
 			await this.userProfilesRepository.update(me.id, {

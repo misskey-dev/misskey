@@ -8,11 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
-	:preferType="defaultStore.state.emojiPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
+	:preferType="prefer.s.emojiPickerStyle"
+	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
-	:src="src"
+	:anchorElement="anchorElement"
 	@click="modal?.close()"
+	@esc="modal?.close()"
 	@opening="opening"
 	@close="emit('close')"
 	@closed="emit('closed')"
@@ -28,25 +30,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:asDrawer="type === 'drawer'"
 		:max-height="maxHeight"
 		@chosen="chosen"
+		@esc="modal?.close()"
 	/>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { shallowRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	src?: HTMLElement;
+	anchorElement?: HTMLElement | null;
 	showPinned?: boolean;
-  pinnedEmojis?: string[],
+	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
-	targetNote?: Misskey.entities.Note;
-  choseAndClose?: boolean;
+	targetNote?: Misskey.entities.Note | null;
+	choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,
@@ -61,8 +64,8 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
-const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
+const modal = useTemplateRef('modal');
+const picker = useTemplateRef('picker');
 
 function chosen(emoji: string) {
 	emit('done', emoji);
@@ -76,7 +79,7 @@ function opening() {
 	picker.value?.focus();
 
 	// 何故かちょっと待たないとフォーカスされない
-	setTimeout(() => {
+	window.setTimeout(() => {
 		picker.value?.focus();
 	}, 10);
 }

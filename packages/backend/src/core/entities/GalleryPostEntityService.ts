@@ -35,6 +35,9 @@ export class GalleryPostEntityService {
 	public async pack(
 		src: MiGalleryPost['id'] | MiGalleryPost,
 		me?: { id: MiUser['id'] } | null | undefined,
+		hint?: {
+			packedUser?: Packed<'UserLite'>
+		},
 	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
@@ -44,7 +47,7 @@ export class GalleryPostEntityService {
 			createdAt: this.idService.parse(post.id).date.toISOString(),
 			updatedAt: post.updatedAt.toISOString(),
 			userId: post.userId,
-			user: this.userEntityService.pack(post.user ?? post.userId, me),
+			user: hint?.packedUser ?? this.userEntityService.pack(post.user ?? post.userId, me),
 			title: post.title,
 			description: post.description,
 			fileIds: post.fileIds,
@@ -58,11 +61,14 @@ export class GalleryPostEntityService {
 	}
 
 	@bindThis
-	public packMany(
+	public async packMany(
 		posts: MiGalleryPost[],
 		me?: { id: MiUser['id'] } | null | undefined,
 	) {
-		return Promise.all(posts.map(x => this.pack(x, me)));
+		const _users = posts.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(posts.map(post => this.pack(post, me, { packedUser: _userMap.get(post.userId) })));
 	}
 }
 

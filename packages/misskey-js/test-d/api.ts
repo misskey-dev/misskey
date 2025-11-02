@@ -1,3 +1,4 @@
+import { describe, test } from 'vitest';
 import { expectType } from 'tsd';
 import * as Misskey from '../src/index.js';
 
@@ -11,7 +12,7 @@ describe('API', () => {
 		expectType<Misskey.entities.MetaResponse>(res);
 	});
 
-	test('conditional respose type (meta)', async () => {
+	test('conditional response type (meta)', async () => {
 		const cli = new Misskey.api.APIClient({
 			origin: 'https://misskey.test',
 			credential: 'TOKEN'
@@ -30,7 +31,7 @@ describe('API', () => {
 		expectType<Misskey.entities.MetaResponse>(res4);
 	});
 
-	test('conditional respose type (users/show)', async () => {
+	test('conditional response type (users/show)', async () => {
 		const cli = new Misskey.api.APIClient({
 			origin: 'https://misskey.test',
 			credential: 'TOKEN'

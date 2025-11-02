@@ -33,23 +33,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="page === 0">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
-							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
+							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
 							<div>{{ i18n.ts._initialAccountSetting.letsStartAccountSetup }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
 							<MkButton style="margin: 0 auto;" transparent rounded @click="later(true)">{{ i18n.ts.later }}</MkButton>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XProfile/>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -62,9 +62,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XPrivacy/>
-						</MkSpacer>
+						</div>
 						<div :class="$style.pageFooter">
 							<div class="_buttonsCenter">
 								<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -76,9 +76,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 3">
 				<div style="height: 100cqh; overflow: auto;">
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<XFollow/>
-					</MkSpacer>
+					</div>
 					<div :class="$style.pageFooter">
 						<div class="_buttonsCenter">
 							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
@@ -89,9 +89,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 4">
 				<div :class="$style.centerPage">
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
-							<i class="ti ti-bell-ringing-2" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
+							<i class="ti ti-bell-ringing-2" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts.pushNotification }}</div>
 							<div style="padding: 0 16px;">{{ i18n.tsx._initialAccountSetting.pushNotificationDescription({ name: instance.name ?? host }) }}</div>
 							<MkPushNotificationAllowButton primary showOnlyToRegister style="margin: 0 auto;"/>
@@ -100,15 +100,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 5">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
-							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
+							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
 							<div>{{ i18n.tsx._initialAccountSetting.youCanContinueTutorial({ name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -119,7 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkButton rounded primary data-cy-user-setup-continue @click="setupComplete()">{{ i18n.ts.close }}</MkButton>
 							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 		</Transition>
@@ -128,7 +128,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, watch, nextTick, defineAsyncComponent } from 'vue';
+import { ref, useTemplateRef, watch, nextTick, defineAsyncComponent } from 'vue';
+import { host } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
@@ -137,22 +138,20 @@ import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { host } from '@/config.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
-// eslint-disable-next-line vue/no-setup-props-destructure
-const page = ref(defaultStore.state.accountSetupWizard);
+const page = ref(store.s.accountSetupWizard);
 
 watch(page, () => {
-	defaultStore.set('accountSetupWizard', page.value);
+	store.set('accountSetupWizard', page.value);
 });
 
 async function close(skip: boolean) {
@@ -165,20 +164,22 @@ async function close(skip: boolean) {
 	}
 
 	dialog.value?.close();
-	defaultStore.set('accountSetupWizard', -1);
+	store.set('accountSetupWizard', -1);
 }
 
 function setupComplete() {
-	defaultStore.set('accountSetupWizard', -1);
+	store.set('accountSetupWizard', -1);
 	dialog.value?.close();
 }
 
 function launchTutorial() {
 	setupComplete();
-	nextTick(() => {
-		os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {
+	nextTick(async () => {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTutorialDialog.vue').then(x => x.default), {
 			initialPage: 1,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	});
 }
 
@@ -192,7 +193,7 @@ async function later(later: boolean) {
 	}
 
 	dialog.value?.close();
-	defaultStore.set('accountSetupWizard', 0);
+	store.set('accountSetupWizard', 0);
 }
 </script>
 
@@ -221,7 +222,7 @@ async function later(later: boolean) {
 
 .progressBarValue {
 	height: 100%;
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	transition: all 0.5s cubic-bezier(0,.5,.5,1);
 }
 
@@ -250,7 +251,7 @@ async function later(later: boolean) {
 	left: 0;
 	flex-shrink: 0;
 	padding: 12px;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 	-webkit-backdrop-filter: blur(15px);
 	backdrop-filter: blur(15px);
 }

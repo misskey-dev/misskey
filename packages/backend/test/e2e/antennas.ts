@@ -6,7 +6,6 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import {
 	api,
 	failedApiCall,
@@ -19,6 +18,7 @@ import {
 	userList,
 } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
@@ -38,7 +38,6 @@ describe('アンテナ', () => {
 		excludeKeywords: [['']],
 		keywords: [['keyword']],
 		name: 'test',
-		notify: false,
 		src: 'all' as const,
 		userListId: null,
 		users: [''],
@@ -147,11 +146,11 @@ describe('アンテナ', () => {
 			caseSensitive: false,
 			createdAt: new Date(response.createdAt).toISOString(),
 			excludeKeywords: [['']],
+			excludeNotesInSensitiveChannel: false,
 			hasUnreadNote: false,
 			isActive: true,
 			keywords: [['keyword']],
 			name: 'test',
-			notify: false,
 			src: 'all',
 			userListId: null,
 			users: [''],
@@ -159,13 +158,13 @@ describe('アンテナ', () => {
 			withReplies: false,
 			excludeBots: false,
 			localOnly: false,
+			notify: false,
 		};
 		assert.deepStrictEqual(response, expected);
 	});
 
 	test('が上限いっぱいまで作成できること', async () => {
-		// antennaLimit + 1まで作れるのがキモ
-		const response = await Promise.all([...Array(DEFAULT_POLICIES.antennaLimit + 1)].map(() => successfulApiCall({
+		const response = await Promise.all([...Array(DEFAULT_POLICIES.antennaLimit)].map(() => successfulApiCall({
 			endpoint: 'antennas/create',
 			parameters: { ...defaultParam },
 			user: alice,
@@ -219,8 +218,8 @@ describe('アンテナ', () => {
 		{ parameters: () => ({ withReplies: true }) },
 		{ parameters: () => ({ withFile: false }) },
 		{ parameters: () => ({ withFile: true }) },
-		{ parameters: () => ({ notify: false }) },
-		{ parameters: () => ({ notify: true }) },
+		{ parameters: () => ({ excludeNotesInSensitiveChannel: false }) },
+		{ parameters: () => ({ excludeNotesInSensitiveChannel: true }) },
 	];
 	test.each(antennaParamPattern)('を作成できること($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({
@@ -232,6 +231,17 @@ describe('アンテナ', () => {
 		assert.deepStrictEqual(response, expected);
 	});
 
+	test('を作成する時キーワードが指定されていないとエラーになる', async () => {
+		await failedApiCall({
+			endpoint: 'antennas/create',
+			parameters: { ...defaultParam, keywords: [[]], excludeKeywords: [[]] },
+			user: alice,
+		}, {
+			status: 400,
+			code: 'EMPTY_KEYWORD',
+			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a',
+		});
+	});
 	//#endregion
 	//#region 更新(antennas/update)
 
@@ -257,6 +267,18 @@ describe('アンテナ', () => {
 			status: 400,
 			code: 'NO_SUCH_USER_LIST',
 			id: '1c6b35c9-943e-48c2-81e4-2844989407f7',
+		});
+	});
+	test('を変更する時キーワードが指定されていないとエラーになる', async () => {
+		const antenna = await successfulApiCall({ endpoint: 'antennas/create', parameters: defaultParam, user: alice });
+		await failedApiCall({
+			endpoint: 'antennas/update',
+			parameters: { ...defaultParam, antennaId: antenna.id, keywords: [[]], excludeKeywords: [[]] },
+			user: alice,
+		}, {
+			status: 400,
+			code: 'EMPTY_KEYWORD',
+			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4',
 		});
 	});
 
@@ -353,14 +375,23 @@ describe('アンテナ', () => {
 				],
 			},
 			{
-				// https://github.com/misskey-dev/misskey/issues/9025
-				label: 'ただし、フォロワー限定投稿とDM投稿を含まない。フォロワーであっても。',
+				label: 'フォロワー限定投稿とDM投稿を含む',
 				parameters: () => ({}),
 				posts: [
 					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'public' }), included: true },
 					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'home' }), included: true },
-					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'followers' }) },
-					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'specified', visibleUserIds: [alice.id] }) },
+					{ note: (): Promise<Note> => post(userFollowedByAlice, { text: `${keyword}`, visibility: 'followers' }), included: true },
+					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, visibility: 'specified', visibleUserIds: [alice.id] }), included: true },
+				],
+			},
+			{
+				label: 'フォロワー限定投稿とDM投稿を含まない',
+				parameters: () => ({}),
+				posts: [
+					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, visibility: 'public' }), included: true },
+					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, visibility: 'home' }), included: true },
+					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, visibility: 'followers' }) },
+					{ note: (): Promise<Note> => post(bob, { text: `${keyword}`, visibility: 'specified', visibleUserIds: [carol.id] }) },
 				],
 			},
 			{
@@ -604,6 +635,41 @@ describe('アンテナ', () => {
 			assert.deepStrictEqual(
 				response.map(({ userId, id, text }) => ({ userId, id, text })),
 				expected.map(({ userId, id, text }) => ({ userId, id, text })));
+			assert.deepStrictEqual(response, expected);
+		});
+
+		test('が取得できること（センシティブチャンネルのノートを除く）', async () => {
+			const keyword = 'キーワード';
+			const antenna = await successfulApiCall({
+				endpoint: 'antennas/create',
+				parameters: { ...defaultParam, keywords: [[keyword]], excludeNotesInSensitiveChannel: true },
+				user: alice,
+			});
+			const nonSensitiveChannel = await successfulApiCall({
+				endpoint: 'channels/create',
+				parameters: { name: 'test', isSensitive: false },
+				user: alice,
+			});
+			const sensitiveChannel = await successfulApiCall({
+				endpoint: 'channels/create',
+				parameters: { name: 'test', isSensitive: true },
+				user: alice,
+			});
+
+			const noteInLocal = await post(bob, { text: `test ${keyword}` });
+			const noteInNonSensitiveChannel = await post(bob, { text: `test ${keyword}`, channelId: nonSensitiveChannel.id });
+			await post(bob, { text: `test ${keyword}`, channelId: sensitiveChannel.id });
+
+			const response = await successfulApiCall({
+				endpoint: 'antennas/notes',
+				parameters: { antennaId: antenna.id },
+				user: alice,
+			});
+			// 最後に投稿したものが先頭に来る。
+			const expected = [
+				noteInNonSensitiveChannel,
+				noteInLocal,
+			];
 			assert.deepStrictEqual(response, expected);
 		});
 

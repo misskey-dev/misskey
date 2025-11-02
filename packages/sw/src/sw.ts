@@ -6,7 +6,8 @@
 import { get } from 'idb-keyval';
 import * as Misskey from 'misskey-js';
 import type { PushNotificationDataMap } from '@/types.js';
-import type { I18n, Locale } from '@/scripts/i18n.js';
+import type { I18n } from '@@/js/i18n.js';
+import type { Locale } from '../../../locales/index.js';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
 import { swLang } from '@/scripts/lang.js';
 import * as swos from '@/scripts/operations.js';
@@ -30,8 +31,8 @@ globalThis.addEventListener('activate', ev => {
 async function offlineContentHTML() {
 	const i18n = await (swLang.i18n ?? swLang.fetchLocale()) as Partial<I18n<Locale>>;
 	const messages = {
-		title: i18n.ts?._offlineScreen?.title ?? 'Offline - Could not connect to server',
-		header: i18n.ts?._offlineScreen?.header ?? 'Could not connect to server',
+		title: i18n.ts?._offlineScreen.title ?? 'Offline - Could not connect to server',
+		header: i18n.ts?._offlineScreen.header ?? 'Could not connect to server',
 		reload: i18n.ts?.reload ?? 'Reload',
 	};
 
@@ -75,8 +76,9 @@ globalThis.addEventListener('push', ev => {
 			// case 'driveFileCreated':
 			case 'notification':
 			case 'unreadAntennaNote':
+			case 'newChatMessage':
 				// 1日以上経過している場合は無視
-				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
+				if (Date.now() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
 				return createNotification(data);
 			case 'readAllNotifications':
@@ -154,13 +156,16 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 			case 'unreadAntennaNote':
 				client = await swos.openAntenna(data.body.antenna.id, loginId);
 				break;
+			case 'newChatMessage':
+				client = await swos.openChat(data.body, loginId);
+				break;
 			default:
 				switch (action) {
 					case 'markAllAsRead':
 						await globalThis.registration.getNotifications()
 							.then(notifications => notifications.forEach(n => n.tag !== 'read_notification' && n.close()));
-						await get('accounts').then(accounts => {
-							return Promise.all(accounts.map(async account => {
+						await get<Pick<Misskey.entities.SignupResponse, 'id' | 'token'>[]>('accounts').then(accounts => {
+							return Promise.all((accounts ?? []).map(async account => {
 								await swos.sendMarkAllAsRead(account.id);
 							}));
 						});

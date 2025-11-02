@@ -15,7 +15,6 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 		info: {
 			version: config.version,
 			title: 'Misskey API',
-			'x-logo': { url: '/static-assets/api-doc.png' },
 		},
 
 		externalDocs: {
@@ -90,7 +89,8 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 			schema.required = undefined;
 		}
 
-		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1);
+		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1)
+			|| ['allOf', 'oneOf', 'anyOf'].some(o => (Array.isArray(schema[o]) && schema[o].length >= 0));
 
 		const info = {
 			operationId: endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
@@ -184,7 +184,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 				},
 				...(endpoint.meta.limit ? {
 					'429': {
-						description: 'To many requests',
+						description: 'Too many requests',
 						content: {
 							'application/json': {
 								schema: {
@@ -211,9 +211,15 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 
 		spec.paths['/' + endpoint.name] = {
 			...(endpoint.meta.allowGet ? {
-				get: info,
+				get: {
+					...info,
+					operationId: 'get___' + info.operationId,
+				},
 			} : {}),
-			post: info,
+			post: {
+				...info,
+				operationId: 'post___' + info.operationId,
+			},
 		};
 	}
 

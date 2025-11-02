@@ -7,12 +7,11 @@ Dockerfile
 build/
 built/
 db/
-docker-compose.yml
+.devcontainer/compose.yml
 node_modules/
 packages/*/node_modules
 redis/
 files/
-misskey-assets/
 fluent-emojis/
 .pnp.*
 
@@ -28,4 +27,4 @@ fluent-emojis/
 
 .idea/
 packages/*/.vscode/
-packages/backend/test/docker-compose.yml
+packages/backend/test/compose.yml

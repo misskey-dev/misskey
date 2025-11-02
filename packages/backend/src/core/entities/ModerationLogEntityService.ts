@@ -8,9 +8,10 @@ import { DI } from '@/di-symbols.js';
 import type { ModerationLogsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { } from '@/models/Blocking.js';
-import type { MiModerationLog } from '@/models/ModerationLog.js';
+import { MiModerationLog } from '@/models/ModerationLog.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -27,6 +28,9 @@ export class ModerationLogEntityService {
 	@bindThis
 	public async pack(
 		src: MiModerationLog['id'] | MiModerationLog,
+		hint?: {
+			packedUser?: Packed<'UserDetailedNotMe'>,
+		},
 	) {
 		const log = typeof src === 'object' ? src : await this.moderationLogsRepository.findOneByOrFail({ id: src });
 
@@ -36,17 +40,20 @@ export class ModerationLogEntityService {
 			type: log.type,
 			info: log.info,
 			userId: log.userId,
-			user: this.userEntityService.pack(log.user ?? log.userId, null, {
+			user: hint?.packedUser ?? this.userEntityService.pack(log.user ?? log.userId, null, {
 				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}
 
 	@bindThis
-	public packMany(
-		reports: any[],
+	public async packMany(
+		reports: MiModerationLog[],
 	) {
-		return Promise.all(reports.map(x => this.pack(x)));
+		const _users = reports.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users, null, { schema: 'UserDetailedNotMe' })
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(reports.map(report => this.pack(report, { packedUser: _userMap.get(report.userId) })));
 	}
 }
 

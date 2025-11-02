@@ -10,16 +10,18 @@ import type { MiUser } from '@/models/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiHashtag } from '@/models/Hashtag.js';
-import type { HashtagsRepository } from '@/models/_.js';
+import type { HashtagsRepository, MiMeta } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 
 @Injectable()
 export class HashtagService {
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis, // TODO: 専用のRedisサーバーを設定できるようにする
 
@@ -29,7 +31,6 @@ export class HashtagService {
 		private userEntityService: UserEntityService,
 		private featuredService: FeaturedService,
 		private idService: IdService,
-		private metaService: MetaService,
 		private utilityService: UtilityService,
 	) {
 	}
@@ -160,10 +161,9 @@ export class HashtagService {
 
 	@bindThis
 	public async updateHashtagsRanking(hashtag: string, userId: MiUser['id']): Promise<void> {
-		const instance = await this.metaService.fetch();
-		const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
+		const hiddenTags = this.meta.hiddenTags.map(t => normalizeForSearch(t));
 		if (hiddenTags.includes(hashtag)) return;
-		if (this.utilityService.isKeyWordIncluded(hashtag, instance.sensitiveWords)) return;
+		if (this.utilityService.isKeyWordIncluded(hashtag, this.meta.sensitiveWords)) return;
 
 		// YYYYMMDDHHmm (10分間隔)
 		const now = new Date();

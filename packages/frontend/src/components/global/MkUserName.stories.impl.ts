@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/test';
-import { StoryObj } from '@storybook/vue3';
+import type { StoryObj } from '@storybook/vue3';
 import { userDetailed } from '../../../.storybook/fakes.js';
 import MkUserName from './MkUserName.vue';
 export const Default = {
@@ -30,7 +30,7 @@ export const Default = {
 		};
 	},
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(userDetailed().name);
+		await expect(canvasElement).toHaveTextContent(userDetailed().name as string);
 	},
 	args: {
 		user: userDetailed(),

@@ -4,83 +4,225 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div role="menu">
+<div
+	role="menu"
+	:class="{
+		[$style.root]: true,
+		[$style.center]: align === 'center',
+		[$style.big]: big,
+		[$style.asDrawer]: asDrawer,
+		[$style.widthSpecified]: width != null,
+	}"
+	@focusin.passive.stop="() => {}"
+>
 	<div
-		ref="itemsEl" v-hotkey="keymap"
+		ref="itemsEl"
+		v-hotkey="keymap"
+		tabindex="0"
 		class="_popup _shadow"
-		:class="[$style.root, { [$style.center]: align === 'center', [$style.asDrawer]: asDrawer }]"
-		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
-		@contextmenu.self="e => e.preventDefault()"
+		:class="$style.menu"
+		:style="{
+			width: (width && !asDrawer) ? `${width}px` : '',
+			maxHeight: maxHeight ? `min(${maxHeight}px, calc(100dvh - 32px))` : 'calc(100dvh - 32px)',
+		}"
+		@keydown.stop="() => {}"
+		@contextmenu.self.prevent="() => {}"
 	>
-		<template v-for="(item, i) in (items2 ?? [])">
-			<div v-if="item.type === 'divider'" role="separator" :class="$style.divider"></div>
-			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
-				<span style="opacity: 0.7;">{{ item.text }}</span>
-			</span>
-			<span v-else-if="item.type === 'pending'" role="menuitem" :tabindex="i" :class="[$style.pending, $style.item]">
+		<template v-for="item in (items2 ?? [])">
+			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
+
+			<div v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label]">
+				<span>{{ item.text }}</span>
+			</div>
+
+			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
-			<MkA v-else-if="item.type === 'link'" role="menuitem" :to="item.to" :tabindex="i" class="_button" :class="$style.item" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+
+			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+				<component :is="item.component" v-bind="item.props"/>
+			</div>
+
+			<MkA
+				v-else-if="item.type === 'link'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				:to="item.to"
+				@click.passive="close(true)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
+					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</MkA>
-			<a v-else-if="item.type === 'a'" role="menuitem" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button" :class="$style.item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+
+			<a
+				v-else-if="item.type === 'a'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				:href="item.href"
+				:target="item.target"
+				:rel="item.target === '_blank' ? 'noopener noreferrer' : undefined"
+				:download="item.download"
+				@click.passive="close(true)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
+					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</a>
-			<button v-else-if="item.type === 'user'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+
+			<button
+				v-else-if="item.type === 'user'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, { [$style.active]: item.active }]"
+				@click.prevent="item.active ? close(false) : clicked(item.action, $event)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<div v-if="item.indicate" :class="$style.item_content">
-					<span :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<span :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
+
+			<button
+				v-else-if="item.type === 'switch'"
+				role="menuitemcheckbox"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				:disabled="unref(item.disabled)"
+				@click.prevent="switchItem(item)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
+				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
-					<span :class="[$style.item_content_text, $style.switchText]">{{ item.text }}</span>
+					<div :class="[$style.item_content_text, { [$style.switchText]: !item.icon }]">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
+					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
+
+			<button
+				v-else-if="item.type === 'radio'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
+				:disabled="unref(item.disabled)"
+				@mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)"
+				@keydown.enter.prevent="preferClick ? null : showRadioOptions(item, $event)"
+				@click.prevent="!preferClick ? null : showRadioOptions(item, $event)"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
+					<div :class="$style.item_content_text" style="pointer-events: none;">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
-			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: getValue(item.active) }]" :disabled="getValue(item.active)" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+
+			<button
+				v-else-if="item.type === 'radioOption'"
+				role="menuitemradio"
+				tabindex="0"
+				:class="['_button', $style.item, $style.radio, { [$style.active]: unref(item.active) }]"
+				@click.prevent="unref(item.active) ? null : clicked(item.action, $event, false)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
+				<div :class="$style.icon">
+					<span :class="[$style.radioIcon, { [$style.radioChecked]: unref(item.active) }]"></span>
+				</div>
+				<div :class="$style.item_content">
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
+				</div>
+			</button>
+
+			<button
+				v-else-if="item.type === 'parent'"
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
+				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
+				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
+				@click.prevent="!preferClick ? null : showChildren(item, $event)"
+			>
+				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
+				<div :class="$style.item_content">
+					<div :class="$style.item_content_text" style="pointer-events: none;">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
+					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
+				</div>
+			</button>
+
+			<button
+				v-else
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, { [$style.danger]: item.danger, [$style.active]: unref(item.active) }]"
+				@click.prevent="unref(item.active) ? close(false) : clicked(item.action, $event)"
+				@mouseenter.passive="onItemMouseEnter"
+				@mouseleave.passive="onItemMouseLeave"
+			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
+					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
 		</template>
-		<span v-if="items2 == null || items2.length === 0" :class="[$style.none, $style.item]">
+
+		<span v-if="items2 == null || items2.length === 0" tabindex="-1" :class="[$style.none, $style.item]">
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>
 	<div v-if="childMenu">
-		<XChild ref="child" :items="childMenu" :targetElement="childTarget!" :rootElement="itemsEl!" showing @actioned="childActioned" @close="close(false)"/>
+		<XChild ref="child" :items="childMenu" :anchorElement="childTarget!" :rootElement="itemsEl!" @actioned="childActioned" @closed="closeChild"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { ComputedRef, computed, defineAsyncComponent, isRef, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
-import { focusPrev, focusNext } from '@/scripts/focus.js';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef } from 'vue';
+import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
+import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
-import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { isTouchUsing } from '@/scripts/touch.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { isFocusable } from '@/utility/focus.js';
+import { getNodeOrNull } from '@/utility/get-dom-node-or-null.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
@@ -90,7 +232,6 @@ const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{
 	items: MenuItem[];
-	viaKeyboard?: boolean;
 	asDrawer?: boolean;
 	align?: 'center' | string;
 	width?: number;
@@ -102,17 +243,30 @@ const emit = defineEmits<{
 	(ev: 'hide'): void;
 }>();
 
-const itemsEl = shallowRef<HTMLDivElement>();
+const big = isTouchUsing;
+
+const isNestingMenu = inject<boolean>('isNestingMenu', false);
+
+const itemsEl = useTemplateRef('itemsEl');
 
 const items2 = ref<InnerMenuItem[]>();
 
-const child = shallowRef<InstanceType<typeof XChild>>();
+const child = useTemplateRef('child');
 
-const keymap = computed(() => ({
-	'up|k|shift+tab': focusUp,
-	'down|j|tab': focusDown,
-	'esc': close,
-}));
+const keymap = {
+	'up|k|shift+tab': {
+		allowRepeat: true,
+		callback: () => focusUp(),
+	},
+	'down|j|tab': {
+		allowRepeat: true,
+		callback: () => focusDown(),
+	},
+	'esc': {
+		allowRepeat: true,
+		callback: () => close(false),
+	},
+} as const satisfies Keymap;
 
 const childShowingItem = ref<MenuItem | null>();
 
@@ -138,7 +292,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-const childTarget = shallowRef<HTMLElement | null>();
+const childTarget = shallowRef<HTMLElement>();
 
 function closeChild() {
 	childMenu.value = null;
@@ -150,25 +304,46 @@ function childActioned() {
 	close(true);
 }
 
-const onGlobalMousedown = (event: MouseEvent) => {
-	if (childTarget.value && (event.target === childTarget.value || childTarget.value.contains(event.target as Node))) return;
-	if (child.value && child.value.checkHit(event)) return;
-	closeChild();
-};
-
 let childCloseTimer: null | number = null;
 
-function onItemMouseEnter(item) {
+function onItemMouseEnter() {
 	childCloseTimer = window.setTimeout(() => {
 		closeChild();
 	}, 300);
 }
 
-function onItemMouseLeave(item) {
+function onItemMouseLeave() {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-async function showChildren(item: MenuParent, ev: MouseEvent) {
+async function showRadioOptions(item: MenuRadio, ev: Event) {
+	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
+		const value = item.options[key];
+		return {
+			type: 'radioOption',
+			text: key,
+			action: () => {
+				item.ref = value;
+			},
+			active: computed(() => item.ref === value),
+		};
+	});
+
+	if (props.asDrawer) {
+		os.popupMenu(children, ev.currentTarget ?? ev.target).finally(() => {
+			close(false);
+		});
+		emit('hide');
+	} else {
+		childTarget.value = (ev.currentTarget ?? ev.target) as HTMLElement;
+		childMenu.value = children;
+		childShowingItem.value = item;
+	}
+}
+
+async function showChildren(item: MenuParent, ev: Event) {
+	ev.stopPropagation();
+
 	const children: MenuItem[] = await (async () => {
 		if (childrenCache.has(item)) {
 			return childrenCache.get(item)!;
@@ -185,7 +360,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 
 	if (props.asDrawer) {
 		os.popupMenu(children, ev.currentTarget ?? ev.target).finally(() => {
-			emit('close');
+			close(false);
 		});
 		emit('hide');
 	} else {
@@ -196,21 +371,19 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 	}
 }
 
-function clicked(fn: MenuAction, ev: MouseEvent) {
+function clicked(fn: MenuAction, ev: MouseEvent, doClose = true) {
 	fn(ev);
+
+	if (!doClose) return;
 	close(true);
 }
 
 function close(actioned = false) {
-	emit('close', actioned);
-}
-
-function focusUp() {
-	focusPrev(document.activeElement);
-}
-
-function focusDown() {
-	focusNext(document.activeElement);
+	disposeHandlers();
+	nextTick(() => {
+		closeChild();
+		emit('close', actioned);
+	});
 }
 
 function switchItem(item: MenuSwitch & { ref: any }) {
@@ -218,30 +391,140 @@ function switchItem(item: MenuSwitch & { ref: any }) {
 	item.ref = !item.ref;
 }
 
-function getValue<T>(item?: ComputedRef<T> | T) {
-	return isRef(item) ? item.value : item;
+function focusUp() {
+	if (disposed) return;
+	if (!itemsEl.value?.contains(window.document.activeElement)) return;
+
+	const focusableElements = Array.from(itemsEl.value.children).filter(isFocusable);
+	const activeIndex = focusableElements.findIndex(el => el === window.document.activeElement);
+	const targetIndex = (activeIndex !== -1 && activeIndex !== 0) ? (activeIndex - 1) : (focusableElements.length - 1);
+	const targetElement = focusableElements.at(targetIndex) ?? itemsEl.value;
+
+	targetElement.focus();
 }
 
-onMounted(() => {
-	if (props.viaKeyboard) {
-		nextTick(() => {
-			if (itemsEl.value) focusNext(itemsEl.value.children[0], true, false);
-		});
+function focusDown() {
+	if (disposed) return;
+	if (!itemsEl.value?.contains(window.document.activeElement)) return;
+
+	const focusableElements = Array.from(itemsEl.value.children).filter(isFocusable);
+	const activeIndex = focusableElements.findIndex(el => el === window.document.activeElement);
+	const targetIndex = (activeIndex !== -1 && activeIndex !== (focusableElements.length - 1)) ? (activeIndex + 1) : 0;
+	const targetElement = focusableElements.at(targetIndex) ?? itemsEl.value;
+
+	targetElement.focus();
+}
+
+const onGlobalFocusin = (ev: FocusEvent) => {
+	if (disposed) return;
+	if (itemsEl.value?.parentElement?.contains(getNodeOrNull(ev.target))) return;
+	nextTick(() => {
+		if (itemsEl.value != null && isFocusable(itemsEl.value)) {
+			itemsEl.value.focus({ preventScroll: true });
+			nextTick(() => focusDown());
+		}
+	});
+};
+
+const onGlobalMousedown = (ev: MouseEvent) => {
+	if (disposed) return;
+	if (childTarget.value?.contains(getNodeOrNull(ev.target))) return;
+	if (child.value?.checkHit(ev)) return;
+	closeChild();
+};
+
+const setupHandlers = () => {
+	if (!isNestingMenu) {
+		window.document.addEventListener('focusin', onGlobalFocusin, { passive: true });
 	}
+	window.document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
+};
 
-	// TODO: アクティブな要素までスクロール
-	//itemsEl.scrollTo();
+let disposed = false;
 
-	document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
+const disposeHandlers = () => {
+	disposed = true;
+	if (!isNestingMenu) {
+		window.document.removeEventListener('focusin', onGlobalFocusin);
+	}
+	window.document.removeEventListener('mousedown', onGlobalMousedown);
+};
+
+onMounted(() => {
+	setupHandlers();
+
+	if (!isNestingMenu) {
+		nextTick(() => itemsEl.value?.focus({ preventScroll: true }));
+	}
 });
 
 onBeforeUnmount(() => {
-	document.removeEventListener('mousedown', onGlobalMousedown);
+	disposeHandlers();
 });
 </script>
 
 <style lang="scss" module>
 .root {
+	&.center {
+		> .menu {
+			> .item {
+				text-align: center;
+			}
+		}
+	}
+
+	&:not(.asDrawer):not(.widthSpecified) {
+		> .menu {
+			max-width: 400px;
+		}
+	}
+
+	&.big:not(.asDrawer) {
+		> .menu {
+			min-width: 230px;
+
+			> .item {
+				padding: 6px 20px;
+				font-size: 0.95em;
+				line-height: 24px;
+			}
+		}
+	}
+
+	&.asDrawer {
+		max-width: 600px;
+		margin: auto;
+
+		> .menu {
+			padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
+			width: 100%;
+			border-radius: 24px;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
+
+			> .item {
+				font-size: 1em;
+				padding: 12px 24px;
+
+				&::before {
+					width: calc(100% - 24px);
+					border-radius: 12px;
+				}
+
+				> .icon {
+					margin-right: 14px;
+					width: 24px;
+				}
+			}
+
+			> .divider {
+				margin: 12px 0;
+			}
+		}
+	}
+}
+
+.menu {
 	padding: 8px 0;
 	box-sizing: border-box;
 	max-width: 100vw;
@@ -249,37 +532,8 @@ onBeforeUnmount(() => {
 	overflow: auto;
 	overscroll-behavior: contain;
 
-	&.center {
-		> .item {
-			text-align: center;
-		}
-	}
-
-	&.asDrawer {
-		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
-		width: 100%;
-		border-radius: 24px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-
-		> .item {
-			font-size: 1em;
-			padding: 12px 24px;
-
-			&:before {
-				width: calc(100% - 24px);
-				border-radius: 12px;
-			}
-
-			> .icon {
-				margin-right: 14px;
-				width: 24px;
-			}
-		}
-
-		> .divider {
-			margin: 12px 0;
-		}
+	&:focus-visible {
+		outline: none;
 	}
 }
 
@@ -296,8 +550,10 @@ onBeforeUnmount(() => {
 	text-align: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	text-decoration: none !important;
+	color: var(--menuFg, var(--MI_THEME-fg));
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		position: absolute;
@@ -311,53 +567,56 @@ onBeforeUnmount(() => {
 		border-radius: 6px;
 	}
 
-	&:not(:disabled):hover {
-		color: var(--accent);
-		text-decoration: none;
+	&:focus-visible {
+		outline: none;
 
-		&:before {
-			background: var(--accentedBg);
+		&:not(:hover):not(:active)::before {
+			outline: var(--MI_THEME-focus) solid 2px;
+			outline-offset: -2px;
 		}
+	}
+
+	&:not(:disabled) {
+		&:hover,
+		&:focus-visible:active,
+		&:focus-visible.active {
+			color: var(--menuHoverFg, var(--MI_THEME-accent));
+
+			&::before {
+				background-color: var(--menuHoverBg, var(--MI_THEME-accentedBg));
+			}
+		}
+
+		&:not(:focus-visible):active,
+		&:not(:focus-visible).active {
+			color: var(--menuActiveFg, var(--MI_THEME-fgOnAccent));
+
+			&::before {
+				background-color: var(--menuActiveBg, var(--MI_THEME-accent));
+			}
+		}
+	}
+
+	&:disabled {
+		cursor: not-allowed;
 	}
 
 	&.danger {
-		color: #ff2a2a;
-
-		&:hover {
-			color: #fff;
-
-			&:before {
-				background: #ff4242;
-			}
-		}
-
-		&:active {
-			color: #fff;
-
-			&:before {
-				background: #d42e2e !important;
-			}
-		}
+		--menuFg: var(--MI_THEME-error);
+		--menuHoverFg: #fff;
+		--menuHoverBg: var(--MI_THEME-error);
+		--menuActiveFg: #fff;
+		--menuActiveBg: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 	}
 
-	&:active,
-	&.active {
-		color: var(--fgOnAccent) !important;
-		opacity: 1;
-
-		&:before {
-			background: var(--accent) !important;
-		}
+	&.radio {
+		--menuActiveFg: var(--MI_THEME-accent);
+		--menuActiveBg: var(--MI_THEME-accentedBg);
 	}
 
-	&:not(:active):focus-visible {
-		box-shadow: 0 0 0 2px var(--focus) inset;
-	}
-
-	&.label {
-		pointer-events: none;
-		font-size: 0.7em;
-		padding-bottom: 4px;
+	&.parent {
+		--menuActiveFg: var(--MI_THEME-accent);
+		--menuActiveBg: var(--MI_THEME-accentedBg);
 	}
 
 	&.pending {
@@ -368,22 +627,6 @@ onBeforeUnmount(() => {
 	&.none {
 		pointer-events: none;
 		opacity: 0.7;
-	}
-
-	&.parent {
-		pointer-events: auto;
-		display: flex;
-		align-items: center;
-		cursor: default;
-
-		&.childShowing {
-			color: var(--accent);
-			text-decoration: none;
-
-			&:before {
-				background: var(--accentedBg);
-			}
-		}
 	}
 }
 
@@ -399,39 +642,28 @@ onBeforeUnmount(() => {
 
 .item_content_text {
 	max-width: calc(100vw - 4rem);
+}
+
+.item_content_text_title {
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
-.switch {
-	position: relative;
-	display: flex;
-	transition: all 0.2s ease;
-	user-select: none;
-	cursor: pointer;
-}
-
-.switchDisabled {
-	cursor: not-allowed;
+.item_content_text_caption {
+	text-wrap: auto;
+	font-size: 85%;
+	opacity: 0.7;
 }
 
 .switchButton {
 	margin-left: -2px;
+	--height: 1.35em;
 }
 
 .switchText {
 	margin-left: 8px;
-	margin-top: 2px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-.switchInput {
-	position: absolute;
-	width: 0;
-	height: 0;
-	opacity: 0;
-	margin: 0;
 }
 
 .icon {
@@ -452,13 +684,53 @@ onBeforeUnmount(() => {
 .indicator {
 	display: flex;
 	align-items: center;
-	color: var(--indicator);
+	color: var(--MI_THEME-indicator);
 	font-size: 12px;
-	animation: global-blink 1s infinite;
+}
+
+.label {
+	position: relative;
+	padding: 6px 16px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	font-size: 0.7em;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	opacity: 0.7;
+	pointer-events: none;
 }
 
 .divider {
 	margin: 8px 0;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.radioIcon {
+	display: inline-block;
+	position: relative;
+	width: 1em;
+	height: 1em;
+	vertical-align: -0.125em;
+	border-radius: 50%;
+	border: solid 2px var(--MI_THEME-divider);
+	background-color: var(--MI_THEME-panel);
+
+	&.radioChecked {
+		border-color: var(--MI_THEME-accent);
+
+		&::after {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 50%;
+			height: 50%;
+			border-radius: 50%;
+			background-color: var(--MI_THEME-accent);
+		}
+	}
 }
 </style>

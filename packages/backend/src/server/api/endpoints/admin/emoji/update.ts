@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, MiEmoji } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -14,7 +14,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
+	requiredRolePolicy: 'canManageCustomEmojis',
 	kind: 'write:admin:emoji',
 
 	errors: {
@@ -37,29 +37,45 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		id: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
-		fileId: { type: 'string', format: 'misskey:id' },
-		category: {
-			type: 'string',
-			nullable: true,
-			description: 'Use `null` to reset the category.',
+	allOf: [
+		{
+			anyOf: [
+				{
+					type: 'object',
+					properties: {
+						id: { type: 'string', format: 'misskey:id' },
+					},
+					required: ['id'],
+				},
+				{
+					type: 'object',
+					properties: {
+						name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
+					},
+					required: ['name'],
+				},
+			],
 		},
-		aliases: { type: 'array', items: {
-			type: 'string',
-		} },
-		license: { type: 'string', nullable: true },
-		isSensitive: { type: 'boolean' },
-		localOnly: { type: 'boolean' },
-		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-			type: 'string',
-		} },
-	},
-	anyOf: [
-		{ required: ['id'] },
-		{ required: ['name'] },
+		{
+			type: 'object',
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+				category: {
+					type: 'string',
+					nullable: true,
+					description: 'Use `null` to reset the category.',
+				},
+				aliases: { type: 'array', items: {
+					type: 'string',
+				} },
+				license: { type: 'string', nullable: true },
+				isSensitive: { type: 'boolean' },
+				localOnly: { type: 'boolean' },
+				roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
+					type: 'string',
+				} },
+			},
+		},
 	],
 } as const;
 
@@ -78,25 +94,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			let emojiId;
-			if (ps.id) {
-				emojiId = ps.id;
-				const emoji = await this.customEmojiService.getEmojiById(ps.id);
-				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
-				if (ps.name && (ps.name !== emoji.name)) {
-					const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
-					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
-				}
-			} else {
-				if (!ps.name) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
-				const emoji = await this.customEmojiService.getEmojiByName(ps.name);
-				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
-				emojiId = emoji.id;
-			}
+			const required = 'id' in ps
+				? { id: ps.id, name: 'name' in ps ? ps.name as string : undefined }
+				: { name: ps.name };
 
-			await this.customEmojiService.update(emojiId, {
-				driveFile,
-				name: ps.name,
+			const error = await this.customEmojiService.update({
+				...required,
+				originalUrl: driveFile != null ? driveFile.url : undefined,
+				publicUrl: driveFile != null ? (driveFile.webpublicUrl ?? driveFile.url) : undefined,
+				fileType: driveFile != null ? (driveFile.webpublicType ?? driveFile.type) : undefined,
 				category: ps.category,
 				aliases: ps.aliases,
 				license: ps.license,
@@ -104,6 +110,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 			}, me);
+
+			switch (error) {
+				case null: return;
+				case 'NO_SUCH_EMOJI': throw new ApiError(meta.errors.noSuchEmoji);
+				case 'SAME_NAME_EMOJI_EXISTS': throw new ApiError(meta.errors.sameNameEmojiExists);
+			}
+			// 網羅性チェック
+			const mustBeNever: never = error;
 		});
 	}
 }

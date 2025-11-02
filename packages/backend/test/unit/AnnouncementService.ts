@@ -10,6 +10,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import type {
 	AnnouncementReadsRepository,
 	AnnouncementsRepository,
@@ -43,7 +44,7 @@ describe('AnnouncementService', () => {
 		return usersRepository.insert({
 			id: genAidx(Date.now()),
 			username: un,
-			usernameLower: un,
+			usernameLower: un.toLowerCase(),
 			...data,
 		})
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
@@ -67,6 +68,7 @@ describe('AnnouncementService', () => {
 			],
 			providers: [
 				AnnouncementService,
+				AnnouncementEntityService,
 				CacheService,
 				IdService,
 			],
@@ -101,10 +103,10 @@ describe('AnnouncementService', () => {
 
 	afterEach(async () => {
 		await Promise.all([
-			app.get(DI.metasRepository).delete({}),
-			usersRepository.delete({}),
-			announcementsRepository.delete({}),
-			announcementReadsRepository.delete({}),
+			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
+			usersRepository.createQueryBuilder().delete().execute(),
+			announcementsRepository.createQueryBuilder().delete().execute(),
+			announcementReadsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();

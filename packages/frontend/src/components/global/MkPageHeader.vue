@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
+<div v-if="show" ref="el" :class="[$style.root]">
 	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
 		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
 			<MkAvatar :class="$style.avatar" :user="$i"/>
@@ -40,23 +40,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
-import tinycolor from 'tinycolor2';
-import XTabs, { Tab } from './MkPageHeader.tabs.vue';
-import { scrollToTop } from '@/scripts/scroll.js';
-import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { PageHeaderItem } from '@/types/page-header.js';
+<script lang="ts">
+import type { PageHeaderItem } from '@/types/page-header.js';
+import type { PageMetadata } from '@/page.js';
+import type { Tab } from './MkPageHeader.tabs.vue';
 
-const props = withDefaults(defineProps<{
+export type PageHeaderProps = {
+	overridePageMetadata?: PageMetadata;
 	tabs?: Tab[];
 	tab?: string;
 	actions?: PageHeaderItem[] | null;
 	thin?: boolean;
+	hideTitle?: boolean;
+	canOmitTitle?: boolean;
 	displayMyAvatar?: boolean;
-}>(), {
+};
+</script>
+
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref, inject, useTemplateRef, computed } from 'vue';
+import { scrollToTop } from '@@/js/scroll.js';
+import XTabs from './MkPageHeader.tabs.vue';
+import { globalEvents } from '@/events.js';
+import { getAccountMenu } from '@/accounts.js';
+import { $i } from '@/i.js';
+import { DI } from '@/di.js';
+import * as os from '@/os.js';
+
+const props = withDefaults(defineProps<PageHeaderProps>(), {
 	tabs: () => ([] as Tab[]),
 });
 
@@ -64,18 +75,19 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const pageMetadata = injectReactiveMetadata();
+//const viewId = inject(DI.viewId);
+const injectedPageMetadata = inject(DI.pageMetadata, ref(null));
+const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
+const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle || (props.canOmitTitle && props.tabs.length > 0));
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = shallowRef<HTMLElement | undefined>(undefined);
-const bg = ref<string | undefined>(undefined);
+const el = useTemplateRef('el');
 const narrow = ref(false);
 const hasTabs = computed(() => props.tabs.length > 0);
 const hasActions = computed(() => props.actions && props.actions.length > 0);
 const show = computed(() => {
-	return !hideTitle || hasTabs.value || hasActions.value;
+	return !hideTitle.value || hasTabs.value || hasActions.value;
 });
 
 const preventDrag = (ev: TouchEvent) => {
@@ -88,33 +100,25 @@ const top = () => {
 	}
 };
 
-function openAccountMenu(ev: MouseEvent) {
-	openAccountMenu_({
+async function openAccountMenu(ev: MouseEvent) {
+	const menuItems = await getAccountMenu({
 		withExtraOperation: true,
-	}, ev);
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function onTabClick(): void {
 	top();
 }
 
-const calcBg = () => {
-	const rawBg = 'var(--bg)';
-	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
-	tinyBg.setAlpha(0.85);
-	bg.value = tinyBg.toRgbString();
-};
-
 let ro: ResizeObserver | null;
 
 onMounted(() => {
-	calcBg();
-	globalEvents.on('themeChanged', calcBg);
-
 	if (el.value && el.value.parentElement) {
 		narrow.value = el.value.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
-			if (el.value && el.value.parentElement && document.body.contains(el.value as HTMLElement)) {
+			if (el.value && el.value.parentElement && window.document.body.contains(el.value as HTMLElement)) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;
 			}
 		});
@@ -123,17 +127,24 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	globalEvents.off('themeChanged', calcBg);
 	if (ro) ro.disconnect();
 });
 </script>
 
 <style lang="scss" module>
 .root {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	border-bottom: solid 0.5px var(--divider);
+	background: color(from var(--MI_THEME-pageHeaderBg) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px transparent;
 	width: 100%;
+	color: var(--MI_THEME-pageHeaderFg);
+}
+
+@container style(--MI_THEME-pageHeaderBg: var(--MI_THEME-bg)) {
+	.root {
+		border-bottom: solid 0.5px var(--MI_THEME-divider);
+	}
 }
 
 .upper,
@@ -145,7 +156,7 @@ onUnmounted(() => {
 .upper {
 	--height: 50px;
 	display: flex;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	height: var(--height);
 
 	.tabs:first-child {
@@ -230,7 +241,7 @@ onUnmounted(() => {
 	}
 
 	&.highlighted {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 

@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
-import { Chart, LegendItem } from 'chart.js';
+import { Chart } from 'chart.js';
+import type { LegendItem } from 'chart.js';
 
 const chart = shallowRef<Chart>();
 const type = shallowRef<string>();
@@ -53,11 +54,11 @@ defineExpose({
 		> .item {
 			font-size: 85%;
 			padding: 4px 12px 4px 8px;
-			border: solid 1px var(--divider);
+			border: solid 1px var(--MI_THEME-divider);
 			border-radius: 999px;
 
 			&:hover {
-				border-color: var(--inputBorderHover);
+				border-color: var(--MI_THEME-inputBorderHover);
 			}
 
 			&.disabled {

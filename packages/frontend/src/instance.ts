@@ -5,14 +5,13 @@
 
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
 //#region loader
-const providedMetaEl = document.getElementById('misskey_meta');
+const providedMetaEl = window.document.getElementById('misskey_meta');
 
 let cachedMeta = miLocalStorage.getItem('instance') ? JSON.parse(miLocalStorage.getItem('instance')!) : null;
 let cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
@@ -30,20 +29,12 @@ if (providedAt > cachedAt) {
 
 export const instance: Misskey.entities.MetaDetailed = reactive(cachedMeta ?? {});
 
-export const serverErrorImageUrl = computed(() => instance.serverErrorImageUrl ?? DEFAULT_SERVER_ERROR_IMAGE_URL);
-
-export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO_IMAGE_URL);
-
-export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
-
-export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
-
-export async function fetchInstance(force = false): Promise<void> {
+export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
 	if (!force) {
 		const cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
 
 		if (Date.now() - cachedAt < 1000 * 60 * 60) {
-			return;
+			return instance;
 		}
 	}
 
@@ -57,4 +48,12 @@ export async function fetchInstance(force = false): Promise<void> {
 
 	miLocalStorage.setItem('instance', JSON.stringify(instance));
 	miLocalStorage.setItem('instanceCachedAt', Date.now().toString());
+
+	return instance;
 }
+
+export type ClientOptions = {
+	entrancePageStyle: 'classic' | 'simple';
+	showTimelineForVisitor: boolean;
+	showActivitiesForVisitor: boolean;
+};

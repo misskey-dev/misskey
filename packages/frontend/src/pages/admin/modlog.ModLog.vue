@@ -8,9 +8,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>
 		<b
 			:class="{
-				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration'].includes(log.type),
-				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword'].includes(log.type),
-				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration'].includes(log.type)
+				[$style.logGreen]: [
+					'createRole',
+					'addCustomEmoji',
+					'createGlobalAnnouncement',
+					'createUserAnnouncement',
+					'createAd',
+					'createInvitation',
+					'createAvatarDecoration',
+					'createSystemWebhook',
+					'createAbuseReportNotificationRecipient',
+				].includes(log.type),
+				[$style.logYellow]: [
+					'markSensitiveDriveFile',
+					'resetPassword',
+					'suspendRemoteInstance',
+				].includes(log.type),
+				[$style.logRed]: [
+					'suspend',
+					'deleteRole',
+					'deleteGlobalAnnouncement',
+					'deleteUserAnnouncement',
+					'deleteCustomEmoji',
+					'deleteNote',
+					'deleteDriveFile',
+					'deleteAd',
+					'deleteAvatarDecoration',
+					'deleteSystemWebhook',
+					'deleteAbuseReportNotificationRecipient',
+					'deleteAccount',
+					'deletePage',
+					'deleteFlash',
+					'deleteGalleryPost',
+					'deleteChatRoom',
+				].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
 		<span v-if="log.type === 'updateUserNote'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
@@ -40,16 +71,68 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'createAvatarDecoration'">: {{ log.info.avatarDecoration.name }}</span>
 		<span v-else-if="log.type === 'updateAvatarDecoration'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'deleteAvatarDecoration'">: {{ log.info.avatarDecoration.name }}</span>
+		<span v-else-if="log.type === 'createSystemWebhook'">: {{ log.info.webhook.name }}</span>
+		<span v-else-if="log.type === 'updateSystemWebhook'">: {{ log.info.before.name }}</span>
+		<span v-else-if="log.type === 'deleteSystemWebhook'">: {{ log.info.webhook.name }}</span>
+		<span v-else-if="log.type === 'createAbuseReportNotificationRecipient'">: {{ log.info.recipient.name }}</span>
+		<span v-else-if="log.type === 'updateAbuseReportNotificationRecipient'">: {{ log.info.before.name }}</span>
+		<span v-else-if="log.type === 'deleteAbuseReportNotificationRecipient'">: {{ log.info.recipient.name }}</span>
+		<span v-else-if="log.type === 'deleteAccount'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'deletePage'">: @{{ log.info.pageUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteChatRoom'">: @{{ log.info.room.name }}</span>
 	</template>
 	<template #icon>
-		<MkAvatar :user="log.user" :class="$style.avatar"/>
+		<i v-if="log.type === 'updateServerSettings'" class="ti ti-settings"></i>
+		<i v-else-if="log.type === 'updateUserNote'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'suspend'" class="ti ti-user-x"></i>
+		<i v-else-if="log.type === 'unsuspend'" class="ti ti-user-check"></i>
+		<i v-else-if="log.type === 'resetPassword'" class="ti ti-key"></i>
+		<i v-else-if="log.type === 'assignRole'" class="ti ti-user-plus"></i>
+		<i v-else-if="log.type === 'unassignRole'" class="ti ti-user-minus"></i>
+		<i v-else-if="log.type === 'createRole'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateRole'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteRole'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'addCustomEmoji'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateCustomEmoji'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteCustomEmoji'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'markSensitiveDriveFile'" class="ti ti-eye-exclamation"></i>
+		<i v-else-if="log.type === 'unmarkSensitiveDriveFile'" class="ti ti-eye"></i>
+		<i v-else-if="log.type === 'suspendRemoteInstance'" class="ti ti-x"></i>
+		<i v-else-if="log.type === 'unsuspendRemoteInstance'" class="ti ti-check"></i>
+		<i v-else-if="log.type === 'createGlobalAnnouncement'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateGlobalAnnouncement'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteGlobalAnnouncement'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createUserAnnouncement'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateUserAnnouncement'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteUserAnnouncement'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteNote'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteDriveFile'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createAd'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateAd'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteAd'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createAvatarDecoration'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateAvatarDecoration'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteAvatarDecoration'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createSystemWebhook'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateSystemWebhook'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteSystemWebhook'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createAbuseReportNotificationRecipient'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateAbuseReportNotificationRecipient'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteAbuseReportNotificationRecipient'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteAccount'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deletePage'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteFlash'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteGalleryPost'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteChatRoom'" class="ti ti-trash"></i>
 	</template>
 	<template #suffix>
 		<MkTime :time="log.createdAt"/>
 	</template>
 
 	<div>
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+		<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 			<div style="flex: 1;">{{ i18n.ts.moderator }}: <MkA :to="`/admin/user/${log.userId}`" class="_link">@{{ log.user?.username }}</MkA></div>
 			<div style="flex: 1;">{{ i18n.ts.dateAndTime }}: <MkTime :time="log.createdAt" mode="detail"/></div>
 		</div>
@@ -111,7 +194,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateRemoteInstanceNote'">
-			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateSystemWebhook'">
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateAbuseReportNotificationRecipient'">
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateAbuseReportNote'">
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateProxyAccountDescription'">
 			<div :class="$style.diff">
 				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
 			</div>
@@ -138,11 +240,6 @@ const props = defineProps<{
 </script>
 
 <style lang="scss" module>
-.avatar {
-	width: 18px;
-	height: 18px;
-}
-
 .diff {
 	background: #fff;
 	color: #000;
@@ -151,14 +248,14 @@ const props = defineProps<{
 }
 
 .logYellow {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .logRed {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .logGreen {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 </style>

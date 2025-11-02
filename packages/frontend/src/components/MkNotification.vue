@@ -6,14 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.head">
-		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
-		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
+		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && 'note' in notification" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned', 'exportCompleted', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
 		<div v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'" :class="[$style.icon, $style.icon_reactionGroupHeart]"><i class="ti ti-heart" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
-		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
-		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
-		<img v-else-if="notification.icon" :class="[$style.icon, $style.icon_app]" :src="notification.icon" alt=""/>
+		<MkAvatar v-else-if="'user' in notification" :class="$style.icon" :user="notification.user" link preview/>
+		<img v-else-if="'icon' in notification && notification.icon != null" :class="[$style.icon, $style.icon_app]" :src="notification.icon" alt=""/>
 		<div
 			:class="[$style.subIcon, {
 				[$style.t_follow]: notification.type === 'follow',
@@ -24,7 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_mention]: notification.type === 'mention',
 				[$style.t_quote]: notification.type === 'quote',
 				[$style.t_pollEnded]: notification.type === 'pollEnded',
+				[$style.t_scheduledNotePosted]: notification.type === 'scheduledNotePosted',
+				[$style.t_scheduledNotePostFailed]: notification.type === 'scheduledNotePostFailed',
 				[$style.t_achievementEarned]: notification.type === 'achievementEarned',
+				[$style.t_exportCompleted]: notification.type === 'exportCompleted',
+				[$style.t_login]: notification.type === 'login',
+				[$style.t_createToken]: notification.type === 'createToken',
+				[$style.t_chatRoomInvitationReceived]: notification.type === 'chatRoomInvitationReceived',
 				[$style.t_roleAssigned]: notification.type === 'roleAssigned' && notification.role.iconUrl == null,
 			}]"
 		>
@@ -36,7 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
+			<i v-else-if="notification.type === 'scheduledNotePosted'" class="ti ti-send"></i>
+			<i v-else-if="notification.type === 'scheduledNotePostFailed'" class="ti ti-alert-triangle"></i>
 			<i v-else-if="notification.type === 'achievementEarned'" class="ti ti-medal"></i>
+			<i v-else-if="notification.type === 'exportCompleted'" class="ti ti-archive"></i>
+			<i v-else-if="notification.type === 'login'" class="ti ti-login-2"></i>
+			<i v-else-if="notification.type === 'createToken'" class="ti ti-key"></i>
+			<i v-else-if="notification.type === 'chatRoomInvitationReceived'" class="ti ti-messages"></i>
 			<template v-else-if="notification.type === 'roleAssigned'">
 				<img v-if="notification.role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="notification.role.iconUrl" alt=""/>
 				<i v-else class="ti ti-badges"></i>
@@ -46,20 +57,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:withTooltip="true"
 				:reaction="notification.reaction.replace(/^:(\w+):$/, ':$1@.:')"
 				:noStyle="true"
-				style="width: 100%; height: 100%;"
+				style="width: 100%; height: 100% !important; object-fit: contain;"
 			/>
 		</div>
 	</div>
 	<div :class="$style.tail">
 		<header :class="$style.header">
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
+			<span v-else-if="notification.type === 'scheduledNotePosted'">{{ i18n.ts._notification.scheduledNotePosted }}</span>
+			<span v-else-if="notification.type === 'scheduledNotePostFailed'">{{ i18n.ts._notification.scheduledNotePostFailed }}</span>
 			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
 			<span v-else-if="notification.type === 'roleAssigned'">{{ i18n.ts._notification.roleAssigned }}</span>
+			<span v-else-if="notification.type === 'chatRoomInvitationReceived'">{{ i18n.ts._notification.chatRoomInvitationReceived }}</span>
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
+			<span v-else-if="notification.type === 'login'">{{ i18n.ts._notification.login }}</span>
+			<span v-else-if="notification.type === 'createToken'">{{ i18n.ts._notification.createToken }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
+			<span v-else-if="notification.type === 'exportCompleted'">{{ i18n.tsx._notification.exportOfXCompleted({ x: exportEntityName[notification.exportedEntity] }) }}</span>
 			<MkA v-else-if="notification.type === 'follow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
-			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: notification.reactions.length }) }}</span>
-			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: notification.reactions.length }) }}</span>
+			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
+			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
 			<span v-else-if="notification.type === 'app'">{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
@@ -72,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<MkA v-else-if="notification.type === 'renote' || notification.type === 'renote:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :author="notification.note.renote.user"/>
+				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :author="notification.note.renote?.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'reply'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
@@ -92,16 +109,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
+			<MkA v-else-if="notification.type === 'scheduledNotePosted'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+				<i class="ti ti-quote" :class="$style.quote"></i>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<i class="ti ti-quote" :class="$style.quote"></i>
+			</MkA>
 			<div v-else-if="notification.type === 'roleAssigned'" :class="$style.text">
 				{{ notification.role.name }}
+			</div>
+			<div v-else-if="notification.type === 'chatRoomInvitationReceived'" :class="$style.text">
+				{{ notification.invitation.room.name }}
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
 			</MkA>
+			<MkA v-else-if="notification.type === 'exportCompleted'" :class="$style.text" :to="`/my/drive/file/${notification.fileId}`">
+				{{ i18n.ts.showFile }}
+			</MkA>
+			<MkA v-else-if="notification.type === 'createToken'" :class="$style.text" to="/settings/apps">
+				<Mfm :text="i18n.tsx._notification.createTokenDescription({ text: i18n.ts.manageAccessTokens })"/>
+			</MkA>
 			<template v-else-if="notification.type === 'follow'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>
 			</template>
-			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
+			<template v-else-if="notification.type === 'followRequestAccepted'">
+				<div :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</div>
+				<div v-if="notification.message" :class="$style.text" style="opacity: 0.6; font-style: oblique;">
+					<i class="ti ti-quote" :class="$style.quote"></i>
+					<span>{{ notification.message }}</span>
+					<i class="ti ti-quote" :class="$style.quote"></i>
+				</div>
+			</template>
 			<template v-else-if="notification.type === 'receiveFollowRequest'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}</span>
 				<div v-if="full && !followRequestDone" :class="$style.followRequestCommands">
@@ -122,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:withTooltip="true"
 							:reaction="reaction.reaction.replace(/^:(\w+):$/, ':$1@.:')"
 							:noStyle="true"
-							style="width: 100%; height: 100%;"
+							style="width: 100%; height: 100% !important; object-fit: contain;"
 						/>
 					</div>
 				</div>
@@ -142,15 +180,14 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { signinRequired } from '@/account.js';
-import { infoImageUrl } from '@/instance.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = withDefaults(defineProps<{
 	notification: Misskey.entities.Notification;
@@ -161,19 +198,38 @@ const props = withDefaults(defineProps<{
 	full: false,
 });
 
+type ExportCompletedNotification = Misskey.entities.Notification & { type: 'exportCompleted' };
+
+const exportEntityName = {
+	antenna: i18n.ts.antennas,
+	blocking: i18n.ts.blockedUsers,
+	clip: i18n.ts.clips,
+	customEmoji: i18n.ts.customEmojis,
+	favorite: i18n.ts.favorites,
+	following: i18n.ts.following,
+	muting: i18n.ts.mutedUsers,
+	note: i18n.ts.notes,
+	userList: i18n.ts.lists,
+} as const satisfies Record<ExportCompletedNotification['exportedEntity'], string>;
+
 const followRequestDone = ref(false);
 
 const acceptFollowRequest = () => {
-	if (props.notification.user == null) return;
+	if (!('user' in props.notification)) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/accept', { userId: props.notification.user.id });
 };
 
 const rejectFollowRequest = () => {
-	if (props.notification.user == null) return;
+	if (!('user' in props.notification)) return;
 	followRequestDone.value = true;
 	misskeyApi('following/requests/reject', { userId: props.notification.user.id });
 };
+
+function getActualReactedUsersCount(notification: Misskey.entities.Notification) {
+	if (notification.type !== 'reaction:grouped') return 0;
+	return new Set(notification.reactions.map((reaction) => reaction.user.id)).size;
+}
 </script>
 
 <style lang="scss" module>
@@ -185,6 +241,17 @@ const rejectFollowRequest = () => {
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
+	content-visibility: auto;
+	contain-intrinsic-size: 0 100px;
+
+	--eventFollow: #36aed2;
+	--eventRenote: #36d298;
+	--eventReply: #007aff;
+	--eventReactionHeart: var(--MI_THEME-love);
+	--eventReaction: #e99a0b;
+	--eventAchievement: #cb9a11;
+	--eventLogin: #007aff;
+	--eventOther: #88a6b7;
 }
 
 .head {
@@ -238,10 +305,11 @@ const rejectFollowRequest = () => {
 	right: -2px;
 	width: 20px;
 	height: 20px;
+	line-height: 20px;
 	box-sizing: border-box;
 	border-radius: 100%;
-	background: var(--panel);
-	box-shadow: 0 0 0 3px var(--panel);
+	background: var(--MI_THEME-panel);
+	box-shadow: 0 0 0 3px var(--MI_THEME-panel);
 	font-size: 11px;
 	text-align: center;
 	color: #fff;
@@ -252,49 +320,71 @@ const rejectFollowRequest = () => {
 }
 
 .t_follow, .t_followRequestAccepted, .t_receiveFollowRequest {
-	padding: 3px;
 	background: var(--eventFollow);
 	pointer-events: none;
 }
 
 .t_renote {
-	padding: 3px;
 	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_quote {
-	padding: 3px;
 	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_reply {
-	padding: 3px;
 	background: var(--eventReply);
 	pointer-events: none;
 }
 
 .t_mention {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_pollEnded {
-	padding: 3px;
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_scheduledNotePosted {
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_scheduledNotePostFailed {
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_achievementEarned {
-	padding: 3px;
 	background: var(--eventAchievement);
 	pointer-events: none;
 }
 
+.t_exportCompleted {
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
 .t_roleAssigned {
-	padding: 3px;
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_login {
+	background: var(--eventLogin);
+	pointer-events: none;
+}
+
+.t_createToken {
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_chatRoomInvitationReceived {
 	background: var(--eventOther);
 	pointer-events: none;
 }
@@ -338,7 +428,7 @@ const rejectFollowRequest = () => {
 	margin-right: 4px;
 	position: relative;
 
-	&:before {
+	&::before {
 		position: absolute;
 		transform: rotate(180deg);
 	}
@@ -381,8 +471,8 @@ const rejectFollowRequest = () => {
 	height: 20px;
 	box-sizing: border-box;
 	border-radius: 100%;
-	background: var(--panel);
-	box-shadow: 0 0 0 3px var(--panel);
+	background: var(--MI_THEME-panel);
+	box-shadow: 0 0 0 3px var(--MI_THEME-panel);
 	font-size: 11px;
 	text-align: center;
 	color: #fff;

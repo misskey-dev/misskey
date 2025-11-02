@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_panel">
-	<div :class="$style.container" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+	<div :class="$style.container" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : undefined }">
 		<div :class="$style.avatarContainer">
 			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
@@ -22,15 +22,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
-import { $i } from '@/account.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { ensureSignin } from '@/i.js';
 import { userPage } from '@/filters/user.js';
+
+const $i = ensureSignin();
 
 const name = 'profile';
 
 const widgetPropsDef = {
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -82,16 +85,19 @@ defineExpose<WidgetComponentExpose>({
 .body {
 	text-overflow: ellipsis;
 	overflow: clip;
+	margin-left: -10px;
+	padding: 10px;
 }
 
 .name {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px rgba(0, 0, 0, 0.5));
 	font-weight: bold;
 }
 
 .username {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px rgba(0, 0, 0, 0.5));
+	font-weight: normal;
 }
 </style>

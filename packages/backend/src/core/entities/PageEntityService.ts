@@ -14,7 +14,6 @@ import type { MiPage } from '@/models/Page.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -40,6 +39,9 @@ export class PageEntityService {
 	public async pack(
 		src: MiPage['id'] | MiPage,
 		me?: { id: MiUser['id'] } | null | undefined,
+		hint?: {
+			packedUser?: Packed<'UserLite'>
+		},
 	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
@@ -91,7 +93,7 @@ export class PageEntityService {
 			createdAt: this.idService.parse(page.id).date.toISOString(),
 			updatedAt: page.updatedAt.toISOString(),
 			userId: page.userId,
-			user: this.userEntityService.pack(page.user ?? page.userId, me), // { schema: 'UserDetailed' } すると無限ループするので注意
+			user: hint?.packedUser ?? this.userEntityService.pack(page.user ?? page.userId, me), // { schema: 'UserDetailed' } すると無限ループするので注意
 			content: page.content,
 			variables: page.variables,
 			title: page.title,
@@ -103,18 +105,21 @@ export class PageEntityService {
 			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
 			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId) : null,
-			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter(isNotNull)),
+			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter(x => x != null)),
 			likedCount: page.likedCount,
 			isLiked: meId ? await this.pageLikesRepository.exists({ where: { pageId: page.id, userId: meId } }) : undefined,
 		});
 	}
 
 	@bindThis
-	public packMany(
+	public async packMany(
 		pages: MiPage[],
 		me?: { id: MiUser['id'] } | null | undefined,
 	) {
-		return Promise.all(pages.map(x => this.pack(x, me)));
+		const _users = pages.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(pages.map(page => this.pack(page, me, { packedUser: _userMap.get(page.userId) })));
 	}
 }
 

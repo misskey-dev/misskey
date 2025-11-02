@@ -57,6 +57,20 @@ export const packedRoleCondFormulaValueIsLocalOrRemoteSchema = {
 	},
 } as const;
 
+export const packedRoleCondFormulaValueUserSettingBooleanSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string', optional: false,
+		},
+		type: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['isSuspended', 'isLocked', 'isBot', 'isCat', 'isExplorable'],
+		},
+	},
+} as const;
+
 export const packedRoleCondFormulaValueAssignedRoleSchema = {
 	type: 'object',
 	properties: {
@@ -136,6 +150,9 @@ export const packedRoleCondFormulaValueSchema = {
 			ref: 'RoleCondFormulaValueIsLocalOrRemote',
 		},
 		{
+			ref: 'RoleCondFormulaValueUserSettingBooleanSchema',
+		},
+		{
 			ref: 'RoleCondFormulaValueAssignedRole',
 		},
 		{
@@ -195,6 +212,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canSearchUsers: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canUseTranslator: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -207,7 +228,23 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
+		maxFileSizeMb: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		uploadableFileTypes: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
 		alwaysMarkNsfw: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUpdateBioMedia: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
@@ -249,6 +286,43 @@ export const packedRolePoliciesSchema = {
 		},
 		avatarDecorationLimit: {
 			type: 'integer',
+			optional: false, nullable: false,
+		},
+		canImportAntennas: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canImportBlocking: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canImportFollowing: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canImportMuting: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canImportUserLists: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		chatAvailability: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['available', 'readonly', 'unavailable'],
+		},
+		noteDraftLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		scheduledNoteLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		watermarkAvailable: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 	},
@@ -340,6 +414,11 @@ export const packedRoleSchema = {
 					example: false,
 				},
 				asBadge: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					example: false,
+				},
+				preserveAssignmentOnMoveAccount: {
 					type: 'boolean',
 					optional: false, nullable: false,
 					example: false,

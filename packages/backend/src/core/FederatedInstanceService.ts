@@ -40,13 +40,14 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 					firstRetrievedAt: new Date(parsed.firstRetrievedAt),
 					latestRequestReceivedAt: parsed.latestRequestReceivedAt ? new Date(parsed.latestRequestReceivedAt) : null,
 					infoUpdatedAt: parsed.infoUpdatedAt ? new Date(parsed.infoUpdatedAt) : null,
+					notRespondingSince: parsed.notRespondingSince ? new Date(parsed.notRespondingSince) : null,
 				};
 			},
 		});
 	}
 
 	@bindThis
-	public async fetch(host: string): Promise<MiInstance> {
+	public async fetchOrRegister(host: string): Promise<MiInstance> {
 		host = this.utilityService.toPuny(host);
 
 		const cached = await this.federatedInstanceCache.get(host);
@@ -55,14 +56,32 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		const index = await this.instancesRepository.findOneBy({ host });
 
 		if (index == null) {
-			const i = await this.instancesRepository.insert({
+			const i = await this.instancesRepository.insertOne({
 				id: this.idService.gen(),
 				host,
 				firstRetrievedAt: new Date(),
-			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			this.federatedInstanceCache.set(host, i);
 			return i;
+		} else {
+			this.federatedInstanceCache.set(host, index);
+			return index;
+		}
+	}
+
+	@bindThis
+	public async fetch(host: string): Promise<MiInstance | null> {
+		host = this.utilityService.toPuny(host);
+
+		const cached = await this.federatedInstanceCache.get(host);
+		if (cached !== undefined) return cached;
+
+		const index = await this.instancesRepository.findOneBy({ host });
+
+		if (index == null) {
+			this.federatedInstanceCache.set(host, null);
+			return null;
 		} else {
 			this.federatedInstanceCache.set(host, index);
 			return index;
