@@ -11,20 +11,27 @@ import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effect
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import { ensureSignin } from '@/i.js';
 
+const $i = ensureSignin();
+
 const FXS = [
 	FX_frame,
 ] as const satisfies ImageEffectorFx<string, any>[];
 
 // TODO: 上部にもラベルを配置できるようにする
 
-export type ImageFrameParams = {
-	borderThickness: number;
-	labelThickness: number;
-	labelScale: number;
-	title: string;
-	text: string;
+type LabelParams = {
+	scale: number;
+	padding: number;
+	textBig: string;
+	textSmall: string;
 	centered: boolean;
 	withQrCode: boolean;
+};
+
+export type ImageFrameParams = {
+	borderThickness: number;
+	labelTop: LabelParams;
+	labelBottom: LabelParams;
 	bgColor: [r: number, g: number, b: number];
 	fgColor: [r: number, g: number, b: number];
 	borderRadius: number; // TODO
@@ -64,7 +71,7 @@ export class ImageFrameRenderer {
 		this.effector.registerTexture('image', this.image);
 	}
 
-	private interpolateText(text: string) {
+	private interpolateTemplateText(text: string) {
 		return text.replaceAll(/\{(\w+)\}/g, (_: string, key: string) => {
 			const meta_date = this.exif.DateTimeOriginal ? this.exif.DateTimeOriginal.description : '-';
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
@@ -92,33 +99,11 @@ export class ImageFrameRenderer {
 		});
 	}
 
-	public async updateAndRender(params: ImageFrameParams): Promise<void> {
-		let imageAreaW = this.image.width;
-		let imageAreaH = this.image.height;
-
-		if (this.renderAsPreview) {
-			const MAX_W = 1000;
-			const MAX_H = 1000;
-
-			if (imageAreaW > MAX_W || imageAreaH > MAX_H) {
-				const scale = Math.min(MAX_W / imageAreaW, MAX_H / imageAreaH);
-				imageAreaW = Math.floor(imageAreaW * scale);
-				imageAreaH = Math.floor(imageAreaH * scale);
-			}
-		}
-
-		const paddingTop = Math.floor(imageAreaH * params.borderThickness);
-		const paddingLeft = Math.floor(imageAreaH * params.borderThickness);
-		const paddingRight = Math.floor(imageAreaH * params.borderThickness);
-		const paddingBottom = Math.floor(imageAreaH * params.labelThickness);
-		const renderWidth = imageAreaW + paddingLeft + paddingRight;
-		const renderHeight = imageAreaH + paddingTop + paddingBottom;
-
-		const aspectRatio = renderWidth / renderHeight;
+	private async renderLabel(renderWidth: number, renderHeight: number, paddingLeft: number, paddingRight: number, imageAreaH: number, params: LabelParams) {
+		const scaleBase = imageAreaH * params.scale;
 		const labelCanvasCtx = window.document.createElement('canvas').getContext('2d')!;
 		labelCanvasCtx.canvas.width = renderWidth;
-		labelCanvasCtx.canvas.height = paddingBottom;
-		const scaleBase = imageAreaH * params.labelScale;
+		labelCanvasCtx.canvas.height = renderHeight;
 		const fontSize = scaleBase / 30;
 		const textsMarginLeft = Math.max(fontSize * 2, paddingLeft);
 		const textsMarginRight = textsMarginLeft;
@@ -133,29 +118,27 @@ export class ImageFrameRenderer {
 		labelCanvasCtx.font = `bold ${fontSize}px sans-serif`;
 		labelCanvasCtx.textBaseline = 'middle';
 
-		const titleY = params.text === '' ? (labelCanvasCtx.canvas.height / 2) : (labelCanvasCtx.canvas.height / 2) - (fontSize * 0.9);
+		const titleY = params.textSmall === '' ? (labelCanvasCtx.canvas.height / 2) : (labelCanvasCtx.canvas.height / 2) - (fontSize * 0.9);
 		if (params.centered) {
 			labelCanvasCtx.textAlign = 'center';
-			labelCanvasCtx.fillText(this.interpolateText(params.title), labelCanvasCtx.canvas.width / 2, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
+			labelCanvasCtx.fillText(this.interpolateTemplateText(params.textBig), labelCanvasCtx.canvas.width / 2, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
 		} else {
 			labelCanvasCtx.textAlign = 'left';
-			labelCanvasCtx.fillText(this.interpolateText(params.title), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
+			labelCanvasCtx.fillText(this.interpolateTemplateText(params.textBig), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
 		}
 
 		labelCanvasCtx.fillStyle = '#00000088';
 		labelCanvasCtx.font = `${fontSize * 0.85}px sans-serif`;
 		labelCanvasCtx.textBaseline = 'middle';
 
-		const textY = params.title === '' ? (labelCanvasCtx.canvas.height / 2) : (labelCanvasCtx.canvas.height / 2) + (fontSize * 0.9);
+		const textY = params.textBig === '' ? (labelCanvasCtx.canvas.height / 2) : (labelCanvasCtx.canvas.height / 2) + (fontSize * 0.9);
 		if (params.centered) {
 			labelCanvasCtx.textAlign = 'center';
-			labelCanvasCtx.fillText(this.interpolateText(params.text), labelCanvasCtx.canvas.width / 2, textY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
+			labelCanvasCtx.fillText(this.interpolateTemplateText(params.textSmall), labelCanvasCtx.canvas.width / 2, textY, labelCanvasCtx.canvas.width - textsMarginLeft - textsMarginRight);
 		} else {
 			labelCanvasCtx.textAlign = 'left';
-			labelCanvasCtx.fillText(this.interpolateText(params.text), textsMarginLeft, textY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
+			labelCanvasCtx.fillText(this.interpolateTemplateText(params.textSmall), textsMarginLeft, textY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
 		}
-
-		const $i = ensureSignin();
 
 		if (withQrCode) {
 			try {
@@ -207,9 +190,38 @@ export class ImageFrameRenderer {
 			}
 		}
 
-		const data = labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height);
+		return labelCanvasCtx;
+	}
 
-		await this.effector.registerTexture('label', data);
+	public async updateAndRender(params: ImageFrameParams): Promise<void> {
+		let imageAreaW = this.image.width;
+		let imageAreaH = this.image.height;
+
+		if (this.renderAsPreview) {
+			const MAX_W = 1000;
+			const MAX_H = 1000;
+
+			if (imageAreaW > MAX_W || imageAreaH > MAX_H) {
+				const scale = Math.min(MAX_W / imageAreaW, MAX_H / imageAreaH);
+				imageAreaW = Math.floor(imageAreaW * scale);
+				imageAreaH = Math.floor(imageAreaH * scale);
+			}
+		}
+
+		const paddingLeft = Math.floor(imageAreaH * params.borderThickness);
+		const paddingRight = Math.floor(imageAreaH * params.borderThickness);
+		const paddingTop = Math.floor(imageAreaH * params.labelTop.padding);
+		const paddingBottom = Math.floor(imageAreaH * params.labelBottom.padding);
+		const renderWidth = imageAreaW + paddingLeft + paddingRight;
+		const renderHeight = imageAreaH + paddingTop + paddingBottom;
+
+		const topLabelCanvasCtx = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.labelTop);
+		const topLabelImage = topLabelCanvasCtx.getImageData(0, 0, topLabelCanvasCtx.canvas.width, topLabelCanvasCtx.canvas.height);
+		this.effector.registerTexture('topLabel', topLabelImage);
+
+		const bottomLabelCanvasCtx = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.labelBottom);
+		const bottomLabelImage = bottomLabelCanvasCtx.getImageData(0, 0, bottomLabelCanvasCtx.canvas.width, bottomLabelCanvasCtx.canvas.height);
+		this.effector.registerTexture('bottomLabel', bottomLabelImage);
 
 		this.effector.changeResolution(renderWidth, renderHeight);
 
@@ -218,7 +230,8 @@ export class ImageFrameRenderer {
 			id: 'a',
 			params: {
 				image: 'image',
-				label: 'label',
+				topLabel: 'topLabel',
+				bottomLabel: 'bottomLabel',
 				paddingLeft: paddingLeft / renderWidth,
 				paddingRight: paddingRight / renderWidth,
 				paddingTop: paddingTop / renderHeight,

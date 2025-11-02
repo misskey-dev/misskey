@@ -35,29 +35,65 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
 					</MkRange>
 
-					<MkRange v-model="frame.labelThickness" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
-						<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
-					</MkRange>
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
 
-					<MkRange v-model="frame.labelScale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
-						<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
-					</MkRange>
+						<div class="_gaps">
+							<MkRange v-model="frame.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
+								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
+							</MkRange>
 
-					<MkSwitch v-model="frame.centered">
-						<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
-					</MkSwitch>
+							<MkRange v-model="frame.labelTop.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+								<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
+							</MkRange>
 
-					<MkInput v-model="frame.title">
-						<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
-					</MkInput>
+							<MkSwitch v-model="frame.labelTop.centered">
+								<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
+							</MkSwitch>
 
-					<MkTextarea v-model="frame.text">
-						<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
-					</MkTextarea>
+							<MkInput v-model="frame.labelTop.textBig">
+								<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
+							</MkInput>
 
-					<MkSwitch v-model="frame.withQrCode">
-						<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
-					</MkSwitch>
+							<MkTextarea v-model="frame.labelTop.textSmall">
+								<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
+							</MkTextarea>
+
+							<MkSwitch v-model="frame.labelTop.withQrCode">
+								<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
+							</MkSwitch>
+						</div>
+					</MkFolder>
+
+					<MkFolder :defaultOpen="true">
+						<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
+
+						<div class="_gaps">
+							<MkRange v-model="frame.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
+								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
+							</MkRange>
+
+							<MkRange v-model="frame.labelBottom.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+								<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
+							</MkRange>
+
+							<MkSwitch v-model="frame.labelBottom.centered">
+								<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
+							</MkSwitch>
+
+							<MkInput v-model="frame.labelBottom.textBig">
+								<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
+							</MkInput>
+
+							<MkTextarea v-model="frame.labelBottom.textSmall">
+								<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
+							</MkTextarea>
+
+							<MkSwitch v-model="frame.labelBottom.withQrCode">
+								<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
+							</MkSwitch>
+						</div>
+					</MkFolder>
 
 					<MkInfo>
 						<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
@@ -118,12 +154,22 @@ const props = defineProps<{
 
 const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
 	borderThickness: 0.05,
-	labelThickness: 0.2,
-	labelScale: 1.0,
-	title: '{year}/{0month}/{0day}',
-	text: '{camera_mm}mm   f/{camera_f}   {camera_s}s   ISO{camera_iso}',
-	centered: false,
-	withQrCode: true,
+	labelTop: {
+		scale: 1.0,
+		padding: 0.2,
+		textBig: '',
+		textSmall: '',
+		centered: false,
+		withQrCode: false,
+	},
+	labelBottom: {
+		scale: 1.0,
+		padding: 0.2,
+		textBig: '{year}/{0month}/{0day}',
+		textSmall: '{camera_mm}mm   f/{camera_f}   {camera_s}s   ISO{camera_iso}',
+		centered: false,
+		withQrCode: true,
+	},
 	bgColor: [255, 255, 255],
 	fgColor: [0, 0, 0],
 });

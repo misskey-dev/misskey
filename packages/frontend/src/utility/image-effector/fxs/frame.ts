@@ -10,13 +10,17 @@ export const FX_frame = defineImageEffectorFx({
 	id: 'frame',
 	name: '(internal)',
 	shader,
-	uniforms: ['image', 'label', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'] as const,
+	uniforms: ['image', 'topLabel', 'bottomLabel', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'] as const,
 	params: {
 		image: {
 			type: 'textureRef',
 			default: null,
 		},
-		label: {
+		topLabel: {
+			type: 'textureRef',
+			default: null,
+		},
+		bottomLabel: {
 			type: 'textureRef',
 			default: null,
 		},
@@ -47,6 +51,8 @@ export const FX_frame = defineImageEffectorFx({
 	},
 	main: ({ gl, u, params, textures }) => {
 		const image = textures.image;
+		if (image == null) return;
+
 		gl.activeTexture(gl.TEXTURE1);
 		gl.bindTexture(gl.TEXTURE_2D, image.texture);
 		gl.uniform1i(u.image, 1);
@@ -56,11 +62,18 @@ export const FX_frame = defineImageEffectorFx({
 		gl.uniform1f(u.paddingLeft, params.paddingLeft);
 		gl.uniform1f(u.paddingRight, params.paddingRight);
 
-		const label = textures.label;
-		if (label) {
+		const topLabel = textures.topLabel;
+		if (topLabel) {
 			gl.activeTexture(gl.TEXTURE2);
-			gl.bindTexture(gl.TEXTURE_2D, label.texture);
-			gl.uniform1i(u.label, 2);
+			gl.bindTexture(gl.TEXTURE_2D, topLabel.texture);
+			gl.uniform1i(u.topLabel, 2);
+		}
+
+		const bottomLabel = textures.bottomLabel;
+		if (bottomLabel) {
+			gl.activeTexture(gl.TEXTURE3);
+			gl.bindTexture(gl.TEXTURE_2D, bottomLabel.texture);
+			gl.uniform1i(u.bottomLabel, 3);
 		}
 	},
 });

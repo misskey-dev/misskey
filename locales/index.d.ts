@@ -5619,6 +5619,14 @@ export interface Locale extends ILocale {
          */
         "tip": string;
         /**
+         * ヘッダー
+         */
+        "header": string;
+        /**
+         * フッター
+         */
+        "footer": string;
+        /**
          * フチの幅
          */
         "borderThickness": string;

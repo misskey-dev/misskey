@@ -1401,6 +1401,8 @@ frame: "フレーム"
 _imageFrameEditor:
   title: "フレームの編集"
   tip: "画像にフレームやメタデータを含んだラベルを追加して装飾できます。"
+  header: "ヘッダー"
+  footer: "フッター"
   borderThickness: "フチの幅"
   labelThickness: "ラベルの幅"
   labelScale: "ラベルのスケール"

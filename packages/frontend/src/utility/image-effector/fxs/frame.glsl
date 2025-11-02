@@ -10,7 +10,8 @@ in vec2 in_uv;
 uniform sampler2D in_texture;
 uniform vec2 in_resolution;
 uniform sampler2D u_image;
-uniform sampler2D u_label;
+uniform sampler2D u_topLabel;
+uniform sampler2D u_bottomLabel;
 uniform float u_paddingTop;
 uniform float u_paddingBottom;
 uniform float u_paddingLeft;
@@ -27,13 +28,20 @@ void main() {
 		remap(in_uv.y, u_paddingTop, 1.0 - u_paddingBottom, 0.0, 1.0)
 	));
 
-	vec4 label_color = texture(u_label, vec2(
+	vec4 topLabel_color = texture(u_topLabel, vec2(
+		in_uv.x,
+		remap(in_uv.y, 0.0, u_paddingTop, 0.0, 1.0)
+	));
+
+	vec4 bottomLabel_color = texture(u_bottomLabel, vec2(
 		in_uv.x,
 		remap(in_uv.y, 1.0 - u_paddingBottom, 1.0, 0.0, 1.0)
 	));
 
-	if (in_uv.y > (1.0 - u_paddingBottom)) {
-		out_color = label_color;
+	if (in_uv.y < u_paddingTop) {
+		out_color = topLabel_color;
+	} else if (in_uv.y > (1.0 - u_paddingBottom)) {
+		out_color = bottomLabel_color;
 	} else {
 		if (in_uv.y > u_paddingTop && in_uv.x > u_paddingLeft && in_uv.x < (1.0 - u_paddingRight)) {
 			out_color = image_color;
