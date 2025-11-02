@@ -6,7 +6,7 @@
 import { url as local } from '@@/js/config.js';
 import { extractDomain } from '@@/js/url.js';
 import { instance } from '@/instance.js';
-import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
 import MkUrlWarningDialog from '@/components/MkUrlWarningDialog.vue';
 import type { MkUrlWarningDialogDoneEvent } from '@/components/MkUrlWarningDialog.vue';
@@ -28,7 +28,7 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 		}
 	});
 
-	const isTrustedByUser = domain != null && prefer.s.trustedDomains.includes(domain);
+	const isTrustedByUser = domain != null && store.s.trustedDomains.includes(domain);
 
 	if (!self && !isTrustedByInstance && !isTrustedByUser) {
 		ev.preventDefault();

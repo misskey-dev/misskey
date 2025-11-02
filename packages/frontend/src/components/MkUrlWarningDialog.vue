@@ -39,7 +39,7 @@ import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 import { instanceName } from '@@/js/config.js';
 
 const props = defineProps<{
@@ -67,8 +67,8 @@ function done(canceled: boolean, result?: Result): void { // eslint-disable-line
 
 async function ok() {
 	const result = true;
-	if (!prefer.s.trustedDomains.includes(domain.value) && trustThisDomain.value) {
-		prefer.commit('trustedDomains', prefer.s.trustedDomains.concat(domain.value));
+	if (!store.s.trustedDomains.includes(domain.value) && trustThisDomain.value) {
+		store.set('trustedDomains', store.s.trustedDomains.concat(domain.value));
 	}
 	done(false, result);
 }
