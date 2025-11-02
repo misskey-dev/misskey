@@ -230,10 +230,6 @@ const uploader = useUploader({
 	multiple: true,
 });
 
-onUnmounted(() => {
-	uploader.dispose();
-});
-
 const draftKey = computed((): string => {
 	let key = targetChannel.value ? `channel:${targetChannel.value.id}` : '';
 
