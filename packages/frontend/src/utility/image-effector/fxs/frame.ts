@@ -10,7 +10,7 @@ export const FX_frame = defineImageEffectorFx({
 	id: 'frame',
 	name: '(internal)',
 	shader,
-	uniforms: ['image', 'topLabel', 'bottomLabel', 'topLabelEnabled', 'bottomLabelEnabled', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'] as const,
+	uniforms: ['image', 'topLabel', 'bottomLabel', 'topLabelEnabled', 'bottomLabelEnabled', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight', 'bg'] as const,
 	params: {
 		image: {
 			type: 'textureRef',
@@ -56,6 +56,10 @@ export const FX_frame = defineImageEffectorFx({
 			max: 1,
 			min: 0,
 		},
+		bg: {
+			type: 'color',
+			default: [1, 1, 1],
+		},
 	},
 	main: ({ gl, u, params, textures }) => {
 		const image = textures.image;
@@ -71,6 +75,7 @@ export const FX_frame = defineImageEffectorFx({
 		gl.uniform1f(u.paddingBottom, params.paddingBottom);
 		gl.uniform1f(u.paddingLeft, params.paddingLeft);
 		gl.uniform1f(u.paddingRight, params.paddingRight);
+		gl.uniform3f(u.bg, params.bg[0], params.bg[1], params.bg[2]);
 
 		if (params.topLabelEnabled) {
 			const topLabel = textures.topLabel;

@@ -1411,6 +1411,8 @@ _imageFrameEditor:
   captionSub: "キャプション(小)"
   availableVariables: "利用可能な変数"
   withQrCode: "二次元コード"
+  backgroundColor: "背景色"
+  textColor: "文字色"
 
 _compression:
   _quality:

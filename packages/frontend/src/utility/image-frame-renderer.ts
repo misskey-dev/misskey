@@ -112,9 +112,6 @@ export class ImageFrameRenderer {
 		const qrSize = scaleBase * 0.1;
 		const qrMarginRight = Math.max((labelCanvasCtx.canvas.height - qrSize) / 2, paddingRight);
 
-		labelCanvasCtx.fillStyle = '#ffffff';
-		labelCanvasCtx.fillRect(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height);
-
 		labelCanvasCtx.fillStyle = '#000000';
 		labelCanvasCtx.font = `bold ${fontSize}px sans-serif`;
 		labelCanvasCtx.textBaseline = 'middle';
@@ -241,6 +238,7 @@ export class ImageFrameRenderer {
 				paddingRight: paddingRight / renderWidth,
 				paddingTop: paddingTop / renderHeight,
 				paddingBottom: paddingBottom / renderHeight,
+				bg: params.bgColor,
 			},
 		}]);
 	}

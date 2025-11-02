@@ -5658,6 +5658,14 @@ export interface Locale extends ILocale {
          * 二次元コード
          */
         "withQrCode": string;
+        /**
+         * 背景色
+         */
+        "backgroundColor": string;
+        /**
+         * 文字色
+         */
+        "textColor": string;
     };
     "_compression": {
         "_quality": {

@@ -35,6 +35,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
 					</MkRange>
 
+					<MkInput :modelValue="getHex(frame.bgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) frame.bgColor = c; }">
+						<template #label>{{ i18n.ts._imageFrameEditor.backgroundColor }}</template>
+					</MkInput>
+
+					<MkInput :modelValue="getHex(frame.fgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) frame.fgColor = c; }">
+						<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
+					</MkInput>
+
 					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
 
@@ -180,7 +188,7 @@ const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
 		centered: false,
 		withQrCode: true,
 	},
-	bgColor: [255, 255, 255],
+	bgColor: [1, 1, 1],
 	fgColor: [0, 0, 0],
 });
 
@@ -320,6 +328,24 @@ async function save() {
 	}
 
 	emit('ok', preset);
+}
+
+function getHex(c: [number, number, number]) {
+	return `#${c.map(x => (x * 255).toString(16).padStart(2, '0')).join('')}`;
+}
+
+function getRgb(hex: string | number): [number, number, number] | null {
+	if (
+		typeof hex === 'number' ||
+		typeof hex !== 'string' ||
+		!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)
+	) {
+		return null;
+	}
+
+	const m = hex.slice(1).match(/[0-9a-fA-F]{2}/g);
+	if (m == null) return [0, 0, 0];
+	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
 }
 </script>
 
