@@ -215,7 +215,7 @@ export class ImageFrameRenderer {
 		const renderWidth = imageAreaW + paddingLeft + paddingRight;
 		const renderHeight = imageAreaH + paddingTop + paddingBottom;
 
-		const topLabelCanvasCtx = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.labelTop);
+		const topLabelCanvasCtx = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.labelTop);
 		const topLabelImage = topLabelCanvasCtx.getImageData(0, 0, topLabelCanvasCtx.canvas.width, topLabelCanvasCtx.canvas.height);
 		this.effector.registerTexture('topLabel', topLabelImage);
 
