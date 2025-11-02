@@ -827,9 +827,6 @@ importers:
       matter-js:
         specifier: 0.20.0
         version: 0.20.0
-      mediabunny:
-        specifier: 1.23.0
-        version: 1.23.0
       mfm-js:
         specifier: 0.25.0
         version: 0.25.0
@@ -4464,12 +4461,6 @@ packages:
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
-  '@types/dom-mediacapture-transform@0.1.11':
-    resolution: {integrity: sha512-Y2p+nGf1bF2XMttBnsVPHUWzRRZzqUoJAKmiP10b5umnO6DDrWI0BrGDJy1pOHoOULVmGSfFNkQrAlC5dcj6nQ==}
-
-  '@types/dom-webcodecs@0.1.13':
-    resolution: {integrity: sha512-O5hkiFIcjjszPIYyUSyvScyvrBoV3NOEEZx/pMlsu44TKzWNkLVBBxnxJz42in5n3QIolYOcBYFCPZZ0h8SkwQ==}
-
   '@types/eslint@7.29.0':
     resolution: {integrity: sha512-VNcvioYDH8/FxaeTKkM4/TiTwt6pBV9E3OfGmvaw8tPl0rrHCJ4Ll15HRT+pMiFAf/MLQvAzC+6RzUMEL9Ceng==}
 
@@ -8017,9 +8008,6 @@ packages:
   media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
-
-  mediabunny@1.23.0:
-    resolution: {integrity: sha512-mWdhhdRquePfTgZ+18DLCFWmqwO6oGP/YudmRU8Puh+whMUJ3VSb9KMAHPl2utim66ixKdZw+DbmdqBfBxRp0A==}
 
   meilisearch@0.53.0:
     resolution: {integrity: sha512-nG4VXbEOSzUmtbfsgOo+t6yX1ECEgXaT4hC0ap9MBpQGK5xwT+NWYDENYsKWR75cVaWaAqva+ok4zHlgtdXlLw==}
@@ -14976,12 +14964,6 @@ snapshots:
 
   '@types/doctrine@0.0.9': {}
 
-  '@types/dom-mediacapture-transform@0.1.11':
-    dependencies:
-      '@types/dom-webcodecs': 0.1.13
-
-  '@types/dom-webcodecs@0.1.13': {}
-
   '@types/eslint@7.29.0':
     dependencies:
       '@types/estree': 1.0.8
@@ -19359,11 +19341,6 @@ snapshots:
   mdn-data@2.12.2: {}
 
   media-typer@0.3.0: {}
-
-  mediabunny@1.23.0:
-    dependencies:
-      '@types/dom-mediacapture-transform': 0.1.11
-      '@types/dom-webcodecs': 0.1.13
 
   meilisearch@0.53.0: {}
 

@@ -60,7 +60,6 @@ function onPostError() {
 async function _close() {
 	const canClose = await form.value?.canClose();
 	if (!canClose) return;
-	form.value?.abortUploader();
 	modal.value?.close();
 }
 
