@@ -101,13 +101,13 @@ onBeforeUnmount(() => {
 	max-width: 480px;
 	box-sizing: border-box;
 	text-align: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 16px;
 }
 
 .icon {
 	font-size: 24px;
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .iconInner {
@@ -121,9 +121,9 @@ onBeforeUnmount(() => {
 }
 
 .urlAddress {
-	padding: var(--margin);
-	border-radius: calc(var(--radius) / 2);
-	border: 1px solid var(--divider);
+	padding: var(--MI-margin);
+	border-radius: calc(var(--MI-radius) / 2);
+	border: 1px solid var(--MI_THEME-divider);
 	overflow-x: auto;
 	white-space: nowrap;
 }
