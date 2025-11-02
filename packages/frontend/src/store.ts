@@ -243,10 +243,6 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: false,
 	},
-	checkRedirectingOtherHost: {
-		where: 'device',
-		default: true,
-	},
 	imageNewTab: {
 		where: 'device',
 		default: false,

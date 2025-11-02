@@ -443,9 +443,6 @@ export const PREF_DEF = definePreferences({
 	defaultVideoCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},
-	checkRedirectingOtherHost: {
-		default: true,
-	},
 	trustedDomains: {
 		default: [] as string[],
 	},
