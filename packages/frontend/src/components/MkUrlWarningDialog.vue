@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div :class="$style.buttons">
-			<MkButton data-cy-modal-dialog-ok inline primary rounded @click="ok">{{ i18n.ts.ok }}</MkButton>
-			<MkButton data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+			<MkButton inline primary rounded @click="ok">{{ i18n.ts.ok }}</MkButton>
+			<MkButton inline rounded @click="cancel">{{ i18n.ts.cancel }}</MkButton>
 		</div>
 	</div>
 </MkModal>
