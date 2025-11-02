@@ -144,7 +144,7 @@ export async function getEmojisByCategory(category: string | typeof CATEGORY_NON
 	}
 }
 
-export async function searchEmojis(query: string, max = 12): Promise<V1Emoji[]> {
+export async function searchEmojis(query: string, max = 12, exact = false): Promise<V1Emoji[]> {
 	try {
 		const database = await getDB();
 		const tx = database.transaction(STORE_NAME, 'readonly');
@@ -167,7 +167,7 @@ export async function searchEmojis(query: string, max = 12): Promise<V1Emoji[]> 
 			}
 		}
 
-		if (matches.size >= max) {
+		if (matches.size >= max || exact) {
 			await tx.done;
 			return Array.from(matches.values()).slice(0, max);
 		}
