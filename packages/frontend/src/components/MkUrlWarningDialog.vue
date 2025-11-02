@@ -42,8 +42,6 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { instanceName } from '@@/js/config.js';
 
-type Result = string | number | true | null;
-
 const props = defineProps<{
 	url: string;
 }>();
@@ -88,11 +86,11 @@ function onKeydown(evt: KeyboardEvent) {
 }
 
 onMounted(() => {
-	document.addEventListener('keydown', onKeydown);
+	window.document.addEventListener('keydown', onKeydown);
 });
 
 onBeforeUnmount(() => {
-	document.removeEventListener('keydown', onKeydown);
+	window.document.removeEventListener('keydown', onKeydown);
 });
 </script>
 
