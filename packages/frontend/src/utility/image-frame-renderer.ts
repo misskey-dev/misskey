@@ -100,7 +100,7 @@ export class ImageFrameRenderer {
 		});
 	}
 
-	private async renderLabel(renderWidth: number, renderHeight: number, paddingLeft: number, paddingRight: number, imageAreaH: number, params: LabelParams) {
+	private async renderLabel(renderWidth: number, renderHeight: number, paddingLeft: number, paddingRight: number, imageAreaH: number, fgColor: [number, number, number], params: LabelParams) {
 		const scaleBase = imageAreaH * params.scale;
 		const labelCanvasCtx = window.document.createElement('canvas').getContext('2d')!;
 		labelCanvasCtx.canvas.width = renderWidth;
@@ -112,7 +112,7 @@ export class ImageFrameRenderer {
 		const qrSize = scaleBase * 0.1;
 		const qrMarginRight = Math.max((labelCanvasCtx.canvas.height - qrSize) / 2, paddingRight);
 
-		labelCanvasCtx.fillStyle = '#000000';
+		labelCanvasCtx.fillStyle = `rgb(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)})`;
 		labelCanvasCtx.font = `bold ${fontSize}px sans-serif`;
 		labelCanvasCtx.textBaseline = 'middle';
 
@@ -125,7 +125,7 @@ export class ImageFrameRenderer {
 			labelCanvasCtx.fillText(this.interpolateTemplateText(params.textBig), textsMarginLeft, titleY, labelCanvasCtx.canvas.width - textsMarginLeft - (withQrCode ? (qrSize + qrMarginRight + (fontSize * 1)) : textsMarginRight));
 		}
 
-		labelCanvasCtx.fillStyle = '#00000088';
+		labelCanvasCtx.fillStyle = `rgba(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)}, 0.5)`;
 		labelCanvasCtx.font = `${fontSize * 0.85}px sans-serif`;
 		labelCanvasCtx.textBaseline = 'middle';
 
@@ -161,6 +161,10 @@ export class ImageFrameRenderer {
 					dotsOptions: {
 						type: 'dots',
 						roundSize: false,
+						color: `rgb(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)})`,
+					},
+					backgroundOptions: {
+						color: 'transparent',
 					},
 					cornersDotOptions: {
 						type: 'dot',
@@ -214,12 +218,12 @@ export class ImageFrameRenderer {
 		const renderHeight = imageAreaH + paddingTop + paddingBottom;
 
 		if (params.labelTop.enabled) {
-			const topLabelImage = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.labelTop);
+			const topLabelImage = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.labelTop);
 			this.effector.registerTexture('topLabel', topLabelImage);
 		}
 
 		if (params.labelBottom.enabled) {
-			const bottomLabelImage = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.labelBottom);
+			const bottomLabelImage = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.labelBottom);
 			this.effector.registerTexture('bottomLabel', bottomLabelImage);
 		}
 
