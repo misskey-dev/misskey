@@ -20,6 +20,7 @@ const FXS = [
 // TODO: 上部にもラベルを配置できるようにする
 
 type LabelParams = {
+	enabled: boolean;
 	scale: number;
 	padding: number;
 	textBig: string;
@@ -190,7 +191,7 @@ export class ImageFrameRenderer {
 			}
 		}
 
-		return labelCanvasCtx;
+		return labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height); ;
 	}
 
 	public async updateAndRender(params: ImageFrameParams): Promise<void> {
@@ -210,18 +211,20 @@ export class ImageFrameRenderer {
 
 		const paddingLeft = Math.floor(imageAreaH * params.borderThickness);
 		const paddingRight = Math.floor(imageAreaH * params.borderThickness);
-		const paddingTop = Math.floor(imageAreaH * params.labelTop.padding);
-		const paddingBottom = Math.floor(imageAreaH * params.labelBottom.padding);
+		const paddingTop = params.labelTop.enabled ? Math.floor(imageAreaH * params.labelTop.padding) : Math.floor(imageAreaH * params.borderThickness);
+		const paddingBottom = params.labelBottom.enabled ? Math.floor(imageAreaH * params.labelBottom.padding) : Math.floor(imageAreaH * params.borderThickness);
 		const renderWidth = imageAreaW + paddingLeft + paddingRight;
 		const renderHeight = imageAreaH + paddingTop + paddingBottom;
 
-		const topLabelCanvasCtx = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.labelTop);
-		const topLabelImage = topLabelCanvasCtx.getImageData(0, 0, topLabelCanvasCtx.canvas.width, topLabelCanvasCtx.canvas.height);
-		this.effector.registerTexture('topLabel', topLabelImage);
+		if (params.labelTop.enabled) {
+			const topLabelImage = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.labelTop);
+			this.effector.registerTexture('topLabel', topLabelImage);
+		}
 
-		const bottomLabelCanvasCtx = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.labelBottom);
-		const bottomLabelImage = bottomLabelCanvasCtx.getImageData(0, 0, bottomLabelCanvasCtx.canvas.width, bottomLabelCanvasCtx.canvas.height);
-		this.effector.registerTexture('bottomLabel', bottomLabelImage);
+		if (params.labelBottom.enabled) {
+			const bottomLabelImage = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.labelBottom);
+			this.effector.registerTexture('bottomLabel', bottomLabelImage);
+		}
 
 		this.effector.changeResolution(renderWidth, renderHeight);
 
@@ -232,6 +235,8 @@ export class ImageFrameRenderer {
 				image: 'image',
 				topLabel: 'topLabel',
 				bottomLabel: 'bottomLabel',
+				topLabelEnabled: params.labelTop.enabled,
+				bottomLabelEnabled: params.labelBottom.enabled,
 				paddingLeft: paddingLeft / renderWidth,
 				paddingRight: paddingRight / renderWidth,
 				paddingTop: paddingTop / renderHeight,

@@ -12,6 +12,8 @@ uniform vec2 in_resolution;
 uniform sampler2D u_image;
 uniform sampler2D u_topLabel;
 uniform sampler2D u_bottomLabel;
+uniform bool u_topLabelEnabled;
+uniform bool u_bottomLabelEnabled;
 uniform float u_paddingTop;
 uniform float u_paddingBottom;
 uniform float u_paddingLeft;
@@ -23,20 +25,22 @@ float remap(float value, float inputMin, float inputMax, float outputMin, float 
 }
 
 void main() {
+	vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
+
 	vec4 image_color = texture(u_image, vec2(
 		remap(in_uv.x, u_paddingLeft, 1.0 - u_paddingRight, 0.0, 1.0),
 		remap(in_uv.y, u_paddingTop, 1.0 - u_paddingBottom, 0.0, 1.0)
 	));
 
-	vec4 topLabel_color = texture(u_topLabel, vec2(
+	vec4 topLabel_color = u_topLabelEnabled ? texture(u_topLabel, vec2(
 		in_uv.x,
 		remap(in_uv.y, 0.0, u_paddingTop, 0.0, 1.0)
-	));
+	)) : bg;
 
-	vec4 bottomLabel_color = texture(u_bottomLabel, vec2(
+	vec4 bottomLabel_color = u_bottomLabelEnabled ? texture(u_bottomLabel, vec2(
 		in_uv.x,
 		remap(in_uv.y, 1.0 - u_paddingBottom, 1.0, 0.0, 1.0)
-	));
+	)) : bg;
 
 	if (in_uv.y < u_paddingTop) {
 		out_color = topLabel_color;
@@ -46,7 +50,7 @@ void main() {
 		if (in_uv.y > u_paddingTop && in_uv.x > u_paddingLeft && in_uv.x < (1.0 - u_paddingRight)) {
 			out_color = image_color;
 		} else {
-			out_color = vec4(1.0, 1.0, 1.0, 1.0);
+			out_color = bg;
 		}
 	}
 }

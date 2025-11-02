@@ -39,6 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
 
 						<div class="_gaps">
+							<MkSwitch v-model="frame.labelTop.enabled">
+								<template #label>{{ i18n.ts.show }}</template>
+							</MkSwitch>
+
 							<MkRange v-model="frame.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
 								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
 							</MkRange>
@@ -69,6 +73,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
 
 						<div class="_gaps">
+							<MkSwitch v-model="frame.labelBottom.enabled">
+								<template #label>{{ i18n.ts.show }}</template>
+							</MkSwitch>
+
 							<MkRange v-model="frame.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
 								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
 							</MkRange>
@@ -155,6 +163,7 @@ const props = defineProps<{
 const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
 	borderThickness: 0.05,
 	labelTop: {
+		enabled: false,
 		scale: 1.0,
 		padding: 0.2,
 		textBig: '',
@@ -163,6 +172,7 @@ const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
 		withQrCode: false,
 	},
 	labelBottom: {
+		enabled: true,
 		scale: 1.0,
 		padding: 0.2,
 		textBig: '{year}/{0month}/{0day}',
