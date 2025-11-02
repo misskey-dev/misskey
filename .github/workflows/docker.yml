@@ -20,12 +20,15 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
+    outputs:
+      image-tag: ${{ steps.stamp_version.outputs.image_tag }}
+    env:
+      IMAGE_TAG: ${{ github.ref_name }}
     steps:
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
-          echo "IMAGE_TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
       - name: Check out the repo
         uses: actions/checkout@v4.3.0
       - name: Set up Docker Buildx
@@ -43,7 +46,7 @@ jobs:
           push: true
           platforms: ${{ matrix.platform }}
           provenance: false
-          labels: ${{ env.IMAGE_TAG }}
+          labels: ${{ steps.stamp_version.outputs.image_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
@@ -68,13 +71,13 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
+    env:
+      IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
     steps:
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
-          sanitized_tag=$(echo "${GITHUB_REF_NAME}" | sed 's/[^a-zA-Z0-9_.-]/-/g')
-          echo "IMAGE_TAG=${sanitized_tag}" >> $GITHUB_ENV
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
