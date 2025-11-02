@@ -59,6 +59,7 @@ const domain = computed(() => new URL(props.url).hostname);
 // overload function を使いたいので lint エラーを無視する
 function done(canceled: true): void;
 function done(canceled: false, result: Result): void; // eslint-disable-line no-redeclare
+
 function done(canceled: boolean, result?: Result): void { // eslint-disable-line no-redeclare
 	emit('done', { canceled, result } as MkUrlWarningDialogDoneEvent);
 	modal.value?.close();
