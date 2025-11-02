@@ -25,22 +25,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModal>
 </template>
 
+<script lang="ts">
+type Result = string | number | true | null;
+
+export type MkUrlWarningDialogDoneEvent = { canceled: true } | { canceled: false, result: Result };
+</script>
+
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, shallowRef, computed } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-
-type Result = string | number | true | null;
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	url: string;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;
+	(ev: 'done', v: MkUrlWarningDialogDoneEvent): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -53,14 +57,14 @@ const domain = computed(() => new URL(props.url).hostname);
 function done(canceled: true): void;
 function done(canceled: false, result: Result): void; // eslint-disable-line no-redeclare
 function done(canceled: boolean, result?: Result): void { // eslint-disable-line no-redeclare
-	emit('done', { canceled, result } as { canceled: true } | { canceled: false, result: Result });
+	emit('done', { canceled, result } as MkUrlWarningDialogDoneEvent);
 	modal.value?.close();
 }
 
 async function ok() {
 	const result = true;
-	if (!defaultStore.state.trustedDomains.includes(domain.value) && trustThisDomain.value) {
-		await defaultStore.set('trustedDomains', defaultStore.state.trustedDomains.concat(domain.value));
+	if (!prefer.s.trustedDomains.includes(domain.value) && trustThisDomain.value) {
+		prefer.commit('trustedDomains', prefer.s.trustedDomains.concat(domain.value));
 	}
 	done(false, result);
 }

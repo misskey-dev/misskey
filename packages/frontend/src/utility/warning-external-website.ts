@@ -4,25 +4,31 @@
  */
 
 import { url as local } from '@@/js/config.js';
+import { extractDomain } from '@@/js/url.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 import MkUrlWarningDialog from '@/components/MkUrlWarningDialog.vue';
+import type { MkUrlWarningDialogDoneEvent } from '@/components/MkUrlWarningDialog.vue';
 
-const extractDomain = /^(https?:\/\/|\/\/)?([^@/\s]+@)?(www\.)?([^:/\s]+)/i;
 const isRegExp = /^\/(.+)\/(.*)$/;
 
 export async function warningExternalWebsite(ev: MouseEvent, url: string) {
-	const domain = extractDomain.exec(url)?.[4];
-	const self = !domain || url.startsWith(local);
+	const domain = extractDomain(url);
+	const self = (domain == null || url.startsWith(local));
+
 	const isTrustedByInstance = self || instance.trustedLinkUrlPatterns.some(expression => {
 		const r = isRegExp.exec(expression);
 		if (r) {
 			return new RegExp(r[1], r[2]).test(url);
-		} else if (expression.includes(' ')) return expression.split(' ').every(keyword => url.includes(keyword));
-		else return domain.endsWith(expression);
+		} else if (expression.includes(' ')) {
+			return expression.split(' ').every(keyword => url.includes(keyword));
+		} else {
+			return domain.endsWith(expression);
+		}
 	});
-	const isTrustedByUser = prefer.s.trustedDomains.includes(domain);
+
+	const isTrustedByUser = domain != null && prefer.s.trustedDomains.includes(domain);
 
 	if (!self && !isTrustedByInstance && !isTrustedByUser) {
 		ev.preventDefault();
@@ -32,7 +38,7 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 			const { dispose } = os.popup(MkUrlWarningDialog, {
 				url,
 			}, {
-				done: result => {
+				done: (result: MkUrlWarningDialogDoneEvent) => {
 					resolve(result ? result : { canceled: true });
 				},
 				closed: () => {
