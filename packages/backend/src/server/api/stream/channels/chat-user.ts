@@ -38,20 +38,7 @@ class ChatUserChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject) {
-		console.log('🔌 [CHANNEL INIT] ChatUserChannel.init called', {
-			params,
-			userId: this.user?.id,
-			otherIdType: typeof params.otherId,
-			otherIdValue: params.otherId,
-		});
-
-		if (typeof params.otherId !== 'string') {
-			console.warn('🔌 [CHANNEL INIT] ChatUserChannel.init FAILED - otherId is not a string', {
-				otherId: params.otherId,
-				type: typeof params.otherId,
-			});
-			return;
-		}
+		if (typeof params.otherId !== 'string') return;
 		this.otherId = params.otherId;
 
 		// oranski方式の定期的なemitTypersは無効化
@@ -59,11 +46,6 @@ class ChatUserChannel extends Channel {
 		// IDをソートして統一的なチャンネル名を作成
 		const sortedIds = [this.user!.id, this.otherId].sort();
 		const channelName = `chatUserStream:${sortedIds[0]}-${sortedIds[1]}`;
-		console.log('🔌 [CHANNEL INIT] ChatUserChannel initialized successfully', {
-			userId: this.user!.id,
-			otherId: this.otherId,
-			channelName,
-		});
 		this.subscriber.on(channelName, this.onEvent);
 	}
 
@@ -93,11 +75,8 @@ class ChatUserChannel extends Channel {
 
 	@bindThis
 	public async onMessage(type: string, body: any) {
-		console.log(`🔍 [DEBUG] ChatUserChannel received message - type: ${type}, userId: ${this.user!.id}, otherId: ${this.otherId}`);
-
 		// セキュリティ: ユーザー認証確認
 		if (!this.user) {
-			console.warn(`🔍 [SECURITY] Unauthenticated user attempting ${type} event`);
 			return;
 		}
 
@@ -108,8 +87,6 @@ class ChatUserChannel extends Channel {
 				}
 				break;
 			case 'typing':
-				console.log(`🔍 [DEBUG] Processing typing event for user chat ${this.user.id} -> ${this.otherId}`);
-
 				// セキュリティ: typing送信者を認証済みユーザーIDに強制設定
 				// フロントエンドからのuserIdパラメータは無視し、認証済みセッションのユーザーIDを使用
 				if (this.otherId) {
@@ -117,8 +94,6 @@ class ChatUserChannel extends Channel {
 				}
 				break;
 			case 'typingStop':
-				console.log(`🔍 [DEBUG] Processing typingStop event for user chat ${this.user.id} -> ${this.otherId}`);
-
 				// セキュリティ: typingStop送信者を認証済みユーザーIDに強制設定
 				// フロントエンドからのuserIdパラメータは無視し、認証済みセッションのユーザーIDを使用
 				if (this.otherId) {

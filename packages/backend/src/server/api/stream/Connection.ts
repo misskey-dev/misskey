@@ -221,69 +221,29 @@ export default class Connection {
 	 */
 	@bindThis
 	public connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
-		console.log('🔌 [CONNECTION] connectChannel called', {
-			id,
-			channel,
-			params,
-			userId: this.user?.id,
-			currentChannelsCount: this.channels.length,
-		});
-
 		if (this.channels.length >= MAX_CHANNELS_PER_CONNECTION) {
-			console.warn('🔌 [CONNECTION] Max channels per connection reached', {
-				maxChannels: MAX_CHANNELS_PER_CONNECTION,
-				currentCount: this.channels.length,
-			});
 			return;
 		}
 
 		const channelService = this.channelsService.getChannelService(channel);
 
 		if (channelService.requireCredential && this.user == null) {
-			console.warn('🔌 [CONNECTION] Channel requires credential but user is null', {
-				channel,
-			});
 			return;
 		}
 
 		if (this.token && ((channelService.kind && !this.token.permission.some(p => p === channelService.kind))
 			|| (!channelService.kind && channelService.requireCredential))) {
-			console.warn('🔌 [CONNECTION] Token permission check failed', {
-				channel,
-				tokenPermissions: this.token?.permission,
-				requiredKind: channelService.kind,
-			});
 			return;
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
 		if (channelService.shouldShare && this.channels.some(c => c.chName === channel)) {
-			console.log('🔌 [CONNECTION] Channel already connected (shared)', {
-				channel,
-			});
 			return;
 		}
 
-		console.log('🔌 [CONNECTION] Creating channel instance', {
-			channel,
-			id,
-			shouldShare: channelService.shouldShare,
-		});
-
 		const ch: Channel = channelService.create(id, this);
 		this.channels.push(ch);
-		console.log('🔌 [CONNECTION] Calling channel.init', {
-			channel,
-			id,
-			params,
-		});
 		ch.init(params ?? {});
-
-		console.log('🔌 [CONNECTION] Channel connected successfully', {
-			channel,
-			id,
-			totalChannels: this.channels.length,
-		});
 
 		if (pong) {
 			this.sendMessageToWs('connected', {

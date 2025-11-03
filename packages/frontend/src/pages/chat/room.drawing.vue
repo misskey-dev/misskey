@@ -1300,23 +1300,14 @@ function connectToChatRoomChannel() {
 	// ユーザー間チャットかルームチャットかで使用するチャンネルを切り替え
 	if (props.userId) {
 		// 1対1チャットの場合はchatUserチャンネルを使用
-		console.log('🔌 [CONNECTION] Connecting to chatUser channel', {
-			otherId: props.userId,
-			myUserId: $i?.id,
-		});
 		connection.value = stream.useChannel('chatUser', {
 			otherId: props.userId,
 		});
-		console.log('🔌 [CONNECTION] chatUser channel connected:', connection.value);
 	} else {
 		// ルームチャットの場合はchatRoomチャンネルを使用
-		console.log('🔌 [CONNECTION] Connecting to chatRoom channel', {
-			roomId: drawingId.value,
-		});
 		connection.value = stream.useChannel('chatRoom', {
 			roomId: drawingId.value,
 		});
-		console.log('🔌 [CONNECTION] chatRoom channel connected:', connection.value);
 	}
 
 	// お絵かき関連イベント
@@ -2192,33 +2183,14 @@ function sendDrawingProgress() {
 
 // カーソル位置送信
 function sendCursorPosition(point: { x: number; y: number }) {
-	if (!connection.value) {
-		console.warn('📍 [CURSOR SEND] No connection available!', {
-			hasConnection: !!connection.value,
-			userId: props.userId,
-			roomId: props.roomId,
-		});
-		return;
-	}
+	if (!connection.value) return;
 
 	try {
 		const data = {
 			x: point.x,
 			y: point.y,
 		};
-		console.log('📍 [CURSOR SEND]', {
-			canvasX: point.x,
-			canvasY: point.y,
-			canvasWidth: canvasWidth.value,
-			canvasHeight: canvasHeight.value,
-			displayWidth: displayWidth.value,
-			displayHeight: displayHeight.value,
-			connectionType: props.userId ? 'chatUser' : 'chatRoom',
-			otherId: props.userId,
-			roomId: props.roomId,
-		});
 		connection.value.send('cursorMove', data);
-		console.log('📍 [CURSOR SENT] Successfully sent cursorMove event');
 		recordCommLog('send', 'cursorMove', data);
 	} catch (error) {
 		console.error('🎨 [ERROR] Failed to send cursor position:', error);
