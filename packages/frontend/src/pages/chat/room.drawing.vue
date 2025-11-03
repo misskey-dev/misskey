@@ -2279,34 +2279,15 @@ async function clearCanvas() {
 			console.log('🧹 [CLEAR] User mode, targetName:', targetName);
 		}
 
-		// 確認ダイアログを表示（フォールバック付き）
+		// 確認ダイアログを表示（Misskey UI）
 		console.log('🧹 [CLEAR] Showing confirmation dialog');
-		let canceled = false;
-		let userInput = '';
+		const { canceled, result: userInput } = await os.inputText({
+			title: 'キャンバスクリア確認',
+			text: 'キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：',
+			placeholder: 'クリア',
+		});
 
-		try {
-			const result = await Promise.race([
-				os.inputText({
-					title: 'キャンバスクリア確認',
-					text: 'キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：',
-					placeholder: 'クリア',
-				}),
-				new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 1000))
-			]);
-			canceled = result.canceled;
-			userInput = result.result || '';
-			console.log('🧹 [CLEAR] os.inputText result:', { canceled, userInput });
-		} catch (error) {
-			console.warn('🧹 [CLEAR] os.inputText failed, using native prompt:', error);
-			// フォールバック: ブラウザネイティブのプロンプトを使用
-			const nativeInput = window.prompt('キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：', '');
-			if (nativeInput === null) {
-				canceled = true;
-			} else {
-				userInput = nativeInput;
-			}
-			console.log('🧹 [CLEAR] Native prompt result:', { canceled, userInput });
-		}
+		console.log('🧹 [CLEAR] Dialog result:', { canceled, userInput });
 
 		// キャンセルされた場合
 		if (canceled) {
