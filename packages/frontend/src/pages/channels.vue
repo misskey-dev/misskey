@@ -45,7 +45,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
