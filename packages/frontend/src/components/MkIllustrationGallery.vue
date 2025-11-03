@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span>{{ i18n.ts.sensitive }}</span>
 			</div>
 			<div v-if="note.files && note.files.length > 1" class="file-count">
-				<i class="ti ti-photos"></i>
+				<i class="ti ti-stack-2"></i>
 				{{ note.files.length }}
 			</div>
 		</div>
