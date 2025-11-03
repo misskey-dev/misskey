@@ -48,6 +48,13 @@ const getInitialTab = () => {
 
 const tab = ref(getInitialTab());
 
+// タブが変更されたらURLハッシュを更新
+watch(tab, (newTab) => {
+	if (typeof window !== 'undefined') {
+		window.location.hash = `#${newTab}`;
+	}
+});
+
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
