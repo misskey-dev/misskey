@@ -12,7 +12,6 @@ export const FX_polkadot = defineImageEffectorFx({
 	id: 'polkadot',
 	name: i18n.ts._imageEffector._fxs.polkadot,
 	shader,
-	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'color'] as const,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,

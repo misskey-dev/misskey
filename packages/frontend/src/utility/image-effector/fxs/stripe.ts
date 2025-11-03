@@ -12,7 +12,6 @@ export const FX_stripe = defineImageEffectorFx({
 	id: 'stripe',
 	name: i18n.ts._imageEffector._fxs.stripe,
 	shader,
-	uniforms: ['angle', 'frequency', 'phase', 'threshold', 'color', 'opacity'] as const,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,

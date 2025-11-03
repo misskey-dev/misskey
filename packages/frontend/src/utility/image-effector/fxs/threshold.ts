@@ -11,7 +11,6 @@ export const FX_threshold = defineImageEffectorFx({
 	id: 'threshold',
 	name: i18n.ts._imageEffector._fxs.threshold,
 	shader,
-	uniforms: ['r', 'g', 'b'] as const,
 	params: {
 		r: {
 			label: i18n.ts._imageEffector._fxProps.redComponent,

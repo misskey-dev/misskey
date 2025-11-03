@@ -4,15 +4,14 @@
  */
 
 import seedrandom from 'seedrandom';
-import shader from './tearing.glsl';
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import shader from './tearing.glsl';
 import { i18n } from '@/i18n.js';
 
 export const FX_tearing = defineImageEffectorFx({
 	id: 'tearing',
 	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
 	shader,
-	uniforms: ['amount', 'channelShift'] as const,
 	params: {
 		amount: {
 			label: i18n.ts._imageEffector._fxProps.amount,

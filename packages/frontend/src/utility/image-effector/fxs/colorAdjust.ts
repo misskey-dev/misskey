@@ -11,7 +11,6 @@ export const FX_colorAdjust = defineImageEffectorFx({
 	id: 'colorAdjust',
 	name: i18n.ts._imageEffector._fxs.colorAdjust,
 	shader,
-	uniforms: ['lightness', 'contrast', 'hue', 'brightness', 'saturation'] as const,
 	params: {
 		lightness: {
 			label: i18n.ts._imageEffector._fxProps.lightness,

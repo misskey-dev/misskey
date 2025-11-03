@@ -5,35 +5,32 @@
 
 import { createTexture, initShaderProgram } from '../webgl.js';
 
-export type ImageCompositorProgramParamDefs = Record<string, any>;
+export type ImageCompositorFunctionParams = Record<string, any>;
 
-export function defineImageCompositorFx<PS extends ImageCompositorProgramParamDefs, US extends string[]>(program: ImageCompositorProgram<PS, US>) {
-	return program;
-}
-
-export type ImageCompositorProgram<PS extends ImageCompositorProgramParamDefs = ImageCompositorProgramParamDefs, US extends string[] = string[]> = {
-	id: string;
+export type ImageCompositorFunction<PS extends ImageCompositorFunctionParams = ImageCompositorFunctionParams> = {
 	shader: string;
-	uniforms: US;
-	params: PS,
 	main: (ctx: {
 		gl: WebGL2RenderingContext;
 		program: WebGLProgram;
 		params: PS;
-		u: Record<US[number], WebGLUniformLocation>;
+		u: Record<string, WebGLUniformLocation>;
 		width: number;
 		height: number;
 		textures: Map<string, { texture: WebGLTexture; width: number; height: number; }>;
 	}) => void;
 };
 
-export type ImageCompositorNode = {
+export type ImageCompositorLayer = {
 	id: string;
-	programId: string;
+	functionId: string;
 	params: Record<string, any>;
 };
 
-// TODO: per node cache
+export function defineImageCompositorFunction<PS extends ImageCompositorFunctionParams>(fn: ImageCompositorFunction<PS>) {
+	return fn;
+}
+
+// TODO: per layer cache
 
 export class ImageCompositor {
 	private gl: WebGL2RenderingContext;
@@ -46,7 +43,7 @@ export class ImageCompositor {
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
 	private nopProgram: WebGLProgram;
 	private registeredTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
-	private programs: ImageCompositorProgram[] = [];
+	private registeredFunctions: Map<string, ImageCompositorFunction & { id: string; uniforms: string[] }> = new Map();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -116,13 +113,23 @@ export class ImageCompositor {
 		gl.enableVertexAttribArray(positionLocation);
 	}
 
-	private renderNode(node: ImageCompositorNode, preTexture: WebGLTexture, invert = false) {
+	private extractUniformNamesFromShader(shader: string): string[] {
+		const uniformRegex = /uniform\s+\w+\s+(\w+)\s*;/g;
+		const uniforms: string[] = [];
+		let match;
+		while ((match = uniformRegex.exec(shader)) !== null) {
+			uniforms.push(match[1].replace(/^u_/, ''));
+		}
+		return uniforms;
+	}
+
+	private renderLayer(layer: ImageCompositorLayer, preTexture: WebGLTexture, invert = false) {
 		const gl = this.gl;
 
-		const program = this.programs.find(p => p.id === node.programId);
-		if (program == null) return;
+		const fn = this.registeredFunctions.get(layer.functionId);
+		if (fn == null) return;
 
-		const cachedShader = this.shaderCache.get(program.id);
+		const cachedShader = this.shaderCache.get(fn.id);
 		const shaderProgram = cachedShader ?? initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
 			uniform bool u_invert;
@@ -132,9 +139,9 @@ export class ImageCompositor {
 				in_uv = (position + 1.0) / 2.0;
 				gl_Position = u_invert ? vec4(position * vec2(1.0, -1.0), 0.0, 1.0) : vec4(position, 0.0, 1.0);
 			}
-		`, program.shader);
+		`, fn.shader);
 		if (cachedShader == null) {
-			this.shaderCache.set(program.id, shaderProgram);
+			this.shaderCache.set(fn.id, shaderProgram);
 		}
 
 		gl.useProgram(shaderProgram);
@@ -150,11 +157,11 @@ export class ImageCompositor {
 		const in_texture = gl.getUniformLocation(shaderProgram, 'in_texture');
 		gl.uniform1i(in_texture, 0);
 
-		program.main({
+		fn.main({
 			gl: gl,
 			program: shaderProgram,
-			params: node.params,
-			u: Object.fromEntries(program.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
+			params: layer.params,
+			u: Object.fromEntries(fn.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: this.registeredTextures,
@@ -163,11 +170,11 @@ export class ImageCompositor {
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
-	public render(nodes: ImageCompositorNode[]) {
+	public render(layers: ImageCompositorLayer[]) {
 		const gl = this.gl;
 
 		// 入力をそのまま出力
-		if (nodes.length === 0) {
+		if (layers.length === 0) {
 			gl.activeTexture(gl.TEXTURE0);
 			gl.bindTexture(gl.TEXTURE_2D, this.baseTexture);
 
@@ -180,8 +187,8 @@ export class ImageCompositor {
 
 		let preTexture = this.baseTexture;
 
-		for (const layer of nodes) {
-			const isLast = layer === nodes.at(-1);
+		for (const layer of layers) {
+			const isLast = layer === layers.at(-1);
 
 			const cachedResultTexture = this.perLayerResultTextures.get(layer.id);
 			const resultTexture = cachedResultTexture ?? createTexture(gl);
@@ -204,14 +211,15 @@ export class ImageCompositor {
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 			}
 
-			this.renderNode(layer, preTexture, isLast);
+			this.renderLayer(layer, preTexture, isLast);
 
 			preTexture = resultTexture;
 		}
 	}
 
-	public registerProgram(program: ImageCompositorProgram) {
-		this.programs.push(program);
+	public registerFunction(id: string, fn: ImageCompositorFunction) {
+		const uniforms = this.extractUniformNamesFromShader(fn.shader);
+		this.registeredFunctions.set(id, { ...fn, id, uniforms });
 	}
 
 	public registerTexture(key: string, image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement) {
@@ -234,6 +242,24 @@ export class ImageCompositor {
 			width: image.width,
 			height: image.height,
 		});
+	}
+
+	public unregisterTexture(key: string) {
+		const gl = this.gl;
+
+		const existing = this.registeredTextures.get(key);
+		if (existing != null) {
+			gl.deleteTexture(existing.texture);
+			this.registeredTextures.delete(key);
+		}
+	}
+
+	public hasTexture(key: string) {
+		return this.registeredTextures.has(key);
+	}
+
+	public getKeysOfRegisteredTextures() {
+		return this.registeredTextures.keys();
 	}
 
 	public changeResolution(width: number, height: number) {

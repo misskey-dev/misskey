@@ -11,7 +11,6 @@ export const FX_pixelate = defineImageEffectorFx({
 	id: 'pixelate',
 	name: i18n.ts._imageEffector._fxs.pixelate,
 	shader,
-	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'strength', 'samples'] as const,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',

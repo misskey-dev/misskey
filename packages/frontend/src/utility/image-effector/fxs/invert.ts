@@ -11,7 +11,6 @@ export const FX_invert = defineImageEffectorFx({
 	id: 'invert',
 	name: i18n.ts._imageEffector._fxs.invert,
 	shader,
-	uniforms: ['r', 'g', 'b'] as const,
 	params: {
 		r: {
 			label: i18n.ts._imageEffector._fxProps.redComponent,

@@ -11,7 +11,6 @@ export const FX_distort = defineImageEffectorFx({
 	id: 'distort',
 	name: i18n.ts._imageEffector._fxs.distort,
 	shader,
-	uniforms: ['phase', 'frequency', 'strength', 'direction'] as const,
 	params: {
 		direction: {
 			label: i18n.ts._imageEffector._fxProps.direction,

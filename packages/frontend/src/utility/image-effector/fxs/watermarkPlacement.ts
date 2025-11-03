@@ -10,7 +10,6 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 	id: 'watermarkPlacement',
 	name: '(internal)',
 	shader,
-	uniforms: ['opacity', 'scale', 'angle', 'cover', 'repeat', 'alignX', 'alignY', 'margin', 'repeatMargin', 'noBBoxExpansion', 'wmResolution', 'wmEnabled', 'watermark'] as const,
 	params: {
 		cover: {
 			type: 'boolean',

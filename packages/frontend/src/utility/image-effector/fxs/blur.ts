@@ -11,7 +11,6 @@ export const FX_blur = defineImageEffectorFx({
 	id: 'blur',
 	name: i18n.ts._imageEffector._fxs.blur,
 	shader,
-	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'radius', 'samples'] as const,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',

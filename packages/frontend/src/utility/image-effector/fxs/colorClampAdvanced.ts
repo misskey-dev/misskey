@@ -11,7 +11,6 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 	id: 'colorClampAdvanced',
 	name: i18n.ts._imageEffector._fxs.colorClampAdvanced,
 	shader,
-	uniforms: ['rMax', 'rMin', 'gMax', 'gMin', 'bMax', 'bMin'] as const,
 	params: {
 		rMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.redComponent})`,

@@ -11,7 +11,6 @@ export const FX_fill = defineImageEffectorFx({
 	id: 'fill',
 	name: i18n.ts._imageEffector._fxs.fill,
 	shader,
-	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'color', 'opacity'] as const,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',

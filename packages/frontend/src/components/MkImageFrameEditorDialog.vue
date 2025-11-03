@@ -132,8 +132,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
-import type { ImageFrameParams } from '@/utility/image-frame-renderer.js';
-import { ImageFrameRenderer } from '@/utility/image-frame-renderer.js';
+import type { ImageFrameParams } from '@/utility/image-frame-renderer/image-frame-renderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';

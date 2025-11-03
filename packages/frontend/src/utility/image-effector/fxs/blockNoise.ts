@@ -4,15 +4,14 @@
  */
 
 import seedrandom from 'seedrandom';
-import shader from './blockNoise.glsl';
 import { defineImageEffectorFx } from '../ImageEffector.js';
+import shader from './blockNoise.glsl';
 import { i18n } from '@/i18n.js';
 
 export const FX_blockNoise = defineImageEffectorFx({
 	id: 'blockNoise',
 	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
 	shader,
-	uniforms: ['amount', 'channelShift'] as const,
 	params: {
 		amount: {
 			label: i18n.ts._imageEffector._fxProps.amount,

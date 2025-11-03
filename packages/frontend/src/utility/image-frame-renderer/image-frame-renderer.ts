@@ -6,18 +6,12 @@
 import QRCodeStyling from 'qr-code-styling';
 import { url } from '@@/js/config.js';
 import ExifReader from 'exifreader';
-import { FX_frame } from './image-effector/fxs/frame.js';
-import type { ImageEffectorFx, ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
+import { ImageCompositor } from '../image-effector/ImageCompositor.js';
+import { FN_frame } from './frame.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
-
-const FXS = [
-	FX_frame,
-] as const satisfies ImageEffectorFx<string, any>[];
-
-// TODO: 上部にもラベルを配置できるようにする
 
 type LabelParams = {
 	enabled: boolean;
@@ -45,7 +39,7 @@ export type ImageFramePreset = {
 };
 
 export class ImageFrameRenderer {
-	private effector: ImageEffector<typeof FXS>;
+	private compositor: ImageCompositor;
 	private image: HTMLImageElement | ImageBitmap;
 	private exif: ExifReader.Tags;
 	private renderAsPreview = false;
@@ -61,15 +55,16 @@ export class ImageFrameRenderer {
 		this.renderAsPreview = options.renderAsPreview ?? false;
 		console.log(this.exif);
 
-		this.effector = new ImageEffector({
+		this.compositor = new ImageCompositor({
 			canvas: options.canvas,
 			renderWidth: 1,
 			renderHeight: 1,
 			image: null,
-			fxs: FXS,
 		});
 
-		this.effector.registerTexture('image', this.image);
+		this.compositor.registerFunction('frame', FN_frame);
+
+		this.compositor.registerTexture('image', this.image);
 	}
 
 	private interpolateTemplateText(text: string) {
@@ -195,7 +190,7 @@ export class ImageFrameRenderer {
 		return labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height); ;
 	}
 
-	public async updateAndRender(params: ImageFrameParams): Promise<void> {
+	public async render(params: ImageFrameParams): Promise<void> {
 		let imageAreaW = this.image.width;
 		let imageAreaH = this.image.height;
 
@@ -219,18 +214,18 @@ export class ImageFrameRenderer {
 
 		if (params.labelTop.enabled) {
 			const topLabelImage = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.labelTop);
-			this.effector.registerTexture('topLabel', topLabelImage);
+			this.compositor.registerTexture('topLabel', topLabelImage);
 		}
 
 		if (params.labelBottom.enabled) {
 			const bottomLabelImage = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.labelBottom);
-			this.effector.registerTexture('bottomLabel', bottomLabelImage);
+			this.compositor.registerTexture('bottomLabel', bottomLabelImage);
 		}
 
-		this.effector.changeResolution(renderWidth, renderHeight);
+		this.compositor.changeResolution(renderWidth, renderHeight);
 
-		await this.effector.setLayersAndRender([{
-			fxId: 'frame',
+		this.compositor.render([{
+			functionId: 'frame',
 			id: 'a',
 			params: {
 				image: 'image',
@@ -247,14 +242,10 @@ export class ImageFrameRenderer {
 		}]);
 	}
 
-	public render(): void {
-		this.effector.render();
-	}
-
 	/*
 	 * disposeCanvas = true だとloseContextを呼ぶため、コンストラクタで渡されたcanvasも再利用不可になるので注意
 	 */
 	public destroy(disposeCanvas = true): void {
-		this.effector.destroy(disposeCanvas);
+		this.compositor.destroy(disposeCanvas);
 	}
 }

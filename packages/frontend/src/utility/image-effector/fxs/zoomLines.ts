@@ -11,7 +11,6 @@ export const FX_zoomLines = defineImageEffectorFx({
 	id: 'zoomLines',
 	name: i18n.ts._imageEffector._fxs.zoomLines,
 	shader,
-	uniforms: ['pos', 'frequency', 'thresholdEnabled', 'threshold', 'maskSize', 'black'] as const,
 	params: {
 		x: {
 			label: i18n.ts._imageEffector._fxProps.centerX,

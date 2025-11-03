@@ -11,7 +11,6 @@ export const FX_checker = defineImageEffectorFx({
 	id: 'checker',
 	name: i18n.ts._imageEffector._fxs.checker,
 	shader,
-	uniforms: ['angle', 'scale', 'color', 'opacity'] as const,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
