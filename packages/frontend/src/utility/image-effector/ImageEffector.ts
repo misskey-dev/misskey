@@ -72,17 +72,12 @@ interface TextureParamDef extends CommonParamDef {
 	} | null;
 };
 
-interface TextureRefParamDef extends CommonParamDef {
-	type: 'textureRef';
-	default: string;
-};
-
 interface ColorParamDef extends CommonParamDef {
 	type: 'color';
 	default: ImageEffectorRGB;
 };
 
-type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | TextureRefParamDef | ColorParamDef;
+type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | ColorParamDef;
 
 export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
 
@@ -160,7 +155,7 @@ export class ImageEffector {
 	}
 
 	public async render(layers: ImageEffectorLayer[]) {
-		const fnParams: Record<string, any> = {};
+		const compositorLayers: ImageCompositorLayer[] = [];
 
 		const unused = new Set(this.compositor.getKeysOfRegisteredTextures());
 
@@ -168,28 +163,40 @@ export class ImageEffector {
 			const fx = this.fxs.find(fx => fx.id === layer.fxId);
 			if (fx == null) continue;
 
+			const fnParams: Record<string, any> = {};
+
 			for (const k of Object.keys(layer.params)) {
 				const paramDef = (fx.params as ImageEffectorFxParamDefs)[k];
 				if (paramDef == null) continue;
-				if (paramDef.type !== 'texture') continue;
-				const v = getValue<typeof paramDef.type>(layer.params, k);
-				if (v == null) continue;
+				if (paramDef.type === 'texture') {
+					const v = getValue<typeof paramDef.type>(layer.params, k);
+					if (v == null) continue;
 
-				const textureKey = this.getTextureKeyForParam(v);
-				unused.delete(textureKey);
-				if (this.compositor.hasTexture(textureKey)) continue;
+					const textureKey = this.getTextureKeyForParam(v);
+					unused.delete(textureKey);
+					fnParams[k] = textureKey;
+					if (this.compositor.hasTexture(textureKey)) continue;
 
-				if (_DEV_) console.log(`Baking texture of <${textureKey}>...`);
+					if (_DEV_) console.log(`Baking texture of <${textureKey}>...`);
 
-				const image =
+					const image =
 					v.type === 'text' ? await createTextureFromText(v.text) :
 					v.type === 'url' ? await createTextureFromUrl(v.url) :
 					v.type === 'qr' ? await createTextureFromQr({ data: v.data }) :
 					null;
-				if (image == null) continue;
+					if (image == null) continue;
 
-				this.compositor.registerTexture(textureKey, image);
+					this.compositor.registerTexture(textureKey, image);
+				} else {
+					fnParams[k] = layer.params[k];
+				}
 			}
+
+			compositorLayers.push({
+				id: layer.id,
+				functionId: layer.fxId,
+				params: fnParams,
+			});
 		}
 
 		for (const k of unused) {
@@ -197,11 +204,7 @@ export class ImageEffector {
 			this.compositor.unregisterTexture(k);
 		}
 
-		this.compositor.render(layers.map(layer => ({
-			id: layer.id,
-			functionId: layer.fxId,
-			params: fnParams,
-		})));
+		this.compositor.render(compositorLayers);
 	}
 
 	public changeResolution(width: number, height: number) {
@@ -264,7 +267,7 @@ async function createTextureFromText(text: string | null, resolution = 2048) {
 	const textMetrics = ctx.measureText(text);
 	const cropWidth = (Math.ceil(textMetrics.actualBoundingBoxRight + textMetrics.actualBoundingBoxLeft) + margin + margin);
 	const cropHeight = (Math.ceil(textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent) + margin + margin);
-	const data = ctx.getImageData(0, (ctx.canvas.height / 2) - (cropHeight / 2), ctx.canvas.width, ctx.canvas.height);
+	const data = ctx.getImageData(0, (ctx.canvas.height / 2) - (cropHeight / 2), cropWidth, cropHeight);
 
 	ctx.canvas.remove();
 
