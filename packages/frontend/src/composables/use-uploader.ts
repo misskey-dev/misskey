@@ -369,11 +369,12 @@ export function useUploader(options: {
 							closed: () => dispose(),
 						});
 					},
-				}, {
-					type: 'button',
+				}, ...(item.imageFrameParams != null ? [{
+					type: 'button' as const,
+					icon: 'ti ti-x',
 					text: i18n.ts.remove,
 					action: () => change(null),
-				}, {
+				}] : []), {
 					type: 'divider',
 				}, ...prefer.s.imageFramePresets.map(preset => ({
 					type: 'button' as const,
