@@ -6,8 +6,8 @@
 import QRCodeStyling from 'qr-code-styling';
 import { url, host } from '@@/js/config.js';
 import { getProxiedImageUrl } from '../media-proxy.js';
-import { ImageCompositor } from './ImageCompositor.js';
-import type { ImageCompositorFunction, ImageCompositorLayer } from './ImageCompositor.js';
+import { ImageCompositor } from '../../lib/ImageCompositor.js';
+import type { ImageCompositorFunction, ImageCompositorLayer } from '../../lib/ImageCompositor.js';
 import { ensureSignin } from '@/i.js';
 
 export type ImageEffectorRGB = [r: number, g: number, b: number];

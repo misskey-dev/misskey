@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createTexture, initShaderProgram } from '../webgl.js';
+import { createTexture, initShaderProgram } from '../utility/webgl.js';
 
 export type ImageCompositorFunctionParams = Record<string, any>;
 

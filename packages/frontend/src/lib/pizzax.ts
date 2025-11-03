@@ -5,6 +5,8 @@
 
 // PIZZAX --- A lightweight store
 
+// TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
+
 import { onUnmounted, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
