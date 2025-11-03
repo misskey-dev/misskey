@@ -81,6 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.andWhere('note.visibility = \'public\'')
 				.andWhere('note.fileIds != \'{}\'') // 画像ありのみ
+				.andWhere('note.userHost IS NULL') // ローカルユーザーのみ
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')

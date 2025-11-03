@@ -56,7 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.fileIds != \'{}\'') // 画像ありのみ
 				.andWhere('note.channelId IS NULL') // チャンネル投稿ではない
-				.andWhere('note.visibility = \'public\''); // Public投稿のみ
+				.andWhere('note.visibility = \'public\'') // Public投稿のみ
+				.andWhere('note.userHost IS NULL'); // ローカルユーザーのみ
 
 			if (ps.sinceId) {
 				query.andWhere('note.id > :sinceId', { sinceId: ps.sinceId });

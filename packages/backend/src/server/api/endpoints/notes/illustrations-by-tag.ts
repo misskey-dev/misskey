@@ -63,6 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Public投稿に限定
 			query.andWhere('note.visibility = \'public\'');
 			query.andWhere('note.channelId IS NULL');
+			query.andWhere('note.userHost IS NULL'); // ローカルユーザーのみ
 
 			try {
 				if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');

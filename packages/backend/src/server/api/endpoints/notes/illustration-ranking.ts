@@ -77,7 +77,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('note.fileIds != \'{}\'') // 画像ありのみ
 				.andWhere('note.channelId IS NULL') // チャンネル投稿ではない
 				.andWhere('note.visibility = \'public\'') // Public投稿のみ
-				.andWhere('note.id > :threeMonthsAgoId', { threeMonthsAgoId }); // 3ヶ月以内
+				.andWhere('note.id > :threeMonthsAgoId', { threeMonthsAgoId }) // 3ヶ月以内
+				.andWhere('note.userHost IS NULL'); // ローカルユーザーのみ
 
 			query.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
