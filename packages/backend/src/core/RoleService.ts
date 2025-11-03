@@ -111,6 +111,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 		'text/plain',
 		'text/csv',
 		'application/json',
+		'application/zip',
 		'image/*',
 		'video/*',
 		'audio/*',

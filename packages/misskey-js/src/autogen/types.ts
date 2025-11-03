@@ -919,7 +919,7 @@ export type paths = {
          * admin/update-user-suspended-reason
          * @description No description provided.
          *
-         *     **Credential required**: *Yes*
+         *     **Credential required**: *Yes* / **Permission**: *write:admin:account*
          */
         post: operations['admin___update-user-suspended-reason'];
     };
@@ -3364,6 +3364,15 @@ export type paths = {
          */
         post: operations['notes___unrenote'];
     };
+    '/notes/update-visibility': {
+        /**
+         * notes/update-visibility
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:notes*
+         */
+        post: operations['notes___update-visibility'];
+    };
     '/notes/user-list-timeline': {
         /**
          * notes/user-list-timeline
@@ -5631,6 +5640,7 @@ export type components = {
                 reaction: string;
                 user: components['schemas']['UserLite'];
             }[];
+            reads?: string[];
             /** Format: date-time */
             expiresAt?: string | null;
             isSystemMessage?: boolean;
@@ -5652,6 +5662,7 @@ export type components = {
                 reaction: string;
                 user?: components['schemas']['UserLite'] | null;
             }[];
+            reads?: string[];
             /** Format: date-time */
             expiresAt?: string | null;
             isSystemMessage?: boolean;
@@ -5670,6 +5681,7 @@ export type components = {
             reactions: {
                 reaction: string;
             }[];
+            reads?: string[];
             /** Format: date-time */
             expiresAt?: string | null;
             isSystemMessage?: boolean;
@@ -5690,6 +5702,7 @@ export type components = {
                 reaction: string;
                 user: components['schemas']['UserLite'];
             }[];
+            reads?: string[];
             /** Format: date-time */
             expiresAt?: string | null;
             isSystemMessage?: boolean;
@@ -32268,6 +32281,80 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     noteId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'notes___update-visibility': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    noteId: string;
+                    /** @enum {string} */
+                    visibility: 'public' | 'home' | 'followers' | 'specified';
                 };
             };
         };
