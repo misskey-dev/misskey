@@ -5,15 +5,14 @@
 
 import { createTexture, initShaderProgram } from '../webgl.js';
 
-export type ImageCompositorFxParamDefs = Record<string, any>;
+export type ImageCompositorProgramParamDefs = Record<string, any>;
 
-export function defineImageCompositorFx<ID extends string, PS extends ImageCompositorFxParamDefs, US extends string[]>(fx: ImageCompositorFx<ID, PS, US>) {
-	return fx;
+export function defineImageCompositorFx<PS extends ImageCompositorProgramParamDefs, US extends string[]>(program: ImageCompositorProgram<PS, US>) {
+	return program;
 }
 
-export type ImageCompositorFx<ID extends string = string, PS extends ImageCompositorFxParamDefs = ImageCompositorFxParamDefs, US extends string[] = string[]> = {
-	id: ID;
-	name: string;
+export type ImageCompositorProgram<PS extends ImageCompositorProgramParamDefs = ImageCompositorProgramParamDefs, US extends string[] = string[]> = {
+	id: string;
 	shader: string;
 	uniforms: US;
 	params: PS,
@@ -30,9 +29,11 @@ export type ImageCompositorFx<ID extends string = string, PS extends ImageCompos
 
 export type ImageCompositorNode = {
 	id: string;
-	fxId: string;
+	programId: string;
 	params: Record<string, any>;
 };
+
+// TODO: per node cache
 
 export class ImageCompositor {
 	private gl: WebGL2RenderingContext;
@@ -45,6 +46,7 @@ export class ImageCompositor {
 	private perLayerResultFrameBuffers: Map<string, WebGLFramebuffer> = new Map();
 	private nopProgram: WebGLProgram;
 	private registeredTextures: Map<string, { texture: WebGLTexture; width: number; height: number; }> = new Map();
+	private programs: ImageCompositorProgram[] = [];
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -117,10 +119,10 @@ export class ImageCompositor {
 	private renderNode(node: ImageCompositorNode, preTexture: WebGLTexture, invert = false) {
 		const gl = this.gl;
 
-		const fx = this.fxs.find(fx => fx.id === node.fxId);
-		if (fx == null) return;
+		const program = this.programs.find(p => p.id === node.programId);
+		if (program == null) return;
 
-		const cachedShader = this.shaderCache.get(fx.id);
+		const cachedShader = this.shaderCache.get(program.id);
 		const shaderProgram = cachedShader ?? initShaderProgram(this.gl, `#version 300 es
 			in vec2 position;
 			uniform bool u_invert;
@@ -130,9 +132,9 @@ export class ImageCompositor {
 				in_uv = (position + 1.0) / 2.0;
 				gl_Position = u_invert ? vec4(position * vec2(1.0, -1.0), 0.0, 1.0) : vec4(position, 0.0, 1.0);
 			}
-		`, fx.shader);
+		`, program.shader);
 		if (cachedShader == null) {
-			this.shaderCache.set(fx.id, shaderProgram);
+			this.shaderCache.set(program.id, shaderProgram);
 		}
 
 		gl.useProgram(shaderProgram);
@@ -148,11 +150,11 @@ export class ImageCompositor {
 		const in_texture = gl.getUniformLocation(shaderProgram, 'in_texture');
 		gl.uniform1i(in_texture, 0);
 
-		fx.main({
+		program.main({
 			gl: gl,
 			program: shaderProgram,
 			params: node.params,
-			u: Object.fromEntries(fx.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
+			u: Object.fromEntries(program.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: this.registeredTextures,
@@ -194,7 +196,7 @@ export class ImageCompositor {
 				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 			} else {
 				const cachedResultFrameBuffer = this.perLayerResultFrameBuffers.get(layer.id);
-				const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer()!;
+				const resultFrameBuffer = cachedResultFrameBuffer ?? gl.createFramebuffer();
 				if (cachedResultFrameBuffer == null) {
 					this.perLayerResultFrameBuffers.set(layer.id, resultFrameBuffer);
 				}
@@ -208,15 +210,15 @@ export class ImageCompositor {
 		}
 	}
 
-	public registerFx(fx: ImageCompositorFx) {
-		this.fxs.push(fx);
+	public registerProgram(program: ImageCompositorProgram) {
+		this.programs.push(program);
 	}
 
 	public registerTexture(key: string, image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement) {
 		const gl = this.gl;
 
-		if (this.registeredTextures.has(key)) {
-			const existing = this.registeredTextures.get(key)!;
+		const existing = this.registeredTextures.get(key);
+		if (existing != null) {
 			gl.deleteTexture(existing.texture);
 			this.registeredTextures.delete(key);
 		}
