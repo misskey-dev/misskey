@@ -1986,30 +1986,50 @@ function redrawWithActiveStrokes() {
 	// 進行中の描画を一時的に描画
 	for (const [, strokeData] of otherActiveStrokes.value) {
 		ctx.save();
-		ctx.globalCompositeOperation = strokeData.tool === 'eraser' ? 'destination-out' : 'source-over';
-		ctx.strokeStyle = strokeData.color;
-		ctx.globalAlpha = strokeData.opacity * 0.8; // 進行中は少し薄く
-		ctx.lineWidth = strokeData.strokeWidth;
-		ctx.lineCap = 'round';
-		ctx.lineJoin = 'round';
 
-		// アンチエイリアス設定
-		ctx.imageSmoothingEnabled = true;
-		ctx.imageSmoothingQuality = 'high';
+		// 筆圧対応の描画処理
+		if (strokeData.points && strokeData.points.length > 0) {
+			// 筆圧情報がある場合は drawSmoothPathLocal を使用
+			const hasPressure = strokeData.points.some((p: any) => p.pressure !== undefined);
 
-		// 線を描画
-		if (strokeData.points.length > 1) {
-			ctx.beginPath();
-			for (let i = 0; i < strokeData.points.length; i++) {
-				const point = strokeData.points[i];
-				if (i === 0) {
-					ctx.moveTo(point.x, point.y);
-				} else {
-					ctx.lineTo(point.x, point.y);
+			if (hasPressure && strokeData.points.length > 1) {
+				// 筆圧対応のスムーズパス描画
+				drawSmoothPathLocal(
+					strokeData.points,
+					strokeData.strokeWidth,
+					strokeData.color,
+					strokeData.opacity * 0.8, // 進行中は少し薄く
+					strokeData.tool === 'eraser'
+				);
+			} else {
+				// 筆圧なしの場合は従来の描画方法
+				ctx.globalCompositeOperation = strokeData.tool === 'eraser' ? 'destination-out' : 'source-over';
+				ctx.strokeStyle = strokeData.color;
+				ctx.globalAlpha = strokeData.opacity * 0.8; // 進行中は少し薄く
+				ctx.lineWidth = strokeData.strokeWidth;
+				ctx.lineCap = 'round';
+				ctx.lineJoin = 'round';
+
+				// アンチエイリアス設定
+				ctx.imageSmoothingEnabled = true;
+				ctx.imageSmoothingQuality = 'high';
+
+				// 線を描画
+				if (strokeData.points.length > 1) {
+					ctx.beginPath();
+					for (let i = 0; i < strokeData.points.length; i++) {
+						const point = strokeData.points[i];
+						if (i === 0) {
+							ctx.moveTo(point.x, point.y);
+						} else {
+							ctx.lineTo(point.x, point.y);
+						}
+					}
+					ctx.stroke();
 				}
 			}
-			ctx.stroke();
 		}
+
 		ctx.restore();
 	}
 
