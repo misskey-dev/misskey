@@ -12,7 +12,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/_.js';
+import { In } from 'typeorm';
+import type { NotesRepository, DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -54,6 +55,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private cacheService: CacheService,
 		private noteEntityService: NoteEntityService,
@@ -125,7 +129,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return true;
 			});
 
-			return await this.noteEntityService.packMany(notes, me);
+			// 各ノートから除外されたファイルをfileIds配列から削除
+			const excludedFileIds = new Set<string>();
+			const allFileIds = notes.flatMap(note => note.fileIds);
+
+			if (allFileIds.length > 0) {
+				const excludedFiles = await this.driveFilesRepository.find({
+					where: {
+						id: In(allFileIds),
+						excludedFromIllustrationHighlight: true,
+					},
+					select: ['id'],
+				});
+
+				for (const file of excludedFiles) {
+					excludedFileIds.add(file.id);
+				}
+			}
+
+			return await this.noteEntityService.packManyWithFilteredFiles(notes, excludedFileIds, me);
 		});
 	}
 }

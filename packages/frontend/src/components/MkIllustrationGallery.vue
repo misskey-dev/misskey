@@ -5,36 +5,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="illustration-gallery">
-	<div v-if="items.length === 0 && !fetching" class="empty">
+	<div v-if="expandedItems.length === 0 && !fetching" class="empty">
 		<div class="icon"><i class="ti ti-photo-off"></i></div>
 		<div>{{ i18n.ts.noNotes }}</div>
 	</div>
 	<div v-else class="gallery-grid">
 		<div
-			v-for="note in items"
-			:key="note.id"
+			v-for="item in expandedItems"
+			:key="`${item.note.id}-${item.fileIndex}`"
 			class="gallery-item"
-			:class="{ 'is-sensitive': isSensitiveNote(note) }"
-			@click="openNote(note.id)"
-			@contextmenu.prevent="onContextMenu($event, note)"
-			@touchstart="onTouchStart($event, note)"
+			:class="{ 'is-sensitive': isSensitiveNote(item.note) }"
+			@click="openNote(item.note.id)"
+			@contextmenu.prevent="onContextMenu($event, item)"
+			@touchstart="onTouchStart($event, item)"
 			@touchend="onTouchEnd"
 			@touchmove="onTouchMove"
 		>
 			<img
-				v-if="note.files && note.files.length > 0"
-				:src="note.files[0].thumbnailUrl || note.files[0].url"
-				:alt="note.text || 'illustration'"
+				:src="item.file.thumbnailUrl || item.file.url"
+				:alt="item.note.text || 'illustration'"
 				class="thumbnail"
-				:class="{ 'blur': shouldBlur(note) }"
+				:class="{ 'blur': shouldBlur(item.note) }"
 			/>
-			<div v-if="shouldBlur(note)" class="sensitive-indicator">
+			<div v-if="shouldBlur(item.note)" class="sensitive-indicator">
 				<i class="ti ti-eye-exclamation"></i>
 				<span>{{ i18n.ts.sensitive }}</span>
-			</div>
-			<div v-if="note.files && note.files.length > 1" class="file-count">
-				<i class="ti ti-stack-2"></i>
-				{{ note.files.length }}
 			</div>
 		</div>
 	</div>
@@ -66,11 +61,36 @@ const props = defineProps<{
 	paginator: any; // IPaginatorインターフェース
 }>();
 
+// ギャラリーアイテムの型定義
+type GalleryItem = {
+	note: Misskey.entities.Note;
+	file: Misskey.entities.DriveFile;
+	fileIndex: number;
+};
+
 const router = useRouter();
 const items = computed(() => props.paginator.items.value);
 const fetching = computed(() => props.paginator.fetching.value);
 const moreFetching = computed(() => props.paginator.fetchingOlder.value);
 const more = computed(() => props.paginator.canFetchOlder.value);
+
+// ノートの複数ファイルを個別のアイテムに展開
+const expandedItems = computed<GalleryItem[]>(() => {
+	const expanded: GalleryItem[] = [];
+	for (const note of items.value) {
+		if (note.files && note.files.length > 0) {
+			// 各ファイルを個別のギャラリーアイテムとして追加
+			for (let i = 0; i < note.files.length; i++) {
+				expanded.push({
+					note: note,
+					file: note.files[i],
+					fileIndex: i,
+				});
+			}
+		}
+	}
+	return expanded;
+});
 
 // 長押し検出用の状態
 const longPressTimer = ref<number | null>(null);
@@ -104,13 +124,9 @@ const shouldBlur = (note: Misskey.entities.Note): boolean => {
 	return prefer.s.nsfw === 'force' || (isSensitiveNote(note) && prefer.s.nsfw !== 'ignore');
 };
 
-const showMenu = async (ev: MouseEvent | TouchEvent, note: Misskey.entities.Note) => {
-	if (!note.files || note.files.length === 0) {
-		return;
-	}
-
-	const fileId = note.files[0].id;
-	const imageUrl = note.files[0].url;
+const showMenu = async (ev: MouseEvent | TouchEvent, item: GalleryItem) => {
+	const fileId = item.file.id;
+	const imageUrl = item.file.url;
 
 	const menu = [];
 
@@ -126,7 +142,7 @@ const showMenu = async (ev: MouseEvent | TouchEvent, note: Misskey.entities.Note
 				const url = window.URL.createObjectURL(blob);
 				const a = document.createElement('a');
 				a.href = url;
-				a.download = note.files[0].name || 'illustration.jpg';
+				a.download = item.file.name || 'illustration.jpg';
 				document.body.appendChild(a);
 				a.click();
 				document.body.removeChild(a);
@@ -181,20 +197,20 @@ const showMenu = async (ev: MouseEvent | TouchEvent, note: Misskey.entities.Note
 };
 
 // PC用の右クリックメニュー
-const onContextMenu = async (ev: MouseEvent, note: Misskey.entities.Note) => {
+const onContextMenu = async (ev: MouseEvent, item: GalleryItem) => {
 	ev.preventDefault();
-	await showMenu(ev, note);
+	await showMenu(ev, item);
 };
 
 // タッチ開始時
-const onTouchStart = (ev: TouchEvent, note: Misskey.entities.Note) => {
+const onTouchStart = (ev: TouchEvent, item: GalleryItem) => {
 	touchMoved = false;
 	// 長押しタイマー開始
 	longPressTimer.value = window.setTimeout(() => {
 		if (!touchMoved) {
 			// 長押し判定されたのでドロワーメニューを表示
 			ev.preventDefault();
-			showMenu(ev, note);
+			showMenu(ev, item);
 		}
 	}, longPressThreshold);
 };
