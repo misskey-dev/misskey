@@ -1603,6 +1603,9 @@ type DriveFilesShowRequest = operations['drive___files___show']['requestBody']['
 type DriveFilesShowResponse = operations['drive___files___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFilesToggleIllustrationHighlightExclusionRequest = operations['drive___files___toggle-illustration-highlight-exclusion']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type DriveFilesUpdateRequest = operations['drive___files___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2110,6 +2113,7 @@ declare namespace entities {
         DriveFilesMoveBulkRequest,
         DriveFilesShowRequest,
         DriveFilesShowResponse,
+        DriveFilesToggleIllustrationHighlightExclusionRequest,
         DriveFilesUpdateRequest,
         DriveFilesUpdateResponse,
         DriveFilesUploadFromUrlRequest,
@@ -2337,6 +2341,8 @@ declare namespace entities {
         NotesIllustrationRankingResponse,
         NotesIllustrationsByTagRequest,
         NotesIllustrationsByTagResponse,
+        NotesIllustrationsByTagRankingRequest,
+        NotesIllustrationsByTagRankingResponse,
         NotesLocalTimelineRequest,
         NotesLocalTimelineResponse,
         NotesMentionsRequest,
@@ -3462,6 +3468,12 @@ type NotesIllustrationRequest = operations['notes___illustration']['requestBody'
 
 // @public (undocumented)
 type NotesIllustrationResponse = operations['notes___illustration']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationsByTagRankingRequest = operations['notes___illustrations-by-tag-ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationsByTagRankingResponse = operations['notes___illustrations-by-tag-ranking']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesIllustrationsByTagRequest = operations['notes___illustrations-by-tag']['requestBody']['content']['application/json'];

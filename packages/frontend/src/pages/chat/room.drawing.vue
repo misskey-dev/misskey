@@ -443,9 +443,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				color: getUserCursorColorLocal(cursor.userId)
 			}"
 		>
-			<i class="ti ti-hand-click"></i>
+			<div :class="$style.cursorPointer"></div>
 			<span
-				:class="$style.cursorUser"
+				:class="$style.cursorLabel"
 				:style="{
 					background: getUserCursorColorLocal(cursor.userId),
 					color: getContrastColorLocal(getUserCursorColorLocal(cursor.userId))
@@ -2116,13 +2116,20 @@ function getContrastColorLocal(backgroundColor: string): string {
 
 // 他のユーザーのカーソル更新
 function updateOtherCursor(data: any) {
-	if (data.userId === $i.id) return;
+	console.log('👆 [DEBUG] Received cursor move:', data);
+	console.log('👆 [DEBUG] My user ID:', $i.id, 'Received user ID:', data.userId, 'Match:', data.userId === $i.id);
+	if (data.userId === $i.id) {
+		console.log('👆 [DEBUG] Skipping own cursor');
+		return;
+	}
 
 	// ユーザー固有の色を取得
 	const userColor = getUserCursorColorLocal(data.userId);
+	console.log('👆 [DEBUG] Updating cursor for user:', data.userId, 'at position:', data.x, data.y, 'color:', userColor);
 
 	const index = otherCursors.value.findIndex(c => c.userId === data.userId);
 	if (index >= 0) {
+		console.log('👆 [DEBUG] Updating existing cursor at index:', index);
 		otherCursors.value[index] = {
 			userId: data.userId,
 			userName: data.userName,
@@ -2131,6 +2138,7 @@ function updateOtherCursor(data: any) {
 			color: userColor
 		};
 	} else {
+		console.log('👆 [DEBUG] Adding new cursor');
 		otherCursors.value.push({
 			userId: data.userId,
 			userName: data.userName,
@@ -2139,6 +2147,7 @@ function updateOtherCursor(data: any) {
 			color: userColor
 		});
 	}
+	console.log('👆 [DEBUG] Total cursors:', otherCursors.value.length, otherCursors.value);
 
 	// 既存のタイマーをクリア
 	const existingTimer = cursorTimers.get(data.userId);
@@ -4689,5 +4698,36 @@ function adjustCanvasForMobile() {
 		margin-bottom: 6px;
 		padding: 6px;
 	}
+}
+
+/* 他のユーザーのカーソル */
+.cursor {
+	position: absolute;
+	pointer-events: none;
+	z-index: 1000;
+	transition: left 0.1s ease-out, top 0.1s ease-out;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+.cursorPointer {
+	width: 0;
+	height: 0;
+	border-left: 12px solid currentColor;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.cursorLabel {
+	padding: 3px 8px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	margin-left: 2px;
 }
 </style>

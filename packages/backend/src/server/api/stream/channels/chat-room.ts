@@ -77,6 +77,11 @@ class ChatRoomChannel extends Channel {
 
 	@bindThis
 	private async onEvent(data: GlobalEvents['chatRoom']['payload']) {
+		// デバッグ: cursorMoveイベントの配信を確認
+		if (data.type === 'cursorMove') {
+			console.log(`🔍 [DEBUG] onEvent called for user ${this.user!.id}, event from user ${data.body.userId}`);
+		}
+
 		if (data.type === 'typing') {
 			const userId = data.body.userId;
 			const begin = this.typers[userId] == null;
@@ -171,10 +176,7 @@ class ChatRoomChannel extends Channel {
 
 			await this.drawingCanvasService.addStroke(this.roomId, strokeData);
 
-			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
-				type: 'drawingStroke',
-				body: strokeData,
-			});
+			await this.chatService.broadcastDrawingStroke(this.roomId, this.user.id, strokeData);
 				break;
 			case 'drawingProgress':
 				console.log(`🔍 [DEBUG] Processing drawing progress for room ${this.roomId} from user ${this.user.id}`);
@@ -212,10 +214,7 @@ class ChatRoomChannel extends Channel {
 				};
 
 				// 描画進行状況をルーム内の他のユーザーに配信
-			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
-					type: 'drawingProgress',
-					body: progressData,
-				});
+			await this.chatService.broadcastDrawingProgress(this.roomId, this.user.id, progressData);
 				break;
 			case 'cursorMove':
 				// レート制限: 50ms間隔制限（カーソルは高頻度）
@@ -228,17 +227,13 @@ class ChatRoomChannel extends Channel {
 				if (body.x < -100 || body.x > 4100 || body.y < -100 || body.y > 4100) return; // 最大4000x4000 + マージン
 
 				// カーソル位置をルーム内の他のユーザーに配信
-			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
-					type: 'cursorMove',
-					body: {
-						userId: this.user.id,
-						userName: this.user.name || this.user.username,
-						x: Math.round(body.x * 10) / 10,
-						y: Math.round(body.y * 10) / 10,
-						timestamp: cursorNow,
-					},
-				});
-				break;
+			await this.chatService.broadcastCursorMove(this.roomId, this.user.id, {
+				userName: this.user.name || this.user.username,
+				x: Math.round(body.x * 10) / 10,
+				y: Math.round(body.y * 10) / 10,
+				timestamp: cursorNow,
+			});
+			break;
 			case 'clearCanvas':
 				console.log(`🔍 [DEBUG] Processing canvas clear for room ${this.roomId} from user ${this.user.id}`);
 
@@ -246,14 +241,11 @@ class ChatRoomChannel extends Channel {
 				await this.drawingCanvasService.clearCanvas(this.roomId, this.user.id);
 
 				// キャンバスクリアをルーム内の他のユーザーに配信
-			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
-					type: 'clearCanvas',
-					body: {
-						userId: this.user.id,
-						userName: this.user.name || this.user.username,
-						timestamp: Date.now(),
-					},
-				});
+			await this.chatService.broadcastClearCanvas(this.roomId, this.user.id, {
+				userId: this.user.id,
+				userName: this.user.name || this.user.username,
+				timestamp: Date.now(),
+			});
 				break;
 			case 'undoStroke':
 				console.log(`🔍 [DEBUG] Processing undo stroke for room ${this.roomId} from user ${this.user.id}`);
@@ -263,15 +255,12 @@ class ChatRoomChannel extends Channel {
 
 				if (undoneStroke) {
 					// アンドゥ成功をルーム内の他のユーザーに配信
-			(this.subscriber as any).emit(`chatRoomStream:${this.roomId}`, {
-						type: 'undoStroke',
-						body: {
-							userId: this.user.id,
-							userName: this.user.name || this.user.username,
-							strokeId: undoneStroke.id,
-							timestamp: Date.now(),
-						},
-					});
+			await this.chatService.broadcastUndoStroke(this.roomId, this.user.id, {
+					userId: this.user.id,
+					userName: this.user.name || this.user.username,
+					strokeId: undoneStroke.id,
+					timestamp: Date.now(),
+				});
 					console.log(`🎨 [DEBUG] Successfully undid stroke ${undoneStroke.id} for user ${this.user.id}`);
 				} else {
 					console.log(`🎨 [DEBUG] No stroke to undo for user ${this.user.id} in room ${this.roomId}`);

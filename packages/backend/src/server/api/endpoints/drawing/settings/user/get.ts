@@ -29,6 +29,7 @@ export const meta = {
 			zoomLevel: { type: 'number' },
 			panOffsetX: { type: 'number' },
 			panOffsetY: { type: 'number' },
+			colors: { type: 'array', items: { type: 'string' }, nullable: true },
 		},
 	},
 

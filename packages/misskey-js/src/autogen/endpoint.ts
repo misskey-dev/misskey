@@ -313,6 +313,7 @@ import type {
 	DriveFilesMoveBulkRequest,
 	DriveFilesShowRequest,
 	DriveFilesShowResponse,
+	DriveFilesToggleIllustrationHighlightExclusionRequest,
 	DriveFilesUpdateRequest,
 	DriveFilesUpdateResponse,
 	DriveFilesUploadFromUrlRequest,
@@ -540,6 +541,8 @@ import type {
 	NotesIllustrationRankingResponse,
 	NotesIllustrationsByTagRequest,
 	NotesIllustrationsByTagResponse,
+	NotesIllustrationsByTagRankingRequest,
+	NotesIllustrationsByTagRankingResponse,
 	NotesLocalTimelineRequest,
 	NotesLocalTimelineResponse,
 	NotesMentionsRequest,
@@ -893,6 +896,7 @@ export type Endpoints = {
 	'drive/files/find-by-hash': { req: DriveFilesFindByHashRequest; res: DriveFilesFindByHashResponse };
 	'drive/files/move-bulk': { req: DriveFilesMoveBulkRequest; res: EmptyResponse };
 	'drive/files/show': { req: DriveFilesShowRequest; res: DriveFilesShowResponse };
+	'drive/files/toggle-illustration-highlight-exclusion': { req: DriveFilesToggleIllustrationHighlightExclusionRequest; res: EmptyResponse };
 	'drive/files/update': { req: DriveFilesUpdateRequest; res: DriveFilesUpdateResponse };
 	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: EmptyResponse };
 	'drive/folders': { req: DriveFoldersRequest; res: DriveFoldersResponse };
@@ -1041,6 +1045,7 @@ export type Endpoints = {
 	'notes/illustration': { req: NotesIllustrationRequest; res: NotesIllustrationResponse };
 	'notes/illustration-ranking': { req: NotesIllustrationRankingRequest; res: NotesIllustrationRankingResponse };
 	'notes/illustrations-by-tag': { req: NotesIllustrationsByTagRequest; res: NotesIllustrationsByTagResponse };
+	'notes/illustrations-by-tag-ranking': { req: NotesIllustrationsByTagRankingRequest; res: NotesIllustrationsByTagRankingResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };

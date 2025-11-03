@@ -1305,4 +1305,84 @@ export class ChatService {
 			userId: fromUserId,
 		});
 	}
+
+	@bindThis
+	public async broadcastCursorMove(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], cursorData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] CursorMove event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] CursorMove event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'cursorMove', {
+			userId: fromUserId,
+			userName: cursorData.userName,
+			x: cursorData.x,
+			y: cursorData.y,
+			timestamp: cursorData.timestamp,
+		});
+	}
+
+	@bindThis
+	public async broadcastDrawingStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], strokeData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] DrawingStroke event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] DrawingStroke event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'drawingStroke', strokeData);
+	}
+
+	@bindThis
+	public async broadcastDrawingProgress(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], progressData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) return; // 無言で制限（高頻度イベントのため）
+
+		if (!await this.isRoomMember(room, fromUserId)) return; // 無言で制限
+
+		this.globalEventService.publishChatRoomStream(roomId, 'drawingProgress', progressData);
+	}
+
+	@bindThis
+	public async broadcastClearCanvas(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], clearData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] ClearCanvas event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] ClearCanvas event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'clearCanvas', clearData);
+	}
+
+	@bindThis
+	public async broadcastUndoStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], undoData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] UndoStroke event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] UndoStroke event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'undoStroke', undoData);
+	}
 }
