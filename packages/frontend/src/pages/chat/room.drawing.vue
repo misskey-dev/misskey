@@ -1,6 +1,34 @@
 <!--
 SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
+
+【お絵かきチャットコンポーネント】
+このコンポーネントは、チャットルーム（複数人）とユーザー間DM（1対1）の両方で使用されます。
+
+■ 対応するチャット形式:
+1. チャットルーム (chatRoom)
+   - URLパターン: /chat/room/:roomId#drawing
+   - props.roomId が存在する場合
+   - drawingId形式: roomId (そのまま)
+   - WebSocketチャンネル: 'chatRoom'
+
+2. ユーザー間DM (chatUser)
+   - URLパターン: /chat/user/:userId#drawing
+   - props.userId が存在する場合
+   - drawingId形式: user-{sortedUserId1}-{sortedUserId2}
+   - WebSocketチャンネル: 'chatUser'
+
+■ チャンネル切り替えロジック:
+- props.userId が存在する場合 → chatUser チャンネルを使用
+- props.roomId が存在する場合 → chatRoom チャンネルを使用
+- 両チャンネルで同じお絵かきイベントをサポート:
+  - drawingStroke, drawingProgress, cursorMove
+  - clearCanvas, undoStroke, redoStroke, canvasSizeChange
+
+■ キャンバスデータの保存先:
+- Redis: リアルタイムの描画ストローク (drawingId をキーとして)
+- PostgreSQL: ユーザー設定 (ツール、色、レイヤー設定など)
+- PostgreSQL: ルーム設定 (キャンバスサイズ)
 -->
 
 <template>
@@ -1272,14 +1300,23 @@ function connectToChatRoomChannel() {
 	// ユーザー間チャットかルームチャットかで使用するチャンネルを切り替え
 	if (props.userId) {
 		// 1対1チャットの場合はchatUserチャンネルを使用
+		console.log('🔌 [CONNECTION] Connecting to chatUser channel', {
+			otherId: props.userId,
+			myUserId: $i?.id,
+		});
 		connection.value = stream.useChannel('chatUser', {
 			otherId: props.userId,
 		});
+		console.log('🔌 [CONNECTION] chatUser channel connected:', connection.value);
 	} else {
 		// ルームチャットの場合はchatRoomチャンネルを使用
+		console.log('🔌 [CONNECTION] Connecting to chatRoom channel', {
+			roomId: drawingId.value,
+		});
 		connection.value = stream.useChannel('chatRoom', {
 			roomId: drawingId.value,
 		});
+		console.log('🔌 [CONNECTION] chatRoom channel connected:', connection.value);
 	}
 
 	// お絵かき関連イベント
@@ -2155,7 +2192,14 @@ function sendDrawingProgress() {
 
 // カーソル位置送信
 function sendCursorPosition(point: { x: number; y: number }) {
-	if (!connection.value) return;
+	if (!connection.value) {
+		console.warn('📍 [CURSOR SEND] No connection available!', {
+			hasConnection: !!connection.value,
+			userId: props.userId,
+			roomId: props.roomId,
+		});
+		return;
+	}
 
 	try {
 		const data = {
@@ -2169,11 +2213,15 @@ function sendCursorPosition(point: { x: number; y: number }) {
 			canvasHeight: canvasHeight.value,
 			displayWidth: displayWidth.value,
 			displayHeight: displayHeight.value,
+			connectionType: props.userId ? 'chatUser' : 'chatRoom',
+			otherId: props.userId,
+			roomId: props.roomId,
 		});
 		connection.value.send('cursorMove', data);
+		console.log('📍 [CURSOR SENT] Successfully sent cursorMove event');
 		recordCommLog('send', 'cursorMove', data);
 	} catch (error) {
-		console.warn('🎨 [WARN] Failed to send cursor position:', error);
+		console.error('🎨 [ERROR] Failed to send cursor position:', error);
 	}
 }
 
