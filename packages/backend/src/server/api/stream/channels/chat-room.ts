@@ -146,15 +146,15 @@ class ChatRoomChannel extends Channel {
 			case 'drawingStroke':
 				console.log(`🔍 [DEBUG] Processing drawing stroke for room ${this.roomId} from user ${this.user.id}`);
 
-				// レート制限: 100ms間隔制限 & 1秒間に10回まで
+				// レート制限: 10ms間隔制限 & 1秒間に100回まで（お絵かき用に緩和）
 				const now = Date.now();
-				if (now - this.lastDrawingStroke < 100) {
+				if (now - this.lastDrawingStroke < 10) {
 					console.warn(`🔍 [SECURITY] Drawing stroke rate limit exceeded by user ${this.user.id}`);
 					return;
 				}
 				if (now - this.lastDrawingStroke < 1000) {
 					this.drawingStrokeCount++;
-					if (this.drawingStrokeCount > 10) {
+					if (this.drawingStrokeCount > 100) {
 						console.warn(`🔍 [SECURITY] Drawing stroke burst limit exceeded by user ${this.user.id}`);
 						return;
 					}
