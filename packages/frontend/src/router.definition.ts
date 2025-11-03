@@ -600,6 +600,11 @@ export const ROUTE_DEF = [{
 	redirect: $i ? `@${$i.username}` : '/',
 	loginRequired: true,
 }, {
+	// イラストタグページ
+	name: 'illustration-tag',
+	path: '/illustration/tags/:tag',
+	component: page(() => import('@/pages/illustration/tags/[tag].vue')),
+}, {
 	path: '/:(*)',
 	component: page(() => import('@/pages/not-found.vue')),
 }] as const satisfies RouteDef[];

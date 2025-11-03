@@ -1,14 +1,6 @@
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
- *
- * イラストランキングAPI仕様:
- * - リアクション数が大きい順にイラストを取得
- * - 直近3ヶ月以内に投稿されたイラストのみ対象
- * - 画像ファイルが添付されている公開投稿のみ（タグは不問）
- * - チャンネル投稿は除外
- * - offset/limit形式のページネーション対応
- * - リアクション数が同じ場合は投稿日時の新しい順
  */
 
 import { Inject, Injectable } from '@nestjs/common';
@@ -20,6 +12,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { genAid } from '@/misc/id/aid.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -43,10 +36,11 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		tag: { type: 'string', minLength: 1 },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', minimum: 0, default: 0 },
 	},
-	required: [],
+	required: ['tag'],
 } as const;
 
 @Injectable()
@@ -61,11 +55,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			/**
-			 * イラストランキング仕様:
+			 * タグ別イラストランキング仕様:
+			 * - 指定されたタグを持つイラストのみ
 			 * - リアクション数が大きい順にソート
 			 * - 直近3ヶ月以内に投稿されたイラストのみ
-			 * - 画像ファイルが添付されている投稿のみ（タグは不問）
+			 * - 画像ファイルが添付されている投稿のみ
 			 */
+
+			// タグを正規化
+			const normalizedTag = normalizeForSearch(ps.tag);
 
 			// 3ヶ月前のIDを計算（MisskeyのIDは時系列順）
 			const threeMonthsAgo = new Date();
@@ -77,7 +75,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('note.fileIds != \'{}\'') // 画像ありのみ
 				.andWhere('note.channelId IS NULL') // チャンネル投稿ではない
 				.andWhere('note.visibility = \'public\'') // Public投稿のみ
-				.andWhere('note.id > :threeMonthsAgoId', { threeMonthsAgoId }); // 3ヶ月以内
+				.andWhere('note.id > :threeMonthsAgoId', { threeMonthsAgoId }) // 3ヶ月以内
+				.andWhere(':tag <@ note.tags', { tag: [normalizedTag] }); // 指定されたタグを含む
 
 			query.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
@@ -90,7 +89,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.queryService.generateSuspendedUserQueryForNote(query);
 
 			// リアクション数でソート（降順）
-			// PostgreSQLのjsonb_array_length関数を使用してreactionsの長さを計算
 			query.addSelect(
 				`COALESCE(
 					(SELECT COUNT(*) FROM jsonb_object_keys(note.reactions)),

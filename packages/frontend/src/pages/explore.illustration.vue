@@ -12,14 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.illustrations }}
 			</h2>
 			<div v-if="popularHashtags.length > 0" class="hashtag-list" style="margin-top: 12px; justify-content: center;">
-				<MkLink
+				<MkA
 					v-for="tag in popularHashtags.slice(0, 5)"
 					:key="tag.tag"
-					:url="`/illustration/tags/${tag.tag}`"
+					:to="`/illustration/tags/${tag.tag}`"
 					class="hashtag-item"
 				>
 					#{{ tag.tag }}
-				</MkLink>
+				</MkA>
 			</div>
 		</div>
 
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<div class="_gaps_s">
 				<div class="hashtag-list">
-					<MkLink
+					<MkA
 						v-for="tag in popularHashtags"
 						:key="tag.tag"
 						:to="`/illustration/tags/${tag.tag}`"
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						#{{ tag.tag }}
 						<span class="count">({{ tag.count }})</span>
-					</MkLink>
+					</MkA>
 				</div>
 			</div>
 		</MkFoldableSection>
@@ -78,7 +78,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { markRaw, ref, onMounted } from 'vue';
 import MkIllustrationGallery from '@/components/MkIllustrationGallery.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkLink from '@/components/MkLink.vue';
 import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
