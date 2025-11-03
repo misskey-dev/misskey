@@ -87,17 +87,17 @@ const popularHashtags = ref<Array<{ tag: string; count: number }>>([]);
 
 // おすすめイラスト用Paginator
 const featuredIllustrationsPaginator = markRaw(new Paginator('notes/highlight-illustrations', {
-	limit: 10,
+	limit: 18,
 }));
 
 // 新着イラスト用Paginator
 const recentIllustrationsPaginator = markRaw(new Paginator('notes/illustration', {
-	limit: 10,
+	limit: 18,
 }));
 
 // ランキング用Paginator（リアクション数順、直近3ヶ月）
 const rankingIllustrationsPaginator = markRaw(new Paginator('notes/illustration-ranking', {
-	limit: 10,
+	limit: 18,
 	offsetMode: true,
 }));
 

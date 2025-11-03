@@ -92,7 +92,7 @@ const popularHashtags = ref<Misskey.entities.Hashtag[]>([]);
 
 // タグ固有のイラスト用Paginator（人気順）
 const tagIllustrationsRankingPaginator = markRaw(new Paginator('notes/illustrations-by-tag-ranking', {
-	limit: 10,
+	limit: 18,
 	offsetMode: true,
 	params: {
 		tag: props.tag, // 指定されたタグ
@@ -101,7 +101,7 @@ const tagIllustrationsRankingPaginator = markRaw(new Paginator('notes/illustrati
 
 // タグ固有のイラスト用Paginator（新着順）
 const tagIllustrationsPaginator = markRaw(new Paginator('notes/illustrations-by-tag', {
-	limit: 10,
+	limit: 18,
 	params: {
 		tag: props.tag, // 指定されたタグ
 	},
