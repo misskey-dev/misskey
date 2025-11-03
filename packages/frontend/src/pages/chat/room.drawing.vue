@@ -44,11 +44,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- カラーパレット -->
 		<div :class="$style.colorPalette">
 			<button
-				v-for="color in colors"
-				:key="color"
+				v-for="(color, index) in colors"
+				:key="index"
 				:class="[$style.colorButton, { [$style.activeColor]: currentColor === color }]"
 				:style="{ backgroundColor: color }"
-				@click="setColor(color)"
+				@click="setColor(color, index)"
 			></button>
 			<button
 				:class="$style.colorPickerButton"
@@ -617,6 +617,7 @@ const MAX_COMM_LOG_ENTRIES = 100;
 const isDrawing = ref(false);
 const currentTool = ref<'pen' | 'eraser' | 'eyedropper'>('pen');
 const currentColor = ref('#000000');
+const currentColorIndex = ref(0); // 現在選択中のカラーパレットのインデックス
 const currentOpacity = ref(1);
 const strokeWidth = ref(2);
 
@@ -722,7 +723,7 @@ let canvasRect = ref<DOMRect | null>(null);
 let resizeObserver: ResizeObserver | null = null;
 
 // カラーパレット（濃いめ）
-const colors = [
+const colors = ref([
 	'#000000', // 黒
 	'#FFFFFF', // 白
 	'#E74C3C', // 赤
@@ -739,7 +740,7 @@ const colors = [
 	'#48C9B0', // アクアマリン
 	'#95A5A6', // グレー
 	'#7F8C8D'  // ダークグレー
-];
+]);
 
 // 透明度レベル
 const opacityLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
@@ -917,6 +918,11 @@ async function loadUserSettings() {
 			zoomLevel.value = settings.zoomLevel;
 			panOffset.value.x = settings.panOffsetX;
 			panOffset.value.y = settings.panOffsetY;
+			// カラーパレットを復元（保存されている場合）
+			if (settings.colors && Array.isArray(settings.colors)) {
+				colors.value = settings.colors;
+				console.log('🎨 [SETTINGS] Color palette restored:', settings.colors);
+			}
 
 			console.log('✅ [SETTINGS] User settings loaded:', settings);
 		}
@@ -978,6 +984,7 @@ function saveUserSettings() {
 				zoomLevel: zoomLevel.value,
 				panOffsetX: panOffset.value.x,
 				panOffsetY: panOffset.value.y,
+				colors: colors.value, // カラーパレットを保存
 			});
 
 			console.log('💾 [SETTINGS] User settings saved');
@@ -1337,8 +1344,12 @@ function setTool(tool: 'pen' | 'eraser' | 'eyedropper') {
 	saveUserSettings();
 }
 
-function setColor(color: string) {
+function setColor(color: string, index?: number) {
 	currentColor.value = color;
+	// インデックスが指定されている場合は保存
+	if (index !== undefined) {
+		currentColorIndex.value = index;
+	}
 	if (currentTool.value === 'eraser') {
 		currentTool.value = 'pen';
 	}
@@ -1348,28 +1359,37 @@ function setColor(color: string) {
 }
 
 // カラーピッカーを開く
-async function openColorPicker() {
-	// iro.jsカラーピッカーダイアログを表示
-	const result = await os.popup(
-		defineAsyncComponent(() => import('@/components/MkColorPickerDialog.vue')),
-		{
-			currentColor: currentColor.value,
-		},
-		{
-			type: 'dialog',
+function openColorPicker() {
+	// Promiseを使ってokイベントを受け取る
+	return new Promise<string | null>((resolve) => {
+		const { dispose } = os.popup(
+			defineAsyncComponent(() => import('@/components/MkColorPickerDialog.vue')),
+			{
+				currentColor: currentColor.value,
+			},
+			{
+				ok: (color: string) => {
+					console.log('🎨 [DEBUG] ColorPicker ok event received:', color);
+					resolve(color);
+					dispose();
+				},
+				closed: () => {
+					console.log('🎨 [DEBUG] ColorPicker closed without selection');
+					resolve(null);
+					dispose();
+				},
+			}
+		);
+	}).then((colorValue) => {
+		if (colorValue) {
+			// 現在選択中のカラーパレットの色を更新
+			colors.value[currentColorIndex.value] = colorValue;
+			// 選択した色を現在の色として設定
+			setColor(colorValue, currentColorIndex.value);
+			console.log('🎨 [DEBUG] Color palette updated at index:', currentColorIndex.value);
+			console.log('🎨 [DEBUG] Color set to:', colorValue);
 		}
-	);
-
-	// デバッグ: 返却値の中身を確認
-	console.log('🎨 [DEBUG] ColorPicker result:', result);
-	console.log('🎨 [DEBUG] result type:', typeof result);
-	console.log('🎨 [DEBUG] result keys:', result ? Object.keys(result) : 'null');
-
-	// MkModalWindowのemit('ok', value)は直接値として返される
-	if (result && typeof result === 'string') {
-		setColor(result);
-		console.log('🎨 [DEBUG] Color set to:', result);
-	}
+	});
 }
 
 function setOpacity(opacity: number) {

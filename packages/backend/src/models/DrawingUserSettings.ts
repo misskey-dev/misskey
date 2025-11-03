@@ -95,6 +95,12 @@ export class MiDrawingUserSettings {
 	})
 	public panOffsetY: number;
 
+	@Column('jsonb', {
+		nullable: true,
+		comment: 'Custom color palette (array of 16 hex colors)',
+	})
+	public colors: string[] | null;
+
 	@Column('timestamp with time zone', {
 		default: () => 'CURRENT_TIMESTAMP',
 	})
