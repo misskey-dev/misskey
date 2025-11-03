@@ -1061,7 +1061,43 @@ function showMenu(ev: MouseEvent) {
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
-const tab = ref('chat');
+// URLハッシュからタブを初期化
+function getInitialTab(): string {
+	const hash = window.location.hash.slice(1); // '#' を除去
+	const validTabs = ['chat', 'drawing', 'search', 'members', 'info'];
+	return validTabs.includes(hash) ? hash : 'chat';
+}
+
+const tab = ref(getInitialTab());
+
+// タブが変更されたらURLハッシュを更新
+watch(tab, (newTab) => {
+	if (newTab !== 'chat') {
+		window.location.hash = newTab;
+	} else {
+		// chatタブの場合はハッシュをクリア
+		history.pushState('', document.title, window.location.pathname + window.location.search);
+	}
+});
+
+// ブラウザの戻る/進むボタンでハッシュが変更されたときの処理
+onMounted(() => {
+	const handleHashChange = () => {
+		const hash = window.location.hash.slice(1);
+		const validTabs = ['chat', 'drawing', 'search', 'members', 'info'];
+		if (validTabs.includes(hash)) {
+			tab.value = hash;
+		} else if (hash === '') {
+			tab.value = 'chat';
+		}
+	};
+
+	window.addEventListener('hashchange', handleHashChange);
+
+	onBeforeUnmount(() => {
+		window.removeEventListener('hashchange', handleHashChange);
+	});
+});
 
 const headerTabs = computed(() => room.value ? [{
 	key: 'chat',
