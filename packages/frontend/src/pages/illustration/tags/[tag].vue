@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<!-- イラスト全体に戻る -->
 		<div style="text-align: center; margin-top: 1em;">
-			<MkA to="/explore" class="back-link">
+			<MkA to="/explore#illustration" class="back-link">
 				<i class="ti ti-arrow-left" style="margin-right: 0.5em;"></i>
 				イラスト一覧に戻る
 			</MkA>

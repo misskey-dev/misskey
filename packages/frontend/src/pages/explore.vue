@@ -35,7 +35,18 @@ const props = withDefaults(defineProps<{
 	initialTab: 'featured',
 });
 
-const tab = ref(props.initialTab);
+// URLハッシュからタブを決定
+const getInitialTab = () => {
+	if (typeof window !== 'undefined' && window.location.hash && window.location.hash.startsWith('#')) {
+		const hashTab = window.location.hash.substring(1);
+		if (['featured', 'users', 'illustration', 'roles'].includes(hashTab)) {
+			return hashTab;
+		}
+	}
+	return props.initialTab;
+};
+
+const tab = ref(getInitialTab());
 
 const headerActions = computed(() => []);
 
