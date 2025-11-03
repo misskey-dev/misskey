@@ -565,6 +565,7 @@ export type NotesTimelineResponse = operations['notes___timeline']['responses'][
 export type NotesTranslateRequest = operations['notes___translate']['requestBody']['content']['application/json'];
 export type NotesTranslateResponse = operations['notes___translate']['responses']['200']['content']['application/json'];
 export type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];
+export type NotesUpdateVisibilityRequest = operations['notes___update-visibility']['requestBody']['content']['application/json'];
 export type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['requestBody']['content']['application/json'];
 export type NotesUserListTimelineResponse = operations['notes___user-list-timeline']['responses']['200']['content']['application/json'];
 export type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
