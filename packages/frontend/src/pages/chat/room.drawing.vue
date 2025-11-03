@@ -436,10 +436,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="cursor.userId"
 			:class="$style.cursor"
 			:style="{
-				left: '50%',
-				top: '50%',
-				transform: `translate(-50%, -50%) translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) translate(${cursor.x - canvasWidth / 2}px, ${cursor.y - canvasHeight / 2}px)`,
-				transformOrigin: 'center',
+				left: ((cursor.x / canvasWidth) * displayWidth) + 'px',
+				top: ((cursor.y / canvasHeight) * displayHeight) + 'px',
+				transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+				transformOrigin: '0 0',
 				color: getUserCursorColorLocal(cursor.userId)
 			}"
 		>
@@ -4720,7 +4720,7 @@ function adjustCanvasForMobile() {
 	border-bottom: 6px solid transparent;
 	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 	margin-left: 25px;
-	margin-top: 41px;
+	margin-top: 19px;
 }
 
 .cursorLabel {
