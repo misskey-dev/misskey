@@ -1933,17 +1933,37 @@ function drawRemoteStroke(data: any) {
 	}
 }
 
-// リモート描画進行状況（描画中）
+/**
+ * リモート描画進行状況（描画中）
+ *
+ * 【仕様】
+ * - 他のユーザーが描画中のストロークをリアルタイムで表示
+ * - レイヤー情報を含めて保存
+ * - 自分の描画は無視
+ *
+ * 【レイヤー対応】
+ * - data.layerが指定されている場合、そのレイヤーに描画
+ * - data.layerが未指定の場合、デフォルトでレイヤー0に描画
+ * - レイヤー情報はotherActiveStrokesに保存
+ *
+ * 【描画更新】
+ * - otherActiveStrokesに進行中のストローク情報を保存
+ * - redrawWithActiveStrokes()を呼び出して再描画
+ */
 function drawRemoteProgress(data: any) {
 	if (!ctx || data.userId === $i.id) return;
 
-	// 進行中の描画を更新
+	// レイヤー情報を取得（未指定の場合は0）
+	const layer = data.layer !== undefined ? data.layer : 0;
+
+	// 進行中の描画を更新（レイヤー情報を含む）
 	otherActiveStrokes.value.set(data.userId, {
 		points: data.points,
 		tool: data.tool,
 		color: data.color,
 		strokeWidth: data.strokeWidth,
 		opacity: data.opacity,
+		layer: layer,
 		userId: data.userId,
 	});
 
@@ -1951,16 +1971,54 @@ function drawRemoteProgress(data: any) {
 	redrawWithActiveStrokes();
 }
 
-// 進行中の描画を含むキャンバス再描画
+/**
+ * 進行中の描画を含むキャンバス再描画
+ *
+ * 【仕様】
+ * - 他のユーザーが描画中のストロークをリアルタイムで表示
+ * - レイヤー情報を考慮して正しいレイヤーに描画
+ * - 描画が完了していないため、少し透明度を下げて表示（opacity * 0.8）
+ *
+ * 【レイヤー対応】
+ * - strokeData.layerで指定されたレイヤーのコンテキストを使用
+ * - layerが未指定の場合はレイヤー0を使用
+ * - 各レイヤーごとに独立して描画状態を保存・復元
+ *
+ * 【描画フロー】
+ * 1. 各レイヤーの現在の状態をimageDataとして保存
+ * 2. 他のユーザーの進行中のストロークを各レイヤーに描画
+ * 3. requestAnimationFrameで次フレームに元の状態を復元
+ * 4. 進行中の描画があれば再度描画（アニメーションループ）
+ *
+ * 【筆圧対応】
+ * - strokeData.pointsに筆圧情報(pressure)がある場合はdrawSmoothPathLocalを使用
+ * - 筆圧情報がない場合は従来の線形描画を使用
+ *
+ * 【パフォーマンス】
+ * - requestAnimationFrameで描画タイミングを最適化
+ * - 進行中の描画がない場合は復元処理をスキップ
+ */
 function redrawWithActiveStrokes() {
 	if (!ctx) return;
 
-	// 現在のキャンバス状態を保存
-	const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value);
+	// 各レイヤーの現在状態を保存
+	const layerImageData: Map<number, ImageData> = new Map();
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const layerCtx = layerContexts.value[i];
+		if (layerCtx) {
+			layerImageData.set(i, layerCtx.getImageData(0, 0, canvasWidth.value, canvasHeight.value));
+		}
+	}
 
-	// 進行中の描画を一時的に描画
+	// 進行中の描画を各レイヤーに一時的に描画
 	for (const [, strokeData] of otherActiveStrokes.value) {
-		ctx.save();
+		// レイヤー情報を取得（未指定の場合は0）
+		const targetLayer = strokeData.layer !== undefined ? strokeData.layer : 0;
+		const targetCtx = layerContexts.value[targetLayer];
+
+		if (!targetCtx) continue;
+
+		targetCtx.save();
 
 		// 筆圧対応の描画処理
 		if (strokeData.points && strokeData.points.length > 0) {
@@ -1969,6 +2027,10 @@ function redrawWithActiveStrokes() {
 
 			if (hasPressure && strokeData.points.length > 1) {
 				// 筆圧対応のスムーズパス描画
+				// 注: drawSmoothPathLocalは現在のレイヤー(ctx)を使用するため、
+				// 一時的にctxを切り替える必要がある
+				const previousCtx = ctx;
+				ctx = targetCtx;
 				drawSmoothPathLocal(
 					strokeData.points,
 					strokeData.strokeWidth,
@@ -1976,43 +2038,49 @@ function redrawWithActiveStrokes() {
 					strokeData.opacity * 0.8, // 進行中は少し薄く
 					strokeData.tool === 'eraser',
 				);
+				ctx = previousCtx;
 			} else {
 				// 筆圧なしの場合は従来の描画方法
-				ctx.globalCompositeOperation = strokeData.tool === 'eraser' ? 'destination-out' : 'source-over';
-				ctx.strokeStyle = strokeData.color;
-				ctx.globalAlpha = strokeData.opacity * 0.8; // 進行中は少し薄く
-				ctx.lineWidth = strokeData.strokeWidth;
-				ctx.lineCap = 'round';
-				ctx.lineJoin = 'round';
+				targetCtx.globalCompositeOperation = strokeData.tool === 'eraser' ? 'destination-out' : 'source-over';
+				targetCtx.strokeStyle = strokeData.color;
+				targetCtx.globalAlpha = strokeData.opacity * 0.8; // 進行中は少し薄く
+				targetCtx.lineWidth = strokeData.strokeWidth;
+				targetCtx.lineCap = 'round';
+				targetCtx.lineJoin = 'round';
 
 				// アンチエイリアス設定
-				ctx.imageSmoothingEnabled = true;
-				ctx.imageSmoothingQuality = 'high';
+				targetCtx.imageSmoothingEnabled = true;
+				targetCtx.imageSmoothingQuality = 'high';
 
 				// 線を描画
 				if (strokeData.points.length > 1) {
-					ctx.beginPath();
+					targetCtx.beginPath();
 					for (let i = 0; i < strokeData.points.length; i++) {
 						const point = strokeData.points[i];
 						if (i === 0) {
-							ctx.moveTo(point.x, point.y);
+							targetCtx.moveTo(point.x, point.y);
 						} else {
-							ctx.lineTo(point.x, point.y);
+							targetCtx.lineTo(point.x, point.y);
 						}
 					}
-					ctx.stroke();
+					targetCtx.stroke();
 				}
 			}
 		}
 
-		ctx.restore();
+		targetCtx.restore();
 	}
 
 	// パフォーマンス最適化: 次フレームで元の状態に戻す
 	requestAnimationFrame(() => {
-		if (ctx && otherActiveStrokes.value.size > 0) {
-			// 進行中の描画があれば再度更新
-			ctx.putImageData(imageData, 0, 0);
+		if (otherActiveStrokes.value.size > 0) {
+			// 進行中の描画があれば、各レイヤーを元の状態に戻してから再度更新
+			for (const [layerIndex, imageData] of layerImageData) {
+				const layerCtx = layerContexts.value[layerIndex];
+				if (layerCtx) {
+					layerCtx.putImageData(imageData, 0, 0);
+				}
+			}
 			redrawWithActiveStrokes();
 		}
 	});
