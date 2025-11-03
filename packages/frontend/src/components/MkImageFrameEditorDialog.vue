@@ -31,15 +31,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
-					<MkRange v-model="frame.borderThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
+					<MkRange v-model="params.borderThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
 						<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
 					</MkRange>
 
-					<MkInput :modelValue="getHex(frame.bgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) frame.bgColor = c; }">
+					<MkInput :modelValue="getHex(params.bgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.bgColor = c; }">
 						<template #label>{{ i18n.ts._imageFrameEditor.backgroundColor }}</template>
 					</MkInput>
 
-					<MkInput :modelValue="getHex(frame.fgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) frame.fgColor = c; }">
+					<MkInput :modelValue="getHex(params.fgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.fgColor = c; }">
 						<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
 					</MkInput>
 
@@ -47,31 +47,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
 
 						<div class="_gaps">
-							<MkSwitch v-model="frame.labelTop.enabled">
+							<MkSwitch v-model="params.labelTop.enabled">
 								<template #label>{{ i18n.ts.show }}</template>
 							</MkSwitch>
 
-							<MkRange v-model="frame.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
+							<MkRange v-model="params.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
 								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
 							</MkRange>
 
-							<MkRange v-model="frame.labelTop.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+							<MkRange v-model="params.labelTop.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
 								<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
 							</MkRange>
 
-							<MkSwitch v-model="frame.labelTop.centered">
+							<MkSwitch v-model="params.labelTop.centered">
 								<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
 							</MkSwitch>
 
-							<MkInput v-model="frame.labelTop.textBig">
+							<MkInput v-model="params.labelTop.textBig">
 								<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
 							</MkInput>
 
-							<MkTextarea v-model="frame.labelTop.textSmall">
+							<MkTextarea v-model="params.labelTop.textSmall">
 								<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
 							</MkTextarea>
 
-							<MkSwitch v-model="frame.labelTop.withQrCode">
+							<MkSwitch v-model="params.labelTop.withQrCode">
 								<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
 							</MkSwitch>
 						</div>
@@ -81,31 +81,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
 
 						<div class="_gaps">
-							<MkSwitch v-model="frame.labelBottom.enabled">
+							<MkSwitch v-model="params.labelBottom.enabled">
 								<template #label>{{ i18n.ts.show }}</template>
 							</MkSwitch>
 
-							<MkRange v-model="frame.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
+							<MkRange v-model="params.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
 								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
 							</MkRange>
 
-							<MkRange v-model="frame.labelBottom.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+							<MkRange v-model="params.labelBottom.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
 								<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
 							</MkRange>
 
-							<MkSwitch v-model="frame.labelBottom.centered">
+							<MkSwitch v-model="params.labelBottom.centered">
 								<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
 							</MkSwitch>
 
-							<MkInput v-model="frame.labelBottom.textBig">
+							<MkInput v-model="params.labelBottom.textBig">
 								<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
 							</MkInput>
 
-							<MkTextarea v-model="frame.labelBottom.textSmall">
+							<MkTextarea v-model="params.labelBottom.textSmall">
 								<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
 							</MkTextarea>
 
-							<MkSwitch v-model="frame.labelBottom.withQrCode">
+							<MkSwitch v-model="params.labelBottom.withQrCode">
 								<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
 							</MkSwitch>
 						</div>
@@ -132,7 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
-import type { ImageFrameParams } from '@/utility/image-frame-renderer/image-frame-renderer.js';
+import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -153,22 +153,19 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const $i = ensureSignin();
 
-const EXIF_MOCK = {
-	DateTimeOriginal: { description: '2012:03:04 5:06:07' },
-	Model: { description: 'Example camera' },
-	LensModel: { description: 'Example lens 123mm f/1.23' },
-	FocalLength: { description: '123mm' },
-	ExposureTime: { description: '1/234' },
-	FNumber: { description: '1.23' },
-	ISOSpeedRatings: { description: '123' },
-} satisfies ExifReader.Tags;
-
 const props = defineProps<{
-	frame?: ImageFrameParams | null;
+	presetEditMode?: boolean;
+	preset?: ImageFramePreset | null;
+	params?: ImageFrameParams | null;
 	image?: File | null;
 }>();
 
-const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
+const preset = deepClone(props.preset) ?? {
+	id: genId(),
+	name: '',
+};
+
+const params = reactive<ImageFrameParams>(deepClone(props.params) ?? {
 	borderThickness: 0.05,
 	labelTop: {
 		enabled: false,
@@ -194,6 +191,7 @@ const frame = reactive<ImageFrameParams>(deepClone(props.frame) ?? {
 
 const emit = defineEmits<{
 	(ev: 'ok', frame: ImageFrameParams): void;
+	(ev: 'presetOk', preset: ImageFramePreset): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -206,11 +204,11 @@ async function cancel() {
 
 const updateThrottled = throttle(50, () => {
 	if (renderer != null) {
-		renderer.render(frame);
+		renderer.render(params);
 	}
 });
 
-watch(frame, async (newValue, oldValue) => {
+watch(params, async (newValue, oldValue) => {
 	updateThrottled();
 }, { deep: true });
 
@@ -262,14 +260,14 @@ async function initRenderer() {
 		renderer = new ImageFrameRenderer({
 			canvas: canvasEl.value,
 			image: sampleImage_3_2,
-			exif: EXIF_MOCK,
+			exif: null,
 			renderAsPreview: true,
 		});
 	} else if (sampleImageType.value === '2_3') {
 		renderer = new ImageFrameRenderer({
 			canvas: canvasEl.value,
 			image: sampleImage_2_3,
-			exif: EXIF_MOCK,
+			exif: null,
 			renderAsPreview: true,
 		});
 	} else if (imageFile != null) {
@@ -285,7 +283,7 @@ async function initRenderer() {
 		});
 	}
 
-	await renderer!.render(frame);
+	await renderer!.render(params);
 }
 
 onMounted(async () => {
@@ -313,21 +311,34 @@ onUnmounted(() => {
 });
 
 async function save() {
-	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.name,
-		default: preset.name,
-	});
-	if (canceled) return;
+	if (props.presetEditMode) {
+		const { canceled, result: name } = await os.inputText({
+			title: i18n.ts.name,
+			default: preset.name,
+		});
+		if (canceled) return;
 
-	preset.name = name || '';
+		preset.name = name || '';
 
-	dialog.value?.close();
-	if (renderer != null) {
-		renderer.destroy();
-		renderer = null;
+		dialog.value?.close();
+		if (renderer != null) {
+			renderer.destroy();
+			renderer = null;
+		}
+
+		emit('presetOk', {
+			...preset,
+			params: deepClone(params),
+		});
+	} else {
+		dialog.value?.close();
+		if (renderer != null) {
+			renderer.destroy();
+			renderer = null;
+		}
+
+		emit('ok', params);
 	}
-
-	emit('ok', preset);
 }
 
 function getHex(c: [number, number, number]) {

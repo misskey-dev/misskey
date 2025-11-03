@@ -38,6 +38,16 @@ export type ImageFramePreset = {
 	params: ImageFrameParams;
 };
 
+const EXIF_MOCK = {
+	DateTimeOriginal: { description: '2012:03:04 5:06:07' },
+	Model: { description: 'Example camera' },
+	LensModel: { description: 'Example lens 123mm f/1.23' },
+	FocalLength: { description: '123mm' },
+	ExposureTime: { description: '1/234' },
+	FNumber: { description: '1.23' },
+	ISOSpeedRatings: { description: '123' },
+} satisfies ExifReader.Tags;
+
 export class ImageFrameRenderer {
 	private compositor: ImageCompositor;
 	private image: HTMLImageElement | ImageBitmap;
@@ -47,11 +57,11 @@ export class ImageFrameRenderer {
 	constructor(options: {
 		canvas: HTMLCanvasElement,
 		image: HTMLImageElement | ImageBitmap,
-		exif: ExifReader.Tags,
+		exif: ExifReader.Tags | null,
 		renderAsPreview?: boolean,
 	}) {
 		this.image = options.image;
-		this.exif = options.exif;
+		this.exif = options.exif ?? EXIF_MOCK;
 		this.renderAsPreview = options.renderAsPreview ?? false;
 		console.log(this.exif);
 

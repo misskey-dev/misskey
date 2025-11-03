@@ -343,8 +343,8 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changePreset(preset: ImageFramePreset | null) {
-				item.imageFramePreset = preset;
+			function change(params: ImageFrameParams | null) {
+				item.imageFrameParams = params;
 				preprocess(item).then(() => {
 					triggerRef(items);
 				});
@@ -355,35 +355,41 @@ export function useUploader(options: {
 				text: i18n.ts.frame,
 				type: 'parent',
 				children: [{
-					type: 'radioOption',
-					text: i18n.ts.none,
-					active: computed(() => item.imageFrameParams == null),
-					action: () => changePreset(null),
-				}, {
-					type: 'divider',
-				}, ...prefer.s.imageFramePresets.map(preset => ({
-					type: 'radioOption' as const,
-					text: preset.name,
-					active: computed(() => item.imageFramePreset?.id === preset.id),
-					action: () => changePreset(preset),
-				})), ...(prefer.s.imageFramePresets.length > 0 ? [{
-					type: 'divider' as const,
-				}] : []), {
 					type: 'button',
-					icon: 'ti ti-plus',
-					text: i18n.ts.add,
+					icon: 'ti ti-pencil',
+					text: i18n.ts.edit,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+							params: item.imageFrameParams,
 							image: item.file,
 						}, {
-							ok: (preset) => {
-								prefer.commit('imageFramePresets', [...prefer.s.imageFramePresets, preset]);
-								changePreset(preset.id);
+							ok: (params) => {
+								change(params);
 							},
 							closed: () => dispose(),
 						});
 					},
-				}],
+				}, {
+					type: 'button',
+					text: i18n.ts.remove,
+					action: () => change(null),
+				}, {
+					type: 'divider',
+				}, ...prefer.s.imageFramePresets.map(preset => ({
+					type: 'button' as const,
+					text: preset.name,
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+							params: preset.params,
+							image: item.file,
+						}, {
+							ok: (params) => {
+								change(params);
+							},
+							closed: () => dispose(),
+						});
+					},
+				}))],
 			});
 		}
 
@@ -625,33 +631,28 @@ export function useUploader(options: {
 			});
 		}
 
-		const canvas = window.document.createElement('canvas');
+		const needsImageFrame = item.imageFrameParams != null && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type);
+		if (needsImageFrame && item.imageFrameParams != null) {
+			const canvas = window.document.createElement('canvas');
+			const exif = await ExifReader.load(await item.file.arrayBuffer());
+			const frameRenderer = new ImageFrameRenderer({
+				canvas: canvas,
+				image: await window.createImageBitmap(preprocessedFile),
+				exif,
+			});
 
-		const exif = await ExifReader.load(await item.file.arrayBuffer());
+			await frameRenderer.render(item.imageFrameParams);
 
-		const frameRenderer = new ImageFrameRenderer({
-			canvas: canvas,
-			image: await window.createImageBitmap(preprocessedFile),
-			exif,
-		});
-		//await frameRenderer.update({
-		//	title: `${meta_model} + ${meta_lensModel}`,
-		//	text: `${date}   ${meta_mm}mm   f/${meta_f}   ${meta_s}s   ISO${meta_iso}`,
-		//});
-		await frameRenderer.render({
-			title: 'aaaaaaaaaaaaa',
-			text: 'bbbbbbbbbbbbbbbbbbbb',
-		});
-
-		preprocessedFile = await new Promise<Blob>((resolve) => {
-			canvas.toBlob((blob) => {
-				if (blob == null) {
-					throw new Error('Failed to convert canvas to blob');
-				}
-				resolve(blob);
-				frameRenderer.destroy();
-			}, 'image/png');
-		});
+			preprocessedFile = await new Promise<Blob>((resolve) => {
+				canvas.toBlob((blob) => {
+					if (blob == null) {
+						throw new Error('Failed to convert canvas to blob');
+					}
+					resolve(blob);
+					frameRenderer.destroy();
+				}, 'image/png');
+			});
+		}
 
 		const compressionSettings = getCompressionSettings(item.compressionLevel);
 		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
