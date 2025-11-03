@@ -63,6 +63,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	//provide('linkNavigationBehavior', props.linkNavigationBehavior);
 
 	const isNote = props.isNote ?? true;
+	const isNoteStrict = props.isNote ?? false; // note なのに isNote がついていないところが散見されるため、厳密に評価する用
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -427,7 +428,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'emojiCode': {
 				if (props.author?.host == null) {
 					// 絵文字 only かつ、絵文字5個以下のときは拡大
-					if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
+					if (isNoteStrict && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
 						return [h('span', {
 							class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 						}, [h(MkCustomEmoji, {
@@ -457,7 +458,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					if (props.emojiUrls && (props.emojiUrls[token.props.name] == null)) {
 						return [h('span', `:${token.props.name}:`)];
 					} else {
-						if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
+						if (isNoteStrict && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
 							return [h('span', {
 								class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 							}, [h(MkCustomEmoji, {
@@ -487,7 +488,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'unicodeEmoji': {
-				if (isNote && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
+				if (isNoteStrict && isEmojiOnlyNote(rootAst) && rootAst.filter(n => n.type === 'emojiCode' || n.type === 'unicodeEmoji').length <= 5) {
 					return [h('span', {
 						class: prefer.s.advancedMfm ? 'mfm-x3' : '',
 					}, [h(MkEmoji, {
