@@ -612,7 +612,7 @@ export function useUploader(options: {
 				image: imageBitmap,
 			});
 
-			await renderer.setLayersAndRender(item.watermarkPreset.layers);
+			await renderer.render(item.watermarkPreset.layers);
 
 			preprocessedFile = await new Promise<Blob>((resolve) => {
 				canvas.toBlob((blob) => {
@@ -638,12 +638,10 @@ export function useUploader(options: {
 		//	title: `${meta_model} + ${meta_lensModel}`,
 		//	text: `${date}   ${meta_mm}mm   f/${meta_f}   ${meta_s}s   ISO${meta_iso}`,
 		//});
-		await frameRenderer.updateAndRender({
+		await frameRenderer.render({
 			title: 'aaaaaaaaaaaaa',
 			text: 'bbbbbbbbbbbbbbbbbbbb',
 		});
-
-		frameRenderer.render();
 
 		preprocessedFile = await new Promise<Blob>((resolve) => {
 			canvas.toBlob((blob) => {

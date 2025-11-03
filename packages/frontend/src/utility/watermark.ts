@@ -83,7 +83,7 @@ export type WatermarkPreset = {
 };
 
 export class WatermarkRenderer {
-	private effector: ImageEffector<typeof WATERMARK_FXS>;
+	private effector: ImageEffector;
 	private layers: WatermarkPreset['layers'] = [];
 
 	constructor(options: {
@@ -200,13 +200,9 @@ export class WatermarkRenderer {
 		});
 	}
 
-	public async setLayersAndRender(layers: WatermarkPreset['layers']) {
+	public async render(layers: WatermarkPreset['layers']) {
 		this.layers = layers;
-		await this.effector.setLayersAndRender(this.makeImageEffectorLayers());
-	}
-
-	public render(): void {
-		this.effector.render();
+		await this.effector.render(this.makeImageEffectorLayers());
 	}
 
 	/*

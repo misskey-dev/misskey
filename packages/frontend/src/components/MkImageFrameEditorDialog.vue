@@ -206,7 +206,7 @@ async function cancel() {
 
 const updateThrottled = throttle(50, () => {
 	if (renderer != null) {
-		renderer.updateAndRender(frame);
+		renderer.render(frame);
 	}
 });
 
@@ -285,7 +285,7 @@ async function initRenderer() {
 		});
 	}
 
-	await renderer!.updateAndRender(frame);
+	await renderer!.render(frame);
 }
 
 onMounted(async () => {

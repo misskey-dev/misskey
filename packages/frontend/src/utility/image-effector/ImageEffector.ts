@@ -159,7 +159,9 @@ export class ImageEffector {
 		}
 	}
 
-	public async setLayersAndRender(layers: ImageEffectorLayer[]) {
+	public async render(layers: ImageEffectorLayer[]) {
+		const fnParams: Record<string, any> = {};
+
 		const unused = new Set(this.compositor.getKeysOfRegisteredTextures());
 
 		for (const layer of layers) {
@@ -198,7 +200,7 @@ export class ImageEffector {
 		this.compositor.render(layers.map(layer => ({
 			id: layer.id,
 			functionId: layer.fxId,
-			params: layer.params,
+			params: fnParams,
 		})));
 	}
 

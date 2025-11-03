@@ -94,7 +94,7 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		renderer.setLayersAndRender(layers);
+		renderer.render(layers);
 	}
 }, { deep: true });
 
@@ -167,7 +167,7 @@ onMounted(async () => {
 		fxs: FXS,
 	});
 
-	await renderer.setLayersAndRender(layers);
+	await renderer.render(layers);
 
 	closeWaiting();
 });
@@ -194,7 +194,7 @@ async function save() {
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
-	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	await renderer.render(layers); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
@@ -206,9 +206,9 @@ const enabled = ref(true);
 watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			renderer.setLayersAndRender(layers);
+			renderer.render(layers);
 		} else {
-			renderer.setLayersAndRender([]);
+			renderer.render([]);
 		}
 	}
 });

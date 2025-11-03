@@ -193,7 +193,7 @@ async function cancel() {
 
 watch(preset, async (newValue, oldValue) => {
 	if (renderer != null) {
-		renderer.setLayersAndRender(preset.layers);
+		renderer.render(preset.layers);
 	}
 }, { deep: true });
 
@@ -277,7 +277,7 @@ async function initRenderer() {
 		});
 	}
 
-	await renderer!.setLayersAndRender(preset.layers);
+	await renderer!.render(preset.layers);
 }
 
 onMounted(async () => {

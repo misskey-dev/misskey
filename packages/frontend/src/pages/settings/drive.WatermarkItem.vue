@@ -78,7 +78,7 @@ onMounted(() => {
 				image: sampleImage,
 			});
 
-			await renderer.setLayersAndRender(props.preset.layers);
+			await renderer.render(props.preset.layers);
 		}, { immediate: true });
 	};
 });
@@ -92,7 +92,7 @@ onUnmounted(() => {
 
 watch(() => props.preset, async () => {
 	if (renderer != null) {
-		await renderer.setLayersAndRender(props.preset.layers);
+		await renderer.render(props.preset.layers);
 	}
 }, { deep: true });
 </script>

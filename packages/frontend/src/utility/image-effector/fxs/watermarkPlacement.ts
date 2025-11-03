@@ -69,7 +69,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 		gl.uniform1i(u.noBBoxExpansion, params.noBoundingBoxExpansion ? 1 : 0);
 
 		// ウォーターマークテクスチャ
-		const wm = textures.watermark;
+		const wm = textures.get(params.watermark);
 		if (wm) {
 			gl.activeTexture(gl.TEXTURE1);
 			gl.bindTexture(gl.TEXTURE_2D, wm.texture);
