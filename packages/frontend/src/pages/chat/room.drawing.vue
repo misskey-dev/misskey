@@ -2235,25 +2235,6 @@ function updateOtherCursor(data: any) {
 
 	// ユーザー固有の色を取得
 	const userColor = getUserCursorColorLocal(data.userId);
-	console.log('📍 [CURSOR RECEIVE]', {
-		canvasX: data.x,
-		canvasY: data.y,
-		displayCalc: {
-			normalizedX: data.x / canvasWidth.value,
-			normalizedY: data.y / canvasHeight.value,
-			displayX: (data.x / canvasWidth.value) * displayWidth.value,
-			displayY: (data.y / canvasHeight.value) * displayHeight.value,
-			finalX: (data.x / canvasWidth.value * displayWidth.value) + panOffset.value.x * zoomLevel.value,
-			finalY: (data.y / canvasHeight.value * displayHeight.value) + panOffset.value.y * zoomLevel.value,
-		},
-		canvasWidth: canvasWidth.value,
-		canvasHeight: canvasHeight.value,
-		displayWidth: displayWidth.value,
-		displayHeight: displayHeight.value,
-		panOffset: panOffset.value,
-		zoomLevel: zoomLevel.value,
-		scale: displayWidth.value / canvasWidth.value,
-	});
 
 	const index = otherCursors.value.findIndex(c => c.userId === data.userId);
 	if (index >= 0) {
