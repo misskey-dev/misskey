@@ -250,21 +250,40 @@ class ChatRoomChannel extends Channel {
 			case 'undoStroke':
 				console.log(`🔍 [DEBUG] Processing undo stroke for room ${this.roomId} from user ${this.user.id}`);
 
-				// ユーザーの最新ストロークをアンドゥ
-				const undoneStroke = await this.drawingCanvasService.performUndo(this.roomId, this.user.id);
+				// セキュリティ: レイヤー情報の検証
+				if (!body || typeof body.layer !== 'number') {
+					console.warn(`🔍 [SECURITY] Invalid undo stroke payload from user ${this.user.id}`);
+					return;
+				}
 
-				if (undoneStroke) {
-					// アンドゥ成功をルーム内の他のユーザーに配信
-			await this.chatService.broadcastUndoStroke(this.roomId, this.user.id, {
+				// アンドゥイベントをルーム内の他のユーザーに配信
+				await this.chatService.broadcastUndoStroke(this.roomId, this.user.id, {
 					userId: this.user.id,
 					userName: this.user.name || this.user.username,
-					strokeId: undoneStroke.id,
+					layer: body.layer,
+					strokeId: body.strokeId,
 					timestamp: Date.now(),
 				});
-					console.log(`🎨 [DEBUG] Successfully undid stroke ${undoneStroke.id} for user ${this.user.id}`);
-				} else {
-					console.log(`🎨 [DEBUG] No stroke to undo for user ${this.user.id} in room ${this.roomId}`);
+				console.log(`🎨 [DEBUG] Broadcasted undo event for layer ${body.layer} from user ${this.user.id}`);
+				break;
+			case 'redoStroke':
+				console.log(`🔍 [DEBUG] Processing redo stroke for room ${this.roomId} from user ${this.user.id}`);
+
+				// セキュリティ: レイヤー情報とストロークデータの検証
+				if (!body || typeof body.layer !== 'number' || !body.stroke) {
+					console.warn(`🔍 [SECURITY] Invalid redo stroke payload from user ${this.user.id}`);
+					return;
 				}
+
+				// リドゥイベントをルーム内の他のユーザーに配信
+				await this.chatService.broadcastRedoStroke(this.roomId, this.user.id, {
+					userId: this.user.id,
+					userName: this.user.name || this.user.username,
+					layer: body.layer,
+					stroke: body.stroke,
+					timestamp: Date.now(),
+				});
+				console.log(`🎨 [DEBUG] Broadcasted redo event for layer ${body.layer} from user ${this.user.id}`);
 				break;
 		}
 	}

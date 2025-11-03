@@ -1371,6 +1371,14 @@ export class ChatService {
 	}
 
 	@bindThis
+	/**
+	 * Undo Stroke配信
+	 *
+	 * 【仕様】
+	 * - 指定されたルームにUndoイベントを配信
+	 * - ルームメンバーのみが配信可能
+	 * - レイヤー情報とストロークIDを含む
+	 */
 	public async broadcastUndoStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], undoData: any): Promise<void> {
 		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
 		if (!room) {
@@ -1384,5 +1392,28 @@ export class ChatService {
 		}
 
 		this.globalEventService.publishChatRoomStream(roomId, 'undoStroke', undoData);
+	}
+
+	/**
+	 * Redo Stroke配信
+	 *
+	 * 【仕様】
+	 * - 指定されたルームにRedoイベントを配信
+	 * - ルームメンバーのみが配信可能
+	 * - レイヤー情報と復元するストロークデータを含む
+	 */
+	public async broadcastRedoStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], redoData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] RedoStroke event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] RedoStroke event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'redoStroke', redoData);
 	}
 }

@@ -759,9 +759,27 @@ const strokeHistory = ref<Array<any>>([]); // ストローク履歴
 const rasterizeThreshold = 50; // ラスタライズを実行するストローク数
 
 // Undo/Redo管理
-const undoStack = ref<Array<any>>([]); // 元に戻す用のスタック
+/**
+ * Undo/Redoスタック
+ *
+ * 【仕様】
+ * - undoStack: 使用しない（レイヤーごとのストローク履歴で管理）
+ * - redoStack: ユーザーごとのUndoで削除したストロークを保存
+ * - canUndo: 現在のレイヤーに自分のストロークがあるかチェック
+ * - canRedo: redoスタックに自分のストロークがあるかチェック
+ *
+ * 【ユーザーごとの履歴】
+ * - Undoは自分のストロークのみを削除
+ * - Redoは自分が削除したストロークのみを復元
+ */
+const undoStack = ref<Array<any>>([]); // 元に戻す用のスタック（使用しない）
 const redoStack = ref<Array<any>>([]); // やり直す用のスタック
-const canUndo = computed(() => undoStack.value.length > 0);
+const canUndo = computed(() => {
+	// 現在のレイヤーに自分のストロークがあればUndo可能
+	const targetLayer = currentLayer.value;
+	const myStrokes = layerStrokeHistory.value[targetLayer]?.filter(s => s.userId === $i.id) || [];
+	return myStrokes.length > 0;
+});
 const canRedo = computed(() => redoStack.value.length > 0);
 
 // レイヤー管理（3レイヤー）
@@ -2647,40 +2665,141 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	await saveRoomSettings();
 }
 
+/**
+ * ストロークを直接キャンバスに描画
+ *
+ * 【仕様】
+ * - 指定されたコンテキストにストロークを直接描画
+ * - 筆圧対応の描画処理
+ * - renderStrokeOnLayerを使わずに描画（無限ループ防止）
+ *
+ * 【パラメータ】
+ * - targetCtx: 描画先のコンテキスト
+ * - stroke: 描画するストロークデータ
+ */
+function drawStrokeDirectly(targetCtx: CanvasRenderingContext2D, stroke: any) {
+	if (!stroke || !stroke.points || stroke.points.length === 0) return;
+
+	targetCtx.save();
+
+	// 筆圧情報の有無を確認
+	const hasPressure = stroke.points.some((p: any) => p.pressure !== undefined);
+
+	if (hasPressure && stroke.points.length > 1) {
+		// 筆圧対応の描画
+		const previousCtx = ctx;
+		ctx = targetCtx;
+		drawSmoothPathLocal(
+			stroke.points,
+			stroke.strokeWidth,
+			stroke.color,
+			stroke.opacity,
+			stroke.tool === 'eraser',
+		);
+		ctx = previousCtx;
+	} else {
+		// 筆圧なしの描画
+		targetCtx.globalCompositeOperation = stroke.tool === 'eraser' ? 'destination-out' : 'source-over';
+		targetCtx.strokeStyle = stroke.color;
+		targetCtx.globalAlpha = stroke.opacity;
+		targetCtx.lineWidth = stroke.strokeWidth;
+		targetCtx.lineCap = 'round';
+		targetCtx.lineJoin = 'round';
+		targetCtx.imageSmoothingEnabled = true;
+		targetCtx.imageSmoothingQuality = 'high';
+
+		if (stroke.points.length > 1) {
+			targetCtx.beginPath();
+			for (let i = 0; i < stroke.points.length; i++) {
+				const point = stroke.points[i];
+				if (i === 0) {
+					targetCtx.moveTo(point.x, point.y);
+				} else {
+					targetCtx.lineTo(point.x, point.y);
+				}
+			}
+			targetCtx.stroke();
+		}
+	}
+
+	targetCtx.restore();
+}
+
 // Undo（元に戻す）
+/**
+ * Undo（元に戻す）
+ *
+ * 【仕様】
+ * - 現在のレイヤーの自分の最後のストロークを1つ削除
+ * - 削除したストロークをredoスタックに保存
+ * - キャンバスを再描画
+ * - 他のユーザーにundoイベントを送信
+ *
+ * 【ユーザーごとの履歴】
+ * - 自分のストローク（userId === $i.id）のみを削除
+ * - 他のユーザーのストロークは削除しない
+ *
+ * 【レイヤー対応】
+ * - 現在のレイヤー（currentLayer）のストローク履歴から操作
+ * - layerStrokeHistory[currentLayer]を操作
+ * - strokeHistoryも同期して更新
+ */
 function undo() {
-	if (!canUndo.value || !ctx) return;
+	const targetLayer = currentLayer.value;
 
-	// 現在の状態をredoスタックに保存
-	const currentState = {
-		history: [...strokeHistory.value],
-		imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value),
-	};
-	redoStack.value.push(currentState);
+	// 現在のレイヤーから自分の最後のストロークを見つける
+	const myStrokeIndex = layerStrokeHistory.value[targetLayer]
+		.map((s, i) => ({ stroke: s, index: i }))
+		.filter(item => item.stroke.userId === $i.id)
+		.pop();
 
-	// undoスタックから前の状態を取得
-	const previousState = undoStack.value.pop();
-	if (!previousState) return;
+	if (!myStrokeIndex) {
+		console.log('🎨 [UNDO] No strokes to undo on layer', targetLayer);
+		return;
+	}
 
-	// strokeHistoryを復元
-	strokeHistory.value = [...previousState.history];
+	// 自分の最後のストロークを削除
+	const [lastStroke] = layerStrokeHistory.value[targetLayer].splice(myStrokeIndex.index, 1);
 
-	// キャンバスをクリアして再描画
-	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-
-	// 履歴から再描画
-	redrawCanvasFromHistory();
-
-	console.log('🎨 [UNDO] Undo performed', {
-		undoStackSize: undoStack.value.length,
-		redoStackSize: redoStack.value.length,
-		strokeCount: strokeHistory.value.length,
+	console.log('🎨 [UNDO] Undoing stroke', {
+		layer: targetLayer,
+		strokeId: lastStroke.id,
+		userId: lastStroke.userId,
+		index: myStrokeIndex.index,
+		remainingStrokes: layerStrokeHistory.value[targetLayer].length,
 	});
+
+	// redoスタックに保存
+	redoStack.value.push({
+		layer: targetLayer,
+		stroke: lastStroke,
+		originalIndex: myStrokeIndex.index,
+	});
+
+	// redoスタックのサイズ制限
+	if (redoStack.value.length > maxUndoHistory) {
+		redoStack.value.shift();
+	}
+
+	// strokeHistoryを更新（現在のレイヤーの履歴で置き換え）
+	strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+
+	// 現在のレイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画（renderStrokeOnLayerを使わず直接描画）
+		for (const stroke of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, stroke);
+		}
+	}
 
 	// 他のユーザーにundoイベントを送信
 	if (connection.value) {
 		const data = {
-			layer: currentLayer.value,
+			layer: targetLayer,
+			strokeId: lastStroke.id,
 			userId: $i?.id,
 			userName: $i?.username,
 		};
@@ -2689,40 +2808,69 @@ function undo() {
 	}
 }
 
-// Redo（やり直す）
+/**
+ * Redo（やり直す）
+ *
+ * 【仕様】
+ * - redoスタックから最後に削除した自分のストロークを復元
+ * - 元の位置にストロークを挿入
+ * - キャンバスを再描画
+ * - 他のユーザーにredoイベントを送信
+ *
+ * 【ユーザーごとの履歴】
+ * - 自分が削除したストロークのみを復元
+ * - 元の位置（originalIndex）に挿入
+ *
+ * 【レイヤー対応】
+ * - redoスタックに保存されているレイヤー情報を使用
+ * - そのレイヤーの履歴にストロークを挿入
+ * - 該当レイヤーのキャンバスを再描画
+ */
 function redo() {
-	if (!canRedo.value || !ctx) return;
+	if (!canRedo.value) return;
 
-	// 現在の状態をundoスタックに保存
-	const currentState = {
-		history: [...strokeHistory.value],
-		imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value),
-	};
-	undoStack.value.push(currentState);
+	// redoスタックから削除されたストロークを取得
+	const redoItem = redoStack.value.pop();
+	if (!redoItem) return;
 
-	// redoスタックから次の状態を取得
-	const nextState = redoStack.value.pop();
-	if (!nextState) return;
+	const { layer: targetLayer, stroke, originalIndex } = redoItem;
 
-	// strokeHistoryを復元
-	strokeHistory.value = [...nextState.history];
-
-	// キャンバスをクリアして再描画
-	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-
-	// 履歴から再描画
-	redrawCanvasFromHistory();
-
-	console.log('🎨 [REDO] Redo performed', {
-		undoStackSize: undoStack.value.length,
-		redoStackSize: redoStack.value.length,
-		strokeCount: strokeHistory.value.length,
+	console.log('🎨 [REDO] Redoing stroke', {
+		layer: targetLayer,
+		strokeId: stroke.id,
+		originalIndex: originalIndex,
 	});
+
+	// 元の位置にストロークを挿入
+	if (originalIndex !== undefined && originalIndex >= 0) {
+		layerStrokeHistory.value[targetLayer].splice(originalIndex, 0, stroke);
+	} else {
+		// 元の位置が不明な場合は最後に追加
+		layerStrokeHistory.value[targetLayer].push(stroke);
+	}
+
+	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
+	if (currentLayer.value === targetLayer) {
+		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+	}
+
+	// 対象レイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画
+		for (const s of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, s);
+		}
+	}
 
 	// 他のユーザーにredoイベントを送信
 	if (connection.value) {
 		const data = {
-			layer: currentLayer.value,
+			layer: targetLayer,
+			stroke: stroke,
+			originalIndex: originalIndex,
 			userId: $i?.id,
 			userName: $i?.username,
 		};
@@ -2731,34 +2879,116 @@ function redo() {
 	}
 }
 
-// リモートユーザーのUndoイベントを処理
+/**
+ * リモートユーザーのUndoイベントを処理
+ *
+ * 【仕様】
+ * - 他のユーザーがUndoした際に呼ばれる
+ * - strokeIdで特定されたストロークを削除
+ * - 対象レイヤーのキャンバスを再描画
+ *
+ * 【ユーザーごとの履歴対応】
+ * - data.strokeIdで指定されたストロークを削除
+ * - ユーザーごとの履歴を維持（他のユーザーのストロークは保持）
+ * - 該当レイヤーを再描画
+ */
 function handleRemoteUndo(data: any) {
-	if (!ctx || data.userId === $i.id) return;
+	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-	// 指定レイヤーの最後のストロークを削除
+	console.log('🎨 [REMOTE-UNDO] Received undo event', data);
+
 	const targetLayer = data.layer;
-	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) return;
+	const strokeId = data.strokeId;
 
-	// レイヤーストローク履歴から最後の1つを削除
-	if (layerStrokeHistory.value[targetLayer].length > 0) {
-		layerStrokeHistory.value[targetLayer].pop();
+	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) {
+		console.warn('🎨 [REMOTE-UNDO] Invalid layer', targetLayer);
+		return;
 	}
 
-	// 現在のレイヤーが対象レイヤーの場合、再描画
+	// strokeIdで特定のストロークを削除
+	const strokeIndex = layerStrokeHistory.value[targetLayer].findIndex(s => s.id === strokeId);
+	if (strokeIndex !== -1) {
+		const removedStroke = layerStrokeHistory.value[targetLayer].splice(strokeIndex, 1)[0];
+		console.log('🎨 [REMOTE-UNDO] Removed stroke from layer', targetLayer, removedStroke);
+	} else {
+		console.warn('🎨 [REMOTE-UNDO] Stroke not found', strokeId);
+		return;
+	}
+
+	// 対象レイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画
+		for (const stroke of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, stroke);
+		}
+	}
+
+	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
 	if (currentLayer.value === targetLayer) {
 		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
-		redrawCanvasFromHistory();
 	}
 }
 
-// リモートユーザーのRedoイベントを処理
+/**
+ * リモートユーザーのRedoイベントを処理
+ *
+ * 【仕様】
+ * - 他のユーザーがRedoした際に呼ばれる
+ * - 指定レイヤーの元の位置にストロークを挿入
+ * - 対象レイヤーのキャンバスを再描画
+ *
+ * 【ユーザーごとの履歴対応】
+ * - data.originalIndexで指定された位置にストロークを挿入
+ * - ストローク順序を維持（他のユーザーのストロークとの関係を保持）
+ * - 該当レイヤーを再描画
+ */
 function handleRemoteRedo(data: any) {
-	if (!ctx || data.userId === $i.id) return;
+	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-	// 注意: Redoは単純な実装では履歴がないため実装困難
-	// より高度な実装では、undo/redoスタックをサーバーで管理する必要がある
-	// 現時点では、リモートredoは未対応として警告のみ出力
-	console.warn('🎨 [REMOTE-REDO] Remote redo is not fully supported yet. Requires server-side undo/redo stack management.');
+	console.log('🎨 [REMOTE-REDO] Received redo event', data);
+
+	const targetLayer = data.layer;
+	const stroke = data.stroke;
+	const originalIndex = data.originalIndex;
+
+	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) {
+		console.warn('🎨 [REMOTE-REDO] Invalid layer', targetLayer);
+		return;
+	}
+
+	if (!stroke) {
+		console.warn('🎨 [REMOTE-REDO] No stroke data');
+		return;
+	}
+
+	// 元の位置にストロークを挿入
+	if (originalIndex !== undefined && originalIndex >= 0) {
+		layerStrokeHistory.value[targetLayer].splice(originalIndex, 0, stroke);
+		console.log('🎨 [REMOTE-REDO] Inserted stroke at index', originalIndex, 'on layer', targetLayer);
+	} else {
+		// 元の位置が不明な場合は最後に追加
+		layerStrokeHistory.value[targetLayer].push(stroke);
+		console.log('🎨 [REMOTE-REDO] Added stroke to end of layer', targetLayer);
+	}
+
+	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
+	if (currentLayer.value === targetLayer) {
+		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+	}
+
+	// 対象レイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画
+		for (const s of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, s);
+		}
+	}
 }
 
 // レイヤー切り替え
