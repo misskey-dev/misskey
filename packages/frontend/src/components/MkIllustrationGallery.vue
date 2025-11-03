@@ -17,6 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="{ 'is-sensitive': isSensitiveNote(note) }"
 			@click="openNote(note.id)"
 			@contextmenu.prevent="onContextMenu($event, note)"
+			@touchstart="onTouchStart($event, note)"
+			@touchend="onTouchEnd"
+			@touchmove="onTouchMove"
 		>
 			<img
 				v-if="note.files && note.files.length > 0"
@@ -48,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -68,6 +71,11 @@ const items = computed(() => props.paginator.items.value);
 const fetching = computed(() => props.paginator.fetching.value);
 const moreFetching = computed(() => props.paginator.fetchingOlder.value);
 const more = computed(() => props.paginator.canFetchOlder.value);
+
+// 長押し検出用の状態
+const longPressTimer = ref<number | null>(null);
+const longPressThreshold = 500; // 500msで長押し判定
+let touchMoved = false;
 
 const fetchMore = async () => {
 	await props.paginator.fetchOlder();
@@ -96,20 +104,47 @@ const shouldBlur = (note: Misskey.entities.Note): boolean => {
 	return prefer.s.nsfw === 'force' || (isSensitiveNote(note) && prefer.s.nsfw !== 'ignore');
 };
 
-const onContextMenu = async (ev: MouseEvent, note: Misskey.entities.Note) => {
-	// 管理者・モデレーターのみ表示
-	if (!$i || (!$i.isAdmin && !$i.isModerator)) {
-		return;
-	}
-
+const showMenu = async (ev: MouseEvent | TouchEvent, note: Misskey.entities.Note) => {
 	if (!note.files || note.files.length === 0) {
 		return;
 	}
 
 	const fileId = note.files[0].id;
+	const imageUrl = note.files[0].url;
 
-	const menu = [
-		{
+	const menu = [];
+
+	// すべてのユーザーに「画像を保存」を表示
+	menu.push({
+		text: '画像を保存',
+		icon: 'ti ti-download',
+		action: async () => {
+			try {
+				// 画像をダウンロード
+				const response = await fetch(imageUrl);
+				const blob = await response.blob();
+				const url = window.URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = note.files[0].name || 'illustration.jpg';
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				window.URL.revokeObjectURL(url);
+				os.success();
+			} catch (error) {
+				console.error('Failed to download image:', error);
+				os.alert({
+					type: 'error',
+					text: '画像の保存に失敗しました',
+				});
+			}
+		},
+	});
+
+	// 管理者・モデレーターには除外メニューも表示
+	if ($i && ($i.isAdmin || $i.isModerator)) {
+		menu.push({
 			text: 'このイラストをハイライトから除外する',
 			icon: 'ti ti-eye-off',
 			action: async () => {
@@ -138,10 +173,49 @@ const onContextMenu = async (ev: MouseEvent, note: Misskey.entities.Note) => {
 					});
 				}
 			},
-		},
-	];
+		});
+	}
 
-	os.contextMenu(menu, ev);
+	// スマホ用のドロワーメニューを表示（popupMenuを使用）
+	os.popupMenu(menu, ev instanceof MouseEvent ? ev.target as HTMLElement : undefined);
+};
+
+// PC用の右クリックメニュー
+const onContextMenu = async (ev: MouseEvent, note: Misskey.entities.Note) => {
+	ev.preventDefault();
+	await showMenu(ev, note);
+};
+
+// タッチ開始時
+const onTouchStart = (ev: TouchEvent, note: Misskey.entities.Note) => {
+	touchMoved = false;
+	// 長押しタイマー開始
+	longPressTimer.value = window.setTimeout(() => {
+		if (!touchMoved) {
+			// 長押し判定されたのでドロワーメニューを表示
+			ev.preventDefault();
+			showMenu(ev, note);
+		}
+	}, longPressThreshold);
+};
+
+// タッチ終了時
+const onTouchEnd = () => {
+	// タイマーをクリア
+	if (longPressTimer.value !== null) {
+		clearTimeout(longPressTimer.value);
+		longPressTimer.value = null;
+	}
+};
+
+// タッチ移動時
+const onTouchMove = () => {
+	// スクロールなどで移動した場合は長押しキャンセル
+	touchMoved = true;
+	if (longPressTimer.value !== null) {
+		clearTimeout(longPressTimer.value);
+		longPressTimer.value = null;
+	}
 };
 
 onMounted(() => {
