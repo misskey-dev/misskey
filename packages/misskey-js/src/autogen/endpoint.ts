@@ -63,6 +63,7 @@ import type {
 	AdminFederationDeleteAllFilesRequest,
 	AdminFederationRefreshRemoteInstanceMetadataRequest,
 	AdminFederationRemoveAllFollowingRequest,
+	AdminFederationRemoveAllFollowingByUserIdRequest,
 	AdminFederationUpdateInstanceRequest,
 	AdminForwardAbuseUserReportRequest,
 	AdminGetIndexStatsResponse,
@@ -137,6 +138,7 @@ import type {
 	AdminUpdateProxyAccountRequest,
 	AdminUpdateProxyAccountResponse,
 	AdminUpdateUserNoteRequest,
+	AdminUpdateUserSuspendedReasonRequest,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AnnouncementsShowRequest,
@@ -219,6 +221,7 @@ import type {
 	ChartsUserReactionsResponse,
 	ChartsUsersRequest,
 	ChartsUsersResponse,
+	ChatGetSecretModeForUserRequest,
 	ChatHistoryRequest,
 	ChatHistoryResponse,
 	ChatMessagesCreateToRoomRequest,
@@ -227,6 +230,9 @@ import type {
 	ChatMessagesCreateToUserResponse,
 	ChatMessagesDeleteRequest,
 	ChatMessagesReactRequest,
+	ChatMessagesReadRequest,
+	ChatMessagesReadUsersRequest,
+	ChatMessagesReadUsersResponse,
 	ChatMessagesRoomTimelineRequest,
 	ChatMessagesRoomTimelineResponse,
 	ChatMessagesSearchRequest,
@@ -239,6 +245,8 @@ import type {
 	ChatRoomsCreateRequest,
 	ChatRoomsCreateResponse,
 	ChatRoomsDeleteRequest,
+	ChatRoomsGetSecretModeRequest,
+	ChatRoomsGetSecretModeResponse,
 	ChatRoomsInvitationsCreateRequest,
 	ChatRoomsInvitationsCreateResponse,
 	ChatRoomsInvitationsIgnoreRequest,
@@ -255,10 +263,12 @@ import type {
 	ChatRoomsMuteRequest,
 	ChatRoomsOwnedRequest,
 	ChatRoomsOwnedResponse,
+	ChatRoomsSetSecretModeRequest,
 	ChatRoomsShowRequest,
 	ChatRoomsShowResponse,
 	ChatRoomsUpdateRequest,
 	ChatRoomsUpdateResponse,
+	ChatSetSecretModeForUserRequest,
 	ClipsAddNoteRequest,
 	ClipsCreateRequest,
 	ClipsCreateResponse,
@@ -275,6 +285,15 @@ import type {
 	ClipsUnfavoriteRequest,
 	ClipsUpdateRequest,
 	ClipsUpdateResponse,
+	DrawingCanvasRequest,
+	DrawingCanvasResponse,
+	DrawingSaveRequest,
+	DrawingSettingsRoomGetRequest,
+	DrawingSettingsRoomGetResponse,
+	DrawingSettingsRoomUpdateRequest,
+	DrawingSettingsUserGetRequest,
+	DrawingSettingsUserGetResponse,
+	DrawingSettingsUserUpdateRequest,
 	DriveResponse,
 	DriveFilesRequest,
 	DriveFilesResponse,
@@ -543,6 +562,7 @@ import type {
 	NotesTranslateRequest,
 	NotesTranslateResponse,
 	NotesUnrenoteRequest,
+	NotesUpdateVisibilityRequest,
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
 	NotificationsCreateRequest,
@@ -702,6 +722,7 @@ export type Endpoints = {
 	'admin/federation/delete-all-files': { req: AdminFederationDeleteAllFilesRequest; res: EmptyResponse };
 	'admin/federation/refresh-remote-instance-metadata': { req: AdminFederationRefreshRemoteInstanceMetadataRequest; res: EmptyResponse };
 	'admin/federation/remove-all-following': { req: AdminFederationRemoveAllFollowingRequest; res: EmptyResponse };
+	'admin/federation/remove-all-following-by-user-id': { req: AdminFederationRemoveAllFollowingByUserIdRequest; res: EmptyResponse };
 	'admin/federation/update-instance': { req: AdminFederationUpdateInstanceRequest; res: EmptyResponse };
 	'admin/forward-abuse-user-report': { req: AdminForwardAbuseUserReportRequest; res: EmptyResponse };
 	'admin/get-index-stats': { req: EmptyRequest; res: AdminGetIndexStatsResponse };
@@ -756,6 +777,7 @@ export type Endpoints = {
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
 	'admin/update-proxy-account': { req: AdminUpdateProxyAccountRequest; res: AdminUpdateProxyAccountResponse };
 	'admin/update-user-note': { req: AdminUpdateUserNoteRequest; res: EmptyResponse };
+	'admin/update-user-suspended-reason': { req: AdminUpdateUserSuspendedReasonRequest; res: EmptyResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
@@ -802,11 +824,14 @@ export type Endpoints = {
 	'charts/user/pv': { req: ChartsUserPvRequest; res: ChartsUserPvResponse };
 	'charts/user/reactions': { req: ChartsUserReactionsRequest; res: ChartsUserReactionsResponse };
 	'charts/users': { req: ChartsUsersRequest; res: ChartsUsersResponse };
+	'chat/get-secret-mode-for-user': { req: ChatGetSecretModeForUserRequest; res: EmptyResponse };
 	'chat/history': { req: ChatHistoryRequest; res: ChatHistoryResponse };
 	'chat/messages/create-to-room': { req: ChatMessagesCreateToRoomRequest; res: ChatMessagesCreateToRoomResponse };
 	'chat/messages/create-to-user': { req: ChatMessagesCreateToUserRequest; res: ChatMessagesCreateToUserResponse };
 	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: EmptyResponse };
 	'chat/messages/react': { req: ChatMessagesReactRequest; res: EmptyResponse };
+	'chat/messages/read': { req: ChatMessagesReadRequest; res: EmptyResponse };
+	'chat/messages/read-users': { req: ChatMessagesReadUsersRequest; res: ChatMessagesReadUsersResponse };
 	'chat/messages/room-timeline': { req: ChatMessagesRoomTimelineRequest; res: ChatMessagesRoomTimelineResponse };
 	'chat/messages/search': { req: ChatMessagesSearchRequest; res: ChatMessagesSearchResponse };
 	'chat/messages/show': { req: ChatMessagesShowRequest; res: ChatMessagesShowResponse };
@@ -815,6 +840,7 @@ export type Endpoints = {
 	'chat/read-all': { req: EmptyRequest; res: EmptyResponse };
 	'chat/rooms/create': { req: ChatRoomsCreateRequest; res: ChatRoomsCreateResponse };
 	'chat/rooms/delete': { req: ChatRoomsDeleteRequest; res: EmptyResponse };
+	'chat/rooms/get-secret-mode': { req: ChatRoomsGetSecretModeRequest; res: ChatRoomsGetSecretModeResponse };
 	'chat/rooms/invitations/create': { req: ChatRoomsInvitationsCreateRequest; res: ChatRoomsInvitationsCreateResponse };
 	'chat/rooms/invitations/ignore': { req: ChatRoomsInvitationsIgnoreRequest; res: EmptyResponse };
 	'chat/rooms/invitations/inbox': { req: ChatRoomsInvitationsInboxRequest; res: ChatRoomsInvitationsInboxResponse };
@@ -825,8 +851,10 @@ export type Endpoints = {
 	'chat/rooms/members': { req: ChatRoomsMembersRequest; res: ChatRoomsMembersResponse };
 	'chat/rooms/mute': { req: ChatRoomsMuteRequest; res: EmptyResponse };
 	'chat/rooms/owned': { req: ChatRoomsOwnedRequest; res: ChatRoomsOwnedResponse };
+	'chat/rooms/set-secret-mode': { req: ChatRoomsSetSecretModeRequest; res: EmptyResponse };
 	'chat/rooms/show': { req: ChatRoomsShowRequest; res: ChatRoomsShowResponse };
 	'chat/rooms/update': { req: ChatRoomsUpdateRequest; res: ChatRoomsUpdateResponse };
+	'chat/set-secret-mode-for-user': { req: ChatSetSecretModeForUserRequest; res: EmptyResponse };
 	'clips/add-note': { req: ClipsAddNoteRequest; res: EmptyResponse };
 	'clips/create': { req: ClipsCreateRequest; res: ClipsCreateResponse };
 	'clips/delete': { req: ClipsDeleteRequest; res: EmptyResponse };
@@ -838,6 +866,12 @@ export type Endpoints = {
 	'clips/show': { req: ClipsShowRequest; res: ClipsShowResponse };
 	'clips/unfavorite': { req: ClipsUnfavoriteRequest; res: EmptyResponse };
 	'clips/update': { req: ClipsUpdateRequest; res: ClipsUpdateResponse };
+	'drawing/canvas': { req: DrawingCanvasRequest; res: DrawingCanvasResponse };
+	'drawing/save': { req: DrawingSaveRequest; res: EmptyResponse };
+	'drawing/settings/room/get': { req: DrawingSettingsRoomGetRequest; res: DrawingSettingsRoomGetResponse };
+	'drawing/settings/room/update': { req: DrawingSettingsRoomUpdateRequest; res: EmptyResponse };
+	'drawing/settings/user/get': { req: DrawingSettingsUserGetRequest; res: DrawingSettingsUserGetResponse };
+	'drawing/settings/user/update': { req: DrawingSettingsUserUpdateRequest; res: EmptyResponse };
 	'drive': { req: EmptyRequest; res: DriveResponse };
 	'drive/files': { req: DriveFilesRequest; res: DriveFilesResponse };
 	'drive/files/attached-chat-messages': { req: DriveFilesAttachedChatMessagesRequest; res: DriveFilesAttachedChatMessagesResponse };
@@ -1011,6 +1045,7 @@ export type Endpoints = {
 	'notes/timeline': { req: NotesTimelineRequest; res: NotesTimelineResponse };
 	'notes/translate': { req: NotesTranslateRequest; res: NotesTranslateResponse };
 	'notes/unrenote': { req: NotesUnrenoteRequest; res: EmptyResponse };
+	'notes/update-visibility': { req: NotesUpdateVisibilityRequest; res: EmptyResponse };
 	'notes/user-list-timeline': { req: NotesUserListTimelineRequest; res: NotesUserListTimelineResponse };
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
 	'notifications/flush': { req: EmptyRequest; res: EmptyResponse };

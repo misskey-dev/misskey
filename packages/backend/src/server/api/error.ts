@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-type E = { message: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: number };
+type E = { message: string, reason?: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: number };
 
 export class ApiError extends Error {
 	public message: string;
+	public reason?: string;
 	public code: string;
 	public id: string;
 	public kind: string;
@@ -24,6 +25,7 @@ export class ApiError extends Error {
 
 		super(err.message);
 		this.message = err.message;
+		this.reason = err.reason;
 		this.code = err.code;
 		this.id = err.id;
 		this.kind = err.kind ?? 'client';

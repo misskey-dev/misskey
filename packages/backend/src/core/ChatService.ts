@@ -388,6 +388,89 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async readMessage(
+		messageId: MiChatMessage['id'],
+		readerId: MiUser['id'],
+	): Promise<void> {
+		// メッセージを取得
+		const message = await this.chatMessagesRepository.findOne({
+			where: { id: messageId },
+			relations: ['toUser', 'toRoom'],
+		});
+
+		if (!message) {
+			throw new Error('Message not found');
+		}
+
+		// 既読権限チェック
+		if (message.toUserId) {
+			// 1対1チャットの場合: 送信者と受信者のみが既読可能
+			if (readerId !== message.fromUserId && readerId !== message.toUserId) {
+				throw new Error('Permission denied: You cannot read this message');
+			}
+		} else if (message.toRoomId) {
+			// ルームチャットの場合: ルームメンバーまたはオーナーのみが既読可能
+			const room = message.toRoom;
+			if (!room) {
+				throw new Error('Room not found');
+			}
+
+			// オーナーかどうかチェック
+			if (readerId === room.ownerId) {
+				// オーナーなら既読可能
+			} else {
+				// メンバーかどうかチェック
+				const membership = await this.chatRoomMembershipsRepository.findOne({
+					where: { roomId: message.toRoomId, userId: readerId },
+				});
+				if (!membership) {
+					throw new Error('Permission denied: You are not a member of this room');
+				}
+			}
+		}
+
+		// 既読リストに追加（重複を避ける）
+		if (!message.reads.includes(readerId)) {
+			await this.chatMessagesRepository.update(messageId, {
+				reads: [...message.reads, readerId],
+			});
+		}
+
+		// Redisキャッシュも更新
+		if (message.toUserId) {
+			// 1対1チャットの場合
+			await this.readUserChatMessage(readerId, message.fromUserId);
+		} else if (message.toRoomId) {
+			// ルームチャットの場合
+			await this.readRoomChatMessage(readerId, message.toRoomId);
+		}
+
+		// WebSocketで既読通知を送信
+		if (message.toRoomId) {
+			// ルームチャットの場合
+			this.globalEventService.publishChatRoomStream(
+				message.toRoomId,
+				'read',
+				{
+					messageId: messageId,
+					readerId: readerId,
+				},
+			);
+		} else {
+			// 1対1チャットの場合
+			this.globalEventService.publishChatUserStream(
+				message.fromUserId,
+				readerId,
+				'read',
+				{
+					messageId: messageId,
+					readerId: readerId,
+				},
+			);
+		}
+	}
+
+	@bindThis
 	public findMessageById(messageId: MiChatMessage['id']) {
 		return this.chatMessagesRepository.findOneBy({ id: messageId });
 	}
@@ -680,6 +763,11 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async checkMembership(roomId: MiChatRoom['id'], userId: MiUser['id']) {
+		return this.chatRoomMembershipsRepository.findOneBy({ roomId, userId });
+	}
+
+	@bindThis
 	public async createRoomInvitation(inviterId: MiUser['id'], roomId: MiChatRoom['id'], inviteeId: MiUser['id']) {
 		if (inviterId === inviteeId) {
 			throw new Error('yourself');
@@ -767,6 +855,18 @@ export class ChatService {
 		// TODO: transaction
 		await this.chatRoomMembershipsRepository.insertOne(membership);
 		await this.chatRoomInvitationsRepository.delete(invitation.id);
+
+		// Publish room join event to all room members
+		this.globalEventService.publishChatRoomStream(roomId, 'joined', {
+			userId: userId,
+			membershipId: membership.id,
+		});
+
+		// Publish main stream event to the user who joined
+		this.globalEventService.publishMainStream(userId, 'chatRoomJoined', {
+			roomId: roomId,
+			membershipId: membership.id,
+		});
 	}
 
 	@bindThis
@@ -1053,7 +1153,7 @@ export class ChatService {
 				isSecretMessageMode: isSecretMessageMode,
 			} as Record<string, any>,
 			reads: [],
-			expiresAt: null,
+			expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // システムメッセージも24時間後に削除
 		} satisfies Partial<MiChatMessage>;
 
 		const inserted = await this.chatMessagesRepository.insertOne(systemMessage);
@@ -1086,7 +1186,7 @@ export class ChatService {
 				isSecretMessageMode: isSecretMessageMode,
 			} as Record<string, any>,
 			reads: [],
-			expiresAt: null,
+			expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // システムメッセージも24時間後に削除
 		} satisfies Partial<MiChatMessage>;
 
 		const inserted = await this.chatMessagesRepository.insertOne(systemMessage);
@@ -1094,5 +1194,115 @@ export class ChatService {
 		// リアルタイム更新
 		const packedMessage = await this.chatEntityService.packMessageLiteForRoom(inserted);
 		this.globalEventService.publishChatRoomStream(roomId, 'message', packedMessage);
+	}
+
+	@bindThis
+	public async notifyUserTyping(fromUserId: MiUser['id'], toUserId: MiUser['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyUserTyping called: ${fromUserId} -> ${toUserId}`);
+
+		// セキュリティ: 送信者ユーザーの存在・有効性確認
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] Typing event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		if (fromUser.isSuspended || fromUser.isDeleted) {
+			console.warn(`🔍 [SECURITY] Typing event from suspended/deleted user: ${fromUserId}`);
+			return;
+		}
+
+		const packedUser = await this.userEntityService.pack(fromUser, null, { schema: 'UserLite' });
+		console.log(`🔍 [DEBUG] Publishing chatUserStream typing event for ${fromUser.username}`);
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatUserStream(fromUserId, toUserId, 'typing', {
+			userId: fromUserId,
+			user: packedUser,
+		});
+	}
+
+	@bindThis
+	public async notifyRoomTyping(fromUserId: MiUser['id'], roomId: MiChatRoom['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyRoomTyping called: ${fromUserId} in room ${roomId}`);
+
+		// セキュリティ: 送信者ユーザーの存在・有効性確認
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] Typing event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		if (fromUser.isSuspended || fromUser.isDeleted) {
+			console.warn(`🔍 [SECURITY] Typing event from suspended/deleted user: ${fromUserId}`);
+			return;
+		}
+
+		// セキュリティ: ルームメンバーシップ確認
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] Typing event for non-existent room: ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] Typing event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		const packedUser = await this.userEntityService.pack(fromUser, null, { schema: 'UserLite' });
+		console.log(`🔍 [DEBUG] Publishing chatRoomStream typing event for ${fromUser.username}`);
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatRoomStream(roomId, 'typing', {
+			userId: fromUserId,
+			user: packedUser,
+		});
+	}
+
+	@bindThis
+	public async notifyUserTypingStop(fromUserId: MiUser['id'], toUserId: MiUser['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyUserTypingStop called: ${fromUserId} -> ${toUserId}`);
+
+		// セキュリティ: 送信者ユーザーの存在確認（軽量チェック）
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] TypingStop event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatUserStream(fromUserId, toUserId, 'typingStop', {
+			userId: fromUserId,
+		});
+	}
+
+	@bindThis
+	public async notifyRoomTypingStop(fromUserId: MiUser['id'], roomId: MiChatRoom['id']): Promise<void> {
+		console.log(`🔍 [DEBUG] ChatService.notifyRoomTypingStop called: ${fromUserId} in room ${roomId}`);
+
+		// セキュリティ: 送信者ユーザーの存在確認（軽量チェック）
+		const fromUser = await this.usersRepository.findOneBy({ id: fromUserId });
+		if (!fromUser) {
+			console.warn(`🔍 [SECURITY] TypingStop event from non-existent user: ${fromUserId}`);
+			return;
+		}
+
+		// セキュリティ: ルームメンバーシップ確認
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] TypingStop event for non-existent room: ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] TypingStop event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		// セキュリティ: 送信するユーザーIDは検証済みのfromUserIdを強制使用
+		this.globalEventService.publishChatRoomStream(roomId, 'typingStop', {
+			userId: fromUserId,
+		});
 	}
 }

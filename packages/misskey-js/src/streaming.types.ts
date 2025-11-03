@@ -254,10 +254,114 @@ export type Channels = {
 				user?: UserLite;
 				messageId: ChatMessageLite['id'];
 			}) => void;
+			read: (payload: {
+				messageId: ChatMessageLite['id'];
+				readerId: User['id'];
+			}) => void;
+			typing: (payload: {
+				userId: User['id'];
+				user?: UserLite;
+			}) => void;
+			typingStop: (payload: {
+				userId: User['id'];
+			}) => void;
+			drawingStroke: (payload: {
+				id: string;
+				userId: User['id'];
+				userName: string;
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth: number;
+				opacity: number;
+				timestamp: number;
+				layer?: number;
+			}) => void;
+			drawingProgress: (payload: {
+				id?: string;
+				userId?: User['id'];
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+				isComplete?: boolean;
+				layer?: number;
+				timestamp?: number;
+			}) => void;
+			cursorMove: (payload: {
+				userId: User['id'];
+				userName: string;
+				x: number;
+				y: number;
+				timestamp: number;
+			}) => void;
+			clearCanvas: (payload: {
+				userId: User['id'];
+				userName?: string;
+				timestamp: number;
+				layer?: number;
+			}) => void;
+			undoStroke: (payload: {
+				userId: User['id'];
+				userName?: string;
+				strokeId?: string;
+				timestamp: number;
+				layer?: number;
+			}) => void;
+			redoStroke: (payload: {
+				userId: User['id'];
+				userName?: string;
+				strokeId?: string;
+				timestamp: number;
+				layer?: number;
+			}) => void;
 		};
 		receives: {
 			read: {
 				id: ChatMessageLite['id'];
+			};
+			typing: {
+				roomId?: string;
+			};
+			typingStop: {
+				roomId?: string;
+			};
+			drawingStroke: {
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+				layer?: number;
+			};
+			drawingProgress: {
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+				isComplete?: boolean;
+				layer?: number;
+			};
+			cursorMove: {
+				x: number;
+				y: number;
+			};
+			clearCanvas: {
+				layer?: number;
+			} | null;
+			undoStroke: {
+				layer?: number;
+				strokeId?: string;
+			};
+			redoStroke: {
+				layer?: number;
+				strokeId?: string;
+			};
+			canvasRasterized: {
+				imageData: string;
+				timestamp: number;
 			};
 		};
 	};
@@ -278,10 +382,118 @@ export type Channels = {
 				user?: UserLite;
 				messageId: ChatMessageLite['id'];
 			}) => void;
+			read: (payload: {
+				messageId: ChatMessageLite['id'];
+				readerId: User['id'];
+			}) => void;
+			typing: (payload: {
+				userId: User['id'];
+				user?: UserLite;
+			}) => void;
+			typingStop: (payload: {
+				userId: User['id'];
+			}) => void;
+			drawingStroke: (payload: {
+				id: string;
+				userId: User['id'];
+				userName: string;
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth: number;
+				opacity: number;
+				timestamp: number;
+				layer?: number;
+			}) => void;
+			drawingProgress: (payload: {
+				id?: string;
+				userId?: User['id'];
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+				isComplete?: boolean;
+				layer?: number;
+				timestamp?: number;
+			}) => void;
+			cursorMove: (payload: {
+				userId: User['id'];
+				userName: string;
+				x: number;
+				y: number;
+				timestamp: number;
+			}) => void;
+			clearCanvas: (payload: {
+				userId: User['id'];
+				userName?: string;
+				timestamp: number;
+				layer?: number;
+			}) => void;
+			undoStroke: (payload: {
+				userId: User['id'];
+				userName: string;
+				strokeId?: string;
+				timestamp: number;
+				layer?: number;
+			}) => void;
+			redoStroke: (payload: {
+				userId: User['id'];
+				userName: string;
+				strokeId?: string;
+				timestamp: number;
+				layer?: number;
+			}) => void;
 		};
 		receives: {
 			read: {
 				id: ChatMessageLite['id'];
+			};
+			typing: {
+				roomId?: string;
+			};
+			typingStop: {
+				roomId?: string;
+			};
+			drawingStroke: {
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+				layer?: number;
+			};
+			drawingProgress: {
+				points: Array<{ x: number; y: number; pressure?: number }>;
+				tool: 'pen' | 'eraser' | 'eyedropper';
+				color: string;
+				strokeWidth?: number;
+				opacity?: number;
+				isComplete?: boolean;
+				layer?: number;
+			};
+			cursorMove: {
+				x: number;
+				y: number;
+			};
+			clearCanvas: null | {
+				layer?: number;
+			};
+			undoStroke: {
+				userId?: User['id'];
+				timestamp: number;
+				layer?: number;
+				strokeId?: string;
+			};
+			redoStroke: {
+				userId?: User['id'];
+				timestamp: number;
+				layer?: number;
+				strokeId?: string;
+			};
+			canvasRasterized: {
+				imageData: string;
+				timestamp: number;
 			};
 		};
 	};

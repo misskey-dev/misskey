@@ -253,10 +253,10 @@ if (!mock) {
 <style lang="scss" module>
 .root {
 	display: inline-flex;
-	height: 42px;
-	padding: 0 6px;
-	font-size: 1.5em;
-	border-radius: 6px;
+	height: 32px;
+	padding: 0 4px;
+	font-size: 1em;
+	border-radius: 4px;
 	align-items: center;
 	justify-content: center;
 
@@ -264,7 +264,7 @@ if (!mock) {
 		background: var(--MI_THEME-buttonBg);
 
 		&:hover {
-			background: rgba(0, 0, 0, 0.1);
+			background: var(--MI_THEME-buttonHoverBg);
 		}
 	}
 
@@ -273,24 +273,26 @@ if (!mock) {
 	}
 
 	&.small {
-		height: 32px;
-		font-size: 1em;
-		border-radius: 4px;
+		height: 28px;
+		font-size: 0.9em;
+		border-radius: 3px;
+		padding: 0 3px;
 
 		> .count {
-			font-size: 0.9em;
-			line-height: 32px;
+			font-size: 0.85em;
+			line-height: 28px;
 		}
 	}
 
 	&.large {
-		height: 52px;
-		font-size: 2em;
-		border-radius: 8px;
+		height: 42px;
+		font-size: 1.5em;
+		border-radius: 6px;
+		padding: 0 6px;
 
 		> .count {
-			font-size: 0.6em;
-			line-height: 52px;
+			font-size: 0.7em;
+			line-height: 42px;
 		}
 	}
 
@@ -310,13 +312,13 @@ if (!mock) {
 }
 
 .limitWidth {
-	max-width: 70px;
+	// 横幅制限を解除して横長表示を可能にする
 	object-fit: contain;
 }
 
 .count {
-	font-size: 0.7em;
-	line-height: 42px;
-	margin: 0 0 0 4px;
+	font-size: 0.8em;
+	line-height: 32px;
+	margin: 0 0 0 3px;
 }
 </style>

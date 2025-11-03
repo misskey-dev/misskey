@@ -509,6 +509,17 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:federation*
      */
+    request<E extends 'admin/federation/remove-all-following-by-user-id', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:federation*
+     */
     request<E extends 'admin/federation/update-instance', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
@@ -1107,6 +1118,17 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:account*
+     */
+    request<E extends 'admin/update-user-suspended-reason', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *No*
      */
     request<E extends 'announcements', P extends Endpoints[E]['req']>(
@@ -1614,6 +1636,18 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *read:user:chat*
+     */
+    request<E extends 'chat/get-secret-mode-for-user', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
     request<E extends 'chat/history', P extends Endpoints[E]['req']>(
@@ -1661,6 +1695,28 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
     request<E extends 'chat/messages/react', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    request<E extends 'chat/messages/read', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    request<E extends 'chat/messages/read-users', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -1749,6 +1805,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
     request<E extends 'chat/rooms/delete', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    request<E extends 'chat/rooms/get-secret-mode', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -1867,6 +1934,17 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    request<E extends 'chat/rooms/set-secret-mode', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
     request<E extends 'chat/rooms/show', P extends Endpoints[E]['req']>(
@@ -1881,6 +1959,18 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
     request<E extends 'chat/rooms/update', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *write:user:chat*
+     */
+    request<E extends 'chat/set-secret-mode-for-user', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -2002,6 +2092,72 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:account*
      */
     request<E extends 'clips/update', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    request<E extends 'drawing/canvas', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    request<E extends 'drawing/save', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    request<E extends 'drawing/settings/room/get', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    request<E extends 'drawing/settings/room/update', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    request<E extends 'drawing/settings/user/get', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    request<E extends 'drawing/settings/user/update', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -3706,7 +3862,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'notes/featured', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3717,7 +3873,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'notes/global-timeline', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3739,7 +3895,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'notes/local-timeline', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3838,7 +3994,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'notes/search', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3940,6 +4096,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:notes*
      */
     request<E extends 'notes/unrenote', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    request<E extends 'notes/update-visibility', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

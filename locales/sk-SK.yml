@@ -1466,3 +1466,5 @@ _imageEffector:
     color: "Farba"
     opacity: "Priehľadnosť"
     lightness: "Zosvetliť"
+assignRole: "Priradené k úlohe"
+unassignRole: "Odstránené z úlohy"

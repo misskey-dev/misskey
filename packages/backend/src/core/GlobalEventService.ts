@@ -20,7 +20,7 @@ import type { MiPage } from '@/models/Page.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import type { MiMeta } from '@/models/Meta.js';
-import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
+import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiChatRoomMembership, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -93,6 +93,10 @@ export interface MainEventTypes {
 	receiveFollowRequest: Packed<'UserLite'>;
 	announcementCreated: {
 		announcement: Packed<'Announcement'>;
+	};
+	chatRoomJoined: {
+		roomId: MiChatRoom['id'];
+		membershipId: MiChatRoomMembership['id'];
 	};
 }
 
@@ -171,6 +175,50 @@ export interface ChatEventTypes {
 		reaction: string;
 		user?: Packed<'UserLite'>;
 		messageId: MiChatMessage['id'];
+	};
+	joined: {
+		userId: MiUser['id'];
+		membershipId: MiChatRoomMembership['id'];
+	};
+	read: {
+		messageId: MiChatMessage['id'];
+		readerId: MiUser['id'];
+	};
+	typing: {
+		userId: MiUser['id'];
+		user?: Packed<'UserLite'>;
+	};
+	typingStop: {
+		userId: MiUser['id'];
+	};
+	drawingStroke: {
+		id: string;
+		userId: MiUser['id'];
+		userName: string;
+		points: Array<{ x: number; y: number }>;
+		tool: 'pen' | 'eraser' | 'eyedropper';
+		color: string;
+		strokeWidth: number;
+		opacity: number;
+		timestamp: number;
+	};
+	cursorMove: {
+		userId: MiUser['id'];
+		userName: string;
+		x: number;
+		y: number;
+		timestamp: number;
+	};
+	clearCanvas: {
+		userId: MiUser['id'];
+		userName: string;
+		timestamp: number;
+	};
+	undoStroke: {
+		userId: MiUser['id'];
+		userName: string;
+		strokeId: string;
+		timestamp: number;
 	};
 }
 
@@ -414,7 +462,9 @@ export class GlobalEventService {
 
 	@bindThis
 	public publishChatUserStream<K extends keyof ChatEventTypes>(fromUserId: MiUser['id'], toUserId: MiUser['id'], type: K, value?: ChatEventTypes[K]): void {
-		this.publish(`chatUserStream:${fromUserId}-${toUserId}`, type, typeof value === 'undefined' ? null : value);
+		// IDをソートして統一的なチャンネル名を作成
+		const sortedIds = [fromUserId, toUserId].sort();
+		this.publish(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis

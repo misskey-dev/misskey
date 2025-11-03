@@ -1404,3 +1404,5 @@ _imageEffector:
   _fxProps:
     scale: "Dimensiune"
     size: "Dimensiune"
+assignRole: "Atribuit la rol"
+unassignRole: "Eliminat din rol"

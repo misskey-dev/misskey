@@ -633,6 +633,30 @@ function showRenoteMenu(): void {
 		};
 	}
 
+	function getChangeVisibilityToHome(): MenuItem {
+		return {
+			text: i18n.ts.changeNoteVisibilityToHome,
+			icon: 'ti ti-home',
+			action: async () => {
+				const confirm = await os.confirm({
+					type: 'question',
+					text: i18n.ts.changeNoteVisibilityToHomeConfirm,
+				});
+				if (confirm.canceled) return;
+
+				await misskeyApi('notes/update-visibility', {
+					noteId: note.id,
+					visibility: 'home',
+				});
+
+				// リノートのvisibilityを更新
+				note.visibility = 'home';
+
+				os.toast(i18n.ts.done);
+			},
+		};
+	}
+
 	const renoteDetailsMenu: MenuItem = {
 		type: 'link',
 		text: i18n.ts.renoteDetails,
@@ -649,12 +673,21 @@ function showRenoteMenu(): void {
 			getUnrenote(),
 		], renoteTime.value);
 	} else {
+		const moderatorMenu: MenuItem[] = [];
+
+		// 管理人・モデレーター限定: publicのリノートをhomeに変更
+		if (($i?.isModerator || $i?.isAdmin) && note.visibility === 'public') {
+			moderatorMenu.push(getChangeVisibilityToHome());
+		}
+
+		moderatorMenu.push(...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : []));
+
 		os.popupMenu([
 			renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
-			{ type: 'divider' },
+			{ type: 'divider' as const },
 			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
-			...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : []),
+			...(moderatorMenu.length > 0 ? [{ type: 'divider' as const }, ...moderatorMenu] : []),
 		], renoteTime.value);
 	}
 }

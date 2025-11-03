@@ -41,6 +41,8 @@ import { MiChatSecretSettings } from '@/models/ChatSecretSettings.js';
 import { MiClip } from '@/models/Clip.js';
 import { MiClipFavorite } from '@/models/ClipFavorite.js';
 import { MiClipNote } from '@/models/ClipNote.js';
+import { MiDrawingRoomSettings } from '@/models/DrawingRoomSettings.js';
+import { MiDrawingUserSettings } from '@/models/DrawingUserSettings.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { MiDriveFolder } from '@/models/DriveFolder.js';
 import { MiEmoji } from '@/models/Emoji.js';
@@ -176,6 +178,8 @@ export {
 	MiClip,
 	MiClipNote,
 	MiClipFavorite,
+	MiDrawingRoomSettings,
+	MiDrawingUserSettings,
 	MiDriveFile,
 	MiDriveFolder,
 	MiEmoji,
@@ -256,6 +260,8 @@ export type ChannelFavoritesRepository = Repository<MiChannelFavorite> & MiRepos
 export type ClipsRepository = Repository<MiClip> & MiRepository<MiClip>;
 export type ClipNotesRepository = Repository<MiClipNote> & MiRepository<MiClipNote>;
 export type ClipFavoritesRepository = Repository<MiClipFavorite> & MiRepository<MiClipFavorite>;
+export type DrawingRoomSettingsRepository = Repository<MiDrawingRoomSettings> & MiRepository<MiDrawingRoomSettings>;
+export type DrawingUserSettingsRepository = Repository<MiDrawingUserSettings> & MiRepository<MiDrawingUserSettings>;
 export type DriveFilesRepository = Repository<MiDriveFile> & MiRepository<MiDriveFile>;
 export type DriveFoldersRepository = Repository<MiDriveFolder> & MiRepository<MiDriveFolder>;
 export type EmojisRepository = Repository<MiEmoji> & MiRepository<MiEmoji>;

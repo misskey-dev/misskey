@@ -154,6 +154,11 @@ export class MiUserProfile {
 	})
 	public moderationNote: string | null;
 
+	@Column('varchar', {
+		length: 8192, default: '',
+	})
+	public suspendedReason: string | null;
+
 	// TODO: そのうち消す
 	@Column('jsonb', {
 		default: {},

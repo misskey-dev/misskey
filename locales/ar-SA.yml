@@ -1605,3 +1605,5 @@ _imageEffector:
     size: "الحجم"
     color: "اللون"
     opacity: "الشفافية"
+assignRole: "تعيين إلى دور"
+unassignRole: "إزالة من الدور"

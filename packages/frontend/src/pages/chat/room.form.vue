@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
+import { throttle } from 'throttle-debounce';
 //import insertTextAtCursor from 'insert-text-at-cursor';
 import { formatTimeString } from '@/utility/format-time-string.js';
 import { selectFile } from '@/utility/drive.js';
@@ -54,6 +55,8 @@ const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
 	room?: Misskey.entities.ChatRoom | null;
 	isSecretMessageMode?: boolean;
+	onTyping?: () => void;
+	onTypingStop?: () => void;
 }>();
 
 const textareaEl = shallowRef<HTMLTextAreaElement>();
@@ -66,14 +69,83 @@ const textareaReadOnly = ref(false);
 const isImeOpen = ref(false);
 const keyboardHeight = ref(0);
 let autocompleteInstance: Autocomplete | null = null;
+// connection は props から受け取る
+let typingStopTimer: ReturnType<typeof setTimeout> | null = null;
+let isTyping = ref(false);
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
+
+// typing停止状態を送信する関数
+function notifyTypingStop() {
+	console.log('🔍 [DEBUG] notifyTypingStop called');
+	if (props.onTypingStop && isTyping.value) {
+		console.log('🔍 [DEBUG] Calling parent onTypingStop function');
+		props.onTypingStop();
+		isTyping.value = false;
+	}
+}
+
+// 強制的にtyping停止を送信する関数（送信時などに使用）
+function forceNotifyTypingStop() {
+	console.log('🔍 [DEBUG] forceNotifyTypingStop called');
+	if (props.onTypingStop) {
+		console.log('🔍 [DEBUG] Force calling parent onTypingStop function');
+		props.onTypingStop();
+		isTyping.value = false;
+
+		// タイマーもクリア
+		if (typingStopTimer) {
+			clearTimeout(typingStopTimer);
+			typingStopTimer = null;
+		}
+	}
+}
+
+// typing状態を送信する関数（3秒間隔でthrottle）
+const notifyTyping = throttle(3000, () => {
+	console.log('🔍 [DEBUG] notifyTyping called');
+
+	// 送信直前に再度textareaが空でないかチェック
+	if (!text.value || text.value.trim() === '') {
+		console.log('🔍 [DEBUG] Text is empty at typing event time, skipping typing event');
+		return;
+	}
+
+	if (props.onTyping) {
+		console.log('🔍 [DEBUG] Calling parent onTyping function');
+		props.onTyping();
+		isTyping.value = true;
+
+		// 既存のタイマーをクリア
+		if (typingStopTimer) {
+			clearTimeout(typingStopTimer);
+		}
+
+		// 5秒後にtyping停止を送信
+		typingStopTimer = setTimeout(() => {
+			notifyTypingStop();
+		}, 5000);
+	} else {
+		console.warn('🔍 [DEBUG] No onTyping function provided');
+	}
+});
 
 function getDraftKey() {
 	return props.user ? 'user:' + props.user.id : 'room:' + props.room?.id;
 }
 
 watch([text, file], saveDraft);
+
+// テキストが空になった時のtyping停止処理
+watch(text, (newText, oldText) => {
+	console.log('🔍 [DEBUG] Text changed:', { newText: newText?.length || 0, oldText: oldText?.length || 0, isTyping: isTyping.value });
+
+	// テキストが空になり、かつtyping中の場合
+	if (isTyping.value && (!newText || newText.trim() === '')) {
+		console.log('🔍 [DEBUG] Text became empty, stopping typing');
+		notifyTypingStop();
+	}
+});
 
 async function onPaste(ev: ClipboardEvent) {
 	if (!ev.clipboardData) return;
@@ -159,6 +231,11 @@ function onDrop(ev: DragEvent): void {
 }
 
 function onKeydown(ev: KeyboardEvent) {
+	// typing状態を通知（ただし、実際にテキストがある場合のみ）
+	if (text.value && text.value.trim() !== '') {
+		notifyTyping();
+	}
+
 	if (ev.key === 'Enter') {
 		if (prefer.s['chat.sendOnEnter']) {
 			if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
@@ -195,6 +272,10 @@ function onChangeFile() {
 function send() {
 	if (!canSend.value) return;
 
+	// 送信開始前に入力中状態を強制的にクリア
+	console.log('🔍 [DEBUG] Sending message, force clearing typing state');
+	forceNotifyTypingStop();
+
 	sending.value = true;
 
 	if (props.user) {
@@ -228,22 +309,64 @@ function clear() {
 	text.value = '';
 	file.value = null;
 	deleteDraft();
+
+	// typing状態を強制的にクリア
+	forceNotifyTypingStop();
+}
+
+// 要素の高さをリセットする共通関数
+function resetElementHeights(parentParent: HTMLElement | null, gaps: HTMLElement | null) {
+	if (parentParent) {
+		parentParent.style.setProperty('height', 'initial');
+	}
+	if (gaps) {
+		gaps.style.setProperty('height', 'initial');
+	}
 }
 
 // テキストエリアを再レンダリング
 function refreshTextarea() {
 	if (textareaEl.value == null) return;
-	const parent = textareaEl.value.parentElement;
-	if (parent) {
-		const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
-		console.log('[KEYBOARD DEBUG] 親要素のzIndexを変更:', randomZIndex);
-		parent.style.zIndex = randomZIndex.toString();
-		setTimeout(() => {
-			const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
-			console.log('[KEYBOARD DEBUG] 親要素のzIndexを変更:', randomZIndex);
-			parent.style.zIndex = randomZIndex.toString();
-		}, 300);
+
+	const parent = textareaEl.value.parentElement as HTMLElement | null;
+	if (!parent) return;
+
+	const parentParent = parent.parentElement;
+	const gaps = parent.closest('._gaps') as HTMLElement | null;
+
+	// 統一されたランダムzIndex値を使用
+	const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
+	console.debug('[KEYBOARD DEBUG] zIndexを変更:', randomZIndex);
+
+	// 統一されたスタイル設定方法
+	parent.style.setProperty('z-index', randomZIndex.toString());
+
+	if (parentParent) {
+		const currentHeight = getComputedStyle(parentParent).height;
+		parentParent.style.setProperty('z-index', randomZIndex.toString());
+		parentParent.style.setProperty('height', `calc(${currentHeight} - 1px)`);
 	}
+
+	if (gaps) {
+		const currentHeight = getComputedStyle(gaps).height;
+		gaps.style.setProperty('z-index', randomZIndex.toString());
+		gaps.style.setProperty('height', `calc(${currentHeight} - 1px)`);
+	}
+
+	setTimeout(() => {
+		// 共通関数を使用して高さをリセット
+		resetElementHeights(parentParent, gaps);
+	}, 100);
+
+	setTimeout(() => {
+		// 共通関数を使用して高さをリセット
+		resetElementHeights(parentParent, gaps);
+	}, 300);
+
+	setTimeout(() => {
+		// 共通関数を使用して高さをリセット
+		resetElementHeights(parentParent, gaps);
+	}, 500);
 }
 
 // iOS keyboard handling
@@ -505,6 +628,8 @@ onMounted(() => {
 		autocompleteInstance = new Autocomplete(textareaEl.value, text);
 	}
 
+	console.log('🔍 [DEBUG] Using parent typing functions:', !!(props.onTyping && props.onTypingStop));
+
 	// キーボード処理の設定
 	const cleanupKeyboard = setupKeyboardHandling();
 
@@ -518,6 +643,12 @@ onMounted(() => {
 	// アンマウント時にクリーンアップ
 	onBeforeUnmount(() => {
 		cleanupKeyboard();
+		// typing状態をクリア
+		notifyTypingStop();
+		if (typingStopTimer) {
+			clearTimeout(typingStopTimer);
+			typingStopTimer = null;
+		}
 	});
 });
 
@@ -526,6 +657,13 @@ onBeforeUnmount(() => {
 		autocompleteInstance.detach();
 		autocompleteInstance = null;
 	}
+	// typing状態をクリア
+	notifyTypingStop();
+	if (typingStopTimer) {
+		clearTimeout(typingStopTimer);
+		typingStopTimer = null;
+	}
+	// typing functions are managed by parent component
 });
 </script>
 

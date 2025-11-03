@@ -54,10 +54,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkFukidashi>
 						</div>
 						<div v-if="user.roles.length > 0" class="roles">
-							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color ?? '' }">
+							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" :class="['role', role.iconUrl ? 'role--no-border' : null]" :style="{ '--color': role.color ?? '' }">
 								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
 									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-									{{ role.name }}
+									<template v-if="!role.iconUrl">
+										{{ role.name }}
+									</template>
 								</MkA>
 							</span>
 						</div>
@@ -507,6 +509,12 @@ onUnmounted(() => {
 						border-radius: 999px;
 						margin-right: 4px;
 						padding: 3px 8px;
+
+						&.role--no-border {
+							border: none;
+							margin-right: 0;
+							padding: 0;
+						}
 					}
 				}
 

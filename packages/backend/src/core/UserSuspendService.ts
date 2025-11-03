@@ -50,7 +50,7 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postSuspend(user).catch(e => {});
-			await this.unFollowAll(user).catch(e => {});
+			// await this.unFollowAll(user).catch(e => {});
 		})();
 	}
 

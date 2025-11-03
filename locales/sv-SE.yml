@@ -721,3 +721,5 @@ _imageEffector:
     scale: "Storlek"
     size: "Storlek"
     color: "Färg"
+assignRole: "Tilldelad roll"
+unassignRole: "Borttagen från roll"

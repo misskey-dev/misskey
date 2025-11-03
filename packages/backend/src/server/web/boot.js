@@ -23,7 +23,7 @@
 	}
 
 	//#region Detect language
-	const supportedLangs = LANGS;
+	const supportedLangs = ["ar-SA", "bn-BD", "ca-ES", "cs-CZ", "da-DK", "de-DE", "el-GR", "en-US", "es-ES", "fr-FR", "hr-HR", "ht-HT", "hu-HU", "id-ID", "it-IT", "ja-JP", "ja-KS", "jbo-EN", "kab-KAB", "kn-IN", "ko-GS", "ko-KR", "lo-LA", "nl-NL", "no-NO", "pl-PL", "pt-PT", "ro-RO", "ru-RU", "si-LK", "sk-SK", "sv-SE", "th-TH", "tr-TR", "ug-CN", "uk-UA", "uz-UZ", "vi-VN", "zh-CN", "zh-TW"];
 	/** @type { string } */
 	let lang = localStorage.getItem('lang');
 	if (lang == null || !supportedLangs.includes(lang)) {

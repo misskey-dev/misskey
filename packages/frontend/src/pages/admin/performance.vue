@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps">
 							<SearchMarker>
 								<MkSwitch v-model="fttForm.state.enableFanoutTimeline">
-									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #label><SearchLabel>{{ i18n.ts.enable }} FTT</SearchLabel><span v-if="fttForm.modifiedStates.enableFanoutTimeline" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #caption>
 										<div><SearchText>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</SearchText></div>
 										<div><MkLink target="_blank" url="https://misskey-hub.net/docs/for-admin/features/ftt/">{{ i18n.ts.details }}</MkLink></div>
@@ -123,7 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<SearchMarker>
 								<MkSwitch v-model="rbtForm.state.enableReactionsBuffering">
-									<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #label><SearchLabel>{{ i18n.ts.enable }} RBT</SearchLabel><span v-if="rbtForm.modifiedStates.enableReactionsBuffering" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #caption><SearchText>{{ i18n.ts._serverSettings.reactionsBufferingDescription }}</SearchText></template>
 								</MkSwitch>
 							</SearchMarker>
@@ -143,18 +143,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<MkSwitch v-model="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
-								<template #label><SearchLabel>{{ i18n.ts.enable }}</SearchLabel><span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #label><SearchLabel>Performance - Remote Notes Cleaning: {{ i18n.ts.enable }}</SearchLabel><span v-if="remoteNotesCleaningForm.modifiedStates.enableRemoteNotesCleaning" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #caption><SearchText>{{ i18n.ts._serverSettings.remoteNotesCleaning_description }}</SearchText></template>
 							</MkSwitch>
 
 							<template v-if="remoteNotesCleaningForm.state.enableRemoteNotesCleaning">
 								<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningExpiryDaysForEachNotes" type="number">
-									<template #label><SearchLabel>{{ i18n.ts._serverSettings.remoteNotesCleaningExpiryDaysForEachNotes }}</SearchLabel> ({{ i18n.ts.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningExpiryDaysForEachNotes" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #label><SearchLabel>Performance - Remote Notes Cleaning: Expiry Days</SearchLabel> ({{ i18n.ts.inDays }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningExpiryDaysForEachNotes" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #suffix>{{ i18n.ts._time.day }}</template>
 								</MkInput>
 
 								<MkInput v-model="remoteNotesCleaningForm.state.remoteNotesCleaningMaxProcessingDurationInMinutes" type="number">
-									<template #label><SearchLabel>{{ i18n.ts._serverSettings.remoteNotesCleaningMaxProcessingDuration }}</SearchLabel> ({{ i18n.ts.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxProcessingDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #label><SearchLabel>Performance - Remote Notes Cleaning: Max Processing Duration</SearchLabel> ({{ i18n.ts.inMinutes }})<span v-if="remoteNotesCleaningForm.modifiedStates.remoteNotesCleaningMaxProcessingDurationInMinutes" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #suffix>{{ i18n.ts._time.minute }}</template>
 								</MkInput>
 							</template>

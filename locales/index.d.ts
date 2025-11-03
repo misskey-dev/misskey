@@ -235,6 +235,14 @@ export interface Locale extends ILocale {
      */
     "deleteAndEditConfirm": string;
     /**
+     * このノートをホームに変更する
+     */
+    "changeNoteVisibilityToHome": string;
+    /**
+     * このノートの公開範囲をホームに変更しますか？
+     */
+    "changeNoteVisibilityToHomeConfirm": string;
+    /**
      * リストに追加
      */
     "addToList": string;
@@ -242,6 +250,10 @@ export interface Locale extends ILocale {
      * アンテナに追加
      */
     "addToAntenna": string;
+    /**
+     * チャットルームに招待
+     */
+    "inviteToRoomChat": string;
     /**
      * メッセージを送信
      */
@@ -351,6 +363,10 @@ export interface Locale extends ILocale {
      */
     "unfollowConfirm": ParameterizedString<"name">;
     /**
+     * フォロー中のすべてのユーザーのフォローを解除しますか？この操作は取り消せません。
+     */
+    "unfollowAllConfirm": string;
+    /**
      * エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、「ドライブ」に追加されます。
      */
     "exportRequested": string;
@@ -454,6 +470,10 @@ export interface Locale extends ILocale {
      * フォロー解除
      */
     "unfollow": string;
+    /**
+     * 全員フォロー解除
+     */
+    "unfollowAll": string;
     /**
      * フォロー許可待ち
      */
@@ -1231,7 +1251,7 @@ export interface Locale extends ILocale {
      */
     "startChat": string;
     /**
-     * {n}人が読みました
+     * 既読 {n}
      */
     "nUsersRead": ParameterizedString<"n">;
     /**
@@ -2395,6 +2415,10 @@ export interface Locale extends ILocale {
      */
     "recentUsed": string;
     /**
+     * 理由
+     */
+    "reason": string;
+    /**
      * インストール
      */
     "install": string;
@@ -3351,6 +3375,10 @@ export interface Locale extends ILocale {
      */
     "typingUsers": ParameterizedString<"users">;
     /**
+     * 複数人が入力中
+     */
+    "multipleUsersTyping": string;
+    /**
      * 特定の日付にジャンプ
      */
     "jumpToSpecifiedDate": string;
@@ -4170,6 +4198,10 @@ export interface Locale extends ILocale {
      * ロールはありません
      */
     "noRole": string;
+    /**
+     * ロールへアサイン
+     */
+    "assignRole": string;
     /**
      * 一般ユーザー
      */

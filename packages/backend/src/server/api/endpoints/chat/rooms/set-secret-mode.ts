@@ -25,7 +25,7 @@ export const meta = {
 		},
 
 		accessDenied: {
-			message: 'You are not the owner of this room.',
+			message: 'You are not the owner or member of this room.',
 			code: 'ACCESS_DENIED',
 			id: '78a07b61-c344-4339-b2c2-140ea33a3c2b',
 		},
@@ -58,8 +58,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRoom);
 			}
 
-			// Only room owner can change secret mode
-			if (room.ownerId !== me.id) {
+			// Only room owner or member can change secret mode
+			if (room.ownerId !== me.id && !await this.chatService.isRoomMember(room, me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

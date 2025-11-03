@@ -78,6 +78,7 @@ export class ChatEntityService {
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
+			reads: message.reads || [], // 既読ユーザーIDの配列
 			isSystemMessage: message.isSystemMessage,
 			meta: message.meta,
 		};
@@ -155,6 +156,7 @@ export class ChatEntityService {
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions,
+			reads: message.reads || [], // 既読ユーザーIDの配列
 			isSystemMessage: message.isSystemMessage,
 			meta: message.meta,
 		};
@@ -210,6 +212,7 @@ export class ChatEntityService {
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
+			reads: message.reads || [], // 既読ユーザーIDの配列
 			isSystemMessage: message.isSystemMessage,
 			meta: message.meta,
 		};

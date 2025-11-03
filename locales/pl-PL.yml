@@ -1600,3 +1600,5 @@ _imageEffector:
     color: "Kolor"
     opacity: "Przezroczystość"
     lightness: "Rozjaśnij"
+assignRole: "Przypisano do roli"
+unassignRole: "Usunięto z roli"

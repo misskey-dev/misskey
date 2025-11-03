@@ -83,7 +83,7 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
 						// SUSPENDED
 						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
-							await showSuspendedDialog();
+							await showSuspendedDialog(res.error.reason);
 						}
 					} else if (res.error.id === 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a') {
 						// USER_IS_DELETED
@@ -182,6 +182,11 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 	}));
 
 	await addAccount(host, me, token);
+
+	// ログイン成功時に凍結されている場合は凍結理由を表示
+	if (me.isSuspended && (me as any).suspendedReason) {
+		await showSuspendedDialog((me as any).suspendedReason);
+	}
 
 	if (redirect) {
 		// 他のタブは再読み込みするだけ

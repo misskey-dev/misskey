@@ -463,6 +463,32 @@ export function getNoteMenu(props: {
 					action: delEdit,
 				});
 			}
+
+			// 管理人・モデレーター限定: publicのノートをhomeに変更
+			if (($i.isModerator || $i.isAdmin) && appearNote.visibility === 'public') {
+				menuItems.push({
+					icon: 'ti ti-home',
+					text: i18n.ts.changeNoteVisibilityToHome,
+					action: async () => {
+						const confirm = await os.confirm({
+							type: 'question',
+							text: i18n.ts.changeNoteVisibilityToHomeConfirm,
+						});
+						if (confirm.canceled) return;
+
+						await misskeyApi('notes/update-visibility', {
+							noteId: appearNote.id,
+							visibility: 'home',
+						});
+
+						// ノートのvisibilityを更新
+						appearNote.visibility = 'home';
+
+						os.toast(i18n.ts.done);
+					},
+				});
+			}
+
 			menuItems.push({
 				icon: 'ti ti-trash',
 				text: i18n.ts.delete,

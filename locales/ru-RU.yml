@@ -2280,3 +2280,5 @@ _imageEffector:
     opacity: "Непрозрачность"
     lightness: "Осветление"
 drafts: "Черновик"
+assignRole: "Роль назначена"
+unassignRole: "Роль отозвана"

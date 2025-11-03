@@ -46,7 +46,7 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	private async getRankingOf(name: string, windowRange: number, threshold: number): Promise<string[]> {
+	private async getRankingOf(name: string, windowRange: number, threshold: number, scoreThreshold = 1): Promise<string[]> {
 		const currentWindow = this.getCurrentWindow(windowRange);
 		const previousWindow = currentWindow - 1;
 
@@ -58,19 +58,42 @@ export class FeaturedService {
 		const [currentRankingResult, previousRankingResult] = await redisPipeline.exec().then(result => result ? result.map(r => (r[1] ?? []) as string[]) : [[], []]);
 
 		const ranking = new Map<string, number>();
+		const currentScores = new Map<string, number>();
+
+		// 現在窓のスコアを一旦全て保存（フィルタリングしない）
 		for (let i = 0; i < currentRankingResult.length; i += 2) {
 			const noteId = currentRankingResult[i];
 			const score = parseInt(currentRankingResult[i + 1], 10);
-			ranking.set(noteId, score);
+			currentScores.set(noteId, score);
 		}
+
+		// 前窓のスコアと合算して最終的なフィルタリング
 		for (let i = 0; i < previousRankingResult.length; i += 2) {
 			const noteId = previousRankingResult[i];
-			const score = parseInt(previousRankingResult[i + 1], 10);
-			const exist = ranking.get(noteId);
-			if (exist != null) {
-				ranking.set(noteId, (exist + score) / 2);
+			const previousScore = parseInt(previousRankingResult[i + 1], 10);
+			const currentScore = currentScores.get(noteId);
+
+			if (currentScore != null) {
+				// 現在窓と前窓の両方にある場合：平均を計算
+				const finalScore = (currentScore + previousScore) / 2;
+				if (finalScore >= scoreThreshold) {
+					ranking.set(noteId, finalScore);
+				}
 			} else {
-				ranking.set(noteId, score);
+				// 前窓のみにある場合：前窓のスコアをチェック
+				if (previousScore >= scoreThreshold) {
+					ranking.set(noteId, previousScore);
+				}
+			}
+		}
+
+		// 現在窓のみにあるノートをチェック
+		for (const [noteId, currentScore] of currentScores) {
+			if (!ranking.has(noteId)) {
+				// 現在窓のみにある場合：現在窓のスコアをチェック
+				if (currentScore >= scoreThreshold) {
+					ranking.set(noteId, currentScore);
+				}
 			}
 		}
 
@@ -114,28 +137,28 @@ export class FeaturedService {
 	}
 
 	@bindThis
-	public getGlobalNotesRanking(threshold: number): Promise<MiNote['id'][]> {
-		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, threshold);
+	public getGlobalNotesRanking(threshold: number, scoreThreshold = 15): Promise<MiNote['id'][]> {
+		return this.getRankingOf('featuredGlobalNotesRanking', GLOBAL_NOTES_RANKING_WINDOW, threshold, scoreThreshold);
 	}
 
 	@bindThis
-	public getGalleryPostsRanking(threshold: number): Promise<MiGalleryPost['id'][]> {
-		return this.getRankingOf('featuredGalleryPostsRanking', GALLERY_POSTS_RANKING_WINDOW, threshold);
+	public getGalleryPostsRanking(threshold: number, scoreThreshold = 1): Promise<MiGalleryPost['id'][]> {
+		return this.getRankingOf('featuredGalleryPostsRanking', GALLERY_POSTS_RANKING_WINDOW, threshold, scoreThreshold);
 	}
 
 	@bindThis
-	public getInChannelNotesRanking(channelId: MiNote['channelId'], threshold: number): Promise<MiNote['id'][]> {
-		return this.getRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, threshold);
+	public getInChannelNotesRanking(channelId: MiNote['channelId'], threshold: number, scoreThreshold = 1): Promise<MiNote['id'][]> {
+		return this.getRankingOf(`featuredInChannelNotesRanking:${channelId}`, GLOBAL_NOTES_RANKING_WINDOW, threshold, scoreThreshold);
 	}
 
 	@bindThis
-	public getPerUserNotesRanking(userId: MiUser['id'], threshold: number): Promise<MiNote['id'][]> {
-		return this.getRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, threshold);
+	public getPerUserNotesRanking(userId: MiUser['id'], threshold: number, scoreThreshold = 1): Promise<MiNote['id'][]> {
+		return this.getRankingOf(`featuredPerUserNotesRanking:${userId}`, PER_USER_NOTES_RANKING_WINDOW, threshold, scoreThreshold);
 	}
 
 	@bindThis
-	public getHashtagsRanking(threshold: number): Promise<string[]> {
-		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, threshold);
+	public getHashtagsRanking(threshold: number, scoreThreshold = 1): Promise<string[]> {
+		return this.getRankingOf('featuredHashtagsRanking', HASHTAG_RANKING_WINDOW, threshold, scoreThreshold);
 	}
 
 	@bindThis

@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="password"
 			ref="passwordPageEl"
 
-			:user="userInfo!"
+			:user="userForPasswordScreen"
 			:needCaptcha="needCaptcha"
 
 			@passwordSubmitted="onPasswordSubmitted"
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
+import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
@@ -106,11 +106,34 @@ const needCaptcha = ref(false);
 
 const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 const password = ref('');
+const submittedUsername = ref('');
 
 //#region Passkey Passwordless
 const credentialRequest = shallowRef<CredentialRequestOptions | null>(null);
 const passkeyContext = ref('');
 const doingPasskeyFromInputPage = ref(false);
+
+type PasswordScreenUser = {
+	username: string;
+	name: string | null;
+	avatarUrl: string | null;
+};
+
+const userForPasswordScreen = computed<PasswordScreenUser>(() => {
+	if (userInfo.value) {
+		return {
+			username: userInfo.value.username,
+			name: userInfo.value.name,
+			avatarUrl: userInfo.value.avatarUrl,
+		};
+	}
+	// userInfoがnullの場合（凍結ユーザーなど）のフォールバック
+	return {
+		username: submittedUsername.value,
+		name: submittedUsername.value,
+		avatarUrl: null,
+	};
+});
 
 function onPasskeyLogin(): void {
 	if (webAuthnSupported()) {
@@ -145,12 +168,17 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 				onSigninApiError();
 			}
 		}).catch(onSigninApiError);
-	} else if (userInfo.value != null) {
-		tryLogin({
-			username: userInfo.value.username,
-			password: password.value,
-			credential: credential.toJSON() as any,
-		});
+	} else {
+		const username = userInfo.value?.username || submittedUsername.value;
+		if (username) {
+			tryLogin({
+				username,
+				password: password.value,
+				credential: credential.toJSON() as any,
+			});
+		} else {
+			onSigninApiError();
+		}
 	}
 }
 
@@ -161,21 +189,31 @@ function onUseTotp(): void {
 
 async function onUsernameSubmitted(username: string) {
 	waiting.value = true;
+	submittedUsername.value = username;
 
-	userInfo.value = await misskeyApi('users/show', {
-		username,
-	}).catch(() => null);
+	try {
+		userInfo.value = await misskeyApi('users/show', {
+			username,
+		}).catch(() => null);
 
-	await tryLogin({
-		username,
-	});
+		await tryLogin({
+			username,
+		});
+	} catch (err) {
+		// ユーザー名のみでの呼び出し時にエラーが発生した場合
+		// パスワード画面への遷移はサーバーの応答に基づいて処理される
+		waiting.value = false;
+	}
 }
 
 async function onPasswordSubmitted(pw: PwResponse) {
 	waiting.value = true;
 	password.value = pw.password;
 
-	if (userInfo.value == null) {
+	// userInfoがnullでも、submittedUsernameを使ってログイン試行
+	const username = userInfo.value?.username || submittedUsername.value;
+
+	if (!username) {
 		await os.alert({
 			type: 'error',
 			title: i18n.ts.noSuchUser,
@@ -183,23 +221,25 @@ async function onPasswordSubmitted(pw: PwResponse) {
 		});
 		waiting.value = false;
 		return;
-	} else {
-		await tryLogin({
-			username: userInfo.value.username,
-			password: pw.password,
-			'hcaptcha-response': pw.captcha.hCaptchaResponse,
-			'm-captcha-response': pw.captcha.mCaptchaResponse,
-			'g-recaptcha-response': pw.captcha.reCaptchaResponse,
-			'turnstile-response': pw.captcha.turnstileResponse,
-			'testcaptcha-response': pw.captcha.testcaptchaResponse,
-		} as any);
 	}
+
+	await tryLogin({
+		username,
+		password: pw.password,
+		'hcaptcha-response': pw.captcha.hCaptchaResponse,
+		'm-captcha-response': pw.captcha.mCaptchaResponse,
+		'g-recaptcha-response': pw.captcha.reCaptchaResponse,
+		'turnstile-response': pw.captcha.turnstileResponse,
+		'testcaptcha-response': pw.captcha.testcaptchaResponse,
+	} as any);
 }
 
 async function onTotpSubmitted(token: string) {
 	waiting.value = true;
 
-	if (userInfo.value == null) {
+	const username = userInfo.value?.username || submittedUsername.value;
+
+	if (!username) {
 		await os.alert({
 			type: 'error',
 			title: i18n.ts.noSuchUser,
@@ -207,18 +247,18 @@ async function onTotpSubmitted(token: string) {
 		});
 		waiting.value = false;
 		return;
-	} else {
-		await tryLogin({
-			username: userInfo.value.username,
-			password: password.value,
-			token,
-		});
 	}
+
+	await tryLogin({
+		username,
+		password: password.value,
+		token,
+	});
 }
 
 async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promise<Misskey.entities.SigninFlowResponse> {
 	const _req = {
-		username: req.username ?? userInfo.value?.username,
+		username: req.username ?? userInfo.value?.username ?? submittedUsername.value,
 		...req,
 	};
 
@@ -307,7 +347,9 @@ function onSigninApiError(err?: any): void {
 			break;
 		}
 		case 'e03a5f46-d309-4865-9b69-56282d94e1eb': {
-			showSuspendedDialog();
+			// Get reason from error response if available
+			const reason = err?.reason || null;
+			showSuspendedDialog(reason);
 			break;
 		}
 		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {

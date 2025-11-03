@@ -26,6 +26,8 @@ import {
 	MiClipNote,
 	MiDriveFile,
 	MiDriveFolder,
+	MiDrawingRoomSettings,
+	MiDrawingUserSettings,
 	MiEmoji,
 	MiFlash,
 	MiFlashLike,
@@ -247,6 +249,18 @@ const $instancesRepository: Provider = {
 const $emojisRepository: Provider = {
 	provide: DI.emojisRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiEmoji).extend(miRepository as MiRepository<MiEmoji>),
+	inject: [DI.db],
+};
+
+const $drawingRoomSettingsRepository: Provider = {
+	provide: DI.drawingRoomSettingsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiDrawingRoomSettings).extend(miRepository as MiRepository<MiDrawingRoomSettings>),
+	inject: [DI.db],
+};
+
+const $drawingUserSettingsRepository: Provider = {
+	provide: DI.drawingUserSettingsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiDrawingUserSettings).extend(miRepository as MiRepository<MiDrawingUserSettings>),
 	inject: [DI.db],
 };
 
@@ -574,6 +588,8 @@ const $reversiGamesRepository: Provider = {
 		$followRequestsRepository,
 		$instancesRepository,
 		$emojisRepository,
+		$drawingRoomSettingsRepository,
+		$drawingUserSettingsRepository,
 		$driveFilesRepository,
 		$driveFoldersRepository,
 		$metasRepository,
@@ -652,6 +668,8 @@ const $reversiGamesRepository: Provider = {
 		$followRequestsRepository,
 		$instancesRepository,
 		$emojisRepository,
+		$drawingRoomSettingsRepository,
+		$drawingUserSettingsRepository,
 		$driveFilesRepository,
 		$driveFoldersRepository,
 		$metasRepository,

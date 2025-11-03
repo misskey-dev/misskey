@@ -71,11 +71,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
 
-			return await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
+			const packed = await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
 				schema: 'MeDetailed',
 				includeSecrets: isSecure,
 				userProfile,
 			});
+
+			// 凍結されている場合は凍結理由も含める
+			if (userProfile.user!.isSuspended && userProfile.suspendedReason) {
+				(packed as any).suspendedReason = userProfile.suspendedReason;
+			}
+
+			return packed;
 		});
 	}
 }

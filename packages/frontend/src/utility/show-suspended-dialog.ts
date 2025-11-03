@@ -6,10 +6,14 @@
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
-export function showSuspendedDialog() {
+export function showSuspendedDialog(reason?: string) {
+	const text = reason
+		? `${i18n.ts.yourAccountSuspendedDescription}\n\n${i18n.ts.reason}: ${reason}`
+		: i18n.ts.yourAccountSuspendedDescription;
+
 	return os.alert({
 		type: 'error',
 		title: i18n.ts.yourAccountSuspendedTitle,
-		text: i18n.ts.yourAccountSuspendedDescription,
+		text: text,
 	});
 }

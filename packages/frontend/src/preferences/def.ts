@@ -304,7 +304,7 @@ export const PREF_DEF = definePreferences({
 		default: 'medium' as 'small' | 'medium' | 'large',
 	},
 	limitWidthOfReaction: {
-		default: true,
+		default: false,
 	},
 	forceShowAds: {
 		default: false,
@@ -441,7 +441,7 @@ export const PREF_DEF = definePreferences({
 	},
 
 	'sound.masterVolume': {
-		default: 0.5,
+		default: 0.3,
 	},
 	'sound.notUseSound': {
 		default: false,
@@ -450,19 +450,19 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	'sound.on.note': {
-		default: { type: 'syuilo/n-aec', volume: 1 } as SoundStore,
+		default: { type: 'syuilo/down', volume: 1 } as SoundStore,
 	},
 	'sound.on.noteMy': {
-		default: { type: 'syuilo/n-cea-4va', volume: 1 } as SoundStore,
+		default: { type: 'syuilo/up', volume: 1 } as SoundStore,
 	},
 	'sound.on.notification': {
-		default: { type: 'syuilo/n-ea', volume: 1 } as SoundStore,
+		default: { type: 'syuilo/pope2', volume: 1 } as SoundStore,
 	},
 	'sound.on.reaction': {
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
 	'sound.on.chatMessage': {
-		default: { type: 'syuilo/waon', volume: 1 } as SoundStore,
+		default: { type: 'syuilo/pope1', volume: 1 } as SoundStore,
 	},
 
 	'deck.alwaysShowMainColumn': {
@@ -491,7 +491,7 @@ export const PREF_DEF = definePreferences({
 	},
 
 	'chat.showSenderName': {
-		default: false,
+		default: true,
 	},
 	'chat.sendOnEnter': {
 		default: false,

@@ -1,6 +1,10 @@
 {
 	"search.exclude": {
-		"**/node_modules": true
+		"**/node_modules": true,
+		"**/built": true,
+		"**/built-test": true,
+		"**/js-built": true,
+		"**/build": true
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"files.associations": {

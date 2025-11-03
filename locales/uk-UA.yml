@@ -1655,3 +1655,5 @@ _imageEffector:
     color: "Колір"
     opacity: "Непрозорість"
     lightness: "Яскравість"
+assignRole: "Призначено роль"
+unassignRole: "Роль знято"

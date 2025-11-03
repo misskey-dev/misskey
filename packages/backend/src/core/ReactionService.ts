@@ -209,18 +209,20 @@ export class ReactionService {
 				.execute();
 		}
 
-		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		// リアクション時のfeaturedランキング更新（スコア+1、セルフ以外・3日間の時間窓内）
 		if (
-			Math.random() < 0.3 &&
 			note.userId !== user.id &&
 			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
 		) {
 			if (note.channelId != null) {
-				if (note.replyId == null) {
+				// チャンネル内ノート：パブリック・ローカルユーザー・非リプライの条件で更新
+				if (note.visibility === 'public' && note.userHost == null && note.replyId == null) {
 					this.featuredService.updateInChannelNotesRanking(note.channelId, note.id, 1);
 				}
 			} else {
+				// グローバルノート：パブリック・ローカルユーザー・非リプライの条件で更新
 				if (note.visibility === 'public' && note.userHost == null && note.replyId == null) {
+					// グローバル注目ノートのランキングを更新（スコア+1）
 					this.featuredService.updateGlobalNotesRanking(note.id, 1);
 					this.featuredService.updatePerUserNotesRanking(note.userId, note.id, 1);
 				}

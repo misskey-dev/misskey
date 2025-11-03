@@ -56,6 +56,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 			</MkTextarea>
 
+			<MkTextarea v-if="!isSystem" v-model="suspendedReason" manualSave>
+				<template #label>{{ i18n.ts.suspendedReason || 'Suspended Reason' }}</template>
+				<template #caption>{{ i18n.ts.suspendedReasonDescription || 'The reason why this user was suspended' }}</template>
+			</MkTextarea>
+
 			<!--
 				<FormSection>
 					<template #label>ActivityPub</template>
@@ -127,6 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton v-if="iAmModerator" inline danger style="margin-right: 8px;" @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 						<MkButton v-if="iAmModerator" inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
 					</div>
+					<MkButton v-if="$i.isAdmin" inline danger style="margin-right: 8px;" @click="unfollowAll">{{ i18n.ts.unfollowAll }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
 			</FormSection>
@@ -262,7 +268,8 @@ const moderator = ref(info.value.isModerator);
 const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
-const moderationNote = ref(info.value.moderationNote);
+const moderationNote = ref<string>(info.value.moderationNote ?? '');
+const suspendedReason = ref<string>(info.value.suspendedReason ?? '');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({
@@ -309,6 +316,11 @@ watch(moderationNote, async () => {
 	await refreshUser();
 });
 
+watch(suspendedReason, async () => {
+	await misskeyApi('admin/update-user-suspended-reason', { userId: user.value.id, text: suspendedReason.value });
+	await refreshUser();
+});
+
 async function refreshUser() {
 	const result = await _fetch_();
 	user.value = result.user;
@@ -318,7 +330,8 @@ async function refreshUser() {
 	silenced.value = info.value.isSilenced;
 	suspended.value = info.value.isSuspended;
 	isSystem.value = user.value.host == null && user.value.username.includes('.');
-	moderationNote.value = info.value.moderationNote;
+	moderationNote.value = info.value.moderationNote ?? '';
+	suspendedReason.value = info.value.suspendedReason ?? '';
 }
 
 async function updateRemoteUser() {
@@ -329,7 +342,7 @@ async function updateRemoteUser() {
 async function resetPassword() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.resetPasswordConfirm,
+		text: String(i18n.ts.resetPasswordConfirm),
 	});
 	if (confirm.canceled) {
 		return;
@@ -345,6 +358,15 @@ async function resetPassword() {
 }
 
 async function toggleSuspend(v) {
+	if (v && (!suspendedReason.value || suspendedReason.value.trim() === '')) {
+		suspended.value = !v;
+		os.alert({
+			type: 'error',
+			text: 'Suspend reason is required before suspending a user.',
+		});
+		return;
+	}
+
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: v ? i18n.ts.suspendConfirm : i18n.ts.unsuspendConfirm,
@@ -360,7 +382,7 @@ async function toggleSuspend(v) {
 async function unsetUserAvatar() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserAvatarConfirm,
+		text: String(i18n.ts.unsetUserAvatarConfirm),
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -379,7 +401,7 @@ async function unsetUserAvatar() {
 async function unsetUserBanner() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.unsetUserBannerConfirm,
+		text: String(i18n.ts.unsetUserBannerConfirm),
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -398,7 +420,7 @@ async function unsetUserBanner() {
 async function deleteAllFiles() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAllFilesConfirm,
+		text: String(i18n.ts.deleteAllFilesConfirm),
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
@@ -414,15 +436,39 @@ async function deleteAllFiles() {
 	await refreshUser();
 }
 
-async function deleteAccount() {
+async function unfollowAll() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.deleteAccountConfirm,
+		text: String(i18n.ts.unfollowAllConfirm),
 	});
 	if (confirm.canceled) return;
 
 	const typed = await os.inputText({
-		text: i18n.tsx.typeToConfirm({ x: user.value?.username }),
+		text: String(i18n.tsx.typeToConfirm({ x: user.value?.username })),
+	});
+	if (typed.canceled) return;
+
+	if (typed.result === user.value?.username) {
+		await os.apiWithDialog('admin/federation/remove-all-following-by-user-id', {
+			userId: user.value.id,
+		});
+	} else {
+		os.alert({
+			type: 'error',
+			text: 'input not match',
+		});
+	}
+}
+
+async function deleteAccount() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: String(i18n.ts.deleteAccountConfirm),
+	});
+	if (confirm.canceled) return;
+
+	const typed = await os.inputText({
+		text: String(i18n.tsx.typeToConfirm({ x: user.value?.username })),
 	});
 	if (typed.canceled) return;
 
@@ -477,7 +523,7 @@ async function assignRole() {
 
 async function unassignRole(role: typeof info.value.roles[number], ev: MouseEvent) {
 	os.popupMenu([{
-		text: i18n.ts.unassign,
+		text: String(i18n.ts.unassign),
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
