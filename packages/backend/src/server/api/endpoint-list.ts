@@ -335,6 +335,7 @@ export * as 'notes/replies' from './endpoints/notes/replies.js';
 export * as 'notes/search' from './endpoints/notes/search.js';
 export * as 'notes/highlight-illustrations' from './endpoints/notes/highlight-illustrations.js';
 export * as 'notes/illustration' from './endpoints/notes/illustration.js';
+export * as 'notes/illustration-ranking' from './endpoints/notes/illustration-ranking.js';
 export * as 'notes/illustrations-by-tag' from './endpoints/notes/illustrations-by-tag.js';
 export * as 'notes/search-by-tag' from './endpoints/notes/search-by-tag.js';
 export * as 'notes/show' from './endpoints/notes/show.js';

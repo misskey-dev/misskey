@@ -536,6 +536,8 @@ import type {
 	NotesHybridTimelineResponse,
 	NotesIllustrationRequest,
 	NotesIllustrationResponse,
+	NotesIllustrationRankingRequest,
+	NotesIllustrationRankingResponse,
 	NotesIllustrationsByTagRequest,
 	NotesIllustrationsByTagResponse,
 	NotesLocalTimelineRequest,
@@ -1037,6 +1039,7 @@ export type Endpoints = {
 	'notes/highlight-illustrations': { req: NotesHighlightIllustrationsRequest; res: NotesHighlightIllustrationsResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/illustration': { req: NotesIllustrationRequest; res: NotesIllustrationResponse };
+	'notes/illustration-ranking': { req: NotesIllustrationRankingRequest; res: NotesIllustrationRankingResponse };
 	'notes/illustrations-by-tag': { req: NotesIllustrationsByTagRequest; res: NotesIllustrationsByTagResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };

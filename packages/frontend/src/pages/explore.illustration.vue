@@ -96,14 +96,10 @@ const recentIllustrationsPaginator = markRaw(new Paginator('notes/illustration',
 	limit: 10,
 }));
 
-// ランキング用Paginator
-const rankingIllustrationsPaginator = markRaw(new Paginator('notes/search-by-tag', {
+// ランキング用Paginator（リアクション数順、直近3ヶ月）
+const rankingIllustrationsPaginator = markRaw(new Paginator('notes/illustration-ranking', {
 	limit: 10,
 	offsetMode: true,
-	params: {
-		query: [['絵'], ['イラスト'], ['illustration']],
-		withFiles: true,
-	},
 }));
 
 // 初期データ読み込み

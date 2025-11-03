@@ -2333,6 +2333,8 @@ declare namespace entities {
         NotesHybridTimelineResponse,
         NotesIllustrationRequest,
         NotesIllustrationResponse,
+        NotesIllustrationRankingRequest,
+        NotesIllustrationRankingResponse,
         NotesIllustrationsByTagRequest,
         NotesIllustrationsByTagResponse,
         NotesLocalTimelineRequest,
@@ -3448,6 +3450,12 @@ type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['request
 
 // @public (undocumented)
 type NotesHybridTimelineResponse = operations['notes___hybrid-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationRankingRequest = operations['notes___illustration-ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationRankingResponse = operations['notes___illustration-ranking']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesIllustrationRequest = operations['notes___illustration']['requestBody']['content']['application/json'];
