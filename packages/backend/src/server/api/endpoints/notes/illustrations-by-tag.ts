@@ -75,6 +75,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// 画像付きノートのみ
 			query.andWhere('note.fileIds != \'{}\'');
 
+			// イラストハイライトから除外されているファイルを除外
+			query.leftJoin('drive_file', 'file', 'file.id = ANY(note."fileIds")')
+				.andWhere('(file."excludedFromIllustrationHighlight" IS NULL OR file."excludedFromIllustrationHighlight" = false)');
+
 			this.queryService.generateBlockedHostQueryForNote(query);
 			this.queryService.generateSuspendedUserQueryForNote(query);
 

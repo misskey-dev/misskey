@@ -72,6 +72,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel')
+				// イラストハイライトから除外されているファイルを除外
+				.leftJoin('drive_file', 'file', 'file.id = ANY(note."fileIds")')
+				.andWhere('(file."excludedFromIllustrationHighlight" IS NULL OR file."excludedFromIllustrationHighlight" = false)')
 				.orderBy('note.id', 'DESC')
 				.limit(ps.limit);
 

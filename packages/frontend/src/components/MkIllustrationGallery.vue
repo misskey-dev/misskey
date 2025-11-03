@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			class="gallery-item"
 			:class="{ 'is-sensitive': isSensitiveNote(note) }"
 			@click="openNote(note.id)"
+			@contextmenu.prevent="onContextMenu($event, note)"
 		>
 			<img
 				v-if="note.files && note.files.length > 0"
@@ -54,6 +55,9 @@ import MkLoading from '@/components/global/MkLoading.vue';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { $i } from '@/i.js';
 
 const props = defineProps<{
 	paginator: any; // IPaginatorインターフェース
@@ -90,6 +94,54 @@ const shouldBlur = (note: Misskey.entities.Note): boolean => {
 	// NSFW設定に基づいてぼかしを適用
 	// force: 常にぼかし, ignore: 常に表示, それ以外: sensitiveならぼかし
 	return prefer.s.nsfw === 'force' || (isSensitiveNote(note) && prefer.s.nsfw !== 'ignore');
+};
+
+const onContextMenu = async (ev: MouseEvent, note: Misskey.entities.Note) => {
+	// 管理者・モデレーターのみ表示
+	if (!$i || (!$i.isAdmin && !$i.isModerator)) {
+		return;
+	}
+
+	if (!note.files || note.files.length === 0) {
+		return;
+	}
+
+	const fileId = note.files[0].id;
+
+	const menu = [
+		{
+			text: 'このイラストをハイライトから除外する',
+			icon: 'ti ti-eye-off',
+			action: async () => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: 'このイラストをハイライトから除外しますか？',
+				});
+
+				if (canceled) return;
+
+				try {
+					await misskeyApi('drive/files/toggle-illustration-highlight-exclusion', {
+						fileId: fileId,
+						excluded: true,
+					});
+
+					os.success();
+
+					// リストを再読み込み
+					props.paginator.reload();
+				} catch (error) {
+					console.error('Failed to exclude illustration:', error);
+					os.alert({
+						type: 'error',
+						text: '除外に失敗しました',
+					});
+				}
+			},
+		},
+	];
+
+	os.contextMenu(menu, ev);
 };
 
 onMounted(() => {

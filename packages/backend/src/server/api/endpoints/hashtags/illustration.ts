@@ -58,6 +58,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('note.visibility = \'public\'') // Public投稿のみ
 				.andWhere('note.channelId IS NULL')
 				.andWhere('note.tags != \'{}\'') // タグが存在するもののみ
+				// イラストハイライトから除外されているファイルを除外
+				.leftJoin('drive_file', 'file', 'file.id = ANY(note."fileIds")')
+				.andWhere('(file."excludedFromIllustrationHighlight" IS NULL OR file."excludedFromIllustrationHighlight" = false)')
 				.groupBy('tag')
 				.orderBy('count', 'DESC')
 				.limit(ps.limit);
