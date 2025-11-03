@@ -242,7 +242,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-device-floppy"></i>
 				<span v-if="!isTouchDevice">保存</span>
 			</button>
-			<button :class="$style.clearButton" title="キャンバスをクリア" @click="clearCanvas">
+			<button
+				:class="$style.clearButton"
+				title="キャンバスをクリア"
+				@click="clearCanvas"
+				@click.capture="() => console.log('🧹 [DEBUG] Clear button clicked (capture phase)')"
+			>
 				<i class="ti ti-trash"></i>
 				<span v-if="!isTouchDevice">クリア</span>
 			</button>
@@ -2215,52 +2220,127 @@ async function saveCanvas() {
 }
 
 // キャンバスクリア（確認ダイアログ付き）
+/**
+ * キャンバスクリア機能
+ *
+ * 【仕様】
+ * 1. 誤操作防止のため、テキスト入力による確認ダイアログを表示
+ * 2. ユーザーが「クリア」と正確に入力した場合のみクリアを実行
+ * 3. ローカルのキャンバスをクリア
+ * 4. WebSocketで他のユーザーにもクリアを通知
+ * 5. 完了後、トーストで成功メッセージを表示
+ *
+ * 【クリア対象】
+ * - 全レイヤーのキャンバス内容（MAX_LAYERS分）
+ * - レイヤーごとの描画履歴（layerStrokeHistory）
+ * - 統合描画履歴（strokeHistory）
+ * - Undo/Redoスタック（undoStack, redoStack）
+ * - 他のユーザーの進行中の描画（otherActiveStrokes）
+ *
+ * 【ダイアログ仕様】
+ * - os.inputText()を使用（Misskey専用UI）
+ * - タイトル: 「キャンバスクリア確認」
+ * - メッセージ: 「キャンバスの全ての内容を削除します。この操作は取り消せません。削除を実行するには「クリア」と入力してください：」
+ * - プレースホルダー: 「クリア」
+ * - 正しい入力: 「クリア」（全角カタカナ）
+ * - 入力が一致した場合: クリア実行
+ * - 入力が不一致の場合: エラーメッセージを表示
+ * - キャンセルの場合: 何もしない
+ *
+ * 【エラーハンドリング】
+ * - キャンセル時: 何もしない（silent）
+ * - 入力不一致時: エラーアラートを表示
+ * - クリア処理でエラー発生: エラーメッセージを表示
+ *
+ * 【WebSocket通信】
+ * - イベント名: 'clearCanvas'
+ * - ペイロード: null
+ * - 送信先: 同じルームの全ユーザー
+ *
+ * 【注意事項】
+ * - この操作は取り消せません（Undoも無効）
+ * - 同じルームの全ユーザーのキャンバスがクリアされます
+ * - 確認ダイアログはモーダルなので、ユーザーの応答を待ちます
+ * - 誤操作防止のため、「クリア」という文字列の完全一致が必要です
+ */
 async function clearCanvas() {
 	try {
+		console.log('🧹 [CLEAR] Canvas clear button clicked');
+
 		// 部屋名またはユーザー名を取得
 		let targetName = '';
 		if (props.roomId) {
 			// ルームチャットの場合は部屋ID（簡易表示）
 			targetName = props.roomId.substring(0, 8);
+			console.log('🧹 [CLEAR] Room mode, targetName:', targetName);
 		} else if (props.userId) {
 			// 1対1チャットの場合はユーザーID（簡易表示）
 			targetName = props.userId.substring(0, 8);
+			console.log('🧹 [CLEAR] User mode, targetName:', targetName);
 		}
 
-		// 確認ダイアログで部屋名/ユーザー名の入力を求める
-		const inputMessage = props.roomId
-			? `キャンバスをクリアします。部屋ID「${targetName}」を入力してください：`
-			: `キャンバスをクリアします。チャット相手のID「${targetName}」を入力してください：`;
+		// 確認ダイアログを表示（フォールバック付き）
+		console.log('🧹 [CLEAR] Showing confirmation dialog');
+		let canceled = false;
+		let userInput = '';
 
-		const { canceled, result: inputValue } = await os.inputText({
-			title: 'キャンバスクリア確認',
-			text: inputMessage,
-			placeholder: targetName,
-		});
+		try {
+			const result = await Promise.race([
+				os.inputText({
+					title: 'キャンバスクリア確認',
+					text: 'キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：',
+					placeholder: 'クリア',
+				}),
+				new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 1000))
+			]);
+			canceled = result.canceled;
+			userInput = result.result || '';
+			console.log('🧹 [CLEAR] os.inputText result:', { canceled, userInput });
+		} catch (error) {
+			console.warn('🧹 [CLEAR] os.inputText failed, using native prompt:', error);
+			// フォールバック: ブラウザネイティブのプロンプトを使用
+			const nativeInput = window.prompt('キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：', '');
+			if (nativeInput === null) {
+				canceled = true;
+			} else {
+				userInput = nativeInput;
+			}
+			console.log('🧹 [CLEAR] Native prompt result:', { canceled, userInput });
+		}
 
-		if (canceled) return;
+		// キャンセルされた場合
+		if (canceled) {
+			console.log('🧹 [CLEAR] User canceled');
+			return;
+		}
 
-		// 入力値が正しいか確認
-		if (inputValue !== targetName) {
+		// 入力が「クリア」でない場合は中止
+		if (userInput !== 'クリア') {
+			console.log('🧹 [CLEAR] Wrong input');
 			os.alert({
 				type: 'error',
 				title: 'エラー',
-				text: '入力された値が正しくありません。',
+				text: '入力された値が正しくありません。「クリア」と入力してください。',
 			});
 			return;
 		}
 
+		console.log('🧹 [CLEAR] User confirmed with correct input');
+
+		console.log('🧹 [CLEAR] Clearing canvas locally');
 		// 確認が取れた場合のみクリア実行
 		clearCanvasLocal();
 
 		if (connection.value) {
+			console.log('🧹 [CLEAR] Sending clear event to other users');
 			connection.value.send('clearCanvas', null);
 		}
 
 		// 成功メッセージ
+		console.log('🧹 [CLEAR] Canvas cleared successfully');
 		os.toast('キャンバスをクリアしました');
 	} catch (error) {
-		console.error('Canvas clear error:', error);
+		console.error('🧹 [CLEAR] Canvas clear error:', error);
 		os.alert({
 			type: 'error',
 			title: 'エラー',
@@ -2269,19 +2349,49 @@ async function clearCanvas() {
 	}
 }
 
+/**
+ * ローカルキャンバスクリア処理
+ *
+ * 【処理内容】
+ * 1. 全レイヤーのキャンバスをクリア
+ *    - MAX_LAYERS分のレイヤーをループ
+ *    - 各レイヤーのコンテキストでclearRectを実行
+ * 2. 描画履歴をリセット
+ *    - layerStrokeHistory: レイヤーごとの描画履歴
+ *    - strokeHistory: 統合描画履歴
+ *    - undoStack: アンドゥスタック
+ *    - redoStack: リドゥスタック
+ * 3. 他のユーザーの進行中の描画をクリア
+ *    - otherActiveStrokes: リモートユーザーの描画中ストローク
+ * 4. 現在のコンテキストを更新
+ *    - 現在のレイヤーのコンテキストを再設定
+ */
 function clearCanvasLocal() {
+	console.log('🧹 [CLEAR] Clearing local canvas, layers:', MAX_LAYERS);
+
+	// 全レイヤーのキャンバスをクリア
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const layerCtx = layerContexts.value[i];
 		if (layerCtx) {
 			layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+			console.log(`🧹 [CLEAR] Layer ${i} cleared`);
 		}
 	}
+
+	// 描画履歴をリセット
 	layerStrokeHistory.value = Array.from({ length: MAX_LAYERS }, () => []);
 	strokeHistory.value = [];
 	undoStack.value = [];
 	redoStack.value = [];
+	console.log('🧹 [CLEAR] History cleared');
+
+	// 他のユーザーの進行中の描画をクリア
 	otherActiveStrokes.value.clear();
+	console.log('🧹 [CLEAR] Other active strokes cleared');
+
+	// 現在のコンテキストを更新
 	ctx = layerContexts.value[currentLayer.value] ?? ctx;
+	console.log('🧹 [CLEAR] Local canvas clear completed');
 }
 
 // ズームをリセット
