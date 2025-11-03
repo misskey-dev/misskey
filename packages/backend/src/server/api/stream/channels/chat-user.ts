@@ -20,11 +20,8 @@ class ChatUserChannel extends Channel {
 	private typers: Record<string, Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
-	// レート制限用（お絵描き機能）
-	private lastDrawingStroke: number = 0;
+	// レート制限用（カーソル移動のみ）
 	private lastCursorMove: number = 0;
-	private drawingStrokeCount: number = 0;
-	private cursorMoveCount: number = 0;
 
 	constructor(
 		private chatService: ChatService,
@@ -129,27 +126,7 @@ class ChatUserChannel extends Channel {
 	// お絵描きストロークの処理
 	@bindThis
 	private async handleDrawingStroke(body: any) {
-		const now = Date.now();
-		const DRAWING_STROKE_RATE_LIMIT = 100; // 100ms間隔
-		const DRAWING_STROKE_BURST_LIMIT = 10; // 1秒間に10回まで
-
-		// レート制限チェック
-		if (now - this.lastDrawingStroke < DRAWING_STROKE_RATE_LIMIT) {
-			return; // レート制限によりスキップ
-		}
-
-		// バースト制限チェック
-		if (now - this.lastDrawingStroke < 1000) {
-			this.drawingStrokeCount++;
-			if (this.drawingStrokeCount > DRAWING_STROKE_BURST_LIMIT) {
-				return; // バースト制限によりスキップ
-			}
-		} else {
-			this.drawingStrokeCount = 1;
-		}
-
-		this.lastDrawingStroke = now;
-
+		// drawingStrokeは完了したストロークなので、レート制限を設けずすべて保存する
 		try {
 			const actor = this.user;
 			if (!actor) return;
@@ -182,16 +159,6 @@ class ChatUserChannel extends Channel {
 	// お絵描き進行状況の処理
 	@bindThis
 	private async handleDrawingProgress(body: any) {
-		const now = Date.now();
-		const DRAWING_PROGRESS_RATE_LIMIT = 50; // 50ms間隔（進行状況は高頻度）
-
-		// レート制限チェック
-		if (now - this.lastDrawingStroke < DRAWING_PROGRESS_RATE_LIMIT) {
-			return; // レート制限によりスキップ
-		}
-
-		this.lastDrawingStroke = now;
-
 		try {
 			const actor = this.user;
 			if (!actor) return;
@@ -209,7 +176,7 @@ class ChatUserChannel extends Channel {
 			const progressData = {
 				userName: actor.username || actor.name || 'Unknown',
 				userId: actor.id,
-				timestamp: now,
+				timestamp: Date.now(),
 				layer: layerIndex,
 				points: body.points.map((p: any) => ({
 					x: Math.min(Math.max(Math.round(p.x), 0), 4000),

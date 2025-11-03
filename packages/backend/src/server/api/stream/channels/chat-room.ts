@@ -22,11 +22,8 @@ class ChatRoomChannel extends Channel {
 	private typers: Record<string, Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
-	// レート制限用
-	private lastDrawingStroke: number = 0;
+	// レート制限用（カーソル移動のみ）
 	private lastCursorMove: number = 0;
-	private drawingStrokeCount: number = 0;
-	private cursorMoveCount: number = 0;
 
 	constructor(
 		private chatService: ChatService,
@@ -151,40 +148,19 @@ class ChatRoomChannel extends Channel {
 			case 'drawingStroke':
 				console.log(`🔍 [DEBUG] Processing drawing stroke for room ${this.roomId} from user ${this.user.id}`);
 
-				// レート制限: 10ms間隔制限 & 1秒間に100回まで（お絵かき用に緩和）
-				const now = Date.now();
-				if (now - this.lastDrawingStroke < 10) {
-					console.warn(`🔍 [SECURITY] Drawing stroke rate limit exceeded by user ${this.user.id}`);
+				// drawingStrokeは完了したストロークなので、レート制限を設けずすべて保存する
+				const strokeData = this.drawingCanvasService.normalizeStrokeData(this.roomId, this.user, body);
+				if (!strokeData) {
+					console.warn(`🔍 [SECURITY] Invalid drawing stroke payload rejected for room ${this.roomId}`);
 					return;
 				}
-				if (now - this.lastDrawingStroke < 1000) {
-					this.drawingStrokeCount++;
-					if (this.drawingStrokeCount > 100) {
-						console.warn(`🔍 [SECURITY] Drawing stroke burst limit exceeded by user ${this.user.id}`);
-						return;
-					}
-				} else {
-					this.drawingStrokeCount = 1;
-				}
-				this.lastDrawingStroke = now;
 
-			const strokeData = this.drawingCanvasService.normalizeStrokeData(this.roomId, this.user, body);
-			if (!strokeData) {
-				console.warn(`🔍 [SECURITY] Invalid drawing stroke payload rejected for room ${this.roomId}`);
-				return;
-			}
+				await this.drawingCanvasService.addStroke(this.roomId, strokeData);
 
-			await this.drawingCanvasService.addStroke(this.roomId, strokeData);
-
-			await this.chatService.broadcastDrawingStroke(this.roomId, this.user.id, strokeData);
+				await this.chatService.broadcastDrawingStroke(this.roomId, this.user.id, strokeData);
 				break;
 			case 'drawingProgress':
 				console.log(`🔍 [DEBUG] Processing drawing progress for room ${this.roomId} from user ${this.user.id}`);
-
-				// レート制限: 50ms間隔制限（進行状況は高頻度）
-				const progressNow = Date.now();
-				if (progressNow - this.lastDrawingStroke < 50) return; // 無言で制限（ログなし）
-				this.lastDrawingStroke = progressNow;
 
 				// セキュリティ: 描画データの詳細検証
 				if (!body || typeof body !== 'object') return;
@@ -210,7 +186,7 @@ class ChatRoomChannel extends Channel {
 					strokeWidth: body.strokeWidth,
 					opacity: body.opacity,
 				layer: layerIndex,
-					timestamp: progressNow,
+					timestamp: Date.now(),
 				};
 
 				// 描画進行状況をルーム内の他のユーザーに配信
