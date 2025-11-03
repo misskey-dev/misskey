@@ -238,15 +238,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-antenna-bars"></i>
 				<span v-if="!isTouchDevice">通信ログ</span>
 			</button>
-			<button :class="$style.saveButton" title="キャンバスを保存" @click="saveCanvas">
-				<i class="ti ti-device-floppy"></i>
-				<span v-if="!isTouchDevice">保存</span>
+			<button :class="$style.saveButton" title="キャンバスをダウンロード" @click="downloadCanvas">
+				<i class="ti ti-download"></i>
+				<span v-if="!isTouchDevice">ダウンロード</span>
 			</button>
 			<button
 				:class="$style.clearButton"
 				title="キャンバスをクリア"
 				@click="clearCanvas"
-				@click.capture="() => console.log('🧹 [DEBUG] Clear button clicked (capture phase)')"
 			>
 				<i class="ti ti-trash"></i>
 				<span v-if="!isTouchDevice">クリア</span>
@@ -2280,28 +2279,73 @@ function eyedropColor(point: { x: number; y: number }) {
 	currentTool.value = 'pen';
 }
 
-// キャンバス保存
-async function saveCanvas() {
+/**
+ * キャンバスダウンロード
+ *
+ * 【仕様】
+ * - 白背景レイヤー + 3枚のレイヤーを合成してダウンロード
+ * - PNG形式で保存
+ * - ファイル名: drawing_[タイムスタンプ].png
+ *
+ * 【合成順序】
+ * 1. 白背景レイヤー（最背面）
+ * 2. レイヤー0
+ * 3. レイヤー1
+ * 4. レイヤー2（最前面）
+ */
+function downloadCanvas() {
 	try {
-		const response = await fetch('/api/drawing/save', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${$i.token}`,
-			},
-			body: JSON.stringify({
-				roomId: drawingId.value,
-			}),
-		});
+		// 合成用の一時キャンバスを作成
+		const compositeCanvas = document.createElement('canvas');
+		compositeCanvas.width = physicalCanvasWidth.value;
+		compositeCanvas.height = physicalCanvasHeight.value;
+		const compositeCtx = compositeCanvas.getContext('2d');
 
-		if (response.ok) {
-			// 成功メッセージ表示
-			// TODO: 成功通知を表示
-		} else {
-			console.error('🎨 [ERROR] Failed to save canvas');
+		if (!compositeCtx) {
+			console.error('🎨 [ERROR] Failed to get composite canvas context');
+			return;
 		}
+
+		// 1. 白背景を描画
+		compositeCtx.fillStyle = '#FFFFFF';
+		compositeCtx.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+
+		// 2. 3枚のレイヤーを順番に合成（レイヤー2→1→0の順）
+		// HTMLでのz-index順序と同じ: レイヤー2が下、レイヤー0が上
+		for (let i = MAX_LAYERS - 1; i >= 0; i--) {
+			const layerCanvas = layerCanvases.value[i];
+			if (layerCanvas) {
+				compositeCtx.drawImage(layerCanvas, 0, 0);
+			}
+		}
+
+		// 3. PNG形式でダウンロード
+		const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+		const filename = `drawing_${timestamp}.png`;
+
+		compositeCanvas.toBlob((blob) => {
+			if (!blob) {
+				console.error('🎨 [ERROR] Failed to create blob');
+				return;
+			}
+
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+
+			os.success('キャンバスをダウンロードしました');
+		}, 'image/png');
 	} catch (error) {
-		console.error('🎨 [ERROR] Save canvas error:', error);
+		console.error('🎨 [ERROR] Download canvas error:', error);
+		os.alert({
+			type: 'error',
+			text: 'キャンバスのダウンロードに失敗しました',
+		});
 	}
 }
 
@@ -2351,39 +2395,32 @@ async function saveCanvas() {
  */
 async function clearCanvas() {
 	try {
-		console.log('🧹 [CLEAR] Canvas clear button clicked');
 
 		// 部屋名またはユーザー名を取得
 		let targetName = '';
 		if (props.roomId) {
 			// ルームチャットの場合は部屋ID（簡易表示）
 			targetName = props.roomId.substring(0, 8);
-			console.log('🧹 [CLEAR] Room mode, targetName:', targetName);
 		} else if (props.userId) {
 			// 1対1チャットの場合はユーザーID（簡易表示）
 			targetName = props.userId.substring(0, 8);
-			console.log('🧹 [CLEAR] User mode, targetName:', targetName);
 		}
 
 		// 確認ダイアログを表示（Misskey UI）
-		console.log('🧹 [CLEAR] Showing confirmation dialog');
 		const { canceled, result: userInput } = await os.inputText({
 			title: 'キャンバスクリア確認',
 			text: 'キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：',
 			placeholder: 'クリア',
 		});
 
-		console.log('🧹 [CLEAR] Dialog result:', { canceled, userInput });
 
 		// キャンセルされた場合
 		if (canceled) {
-			console.log('🧹 [CLEAR] User canceled');
 			return;
 		}
 
 		// 入力が「クリア」でない場合は中止
 		if (userInput !== 'クリア') {
-			console.log('🧹 [CLEAR] Wrong input');
 			os.alert({
 				type: 'error',
 				title: 'エラー',
@@ -2392,19 +2429,15 @@ async function clearCanvas() {
 			return;
 		}
 
-		console.log('🧹 [CLEAR] User confirmed with correct input');
 
-		console.log('🧹 [CLEAR] Clearing canvas locally');
 		// 確認が取れた場合のみクリア実行
 		clearCanvasLocal();
 
 		if (connection.value) {
-			console.log('🧹 [CLEAR] Sending clear event to other users');
 			connection.value.send('clearCanvas', null);
 		}
 
 		// 成功メッセージ
-		console.log('🧹 [CLEAR] Canvas cleared successfully');
 		os.toast('キャンバスをクリアしました');
 	} catch (error) {
 		console.error('🧹 [CLEAR] Canvas clear error:', error);
@@ -2434,14 +2467,12 @@ async function clearCanvas() {
  *    - 現在のレイヤーのコンテキストを再設定
  */
 function clearCanvasLocal() {
-	console.log('🧹 [CLEAR] Clearing local canvas, layers:', MAX_LAYERS);
 
 	// 全レイヤーのキャンバスをクリア
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const layerCtx = layerContexts.value[i];
 		if (layerCtx) {
 			layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-			console.log(`🧹 [CLEAR] Layer ${i} cleared`);
 		}
 	}
 
@@ -2450,15 +2481,12 @@ function clearCanvasLocal() {
 	strokeHistory.value = [];
 	undoStack.value = [];
 	redoStack.value = [];
-	console.log('🧹 [CLEAR] History cleared');
 
 	// 他のユーザーの進行中の描画をクリア
 	otherActiveStrokes.value.clear();
-	console.log('🧹 [CLEAR] Other active strokes cleared');
 
 	// 現在のコンテキストを更新
 	ctx = layerContexts.value[currentLayer.value] ?? ctx;
-	console.log('🧹 [CLEAR] Local canvas clear completed');
 }
 
 // ズームをリセット
@@ -2565,12 +2593,6 @@ function updateDisplaySize() {
 		displayHeight.value = containerWidth / canvasAspect;
 	}
 
-	console.log('📐 [DISPLAY] Display size updated:', {
-		container: `${containerWidth.toFixed(1)}×${containerHeight.toFixed(1)}`,
-		canvas: `${canvasWidth.value}×${canvasHeight.value}`,
-		display: `${displayWidth.value.toFixed(1)}×${displayHeight.value.toFixed(1)}`,
-		aspect: { canvas: canvasAspect.toFixed(3), container: containerAspect.toFixed(3) },
-	});
 }
 
 // キャンバスサイズを変更
@@ -2593,14 +2615,6 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	// コンテナサイズに合わせてdisplayサイズを更新
 	updateDisplaySize();
 
-	console.log('🎨 [SIZE] Updated canvas size:', {
-		canvasWidth: canvasWidth.value,
-		canvasHeight: canvasHeight.value,
-		displayWidth: displayWidth.value,
-		displayHeight: displayHeight.value,
-		physicalWidth: physicalCanvasWidth.value,
-		physicalHeight: physicalCanvasHeight.value,
-	});
 
 	// DPRを考慮して全レイヤーのキャンバスを再初期化
 	const dpr = window.devicePixelRatio || 1;
@@ -2611,14 +2625,6 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	// 実際のcanvas要素のサイズを確認
 	const firstCanvas = layerCanvases.value[0];
 	if (firstCanvas) {
-		console.log('🎨 [SIZE] Actual canvas element:', {
-			cssWidth: firstCanvas.style.width,
-			cssHeight: firstCanvas.style.height,
-			attrWidth: firstCanvas.width,
-			attrHeight: firstCanvas.height,
-			clientWidth: firstCanvas.clientWidth,
-			clientHeight: firstCanvas.clientHeight,
-		});
 	}
 
 	for (let i = 0; i < MAX_LAYERS; i++) {
@@ -2754,20 +2760,12 @@ function undo() {
 		.pop();
 
 	if (!myStrokeIndex) {
-		console.log('🎨 [UNDO] No strokes to undo on layer', targetLayer);
 		return;
 	}
 
 	// 自分の最後のストロークを削除
 	const [lastStroke] = layerStrokeHistory.value[targetLayer].splice(myStrokeIndex.index, 1);
 
-	console.log('🎨 [UNDO] Undoing stroke', {
-		layer: targetLayer,
-		strokeId: lastStroke.id,
-		userId: lastStroke.userId,
-		index: myStrokeIndex.index,
-		remainingStrokes: layerStrokeHistory.value[targetLayer].length,
-	});
 
 	// redoスタックに保存
 	redoStack.value.push({
@@ -2835,11 +2833,6 @@ function redo() {
 
 	const { layer: targetLayer, stroke, originalIndex } = redoItem;
 
-	console.log('🎨 [REDO] Redoing stroke', {
-		layer: targetLayer,
-		strokeId: stroke.id,
-		originalIndex: originalIndex,
-	});
 
 	// 元の位置にストロークを挿入
 	if (originalIndex !== undefined && originalIndex >= 0) {
@@ -2895,7 +2888,6 @@ function redo() {
 function handleRemoteUndo(data: any) {
 	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-	console.log('🎨 [REMOTE-UNDO] Received undo event', data);
 
 	const targetLayer = data.layer;
 	const strokeId = data.strokeId;
@@ -2909,7 +2901,6 @@ function handleRemoteUndo(data: any) {
 	const strokeIndex = layerStrokeHistory.value[targetLayer].findIndex(s => s.id === strokeId);
 	if (strokeIndex !== -1) {
 		const removedStroke = layerStrokeHistory.value[targetLayer].splice(strokeIndex, 1)[0];
-		console.log('🎨 [REMOTE-UNDO] Removed stroke from layer', targetLayer, removedStroke);
 	} else {
 		console.warn('🎨 [REMOTE-UNDO] Stroke not found', strokeId);
 		return;
@@ -2948,7 +2939,6 @@ function handleRemoteUndo(data: any) {
 function handleRemoteRedo(data: any) {
 	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-	console.log('🎨 [REMOTE-REDO] Received redo event', data);
 
 	const targetLayer = data.layer;
 	const stroke = data.stroke;
@@ -2967,11 +2957,9 @@ function handleRemoteRedo(data: any) {
 	// 元の位置にストロークを挿入
 	if (originalIndex !== undefined && originalIndex >= 0) {
 		layerStrokeHistory.value[targetLayer].splice(originalIndex, 0, stroke);
-		console.log('🎨 [REMOTE-REDO] Inserted stroke at index', originalIndex, 'on layer', targetLayer);
 	} else {
 		// 元の位置が不明な場合は最後に追加
 		layerStrokeHistory.value[targetLayer].push(stroke);
-		console.log('🎨 [REMOTE-REDO] Added stroke to end of layer', targetLayer);
 	}
 
 	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
