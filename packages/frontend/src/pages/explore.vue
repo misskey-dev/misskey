@@ -11,6 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-else-if="tab === 'users'">
 		<XUsers/>
 	</div>
+	<div v-else-if="tab === 'illustration'">
+		<XIllustration/>
+	</div>
 	<div v-else-if="tab === 'roles'">
 		<XRoles/>
 	</div>
@@ -22,6 +25,7 @@ import { computed, watch, ref, useTemplateRef } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
 import XRoles from './explore.roles.vue';
+import XIllustration from './explore.illustration.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 
@@ -43,6 +47,10 @@ const headerTabs = computed(() => [{
 	key: 'users',
 	icon: 'ti ti-users',
 	title: i18n.ts.users,
+}, {
+	key: 'illustration',
+	icon: 'ti ti-paint',
+	title: i18n.ts.illustrations,
 }, {
 	key: 'roles',
 	icon: 'ti ti-badges',

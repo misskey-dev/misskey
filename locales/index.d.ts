@@ -1239,6 +1239,30 @@ export interface Locale extends ILocale {
      */
     "explore": string;
     /**
+     * イラスト
+     */
+    "illustrations": string;
+    /**
+     * ハッシュタグでイラスト・アート作品を発見
+     */
+    "illustrationsDescription": string;
+    /**
+     * おすすめイラスト
+     */
+    "featuredIllustrations": string;
+    /**
+     * 新着のイラスト
+     */
+    "recentIllustrations": string;
+    /**
+     * イラストランキング
+     */
+    "illustrationRanking": string;
+    /**
+     * 人気のイラストハッシュタグ
+     */
+    "popularIllustrationHashtags": string;
+    /**
      * 既読
      */
     "messageRead": string;

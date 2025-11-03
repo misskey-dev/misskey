@@ -48,6 +48,9 @@ importers:
       terser:
         specifier: 5.44.0
         version: 5.44.0
+      tsx:
+        specifier: 4.20.5
+        version: 4.20.5
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -10955,8 +10958,8 @@ packages:
   vue-component-type-helpers@3.0.6:
     resolution: {integrity: sha512-6CRM8X7EJqWCJOiKPvSLQG+hJPb/Oy2gyJx3pLjUEhY7PuaCthQu3e0zAGI1lqUBobrrk9IT0K8sG2GsCluxoQ==}
 
-  vue-component-type-helpers@3.1.0:
-    resolution: {integrity: sha512-cC1pYNRZkSS1iCvdlaMbbg2sjDwxX098FucEjtz9Yig73zYjWzQsnMe5M9H8dRNv55hAIDGUI29hF2BEUA4FMQ==}
+  vue-component-type-helpers@3.1.1:
+    resolution: {integrity: sha512-B0kHv7qX6E7+kdc5nsaqjdGZ1KwNKSUQDWGy7XkTYT7wFsOpkEyaJ1Vq79TjwrrtuLRgizrTV7PPuC4rRQo+vw==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -14875,7 +14878,7 @@ snapshots:
       storybook: 9.1.5(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.1(@types/node@22.18.1)(typescript@5.9.2))(prettier@3.6.2)(utf-8-validate@6.0.5)(vite@7.1.5(@types/node@22.18.1)(sass@1.92.1)(terser@5.44.0)(tsx@4.20.5))
       type-fest: 2.19.0
       vue: 3.5.21(typescript@5.9.2)
-      vue-component-type-helpers: 3.1.0
+      vue-component-type-helpers: 3.1.1
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.35.0)(typescript@5.9.2)':
     dependencies:
@@ -22743,7 +22746,7 @@ snapshots:
 
   vue-component-type-helpers@3.0.6: {}
 
-  vue-component-type-helpers@3.1.0: {}
+  vue-component-type-helpers@3.1.1: {}
 
   vue-demi@0.14.7(vue@3.5.21(typescript@5.9.2)):
     dependencies:

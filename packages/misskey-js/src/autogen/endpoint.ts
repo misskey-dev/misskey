@@ -403,6 +403,8 @@ import type {
 	GalleryPostsUpdateResponse,
 	GetAvatarDecorationsResponse,
 	GetOnlineUsersCountResponse,
+	HashtagsIllustrationRequest,
+	HashtagsIllustrationResponse,
 	HashtagsListRequest,
 	HashtagsListResponse,
 	HashtagsSearchRequest,
@@ -528,8 +530,14 @@ import type {
 	NotesFeaturedResponse,
 	NotesGlobalTimelineRequest,
 	NotesGlobalTimelineResponse,
+	NotesHighlightIllustrationsRequest,
+	NotesHighlightIllustrationsResponse,
 	NotesHybridTimelineRequest,
 	NotesHybridTimelineResponse,
+	NotesIllustrationRequest,
+	NotesIllustrationResponse,
+	NotesIllustrationsByTagRequest,
+	NotesIllustrationsByTagResponse,
 	NotesLocalTimelineRequest,
 	NotesLocalTimelineResponse,
 	NotesMentionsRequest,
@@ -938,6 +946,7 @@ export type Endpoints = {
 	'gallery/posts/update': { req: GalleryPostsUpdateRequest; res: GalleryPostsUpdateResponse };
 	'get-avatar-decorations': { req: EmptyRequest; res: GetAvatarDecorationsResponse };
 	'get-online-users-count': { req: EmptyRequest; res: GetOnlineUsersCountResponse };
+	'hashtags/illustration': { req: HashtagsIllustrationRequest; res: HashtagsIllustrationResponse };
 	'hashtags/list': { req: HashtagsListRequest; res: HashtagsListResponse };
 	'hashtags/search': { req: HashtagsSearchRequest; res: HashtagsSearchResponse };
 	'hashtags/show': { req: HashtagsShowRequest; res: HashtagsShowResponse };
@@ -1025,7 +1034,10 @@ export type Endpoints = {
 	'notes/favorites/delete': { req: NotesFavoritesDeleteRequest; res: EmptyResponse };
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };
 	'notes/global-timeline': { req: NotesGlobalTimelineRequest; res: NotesGlobalTimelineResponse };
+	'notes/highlight-illustrations': { req: NotesHighlightIllustrationsRequest; res: NotesHighlightIllustrationsResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
+	'notes/illustration': { req: NotesIllustrationRequest; res: NotesIllustrationResponse };
+	'notes/illustrations-by-tag': { req: NotesIllustrationsByTagRequest; res: NotesIllustrationsByTagResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };

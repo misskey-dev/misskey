@@ -2896,6 +2896,17 @@ declare module '../api.js' {
      * 
      * **Credential required**: *No*
      */
+    request<E extends 'hashtags/illustration', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *No*
+     */
     request<E extends 'hashtags/list', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
@@ -3886,7 +3897,40 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
+    request<E extends 'notes/highlight-illustrations', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
     request<E extends 'notes/hybrid-timeline', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    request<E extends 'notes/illustration', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    request<E extends 'notes/illustrations-by-tag', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

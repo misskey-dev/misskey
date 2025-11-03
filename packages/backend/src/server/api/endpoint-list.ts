@@ -234,6 +234,7 @@ export * as 'gallery/posts/unlike' from './endpoints/gallery/posts/unlike.js';
 export * as 'gallery/posts/update' from './endpoints/gallery/posts/update.js';
 export * as 'get-avatar-decorations' from './endpoints/get-avatar-decorations.js';
 export * as 'get-online-users-count' from './endpoints/get-online-users-count.js';
+export * as 'hashtags/illustration' from './endpoints/hashtags/illustration.js';
 export * as 'hashtags/list' from './endpoints/hashtags/list.js';
 export * as 'hashtags/search' from './endpoints/hashtags/search.js';
 export * as 'hashtags/show' from './endpoints/hashtags/show.js';
@@ -332,6 +333,9 @@ export * as 'notes/reactions/delete' from './endpoints/notes/reactions/delete.js
 export * as 'notes/renotes' from './endpoints/notes/renotes.js';
 export * as 'notes/replies' from './endpoints/notes/replies.js';
 export * as 'notes/search' from './endpoints/notes/search.js';
+export * as 'notes/highlight-illustrations' from './endpoints/notes/highlight-illustrations.js';
+export * as 'notes/illustration' from './endpoints/notes/illustration.js';
+export * as 'notes/illustrations-by-tag' from './endpoints/notes/illustrations-by-tag.js';
 export * as 'notes/search-by-tag' from './endpoints/notes/search-by-tag.js';
 export * as 'notes/show' from './endpoints/notes/show.js';
 export * as 'notes/show-partial-bulk' from './endpoints/notes/show-partial-bulk.js';

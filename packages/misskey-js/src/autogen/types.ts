@@ -2368,6 +2368,15 @@ export type paths = {
          */
         post: operations['get-online-users-count'];
     };
+    '/hashtags/illustration': {
+        /**
+         * hashtags/illustration
+         * @description No description provided.
+         *
+         *     **Credential required**: *No*
+         */
+        post: operations['hashtags___illustration'];
+    };
     '/hashtags/list': {
         /**
          * hashtags/list
@@ -3184,6 +3193,15 @@ export type paths = {
          */
         post: operations['notes___global-timeline'];
     };
+    '/notes/highlight-illustrations': {
+        /**
+         * notes/highlight-illustrations
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['notes___highlight-illustrations'];
+    };
     '/notes/hybrid-timeline': {
         /**
          * notes/hybrid-timeline
@@ -3192,6 +3210,24 @@ export type paths = {
          *     **Credential required**: *Yes* / **Permission**: *read:account*
          */
         post: operations['notes___hybrid-timeline'];
+    };
+    '/notes/illustration': {
+        /**
+         * notes/illustration
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['notes___illustration'];
+    };
+    '/notes/illustrations-by-tag': {
+        /**
+         * notes/illustrations-by-tag
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['notes___illustrations-by-tag'];
     };
     '/notes/local-timeline': {
         /**
@@ -5645,7 +5681,6 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
-            reads?: string[];
         };
         ChatMessageLite: {
             id: string;
@@ -5667,7 +5702,6 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
-            reads?: string[];
         };
         ChatMessageLiteFor1on1: {
             id: string;
@@ -5686,7 +5720,6 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
-            reads?: string[];
         };
         ChatMessageLiteForRoom: {
             id: string;
@@ -5707,7 +5740,6 @@ export type components = {
             expiresAt?: string | null;
             isSystemMessage?: boolean;
             meta?: Record<string, never> | null;
-            reads?: string[];
         };
         ChatRoom: {
             id: string;
@@ -24549,6 +24581,75 @@ export interface operations {
             };
         };
     };
+    hashtags___illustration: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 20 */
+                    limit?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        tag: string;
+                        count: number;
+                    }[];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     hashtags___list: {
         requestBody: {
             content: {
@@ -30863,6 +30964,74 @@ export interface operations {
             };
         };
     };
+    'notes___highlight-illustrations': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 10 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Note'][];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     'notes___hybrid-timeline': {
         requestBody: {
             content: {
@@ -30889,6 +31058,149 @@ export interface operations {
                     withRenotes?: boolean;
                     /** @default false */
                     withReplies?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Note'][];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    notes___illustration: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 10 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Note'][];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'notes___illustrations-by-tag': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    tag: string;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                    /** @default 10 */
+                    limit?: number;
                 };
             };
         };
