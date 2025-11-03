@@ -285,6 +285,31 @@ class ChatRoomChannel extends Channel {
 				});
 				console.log(`🎨 [DEBUG] Broadcasted redo event for layer ${body.layer} from user ${this.user.id}`);
 				break;
+			case 'canvasSizeChange':
+				console.log(`🔍 [DEBUG] Processing canvas size change for room ${this.roomId} from user ${this.user.id}`);
+
+				// セキュリティ: キャンバスサイズの検証
+				if (!body || typeof body.width !== 'number' || typeof body.height !== 'number') {
+					console.warn(`🔍 [SECURITY] Invalid canvas size change payload from user ${this.user.id}`);
+					return;
+				}
+
+				// サイズの範囲検証
+				if (body.width < 100 || body.width > 4000 || body.height < 100 || body.height > 4000) {
+					console.warn(`🔍 [SECURITY] Canvas size out of range from user ${this.user.id}: ${body.width}x${body.height}`);
+					return;
+				}
+
+				// キャンバスサイズ変更イベントをルーム内の他のユーザーに配信
+				await this.chatService.broadcastCanvasSizeChange(this.roomId, this.user.id, {
+					userId: this.user.id,
+					userName: this.user.name || this.user.username,
+					width: body.width,
+					height: body.height,
+					timestamp: Date.now(),
+				});
+				console.log(`🎨 [DEBUG] Broadcasted canvas size change to ${body.width}x${body.height} from user ${this.user.id}`);
+				break;
 		}
 	}
 

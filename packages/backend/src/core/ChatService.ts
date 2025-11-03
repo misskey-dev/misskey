@@ -1416,4 +1416,27 @@ export class ChatService {
 
 		this.globalEventService.publishChatRoomStream(roomId, 'redoStroke', redoData);
 	}
+
+	/**
+	 * Canvas Size Change配信
+	 *
+	 * 【仕様】
+	 * - 指定されたルームにキャンバスサイズ変更イベントを配信
+	 * - ルームメンバーのみが配信可能
+	 * - 新しいキャンバスサイズ情報を含む
+	 */
+	public async broadcastCanvasSizeChange(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], sizeData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] CanvasSizeChange event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] CanvasSizeChange event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'canvasSizeChange', sizeData);
+	}
 }

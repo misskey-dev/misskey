@@ -1313,6 +1313,11 @@ function connectToChatRoomChannel() {
 		handleRemoteRedo(data);
 	});
 
+	connection.value.on('canvasSizeChange', (data: any) => {
+		recordCommLog('receive', 'canvasSizeChange', data);
+		handleRemoteCanvasSizeChange(data);
+	});
+
 	// チャットオーバーレイ用
 	connection.value.on('message', (message: any) => {
 		showChatOverlay(message);
@@ -2596,7 +2601,7 @@ function updateDisplaySize() {
 }
 
 // キャンバスサイズを変更
-async function changeCanvasSize(newWidth: number, newHeight: number) {
+async function changeCanvasSize(newWidth: number, newHeight: number, isRemote = false) {
 	// 全レイヤーの描画内容を保存
 	const layerImageData: Array<ImageData | null> = [];
 	for (let i = 0; i < MAX_LAYERS; i++) {
@@ -2669,6 +2674,18 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 
 	// ルーム設定を保存
 	await saveRoomSettings();
+
+	// 他のユーザーにキャンバスサイズ変更を通知（リモート起因の変更でない場合のみ）
+	if (!isRemote && connection.value) {
+		const data = {
+			width: newWidth,
+			height: newHeight,
+			userId: $i?.id,
+			userName: $i?.username,
+			timestamp: Date.now(),
+		};
+		connection.value.send('canvasSizeChange', data);
+	}
 }
 
 /**
@@ -2977,6 +2994,41 @@ function handleRemoteRedo(data: any) {
 			drawStrokeDirectly(layerCtx, s);
 		}
 	}
+}
+
+/**
+ * リモートユーザーのキャンバスサイズ変更イベントを処理
+ *
+ * 【仕様】
+ * - 他のユーザーがキャンバスサイズを変更した際に呼ばれる
+ * - 自動的に同じサイズに変更する
+ * - 描画内容は保持される
+ *
+ * 【パラメータ】
+ * - data.width: 新しい幅
+ * - data.height: 新しい高さ
+ * - data.userId: 変更したユーザーID
+ * - data.userName: 変更したユーザー名
+ */
+async function handleRemoteCanvasSizeChange(data: any) {
+	if (data.userId === $i.id) return; // 自分のイベントは無視
+
+	const newWidth = data.width;
+	const newHeight = data.height;
+
+	if (typeof newWidth !== 'number' || typeof newHeight !== 'number') {
+		return;
+	}
+
+	if (newWidth < 100 || newWidth > 4000 || newHeight < 100 || newHeight > 4000) {
+		return;
+	}
+
+	// サイズ変更を適用（isRemote=trueで無限ループを防ぐ）
+	await changeCanvasSize(newWidth, newHeight, true);
+
+	// 通知を表示
+	os.toast(`${data.userName || 'ユーザー'}がキャンバスサイズを${newWidth}×${newHeight}に変更しました`);
 }
 
 // レイヤー切り替え
