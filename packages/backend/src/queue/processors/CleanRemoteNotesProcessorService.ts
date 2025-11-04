@@ -111,7 +111,7 @@ export class CleanRemoteNotesProcessorService {
 		}
 
 		// start with a conservative limit and adjust it based on the query duration
-		const minimumLimit = 10;
+		const minimumLimit = 5;
 		let currentLimit = 100;
 		let cursorLeft = '0';
 
@@ -209,9 +209,34 @@ export class CleanRemoteNotesProcessorService {
 					{ newestLimit, cursorLeft },
 				).getRawMany<{ id: MiNote['id'], isRemovable: boolean, isBase: boolean }>();
 			} catch (e) {
-				if (currentLimit > minimumLimit && e instanceof QueryFailedError && e.driverError?.code === '57014') {
-					// Statement timeout (maybe suddenly hit a large note tree), reduce the limit and try again
-					// continuous failures will eventually converge to currentLimit == minimumLimit and then throw
+				if (e instanceof QueryFailedError && e.driverError?.code === '57014') {
+					// Statement timeout (maybe suddenly hit a large note tree), if possible, reduce the limit and try again
+					// if not possible, skip the current batch of notes and find the next root note
+					if (currentLimit <= minimumLimit) {
+						job.log('Local note tree complexity is too high, finding next root note...');
+
+						const idWindow = await this.notesRepository.createQueryBuilder('note')
+							.select('id')
+							.where('note.id > :cursorLeft')
+							.andWhere(removalCriteria)
+							.andWhere({ replyId: IsNull(), renoteId: IsNull() })
+							.orderBy('note.id', 'ASC')
+							.limit(minimumLimit + 1)
+							.setParameters({ cursorLeft })
+							.getRawMany<{ id?: MiNote['id'] }>();
+
+						job.log(`Skipped note IDs: ${idWindow.slice(0, minimumLimit).map(id => id.id).join(', ')}`);
+
+						const lastId = idWindow.at(minimumLimit)?.id;
+
+						if (!lastId) {
+							job.log('No more notes to clean.');
+							break;
+						}
+
+						cursorLeft = lastId;
+						continue;
+					}
 					currentLimit = Math.max(minimumLimit, Math.floor(currentLimit * 0.25));
 					continue;
 				}
