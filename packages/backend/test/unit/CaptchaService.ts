@@ -446,7 +446,7 @@ describe('CaptchaService', () => {
 				if (!res.success) {
 					expect(res.error.code).toBe(code);
 				}
-				expect(metaService.update).not.toBeCalled();
+				expect(metaService.update).not.toHaveBeenCalled();
 			}
 
 			describe('invalidParameters', () => {
