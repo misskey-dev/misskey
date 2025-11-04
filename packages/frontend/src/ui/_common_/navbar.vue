@@ -113,7 +113,6 @@ import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
-import { unisonReload } from '@/utility/unison-reload.js';
 
 const router = useRouter();
 
