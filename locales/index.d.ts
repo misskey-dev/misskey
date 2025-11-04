@@ -5997,6 +5997,10 @@ export interface Locale extends ILocale {
          * ページのタブバーを下部に表示
          */
         "showPageTabBarBottom": string;
+        /**
+         * よく使う絵文字をパレットと呼ばれるプリセットとして登録できます。パレットに登録した絵文字は、絵文字ピッカーですぐに選択できるようになります。
+         */
+        "emojiPaletteBanner": string;
         "_chat": {
             /**
              * 送信者の名前を表示
