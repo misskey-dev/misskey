@@ -12063,6 +12063,14 @@ export interface Locale extends ILocale {
          * 例: misskey.example.com
          */
         "serverHostPlaceholder": string;
+        /**
+         * 投稿日時from
+         */
+        "postFrom": string;
+        /**
+         * 投稿日時to
+         */
+        "postTo": string;
     };
     "_serverSetupWizard": {
         /**
