@@ -9,25 +9,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSlot>
 			<template #label>{{ i18n.ts.navbar }}</template>
 			<MkContainer :showHeader="false">
-				<Sortable
-					v-model="items"
-					itemKey="id"
-					:animation="150"
-					:handle="'.' + $style.itemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
-				>
-					<template #item="{element,index}">
-						<div
-							v-if="element.type === '-' || navbarItemDef[element.type]"
-							:class="$style.item"
-						>
-							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
-							<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[element.type]?.title ?? i18n.ts.divider }}</span>
-							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
-						</div>
-					</template>
-				</Sortable>
+				<div ref="dndParentEl">
+					<div
+						v-for="item, index in items"
+						:key="item.id"
+						:class="$style.item"
+					>
+						<button class="_button handle" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
+						<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item.type]?.title ?? i18n.ts.divider }}</span>
+						<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
+					</div>
+				</div>
 			</MkContainer>
 		</FormSlot>
 		<div class="_buttons">
@@ -54,7 +46,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
@@ -70,13 +64,20 @@ import { prefer } from '@/preferences.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
 import { genId } from '@/utility/id.js';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const items = ref(prefer.s.menu.map(x => ({
 	id: genId(),
 	type: x,
-})));
+})).filter(x => Object.keys(navbarItemDef).includes(x.type) || x.type === '-'));
 const itemTypeValues = computed(() => items.value.map(x => x.type));
+
+const dndParentEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: items,
+	plugins: [animations()],
+	dragHandle: '.handle',
+});
 
 const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
 const showNavbarSubButtons = prefer.model('showNavbarSubButtons');
