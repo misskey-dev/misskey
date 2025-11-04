@@ -8,7 +8,6 @@ import { url } from '@@/js/config.js';
 import ExifReader from 'exifreader';
 import { FN_frame } from './frame.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
-import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
@@ -38,20 +37,10 @@ export type ImageFramePreset = {
 	params: ImageFrameParams;
 };
 
-const EXIF_MOCK = {
-	DateTimeOriginal: { description: '2012:03:04 5:06:07' },
-	Model: { description: 'Example camera' },
-	LensModel: { description: 'Example lens 123mm f/1.23' },
-	FocalLength: { description: '123mm' },
-	ExposureTime: { description: '1/234' },
-	FNumber: { description: '1.23' },
-	ISOSpeedRatings: { description: '123' },
-} satisfies ExifReader.Tags;
-
 export class ImageFrameRenderer {
 	private compositor: ImageCompositor;
 	private image: HTMLImageElement | ImageBitmap;
-	private exif: ExifReader.Tags;
+	private exif: ExifReader.Tags | null;
 	private renderAsPreview = false;
 
 	constructor(options: {
@@ -61,7 +50,7 @@ export class ImageFrameRenderer {
 		renderAsPreview?: boolean,
 	}) {
 		this.image = options.image;
-		this.exif = options.exif ?? EXIF_MOCK;
+		this.exif = options.exif;
 		this.renderAsPreview = options.renderAsPreview ?? false;
 		console.log(this.exif);
 
@@ -78,8 +67,15 @@ export class ImageFrameRenderer {
 	}
 
 	private interpolateTemplateText(text: string) {
+		const DateTimeOriginal = this.exif == null ? '2012:03:04 5:06:07' : this.exif.DateTimeOriginal?.description;
+		const Model = this.exif == null ? 'Example camera' : this.exif.Model?.description;
+		const LensModel = this.exif == null ? 'Example lens 123mm f/1.23' : this.exif.LensModel?.description;
+		const FocalLength = this.exif == null ? '123mm' : this.exif.FocalLength?.description;
+		const ExposureTime = this.exif == null ? '1/234' : this.exif.ExposureTime?.description;
+		const FNumber = this.exif == null ? '1.23' : this.exif.FNumber?.description;
+		const ISOSpeedRatings = this.exif == null ? '123' : this.exif.ISOSpeedRatings?.description;
 		return text.replaceAll(/\{(\w+)\}/g, (_: string, key: string) => {
-			const meta_date = this.exif.DateTimeOriginal ? this.exif.DateTimeOriginal.description : '-';
+			const meta_date = DateTimeOriginal ?? '-';
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
 				case 'date': return date;
@@ -94,12 +90,12 @@ export class ImageFrameRenderer {
 				case '0hour': return meta_date.split(' ')[1].split(':')[0];
 				case '0minute': return meta_date.split(' ')[1].split(':')[1];
 				case '0second': return meta_date.split(' ')[1].split(':')[2];
-				case 'camera_model': return this.exif.Model ? this.exif.Model.description : '-';
-				case 'camera_lens_model': return this.exif.LensModel ? this.exif.LensModel.description : '-';
-				case 'camera_mm': return this.exif.FocalLength ? this.exif.FocalLength.description.replace(' mm', '').replace('mm', '') : '-';
-				case 'camera_f': return this.exif.FNumber ? this.exif.FNumber.description.replace('f/', '') : '-';
-				case 'camera_s': return this.exif.ExposureTime ? this.exif.ExposureTime.description : '-';
-				case 'camera_iso': return this.exif.ISOSpeedRatings ? this.exif.ISOSpeedRatings.description : '-';
+				case 'camera_model': return Model ?? '-';
+				case 'camera_lens_model': return LensModel ?? '-';
+				case 'camera_mm': return FocalLength?.replace(' mm', '').replace('mm', '') ?? '-';
+				case 'camera_f': return FNumber?.replace('f/', '') ?? '-';
+				case 'camera_s': return ExposureTime ?? '-';
+				case 'camera_iso': return ISOSpeedRatings ?? '-';
 				default: return '-';
 			}
 		});

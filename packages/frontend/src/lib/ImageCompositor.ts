@@ -217,7 +217,7 @@ export class ImageCompositor {
 		}
 	}
 
-	public registerFunction(id: string, fn: ImageCompositorFunction) {
+	public registerFunction(id: string, fn: ImageCompositorFunction<any>) {
 		const uniforms = this.extractUniformNamesFromShader(fn.shader);
 		this.registeredFunctions.set(id, { ...fn, id, uniforms });
 	}

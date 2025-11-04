@@ -166,6 +166,7 @@ const preset = deepClone(props.preset) ?? {
 
 const params = reactive<ImageFrameParams>(deepClone(props.params) ?? {
 	borderThickness: 0.05,
+	borderRadius: 0,
 	labelTop: {
 		enabled: false,
 		scale: 1.0,
