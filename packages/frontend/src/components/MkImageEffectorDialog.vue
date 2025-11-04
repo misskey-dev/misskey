@@ -328,7 +328,7 @@ function onImagePointerdown(ev: PointerEvent) {
 		const scaleY = Math.abs(y - startY);
 
 		const layerIndex = layers.findIndex((l) => l.id === id);
-		const layer = layerIndex !== -1 ? layers[layerIndex] : null;
+		const layer = layerIndex !== -1 ? (layers[layerIndex] as Extract<ImageEffectorLayer, { fxId: 'fill' } | { fxId: 'blur' } | { fxId: 'pixelate' }>) : null;
 		if (layer != null) {
 			layer.params.offsetX = (x + startX) - 1;
 			layer.params.offsetY = (y + startY) - 1;
