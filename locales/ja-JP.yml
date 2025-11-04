@@ -1414,6 +1414,7 @@ _imageFrameEditor:
   withQrCode: "二次元コード"
   backgroundColor: "背景色"
   textColor: "文字色"
+  quitWithoutSaveConfirm: "保存せずに終了しますか？"
 
 _compression:
   _quality:

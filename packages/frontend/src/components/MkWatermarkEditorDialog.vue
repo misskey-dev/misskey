@@ -185,11 +185,13 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 
 async function cancel() {
-	const { canceled } = await os.confirm({
-		type: 'question',
-		text: i18n.ts._watermarkEditor.quitWithoutSaveConfirm,
-	});
-	if (canceled) return;
+	if (props.presetEditMode) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts._watermarkEditor.quitWithoutSaveConfirm,
+		});
+		if (canceled) return;
+	}
 
 	emit('cancel');
 	dialog.value?.close();

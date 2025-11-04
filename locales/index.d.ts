@@ -5670,6 +5670,10 @@ export interface Locale extends ILocale {
          * 文字色
          */
         "textColor": string;
+        /**
+         * 保存せずに終了しますか？
+         */
+        "quitWithoutSaveConfirm": string;
     };
     "_compression": {
         "_quality": {

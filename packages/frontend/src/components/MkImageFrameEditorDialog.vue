@@ -198,6 +198,14 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 
 async function cancel() {
+	if (props.presetEditMode) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts._imageFrameEditor.quitWithoutSaveConfirm,
+		});
+		if (canceled) return;
+	}
+
 	dialog.value?.close();
 }
 
