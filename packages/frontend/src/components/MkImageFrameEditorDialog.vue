@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
 					</MkInput>
 
-					<MkFolder :defaultOpen="true">
+					<MkFolder :defaultOpen="params.labelTop.enabled">
 						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
 
 						<div class="_gaps">
@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</MkFolder>
 
-					<MkFolder :defaultOpen="true">
+					<MkFolder :defaultOpen="params.labelBottom.enabled">
 						<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
 
 						<div class="_gaps">
