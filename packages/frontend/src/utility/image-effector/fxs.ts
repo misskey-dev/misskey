@@ -24,7 +24,7 @@ import * as pixelate from '../image-compositor-functions/pixelate.js';
 import type { ImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import type { ImageEffectorUiDefinition } from './ImageEffector.js';
 
-export const FXS = [
+export const FXS = {
 	checker,
 	chromaticAberration,
 	colorAdjust,
@@ -43,7 +43,7 @@ export const FXS = [
 	fill,
 	blur,
 	pixelate,
-] as const satisfies {
+} as const satisfies Record<string, {
 	readonly fn: ImageCompositorFunction<any>;
 	readonly uiDefinition: ImageEffectorUiDefinition<any>;
-}[];
+}>;

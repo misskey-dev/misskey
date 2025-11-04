@@ -99,13 +99,13 @@ watch(layers, async () => {
 }, { deep: true });
 
 function addEffect(ev: MouseEvent) {
-	os.popupMenu(FXS.map((fx) => ({
-		text: fx.name,
+	os.popupMenu(Object.entries(FXS).map(([id, fx]) => ({
+		text: fx.uiDefinition.name,
 		action: () => {
 			layers.push({
 				id: genId(),
-				type: fx.id,
-				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
+				fxId: id,
+				params: Object.fromEntries(Object.entries(fx.uiDefinition.params).map(([k, v]) => [k, v.default])),
 			});
 		},
 	})), ev.currentTarget ?? ev.target);
@@ -136,7 +136,7 @@ function onLayerDelete(layer: ImageEffectorLayer) {
 
 const canvasEl = useTemplateRef('canvasEl');
 
-let renderer: ImageEffector<typeof FXS> | null = null;
+let renderer: ImageEffector | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 onMounted(async () => {
@@ -164,7 +164,6 @@ onMounted(async () => {
 		renderWidth: w,
 		renderHeight: h,
 		image: imageBitmap,
-		fxs: FXS,
 	});
 
 	await renderer.render(layers);
@@ -269,7 +268,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	if (penMode.value === 'fill') {
 		layers.push({
 			id,
-			type: 'fill',
+			fxId: 'fill',
 			params: {
 				offsetX: 0,
 				offsetY: 0,
@@ -283,7 +282,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	} else if (penMode.value === 'blur') {
 		layers.push({
 			id,
-			type: 'blur',
+			fxId: 'blur',
 			params: {
 				offsetX: 0,
 				offsetY: 0,
@@ -296,7 +295,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	} else if (penMode.value === 'pixelate') {
 		layers.push({
 			id,
-			type: 'pixelate',
+			fxId: 'pixelate',
 			params: {
 				offsetX: 0,
 				offsetY: 0,

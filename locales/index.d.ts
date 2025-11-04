@@ -5609,6 +5609,10 @@ export interface Locale extends ILocale {
      * フレーム
      */
     "frame": string;
+    /**
+     * プリセット
+     */
+    "presets": string;
     "_imageFrameEditor": {
         /**
          * フレームの編集

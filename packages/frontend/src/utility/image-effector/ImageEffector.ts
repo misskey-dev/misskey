@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FXS } from './fxs.js';
 import type { ImageCompositorFunction, ImageCompositorLayer } from '@/lib/ImageCompositor.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
 
 export type ImageEffectorRGB = [r: number, g: number, b: number];
-
-type ParamTypeToPrimitive = {
-	[K in ImageEffectorFxParamDef['type']]: (ImageEffectorFxParamDef & { type: K })['default'];
-};
 
 interface CommonParamDef {
 	type: string;
@@ -57,49 +54,14 @@ interface SeedParamDef extends CommonParamDef {
 	default: number;
 };
 
-interface TextureParamDef extends CommonParamDef {
-	type: 'texture';
-	default: {
-		type: 'text'; text: string | null;
-	} | {
-		type: 'url'; url: string | null;
-	} | {
-		type: 'qr'; data: string | null;
-	} | null;
-};
-
 interface ColorParamDef extends CommonParamDef {
 	type: 'color';
 	default: ImageEffectorRGB;
 };
 
-type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | TextureParamDef | ColorParamDef;
+type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanParamDef | AlignParamDef | SeedParamDef | ColorParamDef;
 
 export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
-
-export type GetParamType<T extends ImageEffectorFxParamDef> =
-	T extends NumberEnumParamDef
-		? T['enum'][number]['value']
-		: ParamTypeToPrimitive[T['type']];
-
-export type ParamsRecordTypeToDefRecord<PS extends ImageEffectorFxParamDefs> = {
-	[K in keyof PS]: GetParamType<PS[K]>;
-};
-
-export type ImageEffectorFxDefinition<PS extends ImageEffectorFxParamDefs = ImageEffectorFxParamDefs> = {
-	id: string;
-	name: string;
-	params: PS,
-	shader: string;
-	main: ImageCompositorFunction['main'];
-};
-
-export type ImageEffectorFx<PS extends ImageEffectorFxParamDefs = ImageEffectorFxParamDefs> = {
-	id: string;
-	name: string;
-	fn: ImageCompositorFunction;
-	params: PS,
-};
 
 export type ImageEffectorLayer = {
 	id: string;
@@ -116,7 +78,6 @@ export type ImageEffectorUiDefinition<Fn extends ImageCompositorFunction<any> = 
 
 export class ImageEffector {
 	private canvas: HTMLCanvasElement | null = null;
-	private fxs: ImageEffectorFx[];
 	private compositor: ImageCompositor;
 
 	constructor(options: {
@@ -124,10 +85,8 @@ export class ImageEffector {
 		renderWidth: number;
 		renderHeight: number;
 		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement | null;
-		fxs: ImageEffectorFx[];
 	}) {
 		this.canvas = options.canvas;
-		this.fxs = options.fxs;
 
 		this.compositor = new ImageCompositor({
 			canvas: this.canvas,
@@ -136,8 +95,8 @@ export class ImageEffector {
 			image: options.image,
 		});
 
-		for (const fx of this.fxs) {
-			this.compositor.registerFunction(fx.id, fx.fn);
+		for (const fx in FXS) {
+			this.compositor.registerFunction(fx, FXS[fx].fn);
 		}
 	}
 

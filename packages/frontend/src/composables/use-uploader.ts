@@ -322,12 +322,12 @@ export function useUploader(options: {
 							closed: () => dispose(),
 						});
 					},
-				}, ...(item.watermarkLayers != null ? [{
+				}, {
 					type: 'button' as const,
 					icon: 'ti ti-x',
 					text: i18n.ts.remove,
 					action: () => change(null),
-				}] : []), {
+				}, {
 					type: 'divider',
 				}, {
 					type: 'label',
