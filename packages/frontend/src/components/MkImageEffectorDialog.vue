@@ -104,9 +104,9 @@ function addEffect(ev: MouseEvent) {
 		action: () => {
 			layers.push({
 				id: genId(),
-				fxId: id,
+				fxId: id as keyof typeof FXS,
 				params: Object.fromEntries(Object.entries(fx.uiDefinition.params).map(([k, v]) => [k, v.default])),
-			});
+			} as ImageEffectorLayer);
 		},
 	})), ev.currentTarget ?? ev.target);
 }
