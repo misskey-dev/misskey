@@ -104,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: true,
 				redisTimelines: [`channelTimeline:${channel.id}`],
 				excludePureRenotes: false,
-				excludeMutedChannels: false,
+				includeMutedChannels: true,
 				noteFilter: note => {
 					// 共通機能を使うと見ているチャンネルそのものもミュートしてしまうので閲覧中のチャンネル以外を除く形にする
 					if (note.channelId === channel.id && (note.renoteChannelId === null || note.renoteChannelId === channel.id)) return true;

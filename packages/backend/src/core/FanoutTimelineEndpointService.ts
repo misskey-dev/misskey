@@ -41,8 +41,7 @@ type TimelineOptions = {
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
 	ignoreAuthorFromUserSuspension?: boolean;
-	/** @default true */
-	excludeMutedChannels?: boolean;
+	includeMutedChannels?: boolean;
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 };
 
@@ -122,7 +121,7 @@ export class FanoutTimelineEndpointService {
 					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
 					this.cacheService.userBlockedCache.fetch(ps.me.id),
 					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
-					(ps.excludeMutedChannels ?? true) ? this.channelMutingService.mutingChannelsCache.fetch(me.id) : Promise.resolve(new Set<string>()),
+					ps.includeMutedChannels ? Promise.resolve(new Set<string>()) : this.channelMutingService.mutingChannelsCache.fetch(me.id),
 				]);
 
 				const parentFilter = filter;
@@ -133,7 +132,7 @@ export class FanoutTimelineEndpointService {
 					if (isUserRelated(note.renote, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
-					if ((ps.excludeMutedChannels ?? true) && isChannelRelated(note, userMutedChannels)) return false;
+					if (!ps.includeMutedChannels && isChannelRelated(note, userMutedChannels)) return false;
 
 					return parentFilter(note);
 				};
