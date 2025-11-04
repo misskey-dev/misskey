@@ -6,7 +6,7 @@
 import shader from './watermark.glsl';
 import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 
-export const fn = defineImageCompositorFunction<{
+export const fn = defineImageCompositorFunction<Partial<{
 	cover: boolean;
 	repeat: boolean;
 	scale: number;
@@ -15,7 +15,7 @@ export const fn = defineImageCompositorFunction<{
 	opacity: number;
 	noBoundingBoxExpansion: boolean;
 	watermark: string | null;
-}>({
+}>>({
 	shader,
 	main: ({ gl, u, params, textures }) => {
 		// 基本パラメータ

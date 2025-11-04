@@ -294,9 +294,9 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changeWatermarkPreset(preset: WatermarkPreset | null) {
-				item.watermarkPreset = preset;
-				item.watermarkLayers = preset?.layers ?? null;
+			function change(layers: WatermarkLayers | null, preset?: WatermarkPreset | null) {
+				item.watermarkPreset = preset ?? null;
+				item.watermarkLayers = layers;
 				preprocess(item).then(() => {
 					triggerRef(items);
 				});
@@ -305,14 +305,29 @@ export function useUploader(options: {
 			menu.push({
 				icon: 'ti ti-copyright',
 				text: i18n.ts.watermark,
-				caption: computed(() => item.watermarkPreset == null ? null : item.watermarkPreset.name),
+				caption: computed(() => item.watermarkPreset != null ? item.watermarkPreset.name : item.watermarkLayers != null ? i18n.ts.custom : null),
 				type: 'parent',
 				children: [{
-					type: 'radioOption',
-					text: i18n.ts.none,
-					active: computed(() => item.watermarkLayers == null),
-					action: () => changeWatermarkPreset(null),
-				}, {
+					type: 'button' as const,
+					icon: 'ti ti-pencil',
+					text: i18n.ts.edit,
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
+							layers: item.watermarkLayers,
+							image: item.file,
+						}, {
+							ok: (layers) => {
+								change(layers);
+							},
+							closed: () => dispose(),
+						});
+					},
+				}, ...(item.watermarkLayers != null ? [{
+					type: 'button' as const,
+					icon: 'ti ti-x',
+					text: i18n.ts.remove,
+					action: () => change(null),
+				}] : []), {
 					type: 'divider',
 				}, {
 					type: 'label',
@@ -321,25 +336,8 @@ export function useUploader(options: {
 					type: 'radioOption' as const,
 					text: preset.name,
 					active: computed(() => item.watermarkPreset?.id === preset.id),
-					action: () => changeWatermarkPreset(preset),
-				})), ...(prefer.s.watermarkPresets.length > 0 ? [{
-					type: 'divider' as const,
-				}] : []), {
-					type: 'button',
-					icon: 'ti ti-plus',
-					text: i18n.ts.add,
-					action: async () => {
-						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
-							image: item.file,
-						}, {
-							ok: (preset) => {
-								prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
-								changeWatermarkPreset(preset.id);
-							},
-							closed: () => dispose(),
-						});
-					},
-				}],
+					action: () => change(preset.layers, preset),
+				}))],
 			});
 		}
 
