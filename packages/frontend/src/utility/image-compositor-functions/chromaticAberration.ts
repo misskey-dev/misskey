@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
+import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './chromaticAberration.glsl';
 import { i18n } from '@/i18n.js';
 

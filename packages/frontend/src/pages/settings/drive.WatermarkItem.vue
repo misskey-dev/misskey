@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import type { WatermarkPreset } from '@/utility/watermark.js';
-import { WatermarkRenderer } from '@/utility/watermark.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -41,9 +41,11 @@ const emit = defineEmits<{
 
 async function edit() {
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
+		presetEditMode: true,
 		preset: deepClone(props.preset),
+		layers: deepClone(props.preset.layers),
 	}, {
-		ok: (preset) => {
+		presetOk: (preset) => {
 			emit('updatePreset', preset);
 		},
 		closed: () => dispose(),

@@ -10,7 +10,7 @@ import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
 import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
@@ -19,7 +19,7 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { WatermarkRenderer } from '@/utility/watermark.js';
+import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 
 export type UploaderFeatures = {
@@ -88,6 +88,7 @@ export type UploaderItem = {
 	preprocessedFile?: Blob | null;
 	file: File;
 	watermarkPreset: WatermarkPreset | null;
+	watermarkLayers: WatermarkLayers | null;
 	imageFrameParams: ImageFrameParams | null;
 	isSensitive?: boolean;
 	caption?: string | null;
@@ -140,6 +141,7 @@ export function useUploader(options: {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
 		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+		const watermarkPreset = uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null;
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
@@ -152,7 +154,8 @@ export function useUploader(options: {
 			uploaded: null,
 			uploadFailed: false,
 			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
-			watermarkPreset: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null,
+			watermarkPreset,
+			watermarkLayers: watermarkPreset?.layers ?? null,
 			imageFrameParams: null,
 			file: markRaw(file),
 		});
@@ -293,6 +296,7 @@ export function useUploader(options: {
 		) {
 			function changeWatermarkPreset(preset: WatermarkPreset | null) {
 				item.watermarkPreset = preset;
+				item.watermarkLayers = preset?.layers ?? null;
 				preprocess(item).then(() => {
 					triggerRef(items);
 				});
@@ -306,10 +310,13 @@ export function useUploader(options: {
 				children: [{
 					type: 'radioOption',
 					text: i18n.ts.none,
-					active: computed(() => item.watermarkPreset == null),
+					active: computed(() => item.watermarkLayers == null),
 					action: () => changeWatermarkPreset(null),
 				}, {
 					type: 'divider',
+				}, {
+					type: 'label',
+					text: i18n.ts.presets,
 				}, ...prefer.s.watermarkPresets.map(preset => ({
 					type: 'radioOption' as const,
 					text: preset.name,
@@ -353,9 +360,9 @@ export function useUploader(options: {
 			menu.push({
 				icon: 'ti ti-device-ipad-horizontal',
 				text: i18n.ts.frame,
-				type: 'parent',
+				type: 'parent' as const,
 				children: [{
-					type: 'button',
+					type: 'button' as const,
 					icon: 'ti ti-pencil',
 					text: i18n.ts.edit,
 					action: async () => {
@@ -375,7 +382,10 @@ export function useUploader(options: {
 					text: i18n.ts.remove,
 					action: () => change(null),
 				}] : []), {
-					type: 'divider',
+					type: 'divider' as const,
+				}, {
+					type: 'label' as const,
+					text: i18n.ts.presets,
 				}, ...prefer.s.imageFramePresets.map(preset => ({
 					type: 'button' as const,
 					text: preset.name,
@@ -609,8 +619,8 @@ export function useUploader(options: {
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkPreset != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
-		if (needsWatermark && item.watermarkPreset != null) {
+		const needsWatermark = item.watermarkLayers != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
+		if (needsWatermark && item.watermarkLayers != null) {
 			const canvas = window.document.createElement('canvas');
 			const renderer = new WatermarkRenderer({
 				canvas: canvas,
@@ -619,7 +629,7 @@ export function useUploader(options: {
 				image: imageBitmap,
 			});
 
-			await renderer.render(item.watermarkPreset.layers);
+			await renderer.render(item.watermarkLayers);
 
 			preprocessedFile = await new Promise<Blob>((resolve) => {
 				canvas.toBlob((blob) => {

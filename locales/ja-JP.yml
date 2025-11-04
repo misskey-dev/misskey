@@ -1397,6 +1397,7 @@ widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
 frame: "フレーム"
+presets: "プリセット"
 
 _imageFrameEditor:
   title: "フレームの編集"

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageCompositorFunction } from '../../lib/ImageCompositor.js';
 import shader from './frame.glsl';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 
 export const FN_frame = defineImageCompositorFunction<{
 	image: string | null;

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
-import shader from './blur.glsl';
+import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
+import shader from './pixelate.glsl';
 import { i18n } from '@/i18n.js';
 
-export const FX_blur = defineImageEffectorFx({
-	id: 'blur',
-	name: i18n.ts._imageEffector._fxs.blur,
+export const FX_pixelate = defineImageEffectorFx({
+	id: 'pixelate',
+	name: i18n.ts._imageEffector._fxs.pixelate,
 	shader,
 	params: {
 		offsetX: {
@@ -62,13 +62,13 @@ export const FX_blur = defineImageEffectorFx({
 			step: 0.01,
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
-		radius: {
+		strength: {
 			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number',
-			default: 3.0,
+			default: 0.2,
 			min: 0.0,
-			max: 10.0,
-			step: 0.5,
+			max: 0.5,
+			step: 0.01,
 		},
 	},
 	main: ({ gl, u, params }) => {
@@ -76,7 +76,7 @@ export const FX_blur = defineImageEffectorFx({
 		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
 		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
 		gl.uniform1f(u.angle, params.angle / 2);
-		gl.uniform1f(u.radius, params.radius);
+		gl.uniform1f(u.strength, params.strength * params.strength);
 		gl.uniform1i(u.samples, 256);
 	},
 });

@@ -104,7 +104,7 @@ function addEffect(ev: MouseEvent) {
 		action: () => {
 			layers.push({
 				id: genId(),
-				fxId: fx.id,
+				type: fx.id,
 				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
 			});
 		},
@@ -269,7 +269,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	if (penMode.value === 'fill') {
 		layers.push({
 			id,
-			fxId: 'fill',
+			type: 'fill',
 			params: {
 				offsetX: 0,
 				offsetY: 0,
@@ -283,7 +283,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	} else if (penMode.value === 'blur') {
 		layers.push({
 			id,
-			fxId: 'blur',
+			type: 'blur',
 			params: {
 				offsetX: 0,
 				offsetY: 0,
@@ -296,7 +296,7 @@ function onImagePointerdown(ev: PointerEvent) {
 	} else if (penMode.value === 'pixelate') {
 		layers.push({
 			id,
-			fxId: 'pixelate',
+			type: 'pixelate',
 			params: {
 				offsetX: 0,
 				offsetY: 0,

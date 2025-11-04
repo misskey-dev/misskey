@@ -6,8 +6,8 @@
 import QRCodeStyling from 'qr-code-styling';
 import { url } from '@@/js/config.js';
 import ExifReader from 'exifreader';
-import { ImageCompositor } from '../../lib/ImageCompositor.js';
 import { FN_frame } from './frame.js';
+import { ImageCompositor } from '@/lib/ImageCompositor.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import { ensureSignin } from '@/i.js';
 

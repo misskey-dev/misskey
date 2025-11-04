@@ -4,19 +4,19 @@
  */
 
 import seedrandom from 'seedrandom';
-import { defineImageEffectorFx } from '../ImageEffector.js';
-import shader from './blockNoise.glsl';
+import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
+import shader from './tearing.glsl';
 import { i18n } from '@/i18n.js';
 
-export const FX_blockNoise = defineImageEffectorFx({
-	id: 'blockNoise',
-	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
+export const FX_tearing = defineImageEffectorFx({
+	id: 'tearing',
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
 	shader,
 	params: {
 		amount: {
 			label: i18n.ts._imageEffector._fxProps.amount,
 			type: 'number',
-			default: 50,
+			default: 3,
 			min: 1,
 			max: 100,
 			step: 1,
@@ -30,20 +30,11 @@ export const FX_blockNoise = defineImageEffectorFx({
 			step: 0.01,
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
-		width: {
-			label: i18n.ts.width,
+		size: {
+			label: i18n.ts._imageEffector._fxProps.size,
 			type: 'number',
-			default: 0.05,
-			min: 0.01,
-			max: 1,
-			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
-		},
-		height: {
-			label: i18n.ts.height,
-			type: 'number',
-			default: 0.01,
-			min: 0.01,
+			default: 0.2,
+			min: 0,
 			max: 1,
 			step: 0.01,
 			toViewValue: v => Math.round(v * 100) + '%',
@@ -51,7 +42,7 @@ export const FX_blockNoise = defineImageEffectorFx({
 		channelShift: {
 			label: i18n.ts._imageEffector._fxProps.glitchChannelShift,
 			type: 'number',
-			default: 0,
+			default: 0.5,
 			min: 0,
 			max: 10,
 			step: 0.01,
@@ -67,19 +58,17 @@ export const FX_blockNoise = defineImageEffectorFx({
 		gl.uniform1i(u.amount, params.amount);
 		gl.uniform1f(u.channelShift, params.channelShift);
 
-		const margin = 0;
-
 		const rnd = seedrandom(params.seed.toString());
 
 		for (let i = 0; i < params.amount; i++) {
 			const o = gl.getUniformLocation(program, `u_shiftOrigins[${i.toString()}]`);
-			gl.uniform2f(o, (rnd() * (1 + (margin * 2))) - margin, (rnd() * (1 + (margin * 2))) - margin);
+			gl.uniform1f(o, rnd());
 
 			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
 			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
 
-			const sizes = gl.getUniformLocation(program, `u_shiftSizes[${i.toString()}]`);
-			gl.uniform2f(sizes, params.width, params.height);
+			const h = gl.getUniformLocation(program, `u_shiftHeights[${i.toString()}]`);
+			gl.uniform1f(h, rnd() * params.size);
 		}
 	},
 });

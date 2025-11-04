@@ -204,7 +204,7 @@ import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import XWatermarkItem from './drive.WatermarkItem.vue';
 import XImageFrameItem from './drive.ImageFrameItem.vue';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import type { ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -311,8 +311,11 @@ function chooseUploadFolder() {
 
 async function addWatermarkPreset() {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
+		presetEditMode: true,
+		preset: null,
+		layers: [],
 	}, {
-		ok: (preset: WatermarkPreset) => {
+		presetOk: (preset) => {
 			prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
 		},
 		closed: () => dispose(),

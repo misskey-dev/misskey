@@ -12,7 +12,7 @@ import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import type { ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
 import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';

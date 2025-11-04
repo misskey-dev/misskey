@@ -144,7 +144,6 @@ import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';

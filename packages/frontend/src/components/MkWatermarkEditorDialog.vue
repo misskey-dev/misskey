@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.controls">
 				<div class="_spacer _gaps">
 					<div class="_gaps_s">
-						<MkFolder v-for="(layer, i) in preset.layers" :key="layer.id" :defaultOpen="false" :canPage="false">
+						<MkFolder v-for="(layer, i) in layers" :key="layer.id" :defaultOpen="false" :canPage="false">
 							<template #label>
 								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
 								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 
 							<XLayer
-								v-model:layer="preset.layers[i]"
+								v-model:layer="layers[i]"
 							></XLayer>
 						</MkFolder>
 
@@ -65,8 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
-import type { WatermarkPreset } from '@/utility/watermark.js';
-import { WatermarkRenderer } from '@/utility/watermark.js';
+import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -162,18 +162,22 @@ function createCheckerLayer(): WatermarkPreset['layers'][number] {
 }
 
 const props = defineProps<{
+	presetEditMode?: boolean;
 	preset?: WatermarkPreset | null;
+	layers?: WatermarkLayers | null;
 	image?: File | null;
 }>();
 
-const preset = reactive<WatermarkPreset>(deepClone(props.preset) ?? {
+const preset = deepClone(props.preset) ?? {
 	id: genId(),
 	name: '',
-	layers: [],
-});
+};
+
+const layers = reactive<WatermarkLayers>(props.layers ?? []);
 
 const emit = defineEmits<{
-	(ev: 'ok', preset: WatermarkPreset): void;
+	(ev: 'ok', layers: WatermarkLayers): void;
+	(ev: 'presetOk', preset: WatermarkPreset): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -191,9 +195,9 @@ async function cancel() {
 	dialog.value?.close();
 }
 
-watch(preset, async (newValue, oldValue) => {
+watch(layers, async (newValue, oldValue) => {
 	if (renderer != null) {
-		renderer.render(preset.layers);
+		renderer.render(layers);
 	}
 }, { deep: true });
 
@@ -277,7 +281,7 @@ async function initRenderer() {
 		});
 	}
 
-	await renderer!.render(preset.layers);
+	await renderer!.render(layers);
 }
 
 onMounted(async () => {
@@ -305,77 +309,93 @@ onUnmounted(() => {
 });
 
 async function save() {
-	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.name,
-		default: preset.name,
-	});
-	if (canceled) return;
+	if (props.presetEditMode) {
+		const { canceled, result: name } = await os.inputText({
+			title: i18n.ts.name,
+			default: preset.name,
+		});
+		if (canceled) return;
 
-	preset.name = name || '';
+		preset.name = name || '';
 
-	dialog.value?.close();
-	if (renderer != null) {
-		renderer.destroy();
-		renderer = null;
+		dialog.value?.close();
+		if (renderer != null) {
+			renderer.destroy();
+			renderer = null;
+		}
+
+		emit('presetOk', {
+			...preset,
+			layers: deepClone(layers),
+		});
+	} else {
+		dialog.value?.close();
+		if (renderer != null) {
+			renderer.destroy();
+			renderer = null;
+		}
+
+		emit('ok', layers);
 	}
-
-	emit('ok', preset);
 }
 
 function addLayer(ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts._watermarkEditor.text,
 		action: () => {
-			preset.layers.push(createTextLayer());
+			layers.push(createTextLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.image,
 		action: () => {
-			preset.layers.push(createImageLayer());
+			layers.push(createImageLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.qr,
 		action: () => {
-			preset.layers.push(createQrLayer());
+			layers.push(createQrLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.stripe,
 		action: () => {
-			preset.layers.push(createStripeLayer());
+			layers.push(createStripeLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.polkadot,
 		action: () => {
-			preset.layers.push(createPolkadotLayer());
+			layers.push(createPolkadotLayer());
 		},
 	}, {
 		text: i18n.ts._watermarkEditor.checker,
 		action: () => {
-			preset.layers.push(createCheckerLayer());
+			layers.push(createCheckerLayer());
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function swapUpLayer(layer: WatermarkPreset['layers'][number]) {
-	const index = preset.layers.findIndex(l => l.id === layer.id);
+	const index = layers.findIndex(l => l.id === layer.id);
 	if (index > 0) {
-		const tmp = preset.layers[index - 1];
-		preset.layers[index - 1] = preset.layers[index];
-		preset.layers[index] = tmp;
+		const tmp = layers[index - 1];
+		layers[index - 1] = layers[index];
+		layers[index] = tmp;
 	}
 }
 
 function swapDownLayer(layer: WatermarkPreset['layers'][number]) {
-	const index = preset.layers.findIndex(l => l.id === layer.id);
-	if (index < preset.layers.length - 1) {
-		const tmp = preset.layers[index + 1];
-		preset.layers[index + 1] = preset.layers[index];
-		preset.layers[index] = tmp;
+	const index = layers.findIndex(l => l.id === layer.id);
+	if (index < layers.length - 1) {
+		const tmp = layers[index + 1];
+		layers[index + 1] = layers[index];
+		layers[index] = tmp;
 	}
 }
 
 function removeLayer(layer: WatermarkPreset['layers'][number]) {
-	preset.layers = preset.layers.filter(l => l.id !== layer.id);
+	const index = layers.findIndex(l => l.id === layer.id);
+	if (index !== -1) {
+		layers.splice(index, 1);
+	}
 }
 </script>
 

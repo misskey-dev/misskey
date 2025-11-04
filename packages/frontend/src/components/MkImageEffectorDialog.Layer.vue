@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</template>
 
-	<MkImageEffectorFxForm v-model="layer.params" :paramDefs="fx.params" />
+	<MkImageEffectorFxForm v-model="layer.params" :paramDefs="fx.params"/>
 </MkFolder>
 </template>
 
@@ -26,9 +26,9 @@ import MkImageEffectorFxForm from '@/components/MkImageEffectorFxForm.vue';
 import { FXS } from '@/utility/image-effector/fxs.js';
 
 const layer = defineModel<ImageEffectorLayer>('layer', { required: true });
-const fx = FXS.find((fx) => fx.id === layer.value.fxId);
+const fx = FXS.find((fx) => fx.id === layer.value.type);
 if (fx == null) {
-	throw new Error(`Unrecognized effect: ${layer.value.fxId}`);
+	throw new Error(`Unrecognized effect: ${layer.value.type}`);
 }
 
 const emit = defineEmits<{

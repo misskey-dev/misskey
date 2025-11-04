@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FX_checker } from './fxs/checker.js';
-import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
-import { FX_colorAdjust } from './fxs/colorAdjust.js';
-import { FX_colorClamp } from './fxs/colorClamp.js';
-import { FX_colorClampAdvanced } from './fxs/colorClampAdvanced.js';
-import { FX_distort } from './fxs/distort.js';
-import { FX_polkadot } from './fxs/polkadot.js';
-import { FX_tearing } from './fxs/tearing.js';
-import { FX_grayscale } from './fxs/grayscale.js';
-import { FX_invert } from './fxs/invert.js';
-import { FX_mirror } from './fxs/mirror.js';
-import { FX_stripe } from './fxs/stripe.js';
-import { FX_threshold } from './fxs/threshold.js';
-import { FX_zoomLines } from './fxs/zoomLines.js';
-import { FX_blockNoise } from './fxs/blockNoise.js';
-import { FX_fill } from './fxs/fill.js';
-import { FX_blur } from './fxs/blur.js';
-import { FX_pixelate } from './fxs/pixelate.js';
+import { FX_checker } from '../image-compositor-functions/checker.js';
+import { FX_chromaticAberration } from '../image-compositor-functions/chromaticAberration.js';
+import { FX_colorAdjust } from '../image-compositor-functions/colorAdjust.js';
+import { FX_colorClamp } from '../image-compositor-functions/colorClamp.js';
+import { FX_colorClampAdvanced } from '../image-compositor-functions/colorClampAdvanced.js';
+import { FX_distort } from '../image-compositor-functions/distort.js';
+import { FX_polkadot } from '../image-compositor-functions/polkadot.js';
+import { FX_tearing } from '../image-compositor-functions/tearing.js';
+import { FX_grayscale } from '../image-compositor-functions/grayscale.js';
+import { FX_invert } from '../image-compositor-functions/invert.js';
+import { FX_mirror } from '../image-compositor-functions/mirror.js';
+import { FX_stripe } from '../image-compositor-functions/stripe.js';
+import { FX_threshold } from '../image-compositor-functions/threshold.js';
+import { FX_zoomLines } from '../image-compositor-functions/zoomLines.js';
+import { FX_blockNoise } from '../image-compositor-functions/blockNoise.js';
+import { FX_fill } from '../image-compositor-functions/fill.js';
+import { FX_blur } from '../image-compositor-functions/blur.js';
+import { FX_pixelate } from '../image-compositor-functions/pixelate.js';
 import type { ImageEffectorFx } from './ImageEffector.js';
 
 export const FXS = [
