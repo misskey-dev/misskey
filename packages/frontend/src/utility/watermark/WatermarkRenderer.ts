@@ -7,7 +7,6 @@ import QRCodeStyling from 'qr-code-styling';
 import { url, host } from '@@/js/config.js';
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { fn as fn_watermark } from './watermark.js';
-import type { ImageCompositorLayer } from '@/lib/ImageCompositor.js';
 import { fn as fn_stripe } from '@/utility/image-compositor-functions/stripe.js';
 import { fn as fn_poladot } from '@/utility/image-compositor-functions/polkadot.js';
 import { fn as fn_checker } from '@/utility/image-compositor-functions/checker.js';
@@ -80,8 +79,15 @@ export type WatermarkPreset = {
 	layers: WatermarkLayers;
 };
 
+type WatermarkRendererImageCompositor = ImageCompositor<{
+	watermark: typeof fn_watermark;
+	stripe: typeof fn_stripe;
+	polkadot: typeof fn_poladot;
+	checker: typeof fn_checker;
+}>;
+
 export class WatermarkRenderer {
-	private compositor: ImageCompositor;
+	private compositor: WatermarkRendererImageCompositor;
 
 	constructor(options: {
 		canvas: HTMLCanvasElement,
@@ -94,16 +100,17 @@ export class WatermarkRenderer {
 			renderWidth: options.renderWidth,
 			renderHeight: options.renderHeight,
 			image: options.image,
+			functions: {
+				watermark: fn_watermark,
+				stripe: fn_stripe,
+				polkadot: fn_poladot,
+				checker: fn_checker,
+			},
 		});
-
-		this.compositor.registerFunction('watermark', fn_watermark);
-		this.compositor.registerFunction('stripe', fn_stripe);
-		this.compositor.registerFunction('polkadot', fn_poladot);
-		this.compositor.registerFunction('checker', fn_checker);
 	}
 
 	public async render(layers: WatermarkLayers) {
-		const compositorLayers: ImageCompositorLayer[] = [];
+		const compositorLayers: Parameters<WatermarkRendererImageCompositor['render']>[0] = [];
 
 		const unused = new Set(this.compositor.getKeysOfRegisteredTextures());
 

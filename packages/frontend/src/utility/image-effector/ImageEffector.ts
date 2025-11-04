@@ -64,10 +64,12 @@ type ImageEffectorFxParamDef = NumberParamDef | NumberEnumParamDef | BooleanPara
 export type ImageEffectorFxParamDefs = Record<string, ImageEffectorFxParamDef>;
 
 export type ImageEffectorLayer = {
-	id: string;
-	fxId: string;
-	params: ImageCompositorLayer['params'];
-};
+	[K in keyof typeof FXS]: {
+		id: string;
+		fxId: K;
+		params: Parameters<(typeof FXS)[K]['fn']['main']>[0]['params'];
+	};
+}[keyof typeof FXS];
 
 export type ImageEffectorUiDefinition<Fn extends ImageCompositorFunction<any> = ImageCompositorFunction> = {
 	name: string;
@@ -76,9 +78,13 @@ export type ImageEffectorUiDefinition<Fn extends ImageCompositorFunction<any> = 
 	} : never;
 };
 
+type ImageEffectorImageCompositor = ImageCompositor<{
+	[K in keyof typeof FXS]: typeof FXS[K]['fn'];
+}>;
+
 export class ImageEffector {
 	private canvas: HTMLCanvasElement | null = null;
-	private compositor: ImageCompositor;
+	private compositor: ImageEffectorImageCompositor;
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -93,15 +99,12 @@ export class ImageEffector {
 			renderWidth: options.renderWidth,
 			renderHeight: options.renderHeight,
 			image: options.image,
+			functions: Object.fromEntries(Object.entries(FXS).map(([fxId, fx]) => [fxId, fx.fn])),
 		});
-
-		for (const fx in FXS) {
-			this.compositor.registerFunction(fx, FXS[fx].fn);
-		}
 	}
 
 	public async render(layers: ImageEffectorLayer[]) {
-		const compositorLayers: ImageCompositorLayer[] = [];
+		const compositorLayers: Parameters<ImageEffectorImageCompositor['render']>[0] = [];
 
 		for (const layer of layers) {
 			compositorLayers.push({

@@ -20,11 +20,13 @@ export type ImageCompositorFunction<PS extends ImageCompositorFunctionParams = I
 	}) => void;
 };
 
-export type ImageCompositorLayer = {
-	id: string;
-	functionId: string;
-	params: Record<string, any>;
-};
+export type ImageCompositorLayer<FNS extends Record<string, ImageCompositorFunction> = any> = {
+	[K in keyof FNS]: {
+		id: string;
+		functionId: K;
+		params: Parameters<FNS[K]['main']>[0]['params'];
+	};
+}[keyof FNS];
 
 export function defineImageCompositorFunction<PS extends ImageCompositorFunctionParams>(fn: ImageCompositorFunction<PS>) {
 	return fn;
@@ -32,7 +34,7 @@ export function defineImageCompositorFunction<PS extends ImageCompositorFunction
 
 // TODO: per layer cache
 
-export class ImageCompositor {
+export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<any>>> {
 	private gl: WebGL2RenderingContext;
 	private canvas: HTMLCanvasElement | null = null;
 	private renderWidth: number;
@@ -50,6 +52,7 @@ export class ImageCompositor {
 		renderWidth: number;
 		renderHeight: number;
 		image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement | null;
+		functions: FNS;
 	}) {
 		this.canvas = options.canvas;
 		this.renderWidth = options.renderWidth;
@@ -111,6 +114,11 @@ export class ImageCompositor {
 		const positionLocation = gl.getAttribLocation(this.nopProgram, 'position');
 		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 		gl.enableVertexAttribArray(positionLocation);
+
+		for (const [id, fn] of Object.entries(options.functions)) {
+			const uniforms = this.extractUniformNamesFromShader(fn.shader);
+			this.registeredFunctions.set(id, { ...fn, id, uniforms });
+		}
 	}
 
 	private extractUniformNamesFromShader(shader: string): string[] {
@@ -170,7 +178,7 @@ export class ImageCompositor {
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 
-	public render(layers: ImageCompositorLayer[]) {
+	public render(layers: (ImageCompositorLayer<FNS>)[]) {
 		const gl = this.gl;
 
 		// 入力をそのまま出力
@@ -215,11 +223,6 @@ export class ImageCompositor {
 
 			preTexture = resultTexture;
 		}
-	}
-
-	public registerFunction(id: string, fn: ImageCompositorFunction<any>) {
-		const uniforms = this.extractUniformNamesFromShader(fn.shader);
-		this.registeredFunctions.set(id, { ...fn, id, uniforms });
 	}
 
 	public registerTexture(key: string, image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement) {

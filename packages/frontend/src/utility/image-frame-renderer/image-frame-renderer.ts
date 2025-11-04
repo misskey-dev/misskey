@@ -38,7 +38,7 @@ export type ImageFramePreset = {
 };
 
 export class ImageFrameRenderer {
-	private compositor: ImageCompositor;
+	private compositor: ImageCompositor<{ frame: typeof FN_frame }>;
 	private image: HTMLImageElement | ImageBitmap;
 	private exif: ExifReader.Tags | null;
 	private renderAsPreview = false;
@@ -59,9 +59,8 @@ export class ImageFrameRenderer {
 			renderWidth: 1,
 			renderHeight: 1,
 			image: null,
+			functions: { frame: FN_frame },
 		});
-
-		this.compositor.registerFunction('frame', FN_frame);
 
 		this.compositor.registerTexture('image', this.image);
 	}

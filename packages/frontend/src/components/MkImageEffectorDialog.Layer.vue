@@ -32,8 +32,8 @@ if (fx == null) {
 }
 
 const emit = defineEmits<{
-	(e: 'del'): void;
-	(e: 'swapUp'): void;
-	(e: 'swapDown'): void;
+	(ev: 'del'): void;
+	(ev: 'swapUp'): void;
+	(ev: 'swapDown'): void;
 }>();
 </script>
