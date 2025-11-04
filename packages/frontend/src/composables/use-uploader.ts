@@ -262,7 +262,7 @@ export function useUploader(options: {
 					},
 				},*/ {
 					icon: 'ti ti-sparkles',
-					text: i18n.ts._imageEffector.title + ' (BETA)',
+					text: i18n.ts._imageEffector.title,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
 							image: item.file,
