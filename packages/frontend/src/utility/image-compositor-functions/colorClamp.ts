@@ -3,14 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './colorClamp.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_colorClamp = defineImageEffectorFx({
-	id: 'colorClamp',
-	name: i18n.ts._imageEffector._fxs.colorClamp,
+export const fn = defineImageCompositorFunction<{
+	max: number;
+	min: number;
+}>({
 	shader,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.rMax, params.max);
+		gl.uniform1f(u.rMin, 1.0 + params.min);
+		gl.uniform1f(u.gMax, params.max);
+		gl.uniform1f(u.gMin, 1.0 + params.min);
+		gl.uniform1f(u.bMax, params.max);
+		gl.uniform1f(u.bMin, 1.0 + params.min);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.colorClamp,
 	params: {
 		max: {
 			label: i18n.ts._imageEffector._fxProps.max,
@@ -31,12 +45,4 @@ export const FX_colorClamp = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.rMax, params.max);
-		gl.uniform1f(u.rMin, 1.0 + params.min);
-		gl.uniform1f(u.gMax, params.max);
-		gl.uniform1f(u.gMin, 1.0 + params.min);
-		gl.uniform1f(u.bMax, params.max);
-		gl.uniform1f(u.bMin, 1.0 + params.min);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

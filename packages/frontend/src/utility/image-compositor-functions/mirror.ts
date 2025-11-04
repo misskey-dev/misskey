@@ -3,14 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './mirror.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_mirror = defineImageEffectorFx({
-	id: 'mirror',
-	name: i18n.ts._imageEffector._fxs.mirror,
+export const fn = defineImageCompositorFunction<{
+	h: number;
+	v: number;
+}>({
 	shader,
+	main: ({ gl, u, params }) => {
+		gl.uniform1i(u.h, params.h);
+		gl.uniform1i(u.v, params.v);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.mirror,
 	params: {
 		h: {
 			label: i18n.ts.horizontal,
@@ -33,8 +43,4 @@ export const FX_mirror = defineImageEffectorFx({
 			default: 0,
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1i(u.h, params.h);
-		gl.uniform1i(u.v, params.v);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

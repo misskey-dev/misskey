@@ -3,14 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './invert.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_invert = defineImageEffectorFx({
-	id: 'invert',
-	name: i18n.ts._imageEffector._fxs.invert,
+export const fn = defineImageCompositorFunction<{
+	r: boolean;
+	g: boolean;
+	b: boolean;
+}>({
 	shader,
+	main: ({ gl, u, params }) => {
+		gl.uniform1i(u.r, params.r ? 1 : 0);
+		gl.uniform1i(u.g, params.g ? 1 : 0);
+		gl.uniform1i(u.b, params.b ? 1 : 0);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.invert,
 	params: {
 		r: {
 			label: i18n.ts._imageEffector._fxProps.redComponent,
@@ -28,9 +40,4 @@ export const FX_invert = defineImageEffectorFx({
 			default: true,
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1i(u.r, params.r ? 1 : 0);
-		gl.uniform1i(u.g, params.g ? 1 : 0);
-		gl.uniform1i(u.b, params.b ? 1 : 0);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

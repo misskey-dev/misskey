@@ -3,14 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './chromaticAberration.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_chromaticAberration = defineImageEffectorFx({
-	id: 'chromaticAberration',
-	name: i18n.ts._imageEffector._fxs.chromaticAberration,
+export const fn = defineImageCompositorFunction<{
+	normalize: boolean;
+	amount: number;
+}>({
 	shader,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.amount, params.amount);
+		gl.uniform1i(u.normalize, params.normalize ? 1 : 0);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.chromaticAberration,
 	params: {
 		normalize: {
 			label: i18n.ts._imageEffector._fxProps.normalize,
@@ -26,8 +36,4 @@ export const FX_chromaticAberration = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.amount, params.amount);
-		gl.uniform1i(u.normalize, params.normalize ? 1 : 0);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

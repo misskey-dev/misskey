@@ -4,14 +4,40 @@
  */
 
 import seedrandom from 'seedrandom';
-import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './tearing.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_tearing = defineImageEffectorFx({
-	id: 'tearing',
-	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
+export const fn = defineImageCompositorFunction<{
+	amount: number;
+	strength: number;
+	size: number;
+	channelShift: number;
+	seed: number;
+}>({
 	shader,
+	main: ({ gl, program, u, params }) => {
+		gl.uniform1i(u.amount, params.amount);
+		gl.uniform1f(u.channelShift, params.channelShift);
+
+		const rnd = seedrandom(params.seed.toString());
+
+		for (let i = 0; i < params.amount; i++) {
+			const o = gl.getUniformLocation(program, `u_shiftOrigins[${i.toString()}]`);
+			gl.uniform1f(o, rnd());
+
+			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
+			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
+
+			const h = gl.getUniformLocation(program, `u_shiftHeights[${i.toString()}]`);
+			gl.uniform1f(h, rnd() * params.size);
+		}
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.tearing,
 	params: {
 		amount: {
 			label: i18n.ts._imageEffector._fxProps.amount,
@@ -54,21 +80,4 @@ export const FX_tearing = defineImageEffectorFx({
 			default: 100,
 		},
 	},
-	main: ({ gl, program, u, params }) => {
-		gl.uniform1i(u.amount, params.amount);
-		gl.uniform1f(u.channelShift, params.channelShift);
-
-		const rnd = seedrandom(params.seed.toString());
-
-		for (let i = 0; i < params.amount; i++) {
-			const o = gl.getUniformLocation(program, `u_shiftOrigins[${i.toString()}]`);
-			gl.uniform1f(o, rnd());
-
-			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
-			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
-
-			const h = gl.getUniformLocation(program, `u_shiftHeights[${i.toString()}]`);
-			gl.uniform1f(h, rnd() * params.size);
-		}
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

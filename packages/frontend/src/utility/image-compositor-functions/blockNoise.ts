@@ -4,14 +4,43 @@
  */
 
 import seedrandom from 'seedrandom';
-import { defineImageEffectorFx } from '../image-effector/ImageEffector.js';
 import shader from './blockNoise.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_blockNoise = defineImageEffectorFx({
-	id: 'blockNoise',
-	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
+export const fn = defineImageCompositorFunction<{
+	amount: number;
+	strength: number;
+	width: number;
+	height: number;
+	channelShift: number;
+	seed: number;
+}>({
 	shader,
+	main: ({ gl, program, u, params }) => {
+		gl.uniform1i(u.amount, params.amount);
+		gl.uniform1f(u.channelShift, params.channelShift);
+
+		const margin = 0;
+
+		const rnd = seedrandom(params.seed.toString());
+
+		for (let i = 0; i < params.amount; i++) {
+			const o = gl.getUniformLocation(program, `u_shiftOrigins[${i.toString()}]`);
+			gl.uniform2f(o, (rnd() * (1 + (margin * 2))) - margin, (rnd() * (1 + (margin * 2))) - margin);
+
+			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
+			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
+
+			const sizes = gl.getUniformLocation(program, `u_shiftSizes[${i.toString()}]`);
+			gl.uniform2f(sizes, params.width, params.height);
+		}
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
 	params: {
 		amount: {
 			label: i18n.ts._imageEffector._fxProps.amount,
@@ -63,23 +92,4 @@ export const FX_blockNoise = defineImageEffectorFx({
 			default: 100,
 		},
 	},
-	main: ({ gl, program, u, params }) => {
-		gl.uniform1i(u.amount, params.amount);
-		gl.uniform1f(u.channelShift, params.channelShift);
-
-		const margin = 0;
-
-		const rnd = seedrandom(params.seed.toString());
-
-		for (let i = 0; i < params.amount; i++) {
-			const o = gl.getUniformLocation(program, `u_shiftOrigins[${i.toString()}]`);
-			gl.uniform2f(o, (rnd() * (1 + (margin * 2))) - margin, (rnd() * (1 + (margin * 2))) - margin);
-
-			const s = gl.getUniformLocation(program, `u_shiftStrengths[${i.toString()}]`);
-			gl.uniform1f(s, (1 - (rnd() * 2)) * params.strength);
-
-			const sizes = gl.getUniformLocation(program, `u_shiftSizes[${i.toString()}]`);
-			gl.uniform2f(sizes, params.width, params.height);
-		}
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;
