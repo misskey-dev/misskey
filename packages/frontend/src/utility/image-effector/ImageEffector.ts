@@ -104,7 +104,7 @@ export class ImageEffector {
 	}
 
 	public async render(layers: ImageEffectorLayer[]) {
-		const compositorLayers: Parameters<ImageEffectorImageCompositor['render']>[0] = [];
+		const compositorLayers: Parameters<ImageCompositor<any>['render']>[0] = [];
 
 		for (const layer of layers) {
 			compositorLayers.push({
@@ -114,7 +114,7 @@ export class ImageEffector {
 			});
 		}
 
-		this.compositor.render(compositorLayers);
+		this.compositor.render(compositorLayers as Parameters<ImageEffectorImageCompositor['render']>[0]);
 	}
 
 	public changeResolution(width: number, height: number) {

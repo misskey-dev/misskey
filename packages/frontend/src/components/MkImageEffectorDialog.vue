@@ -277,6 +277,7 @@ function onImagePointerdown(ev: PointerEvent) {
 				angle: 0,
 				opacity: 1,
 				color: [1, 1, 1],
+				ellipse: false,
 			},
 		});
 	} else if (penMode.value === 'blur') {
@@ -290,6 +291,7 @@ function onImagePointerdown(ev: PointerEvent) {
 				scaleY: 0.1,
 				angle: 0,
 				radius: 3,
+				ellipse: false,
 			},
 		});
 	} else if (penMode.value === 'pixelate') {
@@ -303,6 +305,7 @@ function onImagePointerdown(ev: PointerEvent) {
 				scaleY: 0.1,
 				angle: 0,
 				strength: 0.2,
+				ellipse: false,
 			},
 		});
 	}
