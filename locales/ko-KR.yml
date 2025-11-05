@@ -1498,6 +1498,7 @@ _settings:
   showUrlPreview: "URL 미리보기 표시"
   showAvailableReactionsFirstInNote: "이용 가능한 리액션을 선두로 표시"
   showPageTabBarBottom: "페이지의 탭 바를 아래쪽에 표시"
+  emojiPaletteBanner: "이모티콘 선택기에 고정 표시되는 프리셋을 팔레트로 등록하거나 선택기의 표시 방법을 커스터마이징할 수 있습니다."
   _chat:
     showSenderName: "발신자 이름 표시"
     sendOnEnter: "엔터로 보내기"
