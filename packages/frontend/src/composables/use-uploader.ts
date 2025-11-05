@@ -8,7 +8,6 @@ import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import isAnimated from 'is-file-animated';
 import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
-import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
@@ -632,6 +631,7 @@ export function useUploader(options: {
 		const needsImageFrame = item.imageFrameParams != null && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type);
 		if (needsImageFrame && item.imageFrameParams != null) {
 			const canvas = window.document.createElement('canvas');
+			const ExifReader = await import('exifreader');
 			const exif = await ExifReader.load(await item.file.arrayBuffer());
 			const ImageFrameRenderer = await import('@/utility/image-frame-renderer/ImageFrameRenderer.js').then(x => x.ImageFrameRenderer);
 			const frameRenderer = new ImageFrameRenderer({
