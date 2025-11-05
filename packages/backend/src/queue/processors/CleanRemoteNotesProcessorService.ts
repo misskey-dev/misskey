@@ -111,7 +111,7 @@ export class CleanRemoteNotesProcessorService {
 		}
 
 		// start with a conservative limit and adjust it based on the query duration
-		const minimumLimit = 5;
+		const minimumLimit = 10;
 		let currentLimit = 100;
 		let cursorLeft = '0';
 
@@ -155,12 +155,12 @@ export class CleanRemoteNotesProcessorService {
 		// | fff | fff    | TRUE        |
 		// | ggg | ggg    | FALSE       |
 		//
-		const candidateNotesQuery = this.db.createQueryBuilder()
+		const candidateNotesQuery = ({ limit }: { limit: number }) => this.db.createQueryBuilder()
 			.select(`"${candidateNotesCteName}"."id"`, 'id')
 			.addSelect('unremovable."id" IS NULL', 'isRemovable')
 			.addSelect(`BOOL_OR("${candidateNotesCteName}"."isBase")`, 'isBase')
 			.addCommonTableExpression(
-				`((SELECT "base".* FROM (${candidateNotesQueryBase.orderBy('note.id', 'ASC').limit(currentLimit).getQuery()}) AS "base") UNION ${candidateNotesQueryInductive.getQuery()})`,
+				`((SELECT "base".* FROM (${candidateNotesQueryBase.orderBy('note.id', 'ASC').limit(limit).getQuery()}) AS "base") UNION ${candidateNotesQueryInductive.getQuery()})`,
 				candidateNotesCteName,
 				{ recursive: true },
 			)
@@ -205,7 +205,7 @@ export class CleanRemoteNotesProcessorService {
 			let noteIds = null;
 
 			try {
-				noteIds = await candidateNotesQuery.setParameters(
+				noteIds = await candidateNotesQuery({ limit: currentLimit }).setParameters(
 					{ newestLimit, cursorLeft },
 				).getRawMany<{ id: MiNote['id'], isRemovable: boolean, isBase: boolean }>();
 			} catch (e) {
@@ -222,7 +222,7 @@ export class CleanRemoteNotesProcessorService {
 							.andWhere({ replyId: IsNull(), renoteId: IsNull() })
 							.orderBy('note.id', 'ASC')
 							.limit(minimumLimit + 1)
-							.setParameters({ cursorLeft })
+							.setParameters({ cursorLeft, newestLimit })
 							.getRawMany<{ id?: MiNote['id'] }>();
 
 						job.log(`Skipped note IDs: ${idWindow.slice(0, minimumLimit).map(id => id.id).join(', ')}`);
