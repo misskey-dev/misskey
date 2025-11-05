@@ -365,7 +365,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	enableCondensedLine: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	keepScreenOn: {
 		where: 'device',
