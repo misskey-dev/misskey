@@ -26,14 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-else key="_root_" class="_gaps">
 				<div v-if="direction === 'up' || direction === 'both'" v-show="upButtonVisible">
-					<MkButton v-if="!upButtonLoading" :class="$style.more" primary rounded @click="upButtonClick">
+					<MkButton v-if="!upButtonLoading" v-appear="prefer.s.enableInfiniteScroll ? upButtonClick : null" :class="$style.more" primary rounded @click="upButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
 				<slot :items="getValue(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
 				<div v-if="direction === 'down' || direction === 'both'" v-show="downButtonVisible">
-					<MkButton v-if="!downButtonLoading" :class="$style.more" primary rounded @click="downButtonClick">
+					<MkButton v-if="!downButtonLoading" v-appear="prefer.s.enableInfiniteScroll ? downButtonClick : null" :class="$style.more" primary rounded @click="downButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
