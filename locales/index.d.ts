@@ -5997,6 +5997,10 @@ export interface Locale extends ILocale {
          * ページのタブバーを下部に表示
          */
         "showPageTabBarBottom": string;
+        /**
+         * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
+         */
+        "emojiPaletteBanner": string;
         "_chat": {
             /**
              * 送信者の名前を表示
