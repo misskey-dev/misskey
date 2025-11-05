@@ -146,27 +146,35 @@ onMounted(async () => {
 
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
-	imageBitmap = await window.createImageBitmap(props.image);
+	try {
+		imageBitmap = await window.createImageBitmap(props.image);
 
-	const MAX_W = 1000;
-	const MAX_H = 1000;
-	let w = imageBitmap.width;
-	let h = imageBitmap.height;
+		const MAX_W = 1000;
+		const MAX_H = 1000;
+		let w = imageBitmap.width;
+		let h = imageBitmap.height;
 
-	if (w > MAX_W || h > MAX_H) {
-		const scale = Math.min(MAX_W / w, MAX_H / h);
-		w = Math.floor(w * scale);
-		h = Math.floor(h * scale);
+		if (w > MAX_W || h > MAX_H) {
+			const scale = Math.min(MAX_W / w, MAX_H / h);
+			w = Math.floor(w * scale);
+			h = Math.floor(h * scale);
+		}
+
+		renderer = new ImageEffector({
+			canvas: canvasEl.value,
+			renderWidth: w,
+			renderHeight: h,
+			image: imageBitmap,
+		});
+
+		await renderer.render(layers);
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			text: i18n.ts._imageEffector.failedToLoadImage,
+		});
 	}
-
-	renderer = new ImageEffector({
-		canvas: canvasEl.value,
-		renderWidth: w,
-		renderHeight: h,
-		image: imageBitmap,
-	});
-
-	await renderer.render(layers);
 
 	closeWaiting();
 });

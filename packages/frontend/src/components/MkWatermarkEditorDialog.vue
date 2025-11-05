@@ -294,7 +294,15 @@ onMounted(async () => {
 	await sampleImage_3_2_loading;
 	await sampleImage_2_3_loading;
 
-	await initRenderer();
+	try {
+		await initRenderer();
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			text: i18n.ts._watermarkEditor.failedToLoadImage,
+		});
+	}
 
 	closeWaiting();
 });

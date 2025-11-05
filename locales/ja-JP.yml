@@ -1415,6 +1415,7 @@ _imageFrameEditor:
   backgroundColor: "背景色"
   textColor: "文字色"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
 _compression:
   _quality:
@@ -3346,12 +3347,14 @@ _watermarkEditor:
   polkadotSubDotRadius: "サブドットの大きさ"
   polkadotSubDotDivisions: "サブドットの数"
   leaveBlankToAccountUrl: "空欄にするとアカウントのURLになります"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
 _imageEffector:
   title: "エフェクト"
   addEffect: "エフェクトを追加"
   discardChangesConfirm: "変更を破棄して終了しますか？"
   nothingToConfigure: "設定項目はありません"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
   _fxs:
     chromaticAberration: "色収差"

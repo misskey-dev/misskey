@@ -5674,6 +5674,10 @@ export interface Locale extends ILocale {
          * 保存せずに終了しますか？
          */
         "quitWithoutSaveConfirm": string;
+        /**
+         * 画像の読み込みに失敗しました
+         */
+        "failedToLoadImage": string;
     };
     "_compression": {
         "_quality": {
@@ -12503,6 +12507,10 @@ export interface Locale extends ILocale {
          * 空欄にするとアカウントのURLになります
          */
         "leaveBlankToAccountUrl": string;
+        /**
+         * 画像の読み込みに失敗しました
+         */
+        "failedToLoadImage": string;
     };
     "_imageEffector": {
         /**
@@ -12521,6 +12529,10 @@ export interface Locale extends ILocale {
          * 設定項目はありません
          */
         "nothingToConfigure": string;
+        /**
+         * 画像の読み込みに失敗しました
+         */
+        "failedToLoadImage": string;
         "_fxs": {
             /**
              * 色収差
