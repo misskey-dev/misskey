@@ -747,7 +747,7 @@ export interface Locale extends ILocale {
      */
     "flagShowTimelineRepliesDescription": string;
     /**
-     * フォロー中ユーザーからのフォロリクを自動承認
+     * フォロー中ユーザーからのフォロー申請を自動承認
      */
     "autoAcceptFollowed": string;
     /**
