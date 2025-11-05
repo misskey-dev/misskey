@@ -1414,6 +1414,9 @@ _imageFrameEditor:
   withQrCode: "二次元コード"
   backgroundColor: "背景色"
   textColor: "文字色"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
   failedToLoadImage: "画像の読み込みに失敗しました"
 

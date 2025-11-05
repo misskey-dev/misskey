@@ -28,6 +28,7 @@ export type ImageFrameParams = {
 	labelBottom: LabelParams;
 	bgColor: [r: number, g: number, b: number];
 	fgColor: [r: number, g: number, b: number];
+	font: 'serif' | 'sans-serif';
 	borderRadius: number; // TODO
 };
 
@@ -100,7 +101,7 @@ export class ImageFrameRenderer {
 		});
 	}
 
-	private async renderLabel(renderWidth: number, renderHeight: number, paddingLeft: number, paddingRight: number, imageAreaH: number, fgColor: [number, number, number], params: LabelParams) {
+	private async renderLabel(renderWidth: number, renderHeight: number, paddingLeft: number, paddingRight: number, imageAreaH: number, fgColor: [number, number, number], font: string, params: LabelParams) {
 		const scaleBase = imageAreaH * params.scale;
 		const labelCanvasCtx = window.document.createElement('canvas').getContext('2d')!;
 		labelCanvasCtx.canvas.width = renderWidth;
@@ -113,7 +114,7 @@ export class ImageFrameRenderer {
 		const qrMarginRight = Math.max((labelCanvasCtx.canvas.height - qrSize) / 2, paddingRight);
 
 		labelCanvasCtx.fillStyle = `rgb(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)})`;
-		labelCanvasCtx.font = `bold ${fontSize}px sans-serif`;
+		labelCanvasCtx.font = `bold ${fontSize}px ${font}`;
 		labelCanvasCtx.textBaseline = 'middle';
 
 		const titleY = params.textSmall === '' ? (labelCanvasCtx.canvas.height / 2) : (labelCanvasCtx.canvas.height / 2) - (fontSize * 0.9);
@@ -126,7 +127,7 @@ export class ImageFrameRenderer {
 		}
 
 		labelCanvasCtx.fillStyle = `rgba(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)}, 0.5)`;
-		labelCanvasCtx.font = `${fontSize * 0.85}px sans-serif`;
+		labelCanvasCtx.font = `${fontSize * 0.85}px ${font}`;
 		labelCanvasCtx.textBaseline = 'middle';
 
 		const textY = params.textBig === '' ? (labelCanvasCtx.canvas.height / 2) : (labelCanvasCtx.canvas.height / 2) + (fontSize * 0.9);
@@ -218,12 +219,12 @@ export class ImageFrameRenderer {
 		const renderHeight = imageAreaH + paddingTop + paddingBottom;
 
 		if (params.labelTop.enabled) {
-			const topLabelImage = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.labelTop);
+			const topLabelImage = await this.renderLabel(renderWidth, paddingTop, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.font, params.labelTop);
 			this.compositor.registerTexture('topLabel', topLabelImage);
 		}
 
 		if (params.labelBottom.enabled) {
-			const bottomLabelImage = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.labelBottom);
+			const bottomLabelImage = await this.renderLabel(renderWidth, paddingBottom, paddingLeft, paddingRight, imageAreaH, params.fgColor, params.font, params.labelBottom);
 			this.compositor.registerTexture('bottomLabel', bottomLabelImage);
 		}
 

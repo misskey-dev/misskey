@@ -5671,6 +5671,18 @@ export interface Locale extends ILocale {
          */
         "textColor": string;
         /**
+         * フォント
+         */
+        "font": string;
+        /**
+         * セリフ
+         */
+        "fontSerif": string;
+        /**
+         * サンセリフ
+         */
+        "fontSansSerif": string;
+        /**
          * 保存せずに終了しますか？
          */
         "quitWithoutSaveConfirm": string;

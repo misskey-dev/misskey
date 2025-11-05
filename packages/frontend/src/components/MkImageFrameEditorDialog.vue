@@ -43,6 +43,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
 					</MkInput>
 
+					<MkSelect
+						v-model="params.font" :items="[
+							{ label: i18n.ts._imageFrameEditor.fontSansSerif, value: 'sans-serif' },
+							{ label: i18n.ts._imageFrameEditor.fontSerif, value: 'serif' },
+						]"
+					>
+						<template #label>{{ i18n.ts._imageFrameEditor.font }}</template>
+					</MkSelect>
+
 					<MkFolder :defaultOpen="params.labelTop.enabled">
 						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
 
@@ -132,8 +141,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
-import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
-import { ImageFrameRenderer } from '@/utility/image-frame-renderer/image-frame-renderer.js';
+import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -188,6 +197,7 @@ const params = reactive<ImageFrameParams>(deepClone(props.params) ?? {
 	},
 	bgColor: [1, 1, 1],
 	fgColor: [0, 0, 0],
+	font: 'sans-serif',
 });
 
 const emit = defineEmits<{

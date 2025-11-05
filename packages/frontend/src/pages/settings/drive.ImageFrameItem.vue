@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import type { ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
-import { ImageFrameRenderer } from '@/utility/image-frame-renderer/image-frame-renderer.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';

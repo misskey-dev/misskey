@@ -11,7 +11,7 @@ import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue'
 import ExifReader from 'exifreader';
 import type { MenuItem } from '@/types/menu.js';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
-import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/image-frame-renderer.js';
+import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -20,7 +20,7 @@ import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
-import { ImageFrameRenderer } from '@/utility/image-frame-renderer/image-frame-renderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
