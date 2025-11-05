@@ -1498,6 +1498,7 @@ _settings:
   showUrlPreview: "Mostrar vista prèvia d'URL"
   showAvailableReactionsFirstInNote: "Mostra les reacciones que pots fer servir al damunt"
   showPageTabBarBottom: "Mostrar les pestanyes de les línies de temps a la part inferior"
+  emojiPaletteBanner: "Pots registrar ajustos preestablerts com paletes perquè es mostrin permanentment al selector d'emojis, o personalitzar la configuració de visió del selector."
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
