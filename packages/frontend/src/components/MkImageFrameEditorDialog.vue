@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.root">
 		<div :class="$style.container">
-			<div :class="$style.preview">
+			<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
 				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
@@ -149,6 +149,7 @@ import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { prefer } from '@/preferences.js';
 
 const $i = ensureSignin();
 
@@ -393,6 +394,9 @@ function getRgb(hex: string | number): [number, number, number] | null {
 	background-color: var(--MI_THEME-bg);
 	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
 	background-size: 20px 20px;
+}
+
+.animatedBg {
 	animation: bg 1.2s linear infinite;
 }
 
