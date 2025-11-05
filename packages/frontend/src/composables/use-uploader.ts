@@ -32,13 +32,7 @@ const THUMBNAIL_SUPPORTED_TYPES = [
 	'image/png',
 	'image/webp',
 	'image/svg+xml',
-];
-
-const IMAGE_COMPRESSION_SUPPORTED_TYPES = [
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/svg+xml',
+	'image/gif',
 ];
 
 const IMAGE_EDITING_SUPPORTED_TYPES = [
@@ -53,11 +47,7 @@ const VIDEO_COMPRESSION_SUPPORTED_TYPES = [ // TODO
 	'video/x-matroska',
 ];
 
-const WATERMARK_SUPPORTED_TYPES = IMAGE_EDITING_SUPPORTED_TYPES;
-
 const IMAGE_PREPROCESS_NEEDED_TYPES = [
-	...WATERMARK_SUPPORTED_TYPES,
-	...IMAGE_COMPRESSION_SUPPORTED_TYPES,
 	...IMAGE_EDITING_SUPPORTED_TYPES,
 ];
 
@@ -153,7 +143,7 @@ export function useUploader(options: {
 			aborted: false,
 			uploaded: null,
 			uploadFailed: false,
-			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
+			compressionLevel: IMAGE_EDITING_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
 			watermarkPreset,
 			watermarkLayers: watermarkPreset?.layers ?? null,
 			imageFrameParams: null,
@@ -289,7 +279,7 @@ export function useUploader(options: {
 		if (
 			uploaderFeatures.value.watermark &&
 			$i.policies.watermarkAvailable &&
-			WATERMARK_SUPPORTED_TYPES.includes(item.file.type) &&
+			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
@@ -403,7 +393,7 @@ export function useUploader(options: {
 		}
 
 		if (
-			(IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) || VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type)) &&
+			(IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) || VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type)) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
@@ -617,7 +607,7 @@ export function useUploader(options: {
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkLayers != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
+		const needsWatermark = item.watermarkLayers != null && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
 		if (needsWatermark && item.watermarkLayers != null) {
 			const canvas = window.document.createElement('canvas');
 			const renderer = new WatermarkRenderer({
@@ -664,7 +654,7 @@ export function useUploader(options: {
 		}
 
 		const compressionSettings = getCompressionSettings(item.compressionLevel);
-		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
+		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
 
 		if (needsCompress) {
 			const config = {
