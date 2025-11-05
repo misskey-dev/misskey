@@ -5998,7 +5998,7 @@ export interface Locale extends ILocale {
          */
         "showPageTabBarBottom": string;
         /**
-         * よく使う絵文字をパレットと呼ばれるプリセットとして登録できます。パレットに登録した絵文字は、絵文字ピッカーですぐに選択できるようになります。
+         * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
          */
         "emojiPaletteBanner": string;
         "_chat": {
