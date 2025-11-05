@@ -51,6 +51,17 @@ export class CleanRemoteNotesProcessorService {
 		skipped: boolean;
 		transientErrors: number;
 	}> {
+		const getConfig = () => {
+			return {
+				enabled: this.meta.enableRemoteNotesCleaning,
+				maxDuration: this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000, // Convert minutes to milliseconds
+				// The date limit for the newest note to be considered for deletion.
+				// All notes newer than this limit will always be retained.
+				newestLimit: this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes)),
+			};
+		};
+
+		const initialConfig = getConfig();
 		if (!this.meta.enableRemoteNotesCleaning) {
 			this.logger.info('Remote notes cleaning is disabled, skipping...');
 			return {
@@ -64,13 +75,9 @@ export class CleanRemoteNotesProcessorService {
 
 		this.logger.info('cleaning remote notes...');
 
-		const maxDuration = this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
 		//#region queries
-		// The date limit for the newest note to be considered for deletion.
-		// All notes newer than this limit will always be retained.
-		const newestLimit = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
 
 		// The condition for removing the notes.
 		// The note must be:
@@ -92,7 +99,7 @@ export class CleanRemoteNotesProcessorService {
 		const minId = (await this.notesRepository.createQueryBuilder('note')
 			.select('MIN(note.id)', 'minId')
 			.where({
-				id: LessThan(newestLimit),
+				id: LessThan(initialConfig.newestLimit),
 				userHost: Not(IsNull()),
 				replyId: IsNull(),
 				renoteId: IsNull(),
@@ -178,6 +185,11 @@ export class CleanRemoteNotesProcessorService {
 		let lowThroughputWarned = false;
 		let transientErrors = 0;
 		for (;;) {
+			const { enabled, maxDuration, newestLimit } = getConfig();
+			if (!enabled) {
+				this.logger.info('Remote notes cleaning is disabled, processing stopped...');
+				break;
+			}
 			//#region check time
 			const batchBeginAt = Date.now();
 
