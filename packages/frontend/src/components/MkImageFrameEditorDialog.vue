@@ -122,13 +122,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkInfo>
 						<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
-						<div><code class="_selectableAtomic">{date}</code> - 撮影日時</div>
-						<div><code class="_selectableAtomic">{camera_model}</code> - カメラモデル</div>
-						<div><code class="_selectableAtomic">{camera_lens_model}</code> - レンズモデル</div>
-						<div><code class="_selectableAtomic">{camera_mm}</code> - 焦点距離 (例: 50)</div>
-						<div><code class="_selectableAtomic">{camera_f}</code> - 絞り値 (例: 1.8)</div>
-						<div><code class="_selectableAtomic">{camera_s}</code> - シャッタースピード (例: 1/125)</div>
-						<div><code class="_selectableAtomic">{camera_iso}</code> - ISO感度 (例: 100)</div>
+						<div><code class="_selectableAtomic">{year}</code> - {{ i18n.ts._imageEditing._vars.year }}</div>
+						<div><code class="_selectableAtomic">{month}</code> - {{ i18n.ts._imageEditing._vars.month }}</div>
+						<div><code class="_selectableAtomic">{day}</code> - {{ i18n.ts._imageEditing._vars.day }}</div>
+						<div><code class="_selectableAtomic">{hour}</code> - {{ i18n.ts._imageEditing._vars.hour }}</div>
+						<div><code class="_selectableAtomic">{minute}</code> - {{ i18n.ts._imageEditing._vars.minute }}</div>
+						<div><code class="_selectableAtomic">{second}</code> - {{ i18n.ts._imageEditing._vars.second }}</div>
+						<div><code class="_selectableAtomic">{0month}</code> - {{ i18n.ts._imageEditing._vars.month }} ({{ i18n.ts.zeroPadding }})</div>
+						<div><code class="_selectableAtomic">{0day}</code> - {{ i18n.ts._imageEditing._vars.day }} ({{ i18n.ts.zeroPadding }})</div>
+						<div><code class="_selectableAtomic">{0hour}</code> - {{ i18n.ts._imageEditing._vars.hour }} ({{ i18n.ts.zeroPadding }})</div>
+						<div><code class="_selectableAtomic">{0minute}</code> - {{ i18n.ts._imageEditing._vars.minute }} ({{ i18n.ts.zeroPadding }})</div>
+						<div><code class="_selectableAtomic">{0second}</code> - {{ i18n.ts._imageEditing._vars.second }} ({{ i18n.ts.zeroPadding }})</div>
+						<div><code class="_selectableAtomic">{camera_model}</code> - {{ i18n.ts._imageEditing._vars.camera_model }}</div>
+						<div><code class="_selectableAtomic">{camera_lens_model}</code> - {{ i18n.ts._imageEditing._vars.camera_lens_model }}</div>
+						<div><code class="_selectableAtomic">{camera_mm}</code> - {{ i18n.ts._imageEditing._vars.camera_mm }}</div>
+						<div><code class="_selectableAtomic">{camera_f}</code> - {{ i18n.ts._imageEditing._vars.camera_f }}</div>
+						<div><code class="_selectableAtomic">{camera_s}</code> - {{ i18n.ts._imageEditing._vars.camera_s }}</div>
+						<div><code class="_selectableAtomic">{camera_iso}</code> - {{ i18n.ts._imageEditing._vars.camera_iso }}</div>
 					</MkInfo>
 				</div>
 			</div>

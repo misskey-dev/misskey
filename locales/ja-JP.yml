@@ -1398,6 +1398,22 @@ deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
 frame: "フレーム"
 presets: "プリセット"
+zeroPadding: "ゼロ埋め"
+
+_imageEditing:
+  _vars:
+    year: "撮影年"
+    month: "撮影月"
+    day: "撮影日"
+    hour: "撮影した時刻(時)"
+    minute: "撮影した時刻(分)"
+    second: "撮影した時刻(秒)"
+    camera_model: "カメラ名"
+    camera_lens_model: "レンズ名"
+    camera_mm: "焦点距離"
+    camera_f: "絞り"
+    camera_s: "シャッタースピード"
+    camera_iso: "ISO感度"
 
 _imageFrameEditor:
   title: "フレームの編集"

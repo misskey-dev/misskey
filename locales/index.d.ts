@@ -5613,6 +5613,62 @@ export interface Locale extends ILocale {
      * プリセット
      */
     "presets": string;
+    /**
+     * ゼロ埋め
+     */
+    "zeroPadding": string;
+    "_imageEditing": {
+        "_vars": {
+            /**
+             * 撮影年
+             */
+            "year": string;
+            /**
+             * 撮影月
+             */
+            "month": string;
+            /**
+             * 撮影日
+             */
+            "day": string;
+            /**
+             * 撮影した時刻(時)
+             */
+            "hour": string;
+            /**
+             * 撮影した時刻(分)
+             */
+            "minute": string;
+            /**
+             * 撮影した時刻(秒)
+             */
+            "second": string;
+            /**
+             * カメラ名
+             */
+            "camera_model": string;
+            /**
+             * レンズ名
+             */
+            "camera_lens_model": string;
+            /**
+             * 焦点距離
+             */
+            "camera_mm": string;
+            /**
+             * 絞り
+             */
+            "camera_f": string;
+            /**
+             * シャッタースピード
+             */
+            "camera_s": string;
+            /**
+             * ISO感度
+             */
+            "camera_iso": string;
+        };
+    };
     "_imageFrameEditor": {
         /**
          * フレームの編集

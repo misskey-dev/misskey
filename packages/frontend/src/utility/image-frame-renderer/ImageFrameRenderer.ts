@@ -78,7 +78,6 @@ export class ImageFrameRenderer {
 			const meta_date = DateTimeOriginal ?? '-';
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
-				case 'date': return date;
 				case 'year': return date.split('/')[0];
 				case 'month': return date.split('/')[1].replace(/^0/, '');
 				case 'day': return date.split('/')[2].replace(/^0/, '');
