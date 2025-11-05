@@ -19,8 +19,6 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
-import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -610,6 +608,7 @@ export function useUploader(options: {
 		const needsWatermark = item.watermarkLayers != null && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
 		if (needsWatermark && item.watermarkLayers != null) {
 			const canvas = window.document.createElement('canvas');
+			const WatermarkRenderer = await import('@/utility/watermark/WatermarkRenderer.js').then(x => x.WatermarkRenderer);
 			const renderer = new WatermarkRenderer({
 				canvas: canvas,
 				renderWidth: imageBitmap.width,
@@ -634,6 +633,7 @@ export function useUploader(options: {
 		if (needsImageFrame && item.imageFrameParams != null) {
 			const canvas = window.document.createElement('canvas');
 			const exif = await ExifReader.load(await item.file.arrayBuffer());
+			const ImageFrameRenderer = await import('@/utility/image-frame-renderer/ImageFrameRenderer.js').then(x => x.ImageFrameRenderer);
 			const frameRenderer = new ImageFrameRenderer({
 				canvas: canvas,
 				image: await window.createImageBitmap(preprocessedFile),
