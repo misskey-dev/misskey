@@ -202,6 +202,14 @@ export const packedMetaLiteSchema = {
 				},
 			},
 		},
+		trustedLinkUrlPatterns: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
 		notesPerOneAd: {
 			type: 'number',
 			optional: false, nullable: false,

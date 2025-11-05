@@ -407,6 +407,14 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			trustedLinkUrlPatterns: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 			backgroundImageUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -731,6 +739,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perRemoteUserUserTimelineCacheMax: instance.perRemoteUserUserTimelineCacheMax,
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
+				trustedLinkUrlPatterns: instance.trustedLinkUrlPatterns,
 				enableReactionsBuffering: instance.enableReactionsBuffering,
 				notesPerOneAd: instance.notesPerOneAd,
 				summalyProxy: instance.urlPreviewSummaryProxyUrl,

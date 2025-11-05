@@ -5410,6 +5410,7 @@ export type components = {
                 dayOfWeek: number;
                 isSensitive?: boolean;
             }[];
+            trustedLinkUrlPatterns: string[];
             /** @default 0 */
             notesPerOneAd: number;
             enableEmail: boolean;
@@ -9410,6 +9411,7 @@ export interface operations {
                         perUserListTimelineCacheMax: number;
                         enableReactionsBuffering: boolean;
                         notesPerOneAd: number;
+                        trustedLinkUrlPatterns: string[];
                         backgroundImageUrl: string | null;
                         deeplAuthKey: string | null;
                         deeplIsPro: boolean;
@@ -12758,6 +12760,7 @@ export interface operations {
                     mediaSilencedHosts?: string[] | null;
                     /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
                     summalyProxy?: string | null;
+                    trustedLinkUrlPatterns?: string[] | null;
                     urlPreviewEnabled?: boolean;
                     urlPreviewAllowRedirect?: boolean;
                     urlPreviewTimeout?: number;

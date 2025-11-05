@@ -106,6 +106,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
+				<SearchMarker :keywords="['trust', 'url', 'link']">
+					<MkFolder>
+						<template #icon><SearchIcon><i class="ti ti-link"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.trustedLinkUrlPatterns }}</SearchLabel></template>
+
+						<div class="_gaps">
+							<MkTextarea v-model="trustedLinkUrlPatterns">
+								<template #caption>{{ i18n.ts.trustedLinkUrlPatternsDescription }}</template>
+							</MkTextarea>
+							<MkButton primary @click="save_trustedLinkUrlPatterns">{{ i18n.ts.save }}</MkButton>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['silenced', 'servers', 'hosts']">
 					<MkFolder>
 						<template #icon><SearchIcon><i class="ti ti-eye-off"></i></SearchIcon></template>
@@ -194,6 +208,7 @@ const preservedUsernames = ref(meta.preservedUsernames.join('\n'));
 const blockedHosts = ref(meta.blockedHosts.join('\n'));
 const silencedHosts = ref(meta.silencedHosts?.join('\n') ?? '');
 const mediaSilencedHosts = ref(meta.mediaSilencedHosts.join('\n'));
+const trustedLinkUrlPatterns = ref(meta.trustedLinkUrlPatterns.join('\n'));
 
 async function onChange_enableRegistration(value: boolean) {
 	if (value) {
@@ -264,6 +279,14 @@ function save_prohibitedWordsForNameOfUser() {
 function save_hiddenTags() {
 	os.apiWithDialog('admin/update-meta', {
 		hiddenTags: hiddenTags.value.split('\n'),
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_trustedLinkUrlPatterns() {
+	os.apiWithDialog('admin/update-meta', {
+		trustedLinkUrlPatterns: trustedLinkUrlPatterns.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});
