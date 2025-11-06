@@ -5679,6 +5679,14 @@ export interface Locale extends ILocale {
              * ISO感度
              */
             "camera_iso": string;
+            /**
+             * 緯度
+             */
+            "gps_lat": string;
+            /**
+             * 経度
+             */
+            "gps_long": string;
         };
     };
     "_imageFrameEditor": {

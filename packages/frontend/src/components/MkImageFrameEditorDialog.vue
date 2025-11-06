@@ -142,6 +142,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div><code class="_selectableAtomic">{camera_f}</code> - {{ i18n.ts._imageEditing._vars.camera_f }}</div>
 						<div><code class="_selectableAtomic">{camera_s}</code> - {{ i18n.ts._imageEditing._vars.camera_s }}</div>
 						<div><code class="_selectableAtomic">{camera_iso}</code> - {{ i18n.ts._imageEditing._vars.camera_iso }}</div>
+						<div><code class="_selectableAtomic">{gps_lat}</code> - {{ i18n.ts._imageEditing._vars.gps_lat }}</div>
+						<div><code class="_selectableAtomic">{gps_long}</code> - {{ i18n.ts._imageEditing._vars.gps_long }}</div>
 					</MkInfo>
 				</div>
 			</div>

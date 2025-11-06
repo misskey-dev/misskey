@@ -79,13 +79,15 @@ export class ImageFrameRenderer {
 		const ExposureTime = this.exif == null ? '1/234' : this.exif.ExposureTime?.description;
 		const FNumber = this.exif == null ? '1.23' : this.exif.FNumber?.description;
 		const ISOSpeedRatings = this.exif == null ? '123' : this.exif.ISOSpeedRatings?.description;
+		const GPSLatitude = this.exif == null ? '123.000000000000123' : this.exif.GPSLatitude?.description;
+		const GPSLongitude = this.exif == null ? '456.000000000000123' : this.exif.GPSLongitude?.description;
 		return text.replaceAll(/\{(\w+)\}/g, (_: string, key: string) => {
 			const meta_date = DateTimeOriginal ?? '????:??:?? ??:??:??';
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
-				case 'caption': return this.caption ?? '-';
-				case 'filename': return this.filename ?? '-';
-				case 'filename_without_ext': return this.filename?.replace(/\.[^/.]+$/, '') ?? '-';
+				case 'caption': return this.caption ?? '?';
+				case 'filename': return this.filename ?? '?';
+				case 'filename_without_ext': return this.filename?.replace(/\.[^/.]+$/, '') ?? '?';
 				case 'year': return date.split('/')[0];
 				case 'month': return date.split('/')[1].replace(/^0/, '');
 				case 'day': return date.split('/')[2].replace(/^0/, '');
@@ -97,13 +99,15 @@ export class ImageFrameRenderer {
 				case '0hour': return meta_date.split(' ')[1].split(':')[0];
 				case '0minute': return meta_date.split(' ')[1].split(':')[1];
 				case '0second': return meta_date.split(' ')[1].split(':')[2];
-				case 'camera_model': return Model ?? '-';
-				case 'camera_lens_model': return LensModel ?? '-';
-				case 'camera_mm': return FocalLength?.replace(' mm', '').replace('mm', '') ?? '-';
-				case 'camera_f': return FNumber?.replace('f/', '') ?? '-';
-				case 'camera_s': return ExposureTime ?? '-';
-				case 'camera_iso': return ISOSpeedRatings ?? '-';
-				default: return '-';
+				case 'camera_model': return Model ?? '?';
+				case 'camera_lens_model': return LensModel ?? '?';
+				case 'camera_mm': return FocalLength?.replace(' mm', '').replace('mm', '') ?? '?';
+				case 'camera_f': return FNumber?.replace('f/', '') ?? '?';
+				case 'camera_s': return ExposureTime ?? '?';
+				case 'camera_iso': return ISOSpeedRatings ?? '?';
+				case 'gps_lat': return GPSLatitude ?? '?';
+				case 'gps_long': return GPSLongitude ?? '?';
+				default: return '?';
 			}
 		});
 	}

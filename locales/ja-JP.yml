@@ -1417,6 +1417,8 @@ _imageEditing:
     camera_f: "絞り"
     camera_s: "シャッタースピード"
     camera_iso: "ISO感度"
+    gps_lat: "緯度"
+    gps_long: "経度"
 
 _imageFrameEditor:
   title: "フレームの編集"
