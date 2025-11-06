@@ -916,6 +916,14 @@ information: "Informácie"
 inMinutes: "min"
 inDays: "dní"
 widgets: "Widgety"
+_imageEditing:
+  _vars:
+    filename: "Názov súboru"
+_imageFrameEditor:
+  header: "Hlavička"
+  font: "Písmo"
+  fontSerif: "Pätkové"
+  fontSansSerif: "Bezpätkové"
 _chat:
   invitations: "Pozvať"
   noHistory: "Žiadna história"
