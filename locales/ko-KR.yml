@@ -1396,6 +1396,17 @@ scheduled: "예약"
 widgets: "위젯"
 deviceInfo: "장치 정보"
 deviceInfoDescription: "기술적 문의의 경우 아래의 정보를 병기하면 문제의 해결에 도움이 됩니다."
+presets: "프리셋"
+_imageEditing:
+  _vars:
+    filename: "파일명"
+_imageFrameEditor:
+  header: "헤더"
+  withQrCode: "QR 코드"
+  font: "폰트"
+  fontSerif: "명조체"
+  fontSansSerif: "고딕체"
+  quitWithoutSaveConfirm: "보존하지 않고 종료하시겠습니까?"
 _compression:
   _quality:
     high: "고품질"
