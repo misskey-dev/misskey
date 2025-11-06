@@ -1338,6 +1338,16 @@ pluginsAreDisabledBecauseSafeMode: "セーフモードがオンやから、プ�
 customCssIsDisabledBecauseSafeMode: "セーフモードがオンやから、カスタムCSSは適用されてへんで。"
 themeIsDefaultBecauseSafeMode: "セーフモードがオンの間はデフォルトのテーマを使うで。セーフモードをオフにれば元に戻るで。"
 widgets: "ウィジェット"
+presets: "プリセット"
+_imageEditing:
+  _vars:
+    filename: "ファイル名"
+_imageFrameEditor:
+  header: "ヘッダー"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  quitWithoutSaveConfirm: "保存せずに終わってもええんか？"
 _chat:
   noMessagesYet: "まだメッセージはあらへんで"
   individualChat_description: "特定のユーザーと一対一でチャットができるで。"
