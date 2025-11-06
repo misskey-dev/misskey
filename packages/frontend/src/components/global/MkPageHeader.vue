@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<i v-else-if="pageMetadata.icon" :class="[$style.titleIcon, pageMetadata.icon]"></i>
 
-				<div :class="$style.title">
+				<div class="_nowrap" :class="$style.title">
 					<MkUserName v-if="pageMetadata.userName" :user="pageMetadata.userName" :nowrap="true"/>
-					<div v-else-if="pageMetadata.title" :class="$style.title">{{ pageMetadata.title }}</div>
+					<div v-else-if="pageMetadata.title" class="_nowrap">{{ pageMetadata.title }}</div>
 					<div v-if="pageMetadata.subtitle" :class="$style.subtitle">
 						{{ pageMetadata.subtitle }}
 					</div>
@@ -277,9 +277,6 @@ onUnmounted(() => {
 
 .title {
 	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	line-height: 1.1;
 }
 
