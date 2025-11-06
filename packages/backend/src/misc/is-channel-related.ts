@@ -12,13 +12,16 @@ import { Packed } from '@/misc/json-schema.js';
  *
  * @param note 確認対象のノート
  * @param channelIds 確認対象のチャンネルID一覧
+ * @param ignoreAuthor trueの場合、ノートの所属チャンネルが{@link channelIds}に含まれていても無視します（デフォルトはfalse）
  */
-export function isChannelRelated(note: MiNote | Packed<'Note'>, channelIds: Set<string>): boolean {
-	if (note.channelId && channelIds.has(note.channelId)) {
+export function isChannelRelated(note: MiNote | Packed<'Note'>, channelIds: Set<string>, ignoreAuthor = false): boolean {
+	// ノートの所属チャンネルが確認対象のチャンネルID一覧に含まれている場合
+	if (!ignoreAuthor && note.channelId && channelIds.has(note.channelId)) {
 		return true;
 	}
 
-	if (note.renote != null && note.renote.channelId && channelIds.has(note.renote.channelId)) {
+	const renoteChannelId = note.renote?.channelId;
+	if (renoteChannelId != null && renoteChannelId !== note.channelId && channelIds.has(renoteChannelId)) {
 		return true;
 	}
 

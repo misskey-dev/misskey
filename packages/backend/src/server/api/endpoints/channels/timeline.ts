@@ -14,7 +14,6 @@ import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import { isChannelRelated } from '@/misc/is-channel-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -92,9 +91,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.noteEntityService.packMany(await this.getFromDb({ untilId, sinceId, limit: ps.limit, channelId: channel.id }, me), me);
 			}
 
-			const mutingChannelIds = me
-				? await this.channelMutingService.mutingChannelsCache.get(me.id) ?? new Set<string>()
-				: new Set<string>();
 			return await this.fanoutTimelineEndpointService.timeline({
 				untilId,
 				sinceId,
@@ -104,12 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: true,
 				redisTimelines: [`channelTimeline:${channel.id}`],
 				excludePureRenotes: false,
-				includeMutedChannels: true,
-				noteFilter: note => {
-					// 共通機能を使うと見ているチャンネルそのものもミュートしてしまうので閲覧中のチャンネル以外を除く形にする
-					if (note.channelId === channel.id && (note.renoteChannelId === null || note.renoteChannelId === channel.id)) return true;
-					return !isChannelRelated(note, mutingChannelIds);
-				},
+				ignoreAuthorChannelFromMute: true,
 				dbFallback: async (untilId, sinceId, limit) => {
 					return await this.getFromDb({ untilId, sinceId, limit, channelId: channel.id }, me);
 				},

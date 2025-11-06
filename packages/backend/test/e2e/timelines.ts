@@ -3270,7 +3270,7 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 			});
 
-			test('閲覧中チャンネルをミュートしていてもリノートが含まれる', async () => {
+			test('閲覧中チャンネルをミュートしていても、同チャンネルのリノートが含まれる', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const channel = await createChannel('channel', bob);
@@ -3279,6 +3279,23 @@ describe('Timelines', () => {
 				const aliceNote = await post(alice, { text: 'hi' });
 				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
 				const bobRenote = await post(bob, { channelId: channel.id, renoteId: bobNote.id });
+
+				await waitForPushToTl();
+
+				const res = await api('channels/timeline', { channelId: channel.id }, alice);
+
+				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
+			});
+
+			test('閲覧中チャンネルをミュートしていても、同チャンネルのリプライが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				await muteChannel(channel.id, alice);
+
+				const aliceNote = await post(alice, { text: 'hi' });
+				const bobNote = await post(bob, { text: 'ok', channelId: channel.id });
+				const bobRenote = await post(bob, { channelId: channel.id, replyId: bobNote.id, text: 'ho' });
 
 				await waitForPushToTl();
 
