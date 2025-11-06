@@ -747,7 +747,7 @@ export interface Locale extends ILocale {
      */
     "flagShowTimelineRepliesDescription": string;
     /**
-     * フォロー中ユーザーからのフォロリクを自動承認
+     * フォロー中ユーザーからのフォロー申請を自動承認
      */
     "autoAcceptFollowed": string;
     /**
@@ -5605,6 +5605,10 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * あなたは管理者です
+     */
+    "youAreAdmin": string;
     "_compression": {
         "_quality": {
             /**
@@ -5997,6 +6001,10 @@ export interface Locale extends ILocale {
          * ページのタブバーを下部に表示
          */
         "showPageTabBarBottom": string;
+        /**
+         * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
+         */
+        "emojiPaletteBanner": string;
         "_chat": {
             /**
              * 送信者の名前を表示

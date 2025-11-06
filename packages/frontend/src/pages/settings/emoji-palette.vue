@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/emoji-palette" :label="i18n.ts.emojiPalette" :keywords="['emoji', 'palette']" icon="ti ti-mood-happy">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/artist_palette_3d.png" color="#ff9100">
+			<SearchText>{{ i18n.ts._settings.emojiPaletteBanner }}</SearchText>
+		</MkFeatureBanner>
+
 		<FormSection first>
 			<template #label>{{ i18n.ts._emojiPalette.palettes }}</template>
 
@@ -123,6 +127,7 @@ import { computed, ref, watch } from 'vue';
 import XPalette from './emoji-palette.palette.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import { genId } from '@/utility/id.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
