@@ -1043,6 +1043,15 @@ information: "Informacje"
 inMinutes: "minuta"
 inDays: "dzień"
 widgets: "Widżety"
+presets: "Konfiguracja"
+_imageEditing:
+  _vars:
+    filename: "Nazwa pliku"
+_imageFrameEditor:
+  header: "Nagłówek"
+  font: "Czcionka"
+  fontSerif: "Szeryfowa"
+  fontSansSerif: "Bezszeryfowa"
 _chat:
   invitations: "Zaproś"
   noHistory: "Brak historii"
