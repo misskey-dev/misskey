@@ -747,7 +747,7 @@ export interface Locale extends ILocale {
      */
     "flagShowTimelineRepliesDescription": string;
     /**
-     * フォロー中ユーザーからのフォロリクを自動承認
+     * フォロー中ユーザーからのフォロー申請を自動承認
      */
     "autoAcceptFollowed": string;
     /**
@@ -1226,6 +1226,10 @@ export interface Locale extends ILocale {
      * 既読
      */
     "messageRead": string;
+    /**
+     * すべてのメッセージを既読にする
+     */
+    "readAllChatMessages": string;
     /**
      * これより過去の履歴はありません
      */
@@ -4107,6 +4111,18 @@ export interface Locale extends ILocale {
      */
     "sendPushNotificationReadMessageCaption": string;
     /**
+     * ブラウザの通知設定を許可してください
+     */
+    "pleaseAllowPushNotification": string;
+    /**
+     * 通知の送信権限の取得に失敗しました
+     */
+    "browserPushNotificationDisabled": string;
+    /**
+     * {serverName}から通知を送信する権限がありません。ブラウザの設定から通知を許可して再度お試しください。
+     */
+    "browserPushNotificationDisabledDescription": ParameterizedString<"serverName">;
+    /**
      * 最大化
      */
     "windowMaximize": string;
@@ -5605,6 +5621,10 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * あなたは管理者です
+     */
+    "youAreAdmin": string;
     "_compression": {
         "_quality": {
             /**
@@ -5997,6 +6017,10 @@ export interface Locale extends ILocale {
          * ページのタブバーを下部に表示
          */
         "showPageTabBarBottom": string;
+        /**
+         * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
+         */
+        "emojiPaletteBanner": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -6059,6 +6083,10 @@ export interface Locale extends ILocale {
          * 設定のバックアップが見つかりました
          */
         "backupFound": string;
+        /**
+         * 設定の強制バックアップ
+         */
+        "forceBackup": string;
     };
     "_accountSettings": {
         /**
@@ -10890,6 +10918,14 @@ export interface Locale extends ILocale {
         };
     };
     "_moderationLogTypes": {
+        /**
+         * ジョブキューをクリア
+         */
+        "clearQueue": string;
+        /**
+         * キューのジョブを再試行
+         */
+        "promoteQueue": string;
         /**
          * ロールを作成
          */

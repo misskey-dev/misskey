@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
 			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
-		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft"/>
+		<div v-else-if="!thin_ && narrow && !hideTitle" :class="[$style.buttons, $style.buttonsLeft]"></div>
 
 		<template v-if="pageMetadata">
 			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<i v-else-if="pageMetadata.icon" :class="[$style.titleIcon, pageMetadata.icon]"></i>
 
-				<div :class="$style.title">
+				<div class="_nowrap" :class="$style.title">
 					<MkUserName v-if="pageMetadata.userName" :user="pageMetadata.userName" :nowrap="true"/>
-					<div v-else-if="pageMetadata.title">{{ pageMetadata.title }}</div>
+					<div v-else-if="pageMetadata.title" class="_nowrap">{{ pageMetadata.title }}</div>
 					<div v-if="pageMetadata.subtitle" :class="$style.subtitle">
 						{{ pageMetadata.subtitle }}
 					</div>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" :tabs="tabs" :rootEl="el" @update:tab="key => emit('update:tab', key)" @tabClick="onTabClick"/>
 		</template>
-		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
+		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="[$style.buttons, $style.buttonsRight]">
 			<template v-for="action in actions">
 				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
@@ -155,8 +155,10 @@ onUnmounted(() => {
 
 .upper {
 	--height: 50px;
+	--margin: var(--MI-margin);
 	display: flex;
-	gap: var(--MI-margin);
+	gap: var(--margin);
+	align-items: center;
 	height: var(--height);
 
 	.tabs:first-child {
@@ -169,6 +171,7 @@ onUnmounted(() => {
 
 	&.thin {
 		--height: 40px;
+		--margin: 8px;
 
 		> .buttons {
 			> .button {
@@ -179,12 +182,8 @@ onUnmounted(() => {
 
 	&.slim {
 		text-align: center;
-		gap: 0;
 
-		.tabs:first-child {
-			margin-left: 0;
-		}
-		> .titleContainer {
+		.titleContainer {
 			margin: 0 auto;
 			max-width: 100%;
 		}
@@ -197,7 +196,7 @@ onUnmounted(() => {
 }
 
 .buttons {
-	--margin: 8px;
+	flex-shrink: 0;
 	display: flex;
 	align-items: center;
 	min-width: var(--height);
@@ -205,16 +204,6 @@ onUnmounted(() => {
 	&:empty {
 		width: var(--height);
 	}
-}
-
-.buttonsLeft {
-	composes: buttons;
-	margin: 0 var(--margin) 0 0;
-}
-
-.buttonsRight {
-	composes: buttons;
-	margin: 0 0 0 var(--margin);
 }
 
 .avatar {
@@ -231,7 +220,7 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	height: var(--height);
-	width: calc(var(--height) - (var(--margin)));
+	width: calc(var(--height) - 8px);
 	box-sizing: border-box;
 	position: relative;
 	border-radius: 5px;
@@ -254,6 +243,7 @@ onUnmounted(() => {
 .titleContainer {
 	display: flex;
 	align-items: center;
+	min-width: 0;
 	max-width: min(30vw, 400px);
 	overflow: clip;
 	white-space: nowrap;
@@ -287,9 +277,6 @@ onUnmounted(() => {
 
 .title {
 	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	line-height: 1.1;
 }
 
