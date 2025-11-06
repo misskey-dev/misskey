@@ -5617,6 +5617,10 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * あなたは管理者です
+     */
+    "youAreAdmin": string;
     "_compression": {
         "_quality": {
             /**
