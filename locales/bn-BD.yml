@@ -851,6 +851,14 @@ information: "আপনার সম্পর্কে"
 inMinutes: "মিনিট"
 inDays: "দিন"
 widgets: "উইজেটগুলি"
+_imageEditing:
+  _vars:
+    filename: "ফাইলের নাম"
+_imageFrameEditor:
+  header: "হেডার"
+  font: "ফন্ট"
+  fontSerif: "সেরিফ"
+  fontSansSerif: "স্যান্স সেরিফ"
 _chat:
   invitations: "আমন্ত্রণ"
   noHistory: "কোনো ইতিহাস নেই"
