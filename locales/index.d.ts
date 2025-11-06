@@ -4107,6 +4107,18 @@ export interface Locale extends ILocale {
      */
     "sendPushNotificationReadMessageCaption": string;
     /**
+     * ブラウザの通知設定を許可してください
+     */
+    "pleaseAllowPushNotification": string;
+    /**
+     * 通知の送信権限の取得に失敗しました
+     */
+    "browserPushNotificationDisabled": string;
+    /**
+     * {serverName}から通知を送信する権限がありません。ブラウザの設定から通知を許可して再度お試しください。
+     */
+    "browserPushNotificationDisabledDescription": ParameterizedString<"serverName">;
+    /**
      * 最大化
      */
     "windowMaximize": string;
