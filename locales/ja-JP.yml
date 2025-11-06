@@ -302,6 +302,7 @@ uploadFromUrlMayTakeTime: "アップロードが完了するまで時間がか�
 uploadNFiles: "{n}個のファイルをアップロード"
 explore: "みつける"
 messageRead: "既読"
+readAllChatMessages: "すべてのメッセージを既読にする"
 noMoreHistory: "これより過去の履歴はありません"
 startChat: "メッセージを送る"
 nUsersRead: "{n}人が読みました"
@@ -1524,6 +1525,7 @@ _preferencesBackup:
   youNeedToNameYourProfileToEnableAutoBackup: "自動バックアップを有効にするにはプロファイル名の設定が必要です。"
   autoPreferencesBackupIsNotEnabledForThisDevice: "このデバイスで設定の自動バックアップは有効になっていません。"
   backupFound: "設定のバックアップが見つかりました"
+  forceBackup: "設定の強制バックアップ"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2887,6 +2889,8 @@ _abuseReport:
     deleteConfirm: "通知先を削除しますか？"
 
 _moderationLogTypes:
+  clearQueue: "ジョブキューをクリア"
+  promoteQueue: "キューのジョブを再試行"
   createRole: "ロールを作成"
   deleteRole: "ロールを削除"
   updateRole: "ロールを更新"

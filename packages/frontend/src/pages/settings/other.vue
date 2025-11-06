@@ -136,15 +136,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<MkButton @click="forceCloudBackup">Force cloud backup</MkButton>
-
-		<hr>
-
 		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
-			<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+			<MkButton @click="readAllChatMessages">{{ i18n.ts.readAllChatMessages }}</MkButton>
 
 			<hr>
 		</template>
+
+		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
 
 		<FormSlot>
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
