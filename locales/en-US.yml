@@ -1396,6 +1396,17 @@ scheduled: "Scheduled"
 widgets: "Widgets"
 deviceInfo: "Device information"
 deviceInfoDescription: "When making technical inquiries, including the following information may help resolve the issue."
+presets: "Preset"
+_imageEditing:
+  _vars:
+    filename: "Filename"
+_imageFrameEditor:
+  header: "Header"
+  withQrCode: "QR Code"
+  font: "Font"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Discard unsaved changes?"
 _compression:
   _quality:
     high: "High quality"
