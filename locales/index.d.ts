@@ -1227,6 +1227,10 @@ export interface Locale extends ILocale {
      */
     "messageRead": string;
     /**
+     * すべてのメッセージを既読にする
+     */
+    "readAllChatMessages": string;
+    /**
      * これより過去の履歴はありません
      */
     "noMoreHistory": string;
@@ -4107,6 +4111,18 @@ export interface Locale extends ILocale {
      */
     "sendPushNotificationReadMessageCaption": string;
     /**
+     * ブラウザの通知設定を許可してください
+     */
+    "pleaseAllowPushNotification": string;
+    /**
+     * 通知の送信権限の取得に失敗しました
+     */
+    "browserPushNotificationDisabled": string;
+    /**
+     * {serverName}から通知を送信する権限がありません。ブラウザの設定から通知を許可して再度お試しください。
+     */
+    "browserPushNotificationDisabledDescription": ParameterizedString<"serverName">;
+    /**
      * 最大化
      */
     "windowMaximize": string;
@@ -5606,6 +5622,10 @@ export interface Locale extends ILocale {
      */
     "deviceInfoDescription": string;
     /**
+     * あなたは管理者です
+     */
+    "youAreAdmin": string;
+    /**
      * フレーム
      */
     "frame": string;
@@ -6229,6 +6249,10 @@ export interface Locale extends ILocale {
          * 設定のバックアップが見つかりました
          */
         "backupFound": string;
+        /**
+         * 設定の強制バックアップ
+         */
+        "forceBackup": string;
     };
     "_accountSettings": {
         /**
@@ -11060,6 +11084,14 @@ export interface Locale extends ILocale {
         };
     };
     "_moderationLogTypes": {
+        /**
+         * ジョブキューをクリア
+         */
+        "clearQueue": string;
+        /**
+         * キューのジョブを再試行
+         */
+        "promoteQueue": string;
         /**
          * ロールを作成
          */
