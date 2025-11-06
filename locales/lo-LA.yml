@@ -393,6 +393,9 @@ file: "ໄຟລ໌"
 replies: "ຕອບ​ກັບ"
 renotes: "Renote"
 information: "ກ່ຽວກັບ"
+_imageEditing:
+  _vars:
+    filename: "ຊື່ໄຟລ໌"
 _chat:
   invitations: "ເຊີນ"
   noHistory: "​ບໍ່​ມີປະຫວັດ"
