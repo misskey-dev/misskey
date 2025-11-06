@@ -1215,6 +1215,10 @@ lastNDays: "Ultimele {n} zile"
 surrender: "Anulează"
 copyPreferenceId: "Copiază ID-ul preferințelor"
 information: "Despre"
+presets: "Presetate"
+_imageEditing:
+  _vars:
+    filename: "Nume fișier"
 _chat:
   invitations: "Invită"
   noHistory: "Nu există istoric"
