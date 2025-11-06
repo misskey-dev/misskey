@@ -1278,6 +1278,15 @@ information: "Описание"
 inMinutes: "мин"
 inDays: "сут"
 widgets: "Виджеты"
+presets: "Шаблоны"
+_imageEditing:
+  _vars:
+    filename: "Имя файла"
+_imageFrameEditor:
+  header: "Заголовок"
+  font: "Шрифт"
+  fontSerif: "Антиква (с засечками)"
+  fontSansSerif: "Гротеск (без засечек)"
 _chat:
   invitations: "Пригласить"
   noHistory: "История пока пуста"
