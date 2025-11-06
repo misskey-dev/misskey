@@ -1,4 +1,4 @@
-## Unreleased
+## 2025.11.0
 
 ### General
 - Enhance: Node.js 24.10.0をサポートするようになりました
