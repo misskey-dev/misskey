@@ -1401,6 +1401,51 @@ widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
 youAreAdmin: "あなたは管理者です"
+frame: "フレーム"
+presets: "プリセット"
+zeroPadding: "ゼロ埋め"
+
+_imageEditing:
+  _vars:
+    caption: "ファイルのキャプション"
+    filename: "ファイル名"
+    filename_without_ext: "拡張子無しファイル名"
+    year: "撮影年"
+    month: "撮影月"
+    day: "撮影日"
+    hour: "撮影した時刻(時)"
+    minute: "撮影した時刻(分)"
+    second: "撮影した時刻(秒)"
+    camera_model: "カメラ名"
+    camera_lens_model: "レンズ名"
+    camera_mm: "焦点距離"
+    camera_mm_35: "焦点距離(35mm判換算)"
+    camera_f: "絞り"
+    camera_s: "シャッタースピード"
+    camera_iso: "ISO感度"
+    gps_lat: "緯度"
+    gps_long: "経度"
+
+_imageFrameEditor:
+  title: "フレームの編集"
+  tip: "画像にフレームやメタデータを含んだラベルを追加して装飾できます。"
+  header: "ヘッダー"
+  footer: "フッター"
+  borderThickness: "フチの幅"
+  labelThickness: "ラベルの幅"
+  labelScale: "ラベルのスケール"
+  centered: "中央揃え"
+  captionMain: "キャプション(大)"
+  captionSub: "キャプション(小)"
+  availableVariables: "利用可能な変数"
+  withQrCode: "二次元コード"
+  backgroundColor: "背景色"
+  textColor: "文字色"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  quitWithoutSaveConfirm: "保存せずに終了しますか？"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
 _compression:
   _quality:
@@ -3307,7 +3352,7 @@ _userLists:
 watermark: "ウォーターマーク"
 defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
-  tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  tip: "画像にクレジット情報などのウォーターマークを追加できます。"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
   driveFileTypeWarn: "このファイルは対応していません"
   driveFileTypeWarnDescription: "画像ファイルを選択してください"
@@ -3336,12 +3381,14 @@ _watermarkEditor:
   polkadotSubDotRadius: "サブドットの大きさ"
   polkadotSubDotDivisions: "サブドットの数"
   leaveBlankToAccountUrl: "空欄にするとアカウントのURLになります"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
 _imageEffector:
   title: "エフェクト"
   addEffect: "エフェクトを追加"
   discardChangesConfirm: "変更を破棄して終了しますか？"
   nothingToConfigure: "設定項目はありません"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
   _fxs:
     chromaticAberration: "色収差"

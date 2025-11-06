@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
-import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -31,19 +31,19 @@ import { deepClone } from '@/utility/clone.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
-	preset: WatermarkPreset;
+	preset: ImageFramePreset;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'updatePreset', preset: WatermarkPreset): void,
+	(ev: 'updatePreset', preset: ImageFramePreset): void,
 	(ev: 'del'): void,
 }>();
 
 async function edit() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkImageFrameEditorDialog.vue')), {
 		presetEditMode: true,
 		preset: deepClone(props.preset),
-		layers: deepClone(props.preset.layers),
+		params: deepClone(props.preset.params),
 	}, {
 		presetOk: (preset) => {
 			emit('updatePreset', preset);
@@ -66,21 +66,23 @@ const canvasEl = useTemplateRef('canvasEl');
 const sampleImage = new Image();
 sampleImage.src = '/client-assets/sample/3-2.jpg';
 
-let renderer: WatermarkRenderer | null = null;
+let renderer: ImageFrameRenderer | null = null;
 
 onMounted(() => {
 	sampleImage.onload = async () => {
 		watch(canvasEl, async () => {
 			if (canvasEl.value == null) return;
 
-			renderer = new WatermarkRenderer({
+			renderer = new ImageFrameRenderer({
 				canvas: canvasEl.value,
-				renderWidth: 1500,
-				renderHeight: 1000,
 				image: sampleImage,
+				exif: null,
+				caption: 'Example caption',
+				filename: 'example_file_name.jpg',
+				renderAsPreview: true,
 			});
 
-			await renderer.render(props.preset.layers);
+			await renderer.render(props.preset.params);
 		}, { immediate: true });
 	};
 });
@@ -94,7 +96,7 @@ onUnmounted(() => {
 
 watch(() => props.preset, async () => {
 	if (renderer != null) {
-		await renderer.render(props.preset.layers);
+		await renderer.render(props.preset.params);
 	}
 }, { deep: true });
 </script>

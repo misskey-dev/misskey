@@ -9,6 +9,8 @@ import isAnimated from 'is-file-animated';
 import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
+import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -16,7 +18,6 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
-import { WatermarkRenderer } from '@/utility/watermark.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -28,13 +29,7 @@ const THUMBNAIL_SUPPORTED_TYPES = [
 	'image/png',
 	'image/webp',
 	'image/svg+xml',
-];
-
-const IMAGE_COMPRESSION_SUPPORTED_TYPES = [
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/svg+xml',
+	'image/gif',
 ];
 
 const IMAGE_EDITING_SUPPORTED_TYPES = [
@@ -49,11 +44,7 @@ const VIDEO_COMPRESSION_SUPPORTED_TYPES = [ // TODO
 	'video/x-matroska',
 ];
 
-const WATERMARK_SUPPORTED_TYPES = IMAGE_EDITING_SUPPORTED_TYPES;
-
 const IMAGE_PREPROCESS_NEEDED_TYPES = [
-	...WATERMARK_SUPPORTED_TYPES,
-	...IMAGE_COMPRESSION_SUPPORTED_TYPES,
 	...IMAGE_EDITING_SUPPORTED_TYPES,
 ];
 
@@ -83,7 +74,9 @@ export type UploaderItem = {
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
-	watermarkPresetId: string | null;
+	watermarkPreset: WatermarkPreset | null;
+	watermarkLayers: WatermarkLayers | null;
+	imageFrameParams: ImageFrameParams | null;
 	isSensitive?: boolean;
 	caption?: string | null;
 	abort?: (() => void) | null;
@@ -135,6 +128,7 @@ export function useUploader(options: {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
 		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+		const watermarkPreset = uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null;
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
@@ -146,8 +140,10 @@ export function useUploader(options: {
 			aborted: false,
 			uploaded: null,
 			uploadFailed: false,
-			compressionLevel: IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
-			watermarkPresetId: uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? prefer.s.defaultWatermarkPresetId : null,
+			compressionLevel: IMAGE_EDITING_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultImageCompressionLevel : VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(file.type) ? prefer.s.defaultVideoCompressionLevel : 0,
+			watermarkPreset,
+			watermarkLayers: watermarkPreset?.layers ?? null,
+			imageFrameParams: null,
 			file: markRaw(file),
 		});
 		const reactiveItem = items.value.at(-1)!;
@@ -253,7 +249,7 @@ export function useUploader(options: {
 					},
 				},*/ {
 					icon: 'ti ti-sparkles',
-					text: i18n.ts._imageEffector.title + ' (BETA)',
+					text: i18n.ts._imageEffector.title,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageEffectorDialog.vue').then(x => x.default), {
 							image: item.file,
@@ -280,13 +276,14 @@ export function useUploader(options: {
 		if (
 			uploaderFeatures.value.watermark &&
 			$i.policies.watermarkAvailable &&
-			WATERMARK_SUPPORTED_TYPES.includes(item.file.type) &&
+			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
 		) {
-			function changeWatermarkPreset(presetId: string | null) {
-				item.watermarkPresetId = presetId;
+			function change(layers: WatermarkLayers | null, preset?: WatermarkPreset | null) {
+				item.watermarkPreset = preset ?? null;
+				item.watermarkLayers = layers;
 				preprocess(item).then(() => {
 					triggerRef(items);
 				});
@@ -295,43 +292,109 @@ export function useUploader(options: {
 			menu.push({
 				icon: 'ti ti-copyright',
 				text: i18n.ts.watermark,
-				caption: computed(() => item.watermarkPresetId == null ? null : prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId)?.name),
+				caption: computed(() => item.watermarkPreset != null ? item.watermarkPreset.name : item.watermarkLayers != null ? i18n.ts.custom : null),
 				type: 'parent',
 				children: [{
-					type: 'radioOption',
-					text: i18n.ts.none,
-					active: computed(() => item.watermarkPresetId == null),
-					action: () => changeWatermarkPreset(null),
-				}, {
-					type: 'divider',
-				}, ...prefer.s.watermarkPresets.map(preset => ({
-					type: 'radioOption' as const,
-					text: preset.name,
-					active: computed(() => item.watermarkPresetId === preset.id),
-					action: () => changeWatermarkPreset(preset.id),
-				})), ...(prefer.s.watermarkPresets.length > 0 ? [{
-					type: 'divider' as const,
-				}] : []), {
-					type: 'button',
-					icon: 'ti ti-plus',
-					text: i18n.ts.add,
+					type: 'button' as const,
+					icon: 'ti ti-pencil',
+					text: i18n.ts.edit,
 					action: async () => {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
+							layers: item.watermarkLayers,
 							image: item.file,
 						}, {
-							ok: (preset) => {
-								prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
-								changeWatermarkPreset(preset.id);
+							ok: (layers) => {
+								change(layers);
 							},
 							closed: () => dispose(),
 						});
 					},
-				}],
+				}, {
+					type: 'button' as const,
+					icon: 'ti ti-x',
+					text: i18n.ts.remove,
+					action: () => change(null),
+				}, {
+					type: 'divider',
+				}, {
+					type: 'label',
+					text: i18n.ts.presets,
+				}, ...prefer.s.watermarkPresets.map(preset => ({
+					type: 'radioOption' as const,
+					text: preset.name,
+					active: computed(() => item.watermarkPreset?.id === preset.id),
+					action: () => change(preset.layers, preset),
+				}))],
 			});
 		}
 
 		if (
-			(IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type) || VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type)) &&
+			uploaderFeatures.value.imageEditing &&
+			IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) &&
+			!item.preprocessing &&
+			!item.uploading &&
+			!item.uploaded
+		) {
+			function change(params: ImageFrameParams | null) {
+				item.imageFrameParams = params;
+				preprocess(item).then(() => {
+					triggerRef(items);
+				});
+			}
+
+			menu.push({
+				icon: 'ti ti-device-ipad-horizontal',
+				text: i18n.ts.frame,
+				type: 'parent' as const,
+				children: [{
+					type: 'button' as const,
+					icon: 'ti ti-pencil',
+					text: i18n.ts.edit,
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+							params: item.imageFrameParams,
+							image: item.file,
+							imageCaption: item.caption ?? null,
+							imageFilename: item.name,
+						}, {
+							ok: (params) => {
+								change(params);
+							},
+							closed: () => dispose(),
+						});
+					},
+				}, ...(item.imageFrameParams != null ? [{
+					type: 'button' as const,
+					icon: 'ti ti-x',
+					text: i18n.ts.remove,
+					action: () => change(null),
+				}] : []), {
+					type: 'divider' as const,
+				}, {
+					type: 'label' as const,
+					text: i18n.ts.presets,
+				}, ...prefer.s.imageFramePresets.map(preset => ({
+					type: 'button' as const,
+					text: preset.name,
+					action: async () => {
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+							params: preset.params,
+							image: item.file,
+							imageCaption: item.caption ?? null,
+							imageFilename: item.name,
+						}, {
+							ok: (params) => {
+								change(params);
+							},
+							closed: () => dispose(),
+						});
+					},
+				}))],
+			});
+		}
+
+		if (
+			(IMAGE_EDITING_SUPPORTED_TYPES.includes(item.file.type) || VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(item.file.type)) &&
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
@@ -545,10 +608,10 @@ export function useUploader(options: {
 
 		let preprocessedFile: Blob | File = item.file;
 
-		const needsWatermark = item.watermarkPresetId != null && WATERMARK_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
-		const preset = prefer.s.watermarkPresets.find(p => p.id === item.watermarkPresetId);
-		if (needsWatermark && preset != null) {
+		const needsWatermark = item.watermarkLayers != null && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type) && $i.policies.watermarkAvailable;
+		if (needsWatermark && item.watermarkLayers != null) {
 			const canvas = window.document.createElement('canvas');
+			const WatermarkRenderer = await import('@/utility/watermark/WatermarkRenderer.js').then(x => x.WatermarkRenderer);
 			const renderer = new WatermarkRenderer({
 				canvas: canvas,
 				renderWidth: imageBitmap.width,
@@ -556,9 +619,7 @@ export function useUploader(options: {
 				image: imageBitmap,
 			});
 
-			await renderer.setLayers(preset.layers);
-
-			renderer.render();
+			await renderer.render(item.watermarkLayers);
 
 			preprocessedFile = await new Promise<Blob>((resolve) => {
 				canvas.toBlob((blob) => {
@@ -571,8 +632,35 @@ export function useUploader(options: {
 			});
 		}
 
+		const needsImageFrame = item.imageFrameParams != null && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type);
+		if (needsImageFrame && item.imageFrameParams != null) {
+			const canvas = window.document.createElement('canvas');
+			const ExifReader = await import('exifreader');
+			const exif = await ExifReader.load(await item.file.arrayBuffer());
+			const ImageFrameRenderer = await import('@/utility/image-frame-renderer/ImageFrameRenderer.js').then(x => x.ImageFrameRenderer);
+			const frameRenderer = new ImageFrameRenderer({
+				canvas: canvas,
+				image: await window.createImageBitmap(preprocessedFile),
+				exif,
+				caption: item.caption ?? null,
+				filename: item.name,
+			});
+
+			await frameRenderer.render(item.imageFrameParams);
+
+			preprocessedFile = await new Promise<Blob>((resolve) => {
+				canvas.toBlob((blob) => {
+					if (blob == null) {
+						throw new Error('Failed to convert canvas to blob');
+					}
+					resolve(blob);
+					frameRenderer.destroy();
+				}, 'image/png');
+			});
+		}
+
 		const compressionSettings = getCompressionSettings(item.compressionLevel);
-		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
+		const needsCompress = item.compressionLevel !== 0 && compressionSettings && IMAGE_EDITING_SUPPORTED_TYPES.includes(preprocessedFile.type) && !(await isAnimated(preprocessedFile));
 
 		if (needsCompress) {
 			const config = {
