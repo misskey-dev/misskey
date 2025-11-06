@@ -1396,6 +1396,17 @@ scheduled: "Pianificata"
 widgets: "Riquadri"
 deviceInfo: "Informazioni sul dispositivo"
 deviceInfoDescription: "Se ci contatti per ricevere supporto tecnico, ti preghiamo di includere le seguenti informazioni per aiutarci a risolvere il tuo problema."
+presets: "Preimpostato"
+_imageEditing:
+  _vars:
+    filename: "Nome dell'allegato"
+_imageFrameEditor:
+  header: "Intestazione"
+  withQrCode: "QR Code"
+  font: "Tipo di carattere"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans serif"
+  quitWithoutSaveConfirm: "Uscire senza salvare?"
 _compression:
   _quality:
     high: "Alta qualità"
