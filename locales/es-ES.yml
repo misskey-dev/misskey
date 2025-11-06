@@ -1396,6 +1396,17 @@ scheduled: "Programado"
 widgets: "Widgets"
 deviceInfo: "Información del dispositivo"
 deviceInfoDescription: "Al realizar consultas técnicas, incluir la siguiente información puede ayudar a resolver el problema."
+presets: "Predefinido"
+_imageEditing:
+  _vars:
+    filename: "Nombre de archivo"
+_imageFrameEditor:
+  header: "Cabezal"
+  withQrCode: "Código QR"
+  font: "Fuente"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "¿Descartar cambios no guardados?"
 _compression:
   _quality:
     high: "Calidad alta"
