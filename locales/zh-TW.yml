@@ -1395,6 +1395,17 @@ scheduled: "排定"
 widgets: "小工具"
 deviceInfo: "硬體資訊"
 deviceInfoDescription: "在提出技術性諮詢時，若能同時提供以下資訊，將有助於解決問題。"
+presets: "預設值"
+_imageEditing:
+  _vars:
+    filename: "檔案名稱"
+_imageFrameEditor:
+  header: "標題"
+  withQrCode: "二維條碼"
+  font: "字型"
+  fontSerif: "襯線體"
+  fontSansSerif: "黑體"
+  quitWithoutSaveConfirm: "不儲存就退出嗎？"
 _compression:
   _quality:
     high: "高品質"
