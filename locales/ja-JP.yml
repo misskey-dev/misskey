@@ -1414,6 +1414,7 @@ _imageEditing:
     camera_model: "カメラ名"
     camera_lens_model: "レンズ名"
     camera_mm: "焦点距離"
+    camera_mm_35: "焦点距離(35mm判換算)"
     camera_f: "絞り"
     camera_s: "シャッタースピード"
     camera_iso: "ISO感度"

@@ -5668,6 +5668,10 @@ export interface Locale extends ILocale {
              */
             "camera_mm": string;
             /**
+             * 焦点距離(35mm判換算)
+             */
+            "camera_mm_35": string;
+            /**
              * 絞り
              */
             "camera_f": string;

@@ -76,6 +76,7 @@ export class ImageFrameRenderer {
 		const Model = this.exif == null ? 'Example camera' : this.exif.Model?.description;
 		const LensModel = this.exif == null ? 'Example lens 123mm f/1.23' : this.exif.LensModel?.description;
 		const FocalLength = this.exif == null ? '123mm' : this.exif.FocalLength?.description;
+		const FocalLengthIn35mmFilm = this.exif == null ? '123mm' : this.exif.FocalLengthIn35mmFilm?.description;
 		const ExposureTime = this.exif == null ? '1/234' : this.exif.ExposureTime?.description;
 		const FNumber = this.exif == null ? '1.23' : this.exif.FNumber?.description;
 		const ISOSpeedRatings = this.exif == null ? '123' : this.exif.ISOSpeedRatings?.description;
@@ -102,6 +103,7 @@ export class ImageFrameRenderer {
 				case 'camera_model': return Model ?? '?';
 				case 'camera_lens_model': return LensModel ?? '?';
 				case 'camera_mm': return FocalLength?.replace(' mm', '').replace('mm', '') ?? '?';
+				case 'camera_mm_35': return FocalLengthIn35mmFilm?.replace(' mm', '').replace('mm', '') ?? '?';
 				case 'camera_f': return FNumber?.replace('f/', '') ?? '?';
 				case 'camera_s': return ExposureTime ?? '?';
 				case 'camera_iso': return ISOSpeedRatings ?? '?';
