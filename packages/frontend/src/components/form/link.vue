@@ -52,9 +52,11 @@ const props = defineProps<{
 <style lang="scss" module>
 .root {
 	display: block;
+	width: 100%;
 
 	&.inline {
 		display: inline-block;
+		width: auto;
 	}
 }
 
