@@ -77,6 +77,8 @@ onMounted(() => {
 				canvas: canvasEl.value,
 				image: sampleImage,
 				exif: null,
+				caption: 'Example caption',
+				filename: 'example_file_name.jpg',
 				renderAsPreview: true,
 			});
 

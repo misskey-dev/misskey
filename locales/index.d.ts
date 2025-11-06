@@ -5620,6 +5620,18 @@ export interface Locale extends ILocale {
     "_imageEditing": {
         "_vars": {
             /**
+             * ファイルのキャプション
+             */
+            "caption": string;
+            /**
+             * ファイル名
+             */
+            "filename": string;
+            /**
+             * 拡張子無しファイル名
+             */
+            "filename_without_ext": string;
+            /**
              * 撮影年
              */
             "year": string;

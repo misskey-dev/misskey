@@ -354,6 +354,8 @@ export function useUploader(options: {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
 							params: item.imageFrameParams,
 							image: item.file,
+							imageCaption: item.caption ?? null,
+							imageFilename: item.name,
 						}, {
 							ok: (params) => {
 								change(params);
@@ -378,6 +380,8 @@ export function useUploader(options: {
 						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
 							params: preset.params,
 							image: item.file,
+							imageCaption: item.caption ?? null,
+							imageFilename: item.name,
 						}, {
 							ok: (params) => {
 								change(params);
@@ -638,6 +642,8 @@ export function useUploader(options: {
 				canvas: canvas,
 				image: await window.createImageBitmap(preprocessedFile),
 				exif,
+				caption: item.caption ?? null,
+				filename: item.name,
 			});
 
 			await frameRenderer.render(item.imageFrameParams);

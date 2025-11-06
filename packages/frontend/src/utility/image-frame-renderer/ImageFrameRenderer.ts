@@ -42,18 +42,23 @@ export class ImageFrameRenderer {
 	private compositor: ImageCompositor<{ frame: typeof FN_frame }>;
 	private image: HTMLImageElement | ImageBitmap;
 	private exif: ExifReader.Tags | null;
+	private caption: string | null = null;
+	private filename: string | null = null;
 	private renderAsPreview = false;
 
 	constructor(options: {
 		canvas: HTMLCanvasElement,
 		image: HTMLImageElement | ImageBitmap,
 		exif: ExifReader.Tags | null,
+		filename: string | null,
+		caption: string | null,
 		renderAsPreview?: boolean,
 	}) {
 		this.image = options.image;
 		this.exif = options.exif;
+		this.caption = options.caption ?? null;
+		this.filename = options.filename ?? null;
 		this.renderAsPreview = options.renderAsPreview ?? false;
-		console.log(this.exif);
 
 		this.compositor = new ImageCompositor({
 			canvas: options.canvas,
@@ -75,9 +80,12 @@ export class ImageFrameRenderer {
 		const FNumber = this.exif == null ? '1.23' : this.exif.FNumber?.description;
 		const ISOSpeedRatings = this.exif == null ? '123' : this.exif.ISOSpeedRatings?.description;
 		return text.replaceAll(/\{(\w+)\}/g, (_: string, key: string) => {
-			const meta_date = DateTimeOriginal ?? '-';
+			const meta_date = DateTimeOriginal ?? '????:??:?? ??:??:??';
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
+				case 'caption': return this.caption ?? '-';
+				case 'filename': return this.filename ?? '-';
+				case 'filename_without_ext': return this.filename?.replace(/\.[^/.]+$/, '') ?? '-';
 				case 'year': return date.split('/')[0];
 				case 'month': return date.split('/')[1].replace(/^0/, '');
 				case 'day': return date.split('/')[2].replace(/^0/, '');

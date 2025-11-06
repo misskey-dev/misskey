@@ -122,6 +122,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkInfo>
 						<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
+						<div><code class="_selectableAtomic">{filename}</code> - {{ i18n.ts._imageEditing._vars.filename }}</div>
+						<div><code class="_selectableAtomic">{filename_without_ext}</code> - {{ i18n.ts._imageEditing._vars.filename_without_ext }}</div>
+						<div><code class="_selectableAtomic">{caption}</code> - {{ i18n.ts._imageEditing._vars.caption }}</div>
 						<div><code class="_selectableAtomic">{year}</code> - {{ i18n.ts._imageEditing._vars.year }}</div>
 						<div><code class="_selectableAtomic">{month}</code> - {{ i18n.ts._imageEditing._vars.month }}</div>
 						<div><code class="_selectableAtomic">{day}</code> - {{ i18n.ts._imageEditing._vars.day }}</div>
@@ -177,6 +180,8 @@ const props = defineProps<{
 	preset?: ImageFramePreset | null;
 	params?: ImageFrameParams | null;
 	image?: File | null;
+	imageCaption?: string | null;
+	imageFilename?: string | null;
 }>();
 
 const preset = deepClone(props.preset) ?? {
@@ -290,6 +295,8 @@ async function initRenderer() {
 			canvas: canvasEl.value,
 			image: sampleImage_3_2,
 			exif: null,
+			caption: 'Example caption',
+			filename: 'example_file_name.jpg',
 			renderAsPreview: true,
 		});
 	} else if (sampleImageType.value === '2_3') {
@@ -297,6 +304,8 @@ async function initRenderer() {
 			canvas: canvasEl.value,
 			image: sampleImage_2_3,
 			exif: null,
+			caption: 'Example caption',
+			filename: 'example_file_name.jpg',
 			renderAsPreview: true,
 		});
 	} else if (imageFile != null) {
@@ -308,6 +317,8 @@ async function initRenderer() {
 			canvas: canvasEl.value,
 			image: imageBitmap,
 			exif: exif,
+			caption: props.imageCaption ?? null,
+			filename: props.imageFilename ?? null,
 			renderAsPreview: true,
 		});
 	}

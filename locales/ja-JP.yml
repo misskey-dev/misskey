@@ -1402,6 +1402,9 @@ zeroPadding: "ゼロ埋め"
 
 _imageEditing:
   _vars:
+    caption: "ファイルのキャプション"
+    filename: "ファイル名"
+    filename_without_ext: "拡張子無しファイル名"
     year: "撮影年"
     month: "撮影月"
     day: "撮影日"
