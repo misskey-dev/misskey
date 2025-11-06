@@ -1227,6 +1227,10 @@ export interface Locale extends ILocale {
      */
     "messageRead": string;
     /**
+     * すべてのメッセージを既読にする
+     */
+    "readAllChatMessages": string;
+    /**
      * これより過去の履歴はありません
      */
     "noMoreHistory": string;
@@ -6079,6 +6083,10 @@ export interface Locale extends ILocale {
          * 設定のバックアップが見つかりました
          */
         "backupFound": string;
+        /**
+         * 設定の強制バックアップ
+         */
+        "forceBackup": string;
     };
     "_accountSettings": {
         /**
@@ -10910,6 +10918,14 @@ export interface Locale extends ILocale {
         };
     };
     "_moderationLogTypes": {
+        /**
+         * ジョブキューをクリア
+         */
+        "clearQueue": string;
+        /**
+         * キューのジョブを再試行
+         */
+        "promoteQueue": string;
         /**
          * ロールを作成
          */
