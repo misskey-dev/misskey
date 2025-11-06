@@ -1011,6 +1011,14 @@ information: "عن"
 inMinutes: "د"
 inDays: "ي"
 widgets: "التطبيقات المُصغّرة"
+presets: "إعدادات مسبقة"
+_imageEditing:
+  _vars:
+    filename: "اسم الملف"
+_imageFrameEditor:
+  font: "الخط"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "دعوة"
   noHistory: "السجل فارغ"
