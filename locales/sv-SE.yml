@@ -559,6 +559,9 @@ tryAgain: "Försök igen senare"
 signinWithPasskey: "Logga in med nyckel"
 unknownWebAuthnKey: "Okänd nyckel"
 information: "Om"
+_imageEditing:
+  _vars:
+    filename: "Filnamn"
 _chat:
   invitations: "Inbjudan"
   members: "Medlemmar"
