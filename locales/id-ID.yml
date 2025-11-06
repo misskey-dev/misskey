@@ -1288,6 +1288,15 @@ advice: "Saran"
 inMinutes: "menit"
 inDays: "hari"
 widgets: "Widget"
+presets: "Prasetel"
+_imageEditing:
+  _vars:
+    filename: "Nama berkas"
+_imageFrameEditor:
+  header: "Header"
+  font: "Font"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans-serif"
 _chat:
   invitations: "Undang"
   history: "Riwayat obrolan"
