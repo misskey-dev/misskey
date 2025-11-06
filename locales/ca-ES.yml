@@ -1400,6 +1400,17 @@ scheduled: "Programat"
 widgets: "Ginys"
 deviceInfo: "Informació del dispositiu"
 deviceInfoDescription: "En fer consultes tècniques influir la següent informació pot ajudar a resoldre'l més ràpidament."
+presets: "Predefinit"
+_imageEditing:
+  _vars:
+    filename: "Nom del Fitxer"
+_imageFrameEditor:
+  header: "Capçalera"
+  withQrCode: "Codi QR"
+  font: "Lletra tipogràfica"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Sortir sense desar?"
 _compression:
   _quality:
     high: "Qualitat alta"
