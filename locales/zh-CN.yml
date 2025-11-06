@@ -1398,6 +1398,17 @@ widgets: "小工具"
 deviceInfo: "设备信息"
 deviceInfoDescription: "咨询技术问题时，将以下信息一并发送有助于解决问题。"
 youAreAdmin: "你是管理员"
+presets: "预设值"
+_imageEditing:
+  _vars:
+    filename: "文件名称"
+_imageFrameEditor:
+  header: "顶栏"
+  withQrCode: "二维码"
+  font: "字体"
+  fontSerif: "衬线字体"
+  fontSansSerif: "无衬线字体"
+  quitWithoutSaveConfirm: "不保存就退出吗？"
 _compression:
   _quality:
     high: "高质量"
