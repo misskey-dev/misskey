@@ -922,6 +922,14 @@ information: "Інформація"
 inMinutes: "х"
 inDays: "д"
 widgets: "Віджети"
+_imageEditing:
+  _vars:
+    filename: "Ім'я файлу"
+_imageFrameEditor:
+  header: "Заголовок"
+  font: "Шрифт"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans serif"
 _chat:
   invitations: "Запросити"
   noHistory: "Історія порожня"
