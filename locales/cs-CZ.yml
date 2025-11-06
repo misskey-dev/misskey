@@ -1110,6 +1110,15 @@ information: "Informace"
 inMinutes: "Minut"
 inDays: "Dnů"
 widgets: "Widgety"
+presets: "Předvolba"
+_imageEditing:
+  _vars:
+    filename: "Název souboru"
+_imageFrameEditor:
+  header: "Nadpis"
+  font: "Písmo"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Pozvat"
   noHistory: "Žádná historie"
