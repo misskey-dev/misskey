@@ -1223,6 +1223,15 @@ migrateOldSettings_description: "Thông thường, quá trình này diễn ra t�
 inMinutes: "phút"
 inDays: "ngày"
 widgets: "Tiện ích"
+presets: "Mẫu thiết lập"
+_imageEditing:
+  _vars:
+    filename: "Tên tập tin"
+_imageFrameEditor:
+  header: "Ảnh bìa"
+  font: "Phông chữ"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Mời"
   noHistory: "Không có dữ liệu"
