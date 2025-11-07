@@ -1868,6 +1868,9 @@ _postForm:
   replyPlaceholder: "Trả lời tút này"
   quotePlaceholder: "Trích dẫn tút này"
   channelPlaceholder: "Đăng lên một kênh"
+  _howToUse:
+    visibility_title: "Hiển thị"
+    menu_title: "Menu"
   _placeholders:
     a: "Bạn đang định làm gì?"
     b: "Hôm nay bạn có gì vui?"
