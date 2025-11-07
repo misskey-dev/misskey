@@ -2249,6 +2249,9 @@ _postForm:
   replyPlaceholder: "Balas ke catatan ini..."
   quotePlaceholder: "Kutip catatan ini..."
   channelPlaceholder: "Posting ke kanal"
+  _howToUse:
+    visibility_title: "Visibilitas"
+    menu_title: "Menu"
   _placeholders:
     a: "Sedang apa kamu saat ini?"
     b: "Apa yang terjadi di sekitarmu?"
