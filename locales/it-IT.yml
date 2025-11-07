@@ -2543,6 +2543,9 @@ _postForm:
   replyPlaceholder: "Rispondi a questa nota..."
   quotePlaceholder: "Cita questa nota..."
   channelPlaceholder: "Pubblica sul canale..."
+  _howToUse:
+    visibility_title: "Visibilità"
+    menu_title: "Menù"
   _placeholders:
     a: "Come va?"
     b: "Hai qualcosa da raccontare? Inizia pure..."
