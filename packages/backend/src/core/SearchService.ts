@@ -286,14 +286,16 @@ export class SearchService {
 		}
 
 		const [
-			userIdsWhoMeMuting,
+			userIdsWhoMeMutingMap,
 			userIdsWhoBlockingMe,
 		] = me
 			? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.userBlockedCache.fetch(me.id),
 			])
-			: [new Set<string>(), new Set<string>()];
+			: [new Map<string, { mutingType: 'all' | 'timelineOnly' }>(), new Set<string>()];
+
+		const userIdsWhoMeMuting = new Set(userIdsWhoMeMutingMap.keys());
 
 		const query = this.notesRepository.createQueryBuilder('note')
 			.innerJoinAndSelect('note.user', 'user')

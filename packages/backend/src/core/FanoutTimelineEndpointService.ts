@@ -111,7 +111,7 @@ export class FanoutTimelineEndpointService {
 			if (ps.me) {
 				const me = ps.me;
 				const [
-					userIdsWhoMeMuting,
+					userIdsWhoMeMutingMap,
 					userIdsWhoMeMutingRenotes,
 					userIdsWhoBlockingMe,
 					userMutedInstances,
@@ -123,6 +123,8 @@ export class FanoutTimelineEndpointService {
 					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
 					this.channelMutingService.mutingChannelsCache.fetch(me.id),
 				]);
+
+				const userIdsWhoMeMuting = new Set(userIdsWhoMeMutingMap.keys());
 
 				const parentFilter = filter;
 				filter = (note) => {
