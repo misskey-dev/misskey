@@ -6,7 +6,8 @@
 import { bindThis } from '@/decorators.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { deepClone } from '@/misc/clone.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -57,6 +58,10 @@ export default abstract class Channel {
 		return this.connection.followingChannels;
 	}
 
+	protected get mutingChannels() {
+		return this.connection.mutingChannels;
+	}
+
 	protected get subscriber() {
 		return this.connection.subscriber;
 	}
@@ -75,6 +80,9 @@ export default abstract class Channel {
 
 		// 流れてきたNoteがリノートをミュートしてるユーザが行ったもの
 		if (isRenotePacked(note) && !isQuotePacked(note) && this.userIdsWhoMeMutingRenotes.has(note.user.id)) return true;
+
+		// 流れてきたNoteがミュートしているチャンネルと関わる
+		if (isChannelRelated(note, this.mutingChannels)) return true;
 
 		return false;
 	}

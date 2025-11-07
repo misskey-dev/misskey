@@ -146,17 +146,26 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	if (window.document.startViewTransition != null) {
 		window.document.documentElement.classList.add('_themeChanging_');
-		window.document.startViewTransition(async () => {
-			applyThemeInternal(theme, persist);
-			await nextTick();
-		}).finished.then(() => {
+		try {
+			window.document.startViewTransition(async () => {
+				applyThemeInternal(theme, persist);
+				await nextTick();
+			}).finished.then(() => {
+				window.document.documentElement.classList.remove('_themeChanging_');
+				globalEvents.emit('themeChanged');
+			});
+		} catch (err) {
+			// 様々な理由により startViewTransition は失敗することがある
+			// ref. https://github.com/misskey-dev/misskey/issues/16562
+
+			console.error(err);
+
 			window.document.documentElement.classList.remove('_themeChanging_');
-			// 色計算など再度行えるようにクライアント全体に通知
+			applyThemeInternal(theme, persist);
 			globalEvents.emit('themeChanged');
-		});
+		}
 	} else {
 		applyThemeInternal(theme, persist);
-		// 色計算など再度行えるようにクライアント全体に通知
 		globalEvents.emit('themeChanged');
 	}
 }

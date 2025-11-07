@@ -3,15 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './blur.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_blur = defineImageEffectorFx({
-	id: 'blur',
-	name: i18n.ts._imageEffector._fxs.blur,
+export const fn = defineImageCompositorFunction<{
+	offsetX: number;
+	offsetY: number;
+	scaleX: number;
+	scaleY: number;
+	ellipse: boolean;
+	angle: number;
+	radius: number;
+}>({
 	shader,
-	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'radius', 'samples'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform2f(u.offset, params.offsetX / 2, params.offsetY / 2);
+		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
+		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
+		gl.uniform1f(u.angle, params.angle / 2);
+		gl.uniform1f(u.radius, params.radius);
+		gl.uniform1i(u.samples, 256);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.blur,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',
@@ -72,12 +90,4 @@ export const FX_blur = defineImageEffectorFx({
 			step: 0.5,
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform2f(u.offset, params.offsetX / 2, params.offsetY / 2);
-		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
-		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
-		gl.uniform1f(u.angle, params.angle / 2);
-		gl.uniform1f(u.radius, params.radius);
-		gl.uniform1i(u.samples, 256);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

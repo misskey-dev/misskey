@@ -3,15 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './threshold.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_threshold = defineImageEffectorFx({
-	id: 'threshold',
-	name: i18n.ts._imageEffector._fxs.threshold,
+export const fn = defineImageCompositorFunction<{
+	r: number;
+	g: number;
+	b: number;
+}>({
 	shader,
-	uniforms: ['r', 'g', 'b'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.r, params.r);
+		gl.uniform1f(u.g, params.g);
+		gl.uniform1f(u.b, params.b);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.threshold,
 	params: {
 		r: {
 			label: i18n.ts._imageEffector._fxProps.redComponent,
@@ -38,9 +49,4 @@ export const FX_threshold = defineImageEffectorFx({
 			step: 0.01,
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.r, params.r);
-		gl.uniform1f(u.g, params.g);
-		gl.uniform1f(u.b, params.b);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

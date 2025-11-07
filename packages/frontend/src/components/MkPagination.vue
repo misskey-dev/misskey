@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
 			:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
 			:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
-			mode="out-in"
+			:mode="prefer.s.animation ? 'out-in' : undefined"
 		>
 			<MkLoading v-if="paginator.fetching.value"/>
 
@@ -26,14 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div v-else key="_root_" class="_gaps">
 				<div v-if="direction === 'up' || direction === 'both'" v-show="upButtonVisible">
-					<MkButton v-if="!upButtonLoading" :class="$style.more" primary rounded @click="upButtonClick">
+					<MkButton v-if="!upButtonLoading" v-appear="shouldEnableInfiniteScroll ? upButtonClick : null" :class="$style.more" primary rounded @click="upButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
 				</div>
 				<slot :items="getValue(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
 				<div v-if="direction === 'down' || direction === 'both'" v-show="downButtonVisible">
-					<MkButton v-if="!downButtonLoading" :class="$style.more" primary rounded @click="downButtonClick">
+					<MkButton v-if="!downButtonLoading" v-appear="shouldEnableInfiniteScroll ? downButtonClick : null" :class="$style.more" primary rounded @click="downButtonClick">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
 					<MkLoading v-else/>
@@ -43,6 +43,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </component>
 </template>
+
+<script lang="ts">
+export type MkPaginationOptions = {
+	autoLoad?: boolean;
+	/**
+	 * ページネーションを進める方向
+	 * - up: 上方向
+	 * - down: 下方向 (default)
+	 * - both: 双方向
+	 *
+	 * NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
+	 */
+	direction?: 'up' | 'down' | 'both';
+	pullToRefresh?: boolean;
+	withControl?: boolean;
+	forceDisableInfiniteScroll?: boolean;
+};
+</script>
 
 <script lang="ts" setup generic="T extends IPaginator">
 import { isLink } from '@@/js/is-link.js';
@@ -56,24 +74,18 @@ import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import MkPaginationControl from '@/components/MkPaginationControl.vue';
 import * as os from '@/os.js';
 
-const props = withDefaults(defineProps<{
+const props = withDefaults(defineProps<MkPaginationOptions & {
 	paginator: T;
-
-	// ページネーションを進める方向
-	// up: 上方向
-	// down: 下方向 (default)
-	// both: 双方向
-	// NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
-	direction?: 'up' | 'down' | 'both';
-
-	autoLoad?: boolean;
-	pullToRefresh?: boolean;
-	withControl?: boolean;
 }>(), {
 	autoLoad: true,
 	direction: 'down',
 	pullToRefresh: true,
 	withControl: false,
+	forceDisableInfiniteScroll: false,
+});
+
+const shouldEnableInfiniteScroll = computed(() => {
+	return prefer.r.enableInfiniteScroll.value && !props.forceDisableInfiniteScroll;
 });
 
 function onContextmenu(ev: MouseEvent) {

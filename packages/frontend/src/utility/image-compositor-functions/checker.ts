@@ -3,15 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './checker.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_checker = defineImageEffectorFx({
-	id: 'checker',
-	name: i18n.ts._imageEffector._fxs.checker,
+export const fn = defineImageCompositorFunction<{
+	angle: number;
+	scale: number;
+	color: [number, number, number];
+	opacity: number;
+}>({
 	shader,
-	uniforms: ['angle', 'scale', 'color', 'opacity'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.angle, params.angle / 2);
+		gl.uniform1f(u.scale, params.scale * params.scale);
+		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
+		gl.uniform1f(u.opacity, params.opacity);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.checker,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
@@ -45,10 +58,4 @@ export const FX_checker = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.angle, params.angle / 2);
-		gl.uniform1f(u.scale, params.scale * params.scale);
-		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
-		gl.uniform1f(u.opacity, params.opacity);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

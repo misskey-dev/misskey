@@ -3,15 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
-import shader from './fill.glsl';
+import shader from './pixelate.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_fill = defineImageEffectorFx({
-	id: 'fill',
-	name: i18n.ts._imageEffector._fxs.fill,
+export const fn = defineImageCompositorFunction<{
+	offsetX: number;
+	offsetY: number;
+	scaleX: number;
+	scaleY: number;
+	ellipse: boolean;
+	angle: number;
+	strength: number;
+}>({
 	shader,
-	uniforms: ['offset', 'scale', 'ellipse', 'angle', 'color', 'opacity'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform2f(u.offset, params.offsetX / 2, params.offsetY / 2);
+		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
+		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
+		gl.uniform1f(u.angle, params.angle / 2);
+		gl.uniform1f(u.strength, params.strength * params.strength);
+		gl.uniform1i(u.samples, 256);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.pixelate,
 	params: {
 		offsetX: {
 			label: i18n.ts._imageEffector._fxProps.offset + ' X',
@@ -63,27 +81,13 @@ export const FX_fill = defineImageEffectorFx({
 			step: 0.01,
 			toViewValue: v => Math.round(v * 90) + '°',
 		},
-		color: {
-			label: i18n.ts._imageEffector._fxProps.color,
-			type: 'color',
-			default: [1, 1, 1],
-		},
-		opacity: {
-			label: i18n.ts._imageEffector._fxProps.opacity,
+		strength: {
+			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number',
-			default: 1.0,
+			default: 0.2,
 			min: 0.0,
-			max: 1.0,
+			max: 0.5,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform2f(u.offset, params.offsetX / 2, params.offsetY / 2);
-		gl.uniform2f(u.scale, params.scaleX / 2, params.scaleY / 2);
-		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
-		gl.uniform1f(u.angle, params.angle / 2);
-		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
-		gl.uniform1f(u.opacity, params.opacity);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

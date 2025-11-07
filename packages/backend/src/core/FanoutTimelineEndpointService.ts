@@ -20,6 +20,8 @@ import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
 
 type NoteFilter = (note: MiNote) => boolean;
 
@@ -36,6 +38,7 @@ type TimelineOptions = {
 	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
 	ignoreAuthorFromInstanceBlock?: boolean;
+	ignoreAuthorChannelFromMute?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
@@ -56,6 +59,7 @@ export class FanoutTimelineEndpointService {
 		private cacheService: CacheService,
 		private fanoutTimelineService: FanoutTimelineService,
 		private utilityService: UtilityService,
+		private channelMutingService: ChannelMutingService,
 	) {
 	}
 
@@ -119,11 +123,13 @@ export class FanoutTimelineEndpointService {
 					userIdsWhoMeMutingRenotes,
 					userIdsWhoBlockingMe,
 					userMutedInstances,
+					userMutedChannels,
 				] = await Promise.all([
 					this.cacheService.userMutingsCache.fetch(ps.me.id),
 					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
 					this.cacheService.userBlockedCache.fetch(ps.me.id),
 					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
+					this.channelMutingService.mutingChannelsCache.fetch(me.id),
 				]);
 
 				const parentFilter = filter;
@@ -134,6 +140,7 @@ export class FanoutTimelineEndpointService {
 					if (isUserRelated(note.renote, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
+					if (isChannelRelated(note, userMutedChannels, ps.ignoreAuthorChannelFromMute)) return false;
 
 					return parentFilter(note);
 				};

@@ -3,15 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './colorAdjust.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_colorAdjust = defineImageEffectorFx({
-	id: 'colorAdjust',
-	name: i18n.ts._imageEffector._fxs.colorAdjust,
+export const fn = defineImageCompositorFunction<{
+	lightness: number;
+	contrast: number;
+	hue: number;
+	brightness: number;
+	saturation: number;
+}>({
 	shader,
-	uniforms: ['lightness', 'contrast', 'hue', 'brightness', 'saturation'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.brightness, params.brightness);
+		gl.uniform1f(u.contrast, params.contrast);
+		gl.uniform1f(u.hue, params.hue / 2);
+		gl.uniform1f(u.lightness, params.lightness);
+		gl.uniform1f(u.saturation, params.saturation);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.colorAdjust,
 	params: {
 		lightness: {
 			label: i18n.ts._imageEffector._fxProps.lightness,
@@ -59,11 +74,4 @@ export const FX_colorAdjust = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.brightness, params.brightness);
-		gl.uniform1f(u.contrast, params.contrast);
-		gl.uniform1f(u.hue, params.hue / 2);
-		gl.uniform1f(u.lightness, params.lightness);
-		gl.uniform1f(u.saturation, params.saturation);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;
