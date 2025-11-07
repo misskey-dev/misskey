@@ -1177,6 +1177,9 @@ _postForm:
   replyPlaceholder: "নোটটির জবাব দিন..."
   quotePlaceholder: "নোটটিকে উদ্ধৃত করুন..."
   channelPlaceholder: "চ্যানেলে পোস্ট করুন..."
+  _howToUse:
+    visibility_title: "দৃশ্যমানতা"
+    menu_title: "মেনু"
   _placeholders:
     a: "আপনি এখন কি করছেন?"
     b: "আপনার আশে পাশে কি হচ্ছে?"
