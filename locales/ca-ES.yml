@@ -2580,6 +2580,9 @@ _postForm:
   replyPlaceholder: "Contestar..."
   quotePlaceholder: "Citar..."
   channelPlaceholder: "Publicar a un canal..."
+  _howToUse:
+    visibility_title: "Visibilitat"
+    menu_title: "Menú"
   _placeholders:
     a: "Que vols dir?..."
     b: "Alguna cosa interessant al teu voltant?..."
