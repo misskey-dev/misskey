@@ -1470,6 +1470,9 @@ _postForm:
   replyPlaceholder: "Відповідь на цю нотатку..."
   quotePlaceholder: "Прокоментуйте цю нотатку..."
   channelPlaceholder: "Опублікувати в каналі"
+  _howToUse:
+    visibility_title: "Видимість"
+    menu_title: "Меню"
   _placeholders:
     a: "Чим займаєтесь?"
     b: "Що відбувається навколо вас?"
