@@ -1292,30 +1292,39 @@ function cancelSchedule() {
 }
 
 function showTour() {
+	if (textareaEl.value == null ||
+		footerEl.value == null ||
+		accountMenuEl.value == null ||
+		visibilityButton.value == null ||
+		otherSettingsButton.value == null ||
+		submitButtonEl.value == null) {
+		return;
+	}
+
 	startTour([{
 		element: textareaEl.value,
-		title: '本文',
-		description: '投稿する内容を入力します。',
+		title: i18n.ts._postForm._howToUse.content_title,
+		description: i18n.ts._postForm._howToUse.content_description,
 	}, {
 		element: footerEl.value,
-		title: 'ツールバー',
-		description: 'ファイルやアンケートの添付、注釈やハッシュタグの設定、絵文字やメンションの挿入などが可能です。',
+		title: i18n.ts._postForm._howToUse.toolbar_title,
+		description: i18n.ts._postForm._howToUse.toolbar_description,
 	}, {
 		element: accountMenuEl.value,
-		title: 'アカウントメニュー',
-		description: '投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。',
+		title: i18n.ts._postForm._howToUse.account_title,
+		description: i18n.ts._postForm._howToUse.account_description,
 	}, {
 		element: visibilityButton.value,
-		title: '公開範囲',
-		description: 'ノートを公開する範囲の設定が行えます。',
+		title: i18n.ts._postForm._howToUse.visibility_title,
+		description: i18n.ts._postForm._howToUse.visibility_description,
 	}, {
 		element: otherSettingsButton.value,
-		title: 'その他',
-		description: '下書きへの保存、投稿の予約、リアクションの設定など、その他のアクションが行えます。',
+		title: i18n.ts._postForm._howToUse.menu_title,
+		description: i18n.ts._postForm._howToUse.menu_description,
 	}, {
 		element: submitButtonEl.value,
-		title: '投稿ボタン',
-		description: 'ノートを投稿します。Ctrl + Enter / Cmd + Enter でも投稿できます。',
+		title: i18n.ts._postForm._howToUse.submit_title,
+		description: i18n.ts._postForm._howToUse.submit_description,
 	}]).then(() => {
 		closeTip('postForm');
 	});
