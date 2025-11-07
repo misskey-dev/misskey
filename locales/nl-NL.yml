@@ -1023,6 +1023,10 @@ _visibility:
   home: "Startpagina"
   followers: "Volgers"
   specified: "Directe notities"
+_postForm:
+  _howToUse:
+    visibility_title: "Zichtbaarheid"
+    menu_title: "Menu"
 _profile:
   name: "Naam"
   username: "Gebruikersnaam"
