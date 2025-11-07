@@ -2541,6 +2541,9 @@ _postForm:
   replyPlaceholder: "Reply to this note..."
   quotePlaceholder: "Quote this note..."
   channelPlaceholder: "Post to a channel..."
+  _howToUse:
+    visibility_title: "Visibility"
+    menu_title: "Menu"
   _placeholders:
     a: "What are you up to?"
     b: "What's happening around you?"
