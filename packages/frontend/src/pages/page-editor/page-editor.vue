@@ -216,13 +216,14 @@ async function add() {
 	if (canceled || type == null) return;
 
 	const id = genId();
+
+	// TODO: page-editor.el.section.vueのと共通化
 	if (type === 'text') {
 		content.value.push({
 			id,
 			type,
 			text: '',
 		});
-		return;
 	} else if (type === 'section') {
 		content.value.push({
 			id,
@@ -230,14 +231,12 @@ async function add() {
 			title: '',
 			children: [],
 		});
-		return;
 	} else if (type === 'image') {
 		content.value.push({
 			id,
 			type,
 			fileId: null,
 		});
-		return;
 	} else if (type === 'note') {
 		content.value.push({
 			id,
@@ -245,7 +244,6 @@ async function add() {
 			detailed: false,
 			note: null,
 		});
-		return;
 	}
 }
 
