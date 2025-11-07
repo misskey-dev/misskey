@@ -2540,6 +2540,9 @@ _postForm:
   replyPlaceholder: "回覆此貼文..."
   quotePlaceholder: "引用此貼文..."
   channelPlaceholder: "發佈到頻道"
+  _howToUse:
+    visibility_title: "可見性"
+    menu_title: "選單"
   _placeholders:
     a: "今天過得如何？"
     b: "有什麼新鮮事嗎？"
