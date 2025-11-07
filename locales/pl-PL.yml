@@ -1402,6 +1402,9 @@ _postForm:
   replyPlaceholder: "Odpowiedz na ten wpis..."
   quotePlaceholder: "Zacytuj ten wpis…"
   channelPlaceholder: "Publikuj na kanale..."
+  _howToUse:
+    visibility_title: "Widoczność"
+    menu_title: "Menu"
   _placeholders:
     a: "Co się dzieje?"
     b: "Co się wydarzyło?"
