@@ -2510,6 +2510,9 @@ _postForm:
   replyPlaceholder: "Bu notu yanıtla..."
   quotePlaceholder: "Bu notu alıntı yap..."
   channelPlaceholder: "Bir kanala gönder..."
+  _howToUse:
+    visibility_title: "Görünürlük"
+    menu_title: "Menü"
   _placeholders:
     a: "Ne yapıyorsun?"
     b: "Çevrende neler oluyor?"
