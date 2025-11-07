@@ -2542,6 +2542,9 @@ _postForm:
   replyPlaceholder: "이 노트에 답글..."
   quotePlaceholder: "이 노트를 인용..."
   channelPlaceholder: "채널에 게시하기..."
+  _howToUse:
+    visibility_title: "공개 범위"
+    menu_title: "메뉴"
   _placeholders:
     a: "지금 무엇을 하고 있나요?"
     b: "무슨 일이 일어나고 있나요?"
