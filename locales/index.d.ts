@@ -10030,6 +10030,10 @@ export interface Locale extends ILocale {
          * チャンネルに投稿...
          */
         "channelPlaceholder": string;
+        /**
+         * フォームの説明を表示
+         */
+        "showHowToUse": string;
         "_placeholders": {
             /**
              * いまどうしてる？

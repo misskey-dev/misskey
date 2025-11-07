@@ -2641,6 +2641,7 @@ _postForm:
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
+  showHowToUse: "フォームの説明を表示"
   _placeholders:
     a: "いまどうしてる？"
     b: "何かありましたか？"
