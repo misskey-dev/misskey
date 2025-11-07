@@ -2533,6 +2533,9 @@ _postForm:
   replyPlaceholder: "ตอบกลับโน้ตนี้..."
   quotePlaceholder: "อ้างโน้ตนี้..."
   channelPlaceholder: "โพสต์ลงช่อง..."
+  _howToUse:
+    visibility_title: "การมองเห็น"
+    menu_title: "เมนู"
   _placeholders:
     a: "ตอนนี้เป็นยังไงบ้าง?"
     b: "มีอะไรเกิดขึ้นหรือเปล่า?"
