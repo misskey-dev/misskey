@@ -4900,7 +4900,8 @@ export type components = {
             summary: string | null;
             hideTitleWhenPinned: boolean;
             alignCenter: boolean;
-            font: string;
+            /** @enum {string} */
+            font: 'serif' | 'sans-serif';
             script: string;
             eyeCatchingImageId: string | null;
             eyeCatchingImage: components['schemas']['DriveFile'] | null;
