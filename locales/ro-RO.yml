@@ -1311,6 +1311,9 @@ _postForm:
   replyPlaceholder: "Răspunde la această notă..."
   quotePlaceholder: "Citează aceasta nota..."
   channelPlaceholder: "Postează pe un canal..."
+  _howToUse:
+    visibility_title: "Vizibilitate"
+    menu_title: "Meniu"
   _placeholders:
     a: "Ce mai faci?"
     b: "Ce se mai petrece in jurul tău?"
