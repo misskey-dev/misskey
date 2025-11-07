@@ -87,7 +87,8 @@
 			"@aiscript-dev/aiscript-languageserver": "-"
 		},
 		"ignoredBuiltDependencies": [
-			"@sentry-internal/node-cpu-profiler"
+			"@sentry-internal/node-cpu-profiler",
+			"exifreader"
 		]
 	}
 }
