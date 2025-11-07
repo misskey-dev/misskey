@@ -2398,6 +2398,9 @@ _postForm:
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
+  _howToUse:
+    visibility_title: "公開範囲"
+    menu_title: "メニュー"
   _placeholders:
     a: "いまどないしとるん？"
     b: "何かあったん？"
