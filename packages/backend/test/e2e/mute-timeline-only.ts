@@ -35,7 +35,7 @@ describe('Timeline-only Mute', () => {
 
 		assert.strictEqual(res.status, 204);
 
-		// 単体でも走らせられるように副作用消す
+		// Clean up side effects so tests can run independently
 		await api('mute/delete', {
 			userId: bob.id,
 		}, alice);
@@ -118,7 +118,7 @@ describe('Timeline-only Mute', () => {
 		});
 
 		test('timelineOnlyミュートしているユーザーからメンションされても、ストリームに unreadNotification イベントが流れてくる', async () => {
-			// 状態リセット
+			// Reset state
 			await api('notifications/mark-all-as-read', {}, alice);
 
 			const fired = await waitFire(alice, 'main', () => post(carol, { text: '@alice hi' }), msg => msg.type === 'unreadNotification');
