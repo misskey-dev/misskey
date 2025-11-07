@@ -11,6 +11,7 @@ export const TIPS = [
 	'postFormUploader',
 	'clips',
 	'userLists',
+	'postForm',
 	'tl.home',
 	'tl.local',
 	'tl.social',
