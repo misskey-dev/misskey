@@ -2558,6 +2558,9 @@ _postForm:
   replyPlaceholder: "回复这个帖子..."
   quotePlaceholder: "引用这个帖子..."
   channelPlaceholder: "发布到频道…"
+  _howToUse:
+    visibility_title: "可见性"
+    menu_title: "菜单"
   _placeholders:
     a: "现在怎么样？"
     b: "想好发些什么了吗？"
