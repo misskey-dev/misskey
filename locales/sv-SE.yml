@@ -650,6 +650,9 @@ _visibility:
   home: "Hem"
   followers: "Följare"
   specified: "Direktnoter"
+_postForm:
+  _howToUse:
+    menu_title: "Meny"
 _profile:
   name: "Namn"
   username: "Användarnamn"
