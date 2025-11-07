@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<{
 	direction: 'down',
 	pullToRefresh: true,
 	withControl: true,
-	forceDisableInfiniteScroll:false,
+	forceDisableInfiniteScroll: false,
 });
 
 useGlobalEvent('noteDeleted', (noteId) => {
