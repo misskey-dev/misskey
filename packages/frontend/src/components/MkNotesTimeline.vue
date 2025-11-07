@@ -40,22 +40,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup generic="T extends IPaginator<Misskey.entities.Note>">
 import * as Misskey from 'misskey-js';
+import type { MkPaginationOptions } from '@/components/MkPagination.vue';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkNote from '@/components/MkNote.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-import { globalEvents, useGlobalEvent } from '@/events.js';
+import { useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 
-const props = withDefaults(defineProps<{
+const props = withDefaults(defineProps<MkPaginationOptions & {
 	paginator: T;
 	noGap?: boolean;
-
-	direction?: 'up' | 'down' | 'both';
-	autoLoad?: boolean;
-	pullToRefresh?: boolean;
-	withControl?: boolean;
-	forceDisableInfiniteScroll?: boolean;
 }>(), {
 	autoLoad: true,
 	direction: 'down',

@@ -44,6 +44,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </component>
 </template>
 
+<script lang="ts">
+export type MkPaginationOptions = {
+	autoLoad?: boolean;
+	/**
+	 * ページネーションを進める方向
+	 * - up: 上方向
+	 * - down: 下方向 (default)
+	 * - both: 双方向
+	 *
+	 * NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
+	 */
+	direction?: 'up' | 'down' | 'both';
+	pullToRefresh?: boolean;
+	withControl?: boolean;
+	forceDisableInfiniteScroll?: boolean;
+};
+</script>
+
 <script lang="ts" setup generic="T extends IPaginator">
 import { isLink } from '@@/js/is-link.js';
 import { onMounted, computed, watch, unref } from 'vue';
@@ -56,20 +74,8 @@ import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import MkPaginationControl from '@/components/MkPaginationControl.vue';
 import * as os from '@/os.js';
 
-const props = withDefaults(defineProps<{
+const props = withDefaults(defineProps<MkPaginationOptions & {
 	paginator: T;
-
-	// ページネーションを進める方向
-	// up: 上方向
-	// down: 下方向 (default)
-	// both: 双方向
-	// NOTE: この方向はページネーションの方向であって、アイテムの並び順ではない
-	direction?: 'up' | 'down' | 'both';
-
-	autoLoad?: boolean;
-	pullToRefresh?: boolean;
-	withControl?: boolean;
-	forceDisableInfiniteScroll?: boolean;
 }>(), {
 	autoLoad: true,
 	direction: 'down',
