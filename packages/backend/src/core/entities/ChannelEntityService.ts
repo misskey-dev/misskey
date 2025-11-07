@@ -138,6 +138,7 @@ export class ChannelEntityService {
 		src: MiChannel['id'][] | MiChannel[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		detailed?: boolean,
+		pinnedNotesWithReactionAndUserPairCache?: boolean | false,
 	): Promise<Packed<'Channel'>[]> {
 		// IDのみの要素がある場合、DBからオブジェクトを取得して補う
 		const channels = src.filter(it => typeof it === 'object') as MiChannel[];
@@ -191,7 +192,7 @@ export class ChannelEntityService {
 			})
 			.then(it => new Map(it.map(it => [it.id, it])));
 
-		return Promise.all(channels.map(it => this.pack(it, me, detailed, {
+		return Promise.all(channels.map(it => this.pack(it, me, detailed, pinnedNotesWithReactionAndUserPairCache, {
 			bannerFiles,
 			followings,
 			favorites,
