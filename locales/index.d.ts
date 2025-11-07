@@ -747,7 +747,7 @@ export interface Locale extends ILocale {
      */
     "flagShowTimelineRepliesDescription": string;
     /**
-     * フォロー中ユーザーからのフォロリクを自動承認
+     * フォロー中ユーザーからのフォロー申請を自動承認
      */
     "autoAcceptFollowed": string;
     /**
@@ -1226,6 +1226,10 @@ export interface Locale extends ILocale {
      * 既読
      */
     "messageRead": string;
+    /**
+     * すべてのメッセージを既読にする
+     */
+    "readAllChatMessages": string;
     /**
      * これより過去の履歴はありません
      */
@@ -4107,6 +4111,18 @@ export interface Locale extends ILocale {
      */
     "sendPushNotificationReadMessageCaption": string;
     /**
+     * ブラウザの通知設定を許可してください
+     */
+    "pleaseAllowPushNotification": string;
+    /**
+     * 通知の送信権限の取得に失敗しました
+     */
+    "browserPushNotificationDisabled": string;
+    /**
+     * {serverName}から通知を送信する権限がありません。ブラウザの設定から通知を許可して再度お試しください。
+     */
+    "browserPushNotificationDisabledDescription": ParameterizedString<"serverName">;
+    /**
      * 最大化
      */
     "windowMaximize": string;
@@ -5605,6 +5621,176 @@ export interface Locale extends ILocale {
      * 技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。
      */
     "deviceInfoDescription": string;
+    /**
+     * あなたは管理者です
+     */
+    "youAreAdmin": string;
+    /**
+     * フレーム
+     */
+    "frame": string;
+    /**
+     * プリセット
+     */
+    "presets": string;
+    /**
+     * ゼロ埋め
+     */
+    "zeroPadding": string;
+    "_imageEditing": {
+        "_vars": {
+            /**
+             * ファイルのキャプション
+             */
+            "caption": string;
+            /**
+             * ファイル名
+             */
+            "filename": string;
+            /**
+             * 拡張子無しファイル名
+             */
+            "filename_without_ext": string;
+            /**
+             * 撮影年
+             */
+            "year": string;
+            /**
+             * 撮影月
+             */
+            "month": string;
+            /**
+             * 撮影日
+             */
+            "day": string;
+            /**
+             * 撮影した時刻(時)
+             */
+            "hour": string;
+            /**
+             * 撮影した時刻(分)
+             */
+            "minute": string;
+            /**
+             * 撮影した時刻(秒)
+             */
+            "second": string;
+            /**
+             * カメラ名
+             */
+            "camera_model": string;
+            /**
+             * レンズ名
+             */
+            "camera_lens_model": string;
+            /**
+             * 焦点距離
+             */
+            "camera_mm": string;
+            /**
+             * 焦点距離(35mm判換算)
+             */
+            "camera_mm_35": string;
+            /**
+             * 絞り
+             */
+            "camera_f": string;
+            /**
+             * シャッタースピード
+             */
+            "camera_s": string;
+            /**
+             * ISO感度
+             */
+            "camera_iso": string;
+            /**
+             * 緯度
+             */
+            "gps_lat": string;
+            /**
+             * 経度
+             */
+            "gps_long": string;
+        };
+    };
+    "_imageFrameEditor": {
+        /**
+         * フレームの編集
+         */
+        "title": string;
+        /**
+         * 画像にフレームやメタデータを含んだラベルを追加して装飾できます。
+         */
+        "tip": string;
+        /**
+         * ヘッダー
+         */
+        "header": string;
+        /**
+         * フッター
+         */
+        "footer": string;
+        /**
+         * フチの幅
+         */
+        "borderThickness": string;
+        /**
+         * ラベルの幅
+         */
+        "labelThickness": string;
+        /**
+         * ラベルのスケール
+         */
+        "labelScale": string;
+        /**
+         * 中央揃え
+         */
+        "centered": string;
+        /**
+         * キャプション(大)
+         */
+        "captionMain": string;
+        /**
+         * キャプション(小)
+         */
+        "captionSub": string;
+        /**
+         * 利用可能な変数
+         */
+        "availableVariables": string;
+        /**
+         * 二次元コード
+         */
+        "withQrCode": string;
+        /**
+         * 背景色
+         */
+        "backgroundColor": string;
+        /**
+         * 文字色
+         */
+        "textColor": string;
+        /**
+         * フォント
+         */
+        "font": string;
+        /**
+         * セリフ
+         */
+        "fontSerif": string;
+        /**
+         * サンセリフ
+         */
+        "fontSansSerif": string;
+        /**
+         * 保存せずに終了しますか？
+         */
+        "quitWithoutSaveConfirm": string;
+        /**
+         * 画像の読み込みに失敗しました
+         */
+        "failedToLoadImage": string;
+    };
     "_compression": {
         "_quality": {
             /**
@@ -5997,6 +6183,10 @@ export interface Locale extends ILocale {
          * ページのタブバーを下部に表示
          */
         "showPageTabBarBottom": string;
+        /**
+         * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
+         */
+        "emojiPaletteBanner": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -6059,6 +6249,10 @@ export interface Locale extends ILocale {
          * 設定のバックアップが見つかりました
          */
         "backupFound": string;
+        /**
+         * 設定の強制バックアップ
+         */
+        "forceBackup": string;
     };
     "_accountSettings": {
         /**
@@ -10891,6 +11085,14 @@ export interface Locale extends ILocale {
     };
     "_moderationLogTypes": {
         /**
+         * ジョブキューをクリア
+         */
+        "clearQueue": string;
+        /**
+         * キューのジョブを再試行
+         */
+        "promoteQueue": string;
+        /**
          * ロールを作成
          */
         "createRole": string;
@@ -12318,7 +12520,7 @@ export interface Locale extends ILocale {
     "defaultPreset": string;
     "_watermarkEditor": {
         /**
-         * 画像にクレジット情報などのウォーターマークを追加することができます。
+         * 画像にクレジット情報などのウォーターマークを追加できます。
          */
         "tip": string;
         /**
@@ -12433,6 +12635,10 @@ export interface Locale extends ILocale {
          * 空欄にするとアカウントのURLになります
          */
         "leaveBlankToAccountUrl": string;
+        /**
+         * 画像の読み込みに失敗しました
+         */
+        "failedToLoadImage": string;
     };
     "_imageEffector": {
         /**
@@ -12451,6 +12657,10 @@ export interface Locale extends ILocale {
          * 設定項目はありません
          */
         "nothingToConfigure": string;
+        /**
+         * 画像の読み込みに失敗しました
+         */
+        "failedToLoadImage": string;
         "_fxs": {
             /**
              * 色収差

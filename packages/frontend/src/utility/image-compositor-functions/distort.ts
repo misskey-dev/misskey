@@ -3,15 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './distort.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_distort = defineImageEffectorFx({
-	id: 'distort',
-	name: i18n.ts._imageEffector._fxs.distort,
+export const fn = defineImageCompositorFunction<{
+	direction: number;
+	phase: number;
+	frequency: number;
+	strength: number;
+}>({
 	shader,
-	uniforms: ['phase', 'frequency', 'strength', 'direction'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.phase, params.phase);
+		gl.uniform1f(u.frequency, params.frequency);
+		gl.uniform1f(u.strength, params.strength);
+		gl.uniform1i(u.direction, params.direction);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.distort,
 	params: {
 		direction: {
 			label: i18n.ts._imageEffector._fxProps.direction,
@@ -49,10 +62,4 @@ export const FX_distort = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.phase, params.phase);
-		gl.uniform1f(u.frequency, params.frequency);
-		gl.uniform1f(u.strength, params.strength);
-		gl.uniform1i(u.direction, params.direction);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;
