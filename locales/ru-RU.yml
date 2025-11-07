@@ -2016,6 +2016,9 @@ _postForm:
   replyPlaceholder: "Ответ на заметку..."
   quotePlaceholder: "Пояснение к цитате..."
   channelPlaceholder: "Отправить в канал"
+  _howToUse:
+    visibility_title: "Видимость"
+    menu_title: "Меню"
   _placeholders:
     a: "Как дела?"
     b: "Что интересного вокруг?"
