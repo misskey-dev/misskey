@@ -2046,6 +2046,9 @@ _postForm:
   replyPlaceholder: "Répondre à cette note ..."
   quotePlaceholder: "Citez cette note ..."
   channelPlaceholder: "Publier au canal…"
+  _howToUse:
+    visibility_title: "Visibilité"
+    menu_title: "Menu"
   _placeholders:
     a: "Quoi de neuf ?"
     b: "Il s'est passé quelque chose ?"
