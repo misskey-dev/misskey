@@ -656,6 +656,8 @@ _visibility:
   home: "Hjem"
   followers: "Følgere"
 _postForm:
+  _howToUse:
+    menu_title: "Meny"
   _placeholders:
     a: "Hva skjer?"
 _profile:
