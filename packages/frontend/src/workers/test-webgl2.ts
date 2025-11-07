@@ -11,7 +11,7 @@ const canvas = globalThis.OffscreenCanvas && new OffscreenCanvas(1, 1);
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const gl = canvas?.getContext('webgl2');
 if (gl) {
-	postMessage({ result: true });
+	self.postMessage({ result: true });
 } else {
-	postMessage({ result: false });
+	self.postMessage({ result: false });
 }
