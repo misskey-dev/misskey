@@ -1272,6 +1272,9 @@ _postForm:
   replyPlaceholder: "Odpoveď na túto poznámku..."
   quotePlaceholder: "Citovanie tejto poznámky..."
   channelPlaceholder: "Poslať do kanála..."
+  _howToUse:
+    visibility_title: "Viditeľnosť"
+    menu_title: "Menu"
   _placeholders:
     a: "Čo máte v pláne?"
     b: "Čo sa deje?"
