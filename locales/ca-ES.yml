@@ -2580,7 +2580,12 @@ _postForm:
   replyPlaceholder: "Contestar..."
   quotePlaceholder: "Citar..."
   channelPlaceholder: "Publicar a un canal..."
+  showHowToUse: "Mostrar les instruccions"
   _howToUse:
+    content_title: "Cos principal"
+    content_description: "Introdueix el contingut que vols publicar."
+    toolbar_title: "Barra d'eines "
+    toolbar_description: "Pots adjuntar arxius o enquestes, afegir anotacions o etiquetes i inserir emojis o mencions."
     visibility_title: "Visibilitat"
     menu_title: "Menú"
   _placeholders:
