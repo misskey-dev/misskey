@@ -2592,7 +2592,7 @@ _postForm:
     menu_title: "選單"
     menu_description: "可以進行其他操作，例如儲存為草稿、預約發佈貼文、或設定反應等。\n"
     submit_title: "貼文按鈕"
-    submit_description: "發佈貼文。也可以使用 Ctrl + Enter 或 Cmd + Enter 來發佈。"
+    submit_description: "發布貼文。也可以使用 Ctrl + Enter 或 Cmd + Enter 來發布。"
   _placeholders:
     a: "今天過得如何？"
     b: "有什麼新鮮事嗎？"
