@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/// <reference lib="esnext" />
+/// <reference lib="webworker" />
+
 import { render } from 'buraha';
 
 const canvas = new OffscreenCanvas(64, 64);
