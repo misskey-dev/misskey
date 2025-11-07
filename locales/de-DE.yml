@@ -2490,6 +2490,9 @@ _postForm:
   replyPlaceholder: "Dieser Notiz antworten …"
   quotePlaceholder: "Diese Notiz zitieren …"
   channelPlaceholder: "In einen Kanal senden"
+  _howToUse:
+    visibility_title: "Sichtbarkeit"
+    menu_title: "Menü"
   _placeholders:
     a: "Was machst du momentan?"
     b: "Was ist um dich herum los?"
