@@ -1305,4 +1305,280 @@ export class ChatService {
 			userId: fromUserId,
 		});
 	}
+
+	@bindThis
+	public async broadcastCursorMove(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], cursorData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] CursorMove event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] CursorMove event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'cursorMove', {
+			userId: fromUserId,
+			userName: cursorData.userName,
+			x: cursorData.x,
+			y: cursorData.y,
+			timestamp: cursorData.timestamp,
+		});
+	}
+
+	@bindThis
+	public async broadcastDrawingStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], strokeData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] DrawingStroke event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] DrawingStroke event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'drawingStroke', strokeData);
+	}
+
+	@bindThis
+	public async broadcastDrawingProgress(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], progressData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) return; // 無言で制限（高頻度イベントのため）
+
+		if (!await this.isRoomMember(room, fromUserId)) return; // 無言で制限
+
+		this.globalEventService.publishChatRoomStream(roomId, 'drawingProgress', progressData);
+	}
+
+	@bindThis
+	public async broadcastClearCanvas(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], clearData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] ClearCanvas event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] ClearCanvas event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'clearCanvas', clearData);
+	}
+
+	@bindThis
+	/**
+	 * Undo Stroke配信
+	 *
+	 * 【仕様】
+	 * - 指定されたルームにUndoイベントを配信
+	 * - ルームメンバーのみが配信可能
+	 * - レイヤー情報とストロークIDを含む
+	 */
+	public async broadcastUndoStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], undoData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] UndoStroke event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] UndoStroke event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'undoStroke', undoData);
+	}
+
+	/**
+	 * Redo Stroke配信
+	 *
+	 * 【仕様】
+	 * - 指定されたルームにRedoイベントを配信
+	 * - ルームメンバーのみが配信可能
+	 * - レイヤー情報と復元するストロークデータを含む
+	 */
+	public async broadcastRedoStroke(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], redoData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] RedoStroke event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] RedoStroke event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'redoStroke', redoData);
+	}
+
+	/**
+	 * Canvas Size Change配信
+	 *
+	 * 【仕様】
+	 * - 指定されたルームにキャンバスサイズ変更イベントを配信
+	 * - ルームメンバーのみが配信可能
+	 * - 新しいキャンバスサイズ情報を含む
+	 */
+	public async broadcastCanvasSizeChange(roomId: MiChatRoom['id'], fromUserId: MiUser['id'], sizeData: any): Promise<void> {
+		const room = await this.chatRoomsRepository.findOneBy({ id: roomId });
+		if (!room) {
+			console.warn(`🔍 [SECURITY] CanvasSizeChange event for non-existent room ${roomId}`);
+			return;
+		}
+
+		if (!await this.isRoomMember(room, fromUserId)) {
+			console.warn(`🔍 [SECURITY] CanvasSizeChange event from non-member user ${fromUserId} for room ${roomId}`);
+			return;
+		}
+
+		this.globalEventService.publishChatRoomStream(roomId, 'canvasSizeChange', sizeData);
+	}
+
+	// =====================================================
+	// ユーザー間チャット用のお絵かきイベント配信メソッド
+	// =====================================================
+
+	/**
+	 * ユーザー間チャット用: Drawing Stroke配信
+	 */
+	@bindThis
+	public async broadcastUserDrawingStroke(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], strokeData: any): Promise<void> {
+		// ユーザー存在確認
+		const user1 = await this.usersRepository.findOneBy({ id: userId1 });
+		const user2 = await this.usersRepository.findOneBy({ id: userId2 });
+		if (!user1 || !user2) {
+			console.warn(`🔍 [SECURITY] DrawingStroke event for non-existent user`);
+			return;
+		}
+
+		// 送信者が参加者の一人であることを確認
+		if (fromUserId !== userId1 && fromUserId !== userId2) {
+			console.warn(`🔍 [SECURITY] DrawingStroke event from non-participant user ${fromUserId}`);
+			return;
+		}
+
+		// ソート済みIDでストリーム識別子を生成
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'drawingStroke', strokeData);
+	}
+
+	/**
+	 * ユーザー間チャット用: Drawing Progress配信
+	 */
+	@bindThis
+	public async broadcastUserDrawingProgress(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], progressData: any): Promise<void> {
+		// 高頻度イベントのため簡易チェック
+		if (fromUserId !== userId1 && fromUserId !== userId2) return;
+
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'drawingProgress', progressData);
+	}
+
+	/**
+	 * ユーザー間チャット用: Cursor Move配信
+	 */
+	@bindThis
+	public async broadcastUserCursorMove(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], cursorData: any): Promise<void> {
+		// 高頻度イベントのため簡易チェック
+		if (fromUserId !== userId1 && fromUserId !== userId2) return;
+
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'cursorMove', {
+			userId: fromUserId,
+			userName: cursorData.userName,
+			x: cursorData.x,
+			y: cursorData.y,
+			timestamp: cursorData.timestamp,
+		});
+	}
+
+	/**
+	 * ユーザー間チャット用: Clear Canvas配信
+	 */
+	@bindThis
+	public async broadcastUserClearCanvas(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], clearData: any): Promise<void> {
+		const user1 = await this.usersRepository.findOneBy({ id: userId1 });
+		const user2 = await this.usersRepository.findOneBy({ id: userId2 });
+		if (!user1 || !user2) {
+			console.warn(`🔍 [SECURITY] ClearCanvas event for non-existent user`);
+			return;
+		}
+
+		if (fromUserId !== userId1 && fromUserId !== userId2) {
+			console.warn(`🔍 [SECURITY] ClearCanvas event from non-participant user ${fromUserId}`);
+			return;
+		}
+
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'clearCanvas', clearData);
+	}
+
+	/**
+	 * ユーザー間チャット用: Undo Stroke配信
+	 */
+	@bindThis
+	public async broadcastUserUndoStroke(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], undoData: any): Promise<void> {
+		const user1 = await this.usersRepository.findOneBy({ id: userId1 });
+		const user2 = await this.usersRepository.findOneBy({ id: userId2 });
+		if (!user1 || !user2) {
+			console.warn(`🔍 [SECURITY] UndoStroke event for non-existent user`);
+			return;
+		}
+
+		if (fromUserId !== userId1 && fromUserId !== userId2) {
+			console.warn(`🔍 [SECURITY] UndoStroke event from non-participant user ${fromUserId}`);
+			return;
+		}
+
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'undoStroke', undoData);
+	}
+
+	/**
+	 * ユーザー間チャット用: Redo Stroke配信
+	 */
+	@bindThis
+	public async broadcastUserRedoStroke(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], redoData: any): Promise<void> {
+		const user1 = await this.usersRepository.findOneBy({ id: userId1 });
+		const user2 = await this.usersRepository.findOneBy({ id: userId2 });
+		if (!user1 || !user2) {
+			console.warn(`🔍 [SECURITY] RedoStroke event for non-existent user`);
+			return;
+		}
+
+		if (fromUserId !== userId1 && fromUserId !== userId2) {
+			console.warn(`🔍 [SECURITY] RedoStroke event from non-participant user ${fromUserId}`);
+			return;
+		}
+
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'redoStroke', redoData);
+	}
+
+	/**
+	 * ユーザー間チャット用: Canvas Size Change配信
+	 */
+	@bindThis
+	public async broadcastUserCanvasSizeChange(userId1: MiUser['id'], userId2: MiUser['id'], fromUserId: MiUser['id'], sizeData: any): Promise<void> {
+		const user1 = await this.usersRepository.findOneBy({ id: userId1 });
+		const user2 = await this.usersRepository.findOneBy({ id: userId2 });
+		if (!user1 || !user2) {
+			console.warn(`🔍 [SECURITY] CanvasSizeChange event for non-existent user`);
+			return;
+		}
+
+		if (fromUserId !== userId1 && fromUserId !== userId2) {
+			console.warn(`🔍 [SECURITY] CanvasSizeChange event from non-participant user ${fromUserId}`);
+			return;
+		}
+
+		const sortedIds = [userId1, userId2].sort();
+		this.globalEventService.publishChatUserStream(sortedIds[0], sortedIds[1], 'canvasSizeChange', sizeData);
+	}
 }

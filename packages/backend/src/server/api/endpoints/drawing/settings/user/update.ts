@@ -39,6 +39,7 @@ export const paramDef = {
 		zoomLevel: { type: 'number', minimum: 0.5, maximum: 10.0, nullable: true },
 		panOffsetX: { type: 'number', nullable: true },
 		panOffsetY: { type: 'number', nullable: true },
+		colors: { type: 'array', items: { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' }, minItems: 16, maxItems: 16, nullable: true },
 	},
 	required: ['canvasId'],
 } as const;
@@ -68,6 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				zoomLevel: ps.zoomLevel ?? undefined,
 				panOffsetX: ps.panOffsetX ?? undefined,
 				panOffsetY: ps.panOffsetY ?? undefined,
+				colors: ps.colors ?? undefined,
 			});
 		});
 	}

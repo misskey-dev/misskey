@@ -88,6 +88,8 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import { MiChatApproval } from '@/models/ChatApproval.js';
 import { MiChatSecretSettings } from '@/models/ChatSecretSettings.js';
 import { MiSystemAccount } from '@/models/SystemAccount.js';
+import { MiDrawingRoomSettings } from '@/models/DrawingRoomSettings.js';
+import { MiDrawingUserSettings } from '@/models/DrawingUserSettings.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -261,6 +263,8 @@ export const entities = [
 	MiChatSecretSettings,
 	MiBubbleGameRecord,
 	MiReversiGame,
+	MiDrawingRoomSettings,
+	MiDrawingUserSettings,
 	...charts,
 ];
 

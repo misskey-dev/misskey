@@ -645,4 +645,35 @@ export class NoteEntityService implements OnModuleInit {
 
 		return await Promise.all(packings);
 	}
+
+	@bindThis
+	public async packManyWithFilteredFiles(
+		notes: MiNote[],
+		excludedFileIds: Set<string>,
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			detail?: boolean;
+			skipHide?: boolean;
+		},
+	) {
+		// まず通常通りpackする
+		const packedNotes = await this.packMany(notes, me, options);
+
+		// pack後に除外されたファイルをfilesから削除
+		const filteredPackedNotes = packedNotes.map(packedNote => {
+			if (!packedNote.files || packedNote.files.length === 0) {
+				return packedNote;
+			}
+
+			const originalFileCount = packedNote.files.length;
+			const filteredFiles = packedNote.files.filter(file => !excludedFileIds.has(file.id));
+
+			return {
+				...packedNote,
+				files: filteredFiles,
+			};
+		}).filter(packedNote => packedNote.files && packedNote.files.length > 0); // filesが空になったノートを除外
+
+		return filteredPackedNotes;
+	}
 }

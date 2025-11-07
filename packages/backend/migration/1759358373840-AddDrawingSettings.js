@@ -37,6 +37,7 @@ export class AddDrawingSettings1759358373840 {
 				"zoomLevel" double precision NOT NULL DEFAULT 1.0,
 				"panOffsetX" double precision NOT NULL DEFAULT 0,
 				"panOffsetY" double precision NOT NULL DEFAULT 0,
+				"colors" jsonb,
 				"createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 				"updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 				CONSTRAINT "PK_drawing_user_settings" PRIMARY KEY ("id")
@@ -54,6 +55,7 @@ export class AddDrawingSettings1759358373840 {
 		await queryRunner.query(`COMMENT ON COLUMN "drawing_user_settings"."zoomLevel" IS 'Zoom level (0.5-10.0)'`);
 		await queryRunner.query(`COMMENT ON COLUMN "drawing_user_settings"."panOffsetX" IS 'Pan offset X'`);
 		await queryRunner.query(`COMMENT ON COLUMN "drawing_user_settings"."panOffsetY" IS 'Pan offset Y'`);
+		await queryRunner.query(`COMMENT ON COLUMN "drawing_user_settings"."colors" IS 'Custom color palette (array of 16 hex colors)'`);
 
 		// インデックス作成
 		await queryRunner.query(`CREATE INDEX "IDX_drawing_user_settings_userId" ON "drawing_user_settings" ("userId")`);

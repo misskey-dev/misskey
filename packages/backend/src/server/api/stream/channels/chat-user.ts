@@ -20,11 +20,8 @@ class ChatUserChannel extends Channel {
 	private typers: Record<string, Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
-	// レート制限用（お絵描き機能）
-	private lastDrawingStroke: number = 0;
+	// レート制限用（カーソル移動のみ）
 	private lastCursorMove: number = 0;
-	private drawingStrokeCount: number = 0;
-	private cursorMoveCount: number = 0;
 
 	constructor(
 		private chatService: ChatService,
@@ -45,7 +42,8 @@ class ChatUserChannel extends Channel {
 		// this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 		// IDをソートして統一的なチャンネル名を作成
 		const sortedIds = [this.user!.id, this.otherId].sort();
-		this.subscriber.on(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, this.onEvent);
+		const channelName = `chatUserStream:${sortedIds[0]}-${sortedIds[1]}`;
+		this.subscriber.on(channelName, this.onEvent);
 	}
 
 	@bindThis
@@ -74,11 +72,8 @@ class ChatUserChannel extends Channel {
 
 	@bindThis
 	public async onMessage(type: string, body: any) {
-		console.log(`🔍 [DEBUG] ChatUserChannel received message - type: ${type}, userId: ${this.user!.id}, otherId: ${this.otherId}`);
-
 		// セキュリティ: ユーザー認証確認
 		if (!this.user) {
-			console.warn(`🔍 [SECURITY] Unauthenticated user attempting ${type} event`);
 			return;
 		}
 
@@ -89,8 +84,6 @@ class ChatUserChannel extends Channel {
 				}
 				break;
 			case 'typing':
-				console.log(`🔍 [DEBUG] Processing typing event for user chat ${this.user.id} -> ${this.otherId}`);
-
 				// セキュリティ: typing送信者を認証済みユーザーIDに強制設定
 				// フロントエンドからのuserIdパラメータは無視し、認証済みセッションのユーザーIDを使用
 				if (this.otherId) {
@@ -98,8 +91,6 @@ class ChatUserChannel extends Channel {
 				}
 				break;
 			case 'typingStop':
-				console.log(`🔍 [DEBUG] Processing typingStop event for user chat ${this.user.id} -> ${this.otherId}`);
-
 				// セキュリティ: typingStop送信者を認証済みユーザーIDに強制設定
 				// フロントエンドからのuserIdパラメータは無視し、認証済みセッションのユーザーIDを使用
 				if (this.otherId) {
@@ -123,33 +114,19 @@ class ChatUserChannel extends Channel {
 			case 'undoStroke':
 				await this.handleUndoStroke(body);
 				break;
+			case 'redoStroke':
+				await this.handleRedoStroke(body);
+				break;
+			case 'canvasSizeChange':
+				await this.handleCanvasSizeChange(body);
+				break;
 		}
 	}
 
 	// お絵描きストロークの処理
 	@bindThis
 	private async handleDrawingStroke(body: any) {
-		const now = Date.now();
-		const DRAWING_STROKE_RATE_LIMIT = 100; // 100ms間隔
-		const DRAWING_STROKE_BURST_LIMIT = 10; // 1秒間に10回まで
-
-		// レート制限チェック
-		if (now - this.lastDrawingStroke < DRAWING_STROKE_RATE_LIMIT) {
-			return; // レート制限によりスキップ
-		}
-
-		// バースト制限チェック
-		if (now - this.lastDrawingStroke < 1000) {
-			this.drawingStrokeCount++;
-			if (this.drawingStrokeCount > DRAWING_STROKE_BURST_LIMIT) {
-				return; // バースト制限によりスキップ
-			}
-		} else {
-			this.drawingStrokeCount = 1;
-		}
-
-		this.lastDrawingStroke = now;
-
+		// drawingStrokeは完了したストロークなので、レート制限を設けずすべて保存する
 		try {
 			const actor = this.user;
 			if (!actor) return;
@@ -172,11 +149,8 @@ class ChatUserChannel extends Channel {
 
 			await this.drawingCanvasService.addStroke(drawingId, strokeData);
 
-			// 他の参加者に配信（自分以外）
-			(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
-				type: 'drawingStroke',
-				body: strokeData,
-			});
+			// ChatServiceを使って配信
+			await this.chatService.broadcastUserDrawingStroke(actor.id, this.otherId, actor.id, strokeData);
 		} catch (error) {
 			console.error('Drawing stroke error:', error);
 		}
@@ -185,16 +159,6 @@ class ChatUserChannel extends Channel {
 	// お絵描き進行状況の処理
 	@bindThis
 	private async handleDrawingProgress(body: any) {
-		const now = Date.now();
-		const DRAWING_PROGRESS_RATE_LIMIT = 50; // 50ms間隔（進行状況は高頻度）
-
-		// レート制限チェック
-		if (now - this.lastDrawingStroke < DRAWING_PROGRESS_RATE_LIMIT) {
-			return; // レート制限によりスキップ
-		}
-
-		this.lastDrawingStroke = now;
-
 		try {
 			const actor = this.user;
 			if (!actor) return;
@@ -209,21 +173,24 @@ class ChatUserChannel extends Channel {
 			const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
 			const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
 
-			body.userName = actor.username || actor.name || 'Unknown';
-			body.userId = actor.id;
-			body.timestamp = now;
-			body.layer = layerIndex;
-			body.points = body.points.map((p: any) => ({
-				x: Math.min(Math.max(Math.round(p.x), 0), 4000),
-				y: Math.min(Math.max(Math.round(p.y), 0), 4000),
-				pressure: typeof p.pressure === 'number' ? Math.min(Math.max(p.pressure, 0), 1) : 1.0,
-			}));
+			const progressData = {
+				userName: actor.username || actor.name || 'Unknown',
+				userId: actor.id,
+				timestamp: Date.now(),
+				layer: layerIndex,
+				points: body.points.map((p: any) => ({
+					x: Math.min(Math.max(Math.round(p.x), 0), 4000),
+					y: Math.min(Math.max(Math.round(p.y), 0), 4000),
+					pressure: typeof p.pressure === 'number' ? Math.min(Math.max(p.pressure, 0), 1) : 1.0,
+				})),
+				tool: body.tool,
+				color: body.color,
+				strokeWidth: body.strokeWidth,
+				opacity: body.opacity,
+			};
 
-			const sortedIds = [actor.id, this.otherId].sort();
-			(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
-				type: 'drawingProgress',
-				body: body,
-			});
+			// ChatServiceを使って配信
+			await this.chatService.broadcastUserDrawingProgress(actor.id, this.otherId, actor.id, progressData);
 		} catch (error) {
 			console.error('Drawing progress error:', error);
 		}
@@ -246,24 +213,19 @@ class ChatUserChannel extends Channel {
 
 		this.lastCursorMove = now;
 
-	const actor = this.user;
-	if (!actor) return;
+		const actor = this.user;
+		if (!actor) return;
 
-	// カーソル位置データを構成
-	const cursorData = {
-		userId: actor.id,
-		userName: actor.username || actor.name || 'Unknown',
-		x: Math.round(body.x * 10) / 10, // 高精度座標
-		y: Math.round(body.y * 10) / 10,
-		timestamp: Date.now(),
-	};
+		// カーソル位置データを構成
+		const cursorData = {
+			userName: actor.username || actor.name || 'Unknown',
+			x: Math.round(body.x * 10) / 10, // 高精度座標
+			y: Math.round(body.y * 10) / 10,
+			timestamp: Date.now(),
+		};
 
-	// 他の参加者に配信（リアルタイム）
-	const sortedIds = [actor.id, this.otherId].sort();
-	(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
-		type: 'cursorMove',
-		body: cursorData,
-	});
+		// ChatServiceを使って配信
+		await this.chatService.broadcastUserCursorMove(actor.id, this.otherId, actor.id, cursorData);
 	}
 
 	// キャンバスクリアの処理
@@ -280,11 +242,13 @@ class ChatUserChannel extends Channel {
 			// キャンバスをクリア
 			await this.drawingCanvasService.clearCanvas(drawingId, actor.id);
 
-			// 他の参加者に配信
-			(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
-				type: 'clearCanvas',
-				body: {},
-			});
+			// ChatServiceを使って配信
+			const clearData = {
+				userId: actor.id,
+				userName: actor.name || actor.username,
+				timestamp: Date.now(),
+			};
+			await this.chatService.broadcastUserClearCanvas(actor.id, this.otherId, actor.id, clearData);
 		} catch (error) {
 			console.error('Clear canvas error:', error);
 		}
@@ -297,25 +261,83 @@ class ChatUserChannel extends Channel {
 			const actor = this.user;
 			if (!actor) return;
 
-			// ユーザー間チャット用のdrawingIdを生成
-			const sortedIds = [actor.id, this.otherId].sort();
-			const drawingId = `user-${sortedIds[0]}-${sortedIds[1]}`;
-
-			// アンドゥを実行
-			const undoneStroke = await this.drawingCanvasService.performUndo(drawingId, actor.id);
-
-			if (undoneStroke) {
-				// 他の参加者に配信
-				(this.subscriber as any).emit(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, {
-					type: 'undoStroke',
-					body: {
-						strokeId: undoneStroke.id,
-						userId: actor.id,
-					},
-				});
+			// セキュリティ: レイヤー情報の検証
+			if (!body || typeof body.layer !== 'number') {
+				console.warn(`🔍 [SECURITY] Invalid undo stroke payload from user ${actor.id}`);
+				return;
 			}
+
+			// ChatServiceを使って配信
+			const undoData = {
+				userId: actor.id,
+				userName: actor.name || actor.username,
+				layer: body.layer,
+				strokeId: body.strokeId,
+				timestamp: Date.now(),
+			};
+			await this.chatService.broadcastUserUndoStroke(actor.id, this.otherId, actor.id, undoData);
 		} catch (error) {
 			console.error('Undo stroke error:', error);
+		}
+	}
+
+	// リドゥの処理
+	@bindThis
+	private async handleRedoStroke(body: any) {
+		try {
+			const actor = this.user;
+			if (!actor) return;
+
+			// セキュリティ: レイヤー情報とストロークデータの検証
+			if (!body || typeof body.layer !== 'number' || !body.stroke) {
+				console.warn(`🔍 [SECURITY] Invalid redo stroke payload from user ${actor.id}`);
+				return;
+			}
+
+			// ChatServiceを使って配信
+			const redoData = {
+				userId: actor.id,
+				userName: actor.name || actor.username,
+				layer: body.layer,
+				stroke: body.stroke,
+				timestamp: Date.now(),
+			};
+			await this.chatService.broadcastUserRedoStroke(actor.id, this.otherId, actor.id, redoData);
+		} catch (error) {
+			console.error('Redo stroke error:', error);
+		}
+	}
+
+	// キャンバスサイズ変更の処理
+	@bindThis
+	private async handleCanvasSizeChange(body: any) {
+		try {
+			const actor = this.user;
+			if (!actor) return;
+
+			// セキュリティ: キャンバスサイズの検証
+			if (!body || typeof body.width !== 'number' || typeof body.height !== 'number') {
+				console.warn(`🔍 [SECURITY] Invalid canvas size change payload from user ${actor.id}`);
+				return;
+			}
+
+			// サイズの範囲検証
+			if (body.width < 100 || body.width > 4000 || body.height < 100 || body.height > 4000) {
+				console.warn(`🔍 [SECURITY] Canvas size out of range from user ${actor.id}: ${body.width}x${body.height}`);
+				return;
+			}
+
+			// ChatServiceを使って配信
+			const sizeData = {
+				userId: actor.id,
+				userName: actor.name || actor.username,
+				width: body.width,
+				height: body.height,
+				timestamp: Date.now(),
+			};
+			await this.chatService.broadcastUserCanvasSizeChange(actor.id, this.otherId, actor.id, sizeData);
+		} catch (error) {
+			console.error('Canvas size change error:', error);
 		}
 	}
 

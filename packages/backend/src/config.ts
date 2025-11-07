@@ -330,10 +330,15 @@ export function loadConfig(): Config {
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
-		logging: config.logging,
+		logging: {
+			sql: {
+				disableQueryTruncation: false,  // 開発環境ではクエリーを表示
+				enableQueryParamLogging: true,  // エラーログをコンソール出力に
+			},
+		},
 		slack: config.slack,
 	};
-}
+};
 
 function tryCreateUrl(url: string) {
 	try {

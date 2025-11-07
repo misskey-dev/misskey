@@ -178,6 +178,16 @@ export class MiDriveFile {
 	})
 	public isLink: boolean;
 
+	/**
+	 * イラストハイライトから除外されているか
+	 */
+	@Index()
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether the DriveFile is excluded from illustration highlight.',
+	})
+	public excludedFromIllustrationHighlight: boolean;
+
 	@Column('jsonb', {
 		default: {},
 		nullable: true,

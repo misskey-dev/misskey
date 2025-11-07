@@ -1,6 +1,34 @@
 <!--
 SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
+
+【お絵かきチャットコンポーネント】
+このコンポーネントは、チャットルーム（複数人）とユーザー間DM（1対1）の両方で使用されます。
+
+■ 対応するチャット形式:
+1. チャットルーム (chatRoom)
+   - URLパターン: /chat/room/:roomId#drawing
+   - props.roomId が存在する場合
+   - drawingId形式: roomId (そのまま)
+   - WebSocketチャンネル: 'chatRoom'
+
+2. ユーザー間DM (chatUser)
+   - URLパターン: /chat/user/:userId#drawing
+   - props.userId が存在する場合
+   - drawingId形式: user-{sortedUserId1}-{sortedUserId2}
+   - WebSocketチャンネル: 'chatUser'
+
+■ チャンネル切り替えロジック:
+- props.userId が存在する場合 → chatUser チャンネルを使用
+- props.roomId が存在する場合 → chatRoom チャンネルを使用
+- 両チャンネルで同じお絵かきイベントをサポート:
+  - drawingStroke, drawingProgress, cursorMove
+  - clearCanvas, undoStroke, redoStroke, canvasSizeChange
+
+■ キャンバスデータの保存先:
+- Redis: リアルタイムの描画ストローク (drawingId をキーとして)
+- PostgreSQL: ユーザー設定 (ツール、色、レイヤー設定など)
+- PostgreSQL: ルーム設定 (キャンバスサイズ)
 -->
 
 <template>
@@ -9,8 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<button
 		v-if="isTouchDevice"
 		:class="[$style.toolbarToggle, { [$style.toolbarToggleOpen]: isToolbarOpen }]"
-		@click="isToolbarOpen = !isToolbarOpen"
 		title="ツールバー"
+		@click="isToolbarOpen = !isToolbarOpen"
 	>
 		<i :class="isToolbarOpen ? 'ti ti-x' : 'ti ti-tools'"></i>
 	</button>
@@ -20,22 +48,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.toolGroup">
 			<button
 				:class="[$style.toolButton, { [$style.active]: currentTool === 'pen' }]"
-				@click="setTool('pen')"
 				title="鉛筆"
+				@click="setTool('pen')"
 			>
 				<i class="ti ti-pencil"></i>
 			</button>
 			<button
 				:class="[$style.toolButton, { [$style.active]: currentTool === 'eraser' }]"
-				@click="setTool('eraser')"
 				title="消しゴム"
+				@click="setTool('eraser')"
 			>
 				<i class="ti ti-eraser"></i>
 			</button>
 			<button
 				:class="[$style.toolButton, { [$style.active]: currentTool === 'eyedropper' }]"
-				@click="setTool('eyedropper')"
 				title="スポイト"
+				@click="setTool('eyedropper')"
 			>
 				<span style="font-size: 16px;">🎨</span>
 			</button>
@@ -44,16 +72,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- カラーパレット -->
 		<div :class="$style.colorPalette">
 			<button
-				v-for="color in colors"
-				:key="color"
+				v-for="(color, index) in colors"
+				:key="index"
 				:class="[$style.colorButton, { [$style.activeColor]: currentColor === color }]"
 				:style="{ backgroundColor: color }"
-				@click="setColor(color)"
+				@click="setColor(color, index)"
 			></button>
 			<button
 				:class="$style.colorPickerButton"
-				@click="openColorPicker"
 				title="カラーピッカーを開く"
+				@click="openColorPicker"
 			>
 				<i class="ti ti-palette"></i>
 			</button>
@@ -66,8 +94,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="width in strokeWidthLevels"
 				:key="width"
 				:class="[$style.strokeWidthButton, { [$style.active]: strokeWidth === width }]"
-				@click="setStrokeWidth(width)"
 				:title="`線の太さ: ${width}px`"
+				@click="setStrokeWidth(width)"
 			>
 				<div :class="$style.strokePreview" :style="{ width: `${Math.min(width * 2, 12)}px`, height: `${Math.min(width * 2, 12)}px` }"></div>
 			</button>
@@ -87,44 +115,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<!-- 拡大縮小グループ -->
-		<div :class="$style.zoomGroup" v-if="isTouchDevice">
+		<div v-if="isTouchDevice" :class="$style.zoomGroup">
 			<span :class="$style.label">倍率:</span>
 			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}% ({{ Math.round(displayWidth * zoomLevel) }}×{{ Math.round(displayHeight * zoomLevel) }})</span>
-			<button :class="$style.zoomButton" @click="zoomOut" title="縮小 (-)">
+			<button :class="$style.zoomButton" title="縮小 (-)" @click="zoomOut">
 				<i class="ti ti-zoom-out"></i>
 			</button>
-			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット">
+			<button :class="$style.zoomResetButton" title="倍率をリセット" @click="resetZoom">
 				<i class="ti ti-zoom-reset"></i>
 			</button>
-			<button :class="$style.zoomButton" @click="zoomIn" title="拡大 (+)">
+			<button :class="$style.zoomButton" title="拡大 (+)" @click="zoomIn">
 				<i class="ti ti-zoom-in"></i>
 			</button>
-			<button :class="$style.debugButton" @click="showDebugPanel = !showDebugPanel" title="デバッグ情報">
+			<button :class="$style.debugButton" title="デバッグ情報" @click="showDebugPanel = !showDebugPanel">
 				<i class="ti ti-bug"></i>
 			</button>
-			<button :class="$style.commLogButton" @click="exportCommLog" title="通信ログ出力">
+			<button :class="$style.commLogButton" title="通信ログ出力" @click="exportCommLog">
 				<i class="ti ti-antenna-bars"></i>
 			</button>
 		</div>
 
 		<!-- 手ブレ補正設定（モバイル版） -->
-		<div :class="$style.touchCorrectionGroup" v-if="isTouchDevice">
+		<div v-if="isTouchDevice" :class="$style.touchCorrectionGroup">
 			<span :class="$style.label">手ブレ補正:</span>
 			<button
 				:class="[$style.correctionButton, { [$style.active]: handShakeCorrection.enabled.value }]"
-				@click="handShakeCorrection.enabled.value = !handShakeCorrection.enabled.value"
 				title="手ブレスムージング"
+				@click="handShakeCorrection.enabled.value = !handShakeCorrection.enabled.value"
 			>
 				<i class="ti ti-wand"></i>
 			</button>
-			<div :class="$style.correctionLevelGroup" v-if="handShakeCorrection.enabled.value">
+			<div v-if="handShakeCorrection.enabled.value" :class="$style.correctionLevelGroup">
 				<span :class="$style.levelLabel">Lv:</span>
 				<button
 					v-for="level in correctionLevels"
 					:key="level.level"
 					:class="[$style.levelButton, { [$style.active]: handShakeCorrection.level.value === level.level }]"
-					@click="handShakeCorrection.level.value = level.level"
 					:title="`補正レベル ${level.level} (${level.name})`"
+					@click="handShakeCorrection.level.value = level.level"
 				>
 					{{ level.level }}
 				</button>
@@ -132,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<!-- レイヤー切り替え（モバイル版） -->
-		<div :class="$style.layerGroup" v-if="isTouchDevice">
+		<div v-if="isTouchDevice" :class="$style.layerGroup">
 			<span :class="$style.label">レイヤー:</span>
 			<button
 				v-for="layer in MAX_LAYERS"
@@ -142,17 +170,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				{{ layer }}
 			</button>
-			<button :class="$style.layerMenuButton" @click="showLayerMenu" title="レイヤーメニュー">
+			<button :class="$style.layerMenuButton" title="レイヤーメニュー" @click="showLayerMenu">
 				<i class="ti ti-dots-vertical"></i>
 			</button>
 		</div>
 
 		<!-- ウォーターマークボタン（モバイル版） -->
-		<div :class="$style.watermarkGroup" v-if="isTouchDevice">
+		<div v-if="isTouchDevice" :class="$style.watermarkGroup">
 			<button
 				:class="[$style.actionButton, { [$style.active]: showWatermark }]"
-				@click="showWatermark = !showWatermark"
 				title="ウォーターマーク"
+				@click="showWatermark = !showWatermark"
 			>
 				<i class="ti ti-photo-shield"></i>
 				<span>WM</span>
@@ -163,18 +191,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.undoRedoGroup">
 			<button
 				:class="[$style.undoButton, { [$style.disabled]: !canUndo }]"
-				@click="undo"
 				:disabled="!canUndo"
 				title="戻す (Ctrl+Z)"
+				@click="undo"
 			>
 				<i class="ti ti-arrow-back-up"></i>
 				<span v-if="!isTouchDevice">戻す</span>
 			</button>
 			<button
 				:class="[$style.redoButton, { [$style.disabled]: !canRedo }]"
-				@click="redo"
 				:disabled="!canRedo"
 				title="やり直す (Ctrl+Y)"
+				@click="redo"
 			>
 				<i class="ti ti-arrow-forward-up"></i>
 				<span v-if="!isTouchDevice">やり直す</span>
@@ -182,22 +210,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<!-- ズームグループ（PC版） -->
-		<div :class="$style.zoomGroup" v-if="!isTouchDevice">
+		<div v-if="!isTouchDevice" :class="$style.zoomGroup">
 			<span :class="$style.label">倍率:</span>
 			<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}%</span>
-			<button :class="$style.zoomButton" @click="zoomOut" title="縮小 (-)">
+			<button :class="$style.zoomButton" title="縮小 (-)" @click="zoomOut">
 				<i class="ti ti-zoom-out"></i>
 			</button>
-			<button :class="$style.zoomResetButton" @click="resetZoom" title="倍率をリセット (Ctrl+0)">
+			<button :class="$style.zoomResetButton" title="倍率をリセット (Ctrl+0)" @click="resetZoom">
 				<i class="ti ti-zoom-reset"></i>
 			</button>
-			<button :class="$style.zoomButton" @click="zoomIn" title="拡大 (+)">
+			<button :class="$style.zoomButton" title="拡大 (+)" @click="zoomIn">
 				<i class="ti ti-zoom-in"></i>
 			</button>
 		</div>
 
 		<!-- レイヤー切り替え（PC版） -->
-		<div :class="$style.layerGroup" v-if="!isTouchDevice">
+		<div v-if="!isTouchDevice" :class="$style.layerGroup">
 			<span :class="$style.label">レイヤー:</span>
 			<button
 				v-for="layer in MAX_LAYERS"
@@ -207,7 +235,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				{{ layer }}
 			</button>
-			<button :class="$style.layerMenuButton" @click="showLayerMenu" title="レイヤーメニュー">
+			<button :class="$style.layerMenuButton" title="レイヤーメニュー" @click="showLayerMenu">
 				<i class="ti ti-dots-vertical"></i>
 			</button>
 		</div>
@@ -216,71 +244,75 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.actionGroup">
 			<button
 				:class="[$style.actionButton, { [$style.active]: showWatermark }]"
-				@click="showWatermark = !showWatermark"
 				title="ウォーターマーク"
+				@click="showWatermark = !showWatermark"
 			>
 				<i class="ti ti-photo-shield"></i>
 				<span v-if="!isTouchDevice">WM</span>
 			</button>
-			<button :class="$style.fullscreenButton" @click="toggleFullscreen" :title="isFullscreen ? '全画面を終了' : '全画面モード'">
+			<button :class="$style.fullscreenButton" :title="isFullscreen ? '全画面を終了' : '全画面モード'" @click="toggleFullscreen">
 				<i :class="isFullscreen ? 'ti ti-minimize' : 'ti ti-maximize'"></i>
 				<span v-if="!isTouchDevice">{{ isFullscreen ? '終了' : '全画面' }}</span>
 			</button>
-			<button :class="$style.settingsButton" @click="showCanvasSizeDialog" title="キャンバスサイズ変更">
+			<button :class="$style.settingsButton" title="キャンバスサイズ変更" @click="showCanvasSizeDialog">
 				<i class="ti ti-adjustments"></i>
 				<span v-if="!isTouchDevice">サイズ</span>
 			</button>
-			<button :class="$style.debugExportButton" @click="exportDebugLog" title="デバッグログ出力（軌跡記録）">
+			<button :class="$style.debugExportButton" title="デバッグログ出力（軌跡記録）" @click="exportDebugLog">
 				<i class="ti ti-file-export"></i>
 				<span v-if="!isTouchDevice">ログ出力</span>
 			</button>
-			<button :class="$style.commLogButton" @click="exportCommLog" title="通信ログ出力">
+			<button :class="$style.commLogButton" title="通信ログ出力" @click="exportCommLog">
 				<i class="ti ti-antenna-bars"></i>
 				<span v-if="!isTouchDevice">通信ログ</span>
 			</button>
-			<button :class="$style.saveButton" @click="saveCanvas" title="キャンバスを保存">
-				<i class="ti ti-device-floppy"></i>
-				<span v-if="!isTouchDevice">保存</span>
+			<button :class="$style.saveButton" title="キャンバスをダウンロード" @click="downloadCanvas">
+				<i class="ti ti-download"></i>
+				<span v-if="!isTouchDevice">ダウンロード</span>
 			</button>
-			<button :class="$style.clearButton" @click="clearCanvas" title="キャンバスをクリア">
+			<button
+				:class="$style.clearButton"
+				title="キャンバスをクリア"
+				@click="clearCanvas"
+			>
 				<i class="ti ti-trash"></i>
 				<span v-if="!isTouchDevice">クリア</span>
 			</button>
 		</div>
 
 		<!-- 手ブレ補正設定 -->
-		<div :class="$style.mouseCorrectionGroup" v-if="!isTouchDevice">
+		<div v-if="!isTouchDevice" :class="$style.mouseCorrectionGroup">
 			<span :class="$style.label">手ブレ補正:</span>
 			<button
 				:class="[$style.correctionButton, { [$style.active]: handShakeCorrection.enabled.value }]"
-				@click="handShakeCorrection.enabled.value = !handShakeCorrection.enabled.value"
 				title="手ブレスムージング"
+				@click="handShakeCorrection.enabled.value = !handShakeCorrection.enabled.value"
 			>
 				<i class="ti ti-wand"></i>
 			</button>
-			<div :class="$style.correctionLevelGroup" v-if="handShakeCorrection.enabled.value">
+			<div v-if="handShakeCorrection.enabled.value" :class="$style.correctionLevelGroup">
 				<span :class="$style.levelLabel">レベル:</span>
 				<button
 					v-for="level in correctionLevels"
 					:key="level.level"
 					:class="[$style.levelButton, { [$style.active]: handShakeCorrection.level.value === level.level }]"
-					@click="handShakeCorrection.level.value = level.level"
 					:title="`補正レベル ${level.level} (${level.name})`"
+					@click="handShakeCorrection.level.value = level.level"
 				>
 					{{ level.level }}
 				</button>
 			</div>
 			<button
 				:class="[$style.correctionButton, { [$style.active]: handShakeCorrection.pressureSimulation.value }]"
-				@click="handShakeCorrection.pressureSimulation.value = !handShakeCorrection.pressureSimulation.value"
 				title="筆圧シミュレーション"
+				@click="handShakeCorrection.pressureSimulation.value = !handShakeCorrection.pressureSimulation.value"
 			>
 				<i class="ti ti-brush"></i>
 			</button>
 			<button
 				:class="[$style.correctionButton, { [$style.active]: handShakeCorrection.stabilization.value }]"
-				@click="handShakeCorrection.stabilization.value = !handShakeCorrection.stabilization.value"
 				title="手ぶれ補正"
+				@click="handShakeCorrection.stabilization.value = !handShakeCorrection.stabilization.value"
 			>
 				<i class="ti ti-hand-stop"></i>
 			</button>
@@ -303,7 +335,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="showDebugPanel" :class="$style.debugPanel">
 			<div :class="$style.debugHeader">
 				<h4>デバッグ情報</h4>
-				<button @click="showDebugPanel = false" :class="$style.debugCloseButton">×</button>
+				<button :class="$style.debugCloseButton" @click="showDebugPanel = false">×</button>
 			</div>
 			<div :class="$style.debugContent">
 				<div :class="$style.debugSection">
@@ -359,8 +391,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.commLogHeader">
 				<h4>通信ログ</h4>
 				<div :class="$style.commLogActions">
-					<button @click="clearCommLog" :class="$style.commLogClearButton">クリア</button>
-					<button @click="showCommLogPanel = false" :class="$style.commLogCloseButton">×</button>
+					<button :class="$style.commLogClearButton" @click="clearCommLog">クリア</button>
+					<button :class="$style.commLogCloseButton" @click="showCommLogPanel = false">×</button>
 				</div>
 			</div>
 			<div :class="$style.commLogContent">
@@ -436,16 +468,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="cursor.userId"
 			:class="$style.cursor"
 			:style="{
-				left: ((cursor.x / canvasWidth * displayWidth) * zoomLevel + panOffset.x) + 'px',
-				top: ((cursor.y / canvasHeight * displayHeight) * zoomLevel + panOffset.y) + 'px',
-				transform: `scale(${1 / zoomLevel})`,
-				transformOrigin: 'top left',
+				left: '50%',
+				top: '50%',
+				transform: `translate(-50%, -50%) translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) translate(${cursor.x - canvasWidth / 2}px, ${cursor.y - canvasHeight / 2}px)`,
+				transformOrigin: 'center',
 				color: getUserCursorColorLocal(cursor.userId)
 			}"
 		>
-			<i class="ti ti-hand-click"></i>
+			<div :class="$style.cursorPointer"></div>
 			<span
-				:class="$style.cursorUser"
+				:class="$style.cursorLabel"
 				:style="{
 					background: getUserCursorColorLocal(cursor.userId),
 					color: getContrastColorLocal(getUserCursorColorLocal(cursor.userId))
@@ -470,28 +502,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
-import { useStream } from '@/stream.js';
-import { ensureSignin } from '@/i.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { defineAsyncComponent } from 'vue';
-import MkAvatar from '@/components/global/MkAvatar.vue';
 // 分離したコンポーネントをインポート
 import DrawingToolbar from './room.drawing.toolbar.vue';
 import DrawingDebugPanel from './room.drawing.debug.vue';
 // 分離したモジュールをインポート
-import type {
-	ToolType,
-	Point,
-	PressurePoint,
-	StrokeData,
-	DrawingTraceLog,
-	CommunicationLog,
-	CanvasSize,
-	DebugInfo,
-	RealtimeCoords,
-	CorrectionLevel,
-} from './room.drawing.types.js';
 import { screenToCanvasCoordinates, getActualDrawingArea } from './room.drawing.coordinates.js';
 import {
 	drawSmoothPath,
@@ -532,6 +547,23 @@ import {
 	useKeyboard,
 	useWheel,
 } from './room.drawing.gestures.js';
+import type {
+	ToolType,
+	Point,
+	PressurePoint,
+	StrokeData,
+	DrawingTraceLog,
+	CommunicationLog,
+	CanvasSize,
+	DebugInfo,
+	RealtimeCoords,
+	CorrectionLevel,
+} from './room.drawing.types.js';
+import MkAvatar from '@/components/global/MkAvatar.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import * as os from '@/os.js';
+import { ensureSignin } from '@/i.js';
+import { useStream } from '@/stream.js';
 
 const props = defineProps<{
 	roomId?: string;
@@ -617,13 +649,14 @@ const MAX_COMM_LOG_ENTRIES = 100;
 const isDrawing = ref(false);
 const currentTool = ref<'pen' | 'eraser' | 'eyedropper'>('pen');
 const currentColor = ref('#000000');
+const currentColorIndex = ref(0); // 現在選択中のカラーパレットのインデックス
 const currentOpacity = ref(1);
 const strokeWidth = ref(2);
 
 // ツール別の線の太さを記憶
 const toolStrokeWidths = ref({
 	pen: 2,
-	eraser: 10
+	eraser: 10,
 });
 
 // 全画面モード
@@ -645,14 +678,14 @@ const debugInfo = ref<DebugInfo>({
 	scales: {},
 	transform: {},
 	final: {},
-	lastUpdate: ''
+	lastUpdate: '',
 });
 
 // リアルタイム座標表示用
 const realtimeCoords = ref({
 	screen: '(0, 0)',
 	canvas: '(0, 0)',
-	isActive: false
+	isActive: false,
 });
 
 // パン（移動）状態
@@ -722,7 +755,7 @@ let canvasRect = ref<DOMRect | null>(null);
 let resizeObserver: ResizeObserver | null = null;
 
 // カラーパレット（濃いめ）
-const colors = [
+const colors = ref([
 	'#000000', // 黒
 	'#FFFFFF', // 白
 	'#E74C3C', // 赤
@@ -738,8 +771,8 @@ const colors = [
 	'#AF7AC5', // アメジスト
 	'#48C9B0', // アクアマリン
 	'#95A5A6', // グレー
-	'#7F8C8D'  // ダークグレー
-];
+	'#7F8C8D', // ダークグレー
+]);
 
 // 透明度レベル
 const opacityLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
@@ -753,9 +786,27 @@ const strokeHistory = ref<Array<any>>([]); // ストローク履歴
 const rasterizeThreshold = 50; // ラスタライズを実行するストローク数
 
 // Undo/Redo管理
-const undoStack = ref<Array<any>>([]); // 元に戻す用のスタック
+/**
+ * Undo/Redoスタック
+ *
+ * 【仕様】
+ * - undoStack: 使用しない（レイヤーごとのストローク履歴で管理）
+ * - redoStack: ユーザーごとのUndoで削除したストロークを保存
+ * - canUndo: 現在のレイヤーに自分のストロークがあるかチェック
+ * - canRedo: redoスタックに自分のストロークがあるかチェック
+ *
+ * 【ユーザーごとの履歴】
+ * - Undoは自分のストロークのみを削除
+ * - Redoは自分が削除したストロークのみを復元
+ */
+const undoStack = ref<Array<any>>([]); // 元に戻す用のスタック（使用しない）
 const redoStack = ref<Array<any>>([]); // やり直す用のスタック
-const canUndo = computed(() => undoStack.value.length > 0);
+const canUndo = computed(() => {
+	// 現在のレイヤーに自分のストロークがあればUndo可能
+	const targetLayer = currentLayer.value;
+	const myStrokes = layerStrokeHistory.value[targetLayer]?.filter(s => s.userId === $i.id) || [];
+	return myStrokes.length > 0;
+});
 const canRedo = computed(() => redoStack.value.length > 0);
 
 // レイヤー管理（3レイヤー）
@@ -820,7 +871,7 @@ function normalizeStrokeForHistory(stroke: any) {
 
 function renderStrokeOnLayer(
 	stroke: any,
-	options: { skipIfSelf?: boolean; updateHistory?: boolean; suppressRender?: boolean } = {}
+	options: { skipIfSelf?: boolean; updateHistory?: boolean; suppressRender?: boolean } = {},
 ) {
 	const normalized = normalizeStrokeForHistory(stroke);
 	if (!normalized) return null;
@@ -850,7 +901,7 @@ function renderStrokeOnLayer(
 				normalized.strokeWidth,
 				normalized.color,
 				normalized.opacity,
-				normalized.tool === 'eraser'
+				normalized.tool === 'eraser',
 			);
 		});
 	}
@@ -917,8 +968,10 @@ async function loadUserSettings() {
 			zoomLevel.value = settings.zoomLevel;
 			panOffset.value.x = settings.panOffsetX;
 			panOffset.value.y = settings.panOffsetY;
-
-			console.log('✅ [SETTINGS] User settings loaded:', settings);
+			// カラーパレットを復元（保存されている場合）
+			if (settings.colors && Array.isArray(settings.colors)) {
+				colors.value = settings.colors;
+			}
 		}
 	} catch (error) {
 		console.error('❌ [SETTINGS] Failed to load user settings:', error);
@@ -935,8 +988,6 @@ async function loadRoomSettings() {
 		if (settings) {
 			canvasWidth.value = settings.canvasWidth;
 			canvasHeight.value = settings.canvasHeight;
-
-			console.log('✅ [SETTINGS] Room settings loaded:', settings);
 		}
 	} catch (error) {
 		console.error('❌ [SETTINGS] Failed to load room settings:', error);
@@ -951,8 +1002,6 @@ async function saveRoomSettings() {
 			canvasWidth: canvasWidth.value,
 			canvasHeight: canvasHeight.value,
 		});
-
-		console.log('💾 [SETTINGS] Room settings saved');
 	} catch (error) {
 		console.error('❌ [SETTINGS] Failed to save room settings:', error);
 	}
@@ -978,9 +1027,8 @@ function saveUserSettings() {
 				zoomLevel: zoomLevel.value,
 				panOffsetX: panOffset.value.x,
 				panOffsetY: panOffset.value.y,
+				colors: colors.value, // カラーパレットを保存
 			});
-
-			console.log('💾 [SETTINGS] User settings saved');
 		} catch (error) {
 			console.error('❌ [SETTINGS] Failed to save user settings:', error);
 		}
@@ -1012,7 +1060,7 @@ onMounted(async () => {
 				alpha: true,
 				desynchronized: false,
 				colorSpace: 'srgb',
-				willReadFrequently: false
+				willReadFrequently: false,
 			});
 
 			if (context) {
@@ -1070,12 +1118,6 @@ onMounted(async () => {
 				canvasRect.value = rect;
 				// displayWidth/displayHeightは固定値を維持し、ResizeObserverでは更新しない
 				// transformによるサイズ変化を拾わないようにする
-				console.log('📐 [RESIZE] Canvas rect updated:', {
-					rectWidth: rect.width,
-					rectHeight: rect.height,
-					displayWidth: displayWidth.value,
-					displayHeight: displayHeight.value
-				});
 			}
 		});
 		resizeObserver.observe(canvasEl.value);
@@ -1160,18 +1202,18 @@ onMounted(async () => {
 				// マウス位置を中心にズーム
 				// 現在のズーム前の論理座標を取得
 				const beforeZoomCoords = screenToCanvasCoordinates(
-				e.clientX,
-				e.clientY,
-				layerCanvases.value[currentLayer.value] || null,
-				canvasWidth.value,
-				canvasHeight.value,
-				displayWidth.value,
-				displayHeight.value,
-				panOffset.value,
-				zoomLevel.value,
-				zoomCenter.value,
-				isTouchDevice.value
-			);
+					e.clientX,
+					e.clientY,
+					layerCanvases.value[currentLayer.value] || null,
+					canvasWidth.value,
+					canvasHeight.value,
+					displayWidth.value,
+					displayHeight.value,
+					panOffset.value,
+					zoomLevel.value,
+					zoomCenter.value,
+					isTouchDevice.value,
+				);
 
 				// ズームレベルを更新
 				const oldZoom = zoomLevel.value;
@@ -1189,7 +1231,7 @@ onMounted(async () => {
 					panOffset.value,
 					zoomLevel.value,
 					zoomCenter.value,
-					isTouchDevice.value
+					isTouchDevice.value,
 				);
 
 				// マウス位置が変わらないようにパンオフセットを調整
@@ -1198,16 +1240,8 @@ onMounted(async () => {
 
 				panOffset.value = {
 					x: panOffset.value.x - offsetDeltaX,
-					y: panOffset.value.y - offsetDeltaY
+					y: panOffset.value.y - offsetDeltaY,
 				};
-
-				console.log('🎨 [ZOOM] Wheel zoom:', {
-					level: newZoom,
-					mouse: { x: e.clientX, y: e.clientY },
-					beforeCoords: beforeZoomCoords,
-					afterCoords: afterZoomCoords,
-					offsetDelta: { x: offsetDeltaX, y: offsetDeltaY }
-				});
 			}
 		}
 	};
@@ -1267,12 +1301,12 @@ function connectToChatRoomChannel() {
 	if (props.userId) {
 		// 1対1チャットの場合はchatUserチャンネルを使用
 		connection.value = stream.useChannel('chatUser', {
-			otherId: props.userId
+			otherId: props.userId,
 		});
 	} else {
 		// ルームチャットの場合はchatRoomチャンネルを使用
 		connection.value = stream.useChannel('chatRoom', {
-			roomId: drawingId.value
+			roomId: drawingId.value,
 		});
 	}
 
@@ -1307,6 +1341,11 @@ function connectToChatRoomChannel() {
 		handleRemoteRedo(data);
 	});
 
+	connection.value.on('canvasSizeChange', (data: any) => {
+		recordCommLog('receive', 'canvasSizeChange', data);
+		handleRemoteCanvasSizeChange(data);
+	});
+
 	// チャットオーバーレイ用
 	connection.value.on('message', (message: any) => {
 		showChatOverlay(message);
@@ -1337,8 +1376,12 @@ function setTool(tool: 'pen' | 'eraser' | 'eyedropper') {
 	saveUserSettings();
 }
 
-function setColor(color: string) {
+function setColor(color: string, index?: number) {
 	currentColor.value = color;
+	// インデックスが指定されている場合は保存
+	if (index !== undefined) {
+		currentColorIndex.value = index;
+	}
 	if (currentTool.value === 'eraser') {
 		currentTool.value = 'pen';
 	}
@@ -1348,28 +1391,33 @@ function setColor(color: string) {
 }
 
 // カラーピッカーを開く
-async function openColorPicker() {
-	// iro.jsカラーピッカーダイアログを表示
-	const result = await os.popup(
-		defineAsyncComponent(() => import('@/components/MkColorPickerDialog.vue')),
-		{
-			currentColor: currentColor.value,
-		},
-		{
-			type: 'dialog',
+function openColorPicker() {
+	// Promiseを使ってokイベントを受け取る
+	return new Promise<string | null>((resolve) => {
+		const { dispose } = os.popup(
+			defineAsyncComponent(() => import('@/components/MkColorPickerDialog.vue')),
+			{
+				currentColor: currentColor.value,
+			},
+			{
+				ok: (color: string) => {
+					resolve(color);
+					dispose();
+				},
+				closed: () => {
+					resolve(null);
+					dispose();
+				},
+			},
+		);
+	}).then((colorValue) => {
+		if (colorValue) {
+			// 現在選択中のカラーパレットの色を更新
+			colors.value[currentColorIndex.value] = colorValue;
+			// 選択した色を現在の色として設定
+			setColor(colorValue, currentColorIndex.value);
 		}
-	);
-
-	// デバッグ: 返却値の中身を確認
-	console.log('🎨 [DEBUG] ColorPicker result:', result);
-	console.log('🎨 [DEBUG] result type:', typeof result);
-	console.log('🎨 [DEBUG] result keys:', result ? Object.keys(result) : 'null');
-
-	// MkModalWindowのemit('ok', value)は直接値として返される
-	if (result && typeof result === 'string') {
-		setColor(result);
-		console.log('🎨 [DEBUG] Color set to:', result);
-	}
+	});
 }
 
 function setOpacity(opacity: number) {
@@ -1450,7 +1498,7 @@ function draw(event: MouseEvent | TouchEvent) {
 
 		panOffset.value = {
 			x: panOffset.value.x + deltaX,
-			y: panOffset.value.y + deltaY
+			y: panOffset.value.y + deltaY,
 		};
 
 		panStart.value = { x: event.clientX, y: event.clientY };
@@ -1518,7 +1566,7 @@ function stopDrawing() {
 		color: currentColor.value,
 		strokeWidth: strokeWidth.value,
 		opacity: currentOpacity.value,
-		timestamp: Date.now()
+		timestamp: Date.now(),
 	};
 
 	addStrokeToHistory(strokeData);
@@ -1545,7 +1593,7 @@ function applyHandShakeCorrectionLocal(rawPoint: { x: number; y: number }): { x:
 	// 距離と時間差を計算
 	const distance = Math.sqrt(
 		Math.pow(rawPoint.x - lastPoint.x, 2) +
-		Math.pow(rawPoint.y - lastPoint.y, 2)
+		Math.pow(rawPoint.y - lastPoint.y, 2),
 	);
 	const timeDelta = currentTime - lastTime;
 
@@ -1572,7 +1620,7 @@ function applyHandShakeCorrectionLocal(rawPoint: { x: number; y: number }): { x:
 	// スムージング適用（レベルに応じて補正強度変更）
 	smoothedPoint = {
 		x: smoothedPoint.x * settings.factor + rawPoint.x * (1 - settings.factor),
-		y: smoothedPoint.y * settings.factor + rawPoint.y * (1 - settings.factor)
+		y: smoothedPoint.y * settings.factor + rawPoint.y * (1 - settings.factor),
 	};
 
 	// バッファに追加（予測描画用）
@@ -1640,7 +1688,7 @@ function getAccurateCoordinates(canvas: HTMLCanvasElement, clientX: number, clie
 
 	return {
 		x: clampedX,
-		y: clampedY
+		y: clampedY,
 	};
 }
 
@@ -1671,7 +1719,7 @@ function getEventPoint(event: MouseEvent | TouchEvent): { x: number; y: number }
 		panOffset.value,
 		zoomLevel.value,
 		zoomCenter.value,
-		isTouchDevice.value
+		isTouchDevice.value,
 	);
 
 	// キャンバス範囲内にクランプ
@@ -1688,7 +1736,7 @@ function recordTraceLog(
 	screenX: number,
 	screenY: number,
 	canvasX: number,
-	canvasY: number
+	canvasY: number,
 ) {
 	// ログが大きくなりすぎないよう、最大1000件に制限
 	if (drawingTraceLog.value.length >= 1000) {
@@ -1706,12 +1754,12 @@ function recordTraceLog(
 		color: currentColor.value,
 		strokeWidth: strokeWidth.value,
 		zoomLevel: zoomLevel.value,
-		panOffset: { ...panOffset.value }
+		panOffset: { ...panOffset.value },
 	});
 }
 
 // ダグラス・ピューカー法による線の簡素化
-function simplifyPath(points: Array<{ x: number; y: number }>, tolerance: number = 1.0): Array<{ x: number; y: number }> {
+function simplifyPath(points: Array<{ x: number; y: number }>, tolerance = 1.0): Array<{ x: number; y: number }> {
 	if (points.length <= 2) return points;
 
 	// 再帰的にライン簡素化
@@ -1776,7 +1824,7 @@ function simplifyPath(points: Array<{ x: number; y: number }>, tolerance: number
 }
 
 // 移動平均による座標スムージング
-function smoothPoints(points: Array<{ x: number; y: number }>, windowSize: number = 3): Array<{ x: number; y: number }> {
+function smoothPoints(points: Array<{ x: number; y: number }>, windowSize = 3): Array<{ x: number; y: number }> {
 	if (points.length <= windowSize) return points;
 
 	const smoothed: Array<{ x: number; y: number }> = [];
@@ -1793,7 +1841,7 @@ function smoothPoints(points: Array<{ x: number; y: number }>, windowSize: numbe
 
 		smoothed.push({
 			x: sumX / count,
-			y: sumY / count
+			y: sumY / count,
 		});
 	}
 
@@ -1801,7 +1849,7 @@ function smoothPoints(points: Array<{ x: number; y: number }>, windowSize: numbe
 }
 
 // 最高品質スムーズパス描画（複数アルゴリズム組み合わせ + 筆圧対応）
-function drawSmoothPathLocal(points: Array<{ x: number; y: number; pressure?: number }>, strokeWidth?: number, color?: string, opacity?: number, isEraser: boolean = false) {
+function drawSmoothPathLocal(points: Array<{ x: number; y: number; pressure?: number }>, strokeWidth?: number, color?: string, opacity?: number, isEraser = false) {
 	if (!ctx || points.length < 2) return;
 
 	ctx.save();
@@ -1859,7 +1907,7 @@ function drawSmoothPathLocal(points: Array<{ x: number; y: number; pressure?: nu
 			// 3点の場合は2次ベジェ曲線
 			const cp = {
 				x: (processedPoints[0].x + processedPoints[2].x) / 2,
-				y: (processedPoints[0].y + processedPoints[2].y) / 2
+				y: (processedPoints[0].y + processedPoints[2].y) / 2,
 			};
 			ctx.quadraticCurveTo(processedPoints[1].x, processedPoints[1].y, cp.x, cp.y);
 			ctx.lineTo(processedPoints[2].x, processedPoints[2].y);
@@ -1888,7 +1936,6 @@ function drawSmoothPathLocal(points: Array<{ x: number; y: number; pressure?: nu
 
 	ctx.restore();
 }
-
 
 // ローカル描画（高品質版＋筆圧シミュレーション）
 function drawLine(point: { x: number; y: number }) {
@@ -1936,68 +1983,154 @@ function drawRemoteStroke(data: any) {
 	}
 }
 
-// リモート描画進行状況（描画中）
+/**
+ * リモート描画進行状況（描画中）
+ *
+ * 【仕様】
+ * - 他のユーザーが描画中のストロークをリアルタイムで表示
+ * - レイヤー情報を含めて保存
+ * - 自分の描画は無視
+ *
+ * 【レイヤー対応】
+ * - data.layerが指定されている場合、そのレイヤーに描画
+ * - data.layerが未指定の場合、デフォルトでレイヤー0に描画
+ * - レイヤー情報はotherActiveStrokesに保存
+ *
+ * 【描画更新】
+ * - otherActiveStrokesに進行中のストローク情報を保存
+ * - redrawWithActiveStrokes()を呼び出して再描画
+ */
 function drawRemoteProgress(data: any) {
 	if (!ctx || data.userId === $i.id) return;
 
-	console.log('🎨 [DEBUG] Drawing remote progress from user:', data.userId, 'points:', data.points.length);
+	// レイヤー情報を取得（未指定の場合は0）
+	const layer = data.layer !== undefined ? data.layer : 0;
 
-	// 進行中の描画を更新
+	// 進行中の描画を更新（レイヤー情報を含む）
 	otherActiveStrokes.value.set(data.userId, {
 		points: data.points,
 		tool: data.tool,
 		color: data.color,
 		strokeWidth: data.strokeWidth,
 		opacity: data.opacity,
-		userId: data.userId
+		layer: layer,
+		userId: data.userId,
 	});
 
 	// キャンバスを再描画（進行中の描画を含む）
 	redrawWithActiveStrokes();
 }
 
-// 進行中の描画を含むキャンバス再描画
+/**
+ * 進行中の描画を含むキャンバス再描画
+ *
+ * 【仕様】
+ * - 他のユーザーが描画中のストロークをリアルタイムで表示
+ * - レイヤー情報を考慮して正しいレイヤーに描画
+ * - 描画が完了していないため、少し透明度を下げて表示（opacity * 0.8）
+ *
+ * 【レイヤー対応】
+ * - strokeData.layerで指定されたレイヤーのコンテキストを使用
+ * - layerが未指定の場合はレイヤー0を使用
+ * - 各レイヤーごとに独立して描画状態を保存・復元
+ *
+ * 【描画フロー】
+ * 1. 各レイヤーの現在の状態をimageDataとして保存
+ * 2. 他のユーザーの進行中のストロークを各レイヤーに描画
+ * 3. requestAnimationFrameで次フレームに元の状態を復元
+ * 4. 進行中の描画があれば再度描画（アニメーションループ）
+ *
+ * 【筆圧対応】
+ * - strokeData.pointsに筆圧情報(pressure)がある場合はdrawSmoothPathLocalを使用
+ * - 筆圧情報がない場合は従来の線形描画を使用
+ *
+ * 【パフォーマンス】
+ * - requestAnimationFrameで描画タイミングを最適化
+ * - 進行中の描画がない場合は復元処理をスキップ
+ */
 function redrawWithActiveStrokes() {
 	if (!ctx) return;
 
-	// 現在のキャンバス状態を保存
-	const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value);
+	// 各レイヤーの現在状態を保存
+	const layerImageData: Map<number, ImageData> = new Map();
+	for (let i = 0; i < MAX_LAYERS; i++) {
+		const layerCtx = layerContexts.value[i];
+		if (layerCtx) {
+			layerImageData.set(i, layerCtx.getImageData(0, 0, canvasWidth.value, canvasHeight.value));
+		}
+	}
 
-	// 進行中の描画を一時的に描画
+	// 進行中の描画を各レイヤーに一時的に描画
 	for (const [, strokeData] of otherActiveStrokes.value) {
-		ctx.save();
-		ctx.globalCompositeOperation = strokeData.tool === 'eraser' ? 'destination-out' : 'source-over';
-		ctx.strokeStyle = strokeData.color;
-		ctx.globalAlpha = strokeData.opacity * 0.8; // 進行中は少し薄く
-		ctx.lineWidth = strokeData.strokeWidth;
-		ctx.lineCap = 'round';
-		ctx.lineJoin = 'round';
+		// レイヤー情報を取得（未指定の場合は0）
+		const targetLayer = strokeData.layer !== undefined ? strokeData.layer : 0;
+		const targetCtx = layerContexts.value[targetLayer];
 
-		// アンチエイリアス設定
-		ctx.imageSmoothingEnabled = true;
-		ctx.imageSmoothingQuality = 'high';
+		if (!targetCtx) continue;
 
-		// 線を描画
-		if (strokeData.points.length > 1) {
-			ctx.beginPath();
-			for (let i = 0; i < strokeData.points.length; i++) {
-				const point = strokeData.points[i];
-				if (i === 0) {
-					ctx.moveTo(point.x, point.y);
-				} else {
-					ctx.lineTo(point.x, point.y);
+		targetCtx.save();
+
+		// 筆圧対応の描画処理
+		if (strokeData.points && strokeData.points.length > 0) {
+			// 筆圧情報がある場合は drawSmoothPathLocal を使用
+			const hasPressure = strokeData.points.some((p: any) => p.pressure !== undefined);
+
+			if (hasPressure && strokeData.points.length > 1) {
+				// 筆圧対応のスムーズパス描画
+				// 注: drawSmoothPathLocalは現在のレイヤー(ctx)を使用するため、
+				// 一時的にctxを切り替える必要がある
+				const previousCtx = ctx;
+				ctx = targetCtx;
+				drawSmoothPathLocal(
+					strokeData.points,
+					strokeData.strokeWidth,
+					strokeData.color,
+					strokeData.opacity * 0.8, // 進行中は少し薄く
+					strokeData.tool === 'eraser',
+				);
+				ctx = previousCtx;
+			} else {
+				// 筆圧なしの場合は従来の描画方法
+				targetCtx.globalCompositeOperation = strokeData.tool === 'eraser' ? 'destination-out' : 'source-over';
+				targetCtx.strokeStyle = strokeData.color;
+				targetCtx.globalAlpha = strokeData.opacity * 0.8; // 進行中は少し薄く
+				targetCtx.lineWidth = strokeData.strokeWidth;
+				targetCtx.lineCap = 'round';
+				targetCtx.lineJoin = 'round';
+
+				// アンチエイリアス設定
+				targetCtx.imageSmoothingEnabled = true;
+				targetCtx.imageSmoothingQuality = 'high';
+
+				// 線を描画
+				if (strokeData.points.length > 1) {
+					targetCtx.beginPath();
+					for (let i = 0; i < strokeData.points.length; i++) {
+						const point = strokeData.points[i];
+						if (i === 0) {
+							targetCtx.moveTo(point.x, point.y);
+						} else {
+							targetCtx.lineTo(point.x, point.y);
+						}
+					}
+					targetCtx.stroke();
 				}
 			}
-			ctx.stroke();
 		}
-		ctx.restore();
+
+		targetCtx.restore();
 	}
 
 	// パフォーマンス最適化: 次フレームで元の状態に戻す
 	requestAnimationFrame(() => {
-		if (ctx && otherActiveStrokes.value.size > 0) {
-			// 進行中の描画があれば再度更新
-			ctx.putImageData(imageData, 0, 0);
+		if (otherActiveStrokes.value.size > 0) {
+			// 進行中の描画があれば、各レイヤーを元の状態に戻してから再度更新
+			for (const [layerIndex, imageData] of layerImageData) {
+				const layerCtx = layerContexts.value[layerIndex];
+				if (layerCtx) {
+					layerCtx.putImageData(imageData, 0, 0);
+				}
+			}
 			redrawWithActiveStrokes();
 		}
 	});
@@ -2014,7 +2147,7 @@ function sendDrawingStroke() {
 			color: currentColor.value,
 			strokeWidth: strokeWidth.value,
 			opacity: currentOpacity.value,
-			layer: currentLayer.value // レイヤー情報を追加
+			layer: currentLayer.value, // レイヤー情報を追加
 		};
 		connection.value.send('drawingStroke', data);
 		recordCommLog('send', 'drawingStroke', data);
@@ -2039,7 +2172,7 @@ function sendDrawingProgress() {
 			strokeWidth: strokeWidth.value,
 			opacity: currentOpacity.value,
 			isComplete: false,
-			layer: currentLayer.value // レイヤー情報を追加
+			layer: currentLayer.value, // レイヤー情報を追加
 		};
 		connection.value.send('drawingProgress', data);
 		recordCommLog('send', 'drawingProgress', data);
@@ -2055,12 +2188,12 @@ function sendCursorPosition(point: { x: number; y: number }) {
 	try {
 		const data = {
 			x: point.x,
-			y: point.y
+			y: point.y,
 		};
 		connection.value.send('cursorMove', data);
 		recordCommLog('send', 'cursorMove', data);
 	} catch (error) {
-		console.warn('🎨 [WARN] Failed to send cursor position:', error);
+		console.error('🎨 [ERROR] Failed to send cursor position:', error);
 	}
 }
 
@@ -2096,7 +2229,9 @@ function getContrastColorLocal(backgroundColor: string): string {
 
 // 他のユーザーのカーソル更新
 function updateOtherCursor(data: any) {
-	if (data.userId === $i.id) return;
+	if (data.userId === $i.id) {
+		return;
+	}
 
 	// ユーザー固有の色を取得
 	const userColor = getUserCursorColorLocal(data.userId);
@@ -2108,7 +2243,7 @@ function updateOtherCursor(data: any) {
 			userName: data.userName,
 			x: data.x,
 			y: data.y,
-			color: userColor
+			color: userColor,
 		};
 	} else {
 		otherCursors.value.push({
@@ -2116,7 +2251,7 @@ function updateOtherCursor(data: any) {
 			userName: data.userName,
 			x: data.x,
 			y: data.y,
-			color: userColor
+			color: userColor,
 		});
 	}
 
@@ -2150,35 +2285,123 @@ function eyedropColor(point: { x: number; y: number }) {
 	currentTool.value = 'pen';
 }
 
-// キャンバス保存
-async function saveCanvas() {
+/**
+ * キャンバスダウンロード
+ *
+ * 【仕様】
+ * - 白背景レイヤー + 3枚のレイヤーを合成してダウンロード
+ * - PNG形式で保存
+ * - ファイル名: drawing_[タイムスタンプ].png
+ *
+ * 【合成順序】
+ * 1. 白背景レイヤー（最背面）
+ * 2. レイヤー0
+ * 3. レイヤー1
+ * 4. レイヤー2（最前面）
+ */
+function downloadCanvas() {
 	try {
-		const response = await fetch(`/api/drawing/save`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${$i.token}`,
-			},
-			body: JSON.stringify({
-				roomId: drawingId.value
-			}),
-		});
+		// 合成用の一時キャンバスを作成
+		const compositeCanvas = document.createElement('canvas');
+		compositeCanvas.width = physicalCanvasWidth.value;
+		compositeCanvas.height = physicalCanvasHeight.value;
+		const compositeCtx = compositeCanvas.getContext('2d');
 
-		if (response.ok) {
-			// 成功メッセージ表示
-			console.log('🎨 [DEBUG] Canvas saved successfully');
-			// TODO: 成功通知を表示
-		} else {
-			console.error('🎨 [ERROR] Failed to save canvas');
+		if (!compositeCtx) {
+			console.error('🎨 [ERROR] Failed to get composite canvas context');
+			return;
 		}
+
+		// 1. 白背景を描画
+		compositeCtx.fillStyle = '#FFFFFF';
+		compositeCtx.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+
+		// 2. 3枚のレイヤーを順番に合成（レイヤー2→1→0の順）
+		// HTMLでのz-index順序と同じ: レイヤー2が下、レイヤー0が上
+		for (let i = MAX_LAYERS - 1; i >= 0; i--) {
+			const layerCanvas = layerCanvases.value[i];
+			if (layerCanvas) {
+				compositeCtx.drawImage(layerCanvas, 0, 0);
+			}
+		}
+
+		// 3. PNG形式でダウンロード
+		const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+		const filename = `drawing_${timestamp}.png`;
+
+		compositeCanvas.toBlob((blob) => {
+			if (!blob) {
+				console.error('🎨 [ERROR] Failed to create blob');
+				return;
+			}
+
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+
+			os.success('キャンバスをダウンロードしました');
+		}, 'image/png');
 	} catch (error) {
-		console.error('🎨 [ERROR] Save canvas error:', error);
+		console.error('🎨 [ERROR] Download canvas error:', error);
+		os.alert({
+			type: 'error',
+			text: 'キャンバスのダウンロードに失敗しました',
+		});
 	}
 }
 
 // キャンバスクリア（確認ダイアログ付き）
+/**
+ * キャンバスクリア機能
+ *
+ * 【仕様】
+ * 1. 誤操作防止のため、テキスト入力による確認ダイアログを表示
+ * 2. ユーザーが「クリア」と正確に入力した場合のみクリアを実行
+ * 3. ローカルのキャンバスをクリア
+ * 4. WebSocketで他のユーザーにもクリアを通知
+ * 5. 完了後、トーストで成功メッセージを表示
+ *
+ * 【クリア対象】
+ * - 全レイヤーのキャンバス内容（MAX_LAYERS分）
+ * - レイヤーごとの描画履歴（layerStrokeHistory）
+ * - 統合描画履歴（strokeHistory）
+ * - Undo/Redoスタック（undoStack, redoStack）
+ * - 他のユーザーの進行中の描画（otherActiveStrokes）
+ *
+ * 【ダイアログ仕様】
+ * - os.inputText()を使用（Misskey専用UI）
+ * - タイトル: 「キャンバスクリア確認」
+ * - メッセージ: 「キャンバスの全ての内容を削除します。この操作は取り消せません。削除を実行するには「クリア」と入力してください：」
+ * - プレースホルダー: 「クリア」
+ * - 正しい入力: 「クリア」（全角カタカナ）
+ * - 入力が一致した場合: クリア実行
+ * - 入力が不一致の場合: エラーメッセージを表示
+ * - キャンセルの場合: 何もしない
+ *
+ * 【エラーハンドリング】
+ * - キャンセル時: 何もしない（silent）
+ * - 入力不一致時: エラーアラートを表示
+ * - クリア処理でエラー発生: エラーメッセージを表示
+ *
+ * 【WebSocket通信】
+ * - イベント名: 'clearCanvas'
+ * - ペイロード: null
+ * - 送信先: 同じルームの全ユーザー
+ *
+ * 【注意事項】
+ * - この操作は取り消せません（Undoも無効）
+ * - 同じルームの全ユーザーのキャンバスがクリアされます
+ * - 確認ダイアログはモーダルなので、ユーザーの応答を待ちます
+ * - 誤操作防止のため、「クリア」という文字列の完全一致が必要です
+ */
 async function clearCanvas() {
 	try {
+
 		// 部屋名またはユーザー名を取得
 		let targetName = '';
 		if (props.roomId) {
@@ -2189,28 +2412,29 @@ async function clearCanvas() {
 			targetName = props.userId.substring(0, 8);
 		}
 
-		// 確認ダイアログで部屋名/ユーザー名の入力を求める
-		const inputMessage = props.roomId
-			? `キャンバスをクリアします。部屋ID「${targetName}」を入力してください：`
-			: `キャンバスをクリアします。チャット相手のID「${targetName}」を入力してください：`;
-
-		const { canceled, result: inputValue } = await os.inputText({
+		// 確認ダイアログを表示（Misskey UI）
+		const { canceled, result: userInput } = await os.inputText({
 			title: 'キャンバスクリア確認',
-			text: inputMessage,
-			placeholder: targetName,
+			text: 'キャンバスの全ての内容を削除します。\n\nこの操作は取り消せません。\n\n削除を実行するには「クリア」と入力してください：',
+			placeholder: 'クリア',
 		});
 
-		if (canceled) return;
 
-		// 入力値が正しいか確認
-		if (inputValue !== targetName) {
+		// キャンセルされた場合
+		if (canceled) {
+			return;
+		}
+
+		// 入力が「クリア」でない場合は中止
+		if (userInput !== 'クリア') {
 			os.alert({
 				type: 'error',
 				title: 'エラー',
-				text: '入力された値が正しくありません。'
+				text: '入力された値が正しくありません。「クリア」と入力してください。',
 			});
 			return;
 		}
+
 
 		// 確認が取れた場合のみクリア実行
 		clearCanvasLocal();
@@ -2221,29 +2445,53 @@ async function clearCanvas() {
 
 		// 成功メッセージ
 		os.toast('キャンバスをクリアしました');
-
 	} catch (error) {
-		console.error('Canvas clear error:', error);
+		console.error('🧹 [CLEAR] Canvas clear error:', error);
 		os.alert({
 			type: 'error',
 			title: 'エラー',
-			text: 'キャンバスのクリアに失敗しました。'
+			text: 'キャンバスのクリアに失敗しました。',
 		});
 	}
 }
 
+/**
+ * ローカルキャンバスクリア処理
+ *
+ * 【処理内容】
+ * 1. 全レイヤーのキャンバスをクリア
+ *    - MAX_LAYERS分のレイヤーをループ
+ *    - 各レイヤーのコンテキストでclearRectを実行
+ * 2. 描画履歴をリセット
+ *    - layerStrokeHistory: レイヤーごとの描画履歴
+ *    - strokeHistory: 統合描画履歴
+ *    - undoStack: アンドゥスタック
+ *    - redoStack: リドゥスタック
+ * 3. 他のユーザーの進行中の描画をクリア
+ *    - otherActiveStrokes: リモートユーザーの描画中ストローク
+ * 4. 現在のコンテキストを更新
+ *    - 現在のレイヤーのコンテキストを再設定
+ */
 function clearCanvasLocal() {
+
+	// 全レイヤーのキャンバスをクリア
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const layerCtx = layerContexts.value[i];
 		if (layerCtx) {
 			layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 		}
 	}
+
+	// 描画履歴をリセット
 	layerStrokeHistory.value = Array.from({ length: MAX_LAYERS }, () => []);
 	strokeHistory.value = [];
 	undoStack.value = [];
 	redoStack.value = [];
+
+	// 他のユーザーの進行中の描画をクリア
 	otherActiveStrokes.value.clear();
+
+	// 現在のコンテキストを更新
 	ctx = layerContexts.value[currentLayer.value] ?? ctx;
 }
 
@@ -2252,7 +2500,6 @@ function resetZoom() {
 	zoomLevel.value = 1;
 	panOffset.value = { x: 0, y: 0 };
 	zoomCenter.value = { x: 0, y: 0 };
-	console.log('🎨 [DEBUG] Zoom reset to 100%');
 
 	// 設定を自動保存
 	saveUserSettings();
@@ -2262,7 +2509,6 @@ function resetZoom() {
 function zoomIn() {
 	const newZoom = Math.min(zoomLevel.value * 1.2, maxZoom);
 	zoomLevel.value = newZoom;
-	console.log('🎨 [DEBUG] Zoom in:', Math.round(newZoom * 100) + '%');
 
 	// 設定を自動保存
 	saveUserSettings();
@@ -2272,7 +2518,6 @@ function zoomIn() {
 function zoomOut() {
 	const newZoom = Math.max(zoomLevel.value / 1.2, 0.1);
 	zoomLevel.value = newZoom;
-	console.log('🎨 [DEBUG] Zoom out:', Math.round(newZoom * 100) + '%');
 
 	// 設定を自動保存
 	saveUserSettings();
@@ -2289,7 +2534,6 @@ function handleWheel(event: WheelEvent) {
 		const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomLevel.value * zoomFactor));
 
 		zoomLevel.value = newZoom;
-		console.log('🎨 [DEBUG] Wheel zoom:', Math.round(newZoom * 100) + '%');
 
 		// 設定を自動保存
 		saveUserSettings();
@@ -2302,7 +2546,7 @@ async function showCanvasSizeDialog() {
 	const { canceled: widthCanceled, result: width } = await os.inputText({
 		title: '幅 (Width) を入力',
 		placeholder: '800',
-		default: String(canvasWidth.value)
+		default: String(canvasWidth.value),
 	});
 	if (widthCanceled) return;
 
@@ -2310,7 +2554,7 @@ async function showCanvasSizeDialog() {
 	const { canceled: heightCanceled, result: height } = await os.inputText({
 		title: '高さ (Height) を入力',
 		placeholder: '600',
-		default: String(canvasHeight.value)
+		default: String(canvasHeight.value),
 	});
 	if (heightCanceled) return;
 
@@ -2320,7 +2564,7 @@ async function showCanvasSizeDialog() {
 	if (isNaN(w) || isNaN(h) || w < 100 || h < 100 || w > 4000 || h > 4000) {
 		os.alert({
 			type: 'error',
-			text: 'サイズは100〜4000の範囲で指定してください'
+			text: 'サイズは100〜4000の範囲で指定してください',
 		});
 		return;
 	}
@@ -2355,16 +2599,10 @@ function updateDisplaySize() {
 		displayHeight.value = containerWidth / canvasAspect;
 	}
 
-	console.log('📐 [DISPLAY] Display size updated:', {
-		container: `${containerWidth.toFixed(1)}×${containerHeight.toFixed(1)}`,
-		canvas: `${canvasWidth.value}×${canvasHeight.value}`,
-		display: `${displayWidth.value.toFixed(1)}×${displayHeight.value.toFixed(1)}`,
-		aspect: { canvas: canvasAspect.toFixed(3), container: containerAspect.toFixed(3) }
-	});
 }
 
 // キャンバスサイズを変更
-async function changeCanvasSize(newWidth: number, newHeight: number) {
+async function changeCanvasSize(newWidth: number, newHeight: number, isRemote = false) {
 	// 全レイヤーの描画内容を保存
 	const layerImageData: Array<ImageData | null> = [];
 	for (let i = 0; i < MAX_LAYERS; i++) {
@@ -2383,14 +2621,6 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	// コンテナサイズに合わせてdisplayサイズを更新
 	updateDisplaySize();
 
-	console.log('🎨 [SIZE] Updated canvas size:', {
-		canvasWidth: canvasWidth.value,
-		canvasHeight: canvasHeight.value,
-		displayWidth: displayWidth.value,
-		displayHeight: displayHeight.value,
-		physicalWidth: physicalCanvasWidth.value,
-		physicalHeight: physicalCanvasHeight.value
-	});
 
 	// DPRを考慮して全レイヤーのキャンバスを再初期化
 	const dpr = window.devicePixelRatio || 1;
@@ -2401,14 +2631,6 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	// 実際のcanvas要素のサイズを確認
 	const firstCanvas = layerCanvases.value[0];
 	if (firstCanvas) {
-		console.log('🎨 [SIZE] Actual canvas element:', {
-			cssWidth: firstCanvas.style.width,
-			cssHeight: firstCanvas.style.height,
-			attrWidth: firstCanvas.width,
-			attrHeight: firstCanvas.height,
-			clientWidth: firstCanvas.clientWidth,
-			clientHeight: firstCanvas.clientHeight
-		});
 	}
 
 	for (let i = 0; i < MAX_LAYERS; i++) {
@@ -2420,7 +2642,7 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 			alpha: true,
 			desynchronized: false,
 			colorSpace: 'srgb',
-			willReadFrequently: false
+			willReadFrequently: false,
 		});
 
 		if (context) {
@@ -2450,130 +2672,364 @@ async function changeCanvasSize(newWidth: number, newHeight: number) {
 	resetZoom();
 
 	os.toast(`キャンバスサイズを ${newWidth}×${newHeight} に変更しました`);
-	console.log('🎨 [SIZE] Canvas size changed:', { width: newWidth, height: newHeight });
 
 	// ルーム設定を保存
 	await saveRoomSettings();
+
+	// 他のユーザーにキャンバスサイズ変更を通知（リモート起因の変更でない場合のみ）
+	if (!isRemote && connection.value) {
+		const data = {
+			width: newWidth,
+			height: newHeight,
+			userId: $i?.id,
+			userName: $i?.username,
+			timestamp: Date.now(),
+		};
+		connection.value.send('canvasSizeChange', data);
+	}
+}
+
+/**
+ * ストロークを直接キャンバスに描画
+ *
+ * 【仕様】
+ * - 指定されたコンテキストにストロークを直接描画
+ * - 筆圧対応の描画処理
+ * - renderStrokeOnLayerを使わずに描画（無限ループ防止）
+ *
+ * 【パラメータ】
+ * - targetCtx: 描画先のコンテキスト
+ * - stroke: 描画するストロークデータ
+ */
+function drawStrokeDirectly(targetCtx: CanvasRenderingContext2D, stroke: any) {
+	if (!stroke || !stroke.points || stroke.points.length === 0) return;
+
+	targetCtx.save();
+
+	// 筆圧情報の有無を確認
+	const hasPressure = stroke.points.some((p: any) => p.pressure !== undefined);
+
+	if (hasPressure && stroke.points.length > 1) {
+		// 筆圧対応の描画
+		const previousCtx = ctx;
+		ctx = targetCtx;
+		drawSmoothPathLocal(
+			stroke.points,
+			stroke.strokeWidth,
+			stroke.color,
+			stroke.opacity,
+			stroke.tool === 'eraser',
+		);
+		ctx = previousCtx;
+	} else {
+		// 筆圧なしの描画
+		targetCtx.globalCompositeOperation = stroke.tool === 'eraser' ? 'destination-out' : 'source-over';
+		targetCtx.strokeStyle = stroke.color;
+		targetCtx.globalAlpha = stroke.opacity;
+		targetCtx.lineWidth = stroke.strokeWidth;
+		targetCtx.lineCap = 'round';
+		targetCtx.lineJoin = 'round';
+		targetCtx.imageSmoothingEnabled = true;
+		targetCtx.imageSmoothingQuality = 'high';
+
+		if (stroke.points.length > 1) {
+			targetCtx.beginPath();
+			for (let i = 0; i < stroke.points.length; i++) {
+				const point = stroke.points[i];
+				if (i === 0) {
+					targetCtx.moveTo(point.x, point.y);
+				} else {
+					targetCtx.lineTo(point.x, point.y);
+				}
+			}
+			targetCtx.stroke();
+		}
+	}
+
+	targetCtx.restore();
 }
 
 // Undo（元に戻す）
+/**
+ * Undo（元に戻す）
+ *
+ * 【仕様】
+ * - 現在のレイヤーの自分の最後のストロークを1つ削除
+ * - 削除したストロークをredoスタックに保存
+ * - キャンバスを再描画
+ * - 他のユーザーにundoイベントを送信
+ *
+ * 【ユーザーごとの履歴】
+ * - 自分のストローク（userId === $i.id）のみを削除
+ * - 他のユーザーのストロークは削除しない
+ *
+ * 【レイヤー対応】
+ * - 現在のレイヤー（currentLayer）のストローク履歴から操作
+ * - layerStrokeHistory[currentLayer]を操作
+ * - strokeHistoryも同期して更新
+ */
 function undo() {
-	if (!canUndo.value || !ctx) return;
+	const targetLayer = currentLayer.value;
 
-	// 現在の状態をredoスタックに保存
-	const currentState = {
-		history: [...strokeHistory.value],
-		imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
-	};
-	redoStack.value.push(currentState);
+	// 現在のレイヤーから自分の最後のストロークを見つける
+	const myStrokeIndex = layerStrokeHistory.value[targetLayer]
+		.map((s, i) => ({ stroke: s, index: i }))
+		.filter(item => item.stroke.userId === $i.id)
+		.pop();
 
-	// undoスタックから前の状態を取得
-	const previousState = undoStack.value.pop();
-	if (!previousState) return;
+	if (!myStrokeIndex) {
+		return;
+	}
 
-	// strokeHistoryを復元
-	strokeHistory.value = [...previousState.history];
+	// 自分の最後のストロークを削除
+	const [lastStroke] = layerStrokeHistory.value[targetLayer].splice(myStrokeIndex.index, 1);
 
-	// キャンバスをクリアして再描画
-	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 
-	// 履歴から再描画
-	redrawCanvasFromHistory();
-
-	console.log('🎨 [UNDO] Undo performed', {
-		undoStackSize: undoStack.value.length,
-		redoStackSize: redoStack.value.length,
-		strokeCount: strokeHistory.value.length
+	// redoスタックに保存
+	redoStack.value.push({
+		layer: targetLayer,
+		stroke: lastStroke,
+		originalIndex: myStrokeIndex.index,
 	});
+
+	// redoスタックのサイズ制限
+	if (redoStack.value.length > maxUndoHistory) {
+		redoStack.value.shift();
+	}
+
+	// strokeHistoryを更新（現在のレイヤーの履歴で置き換え）
+	strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+
+	// 現在のレイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画（renderStrokeOnLayerを使わず直接描画）
+		for (const stroke of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, stroke);
+		}
+	}
 
 	// 他のユーザーにundoイベントを送信
 	if (connection.value) {
 		const data = {
-			layer: currentLayer.value,
+			layer: targetLayer,
+			strokeId: lastStroke.id,
 			userId: $i?.id,
-			userName: $i?.username
+			userName: $i?.username,
 		};
 		connection.value.send('undoStroke', data);
 		recordCommLog('send', 'undoStroke', data);
 	}
 }
 
-// Redo（やり直す）
+/**
+ * Redo（やり直す）
+ *
+ * 【仕様】
+ * - redoスタックから最後に削除した自分のストロークを復元
+ * - 元の位置にストロークを挿入
+ * - キャンバスを再描画
+ * - 他のユーザーにredoイベントを送信
+ *
+ * 【ユーザーごとの履歴】
+ * - 自分が削除したストロークのみを復元
+ * - 元の位置（originalIndex）に挿入
+ *
+ * 【レイヤー対応】
+ * - redoスタックに保存されているレイヤー情報を使用
+ * - そのレイヤーの履歴にストロークを挿入
+ * - 該当レイヤーのキャンバスを再描画
+ */
 function redo() {
-	if (!canRedo.value || !ctx) return;
+	if (!canRedo.value) return;
 
-	// 現在の状態をundoスタックに保存
-	const currentState = {
-		history: [...strokeHistory.value],
-		imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
-	};
-	undoStack.value.push(currentState);
+	// redoスタックから削除されたストロークを取得
+	const redoItem = redoStack.value.pop();
+	if (!redoItem) return;
 
-	// redoスタックから次の状態を取得
-	const nextState = redoStack.value.pop();
-	if (!nextState) return;
+	const { layer: targetLayer, stroke, originalIndex } = redoItem;
 
-	// strokeHistoryを復元
-	strokeHistory.value = [...nextState.history];
 
-	// キャンバスをクリアして再描画
-	ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+	// 元の位置にストロークを挿入
+	if (originalIndex !== undefined && originalIndex >= 0) {
+		layerStrokeHistory.value[targetLayer].splice(originalIndex, 0, stroke);
+	} else {
+		// 元の位置が不明な場合は最後に追加
+		layerStrokeHistory.value[targetLayer].push(stroke);
+	}
 
-	// 履歴から再描画
-	redrawCanvasFromHistory();
+	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
+	if (currentLayer.value === targetLayer) {
+		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+	}
 
-	console.log('🎨 [REDO] Redo performed', {
-		undoStackSize: undoStack.value.length,
-		redoStackSize: redoStack.value.length,
-		strokeCount: strokeHistory.value.length
-	});
+	// 対象レイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画
+		for (const s of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, s);
+		}
+	}
 
 	// 他のユーザーにredoイベントを送信
 	if (connection.value) {
 		const data = {
-			layer: currentLayer.value,
+			layer: targetLayer,
+			stroke: stroke,
+			originalIndex: originalIndex,
 			userId: $i?.id,
-			userName: $i?.username
+			userName: $i?.username,
 		};
 		connection.value.send('redoStroke', data);
 		recordCommLog('send', 'redoStroke', data);
 	}
 }
 
-// リモートユーザーのUndoイベントを処理
+/**
+ * リモートユーザーのUndoイベントを処理
+ *
+ * 【仕様】
+ * - 他のユーザーがUndoした際に呼ばれる
+ * - strokeIdで特定されたストロークを削除
+ * - 対象レイヤーのキャンバスを再描画
+ *
+ * 【ユーザーごとの履歴対応】
+ * - data.strokeIdで指定されたストロークを削除
+ * - ユーザーごとの履歴を維持（他のユーザーのストロークは保持）
+ * - 該当レイヤーを再描画
+ */
 function handleRemoteUndo(data: any) {
-	if (!ctx || data.userId === $i.id) return;
+	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-	console.log('🎨 [REMOTE-UNDO] Remote undo received from:', data.userName, 'layer:', data.layer);
 
-	// 指定レイヤーの最後のストロークを削除
 	const targetLayer = data.layer;
-	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) return;
+	const strokeId = data.strokeId;
 
-	// レイヤーストローク履歴から最後の1つを削除
-	if (layerStrokeHistory.value[targetLayer].length > 0) {
-		layerStrokeHistory.value[targetLayer].pop();
+	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) {
+		console.warn('🎨 [REMOTE-UNDO] Invalid layer', targetLayer);
+		return;
 	}
 
-	// 現在のレイヤーが対象レイヤーの場合、再描画
+	// strokeIdで特定のストロークを削除
+	const strokeIndex = layerStrokeHistory.value[targetLayer].findIndex(s => s.id === strokeId);
+	if (strokeIndex !== -1) {
+		const removedStroke = layerStrokeHistory.value[targetLayer].splice(strokeIndex, 1)[0];
+	} else {
+		console.warn('🎨 [REMOTE-UNDO] Stroke not found', strokeId);
+		return;
+	}
+
+	// 対象レイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画
+		for (const stroke of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, stroke);
+		}
+	}
+
+	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
 	if (currentLayer.value === targetLayer) {
 		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
-		redrawCanvasFromHistory();
 	}
-
-	console.log('🎨 [REMOTE-UNDO] Undo applied, remaining strokes:', layerStrokeHistory.value[targetLayer].length);
 }
 
-// リモートユーザーのRedoイベントを処理
+/**
+ * リモートユーザーのRedoイベントを処理
+ *
+ * 【仕様】
+ * - 他のユーザーがRedoした際に呼ばれる
+ * - 指定レイヤーの元の位置にストロークを挿入
+ * - 対象レイヤーのキャンバスを再描画
+ *
+ * 【ユーザーごとの履歴対応】
+ * - data.originalIndexで指定された位置にストロークを挿入
+ * - ストローク順序を維持（他のユーザーのストロークとの関係を保持）
+ * - 該当レイヤーを再描画
+ */
 function handleRemoteRedo(data: any) {
-	if (!ctx || data.userId === $i.id) return;
+	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-	console.log('🎨 [REMOTE-REDO] Remote redo received from:', data.userName, 'layer:', data.layer);
 
-	// 注意: Redoは単純な実装では履歴がないため実装困難
-	// より高度な実装では、undo/redoスタックをサーバーで管理する必要がある
-	// 現時点では、リモートredoは未対応として警告のみ出力
-	console.warn('🎨 [REMOTE-REDO] Remote redo is not fully supported yet. Requires server-side undo/redo stack management.');
+	const targetLayer = data.layer;
+	const stroke = data.stroke;
+	const originalIndex = data.originalIndex;
+
+	if (targetLayer < 0 || targetLayer >= MAX_LAYERS) {
+		console.warn('🎨 [REMOTE-REDO] Invalid layer', targetLayer);
+		return;
+	}
+
+	if (!stroke) {
+		console.warn('🎨 [REMOTE-REDO] No stroke data');
+		return;
+	}
+
+	// 元の位置にストロークを挿入
+	if (originalIndex !== undefined && originalIndex >= 0) {
+		layerStrokeHistory.value[targetLayer].splice(originalIndex, 0, stroke);
+	} else {
+		// 元の位置が不明な場合は最後に追加
+		layerStrokeHistory.value[targetLayer].push(stroke);
+	}
+
+	// 現在のレイヤーが対象レイヤーの場合、strokeHistoryも更新
+	if (currentLayer.value === targetLayer) {
+		strokeHistory.value = [...layerStrokeHistory.value[targetLayer]];
+	}
+
+	// 対象レイヤーのキャンバスをクリアして再描画
+	const layerCtx = layerContexts.value[targetLayer];
+	if (layerCtx) {
+		layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+		// 履歴から再描画
+		for (const s of layerStrokeHistory.value[targetLayer]) {
+			drawStrokeDirectly(layerCtx, s);
+		}
+	}
+}
+
+/**
+ * リモートユーザーのキャンバスサイズ変更イベントを処理
+ *
+ * 【仕様】
+ * - 他のユーザーがキャンバスサイズを変更した際に呼ばれる
+ * - 自動的に同じサイズに変更する
+ * - 描画内容は保持される
+ *
+ * 【パラメータ】
+ * - data.width: 新しい幅
+ * - data.height: 新しい高さ
+ * - data.userId: 変更したユーザーID
+ * - data.userName: 変更したユーザー名
+ */
+async function handleRemoteCanvasSizeChange(data: any) {
+	if (data.userId === $i.id) return; // 自分のイベントは無視
+
+	const newWidth = data.width;
+	const newHeight = data.height;
+
+	if (typeof newWidth !== 'number' || typeof newHeight !== 'number') {
+		return;
+	}
+
+	if (newWidth < 100 || newWidth > 4000 || newHeight < 100 || newHeight > 4000) {
+		return;
+	}
+
+	// サイズ変更を適用（isRemote=trueで無限ループを防ぐ）
+	await changeCanvasSize(newWidth, newHeight, true);
+
+	// 通知を表示
+	os.toast(`${data.userName || 'ユーザー'}がキャンバスサイズを${newWidth}×${newHeight}に変更しました`);
 }
 
 // レイヤー切り替え
@@ -2585,7 +3041,6 @@ function switchLayer(layerIndex: number) {
 	ctx = layerContexts.value[layerIndex];
 	// canvasElも更新（イベントリスナーやカーソルスタイル変更用）
 	canvasEl.value = layerCanvases.value[layerIndex];
-	console.log('🎨 [LAYER] Switched to layer', layerIndex);
 
 	// 設定を自動保存
 	saveUserSettings();
@@ -2599,7 +3054,7 @@ async function showLayerMenu() {
 			{ label: 'レイヤーを結合', value: 'merge' },
 			{ label: 'レイヤーを移動', value: 'move' },
 			{ label: 'レイヤーをクリア', value: 'clear' },
-		]
+		],
 	});
 
 	if (canceled || !result) return;
@@ -2624,7 +3079,7 @@ async function mergeLayersDialog() {
 		items: [
 			{ label: 'レイヤー1とレイヤー2を結合', value: 0 },
 			{ label: 'レイヤー2とレイヤー3を結合', value: 1 },
-		]
+		],
 	});
 
 	if (canceled || result === undefined || result === null) return;
@@ -2641,7 +3096,7 @@ async function mergeLayers(fromLayer: number, toLayer: number) {
 	// fromLayerの内容をtoLayerに結合
 	layerStrokeHistory.value[toLayer] = [
 		...layerStrokeHistory.value[toLayer],
-		...layerStrokeHistory.value[fromLayer]
+		...layerStrokeHistory.value[fromLayer],
 	];
 
 	// fromLayerをクリア
@@ -2657,7 +3112,6 @@ async function mergeLayers(fromLayer: number, toLayer: number) {
 	}
 
 	os.toast(`レイヤー${fromLayer + 1}とレイヤー${toLayer + 1}を結合しました`);
-	console.log('🎨 [LAYER] Merged layers', { from: fromLayer, to: toLayer });
 }
 
 // レイヤー移動ダイアログ
@@ -2671,7 +3125,7 @@ async function moveLayerDialog() {
 			{ label: 'レイヤー2の内容をレイヤー3に移動', value: '1-2' },
 			{ label: 'レイヤー3の内容をレイヤー1に移動', value: '2-0' },
 			{ label: 'レイヤー3の内容をレイヤー2に移動', value: '2-1' },
-		]
+		],
 	});
 
 	if (canceled || !result) return;
@@ -2699,7 +3153,6 @@ async function moveLayer(fromLayer: number, toLayer: number) {
 	}
 
 	os.toast(`レイヤー${fromLayer + 1}の内容をレイヤー${toLayer + 1}に移動しました`);
-	console.log('🎨 [LAYER] Moved layer', { from: fromLayer, to: toLayer });
 }
 
 // レイヤークリアダイアログ
@@ -2710,7 +3163,7 @@ async function clearLayerDialog() {
 			{ label: 'レイヤー1をクリア', value: 0 },
 			{ label: 'レイヤー2をクリア', value: 1 },
 			{ label: 'レイヤー3をクリア', value: 2 },
-		]
+		],
 	});
 
 	if (canceled || result === undefined || result === null) return;
@@ -2719,7 +3172,7 @@ async function clearLayerDialog() {
 
 	const { canceled: confirmCanceled } = await os.confirm({
 		type: 'warning',
-		text: `レイヤー${layerIndex + 1}の内容をすべて削除しますか？`
+		text: `レイヤー${layerIndex + 1}の内容をすべて削除しますか？`,
 	});
 
 	if (confirmCanceled) return;
@@ -2741,7 +3194,6 @@ function clearLayer(layerIndex: number) {
 	}
 
 	os.toast(`レイヤー${layerIndex + 1}をクリアしました`);
-	console.log('🎨 [LAYER] Cleared layer', layerIndex);
 }
 
 // デバッグログを出力（軌跡記録付き）
@@ -2753,7 +3205,7 @@ async function exportDebugLog() {
 			canvasHeight: canvasHeight.value,
 			displayWidth: displayWidth.value,
 			displayHeight: displayHeight.value,
-			devicePixelRatio: window.devicePixelRatio
+			devicePixelRatio: window.devicePixelRatio,
 		},
 		currentState: {
 			tool: currentTool.value,
@@ -2761,17 +3213,17 @@ async function exportDebugLog() {
 			strokeWidth: strokeWidth.value,
 			opacity: currentOpacity.value,
 			zoomLevel: zoomLevel.value,
-			panOffset: panOffset.value
+			panOffset: panOffset.value,
 		},
 		traceLog: drawingTraceLog.value,
 		strokeHistory: strokeHistory.value.map(stroke => ({
 			tool: stroke.tool,
 			color: stroke.color,
 			strokeWidth: stroke.strokeWidth,
-			pointCount: stroke.points.length
+			pointCount: stroke.points.length,
 		})),
 		debugInfo: debugInfo.value,
-		performance: monitorPerformance()
+		performance: monitorPerformance(),
 	};
 
 	// JSON形式でダウンロード
@@ -2785,7 +3237,6 @@ async function exportDebugLog() {
 	URL.revokeObjectURL(url);
 
 	os.toast('デバッグログを出力しました');
-	console.log('🎨 [DEBUG] Debug log exported:', debugData);
 }
 
 // 通信ログを記録
@@ -2794,7 +3245,7 @@ function recordCommLog(direction: 'send' | 'receive', type: string, data: any) {
 		timestamp: Date.now(),
 		direction,
 		type,
-		data
+		data,
 	});
 
 	// 最大エントリ数を超えたら古いログを削除
@@ -2818,8 +3269,8 @@ async function exportCommLog() {
 			timestamp: new Date(log.timestamp).toISOString(),
 			direction: log.direction,
 			type: log.type,
-			data: log.data
-		}))
+			data: log.data,
+		})),
 	};
 
 	// JSON形式でダウンロード
@@ -2876,7 +3327,7 @@ function screenToCanvas(clientX: number, clientY: number): Point {
 		zoomLevel.value,
 		zoomCenter.value,
 		isTouchDevice.value,
-		debugInfo
+		debugInfo,
 	);
 }
 
@@ -2887,7 +3338,7 @@ function getDrawingArea() {
 	return getActualDrawingArea(
 		canvas || null,
 		canvasWidth.value,
-		canvasHeight.value
+		canvasHeight.value,
 	);
 }
 
@@ -2921,6 +3372,41 @@ function canvasToScreenCoordinates(canvasX: number, canvasY: number): { x: numbe
 	const screenY = afterTranslateY + canvasRect.value.top;
 
 	return { x: screenX, y: screenY };
+}
+
+// キャンバス座標を表示座標に変換（カーソル表示用）
+function canvasToDisplayCoordinates(canvasX: number, canvasY: number): { x: number; y: number } {
+	// キャンバス座標（0〜4000）を表示座標（CSS pixel、パン/ズーム適用済み）に変換
+	// キャンバスのCSS変換: translate(-50%, -50%) translate(panX, panY) scale(zoom)
+	// transformOrigin: center
+
+	// 1. キャンバス座標を正規化（0〜1）
+	const normalizedX = canvasX / canvasWidth.value;
+	const normalizedY = canvasY / canvasHeight.value;
+
+	// 2. 表示サイズにスケール（CSS上のキャンバスサイズ）
+	const displayX = normalizedX * displayWidth.value;
+	const displayY = normalizedY * displayHeight.value;
+
+	// 3. キャンバス中心を基準にした座標に変換（transformOrigin: center）
+	const centerX = displayWidth.value / 2;
+	const centerY = displayHeight.value / 2;
+	const fromCenterX = displayX - centerX;
+	const fromCenterY = displayY - centerY;
+
+	// 4. ズームを適用（中心基準）
+	const scaledFromCenterX = fromCenterX * zoomLevel.value;
+	const scaledFromCenterY = fromCenterY * zoomLevel.value;
+
+	// 5. 中心を戻す
+	const afterScaleX = scaledFromCenterX + centerX;
+	const afterScaleY = scaledFromCenterY + centerY;
+
+	// 6. パンオフセットを適用
+	const finalX = afterScaleX + panOffset.value.x;
+	const finalY = afterScaleY + panOffset.value.y;
+
+	return { x: finalX, y: finalY };
 }
 
 // 2本指パン用のタッチハンドラー（最適化版）
@@ -2977,8 +3463,6 @@ function handleTouchStart(e: TouchEvent) {
 			logicalY = Math.max(0, Math.min(canvasHeight.value, logicalY));
 
 			zoomCenter.value = { x: logicalX, y: logicalY };
-
-			console.log('🎨 [DEBUG] Zoom center:', Math.round(logicalX), Math.round(logicalY));
 		}
 
 		// 初期距離を記録
@@ -2989,8 +3473,6 @@ function handleTouchStart(e: TouchEvent) {
 		lastTouchDistance.value = distance;
 		initialDistance.value = distance;
 		distanceHistory.value = [distance];
-
-		console.log('🎨 [DEBUG] Two-finger gesture started, initial distance:', Math.round(distance));
 	}
 }
 
@@ -3039,11 +3521,9 @@ function handleTouchMove(e: TouchEvent) {
 				gestureState.value = 'zoom';
 				isZooming.value = true;
 				twoFingerTapStartPos.value = null; // タップ判定をキャンセル
-				console.log('🎨 [DEBUG] Zoom gesture detected');
 			} else if (panDistance > panThreshold) {
 				gestureState.value = 'pan';
 				twoFingerTapStartPos.value = null; // タップ判定をキャンセル
-				console.log('🎨 [DEBUG] Pan gesture detected');
 			}
 		}
 
@@ -3069,11 +3549,10 @@ function handleTouchMove(e: TouchEvent) {
 				// newPanX = oldPanX + relativeCenterX * (oldZoom - newZoom)
 				panOffset.value = {
 					x: panOffset.value.x + relativeCenterX * (zoomLevel.value - newZoom),
-					y: panOffset.value.y + relativeCenterY * (zoomLevel.value - newZoom)
+					y: panOffset.value.y + relativeCenterY * (zoomLevel.value - newZoom),
 				};
 
 				zoomLevel.value = newZoom;
-				console.log('🎨 [DEBUG] Zoom level:', Math.round(newZoom * 100) + '%');
 			}
 		}
 
@@ -3083,9 +3562,8 @@ function handleTouchMove(e: TouchEvent) {
 				// panOffsetはピクセル単位なので、そのまま加算
 				panOffset.value = {
 					x: panOffset.value.x + panDeltaX,
-					y: panOffset.value.y + panDeltaY
+					y: panOffset.value.y + panDeltaY,
 				};
-				console.log('🎨 [DEBUG] Pan offset:', Math.round(panOffset.value.x), Math.round(panOffset.value.y));
 			}
 		}
 
@@ -3093,11 +3571,9 @@ function handleTouchMove(e: TouchEvent) {
 		if (gestureState.value === 'zoom' && panDistance > panThreshold * 2) {
 			gestureState.value = 'hybrid';
 			twoFingerTapStartPos.value = null; // タップ判定をキャンセル
-			console.log('🎨 [DEBUG] Hybrid gesture (pan + zoom)');
 		} else if (gestureState.value === 'pan' && distanceFromInitial > zoomThreshold * 0.5) {
 			gestureState.value = 'hybrid';
 			twoFingerTapStartPos.value = null; // タップ判定をキャンセル
-			console.log('🎨 [DEBUG] Hybrid gesture (zoom + pan)');
 		}
 
 		// 基準点を更新
@@ -3125,7 +3601,7 @@ function handleTouchEnd(e: TouchEvent) {
 				const endCenterY = (touch1.clientY + touch2.clientY) / 2;
 				const moveDistance = Math.sqrt(
 					Math.pow(endCenterX - twoFingerTapStartPos.value.x, 2) +
-					Math.pow(endCenterY - twoFingerTapStartPos.value.y, 2)
+					Math.pow(endCenterY - twoFingerTapStartPos.value.y, 2),
 				);
 
 				if (moveDistance < tapMoveThreshold) {
@@ -3135,12 +3611,10 @@ function handleTouchEnd(e: TouchEvent) {
 
 					if (timeSinceLastTap < twoFingerTapTimeout && lastTwoFingerTap.value > 0) {
 						// ダブルタップ検出: アンドゥ実行
-						console.log('🎨 [DEBUG] Two-finger double tap detected, performing undo');
 						performAdvancedUndo();
 						lastTwoFingerTap.value = 0; // リセット
 					} else {
 						// 最初のタップ
-						console.log('🎨 [DEBUG] Two-finger tap detected');
 						lastTwoFingerTap.value = now;
 					}
 				}
@@ -3153,7 +3627,6 @@ function handleTouchEnd(e: TouchEvent) {
 		isZooming.value = false;
 		gestureState.value = 'none';
 		distanceHistory.value = [];
-		console.log('🎨 [DEBUG] All gestures ended');
 		stopDrawing();
 
 		// パンまたはズームが行われていた場合、設定を自動保存
@@ -3167,7 +3640,6 @@ function handleTouchEnd(e: TouchEvent) {
 		isZooming.value = false;
 		gestureState.value = 'none';
 		distanceHistory.value = [];
-		console.log('🎨 [DEBUG] Switched from gesture to drawing');
 
 		// パンまたはズームが行われていたため、設定を自動保存
 		saveUserSettings();
@@ -3203,12 +3675,10 @@ function monitorPerformance() {
 		memoryUsage: (performance as any).memory ? {
 			used: Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024),
 			total: Math.round((performance as any).memory.totalJSHeapSize / 1024 / 1024),
-			limit: Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024)
+			limit: Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024),
 		} : 'N/A',
-		timestamp: new Date().toISOString()
+		timestamp: new Date().toISOString(),
 	};
-
-	console.log('🎨 [PERFORMANCE]', stats);
 
 	// メモリ使用量が多い場合は警告
 	if (typeof stats.memoryUsage === 'object' && stats.memoryUsage.used > 100) {
@@ -3225,8 +3695,6 @@ function monitorPerformance() {
 function handleUndoStroke(data: any) {
 	if (!ctx) return;
 
-	console.log(`🎨 [DEBUG] Handling remote undo for user ${data.userId}`);
-
 	// リモートユーザーのアンドゥの場合、サーバーから最新データを再取得
 	loadCanvasData();
 }
@@ -3234,39 +3702,38 @@ function handleUndoStroke(data: any) {
 // キャンバスデータ読み込み
 async function loadCanvasData() {
 	try {
-		const response = await fetch(`/api/drawing/canvas`, {
+		const response = await fetch('/api/drawing/canvas', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${$i.token}`,
 			},
 			body: JSON.stringify({
-				roomId: drawingId.value
+				roomId: drawingId.value,
 			}),
 		});
 
 		if (response.ok) {
-		const strokes = await response.json();
-		console.log(`🎨 [DEBUG] Loaded ${strokes.length} strokes for canvas`);
+			const strokes = await response.json();
 
-		for (let i = 0; i < MAX_LAYERS; i++) {
-			const layerCtx = layerContexts.value[i];
-			if (layerCtx) {
-				layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+			for (let i = 0; i < MAX_LAYERS; i++) {
+				const layerCtx = layerContexts.value[i];
+				if (layerCtx) {
+					layerCtx.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+				}
 			}
-		}
 
-		layerStrokeHistory.value = Array.from({ length: MAX_LAYERS }, () => []);
-		strokeHistory.value = [];
-		undoStack.value = [];
-		redoStack.value = [];
-		otherActiveStrokes.value.clear();
+			layerStrokeHistory.value = Array.from({ length: MAX_LAYERS }, () => []);
+			strokeHistory.value = [];
+			undoStack.value = [];
+			redoStack.value = [];
+			otherActiveStrokes.value.clear();
 
-		for (const stroke of strokes) {
-			renderStrokeOnLayer(stroke);
-		}
+			for (const stroke of strokes) {
+				renderStrokeOnLayer(stroke);
+			}
 
-		ctx = layerContexts.value[currentLayer.value] ?? ctx;
+			ctx = layerContexts.value[currentLayer.value] ?? ctx;
 		}
 	} catch (error) {
 		console.warn('🎨 [WARN] Failed to load canvas data:', error);
@@ -3279,7 +3746,7 @@ function addStrokeToHistory(strokeData: any) {
 	if (ctx) {
 		const currentState = {
 			history: [...strokeHistory.value],
-			imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
+			imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value),
 		};
 		undoStack.value.push(currentState);
 
@@ -3297,7 +3764,7 @@ function addStrokeToHistory(strokeData: any) {
 		...strokeData,
 		layer: layerIndex,
 		userId: $i.id,
-		userName: $i.username ?? $i.name ?? null
+		userName: $i.username ?? $i.name ?? null,
 	};
 	const normalized = renderStrokeOnLayer(strokeWithMeta, { suppressRender: true });
 	if (!normalized) {
@@ -3310,8 +3777,6 @@ function addStrokeToHistory(strokeData: any) {
 		// 古いストロークを削除し、必要に応じてラスタライズ
 		const oldStrokesToRemove = strokeHistory.value.length - maxUndoHistory;
 		strokeHistory.value.splice(0, oldStrokesToRemove);
-
-		console.log(`🎨 [DEBUG] Undo history limited to ${maxUndoHistory} strokes`);
 	}
 
 	// ラスタライズの判定
@@ -3324,8 +3789,6 @@ function addStrokeToHistory(strokeData: any) {
 function performRasterization() {
 	if (!ctx || !canvasEl.value) return;
 
-	console.log(`🎨 [DEBUG] Performing rasterization with ${strokeHistory.value.length} strokes`);
-
 	try {
 		// 現在のキャンバス内容を画像として保存
 		const imageData = canvasEl.value.toDataURL();
@@ -3337,7 +3800,6 @@ function performRasterization() {
 		const img = new Image();
 		img.onload = () => {
 			ctx!.drawImage(img, 0, 0);
-			console.log(`🎨 [DEBUG] Canvas rasterized successfully`);
 		};
 		img.src = imageData;
 
@@ -3349,13 +3811,12 @@ function performRasterization() {
 			try {
 				connection.value.send('canvasRasterized', {
 					imageData: imageData,
-					timestamp: Date.now()
+					timestamp: Date.now(),
 				});
 			} catch (error) {
 				console.warn('🎨 [WARN] Failed to send rasterization notification:', error);
 			}
 		}
-
 	} catch (error) {
 		console.error('🎨 [ERROR] Rasterization failed:', error);
 	}
@@ -3370,7 +3831,6 @@ function performAdvancedUndo() {
 
 	// 最後のストロークを削除
 	const removedStroke = strokeHistory.value.pop();
-	console.log(`🎨 [DEBUG] Undoing stroke: ${removedStroke?.tool} at ${new Date(removedStroke?.timestamp).toISOString()}`);
 
 	// キャンバスを再描画
 	redrawCanvasFromHistory();
@@ -3381,7 +3841,7 @@ function performAdvancedUndo() {
 			connection.value.send('undoStroke', {
 				userId: $i.id,
 				timestamp: Date.now(),
-				strokeId: removedStroke?.timestamp
+				strokeId: removedStroke?.timestamp,
 			});
 		} catch (error) {
 			console.warn('🎨 [WARN] Failed to send undo notification:', error);
@@ -3409,7 +3869,7 @@ function redrawCanvasFromHistory() {
 				stroke.strokeWidth,
 				stroke.color,
 				stroke.opacity,
-				stroke.tool === 'eraser'
+				stroke.tool === 'eraser',
 			);
 			ctx = originalCtx;
 		}
@@ -3422,7 +3882,7 @@ function showChatOverlay(message: any) {
 
 	chatOverlay.value = {
 		user: message.fromUser,
-		text: message.text
+		text: message.text,
 	};
 
 	// 3秒後に非表示
@@ -4669,5 +5129,37 @@ function adjustCanvasForMobile() {
 		margin-bottom: 6px;
 		padding: 6px;
 	}
+}
+
+/* 他のユーザーのカーソル */
+.cursor {
+	position: absolute;
+	pointer-events: none;
+	z-index: 1000;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+.cursorPointer {
+	width: 0;
+	height: 0;
+	border-left: 12px solid currentColor;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+	margin-left: 25px;
+	margin-top: 41px;
+}
+
+.cursorLabel {
+	padding: 3px 8px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	margin-left: 2px;
 }
 </style>

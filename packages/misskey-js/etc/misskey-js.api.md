@@ -8,7 +8,7 @@ import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
 import { Options } from 'reconnecting-websocket';
 import type { PublicKeyCredentialRequestOptionsJSON as PublicKeyCredentialRequestOptionsJSON_2 } from '@simplewebauthn/types';
-import _ReconnectingWebSocket from 'reconnecting-websocket';
+import { reconnectingWebsocket } from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -890,10 +890,130 @@ export type Channels = {
                 user?: UserLite;
                 messageId: ChatMessageLite['id'];
             }) => void;
+            read: (payload: {
+                messageId: ChatMessageLite['id'];
+                readerId: User['id'];
+            }) => void;
+            typing: (payload: {
+                userId: User['id'];
+                user?: UserLite;
+            }) => void;
+            typingStop: (payload: {
+                userId: User['id'];
+            }) => void;
+            drawingStroke: (payload: {
+                id: string;
+                userId: User['id'];
+                userName: string;
+                points: Array<{
+                    x: number;
+                    y: number;
+                    pressure?: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth: number;
+                opacity: number;
+                timestamp: number;
+                layer?: number;
+            }) => void;
+            drawingProgress: (payload: {
+                id?: string;
+                userId?: User['id'];
+                points: Array<{
+                    x: number;
+                    y: number;
+                    pressure?: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth?: number;
+                opacity?: number;
+                isComplete?: boolean;
+                layer?: number;
+                timestamp?: number;
+            }) => void;
+            cursorMove: (payload: {
+                userId: User['id'];
+                userName: string;
+                x: number;
+                y: number;
+                timestamp: number;
+            }) => void;
+            clearCanvas: (payload: {
+                userId: User['id'];
+                userName?: string;
+                timestamp: number;
+                layer?: number;
+            }) => void;
+            undoStroke: (payload: {
+                userId: User['id'];
+                userName?: string;
+                strokeId?: string;
+                timestamp: number;
+                layer?: number;
+            }) => void;
+            redoStroke: (payload: {
+                userId: User['id'];
+                userName?: string;
+                strokeId?: string;
+                timestamp: number;
+                layer?: number;
+            }) => void;
         };
         receives: {
             read: {
                 id: ChatMessageLite['id'];
+            };
+            typing: {
+                roomId?: string;
+            };
+            typingStop: {
+                roomId?: string;
+            };
+            drawingStroke: {
+                points: Array<{
+                    x: number;
+                    y: number;
+                    pressure?: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth?: number;
+                opacity?: number;
+                layer?: number;
+            };
+            drawingProgress: {
+                points: Array<{
+                    x: number;
+                    y: number;
+                    pressure?: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth?: number;
+                opacity?: number;
+                isComplete?: boolean;
+                layer?: number;
+            };
+            cursorMove: {
+                x: number;
+                y: number;
+            };
+            clearCanvas: {
+                layer?: number;
+            } | null;
+            undoStroke: {
+                layer?: number;
+                strokeId?: string;
+            };
+            redoStroke: {
+                layer?: number;
+                strokeId?: string;
+            };
+            canvasRasterized: {
+                imageData: string;
+                timestamp: number;
             };
         };
     };
@@ -932,12 +1052,30 @@ export type Channels = {
                 points: Array<{
                     x: number;
                     y: number;
+                    pressure?: number;
                 }>;
                 tool: 'pen' | 'eraser' | 'eyedropper';
                 color: string;
                 strokeWidth: number;
                 opacity: number;
                 timestamp: number;
+                layer?: number;
+            }) => void;
+            drawingProgress: (payload: {
+                id?: string;
+                userId?: User['id'];
+                points: Array<{
+                    x: number;
+                    y: number;
+                    pressure?: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth?: number;
+                opacity?: number;
+                isComplete?: boolean;
+                layer?: number;
+                timestamp?: number;
             }) => void;
             cursorMove: (payload: {
                 userId: User['id'];
@@ -948,14 +1086,23 @@ export type Channels = {
             }) => void;
             clearCanvas: (payload: {
                 userId: User['id'];
-                userName: string;
+                userName?: string;
                 timestamp: number;
+                layer?: number;
             }) => void;
             undoStroke: (payload: {
                 userId: User['id'];
                 userName: string;
-                strokeId: string;
+                strokeId?: string;
                 timestamp: number;
+                layer?: number;
+            }) => void;
+            redoStroke: (payload: {
+                userId: User['id'];
+                userName: string;
+                strokeId?: string;
+                timestamp: number;
+                layer?: number;
             }) => void;
         };
         receives: {
@@ -972,19 +1119,48 @@ export type Channels = {
                 points: Array<{
                     x: number;
                     y: number;
+                    pressure?: number;
                 }>;
                 tool: 'pen' | 'eraser' | 'eyedropper';
                 color: string;
                 strokeWidth?: number;
                 opacity?: number;
+                layer?: number;
+            };
+            drawingProgress: {
+                points: Array<{
+                    x: number;
+                    y: number;
+                    pressure?: number;
+                }>;
+                tool: 'pen' | 'eraser' | 'eyedropper';
+                color: string;
+                strokeWidth?: number;
+                opacity?: number;
+                isComplete?: boolean;
+                layer?: number;
             };
             cursorMove: {
                 x: number;
                 y: number;
             };
-            clearCanvas: null | Record<string, never>;
+            clearCanvas: null | {
+                layer?: number;
+            };
             undoStroke: {
-                userId: User['id'];
+                userId?: User['id'];
+                timestamp: number;
+                layer?: number;
+                strokeId?: string;
+            };
+            redoStroke: {
+                userId?: User['id'];
+                timestamp: number;
+                layer?: number;
+                strokeId?: string;
+            };
+            canvasRasterized: {
+                imageData: string;
                 timestamp: number;
             };
         };
@@ -1425,6 +1601,9 @@ type DriveFilesShowRequest = operations['drive___files___show']['requestBody']['
 
 // @public (undocumented)
 type DriveFilesShowResponse = operations['drive___files___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesToggleIllustrationHighlightExclusionRequest = operations['drive___files___toggle-illustration-highlight-exclusion']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFilesUpdateRequest = operations['drive___files___update']['requestBody']['content']['application/json'];
@@ -1934,6 +2113,7 @@ declare namespace entities {
         DriveFilesMoveBulkRequest,
         DriveFilesShowRequest,
         DriveFilesShowResponse,
+        DriveFilesToggleIllustrationHighlightExclusionRequest,
         DriveFilesUpdateRequest,
         DriveFilesUpdateResponse,
         DriveFilesUploadFromUrlRequest,
@@ -2024,6 +2204,8 @@ declare namespace entities {
         GalleryPostsUpdateResponse,
         GetAvatarDecorationsResponse,
         GetOnlineUsersCountResponse,
+        HashtagsIllustrationRequest,
+        HashtagsIllustrationResponse,
         HashtagsListRequest,
         HashtagsListResponse,
         HashtagsSearchRequest,
@@ -2149,8 +2331,18 @@ declare namespace entities {
         NotesFeaturedResponse,
         NotesGlobalTimelineRequest,
         NotesGlobalTimelineResponse,
+        NotesHighlightIllustrationsRequest,
+        NotesHighlightIllustrationsResponse,
         NotesHybridTimelineRequest,
         NotesHybridTimelineResponse,
+        NotesIllustrationRequest,
+        NotesIllustrationResponse,
+        NotesIllustrationRankingRequest,
+        NotesIllustrationRankingResponse,
+        NotesIllustrationsByTagRequest,
+        NotesIllustrationsByTagResponse,
+        NotesIllustrationsByTagRankingRequest,
+        NotesIllustrationsByTagRankingResponse,
         NotesLocalTimelineRequest,
         NotesLocalTimelineResponse,
         NotesMentionsRequest,
@@ -2183,6 +2375,7 @@ declare namespace entities {
         NotesTranslateRequest,
         NotesTranslateResponse,
         NotesUnrenoteRequest,
+        NotesUpdateVisibilityRequest,
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
         NotificationsCreateRequest,
@@ -2602,6 +2795,12 @@ type GetOnlineUsersCountResponse = operations['get-online-users-count']['respons
 
 // @public (undocumented)
 type Hashtag = components['schemas']['Hashtag'];
+
+// @public (undocumented)
+type HashtagsIllustrationRequest = operations['hashtags___illustration']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsIllustrationResponse = operations['hashtags___illustration']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type HashtagsListRequest = operations['hashtags___list']['requestBody']['content']['application/json'];
@@ -3247,10 +3446,40 @@ type NotesGlobalTimelineRequest = operations['notes___global-timeline']['request
 type NotesGlobalTimelineResponse = operations['notes___global-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesHighlightIllustrationsRequest = operations['notes___highlight-illustrations']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHighlightIllustrationsResponse = operations['notes___highlight-illustrations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesHybridTimelineResponse = operations['notes___hybrid-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationRankingRequest = operations['notes___illustration-ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationRankingResponse = operations['notes___illustration-ranking']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationRequest = operations['notes___illustration']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationResponse = operations['notes___illustration']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationsByTagRankingRequest = operations['notes___illustrations-by-tag-ranking']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationsByTagRankingResponse = operations['notes___illustrations-by-tag-ranking']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationsByTagRequest = operations['notes___illustrations-by-tag']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesIllustrationsByTagResponse = operations['notes___illustrations-by-tag']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesLocalTimelineRequest = operations['notes___local-timeline']['requestBody']['content']['application/json'];
@@ -3353,6 +3582,9 @@ type NotesTranslateResponse = operations['notes___translate']['responses']['200'
 
 // @public (undocumented)
 type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUpdateVisibilityRequest = operations['notes___update-visibility']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['requestBody']['content']['application/json'];
@@ -3718,7 +3950,7 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
         token: string;
     } | null, options?: {
         WebSocket?: Options['WebSocket'];
-        binaryType?: ReconnectingWebSocket['binaryType'];
+        binaryType?: ReconnectingWebSocketInstance['binaryType'];
     });
     // (undocumented)
     close(): void;
@@ -3993,7 +4225,7 @@ type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['
 // Warnings were encountered during analysis:
 //
 // src/entities.ts:55:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
+// src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocketInstance" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:226:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:236:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 

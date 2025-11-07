@@ -25,6 +25,7 @@ export interface UserSettings {
 	zoomLevel: number;
 	panOffsetX: number;
 	panOffsetY: number;
+	colors?: string[];
 }
 
 @Injectable()
@@ -105,6 +106,7 @@ export class DrawingSettingsService {
 				zoomLevel: settings.zoomLevel,
 				panOffsetX: settings.panOffsetX,
 				panOffsetY: settings.panOffsetY,
+				colors: settings.colors,
 			};
 		}
 
@@ -162,6 +164,9 @@ export class DrawingSettingsService {
 			if (settings.panOffsetY !== undefined) {
 				existing.panOffsetY = settings.panOffsetY;
 			}
+			if (settings.colors !== undefined) {
+				existing.colors = settings.colors;
+			}
 			existing.updatedAt = new Date();
 
 			return await this.drawingUserSettingsRepository.save(existing);
@@ -181,6 +186,7 @@ export class DrawingSettingsService {
 				zoomLevel: settings.zoomLevel ?? 1.0,
 				panOffsetX: settings.panOffsetX ?? 0,
 				panOffsetY: settings.panOffsetY ?? 0,
+				colors: settings.colors ?? undefined,
 				createdAt: new Date(),
 				updatedAt: new Date(),
 			});

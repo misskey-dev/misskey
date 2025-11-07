@@ -313,6 +313,7 @@ import type {
 	DriveFilesMoveBulkRequest,
 	DriveFilesShowRequest,
 	DriveFilesShowResponse,
+	DriveFilesToggleIllustrationHighlightExclusionRequest,
 	DriveFilesUpdateRequest,
 	DriveFilesUpdateResponse,
 	DriveFilesUploadFromUrlRequest,
@@ -403,6 +404,8 @@ import type {
 	GalleryPostsUpdateResponse,
 	GetAvatarDecorationsResponse,
 	GetOnlineUsersCountResponse,
+	HashtagsIllustrationRequest,
+	HashtagsIllustrationResponse,
 	HashtagsListRequest,
 	HashtagsListResponse,
 	HashtagsSearchRequest,
@@ -528,8 +531,18 @@ import type {
 	NotesFeaturedResponse,
 	NotesGlobalTimelineRequest,
 	NotesGlobalTimelineResponse,
+	NotesHighlightIllustrationsRequest,
+	NotesHighlightIllustrationsResponse,
 	NotesHybridTimelineRequest,
 	NotesHybridTimelineResponse,
+	NotesIllustrationRequest,
+	NotesIllustrationResponse,
+	NotesIllustrationRankingRequest,
+	NotesIllustrationRankingResponse,
+	NotesIllustrationsByTagRequest,
+	NotesIllustrationsByTagResponse,
+	NotesIllustrationsByTagRankingRequest,
+	NotesIllustrationsByTagRankingResponse,
 	NotesLocalTimelineRequest,
 	NotesLocalTimelineResponse,
 	NotesMentionsRequest,
@@ -883,6 +896,7 @@ export type Endpoints = {
 	'drive/files/find-by-hash': { req: DriveFilesFindByHashRequest; res: DriveFilesFindByHashResponse };
 	'drive/files/move-bulk': { req: DriveFilesMoveBulkRequest; res: EmptyResponse };
 	'drive/files/show': { req: DriveFilesShowRequest; res: DriveFilesShowResponse };
+	'drive/files/toggle-illustration-highlight-exclusion': { req: DriveFilesToggleIllustrationHighlightExclusionRequest; res: EmptyResponse };
 	'drive/files/update': { req: DriveFilesUpdateRequest; res: DriveFilesUpdateResponse };
 	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: EmptyResponse };
 	'drive/folders': { req: DriveFoldersRequest; res: DriveFoldersResponse };
@@ -938,6 +952,7 @@ export type Endpoints = {
 	'gallery/posts/update': { req: GalleryPostsUpdateRequest; res: GalleryPostsUpdateResponse };
 	'get-avatar-decorations': { req: EmptyRequest; res: GetAvatarDecorationsResponse };
 	'get-online-users-count': { req: EmptyRequest; res: GetOnlineUsersCountResponse };
+	'hashtags/illustration': { req: HashtagsIllustrationRequest; res: HashtagsIllustrationResponse };
 	'hashtags/list': { req: HashtagsListRequest; res: HashtagsListResponse };
 	'hashtags/search': { req: HashtagsSearchRequest; res: HashtagsSearchResponse };
 	'hashtags/show': { req: HashtagsShowRequest; res: HashtagsShowResponse };
@@ -1025,7 +1040,12 @@ export type Endpoints = {
 	'notes/favorites/delete': { req: NotesFavoritesDeleteRequest; res: EmptyResponse };
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };
 	'notes/global-timeline': { req: NotesGlobalTimelineRequest; res: NotesGlobalTimelineResponse };
+	'notes/highlight-illustrations': { req: NotesHighlightIllustrationsRequest; res: NotesHighlightIllustrationsResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
+	'notes/illustration': { req: NotesIllustrationRequest; res: NotesIllustrationResponse };
+	'notes/illustration-ranking': { req: NotesIllustrationRankingRequest; res: NotesIllustrationRankingResponse };
+	'notes/illustrations-by-tag': { req: NotesIllustrationsByTagRequest; res: NotesIllustrationsByTagResponse };
+	'notes/illustrations-by-tag-ranking': { req: NotesIllustrationsByTagRankingRequest; res: NotesIllustrationsByTagRankingResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
