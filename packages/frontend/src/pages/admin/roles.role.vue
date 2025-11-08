@@ -112,31 +112,12 @@ async function del() {
 async function assign() {
 	const user = await os.selectUser({ includeSelf: true });
 
-	const { canceled: canceled2, result: period } = await os.select({
-		title: i18n.ts.period + ': ' + role.name,
-		items: [{
-			value: 'indefinitely', label: i18n.ts.indefinitely,
-		}, {
-			value: 'oneHour', label: i18n.ts.oneHour,
-		}, {
-			value: 'oneDay', label: i18n.ts.oneDay,
-		}, {
-			value: 'oneWeek', label: i18n.ts.oneWeek,
-		}, {
-			value: 'oneMonth', label: i18n.ts.oneMonth,
-		}],
-		default: 'indefinitely',
+	const res = await os.selectPeriod({
+		title: `${i18n.ts.period}: ${role.name}`,
 	});
-	if (canceled2) return;
+	if (res.canceled) return;
 
-	const expiresAt = period === 'indefinitely' ? null
-		: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-		: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-		: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
-		: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
-		: null;
-
-	await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id, expiresAt });
+	await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id, expiresAt: res.expiresAt });
 	//role.users.push(user);
 }
 

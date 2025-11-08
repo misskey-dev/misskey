@@ -15,6 +15,7 @@ import type { MenuItem } from '@/types/menu.js';
 import type { PostFormProps } from '@/types/post-form.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
 import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
+import type { MkPeriodDialogDoneEvent } from '@/components/MkPeriodDialog.vue';
 import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
 import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -521,6 +522,19 @@ export function select<C extends OptionValue, D extends C | null = null>(props: 
 				items: props.items.filter(x => x !== undefined),
 				default: props.default ?? null,
 			},
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+			closed: () => dispose(),
+		});
+	});
+}
+
+export function selectPeriod(options: { title?: string } = {}): Promise<MkPeriodDialogDoneEvent> {
+	return new Promise(async (resolve) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkPeriodDialog.vue')), {
+			title: options.title,
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
