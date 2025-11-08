@@ -1940,6 +1940,32 @@ describe('Timelines', () => {
 		});
 
 		describe('Global TL', () => {
+			test('フォローしているユーザーの visibility: home なノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(250);
+				const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/global-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+			});
+
+			test('フォローしていないユーザーの visibility: home なノートが含まれない', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const bobNote = await post(bob, { text: 'hi', visibility: 'home' });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/global-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
+			});
+
 			test('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 

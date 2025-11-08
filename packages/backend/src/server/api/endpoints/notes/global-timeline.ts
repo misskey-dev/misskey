@@ -77,12 +77,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			if (me) {
-				this.queryService.generateVisibilityQuery(query, me);
-				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-			} else {
-				query.andWhere('note.visibility = \'public\'');
-			}
+				if (me) {
+					this.queryService.generateVisibilityQuery(query, me);
+					this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
+					const followExists = query.subQuery()
+						.select('1')
+						.from('following', 'following')
+						.where('following.followeeId = note.userId')
+						.andWhere('following.followerId = :meId');
+
+					query.andWhere(new Brackets(qb => {
+						qb.where('note.visibility != \'home\'')
+							.orWhere('note.userId = :meId')
+							.orWhere(`EXISTS (${ followExists.getQuery() })`);
+					})).setParameter('meId', me.id);
+				} else {
+					query.andWhere('note.visibility = \'public\'');
+				}
 
 			this.queryService.generateBaseNoteFilteringQuery(query, me);
 

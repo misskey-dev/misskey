@@ -572,6 +572,16 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
+			test('フォローしていないユーザーのホーム投稿は流れない', async () => {
+				const fired = await waitFire(
+					erin, 'globalTimeline',
+					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
 			test('フォローしているユーザーの visibility: followers な投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'globalTimeline',	// ayano:Global
