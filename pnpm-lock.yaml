@@ -51,8 +51,8 @@ importers:
         specifier: 9.39.0
         version: 9.39.0
       '@misskey-dev/eslint-plugin':
-        specifier: 2.2.0
-        version: 2.2.0(@eslint/compat@1.1.1)(@eslint/js@9.39.0)(@stylistic/eslint-plugin@2.13.0(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0))(eslint@9.39.0)(globals@16.5.0)
+        specifier: 2.1.0
+        version: 2.1.0(@eslint/compat@1.1.1)(@stylistic/eslint-plugin@2.13.0(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0))(eslint@9.39.0)(globals@16.5.0)
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -2766,17 +2766,16 @@ packages:
   '@misskey-dev/browser-image-resizer@2024.1.0':
     resolution: {integrity: sha512-4EnO0zLW5NDtng3Gaz5MuT761uiuoOuplwX18wBqgj8w56LTU5BjLn/vbHwDIIe0j2gwqDYhMb7bDjmr1/Fomg==}
 
-  '@misskey-dev/eslint-plugin@2.2.0':
-    resolution: {integrity: sha512-NlDtaFRaO2r4KRnacTiYK2Ax/z95ZvhszQ3gfZ7VWWQzPvgoQHSEBT6q94i1/HPzWrcR+l+76c3Y3T1V/yVPeg==}
+  '@misskey-dev/eslint-plugin@2.1.0':
+    resolution: {integrity: sha512-f++Vv1r3BQyGqEE0SB5algUZwRoTMZIYfVtpcuQ2fLuYUm0cQ5BBTs/gwAHPajVB2YD8F33gzPIReTKtuJyCwQ==}
     peerDependencies:
       '@eslint/compat': '>= 1'
-      '@eslint/js': '>= 9'
-      '@stylistic/eslint-plugin': '>= 5'
+      '@stylistic/eslint-plugin': '>= 2'
       '@typescript-eslint/eslint-plugin': '>= 8'
       '@typescript-eslint/parser': '>= 8'
       eslint: '>= 9'
       eslint-plugin-import: '>= 2'
-      globals: '>= 16'
+      globals: '>= 15'
 
   '@misskey-dev/sharp-read-bmp@1.2.0':
     resolution: {integrity: sha512-er4pRakXzHYfEgOFAFfQagqDouG+wLm+kwNq1I30oSdIHDa0wM3KjFpfIGQ25Fks4GcmOl1s7Zh6xoQu5dNjTw==}
@@ -12964,10 +12963,9 @@ snapshots:
 
   '@misskey-dev/browser-image-resizer@2024.1.0': {}
 
-  '@misskey-dev/eslint-plugin@2.2.0(@eslint/compat@1.1.1)(@eslint/js@9.39.0)(@stylistic/eslint-plugin@2.13.0(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0))(eslint@9.39.0)(globals@16.5.0)':
+  '@misskey-dev/eslint-plugin@2.1.0(@eslint/compat@1.1.1)(@stylistic/eslint-plugin@2.13.0(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0)(typescript@5.9.3))(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0))(eslint@9.39.0)(globals@16.5.0)':
     dependencies:
       '@eslint/compat': 1.1.1
-      '@eslint/js': 9.39.0
       '@stylistic/eslint-plugin': 2.13.0(eslint@9.39.0)(typescript@5.9.3)
       '@typescript-eslint/eslint-plugin': 8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.39.0)(typescript@5.9.3))(eslint@9.39.0)(typescript@5.9.3)
       '@typescript-eslint/parser': 8.46.2(eslint@9.39.0)(typescript@5.9.3)
