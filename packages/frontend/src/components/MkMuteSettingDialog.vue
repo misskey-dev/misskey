@@ -15,10 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div class="_gaps">
-			<MkSelect :def="periodDef" v-model="periodModel">
+			<MkSelect v-model="periodModel" :def="periodDef">
 				<template #label>{{ i18n.ts.mutePeriod }}</template>
 			</MkSelect>
-			<MkSelect :def="muteTypeDef" v-model="muteTypeModel">
+			<MkSelect v-model="muteTypeModel" :def="muteTypeDef">
 				<template #label>{{ i18n.ts.muteType }}</template>
 				<template #caption>{{ i18n.ts.muteTypeDescription }}</template>
 			</MkSelect>
