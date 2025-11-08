@@ -149,14 +149,6 @@ onBeforeUnmount(() => {
 	font-size: 1.1em;
 }
 
-.urlAddress {
-	padding: 10px 14px;
-	border-radius: 8px;
-	border: 1px solid var(--MI_THEME-divider);
-	overflow-x: auto;
-	white-space: nowrap;
-}
-
 .buttons {
 	display: flex;
 	gap: 8px;
