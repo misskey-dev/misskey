@@ -22,7 +22,8 @@ class GlobalTimelineChannel extends Channel {
 
 	private canSee(note: Packed<'Note'>): boolean {
 		// Global TL の API と同じ visibility ルールをストリーミングにも適用し、
-		// 非公開ノートが権限のない接続に流出したり、逆に閲覧権のあるノートが欠落したりしないようにする
+		// 非公開ノートが権限のない接続に流出したり、逆に閲覧権のあるノートが欠落したりしないようにする。
+		// まず public/followers/specified の共通ルールでフィルタしたあと、最後に home だけ追加条件（自分自身 or フォロー済み）を課している。
 		if (note.visibility === 'public') return true;
 		if (note.visibility === 'home') {
 			if (!this.user) return false;

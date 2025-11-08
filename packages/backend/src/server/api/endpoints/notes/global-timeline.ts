@@ -80,6 +80,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (me) {
 					this.queryService.generateVisibilityQuery(query, me);
 					this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+					// visibility の共通ルールで public/followers/specified を絞ったあと、
+					// home (未収載) だけは「自分自身 or フォローしている相手」かを追加でチェックする
 
 					const followExists = query.subQuery()
 						.select('1')
