@@ -599,6 +599,10 @@ export interface Locale extends ILocale {
      */
     "muteType": string;
     /**
+     * ミュートを適用する範囲を設定できます。「タイムラインのみ」に設定すると、タイムラインや検索結果上からは見えなくなりますが、通知は受け取ります。
+     */
+    "muteTypeDescription": string;
+    /**
      * タイムラインのみ
      */
     "muteTypeTimeline": string;

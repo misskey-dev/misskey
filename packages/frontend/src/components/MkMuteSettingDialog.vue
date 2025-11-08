@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')">
-	<div :class="$style.root" class="_gaps">
+	<div :class="$style.root" class="_gaps_m">
 		<div class="_gaps_s">
 			<div :class="$style.header">
 				<div :class="$style.icon">
@@ -14,12 +14,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.title">{{ i18n.ts.muteConfirm }}</div>
 			</div>
 		</div>
-		<div class="_gaps_s">
+		<div class="_gaps">
 			<MkSelect :def="periodDef" v-model="periodModel">
 				<template #label>{{ i18n.ts.mutePeriod }}</template>
 			</MkSelect>
 			<MkSelect :def="muteTypeDef" v-model="muteTypeModel">
 				<template #label>{{ i18n.ts.muteType }}</template>
+				<template #caption>{{ i18n.ts.muteTypeDescription }}</template>
 			</MkSelect>
 		</div>
 		<div :class="$style.buttons">
