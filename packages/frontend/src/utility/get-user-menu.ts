@@ -20,6 +20,18 @@ import { mainRouter } from '@/router.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import type { MkMuteSettingDialogDoneEvent } from '@/components/MkMuteSettingDialog.vue';
+
+function muteConfirm(): Promise<MkMuteSettingDialogDoneEvent> {
+	return new Promise(resolve => {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkMuteSettingDialog.vue')), {}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+			closed: () => dispose(),
+		});
+	});
+}
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -34,33 +46,20 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				user.isMuted = false;
 			});
 		} else {
-			const { canceled, result: period } = await os.select({
-				title: i18n.ts.mutePeriod,
-				items: [{
-					value: 'indefinitely', label: i18n.ts.indefinitely,
-				}, {
-					value: 'tenMinutes', label: i18n.ts.tenMinutes,
-				}, {
-					value: 'oneHour', label: i18n.ts.oneHour,
-				}, {
-					value: 'oneDay', label: i18n.ts.oneDay,
-				}, {
-					value: 'oneWeek', label: i18n.ts.oneWeek,
-				}],
-				default: 'indefinitely',
-			});
-			if (canceled) return;
+			const res = await muteConfirm();
+			if (res.canceled) return;
 
-			const expiresAt = period === 'indefinitely' ? null
-				: period === 'tenMinutes' ? Date.now() + (1000 * 60 * 10)
-				: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-				: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-				: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
+			const expiresAt = res.period === 'indefinitely' ? null
+				: res.period === 'tenMinutes' ? Date.now() + (1000 * 60 * 10)
+				: res.period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
+				: res.period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
+				: res.period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
 				: null;
 
 			os.apiWithDialog('mute/create', {
 				userId: user.id,
 				expiresAt,
+				mutingType: res.type,
 			}).then(() => {
 				user.isMuted = true;
 			});

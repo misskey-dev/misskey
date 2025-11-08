@@ -595,6 +595,14 @@ export interface Locale extends ILocale {
      */
     "mute": string;
     /**
+     * ミュートする範囲
+     */
+    "muteType": string;
+    /**
+     * タイムラインのみ
+     */
+    "muteTypeTimeline": string;
+    /**
      * ミュート解除
      */
     "unmute": string;
@@ -5637,6 +5645,10 @@ export interface Locale extends ILocale {
      * ゼロ埋め
      */
     "zeroPadding": string;
+    /**
+     * ミュートしますか？
+     */
+    "muteConfirm": string;
     "_imageEditing": {
         "_vars": {
             /**
