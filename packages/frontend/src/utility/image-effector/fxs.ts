@@ -3,43 +3,47 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FX_checker } from './fxs/checker.js';
-import { FX_chromaticAberration } from './fxs/chromaticAberration.js';
-import { FX_colorAdjust } from './fxs/colorAdjust.js';
-import { FX_colorClamp } from './fxs/colorClamp.js';
-import { FX_colorClampAdvanced } from './fxs/colorClampAdvanced.js';
-import { FX_distort } from './fxs/distort.js';
-import { FX_polkadot } from './fxs/polkadot.js';
-import { FX_tearing } from './fxs/tearing.js';
-import { FX_grayscale } from './fxs/grayscale.js';
-import { FX_invert } from './fxs/invert.js';
-import { FX_mirror } from './fxs/mirror.js';
-import { FX_stripe } from './fxs/stripe.js';
-import { FX_threshold } from './fxs/threshold.js';
-import { FX_zoomLines } from './fxs/zoomLines.js';
-import { FX_blockNoise } from './fxs/blockNoise.js';
-import { FX_fill } from './fxs/fill.js';
-import { FX_blur } from './fxs/blur.js';
-import { FX_pixelate } from './fxs/pixelate.js';
-import type { ImageEffectorFx } from './ImageEffector.js';
+import * as checker from '../image-compositor-functions/checker.js';
+import * as chromaticAberration from '../image-compositor-functions/chromaticAberration.js';
+import * as colorAdjust from '../image-compositor-functions/colorAdjust.js';
+import * as colorClamp from '../image-compositor-functions/colorClamp.js';
+import * as colorClampAdvanced from '../image-compositor-functions/colorClampAdvanced.js';
+import * as distort from '../image-compositor-functions/distort.js';
+import * as polkadot from '../image-compositor-functions/polkadot.js';
+import * as tearing from '../image-compositor-functions/tearing.js';
+import * as grayscale from '../image-compositor-functions/grayscale.js';
+import * as invert from '../image-compositor-functions/invert.js';
+import * as mirror from '../image-compositor-functions/mirror.js';
+import * as stripe from '../image-compositor-functions/stripe.js';
+import * as threshold from '../image-compositor-functions/threshold.js';
+import * as zoomLines from '../image-compositor-functions/zoomLines.js';
+import * as blockNoise from '../image-compositor-functions/blockNoise.js';
+import * as fill from '../image-compositor-functions/fill.js';
+import * as blur from '../image-compositor-functions/blur.js';
+import * as pixelate from '../image-compositor-functions/pixelate.js';
+import type { ImageCompositorFunction } from '@/lib/ImageCompositor.js';
+import type { ImageEffectorUiDefinition } from './ImageEffector.js';
 
-export const FXS = [
-	FX_mirror,
-	FX_invert,
-	FX_grayscale,
-	FX_colorAdjust,
-	FX_colorClamp,
-	FX_colorClampAdvanced,
-	FX_distort,
-	FX_threshold,
-	FX_zoomLines,
-	FX_stripe,
-	FX_polkadot,
-	FX_checker,
-	FX_chromaticAberration,
-	FX_tearing,
-	FX_blockNoise,
-	FX_fill,
-	FX_blur,
-	FX_pixelate,
-] as const satisfies ImageEffectorFx<string, any>[];
+export const FXS = {
+	checker,
+	chromaticAberration,
+	colorAdjust,
+	colorClamp,
+	colorClampAdvanced,
+	distort,
+	polkadot,
+	tearing,
+	grayscale,
+	invert,
+	mirror,
+	stripe,
+	threshold,
+	zoomLines,
+	blockNoise,
+	fill,
+	blur,
+	pixelate,
+} as const satisfies Record<string, {
+	readonly fn: ImageCompositorFunction<any>;
+	readonly uiDefinition: ImageEffectorUiDefinition<any>;
+}>;
