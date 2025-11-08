@@ -144,6 +144,9 @@ markAsSensitive: "センシティブとして設定"
 unmarkAsSensitive: "センシティブを解除する"
 enterFileName: "ファイル名を入力"
 mute: "ミュート"
+muteType: "ミュートする範囲"
+muteTypeDescription: "ミュートを適用する範囲を設定できます。「タイムラインのみ」に設定すると、タイムラインや検索結果上からは見えなくなりますが、通知は受け取ります。"
+muteTypeTimeline: "タイムラインのみ"
 unmute: "ミュート解除"
 renoteMute: "リノートをミュート"
 renoteUnmute: "リノートのミュートを解除"
@@ -1404,6 +1407,7 @@ youAreAdmin: "あなたは管理者です"
 frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
+muteConfirm: "ミュートしますか？"
 
 _imageEditing:
   _vars:
