@@ -60,9 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import XBlocks from './page-editor.blocks.vue';
+import { genId } from '@/utility/id.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -216,7 +216,35 @@ async function add() {
 	if (canceled || type == null) return;
 
 	const id = genId();
-	content.value.push({ id, type });
+
+	// TODO: page-editor.el.section.vueのと共通化
+	if (type === 'text') {
+		content.value.push({
+			id,
+			type,
+			text: '',
+		});
+	} else if (type === 'section') {
+		content.value.push({
+			id,
+			type,
+			title: '',
+			children: [],
+		});
+	} else if (type === 'image') {
+		content.value.push({
+			id,
+			type,
+			fileId: null,
+		});
+	} else if (type === 'note') {
+		content.value.push({
+			id,
+			type,
+			detailed: false,
+			note: null,
+		});
+	}
 }
 
 function setEyeCatchingImage(img: Event) {

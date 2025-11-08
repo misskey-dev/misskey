@@ -4,7 +4,7 @@
  */
 
 import { FXS } from './fxs.js';
-import type { ImageCompositorFunction, ImageCompositorLayer } from '@/lib/ImageCompositor.js';
+import type { ImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
 
 export type ImageEffectorRGB = [r: number, g: number, b: number];

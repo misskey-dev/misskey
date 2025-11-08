@@ -20,7 +20,7 @@ export type ImageCompositorFunction<PS extends ImageCompositorFunctionParams = I
 	}) => void;
 };
 
-export type ImageCompositorLayer<FNS extends Record<string, ImageCompositorFunction> = any> = {
+export type ImageCompositorLayer<FNS extends Record<string, ImageCompositorFunction> = Record<string, ImageCompositorFunction>> = {
 	[K in keyof FNS]: {
 		id: string;
 		functionId: K;
@@ -219,7 +219,7 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, resultTexture, 0);
 			}
 
-			this.renderLayer(layer, preTexture, isLast);
+			this.renderLayer(layer as ImageCompositorLayer, preTexture, isLast);
 
 			preTexture = resultTexture;
 		}
