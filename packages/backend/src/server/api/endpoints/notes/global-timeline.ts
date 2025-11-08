@@ -70,7 +70,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.visibility = \'public\'')
 				.andWhere('note.channelId IS NULL')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
@@ -78,8 +77,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
+			if (me) {
+				this.queryService.generateVisibilityQuery(query, me);
+				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+			} else {
+				query.andWhere('note.visibility = \'public\'');
+			}
+
 			this.queryService.generateBaseNoteFilteringQuery(query, me);
-			if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');

@@ -1939,6 +1939,49 @@ describe('Timelines', () => {
 			});
 		});
 
+		describe('Global TL', () => {
+			test('フォローしているユーザーの visibility: followers なノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(250);
+				const bobNote = await post(bob, { text: 'hi', visibility: 'followers' });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/global-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+				assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'hi');
+			});
+
+			test('自分宛ての指定公開ノートが含まれる', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const bobNote = await post(bob, { text: 'secret', visibility: 'specified', visibleUserIds: [alice.id] });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/global-timeline', { limit: 100 }, alice);
+
+				assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+				assert.strictEqual(res.body.find(note => note.id === bobNote.id)?.text, 'secret');
+			});
+
+			test('未ログイン時はフォロー限定ノートが含まれない', async () => {
+				const [alice] = await Promise.all([signup()]);
+
+				await post(alice, { text: 'hidden', visibility: 'followers' });
+
+				await waitForPushToTl();
+
+				const res = await api('notes/global-timeline', { limit: 100 });
+
+				assert.strictEqual(res.body.some(note => note.text === 'hidden'), false);
+				assert.strictEqual(res.body.length <= 100, true);
+			});
+		});
+
 		// TODO: リノートミュート済みユーザーのテスト
 		// TODO: ページネーションのテスト
 	});

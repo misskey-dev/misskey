@@ -20,6 +20,25 @@ class GlobalTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withFiles: boolean;
 
+	private canSee(note: Packed<'Note'>): boolean {
+		// Global TL の API と同じ visibility ルールをストリーミングにも適用し、
+		// 非公開ノートが権限のない接続に流出したり、逆に閲覧権のあるノートが欠落したりしないようにする
+		if (note.visibility === 'public' || note.visibility === 'home') return true;
+		if (note.visibility === 'specified') {
+			if (!this.user) return false;
+			if (note.userId === this.user.id) return true;
+			return note.visibleUserIds?.includes(this.user.id) ?? false;
+		}
+		if (note.visibility === 'followers') {
+			if (!this.user) return false;
+			if (note.userId === this.user.id) return true;
+			if (note.reply && note.reply.userId === this.user.id) return true;
+			if (note.mentions?.includes(this.user.id)) return true;
+			return Object.hasOwn(this.following, note.userId);
+		}
+		return false;
+	}
+
 	constructor(
 		private metaService: MetaService,
 		private roleService: RoleService,
@@ -48,7 +67,7 @@ class GlobalTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		if (note.visibility !== 'public') return;
+		if (!this.canSee(note)) return;
 		if (note.channelId != null) return;
 		if (note.user.requireSigninToViewContents && this.user == null) return;
 		if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
