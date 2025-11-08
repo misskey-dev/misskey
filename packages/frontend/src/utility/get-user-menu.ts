@@ -18,20 +18,9 @@ import { notesSearchAvailable, canSearchNonLocalNotes } from '@/utility/check-pe
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
+import { openMuteSettingDialog } from '@/utility/mute-confirm.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
-import type { MkMuteSettingDialogDoneEvent } from '@/components/MkMuteSettingDialog.vue';
-
-function muteConfirm(): Promise<MkMuteSettingDialogDoneEvent> {
-	return new Promise(resolve => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkMuteSettingDialog.vue')), {}, {
-			done: result => {
-				resolve(result ? result : { canceled: true });
-			},
-			closed: () => dispose(),
-		});
-	});
-}
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -46,19 +35,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				user.isMuted = false;
 			});
 		} else {
-			const res = await muteConfirm();
+			const res = await openMuteSettingDialog({
+				withMuteType: true,
+			});
 			if (res.canceled) return;
-
-			const expiresAt = res.period === 'indefinitely' ? null
-				: res.period === 'tenMinutes' ? Date.now() + (1000 * 60 * 10)
-				: res.period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-				: res.period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-				: res.period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
-				: null;
 
 			os.apiWithDialog('mute/create', {
 				userId: user.id,
-				expiresAt,
+				expiresAt: res.expiresAt,
 				mutingType: res.type,
 			}).then(() => {
 				user.isMuted = true;
