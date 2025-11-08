@@ -32,4 +32,4 @@ onlyBuiltDependencies:
 ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
-  - happy-dom # セキュリティ修正のため一時的に。そのうち消すこと
+  - '@typescript-eslint/*' # バグ回避のため一時的に。そのうち消すこと
