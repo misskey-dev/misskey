@@ -172,16 +172,16 @@ describe('Timeline', () => {
 				await postAndCheckReception(globalTimeline, true);
 			});
 
-			test('Don\'t receive remote followee\'s home-only Note', async () => {
-				await postAndCheckReception(globalTimeline, false, { visibility: 'home' });
+			test('Receive remote followee\'s home-only Note', async () => {
+				await postAndCheckReception(globalTimeline, true, { visibility: 'home' });
 			});
 
-			test('Don\'t receive remote followee\'s followers-only Note', async () => {
-				await postAndCheckReception(globalTimeline, false, { visibility: 'followers' });
+			test('Receive remote followee\'s followers-only Note', async () => {
+				await postAndCheckReception(globalTimeline, true, { visibility: 'followers' });
 			});
 
-			test('Don\'t receive remote followee\'s visible specified-only Note', async () => {
-				await postAndCheckReception(globalTimeline, false, { visibility: 'specified', visibleUserIds: [bobInA.id] });
+			test('Receive remote followee\'s visible specified-only Note', async () => {
+				await postAndCheckReception(globalTimeline, true, { visibility: 'specified', visibleUserIds: [bobInA.id] });
 			});
 		});
 	});

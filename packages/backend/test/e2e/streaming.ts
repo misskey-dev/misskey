@@ -562,11 +562,61 @@ describe('Streaming', () => {
 			});
 			*/
 
-			test('ホーム投稿は流れない', async () => {
+			test('フォローしているユーザーのホーム投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'globalTimeline',	// ayano:Global
 					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('フォローしていないユーザーのホーム投稿は流れない', async () => {
+				const fired = await waitFire(
+					erin, 'globalTimeline',
+					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('フォローしているユーザーの visibility: followers な投稿が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'globalTimeline',	// ayano:Global
+					() => api('notes/create', { text: 'followers only', visibility: 'followers' }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.text === 'followers only',
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('フォローしていないユーザーの visibility: followers な投稿は流れない', async () => {
+				const fired = await waitFire(
+					ayano, 'globalTimeline',	// ayano:Global
+					() => api('notes/create', { text: 'followers only', visibility: 'followers' }, chitose),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('自分宛ての visibility: specified な投稿が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'globalTimeline',
+					() => api('notes/create', { text: 'direct', visibility: 'specified', visibleUserIds: [ayano.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.text === 'direct',
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('自分宛てでない visibility: specified な投稿は流れない', async () => {
+				const fired = await waitFire(
+					ayano, 'globalTimeline',
+					() => api('notes/create', { text: 'nope', visibility: 'specified', visibleUserIds: [erin.id] }, kyoko),
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.text === 'nope',
 				);
 
 				assert.strictEqual(fired, false);
