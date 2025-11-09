@@ -8191,6 +8191,10 @@ export interface Locale extends ILocale {
              * ウォーターマーク機能の使用可否
              */
             "watermarkAvailable": string;
+            /**
+             * モデレーターの活動状況チェックの対象に含める
+             */
+            "isModeratorInactivityCheckTarget": string;
         };
         "_condition": {
             /**
