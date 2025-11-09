@@ -545,10 +545,10 @@ describe('CheckModeratorsActivityProcessorService with RoleService', () => {
 
 	afterEach(async () => {
 		clock.uninstall();
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
-		await roleAssignmentsRepository.delete({});
-		await rolesRepository.delete({});
+		await usersRepository.deleteAll();
+		await userProfilesRepository.deleteAll();
+		await roleAssignmentsRepository.deleteAll();
+		await rolesRepository.deleteAll();
 
 		roleService.flushCaches();
 	});
