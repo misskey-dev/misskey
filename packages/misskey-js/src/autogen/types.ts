@@ -36648,9 +36648,11 @@ export interface operations {
                     /** @default 10 */
                     limit?: number;
                     page?: number;
-                    /** @default [
+                    /**
+                     * @default [
                      *       "-id"
-                     *     ] */
+                     *     ]
+                     */
                     sortKeys?: ('+id' | '-id' | '+updatedAt' | '-updatedAt' | '+name' | '-name' | '+host' | '-host' | '+uri' | '-uri' | '+publicUrl' | '-publicUrl' | '+type' | '-type' | '+aliases' | '-aliases' | '+category' | '-category' | '+license' | '-license' | '+isSensitive' | '-isSensitive' | '+localOnly' | '-localOnly' | '+roleIdsThatCanBeUsedThisEmojiAsReaction' | '-roleIdsThatCanBeUsedThisEmojiAsReaction')[];
                 };
             };
