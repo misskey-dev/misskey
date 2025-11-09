@@ -295,7 +295,7 @@ export class NotificationEntityService implements OnModuleInit {
 	): boolean {
 		if (!('notifierId' in notification)) return true;
 		const muting = userIdsWhoMeMutingMap.get(notification.notifierId);
-		if (muting && muting.mutingType === 'all') return false;
+		if (muting != null && muting.mutingType === 'all') return false;
 
 		const notifier = notifiers.find(x => x.id === notification.notifierId) ?? null;
 
