@@ -74,7 +74,35 @@ async function add() {
 	if (canceled || type == null) return;
 
 	const id = genId();
-	children.value.push({ id, type });
+
+	// TODO: page-editor.vueのと共通化
+	if (type === 'text') {
+		children.value.push({
+			id,
+			type,
+			text: '',
+		});
+	} else if (type === 'section') {
+		children.value.push({
+			id,
+			type,
+			title: '',
+			children: [],
+		});
+	} else if (type === 'image') {
+		children.value.push({
+			id,
+			type,
+			fileId: null,
+		});
+	} else if (type === 'note') {
+		children.value.push({
+			id,
+			type,
+			detailed: false,
+			note: null,
+		});
+	}
 }
 
 onMounted(() => {

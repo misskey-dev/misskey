@@ -3,16 +3,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './polkadot.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-// Primarily used for watermark
-export const FX_polkadot = defineImageEffectorFx({
-	id: 'polkadot',
-	name: i18n.ts._imageEffector._fxs.polkadot,
+export const fn = defineImageCompositorFunction<{
+	angle: number;
+	scale: number;
+	majorRadius: number;
+	majorOpacity: number;
+	minorDivisions: number;
+	minorRadius: number;
+	minorOpacity: number;
+	color: [number, number, number];
+}>({
 	shader,
-	uniforms: ['angle', 'scale', 'major_radius', 'major_opacity', 'minor_divisions', 'minor_radius', 'minor_opacity', 'color'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.angle, params.angle / 2);
+		gl.uniform1f(u.scale, params.scale * params.scale);
+		gl.uniform1f(u.major_radius, params.majorRadius);
+		gl.uniform1f(u.major_opacity, params.majorOpacity);
+		gl.uniform1f(u.minor_divisions, params.minorDivisions);
+		gl.uniform1f(u.minor_radius, params.minorRadius);
+		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
+		gl.uniform1f(u.minor_opacity, params.minorOpacity);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.polkadot,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
@@ -79,14 +99,4 @@ export const FX_polkadot = defineImageEffectorFx({
 			default: [1, 1, 1],
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.angle, params.angle / 2);
-		gl.uniform1f(u.scale, params.scale * params.scale);
-		gl.uniform1f(u.major_radius, params.majorRadius);
-		gl.uniform1f(u.major_opacity, params.majorOpacity);
-		gl.uniform1f(u.minor_divisions, params.minorDivisions);
-		gl.uniform1f(u.minor_radius, params.minorRadius);
-		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
-		gl.uniform1f(u.minor_opacity, params.minorOpacity);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;
