@@ -969,8 +969,8 @@ async function loadUserSettings() {
 			panOffset.value.x = settings.panOffsetX;
 			panOffset.value.y = settings.panOffsetY;
 			// カラーパレットを復元（保存されている場合）
-			if (settings.colors && Array.isArray(settings.colors)) {
-				colors.value = settings.colors;
+			if ((settings as any).colors && Array.isArray((settings as any).colors)) {
+				colors.value = (settings as any).colors;
 			}
 		}
 	} catch (error) {
@@ -2013,9 +2013,8 @@ function drawRemoteProgress(data: any) {
 		color: data.color,
 		strokeWidth: data.strokeWidth,
 		opacity: data.opacity,
-		layer: layer,
 		userId: data.userId,
-	});
+	} as any);
 
 	// キャンバスを再描画（進行中の描画を含む）
 	redrawWithActiveStrokes();
@@ -2063,7 +2062,7 @@ function redrawWithActiveStrokes() {
 	// 進行中の描画を各レイヤーに一時的に描画
 	for (const [, strokeData] of otherActiveStrokes.value) {
 		// レイヤー情報を取得（未指定の場合は0）
-		const targetLayer = strokeData.layer !== undefined ? strokeData.layer : 0;
+		const targetLayer = (strokeData as any).layer !== undefined ? (strokeData as any).layer : 0;
 		const targetCtx = layerContexts.value[targetLayer];
 
 		if (!targetCtx) continue;
@@ -2344,7 +2343,7 @@ function downloadCanvas() {
 			document.body.removeChild(a);
 			URL.revokeObjectURL(url);
 
-			os.success('キャンバスをダウンロードしました');
+			os.success();
 		}, 'image/png');
 	} catch (error) {
 		console.error('🎨 [ERROR] Download canvas error:', error);

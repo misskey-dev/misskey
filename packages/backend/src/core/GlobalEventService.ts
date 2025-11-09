@@ -220,6 +220,29 @@ export interface ChatEventTypes {
 		strokeId: string;
 		timestamp: number;
 	};
+	drawingProgress: {
+		userId: MiUser['id'];
+		userName: string;
+		points: Array<{ x: number; y: number }>;
+		tool: 'pen' | 'eraser' | 'eyedropper';
+		color: string;
+		strokeWidth: number;
+		opacity: number;
+		timestamp: number;
+	};
+	redoStroke: {
+		userId: MiUser['id'];
+		userName: string;
+		strokeId: string;
+		timestamp: number;
+	};
+	canvasSizeChange: {
+		userId: MiUser['id'];
+		userName: string;
+		width: number;
+		height: number;
+		timestamp: number;
+	};
 }
 
 export interface ReversiEventTypes {

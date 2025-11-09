@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-star ti-fw" style="margin-right: 0.5em;"></i>
 				{{ i18n.ts.featuredIllustrations }}
 			</template>
-			<MkIllustrationGallery :paginator="featuredIllustrationsPaginator"/>
+			<MkIllustrationGallery :paginator="featuredIllustrationsPaginator" @beforeNavigate="saveScrollPosition"/>
 		</MkFoldableSection>
 
 		<!-- 新着のイラストセクション -->

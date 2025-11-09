@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -48,8 +49,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			// 管理画面の非表示ハッシュタグを取得
+			const instance = await this.metaService.fetch();
+			const hiddenTags = instance.hiddenTags.map(tag => tag.toLowerCase());
+
 			// note.tagsフィールドから画像付き投稿が多いハッシュタグを集計
 			const query = this.notesRepository.createQueryBuilder('note')
 				.select('UNNEST(note.tags)', 'tag')

@@ -61,6 +61,10 @@ const props = defineProps<{
 	paginator: any; // IPaginatorインターフェース
 }>();
 
+const emit = defineEmits<{
+	(e: 'beforeNavigate'): void;
+}>();
+
 // ギャラリーアイテムの型定義
 type GalleryItem = {
 	note: Misskey.entities.Note;
