@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('(file."excludedFromIllustrationHighlight" IS NULL OR file."excludedFromIllustrationHighlight" = false)')
 				.groupBy('tag')
 				.orderBy('count', 'DESC')
-				.limit(ps.limit);
+				.limit(ps.limit * 2); // 非表示タグでフィルタリングするため、多めに取得
 
 			const result = await query.getRawMany();
 
@@ -81,6 +81,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const tag = row.tag as string;
 				const count = parseInt(row.count as string, 10);
 				const lowerTag = tag.toLowerCase();
+
+				// 非表示タグに含まれている場合はスキップ
+				if (hiddenTags.includes(lowerTag)) {
+					continue;
+				}
 
 				tagMap.set(lowerTag, (tagMap.get(lowerTag) || 0) + count);
 			}

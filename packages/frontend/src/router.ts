@@ -19,12 +19,29 @@ export function createRouter(fullPath: string): Router {
 
 export const mainRouter = createRouter(window.location.pathname + window.location.search + window.location.hash);
 
+// ブラウザのデフォルトのスクロール復元を無効化（SPAで手動管理するため）
+if (history.scrollRestoration) {
+	history.scrollRestoration = 'manual';
+}
+
+// 履歴エントリごとにユニークなIDを生成
+let historyStateId = 0;
+
 window.addEventListener('popstate', (event) => {
+	// popstate（ブラウザバック/フォワード）が発生したことをマーク
+	sessionStorage.setItem('__misskey_router_popstate', 'true');
+	console.log('[Router] popstate event, state:', event.state);
 	mainRouter.replaceByPath(window.location.pathname + window.location.search + window.location.hash);
 });
 
 mainRouter.addListener('push', ctx => {
-	window.history.pushState({ }, '', ctx.fullPath);
+	// 通常のページ遷移時はpopstateフラグをクリアしない（イラスト遷移の判定に使う）
+	// sessionStorage.removeItem('__misskey_router_popstate'); // コメントアウト
+
+	// 履歴エントリにユニークなIDを保存
+	historyStateId++;
+	window.history.pushState({ id: historyStateId, path: ctx.fullPath }, '', ctx.fullPath);
+	console.log('[Router] push:', ctx.fullPath, 'state ID:', historyStateId);
 });
 
 mainRouter.addListener('replace', ctx => {

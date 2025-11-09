@@ -20,7 +20,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 const roles = ref<Misskey.entities.Role[] | null>(null);
 
 misskeyApi('roles/list').then(res => {
-	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.displayOrder - a.displayOrder);
+	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.usersCount - a.usersCount);
 });
 </script>
 
