@@ -17,32 +17,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ mode === 'create' ? i18n.ts._abuseReport._notificationRecipient.createRecipient : i18n.ts._abuseReport._notificationRecipient.modifyRecipient }}
 	</template>
 	<div v-if="loading === 0" style="display: flex; flex-direction: column; min-height: 100%;">
-		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px; flex-grow: 1;">
 			<div :class="$style.root" class="_gaps_m">
 				<MkInput v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
 				</MkInput>
-				<MkSelect v-model="method">
+				<MkSelect v-model="method" :items="methodDef">
 					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.recipientType }}</template>
-					<option value="email">{{ i18n.ts._abuseReport._notificationRecipient._recipientType.mail }}</option>
-					<option value="webhook">{{ i18n.ts._abuseReport._notificationRecipient._recipientType.webhook }}</option>
 					<template #caption>
 						{{ methodCaption }}
 					</template>
 				</MkSelect>
 				<div>
-					<MkSelect v-if="method === 'email'" v-model="userId">
+					<MkSelect v-if="method === 'email'" v-model="userId" :items="userIdDef">
 						<template #label>{{ i18n.ts._abuseReport._notificationRecipient.notifiedUser }}</template>
-						<option v-for="user in moderators" :key="user.id" :value="user.id">
-							{{ user.name ? `${user.name}(${user.username})` : user.username }}
-						</option>
 					</MkSelect>
 					<div v-else-if="method === 'webhook'" :class="$style.systemWebhook">
-						<MkSelect v-model="systemWebhookId" style="flex: 1">
+						<MkSelect v-model="systemWebhookId" :items="systemWebhookIdDef" style="flex: 1">
 							<template #label>{{ i18n.ts._abuseReport._notificationRecipient.notifiedWebhook }}</template>
-							<option v-for="webhook in systemWebhooks" :key="webhook.id ?? undefined" :value="webhook.id">
-								{{ webhook.name }}
-							</option>
 						</MkSelect>
 						<MkButton rounded :class="$style.systemWebhookEditButton" @click="onEditSystemWebhookClicked">
 							<span v-if="systemWebhookId === null" class="ti ti-plus" style="line-height: normal"/>
@@ -57,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.enable }}</template>
 				</MkSwitch>
 			</div>
-		</MkSpacer>
+		</div>
 
 		<div :class="$style.footer" class="_buttonsCenter">
 			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
@@ -79,13 +71,12 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkDivider from '@/components/MkDivider.vue';
 import * as os from '@/os.js';
-
-type NotificationRecipientMethod = 'email' | 'webhook';
 
 const emit = defineEmits<{
 	(ev: 'submitted'): void;
@@ -105,9 +96,28 @@ const dialogEl = useTemplateRef('dialogEl');
 const loading = ref<number>(0);
 
 const title = ref<string>('');
-const method = ref<NotificationRecipientMethod>('email');
-const userId = ref<string | null>(null);
-const systemWebhookId = ref<string | null>(null);
+const {
+	model: method,
+	def: methodDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.mail, value: 'email' },
+		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.webhook, value: 'webhook' },
+	],
+	initialValue: 'email',
+});
+const {
+	model: userId,
+	def: userIdDef,
+} = useMkSelect({
+	items: computed(() => moderators.value.map(u => ({ label: u.name ? `${u.name}(${u.username})` : u.username, value: u.id as string | null }))),
+});
+const {
+	model: systemWebhookId,
+	def: systemWebhookIdDef,
+} = useMkSelect({
+	items: computed(() => systemWebhooks.value.map(w => ({ label: w.name, value: w.id }))),
+});
 const isActive = ref<boolean>(true);
 
 const moderators = ref<entities.User[]>([]);

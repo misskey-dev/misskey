@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { initChart } from '@/utility/init-chart.js';
 
 export type InstanceForPie = {
@@ -32,15 +32,17 @@ const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',
 });
 
-let chartInstance: Chart;
+let chartInstance: Chart | null = null;
 
 onMounted(() => {
+	if (chartEl.value == null) return;
+
 	chartInstance = new Chart(chartEl.value, {
 		type: 'doughnut',
 		data: {
 			labels: props.data.map(x => x.name),
 			datasets: [{
-				backgroundColor: props.data.map(x => x.color),
+				backgroundColor: props.data.map(x => x.color ?? '#000'),
 				borderColor: getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel'),
 				borderWidth: 2,
 				hoverOffset: 0,
@@ -57,9 +59,10 @@ onMounted(() => {
 				},
 			},
 			onClick: (ev) => {
-				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
-				if (hit && props.data[hit.index].onClick) {
-					props.data[hit.index].onClick();
+				if (ev.native == null) return;
+				const hit = chartInstance!.getElementsAtEventForMode(ev.native, 'nearest', { intersect: true }, false)[0];
+				if (hit && props.data[hit.index].onClick != null) {
+					props.data[hit.index].onClick!();
 				}
 			},
 			plugins: {

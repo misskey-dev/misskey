@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else #header>New emoji</template>
 
 	<div style="display: flex; flex-direction: column; min-height: 100%;">
-		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px; flex-grow: 1;">
 			<div class="_gaps_m">
 				<div v-if="imgUrl != null" :class="$style.imgs">
 					<div style="background: #000;" :class="$style.imgContainer">
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
-				<MkInput v-model="category" :datalist="customEmojiCategories">
+				<MkInput v-model="category" :datalist="customEmojiCategories.filter(x => x != null)">
 					<template #label>{{ i18n.ts.category }}</template>
 				</MkInput>
 				<MkInput v-model="aliases" autocapitalize="off">
@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 				<MkButton v-if="emoji" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -91,7 +91,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
@@ -103,7 +103,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void
 }>();
 
-const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
+const windowEl = useTemplateRef('windowEl');
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji?.category ? props.emoji.category : '');
 const aliases = ref<string>(props.emoji ? props.emoji.aliases.join(' ') : '');
@@ -121,7 +121,10 @@ watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? props.emoji.url : null);
 
 async function changeImage(ev: Event) {
-	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
+	file.value = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	const candidate = file.value.name.replace(/\.(.+)$/, '');
 	if (candidate.match(/^[a-z0-9_]+$/)) {
 		name.value = candidate;
@@ -132,12 +135,12 @@ async function addRole() {
 	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id);
 
-	const { canceled, result: role } = await os.select({
-		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
+	const { canceled, result: roleId } = await os.select({
+		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ label: r.name, value: r.id })),
 	});
-	if (canceled || role == null) return;
+	if (canceled || roleId == null) return;
 
-	rolesThatCanBeUsedThisEmojiAsReaction.value.push(role);
+	rolesThatCanBeUsedThisEmojiAsReaction.value.push(roles.find(r => r.id === roleId)!);
 }
 
 async function removeRole(role: Misskey.entities.RoleLite, ev: Event) {
@@ -153,11 +156,8 @@ async function done() {
 		isSensitive: isSensitive.value,
 		localOnly: localOnly.value,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
+		fileId: file.value ? file.value.id : undefined,
 	};
-
-	if (file.value) {
-		params.fileId = file.value.id;
-	}
 
 	if (props.emoji) {
 		await os.apiWithDialog('admin/emoji/update', {
@@ -174,7 +174,12 @@ async function done() {
 
 		windowEl.value?.close();
 	} else {
-		const created = await os.apiWithDialog('admin/emoji/add', params);
+		if (params.fileId == null) return;
+
+		const created = await os.apiWithDialog('admin/emoji/add', {
+			...params,
+			fileId: params.fileId, // TSを黙らすため
+		});
 
 		emit('done', {
 			created: created,

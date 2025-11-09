@@ -55,7 +55,8 @@ block meta
 	if note.next
 		link(rel='next' href=`${config.url}/notes/${note.next}`)
 
-	if !user.host
-		link(rel='alternate' href=url type='application/activity+json')
-	if note.uri
-		link(rel='alternate' href=note.uri type='application/activity+json')
+	if federationEnabled
+		if !user.host
+			link(rel='alternate' href=url type='application/activity+json')
+		if note.uri
+			link(rel='alternate' href=note.uri type='application/activity+json')

@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { QueryService } from '@/core/QueryService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -49,6 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
 		private cacheService: CacheService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const userIdsWhoBlockingMe = me ? await this.cacheService.userBlockedCache.fetch(me.id) : new Set<string>();
@@ -84,6 +86,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
+
+			this.queryService.generateBlockedHostQueryForNote(query);
+			this.queryService.generateSuspendedUserQueryForNote(query);
 
 			const notes = (await query.getMany()).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;

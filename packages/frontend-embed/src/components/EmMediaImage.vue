@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		target="_blank"
 		rel="noopener"
 	>
-		<ImgWithBlurhash
+		<EmImgWithBlurhash
 			:hash="image.blurhash"
 			:src="hide ? null : url"
 			:forceBlurhash="hide"
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import ImgWithBlurhash from '@/components/EmImgWithBlurhash.vue';
+import EmImgWithBlurhash from '@/components/EmImgWithBlurhash.vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{

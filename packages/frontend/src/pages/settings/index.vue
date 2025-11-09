@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 900px; --MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
 							<div><button class="_textButton" @click="enableAutoBackup">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipAutoBackup">{{ i18n.ts.skip }}</button></div>
 						</MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="SETTING_INDEX"></MkSuperMenu>
+						<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="searchIndex"></MkSuperMenu>
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -42,12 +42,12 @@ import { instance } from '@/instance.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router.js';
-import { searchIndexes } from '@/utility/settings-search-index.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 import { signout } from '@/signout.js';
+import { genSearchIndexes } from '@/utility/inapp-search.js';
 
-const SETTING_INDEX = searchIndexes; // TODO: lazy load
+const searchIndex = await import('search-index:settings').then(({ searchIndexes }) => genSearchIndexes(searchIndexes));
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -177,7 +177,8 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		action: async () => {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.ts.logoutConfirm,
+				title: i18n.ts.logoutConfirm,
+				text: i18n.ts.logoutWillClearClientData,
 			});
 			if (canceled) return;
 			signout();
@@ -187,6 +188,8 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 }]);
 
 onMounted(() => {
+	if (el.value == null) return; // TSを黙らすため
+
 	ro.observe(el.value);
 
 	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
@@ -197,6 +200,8 @@ onMounted(() => {
 });
 
 onActivated(() => {
+	if (el.value == null) return; // TSを黙らすため
+
 	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 
 	if (!narrow.value && currentPage.value?.route.name == null) {
@@ -214,7 +219,7 @@ watch(router.currentRef, (to) => {
 	}
 });
 
-const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
+const emailNotConfigured = computed(() => $i && instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();

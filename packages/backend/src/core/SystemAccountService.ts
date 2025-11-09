@@ -5,11 +5,14 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import type { OnApplicationShutdown } from '@nestjs/common';
 import { DataSource, IsNull } from 'typeorm';
+import * as Redis from 'ioredis';
 import bcrypt from 'bcryptjs';
 import { MiLocalUser, MiUser } from '@/models/User.js';
 import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, type UsersRepository, type SystemAccountsRepository } from '@/models/_.js';
 import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -20,10 +23,13 @@ import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy'] as const;
 
 @Injectable()
-export class SystemAccountService {
+export class SystemAccountService implements OnApplicationShutdown {
 	private cache: MemoryKVCache<MiLocalUser>;
 
 	constructor(
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
+
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -42,6 +48,31 @@ export class SystemAccountService {
 		private idService: IdService,
 	) {
 		this.cache = new MemoryKVCache<MiLocalUser>(1000 * 60 * 10); // 10m
+
+		this.redisForSub.on('message', this.onMessage);
+	}
+
+	@bindThis
+	private async onMessage(_: string, data: string): Promise<void> {
+		const obj = JSON.parse(data);
+
+		if (obj.channel === 'internal') {
+			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+			switch (type) {
+				case 'metaUpdated': {
+					if (body.before != null && body.before.name !== body.after.name) {
+						for (const account of SYSTEM_ACCOUNT_TYPES) {
+							await this.updateCorrespondingUserProfile(account, {
+								name: body.after.name,
+							});
+						}
+					}
+					break;
+				}
+				default:
+					break;
+			}
+		}
 	}
 
 	@bindThis
@@ -145,7 +176,7 @@ export class SystemAccountService {
 
 	@bindThis
 	public async updateCorrespondingUserProfile(type: typeof SYSTEM_ACCOUNT_TYPES[number], extra: {
-		name?: string;
+		name?: string | null;
 		description?: MiUserProfile['description'];
 	}): Promise<MiLocalUser> {
 		const user = await this.fetch(type);
@@ -168,5 +199,16 @@ export class SystemAccountService {
 		this.cache.set(type, updated);
 
 		return updated;
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.redisForSub.off('message', this.onMessage);
+		this.cache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string): void {
+		this.dispose();
 	}
 }

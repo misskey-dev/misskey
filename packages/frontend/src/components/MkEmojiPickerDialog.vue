@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
-	:src="src"
+	:anchorElement="anchorElement"
 	@click="modal?.close()"
 	@esc="modal?.close()"
 	@opening="opening"
@@ -44,11 +44,11 @@ import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	src?: HTMLElement;
+	anchorElement?: HTMLElement | null;
 	showPinned?: boolean;
 	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 	choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,

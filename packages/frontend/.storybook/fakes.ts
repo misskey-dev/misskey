@@ -33,6 +33,7 @@ export function channel(id = 'somechannelid', name = 'Some Channel', bannerUrl: 
 		description: null,
 		userId: null,
 		bannerUrl,
+		bannerId: null,
 		pinnedNoteIds: [],
 		color: '#000',
 		isArchived: false,
@@ -40,6 +41,41 @@ export function channel(id = 'somechannelid', name = 'Some Channel', bannerUrl: 
 		notesCount: 1,
 		isSensitive: false,
 		allowRenoteToExternal: false,
+	};
+}
+
+export function chatMessage(room = false, id = 'somechatmessageid', text = 'Hello!'): entities.ChatMessage {
+	const fromUser = userLite();
+	const toRoom = chatRoom();
+	const toUser = userLite('touserid');
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		fromUserId: fromUser.id,
+		fromUser,
+		text,
+		isRead: false,
+		reactions: [],
+		...room ? {
+			toRoomId: toRoom.id,
+			toRoom,
+		} : {
+			toUserId: toUser.id,
+			toUser,
+		},
+	};
+}
+
+export function chatRoom(id = 'somechatroomid', name = 'Some Chat Room'): entities.ChatRoom {
+	const owner = userLite('someownerid');
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		ownerId: owner.id,
+		owner,
+		name,
+		description: 'A chat room for testing',
+		isMuted: false,
 	};
 }
 
@@ -92,7 +128,7 @@ export function galleryPost(isSensitive = false) {
 	}
 }
 
-export function file(isSensitive = false) {
+export function file(isSensitive = false): entities.DriveFile {
 	return {
 		id: 'somefileid',
 		createdAt: '2016-12-28T22:49:51.000Z',
@@ -172,6 +208,7 @@ export function federationInstance(): entities.FederationInstance {
 		isSuspended: false,
 		suspensionState: 'none',
 		isBlocked: false,
+		isMediaSilenced: false,
 		softwareName: 'misskey',
 		softwareVersion: '2024.5.0',
 		openRegistrations: false,
@@ -276,6 +313,8 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host: enti
 		alsoKnownAs: null,
 		notify: 'none',
 		memo: null,
+		canChat: true,
+		chatScope: 'everyone',
 	};
 }
 
@@ -343,6 +382,7 @@ export function role(params: {
 		asBadge: params.asBadge ?? true,
 		canEditMembersByModerator: params.canEditMembersByModerator ?? false,
 		usersCount: params.usersCount ?? 10,
+		preserveAssignmentOnMoveAccount: false,
 		condFormula: {
 			id: '',
 			type: 'or',

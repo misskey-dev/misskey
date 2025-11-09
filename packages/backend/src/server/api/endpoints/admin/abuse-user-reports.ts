@@ -98,6 +98,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		state: { type: 'string', nullable: true, default: null },
 		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
@@ -115,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.abuseUserReportsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(this.abuseUserReportsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
 
 			switch (ps.state) {
 				case 'resolved': query.andWhere('report.resolved = TRUE'); break;

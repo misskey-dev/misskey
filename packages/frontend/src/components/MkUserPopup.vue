@@ -12,8 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	appear @afterLeave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
-		<div v-if="user != null">
-			<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` : ''">
+		<MkError v-if="error" @retry="fetchUser()"/>
+		<div v-else-if="user != null">
+			<div :class="$style.banner" :style="user.bannerUrl ? { backgroundImage: `url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` } : ''">
 				<span v-if="$i && $i.id != user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
 			</div>
 			<svg viewBox="0 0 128 128" :class="$style.avatarBack">
@@ -21,7 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<path d="M64,32C81.661,32 96,46.339 96,64C95.891,72.184 104,72 104,72C104,72 74.096,80 64,80C52.755,80 24,72 24,72C24,72 31.854,72.018 32,64C32,46.339 46.339,32 64,32Z" style="fill: var(--MI_THEME-popup);"/>
 				</g>
 			</svg>
-			<MkAvatar :class="$style.avatar" :user="user" indicator/>
+			<MkA :to="userPage(user)">
+				<MkAvatar :class="$style.avatar" :user="user" indicator/>
+			</MkA>
 			<div :class="$style.title">
 				<MkA :class="$style.name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 				<div :class="$style.username"><MkAcct :user="user"/></div>
@@ -31,18 +34,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
-				<div :class="$style.statusItem">
+				<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
-				</div>
-				<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
+				</MkA>
+				<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'following')">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
-				</div>
-				<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
+				</MkA>
+				<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
-				</div>
+				</MkA>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<MkFollowButton v-if="$i && user.id != $i.id" v-model:user="user" :class="$style.follow" mini/>
@@ -71,7 +74,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	showing: boolean;
-	q: string;
+	q: string | Misskey.entities.UserDetailed;
 	source: HTMLElement;
 }>();
 
@@ -85,6 +88,7 @@ const zIndex = os.claimZIndex('middle');
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const top = ref(0);
 const left = ref(0);
+const error = ref(false);
 
 function showMenu(ev: MouseEvent) {
 	if (user.value == null) return;
@@ -92,19 +96,28 @@ function showMenu(ev: MouseEvent) {
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
-onMounted(() => {
+async function fetchUser() {
 	if (typeof props.q === 'object') {
 		user.value = props.q;
+		error.value = false;
 	} else {
-		const query = props.q.startsWith('@') ?
+		const query: Misskey.entities.UsersShowRequest = props.q.startsWith('@') ?
 			Misskey.acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
+		// @ts-expect-error payloadの引数側の型が正常に解決されない
 		misskeyApi('users/show', query).then(res => {
 			if (!props.showing) return;
 			user.value = res;
+			error.value = false;
+		}, () => {
+			error.value = true;
 		});
 	}
+}
+
+onMounted(() => {
+	fetchUser();
 
 	const rect = props.source.getBoundingClientRect();
 	const x = ((rect.left + (props.source.offsetWidth / 2)) - (300 / 2)) + window.scrollX;

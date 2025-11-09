@@ -95,8 +95,8 @@ describe('UserWebhookService', () => {
 	}
 
 	async function afterEachImpl() {
-		await usersRepository.delete({});
-		await userWebhooksRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userWebhooksRepository.createQueryBuilder().delete().execute();
 	}
 
 	// --------------------------------------------------------------------------------------
