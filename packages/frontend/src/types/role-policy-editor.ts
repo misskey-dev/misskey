@@ -2,8 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import * as Misskey from 'misskey-js';
 import type { Component } from 'vue';
-import type { ROLE_POLICIES } from '@@/js/const.js';
 
 interface RolePolicyDefItemBase<T = any> {
 	searchTerms?: string[];
@@ -56,7 +56,7 @@ export type RolePolicyDefItem =
 	RolePolicyDefItemString |
 	RolePolicyDefItemEnum;
 
-export type RolePolicyDef = Record<typeof ROLE_POLICIES[number], RolePolicyDefItem>;
+export type RolePolicyDef = Record<typeof Misskey.rolePolicies[number], RolePolicyDefItem>;
 
 export type GetRolePolicyEditorValuesType<T extends RolePolicyDefItem> =
 	T extends RolePolicyDefItemBoolean ? boolean :
