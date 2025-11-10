@@ -7,9 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<template v-if="edit">
 		<header :class="$style.editHeader">
-			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--MI-margin)" data-cy-widget-select>
+			<MkSelect v-model="widgetAdderSelected" :items="widgetAdderSelectedDef" style="margin-bottom: var(--MI-margin)" data-cy-widget-select>
 				<template #label>{{ i18n.ts.selectWidget }}</template>
-				<option v-for="widget in _widgetDefs" :key="widget" :value="widget">{{ i18n.ts._widgets[widget] }}</option>
 			</MkSelect>
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
@@ -51,6 +50,7 @@ export type DefaultStoredWidget = {
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, computed } from 'vue';
+import { isLink } from '@@/js/is-link.js';
 import { genId } from '@/utility/id.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -58,7 +58,7 @@ import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { isLink } from '@@/js/is-link.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -81,7 +81,7 @@ const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
 	(ev: 'addWidget', widget: Widget): void;
 	(ev: 'removeWidget', widget: Widget): void;
-	(ev: 'updateWidget', widget: Partial<Widget>): void;
+	(ev: 'updateWidget', widget: { id: Widget['id']; data: Widget['data']; }): void;
 	(ev: 'exit'): void;
 }>();
 
@@ -89,7 +89,15 @@ const widgetRefs = {};
 const configWidget = (id: string) => {
 	widgetRefs[id].configure();
 };
-const widgetAdderSelected = ref<string | null>(null);
+
+const {
+	model: widgetAdderSelected,
+	def: widgetAdderSelectedDef,
+} = useMkSelect({
+	items: computed(() => [{ label: i18n.ts.none, value: null }, ..._widgetDefs.value.map(x => ({ label: i18n.ts._widgets[x], value: x }))]),
+	initialValue: null,
+});
+
 const addWidget = () => {
 	if (widgetAdderSelected.value == null) return;
 
@@ -104,7 +112,7 @@ const addWidget = () => {
 const removeWidget = (widget) => {
 	emit('removeWidget', widget);
 };
-const updateWidget = (id, data) => {
+const updateWidget = (id: Widget['id'], data: Widget['data']) => {
 	emit('updateWidget', { id, data });
 };
 

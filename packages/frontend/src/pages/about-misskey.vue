@@ -295,6 +295,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'しゃどかの',
 	icon: 'https://assets.misskey-hub.net/patrons/5bec3c6b402942619e03f7a2ae76d69e.jpg',
+}, {
+	name: '大賀愛一郎',
+	icon: 'https://assets.misskey-hub.net/patrons/c701a797d1df4125970f25d3052250ac.jpg',
 }];
 
 const patrons = [

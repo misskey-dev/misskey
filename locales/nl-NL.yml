@@ -1083,3 +1083,5 @@ _search:
 _watermarkEditor:
   image: "Afbeeldingen"
   advanced: "Geavanceerd"
+_qr:
+  showTabTitle: "Weergave"

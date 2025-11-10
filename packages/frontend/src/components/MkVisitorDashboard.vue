@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h1 :class="$style.mainTitle">
 				<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
 				<!-- <img class="logo" v-if="instance.logoImageUrl" :src="instance.logoImageUrl"><span v-else class="text">{{ instanceName }}</span> -->
-				<span>{{ instanceName }}</span>
+				<MkA to="/">{{ instanceName }}</MkA>
 			</h1>
 			<div :class="$style.mainAbout">
 				<!-- eslint-disable-next-line vue/no-v-html -->
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div v-if="stats && instance.clientOptions.showActivityiesForVisitor !== false" :class="$style.stats">
+	<div v-if="stats && instance.clientOptions.showActivitiesForVisitor !== false" :class="$style.stats">
 		<div :class="[$style.statsItem, $style.panel]">
 			<div :class="$style.statsItemLabel">{{ i18n.ts.users }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalUsersCount"/></div>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkStreamingNotesTimeline src="local"/>
 		</div>
 	</div>
-	<div v-if="instance.clientOptions.showActivityiesForVisitor !== false" :class="$style.panel">
+	<div v-if="instance.clientOptions.showActivitiesForVisitor !== false" :class="$style.panel">
 		<XActiveUsersChart/>
 	</div>
 </div>
@@ -72,7 +72,7 @@ import { openInstanceMenu } from '@/ui/_common_/common.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
-if (instance.clientOptions.showActivityiesForVisitor !== false) {
+if (instance.clientOptions.showActivitiesForVisitor !== false) {
 	misskeyApi('stats', {}).then((res) => {
 		stats.value = res;
 	});

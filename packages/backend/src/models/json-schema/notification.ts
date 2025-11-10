@@ -214,6 +214,36 @@ export const packedNotificationSchema = {
 			type: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ['scheduledNotePosted'],
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['scheduledNotePostFailed'],
+			},
+			noteDraft: {
+				type: 'object',
+				ref: 'NoteDraft',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
 				enum: ['follow'],
 			},
 			user: {

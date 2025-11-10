@@ -25,11 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['ugc', 'content', 'visibility', 'visitor', 'guest']">
-					<MkSelect v-model="ugcVisibilityForVisitor" @update:modelValue="onChange_ugcVisibilityForVisitor">
+					<MkSelect v-model="ugcVisibilityForVisitor" :items="ugcVisibilityForVisitorDef" @update:modelValue="onChange_ugcVisibilityForVisitor">
 						<template #label><SearchLabel>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor }}</SearchLabel></template>
-						<option value="all">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all }}</option>
-						<option value="local">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly }} ({{ i18n.ts.recommended }})</option>
-						<option value="none">{{ i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none }}</option>
 						<template #caption>
 							<div><SearchText>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description }}</SearchText></div>
 							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> <SearchText>{{ i18n.ts._serverSettings.userGeneratedContentsVisibilityForVisitor_description2 }}</SearchText></div>
@@ -158,6 +155,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import XServerRules from './server-rules.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -167,6 +165,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -176,7 +175,17 @@ const meta = await misskeyApi('admin/meta');
 
 const enableRegistration = ref(!meta.disableRegistration);
 const emailRequiredForSignup = ref(meta.emailRequiredForSignup);
-const ugcVisibilityForVisitor = ref(meta.ugcVisibilityForVisitor);
+const {
+	model: ugcVisibilityForVisitor,
+	def: ugcVisibilityForVisitorDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.all, value: 'all' },
+		{ label: i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.localOnly, value: 'local' },
+		{ label: i18n.ts._serverSettings._userGeneratedContentsVisibilityForVisitor.none, value: 'none' },
+	],
+	initialValue: meta.ugcVisibilityForVisitor,
+});
 const sensitiveWords = ref(meta.sensitiveWords.join('\n'));
 const prohibitedWords = ref(meta.prohibitedWords.join('\n'));
 const prohibitedWordsForNameOfUser = ref(meta.prohibitedWordsForNameOfUser.join('\n'));
@@ -212,7 +221,7 @@ function onChange_emailRequiredForSignup(value: boolean) {
 	});
 }
 
-function onChange_ugcVisibilityForVisitor(value: string) {
+function onChange_ugcVisibilityForVisitor(value: typeof ugcVisibilityForVisitor.value) {
 	os.apiWithDialog('admin/update-meta', {
 		ugcVisibilityForVisitor: value,
 	}).then(() => {

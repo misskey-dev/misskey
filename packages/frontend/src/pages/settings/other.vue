@@ -55,7 +55,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
 
-					<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
+					<div class="_gaps_s">
+						<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
+					</div>
 				</MkFolder>
 			</SearchMarker>
 
@@ -103,6 +105,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableHapticFeedback">
 							<template #label>Enable haptic feedback</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableWebTranslatorApi">
+							<template #label>Enable in-browser translator API</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -133,10 +138,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<hr>
 
 		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
-			<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+			<MkButton @click="readAllChatMessages">{{ i18n.ts.readAllChatMessages }}</MkButton>
 
 			<hr>
 		</template>
+
+		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
 
 		<FormSlot>
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
@@ -168,6 +175,7 @@ import { migrateOldSettings } from '@/pref-migrate.js';
 import { rolePolicyDef, getPolicyDisplayValue } from '@/utility/role-policy.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
+import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
@@ -178,6 +186,7 @@ const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
+const enableWebTranslatorApi = prefer.model('experimental.enableWebTranslatorApi');
 
 const policiesKv = computed(() => {
 	return Object.fromEntries(
@@ -239,6 +248,11 @@ function hideAllTips() {
 
 function readAllChatMessages() {
 	os.apiWithDialog('chat/read-all', {});
+}
+
+async function forceCloudBackup() {
+	await cloudBackup();
+	os.success();
 }
 
 const headerActions = computed(() => []);

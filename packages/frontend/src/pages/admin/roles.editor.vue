@@ -30,19 +30,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._role.descriptionOfDisplayOrder }}</template>
 	</MkInput>
 
-	<MkSelect v-model="rolePermission" :readonly="readonly">
+	<MkSelect v-model="rolePermission" :items="rolePermissionDef" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
-		<option value="normal">{{ i18n.ts.normalUser }}</option>
-		<option value="moderator">{{ i18n.ts.moderator }}</option>
-		<option value="administrator">{{ i18n.ts.administrator }}</option>
 	</MkSelect>
 
-	<MkSelect v-model="role.target" :readonly="readonly">
+	<MkSelect v-model="role.target" :items="[{ label: i18n.ts._role.manual, value: 'manual' }, { label: i18n.ts._role.conditional, value: 'conditional' }]" :readonly="readonly">
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._role.assignTarget }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
-		<option value="manual">{{ i18n.ts._role.manual }}</option>
-		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
 	</MkSelect>
 
 	<MkFolder v-if="role.target === 'conditional'" defaultOpen>
@@ -94,9 +89,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
-import { ROLE_POLICIES } from '@@/js/const.js';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import XPolicyEditor from './roles.policy-editor.vue';
+import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -124,7 +119,7 @@ const role = ref<Misskey.entities.AdminRolesShowResponse & {
 	const roleBase = deepClone(props.modelValue);
 
 	// fill missing policy
-	for (const ROLE_POLICY of ROLE_POLICIES) {
+	for (const ROLE_POLICY of Misskey.rolePolicies) {
 		if (roleBase.policies[ROLE_POLICY] == null) {
 			roleBase.policies[ROLE_POLICY] = {
 				useDefault: true,
@@ -137,11 +132,17 @@ const role = ref<Misskey.entities.AdminRolesShowResponse & {
 	return roleBase;
 })());
 
-const rolePermission = computed({
+const rolePermissionDef = [
+	{ label: i18n.ts.normalUser, value: 'normal' },
+	{ label: i18n.ts.moderator, value: 'moderator' },
+	{ label: i18n.ts.administrator, value: 'administrator' },
+] as const satisfies MkSelectItem[];
+
+const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissionDef>>({
 	get: () => role.value.isAdministrator ? 'administrator' : role.value.isModerator ? 'moderator' : 'normal',
 	set: (val) => {
-		role.value.isAdministrator = val === 'administrator';
-		role.value.isModerator = val === 'moderator';
+		role.value.isAdministrator = (val === 'administrator');
+		role.value.isModerator = (val === 'moderator');
 	},
 });
 

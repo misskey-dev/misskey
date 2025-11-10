@@ -11,7 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!--<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i></MkButton>-->
 		</div>
 
-		<MkUserCardMini v-for="x in accounts" :key="x[0] + x[1].id" :user="x[1]" :class="$style.user" @click.prevent="menu(x[0], x[1], $event)"/>
+		<template v-for="x in accounts" :key="x.host + x.id">
+			<MkUserCardMini v-if="x.user" :user="x.user" :class="$style.user" @click.prevent="showMenu(x.host, x.id, $event)"/>
+		</template>
 	</div>
 </SearchMarker>
 </template>
@@ -24,29 +26,29 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
-import { switchAccount, removeAccount, login, getAccountWithSigninDialog, getAccountWithSignupDialog } from '@/accounts.js';
+import { switchAccount, removeAccount, login, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { prefer } from '@/preferences.js';
 
-const accounts = prefer.r.accounts;
+const accounts = await getAccounts();
 
 function refreshAllAccounts() {
 	// TODO
 }
 
-function menu(host: string, account: Misskey.entities.UserDetailed, ev: MouseEvent) {
+function showMenu(host: string, id: string, ev: MouseEvent) {
 	let menu: MenuItem[];
 
 	menu = [{
 		text: i18n.ts.switch,
 		icon: 'ti ti-switch-horizontal',
-		action: () => switchAccount(host, account.id),
+		action: () => switchAccount(host, id),
 	}, {
 		text: i18n.ts.remove,
 		icon: 'ti ti-trash',
-		action: () => removeAccount(host, account.id),
+		action: () => removeAccount(host, id),
 	}];
 
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);

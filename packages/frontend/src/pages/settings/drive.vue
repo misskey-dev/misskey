@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink @click="chooseUploadFolder()">
 							<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
 							<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-							<template #suffixIcon><i class="ti ti-folder"></i></template>
+							<template #icon><i class="ti ti-folder"></i></template>
 						</FormLink>
 					</SearchMarker>
 
@@ -124,18 +124,70 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkFolder>
 					</SearchMarker>
 
+					<SearchMarker :keywords="['label', 'frame', 'credit', 'metadata']">
+						<MkFolder>
+							<template #icon><i class="ti ti-device-ipad-horizontal"></i></template>
+							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts._imageFrameEditor.tip }}</template>
+
+							<div class="_gaps">
+								<div class="_gaps_s">
+									<XImageFrameItem
+										v-for="(preset, i) in prefer.r.imageFramePresets.value"
+										:key="preset.id"
+										:preset="preset"
+										@updatePreset="onUpdateImageFramePreset(preset.id, $event)"
+										@del="onDeleteImageFramePreset(preset.id)"
+									/>
+
+									<MkButton iconOnly rounded style="margin: 0 auto;" @click="addImageFramePreset"><i class="ti ti-plus"></i></MkButton>
+
+									<SearchMarker :keywords="['sync', 'frame', 'label', 'preset', 'devices']">
+										<MkSwitch :modelValue="imageFramePresetsSyncEnabled" @update:modelValue="changeImageFramePresetsSyncEnabled">
+											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+										</MkSwitch>
+									</SearchMarker>
+								</div>
+							</div>
+						</MkFolder>
+					</SearchMarker>
+
 					<SearchMarker :keywords="['default', 'image', 'compression']">
 						<MkPreferenceContainer k="defaultImageCompressionLevel">
 							<MkSelect
 								v-model="defaultImageCompressionLevel" :items="[
 									{ label: i18n.ts.none, value: 0 },
-									{ label: i18n.ts.low, value: 1 },
-									{ label: i18n.ts.medium, value: 2 },
-									{ label: i18n.ts.high, value: 3 },
+									{ label: `${i18n.ts.low} (${i18n.ts._compression._quality.high}; ${i18n.ts._compression._size.large})`, value: 1 },
+									{ label: `${i18n.ts.medium} (${i18n.ts._compression._quality.medium}; ${i18n.ts._compression._size.medium})`, value: 2 },
+									{ label: `${i18n.ts.high} (${i18n.ts._compression._quality.low}; ${i18n.ts._compression._size.small})`, value: 3 },
 								]"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.defaultImageCompressionLevel }}</SearchLabel></template>
-								<template #caption><div v-html="i18n.ts.defaultImageCompressionLevel_description"></div></template>
+								<template #label><SearchLabel>{{ i18n.ts.defaultCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="i18n.ts.defaultCompressionLevel_description"></div></template>
+							</MkSelect>
+						</MkPreferenceContainer>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['video']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.video }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<SearchMarker :keywords="['default', 'video', 'compression']">
+						<MkPreferenceContainer k="defaultVideoCompressionLevel">
+							<MkSelect
+								v-model="defaultVideoCompressionLevel" :items="[
+									{ label: i18n.ts.none, value: 0 },
+									{ label: `${i18n.ts.low} (${i18n.ts._compression._quality.high}; ${i18n.ts._compression._size.large})`, value: 1 },
+									{ label: `${i18n.ts.medium} (${i18n.ts._compression._quality.medium}; ${i18n.ts._compression._size.medium})`, value: 2 },
+									{ label: `${i18n.ts.high} (${i18n.ts._compression._quality.low}; ${i18n.ts._compression._size.small})`, value: 3 },
+								]"
+							>
+								<template #label><SearchLabel>{{ i18n.ts.defaultCompressionLevel }}</SearchLabel></template>
+								<template #caption><div v-html="i18n.ts.defaultCompressionLevel_description"></div></template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -151,7 +203,9 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import XWatermarkItem from './drive.WatermarkItem.vue';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import XImageFrameItem from './drive.ImageFrameItem.vue';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -171,6 +225,7 @@ import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { selectDriveFolder } from '@/utility/drive.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
@@ -196,6 +251,7 @@ const meterStyle = computed(() => {
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
 const defaultWatermarkPresetId = prefer.model('defaultWatermarkPresetId');
 const defaultImageCompressionLevel = prefer.model('defaultImageCompressionLevel');
+const defaultVideoCompressionLevel = prefer.model('defaultVideoCompressionLevel');
 
 const watermarkPresetsSyncEnabled = ref(prefer.isSyncEnabled('watermarkPresets'));
 
@@ -208,6 +264,20 @@ function changeWatermarkPresetsSyncEnabled(value: boolean) {
 	} else {
 		prefer.disableSync('watermarkPresets');
 		watermarkPresetsSyncEnabled.value = false;
+	}
+}
+
+const imageFramePresetsSyncEnabled = ref(prefer.isSyncEnabled('imageFramePresets'));
+
+function changeImageFramePresetsSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('imageFramePresets').then((res) => {
+			if (res == null) return;
+			if (res.enabled) imageFramePresetsSyncEnabled.value = true;
+		});
+	} else {
+		prefer.disableSync('imageFramePresets');
+		imageFramePresetsSyncEnabled.value = false;
 	}
 }
 
@@ -241,8 +311,11 @@ function chooseUploadFolder() {
 
 async function addWatermarkPreset() {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
+		presetEditMode: true,
+		preset: null,
+		layers: [],
 	}, {
-		ok: (preset: WatermarkPreset) => {
+		presetOk: (preset) => {
 			prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
 		},
 		closed: () => dispose(),
@@ -272,6 +345,40 @@ function onDeleteWatermarkPreset(id: string) {
 			prefer.commit('defaultWatermarkPresetId', null);
 		}
 	}
+}
+
+function onUpdateImageFramePreset(id: string, preset: ImageFramePreset) {
+	const index = prefer.s.imageFramePresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('imageFramePresets', [
+			...prefer.s.imageFramePresets.slice(0, index),
+			preset,
+			...prefer.s.imageFramePresets.slice(index + 1),
+		]);
+	}
+}
+
+function onDeleteImageFramePreset(id: string) {
+	const index = prefer.s.imageFramePresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('imageFramePresets', [
+			...prefer.s.imageFramePresets.slice(0, index),
+			...prefer.s.imageFramePresets.slice(index + 1),
+		]);
+	}
+}
+
+async function addImageFramePreset() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+		presetEditMode: true,
+		preset: null,
+		params: null,
+	}, {
+		presetOk: (preset) => {
+			prefer.commit('imageFramePresets', [...prefer.s.imageFramePresets, preset]);
+		},
+		closed: () => dispose(),
+	});
 }
 
 function saveProfile() {

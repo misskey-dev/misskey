@@ -39,13 +39,18 @@ for (let i = 0; i < emojilist.length; i++) {
 
 export const emojiCharByCategory = _charGroupByCategory;
 
-export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
+export function getUnicodeEmojiOrNull(char: string): UnicodeEmojiDef | null {
 	// Colorize it because emojilist.json assumes that
 	return unicodeEmojisMap.get(colorizeEmoji(char))
 		// カラースタイル絵文字がjsonに無い場合はテキストスタイル絵文字にフォールバックする
 		?? unicodeEmojisMap.get(char)
-		// それでも見つからない場合はそのまま返す（絵文字情報がjsonに無い場合、このフォールバックが無いとレンダリングに失敗する）
-		?? char;
+		// それでも見つからない場合はnullを返す
+		?? null;
+}
+
+export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
+	// 絵文字が見つからない場合はそのまま返す（絵文字情報がjsonに無い場合、このフォールバックが無いとレンダリングに失敗する）
+	return getUnicodeEmojiOrNull(char) ?? char;
 }
 
 export function isSupportedEmoji(char: string): boolean {

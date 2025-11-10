@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="input"
 			:message="message"
 			:openOnRemote="openOnRemote"
+			:initialUsername="initialUsername"
 
 			@usernameSubmitted="onUsernameSubmitted"
 			@passkeyClick="onPasskeyLogin"
@@ -89,10 +90,12 @@ const props = withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
+	initialUsername?: string;
 }>(), {
 	autoSet: false,
 	message: '',
 	openOnRemote: undefined,
+	initialUsername: undefined,
 });
 
 const page = ref<'input' | 'password' | 'totp' | 'passkey'>('input');

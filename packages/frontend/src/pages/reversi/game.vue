@@ -33,7 +33,7 @@ const props = defineProps<{
 }>();
 
 const game = shallowRef<Misskey.entities.ReversiGameDetailed | null>(null);
-const connection = shallowRef<Misskey.ChannelConnection | null>(null);
+const connection = shallowRef<Misskey.IChannelConnection<Misskey.Channels['reversiGame']> | null>(null);
 const shareWhenStart = ref(false);
 
 watch(() => props.gameId, () => {
