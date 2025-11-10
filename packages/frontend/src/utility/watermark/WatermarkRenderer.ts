@@ -222,7 +222,8 @@ export class WatermarkRenderer {
 					},
 				});
 			} else {
-				throw new Error(`Unrecognized layer type: ${(layer as any).type}`);
+				// @ts-expect-error Should be unreachable
+				throw new Error(`Unrecognized layer type: ${layer.type}`);
 			}
 		}
 
