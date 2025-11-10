@@ -1278,6 +1278,15 @@ information: "Описание"
 inMinutes: "мин"
 inDays: "сут"
 widgets: "Виджеты"
+presets: "Шаблоны"
+_imageEditing:
+  _vars:
+    filename: "Имя файла"
+_imageFrameEditor:
+  header: "Заголовок"
+  font: "Шрифт"
+  fontSerif: "Антиква (с засечками)"
+  fontSansSerif: "Гротеск (без засечек)"
 _chat:
   invitations: "Пригласить"
   noHistory: "История пока пуста"
@@ -2007,6 +2016,9 @@ _postForm:
   replyPlaceholder: "Ответ на заметку..."
   quotePlaceholder: "Пояснение к цитате..."
   channelPlaceholder: "Отправить в канал"
+  _howToUse:
+    visibility_title: "Видимость"
+    menu_title: "Меню"
   _placeholders:
     a: "Как дела?"
     b: "Что интересного вокруг?"
