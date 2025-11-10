@@ -67,7 +67,7 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { mainRouter, useRouter } from '@/router.js';
+import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const $i = ensureSignin();
@@ -186,7 +186,7 @@ const headerActions = computed(() => list.value ? [{
 	icon: 'ti ti-timeline',
 	text: i18n.ts.timeline,
 	handler: () => {
-		mainRouter.push('/timeline/list/:listId', {
+		router.push('/timeline/list/:listId', {
 			params: {
 				listId: list.value!.id,
 			},
