@@ -18,20 +18,9 @@ import { notesSearchAvailable, canSearchNonLocalNotes } from '@/utility/check-pe
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
+import { openMuteSettingDialog } from '@/utility/mute-confirm.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
-import type { MkMuteSettingDialogDoneEvent } from '@/components/MkMuteSettingDialog.vue';
-
-function muteConfirm(): Promise<MkMuteSettingDialogDoneEvent> {
-	return new Promise(resolve => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkMuteSettingDialog.vue')), {}, {
-			done: result => {
-				resolve(result ? result : { canceled: true });
-			},
-			closed: () => dispose(),
-		});
-	});
-}
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -46,19 +35,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				user.isMuted = false;
 			});
 		} else {
-			const res = await muteConfirm();
+			const res = await openMuteSettingDialog({
+				withMuteType: true,
+			});
 			if (res.canceled) return;
-
-			const expiresAt = res.period === 'indefinitely' ? null
-				: res.period === 'tenMinutes' ? Date.now() + (1000 * 60 * 10)
-				: res.period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-				: res.period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-				: res.period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
-				: null;
 
 			os.apiWithDialog('mute/create', {
 				userId: user.id,
-				expiresAt,
+				expiresAt: res.expiresAt,
 				mutingType: res.type,
 			}).then(() => {
 				user.isMuted = true;
@@ -323,31 +307,13 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,
 						action: async () => {
-							const { canceled, result: period } = await os.select({
-								title: i18n.ts.period + ': ' + r.name,
-								items: [{
-									value: 'indefinitely', label: i18n.ts.indefinitely,
-								}, {
-									value: 'oneHour', label: i18n.ts.oneHour,
-								}, {
-									value: 'oneDay', label: i18n.ts.oneDay,
-								}, {
-									value: 'oneWeek', label: i18n.ts.oneWeek,
-								}, {
-									value: 'oneMonth', label: i18n.ts.oneMonth,
-								}],
-								default: 'indefinitely',
+							const res = await os.selectPeriod({
+								title: `${i18n.ts.period}: ${r.name}`,
 							});
-							if (canceled) return;
 
-							const expiresAt = period === 'indefinitely' ? null
-								: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-								: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-								: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
-								: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
-								: null;
+							if (res.canceled) return;
 
-							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id, expiresAt });
+							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id, expiresAt: res.expiresAt });
 						},
 					}));
 				},

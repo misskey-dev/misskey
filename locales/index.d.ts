@@ -3847,6 +3847,10 @@ export interface Locale extends ILocale {
      */
     "mutePeriod": string;
     /**
+     * 期限はあくまで目安です。反映が数分遅れる場合があります。
+     */
+    "mutePeriodDescription": string;
+    /**
      * 期限
      */
     "period": string;

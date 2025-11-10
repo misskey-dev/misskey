@@ -5,33 +5,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')">
-	<div :class="$style.root" class="_gaps_m">
-		<div class="_gaps_s">
-			<div :class="$style.header">
-				<div :class="$style.icon">
-					<i class="ti ti-alert-triangle"></i>
-				</div>
-				<div :class="$style.title">{{ i18n.ts.muteConfirm }}</div>
-			</div>
+	<div :class="$style.root">
+		<div v-if="title" class="_selectable" :class="$style.header">
+			<Mfm :text="title"/>
 		</div>
-		<div class="_gaps">
-			<FormSlot>
-				<div class="_gaps_s">
-					<MkSelect v-model="periodModel" :items="periodDef">
-						<template #label>{{ i18n.ts.mutePeriod }}</template>
-					</MkSelect>
-					<MkInput
-						v-if="periodModel === 'custom'"
-						v-model="manualExpiresAt"
-						type="datetime-local"
-					></MkInput>
-				</div>
-				<template #caption>{{ i18n.ts.mutePeriodDescription }}</template>
-			</FormSlot>
-			<MkSelect v-if="withMuteType" v-model="muteTypeModel" :items="muteTypeDef">
-				<template #label>{{ i18n.ts.muteType }}</template>
-				<template #caption>{{ i18n.ts.muteTypeDescription }}</template>
-			</MkSelect>
+		<div v-if="text" :class="$style.text" class="_selectable">
+			<Mfm :text="text"/>
+		</div>
+		<div class="_gaps_s">
+			<MkSelect v-model="periodModel" :items="periodDef"></MkSelect>
+			<MkInput
+				v-if="periodModel === 'custom'"
+				v-model="manualExpiresAt"
+				type="datetime-local"
+			></MkInput>
 		</div>
 		<div :class="$style.buttons">
 			<MkButton inline rounded @click="cancel">{{ i18n.ts.cancel }}</MkButton>
@@ -43,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { i18n } from '@/i18n.js';
-import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkInput from './MkInput.vue';
 
 const periodItems = [{
@@ -60,31 +47,23 @@ const periodItems = [{
 	value: 'custom', label: i18n.ts.custom,
 }] as const satisfies MkSelectItem[];
 
-const muteTypeItems = [{
-	value: 'all', label: i18n.ts.all,
-}, {
-	value: 'timelineOnly', label: i18n.ts.muteTypeTimeline,
-}] as const satisfies MkSelectItem[];
-
-export type MkMuteSettingDialogDoneEvent = { canceled: true } | { canceled: false, expiresAt: number | null, type: GetMkSelectValueTypesFromDef<typeof muteTypeItems> };
+export type MkPeriodDialogDoneEvent = { canceled: true } | { canceled: false, expiresAt: number | null };
 </script>
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, useTemplateRef, ref, computed } from 'vue';
-import FormSlot from '@/components/form/slot.vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
-withDefaults(defineProps<{
-	withMuteType?: boolean;
-}>(), {
-	withMuteType: false,
-});
+defineProps<{
+	title?: string;
+	text?: string;
+}>();
 
 const emit = defineEmits<{
-	(ev: 'done', v: MkMuteSettingDialogDoneEvent): void;
+	(ev: 'done', v: MkPeriodDialogDoneEvent): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -107,19 +86,11 @@ const canSave = computed(() => {
 	return true;
 });
 
-const {
-	def: muteTypeDef,
-	model: muteTypeModel,
-} = useMkSelect({
-	items: muteTypeItems,
-	initialValue: 'all',
-});
-
 // overload function を使いたいので lint エラーを無視する
 function done(canceled: true): void;
-function done(canceled: false, period: typeof periodModel.value, type: typeof muteTypeModel.value): void; // eslint-disable-line no-redeclare
+function done(canceled: false, period: typeof periodModel.value): void; // eslint-disable-line no-redeclare
 
-function done(canceled: boolean, period?: typeof periodModel.value, type?: typeof muteTypeModel.value) { // eslint-disable-line no-redeclare
+function done(canceled: boolean, period?: typeof periodModel.value) { // eslint-disable-line no-redeclare
 	const expiresAt = (() => {
 		if (canceled) return null;
 		if (period === 'custom' && manualExpiresAt.value != null) {
@@ -147,14 +118,14 @@ function done(canceled: boolean, period?: typeof periodModel.value, type?: typeo
 	if (canceled) {
 		emit('done', { canceled: true });
 	} else {
-		emit('done', { canceled: false, expiresAt, type: type! });
+		emit('done', { canceled: false, expiresAt });
 	}
 
 	modal.value?.close();
 }
 
 async function ok() {
-	done(false, periodModel.value, muteTypeModel.value);
+	done(false, periodModel.value);
 }
 
 function cancel() {
@@ -184,7 +155,6 @@ onBeforeUnmount(() => {
 	position: relative;
 	margin: auto;
 	padding: 32px;
-	width: 100%;
 	min-width: 320px;
 	max-width: 480px;
 	box-sizing: border-box;
@@ -193,25 +163,25 @@ onBeforeUnmount(() => {
 }
 
 .header {
-	display: flex;
-	align-items: center;
-	gap: 0.75em;
-}
-
-.icon {
-	font-size: 18px;
-	color: var(--MI_THEME-warn);
-}
-
-.title {
+	margin: 0 0 8px 0;
+	text-align: center;
 	font-weight: bold;
 	font-size: 1.1em;
+
+	& + .text {
+		margin-top: 8px;
+	}
+}
+
+.text {
+	margin: 16px 0 0 0;
 }
 
 .buttons {
+	margin-top: 16px;
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
-	justify-content: right;
+	justify-content: center;
 }
 </style>
