@@ -13,17 +13,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkPagination>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="P extends IPaginator">
 import * as Misskey from 'misskey-js';
-import type { IPaginator } from '@/utility/paginator.js';
+import type { IPaginator, ExtractorFunction } from '@/utility/paginator.js';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	paginator: IPaginator;
+	paginator: P;
 	noGap?: boolean;
-	extractor?: (item: any) => Misskey.entities.Channel;
+	extractor?: ExtractorFunction<P, Misskey.entities.Channel>;
 }>(), {
 	extractor: (item) => item,
 });

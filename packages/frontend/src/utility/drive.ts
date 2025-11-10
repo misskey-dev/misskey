@@ -124,7 +124,7 @@ export function uploadFile(file: File | Blob, options: {
 			const driveFile = JSON.parse(ev.target.response);
 			globalEvents.emit('driveFileCreated', driveFile);
 			resolve(driveFile);
-		}) as (ev: ProgressEvent<EventTarget>) => any;
+		}) as (ev: ProgressEvent<EventTarget>) => void;
 
 		if (options.onProgress) {
 			xhr.upload.onprogress = ev => {

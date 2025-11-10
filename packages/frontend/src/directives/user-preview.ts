@@ -119,9 +119,9 @@ export const userPreviewDirective = {
 
 		// TODO: 新たにプロパティを作るのをやめMapを使う
 		// ただメモリ的には↓の方が省メモリかもしれないので検討中
-		const self = (el as any)._userPreviewDirective_ = {} as any;
-
-		self.preview = new UserPreview(el, binding.value);
+		el._userPreviewDirective_ = {
+			preview: new UserPreview(el, binding.value),
+		};
 	},
 
 	unmounted(el, binding) {
