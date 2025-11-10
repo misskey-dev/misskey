@@ -1547,6 +1547,7 @@ _settings:
   showAvailableReactionsFirstInNote: "Mostra le reazioni disponibili in alto"
   showPageTabBarBottom: "Visualizza le schede della pagina nella parte inferiore"
   emojiPaletteBanner: "Puoi salvare i le emoji predefinite da appuntare in alto nel raccoglitore emoji come tavolozza e personalizzare in che modo visualizzare il raccoglitore."
+  enableAnimatedImages: "Attivare le immagini animate"
   _chat:
     showSenderName: "Mostra il nome del mittente"
     sendOnEnter: "Invio spedisce"
