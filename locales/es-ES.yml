@@ -5,7 +5,7 @@ introMisskey: "¡Bienvenido/a! Misskey es un servicio de microblogging descentra
 poweredByMisskeyDescription: "{name} es uno de los servicios (también llamado instancia) que usa la plataforma de código abierto <b>Misskey</b>"
 monthAndDay: "{day}/{month}"
 search: "Buscar"
-reset: "Reiniciar"
+reset: "Restablecer"
 notifications: "Notificaciones"
 username: "Nombre de usuario"
 password: "Contraseña"
