@@ -115,4 +115,6 @@ jobs:
       if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'frontend' || matrix.workspace == 'sw' }}
     - run: pnpm --filter misskey-reversi run build
       if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'frontend' }}
+    - run: pnpm --filter misskey-bubble-game run build
+      if: ${{ matrix.workspace == 'frontend' }}
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck
