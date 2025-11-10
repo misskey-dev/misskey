@@ -77,6 +77,7 @@ async function updateBaseRole() {
 	) as RolePolicyRecord;
 
 	await os.apiWithDialog('admin/roles/update-default-policies', {
+		// @ts-expect-error misskey-js側の型定義を修正する必要がある
 		policies: _policies,
 	});
 	fetchInstance(true);
