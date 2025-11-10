@@ -603,6 +603,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkPreferenceContainer>
 						</SearchMarker>
 
+						<SearchMarker :keywords="['animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif']">
+							<MkPreferenceContainer k="disableShowingAnimatedImages">
+								<MkSwitch :modelValue="!disableShowingAnimatedImages" @update:modelValue="v => disableShowingAnimatedImages = !v">
+									<template #label><SearchLabel>{{ i18n.ts._settings.enableAnimatedImages }}</SearchLabel></template>
+									<template #caption>
+										<SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText>
+										<div>{{ i18n.ts.disableShowingAnimatedImages_caption }}</div>
+									</template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
 						<SearchMarker :keywords="['blur']">
 							<MkPreferenceContainer k="useBlurEffect">
 								<MkSwitch v-model="useBlurEffect">
