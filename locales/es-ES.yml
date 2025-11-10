@@ -1547,6 +1547,7 @@ _settings:
   showAvailableReactionsFirstInNote: "Mostrar las reacciones disponibles en la parte superior."
   showPageTabBarBottom: "Mostrar la barra de pestañas de la página en la parte inferior."
   emojiPaletteBanner: "Puedes registrar ajustes preestablecidos como paletas para que se muestren permanentemente en el selector de emojis, o personalizar el método de visualización del selector."
+  enableAnimatedImages: "Habilitar imágenes animadas"
   _chat:
     showSenderName: "Mostrar el nombre del remitente"
     sendOnEnter: "Intro para enviar"
