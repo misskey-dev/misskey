@@ -25,6 +25,7 @@
 
 ### Server
 - Enhance: Remote Notes Cleaningが複雑度が高いノートの処理を中断せずに次のノートから再開するように
+- Enhance: 1つのMisskeyで複数のHTTPサーバプロセスを起動できるように ( #13662 )
 
 ## 2025.10.2
 
