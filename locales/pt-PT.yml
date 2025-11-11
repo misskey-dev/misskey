@@ -1390,6 +1390,17 @@ scheduledToPostOnX: "A nota está agendada para {x}"
 schedule: "Agendar"
 scheduled: "Agendado"
 widgets: "Widgets"
+presets: "Predefinições"
+_imageEditing:
+  _vars:
+    filename: "Nome do Ficheiro"
+_imageFrameEditor:
+  header: "Cabeçalho"
+  withQrCode: "Código QR"
+  font: "Fonte"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Descartar mudanças?"
 _compression:
   _quality:
     high: "Qualidade alta"
@@ -2522,6 +2533,9 @@ _postForm:
   replyPlaceholder: "Responder a essa nota..."
   quotePlaceholder: "Citar essa nota..."
   channelPlaceholder: "Postar em canal..."
+  _howToUse:
+    visibility_title: "Visibilidade"
+    menu_title: "Menu\n"
   _placeholders:
     a: "Como vão as coisas?"
     b: "O que está rolando por aí?"

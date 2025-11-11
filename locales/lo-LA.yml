@@ -393,6 +393,9 @@ file: "ໄຟລ໌"
 replies: "ຕອບ​ກັບ"
 renotes: "Renote"
 information: "ກ່ຽວກັບ"
+_imageEditing:
+  _vars:
+    filename: "ຊື່ໄຟລ໌"
 _chat:
   invitations: "ເຊີນ"
   noHistory: "​ບໍ່​ມີປະຫວັດ"
@@ -434,6 +437,9 @@ _visibility:
   home: "ໜ້າຫຼັກ"
   followers: "ຜູ້ຕິດຕາມ"
   specified: "ໂພສ Direct note"
+_postForm:
+  _howToUse:
+    menu_title: "ເມນູ"
 _profile:
   name: "ຊື່"
   username: "ຊື່ຜູ້ໃຊ້"

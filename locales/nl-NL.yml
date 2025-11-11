@@ -970,6 +970,9 @@ renotes: "Herdelen"
 followingOrFollower: "Gevolgd of volger"
 confirmShowRepliesAll: "Dit is een onomkeerbare operatie. Weet je zeker dat reacties op anderen van iedereen die je volgt, wil weergeven in je tijdlijn?"
 information: "Over"
+_imageEditing:
+  _vars:
+    filename: "Bestandsnaam"
 _chat:
   invitations: "Uitnodigen"
   noHistory: "Geen geschiedenis gevonden"
@@ -1020,6 +1023,10 @@ _visibility:
   home: "Startpagina"
   followers: "Volgers"
   specified: "Directe notities"
+_postForm:
+  _howToUse:
+    visibility_title: "Zichtbaarheid"
+    menu_title: "Menu"
 _profile:
   name: "Naam"
   username: "Gebruikersnaam"

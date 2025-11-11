@@ -851,6 +851,14 @@ information: "আপনার সম্পর্কে"
 inMinutes: "মিনিট"
 inDays: "দিন"
 widgets: "উইজেটগুলি"
+_imageEditing:
+  _vars:
+    filename: "ফাইলের নাম"
+_imageFrameEditor:
+  header: "হেডার"
+  font: "ফন্ট"
+  fontSerif: "সেরিফ"
+  fontSansSerif: "স্যান্স সেরিফ"
 _chat:
   invitations: "আমন্ত্রণ"
   noHistory: "কোনো ইতিহাস নেই"
@@ -1169,6 +1177,9 @@ _postForm:
   replyPlaceholder: "নোটটির জবাব দিন..."
   quotePlaceholder: "নোটটিকে উদ্ধৃত করুন..."
   channelPlaceholder: "চ্যানেলে পোস্ট করুন..."
+  _howToUse:
+    visibility_title: "দৃশ্যমানতা"
+    menu_title: "মেনু"
   _placeholders:
     a: "আপনি এখন কি করছেন?"
     b: "আপনার আশে পাশে কি হচ্ছে?"

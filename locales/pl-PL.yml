@@ -1043,6 +1043,15 @@ information: "Informacje"
 inMinutes: "minuta"
 inDays: "dzień"
 widgets: "Widżety"
+presets: "Konfiguracja"
+_imageEditing:
+  _vars:
+    filename: "Nazwa pliku"
+_imageFrameEditor:
+  header: "Nagłówek"
+  font: "Czcionka"
+  fontSerif: "Szeryfowa"
+  fontSansSerif: "Bezszeryfowa"
 _chat:
   invitations: "Zaproś"
   noHistory: "Brak historii"
@@ -1393,6 +1402,9 @@ _postForm:
   replyPlaceholder: "Odpowiedz na ten wpis..."
   quotePlaceholder: "Zacytuj ten wpis…"
   channelPlaceholder: "Publikuj na kanale..."
+  _howToUse:
+    visibility_title: "Widoczność"
+    menu_title: "Menu"
   _placeholders:
     a: "Co się dzieje?"
     b: "Co się wydarzyło?"

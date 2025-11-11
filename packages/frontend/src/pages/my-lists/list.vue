@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.members }}</template>
 				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
-				<div class="_gaps_s">
-					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
+				<div class="_gaps">
+					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()"><i class="ti ti-plus"></i> {{ i18n.ts.addUser }}</MkButton>
 
-					<MkPagination :paginator="membershipsPaginator" withControl>
+					<MkPagination :paginator="membershipsPaginator">
 						<template #default="{ items }">
 							<div class="_gaps_s">
 								<div v-for="item in items" :key="item.id">
@@ -67,11 +67,12 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { mainRouter } from '@/router.js';
-import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const $i = ensureSignin();
+
+const router = useRouter();
 
 const props = defineProps<{
 	listId: string;
@@ -162,7 +163,7 @@ async function deleteList() {
 		listId: list.value.id,
 	});
 	userListsCache.delete();
-	mainRouter.push('/my/lists');
+	router.push('/my/lists');
 }
 
 async function updateSettings() {
@@ -181,7 +182,17 @@ async function updateSettings() {
 
 watch(() => props.listId, fetchList, { immediate: true });
 
-const headerActions = computed(() => []);
+const headerActions = computed(() => list.value ? [{
+	icon: 'ti ti-timeline',
+	text: i18n.ts.timeline,
+	handler: () => {
+		router.push('/timeline/list/:listId', {
+			params: {
+				listId: list.value!.id,
+			},
+		});
+	},
+}] : []);
 
 const headerTabs = computed(() => []);
 
