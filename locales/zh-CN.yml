@@ -1538,6 +1538,7 @@ _settings:
   showAvailableReactionsFirstInNote: "在顶部显示可用的回应"
   showPageTabBarBottom: "在下方显示页面标签栏"
   emojiPaletteBanner: "可以将固定显示表情符号选择器的预设注册至调色板，也可以自定义表情符号选择器的显示方式。"
+  enableAnimatedImages: "启用动画图像"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"
