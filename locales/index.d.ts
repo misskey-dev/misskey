@@ -6187,6 +6187,10 @@ export interface Locale extends ILocale {
          * 絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。
          */
         "emojiPaletteBanner": string;
+        /**
+         * アニメーション画像を有効にする
+         */
+        "enableAnimatedImages": string;
         "_chat": {
             /**
              * 送信者の名前を表示

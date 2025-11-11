@@ -1288,6 +1288,15 @@ advice: "Saran"
 inMinutes: "menit"
 inDays: "hari"
 widgets: "Widget"
+presets: "Prasetel"
+_imageEditing:
+  _vars:
+    filename: "Nama berkas"
+_imageFrameEditor:
+  header: "Header"
+  font: "Font"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans-serif"
 _chat:
   invitations: "Undang"
   history: "Riwayat obrolan"
@@ -2240,6 +2249,9 @@ _postForm:
   replyPlaceholder: "Balas ke catatan ini..."
   quotePlaceholder: "Kutip catatan ini..."
   channelPlaceholder: "Posting ke kanal"
+  _howToUse:
+    visibility_title: "Visibilitas"
+    menu_title: "Menu"
   _placeholders:
     a: "Sedang apa kamu saat ini?"
     b: "Apa yang terjadi di sekitarmu?"

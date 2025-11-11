@@ -13,7 +13,7 @@ interface CommonParamDef {
 	type: string;
 	label?: string;
 	caption?: string;
-	default: any;
+	default: unknown;
 }
 
 interface NumberParamDef extends CommonParamDef {
