@@ -1,3 +1,12 @@
+## Unreleased
+
+### General
+
+### Client
+
+### Server
+- Fix: チャンネルの説明欄を必須としないように
+
 ## 2025.11.0
 
 ### General
