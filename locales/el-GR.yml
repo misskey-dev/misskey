@@ -288,6 +288,10 @@ replies: "Απάντηση"
 renotes: "Κοινοποίηση σημειώματος"
 postForm: "Φόρμα δημοσίευσης"
 information: "Πληροφορίες"
+widgets: "Μαραφέτια"
+_imageEditing:
+  _vars:
+    filename: "Όνομα αρχείου"
 _chat:
   members: "Μέλη"
   home: "Κεντρικό"
@@ -353,6 +357,7 @@ _visibility:
   home: "Κεντρικό"
   homeDescription: "Δημοσίευση στο κεντρικό χρονολόγιο μόνο"
   followers: "Ακολουθούν"
+  specified: "Απευθείας σημειώματα"
 _profile:
   name: "Όνομα"
   username: "Όνομα μέλους"
@@ -395,6 +400,7 @@ _deck:
     antenna: "Αντένες"
     list: "Λίστα"
     mentions: "Επισημάνσεις"
+    direct: "Απευθείας σημειώματα"
 _webhookSettings:
   name: "Όνομα"
 _moderationLogTypes:
@@ -403,3 +409,5 @@ _reversi:
   total: "Σύνολο"
 _search:
   searchScopeLocal: "Τοπικό"
+_watermarkEditor:
+  image: "Εικόνες"

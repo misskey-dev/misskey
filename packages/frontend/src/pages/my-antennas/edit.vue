@@ -36,7 +36,17 @@ misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaRespons
 	antenna.value = antennaResponse;
 });
 
-const headerActions = computed(() => []);
+const headerActions = computed(() => antenna.value ? [{
+	icon: 'ti ti-timeline',
+	text: i18n.ts.timeline,
+	handler: () => {
+		router.push('/timeline/antenna/:antennaId', {
+			params: {
+				antennaId: antenna.value!.id,
+			},
+		});
+	},
+}] : []);
 const headerTabs = computed(() => []);
 
 definePage(() => ({

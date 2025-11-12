@@ -16,6 +16,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { ApiError } from '@/server/api/error.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -77,12 +78,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
+		private channelMutingService: ChannelMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -129,6 +130,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimelines,
 				useDbFallback: true,
 				ignoreAuthorFromMute: true,
+				ignoreAuthorFromInstanceBlock: true,
+				ignoreAuthorFromUserSuspension: true,
 				excludeReplies: ps.withChannelNotes && !ps.withReplies, // userTimelineWithChannel may include replies
 				excludeNoFiles: ps.withChannelNotes && ps.withFiles, // userTimelineWithChannel may include notes without files
 				excludePureRenotes: !ps.withRenotes,
@@ -163,6 +166,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withFiles: boolean,
 		withRenotes: boolean,
 	}, me: MiLocalUser | null) {
+		const mutingChannelIds = me
+			? await this.channelMutingService
+				.list({ requestUserId: me.id }, { idOnly: true })
+				.then(x => x.map(x => x.id))
+			: [];
 		const isSelf = me && (me.id === ps.userId);
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
@@ -175,20 +183,35 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		if (ps.withChannelNotes) {
-			if (!isSelf) query.andWhere(new Brackets(qb => {
-				qb.orWhere('note.channelId IS NULL');
-				qb.orWhere('channel.isSensitive = false');
+			query.andWhere(new Brackets(qb => {
+				if (mutingChannelIds.length > 0) {
+					qb.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds: mutingChannelIds });
+				}
+
+				if (!isSelf) {
+					qb.andWhere(new Brackets(qb2 => {
+						qb2.orWhere('note.channelId IS NULL');
+						qb2.orWhere('channel.isSensitive = false');
+					}));
+				}
 			}));
 		} else {
 			query.andWhere('note.channelId IS NULL');
 		}
 
-		this.queryService.generateVisibilityQuery(query, me);
-		if (me) {
-			this.queryService.generateMutedUserQueryForNotes(query, me, { id: ps.userId });
-			this.queryService.generateBlockedUserQueryForNotes(query, me);
-			this.queryService.generateMutedNoteQuery(query, me);
+		// -- ミュートされたチャンネルのリノート対策
+		if (mutingChannelIds.length > 0) {
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.renoteChannelId IS NULL');
+				qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+			}));
 		}
+
+		this.queryService.generateVisibilityQuery(query, me);
+		this.queryService.generateBaseNoteFilteringQuery(query, me, {
+			excludeAuthor: true,
+			excludeUserFromMute: ps.userId,
+		});
 
 		if (ps.withFiles) {
 			query.andWhere('note.fileIds != \'{}\'');

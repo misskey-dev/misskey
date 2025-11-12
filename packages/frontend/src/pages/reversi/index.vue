@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer v-if="!matchingAny && !matchingUser" :contentMax="600">
+<div v-if="!matchingAny && !matchingUser" class="_spacer" style="--MI_SPACER-w: 600px;">
 	<div class="_gaps">
 		<div>
 			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder v-if="$i" :defaultOpen="true">
 			<template #label>{{ i18n.ts._reversi.myGames }}</template>
-			<MkPagination :pagination="myGamesPagination" :disableAutoLoad="true">
+			<MkPagination :paginator="myGamesPaginator">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
 						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isStarted && !g.isEnded && $style.gamePreviewWaiting, g.isStarted && !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkFolder :defaultOpen="true">
 			<template #label>{{ i18n.ts._reversi.allGames }}</template>
-			<MkPagination :pagination="gamesPagination" :disableAutoLoad="true">
+			<MkPagination :paginator="gamesPaginator">
 				<template #default="{ items }">
 					<div :class="$style.gamePreviews">
 						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isStarted && !g.isEnded && $style.gamePreviewWaiting, g.isStarted && !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</MkFolder>
 	</div>
-</MkSpacer>
-<MkSpacer v-else :contentMax="600">
+</div>
+<div v-else class="_spacer" style="--MI_SPACER-w: 600px;">
 	<div :class="$style.waitingScreen">
 		<div v-if="matchingUser" :class="$style.waitingScreenTitle">
 			<I18n :src="i18n.ts.waitingFor" tag="span">
@@ -101,12 +101,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline rounded @click="cancelMatching">{{ i18n.ts.cancel }}</MkButton>
 		</div>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
+import { markRaw, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
@@ -117,22 +118,20 @@ import { $i } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
-import { useInterval } from '@@/js/use-interval.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as sound from '@/utility/sound.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const myGamesPagination = {
-	endpoint: 'reversi/games' as const,
+const myGamesPaginator = markRaw(new Paginator('reversi/games', {
 	limit: 10,
 	params: {
 		my: true,
 	},
-};
+}));
 
-const gamesPagination = {
-	endpoint: 'reversi/games' as const,
+const gamesPaginator = markRaw(new Paginator('reversi/games', {
 	limit: 10,
-};
+}));
 
 const router = useRouter();
 
@@ -169,7 +168,11 @@ function startGame(game: Misskey.entities.ReversiGameDetailed) {
 		playbackRate: 1,
 	});
 
-	router.push(`/reversi/g/${game.id}`);
+	router.push('/reversi/g/:gameId', {
+		params: {
+			gameId: game.id,
+		},
+	});
 }
 
 async function matchHeatbeat() {

@@ -4,15 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MutingsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 
 @Injectable()
 export class CheckExpiredMutingsProcessorService {
@@ -23,6 +22,7 @@ export class CheckExpiredMutingsProcessorService {
 		private mutingsRepository: MutingsRepository,
 
 		private userMutingService: UserMutingService,
+		private channelMutingService: ChannelMutingService,
 		private noteMutingService: NoteMutingService,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -42,6 +42,8 @@ export class CheckExpiredMutingsProcessorService {
 		if (expired.length > 0) {
 			await this.userMutingService.unmute(expired);
 		}
+
+		await this.channelMutingService.eraseExpiredMutings();
 
 		await this.noteMutingService.cleanupExpiredMutes();
 

@@ -5,16 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer v-if="error != null" :contentMax="1200">
-		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
-			<p :class="$style.text">
-				<i class="ti ti-alert-triangle"></i>
-				{{ i18n.ts.nothing }}
-			</p>
-		</div>
-	</MkSpacer>
-	<MkSpacer v-else-if="list" :contentMax="700">
+	<div v-if="error != null" class="_spacer" style="--MI_SPACER-w: 1200px;">
+		<MkResult type="error"/>
+	</div>
+	<div v-else-if="list" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="list" class="members _margin">
 			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
 			<div class="_gaps_s">
@@ -25,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount != null && list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
 		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
 		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -42,13 +36,12 @@ import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
-import { serverErrorImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	listId: string;
 }>();
 
-const list = ref<Misskey.entities.UserList | null>(null);
+const list = ref<Misskey.entities.UsersListsShowResponse | null>(null);
 const error = ref<unknown | null>(null);
 const users = ref<Misskey.entities.UserDetailed[]>([]);
 
@@ -58,8 +51,9 @@ function fetchList(): void {
 		forPublic: true,
 	}).then(_list => {
 		list.value = _list;
+		if (_list.userIds == null || _list.userIds.length === 0) return;
 		misskeyApi('users/show', {
-			userIds: list.value.userIds,
+			userIds: _list.userIds,
 		}).then(_users => {
 			users.value = _users;
 		});
@@ -69,28 +63,33 @@ function fetchList(): void {
 }
 
 function like() {
+	if (list.value == null) return;
 	os.apiWithDialog('users/lists/favorite', {
 		listId: list.value.id,
 	}).then(() => {
+		if (list.value == null) return;
 		list.value.isLiked = true;
-		list.value.likedCount++;
+		list.value.likedCount = (list.value.likedCount != null ? list.value.likedCount + 1 : 1);
 	});
 }
 
 function unlike() {
+	if (list.value == null) return;
 	os.apiWithDialog('users/lists/unfavorite', {
 		listId: list.value.id,
 	}).then(() => {
+		if (list.value == null) return;
 		list.value.isLiked = false;
-		list.value.likedCount--;
+		list.value.likedCount = (list.value.likedCount != null ? Math.max(0, list.value.likedCount - 1) : 0);
 	});
 }
 
 async function create() {
+	if (list.value == null) return;
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.enterListName,
 	});
-	if (canceled) return;
+	if (canceled || name == null) return;
 	await os.apiWithDialog('users/lists/create-from-public', { name: name, listId: list.value.id });
 }
 
@@ -105,6 +104,7 @@ definePage(() => ({
 	icon: 'ti ti-list',
 }));
 </script>
+
 <style lang="scss" module>
 .userItem {
 	display: flex;

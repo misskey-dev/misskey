@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { loadConfig } from './built/config.js';
 import { entities } from './built/postgres.js';
+import { isConcurrentIndexMigrationEnabled } from "./migration/js/migration-config.js";
 
 const config = loadConfig();
 
@@ -14,4 +15,5 @@ export default new DataSource({
 	extra: config.db.extra,
 	entities: entities,
 	migrations: ['migration/*.js'],
+	migrationsTransactionMode: isConcurrentIndexMigrationEnabled() ? 'each' : 'all',
 });

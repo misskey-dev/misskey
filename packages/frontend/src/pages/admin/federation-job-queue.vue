@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<XQueue v-if="tab === 'deliver'" domain="deliver"/>
 		<XQueue v-else-if="tab === 'inbox'" domain="inbox"/>
 		<br>
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
 			<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

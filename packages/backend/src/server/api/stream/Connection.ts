@@ -11,8 +11,9 @@ import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
-import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import { NoteMutingService } from '@/core/note/NoteMutingService.js';
@@ -33,10 +34,10 @@ export default class Connection {
 	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: Partial<Record<string, number>> = {};
-	private cachedNotes: Packed<'Note'>[] = [];
 	public userProfile: MiUserProfile | null = null;
 	public following: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
 	public followingChannels: Set<string> = new Set();
+	public mutingChannels: Set<string> = new Set();
 	public userIdsWhoMeMuting: Set<string> = new Set();
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
@@ -49,6 +50,7 @@ export default class Connection {
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 		private channelFollowingService: ChannelFollowingService,
+		private channelMutingService: ChannelMutingService,
 		private noteMutingService: NoteMutingService,
 
 		user: MiUser | null | undefined,
@@ -61,10 +63,20 @@ export default class Connection {
 	@bindThis
 	public async fetch() {
 		if (this.user == null) return;
-		const [userProfile, following, followingChannels, userIdsWhoMeMuting, userIdsWhoBlockingMe, userIdsWhoMeMutingRenotes, noteMuting] = await Promise.all([
+		const [
+			userProfile,
+			following,
+			followingChannels,
+			mutingChannels,
+			userIdsWhoMeMuting,
+			userIdsWhoBlockingMe,
+			userIdsWhoMeMutingRenotes,
+			noteMuting,
+		] = await Promise.all([
 			this.cacheService.userProfileCache.fetch(this.user.id),
 			this.cacheService.userFollowingsCache.fetch(this.user.id),
 			this.channelFollowingService.userFollowingChannelsCache.fetch(this.user.id),
+			this.channelMutingService.mutingChannelsCache.fetch(this.user.id),
 			this.cacheService.userMutingsCache.fetch(this.user.id),
 			this.cacheService.userBlockedCache.fetch(this.user.id),
 			this.cacheService.renoteMutingsCache.fetch(this.user.id),
@@ -73,6 +85,7 @@ export default class Connection {
 		this.userProfile = userProfile;
 		this.following = following;
 		this.followingChannels = followingChannels;
+		this.mutingChannels = mutingChannels;
 		this.userIdsWhoMeMuting = userIdsWhoMeMuting;
 		this.userIdsWhoBlockingMe = userIdsWhoBlockingMe;
 		this.userIdsWhoMeMutingRenotes = userIdsWhoMeMutingRenotes;
@@ -135,26 +148,6 @@ export default class Connection {
 	@bindThis
 	private onBroadcastMessage(data: GlobalEvents['broadcast']['payload']) {
 		this.sendMessageToWs(data.type, data.body);
-	}
-
-	@bindThis
-	public cacheNote(note: Packed<'Note'>) {
-		const add = (note: Packed<'Note'>) => {
-			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
-			if (existIndex > -1) {
-				this.cachedNotes[existIndex] = note;
-				return;
-			}
-
-			this.cachedNotes.unshift(note);
-			if (this.cachedNotes.length > 32) {
-				this.cachedNotes.splice(32);
-			}
-		};
-
-		add(note);
-		if (note.reply) add(note.reply);
-		if (note.renote) add(note.renote);
 	}
 
 	@bindThis

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
 			<div v-if="information">
 				<MkInfo warn>{{ information }}</MkInfo>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 

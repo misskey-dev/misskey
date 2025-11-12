@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="input"
 			:message="message"
 			:openOnRemote="openOnRemote"
+			:initialUsername="initialUsername"
 
 			@usernameSubmitted="onUsernameSubmitted"
 			@passkeyClick="onPasskeyLogin"
@@ -89,10 +90,12 @@ const props = withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
+	initialUsername?: string;
 }>(), {
 	autoSet: false,
 	message: '',
 	openOnRemote: undefined,
+	initialUsername: undefined,
 });
 
 const page = ref<'input' | 'password' | 'totp' | 'passkey'>('input');
@@ -117,6 +120,7 @@ function onPasskeyLogin(): void {
 			.then((res) => {
 				passkeyContext.value = res.context ?? '';
 				credentialRequest.value = parseRequestOptionsFromJSON({
+					// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 					publicKey: res.option,
 				});
 
@@ -131,7 +135,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 	waiting.value = true;
 
 	if (doingPasskeyFromInputPage.value) {
-		misskeyApi('signin-with-passkey', {
+		misskeyApi<Misskey.entities.SigninWithPasskeyResponse>('signin-with-passkey', {
 			credential: credential.toJSON(),
 			context: passkeyContext.value,
 		}).then((res) => {
@@ -146,6 +150,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 		tryLogin({
 			username: userInfo.value.username,
 			password: password.value,
+			// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 			credential: credential.toJSON(),
 		});
 	}
@@ -250,6 +255,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 				case 'passkey': {
 					if (webAuthnSupported()) {
 						credentialRequest.value = parseRequestOptionsFromJSON({
+							// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 							publicKey: res.authRequest,
 						});
 						page.value = 'passkey';

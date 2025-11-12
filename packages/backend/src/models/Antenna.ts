@@ -106,3 +106,6 @@ export class MiAntenna {
 	})
 	public excludeNotesInSensitiveChannel: boolean;
 }
+// Note for future developers: When you added a new column,
+// You should update ExportAntennaProcessorService and ImportAntennaProcessorService
+// to export and import antennas correctly.

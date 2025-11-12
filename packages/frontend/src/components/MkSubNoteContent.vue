@@ -18,8 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
-		<MkPoll :noteId="note.id" :poll="note.poll" :author="note.user" :emojiUrls="note.emojis"/>
+		<MkPoll
+			:noteId="note.id"
+			:multiple="note.poll.multiple"
+			:expiresAt="note.poll.expiresAt"
+			:choices="note.poll.choices"
+			:author="note.user"
+			:emojiUrls="note.emojis"
+		/>
 	</details>
+	<MkA v-if="note.hasPoll && note.poll == null" :to="`/notes/${note.id}`">({{ i18n.ts.poll }})</MkA>
 	<button v-if="isLong && collapsed" :class="$style.fade" class="_button" @click="collapsed = false">
 		<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 	</button>
