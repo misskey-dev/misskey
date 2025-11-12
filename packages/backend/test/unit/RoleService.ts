@@ -158,11 +158,12 @@ describe('RoleService', () => {
 	afterEach(async () => {
 		clock.uninstall();
 
+		// schemaに依存関係があるのでdeadlock回避のためmetaとroleAssignmentを先にdeleteする
+		await app.get(DI.metasRepository).createQueryBuilder().delete().execute();
+		await roleAssignmentsRepository.createQueryBuilder().delete().execute();
 		await Promise.all([
-			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
 			usersRepository.createQueryBuilder().delete().execute(),
 			rolesRepository.createQueryBuilder().delete().execute(),
-			roleAssignmentsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();
