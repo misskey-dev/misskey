@@ -3426,6 +3426,27 @@ describe('Timelines', () => {
 
 				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), false);
 			});
+
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('channels/timeline', { channelId: channel.id }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('channels/timeline', { channelId: channel.id }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+			});
 		});
 		// TODO: リノートミュート済みユーザーのテスト
 		// TODO: ページネーションのテスト

@@ -108,6 +108,7 @@ export class QueryService {
 			this.generateBlockedUserQueryForNotes(query, me);
 			this.generateMutedUserQueryForNotes(query, me, { noteColumn: 'renote', excludeUserFromMute });
 			this.generateBlockedUserQueryForNotes(query, me, { noteColumn: 'renote' });
+			this.generateMutedNoteQuery(query, me);
 		}
 	}
 
@@ -170,7 +171,7 @@ export class QueryService {
 	public generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const query = this.noteMutingsRepository.createQueryBuilder('noteMuting')
 			.select('noteMuting.noteId')
-			.where('noteMuting.userId = :userId', { userId: me.id });
+			.where('noteMuting.userId = :noteMutingUserId', { noteMutingUserId: me.id });
 
 		q.andWhere(`note.id NOT IN (${ query.getQuery() })`);
 		q.setParameters(query.getParameters());

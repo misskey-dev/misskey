@@ -101,8 +101,8 @@ export class StreamingApiServerService {
 				this.notificationService,
 				this.cacheService,
 				this.channelFollowingService,
-				this.noteMutingService,
 				this.channelMutingService,
+				this.noteMutingService,
 				user,
 				app,
 			);
