@@ -301,7 +301,7 @@ export class NotificationEntityService implements OnModuleInit {
 		if (notifier == null) return false;
 		if (notifier.host && userMutedInstances.has(notifier.host)) return false;
 
-		if (notifier.isSuspended) return false;
+		if (this.userEntityService.isSuspendedEither(notifier)) return false;
 
 		return true;
 	}

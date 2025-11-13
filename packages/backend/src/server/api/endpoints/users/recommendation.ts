@@ -68,7 +68,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: me.id });
+				.where('following.followerId = :followerId', { followerId: me.id })
+				.andWhere('following.isFollowerSuspended = false');
 
 			query
 				.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
