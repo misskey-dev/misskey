@@ -158,11 +158,15 @@ describe('RoleService', () => {
 	afterEach(async () => {
 		clock.uninstall();
 
+		/**
+		 * Delete meta and roleAssignment first to avoid deadlock due to schema dependencies
+		 * https://github.com/misskey-dev/misskey/issues/16783
+		 */ 
+		await app.get(DI.metasRepository).createQueryBuilder().delete().execute();
+		await roleAssignmentsRepository.createQueryBuilder().delete().execute();
 		await Promise.all([
-			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
 			usersRepository.createQueryBuilder().delete().execute(),
 			rolesRepository.createQueryBuilder().delete().execute(),
-			roleAssignmentsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();
