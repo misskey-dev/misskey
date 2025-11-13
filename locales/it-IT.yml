@@ -1556,6 +1556,8 @@ _preferencesProfile:
   profileNameDescription: "Impostare il nome che indentifica questo dispositivo."
   profileNameDescription2: "Es: \"PC principale\" o \"Cellulare\""
   manageProfiles: "Gestione profili"
+  shareSameProfileBetweenDevicesIsNotRecommended: "Si sconsiglia di condividere lo stesso profilo su più dispositivi."
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "Se intendi sincronizzare solo alcuni parametri di configurazione su più dispositivi, devi attivare  l'opzione \"Sincronizzazione tra dispositivi\" per ogni parametro interessato."
 _preferencesBackup:
   autoBackup: "Backup automatico"
   restoreFromBackup: "Ripristinare da backup"
