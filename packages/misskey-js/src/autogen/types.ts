@@ -30455,8 +30455,8 @@ export interface operations {
                     sinceId?: string | null;
                     /** Format: misskey:id */
                     untilId?: string | null;
-                    sinceDate?: number;
-                    untilDate?: number;
+                    sinceDate?: number | null;
+                    untilDate?: number | null;
                 };
             };
         };
