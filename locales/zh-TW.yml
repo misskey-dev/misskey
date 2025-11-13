@@ -1557,6 +1557,7 @@ _preferencesProfile:
   profileNameDescription2: "例如：「主要個人電腦」、「智慧型手機」等"
   manageProfiles: "管理個人檔案"
   shareSameProfileBetweenDevicesIsNotRecommended: "不建議在多個裝置上共用同一個設定檔。"
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "如果您希望在多個裝置之間同步某些設定項目，請分別啟用「跨裝置同步」選項。"
 _preferencesBackup:
   autoBackup: "自動備份"
   restoreFromBackup: "從備份還原"
