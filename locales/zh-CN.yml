@@ -1548,6 +1548,7 @@ _preferencesProfile:
   profileNameDescription2: "如「PC」、「手机」等"
   manageProfiles: "管理配置文件"
   shareSameProfileBetweenDevicesIsNotRecommended: "不建议在多个设备间共用同一个配置文件。"
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "若想在多个设备间同步某些设置，请为每个设置打开「多设备间同步」选项。"
 _preferencesBackup:
   autoBackup: "自动备份"
   restoreFromBackup: "从备份恢复"
