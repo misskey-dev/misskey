@@ -105,16 +105,16 @@ describe('NoteMutingService', () => {
 
 	beforeEach(async () => {
 		// Clean database before each test
-		await noteMutingsRepository.delete({});
-		await notesRepository.delete({});
-		await usersRepository.delete({});
+		await noteMutingsRepository.deleteAll();
+		await notesRepository.deleteAll();
+		await usersRepository.deleteAll();
 	});
 
 	afterEach(async () => {
 		// Clean database after each test
-		await noteMutingsRepository.delete({});
-		await notesRepository.delete({});
-		await usersRepository.delete({});
+		await noteMutingsRepository.deleteAll();
+		await notesRepository.deleteAll();
+		await usersRepository.deleteAll();
 	});
 
 	afterAll(async () => {
