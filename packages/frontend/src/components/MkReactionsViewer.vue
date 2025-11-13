@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component
-	:is="prefer.s.animation ? TransitionGroup : 'div'"
+<MkTransitionGroup
 	:enterActiveClass="$style.transition_x_enterActive"
 	:leaveActiveClass="$style.transition_x_leaveActive"
 	:enterFromClass="$style.transition_x_enterFrom"
@@ -24,14 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:myReaction="props.myReaction"
 		@reactionToggled="onMockToggleReaction"
 	/>
-	<slot v-if="hasMoreReactions" name="more"/>
-</component>
+	<slot v-if="hasMoreReactions" :key="'$more'" name="more"/>
+</MkTransitionGroup>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
-import { TransitionGroup } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
