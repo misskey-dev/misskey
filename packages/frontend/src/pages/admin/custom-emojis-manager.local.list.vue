@@ -600,15 +600,12 @@ const headerActions = computed(() => [{
 </script>
 
 <style module lang="scss">
-.violationRow {
+// クラス定義が冗長に見えるのは詳細度を上げて優先的に適用させるため
+:global(.mk_grid_border) :global(.mk_grid_tbody) :global(.mk_grid_tr).violationRow.violationRow {
 	background-color: var(--MI_THEME-infoWarnBg);
 }
 
-.changedRow {
-	background-color: var(--MI_THEME-infoBg);
-}
-
-.editedRow {
+:global(.mk_grid_border) :global(.mk_grid_tbody) :global(.mk_grid_tr).changedRow {
 	background-color: var(--MI_THEME-infoBg);
 }
 
