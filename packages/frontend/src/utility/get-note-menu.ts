@@ -262,15 +262,15 @@ export function getNoteMenu(props: {
 			const { canceled, result: period } = await os.select({
 				title: i18n.ts.mutePeriod,
 				items: [{
-					value: 'indefinitely', text: i18n.ts.indefinitely,
+					value: 'indefinitely', label: i18n.ts.indefinitely,
 				}, {
-					value: 'tenMinutes', text: i18n.ts.tenMinutes,
+					value: 'tenMinutes', label: i18n.ts.tenMinutes,
 				}, {
-					value: 'oneHour', text: i18n.ts.oneHour,
+					value: 'oneHour', label: i18n.ts.oneHour,
 				}, {
-					value: 'oneDay', text: i18n.ts.oneDay,
+					value: 'oneDay', label: i18n.ts.oneDay,
 				}, {
-					value: 'oneWeek', text: i18n.ts.oneWeek,
+					value: 'oneWeek', label: i18n.ts.oneWeek,
 				}],
 				default: 'indefinitely',
 			});
@@ -298,11 +298,11 @@ export function getNoteMenu(props: {
 				{
 					'a58e7999-f6d3-1780-a688-f43661719662': {
 						title: i18n.ts.error,
-						text: i18n.ts._noteMuting.noNotes,
+						text: i18n.ts.noNotes,
 					},
 				},
 			).then(() => {
-				props.isDeleted.value = true;
+				globalEvents.emit('noteDeleted', appearNote.id);
 			});
 		}
 	}

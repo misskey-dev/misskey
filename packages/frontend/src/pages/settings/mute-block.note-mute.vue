@@ -4,10 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination ref="pagingComponent" :pagination="noteMutingPagination">
+<MkPagination :paginator="paginator">
 	<template #empty>
 		<div class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img :src="instance.infoImageUrl ?? undefined" class="_ghost" :alt="instance.name"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</template>
@@ -46,22 +46,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { entities } from 'misskey-js';
-import { shallowRef } from 'vue';
-import type { Paging } from '@/components/MkPagination.vue';
+import { markRaw } from 'vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkNoteSub from '@/components/MkNoteSub.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
-import { infoImageUrl } from '@/instance';
+import { instance } from '@/instance';
 import * as os from '@/os';
+import { Paginator } from '@/utility/paginator';
 
-const noteMutingPagination: Paging = {
-	endpoint: 'notes/muting/list',
+const paginator = markRaw(new Paginator('notes/muting/list', {
 	limit: 10,
-};
+}));
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+paginator.init();
 
 async function onClickUnmuteNote(noteId: string) {
 	await os.apiWithDialog(
@@ -77,8 +76,7 @@ async function onClickUnmuteNote(noteId: string) {
 			},
 		},
 	);
-
-	pagingComponent.value?.reload();
+	paginator.reload();
 }
 
 </script>

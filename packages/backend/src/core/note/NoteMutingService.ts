@@ -162,7 +162,9 @@ export class NoteMutingService implements OnApplicationShutdown {
 			.andWhere('noteMuting.expiresAt IS NOT NULL')
 			.getRawMany<{ noteMuting_id: MiNoteMuting['id'], noteMuting_userId: MiNoteMuting['id'] }>();
 
-		await this.noteMutingsRepository.delete(noteMutings.map(x => x.noteMuting_id));
+		if (noteMutings.length > 0) {
+			await this.noteMutingsRepository.delete(noteMutings.map(x => x.noteMuting_id));
+		}
 
 		for (const id of [...new Set(noteMutings.map(x => x.noteMuting_userId))]) {
 			// 同時多発的なDBアクセスが発生することを避けるため1回ごとにawaitする
