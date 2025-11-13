@@ -130,7 +130,7 @@ const bus = new GridEventEmitter();
  */
 const resizeObserver = new ResizeObserver((entries) => window.setTimeout(() => onResize(entries)));
 
-const rootEl = useTemplateRef<HTMLDivElement>('rootEl');
+const rootEl = useTemplateRef('rootEl');
 /**
  * グリッドの最も上位にある状態。
  */
