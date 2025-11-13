@@ -14,19 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-settings-question"></i></template>
 
 		<div class="_gaps_s">
-			<MkRadios v-model="q_use" :vertical="true">
-				<option value="single">
-					<div><i class="ti ti-user"></i> <b>{{ i18n.ts._serverSetupWizard._use.single }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.single_description }}</div>
-				</option>
-				<option value="group">
-					<div><i class="ti ti-lock"></i> <b>{{ i18n.ts._serverSetupWizard._use.group }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.group_description }}</div>
-				</option>
-				<option value="open">
-					<div><i class="ti ti-world"></i> <b>{{ i18n.ts._serverSetupWizard._use.open }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.open_description }}</div>
-				</option>
+			<MkRadios
+				v-model="q_use"
+				:options="[
+					{ value: 'single', label: i18n.ts._serverSetupWizard._use.single, icon: 'ti ti-user', caption: i18n.ts._serverSetupWizard._use.single_description },
+					{ value: 'group', label: i18n.ts._serverSetupWizard._use.group, icon: 'ti ti-lock', caption: i18n.ts._serverSetupWizard._use.group_description },
+					{ value: 'open', label: i18n.ts._serverSetupWizard._use.open, icon: 'ti ti-world', caption: i18n.ts._serverSetupWizard._use.open_description },
+				]"
+				vertical
+			>
 			</MkRadios>
 
 			<MkInfo v-if="q_use === 'single'">{{ i18n.ts._serverSetupWizard._use.single_youCanCreateMultipleAccounts }}</MkInfo>
@@ -40,7 +36,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-users"></i></template>
 
 		<div class="_gaps_s">
-			<MkRadios v-model="q_scale" :vertical="true">
+			<MkRadios
+				v-model="q_scale"
+				:options="[
+					{ value: 'small', label: i18n.ts._serverSetupWizard._scale.small, icon: 'ti ti-user' },
+					{ value: 'medium', label: i18n.ts._serverSetupWizard._scale.medium, icon: 'ti ti-users' },
+					{ value: 'large', label: i18n.ts._serverSetupWizard._scale.large, icon: 'ti ti-users-group' },
+				]"
+				vertical
+			>
 				<option value="small"><i class="ti ti-user"></i> {{ i18n.ts._serverSetupWizard._scale.small }}</option>
 				<option value="medium"><i class="ti ti-users"></i> {{ i18n.ts._serverSetupWizard._scale.medium }}</option>
 				<option value="large"><i class="ti ti-users-group"></i> {{ i18n.ts._serverSetupWizard._scale.large }}</option>
@@ -57,9 +61,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<div>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description1 }}<br>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description2 }}<br><MkLink target="_blank" url="https://wikipedia.org/wiki/Fediverse">{{ i18n.ts.learnMore }}</MkLink></div>
 
-			<MkRadios v-model="q_federation" :vertical="true">
-				<option value="yes">{{ i18n.ts.yes }}</option>
-				<option value="no">{{ i18n.ts.no }}</option>
+			<MkRadios
+				v-model="q_federation"
+				:options="[
+					{ value: 'yes', label: i18n.ts.yes },
+					{ value: 'no', label: i18n.ts.no },
+				]"
+				vertical
+			>
 			</MkRadios>
 
 			<MkInfo v-if="q_federation === 'yes'">{{ i18n.ts._serverSetupWizard.youCanConfigureMoreFederationSettingsLater }}</MkInfo>
@@ -212,9 +221,9 @@ const props = withDefaults(defineProps<{
 });
 
 const q_name = ref('');
-const q_use = ref('single');
-const q_scale = ref('small');
-const q_federation = ref('yes');
+const q_use = ref<'single' | 'group' | 'open'>('single');
+const q_scale = ref<'small' | 'medium' | 'large'>('small');
+const q_federation = ref<'yes' | 'no'>('no');
 const q_remoteContentsCleaning = ref(true);
 const q_adminName = ref('');
 const q_adminEmail = ref('');

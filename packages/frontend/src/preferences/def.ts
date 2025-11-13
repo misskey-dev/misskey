@@ -237,7 +237,7 @@ export const PREF_DEF = definePreferences({
 		default: prefersReducedMotion,
 	},
 	emojiStyle: {
-		default: 'twemoji', // twemoji / fluentEmoji / native
+		default: 'twemoji' as 'native' | 'fluentEmoji' | 'twemoji',
 	},
 	menuStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
@@ -500,7 +500,7 @@ export const PREF_DEF = definePreferences({
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'center' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'center',
 	},
 	'deck.columnGap': {
 		default: 6,
