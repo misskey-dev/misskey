@@ -242,6 +242,10 @@ uploader.events.on('itemUploaded', ctx => {
 	uploader.removeItem(ctx.item);
 });
 
+if (props.initialLocalFiles) {
+	uploader.addFiles(props.initialLocalFiles);
+}
+
 const draftKey = computed((): string => {
 	let key = targetChannel.value ? `channel:${targetChannel.value.id}` : '';
 
