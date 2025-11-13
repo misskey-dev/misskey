@@ -30449,13 +30449,14 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string | null;
                     /** Format: misskey:id */
                     untilId?: string | null;
-                    /** @default 10 */
-                    limit?: number;
-                    offset?: number;
+                    sinceDate?: number;
+                    untilDate?: number;
                 };
             };
         };

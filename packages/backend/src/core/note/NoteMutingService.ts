@@ -85,6 +85,8 @@ export class NoteMutingService implements OnApplicationShutdown {
 			userId: MiNoteMuting['userId'],
 			sinceId?: MiNoteMuting['id'] | null,
 			untilId?: MiNoteMuting['id'] | null,
+			sinceDate?: number | null,
+			untilDate?: number | null,
 		},
 		opts?: {
 			limit?: number;
@@ -93,7 +95,7 @@ export class NoteMutingService implements OnApplicationShutdown {
 			joinNote?: boolean;
 		},
 	): Promise<MiNoteMuting[]> {
-		const q = this.queryService.makePaginationQuery(this.noteMutingsRepository.createQueryBuilder('noteMuting'), params.sinceId, params.untilId);
+		const q = this.queryService.makePaginationQuery(this.noteMutingsRepository.createQueryBuilder('noteMuting'), params.sinceId, params.untilId, params.sinceDate, params.untilDate);
 
 		q.where('noteMuting.userId = :userId', { userId: params.userId });
 		if (opts?.joinUser) {
@@ -102,8 +104,6 @@ export class NoteMutingService implements OnApplicationShutdown {
 		if (opts?.joinNote) {
 			q.leftJoinAndSelect('noteMuting.note', 'note');
 		}
-
-		q.orderBy('noteMuting.id', 'DESC');
 
 		const limit = opts?.limit ?? 10;
 		q.limit(limit);

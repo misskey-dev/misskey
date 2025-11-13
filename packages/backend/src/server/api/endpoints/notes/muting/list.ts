@@ -31,10 +31,11 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id', nullable: true },
 		untilId: { type: 'string', format: 'misskey:id', nullable: true },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer' },
+		sinceDate: { type: 'integer', nullable: true },
+		untilDate: { type: 'integer', nullable: true },
 	},
 	required: [],
 } as const;
@@ -47,11 +48,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const mutings = await this.noteMutingService.listByUserId(
-				{ userId: me.id },
+				{ userId: me.id, sinceId: ps.sinceId, untilId: ps.untilId, sinceDate: ps.sinceDate, untilDate: ps.untilDate },
 				{
 					joinNote: true,
 					limit: ps.limit,
-					offset: ps.offset,
 				});
 
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

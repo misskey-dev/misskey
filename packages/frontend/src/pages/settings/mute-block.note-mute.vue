@@ -4,13 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination :paginator="paginator">
-	<template #empty>
-		<div class="_fullinfo">
-			<img :src="instance.infoImageUrl ?? undefined" class="_ghost" :alt="instance.name"/>
-			<div>{{ i18n.ts.nothing }}</div>
-		</div>
-	</template>
+<MkPagination :paginator="paginator" withControl>
+	<template #empty><MkResult type="empty" :text="i18n.ts.noNotes"/></template>
 
 	<template #default="{ items }">
 		<MkFolder v-for="item in (items as entities.NotesMutingListResponse)" :key="item.id" style="margin-bottom: 1rem;">
@@ -52,15 +47,12 @@ import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import { i18n } from '@/i18n';
-import { instance } from '@/instance';
 import * as os from '@/os';
 import { Paginator } from '@/utility/paginator';
 
 const paginator = markRaw(new Paginator('notes/muting/list', {
 	limit: 10,
 }));
-
-paginator.init();
 
 async function onClickUnmuteNote(noteId: string) {
 	await os.apiWithDialog(
