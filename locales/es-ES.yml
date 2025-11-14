@@ -2150,7 +2150,7 @@ _accountDelete:
   accountDelete: "Eliminar Cuenta"
   mayTakeTime: "La eliminación de la cuenta es un proceso que precisa de carga. Puede pasar un tiempo hasta que se complete si es mucho el contenido creado y los archivos subidos."
   sendEmail: "Cuando se termine de borrar la cuenta, se enviará un correo a la dirección usada para el registro."
-  requestAccountDelete: "Pedir la eliminación de la cuenta."
+  requestAccountDelete: "Solicitar la eliminación de la cuenta."
   started: "El proceso de eliminación ha comenzado."
   inProgress: "La eliminación está en proceso."
 _ad:
