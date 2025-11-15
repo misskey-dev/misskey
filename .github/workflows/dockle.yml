@@ -24,7 +24,10 @@ jobs:
           docker compose up -d web
           IMAGE_ID=$(docker compose images --format json web | jq -r '.[0].ID')
           docker tag "${IMAGE_ID}" misskey-web:latest
-      - run: |
+      - name: run dockle
+        env:
+          DOCKER_CONTENT_TRUST: 0
+        run: |
           echo "> docker run dockle …"
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
