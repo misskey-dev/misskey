@@ -17,13 +17,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4.3.0
+
       - run: |
           cp .config/docker_example.env .config/docker.env
           cp ./compose_example.yml ./compose.yml
+
       - run: |
           docker compose up -d web
           IMAGE_ID=$(docker compose images --format json web | jq -r '.[0].ID')
           docker tag "${IMAGE_ID}" misskey-web:latest
+
+      - name: Debug docker images
+        run: |
+          echo "== docker images =="
+          docker images
+          echo
+          echo "== inspect misskey-web:latest =="
+          docker image inspect misskey-web:latest || echo "misskey-web:latest NOT FOUND"
+
       - name: run dockle
         env:
           DOCKER_CONTENT_TRUST: 0
