@@ -722,9 +722,9 @@ export function useUploader(options: {
 					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 				audio: {
-					// Explicitly keep audio (don't discard) and copy it if possible
-					// without re-encoding to avoid WebCodecs limitations on iOS Safari
+					// Explicitly keep audio and set a reasonable bitrate to ensure it's included
 					discard: false,
+					bitrate: 128000, // 128 kbps audio bitrate
 				},
 			});
 
