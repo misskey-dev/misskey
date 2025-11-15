@@ -13,20 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONTENT_TRUST: 1
-      DOCKLE_VERSION: 0.4.14
-      DOCKLE_HOST: "unix:///var/run/docker.sock"
+      DOCKLE_VERSION: 0.4.15
+
     steps:
       - uses: actions/checkout@v4.3.0
-      - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
-        run: |
-          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${DOCKLE_VERSION}/dockle_${DOCKLE_VERSION}_Linux-64bit.deb"
-          sudo dpkg -i dockle.deb
       - run: |
           cp .config/docker_example.env .config/docker.env
           cp ./compose_example.yml ./compose.yml
       - run: |
           docker compose up -d web
           IMAGE_ID=$(docker compose images --format json web | jq -r '.[0].ID')
-          docker save "${IMAGE_ID}" -o misskey-web.tar
+          docker tag "${IMAGE_ID}" misskey-web:latest
       - run: |
-          dockle --exit-code 1 --input misskey-web.tar
+          echo "> docker run dockle …"
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            goodwithtech/dockle:v${DOCKLE_VERSION} \
+            --exit-code 1 misskey-web:latest
