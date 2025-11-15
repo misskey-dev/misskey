@@ -2594,9 +2594,9 @@ _postForm:
     visibility_title: "Visibilità"
     visibility_description: "Puoi impostare il grado di visibilità delle Note."
     menu_title: "Menù"
-    menu_description: "Puoi svolgere altre azioni, come il salvataggio in bozza, i post di prenotazione, l'impostazione delle reazioni e così via."
+    menu_description: "Puoi svolgere varie azioni, come salvare in bozza, pianificare le annotazioni, regolare le reazioni ricevute e altro."
     submit_title: "Bottone invia"
-    submit_description: "Posterò un biglietto. Puoi anche fare Ctrl + Inserisci oppure Cmd + Inserisci."
+    submit_description: "Pubblica la Nota. Funziona anche con \"Ctrl + Invio\", oppure \"Cmd + Invio\"."
   _placeholders:
     a: "Come va?"
     b: "Hai qualcosa da raccontare? Inizia pure..."
