@@ -13,10 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONTENT_TRUST: 1
-      DOCKLE_VERSION: 0.4.13
+      DOCKLE_VERSION: 0.4.15
 
     steps:
       - uses: actions/checkout@v4.3.0
+
+      - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
+        run: |
+          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${DOCKLE_VERSION}/dockle_${DOCKLE_VERSION}_Linux-64bit.deb"
+          sudo dpkg -i dockle.deb
 
       - run: |
           cp .config/docker_example.env .config/docker.env
@@ -27,23 +32,17 @@ jobs:
           IMAGE_ID=$(docker compose images --format json web | jq -r '.[0].ID')
           docker tag "${IMAGE_ID}" misskey-web:latest
 
-      - name: Debug docker images
+      - name: Prune docker junk (optional but recommended)
         run: |
-          echo "== docker images =="
-          docker images
-          echo
-          echo "== inspect misskey-web:latest =="
-          docker image inspect misskey-web:latest || echo "misskey-web:latest NOT FOUND"
+          docker system prune -af
+          docker volume prune -f
 
-      - name: run dockle
-        env:
-          DOCKER_CONTENT_TRUST: 0
+      - name: Save image for Dockle
         run: |
-          echo "> docker run dockle …"
-          docker run --rm \
-            -e DOCKER_HOST=unix:///var/run/docker.sock \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            goodwithtech/dockle:v${DOCKLE_VERSION} \
-            --debug \
-            --exit-code 1 \
-            misskey-web:latest
+          docker save misskey-web:latest -o ./misskey-web.tar
+          ls -lh ./misskey-web.tar
+
+      - name: Run Dockle with tar input
+        run: |
+          dockle --exit-code 1 --input ./misskey-web.tar
+
