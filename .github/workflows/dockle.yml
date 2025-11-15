@@ -41,6 +41,9 @@ jobs:
         run: |
           echo "> docker run dockle …"
           docker run --rm \
+            -e DOCKER_HOST=unix:///var/run/docker.sock \
             -v /var/run/docker.sock:/var/run/docker.sock \
             goodwithtech/dockle:v${DOCKLE_VERSION} \
-            --exit-code 1 misskey-web:latest
+            --debug \
+            --exit-code 1 \
+            misskey-web:latest
