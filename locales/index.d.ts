@@ -6219,6 +6219,14 @@ export interface Locale extends ILocale {
          * プロファイルの管理
          */
         "manageProfiles": string;
+        /**
+         * 複数のデバイスで同一のプロファイルを共有することは推奨しません。
+         */
+        "shareSameProfileBetweenDevicesIsNotRecommended": string;
+        /**
+         * 複数のデバイスで同期したい設定項目が存在する場合は、個別に「複数のデバイスで同期」オプションを有効にしてください。
+         */
+        "useSyncBetweenDevicesOptionIfYouWantToSyncSetting": string;
     };
     "_preferencesBackup": {
         /**
