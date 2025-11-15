@@ -115,7 +115,7 @@
 
 			// major/minor/patch: devcontainer の semver
 			// build: Node メジャー
-			// dist: bullseye（比較には使わない）
+			// dist: Debian codename (e.g., bullseye, bookworm)（比較には使わない）
 			versioning: 'regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>\\d+)-(?<dist>.+)$',
 		}
 	],
