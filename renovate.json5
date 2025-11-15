@@ -109,7 +109,7 @@
 		{
 			// devcontainer (Dockerfile用の設定)
 			groupName: '[devcontainer] Update dependencies',
-			matchFileNames: ['.devcontainer/**'],
+			matchFileNames: ['.devcontainer/Dockerfile'],
 			matchDepNames: ['mcr.microsoft.com/devcontainers/javascript-node'],
 			allowedVersions: '/-[0-9]+-(bullseye|bookworm)$/',
 
