@@ -111,7 +111,7 @@
 			groupName: '[devcontainer] Update dependencies',
 			matchFileNames: ['.devcontainer/Dockerfile'],
 			matchDepNames: ['mcr.microsoft.com/devcontainers/javascript-node'],
-			allowedVersions: '/-[0-9]+-(bullseye|bookworm)$/',
+			allowedVersions: '/-[0-9]+-trixie$/',
 
 			// major/minor/patch: devcontainer の semver
 			// build: Node メジャー
