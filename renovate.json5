@@ -117,7 +117,7 @@
 			// build: Node メジャー
 			// dist: Debian codename (e.g., bullseye, bookworm)（比較には使わない）
 			versioning: 'regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>\\d+)-(?<dist>.+)$',
-		}
+		},
 	],
 	customManagers: [
 		{
