@@ -600,16 +600,12 @@ const headerActions = computed(() => [{
 </script>
 
 <style module lang="scss">
-.violationRow {
-	background-color: var(--MI_THEME-infoWarnBg);
-}
-
 .changedRow {
-	background-color: var(--MI_THEME-infoBg);
+	background-color: var(--MI_THEME-infoBg) !important;
 }
 
-.editedRow {
-	background-color: var(--MI_THEME-infoBg);
+.violationRow {
+	background-color: var(--MI_THEME-infoWarnBg) !important;
 }
 
 .main {
