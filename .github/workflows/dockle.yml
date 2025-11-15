@@ -14,6 +14,7 @@ jobs:
     env:
       DOCKER_CONTENT_TRUST: 1
       DOCKLE_VERSION: 0.4.14
+      DOCKLE_HOST: "unix:///var/run/docker.sock"
     steps:
       - uses: actions/checkout@v4.3.0
       - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
