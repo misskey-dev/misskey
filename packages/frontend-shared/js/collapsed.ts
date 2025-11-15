@@ -9,13 +9,13 @@ export function shouldCollapsed(note: Misskey.entities.Note, urls: string[]): bo
 	if (note.cw != null) {
 		return false;
 	}
-
+// 2 & 3 times scaling is not unreasonable for this Instance
 	if (note.text != null) {
 		if (
-			note.text.includes('$[x2') ||
-			note.text.includes('$[x3') ||
+			//note.text.includes('$[x2') ||
+			//note.text.includes('$[x3') ||
 			note.text.includes('$[x4') ||
-			note.text.includes('$[scale') ||
+			//note.text.includes('$[scale') ||
 			note.text.split('\n').length > 9 ||
 			note.text.length > 500
 		) {
