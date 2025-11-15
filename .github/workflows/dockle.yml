@@ -26,8 +26,7 @@ jobs:
           cp ./compose_example.yml ./compose.yml
       - run: |
           docker compose up -d web
-          docker tag "$(docker compose images --format json web | jq -r '.[] | .ID')" misskey-web:latest
+          IMAGE_ID=$(docker compose images --format json web | jq -r '.[0].ID')
+          docker save "${IMAGE_ID}" -o misskey-web.tar
       - run: |
-          cmd="dockle --exit-code 1 misskey-web:latest ${image_name}"
-          echo "> ${cmd}"
-          eval "${cmd}"
+          dockle --exit-code 1 --input misskey-web.tar
