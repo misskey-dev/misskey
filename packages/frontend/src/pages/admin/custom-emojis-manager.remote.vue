@@ -418,8 +418,8 @@ onMounted(async () => {
 	padding: 16px;
 }
 
-:global(.mk_grid_border) :global(.mk_grid_tbody) :global(.mk_grid_tr).changedRow {
-	background-color: var(--MI_THEME-infoBg);
+.changedRow {
+	background-color: var(--MI_THEME-infoBg) !important;
 }
 
 .searchArea {
