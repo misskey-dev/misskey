@@ -7,8 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="meta" :class="$style.root">
 	<MkFeaturedPhotos :class="$style.bg"/>
 	<XTimeline :class="$style.tl"/>
-	<div :class="$style.shape1"></div>
 	<div :class="$style.shape2"></div>
+	<div :class="$style.shape3"></div>
+	<div :class="$style.shape1"></div>
 	<div :class="$style.logoWrapper">
 		<div :class="$style.poweredBy">Powered by</div>
 		<img :src="misskeysvg" :class="$style.misskey"/>
@@ -92,15 +93,6 @@ misskeyApiGet('federation/instances', {
 	}
 }
 
-.shape1 {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	background: var(--MI_THEME-accent);
-	clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
-}
 .shape2 {
 	position: fixed;
 	top: 0;
@@ -110,6 +102,26 @@ misskeyApiGet('federation/instances', {
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
 	opacity: 0.5;
+}
+
+.shape3 {
+	background-color: black;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	clip-path: polygon(0% 0%, 45.1% 0%, 20.1% 100%, 0% 100%);
+}
+	
+.shape1 {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: var(--MI_THEME-accent);
+	clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
 }
 
 .logoWrapper {
