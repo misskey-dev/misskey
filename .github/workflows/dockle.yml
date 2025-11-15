@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CONTENT_TRUST: 1
-      DOCKLE_VERSION: 0.4.15
+      DOCKLE_VERSION: 0.4.13
 
     steps:
       - uses: actions/checkout@v4.3.0
