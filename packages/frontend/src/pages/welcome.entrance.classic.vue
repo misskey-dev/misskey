@@ -135,11 +135,11 @@ misskeyApiGet('federation/instances', {
 }
 
 .poweredBy {
-	margin-bottom: 2px;
+	margin-bottom: -2px;
 }
 
 .misskey {
-	width: 120px;
+	width: 160px;
 
 	@media (max-width: 450px) {
 		width: 100px;
