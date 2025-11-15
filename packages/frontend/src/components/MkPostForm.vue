@@ -1465,6 +1465,8 @@ defineExpose({
 	width: 28px;
 	height: 28px;
 	margin: auto;
+	overflow: clip;
+	object-fit: cover;
 }
 
 .headerRight {
