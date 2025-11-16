@@ -595,6 +595,18 @@ export interface Locale extends ILocale {
      */
     "mute": string;
     /**
+     * ミュートする範囲
+     */
+    "muteType": string;
+    /**
+     * ミュートを適用する範囲を設定できます。「タイムラインのみ」に設定すると、タイムラインや検索結果上からは見えなくなりますが、通知は受け取ります。
+     */
+    "muteTypeDescription": string;
+    /**
+     * タイムラインのみ
+     */
+    "muteTypeTimeline": string;
+    /**
      * ミュート解除
      */
     "unmute": string;
@@ -3835,6 +3847,10 @@ export interface Locale extends ILocale {
      */
     "mutePeriod": string;
     /**
+     * 期限はあくまで目安です。反映が数分遅れる場合があります。
+     */
+    "mutePeriodDescription": string;
+    /**
      * 期限
      */
     "period": string;
@@ -5637,6 +5653,10 @@ export interface Locale extends ILocale {
      * ゼロ埋め
      */
     "zeroPadding": string;
+    /**
+     * ミュートしますか？
+     */
+    "muteConfirm": string;
     "_imageEditing": {
         "_vars": {
             /**
