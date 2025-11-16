@@ -1547,6 +1547,7 @@ _settings:
   showAvailableReactionsFirstInNote: "將可用的反應顯示在頂部"
   showPageTabBarBottom: "在底部顯示頁面的標籤列"
   emojiPaletteBanner: "可以將固定顯示在表情符號選擇器的預設項目註冊為調色盤，或者自訂選擇器的顯示方式。"
+  enableAnimatedImages: "啟用動畫圖片"
   _chat:
     showSenderName: "顯示發送者的名稱"
     sendOnEnter: "按下 Enter 發送訊息"
@@ -1555,6 +1556,8 @@ _preferencesProfile:
   profileNameDescription: "設定一個名稱來識別此裝置。"
   profileNameDescription2: "例如：「主要個人電腦」、「智慧型手機」等"
   manageProfiles: "管理個人檔案"
+  shareSameProfileBetweenDevicesIsNotRecommended: "不建議在多個裝置上共用同一個設定檔。"
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "如果您希望在多個裝置之間同步某些設定項目，請分別啟用「跨裝置同步」選項。"
 _preferencesBackup:
   autoBackup: "自動備份"
   restoreFromBackup: "從備份還原"
