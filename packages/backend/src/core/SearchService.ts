@@ -17,6 +17,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import Logger from '@/logger.js';
 import type { Index, MeiliSearch } from 'meilisearch';
 
 type K = string;
@@ -44,6 +45,17 @@ export type SearchPagination = {
 	untilId?: MiNote['id'];
 	sinceId?: MiNote['id'];
 	limit: number;
+};
+
+export type ReIndexNotesResult = {
+	/** 再インデックスしたノートの数 */
+	fetchedCount: number;
+	/** 最後にインデックスしたノートのID */
+	lastNoteId?: MiNote['id'];
+	/** 最後にインデックスしたノートの投稿日時 */
+	lastNoteDate?: Date;
+	/** 再インデックスに失敗したノートのID */
+	errorNoteIds: MiNote['id'][];
 };
 
 function compileValue(value: V): string {
@@ -76,9 +88,13 @@ function compileQuery(q: Q): string {
 
 @Injectable()
 export class SearchService {
+	public static MeilisearchNotActiveError = class extends Error {
+	};
+
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private readonly meilisearchNoteIndex: Index | null = null;
 	private readonly provider: FulltextSearchProvider;
+	private readonly logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -126,7 +142,24 @@ export class SearchService {
 		}
 
 		this.provider = config.fulltextSearch?.provider ?? 'sqlLike';
-		this.loggerService.getLogger('SearchService').info(`-- Provider: ${this.provider}`);
+		this.logger = this.loggerService.getLogger('SearchService');
+		this.logger.info(`-- Provider: ${this.provider}`);
+	}
+
+	@bindThis
+	private async addDocuments(notes: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'channelId' | 'cw' | 'text' | 'tags'>[]) {
+		return this.meilisearchNoteIndex?.addDocuments(notes.map(note => ({
+			id: note.id,
+			createdAt: this.idService.parse(note.id).date.getTime(),
+			userId: note.userId,
+			userHost: note.userHost,
+			channelId: note.channelId,
+			cw: note.cw,
+			text: note.text,
+			tags: note.tags,
+		})), {
+			primaryKey: 'id',
+		});
 	}
 
 	@bindThis
@@ -150,18 +183,7 @@ export class SearchService {
 			}
 		}
 
-		await this.meilisearchNoteIndex?.addDocuments([{
-			id: note.id,
-			createdAt: this.idService.parse(note.id).date.getTime(),
-			userId: note.userId,
-			userHost: note.userHost,
-			channelId: note.channelId,
-			cw: note.cw,
-			text: note.text,
-			tags: note.tags,
-		}], {
-			primaryKey: 'id',
-		});
+		await this.addDocuments([note]);
 	}
 
 	@bindThis
@@ -170,6 +192,105 @@ export class SearchService {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		await this.meilisearchNoteIndex?.deleteDocument(note.id);
+	}
+
+	@bindThis
+	public async unindexNoteAll() {
+		await this.meilisearchNoteIndex?.deleteAllDocuments();
+	}
+
+	/**
+	 * 一定期間の間に投稿されたノートをmeilisearchに再インデックスする.
+	 */
+	@bindThis
+	public async reIndexNotes(props: {
+		sinceDate?: number | null;
+		untilDate?: number | null;
+	}): Promise<ReIndexNotesResult> {
+		if (this.provider !== 'meilisearch' || !this.meilisearch || !this.meilisearchNoteIndex) {
+			throw new SearchService.MeilisearchNotActiveError();
+		}
+
+		const fetchNote = (sinceId?: MiNote['id'], untilId?: MiNote['id'], offset?: number, limit?: number) => {
+			const query = this.notesRepository.createQueryBuilder('note')
+				// 速い条件だけ先に
+				.andWhere('note.visibility IN (:...visibilities)', { visibilities: ['home', 'public'] });
+
+			if (sinceId) {
+				query.andWhere('note.id > :sinceId', { sinceId });
+			}
+
+			if (untilId) {
+				query.andWhere('note.id < :untilId', { untilId });
+			}
+
+			query.andWhere('note.text IS NOT NULL OR note.cw IS NOT NULL');
+
+			switch (this.meilisearchIndexScope) {
+				case 'global': {
+					break;
+				}
+				case 'local': {
+					query.andWhere('note.userHost IS NULL');
+					break;
+				}
+				default: {
+					query.andWhere('note.userHost IN (:...userHosts)', { userHosts: this.meilisearchIndexScope });
+					break;
+				}
+			}
+
+			return query
+				.select([
+					'note.id',
+					'note.userId',
+					'note.userHost',
+					'note.channelId',
+					'note.cw',
+					'note.text',
+					'note.tags',
+				])
+				.orderBy('note.id', 'DESC')
+				.skip(offset)
+				.take(limit)
+				.getMany();
+		};
+
+		this.logger.info('-- Start Re-indexing notes...');
+
+		const sinceId = props.sinceDate ? this.idService.gen(props.sinceDate) : undefined;
+		const untilId = props.untilDate ? this.idService.gen(props.untilDate) : undefined;
+		const errorNoteIds: MiNote['id'][] = [];
+		let lastNoteId: MiNote['id'] | undefined = undefined;
+		let fetchedCount = 0;
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		while (true) {
+			const notes = await fetchNote(sinceId, untilId, fetchedCount, 100);
+			if (notes.length === 0) {
+				break;
+			}
+
+			try {
+				await this.addDocuments(notes);
+			} catch (err) {
+				this.logger.error('-- Failed to index note', err as Error);
+				errorNoteIds.push(...notes.map(n => n.id));
+				break;
+			}
+
+			lastNoteId = notes[notes.length - 1].id;
+			fetchedCount += notes.length;
+		}
+
+		this.logger.info(`-- Re-indexing finished. Total: ${fetchedCount}`);
+
+		return {
+			fetchedCount: fetchedCount,
+			lastNoteId: lastNoteId,
+			lastNoteDate: lastNoteId ? this.idService.parse(lastNoteId).date : undefined,
+			errorNoteIds: errorNoteIds,
+		};
 	}
 
 	@bindThis
@@ -190,7 +311,6 @@ export class SearchService {
 				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
 			}
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const typeCheck: never = this.provider;
 				return [];
 			}
@@ -222,7 +342,7 @@ export class SearchService {
 		if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
 			query.andWhere('note.text &@~ :q', { q });
 		} else {
-			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
+			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${sqlLikeEscape(q.toLowerCase())}%` });
 		}
 
 		if (opts.host) {
