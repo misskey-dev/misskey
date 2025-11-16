@@ -5,6 +5,7 @@
 
 import { bindThis } from '@/decorators.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isMutingNoteRelated } from '@/misc/is-muting-note-related.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';
@@ -52,6 +53,10 @@ export default abstract class Channel {
 		return this.connection.userMutedInstances;
 	}
 
+	protected get noteMuting() {
+		return this.connection.noteMuting;
+	}
+
 	protected get followingChannels() {
 		return this.connection.followingChannels;
 	}
@@ -81,6 +86,9 @@ export default abstract class Channel {
 
 		// 流れてきたNoteがミュートしているチャンネルと関わる
 		if (isChannelRelated(note, this.mutingChannels)) return true;
+
+		// 流れてきたNoteがミュートしているNoteに関わる（ミュートしたノートがリノートされた or リプライがついた時）
+		if (isMutingNoteRelated(note, this.noteMuting)) return true;
 
 		return false;
 	}

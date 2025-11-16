@@ -674,6 +674,28 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
 			});
 
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				await setTimeout(1000);
+				const bobNote = await post(bob, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('notes/timeline', { limit: 100 }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('notes/timeline', { limit: 100 }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+			});
+
 			describe('Channel', () => {
 				test('チャンネル未フォロー　＋　ユーザ未フォロー　＝　TLに流れない', async () => {
 					const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -1349,6 +1371,26 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
 			}, 1000 * 10);
 
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const bobNote = await post(bob, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('notes/local-timeline', { limit: 100 }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('notes/local-timeline', { limit: 100 }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+			});
+
 			describe('Channel', () => {
 				test('チャンネル未フォロー　＋　ユーザ未フォロー　＝　TLに流れない', async () => {
 					const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -1845,6 +1887,26 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote1.id), false);
 				assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
 			}, 1000 * 10);
+
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const bobNote = await post(bob, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+			});
 
 			describe('Channel', () => {
 				test('チャンネル未フォロー　＋　ユーザ未フォロー　＝　TLに流れない', async () => {
@@ -2458,6 +2520,29 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
 			});
 
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
+				await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
+				await setTimeout(1000);
+				const bobNote = await post(bob, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('notes/user-list-timeline', { listId: list.id }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('notes/user-list-timeline', { listId: list.id }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+			});
+
 			describe('Channel', () => {
 				test('チャンネル未フォロー　＋　リスインしてない　＝　TLに流れない', async () => {
 					const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -3053,6 +3138,26 @@ describe('Timelines', () => {
 				assert.deepStrictEqual(res.body, [note3, note2, note1]);
 			});
 
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const bobNote = await post(bob, { text: 'hi' });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('users/notes', { userId: bob.id }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('users/notes', { userId: bob.id }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+			});
+
 			describe('Channel', () => {
 				test('チャンネルミュートなし　＝　TLに流れる', async () => {
 					const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -3320,6 +3425,27 @@ describe('Timelines', () => {
 				const res = await api('channels/timeline', { channelId: channel.id }, alice);
 
 				assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), false);
+			});
+
+			test('ノートミュートが機能する', async () => {
+				const [alice, bob] = await Promise.all([signup(), signup()]);
+
+				const channel = await createChannel('channel', bob);
+				const bobNote = await post(bob, { text: 'hi', channelId: channel.id });
+
+				await waitForPushToTl();
+
+				// ミュート前はノートが表示される
+				const res1 = await api('channels/timeline', { channelId: channel.id }, alice);
+				assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+				// ノートをミュート
+				await api('notes/muting/create', { noteId: bobNote.id }, alice);
+				await setTimeout(1000);
+
+				// ミュート後はノートが表示されない
+				const res2 = await api('channels/timeline', { channelId: channel.id }, alice);
+				assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
 			});
 		});
 		// TODO: リノートミュート済みユーザーのテスト

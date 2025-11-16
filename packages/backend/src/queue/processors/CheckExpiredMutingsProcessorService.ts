@@ -10,6 +10,7 @@ import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class CheckExpiredMutingsProcessorService {
 
 		private userMutingService: UserMutingService,
 		private channelMutingService: ChannelMutingService,
+		private noteMutingService: NoteMutingService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
@@ -42,6 +44,8 @@ export class CheckExpiredMutingsProcessorService {
 		}
 
 		await this.channelMutingService.eraseExpiredMutings();
+
+		await this.noteMutingService.cleanupExpiredMutes();
 
 		this.logger.succ('All expired mutings checked.');
 	}

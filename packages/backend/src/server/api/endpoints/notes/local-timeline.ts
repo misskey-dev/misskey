@@ -161,6 +161,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		this.queryService.generateBaseNoteFilteringQuery(query, me);
 		if (me) {
 			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+			this.queryService.generateMutedNoteQuery(query, me);
 
 			const mutedChannelIds = await this.channelMutingService
 				.list({ requestUserId: me.id }, { idOnly: true })

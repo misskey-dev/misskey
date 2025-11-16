@@ -3296,6 +3296,14 @@ _search:
   pleaseSelectUser: "ユーザーを選択してください"
   serverHostPlaceholder: "例: misskey.example.com"
 
+_noteMuting:
+  noteMuting: "ミュートしたノート"
+  muteNote: "ノートをミュート"
+  unmuteNote: "ノートのミュートを解除"
+  notMutedNote: "このノートはミュートされていません"
+  labelSuffix: "のノート"
+  unmuteCaption: "ミュートを解除したノートを再表示するにはタイムラインの再読み込みが必要です。"
+
 _serverSetupWizard:
   installCompleted: "Misskeyのインストールが完了しました！"
   firstCreateAccount: "まずは、管理者アカウントを作成しましょう。"
