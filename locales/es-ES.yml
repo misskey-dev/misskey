@@ -1457,7 +1457,7 @@ _order:
   newest: "Los más recientes primero"
   oldest: "Los más antiguos primero"
 _chat:
-  messages: "Mensaje"
+  messages: "Mensajes"
   noMessagesYet: "Aún no hay mensajes"
   newMessage: "Mensajes nuevos"
   individualChat: "Chat individual"
