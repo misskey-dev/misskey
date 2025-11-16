@@ -60,6 +60,7 @@ import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Ref } from 'vue';
 import type { AsUiComponent } from '@/aiscript/ui.js';
 import type { AsUiRoot } from '@/aiscript/ui.js';
+import type { Value } from '@syuilo/aiscript/interpreter/value.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -141,7 +142,7 @@ async function run() {
 			switch (type) {
 				case 'end': logs.value.push({
 					id: Math.random(),
-					text: utils.valToString(params.val, true),
+					text: utils.valToString(params.val as Value, true),
 					print: false,
 				}); break;
 				default: break;

@@ -11,15 +11,15 @@
 	},
 	"devDependencies": {
 		"@types/estree": "1.0.8",
-		"@types/node": "22.18.10",
-		"@typescript-eslint/eslint-plugin": "8.46.1",
-		"@typescript-eslint/parser": "8.46.1",
-		"rollup": "4.52.4",
+		"@types/node": "24.9.2",
+		"@typescript-eslint/eslint-plugin": "8.46.2",
+		"@typescript-eslint/parser": "8.46.2",
+		"rollup": "4.52.5",
 		"typescript": "5.9.3"
 	},
 	"dependencies": {
 		"estree-walker": "3.0.3",
-		"magic-string": "0.30.19",
-		"vite": "7.1.9"
+		"magic-string": "0.30.21",
+		"vite": "7.1.11"
 	}
 }

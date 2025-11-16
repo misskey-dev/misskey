@@ -60,7 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onDrop"
 			@contextmenu.stop="onContextmenu"
 		>
-			<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
+			<div :class="$style.tipContainer">
+				<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
+			</div>
 
 			<div :class="$style.folders">
 				<XFolder
@@ -802,6 +804,10 @@ onBeforeUnmount(() => {
 	}
 }
 
+.tipContainer:not(:empty) {
+	padding: 16px 32px;
+}
+
 .folders,
 .files {
 	display: grid;
@@ -811,6 +817,10 @@ onBeforeUnmount(() => {
 }
 
 @container (max-width: 600px) {
+	.tipContainer:not(:empty) {
+		padding: 16px;
+	}
+
 	.folders,
 	.files {
 		padding: 16px;

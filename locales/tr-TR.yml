@@ -1379,6 +1379,16 @@ customCssIsDisabledBecauseSafeMode: "Güvenli mod etkin olduğu için özel CSS 
 themeIsDefaultBecauseSafeMode: "Güvenli mod etkinken, varsayılan tema kullanılır. Güvenli modu devre dışı bırakmak bu değişiklikleri geri alır."
 thankYouForTestingBeta: "Beta sürümünü test ettiğin için teşekkür ederiz!"
 widgets: "Widget'lar"
+presets: "Ön ayar"
+_imageEditing:
+  _vars:
+    filename: "Dosya adı"
+_imageFrameEditor:
+  header: "Başlık"
+  font: "Yazı tipi"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Kaydedilmemiş değişiklikleri silmek ister misin?"
 _order:
   newest: "Önce yeni"
   oldest: "Önce eski"
@@ -2500,6 +2510,9 @@ _postForm:
   replyPlaceholder: "Bu notu yanıtla..."
   quotePlaceholder: "Bu notu alıntı yap..."
   channelPlaceholder: "Bir kanala gönder..."
+  _howToUse:
+    visibility_title: "Görünürlük"
+    menu_title: "Menü"
   _placeholders:
     a: "Ne yapıyorsun?"
     b: "Çevrende neler oluyor?"

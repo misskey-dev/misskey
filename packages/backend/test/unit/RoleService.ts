@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import { setTimeout } from 'node:timers/promises';
-import { jest } from '@jest/globals';
+import { describe, jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
@@ -158,14 +158,73 @@ describe('RoleService', () => {
 	afterEach(async () => {
 		clock.uninstall();
 
+		/**
+		 * Delete meta and roleAssignment first to avoid deadlock due to schema dependencies
+		 * https://github.com/misskey-dev/misskey/issues/16783
+		 */ 
+		await app.get(DI.metasRepository).createQueryBuilder().delete().execute();
+		await roleAssignmentsRepository.createQueryBuilder().delete().execute();
 		await Promise.all([
-			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
 			usersRepository.createQueryBuilder().delete().execute(),
 			rolesRepository.createQueryBuilder().delete().execute(),
-			roleAssignmentsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();
+	});
+
+	describe('getUserAssigns', () => {
+		test('アサインされたロールを取得できる', async () => {
+			const user = await createUser();
+			const role1 = await createRole({ name: 'a' });
+			const role2 = await createRole({ name: 'b' });
+
+			await roleService.assign(user.id, role1.id);
+			await roleService.assign(user.id, role2.id);
+
+			const assigns = await roleService.getUserAssigns(user.id);
+			expect(assigns).toHaveLength(2);
+			expect(assigns.some(a => a.roleId === role1.id)).toBe(true);
+			expect(assigns.some(a => a.roleId === role2.id)).toBe(true);
+		});
+
+		test('アサインされたロールの有効/期限切れパターンを取得できる', async () => {
+			const user = await createUser();
+			const roleNoExpiry = await createRole({ name: 'no-expires' });
+			const roleNotExpired = await createRole({ name: 'not-expired' });
+			const roleExpired = await createRole({ name: 'expired' });
+
+			// expiresAtなし
+			await roleService.assign(user.id, roleNoExpiry.id);
+
+			// expiresAtあり（期限切れでない）
+			const future = new Date(Date.now() + 1000 * 60 * 60); // +1 hour
+			await roleService.assign(user.id, roleNotExpired.id, future);
+
+			// expiresAtあり（期限切れ）
+			await assignRole({ userId: user.id, roleId: roleExpired.id, expiresAt: new Date(Date.now() - 1000) });
+
+			const assigns = await roleService.getUserAssigns(user.id);
+			expect(assigns.some(a => a.roleId === roleNoExpiry.id)).toBe(true);
+			expect(assigns.some(a => a.roleId === roleNotExpired.id)).toBe(true);
+			expect(assigns.some(a => a.roleId === roleExpired.id)).toBe(false);
+		});
+	});
+
+	describe('getUserRoles', () => {
+		test('アサインされたロールとコンディショナルロールの両方が取得できる', async () => {
+			const user = await createUser();
+			const manualRole = await createRole({ name: 'manual role' });
+			const conditionalRole = await createConditionalRole({
+				id: aidx(),
+				type: 'isBot',
+			});
+			await roleService.assign(user.id, manualRole.id);
+			await roleService.assign(user.id, conditionalRole.id);
+
+			const roles = await roleService.getUserRoles(user.id);
+			expect(roles.some(r => r.id === manualRole.id)).toBe(true);
+			expect(roles.some(r => r.id === conditionalRole.id)).toBe(true);
+		});
 	});
 
 	describe('getUserPolicies', () => {
@@ -279,6 +338,112 @@ describe('RoleService', () => {
 
 			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
+		});
+
+		test('role with no policy set', async () => {
+			const user = await createUser();
+			const roleWithPolicy = await createRole({
+				name: 'roleWithPolicy',
+				policies: {
+					pinLimit: {
+						useDefault: false,
+						priority: 0,
+						value: 10,
+					},
+				},
+			});
+			const roleWithoutPolicy = await createRole({
+				name: 'roleWithoutPolicy',
+				policies: {}, // ポリシーが空
+			});
+			await roleService.assign(user.id, roleWithPolicy.id);
+			await roleService.assign(user.id, roleWithoutPolicy.id);
+			meta.policies = {
+				pinLimit: 5,
+			};
+
+			const result = await roleService.getUserPolicies(user.id);
+
+			// roleWithoutPolicy は default 値 (5) を使い、roleWithPolicy の 10 と比較して大きい方が採用される
+			expect(result.pinLimit).toBe(10);
+		});
+	});
+
+	describe('getUserBadgeRoles', () => {
+		test('手動アサイン済みのバッジロールのみが返る', async () => {
+			const user = await createUser();
+			const badgeRole = await createRole({ name: 'badge', asBadge: true });
+			const normalRole = await createRole({ name: 'normal', asBadge: false });
+
+			await roleService.assign(user.id, badgeRole.id);
+			await roleService.assign(user.id, normalRole.id);
+
+			const roles = await roleService.getUserBadgeRoles(user.id);
+			expect(roles.some(r => r.id === badgeRole.id)).toBe(true);
+			expect(roles.some(r => r.id === normalRole.id)).toBe(false);
+		});
+
+		test('コンディショナルなバッジロールが条件一致で返る', async () => {
+			const user = await createUser({ isBot: true });
+			const condBadgeRole = await createConditionalRole({
+				id: aidx(),
+				type: 'isBot',
+			}, { asBadge: true, name: 'cond-badge' });
+			const condNonBadgeRole = await createConditionalRole({
+				id: aidx(),
+				type: 'isBot',
+			}, { asBadge: false, name: 'cond-non-badge' });
+
+			const roles = await roleService.getUserBadgeRoles(user.id);
+			expect(roles.some(r => r.id === condBadgeRole.id)).toBe(true);
+			expect(roles.some(r => r.id === condNonBadgeRole.id)).toBe(false);
+		});
+
+		test('roleAssignedTo 条件のバッジロール: アサイン有無で変化する', async () => {
+			const [user1, user2] = await Promise.all([createUser(), createUser()]);
+			const manualRole = await createRole({ name: 'manual' });
+			const condBadgeRole = await createConditionalRole({
+				id: aidx(),
+				type: 'roleAssignedTo',
+				roleId: manualRole.id,
+			}, { asBadge: true, name: 'assigned-badge' });
+
+			await roleService.assign(user2.id, manualRole.id);
+
+			const [roles1, roles2] = await Promise.all([
+				roleService.getUserBadgeRoles(user1.id),
+				roleService.getUserBadgeRoles(user2.id),
+			]);
+			expect(roles1.some(r => r.id === condBadgeRole.id)).toBe(false);
+			expect(roles2.some(r => r.id === condBadgeRole.id)).toBe(true);
+		});
+
+		test('期限切れのバッジロールは除外される', async () => {
+			const user = await createUser();
+			const roleNoExpiry = await createRole({ name: 'no-exp', asBadge: true });
+			const roleNotExpired = await createRole({ name: 'not-expired', asBadge: true });
+			const roleExpired = await createRole({ name: 'expired', asBadge: true });
+
+			// expiresAt なし
+			await roleService.assign(user.id, roleNoExpiry.id);
+
+			// expiresAt あり（期限切れでない）
+			const future = new Date(Date.now() + 1000 * 60 * 60); // +1 hour
+			await roleService.assign(user.id, roleNotExpired.id, future);
+
+			// expiresAt あり（期限切れ）
+			await assignRole({ userId: user.id, roleId: roleExpired.id, expiresAt: new Date(Date.now() - 1000) });
+
+			const rolesBefore = await roleService.getUserBadgeRoles(user.id);
+			expect(rolesBefore.some(r => r.id === roleNoExpiry.id)).toBe(true);
+			expect(rolesBefore.some(r => r.id === roleNotExpired.id)).toBe(true);
+			expect(rolesBefore.some(r => r.id === roleExpired.id)).toBe(false);
+
+			// 時間経過で roleNotExpired を失効させる
+			clock.tick('02:00:00');
+			const rolesAfter = await roleService.getUserBadgeRoles(user.id);
+			expect(rolesAfter.some(r => r.id === roleNoExpiry.id)).toBe(true);
+			expect(rolesAfter.some(r => r.id === roleNotExpired.id)).toBe(false);
 		});
 	});
 
@@ -413,9 +578,9 @@ describe('RoleService', () => {
 			expect(result).toEqual([modeUser1.id, modeUser2.id, rootUser.id]);
 		});
 
-		test('root has moderator role', async () => {
-			const [adminUser1, modeUser1, normalUser1, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createRoot(),
+		test('includeAdmins = false, includeRoot = true, excludeExpire = true', async () => {
+			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -424,9 +589,11 @@ describe('RoleService', () => {
 
 			await Promise.all([
 				assignRole({ userId: adminUser1.id, roleId: role1.id }),
+				assignRole({ userId: adminUser2.id, roleId: role1.id, expiresAt: new Date(Date.now() - 1000) }),
 				assignRole({ userId: modeUser1.id, roleId: role2.id }),
-				assignRole({ userId: rootUser.id, roleId: role2.id }),
+				assignRole({ userId: modeUser2.id, roleId: role2.id, expiresAt: new Date(Date.now() - 1000) }),
 				assignRole({ userId: normalUser1.id, roleId: role3.id }),
+				assignRole({ userId: normalUser2.id, roleId: role3.id, expiresAt: new Date(Date.now() - 1000) }),
 			]);
 
 			const result = await roleService.getModeratorIds({
@@ -434,12 +601,12 @@ describe('RoleService', () => {
 				includeRoot: true,
 				excludeExpire: false,
 			});
-			expect(result).toEqual([modeUser1.id, rootUser.id]);
+			expect(result).toEqual([modeUser1.id, modeUser2.id, rootUser.id]);
 		});
 
-		test('root has administrator role', async () => {
-			const [adminUser1, modeUser1, normalUser1, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createRoot(),
+		test('includeAdmins = true, includeRoot = true, excludeExpire = false', async () => {
+			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -448,9 +615,11 @@ describe('RoleService', () => {
 
 			await Promise.all([
 				assignRole({ userId: adminUser1.id, roleId: role1.id }),
-				assignRole({ userId: rootUser.id, roleId: role1.id }),
+				assignRole({ userId: adminUser2.id, roleId: role1.id, expiresAt: new Date(Date.now() - 1000) }),
 				assignRole({ userId: modeUser1.id, roleId: role2.id }),
+				assignRole({ userId: modeUser2.id, roleId: role2.id, expiresAt: new Date(Date.now() - 1000) }),
 				assignRole({ userId: normalUser1.id, roleId: role3.id }),
+				assignRole({ userId: normalUser2.id, roleId: role3.id, expiresAt: new Date(Date.now() - 1000) }),
 			]);
 
 			const result = await roleService.getModeratorIds({
@@ -458,12 +627,12 @@ describe('RoleService', () => {
 				includeRoot: true,
 				excludeExpire: false,
 			});
-			expect(result).toEqual([adminUser1.id, modeUser1.id, rootUser.id]);
+			expect(result).toEqual([adminUser1.id, adminUser2.id, modeUser1.id, modeUser2.id, rootUser.id]);
 		});
 
-		test('root has moderator role(expire)', async () => {
-			const [adminUser1, modeUser1, normalUser1, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createRoot(),
+		test('includeAdmins = true, includeRoot = true, excludeExpire = true', async () => {
+			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -472,17 +641,71 @@ describe('RoleService', () => {
 
 			await Promise.all([
 				assignRole({ userId: adminUser1.id, roleId: role1.id }),
-				assignRole({ userId: modeUser1.id, roleId: role2.id, expiresAt: new Date(Date.now() - 1000) }),
-				assignRole({ userId: rootUser.id, roleId: role2.id, expiresAt: new Date(Date.now() - 1000) }),
+				assignRole({ userId: adminUser2.id, roleId: role1.id, expiresAt: new Date(Date.now() - 1000) }),
+				assignRole({ userId: modeUser1.id, roleId: role2.id }),
+				assignRole({ userId: modeUser2.id, roleId: role2.id, expiresAt: new Date(Date.now() - 1000) }),
 				assignRole({ userId: normalUser1.id, roleId: role3.id }),
+				assignRole({ userId: normalUser2.id, roleId: role3.id, expiresAt: new Date(Date.now() - 1000) }),
 			]);
 
 			const result = await roleService.getModeratorIds({
-				includeAdmins: false,
+				includeAdmins: true,
 				includeRoot: true,
 				excludeExpire: true,
 			});
-			expect(result).toEqual([rootUser.id]);
+			expect(result).toEqual([adminUser1.id, modeUser1.id, rootUser.id]);
+		});
+	});
+
+	describe('getAdministratorIds', () => {
+		test('should return only user IDs with administrator roles', async () => {
+			const adminUser1 = await createUser();
+			const adminUser2 = await createUser();
+			const normalUser = await createUser();
+			const moderatorUser = await createUser();
+
+			const adminRole = await createRole({ name: 'admin', isAdministrator: true, isModerator: false });
+			const moderatorRole = await createRole({ name: 'moderator', isModerator: true, isAdministrator: false });
+			const normalRole = await createRole({ name: 'normal', isAdministrator: false, isModerator: false });
+
+			await roleService.assign(adminUser1.id, adminRole.id);
+			await roleService.assign(adminUser2.id, adminRole.id);
+			await roleService.assign(moderatorUser.id, moderatorRole.id);
+			await roleService.assign(normalUser.id, normalRole.id);
+
+			const adminIds = await roleService.getAdministratorIds();
+
+			// sort for deterministic order
+			adminIds.sort();
+			const expectedIds = [adminUser1.id, adminUser2.id].sort();
+
+			expect(adminIds).toEqual(expectedIds);
+		});
+
+		test('should return an empty array if no users have administrator roles', async () => {
+			const normalUser = await createUser();
+			const normalRole = await createRole({ name: 'normal', isAdministrator: false });
+			await roleService.assign(normalUser.id, normalRole.id);
+
+			const adminIds = await roleService.getAdministratorIds();
+
+			expect(adminIds).toHaveLength(0);
+		});
+
+		test('should return an empty array if there are no administrator roles defined', async () => {
+			await createUser(); // create user to ensure not empty db
+			const adminIds = await roleService.getAdministratorIds();
+			expect(adminIds).toHaveLength(0);
+		});
+
+		// TODO: rootユーザーは現在実装に含まれていないため、テストもそれに倣う
+		test('should not include the root user', async () => {
+			const rootUser = await createUser();
+			meta.rootUserId = rootUser.id;
+
+			const adminIds = await roleService.getAdministratorIds();
+
+			expect(adminIds).not.toContain(rootUser.id);
 		});
 	});
 
