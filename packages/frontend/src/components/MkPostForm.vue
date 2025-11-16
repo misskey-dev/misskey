@@ -608,11 +608,20 @@ async function toggleReactionAcceptance() {
 //#region その他の設定メニューpopup
 function showOtherSettings() {
 	let reactionAcceptanceIcon = 'ti ti-icons';
+	let reactionAcceptanceCaption = '';
 
 	if (reactionAcceptance.value === 'likeOnly') {
 		reactionAcceptanceIcon = 'ti ti-heart _love';
+		reactionAcceptanceCaption = i18n.ts.likeOnly;
 	} else if (reactionAcceptance.value === 'likeOnlyForRemote') {
 		reactionAcceptanceIcon = 'ti ti-heart-plus';
+		reactionAcceptanceCaption = i18n.ts.likeOnlyForRemote;
+	}	else if (reactionAcceptance.value === 'nonSensitiveOnly') {
+		reactionAcceptanceCaption = i18n.ts.nonSensitiveOnly;
+	} else if (reactionAcceptance.value === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') {
+		reactionAcceptanceCaption = i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote;
+	}	else {
+		reactionAcceptanceCaption = i18n.ts.all;
 	}
 
 	const menuItems = [{
@@ -624,6 +633,7 @@ function showOtherSettings() {
 	}, { type: 'divider' }, {
 		icon: reactionAcceptanceIcon,
 		text: i18n.ts.reactionAcceptance,
+		caption: reactionAcceptanceCaption,
 		action: () => {
 			toggleReactionAcceptance();
 		},
