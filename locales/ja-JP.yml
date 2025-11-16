@@ -182,7 +182,7 @@ flagAsCat: "にゃああああああああああああああ！！！！！！�
 flagAsCatDescription: "にゃにゃにゃ？？"
 flagShowTimelineReplies: "タイムラインにノートへの返信を表示する"
 flagShowTimelineRepliesDescription: "オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します。"
-autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自動承認"
+autoAcceptFollowed: "フォロー中ユーザーからのフォロー申請を自動承認"
 addAccount: "アカウントを追加"
 reloadAccountsList: "アカウントリストの情報を更新"
 loginFailed: "ログインに失敗しました"
@@ -302,6 +302,7 @@ uploadFromUrlMayTakeTime: "アップロードが完了するまで時間がか�
 uploadNFiles: "{n}個のファイルをアップロード"
 explore: "みつける"
 messageRead: "既読"
+readAllChatMessages: "すべてのメッセージを既読にする"
 noMoreHistory: "これより過去の履歴はありません"
 startChat: "メッセージを送る"
 nUsersRead: "{n}人が読みました"
@@ -1022,6 +1023,9 @@ pushNotificationAlreadySubscribed: "プッシュ通知は有効です"
 pushNotificationNotSupported: "ブラウザかサーバーがプッシュ通知に非対応"
 sendPushNotificationReadMessage: "通知が既読になったらプッシュ通知を削除する"
 sendPushNotificationReadMessageCaption: "端末の電池消費量が増加する可能性があります。"
+pleaseAllowPushNotification: "ブラウザの通知設定を許可してください"
+browserPushNotificationDisabled: "通知の送信権限の取得に失敗しました"
+browserPushNotificationDisabledDescription: "{serverName}から通知を送信する権限がありません。ブラウザの設定から通知を許可して再度お試しください。"
 windowMaximize: "最大化"
 windowMinimize: "最小化"
 windowRestore: "元に戻す"
@@ -1396,6 +1400,52 @@ scheduled: "予約"
 widgets: "ウィジェット"
 deviceInfo: "デバイス情報"
 deviceInfoDescription: "技術的なお問い合わせの際に、以下の情報を併記すると問題の解決に役立つことがあります。"
+youAreAdmin: "あなたは管理者です"
+frame: "フレーム"
+presets: "プリセット"
+zeroPadding: "ゼロ埋め"
+
+_imageEditing:
+  _vars:
+    caption: "ファイルのキャプション"
+    filename: "ファイル名"
+    filename_without_ext: "拡張子無しファイル名"
+    year: "撮影年"
+    month: "撮影月"
+    day: "撮影日"
+    hour: "撮影した時刻(時)"
+    minute: "撮影した時刻(分)"
+    second: "撮影した時刻(秒)"
+    camera_model: "カメラ名"
+    camera_lens_model: "レンズ名"
+    camera_mm: "焦点距離"
+    camera_mm_35: "焦点距離(35mm判換算)"
+    camera_f: "絞り"
+    camera_s: "シャッタースピード"
+    camera_iso: "ISO感度"
+    gps_lat: "緯度"
+    gps_long: "経度"
+
+_imageFrameEditor:
+  title: "フレームの編集"
+  tip: "画像にフレームやメタデータを含んだラベルを追加して装飾できます。"
+  header: "ヘッダー"
+  footer: "フッター"
+  borderThickness: "フチの幅"
+  labelThickness: "ラベルの幅"
+  labelScale: "ラベルのスケール"
+  centered: "中央揃え"
+  captionMain: "キャプション(大)"
+  captionSub: "キャプション(小)"
+  availableVariables: "利用可能な変数"
+  withQrCode: "二次元コード"
+  backgroundColor: "背景色"
+  textColor: "文字色"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  quitWithoutSaveConfirm: "保存せずに終了しますか？"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
 _compression:
   _quality:
@@ -1503,6 +1553,8 @@ _settings:
   showUrlPreview: "URLプレビューを表示する"
   showAvailableReactionsFirstInNote: "利用できるリアクションを先頭に表示"
   showPageTabBarBottom: "ページのタブバーを下部に表示"
+  emojiPaletteBanner: "絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。"
+  enableAnimatedImages: "アニメーション画像を有効にする"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -1513,6 +1565,8 @@ _preferencesProfile:
   profileNameDescription: "このデバイスを識別する名前を設定してください。"
   profileNameDescription2: "例: 「メインPC」、「スマホ」など"
   manageProfiles: "プロファイルの管理"
+  shareSameProfileBetweenDevicesIsNotRecommended: "複数のデバイスで同一のプロファイルを共有することは推奨しません。"
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "複数のデバイスで同期したい設定項目が存在する場合は、個別に「複数のデバイスで同期」オプションを有効にしてください。"
 
 _preferencesBackup:
   autoBackup: "自動バックアップ"
@@ -1523,6 +1577,7 @@ _preferencesBackup:
   youNeedToNameYourProfileToEnableAutoBackup: "自動バックアップを有効にするにはプロファイル名の設定が必要です。"
   autoPreferencesBackupIsNotEnabledForThisDevice: "このデバイスで設定の自動バックアップは有効になっていません。"
   backupFound: "設定のバックアップが見つかりました"
+  forceBackup: "設定の強制バックアップ"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2589,6 +2644,20 @@ _postForm:
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
   channelPlaceholder: "チャンネルに投稿..."
+  showHowToUse: "フォームの説明を表示"
+  _howToUse:
+    content_title: "本文"
+    content_description: "投稿する内容を入力します。"
+    toolbar_title: "ツールバー"
+    toolbar_description: "ファイルやアンケートの添付、注釈やハッシュタグの設定、絵文字やメンションの挿入などが行えます。"
+    account_title: "アカウントメニュー"
+    account_description: "投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。"
+    visibility_title: "公開範囲"
+    visibility_description: "ノートを公開する範囲の設定が行えます。"
+    menu_title: "メニュー"
+    menu_description: "下書きへの保存、投稿の予約、リアクションの設定など、その他のアクションが行えます。"
+    submit_title: "投稿ボタン"
+    submit_description: "ノートを投稿します。Ctrl + Enter / Cmd + Enter でも投稿できます。"
   _placeholders:
     a: "いまどうしてる？"
     b: "何かありましたか？"
@@ -2886,6 +2955,8 @@ _abuseReport:
     deleteConfirm: "通知先を削除しますか？"
 
 _moderationLogTypes:
+  clearQueue: "ジョブキューをクリア"
+  promoteQueue: "キューのジョブを再試行"
   createRole: "ロールを作成"
   deleteRole: "ロールを削除"
   updateRole: "ロールを更新"
@@ -3298,7 +3369,7 @@ _userLists:
 watermark: "ウォーターマーク"
 defaultPreset: "デフォルトのプリセット"
 _watermarkEditor:
-  tip: "画像にクレジット情報などのウォーターマークを追加することができます。"
+  tip: "画像にクレジット情報などのウォーターマークを追加できます。"
   quitWithoutSaveConfirm: "保存せずに終了しますか？"
   driveFileTypeWarn: "このファイルは対応していません"
   driveFileTypeWarnDescription: "画像ファイルを選択してください"
@@ -3327,12 +3398,14 @@ _watermarkEditor:
   polkadotSubDotRadius: "サブドットの大きさ"
   polkadotSubDotDivisions: "サブドットの数"
   leaveBlankToAccountUrl: "空欄にするとアカウントのURLになります"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
 _imageEffector:
   title: "エフェクト"
   addEffect: "エフェクトを追加"
   discardChangesConfirm: "変更を破棄して終了しますか？"
   nothingToConfigure: "設定項目はありません"
+  failedToLoadImage: "画像の読み込みに失敗しました"
 
   _fxs:
     chromaticAberration: "色収差"

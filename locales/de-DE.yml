@@ -1371,6 +1371,16 @@ defaultImageCompressionLevel_description: "Ein niedrigerer Wert erhält die Bild
 inMinutes: "Minute(n)"
 inDays: "Tag(en)"
 widgets: "Widgets"
+presets: "Vorlage"
+_imageEditing:
+  _vars:
+    filename: "Dateiname"
+_imageFrameEditor:
+  header: "Kopfzeile"
+  font: "Schriftart"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Nicht gespeicherte Änderungen verwerfen?"
 _order:
   newest: "Neueste zuerst"
   oldest: "Älteste zuerst"
@@ -2480,6 +2490,9 @@ _postForm:
   replyPlaceholder: "Dieser Notiz antworten …"
   quotePlaceholder: "Diese Notiz zitieren …"
   channelPlaceholder: "In einen Kanal senden"
+  _howToUse:
+    visibility_title: "Sichtbarkeit"
+    menu_title: "Menü"
   _placeholders:
     a: "Was machst du momentan?"
     b: "Was ist um dich herum los?"

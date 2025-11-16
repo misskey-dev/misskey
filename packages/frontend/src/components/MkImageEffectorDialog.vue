@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.root">
 		<div :class="$style.container">
-			<div :class="$style.preview">
+			<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
 				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown.prevent.stop="onImagePointerdown"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
@@ -64,6 +64,7 @@ import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 import { genId } from '@/utility/id.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	image: File;
@@ -94,19 +95,19 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		renderer.setLayers(layers);
+		renderer.render(layers);
 	}
 }, { deep: true });
 
 function addEffect(ev: MouseEvent) {
-	os.popupMenu(FXS.map((fx) => ({
-		text: fx.name,
+	os.popupMenu(Object.entries(FXS).map(([id, fx]) => ({
+		text: fx.uiDefinition.name,
 		action: () => {
 			layers.push({
 				id: genId(),
-				fxId: fx.id,
-				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
-			});
+				fxId: id as keyof typeof FXS,
+				params: Object.fromEntries(Object.entries(fx.uiDefinition.params).map(([k, v]) => [k, v.default])),
+			} as ImageEffectorLayer);
 		},
 	})), ev.currentTarget ?? ev.target);
 }
@@ -136,7 +137,7 @@ function onLayerDelete(layer: ImageEffectorLayer) {
 
 const canvasEl = useTemplateRef('canvasEl');
 
-let renderer: ImageEffector<typeof FXS> | null = null;
+let renderer: ImageEffector | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 onMounted(async () => {
@@ -146,30 +147,35 @@ onMounted(async () => {
 
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
-	imageBitmap = await window.createImageBitmap(props.image);
+	try {
+		imageBitmap = await window.createImageBitmap(props.image);
 
-	const MAX_W = 1000;
-	const MAX_H = 1000;
-	let w = imageBitmap.width;
-	let h = imageBitmap.height;
+		const MAX_W = 1000;
+		const MAX_H = 1000;
+		let w = imageBitmap.width;
+		let h = imageBitmap.height;
 
-	if (w > MAX_W || h > MAX_H) {
-		const scale = Math.min(MAX_W / w, MAX_H / h);
-		w *= scale;
-		h *= scale;
+		if (w > MAX_W || h > MAX_H) {
+			const scale = Math.min(MAX_W / w, MAX_H / h);
+			w = Math.floor(w * scale);
+			h = Math.floor(h * scale);
+		}
+
+		renderer = new ImageEffector({
+			canvas: canvasEl.value,
+			renderWidth: w,
+			renderHeight: h,
+			image: imageBitmap,
+		});
+
+		await renderer.render(layers);
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			text: i18n.ts._imageEffector.failedToLoadImage,
+		});
 	}
-
-	renderer = new ImageEffector({
-		canvas: canvasEl.value,
-		renderWidth: w,
-		renderHeight: h,
-		image: imageBitmap,
-		fxs: FXS,
-	});
-
-	await renderer.setLayers(layers);
-
-	renderer.render();
 
 	closeWaiting();
 });
@@ -196,7 +202,7 @@ async function save() {
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
-	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	await renderer.render(layers); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
@@ -208,11 +214,10 @@ const enabled = ref(true);
 watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			renderer.setLayers(layers);
+			renderer.render(layers);
 		} else {
-			renderer.setLayers([]);
+			renderer.render([]);
 		}
-		renderer.render();
 	}
 });
 
@@ -281,6 +286,7 @@ function onImagePointerdown(ev: PointerEvent) {
 				angle: 0,
 				opacity: 1,
 				color: [1, 1, 1],
+				ellipse: false,
 			},
 		});
 	} else if (penMode.value === 'blur') {
@@ -294,6 +300,7 @@ function onImagePointerdown(ev: PointerEvent) {
 				scaleY: 0.1,
 				angle: 0,
 				radius: 3,
+				ellipse: false,
 			},
 		});
 	} else if (penMode.value === 'pixelate') {
@@ -307,6 +314,7 @@ function onImagePointerdown(ev: PointerEvent) {
 				scaleY: 0.1,
 				angle: 0,
 				strength: 0.2,
+				ellipse: false,
 			},
 		});
 	}
@@ -329,7 +337,7 @@ function onImagePointerdown(ev: PointerEvent) {
 		const scaleY = Math.abs(y - startY);
 
 		const layerIndex = layers.findIndex((l) => l.id === id);
-		const layer = layerIndex !== -1 ? layers[layerIndex] : null;
+		const layer = layerIndex !== -1 ? (layers[layerIndex] as Extract<ImageEffectorLayer, { fxId: 'fill' } | { fxId: 'blur' } | { fxId: 'pixelate' }>) : null;
 		if (layer != null) {
 			layer.params.offsetX = (x + startX) - 1;
 			layer.params.offsetY = (y + startY) - 1;
@@ -373,8 +381,17 @@ function onImagePointerdown(ev: PointerEvent) {
 .preview {
 	position: relative;
 	background-color: var(--MI_THEME-bg);
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
+	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
+	background-size: 20px 20px;
+}
+
+.animatedBg {
+	animation: bg 1.2s linear infinite;
+}
+
+@keyframes bg {
+	0% { background-position: 0 0; }
+	100% { background-position: -20px -20px; }
 }
 
 .previewContainer {

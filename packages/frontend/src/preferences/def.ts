@@ -5,13 +5,15 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { prefersReducedMotion } from '@@/js/config.js';
 import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 import { deepEqual } from '@/utility/deep-equal.js';
@@ -211,10 +213,10 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	animation: {
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	animatedMfm: {
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	advancedMfm: {
 		default: true,
@@ -232,7 +234,7 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	disableShowingAnimatedImages: {
-		default: window.matchMedia('(prefers-reduced-motion)').matches,
+		default: prefersReducedMotion,
 	},
 	emojiStyle: {
 		default: 'twemoji', // twemoji / fluentEmoji / native
@@ -435,6 +437,26 @@ export const PREF_DEF = definePreferences({
 	defaultWatermarkPresetId: {
 		accountDependent: true,
 		default: null as WatermarkPreset['id'] | null,
+	},
+	imageFramePresets: {
+		accountDependent: true,
+		default: [] as ImageFramePreset[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
 	},
 	defaultImageCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,

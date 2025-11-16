@@ -3,57 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
-import shader from './watermarkPlacement.glsl';
+import shader from './watermark.glsl';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 
-export const FX_watermarkPlacement = defineImageEffectorFx({
-	id: 'watermarkPlacement',
-	name: '(internal)',
+export const fn = defineImageCompositorFunction<Partial<{
+	cover: boolean;
+	repeat: boolean;
+	scale: number;
+	angle: number;
+	align: { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; margin?: number; };
+	opacity: number;
+	noBoundingBoxExpansion: boolean;
+	watermark: string | null;
+}>>({
 	shader,
-	uniforms: ['opacity', 'scale', 'angle', 'cover', 'repeat', 'alignX', 'alignY', 'margin', 'repeatMargin', 'noBBoxExpansion', 'wmResolution', 'wmEnabled', 'watermark'] as const,
-	params: {
-		cover: {
-			type: 'boolean',
-			default: false,
-		},
-		repeat: {
-			type: 'boolean',
-			default: false,
-		},
-		scale: {
-			type: 'number',
-			default: 0.3,
-			min: 0.0,
-			max: 1.0,
-			step: 0.01,
-		},
-		angle: {
-			type: 'number',
-			default: 0,
-			min: -1.0,
-			max: 1.0,
-			step: 0.01,
-		},
-		align: {
-			type: 'align',
-			default: { x: 'right', y: 'bottom', margin: 0 },
-		},
-		opacity: {
-			type: 'number',
-			default: 0.75,
-			min: 0.0,
-			max: 1.0,
-			step: 0.01,
-		},
-		noBoundingBoxExpansion: {
-			type: 'boolean',
-			default: false,
-		},
-		watermark: {
-			type: 'texture',
-			default: null,
-		},
-	},
 	main: ({ gl, u, params, textures }) => {
 		// 基本パラメータ
 		gl.uniform1f(u.opacity, params.opacity ?? 1.0);
@@ -70,7 +33,7 @@ export const FX_watermarkPlacement = defineImageEffectorFx({
 		gl.uniform1i(u.noBBoxExpansion, params.noBoundingBoxExpansion ? 1 : 0);
 
 		// ウォーターマークテクスチャ
-		const wm = textures.watermark;
+		const wm = params.watermark ? textures.get(params.watermark) : null;
 		if (wm) {
 			gl.activeTexture(gl.TEXTURE1);
 			gl.bindTexture(gl.TEXTURE_2D, wm.texture);
