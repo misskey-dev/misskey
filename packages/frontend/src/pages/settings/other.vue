@@ -39,9 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label><SearchLabel>{{ i18n.ts._role.policies }}</SearchLabel></template>
 
 								<div class="_gaps_s">
-									<div v-for="policy in Object.keys($i.policies)" :key="policy">
-										{{ policy }} ... {{ $i.policies[policy] }}
-									</div>
+									<MkKeyValue v-for="(value, pKey) in policiesKv" :key="pKey">
+										<template #key>{{ value.label }}</template>
+										<template #value>{{ value.value }}</template>
+									</MkKeyValue>
 								</div>
 							</MkFolder>
 						</SearchMarker>
@@ -163,7 +164,6 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -172,6 +172,7 @@ import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
+import { rolePolicyDef, getPolicyDisplayValue } from '@/utility/role-policy.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
@@ -186,6 +187,22 @@ const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
 const enableWebTranslatorApi = prefer.model('experimental.enableWebTranslatorApi');
+
+const policiesKv = computed(() => {
+	return Object.fromEntries(
+		Object.entries($i.policies).map(([key, def]) => {
+			const _key = key as keyof typeof $i.policies | keyof typeof rolePolicyDef;
+			const value = getPolicyDisplayValue(rolePolicyDef[_key], def, true);
+			return [_key, {
+				label: rolePolicyDef[_key]?.displayLabel ?? _key,
+				value,
+			}];
+		}),
+	) as Record<keyof typeof $i.policies, {
+		label: string;
+		value: string;
+	}>;
+});
 
 watch(skipNoteRender, () => {
 	suggestReload();
