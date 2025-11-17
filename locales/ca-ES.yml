@@ -1556,6 +1556,8 @@ _preferencesProfile:
   profileNameDescription: "Estableix un nom que identifiqui aquest dispositiu."
   profileNameDescription2: "Per exemple: \"PC Principal\", \"Smartphone\", etc"
   manageProfiles: "Gestionar perfils"
+  shareSameProfileBetweenDevicesIsNotRecommended: "No recomanem compartir el mateix perfil en diferents dispositius."
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "Si hi ha ajustos que vols sincronitzar entre diferents dispositius activa l'opció \"Sincronitza entre diferents dispositius\" individualment per cada una de les diferents opcions."
 _preferencesBackup:
   autoBackup: "Còpia de seguretat automàtica "
   restoreFromBackup: "Restaurar des d'una còpia de seguretat"
