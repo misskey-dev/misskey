@@ -1565,6 +1565,8 @@ _preferencesProfile:
   profileNameDescription: "このデバイスを識別する名前を設定してください。"
   profileNameDescription2: "例: 「メインPC」、「スマホ」など"
   manageProfiles: "プロファイルの管理"
+  shareSameProfileBetweenDevicesIsNotRecommended: "複数のデバイスで同一のプロファイルを共有することは推奨しません。"
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "複数のデバイスで同期したい設定項目が存在する場合は、個別に「複数のデバイスで同期」オプションを有効にしてください。"
 
 _preferencesBackup:
   autoBackup: "自動バックアップ"
