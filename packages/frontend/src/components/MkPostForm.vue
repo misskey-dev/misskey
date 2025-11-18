@@ -610,18 +610,28 @@ function showOtherSettings() {
 	let reactionAcceptanceIcon = 'ti ti-icons';
 	let reactionAcceptanceCaption = '';
 
-	if (reactionAcceptance.value === 'likeOnly') {
-		reactionAcceptanceIcon = 'ti ti-heart _love';
-		reactionAcceptanceCaption = i18n.ts.likeOnly;
-	} else if (reactionAcceptance.value === 'likeOnlyForRemote') {
-		reactionAcceptanceIcon = 'ti ti-heart-plus';
-		reactionAcceptanceCaption = i18n.ts.likeOnlyForRemote;
-	}	else if (reactionAcceptance.value === 'nonSensitiveOnly') {
-		reactionAcceptanceCaption = i18n.ts.nonSensitiveOnly;
-	} else if (reactionAcceptance.value === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') {
-		reactionAcceptanceCaption = i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote;
-	}	else {
-		reactionAcceptanceCaption = i18n.ts.all;
+	switch (reactionAcceptance.value) {
+		case 'likeOnly':
+			reactionAcceptanceIcon = 'ti ti-heart _love';
+			reactionAcceptanceCaption = i18n.ts.likeOnly;
+			break;
+
+		case 'likeOnlyForRemote':
+			reactionAcceptanceIcon = 'ti ti-heart-plus';
+			reactionAcceptanceCaption = i18n.ts.likeOnlyForRemote;
+			break;
+
+		case 'nonSensitiveOnly':
+			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnly;
+			break;
+
+		case 'nonSensitiveOnlyForLocalLikeOnlyForRemote':
+			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote;
+			break;
+
+		default:
+			reactionAcceptanceCaption = i18n.ts.all;
+			break;
 	}
 
 	const menuItems = [{
