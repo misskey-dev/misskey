@@ -1,7 +1,9 @@
 ## Unreleased
 
 ### General
--
+- Note: DevContainerで使用しているDockerfileのベースを更新しました
+	- OSイメージがDebian 13(trixie)に更新されました
+  - Node.jsが24.10.0に更新されました
 
 ### Client
 -
