@@ -47,6 +47,9 @@ const VIDEO_COMPRESSION_SUPPORTED_TYPES = [ // TODO
 	'video/x-matroska',
 ];
 
+// worker/video-opfs-writer.ts と合わせること
+const VIDEO_COMPRESSION_FOLDER_NAME = 'video-compression-temp';
+
 const IMAGE_PREPROCESS_NEEDED_TYPES = [
 	...IMAGE_EDITING_SUPPORTED_TYPES,
 ];
@@ -108,6 +111,21 @@ function getCompressionSettings(level: 0 | 1 | 2 | 3) {
 	}
 }
 
+let folderHandle: FileSystemDirectoryHandle | null = null;
+
+async function getOpfsFolderHandle(): Promise<FileSystemDirectoryHandle> {
+	if (folderHandle == null) {
+		const handle = await navigator.storage.getDirectory();
+		folderHandle = await handle.getDirectoryHandle(VIDEO_COMPRESSION_FOLDER_NAME, { create: true });
+	}
+	return folderHandle;
+}
+
+async function getOpfsFileHandle(fileName: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle> {
+	const folderHandle = await getOpfsFolderHandle();
+	return folderHandle.getFileHandle(fileName, options);
+}
+
 export function useUploader(options: {
 	folderId?: string | null;
 	multiple?: boolean;
@@ -162,8 +180,15 @@ export function useUploader(options: {
 		}
 	}
 
-	function removeItem(item: UploaderItem) {
+	async function removeItem(item: UploaderItem) {
 		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+		if (item.preprocessOpfsFileName != null) {
+			const folderHandle = await getOpfsFolderHandle();
+			await folderHandle.removeEntry(item.preprocessOpfsFileName).catch((err) => {
+				if (_DEV_) console.warn('Failed to remove OPFS temp file', err);
+			});
+		}
+
 		items.value.splice(items.value.indexOf(item), 1);
 	}
 
@@ -740,7 +765,7 @@ export function useUploader(options: {
 					// WritableStreamを生成し、write/closeでWorkerにpostMessage
 					const writable = new WritableStream<StreamTargetChunk>({
 						write(chunk) {
-							return new Promise((resolve, reject) => {
+							return new Promise<void>((resolve, reject) => {
 								worker.onmessage = (e) => {
 									if (e.data.type === 'write' && e.data.success) {
 										resolve();
@@ -752,7 +777,7 @@ export function useUploader(options: {
 							});
 						},
 						close() {
-							return new Promise((resolve, reject) => {
+							return new Promise<void>((resolve, reject) => {
 								worker.onmessage = (e) => {
 									if (e.data.type === 'close' && e.data.success) {
 										resolve();
@@ -811,8 +836,7 @@ export function useUploader(options: {
 				item.compressedSize = output.target.buffer!.byteLength;
 			} else {
 				// OPFSの場合
-				const opfsRoot = await navigator.storage.getDirectory();
-				const fileHandle = await opfsRoot.getFileHandle(`${item.id}.mp4`, { create: false });
+				const fileHandle = await getOpfsFileHandle(item.preprocessOpfsFileName!);
 				if (fileHandle == null) {
 					throw new Error('Failed to get file handle from OPFS');
 				}
@@ -831,15 +855,15 @@ export function useUploader(options: {
 	}
 
 	async function dispose() {
-		const opfsRoot = await navigator.storage.getDirectory();
-
-		for (const item of items.value) {
+		await Promise.all(items.value.map(async (item) => {
 			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
 			if (item.preprocessOpfsFileName != null) {
-				console.log('Removing OPFS file', item.preprocessOpfsFileName);
-				await opfsRoot.removeEntry(item.preprocessOpfsFileName);
+				const folderHandle = await getOpfsFolderHandle();
+				await folderHandle.removeEntry(item.preprocessOpfsFileName).catch((err) => {
+					if (_DEV_) console.warn('Failed to remove OPFS temp file', err);
+				});
 			}
-		}
+		}));
 
 		abortAll();
 	}

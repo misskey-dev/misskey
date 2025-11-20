@@ -918,11 +918,6 @@ function isAnnoying(text: string): boolean {
 
 async function uploadFiles() {
 	await uploader.upload();
-
-	for (const uploadedItem of uploader.items.value.filter(x => x.uploaded != null)) {
-		files.value.push(uploadedItem.uploaded!);
-		uploader.removeItem(uploadedItem);
-	}
 }
 
 async function post(ev?: MouseEvent) {
