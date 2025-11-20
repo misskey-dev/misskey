@@ -138,7 +138,9 @@ preferencesChannel.addEventListener('message', (msg) => {
 		};
 	}
 });
+//#endregion
 
+//#region 定期クラウドバックアップ
 let latestBackupAt = 0;
 
 window.setInterval(() => {
@@ -151,6 +153,7 @@ window.setInterval(() => {
 		latestBackupAt = Date.now();
 	});
 }, 1000 * 60 * 3);
+//#endregion
 
 if (_DEV_) {
 	(window as any).prefer = prefer;
