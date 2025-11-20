@@ -4,6 +4,7 @@
  */
 
 import { computed, onUnmounted, ref, watch } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 import { host, version } from '@@/js/config.js';
 import { PREF_DEF } from './def.js';
 import type { Ref, WritableComputedRef } from 'vue';
@@ -100,6 +101,14 @@ type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => 
 
 export type PreferencesDefinition = Record<string, PreferencesDefinitionRecord<any>>;
 
+type PreferencesManagerEvents = {
+	'committed': <K extends keyof PREF>(ctx: {
+		key: K;
+		value: ValueOf<K>;
+		oldValue: ValueOf<K>;
+	}) => void;
+};
+
 export function definePreferences<T extends Record<string, unknown>>(x: {
 	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
 }): {
@@ -185,6 +194,7 @@ export class PreferencesManager {
 	private currentAccount: { id: string } | null;
 	public profile: PreferencesProfile;
 	public cloudReady: Promise<void>;
+	public readonly events = new EventEmitter<PreferencesManagerEvents>();
 
 	/**
 	 * static / state の略 (static が予約語のため)
@@ -245,6 +255,12 @@ export class PreferencesManager {
 		if (_DEV_) console.log('prefer:commit', key, v);
 
 		this.rewriteRawState(key, v);
+
+		this.events.emit('committed', {
+			key,
+			value: v,
+			oldValue: this.s[key],
+		});
 
 		const record = this.getMatchedRecordOf(key);
 

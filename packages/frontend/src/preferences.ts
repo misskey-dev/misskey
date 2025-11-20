@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BroadcastChannel } from 'broadcast-channel';
 import type { StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -12,6 +13,7 @@ import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { TAB_ID } from '@/tab-id.js';
 
+// クラウド同期用グループ名
 const syncGroup = 'default';
 
 const io: StorageProvider = {
@@ -26,7 +28,6 @@ const io: StorageProvider = {
 
 	save: (ctx) => {
 		miLocalStorage.setItem('preferences', JSON.stringify(ctx.profile));
-		miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
 	},
 
 	cloudGet: async (ctx) => {
@@ -99,30 +100,42 @@ const io: StorageProvider = {
 
 export const prefer = new PreferencesManager(io, $i);
 
-let latestSyncedAt = Date.now();
+//#region タブ間同期
+let latestPreferencesUpdate: {
+	tabId: string;
+	timestamp: number;
+} | null = null;
 
-function syncBetweenTabs() {
-	const latest = miLocalStorage.getItem('latestPreferencesUpdate');
-	if (latest == null) return;
+const preferencesChannel = new BroadcastChannel<{
+	type: 'preferencesUpdate';
+	tabId: string;
+	timestamp: number;
+}>('preferences');
 
-	const latestTab = latest.split('/')[0];
-	const latestAt = parseInt(latest.split('/')[1]);
+prefer.events.on('committed', (ev) => {
+	latestPreferencesUpdate = {
+		tabId: TAB_ID,
+		timestamp: Date.now(),
+	};
+	preferencesChannel.postMessage({
+		type: 'preferencesUpdate',
+		tabId: TAB_ID,
+		timestamp: latestPreferencesUpdate.timestamp,
+	});
+});
 
-	if (latestTab === TAB_ID) return;
-	if (latestAt <= latestSyncedAt) return;
-
-	prefer.reloadProfile();
-
-	latestSyncedAt = Date.now();
-
-	if (_DEV_) console.log('prefer:synced');
-}
-
-window.setInterval(syncBetweenTabs, 5000);
-
-window.document.addEventListener('visibilitychange', () => {
-	if (window.document.visibilityState === 'visible') {
-		syncBetweenTabs();
+preferencesChannel.addEventListener('message', (msg) => {
+	if (msg.type === 'preferencesUpdate') {
+		if (msg.tabId === TAB_ID) return;
+		if (latestPreferencesUpdate != null) {
+			if (msg.timestamp <= latestPreferencesUpdate.timestamp) return;
+		}
+		prefer.reloadProfile();
+		if (_DEV_) console.log('prefer:received update from other tab');
+		latestPreferencesUpdate = {
+			tabId: msg.tabId,
+			timestamp: msg.timestamp,
+		};
 	}
 });
 
