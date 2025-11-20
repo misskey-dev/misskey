@@ -192,7 +192,7 @@ export const paramDef = {
 		scheduledAt: { type: 'integer', nullable: true },
 		isActuallyScheduled: { type: 'boolean', default: false },
 	},
-	required: ['visibility', 'visibleUserIds', 'cw', 'hashtag', 'localOnly', 'reactionAcceptance', 'replyId', 'renoteId', 'channelId', 'text', 'fileIds', 'poll', 'scheduledAt', 'isActuallyScheduled'],
+	required: [],
 } as const;
 
 @Injectable()
@@ -203,22 +203,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const draft = await this.noteDraftService.create(me, {
-				fileIds: ps.fileIds,
+				fileIds: ps.fileIds ?? [],
 				pollChoices: ps.poll?.choices ?? [],
 				pollMultiple: ps.poll?.multiple ?? false,
 				pollExpiresAt: ps.poll?.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				pollExpiredAfter: ps.poll?.expiredAfter ?? null,
 				hasPoll: ps.poll != null,
-				text: ps.text,
-				replyId: ps.replyId,
-				renoteId: ps.renoteId,
-				cw: ps.cw,
-				hashtag: ps.hashtag,
+				text: ps.text ?? null,
+				replyId: ps.replyId ?? null,
+				renoteId: ps.renoteId ?? null,
+				cw: ps.cw ?? null,
+				hashtag: ps.hashtag ?? null,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
-				visibleUserIds: ps.visibleUserIds,
-				channelId: ps.channelId,
+				visibleUserIds: ps.visibleUserIds ?? [],
+				channelId: ps.channelId ?? null,
 				scheduledAt: ps.scheduledAt ? new Date(ps.scheduledAt) : null,
 				isActuallyScheduled: ps.isActuallyScheduled,
 			}).catch((err) => {

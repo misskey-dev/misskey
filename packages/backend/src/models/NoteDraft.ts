@@ -153,11 +153,14 @@ export class MiNoteDraft {
 
 	//#endregion
 
+	// 予約日時
+	// これがあるだけでは実際に予約されているかどうかはわからない
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public scheduledAt: Date | null;
 
+	// scheduledAtに基づいて実際にスケジュールされているか
 	@Column('boolean', {
 		default: false,
 	})

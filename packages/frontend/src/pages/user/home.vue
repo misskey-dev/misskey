@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dl>
 						</div>
 						<div class="status">
-							<MkA :to="userPage(user)">
+							<MkA :to="userPage(user, 'notes')">
 								<b>{{ number(user.notesCount) }}</b>
 								<span>{{ i18n.ts.notes }}</span>
 							</MkA>
@@ -159,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import MkNote from '@/components/MkNote.vue';
@@ -222,9 +222,9 @@ const router = useRouter();
 
 const user = ref(props.user);
 const narrow = ref<null | boolean>(null);
-const rootEl = ref<null | HTMLElement>(null);
-const bannerEl = ref<null | HTMLElement>(null);
-const memoTextareaEl = ref<null | HTMLElement>(null);
+const rootEl = useTemplateRef('rootEl');
+const bannerEl = useTemplateRef('bannerEl');
+const memoTextareaEl = useTemplateRef('memoTextareaEl');
 const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote ?? '');
@@ -368,27 +368,19 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 
 				> .banner-container {
 					position: relative;
-					height: 250px;
+					--bannerHeight: 250px;
+					height: var(--bannerHeight);
 					overflow: clip;
-					background-size: cover;
-					background-position: center;
-					view-timeline-name: --bannerParallax;
-					view-timeline-inset: var(--bannerParallaxInset, auto);
-					view-timeline-axis: block;
 
 					> .banner {
-						position: absolute;
-						top: 50%;
-						left: 0;
 						width: 100%;
-						height: 300%;
+						height: 100%;
+						background-size: cover;
 						background-color: #4c5e6d;
 						background-repeat: repeat-y;
-						background-position: center;
-						will-change: transform;
-						animation: bannerParallaxKeyframes linear both;
-						animation-timeline: --bannerParallax;
-						animation-range: cover;
+						background-position-x: center;
+						background-position-y: 50%;
+						will-change: background-position-y;
 					}
 
 					> .fade {
@@ -681,7 +673,8 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 		> .main {
 			> .profile > .main {
 				> .banner-container {
-					height: 140px;
+					--bannerHeight: 140px;
+					height: var(--bannerHeight);
 
 					> .fade {
 						display: none;
@@ -745,12 +738,32 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 	}
 }
 
+@supports (view-timeline-name: --name) {
+	.ftskorzw {
+		> .main {
+			> .profile > .main {
+				> .banner-container {
+					view-timeline-name: --bannerParallax;
+					view-timeline-inset: var(--bannerParallaxInset, auto);
+					view-timeline-axis: block;
+
+					> .banner {
+						animation: bannerParallaxKeyframes linear both;
+						animation-timeline: --bannerParallax;
+						animation-range: cover;
+					}
+				}
+			}
+		}
+	}
+}
+
 @keyframes bannerParallaxKeyframes {
 	from {
-		transform: translateY(-50%);
+		background-position-y: 50%;
 	}
 	to {
-		transform: translateY(-30%);
+		background-position-y: calc(50% + var(--bannerHeight, 250px) / 3);
 	}
 }
 </style>

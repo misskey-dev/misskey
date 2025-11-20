@@ -172,6 +172,14 @@ export class NoteDraftService {
 		me: MiLocalUser,
 		data: Partial<NoteDraftOptions>,
 	): Promise<void> {
+		if (data.isActuallyScheduled) {
+			if (data.scheduledAt == null) {
+				throw new IdentifiableError('94a89a43-3591-400a-9c17-dd166e71fdfa', 'scheduledAt is required when isActuallyScheduled is true');
+			} else if (data.scheduledAt.getTime() < Date.now()) {
+				throw new IdentifiableError('b34d0c1b-996f-4e34-a428-c636d98df457', 'scheduledAt must be in the future');
+			}
+		}
+
 		if (data.pollExpiresAt != null) {
 			if (data.pollExpiresAt.getTime() < Date.now()) {
 				throw new IdentifiableError('04da457d-b083-4055-9082-955525eda5a5', 'Cannot create expired poll');
@@ -320,6 +328,7 @@ export class NoteDraftService {
 
 	@bindThis
 	public async clearSchedule(draftId: MiNoteDraft['id']): Promise<void> {
+		// TODO: 線形探索なのをどうにかする
 		const jobs = await this.queueService.postScheduledNoteQueue.getJobs(['delayed', 'waiting', 'active']);
 		for (const job of jobs) {
 			if (job.data.noteDraftId === draftId) {

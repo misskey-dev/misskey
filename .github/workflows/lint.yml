@@ -41,7 +41,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.2.0
     - uses: actions/setup-node@v4.4.0
       with:
         node-version-file: '.node-version'
@@ -74,7 +74,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.2.0
     - uses: actions/setup-node@v4.4.0
       with:
         node-version-file: '.node-version'
@@ -96,6 +96,7 @@ jobs:
       matrix:
         workspace:
         - backend
+        - frontend
         - sw
         - misskey-js
     steps:
@@ -104,14 +105,16 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.2.0
     - uses: actions/setup-node@v4.4.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter misskey-js run build
-      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'sw' }}
+      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'frontend' || matrix.workspace == 'sw' }}
     - run: pnpm --filter misskey-reversi run build
-      if: ${{ matrix.workspace == 'backend' }}
+      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'frontend' }}
+    - run: pnpm --filter misskey-bubble-game run build
+      if: ${{ matrix.workspace == 'frontend' }}
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck

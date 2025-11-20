@@ -420,6 +420,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 					<MkInput v-model="role.policies.maxFileSizeMb.value" :disabled="role.policies.maxFileSizeMb.useDefault" type="number" :readonly="readonly">
 						<template #suffix>MB</template>
+						<template #caption>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._role._options.maxFileSize_caption }}</div>
+						</template>
 					</MkInput>
 					<MkRange v-model="role.policies.maxFileSizeMb.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>

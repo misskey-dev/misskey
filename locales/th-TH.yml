@@ -1389,6 +1389,18 @@ scheduleToPostOnX: "กำหนดเวลาให้โพสต์ไว้
 scheduledToPostOnX: "มีการกำหนดเวลาให้โพสต์ไว้ที่ {x}"
 schedule: "กำหนดเวลา"
 scheduled: "กำหนดเวลา"
+widgets: "วิดเจ็ต"
+presets: "พรีเซ็ต"
+_imageEditing:
+  _vars:
+    filename: "ชื่อไฟล์"
+_imageFrameEditor:
+  header: "ส่วนหัว"
+  withQrCode: "QR โค้ด"
+  font: "แบบอักษร"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "ต้องการออกโดยไม่บันทึกหรือไม่?"
 _compression:
   _quality:
     high: "คุณภาพสูง"
@@ -2521,6 +2533,9 @@ _postForm:
   replyPlaceholder: "ตอบกลับโน้ตนี้..."
   quotePlaceholder: "อ้างโน้ตนี้..."
   channelPlaceholder: "โพสต์ลงช่อง..."
+  _howToUse:
+    visibility_title: "การมองเห็น"
+    menu_title: "เมนู"
   _placeholders:
     a: "ตอนนี้เป็นยังไงบ้าง?"
     b: "มีอะไรเกิดขึ้นหรือเปล่า?"
