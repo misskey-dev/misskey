@@ -759,7 +759,7 @@ export function useUploader(options: {
 								item.preprocessOpfsFileName = fileName;
 								resolve(true);
 							} else {
-								opfsError = data.error;
+								opfsError = data.error ?? null;
 								resolve(false);
 							}
 						}

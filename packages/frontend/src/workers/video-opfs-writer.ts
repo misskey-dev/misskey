@@ -31,7 +31,7 @@ self.onmessage = async (ev) => {
 			position = 0;
 			post({ type: 'init', success: true });
 		} catch (err) {
-			post({ type: 'init', success: false, error: err?.message || String(err) });
+			post({ type: 'init', success: false, error: err instanceof Error ? err.message : null });
 		}
 	} else if (data.type === 'write') {
 		// チャンク書き込み（同期）
@@ -40,7 +40,7 @@ self.onmessage = async (ev) => {
 			position += data.chunk.data.byteLength;
 			post({ type: 'write', success: true });
 		} catch (err) {
-			post({ type: 'write', success: false, error: err?.message || String(err) });
+			post({ type: 'write', success: false, error: err instanceof Error ? err.message : null });
 		}
 	} else if (data.type === 'close') {
 		// 書き込み終了
@@ -50,7 +50,7 @@ self.onmessage = async (ev) => {
 			position = 0;
 			post({ type: 'close', success: true });
 		} catch (err) {
-			post({ type: 'close', success: false, error: err?.message || String(err) });
+			post({ type: 'close', success: false, error: err instanceof Error ? err.message : null });
 		}
 	}
 };

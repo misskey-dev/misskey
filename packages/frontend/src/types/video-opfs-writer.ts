@@ -10,7 +10,7 @@ export type VideoOpfsResponse = {
 	success: true;
 } | {
 	success: false;
-	error: string;
+	error?: string | null;
 });
 
 export interface VideoOpfsRequestBase {
