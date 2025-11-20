@@ -918,6 +918,7 @@ function isAnnoying(text: string): boolean {
 
 async function uploadFiles() {
 	await uploader.upload();
+	await nextTick();
 }
 
 async function post(ev?: MouseEvent) {
