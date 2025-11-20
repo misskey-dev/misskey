@@ -126,6 +126,13 @@ async function getOpfsFileHandle(fileName: string, options?: FileSystemGetFileOp
 	return folderHandle.getFileHandle(fileName, options);
 }
 
+export async function clearOpfsTempFiles() {
+	const rootHandle = await navigator.storage.getDirectory();
+	await rootHandle.removeEntry(VIDEO_COMPRESSION_FOLDER_NAME, { recursive: true }).catch(() => {
+		// ignore
+	});
+}
+
 export function useUploader(options: {
 	folderId?: string | null;
 	multiple?: boolean;

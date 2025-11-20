@@ -10,6 +10,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { fetchInstance } from '@/instance.js';
 import { clearAppliedThemeCache } from '@/theme.js';
+import { clearOpfsTempFiles } from '@/composables/use-uploader.js';
 
 export async function clearCache() {
 	os.waiting();
@@ -21,6 +22,7 @@ export async function clearCache() {
 	await misskeyApiGet('clear-browser-cache', {}).catch(() => {
 		// ignore
 	});
+	await clearOpfsTempFiles();
 	await fetchInstance(true);
 	await fetchCustomEmojis(true);
 	unisonReload();
