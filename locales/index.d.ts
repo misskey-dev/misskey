@@ -5637,6 +5637,14 @@ export interface Locale extends ILocale {
      * ゼロ埋め
      */
     "zeroPadding": string;
+    /**
+     * リモートのユーザーによってリアクションされたノートを取得する
+     */
+    "resolveRemoteReactedNotes": string;
+    /**
+     * リモートのユーザーによってリアクションされたノートを取得するかどうかを設定します。この設定を有効にすると、まだサーバーが取得していないリモートのノートにリアクションがつけられた場合でも、そのノートが取得されるようになりますが、ノートの増加率が増える可能性があります。
+     */
+    "resolveRemoteReactedNotesDescription": string;
     "_imageEditing": {
         "_vars": {
             /**
