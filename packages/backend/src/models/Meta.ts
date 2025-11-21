@@ -726,6 +726,11 @@ export class MiMeta {
 		default: { },
 	})
 	public clientOptions: Record<string, any>;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public resolveRemoteReactedNotes: boolean;
 }
 
 export type SoftwareSuspension = {

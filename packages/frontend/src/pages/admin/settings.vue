@@ -339,6 +339,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkSwitch>
 								</SearchMarker>
 							</template>
+
+							<SearchMarker :keywords="['resolve', 'reacted', 'note']">
+								<MkSwitch v-model="federationForm.state.resolveRemoteReactedNotes">
+									<template #label><SearchLabel>{{ i18n.ts.resolveRemoteReactedNotes }}</SearchLabel><span v-if="federationForm.modifiedStates.resolveRemoteReactedNotes" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts.resolveRemoteReactedNotesDescription }}</SearchText></template>
+								</MkSwitch>
+							</SearchMarker>
 						</div>
 					</MkFolder>
 				</SearchMarker>
@@ -483,6 +490,7 @@ const federationForm = useForm({
 	allowExternalApRedirect: meta.allowExternalApRedirect,
 	cacheRemoteFiles: meta.cacheRemoteFiles,
 	cacheRemoteSensitiveFiles: meta.cacheRemoteSensitiveFiles,
+	resolveRemoteReactedNotes: meta.resolveRemoteReactedNotes,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		federation: state.federation,
@@ -493,6 +501,7 @@ const federationForm = useForm({
 		allowExternalApRedirect: state.allowExternalApRedirect,
 		cacheRemoteFiles: state.cacheRemoteFiles,
 		cacheRemoteSensitiveFiles: state.cacheRemoteSensitiveFiles,
+		resolveRemoteReactedNotes: state.resolveRemoteReactedNotes,
 	});
 	fetchInstance(true);
 });

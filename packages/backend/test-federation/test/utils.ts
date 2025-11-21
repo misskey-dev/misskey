@@ -34,7 +34,7 @@ export type Request = <
 	credential?: string | null,
 ) => Promise<Misskey.api.SwitchCaseResponseType<E, P>>;
 
-type Host = 'a.test' | 'b.test';
+type Host = 'a.test' | 'b.test' | 'c.test';
 
 export async function sleep(ms = 250): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));

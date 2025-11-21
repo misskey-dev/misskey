@@ -381,6 +381,10 @@ export const packedMetaDetailedOnlySchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		resolveRemoteReactedNotes: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 

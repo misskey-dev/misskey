@@ -1,6 +1,7 @@
 include:
   - ./compose.a.yml
   - ./compose.b.yml
+  - ./compose.c.yml
 
 services:
   setup:
@@ -25,6 +26,10 @@ services:
       b.test:
         condition: service_healthy
       misskey.b.test:
+        condition: service_healthy
+      c.test:
+        condition: service_healthy
+      misskey.c.test:
         condition: service_healthy
     environment:
       - NODE_ENV=development

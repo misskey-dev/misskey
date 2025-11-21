@@ -1404,6 +1404,8 @@ youAreAdmin: "あなたは管理者です"
 frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
+resolveRemoteReactedNotes: "リモートのユーザーによってリアクションされたノートを取得する"
+resolveRemoteReactedNotesDescription: "リモートのユーザーによってリアクションされたノートを取得するかどうかを設定します。この設定を有効にすると、まだサーバーが取得していないリモートのノートにリアクションがつけられた場合でも、そのノートが取得されるようになりますが、ノートの増加率が増える可能性があります。"
 
 _imageEditing:
   _vars:

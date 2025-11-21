@@ -597,6 +597,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			resolveRemoteReactedNotes: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -753,6 +757,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				remoteNotesCleaningExpiryDaysForEachNotes: instance.remoteNotesCleaningExpiryDaysForEachNotes,
 				remoteNotesCleaningMaxProcessingDurationInMinutes: instance.remoteNotesCleaningMaxProcessingDurationInMinutes,
 				showRoleBadgesOfRemoteUsers: instance.showRoleBadgesOfRemoteUsers,
+				resolveRemoteReactedNotes: instance.resolveRemoteReactedNotes,
 			};
 		});
 	}

@@ -3,18 +3,20 @@ import * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
-	let alice: LoginUser, bob: LoginUser;
-	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+	let alice: LoginUser, bob: LoginUser, charlie: LoginUser;
+	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe, bobInC: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
-		[alice, bob] = await Promise.all([
+		[alice, bob, charlie] = await Promise.all([
 			createAccount('a.test'),
 			createAccount('b.test'),
+			createAccount('c.test'),
 		]);
 
-		[bobInA, aliceInB] = await Promise.all([
+		[bobInA, aliceInB, bobInC] = await Promise.all([
 			resolveRemoteUser('b.test', bob.id, alice),
 			resolveRemoteUser('a.test', alice.id, bob),
+			resolveRemoteUser('c.test', bob.id, charlie),
 		]);
 	});
 
@@ -376,6 +378,31 @@ describe('Note', () => {
 				strictEqual(noteAfterVote.poll.choices[0].votes, 1);
 				strictEqual(noteAfterVote.poll.choices[1].votes, 0);
 			});
+		});
+	});
+
+	describe('Reacted Remote Note', () => {
+		test('Exist of alice note reacted by bob in c.test', async () => {
+			// turn on ResolveReactedRemoteNote
+			await charlie.client.request('admin/update-meta', {
+				resolveReactedRemoteNote: true,
+			});
+			await sleep();
+
+			// follow bob from charlie
+			await charlie.client.request('following/create', { userId: bobInC.id });
+			await sleep();
+
+			// alice creates note, bob reacts, charlie checks
+			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
+			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
+			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
+			await sleep();
+
+			const notesInC = await charlie.client.request('notes/global-timeline', {});
+			const reactedNoteInC = notesInC.find(n => n.uri === note.uri);
+			assert(reactedNoteInC != null);
+			strictEqual(reactedNoteInC!.text, note.text);
 		});
 	});
 });
