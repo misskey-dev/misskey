@@ -1,6 +1,6 @@
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser, charlie: LoginUser;
@@ -384,7 +384,10 @@ describe('Note', () => {
 	describe('Reacted Remote Note', () => {
 		test('Exist of alice note reacted by bob in c.test', async () => {
 			// turn on ResolveReactedRemoteNote
-			await charlie.client.request('admin/update-meta', {
+			const adminC = await fetchAdmin('c.test');
+			await sleep();
+
+			await adminC.client.request('admin/update-meta', {
 				resolveReactedRemoteNote: true,
 			});
 			await sleep();
