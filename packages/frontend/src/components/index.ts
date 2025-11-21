@@ -35,7 +35,7 @@ import SearchLabel from './global/SearchLabel.vue';
 import SearchText from './global/SearchText.vue';
 import SearchIcon from './global/SearchIcon.vue';
 
-import type { App, Component } from 'vue';
+import type { App } from 'vue';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(components)) {
@@ -112,15 +112,3 @@ declare module '@vue/runtime-core' {
 		SearchIcon: typeof SearchIcon;
 	}
 }
-
-import type { ComponentEmit } from 'vue-component-type-helpers';
-
-type G = ComponentEmit<typeof Mfm>;
-
-type EmitName<T extends (...args: any[]) => any> = T extends (evName: infer U, ...args: any[]) => any ? U : never;
-
-type ComponentEmitsObject<T extends Component, E extends ComponentEmit<T>> = E extends (...args: any[]) => any
-	? {
-			[K in EmitName<E>]: E;
-	  }
-	: never;
