@@ -380,10 +380,11 @@ describe('Note', () => {
 	});
 
 	describe('Reacted Remote Note', () => {
+		let adminC: LoginUser;
 		let charlie: LoginUser;
 		let bobInC: Misskey.entities.UserDetailedNotMe;
 		beforeAll(async() => {
-			const adminC = await fetchAdmin('c.test');
+			adminC = await fetchAdmin('c.test');
 			await adminC.client.request('admin/update-meta', {
 				resolveReactedRemoteNote: true,
 			});
@@ -412,7 +413,6 @@ describe('Note', () => {
 		});
 
 		afterAll(async() => {
-			const adminC = await fetchAdmin('c.test');
 			await adminC.client.request('admin/update-meta', {
 				resolveReactedRemoteNote: false,
 			});
