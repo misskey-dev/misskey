@@ -392,11 +392,11 @@ describe('Note', () => {
 				resolveRemoteReactedNotes: true,
 			});
 
-			await sleep(1000);
+			await sleep();
 
 			carol = await createAccount('c.test');
 
-			await sleep(1000);
+			await sleep();
 
 			bobInC = await resolveRemoteUser('b.test', bob.id, carol);
 		});
