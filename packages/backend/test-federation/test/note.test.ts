@@ -396,24 +396,20 @@ describe('Note', () => {
 		});
 
 		test('Exist of alice note reacted by bob in c.test', async () => {
-			// follow bob from charlie
 			await charlie.client.request('following/create', { userId: bobInC.id });
 			await sleep(1000);
 
-			// alice creates note, bob reacts, charlie checks
-			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
+			const note = (await alice.client.request('notes/create', { text: 'test note from alice' })).createdNote;
 			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
-			await sleep(5000);
 
-			// Check if the note exists in C's database via timeline
+			// Wait for the Like activity to be delivered and processed
+			await sleep(10000);
+
 			const timelineInC = await charlie.client.request('notes/global-timeline', { limit: 100 });
-			console.log('Total notes in global timeline:', timelineInC.length);
-			console.log('Looking for note with URI:', note.uri);
-			console.log('Timeline notes URIs:', timelineInC.map(n => n.uri).filter(uri => uri));
 
 			const reactedNoteInC = timelineInC.find(n => n.uri === note.uri);
-			assert(reactedNoteInC != null, `Note with URI ${note.uri} not found in timeline`);
+			assert(reactedNoteInC != null, `Note with URI ${note.uri} not found in C's global timeline. Found ${timelineInC.length} notes.`);
 			strictEqual(reactedNoteInC.text, note.text);
 		});
 
