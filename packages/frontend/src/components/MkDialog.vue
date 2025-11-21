@@ -41,6 +41,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModal>
 </template>
 
+<script lang="ts">
+export type Result = string | number | true | null;
+export type MkDialogReturnType<T = Result> = { canceled: true, result: undefined } | { canceled: false, result: T };
+</script>
+
 <script lang="ts" setup>
 import { ref, useTemplateRef, computed } from 'vue';
 import MkModal from '@/components/MkModal.vue';
@@ -64,8 +69,6 @@ type Select = {
 	items: MkSelectItem[];
 	default: OptionValue | null;
 };
-
-type Result = string | number | true | null;
 
 const props = withDefaults(defineProps<{
 	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
@@ -93,7 +96,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: { canceled: true } | { canceled: false, result: Result }): void;
+	(ev: 'done', v: MkDialogReturnType): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -131,7 +134,7 @@ function done(canceled: true): void;
 function done(canceled: false, result: Result): void; // eslint-disable-line no-redeclare
 
 function done(canceled: boolean, result?: Result): void { // eslint-disable-line no-redeclare
-	emit('done', { canceled, result } as { canceled: true } | { canceled: false, result: Result });
+	emit('done', { canceled, result } as MkDialogReturnType);
 	modal.value?.close();
 }
 

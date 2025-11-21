@@ -24,7 +24,7 @@ import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
-import MkDialog from '@/components/MkDialog.vue';
+import MkDialog, { type MkDialogReturnType } from '@/components/MkDialog.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -161,10 +161,16 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 // props に ref を許可するようにする
 type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
 
+type OverloadToUnion<T> = T extends (...args: infer A) => infer R ? ((...args: A) => R) | OverloadToUnion<T extends ((...args: A) => R) & infer Rest ? Rest : never> : never;
+
+type ComponentEmitsObject<E extends ComponentEmit<Component>, IE = OverloadToUnion<E>> = {
+	[K in IE extends (evName: infer U, ...args: any[]) => any ? U extends string ? U : never : never]: IE extends (evName: K, ...args: infer A) => infer R ? (...args: A) => R : never;
+};
+
 export function popup<T extends Component>(
 	component: T,
 	props: ComponentProps<T>,
-	events: Partial<ComponentEmit<T>> = {},
+	events: Partial<ComponentEmitsObject<ComponentEmit<T>>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
 
@@ -195,7 +201,7 @@ export async function popupAsyncWithDialog<T extends Component>(
 	events: Partial<ComponentEmit<T>> = {},
 ): Promise<{ dispose: () => void }> {
 	let component: T;
-	let closeWaiting = () => {};
+	let closeWaiting = () => { };
 
 	const timer = window.setTimeout(() => {
 		closeWaiting = waiting();
@@ -291,23 +297,21 @@ export function confirm(props: {
 	});
 }
 
-// TODO: const T extends ... にしたい
-// https://zenn.dev/general_link/articles/813e47b7a0eef7#const-type-parameters
-export function actions<T extends {
+type ActionsAction = {
 	value: string;
 	text: string;
-	primary?: boolean,
-	danger?: boolean,
-}[]>(props: {
+	primary?: boolean;
+	danger?: boolean;
+};
+
+// TODO: const T extends ... にしたい
+// https://zenn.dev/general_link/articles/813e47b7a0eef7#const-type-parameters
+export function actions<const T extends ActionsAction[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string;
 	text?: string;
 	actions: T;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: T[number]['value'];
-}> {
+}): Promise<MkDialogReturnType<T[number]['value']>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			...props,
@@ -321,7 +325,7 @@ export function actions<T extends {
 			})),
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<T[number]['value']>);
 			},
 			closed: () => dispose(),
 		});
@@ -338,11 +342,7 @@ export function inputText(props: {
 	default: string;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string;
-}>;
+}): Promise<MkDialogReturnType<string>>;
 // min lengthが指定されてたら result は null になり得ないことを保証する overload function
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
@@ -353,11 +353,7 @@ export function inputText(props: {
 	default?: string;
 	minLength: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string;
-}>;
+}): Promise<MkDialogReturnType<string>>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string;
@@ -367,11 +363,7 @@ export function inputText(props: {
 	default?: string | null;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string | null;
-}>;
+}): Promise<MkDialogReturnType<string | null>>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string;
@@ -381,11 +373,7 @@ export function inputText(props: {
 	default?: string | null;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string | null;
-}> {
+}): Promise<MkDialogReturnType<string | null>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -400,7 +388,7 @@ export function inputText(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<string | null>);
 			},
 			closed: () => dispose(),
 		});
@@ -414,33 +402,21 @@ export function inputNumber(props: {
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: number;
-}>;
+}): Promise<MkDialogReturnType<number>>;
 export function inputNumber(props: {
 	title?: string;
 	text?: string;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: number | null;
-}>;
+}): Promise<MkDialogReturnType<number | null>>;
 export function inputNumber(props: {
 	title?: string;
 	text?: string;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: number | null;
-}> {
+}): Promise<MkDialogReturnType<number | null>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -453,7 +429,7 @@ export function inputNumber(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<number | null>);
 			},
 			closed: () => dispose(),
 		});
@@ -465,11 +441,7 @@ export function inputDatetime(props: {
 	text?: string;
 	placeholder?: string | null;
 	default?: string | null;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: Date;
-}> {
+}): Promise<MkDialogReturnType<Date | null>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -481,7 +453,7 @@ export function inputDatetime(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result != null && result.result != null ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
+				resolve(result != null && typeof result.result === 'string' ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
 			},
 			closed: () => dispose(),
 		});
@@ -508,11 +480,7 @@ export function select<C extends OptionValue, D extends C | null = null>(props: 
 	text?: string;
 	default?: D;
 	items: (MkSelectItem<C> | undefined)[];
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: Exclude<D, undefined> extends null ? C | null : C;
-}> {
+}): Promise<MkDialogReturnType<Exclude<D, undefined> extends null ? C | null : C>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -523,7 +491,7 @@ export function select<C extends OptionValue, D extends C | null = null>(props: 
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<Exclude<D, undefined> extends null ? C | null : C>);
 			},
 			closed: () => dispose(),
 		});
@@ -582,7 +550,7 @@ export function form<F extends Form>(title: string, f: F): Promise<{ canceled: t
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form: f }, {
 			done: result => {
-				resolve(result);
+				resolve(result as { canceled?: false, result: GetFormResultType<F> });
 			},
 			closed: () => dispose(),
 		});
@@ -636,7 +604,7 @@ export async function pickEmoji(anchorElement: HTMLElement, opts: ComponentProps
 
 export async function cropImageFile(imageFile: File | Blob, options: {
 	aspectRatio: number | null;
-}): Promise<File> {
+}): Promise<File | Blob> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
 			imageFile: imageFile,
