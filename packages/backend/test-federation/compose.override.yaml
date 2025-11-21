@@ -121,8 +121,8 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.23.0.0/16
-          ip_range: 172.23.0.0/24
+        - subnet: 172.24.0.0/16
+          ip_range: 172.24.0.0/24
   internal_network:
     internal: true
     driver: bridge
