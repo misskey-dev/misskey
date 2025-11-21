@@ -162,7 +162,7 @@ export class ApInboxService {
 		} else if (isAnnounce(activity)) {
 			return await this.announce(actor, activity, resolver);
 		} else if (isLike(activity)) {
-			return await this.like(actor, activity);
+			return await this.like(actor, activity, resolver);
 		} else if (isUndo(activity)) {
 			return await this.undo(actor, activity, resolver);
 		} else if (isBlock(activity)) {
