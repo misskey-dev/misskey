@@ -404,7 +404,7 @@ describe('Note', () => {
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
-			await sleep(1000);
+			await sleep(5000);
 
 			const bobReactionsInC = await charlie.client.request('users/reactions', { userId: bobInC.id, limit: 10, allowPartial: true });
 			assert(bobReactionsInC[0]);
