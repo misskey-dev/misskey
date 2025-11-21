@@ -7,7 +7,7 @@ services:
       misskey.c.test:
         condition: service_healthy
     networks:
-      - internal_network_b
+      - internal_network_c
     volumes:
       - type: bind
         source: ./.config/c.test.conf
@@ -46,16 +46,16 @@ services:
       file: ./compose.tpl.yml
       service: db
     networks:
-      - internal_network_b
+      - internal_network_c
     volumes:
       - type: bind
-        source: ./volumes/db.b
+        source: ./volumes/db.c
         target: /var/lib/postgresql/data
         bind:
           create_host_path: true
 
 networks:
-  internal_network_b:
+  internal_network_c:
     internal: true
     driver: bridge
     ipam:
