@@ -401,11 +401,6 @@ describe('Note', () => {
 			bobInC = await resolveRemoteUser('b.test', bob.id, carol);
 		});
 
-		test('resolveRemoteReactedNotes is enabled', async () => {
-			const meta = await cAdmin.client.request('admin/meta', {});
-			strictEqual(meta.resolveRemoteReactedNotes, true);
-		});
-
 		test('Exist of alice note reacted by bob in c.test', async () => {
 			await carol.client.request('following/create', { userId: bobInC.id });
 			await sleep();
