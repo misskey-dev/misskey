@@ -35,6 +35,7 @@ services:
       - external_network
       - internal_network_a
       - internal_network_b
+      - internal_network_c
     volumes:
       - type: volume
         source: node_modules_dev
@@ -47,6 +48,7 @@ services:
     networks:
       - internal_network_a
       - internal_network_b
+      - internal_network_c
 
   a.test:
     networks:
