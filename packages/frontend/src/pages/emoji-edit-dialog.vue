@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
 					</div>
 				</MkFolder>
-				<MkSwitch v-model="isSensitive">isSensitive</MkSwitch>
+				<MkSwitch v-model="isSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 				<MkButton v-if="emoji" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
@@ -99,7 +99,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: Misskey.entities.AdminEmojiUpdateRequest; created?: Misskey.entities.AdminEmojiUpdateRequest }): void,
+	(ev: 'done', v: { deleted?: boolean; updated?: Misskey.entities.EmojiDetailed; created?: Misskey.entities.EmojiDetailed }): void,
 	(ev: 'closed'): void
 }>();
 
@@ -157,19 +157,29 @@ async function done() {
 		localOnly: localOnly.value,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
 		fileId: file.value ? file.value.id : undefined,
-	};
+	} satisfies Misskey.entities.AdminEmojiUpdateRequest;
 
 	if (props.emoji) {
+		const emojiDetailed = {
+			id: props.emoji.id,
+			aliases: params.aliases,
+			name: params.name,
+			category: params.category,
+			host: props.emoji.host,
+			url: file.value ? file.value.url : props.emoji.url,
+			license: params.license,
+			isSensitive: params.isSensitive,
+			localOnly: params.localOnly,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: params.roleIdsThatCanBeUsedThisEmojiAsReaction,
+		} satisfies Misskey.entities.EmojiDetailed;
+
 		await os.apiWithDialog('admin/emoji/update', {
 			id: props.emoji.id,
 			...params,
 		});
 
 		emit('done', {
-			updated: {
-				id: props.emoji.id,
-				...params,
-			},
+			updated: emojiDetailed,
 		});
 
 		windowEl.value?.close();

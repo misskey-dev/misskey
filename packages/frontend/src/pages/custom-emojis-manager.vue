@@ -71,7 +71,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, markRaw, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, markRaw, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -116,7 +117,7 @@ const selectAll = () => {
 	}
 };
 
-const toggleSelect = (emoji) => {
+const toggleSelect = (emoji: Misskey.entities.EmojiDetailed) => {
 	if (selectedEmojis.value.includes(emoji.id)) {
 		selectedEmojis.value = selectedEmojis.value.filter(x => x !== emoji.id);
 	} else {
@@ -124,19 +125,23 @@ const toggleSelect = (emoji) => {
 	}
 };
 
-const add = async (ev: MouseEvent) => {
+const add = async () => {
 	const { dispose } = await os.popupAsyncWithDialog(import('./emoji-edit-dialog.vue').then(x => x.default), {
 	}, {
 		done: result => {
 			if (result.created) {
-				paginator.prepend(result.created);
+				const nowIso = (new Date()).toISOString();
+				paginator.prepend({
+					...result.created,
+					createdAt: nowIso,
+				});
 			}
 		},
 		closed: () => dispose(),
 	});
 };
 
-const edit = async (emoji) => {
+const edit = async (emoji: Misskey.entities.EmojiDetailed) => {
 	const { dispose } = await os.popupAsyncWithDialog(import('./emoji-edit-dialog.vue').then(x => x.default), {
 		emoji: emoji,
 	}, {

@@ -231,17 +231,17 @@ function rename() {
 }
 
 function move() {
-	selectDriveFolder(null).then(folder => {
-		if (folder[0] && folder[0].id === props.folder.id) return;
+	selectDriveFolder(null).then(({ canceled, folders }) => {
+		if (canceled || (folders[0] && folders[0].id === props.folder.id)) return;
 
 		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
-			parentId: folder[0] ? folder[0].id : null,
+			parentId: folders[0] ? folders[0].id : null,
 		}).then(() => {
 			globalEvents.emit('driveFoldersUpdated', [{
 				...props.folder,
-				parentId: folder[0] ? folder[0].id : null,
-				parent: folder[0] ?? null,
+				parentId: folders[0] ? folders[0].id : null,
+				parent: folders[0] ?? null,
 			}]);
 		});
 	});
