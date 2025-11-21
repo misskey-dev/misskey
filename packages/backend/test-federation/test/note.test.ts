@@ -387,7 +387,7 @@ describe('Note', () => {
 			adminC = await fetchAdmin('c.test');
 			await adminC.client.request('admin/update-meta', {
 				resolveReactedRemoteNote: true,
-			}, adminC as misskey.entities.SignupResponse);
+			}, adminC);
 			await sleep();
 
 			charlie = await createAccount('c.test');
@@ -415,7 +415,7 @@ describe('Note', () => {
 		afterAll(async() => {
 			await adminC.client.request('admin/update-meta', {
 				resolveReactedRemoteNote: false,
-			}, adminC as misskey.entities.SignupResponse);
+			}, adminC);
 			await sleep();
 		});
 	});
