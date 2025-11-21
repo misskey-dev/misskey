@@ -11,9 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="close(true)"
 	@closed="emit('closed')"
 >
-	<template v-if="tutorialEl?.currentPageDef" #header>
-		<i v-if="tutorialEl.currentPageDef.icon" :class="tutorialEl.currentPageDef.icon"></i>
-		{{ tutorialEl.currentPageDef.title }}
+	<template v-if="tutorialEl?.currentPageDef != null" #header>
+		<i v-if="tutorialEl!.currentPageDef?.icon" :class="tutorialEl!.currentPageDef!.icon"></i>
+		{{ tutorialEl!.currentPageDef?.title }}
 	</template>
 	<template v-else #header>{{ i18n.ts._initialTutorial.title }}</template>
 

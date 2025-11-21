@@ -92,8 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host }))).map(e => `:${e.name}:`))"
-				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host }))).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name }))).map(e => `:${e.name}:`))"
+				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name }))).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -387,7 +387,7 @@ watch(q, async () => {
 		}
 	}
 
-	searchResultCustom.value = (await _searchCustom()).filter(e => !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host })));
+	searchResultCustom.value = (await _searchCustom()).filter(e => !isMuted(makeEmojiMuteKey({ name: e.name })));
 	searchResultUnicode.value = Array.from(searchUnicode()).filter(e => !isMuted(e.char));
 });
 

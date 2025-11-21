@@ -1,3 +1,6 @@
+/// <reference lib="esnext" />
+/// <reference lib="webworker" />
+
 import { createSearchEngine } from '@hanamisskey/browser-search';
 import type { SearchEngineInstance, SearchIndex } from '@hanamisskey/browser-search';
 
@@ -20,7 +23,7 @@ onmessage = async (event: MessageEvent) => {
 	switch (event.data.type) {
 		case 'init': {
 			if (searchEngine) {
-				postMessage({ id: event.data.id, type: 'init', success: false });
+				self.postMessage({ id: event.data.id, type: 'init', success: false });
 				return;
 			}
 
@@ -28,12 +31,12 @@ onmessage = async (event: MessageEvent) => {
 				searchEngine = await createSearchEngine({
 					preCompiledIndex: event.data.preCompiledIndex,
 				});
-				postMessage({ id: event.data.id, type: 'init', success: true });
+				self.postMessage({ id: event.data.id, type: 'init', success: true });
 				return;
 			}
 
 			searchEngine = await createSearchEngine();
-			postMessage({ id: event.data.id, type: 'init', success: true });
+			self.postMessage({ id: event.data.id, type: 'init', success: true });
 			break;
 		}
 
@@ -42,10 +45,10 @@ onmessage = async (event: MessageEvent) => {
 			if (!searchEngine) throw new Error('Search engine not initialized');
 			if ('emojis' in event.data && assertIsEmoji(event.data.emojis)) {
 				searchEngine.addDocuments(event.data.emojis);
-				postMessage({ id: event.data.id, type: 'createIndex', success: true });
+				self.postMessage({ id: event.data.id, type: 'createIndex', success: true });
 				return;
 			}
-			postMessage({ id: event.data.id, type: 'createIndex', success: false });
+			self.postMessage({ id: event.data.id, type: 'createIndex', success: false });
 			break;
 		};
 		case 'insertIndex': {
@@ -56,10 +59,10 @@ onmessage = async (event: MessageEvent) => {
 				event.data.aliases.every((alias) => typeof alias === 'string')
 			) {
 				searchEngine.addDocument(event.data.name, event.data.aliases);
-				postMessage({ id: event.data.id, type: 'insertIndex', success: true });
+				self.postMessage({ id: event.data.id, type: 'insertIndex', success: true });
 				return;
 			}
-			postMessage({ id: event.data.id, type: 'insertIndex', success: false });
+			self.postMessage({ id: event.data.id, type: 'insertIndex', success: false });
 			break;
 		};
 		case 'updateIndex': {
@@ -68,10 +71,10 @@ onmessage = async (event: MessageEvent) => {
 				for (const emoji of event.data.emojis.emojis) {
 					searchEngine.updateDocument(emoji.name, emoji.aliases);
 				}
-				postMessage({ id: event.data.id, type: 'updateIndex', success: true });
+				self.postMessage({ id: event.data.id, type: 'updateIndex', success: true });
 				return;
 			}
-			postMessage({ id: event.data.id, type: 'updateIndex', success: false });
+			self.postMessage({ id: event.data.id, type: 'updateIndex', success: false });
 			break;
 		};
 		case 'deleteIndex': {
@@ -80,22 +83,22 @@ onmessage = async (event: MessageEvent) => {
 				for (const emoji of event.data.emojis.emojis) {
 					searchEngine.removeDocument(emoji.name);
 				}
-				postMessage({ id: event.data.id, type: 'deleteIndex', success: true });
+				self.postMessage({ id: event.data.id, type: 'deleteIndex', success: true });
 				return;
 			}
-			postMessage({ id: event.data.id, type: 'deleteIndex', success: false });
+			self.postMessage({ id: event.data.id, type: 'deleteIndex', success: false });
 			break;
 		};
 		case 'dumpIndex': {
 			if (!searchEngine) throw new Error('Search engine not initialized');
 			const result = searchEngine.dump();
-			postMessage({ id: event.data.id, type: 'dumpIndex', success: true, data: result });
+			self.postMessage({ id: event.data.id, type: 'dumpIndex', success: true, data: result });
 			return;
 		};
 		case 'clearIndex': {
 			if (!searchEngine) throw new Error('Search engine not initialized');
 			searchEngine.clearIndex();
-			postMessage({ id: event.data.id, type: 'clearIndex', success: true });
+			self.postMessage({ id: event.data.id, type: 'clearIndex', success: true });
 			return;
 		};
 		//#endregion
@@ -110,10 +113,10 @@ onmessage = async (event: MessageEvent) => {
 					}
 				}
 				const result = await searchEngine.search(event.data.query, limit);
-				postMessage({ id: event.data.id, type: 'search', success: true, data: result });
+				self.postMessage({ id: event.data.id, type: 'search', success: true, data: result });
 				return;
 			}
-			postMessage({ id: event.data.id, type: 'search', success: false });
+			self.postMessage({ id: event.data.id, type: 'search', success: false });
 			break;
 		};
 
@@ -121,10 +124,10 @@ onmessage = async (event: MessageEvent) => {
 			if (!searchEngine) throw new Error('Search engine not initialized');
 			if ('query' in event.data && typeof event.data.query === 'string') {
 				const result = await searchEngine.searchNoLimit(event.data.query);
-				postMessage({ id: event.data.id, type: 'searchUnlimited', success: true, data: result });
+				self.postMessage({ id: event.data.id, type: 'searchUnlimited', success: true, data: result });
 				return;
 			}
-			postMessage({ id: event.data.id, type: 'searchUnlimited', success: false });
+			self.postMessage({ id: event.data.id, type: 'searchUnlimited', success: false });
 			break;
 		};
 	}

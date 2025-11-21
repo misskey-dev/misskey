@@ -106,6 +106,7 @@ export function emojiDetailed(id = 'someemojiid', name = 'some_emoji'): entities
 		isSensitive: false,
 		localOnly: false,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: ['roleId1', 'roleId2'],
+		remarks: null,
 	};
 }
 

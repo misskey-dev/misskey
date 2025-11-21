@@ -35,8 +35,8 @@ const zIndex = os.claimZIndex('low');
 
 const router = useRouter();
 
-router.on('change', ({ path }) => {
-	if (path === '/') {
+router.on('change', ({ fullPath }) => {
+	if (fullPath === '/') {
 		close();
 	}
 });
