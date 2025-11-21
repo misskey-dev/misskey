@@ -401,12 +401,25 @@ describe('Note', () => {
 
 			const note = (await alice.client.request('notes/create', { text: 'test note from alice' })).createdNote;
 			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
-			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
+
+			let reactionError = null;
+			try {
+				await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
+			} catch (e) {
+				reactionError = e;
+			}
+			assert(reactionError == null, `Failed to create reaction: ${reactionError}`);
 
 			// Wait for the Like activity to be delivered and processed
 			await sleep(10000);
 
-			const timelineInC = await charlie.client.request('notes/global-timeline', { limit: 100 });
+			let timelineInC;
+			try {
+				timelineInC = await charlie.client.request('notes/global-timeline', { limit: 100 });
+			} catch (e) {
+				const error = e as { code?: string; message?: string };
+				throw new Error(`Failed to get global timeline: ${error.code ?? error.message}`);
+			}
 
 			const reactedNoteInC = timelineInC.find(n => n.uri === note.uri);
 			assert(reactedNoteInC != null, `Note with URI ${note.uri} not found in C's global timeline. Found ${timelineInC.length} notes.`);
