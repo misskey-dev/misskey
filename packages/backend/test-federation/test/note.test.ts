@@ -406,10 +406,11 @@ describe('Note', () => {
 			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
 			await sleep(1000);
 
-			const notesInC = await charlie.client.request('notes/global-timeline', {});
-			const reactedNoteInC = notesInC.find(n => n.uri === note.uri);
-			assert(reactedNoteInC != null);
-			strictEqual(reactedNoteInC.text, note.text);
+			const bobReactionsInC = await charlie.client.request('users/reactions', { userId: bobInC.id, limit: 10, allowPartial: true });
+			assert(bobReactionsInC[0]);
+			strictEqual(bobReactionsInC[0].note.uri, note.uri);
+			strictEqual(bobReactionsInC[0].type, '❤');
+			strictEqual(bobReactionsInC[0].note.text, note.text);
 		});
 
 		afterAll(async() => {
