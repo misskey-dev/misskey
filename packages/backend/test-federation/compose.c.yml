@@ -34,7 +34,7 @@ services:
       setup:
         condition: service_completed_successfully
     networks:
-      - internal_network_b
+      - internal_network_c
     volumes:
       - type: bind
         source: ./.config/c.test.default.yml
