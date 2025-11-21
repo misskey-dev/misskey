@@ -807,17 +807,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFolder>
 			</SearchMarker>
-
-			<SearchMarker :keywords="['reset', 'default', 'preferences']">
-				<MkFolder>
-					<template #label><SearchLabel>{{ i18n.ts.resetAllPreferences }}</SearchLabel></template>
-					<template #icon><SearchIcon><i class="ti ti-restore"></i></SearchIcon></template>
-					<div class="_gaps_m">
-						<MkInfo>{{ i18n.ts.resetAllPreferencesDescription }}</MkInfo>
-					</div>
-					<MkButton denger @click="resetAllPreferences"><i class="ti ti-restore"></i> {{ i18n.ts.resetAllPreferences }}</MkButton>
-				</MkFolder>
-			</SearchMarker>
 		</div>
 
 		<hr>
@@ -930,14 +919,8 @@ const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelec
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
-const themePreferenceKeys = ['themes', 'lightTheme', 'darkTheme', 'syncDeviceDarkMode'] as const;
-
 watch(lang, () => {
-	if (lang.value == null) {
-		miLocalStorage.removeItem('lang');
-	} else {
-		miLocalStorage.setItem('lang', lang.value as string);
-	}
+	miLocalStorage.setItem('lang', lang.value as string);
 });
 
 watch(fontSize, () => {
@@ -992,31 +975,6 @@ watch([
 ], () => {
 	suggestReload();
 });
-
-async function resetAllPreferences() {
-	const { canceled, result } = await os.actions({
-		type: 'warning',
-		title: i18n.ts.resetAllPreferences,
-		text: i18n.ts.resetAllPreferencesDescription,
-		actions: [
-			{ value: 'keepThemes', text: i18n.ts.resetAllPreferencesKeepThemes },
-			{ value: 'resetAll', text: i18n.ts.resetAllPreferencesAll, danger: true },
-		],
-	});
-	if (canceled) return;
-
-	if (result === 'keepThemes') {
-		prefer.resetAll({ keepKeys: [...themePreferenceKeys] });
-	} else {
-		prefer.resetAll();
-	}
-
-	lang.value = null;
-	fontSize.value = null;
-	useSystemFont.value = false;
-
-	os.toast(i18n.ts.preferencesReset);
-}
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 

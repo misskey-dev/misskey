@@ -591,6 +591,7 @@ export class PreferencesManager {
 			ref: sync,
 		}];
 	}
+	
 	public resetAll(options?: { keepKeys?: (keyof PREF)[]; }) {
 		const keepKeys = new Set(options?.keepKeys ?? []);
 		let changed = false;
