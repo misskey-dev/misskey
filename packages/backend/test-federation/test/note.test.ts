@@ -4,7 +4,7 @@ import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcl
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
-	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe, bobInC: Misskey.entities.UserDetailedNotMe;
+	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([
