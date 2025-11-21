@@ -388,9 +388,9 @@ describe('Note', () => {
 			await adminC.client.request('admin/update-meta', {
 				resolveRemoteReactedNotes: true,
 			});
-			await sleep();
-
 			charlie = await createAccount('c.test');
+
+			await sleep(1000);
 
 			bobInC = await resolveRemoteUser('c.test', bob.id, charlie);
 		});
@@ -398,18 +398,18 @@ describe('Note', () => {
 		test('Exist of alice note reacted by bob in c.test', async () => {
 			// follow bob from charlie
 			await charlie.client.request('following/create', { userId: bobInC.id });
-			await sleep();
+			await sleep(1000);
 
 			// alice creates note, bob reacts, charlie checks
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
-			await sleep();
+			await sleep(1000);
 
 			const notesInC = await charlie.client.request('notes/global-timeline', {});
 			const reactedNoteInC = notesInC.find(n => n.uri === note.uri);
 			assert(reactedNoteInC != null);
-			strictEqual(reactedNoteInC!.text, note.text);
+			strictEqual(reactedNoteInC.text, note.text);
 		});
 
 		afterAll(async() => {
