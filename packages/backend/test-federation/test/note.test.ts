@@ -406,9 +406,14 @@ describe('Note', () => {
 			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
 			await sleep(5000);
 
-			const timelineInC = await charlie.client.request('notes/global-timeline', { limit: 10 });
+			// Check if the note exists in C's database via timeline
+			const timelineInC = await charlie.client.request('notes/global-timeline', { limit: 100 });
+			console.log('Total notes in global timeline:', timelineInC.length);
+			console.log('Looking for note with URI:', note.uri);
+			console.log('Timeline notes URIs:', timelineInC.map(n => n.uri).filter(uri => uri));
+
 			const reactedNoteInC = timelineInC.find(n => n.uri === note.uri);
-			assert(reactedNoteInC != null);
+			assert(reactedNoteInC != null, `Note with URI ${note.uri} not found in timeline`);
 			strictEqual(reactedNoteInC.text, note.text);
 		});
 
