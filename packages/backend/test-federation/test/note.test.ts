@@ -407,10 +407,10 @@ describe('Note', () => {
 			await sleep(5000);
 
 			const bobReactionsInC = await charlie.client.request('users/reactions', { userId: bobInC.id, limit: 10, allowPartial: true });
-			assert(bobReactionsInC[0]);
-			strictEqual(bobReactionsInC[0].note.uri, note.uri);
-			strictEqual(bobReactionsInC[0].type, '❤');
-			strictEqual(bobReactionsInC[0].note.text, note.text);
+			const bobNoteInC = bobReactionsInC.find(r => r.note.uri === note.uri);
+			assert(bobNoteInC);
+			strictEqual(bobNoteInC.type, '❤');
+			strictEqual(bobNoteInC.note.text, note.text);
 		});
 
 		afterAll(async() => {
