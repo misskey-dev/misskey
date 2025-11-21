@@ -749,7 +749,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.showRoleBadgesOfRemoteUsers = ps.showRoleBadgesOfRemoteUsers;
 			}
 
-			if (typeof ps.disableRegistration === 'boolean') {
+			if (ps.resolveRemoteReactedNotes !== undefined) {
 				set.resolveRemoteReactedNotes = ps.resolveRemoteReactedNotes;
 			}
 
