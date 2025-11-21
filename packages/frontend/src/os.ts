@@ -8,7 +8,7 @@
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import type { Component, Ref } from 'vue';
+import type { Component, MaybeRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -160,18 +160,20 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 }
 
 // props に ref を許可するようにする
-type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
+type PropsWithRefs<P> = { [K in keyof P]: MaybeRef<P[K]> };
+type ComponentProps<T extends Component> = PropsWithRefs<CP<T>>;
 
-type OverloadToUnion<T> = T extends (...args: infer A) => infer R ? ((...args: A) => R) | OverloadToUnion<T extends ((...args: A) => R) & infer Rest ? Rest : never> : never;
+type Decrement = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+type OverloadToUnion<T, D extends number = 10> = D extends 0 ? never : T extends (...args: infer A) => infer R ? ((...args: A) => R) | OverloadToUnion<T extends ((...args: A) => R) & infer Rest ? Rest : never, Decrement[D]> : never;
 
 type ComponentEmitsObject<E extends ComponentEmit<Component>, IE = OverloadToUnion<E>> = {
 	[K in IE extends (evName: infer U, ...args: any[]) => any ? U extends string ? U : never : never]: IE extends (evName: K, ...args: infer A) => infer R ? (...args: A) => R : never;
 };
 
-export function popup<T extends Component>(
+export function popup<T extends Component, P extends CP<T> = CP<T>>(
 	component: T,
-	props: ComponentProps<T>,
-	events: Partial<ComponentEmitsObject<ComponentEmit<T>>> = {},
+	props: PropsWithRefs<P>,
+	events: Partial<ComponentEmitsObject<ComponentEmit<T & Component<P>>>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
 
@@ -196,10 +198,10 @@ export function popup<T extends Component>(
 	};
 }
 
-export async function popupAsyncWithDialog<T extends Component>(
+export async function popupAsyncWithDialog<T extends Component, P extends CP<T>>(
 	componentFetching: Promise<T>,
-	props: ComponentProps<T>,
-	events: Partial<ComponentEmit<T>> = {},
+	props: PropsWithRefs<P>,
+	events: Partial<ComponentEmitsObject<ComponentEmit<T>>> = {},
 ): Promise<{ dispose: () => void }> {
 	let component: T;
 	let closeWaiting = () => { };
@@ -442,7 +444,7 @@ export function inputDatetime(props: {
 	text?: string;
 	placeholder?: string | null;
 	default?: string | null;
-}): Promise<MkDialogReturnType<Date | null>> {
+}): Promise<MkDialogReturnType<Date>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -603,9 +605,9 @@ export async function pickEmoji(anchorElement: HTMLElement, opts: ComponentProps
 	});
 }
 
-export async function cropImageFile(imageFile: File | Blob, options: {
+export async function cropImageFile<F extends File | Blob>(imageFile: F, options: {
 	aspectRatio: number | null;
-}): Promise<File | Blob> {
+}): Promise<F> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
 			imageFile: imageFile,
