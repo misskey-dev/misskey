@@ -14,6 +14,7 @@ const ADMIN_CACHE = new Map<Host, SigninResponse>();
 await Promise.all([
 	fetchAdmin('a.test'),
 	fetchAdmin('b.test'),
+	fetchAdmin('c.test'),
 ]);
 
 type SigninResponse = Omit<Misskey.entities.SigninFlowResponse & { finished: true }, 'finished'>;
@@ -83,7 +84,7 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 		}, res.token);
 		return res;
 	}).catch(err => {
-		if (err.info.e.message === 'access denied') return undefined;
+		if (err.info?.e?.message === 'access denied') return undefined;
 		throw err;
 	});
 }

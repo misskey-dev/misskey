@@ -1,4 +1,5 @@
 import assert, { rejects, strictEqual } from 'node:assert';
+import strict from 'node:assert/strict';
 import * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
@@ -380,54 +381,50 @@ describe('Note', () => {
 	});
 
 	describe('Reacted Remote Note', () => {
-		let adminC: LoginUser;
-		let charlie: LoginUser;
+		let cAdmin: LoginUser;
+		let carol: LoginUser;
 		let bobInC: Misskey.entities.UserDetailedNotMe;
+
 		beforeAll(async() => {
-			adminC = await fetchAdmin('c.test');
-			await adminC.client.request('admin/update-meta', {
+			cAdmin = await fetchAdmin('c.test');
+
+			await cAdmin.client.request('admin/update-meta', {
 				resolveRemoteReactedNotes: true,
 			});
-			charlie = await createAccount('c.test');
 
 			await sleep(1000);
 
-			bobInC = await resolveRemoteUser('c.test', bob.id, charlie);
+			carol = await createAccount('c.test');
+
+			await sleep(1000);
+
+			bobInC = await resolveRemoteUser('b.test', bob.id, carol);
+		});
+
+		test('resolveRemoteReactedNotes is enabled', async () => {
+			const meta = await cAdmin.client.request('admin/meta', {});
+			strictEqual(meta.resolveRemoteReactedNotes, true);
 		});
 
 		test('Exist of alice note reacted by bob in c.test', async () => {
-			await charlie.client.request('following/create', { userId: bobInC.id });
-			await sleep(1000);
+			await carol.client.request('following/create', { userId: bobInC.id });
+			await sleep();
 
 			const note = (await alice.client.request('notes/create', { text: 'test note from alice' })).createdNote;
 			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
+			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
+			await sleep();
 
-			let reactionError = null;
-			try {
-				await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
-			} catch (e) {
-				reactionError = e;
-			}
-			assert(reactionError == null, `Failed to create reaction: ${reactionError}`);
-
-			// Wait for the Like activity to be delivered and processed
-			await sleep(10000);
-
-			let timelineInC;
-			try {
-				timelineInC = await charlie.client.request('notes/global-timeline', { limit: 100 });
-			} catch (e) {
-				const error = e as { code?: string; message?: string };
-				throw new Error(`Failed to get global timeline: ${error.code ?? error.message}`);
-			}
-
-			const reactedNoteInC = timelineInC.find(n => n.uri === note.uri);
-			assert(reactedNoteInC != null, `Note with URI ${note.uri} not found in C's global timeline. Found ${timelineInC.length} notes.`);
+			const notesInC = await carol.client.request('notes/global-timeline', {});
+			const expectedUri = `https://a.test/notes/${note.id}`;
+			const reactedNoteInC = notesInC.find(n => n.uri === expectedUri);
+			assert(reactedNoteInC != null);
 			strictEqual(reactedNoteInC.text, note.text);
+			strictEqual(reactedNoteInC.createdAt, note.createdAt);
 		});
 
 		afterAll(async() => {
-			await adminC.client.request('admin/update-meta', {
+			await cAdmin.client.request('admin/update-meta', {
 				resolveRemoteReactedNotes: false,
 			});
 			await sleep();
