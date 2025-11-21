@@ -386,7 +386,7 @@ describe('Note', () => {
 		beforeAll(async() => {
 			adminC = await fetchAdmin('c.test');
 			await adminC.client.request('admin/update-meta', {
-				resolveReactedRemoteNote: true,
+				resolveRemoteReactedNotes: true,
 			});
 			await sleep();
 
@@ -414,7 +414,7 @@ describe('Note', () => {
 
 		afterAll(async() => {
 			await adminC.client.request('admin/update-meta', {
-				resolveReactedRemoteNote: false,
+				resolveRemoteReactedNotes: false,
 			});
 			await sleep();
 		});
