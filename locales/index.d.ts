@@ -5359,6 +5359,26 @@ export interface Locale extends ILocale {
      */
     "resetToDefaultValue": string;
     /**
+     * すべての設定をリセット
+     */
+    "resetAllPreferences": string;
+    /**
+     * クライアントの設定を初期値に戻します。
+     */
+    "resetAllPreferencesDescription": string;
+    /**
+     * テーマを維持してリセット
+     */
+    "resetAllPreferencesKeepThemes": string;
+    /**
+     * すべてリセット
+     */
+    "resetAllPreferencesAll": string;
+    /**
+     * 設定をリセットしました。
+     */
+    "preferencesReset": string;
+    /**
      * アカウントで上書き
      */
     "overrideByAccount": string;
