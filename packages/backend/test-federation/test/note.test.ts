@@ -392,28 +392,34 @@ describe('Note', () => {
 				resolveRemoteReactedNotes: true,
 			});
 
-			await sleep();
+			await sleep(1000);
 
 			carol = await createAccount('c.test');
 
-			await sleep();
+			await sleep(1000);
 
 			bobInC = await resolveRemoteUser('b.test', bob.id, carol);
 		});
 
 		test('Exist of alice note reacted by bob in c.test', async () => {
 			await carol.client.request('following/create', { userId: bobInC.id });
-			await sleep();
+			await sleep(1000);
 
 			const note = (await alice.client.request('notes/create', { text: 'test note from alice' })).createdNote;
 			const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 			await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: '❤' });
-			await sleep();
 
-			const notesInC = await carol.client.request('notes/global-timeline', {});
+			// Wait for ActivityPub delivery and note resolution with retry logic
 			const expectedUri = `https://a.test/notes/${note.id}`;
-			const reactedNoteInC = notesInC.find(n => n.uri === expectedUri);
-			assert(reactedNoteInC != null);
+			let reactedNoteInC: Misskey.entities.Note | undefined;
+			for (let i = 0; i < 10; i++) {
+				await sleep(1000);
+				const notesInC = await carol.client.request('notes/global-timeline', {});
+				reactedNoteInC = notesInC.find(n => n.uri === expectedUri);
+				if (reactedNoteInC) break;
+			}
+
+			assert(reactedNoteInC != null, 'Note should be resolved in c.test after Bob reacted to it');
 			strictEqual(reactedNoteInC.text, note.text);
 			strictEqual(reactedNoteInC.createdAt, note.createdAt);
 		});
