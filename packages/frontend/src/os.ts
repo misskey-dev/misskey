@@ -166,14 +166,16 @@ type ComponentProps<T extends Component> = PropsWithRefs<CP<T>>;
 type Decrement = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 type OverloadToUnion<T, D extends number = 10> = D extends 0 ? never : T extends (...args: infer A) => infer R ? ((...args: A) => R) | OverloadToUnion<T extends ((...args: A) => R) & infer Rest ? Rest : never, Decrement[D]> : never;
 
-type ComponentEmitsObject<E extends ComponentEmit<Component>, IE = OverloadToUnion<E>> = {
+type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmit<C>>> = {
 	[K in IE extends (evName: infer U, ...args: any[]) => any ? U extends string ? U : never : never]: IE extends (evName: K, ...args: infer A) => infer R ? (...args: A) => R : never;
 };
 
+// NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
+// OverloadToUnionに再帰回数の制限を設けているのもそのため
 export function popup<T extends Component, P extends CP<T> = CP<T>>(
 	component: T,
 	props: PropsWithRefs<P>,
-	events: Partial<ComponentEmitsObject<ComponentEmit<T & Component<P>>>> = {},
+	events: Partial<ComponentEmitsObject<T & Component<P>>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
 
@@ -307,8 +309,6 @@ type ActionsAction = {
 	danger?: boolean;
 };
 
-// TODO: const T extends ... にしたい
-// https://zenn.dev/general_link/articles/813e47b7a0eef7#const-type-parameters
 export function actions<const T extends ActionsAction[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string;
