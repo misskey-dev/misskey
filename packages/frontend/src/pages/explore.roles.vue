@@ -20,7 +20,14 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 const roles = ref<Misskey.entities.Role[] | null>(null);
 
 misskeyApi('roles/list').then(res => {
-	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.usersCount - a.usersCount);
+	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => {
+		// silenced: false (非違反ロール) を優先的に上に表示
+		if (a.silenced !== b.silenced) {
+			return a.silenced ? 1 : -1;
+		}
+		// 同じsilencedステータス内ではユーザー数順にソート
+		return b.usersCount - a.usersCount;
+	});
 });
 </script>
 

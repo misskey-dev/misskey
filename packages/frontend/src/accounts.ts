@@ -184,8 +184,8 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 	await addAccount(host, me, token);
 
 	// ログイン成功時に凍結されている場合は凍結理由を表示
-	if (me.isSuspended && (me as any).suspendedReason) {
-		await showSuspendedDialog((me as any).suspendedReason);
+	if (me.isSuspended && me.suspendedReason) {
+		await showSuspendedDialog(me.suspendedReason);
 	}
 
 	if (redirect) {
