@@ -47,13 +47,19 @@ export async function editNickname(user: entities.User) {
 
 // 設定変更の監視
 // prefer.r を watch することで、別のUIから設定が変更された場合にも監視が発火する
-watch(() => prefer.r.nicknameMap.value, (newMap) => {
-	nicknameState.map.value = { ...newMap };
-});
+// テスト環境では prefer.r が undefined の場合があるため、try-catchで囲む
+try {
+	watch(() => prefer.r.nicknameMap.value, (newMap) => {
+		nicknameState.map.value = { ...newMap };
+	});
 
-watch(() => prefer.r.nicknameEnabled.value, (newEnabled) => {
-	nicknameState.enabled.value = newEnabled;
-});
+	watch(() => prefer.r.nicknameEnabled.value, (newEnabled) => {
+		nicknameState.enabled.value = newEnabled;
+	});
+} catch (err) {
+	// テスト環境では prefer.r が存在しないため、エラーを無視
+	console.debug('Failed to setup nickname preference watchers:', err);
+}
 
 // 初期化
 nicknameState.enabled.value = prefer.s.nicknameEnabled;
