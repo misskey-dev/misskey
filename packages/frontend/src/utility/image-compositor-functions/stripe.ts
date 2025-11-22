@@ -3,16 +3,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './stripe.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-// Primarily used for watermark
-export const FX_stripe = defineImageEffectorFx({
-	id: 'stripe',
-	name: i18n.ts._imageEffector._fxs.stripe,
+export const fn = defineImageCompositorFunction<{
+	angle: number;
+	frequency: number;
+	threshold: number;
+	color: [number, number, number];
+	opacity: number;
+}>({
 	shader,
-	uniforms: ['angle', 'frequency', 'phase', 'threshold', 'color', 'opacity'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.angle, params.angle / 2);
+		gl.uniform1f(u.frequency, params.frequency * params.frequency);
+		gl.uniform1f(u.phase, 0.0);
+		gl.uniform1f(u.threshold, params.threshold);
+		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
+		gl.uniform1f(u.opacity, params.opacity);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.stripe,
 	params: {
 		angle: {
 			label: i18n.ts._imageEffector._fxProps.angle,
@@ -55,12 +70,4 @@ export const FX_stripe = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.angle, params.angle / 2);
-		gl.uniform1f(u.frequency, params.frequency * params.frequency);
-		gl.uniform1f(u.phase, 0.0);
-		gl.uniform1f(u.threshold, params.threshold);
-		gl.uniform3f(u.color, params.color[0], params.color[1], params.color[2]);
-		gl.uniform1f(u.opacity, params.opacity);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;
