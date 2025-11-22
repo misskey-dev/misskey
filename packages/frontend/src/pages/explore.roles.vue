@@ -21,11 +21,11 @@ const roles = ref<Misskey.entities.Role[] | null>(null);
 
 misskeyApi('roles/list').then(res => {
 	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => {
-		// silenced: false (非違反ロール) を優先的に上に表示
-		if (a.silenced !== b.silenced) {
-			return a.silenced ? 1 : -1;
+		// policies.canPublicNote: true (非違反ロール) を優先的に上に表示
+		if (a.policies.canPublicNote.value !== b.policies.canPublicNote.value) {
+			return a.policies.canPublicNote.value ? -1 : 1;
 		}
-		// 同じsilencedステータス内ではユーザー数順にソート
+		// 同じcanPublicNoteステータス内ではユーザー数順にソート
 		return b.usersCount - a.usersCount;
 	});
 });
