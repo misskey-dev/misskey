@@ -10,6 +10,7 @@
 - Fix: ヘッダーメニューのチャンネルの新規作成の項目でチャンネル作成ページに飛べない問題を修正 #16816
 
 ### Server
+- Enhance: `clips/my-favorites` APIがページネーションに対応しました
 - Fix: DeepL APIのAPIキー指定方式変更に対応  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1096)
 	- 内部実装の変更にて対応可能な更新です。Misskey側の設定方法に変更はありません。
