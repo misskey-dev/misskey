@@ -55,6 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('favorite.clip', 'clip');
 
 			const favorites = await query
+				.take(ps.limit)
 				.getMany();
 
 			return this.clipEntityService.packMany(favorites.map(x => x.clip!), me);
