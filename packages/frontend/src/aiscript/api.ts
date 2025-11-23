@@ -40,29 +40,57 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
-		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
-			utils.assertString(title);
-			utils.assertString(text);
-			if (type != null) {
-				assertStringAndIsIn(type, DIALOG_TYPES);
+		'Mk:dialog': values.FN_NATIVE(async ([_title, _text, _type]) => {
+			let title: string | undefined = undefined;
+			let text: string | undefined = undefined;
+			let type: typeof DIALOG_TYPES[number] = 'info';
+
+			if (_title != null && _title.type !== 'null') {
+				utils.assertString(_title);
+				title = _title.value;
 			}
+			if (_text != null && _text.type !== 'null') {
+				utils.assertString(_text);
+				text = _text.value;
+			}
+
+			if (_type != null && _type.type !== 'null') {
+				utils.assertString(_type);
+				assertStringAndIsIn(_type, DIALOG_TYPES);
+				type = _type.value;
+			}
+
 			await os.alert({
-				type: type ? type.value : 'info',
-				title: title.value,
-				text: text.value,
+				type,
+				title,
+				text,
 			});
 			return values.NULL;
 		}),
-		'Mk:confirm': values.FN_NATIVE(async ([title, text, type]) => {
-			utils.assertString(title);
-			utils.assertString(text);
-			if (type != null) {
-				assertStringAndIsIn(type, DIALOG_TYPES);
+		'Mk:confirm': values.FN_NATIVE(async ([_title, _text, _type]) => {
+			let title: string | undefined = undefined;
+			let text: string | undefined = undefined;
+			let type: typeof DIALOG_TYPES[number] = 'question';
+
+			if (_title != null && _title.type !== 'null') {
+				utils.assertString(_title);
+				title = _title.value;
 			}
+			if (_text != null && _text.type !== 'null') {
+				utils.assertString(_text);
+				text = _text.value;
+			}
+
+			if (_type != null && _type.type !== 'null') {
+				utils.assertString(_type);
+				assertStringAndIsIn(_type, DIALOG_TYPES);
+				type = _type.value;
+			}
+
 			const confirm = await os.confirm({
-				type: type ? type.value : 'question',
-				title: title.value,
-				text: text.value,
+				type,
+				title,
+				text,
 			});
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
