@@ -591,4 +591,35 @@ export class PreferencesManager {
 			ref: sync,
 		}];
 	}
+	
+	public resetAll(options?: { keepKeys?: (keyof PREF)[]; }) {
+		const keepKeys = new Set(options?.keepKeys ?? []);
+		let changed = false;
+
+		for (const _key in PREF_DEF) {
+			const key = _key as keyof PREF;
+			if (keepKeys.has(key)) continue;
+
+			const records = this.profile.preferences[key];
+			if (records == null) continue;
+
+			for (const record of records) {
+				const defaultValue = JSON.parse(JSON.stringify(getInitialPrefValue(key)));
+				if (!deepEqual(record[1], defaultValue)) {
+					changed = true;
+				}
+				record[1] = defaultValue;
+
+				if (record[2].sync) {
+					this.io.cloudSet({ key, scope: record[0], value: defaultValue });
+				}
+			}
+			this.rewriteRawState(key, this.getMatchedRecordOf(key)[1]);
+		}
+
+		if (changed) {
+			this.save();
+			this.fetchCloudValues();
+		}
+	}
 }

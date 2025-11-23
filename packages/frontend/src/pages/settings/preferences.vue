@@ -952,8 +952,6 @@ watch([
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,
 	limitWidthOfReaction,
-	mediaListWithOneImageAppearance,
-	limitWidthOfReaction,
 	instanceTicker,
 	squareAvatars,
 	highlightSensitiveMedia,

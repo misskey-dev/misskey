@@ -148,6 +148,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
 			<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
 		</FormSlot>
+
+		<FormSlot>
+			<MkButton danger @click="resetAllPreferences"><i class="ti ti-restore"></i> {{ i18n.ts.resetAllPreferences }}</MkButton>
+			<template #caption>{{ i18n.ts.resetAllPreferencesDescription }}</template>
+		</FormSlot>
 	</div>
 </SearchMarker>
 </template>
@@ -175,6 +180,8 @@ import { migrateOldSettings } from '@/pref-migrate.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
+import { miLocalStorage } from '@/local-storage';
+import { unisonReload } from '@/utility/unison-reload';
 
 const $i = ensureSignin();
 
@@ -186,6 +193,8 @@ const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
 const enableWebTranslatorApi = prefer.model('experimental.enableWebTranslatorApi');
+
+const themePreferenceKeys = ['themes', 'lightTheme', 'darkTheme', 'syncDeviceDarkMode'] as const;
 
 watch(skipNoteRender, () => {
 	suggestReload();
@@ -236,6 +245,35 @@ function readAllChatMessages() {
 async function forceCloudBackup() {
 	await cloudBackup();
 	os.success();
+}
+
+async function resetAllPreferences() {
+	const { canceled, result } = await os.actions({
+		type: 'warning',
+		title: i18n.ts.resetAllPreferences,
+		text: i18n.ts.resetAllPreferencesDescription,
+		actions: [
+			{ value: 'keepThemes', text: i18n.ts.resetAllPreferencesKeepThemes },
+			{ value: 'resetAll', text: i18n.ts.resetAllPreferencesAll, danger: true },
+		],
+	});
+	if (canceled) return;
+
+	const done = os.waiting();
+
+	if (result === 'keepThemes') {
+		prefer.resetAll({ keepKeys: [...themePreferenceKeys] });
+	} else {
+		prefer.resetAll();
+	}
+
+	miLocalStorage.removeItem('lang');
+	miLocalStorage.removeItem('fontSize');
+	miLocalStorage.removeItem('useSystemFont');
+
+	done();
+
+	unisonReload();
 }
 
 const headerActions = computed(() => []);
