@@ -12,7 +12,7 @@
 ### Server
 - Fix: DeepL APIのAPIキー指定方式変更に対応  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1096)
-	- 内部実装の変更にて対応可能な更新です。Misskey側の設定に変更はありません。
+	- 内部実装の変更にて対応可能な更新です。Misskey側の設定方法に変更はありません。
 
 ## 2025.11.0
 
