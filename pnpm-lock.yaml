@@ -708,8 +708,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       '@hanamisskey/browser-search':
-        specifier: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz
-        version: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz
+        specifier: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.5.0.tar.gz
+        version: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.5.0.tar.gz
       '@mcaptcha/vanilla-glue':
         specifier: 0.1.0-alpha-3
         version: 0.1.0-alpha-3
@@ -2234,9 +2234,9 @@ packages:
     deprecated: 'Deprecated: Modern browsers support built-in WebAuthn JSON methods. Please use native browser methods instead. For more information, visit https://github.com/github/webauthn-json'
     hasBin: true
 
-  '@hanamisskey/browser-search@https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz':
-    resolution: {tarball: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz}
-    version: 0.4.1
+  '@hanamisskey/browser-search@https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.5.0.tar.gz':
+    resolution: {tarball: https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.5.0.tar.gz}
+    version: 0.5.0
 
   '@hapi/boom@10.0.1':
     resolution: {integrity: sha512-ERcCZaEjdH3OgSJlyjVk8pHIFeus91CjKP3v+MpgBNp5IvGzP2l/bRiD78nqYcKPaZdbKkK5vDBVPd2ohHBlsA==}
@@ -10595,8 +10595,8 @@ packages:
   vue-component-type-helpers@2.2.10:
     resolution: {integrity: sha512-iDUO7uQK+Sab2tYuiP9D1oLujCWlhHELHMgV/cB13cuGbG4qwkLHvtfWb6FzvxrIOPDnU0oHsz2MlQjhYDeaHA==}
 
-  vue-component-type-helpers@3.1.2:
-    resolution: {integrity: sha512-ch3/SKBtxdZq18vsEntiGCdSszCRNfhX5QaTxjSacCAXLlNQRXfXo+ANjoQEYJMsJOJy1/vHF6Tkc4s85MS+zw==}
+  vue-component-type-helpers@3.1.5:
+    resolution: {integrity: sha512-7V3yJuNWW7/1jxCcI1CswnpDsvs02Qcx/N43LkV+ZqhLj2PKj50slUflHAroNkN4UWiYfzMUUUXiNuv9khmSpQ==}
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -12015,7 +12015,7 @@ snapshots:
 
   '@github/webauthn-json@2.1.1': {}
 
-  '@hanamisskey/browser-search@https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.4.1.tar.gz':
+  '@hanamisskey/browser-search@https://github.com/HanaMisskey/hanami-wasm-search/archive/refs/tags/0.5.0.tar.gz':
     dependencies:
       defu: 6.1.4
 
@@ -14167,7 +14167,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.16(typescript@5.8.3)
-      vue-component-type-helpers: 3.1.2
+      vue-component-type-helpers: 3.1.5
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.28.0)(typescript@5.8.3)':
     dependencies:
@@ -21826,7 +21826,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.10: {}
 
-  vue-component-type-helpers@3.1.2: {}
+  vue-component-type-helpers@3.1.5: {}
 
   vue-demi@0.14.7(vue@3.5.16(typescript@5.8.3)):
     dependencies:
