@@ -52,7 +52,7 @@ export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 	removeCustomEmojiFromSearchIndex(emojis);
 }
 
-export async function fetchCustomEmojis(force = false) {
+export async function fetchCustomEmojis(force = false): Promise<boolean> {
 	const now = Date.now();
 
 	let res: Misskey.entities.EmojisResponse;
@@ -60,7 +60,7 @@ export async function fetchCustomEmojis(force = false) {
 		res = await misskeyApi('emojis', {});
 	} else {
 		const lastFetchedAt = await get('lastEmojisFetchedAt');
-		if (lastFetchedAt && (now - lastFetchedAt) < 1000 * 60 * 60) return;
+		if (lastFetchedAt && (now - lastFetchedAt) < 1000 * 60 * 60) return false;
 		res = await misskeyApiGet('emojis', {});
 	}
 
@@ -68,6 +68,7 @@ export async function fetchCustomEmojis(force = false) {
 	set('emojis', res.emojis);
 	set('lastEmojisFetchedAt', now);
 	regenerateCustomEmojiSearchIndex(res.emojis);
+	return true;
 }
 
 let cachedTags;
