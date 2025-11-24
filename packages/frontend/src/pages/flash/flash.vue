@@ -192,7 +192,6 @@ function start() {
 	run();
 }
 
-/** returns whether the version is legacy (less than 1.0.0) */
 function getIsLegacy(version: string | null): boolean {
 	if (version == null) return false;
 	try {
