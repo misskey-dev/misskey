@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { isSafeMode } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
-import type { Parser, Interpreter, values, utils as utils_TypeReferenceOnly } from '@syuilo/aiscript';
+import type { Parser, Interpreter, values, utils as utils_TypeReferenceOnly, Ast } from '@syuilo/aiscript';
 import type { FormWithDefault } from '@/utility/form.js';
 import { genId } from '@/utility/id.js';
 import { store } from '@/store.js';
@@ -48,7 +48,7 @@ async function getParser(): Promise<Parser> {
 
 export function isSupportedAiScriptVersion(version: string): boolean {
 	try {
-		return (compareVersions(version, '0.12.0') >= 0);
+		return (compareVersions(version, '1.0.0') >= 0);
 	} catch (err) {
 		return false;
 	}
@@ -68,7 +68,8 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		throw new Error(`Aiscript version '${lv}' is not supported`);
 	}
 
-	let ast;
+	let ast: Ast.Node[];
+
 	try {
 		const parser = await getParser();
 		ast = parser.parse(code);

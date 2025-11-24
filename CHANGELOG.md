@@ -12,6 +12,8 @@
 - Fix: 投稿フォームのリセットボタンで注釈がリセットされない問題を修正
 - Fix: PlayのAiScriptバージョン判定（v0.x系・v1.x系の判定）が正しく動作しない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1129)
+- Fix: AiScriptプラグインのバージョン表記チェックが機能していない問題を修正
+  - 文法の破壊的変更を受けなかったプラグインでも、動作バージョン（プラグインコード1行目の`///@1.x.x`の部分）の更新が必要になる可能性があります
 
 ### Server
 - Enhance: `clips/my-favorites` APIがページネーションに対応しました
