@@ -40,7 +40,7 @@ function postMessageWithHandler<T>(opts: {
 	});
 }
 
-export function initEmojiSearch(emojis?: Misskey.entities.EmojiSimple[]) {
+export function initEmojiSearch(regenerateIndex = false, emojis?: Misskey.entities.EmojiSimple[]) {
 	return new Promise<void>(async (resolve) => {
 		if (!emojiSearchWorker || import.meta.env.MODE === 'test') {
 			resolve();
@@ -60,13 +60,13 @@ export function initEmojiSearch(emojis?: Misskey.entities.EmojiSimple[]) {
 		try {
 			await postMessageWithHandler({
 				worker: emojiSearchWorker,
-				message: { type: 'init', preCompiledIndex: preCompiledIndex instanceof Uint8Array ? preCompiledIndex : undefined },
+				message: { type: 'init', preCompiledIndex: !regenerateIndex && preCompiledIndex instanceof Uint8Array ? preCompiledIndex : undefined },
 				expectedType: 'init',
 			});
 
 			hasInitialized = true;
 
-			if (preCompiledIndex == null) {
+			if (regenerateIndex || preCompiledIndex == null || !(preCompiledIndex instanceof Uint8Array)) {
 				if (_DEV_) console.log('[Emoji Search] No precompiled index found, creating a new one');
 
 				const _emojis: Misskey.entities.EmojiSimple[] = emojis ?? (await get('emojis')) ?? [];

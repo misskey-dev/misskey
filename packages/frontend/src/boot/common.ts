@@ -289,9 +289,9 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	try {
-		await fetchCustomEmojis();
+		const updated = await fetchCustomEmojis();
 		if (hanaStore.s.enableWasmEmojiSearch) {
-			await initEmojiSearch();
+			await initEmojiSearch(updated);
 		} else {
 			await clearEmojiSearchIndex();
 		}
