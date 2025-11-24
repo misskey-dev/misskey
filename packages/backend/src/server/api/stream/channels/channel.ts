@@ -41,6 +41,10 @@ class ChannelChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
+		if (note.user.requireSigninToViewContents && this.user == null) return;
+		if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
+		if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
+
 		if (this.isNoteMutedOrBlocked(note)) return;
 
 		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
