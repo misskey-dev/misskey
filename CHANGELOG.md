@@ -10,6 +10,8 @@
 - Fix: ヘッダーメニューのチャンネルの新規作成の項目でチャンネル作成ページに飛べない問題を修正 #16816
 - Fix: 一部のシチュエーションで投稿フォームのツアーが正しく表示されない問題を修正
 - Fix: 投稿フォームのリセットボタンで注釈がリセットされない問題を修正
+- Fix: PlayのAiScriptバージョン判定（v0.x系・v1.x系の判定）が正しく動作しない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1129)
 
 ### Server
 - Enhance: `clips/my-favorites` APIがページネーションに対応しました
