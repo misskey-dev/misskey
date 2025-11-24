@@ -1556,6 +1556,8 @@ _preferencesProfile:
   profileNameDescription: "이 디바이스를 식별할 이름을 설정해 주세요."
   profileNameDescription2: "예: '메인PC', '스마트폰' 등"
   manageProfiles: "프로파일 관리"
+  shareSameProfileBetweenDevicesIsNotRecommended: "여러 장치에서 동일한 프로필을 공유하는 것은 권장하지 않습니다."
+  useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "여러 장치에서 동기화하고 싶은 설정 항목이 있는 경우에는 개별로 '여러 장치에서 동기화' 옵션을 활성화해 주십시오."
 _preferencesBackup:
   autoBackup: "자동 백업"
   restoreFromBackup: "백업으로 복구"
