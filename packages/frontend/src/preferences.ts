@@ -112,7 +112,7 @@ const preferencesChannel = new BroadcastChannel<{
 	timestamp: number;
 }>('preferences');
 
-prefer.events.on('committed', (ev) => {
+prefer.on('committed', () => {
 	latestPreferencesUpdate = {
 		tabId: TAB_ID,
 		timestamp: Date.now(),

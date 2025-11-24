@@ -189,12 +189,11 @@ function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfi
 // TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すればthis.currentAccountのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
 //       と思ったけど操作アカウントが存在しない場合も考慮する現在の設計の方が汎用的かつ堅牢かもしれない
 // NOTE: accountDependentな設定は初期状態であってもアカウントごとのスコープでレコードを作成しておかないと、サーバー同期する際に正しく動作しなくなる
-export class PreferencesManager {
+export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 	private io: StorageProvider;
 	private currentAccount: { id: string } | null;
 	public profile: PreferencesProfile;
 	public cloudReady: Promise<void>;
-	public readonly events = new EventEmitter<PreferencesManagerEvents>();
 
 	/**
 	 * static / state の略 (static が予約語のため)
@@ -211,6 +210,8 @@ export class PreferencesManager {
 	};
 
 	constructor(io: StorageProvider, currentAccount: { id: string } | null) {
+		super();
+
 		this.io = io;
 		this.currentAccount = currentAccount;
 
@@ -256,7 +257,7 @@ export class PreferencesManager {
 
 		this.rewriteRawState(key, v);
 
-		this.events.emit('committed', {
+		this.emit('committed', {
 			key,
 			value: v,
 			oldValue: this.s[key],
