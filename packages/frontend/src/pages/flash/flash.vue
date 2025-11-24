@@ -74,6 +74,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkAsUi from '@/components/MkAsUi.vue';
+import { getAiScriptVersion } from '@/aiscript/common.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -194,7 +195,8 @@ async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
 
-	const isLegacy = !flash.value.script.replaceAll(' ', '').startsWith('///@1.0.0');
+	const version = getAiScriptVersion(flash.value.script);
+	const isLegacy = version ? version.major < 1 : false;
 
 	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
 
