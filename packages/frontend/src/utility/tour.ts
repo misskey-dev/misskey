@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, ref, shallowRef, watch, defineAsyncComponent } from 'vue';
 import * as os from '@/os.js';
 
 type TourStep = {
@@ -26,7 +26,7 @@ export function startTour(steps: TourStep[]) {
 			anchorElementRef.value = step.element;
 		});
 
-		const { dispose } = os.popup(await import('@/components/MkSpot.vue').then(x => x.default), {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSpot.vue')), {
 			title: titleRef,
 			description: descriptionRef,
 			anchorElement: anchorElementRef,

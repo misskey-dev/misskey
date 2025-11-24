@@ -55,7 +55,7 @@
 
 	//#region Script
 	async function importAppScript() {
-		await import(CLIENT_ENTRY ? `/embed_vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/embed_vite/src/_boot_.ts')
+		await import(CLIENT_ENTRY ? `/embed_vite/${CLIENT_ENTRY.replace('scripts', lang)}` : '/embed_vite/src/boot.ts')
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT');

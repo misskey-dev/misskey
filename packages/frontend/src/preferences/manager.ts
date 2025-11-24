@@ -4,6 +4,7 @@
  */
 
 import { computed, onUnmounted, ref, watch } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 import { host, version } from '@@/js/config.js';
 import { PREF_DEF } from './def.js';
 import type { Ref, WritableComputedRef } from 'vue';
@@ -100,6 +101,14 @@ type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => 
 
 export type PreferencesDefinition = Record<string, PreferencesDefinitionRecord<any>>;
 
+type PreferencesManagerEvents = {
+	'committed': <K extends keyof PREF>(ctx: {
+		key: K;
+		value: ValueOf<K>;
+		oldValue: ValueOf<K>;
+	}) => void;
+};
+
 export function definePreferences<T extends Record<string, unknown>>(x: {
 	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
 }): {
@@ -180,7 +189,7 @@ function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfi
 // TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すればthis.currentAccountのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
 //       と思ったけど操作アカウントが存在しない場合も考慮する現在の設計の方が汎用的かつ堅牢かもしれない
 // NOTE: accountDependentな設定は初期状態であってもアカウントごとのスコープでレコードを作成しておかないと、サーバー同期する際に正しく動作しなくなる
-export class PreferencesManager {
+export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 	private io: StorageProvider;
 	private currentAccount: { id: string } | null;
 	public profile: PreferencesProfile;
@@ -201,6 +210,8 @@ export class PreferencesManager {
 	};
 
 	constructor(io: StorageProvider, currentAccount: { id: string } | null) {
+		super();
+
 		this.io = io;
 		this.currentAccount = currentAccount;
 
@@ -245,6 +256,12 @@ export class PreferencesManager {
 		if (_DEV_) console.log('prefer:commit', key, v);
 
 		this.rewriteRawState(key, v);
+
+		this.emit('committed', {
+			key,
+			value: v,
+			oldValue: this.s[key],
+		});
 
 		const record = this.getMatchedRecordOf(key);
 
