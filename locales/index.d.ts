@@ -359,10 +359,6 @@ export interface Locale extends ILocale {
      */
     "rejectFollowRequestConfirm": ParameterizedString<"name">;
     /**
-     * 拒否したことは相手には通知されません。
-     */
-    "rejectFollowRequestConfirmDescription": string;
-    /**
      * エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、「ドライブ」に追加されます。
      */
     "exportRequested": string;

@@ -66,8 +66,7 @@ function accept(user: Misskey.entities.UserLite) {
 async function reject(user: Misskey.entities.UserLite) {
 	const { canceled } = await os.confirm({
 		type: 'question',
-		title: i18n.tsx.rejectFollowRequestConfirm({ name: user.name || user.username }),
-		text: i18n.ts.rejectFollowRequestConfirmDescription,
+		text: i18n.tsx.rejectFollowRequestConfirm({ name: user.name || user.username }),
 	});
 
 	if (canceled) return;
