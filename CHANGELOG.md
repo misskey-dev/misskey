@@ -10,9 +10,16 @@
 - Fix: ヘッダーメニューのチャンネルの新規作成の項目でチャンネル作成ページに飛べない問題を修正 #16816
 - Fix: ラジオボタンに空白の選択肢が表示される問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1105)
+- Fix: 一部のシチュエーションで投稿フォームのツアーが正しく表示されない問題を修正
+- Fix: 投稿フォームのリセットボタンで注釈がリセットされない問題を修正
 
 ### Server
--
+- Enhance: `clips/my-favorites` APIがページネーションに対応しました
+- Enhance: メモリ使用量を削減しました
+- Fix: チャンネルのリアルタイム更新時に、ロックダウン設定にて非ログイン時にノートを表示しない設定にしている場合でもノートが表示されてしまう問題を修正
+- Fix: DeepL APIのAPIキー指定方式変更に対応  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1096)
+	- 内部実装の変更にて対応可能な更新です。Misskey側の設定方法に変更はありません。
 
 ## 2025.11.0
 
