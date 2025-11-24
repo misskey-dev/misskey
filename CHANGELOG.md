@@ -18,6 +18,8 @@
 - Fix: DeepL APIのAPIキー指定方式変更に対応  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1096)
 	- 内部実装の変更にて対応可能な更新です。Misskey側の設定方法に変更はありません。
+- Fix: DBレプリケーションを利用する環境でクエリーが失敗する問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1123)
 
 ## 2025.11.0
 
