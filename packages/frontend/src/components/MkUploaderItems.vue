@@ -5,58 +5,64 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_gaps_s">
-	<div
-		v-for="item in props.items"
-		:key="item.id"
-		v-panel
-		:class="[$style.item, { [$style.itemWaiting]: item.preprocessing, [$style.itemCompleted]: item.uploaded, [$style.itemFailed]: item.uploadFailed }]"
-		:style="{
-			'--p': item.progress != null ? `${item.progress.value / item.progress.max * 100}%` : '0%',
-			'--pp': item.preprocessProgress != null ? `${item.preprocessProgress * 100}%` : '100%',
-		}"
-		@contextmenu.prevent.stop="onContextmenu(item, $event)"
-	>
-		<div :class="$style.itemInner">
-			<div :class="$style.itemActionWrapper">
-				<MkButton :iconOnly="true" rounded @click="emit('showMenu', item, $event)"><i class="ti ti-dots"></i></MkButton>
-			</div>
-			<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ item.thumbnail })` }" @click="onThumbnailClick(item, $event)"></div>
-			<div :class="$style.itemBody">
-				<div>
-					<i v-if="item.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i>
-					<MkCondensedLine :minScale="2 / 3">{{ item.name }}</MkCondensedLine>
+	<Sortable :modelValue="props.items" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
+		<template #item="{ element }">
+			<div
+				v-panel
+				:class="[$style.item, { [$style.itemWaiting]: element.preprocessing, [$style.itemCompleted]: element.uploaded, [$style.itemFailed]: element.uploadFailed }]"
+				:style="{
+					'--p': element.progress != null ? `${element.progress.value / element.progress.max * 100}%` : '0%',
+					'--pp': element.preprocessProgress != null ? `${element.preprocessProgress * 100}%` : '100%',
+				}"
+				@contextmenu.prevent.stop="onContextmenu(element, $event)"
+			>
+				<div :class="$style.itemInner">
+					<div :class="$style.itemActionWrapper">
+						<MkButton :iconOnly="true" rounded @click="emit('showMenu', element, $event)"><i class="ti ti-dots"></i></MkButton>
+					</div>
+					<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ element.thumbnail })` }" @click="onThumbnailClick(element, $event)"></div>
+					<div :class="$style.itemBody">
+						<div>
+							<i v-if="element.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i>
+							<MkCondensedLine :minScale="2 / 3">{{ element.name }}</MkCondensedLine>
+						</div>
+						<div :class="$style.itemInfo">
+							<span>{{ element.file.type }}</span>
+							<span v-if="element.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(element.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - element.compressedSize / element.file.size) * 100) }) }})</span>
+							<span v-else>{{ bytes(element.file.size) }}</span>
+							<span v-if="element.preprocessing">{{ i18n.ts.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
+						</div>
+						<div>
+						</div>
+					</div>
+					<div :class="$style.itemIconWrapper">
+						<MkSystemIcon v-if="element.uploading" :class="$style.itemIcon" type="waiting"/>
+						<MkSystemIcon v-else-if="element.uploaded" :class="$style.itemIcon" type="success"/>
+						<MkSystemIcon v-else-if="element.uploadFailed" :class="$style.itemIcon" type="error"/>
+					</div>
 				</div>
-				<div :class="$style.itemInfo">
-					<span>{{ item.file.type }}</span>
-					<span v-if="item.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(item.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - item.compressedSize / item.file.size) * 100) }) }})</span>
-					<span v-else>{{ bytes(item.file.size) }}</span>
-					<span v-if="item.preprocessing">{{ i18n.ts.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
-				</div>
-				<div>
-				</div>
 			</div>
-			<div :class="$style.itemIconWrapper">
-				<MkSystemIcon v-if="item.uploading" :class="$style.itemIcon" type="waiting"/>
-				<MkSystemIcon v-else-if="item.uploaded" :class="$style.itemIcon" type="success"/>
-				<MkSystemIcon v-else-if="item.uploadFailed" :class="$style.itemIcon" type="error"/>
-			</div>
-		</div>
-	</div>
+		</template>
+	</Sortable>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { defineAsyncComponent } from 'vue';
 import { isLink } from '@@/js/is-link.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+
 const props = defineProps<{
 	items: UploaderItem[];
 }>();
 
 const emit = defineEmits<{
+	(ev: 'update:modelValue', value: UploaderItem[]): void;
 	(ev: 'showMenu', item: UploaderItem, event: MouseEvent): void;
 	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: MouseEvent): void;
 }>();
@@ -82,6 +88,7 @@ function onThumbnailClick(item: UploaderItem, ev: MouseEvent) {
 	position: relative;
 	border-radius: 10px;
 	overflow: clip;
+	cursor: move;
 
 	&::before {
 		content: '';
