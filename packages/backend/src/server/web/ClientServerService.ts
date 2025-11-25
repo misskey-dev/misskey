@@ -50,7 +50,7 @@ import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntitySer
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
-import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -918,7 +918,7 @@ export class ClientServerService {
 			return await renderBase(reply);
 		});
 
-		fastify.setErrorHandler(async (error, request, reply) => {
+		fastify.setErrorHandler<FastifyError>(async (error, request, reply) => {
 			const errId = randomUUID();
 			this.clientLoggerService.logger.error(`Internal error occurred in ${request.routeOptions.url}: ${error.message}`, {
 				path: request.routeOptions.url,
