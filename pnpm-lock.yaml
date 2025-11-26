@@ -735,8 +735,8 @@ importers:
         specifier: npm:@syuilo/aiscript@^0.19.0
         version: '@syuilo/aiscript@0.19.0'
       '@twemoji/parser':
-        specifier: 17.0.1
-        version: 17.0.1
+        specifier: 16.0.0
+        version: 16.0.0
       '@vitejs/plugin-vue':
         specifier: 6.0.1
         version: 6.0.1(vite@7.2.2(@types/node@24.10.0)(sass@1.93.3)(terser@5.44.1)(tsx@4.20.6))(vue@3.5.24(typescript@5.9.3))
