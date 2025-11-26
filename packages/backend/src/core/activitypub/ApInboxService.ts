@@ -197,9 +197,19 @@ export class ApInboxService {
 	private async like(actor: MiRemoteUser, activity: ILike, resolver?: Resolver): Promise<string> {
 		const targetUri = getApId(activity.object);
 
-		const note = this.meta.resolveRemoteReactedNotes ?
-			await this.apNoteService.resolveNote(targetUri, { resolver }) :
-			await this.apNoteService.fetchNote(targetUri);
+		let note;
+		if (this.meta.resolveRemoteReactedNotes) {
+			try {
+				note = await this.apNoteService.resolveNote(targetUri, { resolver });
+			} catch (err) {
+				if (err instanceof StatusError && !err.isRetryable) {
+					return `skip: resolveNote failed ${err.statusCode}`;
+				}
+				throw err;
+			}
+		} else {
+			note = await this.apNoteService.fetchNote(targetUri);
+		}
 
 		if (!note) return `skip: target note not found ${targetUri}`;
 
