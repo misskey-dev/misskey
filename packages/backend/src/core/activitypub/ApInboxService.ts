@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -25,7 +25,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import type { MiRemoteUser } from '@/models/User.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -290,12 +290,29 @@ export class ApInboxService {
 		const targetUri = getApId(activity.object);
 		if (targetUri.startsWith('bear:')) return 'skip: bearcaps url not supported.';
 
-		const target = await resolver.resolve(activity.object).catch(e => {
+		let resolverForAnnounce = resolver;
+
+		const target = await resolver.resolve(activity.object).catch(async e => {
+			if (e instanceof StatusError && [401, 403].includes(e.statusCode)) {
+				// 適切な権限がない場合、announceしたactorのフォロワーを探し、フォロワーであるactorで再度resolveを試みる
+				const followers = await this.userFollowingService.getFollowers(actor.id);
+				if (followers.length > 0) {
+					const follower = followers[0].followerId;
+					const followerUser = await this.usersRepository.findOneBy({ id: follower, host: IsNull() });
+					if (followerUser) {
+						const newResolver = this.apResolverService.createResolver(followerUser as MiLocalUser);
+						const resolved = await newResolver.resolve(activity.object);
+						resolverForAnnounce = newResolver;
+						return resolved;
+					}
+				}
+			}
+
 			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
 
-		if (isPost(target)) return await this.announceNote(actor, activity, target);
+		if (isPost(target)) return await this.announceNote(actor, activity, target, resolverForAnnounce);
 
 		return `skip: unknown object type ${getApType(target)}`;
 	}

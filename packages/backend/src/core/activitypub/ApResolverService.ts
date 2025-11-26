@@ -44,8 +44,12 @@ export class Resolver {
 		private apDbResolverService: ApDbResolverService,
 		private loggerService: LoggerService,
 		private recursionLimit = 256,
+		private resolvedBy?: MiLocalUser,
 	) {
 		this.history = new Set();
+		if (this.resolvedBy) {
+			this.user = this.resolvedBy;
+		}
 		this.logger = this.loggerService.getLogger('ap-resolve');
 	}
 
@@ -212,7 +216,7 @@ export class ApResolverService {
 	}
 
 	@bindThis
-	public createResolver(): Resolver {
+	public createResolver(resolvedBy: (MiLocalUser | undefined) = undefined): Resolver {
 		return new Resolver(
 			this.config,
 			this.meta,
@@ -228,6 +232,8 @@ export class ApResolverService {
 			this.apRendererService,
 			this.apDbResolverService,
 			this.loggerService,
+			undefined,
+			resolvedBy,
 		);
 	}
 }
