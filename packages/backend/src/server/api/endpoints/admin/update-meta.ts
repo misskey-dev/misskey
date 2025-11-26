@@ -90,6 +90,7 @@ export const paramDef = {
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
 		enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
+		sensitiveMediaDetectionProxyUrl: { type: 'string', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
 		langs: {
@@ -420,6 +421,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
 				set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
+			}
+
+			if (ps.sensitiveMediaDetectionProxyUrl !== undefined) {
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				set.sensitiveMediaDetectionProxyUrl = ps.sensitiveMediaDetectionProxyUrl || null;
 			}
 
 			if (ps.maintainerName !== undefined) {

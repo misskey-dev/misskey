@@ -2150,6 +2150,8 @@ _role:
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
+  proxyUrl: "センシティブメディア検出プロキシURL"
+  proxyUrlDescription: "外部のセンシティブメディア検出サービスのURL。空欄にすると内蔵の検出機能(nsfwjs)を使用します。外部サービスのURLを設定すると、検出処理を外部化してサーバーの負荷を軽減できます。"
   sensitivity: "検出感度"
   sensitivityDescription: "感度を低くすると、誤検知(偽陽性)が減ります。感度を高くすると、検知漏れ(偽陰性)が減ります。"
   setSensitiveFlagAutomatically: "センシティブフラグを設定する"

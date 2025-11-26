@@ -25,6 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<div><SearchText>{{ i18n.ts._sensitiveMediaDetection.description }}</SearchText></div>
 
+							<SearchMarker :keywords="['proxy', 'url', 'external', 'service']">
+								<MkInput v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionProxyUrl">
+									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.proxyUrl }}</SearchLabel></template>
+									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.proxyUrlDescription }}</SearchText></template>
+								</MkInput>
+							</SearchMarker>
+
 							<MkRadios v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection">
 								<option value="none">{{ i18n.ts.none }}</option>
 								<option value="all">{{ i18n.ts.all }}</option>
@@ -185,6 +192,7 @@ const sensitiveMediaDetectionForm = useForm({
 	meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 4 : 0,
 	setSensitiveFlagAutomatically: meta.setSensitiveFlagAutomatically,
 	enableSensitiveMediaDetectionForVideos: meta.enableSensitiveMediaDetectionForVideos,
+	sensitiveMediaDetectionProxyUrl: meta.sensitiveMediaDetectionProxyUrl,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		sensitiveMediaDetection: state.sensitiveMediaDetection,
@@ -197,6 +205,7 @@ const sensitiveMediaDetectionForm = useForm({
 			null as never,
 		setSensitiveFlagAutomatically: state.setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos: state.enableSensitiveMediaDetectionForVideos,
+		sensitiveMediaDetectionProxyUrl: state.sensitiveMediaDetectionProxyUrl,
 	});
 	fetchInstance(true);
 });
