@@ -8,7 +8,6 @@ import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
-	beforeEach,
 	beforeAll,
 	beforeEach,
 	describe,
