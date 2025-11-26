@@ -127,7 +127,30 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(value);
+		let object: IObject | null;
+		try {
+			object = await resolver.resolve(value, undefined);
+		} catch (err) {
+			if (err instanceof IdentifiableError && (
+				err.id === '891c7a32-0f2a-4c7f-8410-62811a6c0924' || // authentication/authorization error
+				err.id === '6a31f439-d0bc-4c9c-a141-9efb8ef4ef17' // non-retryable error
+			)) {
+				// Return null instead of throwing to prevent job queue retries
+				this.logger.info(`Skipping createNote due to non-retryable error: ${err.message}`);
+				object = null;
+			} else {
+				throw err;
+			}
+		}
+
+		if (object == null) {
+			// fallback: use local cache if resolve fails due to non-retryable errors
+			const note = await this.fetchNote(value);
+			if (note) {
+				this.logger.info(`Found note in local cache after resolve failure: ${typeof value === 'string' ? value : getApId(value)}`);
+			}
+			return note;
+		}
 
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri, actor);
@@ -409,7 +432,7 @@ export class ApNoteService {
 						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
 						// _misskey_license が存在しなければ `null`
-						license: (tag._misskey_license?.freeText ?? null)
+						license: (tag._misskey_license?.freeText ?? null),
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
@@ -432,7 +455,7 @@ export class ApNoteService {
 				updatedAt: new Date(),
 				aliases: [],
 				// _misskey_license が存在しなければ `null`
-				license: (tag._misskey_license?.freeText ?? null)
+				license: (tag._misskey_license?.freeText ?? null),
 			});
 		}));
 	}

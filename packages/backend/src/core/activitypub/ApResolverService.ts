@@ -16,6 +16,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { StatusError } from '@/misc/status-error.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
@@ -108,19 +109,35 @@ export class Resolver {
 			this.user = await this.systemAccountService.fetch('actor');
 		}
 
-		const object = (this.user
-			? await this.apRequestService.signedGet(value, this.user, allowSoftfail) as IObject
-			: await this.httpRequestService.getActivityJson(value, undefined, allowSoftfail)) as IObject;
+		try {
+			const object = (this.user
+				? await this.apRequestService.signedGet(value, this.user, allowSoftfail) as IObject
+				: await this.httpRequestService.getActivityJson(value, undefined, allowSoftfail)) as IObject;
 
-		if (
-			Array.isArray(object['@context']) ?
-				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
-				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
-		) {
-			throw new IdentifiableError('72180409-793c-4973-868e-5a118eb5519b', 'invalid response');
+			if (
+				Array.isArray(object['@context']) ?
+					!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
+					object['@context'] !== 'https://www.w3.org/ns/activitystreams'
+			) {
+				throw new IdentifiableError('72180409-793c-4973-868e-5a118eb5519b', 'invalid response');
+			}
+
+			return object;
+		} catch (err) {
+			if (err instanceof StatusError) {
+				if (err.statusCode === 401 || err.statusCode === 403) {
+					this.logger.info(`Failed to resolve due to authentication/authorization error (${err.statusCode}): ${value}`);
+					throw new IdentifiableError('891c7a32-0f2a-4c7f-8410-62811a6c0924', `authentication/authorization error (${err.statusCode}): ${value}`);
+				} else if (!err.isRetryable) {
+					this.logger.info(`Failed to resolve with non-retryable error (${err.statusCode}): ${value}`);
+					throw new IdentifiableError('6a31f439-d0bc-4c9c-a141-9efb8ef4ef17', `non-retryable error (${err.statusCode}): ${value}`);
+				} else {
+					this.logger.warn(`Failed to resolve with retryable error (${err.statusCode}): ${value}`);
+					throw err;
+				}
+			}
+			throw err;
 		}
-
-		return object;
 	}
 
 	@bindThis
