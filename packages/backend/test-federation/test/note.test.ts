@@ -378,4 +378,33 @@ describe('Note', () => {
 			});
 		});
 	});
+
+	describe('Visibility', () => {
+		test('Followers-only note can be fetched after following', async () => {
+			const note = (await bob.client.request('notes/create', {
+				text: 'secret',
+				visibility: 'followers',
+			})).createdNote;
+
+			const noteUri = `https://b.test/notes/${note.id}`;
+
+			// Alice tries to fetch the note (should fail)
+			await rejects(
+				async () => await alice.client.request('ap/show', { uri: noteUri }),
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(err: any) => {
+					strictEqual(err.code, 'REQUEST_FAILED');
+					return true;
+				},
+			);
+
+			// Alice follows Bob
+			await alice.client.request('following/create', { userId: bobInA.id });
+			await sleep();
+
+			// Alice tries to fetch the note again (should success)
+			const resolvedNote = await resolveRemoteNote('b.test', note.id, alice);
+			strictEqual(resolvedNote.text, 'secret');
+		});
+	});
 });
