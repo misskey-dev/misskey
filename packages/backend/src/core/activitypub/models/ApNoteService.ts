@@ -127,16 +127,7 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(value, undefined);
-
-		if (object == null) {
-			// fallback: use local cache if resolve fails due to non-retryable errors
-			const note = await this.fetchNote(value);
-			if (note) {
-				this.logger.info(`Found note in local cache after resolve failure: ${typeof value === 'string' ? value : getApId(value)}`);
-			}
-			return note;
-		}
+		const object = await resolver.resolve(value);
 
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri, actor);
