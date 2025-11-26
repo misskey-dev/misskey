@@ -210,21 +210,31 @@ async function chooseRole(ev: MouseEvent): Promise<void> {
 }
 
 function saveSrc(newSrc: TimelinePageSrc): void {
-	// URLパラメータ経由の場合は保存しない
+	// URLパラメータ経由でも、ロールから別のタイムラインへ切り替える場合は許可
 	if (props.roleId && newSrc === `role:${props.roleId}`) return;
 	if (props.listId && newSrc === `list:${props.listId}`) return;
 	if (props.antennaId && newSrc === `antenna:${props.antennaId}`) return;
+	
+	// ナビゲーションでURLを更新
+	if (newSrc.startsWith('role:')) {
+		// ロールタイムラインへ遷移
+		router.push(`/timeline/role/${newSrc.split(':')[1]}`);
+	} else {
+		// 基本タイムラインへ遷移
+		router.push('/timeline');
+		
+		// ストアに状態を保存
+		const out = deepMerge({ src: newSrc }, store.s.tl);
 
-	const out = deepMerge({ src: newSrc }, store.s.tl);
+		if (newSrc.startsWith('userList:')) {
+			const id = newSrc.substring('userList:'.length);
+			out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
+		}
 
-	if (newSrc.startsWith('userList:')) {
-		const id = newSrc.substring('userList:'.length);
-		out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
-	}
-
-	store.set('tl', out);
-	if (['local', 'global'].includes(newSrc)) {
-		srcWhenNotSignin.value = newSrc as 'local' | 'global';
+		store.set('tl', out);
+		if (['local', 'global'].includes(newSrc)) {
+			srcWhenNotSignin.value = newSrc as 'local' | 'global';
+		}
 	}
 }
 
