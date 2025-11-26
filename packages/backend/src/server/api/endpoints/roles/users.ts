@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { RolesRepository, RoleAssignmentsRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['role', 'users'],
@@ -38,6 +38,9 @@ export const meta = {
 				user: {
 					type: 'object',
 					ref: 'UserDetailed',
+				},
+				popularityScore: {
+					type: 'number',
 				},
 			},
 			required: ['id', 'user'],
@@ -88,19 +91,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.where('assign.expiresAt IS NULL')
 						.orWhere('assign.expiresAt > :now', { now: new Date() });
 				}))
-				.innerJoinAndSelect('assign.user', 'user');
+				.innerJoin('assign.user', 'user');
 
 			const assigns = await query
 				.limit(ps.limit)
 				.getMany();
 
-			const _users = assigns.map(({ user, userId }) => user ?? userId);
-			const _userMap = await this.userEntityService.packMany(_users, me, { schema: 'UserDetailed' })
-				.then(users => new Map(users.map(u => [u.id, u])));
-			return await Promise.all(assigns.map(async assign => ({
-				id: assign.id,
-				user: _userMap.get(assign.userId) ?? await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
-			})));
+			// 新アルゴリズムで人気スコアを計算してソート
+			const scoredAssigns = await Promise.all(assigns.map(async assign => {
+				const user = await this.userEntityService.pack(assign.userId, me, { schema: 'UserDetailed' });
+				const popularityScore = await this.userEntityService.calculatePopularityScore(
+					assign.userId,
+					user.followersCount || 0,
+					user.notesCount || 0
+				);
+				
+				return {
+					id: assign.id,
+					user,
+					popularityScore,
+				};
+			}));
+			
+			// 人気スコアの降順にソートして返す
+			return scoredAssigns
+				.sort((a, b) => b.popularityScore - a.popularityScore);
 		});
 	}
 }

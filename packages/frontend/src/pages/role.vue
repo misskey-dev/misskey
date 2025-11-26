@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-else-if="tab === 'users'" class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div class="_gaps_s">
-			<div v-if="role">{{ role.description }}</div>
+			<div v-if="role"><MkMfm :text="role.description" /></div>
 			<MkUserList v-if="visible" :paginator="usersPaginator" :extractor="(item) => item.user"/>
 			<MkResult v-else-if="!visible" type="empty" :text="i18n.ts.nothing"/>
 		</div>
@@ -31,6 +31,7 @@ import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { Paginator } from '@/utility/paginator.js';
+import MkMfm from '@/components/global/MkMfm.js';
 
 const props = withDefaults(defineProps<{
 	roleId: string;
@@ -65,6 +66,7 @@ const usersPaginator = markRaw(new Paginator('roles/users', {
 	limit: 30,
 	computedParams: computed(() => ({
 		roleId: props.roleId,
+		sort: 'popularity',
 	})),
 }));
 

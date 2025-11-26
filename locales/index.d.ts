@@ -2563,6 +2563,10 @@ export interface Locale extends ILocale {
      */
     "yourAccountSuspendedDescription": string;
     /**
+     * このユーザーが凍结された理由
+     */
+    "suspendedReasonDescription": string;
+    /**
      * トークンが無効です
      */
     "tokenRevoked": string;

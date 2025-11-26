@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else-if="role.target === 'conditional'" :class="$style.bodyUsers">? users</span>
 			</template>
 		</div>
-		<div :class="$style.bodyDescription">{{ role.description }}</div>
+		<div :class="$style.bodyDescription"><MkMfm :text="role.description" /></div>
 	</div>
 </MkA>
 </template>
@@ -37,6 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
+import MkMfm from '@/components/global/MkMfm.js';
 
 const props = withDefaults(defineProps<{
 	role: Misskey.entities.Role | Misskey.entities.IResponse['roles'][number];

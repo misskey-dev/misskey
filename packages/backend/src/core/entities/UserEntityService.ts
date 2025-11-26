@@ -618,6 +618,8 @@ export class UserEntityService implements OnModuleInit {
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
 				policies: this.roleService.getUserPolicies(user.id),
+				// 受け取ったリアクション数を非同期で取得
+				receivedReactionsCount: isDetailed ? this.calculateReceivedReactionsCount(user.id).catch(() => 0) : undefined,
 			} : {}),
 
 			...(opts.includeSecrets ? {
@@ -727,5 +729,85 @@ export class UserEntityService implements OnModuleInit {
 				},
 			)),
 		);
+	}
+
+	@bindThis
+	private calculateNormalizedReactionScore(reactionsCount: number): number {
+		// リアクション数を対数スケールで正規化（0-100範囲）
+		// log10(リアクション数 + 1) × 20、最大値100に制限
+		const score = Math.log10(reactionsCount + 1) * 20;
+		return Math.min(Math.floor(score), 100);
+	}
+
+	@bindThis
+	public async calculateRecentActivityScore(userId: MiUser['id']): Promise<number> {
+		// 最近30日間の投稿数を取得し、0-100範囲に正規化
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+		const thirtyDaysAgoSnowflake = this.idService.gen(thirtyDaysAgo.getTime());
+		
+		// Misskeyではidにタイムスタンプが含まれているため、idで比較
+		const sql = `
+			SELECT COUNT(*) as count 
+			FROM note 
+			WHERE "userId" = $1 AND id >= $2
+		`;
+		
+		const result = await this.usersRepository.query(sql, [userId, thirtyDaysAgoSnowflake]);
+		const recentNotes = parseInt(result[0]?.count || '0', 10);
+		
+		// 30日間の投稿数を0-100範囲に正規化（30投稿で満点）
+		return Math.min(Math.floor((recentNotes / 30) * 100), 100);
+	}
+
+	@bindThis
+	private calculateAccountAgeScore(userId: string): number {
+		// アカウント運営期間を0-100範囲に正規化
+		const now = new Date();
+		const createdDate = this.idService.parse(userId).date;
+		const daysSinceCreation = Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+		
+		// 365日（1年）で満点、最大100に制限
+		return Math.min(Math.floor((daysSinceCreation / 365) * 100), 100);
+	}
+
+	@bindThis
+	public async calculatePopularityScore(userId: MiUser['id'], followerCount: number, notesCount: number): Promise<number> {
+		// リアクション数を取得（内部計算用）
+		const reactionsCount = await this.calculateReceivedReactionsCount(userId);
+		
+		// 各指標を正規化
+		const reactionScore = this.calculateNormalizedReactionScore(reactionsCount);
+		const activityScore = await this.calculateRecentActivityScore(userId);
+		
+		// アカウント期間はIDから計算
+		const ageScore = this.calculateAccountAgeScore(userId);
+		
+		// 人気スコア計算式：
+		// (フォロワー数 × 0.4) + (投稿数 × 0.25) + (正規化リアクション指標 × 0.2) + (最近のアクティビティ × 0.1) + (アカウント運営期間 × 0.05)
+		const popularityScore = 
+			(followerCount * 0.4) + 
+			(notesCount * 0.25) + 
+			(reactionScore * 0.2) + 
+			(activityScore * 0.1) + 
+			(ageScore * 0.05);
+		
+		// 小数点第2位まで保持
+		return Math.round(popularityScore * 100) / 100;
+	}
+
+	@bindThis
+	public async calculateReceivedReactionsCount(userId: MiUser['id']): Promise<number> {
+		// ユーザーから受け取ったリアクションの合計数を計算
+		const result = await this.usersRepository.query(`
+			SELECT SUM(CAST(value AS integer)) as total
+			FROM (
+				SELECT (jsonb_each_text(reactions)).value
+				FROM note 
+				WHERE "userId" = $1 AND reactions IS NOT NULL
+			) subquery
+		`, [userId]);
+		
+		return parseInt(result[0]?.total || '0', 10);
 	}
 }
