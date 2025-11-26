@@ -8,7 +8,7 @@ import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
-	afterEach,
+	beforeEach,
 	beforeAll,
 	beforeEach,
 	describe,
@@ -80,7 +80,7 @@ describe('AiScript common API', () => {
 	});
 
 	describe('readline', () => {
-		afterEach(() => {
+		beforeEach(() => {
 			vi.restoreAllMocks();
 		});
 
@@ -176,7 +176,7 @@ describe('AiScript common API', () => {
 	});
 
 	describe('dialog', () => {
-		afterEach(() => {
+		beforeEach(() => {
 			vi.restoreAllMocks();
 		});
 
@@ -215,7 +215,7 @@ describe('AiScript common API', () => {
 	});
 
 	describe('confirm', () => {
-		afterEach(() => {
+		beforeEach(() => {
 			vi.restoreAllMocks();
 		});
 
@@ -272,7 +272,7 @@ describe('AiScript common API', () => {
 	});
 
 	describe('api', () => {
-		afterEach(() => {
+		beforeEach(() => {
 			vi.restoreAllMocks();
 		});
 
@@ -347,7 +347,7 @@ describe('AiScript common API', () => {
 			miLocalStorage.removeItem('aiscript:widget:key');
 		});
 
-		afterEach(() => {
+		beforeEach(() => {
 			miLocalStorage.removeItem('aiscript:widget:key');
 		});
 
