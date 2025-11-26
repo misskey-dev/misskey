@@ -58,7 +58,7 @@
 		"esbuild": "0.27.0",
 		"execa": "9.6.0",
 		"fast-glob": "3.3.3",
-		"glob": "11.0.3",
+		"glob": "11.1.0",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.0",
 		"postcss": "8.5.6",

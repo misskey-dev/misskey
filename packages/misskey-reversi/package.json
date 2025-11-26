@@ -29,7 +29,7 @@
 		"@typescript-eslint/parser": "8.46.3",
 		"esbuild": "0.27.0",
 		"execa": "9.6.0",
-		"glob": "11.0.3",
+		"glob": "11.1.0",
 		"nodemon": "3.1.10",
 		"typescript": "5.9.3"
 	},
