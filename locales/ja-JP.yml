@@ -493,6 +493,7 @@ enable: "有効にする"
 next: "次"
 retype: "再入力"
 noteOf: "{user}のノート"
+noteSpacing: "ノート間隔"
 quoteAttached: "引用付き"
 quoteQuestion: "引用として添付しますか？"
 attachAsFileQuestion: "クリップボードのテキストが長いです。テキストファイルとして添付しますか？"
@@ -1466,6 +1467,12 @@ _emojiPalette:
   enableSyncBetweenDevicesForPalettes: "パレットのデバイス間同期を有効にする"
   paletteForMain: "メインで使用するパレット"
   paletteForReaction: "リアクションで使用するパレット"
+
+_noteSpacing:
+  extremelyNarrow: "極狭い"
+  narrow: "狭い"
+  normal: "普通"
+  wide: "広い"
 
 _settings:
   driveBanner: "ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。"

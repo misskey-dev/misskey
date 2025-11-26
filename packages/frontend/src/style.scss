@@ -13,12 +13,24 @@
 
 	--MI-margin: var(--MI-marginFull);
 
+	// Note spacing variables
+	--MI-noteSpacing-extremelyNarrow: 3px;
+	--MI-noteSpacing-narrow: 6px;
+	--MI-noteSpacing-normal: 16px;
+	--MI-noteSpacing-wide: 28px;
+
 	// switch dynamically
 	--MI-minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
 	--MI-minBottomSpacing: var(--MI-minBottomSpacingMobile);
 
 	@media (max-width: 500px) {
 		--MI-margin: var(--MI-marginHalf);
+
+		// Mobile note spacing
+		--MI-noteSpacing-extremelyNarrow: 2px;
+		--MI-noteSpacing-narrow: 4px;
+		--MI-noteSpacing-normal: 10px;
+		--MI-noteSpacing-wide: 18px;
 	}
 }
 

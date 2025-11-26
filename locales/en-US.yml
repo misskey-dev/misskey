@@ -493,6 +493,7 @@ enable: "Enable"
 next: "Next"
 retype: "Enter again"
 noteOf: "Note by {user}"
+noteSpacing: "Note Spacing"
 quoteAttached: "Quote"
 quoteQuestion: "Append as quote?"
 attachAsFileQuestion: "The text in clipboard is long. Would you want to attach it as text file?"
@@ -1462,6 +1463,13 @@ _emojiPalette:
   enableSyncBetweenDevicesForPalettes: "Enable palette sync between devices"
   paletteForMain: "Main palette"
   paletteForReaction: "Reaction palette"
+
+_noteSpacing:
+  extremelyNarrow: "Extremely Narrow"
+  narrow: "Narrow"
+  normal: "Normal"
+  wide: "Wide"
+
 _settings:
   driveBanner: "You can manage and configure the drive, check usage, and configure file upload settings."
   pluginBanner: "You can extend client features with plugins. You can install plugins, configure and manage individually."

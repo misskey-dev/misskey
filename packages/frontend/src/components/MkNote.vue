@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-if="!hardMuted && muted === false"
 	ref="rootEl"
 	v-hotkey="keymap"
-	:class="[$style.root, { [$style.showActionsOnlyHover]: prefer.s.showNoteActionsOnlyHover, [$style.skipRender]: prefer.s.skipNoteRender }]"
+	:class="[$style.root, { [$style.showActionsOnlyHover]: prefer.s.showNoteActionsOnlyHover, [$style.skipRender]: prefer.s.skipNoteRender, [$style.compact]: noteSpacing === 'extremelyNarrow' }]"
 	tabindex="0"
 >
 	<MkNoteSub v-if="appearNote.replyId && !renoteCollapsed" :note="appearNote?.reply ?? null" :class="$style.replyTo"/>
@@ -314,6 +314,8 @@ const renoteCollapsed = ref(
 		($appearNote.myReaction != null)
 	),
 );
+
+const noteSpacing = computed(() => prefer.s.noteSpacing);
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
@@ -793,6 +795,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 	white-space: pre;
 	color: var(--MI_THEME-renote);
 
+	.root.compact & {
+		padding: 8px 16px 4px 16px;
+	}
+
 	& + .article {
 		padding-top: 8px;
 	}
@@ -869,6 +875,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 	position: relative;
 	display: flex;
 	padding: 28px 32px;
+
+	.root.compact & {
+		padding: 14px 16px;
+	}
 }
 
 .colorBar {
@@ -1024,10 +1034,18 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 	.renote {
 		padding: 12px 26px 0 26px;
+
+		.root.compact & {
+			padding: 6px 13px 0 13px;
+		}
 	}
 
 	.article {
 		padding: 24px 26px;
+
+		.root.compact & {
+			padding: 12px 13px;
+		}
 	}
 
 	.avatar {
@@ -1043,10 +1061,18 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 	.renote {
 		padding: 10px 22px 0 22px;
+
+		.root.compact & {
+			padding: 5px 11px 0 11px;
+		}
 	}
 
 	.article {
 		padding: 20px 22px;
+
+		.root.compact & {
+			padding: 10px 11px;
+		}
 	}
 
 	.footer {
@@ -1057,6 +1083,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 @container (max-width: 480px) {
 	.renote {
 		padding: 8px 16px 0 16px;
+
+		.root.compact & {
+			padding: 4px 8px 0 8px;
+		}
 	}
 
 	.tip {
@@ -1070,6 +1100,10 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 	.article {
 		padding: 14px 16px;
+
+		.root.compact & {
+			padding: 7px 8px;
+		}
 	}
 }
 

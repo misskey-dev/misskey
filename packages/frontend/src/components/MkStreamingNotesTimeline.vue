@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
-			:class="$style.notes"
+			:class="[$style.notes, $style[noteSpacingClass]]"
 			:enterActiveClass="$style.transition_x_enterActive"
 			:leaveActiveClass="$style.transition_x_leaveActive"
 			:enterFromClass="$style.transition_x_enterFrom"
@@ -77,6 +77,12 @@ import { i18n } from '@/i18n.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
+
+const noteSpacing = computed(() => prefer.s.noteSpacing);
+
+const noteSpacingClass = computed(() => {
+	return `spacing_${noteSpacing.value}`;
+});
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -463,6 +469,39 @@ defineExpose({
 
 .note:not(:empty) {
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+// Note spacing modes
+.notes.spacing_extremelyNarrow .note:not(:last-child) {
+	padding-bottom: 3px;
+
+	@media (max-width: 500px) {
+		padding-bottom: 2px;
+	}
+}
+
+.notes.spacing_narrow .note:not(:last-child) {
+	padding-bottom: 6px;
+
+	@media (max-width: 500px) {
+		padding-bottom: 4px;
+	}
+}
+
+.notes.spacing_normal .note:not(:last-child) {
+	padding-bottom: 16px;
+
+	@media (max-width: 500px) {
+		padding-bottom: 10px;
+	}
+}
+
+.notes.spacing_wide .note:not(:last-child) {
+	padding-bottom: 28px;
+
+	@media (max-width: 500px) {
+		padding-bottom: 18px;
+	}
 }
 
 .new {

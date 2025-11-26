@@ -297,6 +297,9 @@ export const PREF_DEF = definePreferences({
 	showNoteActionsOnlyHover: {
 		default: false,
 	},
+	noteSpacing: {
+		default: 'normal' as 'extremelyNarrow' | 'narrow' | 'normal' | 'wide',
+	},
 	showClipButtonInNoteFooter: {
 		default: false,
 	},
