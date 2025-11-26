@@ -188,13 +188,16 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseRole(ev: MouseEvent): Promise<void> {
-	const roles = await misskeyApi('roles/list');
+	const roles = await misskeyApi('roles/list', { canPublicNote: true });
 	const items: (MenuItem | undefined)[] = [
-		...roles.filter(x => x.isExplorable).map(role => ({
-			type: 'link' as const,
-			text: role.name,
-			to: `/timeline/role/${role.id}`,
-		})),
+		...roles
+			.filter(x => x.isExplorable)
+			.sort((a, b) => b.usersCount - a.usersCount)
+			.map(role => ({
+				type: 'link' as const,
+				text: role.name,
+				to: `/timeline/role/${role.id}`,
+			})),
 		(roles.filter(x => x.isExplorable).length === 0 ? undefined : { type: 'divider' }),
 		{
 			type: 'link' as const,
