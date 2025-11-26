@@ -127,21 +127,7 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		let object: IObject | null;
-		try {
-			object = await resolver.resolve(value, undefined);
-		} catch (err) {
-			if (err instanceof IdentifiableError && (
-				err.id === '891c7a32-0f2a-4c7f-8410-62811a6c0924' || // authentication/authorization error
-				err.id === '6a31f439-d0bc-4c9c-a141-9efb8ef4ef17' // non-retryable error
-			)) {
-				// Return null instead of throwing to prevent job queue retries
-				this.logger.info(`Skipping createNote due to non-retryable error: ${err.message}`);
-				object = null;
-			} else {
-				throw err;
-			}
-		}
+		const object = await resolver.resolve(value, undefined);
 
 		if (object == null) {
 			// fallback: use local cache if resolve fails due to non-retryable errors
