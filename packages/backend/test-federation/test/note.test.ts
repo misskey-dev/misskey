@@ -406,5 +406,42 @@ describe('Note', () => {
 			const resolvedNote = await resolveRemoteNote('b.test', note.id, alice);
 			strictEqual(resolvedNote.text, 'secret');
 		});
+
+		test('Followers-only note can be fetched via Announce if the receiver follows the announcer', async () => {
+			// Ensure Alice is NOT following Bob
+			try {
+				await alice.client.request('following/delete', { userId: bobInA.id });
+			} catch {
+				// ignore if not following
+			}
+			await sleep();
+
+			// Bob creates a followers-only note
+			const note = (await bob.client.request('notes/create', {
+				text: 'followers only',
+				visibility: 'followers',
+			})).createdNote;
+
+			// Alice follows Bob
+			await alice.client.request('following/create', { userId: bobInA.id });
+			await sleep();
+
+			// Bob renote the note
+			const bobRenote = await bob.client.request('notes/create', {
+				renoteId: note.id,
+			});
+
+			await sleep();
+
+			// Alice should be able to see the renote and the original note
+			const timeline = await alice.client.request('notes/timeline', { limit: 10 });
+			const renoteUri = `https://b.test/notes/${bobRenote.createdNote.id}/activity`;
+			const renoteInA = timeline.find(n => n.uri === renoteUri);
+
+			assert(renoteInA != null);
+			assert(renoteInA.renote != null);
+			strictEqual(renoteInA.renote.text, 'followers only');
+			strictEqual(renoteInA.renote.visibility, 'followers');
+		});
 	});
 });
