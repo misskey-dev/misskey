@@ -45,21 +45,27 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			let text: string | undefined = undefined;
 			let type: typeof DIALOG_TYPES[number] = 'info';
 
-			if (_title != null && utils.isString(_title)) {
-				title = _title.value;
+			if (_title != null) {
+				if (utils.isString(_title)) {
+					title = _title.value;
+				}
 			} else {
 				utils.assertNull(_title);
 			}
 
-			if (_text != null && utils.isString(_text)) {
-				text = _text.value;
+			if (_text != null) {
+				if (utils.isString(_text)) {
+					text = _text.value;
+				}
 			} else {
 				utils.assertNull(_text);
 			}
 
-			if (_type != null && utils.isString(_type)) {
-				assertStringAndIsIn(_type, DIALOG_TYPES);
-				type = _type.value;
+			if (_type != null) {
+				if (utils.isString(_type)) {
+					assertStringAndIsIn(_type, DIALOG_TYPES);
+					type = _type.value;
+				}
 			} else {
 				utils.assertNull(_type);
 			}
@@ -76,21 +82,27 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			let text: string | undefined = undefined;
 			let type: typeof DIALOG_TYPES[number] = 'question';
 
-			if (_title != null && utils.isString(_title)) {
-				title = _title.value;
+			if (_title != null) {
+				if (utils.isString(_title)) {
+					title = _title.value;
+				}
 			} else {
 				utils.assertNull(_title);
 			}
 
-			if (_text != null && utils.isString(_text)) {
-				text = _text.value;
+			if (_text != null) {
+				if (utils.isString(_text)) {
+					text = _text.value;
+				}
 			} else {
 				utils.assertNull(_text);
 			}
 
-			if (_type != null && utils.isString(_type)) {
-				assertStringAndIsIn(_type, DIALOG_TYPES);
-				type = _type.value;
+			if (_type != null) {
+				if (utils.isString(_type)) {
+					assertStringAndIsIn(_type, DIALOG_TYPES);
+					type = _type.value;
+				}
 			} else {
 				utils.assertNull(_type);
 			}
