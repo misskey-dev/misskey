@@ -458,7 +458,7 @@ export class ApInboxService {
 			const exist = await this.apNoteService.fetchNote(note);
 			if (exist) return 'skip: note exists';
 
-			await this.apNoteService.createNote(note, actor, resolver, silent)
+			await this.apNoteService.createNote(note, actor, resolver, silent, true)
 				.catch(async (err) => {
 					if (err instanceof StatusError && [401, 403].includes(err.statusCode)) {
 						// 適切な権限がない場合、createしたactorのフォロワーを探し、フォロワーであるactorで再度resolveを試みる
