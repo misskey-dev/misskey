@@ -143,12 +143,12 @@ export class UserSearchService {
 			.select('following.followeeId')
 			.where('following.followerId = :followerId', { followerId: me.id });
 
-		const activeFollowingUsersQuery = this.generateUserQueryBuilder(params)
+		const activeFollowingUsersQuery = this.generateUserQueryBuilder({ ...params, meId: me.id })
 			.andWhere(`user.id IN (${followingUserQuery.getQuery()})`)
 			.andWhere('user.updatedAt > :activeThreshold', { activeThreshold });
 		activeFollowingUsersQuery.setParameters(followingUserQuery.getParameters());
 
-		const inactiveFollowingUsersQuery = this.generateUserQueryBuilder(params)
+		const inactiveFollowingUsersQuery = this.generateUserQueryBuilder({ ...params, meId: me.id })
 			.andWhere(`user.id IN (${followingUserQuery.getQuery()})`)
 			.andWhere(new Brackets(qb => {
 				qb
@@ -158,12 +158,12 @@ export class UserSearchService {
 		inactiveFollowingUsersQuery.setParameters(followingUserQuery.getParameters());
 
 		// 自分自身がヒットするとしたらここ
-		const activeUserQuery = this.generateUserQueryBuilder(params)
+		const activeUserQuery = this.generateUserQueryBuilder({ ...params, meId: me.id })
 			.andWhere(`user.id NOT IN (${followingUserQuery.getQuery()})`)
 			.andWhere('user.updatedAt > :activeThreshold', { activeThreshold });
 		activeUserQuery.setParameters(followingUserQuery.getParameters());
 
-		const inactiveUserQuery = this.generateUserQueryBuilder(params)
+		const inactiveUserQuery = this.generateUserQueryBuilder({ ...params, meId: me.id })
 			.andWhere(`user.id NOT IN (${followingUserQuery.getQuery()})`)
 			.andWhere('user.updatedAt <= :activeThreshold', { activeThreshold });
 		inactiveUserQuery.setParameters(followingUserQuery.getParameters());
@@ -185,14 +185,14 @@ export class UserSearchService {
 		// デフォルト30日以内に更新されたユーザーをアクティブユーザーとする
 		const activeThreshold = params.activeThreshold ?? defaultActiveThreshold();
 
-		const activeUserQuery = this.generateUserQueryBuilder(params)
+		const activeUserQuery = this.generateUserQueryBuilder({ ...params, meId: null })
 			.andWhere(new Brackets(qb => {
 				qb
 					.where('user.updatedAt IS NULL')
 					.orWhere('user.updatedAt > :activeThreshold', { activeThreshold });
 			}));
 
-		const inactiveUserQuery = this.generateUserQueryBuilder(params)
+		const inactiveUserQuery = this.generateUserQueryBuilder({ ...params, meId: null })
 			.andWhere('user.updatedAt <= :activeThreshold', { activeThreshold });
 
 		return [activeUserQuery, inactiveUserQuery];
@@ -207,6 +207,7 @@ export class UserSearchService {
 	private generateUserQueryBuilder(params: {
 		username?: string | null,
 		host?: string | null,
+		meId?: string | null,
 	}): SelectQueryBuilder<MiUser> {
 		const userQuery = this.usersRepository.createQueryBuilder('user');
 
@@ -225,6 +226,15 @@ export class UserSearchService {
 		}
 
 		userQuery.andWhere('user.isSuspended = FALSE');
+
+		// hideUserSearchResult のフィルタリング
+		if (params.meId) {
+			// 自分自身は常に表示、それ以外は hideUserSearchResult が false のもののみ
+			userQuery.andWhere('(user.id = :meId OR user.hideUserSearchResult = FALSE)', { meId: params.meId });
+		} else {
+			// 未ログインの場合は hideUserSearchResult が false のもののみ
+			userQuery.andWhere('user.hideUserSearchResult = FALSE');
+		}
 
 		return userQuery;
 	}
@@ -261,6 +271,13 @@ export class UserSearchService {
 					.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 			}))
 			.andWhere('user.isSuspended = FALSE');
+
+		// hideUserSearchResult のフィルタリング
+		if (meId) {
+			nameQuery.andWhere('(user.id = :meId OR user.hideUserSearchResult = FALSE)', { meId });
+		} else {
+			nameQuery.andWhere('user.hideUserSearchResult = FALSE');
+		}
 
 		if (mutingQuery) {
 			nameQuery.andWhere(`user.id NOT IN (${mutingQuery.getQuery()})`);
@@ -304,6 +321,13 @@ export class UserSearchService {
 				}))
 				.andWhere('user.isSuspended = FALSE')
 				.setParameters(profQuery.getParameters());
+
+			// hideUserSearchResult のフィルタリング
+			if (meId) {
+				userQuery.andWhere('(user.id = :meId OR user.hideUserSearchResult = FALSE)', { meId });
+			} else {
+				userQuery.andWhere('user.hideUserSearchResult = FALSE');
+			}
 
 			users = users.concat(await userQuery
 				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
