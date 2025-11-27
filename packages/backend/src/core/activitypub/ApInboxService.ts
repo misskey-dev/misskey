@@ -458,7 +458,21 @@ export class ApInboxService {
 			const exist = await this.apNoteService.fetchNote(note);
 			if (exist) return 'skip: note exists';
 
-			await this.apNoteService.createNote(note, actor, resolver, silent);
+			await this.apNoteService.createNote(note, actor, resolver, silent)
+				.catch(async (err) => {
+					if (err instanceof StatusError && [401, 403].includes(err.statusCode)) {
+						// 適切な権限がない場合、createしたactorのフォロワーを探し、フォロワーであるactorで再度resolveを試みる
+						const followers = await this.userFollowingService.getFollowers(actor.id);
+						if (followers.length > 0) {
+							const follower = followers[0].followerId;
+							const followerUser = await this.usersRepository.findOneBy({ id: follower, host: IsNull() });
+							if (followerUser) {
+								return await this.apNoteService.createNote(note, actor, this.apResolverService.createResolver(followerUser as MiLocalUser), silent);
+							}
+						}
+					}
+					throw err;
+				});
 			return 'ok';
 		} catch (err) {
 			if (err instanceof StatusError && !err.isRetryable) {
