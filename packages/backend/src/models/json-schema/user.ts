@@ -631,7 +631,11 @@ export const packedMeDetailedOnlySchema = {
 				},
 			],
 		},
-		hideSearchResult: {
+		hideNoteSearchResult: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
+		hideUserSearchResult: {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},

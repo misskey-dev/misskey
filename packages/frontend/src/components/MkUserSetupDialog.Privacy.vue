@@ -24,11 +24,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkFolder>
 
 	<MkFolder>
-		<template #label>{{ i18n.ts.hideSearchResult }}</template>
+		<template #label>{{ i18n.ts.hideNoteSearchResult }}</template>
 		<template #icon><i class="ti ti-search-off"></i></template>
-		<template #suffix>{{ hideSearchResult ? i18n.ts.on : i18n.ts.off }}</template>
+		<template #suffix>{{ hideNoteSearchResult ? i18n.ts.on : i18n.ts.off }}</template>
 
-		<MkSwitch v-model="hideSearchResult">{{ i18n.ts.hideSearchResult }}<template #caption>{{ i18n.ts.hideSearchResultDescription }}</template></MkSwitch>
+		<MkSwitch v-model="hideNoteSearchResult">{{ i18n.ts.hideNoteSearchResult }}<template #caption>{{ i18n.ts.hideNoteSearchResultDescription }}</template></MkSwitch>
+	</MkFolder>
+
+	<MkFolder>
+		<template #label>{{ i18n.ts.hideUserSearchResult }}</template>
+		<template #icon><i class="ti ti-user-search"></i></template>
+		<template #suffix>{{ hideUserSearchResult ? i18n.ts.on : i18n.ts.off }}</template>
+
+		<MkSwitch v-model="hideUserSearchResult">{{ i18n.ts.hideUserSearchResult }}<template #caption>{{ i18n.ts.hideUserSearchResultDescription }}</template></MkSwitch>
 	</MkFolder>
 
 	<MkFolder>
@@ -61,15 +69,17 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 
 const isLocked = ref(true);
 const hideOnlineStatus = ref(true);
-const hideSearchResult = ref(true);
+const hideNoteSearchResult = ref(true);
+const hideUserSearchResult = ref(false);
 const noCrawle = ref(true);
 const preventAiLearning = ref(true);
 
-watch([isLocked, hideOnlineStatus, hideSearchResult, noCrawle, preventAiLearning], () => {
+watch([isLocked, hideOnlineStatus, hideNoteSearchResult, hideUserSearchResult, noCrawle, preventAiLearning], () => {
 	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
-		hideSearchResult: !!hideSearchResult.value,
+		hideNoteSearchResult: !!hideNoteSearchResult.value,
+		hideUserSearchResult: !!hideUserSearchResult.value,
 		noCrawle: !!noCrawle.value,
 		preventAiLearning: !!preventAiLearning.value,
 	});
