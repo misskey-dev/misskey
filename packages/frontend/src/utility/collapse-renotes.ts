@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as Misskey from 'misskey-js';
 import { prefer } from '@/preferences.js';
 
 const seenNotes: string[] = [];
 
-export function checkCollapseRenote(appearNote: Record<string, any> | null, note: Record<string, any>, me: Record<string, any> | null | undefined): boolean {
+export function checkCollapseRenote(appearNote: Misskey.entities.Note | null, note: Misskey.entities.Note, me: Misskey.entities.MeDetailed | null | undefined): boolean {
 	try {
 		// 設定値の取得（prefer方式のみを使用）
 		const collapseRenotes = prefer.s.collapseRenotes;

@@ -1358,7 +1358,10 @@ async function post(ev?: MouseEvent) {
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
 			try {
-				postData = await interruptor.handler(deepClone(postData) as any) as typeof postData;
+				// プラグインhandlerはNote型を期待するが、postDataは投稿前のデータ
+				// 本家Misskeyと同様のパターンを使用
+				// @ts-expect-error: postData type mismatch with plugin handler expectation (same as upstream)
+				postData = await interruptor.handler(deepClone(postData)) as typeof postData;
 			} catch (err) {
 				console.error(err);
 			}
