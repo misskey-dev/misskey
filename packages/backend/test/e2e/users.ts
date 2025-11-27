@@ -137,7 +137,8 @@ describe('ユーザー', () => {
 			twoFactorBackupCodesStock: user.twoFactorBackupCodesStock,
 			hideOnlineStatus: user.hideOnlineStatus,
 			activeStatusVisibility: user.activeStatusVisibility,
-			hideSearchResult: user.hideSearchResult, // yamisskey独自
+			hideNoteSearchResult: user.hideNoteSearchResult, // yamisskey独自
+			hideUserSearchResult: user.hideUserSearchResult, // yamisskey独自
 			hasUnreadSpecifiedNotes: user.hasUnreadSpecifiedNotes,
 			hasUnreadMentions: user.hasUnreadMentions,
 			hasUnreadAnnouncement: user.hasUnreadAnnouncement,

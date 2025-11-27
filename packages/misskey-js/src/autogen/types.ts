@@ -9934,7 +9934,8 @@ export type components = {
                 /** Format: misskey:id */
                 userListId: string;
             };
-            hideSearchResult: boolean;
+            hideNoteSearchResult: boolean;
+            hideUserSearchResult: boolean;
             hasUnreadSpecifiedNotes: boolean;
             hasUnreadMentions: boolean;
             hasUnreadAnnouncement: boolean;
@@ -35588,7 +35589,8 @@ export interface operations {
                         /** Format: misskey:id */
                         userListId: string;
                     };
-                    hideSearchResult?: boolean;
+                    hideNoteSearchResult?: boolean;
+                    hideUserSearchResult?: boolean;
                     publicReactions?: boolean;
                     hideActivity?: boolean;
                     hideProfileFiles?: boolean;

@@ -623,7 +623,8 @@ export class UserEntityService implements OnModuleInit {
 				twoFactorBackupCodesStock: profile?.twoFactorBackupSecret?.length === 5 ? 'full' : (profile?.twoFactorBackupSecret?.length ?? 0) > 0 ? 'partial' : 'none',
 				hideOnlineStatus: user.hideOnlineStatus,
 				activeStatusVisibility: user.activeStatusVisibility,
-				hideSearchResult: user.hideSearchResult,
+				hideNoteSearchResult: user.hideNoteSearchResult,
+				hideUserSearchResult: user.hideUserSearchResult,
 				hasUnreadSpecifiedNotes: false, // 後方互換性のため
 				hasUnreadMentions: false, // 後方互換性のため
 				hasUnreadChatMessages: this.chatService.hasUnreadMessages(user.id),
