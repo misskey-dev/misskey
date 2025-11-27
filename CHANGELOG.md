@@ -19,7 +19,6 @@
 - Fix: 初回読み込み時にエラーになることがある問題を修正
 
 ### Server
-- Enhance: `clips/my-favorites` APIがページネーションに対応しました
 - Enhance: メモリ使用量を削減しました
 - Enhance: 依存関係の更新
 - Fix: ワードミュートの文字数計算を修正  

@@ -506,10 +506,10 @@ describe('クリップ', () => {
 			});
 		};
 
-		const myFavorites = async (parameters: Misskey.entities.ClipsMyFavoritesRequest, request: Partial<ApiRequest<'clips/my-favorites'>> = {}): Promise<Misskey.entities.Clip[]> => {
+		const myFavorites = async (request: Partial<ApiRequest<'clips/my-favorites'>> = {}): Promise<Misskey.entities.Clip[]> => {
 			return successfulApiCall({
 				endpoint: 'clips/my-favorites',
-				parameters,
+				parameters: {},
 				user: alice,
 				...request,
 			});
@@ -562,9 +562,8 @@ describe('クリップ', () => {
 				await favorite({ clipId: clip.id });
 			}
 
-			const favorited = await myFavorites({
-				limit: 30,
-			});
+			// pagenationはない。全部一気にとれる。
+			const favorited = await myFavorites();
 			assert.strictEqual(favorited.length, clips.length);
 			for (const clip of favorited) {
 				assert.strictEqual(clip.favoritedCount, 1);
@@ -618,7 +617,7 @@ describe('クリップ', () => {
 			const clip = await show({ clipId: aliceClip.id });
 			assert.strictEqual(clip.favoritedCount, 0);
 			assert.strictEqual(clip.isFavorited, false);
-			assert.deepStrictEqual(await myFavorites({}), []);
+			assert.deepStrictEqual(await myFavorites(), []);
 		});
 
 		test.each([
@@ -652,13 +651,13 @@ describe('クリップ', () => {
 
 		test('を取得できる。', async () => {
 			await favorite({ clipId: aliceClip.id });
-			const favorited = await myFavorites({});
+			const favorited = await myFavorites();
 			assert.deepStrictEqual(favorited, [await show({ clipId: aliceClip.id })]);
 		});
 
 		test('を取得したとき他人のお気に入りは含まない。', async () => {
 			await favorite({ clipId: aliceClip.id });
-			const favorited = await myFavorites({}, { user: bob });
+			const favorited = await myFavorites({ user: bob });
 			assert.deepStrictEqual(favorited, []);
 		});
 	});
