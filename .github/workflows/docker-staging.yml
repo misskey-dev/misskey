@@ -1,9 +1,9 @@
-name: Publish Docker image (nayami)
+name: Publish Docker image (staging)
 
 on:
   push:
     branches:
-      - nayami
+      - staging
   workflow_dispatch:
 
 env:
@@ -81,8 +81,8 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.REGISTRY_IMAGE }}:nayami \
+          docker buildx imagetools create --tag ${{ env.REGISTRY_IMAGE }}:staging \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:nayami
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:staging
