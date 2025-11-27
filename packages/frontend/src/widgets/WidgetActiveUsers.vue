@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-FileCopyrightText: hitalin and yamisskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 <template>
@@ -24,17 +24,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="user.name && user.name !== user.username" :class="$style.username">@{{ user.username }}</div>
 				</div>
 
-				<!-- ミュートボタン (自分以外の場合) または透明プレースホルダー (自分の場合) -->
-				<button
-					v-if="$i && user.id !== $i.id"
-					v-tooltip="i18n.ts.mute"
-					:class="$style.muteButton"
-					@click.stop="muteMember(user)"
-				>
-					<i class="ti ti-eye-off"></i>
-				</button>
-				<div v-else :class="$style.buttonPlaceholder"></div>
-
 				<div :class="$style.date">
 					<template v-if="user.onlineStatus !== 'unknown' && user.onlineStatus !== 'offline'">
 						<MkTime v-if="user.lastActiveDate" :time="user.lastActiveDate" small/>
@@ -51,13 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
-import type { MenuButton } from '@/types/menu.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
 import MkA from '@/components/global/MkA.vue';
@@ -65,11 +53,9 @@ import MkResult from '@/components/global/MkResult.vue';
 import MkTime from '@/components/global/MkTime.vue';
 import MkUserName from '@/components/global/MkUserName.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n';
 import { $i } from '@/i.js';
 import { playMisskeySfx } from '@/utility/sound.js';
-import { getUserMenu } from '@/utility/get-user-menu.js';
 
 // yamisskey独自: get-online-users-countエンドポイントの戻り値型
 // 本家Misskeyには存在しない独自拡張のため、手動で型定義
@@ -132,10 +118,6 @@ const prevUserIds = ref(new Set<string>());
 const isLoggedIn = computed(() => $i != null);
 const userMutings = ref(new Set<string>());
 
-// WebSocketストリーム接続（本家パターンに従う）
-// 型定義の複雑さを回避するため、実装詳細は隠蔽
-let connection: { dispose: () => void } | null = null;
-
 // ミュート情報を取得
 async function fetchMutings() {
 	if (!isLoggedIn.value) return;
@@ -150,7 +132,6 @@ async function fetchMutings() {
 
 // ミュートユーザーを除外した表示用のユーザーリスト
 const filteredActiveUsers = computed(() => {
-	if (!activeUsers.value) return [];
 	return activeUsers.value.filter(user => !userMutings.value.has(user.id));
 });
 
@@ -187,117 +168,24 @@ const tick = async () => {
 	}
 };
 
-// WebSocketストリーム接続とイベントハンドラの設定
-function connectStream() {
-	if (!isLoggedIn.value) return;
-
-	// 既存の接続がある場合は切断
-	if (connection) {
-		connection.dispose();
-	}
-
-	// mainチャネルに接続（本家パターン）
-	const stream = useStream().useChannel('main');
-	connection = stream;
-
-	// yamisskey独自イベントへの対応
-	// 型定義に含まれていないイベントを扱うため、unknown経由で型安全に処理
-	type ConnectionWithExtendedEvents = {
-		on: (event: string, handler: (...args: unknown[]) => void) => void;
-	};
-	const conn = stream as unknown as ConnectionWithExtendedEvents;
-
-	// meUpdated時にミュートリストとアクティブユーザーを更新
-	// ミュート/アンミュートすると自分の情報が更新されるため、このイベントを活用
-	conn.on('meUpdated', () => {
-		fetchMutings();
-		tick(); // アクティブユーザーも更新してリアルタイム性を確保
-	});
-
-	// ユーザーのオンライン状態変更時に即座に更新
-	conn.on('userOnlineStatusChanged', () => {
-		tick();
-	});
-
-	// ミュート実行時に即座にUIから削除
-	conn.on('mute', (mutee: unknown) => {
-		if (mutee && typeof mutee === 'object' && 'id' in mutee) {
-			userMutings.value.add((mutee as { id: string }).id);
-		}
-	});
-
-	// ミュート解除時に即座に再表示
-	conn.on('unmute', (mutee: unknown) => {
-		if (mutee && typeof mutee === 'object' && 'id' in mutee) {
-			userMutings.value.delete((mutee as { id: string }).id);
-			tick();
-		}
-	});
-
-	// 接続切断時の自動再接続
-	conn.on('_disconnected_', () => {
-		window.setTimeout(() => {
-			connectStream();
-		}, 3000);
-	});
-}
-
-// ユーザーをミュートする
-function muteMember(user: OnlineUserDetail) {
-	if (!isLoggedIn.value) return;
-
-	const { menu, cleanup } = getUserMenu(user as unknown as Misskey.entities.UserDetailed);
-
-	const muteItem = menu.find(item =>
-		'icon' in item && 'text' in item && item.icon === 'ti ti-eye-off' && item.text === i18n.ts.mute,
-	) as MenuButton | undefined;
-
-	if (muteItem?.action) {
-		muteItem.action({} as MouseEvent);
-
-		// WebSocketイベントで処理されるが、念のためフォールバック
-		window.setTimeout(() => {
-			fetchMutings();
-		}, 500);
-	}
-
-	cleanup();
-}
-
 // 初期化
 onMounted(() => {
 	fetchMutings();
 	tick();
-	connectStream();
-});
-
-// クリーンアップ
-onUnmounted(() => {
-	if (connection) {
-		connection.dispose();
-		connection = null;
-	}
 });
 
 // ログイン状態変化への対応
 watch(isLoggedIn, (newValue) => {
 	if (newValue) {
-		// ログイン時: 接続確立
 		fetchMutings();
-		connectStream();
 	} else {
-		// ログアウト時: 接続切断
-		if (connection) {
-			connection.dispose();
-			connection = null;
-		}
 		activeUsers.value = [];
 		userMutings.value.clear();
 	}
 });
 
-// 定期更新（WebSocketのバックアップとして30秒ごと）
-useInterval(tick, 1000 * 30, {
+// 定期更新（本家パターンに従い、シンプルに15秒ごと）
+useInterval(tick, 1000 * 15, {
 	immediate: false,
 	afterMounted: true,
 });
@@ -324,21 +212,16 @@ defineExpose<WidgetComponentExpose>({
 
 .row {
     display: grid;
-    grid-template-columns: auto 1fr auto auto;  // 4列のグリッドに変更
+    grid-template-columns: auto 1fr auto;
     gap: 8px;
     margin-bottom: 6px;
     padding: 6px;
     border-radius: 6px;
     transition: background 0.2s;
     align-items: center;
-    position: relative;  // 子要素の絶対配置のための基準
 
     &:hover {
         background: var(--MI_THEME-accentedBg);
-
-        .muteButton {
-            opacity: 0.7;  // ホバー時に表示
-        }
     }
 }
 
@@ -380,33 +263,5 @@ defineExpose<WidgetComponentExpose>({
     :global(.time) {
         color: inherit;
     }
-}
-
-.muteButton {
-  opacity: 0;  // 初期状態では非表示
-  transition: opacity 0.2s, background 0.2s;
-  background: none;
-  border: none;
-  padding: 4px;
-  height: 28px;
-  aspect-ratio: 1;
-  color: var(--MI_THEME-fgTransparentWeak);
-  cursor: pointer;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    opacity: 1;  // ボタンにホバーしたときは完全表示
-    color: var(--MI_THEME-accent);
-    background: var(--MI_THEME-buttonHoverBg);
-  }
-}
-
-.buttonPlaceholder {
-  width: 28px;  /* ミュートボタンと同じ幅 */
-  height: 28px; /* ミュートボタンと同じ高さ */
-  aspect-ratio: 1;
 }
 </style>
