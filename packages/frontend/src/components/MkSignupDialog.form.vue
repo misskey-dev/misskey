@@ -205,6 +205,7 @@ const emit = defineEmits<{
 	(ev: 'signup', user: Misskey.entities.SignupResponse): void;
 	(ev: 'signupEmailPending'): void;
 	(ev: 'approvalPending'): void;
+	(ev: 'approvalAndEmailPending'): void;
 }>();
 
 const host = toUnicode(config.host);

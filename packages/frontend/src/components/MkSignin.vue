@@ -120,7 +120,7 @@ function onPasskeyLogin(): void {
 			.then((res) => {
 				passkeyContext.value = res.context ?? '';
 				credentialRequest.value = parseRequestOptionsFromJSON({
-					// @ts-expect-error - Type mismatch between @simplewebauthn/types and @github/webauthn-json
+					// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 					publicKey: res.option,
 				});
 
@@ -135,8 +135,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 	waiting.value = true;
 
 	if (doingPasskeyFromInputPage.value) {
-		misskeyApi('signin-with-passkey', {
-			// @ts-expect-error Type mismatch between @simplewebauthn/types and @github/webauthn-json
+		misskeyApi<Misskey.entities.SigninWithPasskeyResponse>('signin-with-passkey', {
 			credential: credential.toJSON(),
 			context: passkeyContext.value,
 		}).then((res) => {
@@ -151,7 +150,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 		tryLogin({
 			username: userInfo.value.username,
 			password: password.value,
-			// @ts-expect-error Type mismatch between @simplewebauthn/types and @github/webauthn-json
+			// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 			credential: credential.toJSON(),
 		});
 	}
@@ -256,7 +255,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 				case 'passkey': {
 					if (webAuthnSupported()) {
 						credentialRequest.value = parseRequestOptionsFromJSON({
-							// @ts-expect-error - Type mismatch between @simplewebauthn/types and @github/webauthn-json
+							// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 							publicKey: res.authRequest,
 						});
 						page.value = 'passkey';
@@ -312,22 +311,6 @@ function onSigninApiError(err?: any): void {
 		}
 		case 'e03a5f46-d309-4865-9b69-56282d94e1eb': {
 			showSuspendedDialog();
-			break;
-		}
-		case '2fe70810-0ed2-47db-a70b-dc3ecbf5f069': {
-			os.alert({
-				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.registerHasNotBeenApprovedYet,
-			});
-			break;
-		}
-		case '8c4ef3ce-12a9-4f04-a515-3bf20590c321': {
-			os.alert({
-				type: 'error',
-				title: i18n.ts.loginFailed,
-				text: i18n.ts.registerHasBeenRejected,
-			});
 			break;
 		}
 		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
@@ -409,14 +392,12 @@ onBeforeUnmount(() => {
 <style lang="scss" module>
 .transition_enterActive,
 .transition_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0, 0, .35, 1), transform 0.3s cubic-bezier(0, 0, .35, 1);
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
 }
-
 .transition_enterFrom {
 	opacity: 0;
 	transform: translateX(50px);
 }
-
 .transition_leaveTo {
 	opacity: 0;
 	transform: translateX(-50px);

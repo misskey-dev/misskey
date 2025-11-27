@@ -55,11 +55,17 @@ class HomeTimelineChannel extends Channel {
 
 		if (note.channelId) {
 			// チャンネル投稿のフィルタリング
-			if (!this.followingChannels.has(note.channelId)) return;
+			// そのチャンネルをフォローしていない
+			if (!this.followingChannels.has(note.channelId)) {
+				return;
+			}
 
-			// excludeChannelNotesNonFollowing有効時: フォロー中ユーザーの投稿のみ
+			// excludeChannelNotesNonFollowing有効時の追加チェック
 			if (this.excludeChannelNotesNonFollowing) {
-				if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
+				// フォローしているユーザーの投稿のみ許可
+				if (!isMe && !Object.hasOwn(this.following, note.userId)) {
+					return;
+				}
 			}
 		} else {
 			// 非チャンネル投稿: その投稿のユーザーをフォローしていなかったら弾く

@@ -36,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-else :class="$style.buttonPlaceholder"></div>
 
 				<div :class="$style.date">
-					<template v-if="!user.hideOnlineStatus">
-						<MkTime :time="user.lastActiveDate" small/>
+					<template v-if="user.onlineStatus !== 'unknown' && user.onlineStatus !== 'offline'">
+						<MkTime v-if="user.updatedAt" :time="user.updatedAt" small/>
 					</template>
 					<template v-else>
 						<span>{{ i18n.ts.private }}</span>
@@ -52,6 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
@@ -68,6 +69,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/i.js';
 import { playMisskeySfx } from '@/utility/sound.js';
 import { getUserMenu } from '@/utility/get-user-menu.js';
+import type { MenuButton } from '@/types/menu.js';
 
 const name = i18n.ts._widgets.activeUsers;
 
@@ -159,8 +161,8 @@ const filteredActiveUsers = computed(() => {
 const checkForNewUsers = (users) => {
 	if (!widgetProps.sound) return;
 
-	const currentUserIds = new Set(users.map(user => user.id));
-	const newUserIds = [...currentUserIds].filter(id =>
+	const currentUserIds = new Set<string>(users.map((user: any) => user.id as string));
+	const newUserIds = Array.from(currentUserIds).filter((id: string) =>
 		!prevUserIds.value.has(id) && !userMutings.value.has(id),
 	);
 
@@ -171,7 +173,7 @@ const checkForNewUsers = (users) => {
 	}
 
 	// 現在のユーザーIDを保存
-	prevUserIds.value = currentUserIds;
+	prevUserIds.value = currentUserIds as Set<string>;
 };
 
 const tick = async () => {
@@ -245,29 +247,20 @@ function muteMember(user) {
 
 	// ミュート関連のメニュー項目を探す部分を単純化
 	const muteItem = menu.find(item =>
-		item.icon === 'ti ti-eye-off' && item.text === i18n.ts.mute,
-	);
+		'icon' in item && 'text' in item && item.icon === 'ti ti-eye-off' && item.text === i18n.ts.mute,
+	) as MenuButton | undefined;
 
 	if (muteItem && muteItem.action) {
 		// 既存のミュート機能を実行（期間選択UIを含む）
-		const actionResult = muteItem.action();
+		muteItem.action({} as MouseEvent);
 
-		// アクションがPromiseを返す場合は完了を待つ
-		if (actionResult instanceof Promise) {
-			actionResult.then(() => {
-				// ミュート成功後、手動でユーザーを非表示にする
-				userMutings.value.add(user.id);
-				activeUsers.value = activeUsers.value.filter(u => u.id !== user.id);
-			}).catch(err => {
-				console.error('Failed to mute user:', err);
-			});
-		} else {
-			// 即時にミュート状態を反映（非同期でない場合やPromiseを返さない場合）
-			window.setTimeout(() => {
-				userMutings.value.add(user.id);
-				activeUsers.value = activeUsers.value.filter(u => u.id !== user.id);
-			}, 100); // 少し遅延を入れて、ミュート処理の完了を待つ
-		}
+		// ミュート実行後、少し待ってからユーザーを非表示にする
+		window.setTimeout(() => {
+			// ミュート成功後、手動でユーザーを非表示にする
+			userMutings.value.add(user.id);
+			activeUsers.value = activeUsers.value.filter(u => u.id !== user.id);
+			fetchMutings(); // ミュートリストを再取得
+		}, 500);
 	}
 
 	// 使い終わったらクリーンアップ

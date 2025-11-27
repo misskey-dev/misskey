@@ -78,7 +78,6 @@ jobs:
           pnpm build
       - name: Setup
         run: |
-          echo "NODE_VERSION=$(cat ${{ matrix.node-version-file }})" >> $GITHUB_ENV
           cd packages/backend/test-federation
           bash ./setup.sh
           sudo chmod 644 ./certificates/*.test.key
@@ -88,24 +87,24 @@ jobs:
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
         run: |
           cd packages/backend/test-federation
-          docker compose up -d --scale tester=0
+          NODE_VERSION=$(cat ../../../${{ matrix.node-version-file }}) docker compose up -d --scale tester=0
       - name: Print start_servers error
         if: ${{ steps.start_servers.outcome == 'failure' }}
         run: |
           cd packages/backend/test-federation
-          docker compose logs | tail -n 300
+          NODE_VERSION=$(cat ../../../${{ matrix.node-version-file }}) docker compose logs | tail -n 300
           exit 1
       - name: Test
         run: |
           cd packages/backend/test-federation
-          docker compose run --no-deps tester
+          NODE_VERSION=$(cat ../../../${{ matrix.node-version-file }}) docker compose run --no-deps tester
       - name: Log
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose logs
+          NODE_VERSION=$(cat ../../../${{ matrix.node-version-file }}) docker compose logs
       - name: Stop servers
         if: always()
         run: |
           cd packages/backend/test-federation
-          docker compose down
+          NODE_VERSION=$(cat ../../../${{ matrix.node-version-file }}) docker compose down

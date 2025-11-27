@@ -21,11 +21,11 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.18.10",
-		"@typescript-eslint/eslint-plugin": "8.46.1",
-		"@typescript-eslint/parser": "8.46.1",
-		"esbuild": "0.25.10",
-		"eslint-plugin-vue": "10.5.0",
+		"@types/node": "24.9.2",
+		"@typescript-eslint/eslint-plugin": "8.46.2",
+		"@typescript-eslint/parser": "8.46.2",
+		"esbuild": "0.25.11",
+		"eslint-plugin-vue": "10.5.1",
 		"nodemon": "3.1.10",
 		"typescript": "5.9.3",
 		"vue-eslint-parser": "10.2.0"

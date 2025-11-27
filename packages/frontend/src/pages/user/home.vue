@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkFoldableSection v-if="user.communityRoles && user.communityRoles.length > 0" class="role-folder" :expanded="user.communityRoles.length < 5">
 							<template #header>{{ i18n.ts.communityRole }}</template>
 							<div class="roles">
-								<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+								<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="role.color ? { '--color': role.color } : {}">
 									<MkA v-adaptive-bg :to="`/roles/${role.id}`">
 										<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
 										{{ role.name }}
@@ -139,19 +139,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="status">
 							<MkA v-if="isNotesVisibilityForMe(user)" :to="userPage(user, 'notes')">
-								<!-- 以下を条件分岐に変更 -->
 								<b v-if="shouldHideNotesCount(user)">-</b>
 								<b v-else>{{ number(user.notesCount) }}</b>
 								<span>{{ i18n.ts.notes }}</span>
 							</MkA>
 							<MkA v-if="isFollowingVisibleForMe(user)" :to="userPage(user, 'following')">
-								<!-- 以下を条件分岐に変更 -->
 								<b v-if="shouldHideFollowingCount(user)">-</b>
 								<b v-else>{{ number(user.followingCount) }}</b>
 								<span>{{ i18n.ts.following }}</span>
 							</MkA>
 							<MkA v-if="isFollowersVisibleForMe(user)" :to="userPage(user, 'followers')">
-								<!-- 以下を条件分岐に変更 -->
 								<b v-if="shouldHideFollowersCount(user)">-</b>
 								<b v-else>{{ number(user.followersCount) }}</b>
 								<span>{{ i18n.ts.followers }}</span>

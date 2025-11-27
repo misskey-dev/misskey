@@ -11,10 +11,10 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.18.10",
+		"@types/node": "24.9.2",
 		"@types/wawoff2": "1.0.2",
-		"@typescript-eslint/eslint-plugin": "8.46.1",
-		"@typescript-eslint/parser": "8.46.1"
+		"@typescript-eslint/eslint-plugin": "8.46.2",
+		"@typescript-eslint/parser": "8.46.2"
 	},
 	"dependencies": {
 		"@tabler/icons-webfont": "3.35.0",

@@ -4,10 +4,10 @@
  */
 
 import { entities } from 'misskey-js';
+import { ref, watch } from 'vue';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os';
-import { ref } from 'vue';
 
 // リアクティブなニックネーム状態
 export const nicknameState = {
@@ -46,22 +46,20 @@ export async function editNickname(user: entities.User) {
 }
 
 // 設定変更の監視
-// prefer.commitは内部的にpreferのプロパティも更新するため、
-// 別のUIから設定が変更された場合にもこの監視が発火する
-const originalSet = prefer.set;
-prefer.set = function (key, value) {
-	// 元のメソッドを呼び出す
-	const result = originalSet.call(this, key, value);
+// prefer.r を watch することで、別のUIから設定が変更された場合にも監視が発火する
+// テスト環境では prefer.r が undefined の場合があるため、try-catchで囲む
+try {
+	watch(() => prefer.r.nicknameMap.value, (newMap) => {
+		nicknameState.map.value = { ...newMap };
+	});
 
-	// ニックネーム関連の設定が変更されたら状態を更新
-	if (key === 'nicknameMap') {
-		nicknameState.map.value = { ...value };
-	} else if (key === 'nicknameEnabled') {
-		nicknameState.enabled.value = value;
-	}
-
-	return result;
-};
+	watch(() => prefer.r.nicknameEnabled.value, (newEnabled) => {
+		nicknameState.enabled.value = newEnabled;
+	});
+} catch (err) {
+	// テスト環境では prefer.r が存在しないため、エラーを無視
+	console.debug('Failed to setup nickname preference watchers:', err);
+}
 
 // 初期化
 nicknameState.enabled.value = prefer.s.nicknameEnabled;

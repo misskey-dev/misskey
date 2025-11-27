@@ -3,15 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './zoomLines.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_zoomLines = defineImageEffectorFx({
-	id: 'zoomLines',
-	name: i18n.ts._imageEffector._fxs.zoomLines,
+export const fn = defineImageCompositorFunction<{
+	x: number;
+	y: number;
+	frequency: number;
+	smoothing: boolean;
+	threshold: number;
+	maskSize: number;
+	black: boolean;
+}>({
 	shader,
-	uniforms: ['pos', 'frequency', 'thresholdEnabled', 'threshold', 'maskSize', 'black'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform2f(u.pos, params.x / 2, params.y / 2);
+		gl.uniform1f(u.frequency, params.frequency * params.frequency);
+		// thresholdの調整が有効な間はsmoothingが利用できない
+		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
+		gl.uniform1f(u.threshold, params.threshold);
+		gl.uniform1f(u.maskSize, params.maskSize);
+		gl.uniform1i(u.black, params.black ? 1 : 0);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.zoomLines,
 	params: {
 		x: {
 			label: i18n.ts._imageEffector._fxProps.centerX,
@@ -65,13 +84,4 @@ export const FX_zoomLines = defineImageEffectorFx({
 			default: false,
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform2f(u.pos, params.x / 2, params.y / 2);
-		gl.uniform1f(u.frequency, params.frequency * params.frequency);
-		// thresholdの調整が有効な間はsmoothingが利用できない
-		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
-		gl.uniform1f(u.threshold, params.threshold);
-		gl.uniform1f(u.maskSize, params.maskSize);
-		gl.uniform1i(u.black, params.black ? 1 : 0);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

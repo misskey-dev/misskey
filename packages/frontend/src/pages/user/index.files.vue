@@ -30,7 +30,7 @@ import { i18n } from '@/i18n.js';
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed | Misskey.entities.MeDetailed;
 }>();
 
 const emit = defineEmits<{

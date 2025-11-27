@@ -23,7 +23,6 @@ import type { TestingModule } from '@nestjs/testing';
 describe('S3Service', () => {
 	let app: TestingModule;
 	let s3Service: S3Service;
-	// @ts-expect-error - Smithy types version mismatch between 4.6.0 and 4.8.0
 	const s3Mock = mockClient(S3Client);
 
 	beforeAll(async () => {
@@ -45,7 +44,6 @@ describe('S3Service', () => {
 
 	describe('upload', () => {
 		test('upload a file', async () => {
-			// @ts-expect-error - Smithy types version mismatch
 			s3Mock.on(PutObjectCommand).resolves({});
 
 			await s3Service.upload({ objectStorageRegion: 'us-east-1' } as MiMeta, {
@@ -56,11 +54,8 @@ describe('S3Service', () => {
 		});
 
 		test('upload a large file', async () => {
-			// @ts-expect-error - Smithy types version mismatch
 			s3Mock.on(CreateMultipartUploadCommand).resolves({ UploadId: '1' });
-			// @ts-expect-error - Smithy types version mismatch
 			s3Mock.on(UploadPartCommand).resolves({ ETag: '1' });
-			// @ts-expect-error - Smithy types version mismatch
 			s3Mock.on(CompleteMultipartUploadCommand).resolves({ Bucket: 'fake', Key: 'fake' });
 
 			await s3Service.upload({} as MiMeta, {
@@ -71,7 +66,6 @@ describe('S3Service', () => {
 		});
 
 		test('upload a file error', async () => {
-			// @ts-expect-error - Smithy types version mismatch
 			s3Mock.on(PutObjectCommand).rejects({ name: 'Fake Error' });
 
 			await expect(s3Service.upload({ objectStorageRegion: 'us-east-1' } as MiMeta, {
@@ -82,7 +76,6 @@ describe('S3Service', () => {
 		});
 
 		test('upload a large file error', async () => {
-			// @ts-expect-error - Smithy types version mismatch
 			s3Mock.on(UploadPartCommand).rejects();
 
 			await expect(s3Service.upload({} as MiMeta, {

@@ -45,12 +45,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'pinned'">
-			<div :class="$style.root">
+			<div v-if="pinnedChannels.length > 0" :class="$style.root">
 				<MkChannelPreview v-for="channel in pinnedChannels" :key="channel.id" :channel="channel"/>
 			</div>
+			<MkResult v-else type="empty"/>
 		</div>
-		<div v-else-if="tab === 'owned'">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+		<div v-else-if="tab === 'owned'" class="_gaps">
+			<MkButton link primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
@@ -70,6 +71,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkResult from '@/components/global/MkResult.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
@@ -135,15 +137,7 @@ async function search() {
 	key.value = query + type;
 }
 
-function create() {
-	router.push('/channels/new');
-}
-
-const headerActions = computed(() => [{
-	icon: 'ti ti-plus',
-	text: i18n.ts.create,
-	handler: create,
-}]);
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'search',

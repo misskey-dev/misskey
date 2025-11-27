@@ -463,6 +463,12 @@ surrender: "Avbryt"
 information: "Informasjon"
 inMinutes: "Minutter"
 inDays: "Dager"
+_imageEditing:
+  _vars:
+    filename: "Filnavn"
+_imageFrameEditor:
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Inviter"
   members: "Medlemmer"
@@ -650,6 +656,8 @@ _visibility:
   home: "Hjem"
   followers: "Følgere"
 _postForm:
+  _howToUse:
+    menu_title: "Meny"
   _placeholders:
     a: "Hva skjer?"
 _profile:

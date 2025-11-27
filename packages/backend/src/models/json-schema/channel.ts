@@ -42,8 +42,8 @@ export const packedChannelSchema = {
 		},
 		bannerId: {
 			type: 'string',
-			format: 'id',
 			nullable: true, optional: false,
+			format: 'id',
 		},
 		pinnedNoteIds: {
 			type: 'array',
@@ -87,6 +87,10 @@ export const packedChannelSchema = {
 			optional: true, nullable: false,
 		},
 		isFavorited: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		isMuting: {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
