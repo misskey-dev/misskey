@@ -290,8 +290,6 @@ export class ApInboxService {
 		const targetUri = getApId(activity.object);
 		if (targetUri.startsWith('bear:')) return 'skip: bearcaps url not supported.';
 
-		let resolverForAnnounce = resolver;
-
 		const target = await resolver.resolve(activity.object).catch(async e => {
 			if (e instanceof StatusError && [401, 403].includes(e.statusCode)) {
 				// 適切な権限がない場合、announceしたactorのフォロワーを探し、フォロワーであるactorで再度resolveを試みる
@@ -302,7 +300,6 @@ export class ApInboxService {
 					if (followerUser) {
 						const newResolver = this.apResolverService.createResolver(followerUser as MiLocalUser);
 						const resolved = await newResolver.resolve(activity.object);
-						resolverForAnnounce = newResolver;
 						return resolved;
 					}
 				}
@@ -312,7 +309,7 @@ export class ApInboxService {
 			throw e;
 		});
 
-		if (isPost(target)) return await this.announceNote(actor, activity, target, resolverForAnnounce);
+		if (isPost(target)) return await this.announceNote(actor, activity, target);
 
 		return `skip: unknown object type ${getApType(target)}`;
 	}
