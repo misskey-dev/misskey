@@ -217,30 +217,32 @@ export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-/**
- * Path of configuration directory
- */
-const dir = `${_dirname}/../../../.config`;
+/** Path of repository root directory */
+const rootDir = resolve(_dirname, '../../../../');
+/** Path of configuration directory */
+const configDir = resolve(rootDir, '.config');
+/** Path of built directory */
+const projectBuiltDir = resolve(rootDir, 'built');
 
 /**
  * Path of configuration file
  */
 export const path = process.env.MISSKEY_CONFIG_YML
-	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
+	? resolve(configDir, process.env.MISSKEY_CONFIG_YML)
 	: process.env.NODE_ENV === 'test'
-		? resolve(dir, 'test.yml')
-		: resolve(dir, 'default.yml');
+		? resolve(configDir, 'test.yml')
+		: resolve(configDir, 'default.yml');
 
 export function loadConfig(): Config {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
+	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
-	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
-	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
+	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
+	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 	const frontendManifest = frontendManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
+		JSON.parse(fs.readFileSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'), 'utf-8'))
 		: { 'src/_boot_.ts': { file: null } };
 	const frontendEmbedManifest = frontendEmbedManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
+		JSON.parse(fs.readFileSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'), 'utf-8'))
 		: { 'src/boot.ts': { file: null } };
 
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;

@@ -583,6 +583,9 @@ importers:
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
+      esbuild-plugin-swc:
+        specifier: 1.0.1
+        version: 1.0.1
       eslint-plugin-import:
         specifier: 2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.46.3(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
@@ -6727,6 +6730,9 @@ packages:
 
   es6-promisify@5.0.0:
     resolution: {integrity: sha512-C+d6UdsYDk0lMebHNR4S2NybQMMngAOnOwYBQjTOiv0MkoJMP0Myw2mgpDLBcpfCmRLxyFqYhS/CfOENq4SJhQ==}
+
+  esbuild-plugin-swc@1.0.1:
+    resolution: {integrity: sha512-K/basZARuDSHH7Krr7FdzwZF4WRLTcZa4c0R2FPuXCyYdh2nZMDdi6SYuuDv0MzKQY+jm0Afl4gltLsBzPesiQ==}
 
   esbuild-register@3.6.0:
     resolution: {integrity: sha512-H2/S7Pm8a9CL1uhp9OvjwrBh5Pvx0H8qVOxNu8Wed9Y7qv56MPtq+GGM8RJpq6glYJn9Wspr8uw7l55uyinNeg==}
@@ -18019,6 +18025,13 @@ snapshots:
     dependencies:
       es6-promise: 4.2.8
     optional: true
+
+  esbuild-plugin-swc@1.0.1:
+    dependencies:
+      '@swc/core': 1.15.1
+      deepmerge: 4.3.1
+    transitivePeerDependencies:
+      - '@swc/helpers'
 
   esbuild-register@3.6.0(esbuild@0.25.11):
     dependencies:

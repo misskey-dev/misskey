@@ -4,7 +4,7 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
@@ -55,13 +55,19 @@ import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const staticAssets = `${_dirname}/../../../assets/`;
-const clientAssets = `${_dirname}/../../../../frontend/assets/`;
-const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
-const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
-const frontendViteOut = `${_dirname}/../../../../../built/_frontend_vite_/`;
-const frontendEmbedViteOut = `${_dirname}/../../../../../built/_frontend_embed_vite_/`;
-const tarball = `${_dirname}/../../../../../built/tarball/`;
+const rootDir = `${_dirname}/../../../../`;
+const backendRootDir = resolve(rootDir, 'packages/backend');
+const frontendRootDir = resolve(rootDir, 'packages/frontend');
+
+const staticAssets = resolve(backendRootDir, 'assets');
+const clientAssets = resolve(frontendRootDir, 'assets');
+const assets = resolve(rootDir, 'built/_frontend_dist_');
+const swAssets = resolve(rootDir, 'built/_sw_dist_');
+const fluentEmojisDir = resolve(rootDir, 'fluent-emojis/dist');
+const twemojiDir = resolve(backendRootDir, 'node_modules/@discordapp/twemoji/dist/svg');
+const frontendViteOut = resolve(rootDir, 'built/_frontend_vite_');
+const frontendEmbedViteOut = resolve(rootDir, 'built/_frontend_embed_vite_');
+const tarball = resolve(rootDir, 'built/tarball');
 
 @Injectable()
 export class ClientServerService {
@@ -222,6 +228,7 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.frontendEmbedManifestExists) {
+			console.log(`[ClientServerService] Using built frontend vite assets. ${frontendViteOut}`);
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
 					root: frontendViteOut,
@@ -241,6 +248,7 @@ export class ClientServerService {
 				done();
 			});
 		} else {
+			console.log('[ClientServerService] Proxying to Vite dev server.');
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -312,7 +320,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return await reply.sendFile(path, `${_dirname}/../../../../../fluent-emojis/dist/`, {
+			return reply.sendFile(path, fluentEmojisDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -327,7 +335,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return await reply.sendFile(path, `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`, {
+			return reply.sendFile(path, twemojiDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -341,7 +349,7 @@ export class ClientServerService {
 			}
 
 			const mask = await sharp(
-				`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+				`${twemojiDir}/${path.replace('.png', '')}.svg`,
 				{ density: 1000 },
 			)
 				.resize(488, 488)
