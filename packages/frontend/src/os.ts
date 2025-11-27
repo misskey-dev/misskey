@@ -275,6 +275,7 @@ export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string;
 	text?: string;
+	caption?: string;
 	okText?: string;
 	cancelText?: string;
 }): Promise<{ canceled: boolean }> {

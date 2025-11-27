@@ -57,7 +57,6 @@ definePage(() => ({
 	...channel.value ? {
 		title: channel.value.name,
 		subtitle: i18n.ts.followers,
-		avatar: channel.value,
 	} : {},
 }));
 </script>

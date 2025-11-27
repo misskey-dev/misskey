@@ -3,15 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineImageEffectorFx } from '../ImageEffector.js';
 import shader from './colorClamp.glsl';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
 
-export const FX_colorClampAdvanced = defineImageEffectorFx({
-	id: 'colorClampAdvanced',
-	name: i18n.ts._imageEffector._fxs.colorClampAdvanced,
+export const fn = defineImageCompositorFunction<{
+	rMax: number;
+	rMin: number;
+	gMax: number;
+	gMin: number;
+	bMax: number;
+	bMin: number;
+}>({
 	shader,
-	uniforms: ['rMax', 'rMin', 'gMax', 'gMin', 'bMax', 'bMin'] as const,
+	main: ({ gl, u, params }) => {
+		gl.uniform1f(u.rMax, params.rMax);
+		gl.uniform1f(u.rMin, 1.0 + params.rMin);
+		gl.uniform1f(u.gMax, params.gMax);
+		gl.uniform1f(u.gMin, 1.0 + params.gMin);
+		gl.uniform1f(u.bMax, params.bMax);
+		gl.uniform1f(u.bMin, 1.0 + params.bMin);
+	},
+});
+
+export const uiDefinition = {
+	name: i18n.ts._imageEffector._fxs.colorClampAdvanced,
 	params: {
 		rMax: {
 			label: `${i18n.ts._imageEffector._fxProps.max} (${i18n.ts._imageEffector._fxProps.redComponent})`,
@@ -68,12 +85,4 @@ export const FX_colorClampAdvanced = defineImageEffectorFx({
 			toViewValue: v => Math.round(v * 100) + '%',
 		},
 	},
-	main: ({ gl, u, params }) => {
-		gl.uniform1f(u.rMax, params.rMax);
-		gl.uniform1f(u.rMin, 1.0 + params.rMin);
-		gl.uniform1f(u.gMax, params.gMax);
-		gl.uniform1f(u.gMin, 1.0 + params.gMin);
-		gl.uniform1f(u.bMax, params.bMax);
-		gl.uniform1f(u.bMin, 1.0 + params.bMin);
-	},
-});
+} satisfies ImageEffectorUiDefinition<typeof fn>;

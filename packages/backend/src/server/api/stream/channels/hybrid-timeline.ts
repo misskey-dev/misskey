@@ -63,25 +63,33 @@ class HybridTimelineChannel extends Channel {
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		// チャンネルの投稿ではなく、自分自身の投稿 または
-		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
-		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
-		// フォローしているチャンネルの投稿 の場合だけ
-		if (note.channelId != null) {
-			// チャンネル投稿の場合
-			if (!this.followingChannels.has(note.channelId)) return;
-
-			// excludeChannelNotesNonFollowing有効時: フォロー中ユーザーの投稿のみ
-			if (this.excludeChannelNotesNonFollowing) {
-				if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
-			}
-		} else {
-			// 非チャンネル投稿の場合
+		// チャンネル投稿でない場合
+		if (!note.channelId) {
+			// 以下の条件に該当するノートのみ後続処理に通す
+			// - 自分自身の投稿
+			// - その投稿のユーザーをフォローしている
+			// - 全体公開のローカルの投稿
 			if (!(
 				isMe ||
 				Object.hasOwn(this.following, note.userId) ||
 				(note.user.host == null && note.visibility === 'public')
-			)) return;
+			)) {
+				return;
+			}
+		} else {
+			// チャンネル投稿の場合
+			// - フォローしているチャンネルの投稿のみ
+			if (!this.followingChannels.has(note.channelId)) {
+				return;
+			}
+
+			// excludeChannelNotesNonFollowing有効時の追加チェック
+			if (this.excludeChannelNotesNonFollowing) {
+				// フォローしているユーザーの投稿のみ許可
+				if (!isMe && !Object.hasOwn(this.following, note.userId)) {
+					return;
+				}
+			}
 		}
 
 		if (note.visibility === 'followers') {
@@ -90,11 +98,7 @@ class HybridTimelineChannel extends Channel {
 			if (!isMe && !note.visibleUserIds!.includes(this.user!.id)) return;
 		}
 
-		// やみモードが有効な投稿はフォローしている人だけ配信
-		if (note.isNoteInYamiMode) {
-			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
-		}
-
+		// この関数内でチャンネルミューティングもチェックされる
 		if (this.isNoteMutedOrBlocked(note)) return;
 
 		if (note.reply) {

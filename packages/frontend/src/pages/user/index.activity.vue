@@ -28,7 +28,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.User;
+	user: Misskey.entities.UserDetailed | Misskey.entities.MeDetailed;
 	limit?: number;
 }>(), {
 	limit: 50,

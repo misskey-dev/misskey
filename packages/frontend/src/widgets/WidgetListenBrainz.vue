@@ -46,7 +46,7 @@ const widgetPropsDef = {
 	},
 	userId: {
 		type: 'string' as const,
-		default: null,
+		default: '',
 	},
 	noteFormat: {
 		type: 'string' as const,
@@ -95,7 +95,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name, widgetProps
 
 // ウィジット初期化時にユーザープロフィールのListenBrainzIDを設定
 onMounted(() => {
-	if (widgetProps.userId === null && $i && $i.listenbrainz) {
+	if (!widgetProps.userId && $i && $i.listenbrainz) {
 		widgetProps.userId = $i.listenbrainz;
 		save();
 	}
@@ -146,7 +146,7 @@ const postNote = async () => {
 	const note = formattedNote.value;
 	misskeyApi('notes/create', {
 		text: note,
-		visibility: widgetProps.visibility,
+		visibility: widgetProps.visibility as 'public' | 'home' | 'followers' | 'specified',
 		localOnly: widgetProps.localOnly,
 	});
 };

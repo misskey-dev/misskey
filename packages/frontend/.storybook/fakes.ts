@@ -318,6 +318,10 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host: enti
 		memo: null,
 		canChat: true,
 		chatScope: 'everyone',
+		listenbrainz: null,
+		hideActivity: false,
+		hideProfileFiles: false,
+		notesVisibility: 'public',
 	};
 }
 

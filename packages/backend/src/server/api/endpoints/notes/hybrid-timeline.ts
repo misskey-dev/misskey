@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, ChannelFollowingsRepository, MiMeta } from '@/models/_.js';
+import type { NotesRepository, MiMeta } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -18,6 +18,8 @@ import { QueryService } from '@/core/QueryService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -82,9 +84,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
@@ -92,6 +91,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private userFollowingService: UserFollowingService,
+		private channelMutingService: ChannelMutingService,
+		private channelFollowingService: ChannelFollowingService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -149,17 +150,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const [
 				followings,
-				followingChannels,
+				followingChannelIds,
 			] = await Promise.all([
 				this.cacheService.userFollowingsCache.fetch(me.id),
-				this.channelFollowingsRepository.find({
-					where: {
-						followerId: me.id,
-					},
-				}),
+				this.channelFollowingService.userFollowingChannelsCache.fetch(me.id),
 			]);
-
-			const followingChannelIds = new Set(followingChannels.map(x => x.followeeId));
 
 			const redisTimeline = await this.fanoutTimelineEndpointService.timeline({
 				untilId,
@@ -230,24 +225,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		excludeChannelNotesNonFollowing: boolean,
 	}, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
-		const followingChannels = await this.channelFollowingsRepository.find({
-			where: {
-				followerId: me.id,
-			},
-		});
+
+		const mutingChannelIds = await this.channelMutingService
+			.list({ requestUserId: me.id }, { idOnly: true })
+			.then(x => x.map(x => x.id));
+		const followingChannelIds = await this.channelFollowingService
+			.list({ requestUserId: me.id }, { idOnly: true })
+			.then(x => x.map(x => x.id).filter(x => !mutingChannelIds.includes(x)));
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 			.andWhere('note.isNoteInYamiMode = FALSE')
 			.andWhere(new Brackets(qb => {
 				if (followees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
-					// 自分とフォロー中のユーザーの投稿（やみモードでないもののみ）
-					qb.where('note.userId IN (:...meOrFolloweeIds) AND note.isNoteInYamiMode = FALSE', { meOrFolloweeIds: meOrFolloweeIds });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInYamiMode IS FALSE)');
+					// 自分とフォロー中のユーザーの投稿
+					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds });
+					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
 				} else {
-					// 自分の投稿（やみモードでないもののみ）
-					qb.where('note.userId = :meId AND note.isNoteInYamiMode = FALSE', { meId: me.id });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInYamiMode IS FALSE)');
+					// 自分の投稿
+					qb.where('note.userId = :meId', { meId: me.id });
+					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
 				}
 			}))
 			.innerJoinAndSelect('note.user', 'user')
@@ -256,9 +253,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
-		if (followingChannels.length > 0) {
-			const followingChannelIds = followingChannels.map(x => x.followeeId);
-
+		if (followingChannelIds.length > 0) {
 			if (ps.excludeChannelNotesNonFollowing) {
 				// フォロー中ユーザーのチャンネル投稿のみ + 非チャンネル投稿
 				const meOrFolloweeIds = followees.length > 0 ? [me.id, ...followees.map(f => f.followeeId)] : [me.id];
@@ -281,6 +276,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 		} else {
 			query.andWhere('note.channelId IS NULL');
+		}
+
+		if (mutingChannelIds.length > 0) {
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.renoteChannelId IS NULL');
+				qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+			}));
 		}
 
 		if (!ps.withReplies) {

@@ -3,14 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// Jitsi Meet External API の最小限の型定義
+// 公式の型定義が存在しないため、使用しているメソッドのみを定義
+interface JitsiMeetAPI {
+	dispose(): void;
+	getIFrame(): HTMLIFrameElement | null;
+}
+
+interface JitsiMeetExternalAPIConstructor {
+	new(domain: string, options: Record<string, unknown>): JitsiMeetAPI;
+}
+
 declare global {
 	interface Window {
-		JitsiMeetExternalAPI: any;
+		JitsiMeetExternalAPI: JitsiMeetExternalAPIConstructor;
 	}
 }
 
 class JitsiApiService {
-	private api: any = null;
+	private api: JitsiMeetAPI | null = null;
 	private isScriptLoaded: Record<string, boolean> = {};
 
 	// Misskeyの絵文字を除去する関数

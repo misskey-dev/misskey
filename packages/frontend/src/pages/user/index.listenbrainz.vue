@@ -38,7 +38,7 @@ import MkContainer from '@/components/MkContainer.vue';
 
 const props = withDefaults(
 	defineProps<{
-		user: Misskey.entities.User & { listenbrainz?: string };
+		user: Misskey.entities.UserDetailed | Misskey.entities.MeDetailed;
 	}>(),
 	{},
 );

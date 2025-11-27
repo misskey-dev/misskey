@@ -276,7 +276,7 @@ const postNote = async () => {
 	const note = formattedNote.value;
 	await misskeyApi('notes/create', {
 		text: note,
-		visibility: widgetProps.visibility,
+		visibility: widgetProps.visibility as 'public' | 'home' | 'followers' | 'specified',
 		localOnly: widgetProps.localOnly,
 	});
 };

@@ -20,6 +20,7 @@ import PageWithHeader from '@/components/global/PageWithHeader.vue';
 import { deviceKind } from '@/utility/device-kind.js';
 import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 
 // タブUIの表示のためにこのプロバイダーを追加
 provide('shouldOmitHeaderTitle', true);
@@ -61,7 +62,7 @@ watch(recent, (newValue) => {
 
 // タイムラインと同等のリロードボタンを追加したヘッダーアクション
 const headerActions = computed(() => {
-	const actions = [];
+	const actions: PageHeaderItem[] = [];
 
 	// デスクトップの場合はリロードボタンを追加
 	if (deviceKind === 'desktop') {
