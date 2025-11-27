@@ -31,6 +31,10 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 		// yamisskey: Ignore errors related to system account updates during tests
 		'An unknown error has occurred',
+
+		// yamisskey: Ignore credential errors during database resets
+		// This occurs when frontend tries to use old session after Redis flush
+		'Credential required',
 	].some(msg => err.message.includes(msg))) {
 		return false;
 	}
