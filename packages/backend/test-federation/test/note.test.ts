@@ -501,5 +501,64 @@ describe('Note', () => {
 			strictEqual(replyInA.reply.text, noteText);
 			strictEqual(replyInA.reply.visibility, 'followers');
 		});
+
+		test('Followers-only note can be fetched via Quote if the receiver follows the author', async () => {
+			const [author, follower] = await Promise.all([
+				createAccount('b.test'),
+				createAccount('a.test'),
+			]);
+
+			const authorInA = await resolveRemoteUser('b.test', author.id, follower);
+
+			// Author creates a followers-only note
+			const noteText = `followers only source ${Date.now()}`;
+			const note = (await author.client.request('notes/create', {
+				text: noteText,
+				visibility: 'followers',
+			})).createdNote;
+
+			const noteUri = `https://b.test/notes/${note.id}`;
+
+			// Follower tries to fetch the note (should fail)
+			await rejects(
+				async () => await follower.client.request('ap/show', { uri: noteUri }),
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(err: any) => {
+					strictEqual(err.code, 'REQUEST_FAILED');
+					return true;
+				},
+			);
+
+			// Follower follows Author
+			await follower.client.request('following/create', { userId: authorInA.id });
+			await sleep();
+
+			// Author quotes the note
+			const quoteText = `quoting secret note ${Date.now()}`;
+			const quote = (await author.client.request('notes/create', {
+				text: quoteText,
+				renoteId: note.id,
+				visibility: 'public',
+			})).createdNote;
+			await sleep();
+
+			// Follower should be able to see the Quote and the Original Note
+			const timeline = await follower.client.request('notes/timeline', { limit: 10 });
+			const quotesInA = timeline.filter(n => n.text === quoteText);
+
+			const quoteUri = `https://b.test/notes/${quote.id}`;
+
+			// Check duplication of quote
+			strictEqual(quotesInA.length, 1);
+
+			const quoteInA = quotesInA[0];
+			strictEqual(quoteInA.text, quoteText);
+			strictEqual(quoteInA.uri, quoteUri);
+
+			// Check renote content
+			assert(quoteInA.renote != null);
+			strictEqual(quoteInA.renote.text, noteText);
+			strictEqual(quoteInA.renote.visibility, 'followers');
+		});
 	});
 });
