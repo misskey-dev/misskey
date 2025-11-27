@@ -17,13 +17,13 @@ yamisskey は 3ブランチで開発を進めます：
 
 | ブランチ | 環境 | バージョン形式 | 用途 |
 |---------|------|---------------|------|
-| **muyami** | 開発（ローカル） | `2025.1.0-muyami-1.4.3` | 新機能開発・実験的機能 |
-| **nayami** | テスト（[なやみすきー](https://na.yami.ski/)） | `2025.1.0-nayami-1.4.3` | 本番前検証（push時にDockerイメージ自動ビルド） |
+| **develop** | 開発（ローカル） | `2025.1.0-muyami-1.4.3` | 新機能開発・実験的機能 |
+| **staging** | テスト（[なやみすきー](https://na.yami.ski/)） | `2025.1.0-nayami-1.4.3` | 本番前検証（push時にDockerイメージ自動ビルド） |
 | **master** | 本番（[やみすきー](https://yami.ski/)） | `2025.1.0-yami-1.4.3` | 安定運用版（リリース時にDockerイメージ自動ビルド） |
 
-**開発の流れ**: muyami → nayami → master
+**開発の流れ**: develop → staging → master
 
-**重要**: すべての変更は**必ずmuyamiブランチから開始**してください。nayamiやmasterで直接開発することは禁止です。
+**重要**: すべての変更は**必ずdevelopブランチから開始**してください。stagingやmasterで直接開発することは禁止です。
 
 ## 開発環境
 
@@ -53,7 +53,7 @@ git fetch --all --prune --tags
 ### 2. 開発ブランチに切り替え
 
 ```bash
-git checkout muyami
+git checkout develop
 ```
 
 ### 3. 依存関係のインストール
@@ -68,11 +68,11 @@ pnpm build-misskey-js-with-types
 
 ### 日常的な開発作業
 
-**重要**: 開発は必ずmuyamiブランチで行います。
+**重要**: 開発は必ずdevelopブランチで行います。
 
 ```bash
-# muyamiブランチに切り替え
-git checkout muyami
+# developブランチに切り替え
+git checkout develop
 
 # トピックブランチで開発
 git checkout -b feat/新機能名
@@ -84,24 +84,24 @@ pnpm dev
 git add .
 git commit -m "feat: 新機能の実装"
 
-# muyamiにマージしてプッシュ
-git checkout muyami
+# developにマージしてプッシュ
+git checkout develop
 git merge feat/新機能名
-git push origin muyami
+git push origin develop
 ```
 
 ### テスト環境への反映
 
 ```bash
-# nayamiブランチに切り替え
-git checkout nayami
-git pull origin nayami
-git merge muyami
+# stagingブランチに切り替え
+git checkout staging
+git pull origin staging
+git merge develop
 
-# package.jsonのバージョン更新（muyami → nayami）
+# package.jsonのバージョン更新（develop → staging）
 # 例: 2025.1.0-muyami-1.4.3 → 2025.1.0-nayami-1.4.3
 
-git push origin nayami  # Dockerイメージが自動ビルドされる
+git push origin staging  # Dockerイメージが自動ビルドされる
 ```
 
 [なやみすきー](https://na.yami.ski/)で動作確認後、本番への反映を進めます。
@@ -112,7 +112,7 @@ git push origin nayami  # Dockerイメージが自動ビルドされる
 # masterブランチに切り替え
 git checkout master
 git pull origin master
-git merge nayami
+git merge staging
 
 # package.jsonのバージョン更新（nayami → yami）
 # 例: 2025.1.0-nayami-1.4.3 → 2025.1.0-yami-1.4.3
@@ -137,9 +137,9 @@ git push origin master
 # メインリポジトリで作業
 cd yamisskey
 
-# 並列開発用のworktreeを作成（muyamiベース）
-git worktree add ../yamisskey-feat-a -b feat/feature-a muyami
-git worktree add ../yamisskey-feat-b -b feat/feature-b muyami
+# 並列開発用のworktreeを作成（developベース）
+git worktree add ../yamisskey-feat-a -b feat/feature-a develop
+git worktree add ../yamisskey-feat-b -b feat/feature-b develop
 
 # 各worktreeで開発
 cd ../yamisskey-feat-a
@@ -150,12 +150,12 @@ cd ../yamisskey-feat-b
 pnpm install && pnpm build
 # 開発作業...
 
-# 開発完了後、muyamiにマージ
+# 開発完了後、developにマージ
 cd ../yamisskey
-git checkout muyami
+git checkout develop
 git merge feat/feature-a
 git merge feat/feature-b
-git push origin muyami
+git push origin develop
 
 # worktreeの削除
 git worktree remove ../yamisskey-feat-a
@@ -166,11 +166,11 @@ git worktree remove ../yamisskey-feat-b
 
 ```bash
 # バックアップを作成
-git checkout muyami
+git checkout develop
 VERSION=$(node -p "require('./package.json').version")
 git branch backup/$VERSION
 
-git checkout nayami
+git checkout staging
 VERSION=$(node -p "require('./package.json').version")
 git branch backup/$VERSION
 
@@ -178,8 +178,8 @@ git checkout master
 VERSION=$(node -p "require('./package.json').version")
 git branch backup/$VERSION
 
-# muyamiに取り込み
-git checkout muyami
+# developに取り込み
+git checkout develop
 git fetch upstream --tags --prune
 git merge --no-ff --no-edit -S <tag-name>
 
@@ -187,7 +187,7 @@ git merge --no-ff --no-edit -S <tag-name>
 git add -A
 git commit -m "upstream: resolve conflicts for <tag-name>"
 
-# nayami → master へ順次反映
+# staging → master へ順次反映
 ```
 
 ### 他フォークからのcherry-pick
@@ -200,8 +200,8 @@ git fetch cherrypick
 # コミットIDを確認
 git log cherrypick/develop --oneline -20
 
-# muyamiにcherry-pick
-git checkout muyami
+# developにcherry-pick
+git checkout develop
 git cherry-pick <コミットID>
 ```
 
@@ -216,9 +216,9 @@ git log --oneline -10
 git merge --abort
 
 # バックアップからの復元
-git checkout muyami
+git checkout develop
 git reset --hard backup/2025.1.0-muyami-1.4.3
-git push --force origin muyami  # 注意：慎重に実行
+git push --force origin develop  # 注意：慎重に実行
 
 # worktreeのクリーンアップ
 git worktree prune
@@ -229,9 +229,9 @@ sudo chown -R $(whoami) yamisskey/
 
 ## 開発ルール
 
-- **すべての開発はmuyamiから開始**（nayami/masterでの直接開発は禁止）
-- トピックブランチで開発し、muyamiにマージ
-- muyami → nayami → master の順で反映（逆順禁止）
+- **すべての開発はdevelopから開始**（staging/masterでの直接開発は禁止）
+- トピックブランチで開発し、developにマージ
+- develop → staging → master の順で反映（逆順禁止）
 - 重要な変更前は必ずバックアップを作成
 - プライバシー・セキュリティ機能は特に慎重にテスト
 
