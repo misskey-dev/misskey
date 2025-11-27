@@ -48,26 +48,26 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			if (_title != null) {
 				if (utils.isString(_title)) {
 					title = _title.value;
+				} else {
+					utils.assertNull(_title);
 				}
-			} else {
-				utils.assertNull(_title);
 			}
 
 			if (_text != null) {
 				if (utils.isString(_text)) {
 					text = _text.value;
+				} else {
+					utils.assertNull(_text);
 				}
-			} else {
-				utils.assertNull(_text);
 			}
 
 			if (_type != null) {
 				if (utils.isString(_type)) {
 					assertStringAndIsIn(_type, DIALOG_TYPES);
 					type = _type.value;
+				} else {
+					utils.assertNull(_type);
 				}
-			} else {
-				utils.assertNull(_type);
 			}
 
 			await os.alert({
@@ -85,26 +85,26 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			if (_title != null) {
 				if (utils.isString(_title)) {
 					title = _title.value;
+				} else {
+					utils.assertNull(_title);
 				}
-			} else {
-				utils.assertNull(_title);
 			}
 
 			if (_text != null) {
 				if (utils.isString(_text)) {
 					text = _text.value;
+				} else {
+					utils.assertNull(_text);
 				}
-			} else {
-				utils.assertNull(_text);
 			}
 
 			if (_type != null) {
 				if (utils.isString(_type)) {
 					assertStringAndIsIn(_type, DIALOG_TYPES);
 					type = _type.value;
+				} else {
+					utils.assertNull(_type);
 				}
-			} else {
-				utils.assertNull(_type);
 			}
 
 			const confirm = await os.confirm({
