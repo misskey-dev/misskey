@@ -139,7 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template v-if="log.type === 'updateServerSettings'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before as JsValue, null, '\t')" :newString="AiSON.stringify(log.info.after as JsValue, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateUserNote'">
@@ -221,7 +221,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<details>
 			<summary>raw</summary>
-			<pre>{{ AiSON.stringify(log, null, '\t') }}</pre>
+			<pre>{{ AiSON.stringify(log as JsValue, null, '\t') }}</pre>
 		</details>
 	</div>
 </MkFolder>
@@ -233,6 +233,7 @@ import { CodeDiff } from 'v-code-diff';
 import { AiSON } from '@syuilo/aiscript';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
+import type { JsValue } from '@syuilo/aiscript/interpreter/util.js';
 
 const props = defineProps<{
 	log: Misskey.entities.ModerationLog;

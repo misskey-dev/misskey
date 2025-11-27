@@ -46,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
 import { AiSON } from '@syuilo/aiscript';
+import type { JsValue } from '@syuilo/aiscript/interpreter/util.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -74,7 +75,7 @@ function fetchValue() {
 		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
 		value.value = res;
-		valueForEditor.value = AiSON.stringify(res.value, null, '\t');
+		valueForEditor.value = AiSON.stringify(res.value as JsValue, null, '\t');
 	});
 }
 
