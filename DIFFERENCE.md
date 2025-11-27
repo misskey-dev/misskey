@@ -1,6 +1,6 @@
 # DIFFRENCE
 
-## Unreleased
+## 2025.11.0-yami-1.9.28
 
 ### Misskey 2025.11.0への追従
 
