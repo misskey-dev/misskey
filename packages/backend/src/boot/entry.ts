@@ -28,8 +28,6 @@ const logger = new Logger('core', 'cyan');
 const clusterLogger = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
 
-let isShutdown = false;
-
 //#region Events
 
 // Listen new workers
@@ -44,8 +42,6 @@ cluster.on('online', worker => {
 
 // Listen for dying workers
 cluster.on('exit', worker => {
-	if (isShutdown) return;
-
 	// Replace the dead worker,
 	// we're not sentimental
 	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));
@@ -91,35 +87,6 @@ if (!envOption.disableClustering) {
 }
 
 readyRef.value = true;
-
-if (cluster.isPrimary) {
-	const handleSignal = async (signal: string) => {
-		if (isShutdown) return;
-		isShutdown = true;
-		logger.info(`Received ${signal}, shutting down...`);
-
-		for (const id in cluster.workers) {
-			cluster.workers[id]?.kill();
-		}
-
-		process.exit(0);
-	};
-
-	process.on('SIGINT', () => handleSignal('SIGINT'));
-	process.on('SIGTERM', () => handleSignal('SIGTERM'));
-
-	if (process.platform === 'win32') {
-		const rl = await import('node:readline');
-		const rli = rl.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-		});
-
-		rli.on('SIGINT', () => {
-			process.emit('SIGINT');
-		});
-	}
-}
 
 // ユニットテスト時にMisskeyが子プロセスで起動された時のため
 // それ以外のときは process.send は使えないので弾く
