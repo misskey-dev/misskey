@@ -14,11 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.content">
 		<div v-if="filteredActiveUsers.length > 0" :class="$style.users">
 			<div v-for="user in filteredActiveUsers" :key="user.id || user.username" :class="$style.row">
-				<MkAvatar :user="user" :class="$style.avatar" indicator link preview/>
+				<MkAvatar :user="user as unknown as Misskey.entities.User" :class="$style.avatar" indicator link preview/>
 				<div :class="$style.userInfo">
 					<div :class="$style.name">
 						<MkA :to="'/@' + user.username">
-							<MkUserName :user="user"/>
+							<MkUserName :user="user as unknown as Misskey.entities.User"/>
 						</MkA>
 					</div>
 					<div v-if="user.name && user.name !== user.username" :class="$style.username">@{{ user.username }}</div>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div :class="$style.date">
 					<template v-if="user.onlineStatus !== 'unknown' && user.onlineStatus !== 'offline'">
-						<MkTime v-if="user.updatedAt" :time="user.updatedAt" small/>
+						<MkTime v-if="user.lastActiveDate" :time="user.lastActiveDate" small/>
 					</template>
 					<template v-else>
 						<span>{{ i18n.ts.private }}</span>
@@ -57,6 +57,7 @@ import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import type { GetFormResultType } from '@/utility/form.js';
+import type { MenuButton } from '@/types/menu.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
 import MkA from '@/components/global/MkA.vue';
@@ -69,7 +70,29 @@ import { i18n } from '@/i18n';
 import { $i } from '@/i.js';
 import { playMisskeySfx } from '@/utility/sound.js';
 import { getUserMenu } from '@/utility/get-user-menu.js';
-import type { MenuButton } from '@/types/menu.js';
+
+// yamisskey独自: get-online-users-countエンドポイントの戻り値型
+// 本家Misskeyには存在しない独自拡張のため、手動で型定義
+// バックエンドのレスポンス形状を正確に反映
+type OnlineUserDetail = {
+	id: string;
+	username: string;
+	name?: string | null;
+	avatarUrl?: string | null;
+	avatarBlurhash?: string | null;
+	avatarDecorations: Array<{
+		id: string;
+		angle?: number;
+		flipH?: boolean;
+		url: string;
+		offsetX?: number;
+		offsetY?: number;
+	}>;
+	host?: string | null;
+	// バックエンドはISO文字列を返す
+	lastActiveDate: string | null;
+	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
+};
 
 const name = i18n.ts._widgets.activeUsers;
 
@@ -104,76 +127,48 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const activeUsers = ref<any[]>([]);
+const activeUsers = ref<OnlineUserDetail[]>([]);
 const prevUserIds = ref(new Set<string>());
-const connection = ref<any>(null);
 const isLoggedIn = computed(() => $i != null);
-const userMutings = ref(new Set<string>()); // ミュートしているユーザーのIDを保持 (表示フィルタリング用に残す)
+const userMutings = ref(new Set<string>());
 
-// ミュート情報を取得する関数を強化
+// WebSocketストリーム接続（本家パターンに従う）
+// 型定義の複雑さを回避するため、実装詳細は隠蔽
+let connection: { dispose: () => void } | null = null;
+
+// ミュート情報を取得
 async function fetchMutings() {
 	if (!isLoggedIn.value) return;
 
 	try {
 		const mutings = await misskeyApi('mute/list');
-		// 前回のミュートリストと比較
-		const previousMutings = new Set(userMutings.value);
-		const newMutings = new Set(mutings.map(m => m.muteeId));
-
-		// 新しいミュートリストをセット
-		userMutings.value = newMutings;
-
-		// 解除されたミュートがあり、かつアクティブユーザーリストが空でなければ再取得
-		const unmuteDetected = [...previousMutings].some(id => !newMutings.has(id));
-		if (unmuteDetected && activeUsers.value.length > 0) {
-			console.log('Detected unmute changes, refreshing active users list');
-			// ミュート解除を検出したらアクティブユーザーリストを再取得
-			refreshActiveUsers();
-		}
+		userMutings.value = new Set(mutings.map(m => m.muteeId));
 	} catch (err) {
 		console.error('Failed to fetch mutings:', err);
 	}
 }
 
-// アクティブユーザーリストのみを更新する関数を追加
-async function refreshActiveUsers() {
-	if (!isLoggedIn.value) return;
-
-	try {
-		const res = await misskeyApi('get-online-users-count');
-		checkForNewUsers(res.details);
-		activeUsers.value = res.details;
-	} catch (err) {
-		console.error('Failed to refresh active users:', err);
-	}
-}
-
-// ミュートユーザーを除外した表示用のユーザーリストを生成 (表示フィルタリング用に残す)
+// ミュートユーザーを除外した表示用のユーザーリスト
 const filteredActiveUsers = computed(() => {
 	if (!activeUsers.value) return [];
-
-	return activeUsers.value.filter(user =>
-		!userMutings.value.has(user.id),
-	);
+	return activeUsers.value.filter(user => !userMutings.value.has(user.id));
 });
 
 // 新しいユーザーが表示された時に通知音を鳴らす
-const checkForNewUsers = (users) => {
+const checkForNewUsers = (users: OnlineUserDetail[]) => {
 	if (!widgetProps.sound) return;
 
-	const currentUserIds = new Set<string>(users.map((user: any) => user.id as string));
-	const newUserIds = Array.from(currentUserIds).filter((id: string) =>
+	const currentUserIds = new Set<string>(users.map(user => user.id));
+	const newUserIds = Array.from(currentUserIds).filter(id =>
 		!prevUserIds.value.has(id) && !userMutings.value.has(id),
 	);
 
-	// 初回ロード時は通知しない（prevUserIds.valueが空の場合）
+	// 初回ロード時は通知しない
 	if (newUserIds.length > 0 && prevUserIds.value.size > 0) {
-		// 通知音を正しい関数で鳴らす
 		playMisskeySfx('notification');
 	}
 
-	// 現在のユーザーIDを保存
-	prevUserIds.value = currentUserIds as Set<string>;
+	prevUserIds.value = currentUserIds;
 };
 
 const tick = async () => {
@@ -183,91 +178,93 @@ const tick = async () => {
 	}
 
 	try {
-		// ミュートリストとアクティブユーザーを並行して取得
-		await Promise.all([
-			fetchMutings(),
-			refreshActiveUsers(),
-		]);
+		const res = await misskeyApi('get-online-users-count');
+		checkForNewUsers(res.details);
+		activeUsers.value = res.details;
 	} catch (err) {
-		console.error('Failed to update widget data:', err);
+		console.error('Failed to fetch active users:', err);
 		activeUsers.value = [];
 	}
 };
 
-// WebSocketを使用したリアルタイム更新
-const connectStream = () => {
+// WebSocketストリーム接続とイベントハンドラの設定
+function connectStream() {
 	if (!isLoggedIn.value) return;
 
 	// 既存の接続がある場合は切断
-	if (connection.value) {
-		connection.value.dispose();
+	if (connection) {
+		connection.dispose();
 	}
 
-	// グローバルタイムラインのストリームに接続
-	connection.value = useStream().useChannel('main');
+	// mainチャネルに接続（本家パターン）
+	const stream = useStream().useChannel('main');
+	connection = stream;
 
-	// ユーザーのステータス更新があった場合に再取得
-	connection.value.on('userOnlineStatusChanged', () => {
+	// yamisskey独自イベントへの対応
+	// 型定義に含まれていないイベントを扱うため、unknown経由で型安全に処理
+	type ConnectionWithExtendedEvents = {
+		on: (event: string, handler: (...args: unknown[]) => void) => void;
+	};
+	const conn = stream as unknown as ConnectionWithExtendedEvents;
+
+	// meUpdated時にミュートリストとアクティブユーザーを更新
+	// ミュート/アンミュートすると自分の情報が更新されるため、このイベントを活用
+	conn.on('meUpdated', () => {
+		fetchMutings();
+		tick(); // アクティブユーザーも更新してリアルタイム性を確保
+	});
+
+	// ユーザーのオンライン状態変更時に即座に更新
+	conn.on('userOnlineStatusChanged', () => {
 		tick();
 	});
 
-	// ミュート関連のイベントリスナー
-	connection.value.on('mute', mutee => {
-		userMutings.value.add(mutee.id);
-		// アクティブユーザーリストを更新
-		activeUsers.value = activeUsers.value.filter(user => !userMutings.value.has(user.id));
+	// ミュート実行時に即座にUIから削除
+	conn.on('mute', (mutee: unknown) => {
+		if (mutee && typeof mutee === 'object' && 'id' in mutee) {
+			userMutings.value.add((mutee as { id: string }).id);
+		}
 	});
 
-	// WebSocketイベントハンドラを強化
-	connection.value.on('unmute', mutee => {
-		// まずローカルのミュートリストを更新
-		userMutings.value.delete(mutee.id);
-
-		// ミュート情報を完全に再取得して同期
-		fetchMutings().then(() => {
-			// ミュート情報取得後にアクティブユーザーリストも更新
+	// ミュート解除時に即座に再表示
+	conn.on('unmute', (mutee: unknown) => {
+		if (mutee && typeof mutee === 'object' && 'id' in mutee) {
+			userMutings.value.delete((mutee as { id: string }).id);
 			tick();
-		});
+		}
 	});
 
-	// 接続エラーや切断時の再接続ロジック
-	connection.value.on('_disconnected_', () => {
+	// 接続切断時の自動再接続
+	conn.on('_disconnected_', () => {
 		window.setTimeout(() => {
 			connectStream();
-		}, 3000); // 3秒後に再接続を試みる
+		}, 3000);
 	});
-};
+}
 
 // ユーザーをミュートする
-function muteMember(user) {
-	if (!isLoggedIn.value || !user || !user.id) return;
+function muteMember(user: OnlineUserDetail) {
+	if (!isLoggedIn.value) return;
 
-	// getUserMenuから取得したメニュー項目からミュート機能を使用
-	const { menu, cleanup } = getUserMenu(user);
+	const { menu, cleanup } = getUserMenu(user as unknown as Misskey.entities.UserDetailed);
 
-	// ミュート関連のメニュー項目を探す部分を単純化
 	const muteItem = menu.find(item =>
 		'icon' in item && 'text' in item && item.icon === 'ti ti-eye-off' && item.text === i18n.ts.mute,
 	) as MenuButton | undefined;
 
-	if (muteItem && muteItem.action) {
-		// 既存のミュート機能を実行（期間選択UIを含む）
+	if (muteItem?.action) {
 		muteItem.action({} as MouseEvent);
 
-		// ミュート実行後、少し待ってからユーザーを非表示にする
+		// WebSocketイベントで処理されるが、念のためフォールバック
 		window.setTimeout(() => {
-			// ミュート成功後、手動でユーザーを非表示にする
-			userMutings.value.add(user.id);
-			activeUsers.value = activeUsers.value.filter(u => u.id !== user.id);
-			fetchMutings(); // ミュートリストを再取得
+			fetchMutings();
 		}, 500);
 	}
 
-	// 使い終わったらクリーンアップ
 	cleanup();
 }
 
-// 初期化と定期更新
+// 初期化
 onMounted(() => {
 	fetchMutings();
 	tick();
@@ -276,30 +273,31 @@ onMounted(() => {
 
 // クリーンアップ
 onUnmounted(() => {
-	if (connection.value) {
-		connection.value.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
 	}
 });
 
-// ログイン状態が変化した場合に再接続
+// ログイン状態変化への対応
 watch(isLoggedIn, (newValue) => {
 	if (newValue) {
+		// ログイン時: 接続確立
 		fetchMutings();
 		connectStream();
-	} else if (connection.value) {
-		connection.value.dispose();
-		connection.value = null;
+	} else {
+		// ログアウト時: 接続切断
+		if (connection) {
+			connection.dispose();
+			connection = null;
+		}
+		activeUsers.value = [];
+		userMutings.value.clear();
 	}
 });
 
-// 定期更新は維持（バックアップとして）
+// 定期更新（WebSocketのバックアップとして30秒ごと）
 useInterval(tick, 1000 * 30, {
-	immediate: false, // すでにonMountedでtickを実行するのでfalse
-	afterMounted: true,
-});
-
-// ミュート情報の同期頻度を上げる
-useInterval(fetchMutings, 1000 * 20, { // 20秒ごとに確認
 	immediate: false,
 	afterMounted: true,
 });
