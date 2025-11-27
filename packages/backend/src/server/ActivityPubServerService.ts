@@ -669,7 +669,6 @@ export class ActivityPubServerService {
 
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
-				visibility: In(['public', 'home', 'followers', 'specified']),
 				localOnly: false,
 			});
 
