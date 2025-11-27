@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+### Refactor
+- **検索結果非表示設定をノートとユーザーに分離**
+  - `hideSearchResult` を `hideNoteSearchResult` と `hideUserSearchResult` の2つの設定に分割
+  - ノート検索結果から自分のノートを隠す機能と、ユーザー検索結果から自分を隠す機能を明確に分離
+  - ユーザー検索結果から自分を隠す機能を新たに実装（既存の `hideSearchResult` はノート検索のみに使用されていた）
+  - 自己除外ロジック: ユーザーは常に自分自身を検索結果で見つけることが可能
+
+### Technical Details
+- **Backend実装**
+  - データベースマイグレーション: `hideSearchResult` → `hideNoteSearchResult` にカラム名変更、`hideUserSearchResult` を新規追加
+  - `User.ts`: 2つの boolean フィールドを追加（`hideNoteSearchResult`, `hideUserSearchResult`）
+  - `SearchService.ts`: ノート検索で `hideNoteSearchResult` を使用するように更新
+  - `UserSearchService.ts`: ユーザー検索で `hideUserSearchResult` によるフィルタリングを実装
+  - `i/update.ts`: API エンドポイントに両方のパラメータを追加
+- **Frontend実装**
+  - `privacy.vue`: プライバシー設定画面で2つの独立したスイッチに分離
+  - `MkUserSetupDialog.Privacy.vue`: 初期設定ダイアログに両方の設定を追加
+- **i18n**
+  - ja-JP, en-US, ja-KS に翻訳を追加
+  - `hideNoteSearchResult`: "自分のノートを他人のノート検索結果から隠す"
+  - `hideUserSearchResult`: "自分を他人のユーザー検索結果から隠す"
+
+### 2025.11.0-yami-1.9.28
+
 ### Misskey 2025.11.0への追従
 
 本家Misskey 2025.11.0をmuyamiブランチにマージしました。
