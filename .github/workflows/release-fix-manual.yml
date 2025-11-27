@@ -1,0 +1,207 @@
+name: "Fix Release Manual"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: 'Use workflow from tag (e.g., 2025.8.0-yami-1.9.13)'
+        required: true
+        type: string
+      force_recreate:
+        description: 'Force recreate tag and release even if already exists'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  fix-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate input tag format
+        id: validate
+        run: |
+          tag="${{ inputs.target_tag }}"
+          if [[ "$tag" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-yami-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "✅ Valid yami tag format: $tag"
+            echo "is_valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Invalid tag format. Expected: YYYY.M.D-yami-X.Y.Z"
+            echo "is_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Check current package.json version
+        id: check_version
+        if: steps.validate.outputs.is_valid == 'true'
+        run: |
+          current_version=$(jq -r '.version' package.json)
+          target_tag="${{ inputs.target_tag }}"
+
+          echo "Current package.json version: $current_version"
+          echo "Target tag: $target_tag"
+
+          if [[ "$current_version" == "$target_tag" ]]; then
+            echo "✅ Package.json already matches target tag"
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Package.json version mismatch, will update"
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          fi
+
+          echo "current_version=$current_version" >> $GITHUB_OUTPUT
+
+      - name: Update package.json version
+        if: steps.check_version.outputs.needs_update == 'true'
+        run: |
+          target_tag="${{ inputs.target_tag }}"
+          echo "🔄 Updating package.json version to: $target_tag"
+
+          # package.jsonを更新
+          jq --arg version "$target_tag" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+          # 変更をコミット
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "Fix version to $target_tag"
+          git push origin master
+
+          echo "✅ Package.json updated and committed"
+
+      - name: Handle existing tag and release
+        id: cleanup
+        run: |
+          target_tag="${{ inputs.target_tag }}"
+          force_recreate="${{ inputs.force_recreate }}"
+
+          # タグの存在確認
+          if git tag --list | grep -q "^$target_tag$"; then
+            echo "⚠️ Tag $target_tag already exists"
+            if [[ "$force_recreate" == "true" ]]; then
+              echo "🗑️ Force recreate enabled, deleting existing tag"
+              git push origin ":refs/tags/$target_tag"
+              git tag -d "$target_tag" 2>/dev/null || true
+              echo "tag_existed=true" >> $GITHUB_OUTPUT
+              echo "will_recreate=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Tag exists and force_recreate is false"
+              echo "tag_existed=true" >> $GITHUB_OUTPUT
+              echo "will_recreate=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "✅ Tag $target_tag does not exist"
+            echo "tag_existed=false" >> $GITHUB_OUTPUT
+            echo "will_recreate=true" >> $GITHUB_OUTPUT
+          fi
+
+          # リリースの存在確認と削除
+          if gh release view "$target_tag" >/dev/null 2>&1; then
+            echo "⚠️ Release $target_tag already exists"
+            if [[ "$force_recreate" == "true" ]]; then
+              echo "🗑️ Deleting existing release"
+              gh release delete "$target_tag" --yes
+              echo "release_existed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Release exists and force_recreate is false"
+              echo "release_existed=true" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "✅ Release $target_tag does not exist"
+            echo "release_existed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create corrected tag
+        if: steps.cleanup.outputs.will_recreate == 'true'
+        run: |
+          target_tag="${{ inputs.target_tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$target_tag" -m "Release $target_tag (version corrected)"
+          git push origin "$target_tag"
+          echo "✅ Tag $target_tag created successfully"
+
+      - name: Get release notes
+        id: notes
+        if: steps.cleanup.outputs.will_recreate == 'true'
+        run: |
+          target_tag="${{ inputs.target_tag }}"
+
+          if [ -f DIFFERENCE.md ]; then
+            # DIFFERENCE.mdから対応するバージョンのセクションを抽出
+            target_section=$(awk -v tag="$target_tag" '
+              BEGIN { found = 0 }
+              /^## / {
+                if ($0 ~ "## " tag "$") {
+                  found = 1
+                  next
+                }
+                if (found && /^## /) {
+                  exit
+                }
+              }
+              found { print }
+            ' DIFFERENCE.md)
+
+            if [ -n "$target_section" ]; then
+              # DIFFERENCE.mdの内容をそのまま使用
+              {
+                echo "notes<<EOF"
+                printf "%s\n" "$target_section"
+                echo "EOF"
+              } >> $GITHUB_OUTPUT
+            else
+              # タグが見つからない場合のフォールバック
+              {
+                echo "notes<<EOF"
+                echo "### Changes"
+                echo "- Version correction release"
+                echo "- Fixed package.json version mismatch"
+                echo "EOF"
+              } >> $GITHUB_OUTPUT
+            fi
+          else
+            {
+              echo "notes<<EOF"
+              echo "### Changes"
+              echo "- Version correction release"
+              echo "- Fixed package.json version mismatch"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create corrected GitHub Release
+        if: steps.cleanup.outputs.will_recreate == 'true'
+        run: |
+          target_tag="${{ inputs.target_tag }}"
+          gh release create "$target_tag" \
+            --title "$target_tag" \
+            --notes "${{ steps.notes.outputs.notes }}" \
+            --target master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          target_tag="${{ inputs.target_tag }}"
+          echo "🎉 Version fix completed for: $target_tag"
+          echo "📋 Release URL: https://github.com/${{ github.repository }}/releases/tag/$target_tag"
+          echo ""
+          echo "Next steps:"
+          echo "1. Docker images will be automatically rebuilt with correct version"
+          echo "2. Verify package.json version matches tag name"
+          echo "3. Test external client compatibility"

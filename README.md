@@ -3,6 +3,8 @@
 	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
 </a>
 
+<a href="https://flatt.tech/oss/gmo/trampoline" target="_blank"><img src="https://flatt.tech/assets/images/badges/gmo-oss.svg" height="24px"/></a>
+
 **🌎 **Misskey** is an open source, federated social media platform that's free forever! 🚀**
 
 [Learn more](https://misskey-hub.net/)
