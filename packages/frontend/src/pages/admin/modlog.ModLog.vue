@@ -139,7 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template v-if="log.type === 'updateServerSettings'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateUserNote'">
@@ -156,7 +156,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 		<template v-else-if="log.type === 'updateRole'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'assignRole'">
@@ -170,27 +170,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="log.type === 'updateCustomEmoji'">
 			<div>{{ i18n.ts.emoji }}: {{ log.info.emojiId }}</div>
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateAd'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateGlobalAnnouncement'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateUserAnnouncement'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateAvatarDecoration'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateRemoteInstanceNote'">
@@ -200,12 +200,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 		<template v-else-if="log.type === 'updateSystemWebhook'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateAbuseReportNotificationRecipient'">
 			<div :class="$style.diff">
-				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+				<CodeDiff :context="5" :hideHeader="true" :oldString="AiSON.stringify(log.info.before, null, '\t')" :newString="AiSON.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateAbuseReportNote'">
@@ -221,7 +221,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<details>
 			<summary>raw</summary>
-			<pre>{{ JSON5.stringify(log, null, '\t') }}</pre>
+			<pre>{{ AiSON.stringify(log, null, '\t') }}</pre>
 		</details>
 	</div>
 </MkFolder>
@@ -230,7 +230,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { CodeDiff } from 'v-code-diff';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 

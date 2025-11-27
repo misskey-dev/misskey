@@ -6,8 +6,8 @@
 import { watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
-import defaultLightTheme from '@@/themes/l-light.json5';
-import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import defaultLightTheme from '@@/themes/l-light.aison';
+import defaultDarkTheme from '@@/themes/d-green-lime.aison';
 import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import type { App } from 'vue';
 import widgets from '@/widgets/index.js';

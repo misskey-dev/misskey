@@ -17,7 +17,7 @@ import {
 } from 'vite';
 import fs from 'node:fs';
 import { glob } from 'glob';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript';
 import MagicString, { SourceMap } from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
@@ -605,7 +605,7 @@ export class MarkerIdAssigner {
 			} else {
 				// :children 属性がまだない場合、新規作成
 				const endOfParentStartTag = findEndOfStartTagAttributes(parentNode);
-				s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, "'")}"`);
+				s.appendRight(endOfParentStartTag, ` :children="${AiSON.stringify(childIds).replace(/"/g, "'")}"`);
 				logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
 			}
 		}

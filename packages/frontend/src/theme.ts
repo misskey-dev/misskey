@@ -7,9 +7,9 @@
 
 import { ref, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
-import lightTheme from '@@/themes/_light.json5';
-import darkTheme from '@@/themes/_dark.json5';
-import JSON5 from 'json5';
+import lightTheme from '@@/themes/_light.aison';
+import darkTheme from '@@/themes/_dark.aison';
+import { AiSON } from '@syuilo/aiscript';
 import { version } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { BundledTheme } from 'shiki/themes';
@@ -61,7 +61,7 @@ export const getBuiltinThemes = () => Promise.all(
 		'd-cherry',
 		'd-ice',
 		'd-u0',
-	].map(name => import(`@@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
+	].map(name => import(`@@/themes/${name}.aison`).then(({ default: _default }): Theme => _default)),
 );
 
 export function getBuiltinThemesRef() {
@@ -229,7 +229,7 @@ export function parseThemeCode(code: string): Theme {
 	let theme;
 
 	try {
-		theme = JSON5.parse(code);
+		theme = AiSON.parse(code);
 	} catch (err) {
 		throw new Error('Failed to parse theme json');
 	}

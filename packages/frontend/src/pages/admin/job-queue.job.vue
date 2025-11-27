@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<MkFolder :withSpacer="false">
 			<template #label>Options</template>
-			<MkCode :code="JSON5.stringify(job.opts, null, '\t')" lang="js"/>
+			<MkCode :code="AiSON.stringify(job.opts, null, '\t')" lang="js"/>
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'timeline'">
@@ -143,14 +143,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkTl>
 	</div>
 	<div v-else-if="tab === 'data'">
-		<MkCode :code="JSON5.stringify(job.data, null, '\t')" lang="js"/>
+		<MkCode :code="AiSON.stringify(job.data, null, '\t')" lang="js"/>
 	</div>
 	<div v-else-if="tab === 'dataEdit'" class="_gaps_s">
-		<MkCodeEditor v-model="editData" lang="json5"></MkCodeEditor>
+		<MkCodeEditor v-model="editData" lang="js"></MkCodeEditor>
 		<MkButton><i class="ti ti-device-floppy"></i> Update</MkButton>
 	</div>
 	<div v-else-if="tab === 'result'">
-		<MkCode :code="JSON5.stringify(job.returnValue, null, '\t')" lang="json5"/>
+		<MkCode :code="AiSON.stringify(job.returnValue, null, '\t')" lang="js"/>
 	</div>
 	<div v-else-if="tab === 'error'" class="_gaps_s">
 		<MkCode v-for="log in job.stacktrace" :code="log" lang="stacktrace"/>
@@ -165,7 +165,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript';
 import type { TlEvent } from '@/components/MkTl.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -200,7 +200,7 @@ const emit = defineEmits<{
 }>();
 
 const tab = ref('info');
-const editData = ref(JSON5.stringify(props.job.data, null, '\t'));
+const editData = ref(AiSON.stringify(props.job.data, null, '\t'));
 const canEdit = true;
 const logs = ref<string[]>([]);
 

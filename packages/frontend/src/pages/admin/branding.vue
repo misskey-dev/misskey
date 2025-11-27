@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript';
 import { host } from '@@/js/config.js';
 import type { ClientOptions } from '@/instance.js';
 import MkInput from '@/components/MkInput.vue';
@@ -209,7 +209,7 @@ function save() {
 		serverErrorImageUrl: serverErrorImageUrl.value === '' ? null : serverErrorImageUrl.value,
 		repositoryUrl: repositoryUrl.value === '' ? null : repositoryUrl.value,
 		feedbackUrl: feedbackUrl.value === '' ? null : feedbackUrl.value,
-		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride.value)),
+		manifestJsonOverride: manifestJsonOverride.value === '' ? '{}' : JSON.stringify(AiSON.parse(manifestJsonOverride.value)),
 	}).then(() => {
 		fetchInstance(true);
 	});

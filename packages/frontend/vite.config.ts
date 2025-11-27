@@ -11,7 +11,7 @@ import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
-import pluginJson5 from './vite.json5.js';
+import pluginAison from './lib/rollup-plugin-aison.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
@@ -20,7 +20,7 @@ import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
-const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.aison', '.svg', '.sass', '.scss', '.css', '.vue'];
 
 /**
  * 検索インデックスの生成設定
@@ -117,7 +117,7 @@ export function getConfig(): UserConfig {
 			pluginVue(),
 			pluginRemoveUnrefI18n(),
 			pluginUnwindCssModuleClassName(),
-			pluginJson5(),
+			pluginAison(),
 			pluginGlsl({ minify: true }),
 			...process.env.NODE_ENV === 'production'
 				? [

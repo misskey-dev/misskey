@@ -7,13 +7,13 @@ import { promises as fsp } from 'fs';
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
-import pluginJson5 from './vite.json5.js';
+import pluginAison from './lib/rollup-plugin-aison.js';
 import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
-const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.aison', '.svg', '.sass', '.scss', '.css', '.vue'];
 
 /**
  * Misskeyのフロントエンドにバンドルせず、CDNなどから別途読み込むリソースを記述する。
@@ -89,7 +89,7 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginVue(),
 			pluginRemoveUnrefI18n(),
-			pluginJson5(),
+			pluginAison(),
 		],
 
 		resolve: {

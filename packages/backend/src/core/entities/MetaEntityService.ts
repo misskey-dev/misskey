@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { AdsRepository } from '@/models/_.js';
@@ -54,13 +54,13 @@ export class MetaEntityService {
 		let defaultDarkTheme = null;
 		if (instance.defaultLightTheme) {
 			try {
-				defaultLightTheme = JSON.stringify(JSON5.parse(instance.defaultLightTheme));
+				defaultLightTheme = JSON.stringify(AiSON.parse(instance.defaultLightTheme));
 			} catch (e) {
 			}
 		}
 		if (instance.defaultDarkTheme) {
 			try {
-				defaultDarkTheme = JSON.stringify(JSON5.parse(instance.defaultDarkTheme));
+				defaultDarkTheme = JSON.stringify(AiSON.parse(instance.defaultDarkTheme));
 			} catch (e) {
 			}
 		}
