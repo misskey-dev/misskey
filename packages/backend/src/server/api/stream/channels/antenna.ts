@@ -6,6 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
@@ -42,6 +43,32 @@ class AntennaChannel extends Channel {
 			const note = await this.noteEntityService.pack(data.body.id, this.user, { detail: true });
 
 			if (this.isNoteMutedOrBlocked(note)) return;
+
+			if (this.user) {
+				const shouldHideThisNote = await this.noteEntityService.shouldHideNote(note, this.user.id);
+				if (shouldHideThisNote) {
+					this.noteEntityService.hideNote(note);
+				}
+
+				if (isRenotePacked(note) && note.renote) {
+					const shouldHideRenote = await this.noteEntityService.shouldHideNote(note.renote, this.user.id);
+
+					if (isQuotePacked(note)) {
+						// 引用リノートの場合、リノート部分だけ隠す
+						this.noteEntityService.hideNote(note.renote);
+					} else if (shouldHideRenote) {
+						// 純粋なリノートの場合、流さない（そもそもここにたどり着くことは無いとは思うけど）
+						return;
+					}
+				}
+
+				if (isRenotePacked(note) && !isQuotePacked(note)) {
+					if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+						const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+						note.renote.myReaction = myRenoteReaction;
+					}
+				}
+			}
 
 			this.send('note', note);
 		} else {
