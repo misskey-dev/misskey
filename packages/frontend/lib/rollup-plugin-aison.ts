@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { AiSON, errors } from '@syuilo/aiscript';
 import type { Plugin } from 'rollup';
 import { createFilter, dataToEsm } from '@rollup/pluginutils';
