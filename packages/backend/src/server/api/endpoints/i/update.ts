@@ -205,7 +205,8 @@ export const paramDef = {
 				},
 			],
 		},
-		hideSearchResult: { type: 'boolean' },
+		hideNoteSearchResult: { type: 'boolean' },
+		hideUserSearchResult: { type: 'boolean' },
 		publicReactions: { type: 'boolean' },
 		hideActivity: { type: 'boolean' },
 		hideProfileFiles: { type: 'boolean' },
@@ -378,7 +379,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
 			if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
 			if (ps.activeStatusVisibility !== undefined) updates.activeStatusVisibility = ps.activeStatusVisibility;
-			if (typeof ps.hideSearchResult === 'boolean') updates.hideSearchResult = ps.hideSearchResult;
+			if (typeof ps.hideNoteSearchResult === 'boolean') updates.hideNoteSearchResult = ps.hideNoteSearchResult;
+			if (typeof ps.hideUserSearchResult === 'boolean') updates.hideUserSearchResult = ps.hideUserSearchResult;
 			if (typeof ps.publicReactions === 'boolean') profileUpdates.publicReactions = ps.publicReactions;
 			if (typeof ps.hideActivity === 'boolean') profileUpdates.hideActivity = ps.hideActivity;
 			if (typeof ps.hideProfileFiles === 'boolean') profileUpdates.hideProfileFiles = ps.hideProfileFiles;

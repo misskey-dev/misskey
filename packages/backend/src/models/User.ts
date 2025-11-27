@@ -49,7 +49,12 @@ export class MiUser {
 	@Column('boolean', {
 		default: true, // false から true に変更
 	})
-	public hideSearchResult: boolean;
+	public hideNoteSearchResult: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public hideUserSearchResult: boolean;
 
 	@Column('varchar', {
 		length: 128,

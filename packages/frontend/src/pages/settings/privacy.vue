@@ -117,9 +117,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ i18n.ts.hideOnlineStatus }}
 			<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
 		</MkSwitch>
-		<MkSwitch v-model="hideSearchResult" @update:modelValue="save()">
-			<template #label><SearchLabel>{{ i18n.ts.hideSearchResult }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-			<template #caption><SearchText>{{ i18n.ts.hideSearchResultDescription }}</SearchText></template>
+		<MkSwitch v-model="hideNoteSearchResult" @update:modelValue="save()">
+			<template #label><SearchLabel>{{ i18n.ts.hideNoteSearchResult }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+			<template #caption><SearchText>{{ i18n.ts.hideNoteSearchResultDescription }}</SearchText></template>
+		</MkSwitch>
+		<MkSwitch v-model="hideUserSearchResult" @update:modelValue="save()">
+			<template #label><SearchLabel>{{ i18n.ts.hideUserSearchResult }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+			<template #caption><SearchText>{{ i18n.ts.hideUserSearchResultDescription }}</SearchText></template>
 		</MkSwitch>
 		<MkSwitch v-model="noCrawle" @update:modelValue="save()">
 			{{ i18n.ts.noCrawle }}
@@ -305,7 +309,8 @@ const requireSigninToViewContents = ref($i.requireSigninToViewContents ?? false)
 const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null);
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
-const hideSearchResult = ref($i.hideSearchResult);
+const hideNoteSearchResult = ref($i.hideNoteSearchResult);
+const hideUserSearchResult = ref($i.hideUserSearchResult);
 const publicReactions = ref($i.publicReactions);
 const hideActivity = ref($i.hideActivity);
 const hideProfileFiles = ref($i.hideProfileFiles);
@@ -562,7 +567,8 @@ function save() {
 		makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
 		makeNotesHiddenBefore: makeNotesHiddenBefore.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
-		hideSearchResult: !!hideSearchResult.value,
+		hideNoteSearchResult: !!hideNoteSearchResult.value,
+		hideUserSearchResult: !!hideUserSearchResult.value,
 		publicReactions: !!publicReactions.value,
 		hideActivity: !!hideActivity.value,
 		hideProfileFiles: !!hideProfileFiles.value,

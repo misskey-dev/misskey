@@ -3519,13 +3519,21 @@ export interface Locale extends ILocale {
      */
     "activeStatusVisibility": string;
     /**
-     * 自分のノートを他人の検索結果から隠す
+     * 自分のノートを他人のノート検索結果から隠す
      */
-    "hideSearchResult": string;
+    "hideNoteSearchResult": string;
     /**
-     * 自分のノートを他人の検索結果に表示させないようにします。 (ノートの投稿範囲によっては他のサーバーから検索できてしまう可能性があります)
+     * 自分のノートを他人のノート検索結果に表示させないようにします。 (ノートの投稿範囲によっては他のサーバーから検索できてしまう可能性があります)
      */
-    "hideSearchResultDescription": string;
+    "hideNoteSearchResultDescription": string;
+    /**
+     * 自分を他人のユーザー検索結果から隠す
+     */
+    "hideUserSearchResult": string;
+    /**
+     * 自分を他人のユーザー検索結果に表示させないようにします。
+     */
+    "hideUserSearchResultDescription": string;
     /**
      * オンライン
      */
