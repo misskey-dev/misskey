@@ -45,19 +45,23 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			let text: string | undefined = undefined;
 			let type: typeof DIALOG_TYPES[number] = 'info';
 
-			if (_title != null && _title.type !== 'null') {
-				utils.assertString(_title);
+			if (_title != null && utils.isString(_title)) {
 				title = _title.value;
-			}
-			if (_text != null && _text.type !== 'null') {
-				utils.assertString(_text);
-				text = _text.value;
+			} else {
+				utils.assertNull(_title);
 			}
 
-			if (_type != null && _type.type !== 'null') {
-				utils.assertString(_type);
+			if (_text != null && utils.isString(_text)) {
+				text = _text.value;
+			} else {
+				utils.assertNull(_text);
+			}
+
+			if (_type != null && utils.isString(_type)) {
 				assertStringAndIsIn(_type, DIALOG_TYPES);
 				type = _type.value;
+			} else {
+				utils.assertNull(_type);
 			}
 
 			await os.alert({
@@ -72,19 +76,23 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			let text: string | undefined = undefined;
 			let type: typeof DIALOG_TYPES[number] = 'question';
 
-			if (_title != null && _title.type !== 'null') {
-				utils.assertString(_title);
+			if (_title != null && utils.isString(_title)) {
 				title = _title.value;
-			}
-			if (_text != null && _text.type !== 'null') {
-				utils.assertString(_text);
-				text = _text.value;
+			} else {
+				utils.assertNull(_title);
 			}
 
-			if (_type != null && _type.type !== 'null') {
-				utils.assertString(_type);
+			if (_text != null && utils.isString(_text)) {
+				text = _text.value;
+			} else {
+				utils.assertNull(_text);
+			}
+
+			if (_type != null && utils.isString(_type)) {
 				assertStringAndIsIn(_type, DIALOG_TYPES);
 				type = _type.value;
+			} else {
+				utils.assertNull(_type);
 			}
 
 			const confirm = await os.confirm({
@@ -106,12 +114,13 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			}
 
 			let actualToken: string | null = null;
-			if (token != null && token.type !== 'null') {
+			if (token != null && !utils.isNull(token)) {
 				utils.assertString(token);
 				// バグがあればundefinedもあり得るため念のため
 				if (typeof token.value !== 'string') throw new errors.AiScriptRuntimeError('invalid token');
 				actualToken = token.value;
 			}
+
 			if (actualToken == null) {
 				actualToken = opts.token ?? null;
 			}
@@ -119,6 +128,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			if (param == null) {
 				throw new errors.AiScriptRuntimeError('expected param');
 			}
+
 			utils.assertObject(param);
 			return misskeyApi(ep.value as keyof Misskey.Endpoints, utils.valToJs(param) as object, actualToken).then(res => {
 				return utils.jsToVal(res);

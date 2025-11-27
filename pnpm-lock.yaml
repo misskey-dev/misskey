@@ -729,8 +729,8 @@ importers:
         specifier: 10.26.0
         version: 10.26.0(vue@3.5.24(typescript@5.9.3))
       '@syuilo/aiscript':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 1.2.0
+        version: 1.2.0
       '@syuilo/aiscript-0-19-0':
         specifier: npm:@syuilo/aiscript@^0.19.0
         version: '@syuilo/aiscript@0.19.0'
@@ -4459,8 +4459,8 @@ packages:
   '@syuilo/aiscript@0.19.0':
     resolution: {integrity: sha512-ZWG4s1m6RrFjE7NeIMaxFz769YO1jW5ReTrOROrEO4IHheOrjxxJ/Ffe2TUNqX9/XxDloMwfWplKhfSzx8LGMA==}
 
-  '@syuilo/aiscript@1.1.2':
-    resolution: {integrity: sha512-cijsHTiMjeECocElyjRIcWMPGDhZIX3YfCOyzI6AZM8ajxRQ2hSqJwEh9pDr4mVTml9kLMHWDHmgfHkTHRJ1sg==}
+  '@syuilo/aiscript@1.2.0':
+    resolution: {integrity: sha512-3MkKfqDftqHyouINgHEIHnoTVWEeL0L1o7Y7Y9d8qb5h5vZKphzH/KVG3R2iI6CHtmO1mWHHJx5A499f80H9FA==}
 
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
@@ -14858,7 +14858,7 @@ snapshots:
       stringz: 2.1.0
       uuid: 9.0.1
 
-  '@syuilo/aiscript@1.1.2':
+  '@syuilo/aiscript@1.2.0':
     dependencies:
       seedrandom: 3.0.5
       stringz: 2.1.0
