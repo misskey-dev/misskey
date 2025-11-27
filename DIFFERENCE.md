@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2025.11.0-yami-1.9.29
+
 ### Refactor
 - **検索結果非表示設定をノートとユーザーに分離**
   - `hideSearchResult` を `hideNoteSearchResult` と `hideUserSearchResult` の2つの設定に分割
@@ -24,7 +26,7 @@
   - `hideNoteSearchResult`: "自分のノートを他人のノート検索結果から隠す"
   - `hideUserSearchResult`: "自分を他人のユーザー検索結果から隠す"
 
-### 2025.11.0-yami-1.9.28
+## 2025.11.0-yami-1.9.28
 
 ### Misskey 2025.11.0への追従
 
