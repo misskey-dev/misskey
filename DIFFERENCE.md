@@ -1,6 +1,6 @@
 # DIFFRENCE
 
-## Unreleased
+## 2025.11.0-yami-1.9.29
 
 ### Refactor
 - **検索結果非表示設定をノートとユーザーに分離**
