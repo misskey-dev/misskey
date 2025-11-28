@@ -139,13 +139,13 @@ export const meta = {
 		scheduledAtRequired: {
 			message: 'scheduledAt is required when isActuallyScheduled is true.',
 			code: 'SCHEDULED_AT_REQUIRED',
-			id: '94a89a43-3591-400a-9c17-dd166e71fdfa',
+			id: '15e28a55-e74c-4d65-89b7-8880cdaaa87d',
 		},
 
 		scheduledAtMustBeInFuture: {
 			message: 'scheduledAt must be in the future.',
 			code: 'SCHEDULED_AT_MUST_BE_IN_FUTURE',
-			id: 'b34d0c1b-996f-4e34-a428-c636d98df457',
+			id: 'e4bed6c9-017e-4934-aed0-01c22cc60ec1',
 		},
 	},
 
