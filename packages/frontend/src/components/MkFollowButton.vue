@@ -102,6 +102,21 @@ async function onClick() {
 			await misskeyApi('following/delete', {
 				userId: props.user.id,
 			});
+		} else if (hasPendingFollowRequestFromYou.value) {
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+			});
+
+			if (canceled) {
+				wait.value = false;
+				return;
+			}
+
+			await misskeyApi('following/requests/cancel', {
+				userId: props.user.id,
+			});
+			hasPendingFollowRequestFromYou.value = false;
 		} else {
 			if (prefer.s.alwaysConfirmFollow) {
 				const { canceled } = await os.confirm({
@@ -115,41 +130,34 @@ async function onClick() {
 				}
 			}
 
-			if (hasPendingFollowRequestFromYou.value) {
-				await misskeyApi('following/requests/cancel', {
-					userId: props.user.id,
-				});
-				hasPendingFollowRequestFromYou.value = false;
-			} else {
-				await misskeyApi('following/create', {
-					userId: props.user.id,
-					withReplies: prefer.s.defaultFollowWithReplies,
-				});
-				emit('update:user', {
-					...props.user,
-					withReplies: prefer.s.defaultFollowWithReplies,
-				});
-				hasPendingFollowRequestFromYou.value = true;
+			await misskeyApi('following/create', {
+				userId: props.user.id,
+				withReplies: prefer.s.defaultFollowWithReplies,
+			});
+			emit('update:user', {
+				...props.user,
+				withReplies: prefer.s.defaultFollowWithReplies,
+			});
+			hasPendingFollowRequestFromYou.value = true;
 
-				if ($i == null) {
-					wait.value = false;
-					return;
-				}
+			if ($i == null) {
+				wait.value = false;
+				return;
+			}
 
-				claimAchievement('following1');
+			claimAchievement('following1');
 
-				if ($i.followingCount >= 10) {
-					claimAchievement('following10');
-				}
-				if ($i.followingCount >= 50) {
-					claimAchievement('following50');
-				}
-				if ($i.followingCount >= 100) {
-					claimAchievement('following100');
-				}
-				if ($i.followingCount >= 300) {
-					claimAchievement('following300');
-				}
+			if ($i.followingCount >= 10) {
+				claimAchievement('following10');
+			}
+			if ($i.followingCount >= 50) {
+				claimAchievement('following50');
+			}
+			if ($i.followingCount >= 100) {
+				claimAchievement('following100');
+			}
+			if ($i.followingCount >= 300) {
+				claimAchievement('following300');
 			}
 		}
 	} catch (err) {

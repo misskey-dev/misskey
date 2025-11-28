@@ -63,6 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
+import { utils } from '@syuilo/aiscript';
+import { compareVersions } from 'compare-versions';
 import { url } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
@@ -74,7 +76,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkAsUi from '@/components/MkAsUi.vue';
-import { getAiScriptVersion } from '@/aiscript/common.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
@@ -191,12 +192,21 @@ function start() {
 	run();
 }
 
+function getIsLegacy(version: string | null): boolean {
+	if (version == null) return false;
+	try {
+		return compareVersions(version, '1.0.0') < 0;
+	} catch {
+		return false;
+	}
+}
+
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
 
-	const version = getAiScriptVersion(flash.value.script);
-	const isLegacy = version ? version.major < 1 : false;
+	const version = utils.getLangVersion(flash.value.script);
+	const isLegacy = version != null && getIsLegacy(version);
 
 	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
 
