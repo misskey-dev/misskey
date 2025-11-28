@@ -295,8 +295,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.chatScope !== undefined) updates.chatScope = ps.chatScope;
 
 			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
-				// TODO: ちゃんと数える
-				const length = JSON.stringify(mutedWords).length;
+				const count = (arr: (string[] | string)[]) => {
+					let length = 0;
+					for (const item of arr) {
+						if (typeof item === 'string') {
+							length += item.length;
+						} else if (Array.isArray(item)) {
+							for (const subItem of item) {
+								length += subItem.length;
+							}
+						}
+					}
+					return length;
+				};
+				const length = count(mutedWords);
 				if (length > limit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}

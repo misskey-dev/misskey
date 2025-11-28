@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2025.11.0",
+	"version": "2025.11.1",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -37,19 +37,19 @@
 		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.53.3",
-		"@types/node": "24.9.2",
-		"@typescript-eslint/eslint-plugin": "8.46.2",
-		"@typescript-eslint/parser": "8.46.2",
-		"@vitest/coverage-v8": "3.2.4",
-		"esbuild": "0.25.11",
+		"@microsoft/api-extractor": "7.55.0",
+		"@types/node": "24.10.1",
+		"@typescript-eslint/eslint-plugin": "8.47.0",
+		"@typescript-eslint/parser": "8.47.0",
+		"@vitest/coverage-v8": "4.0.10",
+		"esbuild": "0.27.0",
 		"execa": "9.6.0",
-		"glob": "11.0.3",
+		"glob": "13.0.0",
 		"ncp": "2.0.0",
-		"nodemon": "3.1.10",
+		"nodemon": "3.1.11",
 		"tsd": "0.33.0",
 		"typescript": "5.9.3",
-		"vitest": "3.2.4",
+		"vitest": "4.0.10",
 		"vitest-websocket-mock": "0.5.0"
 	},
 	"files": [
