@@ -202,7 +202,7 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	// TODO
-	//const locales = await import('../../../../locales/index.js');
+	//const locales = await import('@misskey/locale-assets');
 
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 

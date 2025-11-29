@@ -16,6 +16,13 @@ await execa('pnpm', ['clean'], {
 	stderr: process.stderr,
 });
 
+// アセットのビルドで依存しているので一番最初に必要
+await execa('pnpm', ['--filter', 'locale-assets', 'build'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 await Promise.all([
 	execa('pnpm', ['build-pre'], {
 		cwd: _dirname + '/../',
@@ -83,6 +90,12 @@ execa('pnpm', ['--filter', 'sw', 'watch'], {
 });
 
 execa('pnpm', ['--filter', 'misskey-js', 'watch', '--no-clean'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'locale-assets', 'watch', '--no-clean'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

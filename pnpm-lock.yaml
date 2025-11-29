@@ -53,6 +53,9 @@ importers:
       '@misskey-dev/eslint-plugin':
         specifier: 2.2.0
         version: 2.2.0(@eslint/compat@1.4.0(eslint@9.39.1))(@eslint/js@9.39.1)(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1))(eslint@9.39.1)(globals@16.5.0)
+      '@misskey/locale-assets':
+        specifier: workspace:*
+        version: link:packages/locale-assets
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -716,6 +719,9 @@ importers:
       '@misskey-dev/browser-image-resizer':
         specifier: 2024.1.0
         version: 2024.1.0
+      '@misskey/locale-assets':
+        specifier: workspace:*
+        version: link:../locale-assets
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.53.3)
@@ -1101,6 +1107,9 @@ importers:
 
   packages/frontend-builder:
     dependencies:
+      '@misskey/locale-assets':
+        specifier: workspace:*
+        version: link:../locale-assets
       estree-walker:
         specifier: 3.0.3
         version: 3.0.3
@@ -1135,6 +1144,9 @@ importers:
       '@discordapp/twemoji':
         specifier: 16.0.1
         version: 16.0.1
+      '@misskey/locale-assets':
+        specifier: workspace:*
+        version: link:../locale-assets
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.53.3)
@@ -1304,6 +1316,9 @@ importers:
 
   packages/frontend-shared:
     dependencies:
+      '@misskey/locale-assets':
+        specifier: workspace:*
+        version: link:../locale-assets
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -1369,6 +1384,46 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.47.0
         version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
+
+  packages/locale-assets:
+    dependencies:
+      js-yaml:
+        specifier: 4.1.1
+        version: 4.1.1
+    devDependencies:
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.47.0
+        version: 8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.47.0
+        version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
+      chokidar:
+        specifier: 4.0.3
+        version: 4.0.3
+      esbuild:
+        specifier: 0.27.0
+        version: 0.27.0
+      execa:
+        specifier: 9.6.0
+        version: 9.6.0
+      glob:
+        specifier: 11.1.0
+        version: 11.1.0
+      nodemon:
+        specifier: 3.1.11
+        version: 3.1.11
+      tsx:
+        specifier: 4.20.6
+        version: 4.20.6
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
   packages/misskey-bubble-game:
     dependencies:
@@ -1534,6 +1589,9 @@ importers:
 
   packages/sw:
     dependencies:
+      '@misskey/locale-assets':
+        specifier: workspace:*
+        version: link:../locale-assets
       esbuild:
         specifier: 0.27.0
         version: 0.27.0
