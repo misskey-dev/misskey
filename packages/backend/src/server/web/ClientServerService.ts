@@ -69,7 +69,6 @@ import { OAuthPage } from './views/oauth.js';
 
 import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
-
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
