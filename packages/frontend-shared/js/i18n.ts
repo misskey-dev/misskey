@@ -3,36 +3,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { ILocale, ParameterizedString } from '@misskey/locale-assets';
+import type { ILocale, ParameterizedString } from 'i18n';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TODO = any;
 
 type FlattenKeys<T extends ILocale, TPrediction> = keyof {
 	[K in keyof T as T[K] extends ILocale
-		? FlattenKeys<T[K], TPrediction> extends infer C extends string
-			? `${K & string}.${C}`
-			: never
-		: T[K] extends TPrediction
-			? K
-			: never]: T[K];
+	? FlattenKeys<T[K], TPrediction> extends infer C extends string
+	? `${K & string}.${C}`
+	: never
+	: T[K] extends TPrediction
+	? K
+	: never]: T[K];
 };
 
 type ParametersOf<T extends ILocale, TKey extends FlattenKeys<T, ParameterizedString>> = TKey extends `${infer K}.${infer C}`
 	// @ts-expect-error -- C は明らかに FlattenKeys<T[K], ParameterizedString> になるが、型システムはここでは TKey がドット区切りであることのコンテキストを持たないので、型システムに合法にて示すことはできない。
 	? ParametersOf<T[K], C>
 	: TKey extends keyof T
-		? T[TKey] extends ParameterizedString<infer P>
-			? P
-			: never
-		: never;
+	? T[TKey] extends ParameterizedString<infer P>
+	? P
+	: never
+	: never;
 
 type Tsx<T extends ILocale> = {
 	// `string extends T[K] ? never : K` part removes non-parameterized string keys from Tsx type.
 	readonly [K in keyof T as string extends T[K] ? never : K]: T[K] extends ParameterizedString<infer P>
-		? (arg: { readonly [_ in P]: string | number }) => string
-		// @ts-expect-error -- 証明省略
-		: Tsx<T[K]>;
+	? (arg: { readonly [_ in P]: string | number }) => string
+	// @ts-expect-error -- 証明省略
+	: Tsx<T[K]>;
 };
 
 export class I18n<T extends ILocale> {

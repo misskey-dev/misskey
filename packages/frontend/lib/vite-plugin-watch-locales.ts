@@ -4,7 +4,7 @@
  */
 
 import path from 'node:path'
-import locales from '@misskey/locale-assets';
+import locales from 'i18n';
 
 const localesDir = path.resolve(__dirname, '../../locale-assets/src/locales')
 

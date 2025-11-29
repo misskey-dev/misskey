@@ -3,11 +3,11 @@ name: Lint
 on:
   push:
     paths:
-      - packages/locale-assets/**
+      - packages/i18n/**
       - .github/workflows/locale.yml
   pull_request:
     paths:
-      - packages/locale-assets/**
+      - packages/i18n/**
       - .github/workflows/locale.yml
 jobs:
   locale_verify:
@@ -26,5 +26,5 @@ jobs:
           cache: "pnpm"
       - run: pnpm i --frozen-lockfile
       - name: Verify Locales
-        working-directory: ./packages/locale-assets
+        working-directory: ./packages/i18n
         run: pnpm run verify

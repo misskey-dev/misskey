@@ -9,7 +9,7 @@
 	"packageManager": "pnpm@10.22.0",
 	"workspaces": [
 		"packages/misskey-js",
-		"packages/locale-assets",
+		"packages/i18n",
 		"packages/misskey-reversi",
 		"packages/misskey-bubble-game",
 		"packages/icons-subsetter",
@@ -70,7 +70,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
-		"@misskey/locale-assets": "workspace:*",
+		"i18n": "workspace:*",
 		"@misskey-dev/eslint-plugin": "2.2.0",
 		"@types/js-yaml": "4.0.9",
 		"@types/node": "24.10.1",
