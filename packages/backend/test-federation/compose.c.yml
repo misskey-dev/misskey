@@ -1,0 +1,64 @@
+services:
+  c.test:
+    extends:
+      file: ./compose.tpl.yml
+      service: nginx
+    depends_on:
+      misskey.c.test:
+        condition: service_healthy
+    networks:
+      - internal_network_c
+    volumes:
+      - type: bind
+        source: ./.config/c.test.conf
+        target: /etc/nginx/conf.d/c.test.conf
+        read_only: true
+      - type: bind
+        source: ./certificates/c.test.crt
+        target: /etc/nginx/certificates/c.test.crt
+        read_only: true
+      - type: bind
+        source: ./certificates/c.test.key
+        target: /etc/nginx/certificates/c.test.key
+        read_only: true
+
+  misskey.c.test:
+    extends:
+      file: ./compose.tpl.yml
+      service: misskey
+    depends_on:
+      db.c.test:
+        condition: service_healthy
+      redis.test:
+        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - internal_network_c
+    volumes:
+      - type: bind
+        source: ./.config/c.test.default.yml
+        target: /misskey/.config/default.yml
+        read_only: true
+
+  db.c.test:
+    extends:
+      file: ./compose.tpl.yml
+      service: db
+    networks:
+      - internal_network_c
+    volumes:
+      - type: bind
+        source: ./volumes/db.c
+        target: /var/lib/postgresql/data
+        bind:
+          create_host_path: true
+
+networks:
+  internal_network_c:
+    internal: true
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+          ip_range: 172.23.0.0/24

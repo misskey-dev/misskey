@@ -156,6 +156,7 @@ export class MetaEntityService {
 			...packed,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
+			resolveRemoteReactedNotes: instance.resolveRemoteReactedNotes,
 			requireSetup: this.meta.rootUserId == null,
 			proxyAccountName: proxyAccount.username,
 			features: {

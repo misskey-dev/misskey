@@ -35,6 +35,7 @@ services:
       - external_network
       - internal_network_a
       - internal_network_b
+      - internal_network_c
     volumes:
       - type: volume
         source: node_modules_dev
@@ -47,6 +48,7 @@ services:
     networks:
       - internal_network_a
       - internal_network_b
+      - internal_network_c
 
   a.test:
     networks:
@@ -92,13 +94,35 @@ services:
         source: node_modules_misskey-reversi
         target: /misskey/packages/misskey-reversi/node_modules
 
+  c.test:
+    networks:
+      - internal_network
+
+  misskey.c.test:
+    networks:
+      - external_network
+      - internal_network
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /misskey/node_modules
+      - type: volume
+        source: node_modules_backend
+        target: /misskey/packages/backend/node_modules
+      - type: volume
+        source: node_modules_misskey-js
+        target: /misskey/packages/misskey-js/node_modules
+      - type: volume
+        source: node_modules_misskey-reversi
+        target: /misskey/packages/misskey-reversi/node_modules
+
 networks:
   external_network:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.23.0.0/16
-          ip_range: 172.23.0.0/24
+        - subnet: 172.24.0.0/16
+          ip_range: 172.24.0.0/24
   internal_network:
     internal: true
     driver: bridge

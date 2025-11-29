@@ -34,5 +34,6 @@ console.log('Daemon started running');
 	setInterval(() => {
 		purgeLimit('a.test', redisClient);
 		purgeLimit('b.test', redisClient);
+		purgeLimit('c.test', redisClient);
 	}, 200);
 }

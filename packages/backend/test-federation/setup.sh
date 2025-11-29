@@ -33,3 +33,4 @@ function generate {
 
 generate a.test
 generate b.test
+generate c.test
