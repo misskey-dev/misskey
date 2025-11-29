@@ -15,7 +15,6 @@ export function BiosPage(props: {
 					<meta name="application-name" content="Misskey" />
 					<title>Misskey Repair Tool</title>
 					<link rel="stylesheet" href="/static-assets/misc/bios.css" />
-					<script src="/static-assets/misc/bios.js"></script>
 				</head>
 
 				<body>
@@ -28,6 +27,7 @@ export function BiosPage(props: {
 						</div>
 						<div id="content"></div>
 					</main>
+					<script src="/static-assets/misc/bios.js"></script>
 				</body>
 			</html>
 		</>

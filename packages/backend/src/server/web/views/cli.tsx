@@ -16,7 +16,6 @@ export function CliPage(props: {
 					<title>Misskey CLI Tool</title>
 
 					<link rel="stylesheet" href="/static-assets/misc/cli.css" />
-					<script src="/static-assets/misc/cli.js"></script>
 				</head>
 
 				<body>
@@ -30,6 +29,7 @@ export function CliPage(props: {
 						</div>
 						<div id="tl"></div>
 					</main>
+					<script src="/static-assets/misc/cli.js"></script>
 				</body>
 			</html>
 		</>

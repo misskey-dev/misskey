@@ -12,9 +12,11 @@ export function FlushPage(props?: {}) {
 					<meta charset="UTF-8" />
 					<meta name="application-name" content="Misskey" />
 					<title>Clear preferences and cache</title>
-					<script src="/static-assets/misc/flush.js"></script>
 				</head>
-				<body id="msg"></body>
+				<body>
+					<div id="msg"></div>
+					<script src="/static-assets/misc/flush.js"></script>
+				</body>
 			</html>
 		</>
 	);
