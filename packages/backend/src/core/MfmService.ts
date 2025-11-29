@@ -379,7 +379,7 @@ export class MfmService {
 				const href = remoteUserInfo
 					? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri)
 					: `${this.config.url}/${acct.endsWith(`@${this.config.url}`) ? acct.substring(0, acct.length - this.config.url.length - 1) : acct}`;
-				return `<a href="${new URL(href).href}" class="u-url mention">${escapeHtml(acct)}</a>`;
+				return `<a href="${escapeHtml(new URL(href).href)}" class="u-url mention">${escapeHtml(acct)}</a>`;
 			},
 
 			quote: (node) => {
