@@ -362,7 +362,7 @@ export class MfmService {
 			},
 
 			hashtag: (node) => {
-				return `<a href="${this.config.url}/tags/${encodeURIComponent(escapeHtml(node.props.hashtag))}" rel="tag">#${escapeHtml(node.props.hashtag)}</a>`;
+				return `<a href="${this.config.url}/tags/${encodeURIComponent(node.props.hashtag)}" rel="tag">#${escapeHtml(node.props.hashtag)}</a>`;
 			},
 
 			inlineCode: (node) => {
@@ -378,7 +378,7 @@ export class MfmService {
 			},
 
 			link: (node) => {
-				return `<a href="${encodeURIComponent(escapeHtml(node.props.url))}">${toHtml(node.children)}</a>`;
+				return `<a href="${new URL(node.props.url).href}">${toHtml(node.children)}</a>`;
 			},
 
 			mention: (node) => {
@@ -387,7 +387,7 @@ export class MfmService {
 				const href = remoteUserInfo
 					? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri)
 					: `${this.config.url}/${acct.endsWith(`@${this.config.url}`) ? acct.substring(0, acct.length - this.config.url.length - 1) : acct}`;
-				return `<a href="${encodeURIComponent(escapeHtml(href))}" class="u-url mention">${escapeHtml(acct)}</a>`;
+				return `<a href="${new URL(href).href}" class="u-url mention">${escapeHtml(acct)}</a>`;
 			},
 
 			quote: (node) => {
@@ -411,11 +411,11 @@ export class MfmService {
 			},
 
 			url: (node) => {
-				return `<a href="${encodeURIComponent(escapeHtml(node.props.url))}">${escapeHtml(node.props.url)}</a>`;
+				return `<a href="${new URL(node.props.url).href}">${escapeHtml(node.props.url)}</a>`;
 			},
 
 			search: (node) => {
-				return `<a href="https://www.google.com/search?q=${encodeURIComponent(escapeHtml(node.props.query))}">${escapeHtml(node.props.content)}</a>`;
+				return `<a href="https://www.google.com/search?q=${encodeURIComponent(node.props.query)}">${escapeHtml(node.props.content)}</a>`;
 			},
 
 			plain: (node) => {
