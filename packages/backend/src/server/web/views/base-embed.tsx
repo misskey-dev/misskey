@@ -35,7 +35,7 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 				<head>
 					<meta charset="UTF-8" />
 					<meta name="application-name" content="Misskey" />
-					<meta name="refferer" content="origin" />
+					<meta name="referer" content="origin" />
 					<meta name="theme-color" content={props.themeColor ?? '#86b300'} />
 					<meta name="theme-color-orig" content={props.themeColor ?? '#86b300'} />
 					<meta name="viewport" content="width=device-width, initial-scale=1.0" />
