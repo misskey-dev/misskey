@@ -354,7 +354,7 @@ export class MfmService {
 			},
 
 			emojiCode: (node) => {
-				return `\u200B:${node.props.name}:\u200B`;
+				return `\u200B:${escapeHtml(node.props.name)}:\u200B`;
 			},
 
 			unicodeEmoji: (node) => {
