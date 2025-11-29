@@ -24,6 +24,7 @@ COPY --link ["packages/frontend-shared/package.json", "./packages/frontend-share
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
 COPY --link ["packages/frontend-embed/package.json", "./packages/frontend-embed/"]
 COPY --link ["packages/frontend-builder/package.json", "./packages/frontend-builder/"]
+COPY --link ["packages/i18n/package.json", "./packages/i18n/"]
 COPY --link ["packages/icons-subsetter/package.json", "./packages/icons-subsetter/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
