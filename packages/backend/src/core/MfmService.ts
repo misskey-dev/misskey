@@ -404,7 +404,7 @@ export class MfmService {
 				const lines = node.props.text.split(/\r\n|\r|\n/).map(x => escapeHtml(x));
 
 				for (const x of intersperse<FIXME | 'br'>('br', lines)) {
-					html += x === 'br' ? '<br>' : x;
+					html += x === 'br' ? '<br />' : x;
 				}
 
 				return `<p>${html}</p>`;
