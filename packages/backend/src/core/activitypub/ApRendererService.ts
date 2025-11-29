@@ -435,7 +435,7 @@ export class ApRendererService {
 
 		if (quote != null) {
 			// Append quote link as `<br><br><span class="quote-inline">RE: <a href="...">...</a></span>`
-			// the claas name `quote-inline` is used in non-misskey clients for styling quote notes.
+			// the class name `quote-inline` is used in non-misskey clients for styling quote notes.
 			// For compatibility, the span part should be kept as possible.
 			extraHtml = `<br><br><span class="quote-inline">RE: <a href="${escapeHtml(quote)}">${escapeHtml(quote)}</a></span>`;
 		}
