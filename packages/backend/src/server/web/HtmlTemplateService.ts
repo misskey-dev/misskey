@@ -15,7 +15,6 @@ import type { CommonData } from './views/_.js';
 
 @Injectable()
 export class HtmlTemplateService {
-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
