@@ -274,14 +274,14 @@ export class MfmService {
 
 		function toHtml(children?: mfm.MfmNode[]): string {
 			if (children == null) return '';
-			return children.map(x => (handlers as any)[x.type](x)).join('');
+			return children.map(x => handlers[x.type](x)).join('');
 		}
 
 		function fnDefault(node: mfm.MfmFn) {
 			return `<i>${toHtml(node.children)}</i>`;
 		}
 
-		const handlers: { [K in mfm.MfmNode['type']]: (node: mfm.NodeType<K>) => any } = {
+		const handlers = {
 			bold: (node) => {
 				return `<b>${toHtml(node.children)}</b>`;
 			},
@@ -370,7 +370,12 @@ export class MfmService {
 			},
 
 			link: (node) => {
-				return `<a href="${escapeHtml(new URL(node.props.url).href)}">${toHtml(node.children)}</a>`;
+				try {
+					const url = new URL(node.props.url);
+					return `<a href="${escapeHtml(url.href)}">${toHtml(node.children)}</a>`;
+				} catch (err) {
+					return `[${toHtml(node.children)}](${escapeHtml(node.props.url)})`;
+				}
 			},
 
 			mention: (node) => {
@@ -379,7 +384,12 @@ export class MfmService {
 				const href = remoteUserInfo
 					? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri)
 					: `${this.config.url}/${acct.endsWith(`@${this.config.url}`) ? acct.substring(0, acct.length - this.config.url.length - 1) : acct}`;
-				return `<a href="${escapeHtml(new URL(href).href)}" class="u-url mention">${escapeHtml(acct)}</a>`;
+				try {
+					const url = new URL(href);
+					return `<a href="${escapeHtml(url.href)}" class="u-url mention">${escapeHtml(acct)}</a>`;
+				} catch (err) {
+					return escapeHtml(acct);
+				}
 			},
 
 			quote: (node) => {
@@ -403,7 +413,12 @@ export class MfmService {
 			},
 
 			url: (node) => {
-				return `<a href="${escapeHtml(new URL(node.props.url).href)}">${escapeHtml(node.props.url)}</a>`;
+				try {
+					const url = new URL(node.props.url);
+					return `<a href="${escapeHtml(url.href)}">${escapeHtml(node.props.url)}</a>`;
+				} catch (err) {
+					return escapeHtml(node.props.url);
+				}
 			},
 
 			search: (node) => {
@@ -413,7 +428,7 @@ export class MfmService {
 			plain: (node) => {
 				return `<span>${toHtml(node.children)}</span>`;
 			},
-		};
+		} satisfies { [K in mfm.MfmNode['type']]: (node: mfm.NodeType<K>) => string } as { [K in mfm.MfmNode['type']]: (node: mfm.MfmNode) => string };
 
 		return `${toHtml(nodes)}${extraHtml ?? ''}`;
 	}
