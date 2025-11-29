@@ -12,6 +12,7 @@ import { intersperse } from '@/misc/prelude/array.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
+import { escapeHtml } from '@/misc/html-escape.js';
 import type { DefaultTreeAdapterMap } from 'parse5';
 import type * as mfm from 'mfm-js';
 
@@ -269,15 +270,6 @@ export class MfmService {
 	public toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = [], extraHtml: string | null = null) {
 		if (nodes == null) {
 			return null;
-		}
-
-		function escapeHtml(text: string): string {
-			return text
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#039;');
 		}
 
 		function toHtml(children?: mfm.MfmNode[]): string {

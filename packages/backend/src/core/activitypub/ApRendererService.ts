@@ -28,6 +28,7 @@ import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { IdService } from '@/core/IdService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { escapeHtml } from '@/misc/html-escape.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
@@ -436,7 +437,7 @@ export class ApRendererService {
 			// Append quote link as `<br><br><span class="quote-inline">RE: <a href="...">...</a></span>`
 			// the claas name `quote-inline` is used in non-misskey clients for styling quote notes.
 			// For compatibility, the span part should be kept as possible.
-			extraHtml = `<br><br><span class="quote-inline">RE: <a href="${quote}">${quote}</a></span>`;
+			extraHtml = `<br><br><span class="quote-inline">RE: <a href="${escapeHtml(quote)}">${escapeHtml(quote)}</a></span>`;
 		}
 
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
