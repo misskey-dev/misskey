@@ -407,7 +407,7 @@ export class MfmService {
 					html += x === 'br' ? '<br />' : x;
 				}
 
-				return `<p>${html}</p>`;
+				return html;
 			},
 
 			url: (node) => {
@@ -423,6 +423,6 @@ export class MfmService {
 			},
 		};
 
-		return `<p>${toHtml(nodes)}${extraHtml ?? ''}</p>`;
+		return `${toHtml(nodes)}${extraHtml ?? ''}`;
 	}
 }
