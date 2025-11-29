@@ -11,8 +11,7 @@ import * as yaml from 'js-yaml';
 import postcss from 'postcss';
 import * as terser from 'terser';
 
-import { build as buildLocales } from '@misskey/locale-assets';
-import meta from '../package.json' with { type: 'json' };
+import { locales } from '@misskey/locale-assets';
 import buildTarball from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
@@ -22,24 +21,12 @@ const configPath = process.env.MISSKEY_CONFIG_YML
 		? path.resolve(configDir, 'test.yml')
 		: path.resolve(configDir, 'default.yml');
 
-let locales = buildLocales();
-
 async function loadConfig() {
 	return fs.readFile(configPath, 'utf-8').then(data => yaml.load(data)).catch(() => null);
 }
 
 async function copyFrontendFonts() {
 	await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
-}
-
-async function copyFrontendLocales() {
-	await fs.mkdir('./built/_frontend_dist_/locales', { recursive: true });
-
-	const v = { '_version_': meta.version };
-
-	for (const [lang, locale] of Object.entries(locales)) {
-		await fs.writeFile(`./built/_frontend_dist_/locales/${lang}.${meta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
-	}
 }
 
 async function copyBackendViews() {
@@ -82,7 +69,6 @@ async function buildBackendStyle() {
 async function build() {
 	await Promise.all([
 		copyFrontendFonts(),
-		copyFrontendLocales(),
 		copyBackendViews(),
 		buildBackendScript(),
 		buildBackendStyle(),
@@ -91,15 +77,3 @@ async function build() {
 }
 
 await build();
-
-if (process.argv.includes('--watch')) {
-	const watcher = fs.watch('./packages/locale-assets/src/locales', { recursive: true });
-	for await (const event of watcher) {
-		const filename = event.filename?.replaceAll('\\', '/');
-		if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
-			console.log(`update ${filename} ...`)
-			locales = buildLocales();
-			await copyFrontendLocales()
-		}
-	}
-}

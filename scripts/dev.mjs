@@ -45,6 +45,11 @@ await Promise.all([
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
+	execa('pnpm', ['--filter', 'misskey-js', 'build'], {
+		cwd: _dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	}),
 ]);
 
 execa('pnpm', ['build-pre', '--watch'], {

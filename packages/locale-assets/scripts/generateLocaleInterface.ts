@@ -139,11 +139,11 @@ export async function generateLocaleInterface(localesDir: string): Promise<void>
 		);
 
 	const autogenDir = `${__dirname}/../src/autogen`;
-	if (fs.existsSync(autogenDir)) {
-		fs.rmSync(autogenDir, { recursive: true, force: true });
-	}
 	fs.mkdirSync(autogenDir, { recursive: true });
-	fs.writeFileSync(`${autogenDir}/locale.ts`, printed, 'utf-8');
+
+	// 一瞬ファイルが存在しなくなって途切れる→不安定になるらしいので、リネームで対処
+	fs.writeFileSync(`${autogenDir}/_locale.ts`, printed, 'utf-8');
+	fs.renameSync(`${autogenDir}/_locale.ts`, `${autogenDir}/locale.ts`);
 }
 
 // スクリプトとして直接実行された場合
