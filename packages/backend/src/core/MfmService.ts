@@ -12,7 +12,7 @@ import { intersperse } from '@/misc/prelude/array.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
-import { escapeHtml } from '@/misc/html-escape.js';
+import { escapeHtml } from '@/misc/escape-html.js';
 import type { DefaultTreeAdapterMap } from 'parse5';
 import type * as mfm from 'mfm-js';
 
