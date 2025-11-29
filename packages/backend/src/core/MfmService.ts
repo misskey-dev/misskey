@@ -370,7 +370,7 @@ export class MfmService {
 			},
 
 			link: (node) => {
-				return `<a href="${new URL(node.props.url).href}">${toHtml(node.children)}</a>`;
+				return `<a href="${escapeHtml(new URL(node.props.url).href)}">${toHtml(node.children)}</a>`;
 			},
 
 			mention: (node) => {
