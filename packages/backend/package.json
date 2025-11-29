@@ -150,7 +150,6 @@
 		"oauth2orize-pkce": "0.1.2",
 		"os-utils": "0.0.14",
 		"otpauth": "9.4.1",
-		"parse5": "7.3.0",
 		"pg": "8.16.3",
 		"pkce-challenge": "4.1.0",
 		"probe-image-size": "7.2.3",
