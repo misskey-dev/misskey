@@ -30,7 +30,8 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
-import { ClientServerService } from '@/server/web/ClientServerService.js';
+import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
+import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -252,7 +253,7 @@ export class OAuth2ProviderService {
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 		loggerService: LoggerService,
-		private clientServerService: ClientServerService,
+		private htmlTemplateService: HtmlTemplateService,
 	) {
 		this.#logger = loggerService.getLogger('oauth');
 
@@ -386,8 +387,8 @@ export class OAuth2ProviderService {
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
-			reply.header('Content-Type', 'text/html; charset=utf-8');
-			return await reply.send(await this.clientServerService.oauthReplyHandler({
+			return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+				...await this.htmlTemplateService.getCommonData(),
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
 				clientLogo: oauth2.client.logo ?? undefined,

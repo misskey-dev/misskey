@@ -20,7 +20,6 @@ import * as Acct from '@/misc/acct.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
-import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
@@ -41,14 +40,13 @@ import type Logger from '@/logger.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
+import { HtmlTemplateService } from './HtmlTemplateService.js';
 
-import type { CommonData } from './views/_.js';
 import { BasePage } from './views/base.js';
 import { UserPage } from './views/user.js';
 import { NotePage } from './views/note.js';
@@ -125,7 +123,6 @@ export class ClientServerService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private pageEntityService: PageEntityService,
-		private metaEntityService: MetaEntityService,
 		private galleryPostEntityService: GalleryPostEntityService,
 		private clipEntityService: ClipEntityService,
 		private channelEntityService: ChannelEntityService,
@@ -133,7 +130,7 @@ export class ClientServerService {
 		private announcementEntityService: AnnouncementEntityService,
 		private urlPreviewService: UrlPreviewService,
 		private feedService: FeedService,
-		private roleService: RoleService,
+		private htmlTemplateService: HtmlTemplateService,
 		private clientLoggerService: ClientLoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
@@ -197,25 +194,6 @@ export class ClientServerService {
 
 		reply.header('Cache-Control', 'max-age=300');
 		return (manifest);
-	}
-
-	@bindThis
-	private async generateCommonData(meta: MiMeta): Promise<CommonData> {
-		return {
-			version: this.config.version,
-			config: this.config,
-			instanceName: meta.name ?? 'Misskey',
-			icon: meta.iconUrl,
-			appleTouchIcon: meta.app512IconUrl,
-			themeColor: meta.themeColor,
-			serverErrorImageUrl: meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
-			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
-			notFoundImageUrl: meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
-			instanceUrl: this.config.url,
-			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(meta)),
-			now: Date.now(),
-			federationEnabled: this.meta.federation !== 'none',
-		};
 	}
 
 	@bindThis
@@ -422,19 +400,13 @@ export class ClientServerService {
 
 		//#endregion
 
-		const replyHtml = async (reply: FastifyReply, html: string | Promise<string>) => {
-			reply.header('Content-Type', 'text/html; charset=utf-8');
-			const _html = await html;
-			return reply.send(_html);
-		};
-
 		const renderBase = async (reply: FastifyReply, data: Partial<Parameters<typeof BasePage>[0]> = {}) => {
 			reply.header('Cache-Control', 'public, max-age=30');
-			return await replyHtml(reply, BasePage({
+			return await HtmlTemplateService.replyHtml(reply, BasePage({
 				img: this.meta.bannerUrl ?? undefined,
 				title: this.meta.name ?? 'Misskey',
 				desc: this.meta.description ?? undefined,
-				...await this.generateCommonData(this.meta),
+				...await this.htmlTemplateService.getCommonData(),
 				...data,
 			}));
 		};
@@ -530,11 +502,11 @@ export class ClientServerService {
 					userProfile: profile,
 				});
 
-				return await replyHtml(reply, UserPage({
+				return await HtmlTemplateService.replyHtml(reply, UserPage({
 					user: _user,
 					profile,
 					sub: request.params.sub,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 					clientCtxJson: htmlSafeJsonStringify({
 						user: _user,
 					}),
@@ -589,10 +561,10 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
-				return await replyHtml(reply, NotePage({
+				return await HtmlTemplateService.replyHtml(reply, NotePage({
 					note: _note,
 					profile,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 					clientCtxJson: htmlSafeJsonStringify({
 						note: _note,
 					}),
@@ -629,10 +601,10 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
-				return await replyHtml(reply, PagePage({
+				return await HtmlTemplateService.replyHtml(reply, PagePage({
 					page: _page,
 					profile,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -653,10 +625,10 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
-				return await replyHtml(reply, FlashPage({
+				return await HtmlTemplateService.replyHtml(reply, FlashPage({
 					flash: _flash,
 					profile,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -677,10 +649,10 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
-				return await replyHtml(reply, ClipPage({
+				return await HtmlTemplateService.replyHtml(reply, ClipPage({
 					clip: _clip,
 					profile,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 					clientCtxJson: htmlSafeJsonStringify({
 						clip: _clip,
 					}),
@@ -702,10 +674,10 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
-				return await replyHtml(reply, GalleryPostPage({
+				return await HtmlTemplateService.replyHtml(reply, GalleryPostPage({
 					galleryPost: _post,
 					profile,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -721,9 +693,9 @@ export class ClientServerService {
 			if (channel) {
 				const _channel = await this.channelEntityService.pack(channel);
 				reply.header('Cache-Control', 'public, max-age=15');
-				return await replyHtml(reply, ChannelPage({
+				return await HtmlTemplateService.replyHtml(reply, ChannelPage({
 					channel: _channel,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -739,9 +711,9 @@ export class ClientServerService {
 			if (game) {
 				const _game = await this.reversiGameEntityService.packDetail(game);
 				reply.header('Cache-Control', 'public, max-age=3600');
-				return await replyHtml(reply, ReversiGamePage({
+				return await HtmlTemplateService.replyHtml(reply, ReversiGamePage({
 					reversiGame: _game,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -758,9 +730,9 @@ export class ClientServerService {
 			if (announcement) {
 				const _announcement = await this.announcementEntityService.pack(announcement);
 				reply.header('Cache-Control', 'public, max-age=3600');
-				return await replyHtml(reply, AnnouncementPage({
+				return await HtmlTemplateService.replyHtml(reply, AnnouncementPage({
 					announcement: _announcement,
-					...await this.generateCommonData(this.meta),
+					...await this.htmlTemplateService.getCommonData(),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -794,9 +766,9 @@ export class ClientServerService {
 			const _user = await this.userEntityService.pack(user);
 
 			reply.header('Cache-Control', 'public, max-age=3600');
-			return await replyHtml(reply, BaseEmbed({
+			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonData(this.meta),
+				...await this.htmlTemplateService.getCommonData(),
 				embedCtxJson: htmlSafeJsonStringify({
 					user: _user,
 				}),
@@ -820,9 +792,9 @@ export class ClientServerService {
 			const _note = await this.noteEntityService.pack(note, null, { detail: true });
 
 			reply.header('Cache-Control', 'public, max-age=3600');
-			return await replyHtml(reply, BaseEmbed({
+			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonData(this.meta),
+				...await this.htmlTemplateService.getCommonData(),
 				embedCtxJson: htmlSafeJsonStringify({
 					note: _note,
 				}),
@@ -841,9 +813,9 @@ export class ClientServerService {
 			const _clip = await this.clipEntityService.pack(clip);
 
 			reply.header('Cache-Control', 'public, max-age=3600');
-			return await replyHtml(reply, BaseEmbed({
+			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonData(this.meta),
+				...await this.htmlTemplateService.getCommonData(),
 				embedCtxJson: htmlSafeJsonStringify({
 					clip: _clip,
 				}),
@@ -854,16 +826,16 @@ export class ClientServerService {
 			reply.removeHeader('X-Frame-Options');
 
 			reply.header('Cache-Control', 'public, max-age=3600');
-			return await replyHtml(reply, BaseEmbed({
+			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.generateCommonData(this.meta),
+				...await this.htmlTemplateService.getCommonData(),
 			}));
 		});
 
 		fastify.get('/_info_card_', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 
-			return await replyHtml(reply, InfoCardPage({
+			return await HtmlTemplateService.replyHtml(reply, InfoCardPage({
 				version: this.config.version,
 				config: this.config,
 				meta: this.meta,
@@ -872,13 +844,13 @@ export class ClientServerService {
 		//#endregion
 
 		fastify.get('/bios', async (request, reply) => {
-			return await replyHtml(reply, BiosPage({
+			return await HtmlTemplateService.replyHtml(reply, BiosPage({
 				version: this.config.version,
 			}));
 		});
 
 		fastify.get('/cli', async (request, reply) => {
-			return await replyHtml(reply, CliPage({
+			return await HtmlTemplateService.replyHtml(reply, CliPage({
 				version: this.config.version,
 			}));
 		});
@@ -903,7 +875,7 @@ export class ClientServerService {
 				reply.header('Clear-Site-Data', '"*"');
 			}
 			reply.header('Set-Cookie', 'http-flush-failed=1; Path=/flush; Max-Age=60');
-			return await replyHtml(reply, FlushPage());
+			return await HtmlTemplateService.replyHtml(reply, FlushPage());
 		});
 
 		// streamingに非WebSocketリクエストが来た場合にbase htmlをキャシュ付きで返すと、Proxy等でそのパスがキャッシュされておかしくなる
@@ -929,24 +901,12 @@ export class ClientServerService {
 			});
 			reply.code(500);
 			reply.header('Cache-Control', 'max-age=10, must-revalidate');
-			return await replyHtml(reply, ErrorPage({
+			return await HtmlTemplateService.replyHtml(reply, ErrorPage({
 				code: error.code,
 				id: errId,
 			}));
 		});
 
 		done();
-	}
-
-	public async oauthReplyHandler(args: {
-		transactionId: string;
-		clientName: string;
-		clientLogo?: string;
-		scope: string[];
-	}) {
-		return await OAuthPage({
-			...await this.generateCommonData(this.meta),
-			...args,
-		});
 	}
 }
