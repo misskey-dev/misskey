@@ -19,7 +19,7 @@ import {
 	ResourceOwnerPassword,
 } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
@@ -73,11 +73,11 @@ const clientConfig: ModuleOptions<'client_id'> = {
 };
 
 function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined, clientLogo: string | undefined } {
-	const fragment = JSDOM.fragment(html);
+	const doc = htmlParser.parse(`<div>${html}</div>`);
 	return {
-		transactionId: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content,
-		clientName: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content,
-		clientLogo: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-logo"]')?.content,
+		transactionId: doc.querySelector('meta[name="misskey:oauth:transaction-id"]')?.attributes.content,
+		clientName: doc.querySelector('meta[name="misskey:oauth:client-name"]')?.attributes.content,
+		clientLogo: doc.querySelector('meta[name="misskey:oauth:client-logo"]')?.attributes.content,
 	};
 }
 
@@ -148,7 +148,7 @@ function assertIndirectError(response: Response, error: string): void {
 async function assertDirectError(response: Response, status: number, error: string): Promise<void> {
 	assert.strictEqual(response.status, status);
 
-	const data = await response.json();
+	const data = await response.json() as any;
 	assert.strictEqual(data.error, error);
 }
 
@@ -704,7 +704,7 @@ describe('OAuth', () => {
 		const response = await fetch(new URL('.well-known/oauth-authorization-server', host));
 		assert.strictEqual(response.status, 200);
 
-		const body = await response.json();
+		const body = await response.json() as any;
 		assert.strictEqual(body.issuer, 'http://misskey.local');
 		assert.ok(body.scopes_supported.includes('write:notes'));
 	});

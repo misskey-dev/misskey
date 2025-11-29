@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2025.11.1-beta.2",
+	"version": "2025.11.2-alpha.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -58,7 +58,7 @@
 		"esbuild": "0.27.0",
 		"execa": "9.6.0",
 		"fast-glob": "3.3.3",
-		"glob": "11.1.0",
+		"glob": "13.0.0",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.1",
 		"postcss": "8.5.6",
