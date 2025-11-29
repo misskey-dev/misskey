@@ -120,7 +120,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		}
 
 		const text = await res.text();
-		const fragment = htmlParser.parse(text);
+		const fragment = htmlParser.parse(`<div>${text}</div>`);
 
 		redirectUris.push(...[...fragment.querySelectorAll('link[rel=redirect_uri][href]')].map(el => el.attributes.href));
 
