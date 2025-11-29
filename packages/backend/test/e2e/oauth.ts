@@ -19,7 +19,7 @@ import {
 	ResourceOwnerPassword,
 } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
@@ -73,11 +73,11 @@ const clientConfig: ModuleOptions<'client_id'> = {
 };
 
 function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined, clientLogo: string | undefined } {
-	const fragment = JSDOM.fragment(html);
+	const doc = htmlParser.parse(`<div>${html}</div>`);
 	return {
-		transactionId: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content,
-		clientName: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content,
-		clientLogo: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-logo"]')?.content,
+		transactionId: doc.querySelector('meta[name="misskey:oauth:transaction-id"]')?.attributes.content,
+		clientName: doc.querySelector('meta[name="misskey:oauth:client-name"]')?.attributes.content,
+		clientLogo: doc.querySelector('meta[name="misskey:oauth:client-logo"]')?.attributes.content,
 	};
 }
 
