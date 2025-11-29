@@ -21,7 +21,7 @@ type CommonData = {
 	federationEnabled: boolean;
 };
 
-export function Layout(props: CommonProps<CommonData &{
+export function LayoutEmbed(props: CommonProps<CommonData &{
 	title?: string;
 	noindex?: boolean;
 	desc?: string;
@@ -30,18 +30,16 @@ export function Layout(props: CommonProps<CommonData &{
 	infoImageUrl?: string;
 	notFoundImageUrl?: string;
 	metaJson?: string;
-	clientCtxJson?: string;
+	embedCtxJson?: string;
 
 	titleSlot?: Children;
-	descSlot?: Children;
 	metaSlot?: Children;
-	ogSlot?: Children;
 }>) {
 	const now = Date.now();
 
 	// 変数名をsafeで始めることでエラーをスキップ
 	const safeMetaJson = props.metaJson;
-	const safeClientCtxJson = props.clientCtxJson;
+	const safeEmbedCtxJson = props.embedCtxJson;
 
 	return (
 		<>
@@ -61,42 +59,26 @@ export function Layout(props: CommonProps<CommonData &{
 					<meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no" />
 					<link rel="icon" href={props.icon ?? '/favicon.ico'} />
 					<link rel="apple-touch-icon" href={props.appleTouchIcon ?? '/apple-touch-icon.png'} />
-					<link rel="manifest" href="/manifest.json" />
-					<link rel="search" type="application/opensearchdescription+xml" title={props.title ?? 'Misskey'} href={`${props.config.url}/opensearch.xml`} />
-					{props.serverErrorImageUrl != null ? <link rel="prefetch" as="image" href={props.serverErrorImageUrl} /> : null}
-					{props.infoImageUrl != null ? <link rel="prefetch" as="image" href={props.infoImageUrl} /> : null}
-					{props.notFoundImageUrl != null ? <link rel="prefetch" as="image" href={props.notFoundImageUrl} /> : null}
 
-					{!props.config.frontendManifestExists ? <script type="module" src="/vite/@vite/client"></script> : null}
+					{!props.config.frontendEmbedManifestExists ? <script type="module" src="/embed_vite/@vite/client"></script> : null}
 
 					{props.titleSlot ?? <title safe>{props.title ?? 'Misskey'}</title>}
 
-					{props.noindex ? <meta name="robots" content="noindex" /> : null}
-
-					{props.descSlot ?? (props.desc != null ? <meta name="description" content={props.desc ?? defaultDescription} /> : null)}
-
 					{props.metaSlot}
 
-					{props.ogSlot ?? (
-						<>
-							{props.title != null ? <meta property="og:title" content={props.title ?? 'Misskey'} /> : null}
-							{props.desc != null ? <meta property="og:description" content={props.desc ?? defaultDescription} /> : null}
-							{props.img != null ? <meta property="og:image" content={props.img} /> : null}
-							<meta property="twitter:card" content="summary" />
-						</>
-					)}
+					<meta name="robots" content="noindex" />
 
-					<link rel="stylesheet" href="/vite/loader/style.css" />
+					<link rel="stylesheet" href="/embed_vite/loader/style.css" />
 
 					<script>
 						const VERSION = '{props.version}';
-						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEntry.file)};
+						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEmbedEntry.file)};
 					</script>
 
 					{props.metaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
-					{props.clientCtxJson != null ? <script type="application/json" id="misskey_clientCtx" data-generated-at={now}>{safeClientCtxJson}</script> : null}
+					{props.embedCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now}>{safeEmbedCtxJson}</script> : null}
 
-					<script src="/vite/loader/boot.js"></script>
+					<script src="/embed_vite/loader/boot.js"></script>
 				</head>
 				<body>
 					<noscript>
