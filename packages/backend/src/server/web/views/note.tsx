@@ -74,7 +74,7 @@ export function NotePage(props: CommonProps<{
 
 				{props.federationEnabled ? (
 					<>
-						{props.note.user.host != null ? <link rel="alternate" type="application/activity+json" href={`${props.config.url}/notes/${props.note.id}`} /> : null}
+						{props.note.user.host == null ? <link rel="alternate" type="application/activity+json" href={`${props.config.url}/notes/${props.note.id}`} /> : null}
 						{props.note.uri != null ? <link rel="alternate" type="application/activity+json" href={props.note.uri} /> : null}
 					</>
 				) : null}

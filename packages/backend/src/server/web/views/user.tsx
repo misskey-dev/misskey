@@ -48,7 +48,7 @@ export function UserPage(props: CommonProps<{
 
 				{props.sub == null && props.federationEnabled ? (
 					<>
-						{props.user.host != null ? <link rel="alternate" type="application/activity+json" href={`${props.config.url}/users/${props.user.id}`} /> : null}
+						{props.user.host == null ? <link rel="alternate" type="application/activity+json" href={`${props.config.url}/users/${props.user.id}`} /> : null}
 						{props.user.uri != null ? <link rel="alternate" type="application/activity+json" href={props.user.uri} /> : null}
 						{props.profile.url != null ? <link rel="alternate" type="text/html" href={props.profile.url} /> : null}
 					</>
