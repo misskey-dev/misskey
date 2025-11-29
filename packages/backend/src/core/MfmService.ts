@@ -407,7 +407,7 @@ export class MfmService {
 			},
 
 			search: (node) => {
-				return `<a href="https://www.google.com/search?q=${encodeURIComponent(node.props.query)}">${escapeHtml(node.props.content)}</a>`;
+				return `<a href="${escapeHtml(`https://www.google.com/search?q=${encodeURIComponent(node.props.query)}`)}">${escapeHtml(node.props.content)}</a>`;
 			},
 
 			plain: (node) => {
