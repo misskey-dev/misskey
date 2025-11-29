@@ -354,7 +354,7 @@ export class MfmService {
 			},
 
 			hashtag: (node) => {
-				return `<a href="${this.config.url}/tags/${encodeURIComponent(node.props.hashtag)}" rel="tag">#${escapeHtml(node.props.hashtag)}</a>`;
+				return `<a href="${escapeHtml(`${this.config.url}/tags/${encodeURIComponent(node.props.hashtag)}`)}" rel="tag">#${escapeHtml(node.props.hashtag)}</a>`;
 			},
 
 			inlineCode: (node) => {
