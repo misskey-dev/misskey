@@ -209,6 +209,10 @@ export class MfmService {
 						text += '\n```\n';
 						text += getText(node.childNodes[0]);
 						text += '\n```\n';
+					} else if (node.childNodes.length === 1 && (node.childNodes[0] instanceof htmlParser.TextNode) && node.childNodes[0].textContent.startsWith('<code>') && node.childNodes[0].textContent.endsWith('</code>')) {
+						text += '\n```\n';
+						text += node.childNodes[0].textContent.slice(6, -7);
+						text += '\n```\n';
 					} else {
 						analyzeChildren(node.childNodes);
 					}
