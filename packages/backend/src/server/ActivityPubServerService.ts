@@ -17,6 +17,7 @@ import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReact
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
@@ -30,9 +31,9 @@ import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -73,12 +74,31 @@ export class ActivityPubServerService {
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
+		private apDbResolverService: ApDbResolverService,
 		private queueService: QueueService,
 		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
 		//this.createServer = this.createServer.bind(this);
+	}
+
+	@bindThis
+	private async authenticate(request: FastifyRequest): Promise<MiUser | null> {
+		let signature;
+
+		try {
+			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
+		} catch (e) {
+			return null;
+		}
+
+		const authUser = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+		if (authUser == null) return null;
+
+		if (!httpSignature.verifySignature(signature, authUser.key.keyPem)) return null;
+
+		return authUser.user;
 	}
 
 	@bindThis
@@ -645,15 +665,42 @@ export class ActivityPubServerService {
 				return;
 			}
 
+			const user = await this.authenticate(request);
+
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
-				visibility: In(['public', 'home']),
 				localOnly: false,
 			});
 
 			if (note == null) {
 				reply.code(404);
 				return;
+			}
+
+			// followersの場合、認証ユーザーがフォロワーであることを確認
+			if (note.visibility === 'followers') {
+				if (user == null) {
+					reply.code(403);
+					return;
+				}
+
+				const isFollowing = await this.followingsRepository.exist({
+					where: {
+						followerId: user.id,
+						followeeId: note.userId,
+					},
+				});
+
+				if (!isFollowing) {
+					reply.code(403);
+					return;
+				}
+			} else if (note.visibility === 'specified') {
+				// specifiedの場合、認証ユーザーがvisibleUserIdsに含まれていることを確認
+				if (user == null || !note.visibleUserIds.includes(user.id)) {
+					reply.code(403);
+					return;
+				}
 			}
 
 			// リモートだったらリダイレクト
