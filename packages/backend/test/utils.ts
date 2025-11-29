@@ -468,7 +468,7 @@ export function makeStreamCatcher<T>(
 
 export type SimpleGetResponse = {
 	status: number,
-	body: any | htmlParser.HTMLElement | null,
+	body: any | null,
 	type: string | null,
 	location: string | null
 };
