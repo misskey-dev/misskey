@@ -53,9 +53,6 @@ importers:
       '@misskey-dev/eslint-plugin':
         specifier: 2.2.0
         version: 2.2.0(@eslint/compat@1.4.0(eslint@9.39.1))(@eslint/js@9.39.1)(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1))(eslint@9.39.1)(globals@16.5.0)
-      '@misskey/locale-assets':
-        specifier: workspace:*
-        version: link:packages/locale-assets
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -80,6 +77,9 @@ importers:
       globals:
         specifier: 16.5.0
         version: 16.5.0
+      i18n:
+        specifier: workspace:*
+        version: link:packages/i18n
       ncp:
         specifier: 2.0.0
         version: 2.0.0
@@ -719,9 +719,6 @@ importers:
       '@misskey-dev/browser-image-resizer':
         specifier: 2024.1.0
         version: 2024.1.0
-      '@misskey/locale-assets':
-        specifier: workspace:*
-        version: link:../locale-assets
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.53.3)
@@ -809,6 +806,9 @@ importers:
       frontend-shared:
         specifier: workspace:*
         version: link:../frontend-shared
+      i18n:
+        specifier: workspace:*
+        version: link:../i18n
       icons-subsetter:
         specifier: workspace:*
         version: link:../icons-subsetter
@@ -1107,12 +1107,12 @@ importers:
 
   packages/frontend-builder:
     dependencies:
-      '@misskey/locale-assets':
-        specifier: workspace:*
-        version: link:../locale-assets
       estree-walker:
         specifier: 3.0.3
         version: 3.0.3
+      i18n:
+        specifier: workspace:*
+        version: link:../i18n
       magic-string:
         specifier: 0.30.21
         version: 0.30.21
@@ -1144,9 +1144,6 @@ importers:
       '@discordapp/twemoji':
         specifier: 16.0.1
         version: 16.0.1
-      '@misskey/locale-assets':
-        specifier: workspace:*
-        version: link:../locale-assets
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.53.3)
@@ -1177,6 +1174,9 @@ importers:
       frontend-shared:
         specifier: workspace:*
         version: link:../frontend-shared
+      i18n:
+        specifier: workspace:*
+        version: link:../i18n
       icons-subsetter:
         specifier: workspace:*
         version: link:../icons-subsetter
@@ -1316,9 +1316,9 @@ importers:
 
   packages/frontend-shared:
     dependencies:
-      '@misskey/locale-assets':
+      i18n:
         specifier: workspace:*
-        version: link:../locale-assets
+        version: link:../i18n
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -1351,41 +1351,7 @@ importers:
         specifier: 10.2.0
         version: 10.2.0(eslint@9.39.1)
 
-  packages/icons-subsetter:
-    dependencies:
-      '@tabler/icons-webfont':
-        specifier: 3.35.0
-        version: 3.35.0
-      harfbuzzjs:
-        specifier: 0.4.13
-        version: 0.4.13
-      tiny-glob:
-        specifier: 0.2.9
-        version: 0.2.9
-      tsx:
-        specifier: 4.20.6
-        version: 4.20.6
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      wawoff2:
-        specifier: 2.0.1
-        version: 2.0.1
-    devDependencies:
-      '@types/node':
-        specifier: 24.10.1
-        version: 24.10.1
-      '@types/wawoff2':
-        specifier: 1.0.2
-        version: 1.0.2
-      '@typescript-eslint/eslint-plugin':
-        specifier: 8.47.0
-        version: 8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/parser':
-        specifier: 8.47.0
-        version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
-
-  packages/locale-assets:
+  packages/i18n:
     dependencies:
       js-yaml:
         specifier: 4.1.1
@@ -1424,6 +1390,40 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+
+  packages/icons-subsetter:
+    dependencies:
+      '@tabler/icons-webfont':
+        specifier: 3.35.0
+        version: 3.35.0
+      harfbuzzjs:
+        specifier: 0.4.13
+        version: 0.4.13
+      tiny-glob:
+        specifier: 0.2.9
+        version: 0.2.9
+      tsx:
+        specifier: 4.20.6
+        version: 4.20.6
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      wawoff2:
+        specifier: 2.0.1
+        version: 2.0.1
+    devDependencies:
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
+      '@types/wawoff2':
+        specifier: 1.0.2
+        version: 1.0.2
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.47.0
+        version: 8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.47.0
+        version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
 
   packages/misskey-bubble-game:
     dependencies:
@@ -1589,12 +1589,12 @@ importers:
 
   packages/sw:
     dependencies:
-      '@misskey/locale-assets':
-        specifier: workspace:*
-        version: link:../locale-assets
       esbuild:
         specifier: 0.27.0
         version: 0.27.0
+      i18n:
+        specifier: workspace:*
+        version: link:../i18n
       idb-keyval:
         specifier: 6.2.2
         version: 6.2.2

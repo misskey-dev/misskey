@@ -52,7 +52,7 @@ await fs.readFile(
 		micromatch(Array.from(modules), [
 			'../../assets/**',
 			'../../fluent-emojis/**',
-			'../../packages/locale-assets/ja-JP.yml',
+			'../../packages/i18n/ja-JP.yml',
 			'assets/**',
 			'public/**',
 			'package.json',
@@ -60,7 +60,7 @@ await fs.readFile(
 	) {
 		return;
 	}
-	for (;;) {
+	for (; ;) {
 		const oldSize = modules.size;
 		for (const module of Array.from(modules)) {
 			if (map.has(module)) {

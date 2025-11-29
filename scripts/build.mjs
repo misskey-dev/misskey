@@ -28,7 +28,7 @@ const buildLayers = [
 	// 第1層: 基盤パッケージ（並行ビルド）
 	[
 		'misskey-js',
-		'@misskey/locale-assets',
+		'i18n',
 		'misskey-reversi',
 		'misskey-bubble-game',
 		'icons-subsetter',

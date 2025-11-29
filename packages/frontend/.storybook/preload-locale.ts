@@ -4,7 +4,7 @@
  */
 
 import { writeFile } from 'node:fs/promises';
-import locales from '@misskey/locale-assets';
+import locales from 'i18n';
 
 await writeFile(
 	new URL('locale.ts', import.meta.url),

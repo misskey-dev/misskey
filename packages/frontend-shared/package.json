@@ -34,7 +34,7 @@
 		"js-built"
 	],
 	"dependencies": {
-		"@misskey/locale-assets": "workspace:*",
+		"i18n": "workspace:*",
 		"misskey-js": "workspace:*",
 		"vue": "3.5.24"
 	}

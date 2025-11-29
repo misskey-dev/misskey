@@ -11,7 +11,7 @@ import * as yaml from 'js-yaml';
 import postcss from 'postcss';
 import * as terser from 'terser';
 
-import { locales } from '@misskey/locale-assets';
+import { locales } from 'i18n';
 import buildTarball from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
