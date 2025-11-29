@@ -403,7 +403,7 @@ export class MfmService {
 			},
 
 			url: (node) => {
-				return `<a href="${new URL(node.props.url).href}">${escapeHtml(node.props.url)}</a>`;
+				return `<a href="${escapeHtml(new URL(node.props.url).href)}">${escapeHtml(node.props.url)}</a>`;
 			},
 
 			search: (node) => {
