@@ -24,13 +24,13 @@ describe('MfmService', () => {
 	describe('toHtml', () => {
 		test('br', () => {
 			const input = 'foo\nbar\nbaz';
-			const output = '<p><span>foo<br />bar<br />baz</span></p>';
+			const output = '<p>foo<br />bar<br />baz</p>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('br alt', () => {
 			const input = 'foo\r\nbar\rbaz';
-			const output = '<p><span>foo<br />bar<br />baz</span></p>';
+			const output = '<p>foo<br />bar<br />baz</p>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
@@ -118,7 +118,7 @@ describe('MfmService', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp> b</ruby> c</p>'), 'a Misskey(ミス キー) b c');
 			assert.deepStrictEqual(
 				mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp></ruby> b</p>'),
-				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b'
+				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b',
 			);
 		});
 
