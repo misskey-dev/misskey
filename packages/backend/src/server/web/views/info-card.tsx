@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { comment, CommonProps } from '@/server/web/views/_.js';
+import { comment, CommonPropsMinimum } from '@/server/web/views/_.js';
 import type { MiMeta } from '@/models/Meta.js';
 
-export function InfoCard(props: CommonProps<{
+export function InfoCardPage(props: CommonPropsMinimum<{
 	meta: MiMeta;
 }>) {
 	// 変数名をsafeで始めることでエラーをスキップ

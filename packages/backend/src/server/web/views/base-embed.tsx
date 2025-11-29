@@ -7,7 +7,7 @@ import { comment } from '@/server/web/views/_.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import type { PropsWithChildren, Children } from '@kitajs/html';
 
-export function LayoutEmbed(props: PropsWithChildren<CommonProps<{
+export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 	title?: string;
 	noindex?: boolean;
 	desc?: string;

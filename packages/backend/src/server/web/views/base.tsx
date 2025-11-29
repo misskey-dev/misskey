@@ -7,21 +7,7 @@ import { comment, defaultDescription } from '@/server/web/views/_.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import type { PropsWithChildren, Children } from '@kitajs/html';
 
-type CommonData = {
-	instanceName: string;
-	icon: string | null;
-	appleTouchIcon: string | null;
-	themeColor: string | null;
-	serverErrorImageUrl: string;
-	infoImageUrl: string;
-	notFoundImageUrl: string;
-	instanceUrl: string;
-	metaJson: string;
-	now: number;
-	federationEnabled: boolean;
-};
-
-export function Layout(props: PropsWithChildren<CommonProps<CommonData & {
+export function Layout(props: PropsWithChildren<CommonProps<{
 	title?: string;
 	noindex?: boolean;
 	desc?: string;
@@ -126,4 +112,6 @@ export function Layout(props: PropsWithChildren<CommonProps<CommonData & {
 		</>
 	);
 }
+
+export { Layout as BasePage };
 

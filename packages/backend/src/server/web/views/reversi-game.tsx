@@ -4,13 +4,11 @@
  */
 
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Layout } from '@/server/web/views/base.js';
 
 export function ReversiGamePage(props: CommonProps<{
 	reversiGame: Packed<'ReversiGameDetailed'>;
-	profile: MiUserProfile;
 }>) {
 	const title = `${props.reversiGame.user1.username} vs ${props.reversiGame.user2.username}`;
 	const description = `⚫⚪Misskey Reversi⚪⚫`;

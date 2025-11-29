@@ -14,11 +14,17 @@ export const comment = `<!--
  Thank you for using Misskey!
  If you are reading this message... how about joining the development?
  https://github.com/misskey-dev/misskey
+
 -->`;
 
 export const defaultDescription = '✨🌎✨ A interplanetary communication platform ✨🚀✨';
 
-export type CommonData = {
+export type MinimumCommonData = {
+	version: string;
+	config: Config;
+};
+
+export type CommonData = MinimumCommonData & {
 	instanceName: string;
 	icon: string | null;
 	appleTouchIcon: string | null;
@@ -27,14 +33,12 @@ export type CommonData = {
 	infoImageUrl: string;
 	notFoundImageUrl: string;
 	instanceUrl: string;
-	metaJson: string;
 	now: number;
 	federationEnabled: boolean;
+	metaJson?: string;
+	clientCtxJson?: string;
 };
 
-export type CommonPropsMinimum<T = {}> = {
-	version: string;
-	config: Config;
-} & T;
+export type CommonPropsMinimum<T = {}> = MinimumCommonData & T;
 
-export type CommonProps<T = {}> = CommonPropsMinimum<CommonData & T>;
+export type CommonProps<T = {}> = CommonData & T;

@@ -6,11 +6,11 @@
 import { comment } from '@/server/web/views/_.js';
 import type { CommonPropsMinimum } from '@/server/web/views/_.js';
 
-export function Error(props: CommonPropsMinimum<{
+export function ErrorPage(props: {
 	title?: string;
 	code: string;
 	id: string;
-}>) {
+}) {
 	return (
 		<>
 			{'<!DOCTYPE html>'}
