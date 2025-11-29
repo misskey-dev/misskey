@@ -304,7 +304,7 @@ export class MfmService {
 						const text = node.children[0].type === 'text' ? node.children[0].props.text : '';
 						try {
 							const date = new Date(parseInt(text, 10) * 1000);
-							return `<time datetime="${date.toISOString()}">${date.toISOString()}</time>`;
+							return `<time datetime="${escapeHtml(date.toISOString())}">${escapeHtml(date.toISOString())}</time>`;
 						} catch (err) {
 							return fnDefault(node);
 						}
