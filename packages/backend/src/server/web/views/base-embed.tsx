@@ -3,25 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { comment, defaultDescription } from '@/server/web/views/_.js';
+import { comment } from '@/server/web/views/_.js';
 import type { CommonProps } from '@/server/web/views/_.js';
-import type { Children } from '@kitajs/html';
+import type { PropsWithChildren, Children } from '@kitajs/html';
 
-type CommonData = {
-	instanceName: string;
-	icon: string | null;
-	appleTouchIcon: string | null;
-	themeColor: string | null;
-	serverErrorImageUrl: string;
-	infoImageUrl: string;
-	notFoundImageUrl: string;
-	instanceUrl: string;
-	metaJson: string;
-	now: number;
-	federationEnabled: boolean;
-};
-
-export function LayoutEmbed(props: CommonProps<CommonData &{
+export function LayoutEmbed(props: PropsWithChildren<CommonProps<{
 	title?: string;
 	noindex?: boolean;
 	desc?: string;
@@ -34,7 +20,7 @@ export function LayoutEmbed(props: CommonProps<CommonData &{
 
 	titleSlot?: Children;
 	metaSlot?: Children;
-}>) {
+}>>) {
 	const now = Date.now();
 
 	// 変数名をsafeで始めることでエラーをスキップ

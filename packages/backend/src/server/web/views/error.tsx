@@ -4,9 +4,9 @@
  */
 
 import { comment } from '@/server/web/views/_.js';
-import type { CommonProps } from '@/server/web/views/_.js';
+import type { CommonPropsMinimum } from '@/server/web/views/_.js';
 
-export function Error(props: CommonProps<{
+export function Error(props: CommonPropsMinimum<{
 	title?: string;
 	code: string;
 	id: string;

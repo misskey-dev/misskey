@@ -5,7 +5,7 @@
 
 import { comment, defaultDescription } from '@/server/web/views/_.js';
 import type { CommonProps } from '@/server/web/views/_.js';
-import type { Children } from '@kitajs/html';
+import type { PropsWithChildren, Children } from '@kitajs/html';
 
 type CommonData = {
 	instanceName: string;
@@ -21,7 +21,7 @@ type CommonData = {
 	federationEnabled: boolean;
 };
 
-export function Layout(props: CommonProps<CommonData &{
+export function Layout(props: PropsWithChildren<CommonProps<CommonData & {
 	title?: string;
 	noindex?: boolean;
 	desc?: string;
@@ -36,7 +36,7 @@ export function Layout(props: CommonProps<CommonData &{
 	descSlot?: Children;
 	metaSlot?: Children;
 	ogSlot?: Children;
-}>) {
+}>>) {
 	const now = Date.now();
 
 	// 変数名をsafeで始めることでエラーをスキップ

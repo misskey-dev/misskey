@@ -4,7 +4,6 @@
  */
 
 import type { Config } from '@/config.js';
-import type { PropsWithChildren } from '@kitajs/html';
 
 export const comment = `<!--
   _____ _         _
@@ -19,7 +18,23 @@ export const comment = `<!--
 
 export const defaultDescription = '✨🌎✨ A interplanetary communication platform ✨🚀✨';
 
-export type CommonProps<T = {}> = PropsWithChildren<{
+export type CommonData = {
+	instanceName: string;
+	icon: string | null;
+	appleTouchIcon: string | null;
+	themeColor: string | null;
+	serverErrorImageUrl: string;
+	infoImageUrl: string;
+	notFoundImageUrl: string;
+	instanceUrl: string;
+	metaJson: string;
+	now: number;
+	federationEnabled: boolean;
+};
+
+export type CommonPropsMinimum<T = {}> = {
 	version: string;
 	config: Config;
-}> & T;
+} & T;
+
+export type CommonProps<T = {}> = CommonPropsMinimum<CommonData & T>;
