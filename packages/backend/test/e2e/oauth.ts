@@ -148,7 +148,7 @@ function assertIndirectError(response: Response, error: string): void {
 async function assertDirectError(response: Response, status: number, error: string): Promise<void> {
 	assert.strictEqual(response.status, status);
 
-	const data = await response.json();
+	const data = await response.json() as any;
 	assert.strictEqual(data.error, error);
 }
 
@@ -704,7 +704,7 @@ describe('OAuth', () => {
 		const response = await fetch(new URL('.well-known/oauth-authorization-server', host));
 		assert.strictEqual(response.status, 200);
 
-		const body = await response.json();
+		const body = await response.json() as any;
 		assert.strictEqual(body.issuer, 'http://misskey.local');
 		assert.ok(body.scopes_supported.includes('write:notes'));
 	});
