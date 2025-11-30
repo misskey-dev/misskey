@@ -5,13 +5,11 @@
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
@@ -24,6 +22,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { AppLockService } from '@/core/AppLockService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
@@ -49,9 +48,6 @@ export class ApNoteService {
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
@@ -75,6 +71,7 @@ export class ApNoteService {
 		private noteCreateService: NoteCreateService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
+		private appLockService: AppLockService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -357,7 +354,7 @@ export class ApNoteService {
 			throw new StatusError('blocked host', 451);
 		}
 
-		const unlock = await acquireApObjectLock(this.redisClient, uri);
+		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			//#region このサーバーに既に登録されていたらそれを返す

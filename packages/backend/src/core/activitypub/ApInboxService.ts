@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -15,7 +14,6 @@ import { NotePiningService } from '@/core/NotePiningService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
-import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
@@ -30,6 +28,7 @@ import type { MiRemoteUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { AppLockService } from '@/core/AppLockService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -48,9 +47,6 @@ export class ApInboxService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -85,6 +81,7 @@ export class ApInboxService {
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
+		private appLockService: AppLockService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -311,7 +308,7 @@ export class ApInboxService {
 		// アナウンス先が許可されているかチェック
 		if (!this.utilityService.isFederationAllowedUri(uri)) return;
 
-		const unlock = await acquireApObjectLock(this.redisClient, uri);
+		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			// 既に同じURIを持つものが登録されていないかチェック
@@ -438,7 +435,7 @@ export class ApInboxService {
 			}
 		}
 
-		const unlock = await acquireApObjectLock(this.redisClient, uri);
+		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			const exist = await this.apNoteService.fetchNote(note);
@@ -522,7 +519,7 @@ export class ApInboxService {
 	private async deleteNote(actor: MiRemoteUser, uri: string): Promise<string> {
 		this.logger.info(`Deleting the Note: ${uri}`);
 
-		const unlock = await acquireApObjectLock(this.redisClient, uri);
+		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			const note = await this.apDbResolverService.getNoteFromApId(uri);
