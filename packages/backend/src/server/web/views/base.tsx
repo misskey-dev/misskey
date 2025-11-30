@@ -56,6 +56,10 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 
 					{!props.config.frontendManifestExists ? <script type="module" src="/vite/@vite/client"></script> : null}
 
+					{props.config.frontendEntry.css != null ? props.config.frontendEntry.css.map((href) => (
+						<link rel="stylesheet" href={`/vite/${href}`} />
+					)) : null}
+
 					{props.titleSlot ?? <title safe>{props.title ?? 'Misskey'}</title>}
 
 					{props.noindex ? <meta name="robots" content="noindex" /> : null}

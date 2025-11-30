@@ -238,6 +238,7 @@
 		"nodemon": "3.1.11",
 		"pid-port": "2.0.0",
 		"simple-oauth2": "5.1.0",
-		"supertest": "7.1.4"
+		"supertest": "7.1.4",
+		"vite": "7.2.4"
 	}
 }

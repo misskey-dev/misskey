@@ -49,6 +49,10 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 
 					{!props.config.frontendEmbedManifestExists ? <script type="module" src="/embed_vite/@vite/client"></script> : null}
 
+					{props.config.frontendEmbedEntry.css != null ? props.config.frontendEmbedEntry.css.map((href) => (
+						<link rel="stylesheet" href={`/embed_vite/${href}`} />
+					)) : null}
+
 					{props.titleSlot ?? <title safe>{props.title ?? 'Misskey'}</title>}
 
 					{props.metaSlot}
