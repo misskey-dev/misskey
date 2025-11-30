@@ -149,7 +149,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		let name = id;
 		let logo: string | null = null;
 		if (text) {
-			const microformats = parseMicroformats(doc, { baseUrl: res.url });
+			const microformats = parseMicroformats(doc, res.url);
 			if (typeof microformats.name === 'string') {
 				name = microformats.name;
 			}
