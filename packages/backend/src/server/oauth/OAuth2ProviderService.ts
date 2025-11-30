@@ -107,7 +107,7 @@ function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string, id: str
 	const nameEl = hApp.querySelector('.p-name');
 	if (nameEl != null) {
 		const href = nameEl.attributes.href || nameEl.attributes.src;
-		if (href != null && new URL(href, baseUrl).toString().includes(id)) {
+		if (href != null && new URL(href, baseUrl).toString() === new URL(id).toString()) {
 			name = nameEl.textContent.trim();
 		}
 	}
