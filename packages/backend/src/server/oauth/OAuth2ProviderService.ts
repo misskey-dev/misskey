@@ -97,21 +97,24 @@ interface ClientInformation {
 	logo: string | null;
 }
 
-function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string): { name: string | null; logo: string | null; } {
+function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string, id: string): { name: string | null; logo: string | null; } {
 	let name: string | null = null;
 	let logo: string | null = null;
 
 	const hApps = doc.querySelectorAll('.h-app');
 	for (const hApp of hApps) {
 		const nameEl = hApp.querySelector('.p-name');
-		if (nameEl && nameEl.textContent.trim()) {
-			name = nameEl.textContent.trim();
+		if (nameEl != null) {
+			const href = nameEl.getAttribute('href') ?? nameEl.getAttribute('src');
+			if (href != null && href.includes(id)) {
+				name = nameEl.textContent.trim();
+			}
 		}
 
 		const logoEl = hApp.querySelector('.u-logo');
-		if (logoEl) {
-			const href = logoEl.getAttribute('href') || logoEl.getAttribute('src');
-			if (href) {
+		if (logoEl != null) {
+			const href = logoEl.getAttribute('href') ?? logoEl.getAttribute('src');
+			if (href != null) {
 				logo = new URL(href, baseUrl).toString();
 			}
 		}
@@ -149,7 +152,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		let name = id;
 		let logo: string | null = null;
 		if (text) {
-			const microformats = parseMicroformats(doc, res.url);
+			const microformats = parseMicroformats(doc, res.url, id);
 			if (typeof microformats.name === 'string') {
 				name = microformats.name;
 			}
