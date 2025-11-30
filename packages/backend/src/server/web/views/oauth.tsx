@@ -19,10 +19,10 @@ export function OAuthPage(props: CommonProps<{
 	function metaBlock() {
 		return (
 			<>
-				<meta name="misskey:oauth-transaction-id" content={props.transactionId} />
-				<meta name="misskey:oauth-client-name" content={props.clientName} />
-				{props.clientLogo ? <meta name="misskey:oauth-client-logo" content={props.clientLogo} /> : null}
-				<meta name="misskey:oauth-scope" content={props.scope.join(' ')} />
+				<meta name="misskey:oauth:transaction-id" content={props.transactionId} />
+				<meta name="misskey:oauth:client-name" content={props.clientName} />
+				{props.clientLogo ? <meta name="misskey:oauth:client-logo" content={props.clientLogo} /> : null}
+				<meta name="misskey:oauth:scope" content={props.scope.join(' ')} />
 			</>
 		);
 	}
