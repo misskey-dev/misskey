@@ -15,7 +15,6 @@ import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
 import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
-import htmlSafeJsonStringify from 'htmlescape';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -62,6 +61,20 @@ const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const frontendViteOut = `${_dirname}/../../../../../built/_frontend_vite_/`;
 const frontendEmbedViteOut = `${_dirname}/../../../../../built/_frontend_embed_vite_/`;
 const tarball = `${_dirname}/../../../../../built/tarball/`;
+
+const ESCAPE_LOOKUP = {
+	'&': '\\u0026',
+	'>': '\\u003e',
+	'<': '\\u003c',
+	'\u2028': '\\u2028',
+	'\u2029': '\\u2029',
+} as Record<string, string>;
+
+const ESCAPE_REGEX = /[&><\u2028\u2029]/g;
+
+function htmlSafeJsonStringify(obj: any): string {
+	return JSON.stringify(obj).replace(ESCAPE_REGEX, x => ESCAPE_LOOKUP[x]);
+}
 
 @Injectable()
 export class ClientServerService {
