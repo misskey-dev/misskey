@@ -18,6 +18,7 @@
 		"typescript": "5.9.3"
 	},
 	"dependencies": {
+		"i18n": "workspace:*",
 		"estree-walker": "3.0.3",
 		"magic-string": "0.30.21",
 		"vite": "7.2.4"

@@ -4,6 +4,7 @@ packages:
   - packages/frontend
   - packages/frontend-builder
   - packages/frontend-embed
+  - packages/i18n
   - packages/icons-subsetter
   - packages/sw
   - packages/misskey-js

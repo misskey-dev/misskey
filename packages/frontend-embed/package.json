@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "16.0.1",
+		"i18n": "workspace:*",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "6.0.3",
 		"@rollup/pluginutils": "5.3.0",

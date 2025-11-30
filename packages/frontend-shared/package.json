@@ -34,6 +34,7 @@
 		"js-built"
 	],
 	"dependencies": {
+		"i18n": "workspace:*",
 		"misskey-js": "workspace:*",
 		"vue": "3.5.24"
 	}

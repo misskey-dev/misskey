@@ -8,15 +8,17 @@
 	},
 	"packageManager": "pnpm@10.22.0",
 	"workspaces": [
-		"packages/frontend-shared",
-		"packages/frontend",
-		"packages/frontend-embed",
-		"packages/icons-subsetter",
-		"packages/backend",
-		"packages/sw",
 		"packages/misskey-js",
+		"packages/i18n",
 		"packages/misskey-reversi",
-		"packages/misskey-bubble-game"
+		"packages/misskey-bubble-game",
+		"packages/icons-subsetter",
+		"packages/frontend-shared",
+		"packages/frontend-builder",
+		"packages/sw",
+		"packages/backend",
+		"packages/frontend",
+		"packages/frontend-embed"
 	],
 	"private": true,
 	"scripts": {
@@ -68,6 +70,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
+		"i18n": "workspace:*",
 		"@misskey-dev/eslint-plugin": "2.2.0",
 		"@types/js-yaml": "4.0.9",
 		"@types/node": "24.10.1",

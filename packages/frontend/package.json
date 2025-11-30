@@ -20,6 +20,7 @@
 		"@discordapp/twemoji": "16.0.1",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
+		"i18n": "workspace:*",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "6.0.3",
