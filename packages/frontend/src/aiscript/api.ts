@@ -40,29 +40,77 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
-		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
-			utils.assertString(title);
-			utils.assertString(text);
-			if (type != null) {
-				assertStringAndIsIn(type, DIALOG_TYPES);
+		'Mk:dialog': values.FN_NATIVE(async ([_title, _text, _type]) => {
+			let title: string | undefined = undefined;
+			let text: string | undefined = undefined;
+			let type: typeof DIALOG_TYPES[number] = 'info';
+
+			if (_title != null) {
+				if (utils.isString(_title)) {
+					title = _title.value;
+				} else {
+					utils.assertNull(_title);
+				}
 			}
+
+			if (_text != null) {
+				if (utils.isString(_text)) {
+					text = _text.value;
+				} else {
+					utils.assertNull(_text);
+				}
+			}
+
+			if (_type != null) {
+				if (utils.isString(_type)) {
+					assertStringAndIsIn(_type, DIALOG_TYPES);
+					type = _type.value;
+				} else {
+					utils.assertNull(_type);
+				}
+			}
+
 			await os.alert({
-				type: type ? type.value : 'info',
-				title: title.value,
-				text: text.value,
+				type,
+				title,
+				text,
 			});
 			return values.NULL;
 		}),
-		'Mk:confirm': values.FN_NATIVE(async ([title, text, type]) => {
-			utils.assertString(title);
-			utils.assertString(text);
-			if (type != null) {
-				assertStringAndIsIn(type, DIALOG_TYPES);
+		'Mk:confirm': values.FN_NATIVE(async ([_title, _text, _type]) => {
+			let title: string | undefined = undefined;
+			let text: string | undefined = undefined;
+			let type: typeof DIALOG_TYPES[number] = 'question';
+
+			if (_title != null) {
+				if (utils.isString(_title)) {
+					title = _title.value;
+				} else {
+					utils.assertNull(_title);
+				}
 			}
+
+			if (_text != null) {
+				if (utils.isString(_text)) {
+					text = _text.value;
+				} else {
+					utils.assertNull(_text);
+				}
+			}
+
+			if (_type != null) {
+				if (utils.isString(_type)) {
+					assertStringAndIsIn(_type, DIALOG_TYPES);
+					type = _type.value;
+				} else {
+					utils.assertNull(_type);
+				}
+			}
+
 			const confirm = await os.confirm({
-				type: type ? type.value : 'question',
-				title: title.value,
-				text: text.value,
+				type,
+				title,
+				text,
 			});
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
@@ -76,15 +124,23 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			if (ep.value.includes('://') || ep.value.includes('..')) {
 				throw new errors.AiScriptRuntimeError('invalid endpoint');
 			}
-			if (token) {
+
+			let actualToken: string | null = null;
+			if (token != null && !utils.isNull(token)) {
 				utils.assertString(token);
 				// バグがあればundefinedもあり得るため念のため
-				if (typeof token.value !== 'string') throw new Error('invalid token');
+				if (typeof token.value !== 'string') throw new errors.AiScriptRuntimeError('invalid token');
+				actualToken = token.value;
 			}
-			const actualToken: string | null = token?.value ?? opts.token ?? null;
+
+			if (actualToken == null) {
+				actualToken = opts.token ?? null;
+			}
+
 			if (param == null) {
 				throw new errors.AiScriptRuntimeError('expected param');
 			}
+
 			utils.assertObject(param);
 			return misskeyApi(ep.value as keyof Misskey.Endpoints, utils.valToJs(param) as object, actualToken).then(res => {
 				return utils.jsToVal(res);
