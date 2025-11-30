@@ -209,7 +209,6 @@
 		"@types/oauth2orize": "1.11.5",
 		"@types/oauth2orize-pkce": "0.1.2",
 		"@types/pg": "8.15.6",
-		"@types/pug": "2.0.10",
 		"@types/qrcode": "1.5.6",
 		"@types/random-seed": "0.3.5",
 		"@types/ratelimiter": "3.4.6",

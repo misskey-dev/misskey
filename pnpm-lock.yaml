@@ -505,9 +505,6 @@ importers:
       '@types/pg':
         specifier: 8.15.6
         version: 8.15.6
-      '@types/pug':
-        specifier: 2.0.10
-        version: 2.0.10
       '@types/qrcode':
         specifier: 1.5.6
         version: 1.5.6
@@ -4822,9 +4819,6 @@ packages:
 
   '@types/pg@8.15.6':
     resolution: {integrity: sha512-NoaMtzhxOrubeL/7UZuNTrejB4MPAJ0RpxZqXQf2qXuVlTPuG6Y8p4u9dKRaue4yjmC7ZhzVO2/Yyyn25znrPQ==}
-
-  '@types/pug@2.0.10':
-    resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
 
   '@types/punycode@2.1.4':
     resolution: {integrity: sha512-trzh6NzBnq8yw5e35f8xe8VTYjqM3NE7bohBtvDVf/dtUer3zYTLK1Ka3DG3p7bdtoaOHZucma6FfVKlQ134pQ==}
@@ -15293,8 +15287,6 @@ snapshots:
       '@types/node': 24.10.1
       pg-protocol: 1.10.3
       pg-types: 2.2.0
-
-  '@types/pug@2.0.10': {}
 
   '@types/punycode@2.1.4': {}
 
