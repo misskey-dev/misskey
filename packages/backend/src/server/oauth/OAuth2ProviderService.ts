@@ -6,7 +6,7 @@
 import dns from 'node:dns/promises';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
@@ -120,9 +120,9 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		}
 
 		const text = await res.text();
-		const fragment = JSDOM.fragment(text);
+		const fragment = htmlParser.parse(`<div>${text}</div>`);
 
-		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
+		redirectUris.push(...[...fragment.querySelectorAll('link[rel=redirect_uri][href]')].map(el => el.attributes.href));
 
 		let name = id;
 		let logo: string | null = null;

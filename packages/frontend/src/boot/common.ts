@@ -178,16 +178,13 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
 	if (!isSafeMode) {
-		const darkTheme = prefer.model('darkTheme');
-		const lightTheme = prefer.model('lightTheme');
-
-		watch(darkTheme, (theme) => {
+		watch(prefer.r.darkTheme, (theme) => {
 			if (store.s.darkMode) {
 				applyTheme(theme ?? defaultDarkTheme);
 			}
 		});
 
-		watch(lightTheme, (theme) => {
+		watch(prefer.r.lightTheme, (theme) => {
 			if (!store.s.darkMode) {
 				applyTheme(theme ?? defaultLightTheme);
 			}

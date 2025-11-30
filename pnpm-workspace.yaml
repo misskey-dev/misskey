@@ -14,6 +14,7 @@ onlyBuiltDependencies:
   - '@nestjs/core'
   - '@parcel/watcher'
   - '@sentry/profiling-node'
+  - '@sentry-internal/node-cpu-profiler'
   - '@swc/core'
   - '@tensorflow/tfjs-node'
   - bufferutil
@@ -32,3 +33,4 @@ onlyBuiltDependencies:
 ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
+  - '@syuilo/aiscript'
