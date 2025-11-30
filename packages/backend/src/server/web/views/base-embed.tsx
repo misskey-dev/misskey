@@ -60,6 +60,7 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 					<script>
 						const VERSION = '{props.version}';
 						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEmbedEntry.file)};
+						const LANGS = {JSON.stringify(props.langs)};
 					</script>
 
 					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}

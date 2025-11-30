@@ -25,6 +25,7 @@ export type MinimumCommonData = {
 };
 
 export type CommonData = MinimumCommonData & {
+	langs: string[];
 	instanceName: string;
 	icon: string | null;
 	appleTouchIcon: string | null;

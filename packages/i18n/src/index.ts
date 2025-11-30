@@ -161,6 +161,6 @@ async function writeFrontendLocalesJson(destDir: string, version: string): Promi
 	}
 }
 
-export { locales, build, writeFrontendLocalesJson };
+export { locales, languages, build, writeFrontendLocalesJson };
 export type { Language, Locale, ILocale, ParameterizedString };
 export default locales;

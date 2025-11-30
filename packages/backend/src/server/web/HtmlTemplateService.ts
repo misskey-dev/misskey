@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { languages } from 'i18n';
 import { Injectable, Inject } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -31,6 +32,7 @@ export class HtmlTemplateService {
 		return {
 			version: this.config.version,
 			config: this.config,
+			langs: [...languages],
 			instanceName: this.meta.name ?? 'Misskey',
 			icon: this.meta.iconUrl,
 			appleTouchIcon: this.meta.app512IconUrl,
