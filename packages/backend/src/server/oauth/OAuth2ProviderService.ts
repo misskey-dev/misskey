@@ -101,22 +101,22 @@ function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string, id: str
 	let name: string | null = null;
 	let logo: string | null = null;
 
-	const hApps = doc.querySelectorAll('.h-app');
-	for (const hApp of hApps) {
-		const nameEl = hApp.querySelector('.p-name');
-		if (nameEl != null) {
-			const href = nameEl.getAttribute('href') ?? nameEl.getAttribute('src');
-			if (href != null && href.includes(id)) {
-				name = nameEl.textContent.trim();
-			}
-		}
+	const hApp = doc.querySelector('.h-app');
+	if (hApp == null) return { name, logo };
 
-		const logoEl = hApp.querySelector('.u-logo');
-		if (logoEl != null) {
-			const href = logoEl.getAttribute('href') ?? logoEl.getAttribute('src');
-			if (href != null) {
-				logo = new URL(href, baseUrl).toString();
-			}
+	const nameEl = hApp.querySelector('.p-name');
+	if (nameEl != null) {
+		const href = nameEl.attributes.href || nameEl.attributes.src;
+		if (href != null && new URL(href, baseUrl).toString().includes(id)) {
+			name = nameEl.textContent.trim();
+		}
+	}
+
+	const logoEl = hApp.querySelector('.u-logo');
+	if (logoEl != null) {
+		const href = logoEl.attributes.href || logoEl.attributes.src;
+		if (href != null) {
+			logo = new URL(href, baseUrl).toString();
 		}
 	}
 
