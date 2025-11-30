@@ -565,6 +565,9 @@ importers:
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
+      esbuild-plugin-swc:
+        specifier: 1.0.1
+        version: 1.0.1
       eslint-plugin-import:
         specifier: 2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
@@ -6208,11 +6211,6 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
-  cypress@15.6.0:
-    resolution: {integrity: sha512-Vqo66GG1vpxZ7H1oDX9umfmzA3nF7Wy80QAc3VjwPREO5zTY4d1xfQFNPpOWleQl9vpdmR2z1liliOcYlRX6rQ==}
-    engines: {node: ^20.1.0 || ^22.0.0 || >=24.0.0}
-    hasBin: true
-
   cypress@15.7.0:
     resolution: {integrity: sha512-1C81zKxnQckYm2XGi37rPV4rN0bzUoWhydhKdOyshJn5gJKszEx5as9VLSZI0jp0ye49QxmnbU4TtMpcD+OmGQ==}
     engines: {node: ^20.1.0 || ^22.0.0 || >=24.0.0}
@@ -6595,6 +6593,9 @@ packages:
 
   es6-promisify@5.0.0:
     resolution: {integrity: sha512-C+d6UdsYDk0lMebHNR4S2NybQMMngAOnOwYBQjTOiv0MkoJMP0Myw2mgpDLBcpfCmRLxyFqYhS/CfOENq4SJhQ==}
+
+  esbuild-plugin-swc@1.0.1:
+    resolution: {integrity: sha512-K/basZARuDSHH7Krr7FdzwZF4WRLTcZa4c0R2FPuXCyYdh2nZMDdi6SYuuDv0MzKQY+jm0Afl4gltLsBzPesiQ==}
 
   esbuild@0.25.11:
     resolution: {integrity: sha512-KohQwyzrKTQmhXDW1PjCv3Tyspn9n5GcY2RTDqeORIdIJY8yKIF7sTSopFmn/wpMPW4rdPXI0UE5LJLuq3bx0Q==}
@@ -10115,11 +10116,6 @@ packages:
   standard-as-callback@2.1.0:
     resolution: {integrity: sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==}
 
-  start-server-and-test@2.1.2:
-    resolution: {integrity: sha512-OIjfo3G6QV9Sh6IlMqj58oZwVhPVuU/l6uVACG7YNE9kAfDvcYoPThtb0NNT3tZMMC3wOYbXnC15yiCSNFkdRg==}
-    engines: {node: '>=16'}
-    hasBin: true
-
   start-server-and-test@2.1.3:
     resolution: {integrity: sha512-k4EcbNjeg0odaDkAMlIeDVDByqX9PIgL4tivgP2tES6Zd8o+4pTq/HgbWCyA3VHIoZopB+wGnNPKYGGSByNriQ==}
     engines: {node: '>=16'}
@@ -11077,11 +11073,6 @@ packages:
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
     engines: {node: '>=18'}
-
-  wait-on@8.0.5:
-    resolution: {integrity: sha512-J3WlS0txVHkhLRb2FsmRg3dkMTCV1+M6Xra3Ho7HzZDHpE7DCOnoSoCJsZotrmW3uRMhvIJGSKUKrh/MeF4iag==}
-    engines: {node: '>=12.0.0'}
-    hasBin: true
 
   wait-on@9.0.3:
     resolution: {integrity: sha512-13zBnyYvFDW1rBvWiJ6Av3ymAaq8EDQuvxZnPIw3g04UqGi4TyoIJABmfJ6zrvKo9yeFQExNkOk7idQbDJcuKA==}
@@ -16962,52 +16953,6 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  cypress@15.6.0:
-    dependencies:
-      '@cypress/request': 3.0.9
-      '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
-      '@types/sinonjs__fake-timers': 8.1.1
-      '@types/sizzle': 2.3.10
-      '@types/tmp': 0.2.6
-      arch: 2.2.0
-      blob-util: 2.0.2
-      bluebird: 3.7.2
-      buffer: 5.7.1
-      cachedir: 2.4.0
-      chalk: 4.1.2
-      ci-info: 4.3.1
-      cli-cursor: 3.1.0
-      cli-table3: 0.6.1
-      commander: 6.2.1
-      common-tags: 1.8.2
-      dayjs: 1.11.19
-      debug: 4.4.3(supports-color@8.1.1)
-      enquirer: 2.4.1
-      eventemitter2: 6.4.7
-      execa: 4.1.0
-      executable: 4.1.1
-      extract-zip: 2.0.1(supports-color@8.1.1)
-      figures: 3.2.0
-      fs-extra: 9.1.0
-      hasha: 5.2.2
-      is-installed-globally: 0.4.0
-      listr2: 3.14.0(enquirer@2.4.1)
-      lodash: 4.17.21
-      log-symbols: 4.1.0
-      minimist: 1.2.8
-      ospath: 1.2.2
-      pretty-bytes: 5.6.0
-      process: 0.11.10
-      proxy-from-env: 1.0.0
-      request-progress: 3.0.0
-      semver: 7.7.3
-      supports-color: 8.1.1
-      systeminformation: 5.27.7
-      tmp: 0.2.5
-      tree-kill: 1.2.2
-      untildify: 4.0.0
-      yauzl: 2.10.0
-
   cypress@15.7.0:
     dependencies:
       '@cypress/request': 3.0.9
@@ -17487,6 +17432,13 @@ snapshots:
     dependencies:
       es6-promise: 4.2.8
     optional: true
+
+  esbuild-plugin-swc@1.0.1:
+    dependencies:
+      '@swc/core': 1.15.3
+      deepmerge: 4.3.1
+    transitivePeerDependencies:
+      - '@swc/helpers'
 
   esbuild@0.25.11:
     optionalDependencies:
@@ -21775,19 +21727,6 @@ snapshots:
 
   standard-as-callback@2.1.0: {}
 
-  start-server-and-test@2.1.2:
-    dependencies:
-      arg: 5.0.2
-      bluebird: 3.7.2
-      check-more-types: 2.24.0
-      debug: 4.4.3(supports-color@10.2.2)
-      execa: 5.1.1
-      lazy-ass: 1.6.0
-      ps-tree: 1.2.0
-      wait-on: 8.0.5(debug@4.4.3)
-    transitivePeerDependencies:
-      - supports-color
-
   start-server-and-test@2.1.3:
     dependencies:
       arg: 5.0.2
@@ -22730,16 +22669,6 @@ snapshots:
     dependencies:
       xml-name-validator: 5.0.0
     optional: true
-
-  wait-on@8.0.5(debug@4.4.3):
-    dependencies:
-      axios: 1.13.2(debug@4.4.3)
-      joi: 18.0.1
-      lodash: 4.17.21
-      minimist: 1.2.8
-      rxjs: 7.8.2
-    transitivePeerDependencies:
-      - debug
 
   wait-on@9.0.3(debug@4.4.3):
     dependencies:

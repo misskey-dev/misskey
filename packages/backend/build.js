@@ -3,8 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { build } from 'esbuild';
 import { swcPlugin } from 'esbuild-plugin-swc';
-import { buildBackendScript, buildBackendStyle, copyBackendViews } from '../../scripts/build-assets-func.mjs';
-import { build as buildLocales } from '../../locales/index.js';
+import { buildBackendScript, buildBackendStyle, copyBackendViews } from '../../scripts/build-assets.mjs';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -112,7 +111,7 @@ async function buildPre() {
 	const rootDir = resolve(_dirname, '../..');
 	await Promise.all([
 		copyBackendViews(rootDir),
-		buildBackendScript(rootDir, buildLocales()),
+		buildBackendScript(rootDir),
 		buildBackendStyle(rootDir),
 	]);
 }

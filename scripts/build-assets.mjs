@@ -13,6 +13,7 @@ import * as terser from 'terser';
 
 import { locales } from 'i18n';
 import buildTarball from './tarball.mjs';
+import { resolve } from "node:path";
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
 const configPath = process.env.MISSKEY_CONFIG_YML
@@ -29,51 +30,65 @@ async function copyFrontendFonts() {
 	await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
 }
 
-async function copyBackendViews() {
-	await fs.cp('./packages/backend/src/server/web/views', './packages/backend/built/server/web/views', { recursive: true });
+/** @param {string} baseDir */
+export async function copyBackendViews(baseDir) {
+	const srcWebDir = resolve(baseDir, './packages/backend/src/server/web/views');
+	const destWebDir = resolve(baseDir, './packages/backend/built/boot/views');
+	await fs.cp(srcWebDir, destWebDir, { recursive: true });
 }
 
-async function buildBackendScript() {
-	await fs.mkdir('./packages/backend/built/server/web', { recursive: true });
+/** @param {string} baseDir */
+export async function buildBackendScript(baseDir) {
+	const srcWebDir = resolve(baseDir, './packages/backend/src/server/web');
+	const destWebDir = resolve(baseDir, './packages/backend/built/boot');
+	await fs.mkdir(destWebDir, { recursive: true });
 
 	for (const file of [
-		'./packages/backend/src/server/web/boot.js',
-		'./packages/backend/src/server/web/boot.embed.js',
-		'./packages/backend/src/server/web/bios.js',
-		'./packages/backend/src/server/web/cli.js',
-		'./packages/backend/src/server/web/error.js',
+		`${srcWebDir}/boot.js`,
+		`${srcWebDir}/boot.embed.js`,
+		`${srcWebDir}/bios.js`,
+		`${srcWebDir}/cli.js`,
+		`${srcWebDir}/error.js`,
 	]) {
 		let source = await fs.readFile(file, { encoding: 'utf-8' });
 		source = source.replaceAll('LANGS', JSON.stringify(Object.keys(locales)));
 		const { code } = await terser.minify(source, { toplevel: true });
-		await fs.writeFile(`./packages/backend/built/server/web/${path.basename(file)}`, code);
+		await fs.writeFile(`${destWebDir}/${path.basename(file)}`, code);
 	}
 }
 
-async function buildBackendStyle() {
-	await fs.mkdir('./packages/backend/built/server/web', { recursive: true });
+/** @param {string} baseDir */
+export async function buildBackendStyle(baseDir) {
+	const srcWebDir = resolve(baseDir, './packages/backend/src/server/web');
+	const destWebDir = resolve(baseDir, './packages/backend/built/boot');
+	await fs.mkdir(destWebDir, { recursive: true });
 
 	for (const file of [
-		'./packages/backend/src/server/web/style.css',
-		'./packages/backend/src/server/web/style.embed.css',
-		'./packages/backend/src/server/web/bios.css',
-		'./packages/backend/src/server/web/cli.css',
-		'./packages/backend/src/server/web/error.css'
+		`${srcWebDir}/style.css`,
+		`${srcWebDir}/style.embed.css`,
+		`${srcWebDir}/bios.css`,
+		`${srcWebDir}/cli.css`,
+		`${srcWebDir}/error.css`
 	]) {
 		const source = await fs.readFile(file, { encoding: 'utf-8' });
 		const { css } = await postcss([cssnano({ zindex: false })]).process(source, { from: undefined });
-		await fs.writeFile(`./packages/backend/built/server/web/${path.basename(file)}`, css);
+		await fs.writeFile(`${destWebDir}/${path.basename(file)}`, css);
 	}
 }
 
 async function build() {
+	const baseDir = fileURLToPath(new URL('..', import.meta.url));
 	await Promise.all([
 		copyFrontendFonts(),
-		copyBackendViews(),
-		buildBackendScript(),
-		buildBackendStyle(),
+		copyBackendViews(baseDir),
+		buildBackendScript(baseDir),
+		buildBackendStyle(baseDir),
 		loadConfig().then(config => config?.publishTarballInsteadOfProvideRepositoryUrl && buildTarball()),
 	]);
 }
 
-await build();
+// スクリプトとして直接実行された場合
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (isMain) {
+	await build();
+}
