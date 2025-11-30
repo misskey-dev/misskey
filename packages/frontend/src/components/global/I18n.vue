@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<render />
+<render/>
 </template>
 
 <script setup lang="ts" generic="T extends string | ParameterizedString">
