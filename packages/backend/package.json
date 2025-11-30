@@ -123,6 +123,7 @@
 		"got": "14.6.4",
 		"hpagent": "1.2.0",
 		"http-link-header": "1.1.3",
+		"i18n": "workspace:*",
 		"ioredis": "5.8.2",
 		"ip-cidr": "4.0.2",
 		"ipaddr.js": "2.2.0",
