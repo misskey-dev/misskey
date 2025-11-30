@@ -69,8 +69,8 @@ importers:
         specifier: 10.1.0
         version: 10.1.0
       cypress:
-        specifier: 15.6.0
-        version: 15.6.0
+        specifier: 15.7.0
+        version: 15.7.0
       eslint:
         specifier: 9.39.1
         version: 9.39.1
@@ -81,11 +81,11 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       pnpm:
-        specifier: 10.22.0
-        version: 10.22.0
+        specifier: 10.23.0
+        version: 10.23.0
       start-server-and-test:
-        specifier: 2.1.2
-        version: 2.1.2
+        specifier: 2.1.3
+        version: 2.1.3
     optionalDependencies:
       '@tensorflow/tfjs-core':
         specifier: 4.22.0
@@ -6117,6 +6117,11 @@ packages:
     engines: {node: ^20.1.0 || ^22.0.0 || >=24.0.0}
     hasBin: true
 
+  cypress@15.7.0:
+    resolution: {integrity: sha512-1C81zKxnQckYm2XGi37rPV4rN0bzUoWhydhKdOyshJn5gJKszEx5as9VLSZI0jp0ye49QxmnbU4TtMpcD+OmGQ==}
+    engines: {node: ^20.1.0 || ^22.0.0 || >=24.0.0}
+    hasBin: true
+
   dashdash@1.14.1:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
     engines: {node: '>=0.10'}
@@ -8986,8 +8991,8 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
-  pnpm@10.22.0:
-    resolution: {integrity: sha512-vwSe/plbKPUn/StBrgR0zikYb37cs79UUIe9Yfu+uyv3U2LRMH/aCcLSiOHkmXh6wS1Py2F6l0cYpgUfLu50HA==}
+  pnpm@10.23.0:
+    resolution: {integrity: sha512-IcTlaYACrel+Tv6Li0qJqN48haN5GflX56DzDzj7xbvdBZgP/ikXmy+25uaRJC4JjZRdFgF3LK0P71+2QR4qSw==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -10023,6 +10028,11 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
+  start-server-and-test@2.1.3:
+    resolution: {integrity: sha512-k4EcbNjeg0odaDkAMlIeDVDByqX9PIgL4tivgP2tES6Zd8o+4pTq/HgbWCyA3VHIoZopB+wGnNPKYGGSByNriQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+
   statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
@@ -10945,6 +10955,11 @@ packages:
   wait-on@8.0.5:
     resolution: {integrity: sha512-J3WlS0txVHkhLRb2FsmRg3dkMTCV1+M6Xra3Ho7HzZDHpE7DCOnoSoCJsZotrmW3uRMhvIJGSKUKrh/MeF4iag==}
     engines: {node: '>=12.0.0'}
+    hasBin: true
+
+  wait-on@9.0.3:
+    resolution: {integrity: sha512-13zBnyYvFDW1rBvWiJ6Av3ymAaq8EDQuvxZnPIw3g04UqGi4TyoIJABmfJ6zrvKo9yeFQExNkOk7idQbDJcuKA==}
+    engines: {node: '>=20.0.0'}
     hasBin: true
 
   walker@1.0.8:
@@ -16810,6 +16825,51 @@ snapshots:
       untildify: 4.0.0
       yauzl: 2.10.0
 
+  cypress@15.7.0:
+    dependencies:
+      '@cypress/request': 3.0.9
+      '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
+      '@types/sinonjs__fake-timers': 8.1.1
+      '@types/sizzle': 2.3.10
+      '@types/tmp': 0.2.6
+      arch: 2.2.0
+      blob-util: 2.0.2
+      bluebird: 3.7.2
+      buffer: 5.7.1
+      cachedir: 2.4.0
+      chalk: 4.1.2
+      ci-info: 4.3.1
+      cli-cursor: 3.1.0
+      cli-table3: 0.6.1
+      commander: 6.2.1
+      common-tags: 1.8.2
+      dayjs: 1.11.19
+      debug: 4.4.3(supports-color@8.1.1)
+      enquirer: 2.4.1
+      eventemitter2: 6.4.7
+      execa: 4.1.0
+      executable: 4.1.1
+      extract-zip: 2.0.1(supports-color@8.1.1)
+      figures: 3.2.0
+      fs-extra: 9.1.0
+      hasha: 5.2.2
+      is-installed-globally: 0.4.0
+      listr2: 3.14.0(enquirer@2.4.1)
+      lodash: 4.17.21
+      log-symbols: 4.1.0
+      minimist: 1.2.8
+      ospath: 1.2.2
+      pretty-bytes: 5.6.0
+      process: 0.11.10
+      proxy-from-env: 1.0.0
+      request-progress: 3.0.0
+      supports-color: 8.1.1
+      systeminformation: 5.27.7
+      tmp: 0.2.5
+      tree-kill: 1.2.2
+      untildify: 4.0.0
+      yauzl: 2.10.0
+
   dashdash@1.14.1:
     dependencies:
       assert-plus: 1.0.0
@@ -20373,7 +20433,7 @@ snapshots:
 
   pngjs@5.0.0: {}
 
-  pnpm@10.22.0: {}
+  pnpm@10.23.0: {}
 
   polished@4.3.1:
     dependencies:
@@ -21550,6 +21610,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  start-server-and-test@2.1.3:
+    dependencies:
+      arg: 5.0.2
+      bluebird: 3.7.2
+      check-more-types: 2.24.0
+      debug: 4.4.3(supports-color@10.2.2)
+      execa: 5.1.1
+      lazy-ass: 1.6.0
+      ps-tree: 1.2.0
+      wait-on: 9.0.3(debug@4.4.3)
+    transitivePeerDependencies:
+      - supports-color
+
   statuses@2.0.1: {}
 
   statuses@2.0.2: {}
@@ -22441,6 +22514,16 @@ snapshots:
     optional: true
 
   wait-on@8.0.5(debug@4.4.3):
+    dependencies:
+      axios: 1.13.2(debug@4.4.3)
+      joi: 18.0.1
+      lodash: 4.17.21
+      minimist: 1.2.8
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - debug
+
+  wait-on@9.0.3(debug@4.4.3):
     dependencies:
       axios: 1.13.2(debug@4.4.3)
       joi: 18.0.1
