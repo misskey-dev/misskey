@@ -65,8 +65,8 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 
 					{props.ogSlot ?? (
 						<>
-							{props.title != null ? <meta property="og:title" content={props.title ?? 'Misskey'} /> : null}
-							{props.desc != null ? <meta property="og:description" content={props.desc ?? defaultDescription} /> : null}
+							<meta property="og:title" content={props.title ?? 'Misskey'} />
+							<meta property="og:description" content={props.desc ?? defaultDescription} />
 							{props.img != null ? <meta property="og:image" content={props.img} /> : null}
 							<meta property="twitter:card" content="summary" />
 						</>
