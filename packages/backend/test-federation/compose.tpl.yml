@@ -95,7 +95,7 @@ services:
       retries: 20
 
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     env_file:
       - ./.config/docker.env
     volumes:
