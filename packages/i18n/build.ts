@@ -17,9 +17,10 @@ import type { BuildOptions, BuildResult, Plugin, PluginBuild } from 'esbuild';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
-const _rootPackage = JSON.parse(fs.readFileSync(resolve(_dirname, '../../package.json'), 'utf-8'));
+const _rootPackageDir = resolve(_dirname, '../../');
+const _rootPackage = JSON.parse(fs.readFileSync(resolve(_rootPackageDir, 'package.json'), 'utf-8'));
 const _frontendLocalesDir = resolve(_dirname, '../../built/_frontend_dist_/locales');
-const _localesDir = resolve(_dirname, 'src/locales');
+const _localesDir = resolve(_rootPackageDir, 'locales');
 
 const entryPoints = globSync('./src/**/**.{ts,tsx}');
 
@@ -49,7 +50,7 @@ if (args.includes('--watch')) {
 }
 
 function copyLocales(): void {
-	const srcDir = resolve(_dirname, 'src/locales');
+	const srcDir = _localesDir;
 	const destDir = resolve(_dirname, 'built/locales');
 
 	fs.mkdirSync(destDir, { recursive: true });
