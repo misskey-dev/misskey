@@ -10,14 +10,14 @@ import { execa } from 'execa';
  *
  * 第1層（依存なし - 並行ビルド可能）:
  *   - misskey-js: 基盤SDK
- *   - locale-assets: 翻訳アセット
+ *   - i18n: 翻訳アセット
  *   - misskey-reversi: リバーシロジック
  *   - misskey-bubble-game: バブルゲームロジック
  *   - icons-subsetter: アイコンフォント生成
  *
  * 第2層（第1層に依存）:
- *   - frontend-shared: misskey-js, locale-assets に依存
- *   - sw: misskey-js, locale-assets に依存
+ *   - frontend-shared: misskey-js, i18n に依存
+ *   - sw: misskey-js, i18n に依存
  *   - backend: misskey-js, misskey-reversi に依存
  *
  * 第3層（第1層・第2層に依存）:

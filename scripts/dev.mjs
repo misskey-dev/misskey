@@ -17,7 +17,7 @@ await execa('pnpm', ['clean'], {
 });
 
 // アセットのビルドで依存しているので一番最初に必要
-await execa('pnpm', ['--filter', 'locale-assets', 'build'], {
+await execa('pnpm', ['--filter', 'i18n', 'build'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
@@ -100,7 +100,7 @@ execa('pnpm', ['--filter', 'misskey-js', 'watch', '--no-clean'], {
 	stderr: process.stderr,
 });
 
-execa('pnpm', ['--filter', 'locale-assets', 'watch', '--no-clean'], {
+execa('pnpm', ['--filter', 'i18n', 'watch', '--no-clean'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,

@@ -6,7 +6,7 @@
 import path from 'node:path'
 import locales from 'i18n';
 
-const localesDir = path.resolve(__dirname, '../../locale-assets/src/locales')
+const localesDir = path.resolve(__dirname, '../../i18n/src/locales')
 
 /**
  * 外部ファイルを監視し、必要に応じてwebSocketでメッセージを送るViteプラグイン
