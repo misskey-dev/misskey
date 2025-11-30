@@ -5,6 +5,7 @@
 
 import { comment } from '@/server/web/views/_.js';
 import type { CommonProps } from '@/server/web/views/_.js';
+import { Splash } from '@/server/web/views/_splash.js';
 import type { PropsWithChildren, Children } from '@kitajs/html';
 
 export function BaseEmbed(props: PropsWithChildren<CommonProps<{
@@ -73,21 +74,7 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 							Please turn on your JavaScript
 						</p>
 					</noscript>
-					<div id="splash">
-						<img id="splashIcon" src={props.icon ?? '/static-assets/splash.png'} />
-						<div id="splashSpinner">
-							<svg class="spinner bg" viewBox="0 0 152 152" xmlns="http://www.w3.org/2000/svg">
-								<g transform="matrix(1,0,0,1,12,12)">
-									<circle cx="64" cy="64" r="64" style="fill:none;stroke:currentColor;stroke-width:24px;"/>
-								</g>
-							</svg>
-							<svg class="spinner fg" viewBox="0 0 152 152" xmlns="http://www.w3.org/2000/svg">
-								<g transform="matrix(1,0,0,1,12,12)">
-									<path d="M128,64C128,28.654 99.346,0 64,0C99.346,0 128,28.654 128,64Z" style="fill:none;stroke:currentColor;stroke-width:24px;"/>
-								</g>
-							</svg>
-						</div>
-					</div>
+					<Splash icon={props.icon} />
 					{props.children}
 				</body>
 			</html>
