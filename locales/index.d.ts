@@ -5633,6 +5633,7 @@ export interface Locale extends ILocale {
      * タグセット
      */
     "tagset": string;
+    /**
      * あなたは管理者です
      */
     "youAreAdmin": string;
