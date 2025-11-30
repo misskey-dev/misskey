@@ -4,10 +4,12 @@ on:
   push:
     paths:
       - packages/i18n/**
+      - locales/**
       - .github/workflows/locale.yml
   pull_request:
     paths:
       - packages/i18n/**
+      - locales/**
       - .github/workflows/locale.yml
 jobs:
   locale_verify:
@@ -25,6 +27,7 @@ jobs:
           node-version-file: ".node-version"
           cache: "pnpm"
       - run: pnpm i --frozen-lockfile
+      - run: pnpm --filter i18n build
       - name: Verify Locales
         working-directory: ./packages/i18n
         run: pnpm run verify
