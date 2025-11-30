@@ -80,8 +80,8 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEntry.file)};
 					</script>
 
-					{props.metaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
-					{props.clientCtxJson != null ? <script type="application/json" id="misskey_clientCtx" data-generated-at={now}>{safeClientCtxJson}</script> : null}
+					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
+					{safeClientCtxJson != null ? <script type="application/json" id="misskey_clientCtx" data-generated-at={now}>{safeClientCtxJson}</script> : null}
 
 					<script src="/vite/loader/boot.js"></script>
 				</head>

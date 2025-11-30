@@ -62,8 +62,8 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEmbedEntry.file)};
 					</script>
 
-					{props.metaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
-					{props.embedCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now}>{safeEmbedCtxJson}</script> : null}
+					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
+					{safeEmbedCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now}>{safeEmbedCtxJson}</script> : null}
 
 					<script src="/embed_vite/loader/boot.js"></script>
 				</head>
