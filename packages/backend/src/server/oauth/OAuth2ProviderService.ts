@@ -12,8 +12,6 @@ import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyCors from '@fastify/cors';
-import fastifyView from '@fastify/view';
-import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
@@ -32,6 +30,8 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
+import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
+import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -253,6 +253,7 @@ export class OAuth2ProviderService {
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 		loggerService: LoggerService,
+		private htmlTemplateService: HtmlTemplateService,
 	) {
 		this.#logger = loggerService.getLogger('oauth');
 
@@ -386,23 +387,15 @@ export class OAuth2ProviderService {
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
-			return await reply.view('oauth', {
+			return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+				...await this.htmlTemplateService.getCommonData(),
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
-				clientLogo: oauth2.client.logo,
-				scope: oauth2.req.scope.join(' '),
-			});
+				clientLogo: oauth2.client.logo ?? undefined,
+				scope: oauth2.req.scope,
+			}));
 		});
 		fastify.post('/decision', async () => { });
-
-		fastify.register(fastifyView, {
-			root: fileURLToPath(new URL('../web/views', import.meta.url)),
-			engine: { pug },
-			defaultContext: {
-				version: this.config.version,
-				config: this.config,
-			},
-		});
 
 		await fastify.register(fastifyExpress);
 		fastify.use('/authorize', this.#server.authorize(((areq, done) => {
