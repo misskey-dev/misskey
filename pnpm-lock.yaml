@@ -77,9 +77,6 @@ importers:
       globals:
         specifier: 16.5.0
         version: 16.5.0
-      i18n:
-        specifier: workspace:*
-        version: link:packages/i18n
       ncp:
         specifier: 2.0.0
         version: 2.0.0
