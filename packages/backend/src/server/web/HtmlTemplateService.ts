@@ -6,7 +6,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promises as fsp } from 'node:fs';
-import { languages } from 'i18n';
+import { languages } from 'i18n/const';
 import { Injectable, Inject } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
