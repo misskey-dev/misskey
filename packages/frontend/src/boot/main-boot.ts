@@ -303,13 +303,6 @@ export async function mainBoot() {
 			});
 		}
 
-		if ('Notification' in window) {
-			// 許可を得ていなかったらリクエスト
-			if (Notification.permission === 'default') {
-				Notification.requestPermission();
-			}
-		}
-
 		if (store.s.realtimeMode) {
 			const stream = useStream();
 
@@ -366,11 +359,6 @@ export async function mainBoot() {
 					hasUnreadNotification: true,
 					unreadNotificationsCount,
 				});
-			});
-
-			main.on('unreadAntenna', () => {
-				updateCurrentAccountPartial({ hasUnreadAntenna: true });
-				sound.playMisskeySfx('antenna');
 			});
 
 			main.on('newChatMessage', () => {

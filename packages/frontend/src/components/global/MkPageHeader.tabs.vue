@@ -4,12 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="el" :class="$style.tabs" @wheel="onTabWheel">
+<div ref="el" :class="$style.tabs" :style="{ '--tabAnchorName': tabAnchorName }" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
 		<button
-			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: prefer.s.animation }]"
-			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
+			v-for="t in tabs"
+			:ref="(el) => tabRefs[t.key] = (el as HTMLElement)"
+			v-tooltip.noDelay="t.title"
+			class="_button"
+			:class="[$style.tab, {
+				[$style.active]: t.key != null && t.key === props.tab,
+				[$style.animate]: prefer.s.animation
+			}]"
+			:style="getTabStyle(t)"
+			@mousedown="(ev) => onTabMousedown(t, ev)"
+			@click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
 				<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
@@ -39,27 +47,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 export type Tab = {
 	key: string;
 	onClick?: (ev: MouseEvent) => void;
-} & (
-	| {
-		iconOnly?: false;
-		title: string;
-		icon?: string;
-	}
-	| {
-		iconOnly: true;
-		icon: string;
-	}
-);
+	iconOnly?: boolean;
+	title: string;
+	icon?: string;
+};
 </script>
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
+import { genId } from '@/utility/id.js';
+
+const cssAnchorSupported = CSS.supports('position-anchor', '--anchor-name');
+const tabAnchorName = `--${genId()}-currentTab`;
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
-	rootEl?: HTMLElement;
+	rootEl?: HTMLElement | null;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -72,6 +77,17 @@ const emit = defineEmits<{
 const el = useTemplateRef('el');
 const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs: Record<string, HTMLElement | null> = {};
+
+function getTabStyle(t: Tab) {
+	if (!cssAnchorSupported) return {};
+	if (t.key === props.tab) {
+		return {
+			anchorName: tabAnchorName,
+		};
+	} else {
+		return {};
+	}
+}
 
 function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
@@ -95,6 +111,8 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 }
 
 function renderTab() {
+	if (cssAnchorSupported) return;
+
 	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
 	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
@@ -159,22 +177,24 @@ function afterLeave(el: Element) {
 let ro2: ResizeObserver | null;
 
 onMounted(() => {
-	watch([() => props.tab, () => props.tabs], () => {
-		nextTick(() => {
-			if (entering) return;
-			renderTab();
+	if (!cssAnchorSupported) {
+		watch([() => props.tab, () => props.tabs], () => {
+			nextTick(() => {
+				if (entering) return;
+				renderTab();
+			});
+		}, {
+			immediate: true,
 		});
-	}, {
-		immediate: true,
-	});
 
-	if (props.rootEl) {
-		ro2 = new ResizeObserver((entries, observer) => {
-			if (window.document.body.contains(el.value as HTMLElement)) {
-				nextTick(() => renderTab());
-			}
-		});
-		ro2.observe(props.rootEl);
+		if (props.rootEl) {
+			ro2 = new ResizeObserver(() => {
+				if (window.document.body.contains(el.value as HTMLElement)) {
+					nextTick(() => renderTab());
+				}
+			});
+			ro2.observe(props.rootEl);
+		}
 	}
 });
 
@@ -251,6 +271,13 @@ onUnmounted(() => {
 
 	&.animate {
 		transition: width 0.15s ease, left 0.15s ease;
+	}
+}
+
+@supports (position-anchor: --anchor-name) {
+	.tabHighlight {
+		left: anchor(var(--tabAnchorName) start);
+		width: anchor-size(var(--tabAnchorName) width);
 	}
 }
 </style>

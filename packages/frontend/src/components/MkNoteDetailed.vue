@@ -392,6 +392,9 @@ const reactionsPaginator = markRaw(new Paginator('notes/reactions', {
 }));
 
 useTooltip(renoteButton, async (showing) => {
+	const anchorElement = renoteButton.value;
+	if (anchorElement == null) return;
+
 	const renotes = await misskeyApi('notes/renotes', {
 		noteId: appearNote.id,
 		limit: 11,
@@ -405,7 +408,7 @@ useTooltip(renoteButton, async (showing) => {
 		showing,
 		users,
 		count: appearNote.renoteCount,
-		anchorElement: renoteButton.value,
+		anchorElement: anchorElement,
 	}, {
 		closed: () => dispose(),
 	});

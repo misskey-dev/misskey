@@ -9,11 +9,12 @@ import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { Component, Ref } from 'vue';
-import type { ComponentProps as CP } from 'vue-component-type-helpers';
+import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { PostFormProps } from '@/types/post-form.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
+import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
 import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
 import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -35,9 +36,9 @@ import { focusParent } from '@/utility/focus.js';
 export const openingWindowsCount = ref(0);
 
 export type ApiWithDialogCustomErrors = Record<string, { title?: string; text: string; }>;
-export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
+export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 	endpoint: E,
-	data: P,
+	data: Misskey.Endpoints[E]['req'],
 	token?: string | null | undefined,
 	customErrors?: ApiWithDialogCustomErrors,
 ) => {
@@ -75,7 +76,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Miss
 		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
 			title = i18n.ts.permissionDeniedError;
 			text = i18n.ts.permissionDeniedErrorDescription;
-		} else if (err.code.startsWith('TOO_MANY')) {
+		} else if (err.code.startsWith('TOO_MANY')) { // TODO: バックエンドに kind: client/contentsLimitExceeded みたいな感じで送るように統一してもらってそれで判定する
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
 		} else if (err.message.startsWith('Unexpected token')) {
@@ -157,27 +158,8 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 	return zIndexes[priority];
 }
 
-// InstanceType<typeof Component>['$emit'] だとインターセクション型が返ってきて
-// 使い物にならないので、代わりに ['$props'] から色々省くことで emit の型を生成する
-// FIXME: 何故か *.ts ファイルからだと型がうまく取れない？ことがあるのをなんとかしたい
-type ComponentEmit<T> = T extends new () => { $props: infer Props }
-	? [keyof Pick<T, Extract<keyof T, `on${string}`>>] extends [never]
-		? Record<string, unknown> // *.ts ファイルから型がうまく取れないとき用（これがないと {} になって型エラーがうるさい）
-		: EmitsExtractor<Props>
-	: T extends (...args: any) => any
-		? ReturnType<T> extends { [x: string]: any; __ctx?: { [x: string]: any; props: infer Props } }
-			? [keyof Pick<T, Extract<keyof T, `on${string}`>>] extends [never]
-				? Record<string, unknown>
-				: EmitsExtractor<Props>
-			: never
-		: never;
-
 // props に ref を許可するようにする
 type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
-
-type EmitsExtractor<T> = {
-	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
-};
 
 export function popup<T extends Component>(
 	component: T,
@@ -478,7 +460,7 @@ export function inputNumber(props: {
 	});
 }
 
-export function inputDate(props: {
+export function inputDatetime(props: {
 	title?: string;
 	text?: string;
 	placeholder?: string | null;
@@ -493,13 +475,13 @@ export function inputDate(props: {
 			title: props.title,
 			text: props.text,
 			input: {
-				type: 'date',
+				type: 'datetime-local',
 				placeholder: props.placeholder,
 				default: props.default ?? null,
 			},
 		}, {
 			done: result => {
-				resolve(result ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
+				resolve(result != null && result.result != null ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
 			},
 			closed: () => dispose(),
 		});
@@ -521,50 +503,15 @@ export function authenticateDialog(): Promise<{
 	});
 }
 
-type SelectItem<C> = {
-	value: C;
-	text: string;
-};
-
-// default が指定されていたら result は null になり得ないことを保証する overload function
-export function select<C = unknown>(props: {
+export function select<C extends OptionValue, D extends C | null = null>(props: {
 	title?: string;
 	text?: string;
-	default: string;
-	items: (SelectItem<C> | {
-		sectionTitle: string;
-		items: SelectItem<C>[];
-	} | undefined)[];
+	default?: D;
+	items: (MkSelectItem<C> | undefined)[];
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
-	canceled: false; result: C;
-}>;
-export function select<C = unknown>(props: {
-	title?: string;
-	text?: string;
-	default?: string | null;
-	items: (SelectItem<C> | {
-		sectionTitle: string;
-		items: SelectItem<C>[];
-	} | undefined)[];
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: C | null;
-}>;
-export function select<C = unknown>(props: {
-	title?: string;
-	text?: string;
-	default?: string | null;
-	items: (SelectItem<C> | {
-		sectionTitle: string;
-		items: SelectItem<C>[];
-	} | undefined)[];
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: C | null;
+	canceled: false; result: Exclude<D, undefined> extends null ? C | null : C;
 }> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
@@ -703,7 +650,7 @@ export async function cropImageFile(imageFile: File | Blob, options: {
 	});
 }
 
-export function popupMenu(items: MenuItem[], anchorElement?: HTMLElement | EventTarget | null, options?: {
+export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElement | EventTarget | null, options?: {
 	align?: string;
 	width?: number;
 	onClosing?: () => void;
@@ -715,7 +662,7 @@ export function popupMenu(items: MenuItem[], anchorElement?: HTMLElement | Event
 	let returnFocusTo = getHTMLElementOrNull(anchorElement) ?? getHTMLElementOrNull(window.document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
-			items,
+			items: items.filter(x => x != null),
 			anchorElement,
 			width: options?.width,
 			align: options?.align,
