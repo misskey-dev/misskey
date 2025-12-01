@@ -51,6 +51,14 @@ services:
         target: /misskey/packages/misskey-js/package.json
         read_only: true
       - type: bind
+        source: ../../i18n/built
+        target: /misskey/packages/i18n/built
+        read_only: true
+      - type: bind
+        source: ../../i18n/package.json
+        target: /misskey/packages/i18n/package.json
+        read_only: true
+      - type: bind
         source: ../../misskey-reversi/built
         target: /misskey/packages/misskey-reversi/built
         read_only: true
