@@ -46,6 +46,7 @@ export class HtmlTemplateService {
 	@bindThis
 	private async prepareFrontendBootloaders() {
 		if (this.frontendBootloadersFetched) return;
+		this.frontendBootloadersFetched = true;
 
 		const transformJs = (code: string) => transform(code, {
 			minify: true,
@@ -80,8 +81,6 @@ export class HtmlTemplateService {
 		if (embedBootCss != null) {
 			this.frontendEmbedBootloaderCss = embedBootCss.code;
 		}
-
-		this.frontendBootloadersFetched = true;
 	}
 
 	@bindThis
