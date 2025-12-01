@@ -6,7 +6,6 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promises as fsp } from 'node:fs';
-import { transform } from 'esbuild';
 import { languages } from 'i18n';
 import { Injectable, Inject } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
@@ -48,38 +47,27 @@ export class HtmlTemplateService {
 		if (this.frontendBootloadersFetched) return;
 		this.frontendBootloadersFetched = true;
 
-		const transformJs = (code: string) => transform(code, {
-			minify: true,
-			format: 'iife',
-			loader: 'js',
-		});
-
-		const transformCss = (code: string) => transform(code, {
-			minify: true,
-			loader: 'css',
-		});
-
 		const [bootJs, bootCss, embedBootJs, embedBootCss] = await Promise.all([
-			fsp.readFile(`${frontendVitePublic}loader/boot.js`, 'utf-8').then((code) => transformJs(code)).catch(() => null),
-			fsp.readFile(`${frontendVitePublic}loader/style.css`, 'utf-8').then((code) => transformCss(code)).catch(() => null),
-			fsp.readFile(`${frontendEmbedVitePublic}loader/boot.js`, 'utf-8').then((code) => transformJs(code)).catch(() => null),
-			fsp.readFile(`${frontendEmbedVitePublic}loader/style.css`, 'utf-8').then((code) => transformCss(code)).catch(() => null),
+			fsp.readFile(`${frontendVitePublic}loader/boot.js`, 'utf-8').catch(() => null),
+			fsp.readFile(`${frontendVitePublic}loader/style.css`, 'utf-8').catch(() => null),
+			fsp.readFile(`${frontendEmbedVitePublic}loader/boot.js`, 'utf-8').catch(() => null),
+			fsp.readFile(`${frontendEmbedVitePublic}loader/style.css`, 'utf-8').catch(() => null),
 		]);
 
 		if (bootJs != null) {
-			this.frontendBootloaderJs = bootJs.code;
+			this.frontendBootloaderJs = bootJs;
 		}
 
 		if (bootCss != null) {
-			this.frontendBootloaderCss = bootCss.code;
+			this.frontendBootloaderCss = bootCss;
 		}
 
 		if (embedBootJs != null) {
-			this.frontendEmbedBootloaderJs = embedBootJs.code;
+			this.frontendEmbedBootloaderJs = embedBootJs;
 		}
 
 		if (embedBootCss != null) {
-			this.frontendEmbedBootloaderCss = embedBootCss.code;
+			this.frontendEmbedBootloaderCss = embedBootCss;
 		}
 	}
 
