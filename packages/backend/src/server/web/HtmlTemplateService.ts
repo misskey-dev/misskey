@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promises as fsp } from 'node:fs';
+import { transform } from 'esbuild';
 import { languages } from 'i18n';
 import { Injectable, Inject } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
@@ -14,8 +18,20 @@ import type { Config } from '@/config.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { CommonData } from './views/_.js';
 
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
+
+const frontendVitePublic = `${_dirname}/../../../../frontend/public/`;
+const frontendEmbedVitePublic = `${_dirname}/../../../../frontend-embed/public/`;
+
 @Injectable()
 export class HtmlTemplateService {
+	private frontendBootloadersFetched = false;
+	public frontendBootloaderJs: string | null = null;
+	public frontendBootloaderCss: string | null = null;
+	public frontendEmbedBootloaderJs: string | null = null;
+	public frontendEmbedBootloaderCss: string | null = null;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -28,7 +44,50 @@ export class HtmlTemplateService {
 	}
 
 	@bindThis
+	private async prepareFrontendBootloaders() {
+		if (this.frontendBootloadersFetched) return;
+
+		const transformJs = (code: string) => transform(code, {
+			minify: true,
+			format: 'iife',
+			loader: 'js',
+		});
+
+		const transformCss = (code: string) => transform(code, {
+			minify: true,
+			loader: 'css',
+		});
+
+		const [bootJs, bootCss, embedBootJs, embedBootCss] = await Promise.all([
+			fsp.readFile(`${frontendVitePublic}loader/boot.js`, 'utf-8').then((code) => transformJs(code)).catch(() => null),
+			fsp.readFile(`${frontendVitePublic}loader/style.css`, 'utf-8').then((code) => transformCss(code)).catch(() => null),
+			fsp.readFile(`${frontendEmbedVitePublic}loader/boot.js`, 'utf-8').then((code) => transformJs(code)).catch(() => null),
+			fsp.readFile(`${frontendEmbedVitePublic}loader/style.css`, 'utf-8').then((code) => transformCss(code)).catch(() => null),
+		]);
+
+		if (bootJs != null) {
+			this.frontendBootloaderJs = bootJs.code;
+		}
+
+		if (bootCss != null) {
+			this.frontendBootloaderCss = bootCss.code;
+		}
+
+		if (embedBootJs != null) {
+			this.frontendEmbedBootloaderJs = embedBootJs.code;
+		}
+
+		if (embedBootCss != null) {
+			this.frontendEmbedBootloaderCss = embedBootCss.code;
+		}
+
+		this.frontendBootloadersFetched = true;
+	}
+
+	@bindThis
 	public async getCommonData(): Promise<CommonData> {
+		await this.prepareFrontendBootloaders();
+
 		return {
 			version: this.config.version,
 			config: this.config,
@@ -44,6 +103,10 @@ export class HtmlTemplateService {
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(this.meta)),
 			now: Date.now(),
 			federationEnabled: this.meta.federation !== 'none',
+			frontendBootloaderJs: this.frontendBootloaderJs,
+			frontendBootloaderCss: this.frontendBootloaderCss,
+			frontendEmbedBootloaderJs: this.frontendEmbedBootloaderJs,
+			frontendEmbedBootloaderCss: this.frontendEmbedBootloaderCss,
 		};
 	}
 

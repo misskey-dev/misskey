@@ -58,7 +58,7 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 
 					<meta name="robots" content="noindex" />
 
-					<link rel="stylesheet" href="/embed_vite/loader/style.css" />
+					{props.frontendEmbedBootloaderCss != null ? <style safe>{props.frontendEmbedBootloaderCss}</style> : <link rel="stylesheet" href="/embed_vite/loader/style.css" />}
 
 					<script>
 						const VERSION = '{props.version}';
@@ -69,7 +69,7 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
 					{safeEmbedCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now}>{safeEmbedCtxJson}</script> : null}
 
-					<script src="/embed_vite/loader/boot.js"></script>
+					{props.frontendEmbedBootloaderJs != null ? <script>{props.frontendEmbedBootloaderJs}</script> : <script src="/embed_vite/loader/boot.js"></script>}
 				</head>
 				<body>
 					<noscript>

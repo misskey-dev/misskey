@@ -114,6 +114,7 @@
 		"content-disposition": "1.0.1",
 		"date-fns": "4.1.0",
 		"deep-email-validator": "0.1.21",
+		"esbuild": "0.27.0",
 		"fastify": "5.6.2",
 		"fastify-raw-body": "5.0.0",
 		"feed": "5.1.0",

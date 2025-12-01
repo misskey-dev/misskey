@@ -76,7 +76,7 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 						</>
 					)}
 
-					<link rel="stylesheet" href="/vite/loader/style.css" />
+					{props.frontendBootloaderCss != null ? <style safe>{props.frontendBootloaderCss}</style> : <link rel="stylesheet" href="/vite/loader/style.css" />}
 
 					<script>
 						const VERSION = '{props.version}';
@@ -87,7 +87,7 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
 					{safeClientCtxJson != null ? <script type="application/json" id="misskey_clientCtx" data-generated-at={now}>{safeClientCtxJson}</script> : null}
 
-					<script src="/vite/loader/boot.js"></script>
+					{props.frontendBootloaderJs != null ? <script>{props.frontendBootloaderJs}</script> : <script src="/vite/loader/boot.js"></script>}
 				</head>
 				<body>
 					<noscript>

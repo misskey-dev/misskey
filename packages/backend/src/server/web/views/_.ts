@@ -36,6 +36,10 @@ export type CommonData = MinimumCommonData & {
 	instanceUrl: string;
 	now: number;
 	federationEnabled: boolean;
+	frontendBootloaderJs: string | null;
+	frontendBootloaderCss: string | null;
+	frontendEmbedBootloaderJs: string | null;
+	frontendEmbedBootloaderCss: string | null;
 	metaJson?: string;
 	clientCtxJson?: string;
 };
