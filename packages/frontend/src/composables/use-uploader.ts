@@ -18,6 +18,9 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
+import VideoOpfsWriter from '@/workers/video-opfs-writer?worker';
+import type { VideoOpfsResponse } from '@/types/video-opfs-writer.js';
+import type { StreamTargetChunk } from 'mediabunny';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;
@@ -43,6 +46,9 @@ const VIDEO_COMPRESSION_SUPPORTED_TYPES = [ // TODO
 	'video/quicktime',
 	'video/x-matroska',
 ];
+
+// worker/video-opfs-writer.ts と合わせること
+const VIDEO_COMPRESSION_FOLDER_NAME = 'video-compression-temp';
 
 const IMAGE_PREPROCESS_NEEDED_TYPES = [
 	...IMAGE_EDITING_SUPPORTED_TYPES,
@@ -73,6 +79,7 @@ export type UploaderItem = {
 	compressionLevel: 0 | 1 | 2 | 3;
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
+	preprocessOpfsFileName?: string;
 	file: File;
 	watermarkPreset: WatermarkPreset | null;
 	watermarkLayers: WatermarkLayers | null;
@@ -102,6 +109,28 @@ function getCompressionSettings(level: 0 | 1 | 2 | 3) {
 	} else {
 		return null;
 	}
+}
+
+let folderHandle: FileSystemDirectoryHandle | null = null;
+
+async function getOpfsFolderHandle(): Promise<FileSystemDirectoryHandle> {
+	if (folderHandle == null) {
+		const handle = await navigator.storage.getDirectory();
+		folderHandle = await handle.getDirectoryHandle(VIDEO_COMPRESSION_FOLDER_NAME, { create: true });
+	}
+	return folderHandle;
+}
+
+async function getOpfsFileHandle(fileName: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle> {
+	const folderHandle = await getOpfsFolderHandle();
+	return folderHandle.getFileHandle(fileName, options);
+}
+
+export async function clearOpfsTempFiles() {
+	const rootHandle = await navigator.storage.getDirectory();
+	await rootHandle.removeEntry(VIDEO_COMPRESSION_FOLDER_NAME, { recursive: true }).catch(() => {
+		// ignore
+	});
 }
 
 export function useUploader(options: {
@@ -158,8 +187,15 @@ export function useUploader(options: {
 		}
 	}
 
-	function removeItem(item: UploaderItem) {
+	async function removeItem(item: UploaderItem) {
 		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+		if (item.preprocessOpfsFileName != null) {
+			const folderHandle = await getOpfsFolderHandle();
+			await folderHandle.removeEntry(item.preprocessOpfsFileName).catch((err) => {
+				if (_DEV_) console.warn('Failed to remove OPFS temp file', err);
+			});
+		}
+
 		items.value.splice(items.value.indexOf(item), 1);
 	}
 
@@ -696,29 +732,90 @@ export function useUploader(options: {
 
 	async function preprocessForVideo(item: UploaderItem): Promise<void> {
 		let preprocessedFile: Blob | File = item.file;
-
 		const needsCompress = item.compressionLevel !== 0 && VIDEO_COMPRESSION_SUPPORTED_TYPES.includes(preprocessedFile.type);
 
 		if (needsCompress) {
 			const mediabunny = await import('mediabunny');
-
 			const source = new mediabunny.BlobSource(preprocessedFile);
-
 			const input = new mediabunny.Input({
 				source,
 				formats: mediabunny.ALL_FORMATS,
 			});
 
-			const output = new mediabunny.Output({
-				target: new mediabunny.BufferTarget(),
-				format: new mediabunny.Mp4OutputFormat(),
-			});
+			let output: InstanceType<typeof mediabunny.Output>;
+			let opfsError: null | string = null;
+
+			// OPFS Worker初期化
+			let worker: Worker;
+			try {
+				worker = new VideoOpfsWriter();
+				const fileName = `${item.id}.mp4`;
+				// Worker初期化
+				const opfsPromise = new Promise((resolve) => {
+					worker.addEventListener('message', (ev) => {
+						const data = ev.data as VideoOpfsResponse;
+						if (data.type === 'init') {
+							if (data.success) {
+								item.preprocessOpfsFileName = fileName;
+								resolve(true);
+							} else {
+								opfsError = data.error ?? null;
+								resolve(false);
+							}
+						}
+					});
+					worker.postMessage({ type: 'init', fileName });
+				});
+				const result = await opfsPromise;
+				if (result) {
+					// StreamTarget生成
+					// WritableStreamを生成し、write/closeでWorkerにpostMessage
+					const writable = new WritableStream<StreamTargetChunk>({
+						write(chunk) {
+							return new Promise<void>((resolve, reject) => {
+								worker.onmessage = (e) => {
+									if (e.data.type === 'write' && e.data.success) {
+										resolve();
+									} else if (e.data.type === 'write') {
+										reject(e.data.error);
+									}
+								};
+								worker.postMessage({ type: 'write', chunk });
+							});
+						},
+						close() {
+							return new Promise<void>((resolve, reject) => {
+								worker.onmessage = (e) => {
+									if (e.data.type === 'close' && e.data.success) {
+										resolve();
+									} else if (e.data.type === 'close') {
+										reject(e.data.error);
+									}
+								};
+								worker.postMessage({ type: 'close' });
+							});
+						},
+					});
+
+					output = new mediabunny.Output({
+						target: new mediabunny.StreamTarget(writable, {}),
+						format: new mediabunny.Mp4OutputFormat(),
+					});
+				} else {
+					throw new Error(opfsError || 'OPFS not available');
+				}
+			} catch (err) {
+				// フォールバック: BufferTarget
+				output = new mediabunny.Output({
+					target: new mediabunny.BufferTarget(),
+					format: new mediabunny.Mp4OutputFormat(),
+				});
+			}
 
 			const currentConversion = await mediabunny.Conversion.init({
 				input,
 				output,
 				video: {
-					//width: 320, // Height will be deduced automatically to retain aspect ratio
 					bitrate: item.compressionLevel === 1 ? mediabunny.QUALITY_VERY_HIGH : item.compressionLevel === 2 ? mediabunny.QUALITY_MEDIUM : mediabunny.QUALITY_VERY_LOW,
 				},
 				audio: {
@@ -741,8 +838,18 @@ export function useUploader(options: {
 
 			item.abortPreprocess = null;
 
-			preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
-			item.compressedSize = output.target.buffer!.byteLength;
+			if (output.target instanceof mediabunny.BufferTarget) {
+				preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
+				item.compressedSize = output.target.buffer!.byteLength;
+			} else {
+				// OPFSの場合
+				const fileHandle = await getOpfsFileHandle(item.preprocessOpfsFileName!);
+				if (fileHandle == null) {
+					throw new Error('Failed to get file handle from OPFS');
+				}
+				preprocessedFile = await fileHandle.getFile();
+				item.compressedSize = preprocessedFile.size;
+			}
 			item.uploadName = `${item.name}.mp4`;
 		} else {
 			item.compressedSize = null;
@@ -754,10 +861,16 @@ export function useUploader(options: {
 		item.preprocessedFile = markRaw(preprocessedFile);
 	}
 
-	function dispose() {
-		for (const item of items.value) {
+	async function dispose() {
+		await Promise.all(items.value.map(async (item) => {
 			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-		}
+			if (item.preprocessOpfsFileName != null) {
+				const folderHandle = await getOpfsFolderHandle();
+				await folderHandle.removeEntry(item.preprocessOpfsFileName).catch((err) => {
+					if (_DEV_) console.warn('Failed to remove OPFS temp file', err);
+				});
+			}
+		}));
 
 		abortAll();
 	}
