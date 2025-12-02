@@ -546,22 +546,50 @@ describe('AiScript common API', () => {
 			]));
 		});
 
-		test.concurrent('with index and length', async () => {
+		test.concurrent('with index', async () => {
 			const [res] = await exe(`
-				<: MkCustomEmoji:searchByFn(@(emoji, index, length) {
-					if (index == length - 1) {
+				<: MkCustomEmoji:searchByFn(@(emoji, index) {
+					if (index % 2 == 0) {
 						return true
 					}
 					return false
 				})
 			`);
-			expect(res).toStrictEqual(values.ARR([
-				values.OBJ(new Map<string, values.Value>([
-					['name', values.STR('wink')],
-					['url', values.STR('https://example.com/emoji/wink.png')],
-					['aliases', values.ARR([values.STR('flirt'), values.STR('playful')])],
-				])),
-			]));
+
+			// valueの順序は不定なので、内容だけ確認する
+			utils.assertArray(res);
+			const names = res.value.map(v => {
+				utils.assertObject(v);
+				const nameVal = v.value.get('name');
+				utils.assertString(nameVal);
+				return nameVal.value;
+			});
+
+			expect(names.sort()).toStrictEqual(['smile', 'wink']);
+		});
+
+		test.concurrent('with currentLength', async () => {
+			const [res] = await exe(`
+				let emojiLength = MkCustomEmoji:getCount();
+				<: MkCustomEmoji:searchByFn(@(emoji, index, currentLength) {
+					// Get emojis until the length reaches emojiLength - 1
+					if (currentLength + 1 <= emojiLength - 1) {
+						return true
+					}
+					return false
+				})
+			`);
+
+			// valueの順序は不定なので、内容だけ確認する
+			utils.assertArray(res);
+			const names = res.value.map(v => {
+				utils.assertObject(v);
+				const nameVal = v.value.get('name');
+				utils.assertString(nameVal);
+				return nameVal.value;
+			});
+
+			expect(names.sort()).toStrictEqual(['sad', 'smile']);
 		});
 	});
 });

@@ -258,7 +258,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 
 			let i = 0;
 			for (const emoji of customEmojis.value) {
-				const res = await opts.topCall(fn, [utils.jsToVal(emoji), values.NUM(i), values.NUM(customEmojis.value.length)]);
+				const res = await opts.topCall(fn, [utils.jsToVal(emoji), values.NUM(i), values.NUM(result.length)]);
 				utils.assertBoolean(res);
 				if (res.value === true) {
 					result.push(emoji);
