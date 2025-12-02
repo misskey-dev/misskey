@@ -548,7 +548,7 @@ describe('AiScript common API', () => {
 		test.concurrent('with index and length', async () => {
 			const [res] = await exe(`
 				<: MkCustomEmoji:searchByFn(@(emoji, index, length) {
-					if (index == (length - 1)) {
+					if (index == length - 1) {
 						return true
 					}
 					return false
