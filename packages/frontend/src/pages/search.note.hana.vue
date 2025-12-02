@@ -136,13 +136,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-if="searchMode === 'v1' && onlyWithFiles && showAsGrid"
 				v-slot="{ items }"
 				:key="`searchNotes:${key}:grid`"
-				:paginatior="paginator"
+				:paginator="paginator"
 			>
 				<div :class="$style.stream">
 					<MkNoteMediaGrid v-for="note in (items as Misskey.entities.Note[])" :key="note.id" :note="note" square/>
 				</div>
 			</MkPagination>
-			<MkNotesTimeline v-else :key="`searchNotes:${key}:note`" :paginatior="paginator"/>
+			<MkNotesTimeline v-else :key="`searchNotes:${key}:note`" :paginator="paginator"/>
 		</div>
 	</MkStickyContainer>
 </div>
