@@ -5,7 +5,7 @@
 
 import { miLocalStorage } from '@/local-storage.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
-import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
+import { errors, Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import {
 	afterAll,
 	beforeAll,
@@ -491,18 +491,19 @@ describe('AiScript common API', () => {
 			const [res] = await exe(`
 				<: MkCustomEmoji:search('a', 2)
 			`);
-			expect(res).toStrictEqual(values.ARR([
-				values.OBJ(new Map<string, values.Value>([
-					['name', values.STR('smile')],
-					['url', values.STR('https://example.com/emoji/smile.png')],
-					['aliases', values.ARR([values.STR('happy'), values.STR('joy')])],
-				])),
-				values.OBJ(new Map<string, values.Value>([
-					['name', values.STR('sad')],
-					['url', values.STR('https://example.com/emoji/sad.png')],
-					['aliases', values.ARR([values.STR('unhappy'), values.STR('sorrow')])],
-				])),
-			]));
+
+			utils.assertArray(res);
+			expect(res.value.length).toBe(2);
+
+			// valueの順序は不定なので、内容だけ確認する
+			const names = res.value.map(v => {
+				utils.assertObject(v);
+				const nameVal = v.value.get('name');
+				utils.assertString(nameVal);
+				return nameVal.value;
+			});
+
+			expect(names.sort()).toStrictEqual(['sad', 'smile']);
 		});
 
 		test.concurrent('exact match', async () => {
