@@ -24,6 +24,7 @@ import { store } from '@/store.js';
 
 const zIndex = os.claimZIndex('high');
 
+const stream = useStream();
 const hasDisconnected = ref(false);
 let timeoutId: number | null = null;
 
@@ -44,13 +45,13 @@ function reload() {
 }
 
 if (store.s.realtimeMode) {
-	useStream().on('_connected_', resetDisconnected);
-	useStream().on('_disconnected_', onDisconnected);
+	stream.on('_connected_', resetDisconnected);
+	stream.on('_disconnected_', onDisconnected);
 
 	onUnmounted(() => {
 		if (timeoutId != null) window.clearTimeout(timeoutId);
-		useStream().off('_connected_', resetDisconnected);
-		useStream().off('_disconnected_', onDisconnected);
+		stream.off('_connected_', resetDisconnected);
+		stream.off('_disconnected_', onDisconnected);
 	});
 }
 </script>
