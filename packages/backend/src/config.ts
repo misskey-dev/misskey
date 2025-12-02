@@ -6,7 +6,6 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import * as yaml from 'js-yaml';
 import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
@@ -227,10 +226,10 @@ const dir = `${_dirname}/../../../.config`;
  * Path of configuration file
  */
 export const path = process.env.MISSKEY_CONFIG_YML
-	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
+	? resolve(dir, process.env.MISSKEY_CONFIG_YML).replace(/\.ya?ml$/i, '.json')
 	: process.env.NODE_ENV === 'test'
-		? resolve(dir, 'test.yml')
-		: resolve(dir, 'default.yml');
+		? resolve(dir, 'test.json')
+		: resolve(dir, 'default.json');
 
 export function loadConfig(): Config {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
@@ -244,7 +243,7 @@ export function loadConfig(): Config {
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
 		: { 'src/boot.ts': { file: null } };
 
-	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
+	const config = JSON.parse(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
