@@ -73,6 +73,30 @@ vi.mock('@/utility/misskey-api.js', () => {
 	return { misskeyApi: misskeyApiMock };
 });
 
+vi.mock('@/custom-emojis.js', () => {
+	return {
+		customEmojis: {
+			value: [
+				{
+					name: 'smile',
+					url: 'https://example.com/emoji/smile.png',
+					aliases: ['happy', 'joy'],
+				},
+				{
+					name: 'sad',
+					url: 'https://example.com/emoji/sad.png',
+					aliases: ['unhappy', 'sorrow'],
+				},
+				{
+					name: 'wink',
+					url: 'https://example.com/emoji/wink.png',
+					aliases: ['flirt', 'playful'],
+				},
+			],
+		},
+	};
+});
+
 describe('AiScript common API', () => {
 	afterAll(() => {
 		vi.unstubAllGlobals();
@@ -411,5 +435,132 @@ describe('AiScript common API', () => {
 			<: Mk:nyaize('な')
 		`);
 		expect(res).toStrictEqual(values.STR('にゃ'));
+	});
+
+	test.concurrent('custom emoji get', async () => {
+		const [res1] = await exe(`
+			<: MkCustomEmoji:get('smile')
+		`);
+		expect(res1).toStrictEqual(values.OBJ(new Map<string, values.Value>([
+			['name', values.STR('smile')],
+			['url', values.STR('https://example.com/emoji/smile.png')],
+			['aliases', values.ARR([values.STR('happy'), values.STR('joy')])],
+		])));
+
+		const [res2] = await exe(`
+			<: MkCustomEmoji:get('nonexistent')
+		`);
+		expect(res2).toStrictEqual(values.NULL);
+	});
+
+	test.concurrent('custom emoji getCount', async () => {
+		const [res] = await exe(`
+			<: MkCustomEmoji:getCount()
+		`);
+		expect(res).toStrictEqual(values.NUM(3));
+	});
+
+	describe.concurrent('custom emoji search', () => {
+		test.concurrent('by name', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:search('smile')
+			`);
+			expect(res).toStrictEqual(values.ARR([
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('smile')],
+					['url', values.STR('https://example.com/emoji/smile.png')],
+					['aliases', values.ARR([values.STR('happy'), values.STR('joy')])],
+				])),
+			]));
+		});
+
+		test.concurrent('by alias', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:search('flirt')
+			`);
+			expect(res).toStrictEqual(values.ARR([
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('wink')],
+					['url', values.STR('https://example.com/emoji/wink.png')],
+					['aliases', values.ARR([values.STR('flirt'), values.STR('playful')])],
+				])),
+			]));
+		});
+
+		test.concurrent('limit', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:search('a', 2)
+			`);
+			expect(res).toStrictEqual(values.ARR([
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('smile')],
+					['url', values.STR('https://example.com/emoji/smile.png')],
+					['aliases', values.ARR([values.STR('happy'), values.STR('joy')])],
+				])),
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('sad')],
+					['url', values.STR('https://example.com/emoji/sad.png')],
+					['aliases', values.ARR([values.STR('unhappy'), values.STR('sorrow')])],
+				])),
+			]));
+		});
+
+		test.concurrent('exact match', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:search('smile', null, true)
+			`);
+			expect(res).toStrictEqual(values.ARR([
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('smile')],
+					['url', values.STR('https://example.com/emoji/smile.png')],
+					['aliases', values.ARR([values.STR('happy'), values.STR('joy')])],
+				])),
+			]));
+		});
+
+		test.concurrent('no match', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:search('nonexistent')
+			`);
+			expect(res).toStrictEqual(values.ARR([]));
+		});
+	});
+
+	describe.concurrent('custom emoji searchByFn', () => {
+		test.concurrent('basic', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:searchByFn((emoji) => {
+					if (emoji.name === 'sad') {
+						return true
+					}
+					return false
+				})
+			`);
+			expect(res).toStrictEqual(values.ARR([
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('sad')],
+					['url', values.STR('https://example.com/emoji/sad.png')],
+					['aliases', values.ARR([values.STR('unhappy'), values.STR('sorrow')])],
+				])),
+			]));
+		});
+
+		test.concurrent('with index and length', async () => {
+			const [res] = await exe(`
+				<: MkCustomEmoji:searchByFn((emoji, index, length) => {
+					if (index === length - 1) {
+						return true
+					}
+					return false
+				})
+			`);
+			expect(res).toStrictEqual(values.ARR([
+				values.OBJ(new Map<string, values.Value>([
+					['name', values.STR('wink')],
+					['url', values.STR('https://example.com/emoji/wink.png')],
+					['aliases', values.ARR([values.STR('flirt'), values.STR('playful')])],
+				])),
+			]));
+		});
 	});
 });
