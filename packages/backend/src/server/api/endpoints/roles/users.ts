@@ -93,9 +93,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}))
 				.innerJoin('assign.user', 'user');
 
-			const assigns = await query
-				.limit(ps.limit)
-				.getMany();
+			// 全メンバーを取得（スコア計算後にソートするため）
+			const assigns = await query.getMany();
 
 			// 新アルゴリズムで人気スコアを計算してソート
 			const scoredAssigns = await Promise.all(assigns.map(async assign => {
@@ -113,9 +112,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				};
 			}));
 			
-			// 人気スコアの降順にソートして返す
+			// 人気スコアの降順にソートして上位limit件を返す
 			return scoredAssigns
-				.sort((a, b) => b.popularityScore - a.popularityScore);
+				.sort((a, b) => b.popularityScore - a.popularityScore)
+				.slice(0, ps.limit);
 		});
 	}
 }

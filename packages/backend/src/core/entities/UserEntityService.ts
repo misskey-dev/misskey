@@ -772,26 +772,27 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async calculatePopularityScore(userId: MiUser['id'], followerCount: number, notesCount: number): Promise<number> {
-		// リアクション数を取得（内部計算用）
-		const reactionsCount = await this.calculateReceivedReactionsCount(userId);
-		
-		// 各指標を正規化
-		const reactionScore = this.calculateNormalizedReactionScore(reactionsCount);
-		const activityScore = await this.calculateRecentActivityScore(userId);
-		
-		// アカウント期間はIDから計算
-		const ageScore = this.calculateAccountAgeScore(userId);
-		
-		// 人気スコア計算式：
-		// (フォロワー数 × 0.4) + (投稿数 × 0.25) + (正規化リアクション指標 × 0.2) + (最近のアクティビティ × 0.1) + (アカウント運営期間 × 0.05)
-		const popularityScore = 
-			(followerCount * 0.4) + 
-			(notesCount * 0.25) + 
-			(reactionScore * 0.2) + 
-			(activityScore * 0.1) + 
-			(ageScore * 0.05);
-		
+	public async calculatePopularityScore(userId: MiUser['id'], followerCount: number, _notesCount: number): Promise<number> {
+		// 30日間のエンゲージメント比率とノート数を取得
+		const { ratio: engagementRatio, notesCount: recentNotes } = await this.calculateRecentEngagementRatio(userId);
+
+		// エンゲージメント比率を正規化（0-100範囲、比率10で満点）
+		const normalizedEngagement = Math.min(engagementRatio * 10, 100);
+
+		// フォロワー数を正規化（0-100範囲、対数スケール）
+		const normalizedFollowers = Math.min(Math.log10(followerCount + 1) * 20, 100);
+
+		// ノート数に応じてエンゲージメント重みを0.05〜0.5の範囲で動的調整
+		// 100ノートで最大値(0.5)に到達
+		// これにより、ノート数が少ない新規ユーザーはフォロワー数重視になる
+		const engagementWeight = Math.min(0.05 + (recentNotes / 100) * 0.45, 0.5);
+		const followerWeight = 1 - engagementWeight;
+
+		// 動的重み付けでスコア計算
+		const popularityScore =
+			(normalizedEngagement * engagementWeight) +
+			(normalizedFollowers * followerWeight);
+
 		// 小数点第2位まで保持
 		return Math.round(popularityScore * 100) / 100;
 	}
@@ -803,11 +804,57 @@ export class UserEntityService implements OnModuleInit {
 			SELECT SUM(CAST(value AS integer)) as total
 			FROM (
 				SELECT (jsonb_each_text(reactions)).value
-				FROM note 
+				FROM note
 				WHERE "userId" = $1 AND reactions IS NOT NULL
 			) subquery
 		`, [userId]);
-		
+
 		return parseInt(result[0]?.total || '0', 10);
+	}
+
+	@bindThis
+	public async calculateRecentReactionsCount(userId: MiUser['id']): Promise<number> {
+		// 直近30日間に受け取ったリアクションの合計数を計算
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+		const thirtyDaysAgoSnowflake = this.idService.gen(thirtyDaysAgo.getTime());
+
+		const result = await this.usersRepository.query(`
+			SELECT SUM(CAST(value AS integer)) as total
+			FROM (
+				SELECT (jsonb_each_text(reactions)).value
+				FROM note
+				WHERE "userId" = $1
+					AND id >= $2
+					AND reactions IS NOT NULL
+			) subquery
+		`, [userId, thirtyDaysAgoSnowflake]);
+
+		return parseInt(result[0]?.total || '0', 10);
+	}
+
+	@bindThis
+	public async calculateRecentEngagementRatio(userId: MiUser['id']): Promise<{ ratio: number; notesCount: number }> {
+		// 直近30日間のエンゲージメント比率（リアクション数/ノート数）を計算
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+		const thirtyDaysAgoSnowflake = this.idService.gen(thirtyDaysAgo.getTime());
+
+		// 30日間のノート数
+		const notesResult = await this.usersRepository.query(`
+			SELECT COUNT(*) as count
+			FROM note
+			WHERE "userId" = $1 AND id >= $2
+		`, [userId, thirtyDaysAgoSnowflake]);
+		const recentNotes = parseInt(notesResult[0]?.count || '0', 10);
+
+		// ノート数が0の場合は比率0
+		if (recentNotes === 0) return { ratio: 0, notesCount: 0 };
+
+		// 30日間のリアクション数
+		const reactionsCount = await this.calculateRecentReactionsCount(userId);
+
+		// リアクション/ノート比率
+		return { ratio: reactionsCount / recentNotes, notesCount: recentNotes };
 	}
 }
