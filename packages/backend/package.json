@@ -198,7 +198,6 @@
 		"@types/fluent-ffmpeg": "2.1.28",
 		"@types/http-link-header": "1.0.7",
 		"@types/jest": "29.5.14",
-		"@types/json5": "2.2.0",
 		"@types/jsonld": "1.5.15",
 		"@types/jsrsasign": "10.5.15",
 		"@types/mime-types": "3.0.1",
