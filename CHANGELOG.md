@@ -8,8 +8,12 @@
 
 ### Client
 - Enhance: AiScript APIに、絵文字取得・検索用の関数を追加
-  - `MkCustomEmoji:get(name)`
-	- `MkCustomEmoji:search(query, limit?, exact?)`
+  - `MkCustomEmoji:get(name)` - 名前でカスタム絵文字を取得（存在しない場合はnullを返す）
+  - `MkCustomEmoji:getCount()` - カスタム絵文字の総数を取得
+  - `MkCustomEmoji:searchByFn(fn)` - 全カスタム絵文字をイテレートし、コールバック関数の戻り値が真となる絵文字を取得
+    - 関数は `(emoji: EmojiSimple, index: number, length: number) => boolean` の形式を取ります
+    - 構造上全件取得が可能ですが、メモリ使用量の観点からおすすめしません
+  - `MkCustomEmoji:search(query, limit?, exact?)` - 名前・エイリアスでカスタム絵文字を検索
 
 ### Server
 - Enhance: メモリ使用量を削減しました
