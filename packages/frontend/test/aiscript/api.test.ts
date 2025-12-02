@@ -529,8 +529,8 @@ describe('AiScript common API', () => {
 	describe.concurrent('custom emoji searchByFn', () => {
 		test.concurrent('basic', async () => {
 			const [res] = await exe(`
-				<: MkCustomEmoji:searchByFn((emoji) => {
-					if (emoji.name === 'sad') {
+				<: MkCustomEmoji:searchByFn(@(emoji) {
+					if (emoji.name == 'sad') {
 						return true
 					}
 					return false
@@ -547,8 +547,8 @@ describe('AiScript common API', () => {
 
 		test.concurrent('with index and length', async () => {
 			const [res] = await exe(`
-				<: MkCustomEmoji:searchByFn((emoji, index, length) => {
-					if (index === length - 1) {
+				<: MkCustomEmoji:searchByFn(@(emoji, index, length) {
+					if (index == (length - 1)) {
 						return true
 					}
 					return false
