@@ -234,7 +234,7 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	disableShowingAnimatedImages: {
-		default: prefersReducedMotion,
+		default: false,
 	},
 	emojiStyle: {
 		default: 'twemoji', // twemoji / fluentEmoji / native

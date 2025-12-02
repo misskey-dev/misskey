@@ -144,7 +144,9 @@ export function applyTheme(theme: Theme, persist = true) {
 	if (theme.id === currentThemeId && miLocalStorage.getItem('themeCachedVersion') === version) return;
 	currentThemeId = theme.id;
 
-	if (window.document.startViewTransition != null) {
+	// visibilityStateがhiddenな状態でstartViewTransitionするとブラウザによってはエラーになる
+	// 通常hiddenな時に呼ばれることはないが、iOSのPWAだとアプリ切り替え時に(何故か)hiddenな状態で(何故か)一瞬デバイスのダークモード判定が変わりapplyThemeが呼ばれる場合がある
+	if (window.document.startViewTransition != null && window.document.visibilityState === 'visible') {
 		window.document.documentElement.classList.add('_themeChanging_');
 		try {
 			window.document.startViewTransition(async () => {
@@ -157,6 +159,8 @@ export function applyTheme(theme: Theme, persist = true) {
 		} catch (err) {
 			// 様々な理由により startViewTransition は失敗することがある
 			// ref. https://github.com/misskey-dev/misskey/issues/16562
+
+			// FIXME: viewTransitonエラーはtry~catch貫通してそうな気配がする
 
 			console.error(err);
 

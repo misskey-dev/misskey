@@ -11,6 +11,7 @@ import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { RedisOptions } from 'ioredis';
+import type { ManifestChunk } from 'vite';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
@@ -187,9 +188,9 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	frontendEntry: { file: string | null };
+	frontendEntry: ManifestChunk;
 	frontendManifestExists: boolean;
-	frontendEmbedEntry: { file: string | null };
+	frontendEmbedEntry: ManifestChunk;
 	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
