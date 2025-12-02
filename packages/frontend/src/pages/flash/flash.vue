@@ -63,6 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
+import { utils } from '@syuilo/aiscript';
+import { compareVersions } from 'compare-versions';
 import { url } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
@@ -190,19 +192,29 @@ function start() {
 	run();
 }
 
+function getIsLegacy(version: string | null): boolean {
+	if (version == null) return false;
+	try {
+		return compareVersions(version, '1.0.0') < 0;
+	} catch {
+		return false;
+	}
+}
+
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
 
-	const isLegacy = !flash.value.script.replaceAll(' ', '').startsWith('///@1.0.0');
+	const version = utils.getLangVersion(flash.value.script);
+	const isLegacy = version != null && getIsLegacy(version);
 
-	const { Interpreter, Parser, values } = isLegacy ? await import('@syuilo/aiscript-0-19-0') : await import('@syuilo/aiscript');
+	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
 
 	const parser = new Parser();
 
 	components.value = [];
 
-	aiscript.value = new Interpreter({
+	const interpreter = new Interpreter({
 		...createAiScriptEnv({
 			storageKey: 'flash:' + flash.value.id,
 		}),
@@ -221,6 +233,8 @@ async function run() {
 		},
 	});
 
+	aiscript.value = interpreter;
+
 	let ast;
 	try {
 		ast = parser.parse(flash.value.script);
@@ -232,8 +246,8 @@ async function run() {
 		return;
 	}
 	try {
-		await aiscript.value.exec(ast);
-	} catch (err) {
+		await interpreter.exec(ast);
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
 			title: 'AiScript Error',

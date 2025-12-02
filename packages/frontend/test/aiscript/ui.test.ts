@@ -316,11 +316,10 @@ describe('AiScript UI API', () => {
 
 	describe('textInput', () => {
 		test.concurrent('all options', async () => {
-			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let text_input = Ui:C:textInput({
 					onInput: print
-					"default": 'a'
+					default: 'a'
 					label: 'b'
 					caption: 'c'
 				}, 'id')
@@ -357,11 +356,10 @@ describe('AiScript UI API', () => {
 
 	describe('textarea', () => {
 		test.concurrent('all options', async () => {
-			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let textarea = Ui:C:textarea({
 					onInput: print
-					"default": 'a'
+					default: 'a'
 					label: 'b'
 					caption: 'c'
 				}, 'id')
@@ -398,11 +396,10 @@ describe('AiScript UI API', () => {
 
 	describe('numberInput', () => {
 		test.concurrent('all options', async () => {
-			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let number_input = Ui:C:numberInput({
 					onInput: print
-					"default": 1
+					default: 1
 					label: 'a'
 					caption: 'b'
 				}, 'id')
@@ -560,11 +557,10 @@ describe('AiScript UI API', () => {
 
 	describe('switch', () => {
 		test.concurrent('all options', async () => {
-			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let switch = Ui:C:switch({
 					onChange: print
-					"default": false
+					default: false
 					label: 'a'
 					caption: 'b'
 				}, 'id')
@@ -601,7 +597,6 @@ describe('AiScript UI API', () => {
 
 	describe('select', () => {
 		test.concurrent('all options', async () => {
-			// https://github.com/aiscript-dev/aiscript/pull/948
 			const { root, get, outputs } = await exe(`
 				let select = Ui:C:select({
 					items: [
@@ -609,7 +604,7 @@ describe('AiScript UI API', () => {
 						{ text: 'B', value: 'b' }
 					]
 					onChange: print
-					"default": 'a'
+					default: 'a'
 					label: 'c'
 					caption: 'd'
 				}, 'id')

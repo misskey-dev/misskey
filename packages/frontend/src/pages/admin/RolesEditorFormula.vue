@@ -6,26 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div :class="$style.header">
-		<MkSelect v-model="type" :class="$style.typeSelect">
-			<option value="isLocal">{{ i18n.ts._role._condition.isLocal }}</option>
-			<option value="isRemote">{{ i18n.ts._role._condition.isRemote }}</option>
-			<option value="isSuspended">{{ i18n.ts._role._condition.isSuspended }}</option>
-			<option value="isLocked">{{ i18n.ts._role._condition.isLocked }}</option>
-			<option value="isBot">{{ i18n.ts._role._condition.isBot }}</option>
-			<option value="isCat">{{ i18n.ts._role._condition.isCat }}</option>
-			<option value="isExplorable">{{ i18n.ts._role._condition.isExplorable }}</option>
-			<option value="roleAssignedTo">{{ i18n.ts._role._condition.roleAssignedTo }}</option>
-			<option value="createdLessThan">{{ i18n.ts._role._condition.createdLessThan }}</option>
-			<option value="createdMoreThan">{{ i18n.ts._role._condition.createdMoreThan }}</option>
-			<option value="followersLessThanOrEq">{{ i18n.ts._role._condition.followersLessThanOrEq }}</option>
-			<option value="followersMoreThanOrEq">{{ i18n.ts._role._condition.followersMoreThanOrEq }}</option>
-			<option value="followingLessThanOrEq">{{ i18n.ts._role._condition.followingLessThanOrEq }}</option>
-			<option value="followingMoreThanOrEq">{{ i18n.ts._role._condition.followingMoreThanOrEq }}</option>
-			<option value="notesLessThanOrEq">{{ i18n.ts._role._condition.notesLessThanOrEq }}</option>
-			<option value="notesMoreThanOrEq">{{ i18n.ts._role._condition.notesMoreThanOrEq }}</option>
-			<option value="and">{{ i18n.ts._role._condition.and }}</option>
-			<option value="or">{{ i18n.ts._role._condition.or }}</option>
-			<option value="not">{{ i18n.ts._role._condition.not }}</option>
+		<MkSelect v-model="type" :items="typeDef" :class="$style.typeSelect">
 		</MkSelect>
 		<button v-if="draggable" class="drag-handle _button" :class="$style.dragHandle">
 			<i class="ti ti-menu-2"></i>
@@ -58,8 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
 	</MkInput>
 
-	<MkSelect v-else-if="type === 'roleAssignedTo'" v-model="v.roleId">
-		<option v-for="role in roles.filter(r => r.target === 'manual')" :key="role.id" :value="role.id">{{ role.name }}</option>
+	<MkSelect v-else-if="type === 'roleAssignedTo'" v-model="v.roleId" :items="assignedToDef">
 	</MkSelect>
 </div>
 </template>
@@ -69,6 +49,7 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { genId } from '@/utility/id.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
@@ -99,7 +80,29 @@ watch(v, () => {
 	emit('update:modelValue', v.value);
 }, { deep: true });
 
-const type = computed({
+const typeDef = [
+	{ label: i18n.ts._role._condition.isLocal, value: 'isLocal' },
+	{ label: i18n.ts._role._condition.isRemote, value: 'isRemote' },
+	{ label: i18n.ts._role._condition.isSuspended, value: 'isSuspended' },
+	{ label: i18n.ts._role._condition.isLocked, value: 'isLocked' },
+	{ label: i18n.ts._role._condition.isBot, value: 'isBot' },
+	{ label: i18n.ts._role._condition.isCat, value: 'isCat' },
+	{ label: i18n.ts._role._condition.isExplorable, value: 'isExplorable' },
+	{ label: i18n.ts._role._condition.roleAssignedTo, value: 'roleAssignedTo' },
+	{ label: i18n.ts._role._condition.createdLessThan, value: 'createdLessThan' },
+	{ label: i18n.ts._role._condition.createdMoreThan, value: 'createdMoreThan' },
+	{ label: i18n.ts._role._condition.followersLessThanOrEq, value: 'followersLessThanOrEq' },
+	{ label: i18n.ts._role._condition.followersMoreThanOrEq, value: 'followersMoreThanOrEq' },
+	{ label: i18n.ts._role._condition.followingLessThanOrEq, value: 'followingLessThanOrEq' },
+	{ label: i18n.ts._role._condition.followingMoreThanOrEq, value: 'followingMoreThanOrEq' },
+	{ label: i18n.ts._role._condition.notesLessThanOrEq, value: 'notesLessThanOrEq' },
+	{ label: i18n.ts._role._condition.notesMoreThanOrEq, value: 'notesMoreThanOrEq' },
+	{ label: i18n.ts._role._condition.and, value: 'and' },
+	{ label: i18n.ts._role._condition.or, value: 'or' },
+	{ label: i18n.ts._role._condition.not, value: 'not' },
+] as const satisfies MkSelectItem[];
+
+const type = computed<GetMkSelectValueTypesFromDef<typeof typeDef>>({
 	get: () => v.value.type,
 	set: (t) => {
 		if (t === 'and') v.value.values = [];
@@ -117,6 +120,8 @@ const type = computed({
 		v.value.type = t;
 	},
 });
+
+const assignedToDef = computed(() => roles.filter(r => r.target === 'manual').map(r => ({ label: r.name, value: r.id })) satisfies MkSelectItem[]);
 
 function addValue() {
 	v.value.values.push({ id: genId(), type: 'isRemote' });

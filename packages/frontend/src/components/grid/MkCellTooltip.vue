@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="250" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :anchorElement="anchorElement" :maxWidth="250" @closed="emit('closed')">
 	<div :class="$style.root">
 		{{ content }}
 	</div>
@@ -18,7 +18,7 @@ import MkTooltip from '@/components/MkTooltip.vue';
 defineProps<{
 	showing: boolean;
 	content: string;
-	targetElement: HTMLElement;
+	anchorElement: HTMLElement;
 }>();
 
 const emit = defineEmits<{

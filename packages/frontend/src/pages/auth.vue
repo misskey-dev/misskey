@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<h1>{{ i18n.ts._auth.denied }}</h1>
 			</div>
 			<div v-if="state == 'accepted' && session">
-				<h1>{{ session.app.isAuthorized ? i18n.ts['already-authorized'] : i18n.ts.allowed }}</h1>
+				<h1>{{ session.app.isAuthorized ? i18n.ts._auth.alreadyAuthorized : i18n.ts._auth.accepted }}</h1>
 				<p v-if="session.app.callbackUrl">
 					{{ i18n.ts._auth.callback }}
 					<MkEllipsis/>
@@ -75,14 +75,15 @@ onMounted(async () => {
 	if (!$i) return;
 
 	try {
-		session.value = await misskeyApi('auth/session/show', {
+		const result = await misskeyApi('auth/session/show', {
 			token: props.token,
 		});
+		session.value = result;
 
 		// 既に連携していた場合
-		if (session.value.app.isAuthorized) {
+		if (result.app.isAuthorized) {
 			await misskeyApi('auth/accept', {
-				token: session.value.token,
+				token: result.token,
 			});
 			accepted();
 		} else {

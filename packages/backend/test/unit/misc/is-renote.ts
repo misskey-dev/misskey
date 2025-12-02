@@ -23,6 +23,7 @@ const base: MiNote = {
 	renoteCount: 0,
 	repliesCount: 0,
 	clippedCount: 0,
+	pageCount: 0,
 	reactions: {},
 	visibility: 'public',
 	uri: null,
@@ -43,6 +44,7 @@ const base: MiNote = {
 	replyUserHost: null,
 	renoteUserId: null,
 	renoteUserHost: null,
+	renoteChannelId: null,
 };
 
 describe('misc:is-renote', () => {

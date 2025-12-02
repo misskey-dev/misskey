@@ -16,6 +16,13 @@ await execa('pnpm', ['clean'], {
 	stderr: process.stderr,
 });
 
+// アセットのビルドで依存しているので一番最初に必要
+await execa('pnpm', ['--filter', 'i18n', 'build'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
 await Promise.all([
 	execa('pnpm', ['build-pre'], {
 		cwd: _dirname + '/../',
@@ -34,6 +41,11 @@ await Promise.all([
 	}),
 	// icons-subsetterは開発段階では使用されないが、型エラーを抑制するためにはじめの一度だけビルドする
 	execa('pnpm', ['--filter', 'icons-subsetter', 'build'], {
+		cwd: _dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	}),
+	execa('pnpm', ['--filter', 'misskey-js', 'build'], {
 		cwd: _dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -83,6 +95,12 @@ execa('pnpm', ['--filter', 'sw', 'watch'], {
 });
 
 execa('pnpm', ['--filter', 'misskey-js', 'watch', '--no-clean'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'i18n', 'watch', '--no-clean'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
