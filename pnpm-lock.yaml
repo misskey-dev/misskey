@@ -469,9 +469,6 @@ importers:
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
-      '@types/json5':
-        specifier: 2.2.0
-        version: 2.2.0
       '@types/jsonld':
         specifier: 1.5.15
         version: 1.5.15
@@ -4741,10 +4738,6 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-
-  '@types/json5@2.2.0':
-    resolution: {integrity: sha512-NrVug5woqbvNZ0WX+Gv4R+L4TGddtmFek2u8RtccAgFZWtS9QXF2xCXY22/M4nzkaKF0q9Fc6M/5rxLDhfwc/A==}
-    deprecated: This is a stub types definition. json5 provides its own type definitions, so you do not need this installed.
 
   '@types/jsonld@1.5.15':
     resolution: {integrity: sha512-PlAFPZjL+AuGYmwlqwKEL0IMP8M8RexH0NIPGfCVWSQ041H2rR/8OlyZSD7KsCVoN8vCfWdtWDBxX8yBVP+xow==}
@@ -15132,10 +15125,6 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
-
-  '@types/json5@2.2.0':
-    dependencies:
-      json5: 2.2.3
 
   '@types/jsonld@1.5.15': {}
 
