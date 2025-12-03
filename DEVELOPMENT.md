@@ -99,8 +99,8 @@ git pull origin staging
 git merge develop
 
 # バージョン番号をインクリメント
+# 形式: {misskey-version}-yami-{yamisskey-version}
 # 例: 2025.11.1-yami-1.9.30 → 2025.11.1-yami-1.9.31
-# （全ブランチで yami プリフィックス統一）
 
 git push origin staging  # Dockerイメージが自動ビルドされる
 ```
@@ -115,18 +115,18 @@ git checkout master
 git pull origin master
 git merge staging
 
-# バージョンはstagingと同じ（yamiプリフィックス）
-# 例: 2025.11.1-yami-1.9.31
+# バージョンはstagingと同じ
+# 形式: {misskey-version}-yami-{yamisskey-version}
 
 git push origin master
 ```
 
 **リリース手順**:
 1. `DIFFERENCE.md` の Unreleased 項目に変更点を記載
-2. `package.json` の version をインクリメント
+2. `package.json` の version を yami 形式でインクリメント（例: `2025.11.1-yami-1.9.31`）
 3. GitHub で [Release Manager Dispatch](https://github.com/yamisskey-dev/yamisskey/actions/workflows/release-with-dispatch.yml) を実行
-4. 自動生成された PR で `package.json` のバージョンを yami 形式に修正
-5. PR をマージすると GitHub Release と Docker イメージが自動生成
+4. 自動生成された PR を確認してマージ
+5. マージすると GitHub Release と Docker イメージが自動生成
 
 ## 応用的な使い方
 

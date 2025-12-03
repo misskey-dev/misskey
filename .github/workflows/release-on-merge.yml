@@ -33,27 +33,21 @@ jobs:
           echo "current_version=$current_version" >> $GITHUB_OUTPUT
           echo "Current master version: $current_version"
 
-          # yamisskey バージョン形式チェック
-          # 2025年12月以降: 全ブランチで yami プリフィックスに統一
-          # 旧プリフィックス (muyami/nayami) は後方互換性のみでサポート（非推奨）
+          # yamisskey バージョン形式チェック (yamiプリフィックス統一)
+          # 形式: {misskey-version}-yami-{yamisskey-version}
+          # 例: 2025.11.1-yami-1.9.30
           if [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-yami-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            echo "✅ Valid yamisskey version format: yami"
+            echo "✅ Valid yamisskey version format"
             echo "is_yamisskey=true" >> $GITHUB_OUTPUT
-            echo "version_type=yami" >> $GITHUB_OUTPUT
             echo "should_create_release=true" >> $GITHUB_OUTPUT
-            echo "🚀 Production version - will create GitHub release"
-          elif [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-(muyami|nayami)-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            # 旧プリフィックス（2025年12月以前の後方互換性のみ）
-            version_type="${BASH_REMATCH[2]}"
-            echo "⚠️ Deprecated version format: $version_type (please migrate to 'yami' prefix)"
-            echo "is_yamisskey=true" >> $GITHUB_OUTPUT
-            echo "version_type=$version_type" >> $GITHUB_OUTPUT
-            echo "should_create_release=false" >> $GITHUB_OUTPUT
-            echo "🔧 Deprecated version - no release creation (update to yami prefix required)"
+            echo "🚀 Creating GitHub release for version: $current_version"
           else
-            echo "⚠️ Not a yamisskey version format, skipping release creation"
+            echo "❌ Invalid version format: $current_version"
+            echo "Expected format: {misskey-version}-yami-{yamisskey-version}"
+            echo "Example: 2025.11.1-yami-1.9.30"
             echo "is_yamisskey=false" >> $GITHUB_OUTPUT
             echo "should_create_release=false" >> $GITHUB_OUTPUT
+            exit 1
           fi
 
       - name: Check if tag already exists
