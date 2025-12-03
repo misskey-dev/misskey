@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkNoteMediaGrid v-for="note in (items as Misskey.entities.Note[])" :key="note.id" :note="note" square/>
 				</div>
 			</MkPagination>
-			<MkNotesTimeline v-else :key="`searchNotes:${key}:note`" :paginator="paginator"/>
+			<MkNotesTimeline v-else :key="`searchNotes:${key}:note`" :paginator="paginator" :withControl="false"/>
 		</div>
 	</MkStickyContainer>
 </div>
