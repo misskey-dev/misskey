@@ -1603,7 +1603,7 @@ async function openAccountMenu(ev: MouseEvent) {
 				reactionAcceptance.value = draft.reactionAcceptance;
 				scheduledAt.value = draft.scheduledAt ?? null;
 				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
-				// やみノートモードの復元（muyami独自機能）
+				// やみノートモードの復元（yamisskey独自機能）
 				isNoteInYamiMode.value = draft.isNoteInYamiMode ?? false;
 
 				visibleUsers.value = [];
