@@ -10,14 +10,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		$style.root,
 		{
 			[$style.inline]: inline,
-			[$style.large]: large,
 			'_button': !to,
 		},
 	]"
 >
 	<component
 		:is="to ? (external ? 'a' : 'MkA') : 'div'"
-		:class="[$style.main, { [$style.active]: active }]"
+		:class="[$style.main, { [$style.active]: active, [$style.large]: large }]"
 		class="_button"
 		v-bind="to ? (external ? { href: to, target: '_blank' } : { to, behavior }) : {}"
 	>
@@ -39,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
 	to?: string;
 	active?: boolean;
 	external?: boolean;
@@ -66,7 +65,7 @@ const props = defineProps<{
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px 14px;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-folderHeaderBg);
 	border-radius: 6px;
 	font-size: 0.9em;
 
@@ -76,12 +75,12 @@ const props = defineProps<{
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-folderHeaderHoverBg);
 	}
 
 	&.active {
-		color: var(--accent);
-		background: var(--buttonHoverBg);
+		color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-folderHeaderHoverBg);
 	}
 }
 
@@ -89,7 +88,7 @@ const props = defineProps<{
 	margin-right: 0.75em;
 	flex-shrink: 0;
 	text-align: center;
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;
