@@ -40,6 +40,10 @@ services:
         source: ./.config/a.test.default.yml
         target: /misskey/.config/default.yml
         read_only: true
+      - type: bind
+        source: ../scripts/convert_config.js
+        target: /misskey/packages/backend/scripts/convert_config.js
+        read_only: true
 
   db.a.test:
     extends:
