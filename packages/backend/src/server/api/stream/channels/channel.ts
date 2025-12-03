@@ -12,6 +12,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingFilterService } from '../NoteStreamingFilterService.js';
 
 class ChannelChannel extends Channel {
 	public readonly chName = 'channel';
@@ -21,6 +22,7 @@ class ChannelChannel extends Channel {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingFilterService,
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -47,24 +49,10 @@ class ChannelChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
+		const filterResult = await this.noteStreamingFilterService.filterForStreaming(note, this.user?.id ?? null);
+		if (filterResult === 'skip') return;
+
 		if (this.user) {
-			const shouldHideThisNote = await this.noteEntityService.shouldHideNote(note, this.user.id);
-			if (shouldHideThisNote) {
-				this.noteEntityService.hideNote(note);
-			}
-
-			if (isRenotePacked(note) && note.renote) {
-				const shouldHideRenote = await this.noteEntityService.shouldHideNote(note.renote, this.user.id);
-
-				if (shouldHideRenote && isQuotePacked(note)) {
-					// 引用リノートの場合、リノート部分だけ隠す
-					this.noteEntityService.hideNote(note.renote);
-				} else if (shouldHideRenote) {
-					// 純粋なリノートの場合、流さない
-					return;
-				}
-			}
-
 			if (isRenotePacked(note) && !isQuotePacked(note)) {
 				if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 					const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
@@ -120,6 +108,7 @@ export class ChannelChannelService implements MiChannelService<false> {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingFilterService,
 	) {
 	}
 
@@ -127,6 +116,7 @@ export class ChannelChannelService implements MiChannelService<false> {
 	public create(id: string, connection: Channel['connection']): ChannelChannel {
 		return new ChannelChannel(
 			this.noteEntityService,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);

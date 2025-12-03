@@ -10,6 +10,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingFilterService } from '../NoteStreamingFilterService.js';
 
 class AntennaChannel extends Channel {
 	public readonly chName = 'antenna';
@@ -20,6 +21,7 @@ class AntennaChannel extends Channel {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingFilterService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -44,24 +46,10 @@ class AntennaChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
+			const filterResult = await this.noteStreamingFilterService.filterForStreaming(note, this.user?.id ?? null);
+			if (filterResult === 'skip') return;
+
 			if (this.user) {
-				const shouldHideThisNote = await this.noteEntityService.shouldHideNote(note, this.user.id);
-				if (shouldHideThisNote) {
-					this.noteEntityService.hideNote(note);
-				}
-
-				if (isRenotePacked(note) && note.renote) {
-					const shouldHideRenote = await this.noteEntityService.shouldHideNote(note.renote, this.user.id);
-
-					if (shouldHideRenote && isQuotePacked(note)) {
-						// 引用リノートの場合、リノート部分だけ隠す
-						this.noteEntityService.hideNote(note.renote);
-					} else if (shouldHideRenote) {
-						// 純粋なリノートの場合、流さない（そもそもここにたどり着くことは無いとは思うけど）
-						return;
-					}
-				}
-
 				if (isRenotePacked(note) && !isQuotePacked(note)) {
 					if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 						const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
@@ -91,6 +79,7 @@ export class AntennaChannelService implements MiChannelService<true> {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingFilterService,
 	) {
 	}
 
@@ -98,6 +87,7 @@ export class AntennaChannelService implements MiChannelService<true> {
 	public create(id: string, connection: Channel['connection']): AntennaChannel {
 		return new AntennaChannel(
 			this.noteEntityService,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);

@@ -11,6 +11,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingFilterService } from '../NoteStreamingFilterService.js';
 
 class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
@@ -21,6 +22,7 @@ class RoleTimelineChannel extends Channel {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
+		private noteStreamingFilterService: NoteStreamingFilterService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -49,24 +51,10 @@ class RoleTimelineChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
+			const filterResult = await this.noteStreamingFilterService.filterForStreaming(note, this.user?.id ?? null);
+			if (filterResult === 'skip') return;
+
 			if (this.user) {
-				const shouldHideThisNote = await this.noteEntityService.shouldHideNote(note, this.user.id);
-				if (shouldHideThisNote) {
-					this.noteEntityService.hideNote(note);
-				}
-
-				if (isRenotePacked(note) && note.renote) {
-					const shouldHideRenote = await this.noteEntityService.shouldHideNote(note.renote, this.user.id);
-
-					if (shouldHideRenote && isQuotePacked(note)) {
-						// 引用リノートの場合、リノート部分だけ隠す
-						this.noteEntityService.hideNote(note.renote);
-					} else if (shouldHideRenote) {
-						// 純粋なリノートの場合、流さない
-						return;
-					}
-				}
-
 				if (isRenotePacked(note) && !isQuotePacked(note)) {
 					if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 						const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
@@ -97,6 +85,7 @@ export class RoleTimelineChannelService implements MiChannelService<false> {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
+		private noteStreamingFilterService: NoteStreamingFilterService,
 	) {
 	}
 
@@ -105,6 +94,7 @@ export class RoleTimelineChannelService implements MiChannelService<false> {
 		return new RoleTimelineChannel(
 			this.noteEntityService,
 			this.roleservice,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);
