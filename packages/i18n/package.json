@@ -8,6 +8,10 @@
 		".": {
 			"types": "./built/index.d.ts",
 			"import": "./built/index.js"
+		},
+		"./const": {
+			"types": "./built/const.d.ts",
+			"import": "./built/const.js"
 		}
 	},
 	"scripts": {
