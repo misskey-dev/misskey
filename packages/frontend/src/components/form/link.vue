@@ -108,7 +108,7 @@ defineProps<{
 }
 
 .headerTextSub {
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 }
 
