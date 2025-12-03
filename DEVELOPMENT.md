@@ -100,7 +100,7 @@ git merge develop
 
 # バージョン番号をインクリメント
 # 形式: {misskey-version}-yami-{yamisskey-version}
-# 例: 2025.11.1-yami-1.9.30 → 2025.11.1-yami-1.9.31
+# 例: 2025.11.1-yami-1.9.28 → 2025.11.1-yami-1.9.29
 
 git push origin staging  # Dockerイメージが自動ビルドされる
 ```
@@ -218,7 +218,7 @@ git merge --abort
 
 # バックアップからの復元
 git checkout develop
-git reset --hard backup/2025.11.1-yami-1.9.30
+git reset --hard backup/2025.11.1-yami-1.9.29
 git push --force origin develop  # 注意：慎重に実行
 
 # worktreeのクリーンアップ
