@@ -33,7 +33,9 @@ jobs:
           echo "current_version=$current_version" >> $GITHUB_OUTPUT
           echo "Current master version: $current_version"
 
-          # yamisskey バージョン形式チェック (yami統一後も旧プリフィックスをサポート)
+          # yamisskey バージョン形式チェック
+          # 2025年12月以降: 全ブランチで yami プリフィックスに統一
+          # 旧プリフィックス (muyami/nayami) は後方互換性のみでサポート（非推奨）
           if [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-yami-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             echo "✅ Valid yamisskey version format: yami"
             echo "is_yamisskey=true" >> $GITHUB_OUTPUT
@@ -41,13 +43,13 @@ jobs:
             echo "should_create_release=true" >> $GITHUB_OUTPUT
             echo "🚀 Production version - will create GitHub release"
           elif [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-(muyami|nayami)-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            # 旧プリフィックス（後方互換性のため残す）
+            # 旧プリフィックス（2025年12月以前の後方互換性のみ）
             version_type="${BASH_REMATCH[2]}"
-            echo "⚠️ Deprecated version format: $version_type (should use 'yami')"
+            echo "⚠️ Deprecated version format: $version_type (please migrate to 'yami' prefix)"
             echo "is_yamisskey=true" >> $GITHUB_OUTPUT
             echo "version_type=$version_type" >> $GITHUB_OUTPUT
             echo "should_create_release=false" >> $GITHUB_OUTPUT
-            echo "🔧 Deprecated version - no release creation (please migrate to 'yami' prefix)"
+            echo "🔧 Deprecated version - no release creation (update to yami prefix required)"
           else
             echo "⚠️ Not a yamisskey version format, skipping release creation"
             echo "is_yamisskey=false" >> $GITHUB_OUTPUT
