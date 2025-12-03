@@ -118,11 +118,15 @@ async function measureMemory() {
 	serverProcess.kill('SIGTERM');
 
 	// Wait for process to exit
+	let exited = false;
 	await new Promise((resolve) => {
-		serverProcess.on('exit', resolve);
+		serverProcess.on('exit', () => {
+			exited = true;
+			resolve(undefined);
+		});
 		// Force kill after 10 seconds if not exited
 		setTimeout(10000).then(() => {
-			if (!serverProcess.killed) {
+			if (!exited) {
 				serverProcess.kill('SIGKILL');
 			}
 			resolve(undefined);
