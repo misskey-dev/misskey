@@ -310,8 +310,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       nodemailer:
-        specifier: 7.0.10
-        version: 7.0.10
+        specifier: 7.0.11
+        version: 7.0.11
       nsfwjs:
         specifier: 4.2.0
         version: 4.2.0(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3)
@@ -8639,8 +8639,8 @@ packages:
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
 
-  nodemailer@7.0.10:
-    resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
+  nodemailer@7.0.11:
+    resolution: {integrity: sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.11:
@@ -20047,7 +20047,7 @@ snapshots:
 
   node-releases@2.0.27: {}
 
-  nodemailer@7.0.10: {}
+  nodemailer@7.0.11: {}
 
   nodemon@3.1.11:
     dependencies:
