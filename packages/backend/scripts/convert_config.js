@@ -25,13 +25,16 @@ const configDir = resolve(_dirname, '../../../.config');
  */
 function convertYamlToJson(ymlPath, jsonPath) {
 	if (!fs.existsSync(ymlPath)) {
-		console.log(`${ymlPath} が見つからないためスキップします`);
+		console.log(`skipped: ${ymlPath} is not found`);
 		return;
 	}
 
 	const yamlContent = fs.readFileSync(ymlPath, 'utf-8');
 	const jsonContent = yaml.load(yamlContent);
-	fs.writeFileSync(jsonPath, JSON.stringify(jsonContent, null, 2), 'utf-8');
+	fs.writeFileSync(jsonPath, JSON.stringify({
+		'_NOTE_': 'This file is auto-generated from YAML file. DO NOT EDIT.',
+		...jsonContent,
+	}), 'utf-8');
 	console.log(`✓ ${ymlPath} → ${jsonPath}`);
 }
 
@@ -53,4 +56,4 @@ if (process.env.MISSKEY_CONFIG_YML) {
 	convertYamlToJson(customYmlPath, customJsonPath);
 }
 
-console.log('設定ファイルの変換が完了しました');
+console.log('Configuration compiled');
