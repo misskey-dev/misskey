@@ -4,7 +4,7 @@
 
 ### Misskey 2025.11.1への追従
 
-本家Misskey 2025.11.1をdevelop（旧muyami）ブランチにマージしました。詳細はCHANGELOG.mdを参照してください。
+本家Misskey 2025.11.1をdevelopブランチにマージしました。詳細はCHANGELOG.mdを参照してください。
 
 #### yamisskey独自機能への影響
 
