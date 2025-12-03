@@ -4,7 +4,8 @@ on:
   pull_request_target:
     branches:
       - master
-      - nayami
+      - staging
+      - develop
       - improve-misskey-js-autogen-check
     paths:
       - packages/backend/**

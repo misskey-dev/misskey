@@ -33,28 +33,21 @@ jobs:
           echo "current_version=$current_version" >> $GITHUB_OUTPUT
           echo "Current master version: $current_version"
 
-          # yamisskey バージョン形式チェック
-          if [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-(muyami|nayami|yami)-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+          # yamisskey バージョン形式チェック (yami統一後も旧プリフィックスをサポート)
+          if [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-yami-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "✅ Valid yamisskey version format: yami"
+            echo "is_yamisskey=true" >> $GITHUB_OUTPUT
+            echo "version_type=yami" >> $GITHUB_OUTPUT
+            echo "should_create_release=true" >> $GITHUB_OUTPUT
+            echo "🚀 Production version - will create GitHub release"
+          elif [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-(muyami|nayami)-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            # 旧プリフィックス（後方互換性のため残す）
             version_type="${BASH_REMATCH[2]}"
-            echo "✅ Valid yamisskey version format: $version_type"
+            echo "⚠️ Deprecated version format: $version_type (should use 'yami')"
             echo "is_yamisskey=true" >> $GITHUB_OUTPUT
             echo "version_type=$version_type" >> $GITHUB_OUTPUT
-
-            # バージョンタイプに応じたリリース作成を決定
-            case "$version_type" in
-              "yami")
-                echo "should_create_release=true" >> $GITHUB_OUTPUT
-                echo "🚀 Production version - will create GitHub release"
-                ;;
-              "nayami")
-                echo "should_create_release=false" >> $GITHUB_OUTPUT
-                echo "🔧 Development version - no release creation"
-                ;;
-              "muyami")
-                echo "should_create_release=false" >> $GITHUB_OUTPUT
-                echo "⚙️ Early development version - no release creation"
-                ;;
-            esac
+            echo "should_create_release=false" >> $GITHUB_OUTPUT
+            echo "🔧 Deprecated version - no release creation (please migrate to 'yami' prefix)"
           else
             echo "⚠️ Not a yamisskey version format, skipping release creation"
             echo "is_yamisskey=false" >> $GITHUB_OUTPUT

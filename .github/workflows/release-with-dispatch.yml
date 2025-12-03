@@ -17,22 +17,22 @@ jobs:
   check-branch:
     runs-on: ubuntu-latest
     outputs:
-      is_nayami: ${{ steps.check.outputs.is_nayami }}
+      is_staging: ${{ steps.check.outputs.is_staging }}
     steps:
-      - name: Check if branch is nayami
+      - name: Check if branch is staging
         id: check
         run: |
-          if [ "${{ github.ref_name }}" = "nayami" ]; then
-            echo "is_nayami=true" >> $GITHUB_OUTPUT
+          if [ "${{ github.ref_name }}" = "staging" ]; then
+            echo "is_staging=true" >> $GITHUB_OUTPUT
           else
-            echo "is_nayami=false" >> $GITHUB_OUTPUT
-            echo "::error::This workflow only supports nayami branch. Current branch: ${{ github.ref_name }}"
+            echo "is_staging=false" >> $GITHUB_OUTPUT
+            echo "::error::This workflow only supports staging branch. Current branch: ${{ github.ref_name }}"
             exit 1
           fi
 
   create-release-pr:
     needs: check-branch
-    if: ${{ needs.check-branch.outputs.is_nayami == 'true' }}
+    if: ${{ needs.check-branch.outputs.is_staging == 'true' }}
     uses: yamisskey-dev/release-manager-actions/.github/workflows/create-target.yml@v2-yamisskey
     with:
       difference_path: 'DIFFERENCE.md'
@@ -43,7 +43,7 @@ jobs:
   merge-release-pr:
     runs-on: ubuntu-latest
     needs: check-branch
-    if: ${{ needs.check-branch.outputs.is_nayami == 'true' && inputs.merge == true }}
+    if: ${{ needs.check-branch.outputs.is_staging == 'true' && inputs.merge == true }}
     steps:
       - uses: actions/checkout@v4
       - name: Get and merge PR
