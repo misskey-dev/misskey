@@ -1,3 +1,33 @@
+## 2025.11.1
+
+### Client
+
+- Enhance: リアクションの受け入れ設定にキャプションを追加 #15921
+- Fix: ページの内容がはみ出ることがある問題を修正
+- Fix: ナビゲーションバーを下に表示しているときに、項目数が多いと表示が崩れる問題を修正
+- Fix: ヘッダーメニューのチャンネルの新規作成の項目でチャンネル作成ページに飛べない問題を修正 #16816
+- Fix: ラジオボタンに空白の選択肢が表示される問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1105)
+- Fix: 一部のシチュエーションで投稿フォームのツアーが正しく表示されない問題を修正
+- Fix: 投稿フォームのリセットボタンで注釈がリセットされない問題を修正
+- Fix: PlayのAiScriptバージョン判定（v0.x系・v1.x系の判定）が正しく動作しない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1129)
+- Fix: フォロー申請をキャンセルする際の確認ダイアログの文言が不正確な問題を修正
+- Fix: 初回読み込み時にエラーになることがある問題を修正
+- Fix: お気に入りクリップの一覧表示が正しく動作しない問題を修正
+- Fix: AiScript Misskey 拡張APIにおいて、各種関数の引数で明示的に `null` が指定されている場合のハンドリングを修正
+
+### Server
+- Enhance: メモリ使用量を削減しました
+- Enhance: 依存関係の更新
+- Fix: ワードミュートの文字数計算を修正  
+- Fix: チャンネルのリアルタイム更新時に、ロックダウン設定にて非ログイン時にノートを表示しない設定にしている場合でもノートが表示されてしまう問題を修正
+- Fix: DeepL APIのAPIキー指定方式変更に対応  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1096)
+	- 内部実装の変更にて対応可能な更新です。Misskey側の設定方法に変更はありません。
+- Fix: DBレプリケーションを利用する環境でクエリーが失敗する問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1123)
+
 ## 2025.11.0
 
 ### General

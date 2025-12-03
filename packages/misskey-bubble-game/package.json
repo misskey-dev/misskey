@@ -25,14 +25,14 @@
 	},
 	"devDependencies": {
 		"@types/matter-js": "0.20.2",
-		"@types/node": "24.9.2",
+		"@types/node": "24.10.1",
 		"@types/seedrandom": "3.0.8",
-		"@typescript-eslint/eslint-plugin": "8.46.2",
-		"@typescript-eslint/parser": "8.46.2",
-		"esbuild": "0.25.11",
+		"@typescript-eslint/eslint-plugin": "8.47.0",
+		"@typescript-eslint/parser": "8.47.0",
+		"esbuild": "0.27.0",
 		"execa": "9.6.0",
-		"glob": "11.0.3",
-		"nodemon": "3.1.10",
+		"glob": "11.1.0",
+		"nodemon": "3.1.11",
 		"typescript": "5.9.3"
 	},
 	"files": [
