@@ -37,6 +37,17 @@ let $iMock = vi.hoisted<Partial<typeof import('@/i.js').$i> | null >(
 	() => null
 );
 
+function errorWithPos<T extends errors.AiScriptError>(
+	error: T,
+	line: number,
+	column: number,
+): T {
+	const pos = { line, column };
+	error.pos = pos;
+	error.message = error.message + `\n  at <root> (Line ${pos.line}, Column ${pos.column})`;
+	return error;
+}
+
 vi.mock('@/i.js', () => {
 	return {
 		get $i() {
@@ -316,7 +327,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:api('https://example.com/api/ping', {})
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('invalid endpoint'),
+				errorWithPos(new errors.AiScriptRuntimeError('invalid endpoint'), 2, 11),
 			);
 			expect(misskeyApiMock).not.toHaveBeenCalled();
 		});
@@ -325,7 +336,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:api('ping')
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('expected param'),
+				errorWithPos(new errors.AiScriptRuntimeError('expected param'), 2, 11),
 			);
 			expect(misskeyApiMock).not.toHaveBeenCalled();
 		});
@@ -353,7 +364,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:save('key')
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('Expect anything, but got nothing.'),
+				errorWithPos(new errors.AiScriptRuntimeError('Expect anything, but got nothing.'), 2, 12),
 			);
 		});
 

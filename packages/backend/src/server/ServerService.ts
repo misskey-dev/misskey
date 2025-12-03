@@ -75,7 +75,7 @@ export class ServerService implements OnApplicationShutdown {
 	@bindThis
 	public async launch(): Promise<void> {
 		const fastify = Fastify({
-			trustProxy: true,
+			trustProxy: this.config.trustProxy ?? true,
 			logger: false,
 		});
 		this.#fastify = fastify;
@@ -235,30 +235,6 @@ export class ServerService implements OnApplicationShutdown {
 				return await genIdenticon(request.params.x);
 			} else {
 				return reply.redirect('/static-assets/avatar.png');
-			}
-		});
-
-		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
-			const profile = await this.userProfilesRepository.findOneBy({
-				emailVerifyCode: request.params.code,
-			});
-
-			if (profile != null) {
-				await this.userProfilesRepository.update({ userId: profile.userId }, {
-					emailVerified: true,
-					emailVerifyCode: null,
-				});
-
-				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-					schema: 'MeDetailed',
-					includeSecrets: true,
-				}));
-
-				reply.code(200).send('Verification succeeded! メールアドレスの認証に成功しました。');
-				return;
-			} else {
-				reply.code(404).send('Verification failed. Please try again. メールアドレスの認証に失敗しました。もう一度お試しください');
-				return;
 			}
 		});
 

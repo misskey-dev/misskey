@@ -13,11 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkButton>
 			</div>
 			<div :class="$style.subMenus" class="_gaps_s">
-				<MkSelect v-model="filterMethod" style="flex: 1">
+				<MkSelect v-model="filterMethod" :items="filterMethodDef" style="flex: 1">
 					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.recipientType }}</template>
-					<option :value="null">-</option>
-					<option :value="'email'">{{ i18n.ts._abuseReport._notificationRecipient._recipientType.mail }}</option>
-					<option :value="'webhook'">{{ i18n.ts._abuseReport._notificationRecipient._recipientType.webhook }}</option>
 				</MkSelect>
 				<MkInput v-model="filterText" type="search" style="flex: 1">
 					<template #label>{{ i18n.ts._abuseReport._notificationRecipient.keywords }}</template>
@@ -51,10 +48,21 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import MkDivider from '@/components/MkDivider.vue';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const recipients = ref<entities.AbuseReportNotificationRecipient[]>([]);
 
-const filterMethod = ref<string | null>(null);
+const {
+	model: filterMethod,
+	def: filterMethodDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: null },
+		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.mail, value: 'email' },
+		{ label: i18n.ts._abuseReport._notificationRecipient._recipientType.webhook, value: 'webhook' },
+	],
+	initialValue: null,
+});
 const filterText = ref<string>('');
 
 const filteredRecipients = computed(() => {

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/drive" :label="i18n.ts.drive" :keywords="['drive']" icon="ti ti-cloud">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/cloud_3d.png" color="#0059ff">
-			<SearchKeyword>{{ i18n.ts._settings.driveBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.driveBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['capacity', 'usage']">
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<FormLink @click="chooseUploadFolder()">
 							<SearchLabel>{{ i18n.ts.uploadFolder }}</SearchLabel>
 							<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-							<template #suffixIcon><i class="ti ti-folder"></i></template>
+							<template #icon><i class="ti ti-folder"></i></template>
 						</FormLink>
 					</SearchMarker>
 
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPreferenceContainer k="keepOriginalFilename">
 							<MkSwitch v-model="keepOriginalFilename">
 								<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
-								<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
+								<template #caption><SearchText>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchText></template>
 							</MkSwitch>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['auto', 'nsfw', 'sensitive', 'media', 'file']">
 						<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
 							<template #label><SearchLabel>{{ i18n.ts.enableAutoSensitive }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-							<template #caption><SearchKeyword>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchKeyword></template>
+							<template #caption><SearchText>{{ i18n.ts.enableAutoSensitiveDescription }}</SearchText></template>
 						</MkSwitch>
 					</SearchMarker>
 				</div>
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['watermark', 'credit']">
-						<MkFolder>
+						<MkFolder v-if="$i.policies.watermarkAvailable">
 							<template #icon><i class="ti ti-copyright"></i></template>
 							<template #label><SearchLabel>{{ i18n.ts.watermark }}</SearchLabel></template>
 							<template #caption>{{ i18n.ts._watermarkEditor.tip }}</template>
@@ -124,6 +124,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkFolder>
 					</SearchMarker>
 
+					<SearchMarker :keywords="['label', 'frame', 'credit', 'metadata']">
+						<MkFolder>
+							<template #icon><i class="ti ti-device-ipad-horizontal"></i></template>
+							<template #label><SearchLabel>{{ i18n.ts.frame }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts._imageFrameEditor.tip }}</template>
+
+							<div class="_gaps">
+								<div class="_gaps_s">
+									<XImageFrameItem
+										v-for="(preset, i) in prefer.r.imageFramePresets.value"
+										:key="preset.id"
+										:preset="preset"
+										@updatePreset="onUpdateImageFramePreset(preset.id, $event)"
+										@del="onDeleteImageFramePreset(preset.id)"
+									/>
+
+									<MkButton iconOnly rounded style="margin: 0 auto;" @click="addImageFramePreset"><i class="ti ti-plus"></i></MkButton>
+
+									<SearchMarker :keywords="['sync', 'frame', 'label', 'preset', 'devices']">
+										<MkSwitch :modelValue="imageFramePresetsSyncEnabled" @update:modelValue="changeImageFramePresetsSyncEnabled">
+											<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts.syncBetweenDevices }}</SearchLabel></template>
+										</MkSwitch>
+									</SearchMarker>
+								</div>
+							</div>
+						</MkFolder>
+					</SearchMarker>
+
 					<SearchMarker :keywords="['default', 'image', 'compression']">
 						<MkPreferenceContainer k="defaultImageCompressionLevel">
 							<MkSelect
@@ -151,7 +179,9 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import XWatermarkItem from './drive.WatermarkItem.vue';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import XImageFrameItem from './drive.ImageFrameItem.vue';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -171,6 +201,7 @@ import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { selectDriveFolder } from '@/utility/drive.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
@@ -211,6 +242,20 @@ function changeWatermarkPresetsSyncEnabled(value: boolean) {
 	}
 }
 
+const imageFramePresetsSyncEnabled = ref(prefer.isSyncEnabled('imageFramePresets'));
+
+function changeImageFramePresetsSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('imageFramePresets').then((res) => {
+			if (res == null) return;
+			if (res.enabled) imageFramePresetsSyncEnabled.value = true;
+		});
+	} else {
+		prefer.disableSync('imageFramePresets');
+		imageFramePresetsSyncEnabled.value = false;
+	}
+}
+
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
 	usage.value = info.usage;
@@ -241,8 +286,11 @@ function chooseUploadFolder() {
 
 async function addWatermarkPreset() {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkWatermarkEditorDialog.vue').then(x => x.default), {
+		presetEditMode: true,
+		preset: null,
+		layers: [],
 	}, {
-		ok: (preset: WatermarkPreset) => {
+		presetOk: (preset) => {
 			prefer.commit('watermarkPresets', [...prefer.s.watermarkPresets, preset]);
 		},
 		closed: () => dispose(),
@@ -272,6 +320,40 @@ function onDeleteWatermarkPreset(id: string) {
 			prefer.commit('defaultWatermarkPresetId', null);
 		}
 	}
+}
+
+function onUpdateImageFramePreset(id: string, preset: ImageFramePreset) {
+	const index = prefer.s.imageFramePresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('imageFramePresets', [
+			...prefer.s.imageFramePresets.slice(0, index),
+			preset,
+			...prefer.s.imageFramePresets.slice(index + 1),
+		]);
+	}
+}
+
+function onDeleteImageFramePreset(id: string) {
+	const index = prefer.s.imageFramePresets.findIndex(p => p.id === id);
+	if (index !== -1) {
+		prefer.commit('imageFramePresets', [
+			...prefer.s.imageFramePresets.slice(0, index),
+			...prefer.s.imageFramePresets.slice(index + 1),
+		]);
+	}
+}
+
+async function addImageFramePreset() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageFrameEditorDialog.vue').then(x => x.default), {
+		presetEditMode: true,
+		preset: null,
+		params: null,
+	}, {
+		presetOk: (preset) => {
+			prefer.commit('imageFramePresets', [...prefer.s.imageFramePresets, preset]);
+		},
+		closed: () => dispose(),
+	});
 }
 
 function saveProfile() {

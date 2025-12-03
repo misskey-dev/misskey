@@ -71,7 +71,7 @@ import {
 import * as os from '@/os.js';
 import { createColumn } from '@/components/grid/column.js';
 import { createRow, defaultGridRowSetting, resetRow } from '@/components/grid/row.js';
-import { handleKeyEvent } from '@/utility/key-event.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 
 type RowHolder = {
 	row: GridRow,
@@ -289,161 +289,143 @@ function onKeyDown(ev: KeyboardEvent) {
 			const max = availableBounds.value;
 			const bounds = rangedBounds.value;
 
-			handleKeyEvent(ev, [
-				{
-					code: 'Delete', handler: () => {
-						if (rangedRows.value.length > 0) {
-							if (rowSetting.events.delete) {
-								rowSetting.events.delete(rangedRows.value);
-							}
-						} else {
-							const context = createContext();
-							removeDataFromGrid(context, (cell) => {
-								emitCellValue(cell, undefined);
-							});
+			makeHotkey({
+				'delete': () => {
+					if (rangedRows.value.length > 0) {
+						if (rowSetting.events.delete) {
+							rowSetting.events.delete(rangedRows.value);
 						}
-					},
-				},
-				{
-					code: 'KeyC', modifiers: ['Control'], handler: () => {
+					} else {
 						const context = createContext();
-						copyGridDataToClipboard(data.value, context);
-					},
-				},
-				{
-					code: 'KeyV', modifiers: ['Control'], handler: async () => {
-						const _cells = cells.value;
-						const context = createContext();
-						await pasteToGridFromClipboard(context, (row, col, parsedValue) => {
-							emitCellValue(_cells[row.index].cells[col.index], parsedValue);
+						removeDataFromGrid(context, (cell) => {
+							emitCellValue(cell, undefined);
 						});
-					},
+					}
 				},
-				{
-					code: 'ArrowRight', modifiers: ['Control', 'Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: { col: selectedCellAddress.col, row: bounds.leftTop.row },
-							rightBottom: { col: max.rightBottom.col, row: bounds.rightBottom.row },
-						});
-					},
+				'ctrl+c|meta+c': () => {
+					const context = createContext();
+					copyGridDataToClipboard(data.value, context);
 				},
-				{
-					code: 'ArrowLeft', modifiers: ['Control', 'Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: { col: max.leftTop.col, row: bounds.leftTop.row },
-							rightBottom: { col: selectedCellAddress.col, row: bounds.rightBottom.row },
-						});
-					},
+				'ctrl+v|meta+v': async () => {
+					const _cells = cells.value;
+					const context = createContext();
+					await pasteToGridFromClipboard(context, (row, col, parsedValue) => {
+						emitCellValue(_cells[row.index].cells[col.index], parsedValue);
+					});
 				},
-				{
-					code: 'ArrowUp', modifiers: ['Control', 'Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: { col: bounds.leftTop.col, row: max.leftTop.row },
-							rightBottom: { col: bounds.rightBottom.col, row: selectedCellAddress.row },
-						});
-					},
+				'ctrl+shift+right|meta+shift+right': () => {
+					updateSelectionRange({
+						leftTop: { col: selectedCellAddress.col, row: bounds.leftTop.row },
+						rightBottom: { col: max.rightBottom.col, row: bounds.rightBottom.row },
+					});
 				},
-				{
-					code: 'ArrowDown', modifiers: ['Control', 'Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: { col: bounds.leftTop.col, row: selectedCellAddress.row },
-							rightBottom: { col: bounds.rightBottom.col, row: max.rightBottom.row },
-						});
-					},
+				'ctrl+shift+left|meta+shift+left': () => {
+					updateSelectionRange({
+						leftTop: { col: max.leftTop.col, row: bounds.leftTop.row },
+						rightBottom: { col: selectedCellAddress.col, row: bounds.rightBottom.row },
+					});
 				},
-				{
-					code: 'ArrowRight', modifiers: ['Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: {
-								col: bounds.leftTop.col < selectedCellAddress.col
-									? bounds.leftTop.col + 1
-									: selectedCellAddress.col,
-								row: bounds.leftTop.row,
-							},
-							rightBottom: {
-								col: (bounds.rightBottom.col > selectedCellAddress.col || bounds.leftTop.col === selectedCellAddress.col)
-									? bounds.rightBottom.col + 1
-									: selectedCellAddress.col,
-								row: bounds.rightBottom.row,
-							},
-						});
-					},
+				'ctrl+shift+up|meta+shift+up': () => {
+					updateSelectionRange({
+						leftTop: { col: bounds.leftTop.col, row: max.leftTop.row },
+						rightBottom: { col: bounds.rightBottom.col, row: selectedCellAddress.row },
+					});
 				},
-				{
-					code: 'ArrowLeft', modifiers: ['Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: {
-								col: (bounds.leftTop.col < selectedCellAddress.col || bounds.rightBottom.col === selectedCellAddress.col)
-									? bounds.leftTop.col - 1
-									: selectedCellAddress.col,
-								row: bounds.leftTop.row,
-							},
-							rightBottom: {
-								col: bounds.rightBottom.col > selectedCellAddress.col
-									? bounds.rightBottom.col - 1
-									: selectedCellAddress.col,
-								row: bounds.rightBottom.row,
-							},
-						});
-					},
+				'ctrl+shift+down|meta+shift+down': () => {
+					updateSelectionRange({
+						leftTop: { col: bounds.leftTop.col, row: selectedCellAddress.row },
+						rightBottom: { col: bounds.rightBottom.col, row: max.rightBottom.row },
+					});
 				},
-				{
-					code: 'ArrowUp', modifiers: ['Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: {
-								col: bounds.leftTop.col,
-								row: (bounds.leftTop.row < selectedCellAddress.row || bounds.rightBottom.row === selectedCellAddress.row)
-									? bounds.leftTop.row - 1
-									: selectedCellAddress.row,
-							},
-							rightBottom: {
-								col: bounds.rightBottom.col,
-								row: bounds.rightBottom.row > selectedCellAddress.row
-									? bounds.rightBottom.row - 1
-									: selectedCellAddress.row,
-							},
-						});
-					},
+				'ctrl+right|meta+right': () => {
+					selectionCell({ col: max.rightBottom.col, row: selectedCellAddress.row });
 				},
-				{
-					code: 'ArrowDown', modifiers: ['Shift'], handler: () => {
-						updateSelectionRange({
-							leftTop: {
-								col: bounds.leftTop.col,
-								row: bounds.leftTop.row < selectedCellAddress.row
-									? bounds.leftTop.row + 1
-									: selectedCellAddress.row,
-							},
-							rightBottom: {
-								col: bounds.rightBottom.col,
-								row: (bounds.rightBottom.row > selectedCellAddress.row || bounds.leftTop.row === selectedCellAddress.row)
-									? bounds.rightBottom.row + 1
-									: selectedCellAddress.row,
-							},
-						});
-					},
+				'ctrl+left|meta+left': () => {
+					selectionCell({ col: max.leftTop.col, row: selectedCellAddress.row });
 				},
-				{
-					code: 'ArrowDown', handler: () => {
-						selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row + 1 });
-					},
+				'ctrl+up|meta+up': () => {
+					selectionCell({ col: selectedCellAddress.col, row: max.leftTop.row });
 				},
-				{
-					code: 'ArrowUp', handler: () => {
-						selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row - 1 });
-					},
+				'ctrl+down|meta+down': () => {
+					selectionCell({ col: selectedCellAddress.col, row: max.rightBottom.row });
 				},
-				{
-					code: 'ArrowRight', handler: () => {
-						selectionCell({ col: selectedCellAddress.col + 1, row: selectedCellAddress.row });
-					},
+				'shift+right': () => {
+					updateSelectionRange({
+						leftTop: {
+							col: bounds.leftTop.col < selectedCellAddress.col
+								? bounds.leftTop.col + 1
+								: selectedCellAddress.col,
+							row: bounds.leftTop.row,
+						},
+						rightBottom: {
+							col: (bounds.rightBottom.col > selectedCellAddress.col || bounds.leftTop.col === selectedCellAddress.col)
+								? bounds.rightBottom.col + 1
+								: selectedCellAddress.col,
+							row: bounds.rightBottom.row,
+						},
+					});
 				},
-				{
-					code: 'ArrowLeft', handler: () => {
-						selectionCell({ col: selectedCellAddress.col - 1, row: selectedCellAddress.row });
-					},
+				'shift+left': () => {
+					updateSelectionRange({
+						leftTop: {
+							col: (bounds.leftTop.col < selectedCellAddress.col || bounds.rightBottom.col === selectedCellAddress.col)
+								? bounds.leftTop.col - 1
+								: selectedCellAddress.col,
+							row: bounds.leftTop.row,
+						},
+						rightBottom: {
+							col: bounds.rightBottom.col > selectedCellAddress.col
+								? bounds.rightBottom.col - 1
+								: selectedCellAddress.col,
+							row: bounds.rightBottom.row,
+						},
+					});
 				},
-			]);
+				'shift+up': () => {
+					updateSelectionRange({
+						leftTop: {
+							col: bounds.leftTop.col,
+							row: (bounds.leftTop.row < selectedCellAddress.row || bounds.rightBottom.row === selectedCellAddress.row)
+								? bounds.leftTop.row - 1
+								: selectedCellAddress.row,
+						},
+						rightBottom: {
+							col: bounds.rightBottom.col,
+							row: bounds.rightBottom.row > selectedCellAddress.row
+								? bounds.rightBottom.row - 1
+								: selectedCellAddress.row,
+						},
+					});
+				},
+				'shift+down': () => {
+					updateSelectionRange({
+						leftTop: {
+							col: bounds.leftTop.col,
+							row: bounds.leftTop.row < selectedCellAddress.row
+								? bounds.leftTop.row + 1
+								: selectedCellAddress.row,
+						},
+						rightBottom: {
+							col: bounds.rightBottom.col,
+							row: (bounds.rightBottom.row > selectedCellAddress.row || bounds.leftTop.row === selectedCellAddress.row)
+								? bounds.rightBottom.row + 1
+								: selectedCellAddress.row,
+						},
+					});
+				},
+				'down': () => {
+					selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row + 1 });
+				},
+				'up': () => {
+					selectionCell({ col: selectedCellAddress.col, row: selectedCellAddress.row - 1 });
+				},
+				'right': () => {
+					selectionCell({ col: selectedCellAddress.col + 1, row: selectedCellAddress.row });
+				},
+				'left': () => {
+					selectionCell({ col: selectedCellAddress.col - 1, row: selectedCellAddress.row });
+				},
+			}, [])(ev);
 
 			break;
 		}

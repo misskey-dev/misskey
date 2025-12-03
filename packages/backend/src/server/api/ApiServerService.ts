@@ -176,6 +176,17 @@ export class ApiServerService {
 			}
 		});
 
+		fastify.all('/clear-browser-cache', (request, reply) => {
+			if (['GET', 'POST'].includes(request.method)) {
+				reply.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
+				reply.code(204);
+				reply.send();
+			} else {
+				reply.code(405);
+				reply.send();
+			}
+		});
+
 		// Make sure any unknown path under /api returns HTTP 404 Not Found,
 		// because otherwise ClientServerService will return the base client HTML
 		// page with HTTP 200.

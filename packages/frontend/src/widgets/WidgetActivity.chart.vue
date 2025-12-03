@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 const props = defineProps<{
 	activity: {
 		total: number;
@@ -94,6 +94,10 @@ function render() {
 		pointsTotal.value = activity.map((d, i) => `${(i * zoom.value) + pos.value},${(1 - (d.total / peak)) * viewBoxY.value}`).join(' ');
 	}
 }
+
+onMounted(() => {
+	render();
+});
 </script>
 
 <style lang="scss" module>

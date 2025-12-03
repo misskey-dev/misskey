@@ -68,7 +68,6 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 	return await client.request('admin/accounts/create', ADMIN_PARAMS).then(res => {
 		ADMIN_CACHE.set(host, {
 			id: res.id,
-			// @ts-expect-error FIXME: openapi-typescript generates incorrect response type for this endpoint, so ignore this
 			i: res.token,
 		});
 		return res as Misskey.entities.SignupResponse;
@@ -78,6 +77,9 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 				/** TODO: @see https://github.com/misskey-dev/misskey/issues/14169 */
 				rateLimitFactor: 0 as never,
 			},
+		}, res.token);
+		await client.request('admin/update-meta', {
+			federation: 'all',
 		}, res.token);
 		return res;
 	}).catch(err => {
@@ -187,7 +189,8 @@ export async function uploadFile(
 	path = '../../test/resources/192.jpg',
 ): Promise<Misskey.entities.DriveFile> {
 	const filename = path.split('/').pop() ?? 'untitled';
-	const blob = new Blob([await readFile(join(__dirname, path))]);
+	const buffer = await readFile(join(__dirname, path));
+	const blob = new Blob([new Uint8Array(buffer)]);
 
 	const body = new FormData();
 	body.append('i', user.i);

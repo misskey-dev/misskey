@@ -20,6 +20,7 @@ import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 import type { PredictionType } from 'nsfwjs';
 
 export type FileInfo = {
@@ -204,16 +205,7 @@ export class FileInfoService {
 			return [sensitive, porn];
 		}
 
-		if ([
-			'image/jpeg',
-			'image/png',
-			'image/webp',
-		].includes(mime)) {
-			const result = await this.aiService.detectSensitive(source);
-			if (result) {
-				[sensitive, porn] = judgePrediction(result);
-			}
-		} else if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
+		if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
 			const [outDir, disposeOutDir] = await createTempDir();
 			try {
 				const command = FFmpeg()
@@ -281,6 +273,23 @@ export class FileInfoService {
 			} finally {
 				disposeOutDir();
 			}
+		} else if (isMimeImage(mime, 'sharp-convertible-image-with-bmp')) {
+			/*
+			 * tfjs-node は限られた画像形式しか受け付けないため、sharp で PNG に変換する
+			 * せっかくなので内部処理で使われる最大サイズの299x299に事前にリサイズする
+			 */
+			const png = await (await sharpBmp(source, mime))
+				.resize(299, 299, {
+					withoutEnlargement: false,
+				})
+				.rotate()
+				.flatten({ background: { r: 119, g: 119, b: 119 } }) // 透過部分を18%グレーで塗りつぶす
+				.png()
+				.toBuffer();
+			const result = await this.aiService.detectSensitive(png);
+			if (result) {
+				[sensitive, porn] = judgePrediction(result);
+			}
 		}
 
 		return [sensitive, porn];
@@ -330,7 +339,7 @@ export class FileInfoService {
 	}
 
 	@bindThis
-	public fixMime(mime: string | fileType.MimeType): string {
+	public fixMime(mime: string): string {
 		// see https://github.com/misskey-dev/misskey/pull/10686
 		if (mime === 'audio/x-flac') {
 			return 'audio/flac';

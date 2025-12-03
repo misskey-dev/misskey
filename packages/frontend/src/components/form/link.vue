@@ -4,8 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.inline]: inline }]">
-	<a v-if="external" :class="[$style.main, { [$style.large]: large }]" class="_button" :href="to" target="_blank">
+<component
+	:is="to ? 'div' : 'button'"
+	:class="[
+		$style.root,
+		{
+			[$style.inline]: inline,
+			[$style.large]: large,
+			'_button': !to,
+		},
+	]"
+>
+	<component
+		:is="to ? (external ? 'a' : 'MkA') : 'div'"
+		:class="[$style.main, { [$style.active]: active }]"
+		class="_button"
+		v-bind="to ? (external ? { href: to, target: '_blank' } : { to, behavior }) : {}"
+	>
 		<span :class="$style.icon"><slot name="icon"></slot></span>
 		<div :class="$style.headerText">
 			<div>
@@ -17,32 +32,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<span :class="$style.suffix">
 			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
-			<i class="ti ti-external-link"></i>
+			<i :class="to && external ? 'ti ti-external-link' : 'ti ti-chevron-right'"></i>
 		</span>
-	</a>
-	<MkA v-else :class="[$style.main, { [$style.large]: large, [$style.active]: active }]" class="_button" :to="to" :behavior="behavior">
-		<span :class="$style.icon"><slot name="icon"></slot></span>
-		<div :class="$style.headerText">
-			<div>
-				<MkCondensedLine :minScale="2 / 3"><slot></slot></MkCondensedLine>
-			</div>
-			<div v-if="$slots.caption" :class="$style.headerTextSub">
-				<MkCondensedLine :minScale="2 / 3"><slot name="caption"></slot></MkCondensedLine>
-			</div>
-		</div>
-		<span :class="$style.suffix">
-			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
-			<i class="ti ti-chevron-right"></i>
-		</span>
-	</MkA>
-</div>
+	</component>
+</component>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-
 const props = defineProps<{
-	to: string;
+	to?: string;
 	active?: boolean;
 	external?: boolean;
 	behavior?: null | 'window' | 'browser';
@@ -54,9 +52,11 @@ const props = defineProps<{
 <style lang="scss" module>
 .root {
 	display: block;
+	width: 100%;
 
 	&.inline {
 		display: inline-block;
+		width: auto;
 	}
 }
 
@@ -66,7 +66,7 @@ const props = defineProps<{
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px 14px;
-	background: var(--MI_THEME-folderHeaderBg);
+	background: var(--buttonBg);
 	border-radius: 6px;
 	font-size: 0.9em;
 
@@ -76,12 +76,12 @@ const props = defineProps<{
 
 	&:hover {
 		text-decoration: none;
-		background: var(--MI_THEME-folderHeaderHoverBg);
+		background: var(--buttonHoverBg);
 	}
 
 	&.active {
-		color: var(--MI_THEME-accent);
-		background: var(--MI_THEME-folderHeaderHoverBg);
+		color: var(--accent);
+		background: var(--buttonHoverBg);
 	}
 }
 
@@ -89,12 +89,12 @@ const props = defineProps<{
 	margin-right: 0.75em;
 	flex-shrink: 0;
 	text-align: center;
-	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+	color: var(--fgTransparentWeak);
 
 	&:empty {
 		display: none;
 
-		& + .text {
+		& + .headerText {
 			padding-left: 4px;
 		}
 	}
@@ -109,7 +109,7 @@ const props = defineProps<{
 }
 
 .headerTextSub {
-	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+	color: var(--fgTransparentWeak);
 	font-size: .85em;
 }
 

@@ -14,6 +14,7 @@ export default [
 	...pluginVue.configs['flat/recommended'],
 	{
 		files: ['src/**/*.{ts,vue}'],
+		ignores: ['**/*.stories.ts'],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),
@@ -153,6 +154,9 @@ export default [
 				autofix: true,
 			}],
 			'vue/attribute-hyphenation': ['error', 'never'],
+			'vue/no-mutating-props': ['error', {
+				shallowOnly: true,
+			}],
 		},
 	},
 ];

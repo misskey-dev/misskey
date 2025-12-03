@@ -11,10 +11,12 @@ export const TIPS = [
 	'postFormUploader',
 	'clips',
 	'userLists',
+	'postForm',
 	'tl.home',
 	'tl.local',
 	'tl.social',
 	'tl.global',
+	'tl.hanami',
 	'abuses',
 ] as const;
 

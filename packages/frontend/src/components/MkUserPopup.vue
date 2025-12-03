@@ -22,7 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<path d="M64,32C81.661,32 96,46.339 96,64C95.891,72.184 104,72 104,72C104,72 74.096,80 64,80C52.755,80 24,72 24,72C24,72 31.854,72.018 32,64C32,46.339 46.339,32 64,32Z" style="fill: var(--MI_THEME-popup);"/>
 				</g>
 			</svg>
-			<MkAvatar :class="$style.avatar" :user="user" indicator/>
+			<MkA :to="userPage(user)">
+				<MkAvatar :class="$style.avatar" :user="user" indicator/>
+			</MkA>
 			<div :class="$style.title">
 				<MkA :class="$style.name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 				<div :class="$style.username"><MkAcct :user="user"/></div>
@@ -32,18 +34,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
-				<div :class="$style.statusItem">
+				<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
-				</div>
-				<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
+				</MkA>
+				<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'following')">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
-				</div>
-				<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
+				</MkA>
+				<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
-				</div>
+				</MkA>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<MkFollowButton v-if="$i && user.id != $i.id" v-model:user="user" :class="$style.follow" mini/>
@@ -72,7 +74,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	showing: boolean;
-	q: string;
+	q: string | Misskey.entities.UserDetailed;
 	source: HTMLElement;
 }>();
 
@@ -99,10 +101,11 @@ async function fetchUser() {
 		user.value = props.q;
 		error.value = false;
 	} else {
-		const query: Omit<Misskey.entities.UsersShowRequest, 'userIds'> = props.q.startsWith('@') ?
+		const query: Misskey.entities.UsersShowRequest = props.q.startsWith('@') ?
 			Misskey.acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
+		// @ts-expect-error payloadの引数側の型が正常に解決されない
 		misskeyApi('users/show', query).then(res => {
 			if (!props.showing) return;
 			user.value = res;

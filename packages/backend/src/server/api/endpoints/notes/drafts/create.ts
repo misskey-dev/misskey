@@ -124,10 +124,28 @@ export const meta = {
 			id: '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8',
 		},
 
+		tooManyScheduledNotes: {
+			message: 'You cannot create scheduled notes any more.',
+			code: 'TOO_MANY_SCHEDULED_NOTES',
+			id: '22ae69eb-09e3-4541-a850-773cfa45e693',
+		},
+
 		cannotRenoteToExternal: {
 			message: 'Cannot Renote to External.',
 			code: 'CANNOT_RENOTE_TO_EXTERNAL',
 			id: 'ed1952ac-2d26-4957-8b30-2deda76bedf7',
+		},
+
+		scheduledAtRequired: {
+			message: 'scheduledAt is required when isActuallyScheduled is true.',
+			code: 'SCHEDULED_AT_REQUIRED',
+			id: '15e28a55-e74c-4d65-89b7-8880cdaaa87d',
+		},
+
+		scheduledAtMustBeInFuture: {
+			message: 'scheduledAt must be in the future.',
+			code: 'SCHEDULED_AT_MUST_BE_IN_FUTURE',
+			id: 'e4bed6c9-017e-4934-aed0-01c22cc60ec1',
 		},
 	},
 
@@ -162,7 +180,7 @@ export const paramDef = {
 		fileIds: {
 			type: 'array',
 			uniqueItems: true,
-			minItems: 1,
+			minItems: 0,
 			maxItems: 16,
 			items: { type: 'string', format: 'misskey:id' },
 		},
@@ -183,6 +201,8 @@ export const paramDef = {
 			},
 			required: ['choices'],
 		},
+		scheduledAt: { type: 'integer', nullable: true },
+		isActuallyScheduled: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -195,23 +215,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const draft = await this.noteDraftService.create(me, {
-				fileIds: ps.fileIds,
-				poll: ps.poll ? {
-					choices: ps.poll.choices,
-					multiple: ps.poll.multiple ?? false,
-					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-					expiredAfter: ps.poll.expiredAfter ?? null,
-				} : undefined,
+				fileIds: ps.fileIds ?? [],
+				pollChoices: ps.poll?.choices ?? [],
+				pollMultiple: ps.poll?.multiple ?? false,
+				pollExpiresAt: ps.poll?.expiresAt ? new Date(ps.poll.expiresAt) : null,
+				pollExpiredAfter: ps.poll?.expiredAfter ?? null,
+				hasPoll: ps.poll != null,
 				text: ps.text ?? null,
-				replyId: ps.replyId ?? undefined,
-				renoteId: ps.renoteId ?? undefined,
+				replyId: ps.replyId ?? null,
+				renoteId: ps.renoteId ?? null,
 				cw: ps.cw ?? null,
-				...(ps.hashtag ? { hashtag: ps.hashtag } : {}),
+				hashtag: ps.hashtag ?? null,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
 				visibleUserIds: ps.visibleUserIds ?? [],
-				channelId: ps.channelId ?? undefined,
+				channelId: ps.channelId ?? null,
+				scheduledAt: ps.scheduledAt ? new Date(ps.scheduledAt) : null,
+				isActuallyScheduled: ps.isActuallyScheduled,
 			}).catch((err) => {
 				if (err instanceof IdentifiableError) {
 					switch (err.id) {
@@ -241,6 +262,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 						case '215dbc76-336c-4d2a-9605-95766ba7dab0':
 							throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
+						case 'c3275f19-4558-4c59-83e1-4f684b5fab66':
+							throw new ApiError(meta.errors.tooManyScheduledNotes);
+						case '94a89a43-3591-400a-9c17-dd166e71fdfa':
+							throw new ApiError(meta.errors.scheduledAtRequired);
+						case 'b34d0c1b-996f-4e34-a428-c636d98df457':
+							throw new ApiError(meta.errors.scheduledAtMustBeInFuture);
 						default:
 							throw err;
 					}

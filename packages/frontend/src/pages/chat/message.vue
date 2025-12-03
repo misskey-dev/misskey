@@ -25,7 +25,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 
 const props = defineProps<{
-	messageId?: string;
+	messageId: string;
 }>();
 
 const initializing = ref(true);
@@ -46,6 +46,6 @@ onMounted(() => {
 });
 
 definePage({
-	title: i18n.ts.chat,
+	title: i18n.ts.directMessage,
 });
 </script>

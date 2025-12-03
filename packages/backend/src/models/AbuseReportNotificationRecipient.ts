@@ -22,7 +22,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 有効かどうか.
 	 */
-	@Index()
+	@Index('IDX_abuse_report_notification_recipient_isActive')
 	@Column('boolean', {
 		default: true,
 	})
@@ -47,7 +47,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知方法.
 	 */
-	@Index()
+	@Index('IDX_abuse_report_notification_recipient_method')
 	@Column('varchar', {
 		length: 64,
 	})
@@ -56,10 +56,11 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知先のユーザID.
 	 */
-	@Index()
+	@Index('IDX_abuse_report_notification_recipient_userId')
 	@Column({
 		...id(),
 		nullable: true,
+		default: null,
 	})
 	public userId: MiUser['id'] | null;
 
@@ -75,17 +76,20 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知先のユーザプロフィール.
 	 */
-	@ManyToOne(type => MiUserProfile, {})
+	@ManyToOne(type => MiUserProfile, {
+		onDelete: 'CASCADE',
+	})
 	@JoinColumn({ name: 'userId', referencedColumnName: 'userId', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_userId2' })
 	public userProfile: MiUserProfile | null;
 
 	/**
 	 * 通知先のシステムWebhookId.
 	 */
-	@Index()
+	@Index('IDX_abuse_report_notification_recipient_systemWebhookId')
 	@Column({
 		...id(),
 		nullable: true,
+		default: null,
 	})
 	public systemWebhookId: string | null;
 
@@ -95,6 +99,6 @@ export class MiAbuseReportNotificationRecipient {
 	@ManyToOne(type => MiSystemWebhook, {
 		onDelete: 'CASCADE',
 	})
-	@JoinColumn()
+	@JoinColumn({ name: 'systemWebhookId', referencedColumnName: 'id', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_systemWebhookId' })
 	public systemWebhook: MiSystemWebhook | null;
 }

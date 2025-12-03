@@ -31,6 +31,7 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
+// misskey-js の rolePolicies と同期すべし
 export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
@@ -45,6 +46,7 @@ export type RolePolicies = {
 	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
 	canSearchWithHanamiSearchV1: boolean;
+	canSearchUsers: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
@@ -70,6 +72,8 @@ export type RolePolicies = {
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
 	uploadableFileTypes: string[];
 	noteDraftLimit: number;
+	scheduledNoteLimit: number;
+	watermarkAvailable: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -86,6 +90,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageAvatarDecorations: false,
 	canSearchNotes: true,
 	canSearchWithHanamiSearchV1: true,
+	canSearchUsers: true,
 	canUseTranslator: true,
 	canHideAds: false,
 	driveCapacityMb: 100,
@@ -106,17 +111,19 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportBlocking: true,
 	canImportFollowing: true,
 	canImportMuting: true,
-	canImportNotes: true,
+	canImportNotes: false,
 	canImportUserLists: true,
 	chatAvailability: 'unavailable',
 	uploadableFileTypes: [
-		'text/plain',
+		'text/*',
 		'application/json',
 		'image/*',
 		'video/*',
 		'audio/*',
 	],
 	noteDraftLimit: 10,
+	scheduledNoteLimit: 1,
+	watermarkAvailable: true,
 };
 
 @Injectable()
@@ -412,6 +419,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canSearchWithHanamiSearchV1: calc('canSearchWithHanamiSearchV1', vs => vs.some(v => v === true)),
+			canSearchUsers: calc('canSearchUsers', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
@@ -446,6 +454,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				return [...set];
 			}),
 			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
+			scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
+			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
 		};
 	}
 

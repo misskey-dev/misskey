@@ -23,3 +23,5 @@ hanamisearch:
   port: 17701
   index: 'test-hanami'
 id: aidx
+
+proxyRemoteFiles: true

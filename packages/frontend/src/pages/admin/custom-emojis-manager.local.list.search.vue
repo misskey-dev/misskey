@@ -56,20 +56,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 					<MkSelect
 						v-model="model.sensitive"
+						:items="[
+							{ label: '-', value: null },
+							{ label: 'true', value: 'true' },
+							{ label: 'false', value: 'false' },
+						]"
 					>
 						<template #label>sensitive</template>
-						<option :value="null">-</option>
-						<option :value="true">true</option>
-						<option :value="false">false</option>
 					</MkSelect>
 
 					<MkSelect
 						v-model="model.localOnly"
+						:items="[
+							{ label: '-', value: null },
+							{ label: 'true', value: 'true' },
+							{ label: 'false', value: 'false' },
+						]"
 					>
 						<template #label>localOnly</template>
-						<option :value="null">-</option>
-						<option :value="true">true</option>
-						<option :value="false">false</option>
 					</MkSelect>
 					<MkInput
 						v-model="model.updatedAtFrom"

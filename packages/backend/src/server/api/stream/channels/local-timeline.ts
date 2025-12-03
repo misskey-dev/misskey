@@ -12,6 +12,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
@@ -25,6 +26,7 @@ class LocalTimelineChannel extends Channel {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -71,14 +73,17 @@ class LocalTimelineChannel extends Channel {
 
 		const reactionMutedNote = await this.removeMutedReactions(note);
 
-		if (this.user && isRenotePacked(reactionMutedNote) && !isQuotePacked(reactionMutedNote)) {
-			if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
-				reactionMutedNote.renote.myReaction = myRenoteReaction;
+		const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(reactionMutedNote, this.user?.id ?? null);
+		if (shouldSkipByLockdown) return;
+
+		if (this.user) {
+			if (isRenotePacked(reactionMutedNote) && !isQuotePacked(reactionMutedNote)) {
+				if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
+					const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
+					reactionMutedNote.renote.myReaction = myRenoteReaction;
+				}
 			}
 		}
-
-		this.connection.cacheNote(reactionMutedNote);
 
 		this.send('note', reactionMutedNote);
 	}
@@ -100,6 +105,7 @@ export class LocalTimelineChannelService implements MiChannelService<false> {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 	) {
 	}
 
@@ -109,6 +115,7 @@ export class LocalTimelineChannelService implements MiChannelService<false> {
 			this.metaService,
 			this.roleService,
 			this.noteEntityService,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);

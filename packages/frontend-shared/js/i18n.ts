@@ -28,7 +28,8 @@ type ParametersOf<T extends ILocale, TKey extends FlattenKeys<T, ParameterizedSt
 		: never;
 
 type Tsx<T extends ILocale> = {
-	readonly [K in keyof T as T[K] extends string ? never : K]: T[K] extends ParameterizedString<infer P>
+	// `string extends T[K] ? never : K` part removes non-parameterized string keys from Tsx type.
+	readonly [K in keyof T as string extends T[K] ? never : K]: T[K] extends ParameterizedString<infer P>
 		? (arg: { readonly [_ in P]: string | number }) => string
 		// @ts-expect-error -- 証明省略
 		: Tsx<T[K]>;
@@ -39,11 +40,7 @@ export class I18n<T extends ILocale> {
 	private devMode: boolean;
 
 	constructor(public locale: T, devMode = false) {
-		// 場合によってはバージョンアップ前の翻訳データを参照した結果存在しないプロパティにアクセスしてクライアントが起動できなくなることがある問題の応急処置として非devモードでもプロキシする
-		// TODO: https://github.com/misskey-dev/misskey/issues/14453 が実装されたらそのようなことは発生し得なくなるため消す
-		const oukyuusyoti = true;
-
-		this.devMode = devMode || oukyuusyoti;
+		this.devMode = devMode;
 
 		//#region BIND
 		this.t = this.t.bind(this);

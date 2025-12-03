@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="instance" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div v-if="tab === 'overview'" class="_gaps_m">
 			<div :class="$style.faviconAndName">
-				<img :src="faviconUrl" alt="" :class="$style.icon"/>
+				<img v-if="faviconUrl" :src="faviconUrl" alt="" :class="$style.icon"/>
 				<span :class="$style.name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
 			</div>
 			<div style="display: flex; flex-direction: column; gap: 1em;">
@@ -92,18 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'chart'" class="_gaps_m">
 			<div>
 				<div :class="$style.selects">
-					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-						<option value="instance-requests">{{ i18n.ts._instanceCharts.requests }}</option>
-						<option value="instance-users">{{ i18n.ts._instanceCharts.users }}</option>
-						<option value="instance-users-total">{{ i18n.ts._instanceCharts.usersTotal }}</option>
-						<option value="instance-notes">{{ i18n.ts._instanceCharts.notes }}</option>
-						<option value="instance-notes-total">{{ i18n.ts._instanceCharts.notesTotal }}</option>
-						<option value="instance-ff">{{ i18n.ts._instanceCharts.ff }}</option>
-						<option value="instance-ff-total">{{ i18n.ts._instanceCharts.ffTotal }}</option>
-						<option value="instance-drive-usage">{{ i18n.ts._instanceCharts.cacheSize }}</option>
-						<option value="instance-drive-usage-total">{{ i18n.ts._instanceCharts.cacheSizeTotal }}</option>
-						<option value="instance-drive-files">{{ i18n.ts._instanceCharts.files }}</option>
-						<option value="instance-drive-files-total">{{ i18n.ts._instanceCharts.filesTotal }}</option>
+					<MkSelect v-model="chartSrc" :items="chartSrcDef" style="margin: 0 10px 0 0; flex: 1;">
 					</MkSelect>
 				</div>
 				<div>
@@ -115,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-else-if="tab === 'users'" class="_gaps_m">
-			<MkPagination v-slot="{ items }" :pagination="usersPagination">
+			<MkPagination v-slot="{ items }" :paginator="usersPaginator">
 				<div :class="$style.users">
 					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'unknown'}`" :to="`/admin/user/${user.id}`">
 						<MkUserCardMini :user="user"/>
@@ -132,10 +121,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ChartSrc } from '@/components/MkChart.vue';
-import type { PagingCtx } from '@/composables/use-pagination.js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -155,7 +143,9 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { dateString } from '@/filters/date.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	host: string;
@@ -163,7 +153,25 @@ const props = defineProps<{
 
 const tab = ref('overview');
 
-const chartSrc = ref<ChartSrc>('instance-requests');
+const {
+	model: chartSrc,
+	def: chartSrcDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._instanceCharts.requests, value: 'instance-requests' },
+		{ label: i18n.ts._instanceCharts.users, value: 'instance-users' },
+		{ label: i18n.ts._instanceCharts.usersTotal, value: 'instance-users-total' },
+		{ label: i18n.ts._instanceCharts.notes, value: 'instance-notes' },
+		{ label: i18n.ts._instanceCharts.notesTotal, value: 'instance-notes-total' },
+		{ label: i18n.ts._instanceCharts.ff, value: 'instance-ff' },
+		{ label: i18n.ts._instanceCharts.ffTotal, value: 'instance-ff-total' },
+		{ label: i18n.ts._instanceCharts.cacheSize, value: 'instance-drive-usage' },
+		{ label: i18n.ts._instanceCharts.cacheSizeTotal, value: 'instance-drive-usage-total' },
+		{ label: i18n.ts._instanceCharts.files, value: 'instance-drive-files' },
+		{ label: i18n.ts._instanceCharts.filesTotal, value: 'instance-drive-files-total' },
+	],
+	initialValue: 'instance-requests',
+});
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
 const instance = ref<Misskey.entities.FederationInstance | null>(null);
 const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding' | 'softwareSuspended'>('none');
@@ -173,8 +181,7 @@ const isMediaSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
 const moderationNote = ref('');
 
-const usersPagination = {
-	endpoint: iAmModerator ? 'admin/show-users' : 'users',
+const usersPaginator = iAmModerator ? markRaw(new Paginator('admin/show-users', {
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
@@ -182,7 +189,15 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-} satisfies PagingCtx<'admin/show-users' | 'users'>;
+})) : markRaw(new Paginator('users', {
+	limit: 10,
+	params: {
+		sort: '+updatedAt',
+		state: 'all',
+		hostname: props.host,
+	},
+	offsetMode: true,
+}));
 
 if (iAmModerator) {
 	watch(moderationNote, async () => {
@@ -191,7 +206,7 @@ if (iAmModerator) {
 	});
 }
 
-async function fetch(): Promise<void> {
+async function _fetch_(): Promise<void> {
 	if (iAmAdmin) {
 		meta.value = await misskeyApi('admin/meta');
 	}
@@ -269,7 +284,7 @@ function refreshMetadata(): void {
 	});
 }
 
-fetch();
+_fetch_();
 
 const headerActions = computed(() => [{
 	text: `https://${props.host}`,

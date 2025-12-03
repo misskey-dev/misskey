@@ -72,12 +72,20 @@ async function save() {
 			roleId: role.value.id,
 			...data.value,
 		});
-		router.push('/admin/roles/' + role.value.id);
+		router.push('/admin/roles/:id', {
+			params: {
+				id: role.value.id,
+			}
+		});
 	} else {
 		const created = await os.apiWithDialog('admin/roles/create', {
 			...data.value,
 		});
-		router.push('/admin/roles/' + created.id);
+		router.push('/admin/roles/:id', {
+			params: {
+				id: created.id,
+			}
+		});
 	}
 }
 

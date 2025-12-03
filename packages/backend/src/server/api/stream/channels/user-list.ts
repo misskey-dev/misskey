@@ -12,6 +12,7 @@ import { bindThis } from '@/decorators.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class UserListChannel extends Channel {
 	public readonly chName = 'userList';
@@ -27,6 +28,7 @@ class UserListChannel extends Channel {
 		private userListsRepository: UserListsRepository,
 		private userListMembershipsRepository: UserListMembershipsRepository,
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -111,14 +113,17 @@ class UserListChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
-			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-				note.renote.myReaction = myRenoteReaction;
+		const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(note, this.user?.id ?? null);
+		if (shouldSkipByLockdown) return;
+
+		if (this.user) {
+			if (isRenotePacked(note) && !isQuotePacked(note)) {
+				if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+					const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+					note.renote.myReaction = myRenoteReaction;
+				}
 			}
 		}
-
-		this.connection.cacheNote(note);
 
 		this.send('note', note);
 	}
@@ -147,6 +152,7 @@ export class UserListChannelService implements MiChannelService<false> {
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 	) {
 	}
 
@@ -156,6 +162,7 @@ export class UserListChannelService implements MiChannelService<false> {
 			this.userListsRepository,
 			this.userListMembershipsRepository,
 			this.noteEntityService,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);

@@ -8,7 +8,7 @@
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
 import {
 	createLogger,
-	EnvironmentModuleGraph,
+	type EnvironmentModuleGraph,
 	type LogErrorOptions,
 	type LogOptions,
 	normalizePath,
@@ -39,6 +39,7 @@ export interface SearchIndexItem {
 	path?: string;
 	label: string;
 	keywords: string[];
+	texts: string[];
 	icon?: string;
 	inlining?: string[];
 }
@@ -227,14 +228,14 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
 // region extractUsageInfoFromTemplateAst
 
 /**
- * SearchLabel/SearchKeyword/SearchIconを探して抽出する関数
+ * SearchLabel/SearchText/SearchIconを探して抽出する関数
  */
-function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: string | null, keywords: string[], icon: string | null } {
+function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: string | null; texts: string[]; icon: string | null; } {
 	let label: string | null | undefined = undefined;
 	let icon: string | null | undefined = undefined;
-	const keywords: string[] = [];
+	const texts: string[] = [];
 
-	logger.info(`Extracting labels and keywords from ${nodes.length} nodes`);
+	logger.info(`Extracting labels and texts from ${nodes.length} nodes`);
 
 	walkVueElements(nodes, null, (node) => {
 		switch (node.tag) {
@@ -248,10 +249,10 @@ function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: stri
 
 				label = extractElementText(node, id);
 				return;
-			case 'SearchKeyword':
+			case 'SearchText':
 				const content = extractElementText(node, id);
 				if (content) {
-					keywords.push(content);
+					texts.push(content);
 				}
 				return;
 			case 'SearchIcon':
@@ -278,8 +279,8 @@ function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: stri
 	});
 
 	// デバッグ情報
-	logger.info(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}, icon=${icon}]`);
-	return { label: label ?? null, keywords, icon: icon ?? null };
+	logger.info(`Extraction completed: label=${label}, text=[${texts.join(', ')}, icon=${icon}]`);
+	return { label: label ?? null, texts, icon: icon ?? null };
 }
 
 function getStringProp(attr: AttributeNode | DirectiveNode | null, id: string): string | null {
@@ -351,33 +352,36 @@ function extractUsageInfoFromTemplateAst(
 			parentId: parentId ?? undefined,
 			label: '', // デフォルト値
 			keywords: [],
+			texts: [],
 		};
 
 		// バインドプロパティを取得
-		const path = getStringProp(findAttribute(node.props, 'path'), id)
-		const icon = getStringProp(findAttribute(node.props, 'icon'), id)
-		const label = getStringProp(findAttribute(node.props, 'label'), id)
-		const inlining = getStringArrayProp(findAttribute(node.props, 'inlining'), id)
-		const keywords = getStringArrayProp(findAttribute(node.props, 'keywords'), id)
+		const path = getStringProp(findAttribute(node.props, 'path'), id);
+		const icon = getStringProp(findAttribute(node.props, 'icon'), id);
+		const label = getStringProp(findAttribute(node.props, 'label'), id);
+		const inlining = getStringArrayProp(findAttribute(node.props, 'inlining'), id);
+		const keywords = getStringArrayProp(findAttribute(node.props, 'keywords'), id);
+		const texts = getStringArrayProp(findAttribute(node.props, 'texts'), id);
 
 		if (path) markerInfo.path = path;
 		if (icon) markerInfo.icon = icon;
 		if (label) markerInfo.label = label;
 		if (inlining) markerInfo.inlining = inlining;
 		if (keywords) markerInfo.keywords = keywords;
+		if (texts) markerInfo.texts = texts;
 
-		//pathがない場合はファイルパスを設定
+		// pathがない場合はファイルパスを設定
 		if (markerInfo.path == null && parentId == null) {
 			markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
 		}
 
-		// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
+		// SearchLabelとSearchTextを抽出 (AST全体を探索)
 		{
 			const extracted = extractSugarTags(node.children, id);
 			if (extracted.label && markerInfo.label) logger.warn(`Duplicate label found for ${markerId} at ${id}:${node.loc.start.line}`);
 			if (extracted.icon && markerInfo.icon) logger.warn(`Duplicate icon found for ${markerId} at ${id}:${node.loc.start.line}`);
 			markerInfo.label = extracted.label ?? markerInfo.label ?? '';
-			markerInfo.keywords = [...extracted.keywords, ...markerInfo.keywords];
+			markerInfo.texts = [...extracted.texts, ...markerInfo.texts];
 			markerInfo.icon = extracted.icon ?? markerInfo.icon ?? undefined;
 		}
 

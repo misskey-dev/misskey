@@ -92,8 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host }))).map(e => `:${e.name}:`))"
-				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host }))).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name }))).map(e => `:${e.name}:`))"
+				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value) && !isMuted(makeEmojiMuteKey({ name: e.name }))).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -145,6 +145,7 @@ import { checkReactionPermissions } from '@/utility/check-reaction-permissions.j
 import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
 import { isMuted, makeEmojiMuteKey } from '@/utility/emoji-mute.js';
+import { haptic } from '@/utility/haptic.js';
 
 const router = useRouter();
 
@@ -155,7 +156,7 @@ const props = withDefaults(defineProps<{
 	asDrawer?: boolean;
 	asWindow?: boolean;
 	asReactionPicker?: boolean; // 今は使われてないが将来的に使いそう
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 }>(), {
 	showPinned: true,
 });
@@ -329,7 +330,7 @@ watch(q, async () => {
 
 			for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
-					if (keywords.every(keyword => index[emoji.char].some(k => k.includes(keyword)))) {
+					if (keywords.every(keyword => index[emoji.char]?.some(k => k.includes(keyword)))) {
 						matches.add(emoji);
 						if (matches.size >= max) break;
 					}
@@ -346,7 +347,7 @@ watch(q, async () => {
 
 			for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
-					if (index[emoji.char].some(k => k.startsWith(newQ))) {
+					if (index[emoji.char]?.some(k => k.startsWith(newQ))) {
 						matches.add(emoji);
 						if (matches.size >= max) break;
 					}
@@ -363,7 +364,7 @@ watch(q, async () => {
 
 			for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
-					if (index[emoji.char].some(k => k.includes(newQ))) {
+					if (index[emoji.char]?.some(k => k.includes(newQ))) {
 						matches.add(emoji);
 						if (matches.size >= max) break;
 					}
@@ -386,7 +387,7 @@ watch(q, async () => {
 		}
 	}
 
-	searchResultCustom.value = (await _searchCustom()).filter(e => !isMuted(makeEmojiMuteKey({ name: e.name, host: e.host })));
+	searchResultCustom.value = (await _searchCustom()).filter(e => !isMuted(makeEmojiMuteKey({ name: e.name })));
 	searchResultUnicode.value = Array.from(searchUnicode()).filter(e => !isMuted(e.char));
 });
 
@@ -446,6 +447,8 @@ function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, 
 
 	const key = getKey(emoji);
 	emit('chosen', key);
+
+	haptic();
 
 	// 最近使った絵文字更新
 	if (!pinned.value?.includes(key)) {
@@ -511,7 +514,7 @@ function done(query?: string): boolean | void {
 
 function settings() {
 	emit('esc');
-	router.push('settings/emoji-palette');
+	router.push('/settings/emoji-palette');
 }
 
 onMounted(() => {
@@ -543,46 +546,52 @@ defineExpose({
 		--eachSize: 50px;
 	}
 
+	&.s4 {
+		--eachSize: 55px;
+	}
+
+	&.s5 {
+		--eachSize: 60px;
+	}
+
 	&.w1 {
-		width: calc((var(--eachSize) * 5) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr;
+		--columns: 5;
 	}
 
 	&.w2 {
-		width: calc((var(--eachSize) * 6) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 6;
 	}
 
 	&.w3 {
-		width: calc((var(--eachSize) * 7) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 7;
 	}
 
 	&.w4 {
-		width: calc((var(--eachSize) * 8) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 8;
 	}
 
 	&.w5 {
-		width: calc((var(--eachSize) * 9) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 9;
 	}
 
 	&.h1 {
-		height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
+		--rows: 4;
 	}
 
 	&.h2 {
-		height: calc((var(--eachSize) * 6) + (#{$pad} * 2));
+		--rows: 6;
 	}
 
 	&.h3 {
-		height: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+		--rows: 8;
 	}
 
 	&.h4 {
-		height: calc((var(--eachSize) * 10) + (#{$pad} * 2));
+		--rows: 10;
 	}
+
+	width: calc((var(--eachSize) * var(--columns)) + (#{$pad} * 2));
+	height: calc((var(--eachSize) * var(--rows)) + (#{$pad} * 2));
 
 	&.asDrawer {
 		width: 100% !important;
@@ -598,8 +607,16 @@ defineExpose({
 
 				> .body {
 					display: grid;
-					grid-template-columns: var(--columns);
+					grid-template-columns: repeat(var(--columns), 1fr);
 					font-size: 30px;
+
+					> .config {
+						aspect-ratio: 1 / 1;
+						width: auto;
+						height: auto;
+						min-width: 0;
+						font-size: 14px;
+					}
 
 					> .item {
 						aspect-ratio: 1 / 1;
@@ -632,7 +649,7 @@ defineExpose({
 			::v-deep(section) {
 				> .body {
 					display: grid;
-					grid-template-columns: var(--columns);
+					grid-template-columns: repeat(var(--columns), 1fr);
 					font-size: 30px;
 
 					> .item {
@@ -700,12 +717,7 @@ defineExpose({
 		height: 100%;
 		overflow-y: auto;
 		overflow-x: hidden;
-
 		scrollbar-width: none;
-
-		&::-webkit-scrollbar {
-			display: none;
-		}
 
 		> .group {
 			&:not(.index) {

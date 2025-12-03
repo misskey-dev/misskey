@@ -95,7 +95,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (targetLang.includes('-')) targetLang = targetLang.split('-')[0];
 
 			const params = new URLSearchParams();
-			params.append('auth_key', this.serverSettings.deeplAuthKey);
 			params.append('text', note.text);
 			params.append('target_lang', targetLang);
 
@@ -104,6 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const res = await this.httpRequestService.send(endpoint, {
 				method: 'POST',
 				headers: {
+					'Authorization': `DeepL-Auth-Key ${this.serverSettings.deeplAuthKey}`,
 					'Content-Type': 'application/x-www-form-urlencoded',
 					Accept: 'application/json, */*',
 				},
