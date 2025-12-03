@@ -1049,6 +1049,13 @@ function clear() {
 	quoteId.value = null;
 	scheduleNote.value = null;
 	scheduledAt.value = null;
+	scheduledNoteDelete.value = null;
+	// やみノートモードをデフォルト設定にリセット
+	if ($i.policies?.canYamiNote) {
+		isNoteInYamiMode.value = prefer.s.rememberNoteVisibility
+			? prefer.s.isNoteInYamiMode
+			: prefer.s.defaultIsNoteInYamiMode;
+	}
 }
 
 function onKeydown(ev: KeyboardEvent) {
