@@ -120,7 +120,7 @@ class UserListChannel extends Channel {
 			if (isRenotePacked(note) && note.renote) {
 				const shouldHideRenote = await this.noteEntityService.shouldHideNote(note.renote, this.user.id);
 
-				if (isQuotePacked(note)) {
+				if (shouldHideRenote && isQuotePacked(note)) {
 					// 引用リノートの場合、リノート部分だけ隠す
 					this.noteEntityService.hideNote(note.renote);
 				} else if (shouldHideRenote) {
