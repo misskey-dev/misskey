@@ -12,6 +12,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
@@ -26,6 +27,7 @@ class HybridTimelineChannel extends Channel {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -109,10 +111,15 @@ class HybridTimelineChannel extends Channel {
 
 		const reactionMutedNote = await this.removeMutedReactions(note);
 
-		if (this.user && reactionMutedNote.renoteId && !reactionMutedNote.text) {
-			if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
-				reactionMutedNote.renote.myReaction = myRenoteReaction;
+		const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(reactionMutedNote, this.user?.id ?? null);
+		if (shouldSkipByLockdown) return;
+
+		if (this.user) {
+			if (isRenotePacked(reactionMutedNote) && !isQuotePacked(reactionMutedNote)) {
+				if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
+					const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
+					reactionMutedNote.renote.myReaction = myRenoteReaction;
+				}
 			}
 		}
 
@@ -136,6 +143,7 @@ export class HybridTimelineChannelService implements MiChannelService<true> {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 	) {
 	}
 
@@ -145,6 +153,7 @@ export class HybridTimelineChannelService implements MiChannelService<true> {
 			this.metaService,
 			this.roleService,
 			this.noteEntityService,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);

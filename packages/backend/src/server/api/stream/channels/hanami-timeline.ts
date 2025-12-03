@@ -12,6 +12,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class HanamiTimelineChannel extends Channel {
 	public readonly chName = 'hanamiTimeline';
@@ -29,6 +30,7 @@ class HanamiTimelineChannel extends Channel {
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
 		private featuredService: FeaturedService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -119,10 +121,15 @@ class HanamiTimelineChannel extends Channel {
 
 		const reactionMutedNote = await this.removeMutedReactions(note);
 
-		if (this.user && isRenotePacked(reactionMutedNote) && !isQuotePacked(reactionMutedNote)) {
-			if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
-				reactionMutedNote.renote.myReaction = myRenoteReaction;
+		const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(reactionMutedNote, this.user?.id ?? null);
+		if (shouldSkipByLockdown) return;
+
+		if (this.user) {
+			if (isRenotePacked(reactionMutedNote) && !isQuotePacked(reactionMutedNote)) {
+				if (reactionMutedNote.renote && Object.keys(reactionMutedNote.renote.reactions).length > 0) {
+					const myRenoteReaction = await this.noteEntityService.populateMyReaction(reactionMutedNote.renote, this.user.id);
+					reactionMutedNote.renote.myReaction = myRenoteReaction;
+				}
 			}
 		}
 
@@ -146,6 +153,7 @@ export class HanamiTimelineChannelService implements MiChannelService<true> {
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
 		private featuredService: FeaturedService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 	) {
 	}
 
@@ -155,6 +163,7 @@ export class HanamiTimelineChannelService implements MiChannelService<true> {
 			this.noteEntityService,
 			this.roleService,
 			this.featuredService,
+			this.noteStreamingFilterService,
 			id,
 			connection,
 		);
