@@ -12,7 +12,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
-import { NoteStreamingFilterService } from '../NoteStreamingFilterService.js';
+import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
@@ -27,7 +27,7 @@ class HybridTimelineChannel extends Channel {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private noteStreamingFilterService: NoteStreamingFilterService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -104,8 +104,8 @@ class HybridTimelineChannel extends Channel {
 			}
 		}
 
-		const filterResult = await this.noteStreamingFilterService.filterForStreaming(note, this.user?.id ?? null);
-		if (filterResult === 'skip') return;
+		const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(note, this.user?.id ?? null);
+		if (shouldSkipByLockdown) return;
 
 		if (this.user) {
 			if (isRenotePacked(note) && !isQuotePacked(note)) {
@@ -136,7 +136,7 @@ export class HybridTimelineChannelService implements MiChannelService<true> {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private noteStreamingFilterService: NoteStreamingFilterService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 	) {
 	}
 

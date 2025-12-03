@@ -11,7 +11,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
-import { NoteStreamingFilterService } from '../NoteStreamingFilterService.js';
+import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
@@ -22,7 +22,7 @@ class RoleTimelineChannel extends Channel {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
-		private noteStreamingFilterService: NoteStreamingFilterService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -51,8 +51,8 @@ class RoleTimelineChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			const filterResult = await this.noteStreamingFilterService.filterForStreaming(note, this.user?.id ?? null);
-			if (filterResult === 'skip') return;
+			const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(note, this.user?.id ?? null);
+			if (shouldSkipByLockdown) return;
 
 			if (this.user) {
 				if (isRenotePacked(note) && !isQuotePacked(note)) {
@@ -85,7 +85,7 @@ export class RoleTimelineChannelService implements MiChannelService<false> {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
-		private noteStreamingFilterService: NoteStreamingFilterService,
+		private noteStreamingFilterService: NoteStreamingLockdownService,
 	) {
 	}
 
