@@ -72,6 +72,7 @@ jobs:
 
   save-pr-number:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Save PR number
         env:
