@@ -17,7 +17,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const configDir = resolve(_dirname, '../../../.config');
-const OUTPUT_PATH = resolve(configDir, '.config.json');
+const OUTPUT_PATH = resolve(_dirname, '../built/.config.json');
 
 // TODO: yamlのパースに失敗したときのエラーハンドリング
 
@@ -35,6 +35,9 @@ function yamlToJson(ymlPath) {
 
 	const yamlContent = fs.readFileSync(ymlPath, 'utf-8');
 	const jsonContent = yaml.load(yamlContent);
+	if (!fs.existsSync(dirname(OUTPUT_PATH))) {
+		fs.mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
+	}
 	fs.writeFileSync(OUTPUT_PATH, JSON.stringify({
 		'_NOTE_': 'This file is auto-generated from YAML file. DO NOT EDIT.',
 		...jsonContent,
