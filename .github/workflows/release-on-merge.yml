@@ -35,7 +35,7 @@ jobs:
 
           # yamisskey バージョン形式チェック (yamiプリフィックス統一)
           # 形式: {misskey-version}-yami-{yamisskey-version}
-          # 例: 2025.11.1-yami-1.9.30
+          # 例: 2025.11.1-yami-1.9.29
           if [[ "$current_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-yami-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             echo "✅ Valid yamisskey version format"
             echo "is_yamisskey=true" >> $GITHUB_OUTPUT
@@ -44,7 +44,7 @@ jobs:
           else
             echo "❌ Invalid version format: $current_version"
             echo "Expected format: {misskey-version}-yami-{yamisskey-version}"
-            echo "Example: 2025.11.1-yami-1.9.30"
+            echo "Example: 2025.11.1-yami-1.9.29"
             echo "is_yamisskey=false" >> $GITHUB_OUTPUT
             echo "should_create_release=false" >> $GITHUB_OUTPUT
             exit 1
