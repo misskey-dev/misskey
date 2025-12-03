@@ -15,11 +15,11 @@
 
 yamisskey は 3ブランチで開発を進めます：
 
-| ブランチ | 環境 | バージョン形式 | 用途 |
+| ブランチ | 環境 | 用途 |
 |---------|------|---------------|------|
-| **develop** | 開発（ローカル） | `2025.1.0-muyami-1.4.3` | 新機能開発・実験的機能 |
-| **staging** | テスト（[なやみすきー](https://na.yami.ski/)） | `2025.1.0-nayami-1.4.3` | 本番前検証（push時にDockerイメージ自動ビルド） |
-| **master** | 本番（[やみすきー](https://yami.ski/)） | `2025.1.0-yami-1.4.3` | 安定運用版（リリース時にDockerイメージ自動ビルド） |
+| **develop** | 開発（ローカル）| 新機能開発・実験的機能 |
+| **staging** | テスト（[なやみすきー](https://na.yami.ski/)） | 本番前検証（push時にDockerイメージ自動ビルド） |
+| **master** | 本番（[やみすきー](https://yami.ski/) | 安定運用版（リリース時にDockerイメージ自動ビルド） |
 
 **開発の流れ**: develop → staging → master
 
@@ -98,8 +98,9 @@ git checkout staging
 git pull origin staging
 git merge develop
 
-# package.jsonのバージョン更新（develop → staging）
-# 例: 2025.1.0-muyami-1.4.3 → 2025.1.0-nayami-1.4.3
+# バージョン番号をインクリメント
+# 形式: {misskey-version}-yami-{yamisskey-version}
+# 例: 2025.11.1-yami-1.9.28 → 2025.11.1-yami-1.9.29
 
 git push origin staging  # Dockerイメージが自動ビルドされる
 ```
@@ -114,18 +115,18 @@ git checkout master
 git pull origin master
 git merge staging
 
-# package.jsonのバージョン更新（nayami → yami）
-# 例: 2025.1.0-nayami-1.4.3 → 2025.1.0-yami-1.4.3
+# バージョンはstagingと同じ
+# 形式: {misskey-version}-yami-{yamisskey-version}
 
 git push origin master
 ```
 
 **リリース手順**:
 1. `DIFFERENCE.md` の Unreleased 項目に変更点を記載
-2. `package.json` の version をインクリメント
+2. `package.json` の version を yami 形式でインクリメント（例: `2025.11.1-yami-1.9.31`）
 3. GitHub で [Release Manager Dispatch](https://github.com/yamisskey-dev/yamisskey/actions/workflows/release-with-dispatch.yml) を実行
-4. 自動生成された PR で `package.json` のバージョンを yami 形式に修正
-5. PR をマージすると GitHub Release と Docker イメージが自動生成
+4. 自動生成された PR を確認してマージ
+5. マージすると GitHub Release と Docker イメージが自動生成
 
 ## 応用的な使い方
 
@@ -217,7 +218,7 @@ git merge --abort
 
 # バックアップからの復元
 git checkout develop
-git reset --hard backup/2025.1.0-muyami-1.4.3
+git reset --hard backup/2025.11.1-yami-1.9.29
 git push --force origin develop  # 注意：慎重に実行
 
 # worktreeのクリーンアップ

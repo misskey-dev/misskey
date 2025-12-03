@@ -926,11 +926,30 @@ async function toggleReactionAcceptance() {
 //#region その他の設定メニューpopup
 function showOtherSettings() {
 	let reactionAcceptanceIcon = 'ti ti-icons';
+	let reactionAcceptanceCaption = '';
 
-	if (reactionAcceptance.value === 'likeOnly') {
-		reactionAcceptanceIcon = 'ti ti-heart _love';
-	} else if (reactionAcceptance.value === 'likeOnlyForRemote') {
-		reactionAcceptanceIcon = 'ti ti-heart-plus';
+	switch (reactionAcceptance.value) {
+		case 'likeOnly':
+			reactionAcceptanceIcon = 'ti ti-heart _love';
+			reactionAcceptanceCaption = i18n.ts.likeOnly;
+			break;
+
+		case 'likeOnlyForRemote':
+			reactionAcceptanceIcon = 'ti ti-heart-plus';
+			reactionAcceptanceCaption = i18n.ts.likeOnlyForRemote;
+			break;
+
+		case 'nonSensitiveOnly':
+			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnly;
+			break;
+
+		case 'nonSensitiveOnlyForLocalLikeOnlyForRemote':
+			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote;
+			break;
+
+		default:
+			reactionAcceptanceCaption = i18n.ts.all;
+			break;
 	}
 
 	const menuItems = [{
@@ -942,6 +961,7 @@ function showOtherSettings() {
 	}, { type: 'divider' }, {
 		icon: reactionAcceptanceIcon,
 		text: i18n.ts.reactionAcceptance,
+		caption: reactionAcceptanceCaption,
 		action: () => {
 			toggleReactionAcceptance();
 		},
@@ -1023,11 +1043,19 @@ function removeVisibleUser(user) {
 
 function clear() {
 	text.value = '';
+	cw.value = null;
 	files.value = [];
 	poll.value = null;
 	quoteId.value = null;
 	scheduleNote.value = null;
 	scheduledAt.value = null;
+	scheduledNoteDelete.value = null;
+	// やみノートモードをデフォルト設定にリセット
+	if ($i.policies?.canYamiNote) {
+		isNoteInYamiMode.value = prefer.s.rememberNoteVisibility
+			? prefer.s.isNoteInYamiMode
+			: prefer.s.defaultIsNoteInYamiMode;
+	}
 }
 
 function onKeydown(ev: KeyboardEvent) {
@@ -1575,7 +1603,7 @@ async function openAccountMenu(ev: MouseEvent) {
 				reactionAcceptance.value = draft.reactionAcceptance;
 				scheduledAt.value = draft.scheduledAt ?? null;
 				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
-				// やみノートモードの復元（muyami独自機能）
+				// やみノートモードの復元（yamisskey独自機能）
 				isNoteInYamiMode.value = draft.isNoteInYamiMode ?? false;
 
 				visibleUsers.value = [];

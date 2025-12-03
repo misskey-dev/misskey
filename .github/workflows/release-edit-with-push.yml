@@ -3,7 +3,7 @@ name: "Release Manager: sync changelog with PR"
 on:
   push:
     branches:
-      - nayami
+      - staging
     paths:
       - 'DIFFERENCE.md'
 

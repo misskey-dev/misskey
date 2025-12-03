@@ -158,6 +158,8 @@ export function applyTheme(theme: Theme, persist = true) {
 			// 様々な理由により startViewTransition は失敗することがある
 			// ref. https://github.com/misskey-dev/misskey/issues/16562
 
+			// FIXME: viewTransitonエラーはtry~catch貫通してそうな気配がする
+
 			console.error(err);
 
 			window.document.documentElement.classList.remove('_themeChanging_');
