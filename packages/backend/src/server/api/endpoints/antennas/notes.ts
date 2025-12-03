@@ -15,7 +15,6 @@ import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
-import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
@@ -158,7 +157,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notes.sort((a, b) => a.id > b.id ? -1 : 1);
 			}
 
-			const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !note.isHidden).filter(note => !isMustRemove(note, 'home'));
+			const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !note.isHidden);
 			await Promise.all(
 				packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
 			);
