@@ -4,12 +4,12 @@ name: Get backend memory usage
 on:
   pull_request:
     branches:
-      - master
       - develop
     paths:
       - packages/backend/**
       - packages/misskey-js/**
       - .github/workflows/get-backend-memory.yml
+      - .github/workflows/report-backend-memory.yml
 
 jobs:
   get-memory-usage:
