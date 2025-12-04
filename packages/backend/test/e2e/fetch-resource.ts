@@ -74,7 +74,7 @@ describe('Webリソース', () => {
 	};
 
 	const metaTag = (res: SimpleGetResponse, key: string, superkey = 'name'): string => {
-		return res.body.window.document.querySelector('meta[' + superkey + '="' + key + '"]')?.content;
+		return res.body.querySelector('meta[' + superkey + '="' + key + '"]')?.attributes.content;
 	};
 
 	beforeAll(async () => {

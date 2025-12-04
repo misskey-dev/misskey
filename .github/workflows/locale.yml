@@ -3,10 +3,12 @@ name: Lint
 on:
   push:
     paths:
+      - packages/i18n/**
       - locales/**
       - .github/workflows/locale.yml
   pull_request:
     paths:
+      - packages/i18n/**
       - locales/**
       - .github/workflows/locale.yml
 jobs:
@@ -14,15 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v4.3.0
-      with:
-        fetch-depth: 0
-        submodules: true
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4.2.0
-    - uses: actions/setup-node@v4.4.0
-      with:
-        node-version-file: '.node-version'
-        cache: 'pnpm'
-    - run: pnpm i --frozen-lockfile
-    - run: cd locales && node verify.js
+      - uses: actions/checkout@v4.3.0
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.2.0
+      - uses: actions/setup-node@v4.4.0
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm --filter i18n build
+      - name: Verify Locales
+        working-directory: ./packages/i18n
+        run: pnpm run verify
