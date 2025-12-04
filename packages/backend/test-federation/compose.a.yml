@@ -37,7 +37,7 @@ services:
       - internal_network_a
     volumes:
       - type: bind
-        source: ./.config/a.config.json
+        source: ./.config/a.test.config.json
         target: /misskey/built/._config_.json
         read_only: true
 
