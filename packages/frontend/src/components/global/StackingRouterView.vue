@@ -74,7 +74,9 @@ function mount() {
 }
 
 function back() {
-	const prev = tabs.value[tabs.value.length - 2];
+	const prev = tabs.value.at(tabs.value.length - 2);
+	if (prev == null) return; // transitionの関係でprevが無い状態でbackが呼ばれることがある
+
 	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
 	router?.replaceByPath(prev.fullPath);
 }
