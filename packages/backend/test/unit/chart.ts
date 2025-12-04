@@ -29,7 +29,7 @@ describe('Chart', () => {
 	let redisClient = {
 		set: () => Promise.resolve('OK'),
 		get: () => Promise.resolve(null),
-	} as unknown as jest.Mocked<Redis.Redis>;
+	} as unknown as Mocked<Redis.Redis>;
 
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
