@@ -8,11 +8,10 @@ process.env.NODE_ENV = 'test';
 import { setTimeout } from 'node:timers/promises';
 import { describe, beforeEach, afterEach, test, expect, vi } from 'vitest';
 import type { Mocked } from 'vitest';
-import { ModuleMocker } from 'jest-mock';
+import { mockDeep } from 'vitest-mock-extended';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockMetadata } from 'jest-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import {
@@ -34,8 +33,6 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-
-const moduleMocker = new ModuleMocker(global);
 
 describe('RoleService', () => {
 	let app: TestingModule;
@@ -138,9 +135,7 @@ describe('RoleService', () => {
 					return { fetch: vi.fn() };
 				}
 				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
+					return mockDeep<typeof token>();
 				}
 			})
 			.compile();

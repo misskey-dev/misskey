@@ -222,15 +222,14 @@
 		"eslint-plugin-import": "2.32.0",
 		"execa": "9.6.0",
 		"fkill": "10.0.1",
-		"jest-mock": "29.7.0",
-		"jest-util": "29.7.0",
 		"js-yaml": "4.1.1",
 		"nodemon": "3.1.11",
 		"pid-port": "2.0.0",
 		"simple-oauth2": "5.1.0",
 		"supertest": "7.1.4",
 		"unplugin-swc": "1.5.8",
+		"vite": "7.2.4",
 		"vitest": "4.0.13",
-		"vite": "7.2.4"
+		"vitest-mock-extended": "3.1.0"
 	}
 }

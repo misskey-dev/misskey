@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import { describe, expect, beforeEach, afterEach, test, vi } from 'vitest';
 import type { Mocked } from 'vitest';
-import { ModuleMocker } from 'jest-mock';
+import { mockDeep } from 'vitest-mock-extended';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
@@ -27,9 +27,6 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
 
 describe('AnnouncementService', () => {
 	let app: TestingModule;
@@ -85,9 +82,7 @@ describe('AnnouncementService', () => {
 						log: vi.fn(),
 					};
 				} else if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
+					return mockDeep<typeof token>();
 				}
 			})
 			.compile();
