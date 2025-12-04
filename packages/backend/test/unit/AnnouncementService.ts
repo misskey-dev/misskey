@@ -199,7 +199,7 @@ describe('AnnouncementService', () => {
 		});
 	});
 
-	describe('read', () => {
+	describe.todo('read', () => {
 		// TODO
 	});
 });

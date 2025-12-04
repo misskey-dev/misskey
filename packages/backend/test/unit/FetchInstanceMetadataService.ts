@@ -70,6 +70,8 @@ describe('FetchInstanceMetadataService', () => {
 
 	afterEach(async () => {
 		await app.close();
+		vi.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test('Lock and update', async () => {
