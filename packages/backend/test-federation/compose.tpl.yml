@@ -23,6 +23,10 @@ services:
         target: /misskey/built
         read_only: false
       - type: bind
+        source: ./.config/dummy.yml
+        target: /misskey/.config/default.yml
+        read_only: true
+      - type: bind
         source: ../assets
         target: /misskey/packages/backend/assets
         read_only: true
