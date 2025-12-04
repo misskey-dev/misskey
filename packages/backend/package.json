@@ -26,10 +26,10 @@
 		"eslint": "eslint --quiet \"{src,test-federation}/**/*.ts\"",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"test": "pnpm convert:config && vitest --config vitest.config.unit.ts",
-		"test:e2e": "pnpm convert:config && vitest --config vitest.config.e2e.ts",
+		"test:e2e": "pnpm build && pnpm build:test && pnpm convert:config && vitest --config vitest.config.e2e.ts",
 		"test:fed": "pnpm convert:config && vitest --config vitest.config.fed.ts",
 		"test-and-coverage": "pnpm convert:config && vitest --coverage --config vitest.config.unit.ts",
-		"test-and-coverage:e2e": "pnpm convert:config && vitest --coverage --config vitest.config.e2e.ts",
+		"test-and-coverage:e2e": "pnpm build && pnpm build:test && pnpm convert:config && vitest --coverage --config vitest.config.e2e.ts",
 		"check-migrations": "node scripts/check_migrations_clean.js",
 		"generate-api-json": "pnpm convert:config && node ./scripts/generate_api_json.js"
 	},
