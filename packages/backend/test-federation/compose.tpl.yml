@@ -21,7 +21,7 @@ services:
       - type: bind
         source: ../../../built
         target: /misskey/built
-        read_only: true
+        read_only: false
       - type: bind
         source: ../assets
         target: /misskey/packages/backend/assets
