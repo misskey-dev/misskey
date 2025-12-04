@@ -7,6 +7,7 @@ db:
   user: postgres
   pass: postgres
 dbReplications: false
+trustProxy: true
 redis:
   host: redis.test
   port: 6379
