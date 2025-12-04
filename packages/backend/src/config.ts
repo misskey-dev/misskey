@@ -217,7 +217,7 @@ export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-export const compiledConfigFilePath = resolve(_dirname, '.config.json');
+export const compiledConfigFilePath = resolve(_dirname, '../../../built/.config.json');
 
 export function loadConfig(): Config {
 	if (!fs.existsSync(compiledConfigFilePath)) {
