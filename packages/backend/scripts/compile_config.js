@@ -17,7 +17,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const configDir = resolve(_dirname, '../../../.config');
-const OUTPUT_PATH = resolve(_dirname, '../../../.config/.config.json');
+const OUTPUT_PATH = resolve(_dirname, '../../../built/.config.json');
 
 // TODO: yamlのパースに失敗したときのエラーハンドリング
 
@@ -27,8 +27,8 @@ const OUTPUT_PATH = resolve(_dirname, '../../../.config/.config.json');
  */
 function yamlToJson(ymlPath) {
 	if (!fs.existsSync(ymlPath)) {
-		console.log(`YAML file not found: ${ymlPath}`);
-		return;
+		console.error(`YAML file not found: ${ymlPath}`);
+		process.exit(1);
 	}
 
 	console.log(`${ymlPath} → ${OUTPUT_PATH}`);

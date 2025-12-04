@@ -38,7 +38,7 @@ services:
     volumes:
       - type: bind
         source: ./.config/b.test.config.json
-        target: /misskey/.config/._config_.json
+        target: /misskey/built/._config_.json
         read_only: true
 
   db.b.test:
