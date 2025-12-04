@@ -28,7 +28,7 @@ const OUTPUT_PATH = resolve(_dirname, '../../../built/.config.json');
 function yamlToJson(ymlPath) {
 	if (!fs.existsSync(ymlPath)) {
 		console.warn(`YAML file not found: ${ymlPath}`);
-		process.exit(1);
+		return;
 	}
 
 	console.log(`${ymlPath} → ${OUTPUT_PATH}`);
