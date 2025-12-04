@@ -10,4 +10,3 @@ beforeAll(async () => {
 	await initTestDb(false);
 	await sendEnvResetRequest();
 });
-

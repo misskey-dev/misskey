@@ -7,7 +7,7 @@ export default mergeConfig(
 		test: {
 			include: ['test/e2e/**/*.ts'],
 			globalSetup: './built-test/entry.js',
-			setupFiles: ['./test/setup.ts'],
+			setupFiles: ['./test/setup.e2e.ts'],
 		},
 	}),
 );

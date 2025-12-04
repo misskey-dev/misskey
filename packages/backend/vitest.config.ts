@@ -14,6 +14,12 @@ export const baseConfig = defineConfig({
 			include: ['src/**/*.ts'],
 			exclude: ['src/**/*.test.ts'],
 		},
+		restoreMocks: true,
+		testTimeout: 60000,
+		maxWorkers: 1,
+		logHeapUsage: true,
+		vmMemoryLimit: 1024,
+		maxConcurrency: 32,
 	},
 	resolve: {
 		alias: {

@@ -5,6 +5,7 @@ export default mergeConfig(
 	baseConfig,
 	defineConfig({
 		test: {
+			globalSetup: './test/setup.unit.ts',
 			include: ['test/unit/**/*.ts', 'src/**/*.test.ts'],
 		},
 	}),
