@@ -51,8 +51,8 @@ services:
         target: /misskey/packages/backend/vitest.config.fed.ts
         read_only: true
       - type: bind
-        source: ../scripts/convert_config.js
-        target: /misskey/packages/backend/scripts/convert_config.js
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
         read_only: true
       - type: bind
         source: ../../misskey-js/built
