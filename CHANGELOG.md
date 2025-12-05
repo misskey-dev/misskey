@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Fix: stacking router viewで連続して戻る操作を行うと何も表示されなくなる問題を修正
 
 ### Server
 - Enhance: メモリ使用量を削減しました
