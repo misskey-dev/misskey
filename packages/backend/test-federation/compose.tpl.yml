@@ -21,6 +21,10 @@ services:
       - type: bind
         source: ../../../built
         target: /misskey/built
+        read_only: false
+      - type: bind
+        source: ./.config/dummy.yml
+        target: /misskey/.config/default.yml
         read_only: true
       - type: bind
         source: ../assets
@@ -43,8 +47,8 @@ services:
         target: /misskey/packages/backend/package.json
         read_only: true
       - type: bind
-        source: ../scripts/convert_config.js
-        target: /misskey/packages/backend/scripts/convert_config.js
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
         read_only: true
       - type: bind
         source: ../../misskey-js/built

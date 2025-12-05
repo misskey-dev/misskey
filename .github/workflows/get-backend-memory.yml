@@ -57,7 +57,7 @@ jobs:
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config/default.yml
     - name: Compile Configure
-      run: pnpm convert:config
+      run: pnpm compile-config
     - name: Build
       run: pnpm build
     - name: Run migrations
