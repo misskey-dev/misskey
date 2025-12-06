@@ -1,4 +1,4 @@
-#Do not forget to add the remote upstream
+# Do not forget to add the remote upstream
 ```bash
 git remote add upstream git@github.com:misskey-dev/misskey.git
 ```
