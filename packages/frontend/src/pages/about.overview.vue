@@ -27,6 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
 			</div>
+			<FormLink to="https://donate.neondystopia.world/" external>
+				<template #icon><i class="ti ti-heart" style="color: #289404;"></i></template>
+				Donate to support NeonDystopia
+				<template #suffix>Donations</template>
+			</FormLink>
 			<FormLink to="/about-misskey">
 				<template #icon><i class="ti ti-info-circle"></i></template>
 				{{ i18n.ts.aboutMisskey }}
