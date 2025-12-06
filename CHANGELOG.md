@@ -4,6 +4,7 @@
 -
 
 ### Client
+- Enhance: 画面幅が広いときにメディアを横並びで表示できるようにするオプションを追加
 - Fix: stacking router viewで連続して戻る操作を行うと何も表示されなくなる問題を修正
 
 ### Server
