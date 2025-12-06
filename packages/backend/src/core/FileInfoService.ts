@@ -5,23 +5,18 @@
 
 import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
-import { join } from 'node:path';
 import * as stream from 'node:stream/promises';
 import { Injectable } from '@nestjs/common';
-import { FSWatcher } from 'chokidar';
 import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import * as blurhash from 'blurhash';
-import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
-import type { PredictionType } from 'nsfwjs';
 
 export type FileInfo = {
 	size: number;
@@ -67,8 +62,6 @@ export class FileInfoService {
 	public async getFileInfo(path: string, opts: {
 		fileName?: string | null;
 		skipSensitiveDetection: boolean;
-		sensitiveThreshold?: number;
-		sensitiveThresholdForPorn?: number;
 		enableSensitiveMediaDetectionForVideos?: boolean;
 	}): Promise<FileInfo> {
 		const warnings = [] as string[];
@@ -159,15 +152,20 @@ export class FileInfoService {
 		let sensitive = false;
 		let porn = false;
 
-		if (!opts.skipSensitiveDetection) {
-			await this.detectSensitivity(
+		if (
+			!opts.skipSensitiveDetection && (
+				((type.mime === 'image/apng' || type.mime.startsWith('video/')) && opts.enableSensitiveMediaDetectionForVideos) ||
+				(type.mime.startsWith('image/') && type.mime !== 'image/apng')
+			)
+		) {
+			await this.aiService.detectSensitivity(
 				path,
 				type.mime,
-				opts.sensitiveThreshold ?? 0.5,
-				opts.sensitiveThresholdForPorn ?? 0.75,
-				opts.enableSensitiveMediaDetectionForVideos ?? false,
 			).then(value => {
-				[sensitive, porn] = value;
+				if (value != null) {
+					sensitive = value.sensitive;
+					porn = value.porn;
+				}
 			}, error => {
 				warnings.push(`detectSensitivity failed: ${error}`);
 			});
@@ -185,157 +183,6 @@ export class FileInfoService {
 			porn,
 			warnings,
 		};
-	}
-
-	@bindThis
-	private async detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
-		let sensitive = false;
-		let porn = false;
-
-		function judgePrediction(result: readonly PredictionType[]): [sensitive: boolean, porn: boolean] {
-			let sensitive = false;
-			let porn = false;
-
-			if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
-			if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
-			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
-
-			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThresholdForPorn) porn = true;
-
-			return [sensitive, porn];
-		}
-
-		if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
-			const [outDir, disposeOutDir] = await createTempDir();
-			try {
-				const command = FFmpeg()
-					.input(source)
-					.inputOptions([
-						'-skip_frame', 'nokey', // 可能ならキーフレームのみを取得してほしいとする（そうなるとは限らない）
-						'-lowres', '3', // 元の画質でデコードする必要はないので 1/8 画質でデコードしてもよいとする（そうなるとは限らない）
-					])
-					.noAudio()
-					.videoFilters([
-						{
-							filter: 'select', // フレームのフィルタリング
-							options: {
-								e: 'eq(pict_type,PICT_TYPE_I)', // I-Frame のみをフィルタする（VP9 とかはデコードしてみないとわからないっぽい）
-							},
-						},
-						{
-							filter: 'blackframe', // 暗いフレームの検出
-							options: {
-								amount: '0', // 暗さに関わらず全てのフレームで測定値を取る
-							},
-						},
-						{
-							filter: 'metadata',
-							options: {
-								mode: 'select', // フレーム選択モード
-								key: 'lavfi.blackframe.pblack', // フレームにおける暗部の百分率（前のフィルタからのメタデータを参照する）
-								value: '50',
-								function: 'less', // 50% 未満のフレームを選択する（50% 以上暗部があるフレームだと誤検知を招くかもしれないので）
-							},
-						},
-						{
-							filter: 'scale',
-							options: {
-								w: 299,
-								h: 299,
-							},
-						},
-					])
-					.format('image2')
-					.output(join(outDir, '%d.png'))
-					.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
-				const results: ReturnType<typeof judgePrediction>[] = [];
-				let frameIndex = 0;
-				let targetIndex = 0;
-				let nextIndex = 1;
-				for await (const path of this.asyncIterateFrames(outDir, command)) {
-					try {
-						const index = frameIndex++;
-						if (index !== targetIndex) {
-							continue;
-						}
-						targetIndex = nextIndex;
-						nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
-						const result = await this.aiService.detectSensitive(path);
-						if (result) {
-							results.push(judgePrediction(result));
-						}
-					} finally {
-						fs.promises.unlink(path);
-					}
-				}
-				sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
-				porn = results.filter(x => x[1]).length >= Math.ceil(results.length * sensitiveThresholdForPorn);
-			} finally {
-				disposeOutDir();
-			}
-		} else if (isMimeImage(mime, 'sharp-convertible-image-with-bmp')) {
-			/*
-			 * tfjs-node は限られた画像形式しか受け付けないため、sharp で PNG に変換する
-			 * せっかくなので内部処理で使われる最大サイズの299x299に事前にリサイズする
-			 */
-			const png = await (await sharpBmp(source, mime))
-				.resize(299, 299, {
-					withoutEnlargement: false,
-				})
-				.rotate()
-				.flatten({ background: { r: 119, g: 119, b: 119 } }) // 透過部分を18%グレーで塗りつぶす
-				.png()
-				.toBuffer();
-			const result = await this.aiService.detectSensitive(png);
-			if (result) {
-				[sensitive, porn] = judgePrediction(result);
-			}
-		}
-
-		return [sensitive, porn];
-	}
-
-	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
-		const watcher = new FSWatcher({
-			cwd,
-		});
-		let finished = false;
-		command.once('end', () => {
-			finished = true;
-			watcher.close();
-		});
-		command.run();
-		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-			const current = `${i}.png`;
-			const next = `${i + 1}.png`;
-			const framePath = join(cwd, current);
-			if (await this.exists(join(cwd, next))) {
-				yield framePath;
-			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-				watcher.add(next);
-				await new Promise<void>((resolve, reject) => {
-					watcher.on('add', function onAdd(path) {
-						if (path === next) { // 次フレームの書き出しが始まっているなら、現在フレームの書き出しは終わっている
-							watcher.unwatch(current);
-							watcher.off('add', onAdd);
-							resolve();
-						}
-					});
-					command.once('end', resolve); // 全てのフレームを処理し終わったなら、最終フレームである現在フレームの書き出しは終わっている
-					command.once('error', reject);
-				});
-				yield framePath;
-			} else if (await this.exists(framePath)) {
-				yield framePath;
-			} else {
-				return;
-			}
-		}
-	}
-
-	@bindThis
-	private exists(path: string): Promise<boolean> {
-		return fs.promises.access(path).then(() => true, () => false);
 	}
 
 	@bindThis

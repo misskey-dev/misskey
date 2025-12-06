@@ -25,39 +25,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<div><SearchText>{{ i18n.ts._sensitiveMediaDetection.description }}</SearchText></div>
 
-							<MkRadios v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection">
-								<option value="none">{{ i18n.ts.none }}</option>
-								<option value="all">{{ i18n.ts.all }}</option>
-								<option value="local">{{ i18n.ts.localOnly }}</option>
-								<option value="remote">{{ i18n.ts.remoteOnly }}</option>
-							</MkRadios>
+							<MkInfo v-if="!meta.sensitiveMediaDetectionAvailable" warn>
+								{{ i18n.ts.sensitiveMediaDetectionNotAvailable }}
+							</MkInfo>
 
-							<SearchMarker :keywords="['sensitivity']">
-								<MkRange v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :textConverter="(v) => `${v + 1}`">
-									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</SearchLabel></template>
-									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</SearchText></template>
-								</MkRange>
-							</SearchMarker>
+							<MkDisableSection :disabled="!meta.sensitiveMediaDetectionAvailable">
+								<div class="_gaps_m">
+									<MkRadios v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection">
+										<option value="none">{{ i18n.ts.none }}</option>
+										<option value="all">{{ i18n.ts.all }}</option>
+										<option value="local">{{ i18n.ts.localOnly }}</option>
+										<option value="remote">{{ i18n.ts.remoteOnly }}</option>
+									</MkRadios>
 
-							<SearchMarker :keywords="['video', 'analyze']">
-								<MkSwitch v-model="sensitiveMediaDetectionForm.state.enableSensitiveMediaDetectionForVideos">
-									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
-									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</SearchText></template>
-								</MkSwitch>
-							</SearchMarker>
+									<SearchMarker :keywords="['video', 'analyze']">
+										<MkSwitch v-model="sensitiveMediaDetectionForm.state.enableSensitiveMediaDetectionForVideos">
+											<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+											<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</SearchText></template>
+										</MkSwitch>
+									</SearchMarker>
 
-							<SearchMarker :keywords="['flag', 'automatically']">
-								<MkSwitch v-model="sensitiveMediaDetectionForm.state.setSensitiveFlagAutomatically">
-									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</SearchLabel> ({{ i18n.ts.notRecommended }})</template>
-									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</SearchText></template>
-								</MkSwitch>
-							</SearchMarker>
-
-							<!-- 現状 false positive が多すぎて実用に耐えない
-					<MkSwitch v-model="disallowUploadWhenPredictedAsPorn">
-						<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
-					</MkSwitch>
-					-->
+									<SearchMarker :keywords="['flag', 'automatically']">
+										<MkSwitch v-model="sensitiveMediaDetectionForm.state.setSensitiveFlagAutomatically">
+											<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</SearchLabel> ({{ i18n.ts.notRecommended }})</template>
+											<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</SearchText></template>
+										</MkSwitch>
+									</SearchMarker>
+								</div>
+							</MkDisableSection>
 						</div>
 					</MkFolder>
 				</SearchMarker>
@@ -158,14 +153,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import XBotProtection from './bot-protection.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkDisableSection from '@/components/MkDisableSection.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
@@ -178,23 +174,11 @@ const meta = await misskeyApi('admin/meta');
 
 const sensitiveMediaDetectionForm = useForm({
 	sensitiveMediaDetection: meta.sensitiveMediaDetection,
-	sensitiveMediaDetectionSensitivity: meta.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0 :
-	meta.sensitiveMediaDetectionSensitivity === 'low' ? 1 :
-	meta.sensitiveMediaDetectionSensitivity === 'medium' ? 2 :
-	meta.sensitiveMediaDetectionSensitivity === 'high' ? 3 :
-	meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 4 : 0,
 	setSensitiveFlagAutomatically: meta.setSensitiveFlagAutomatically,
 	enableSensitiveMediaDetectionForVideos: meta.enableSensitiveMediaDetectionForVideos,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		sensitiveMediaDetection: state.sensitiveMediaDetection,
-		sensitiveMediaDetectionSensitivity:
-			state.sensitiveMediaDetectionSensitivity === 0 ? 'veryLow' :
-			state.sensitiveMediaDetectionSensitivity === 1 ? 'low' :
-			state.sensitiveMediaDetectionSensitivity === 2 ? 'medium' :
-			state.sensitiveMediaDetectionSensitivity === 3 ? 'high' :
-			state.sensitiveMediaDetectionSensitivity === 4 ? 'veryHigh' :
-			null as never,
 		setSensitiveFlagAutomatically: state.setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos: state.enableSensitiveMediaDetectionForVideos,
 	});

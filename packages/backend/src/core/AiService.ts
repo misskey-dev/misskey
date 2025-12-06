@@ -4,87 +4,99 @@
  */
 
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import { Injectable } from '@nestjs/common';
-import si from 'systeminformation';
-import { Mutex } from 'async-mutex';
-import fetch from 'node-fetch';
+import * as http from 'node:http';
+import * as https from 'node:https';
+import FormData from 'form-data';
+import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import type { NSFWJS, PredictionType } from 'nsfwjs';
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
-
-const REQUIRED_CPU_FLAGS_X64 = ['avx2', 'fma'];
-let isSupportedCpu: undefined | boolean = undefined;
+type SensitivityDetectionResult = {
+	sensitive: boolean;
+	porn: boolean;
+};
 
 @Injectable()
 export class AiService {
-	private model: NSFWJS;
-	private modelLoadMutex: Mutex = new Mutex();
-
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
+		private httpRequestService: HttpRequestService,
 	) {
 	}
 
 	@bindThis
-	public async detectSensitive(source: string | Buffer): Promise<PredictionType[] | null> {
-		try {
-			if (isSupportedCpu === undefined) {
-				isSupportedCpu = await this.computeIsSupportedCpu();
-			}
-
-			if (!isSupportedCpu) {
-				console.error('This CPU cannot use TensorFlow.');
-				return null;
-			}
-
-			const tf = await import('@tensorflow/tfjs-node');
-			tf.env().global.fetch = fetch;
-
-			if (this.model == null) {
-				const nsfw = await import('nsfwjs');
-				await this.modelLoadMutex.runExclusive(async () => {
-					if (this.model == null) {
-						this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
-					}
-				});
-			}
-
-			const buffer = source instanceof Buffer ? source : await fs.promises.readFile(source);
-			const image = await tf.node.decodeImage(buffer, 3) as any;
-			try {
-				const predictions = await this.model.classify(image);
-				return predictions;
-			} finally {
-				image.dispose();
-			}
-		} catch (err) {
-			console.error(err);
+	public async detectSensitivity(source: string | Buffer, fileType: string): Promise<null | SensitivityDetectionResult> {
+		if (this.config.mediaSensitivityDetectorUrl == null) {
 			return null;
 		}
-	}
 
-	private async computeIsSupportedCpu(): Promise<boolean> {
-		switch (process.arch) {
-			case 'x64': {
-				const cpuFlags = await this.getCpuFlags();
-				return REQUIRED_CPU_FLAGS_X64.every(required => cpuFlags.includes(required));
-			}
-			case 'arm64': {
-				// As far as I know, no required CPU flags for ARM64.
-				return true;
-			}
-			default: {
-				return false;
-			}
-		}
-	}
+		const buffer = source instanceof Buffer ? source : fs.createReadStream(source);
+		const formData = new FormData();
+		formData.append('apiKey', this.config.mediaSensitivityDetectorApiKey ?? '');
+		formData.append('file', buffer, {
+			contentType: fileType,
+		});
 
-	@bindThis
-	private async getCpuFlags(): Promise<string[]> {
-		const str = await si.cpuFlags();
-		return str.split(/\s+/);
+		const url = new URL('/v1/detect', this.config.mediaSensitivityDetectorUrl);
+		const agent = this.httpRequestService.getAgentByUrl(url, undefined, true);
+		const hModule = url.protocol === 'http:' ? http : https;
+
+		return new Promise<null | SensitivityDetectionResult>((resolve, reject) => {
+			let responseReceived = false;
+
+			const req = hModule.request({
+				method: 'POST',
+				agent,
+				headers: {
+					'user-agent': this.config.userAgent,
+					...formData.getHeaders(),
+				},
+				host: url.hostname,
+				port: url.port,
+			}, (res) => {
+				responseReceived = true;
+				const chunks: Buffer[] = [];
+
+				res.on('data', (chunk) => {
+					chunks.push(chunk);
+				});
+
+				res.on('end', () => {
+					const body = Buffer.concat(chunks).toString('utf-8');
+					if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+						try {
+							const data = JSON.parse(body);
+							if (typeof data.sensitive === 'boolean' && typeof data.porn === 'boolean') {
+								resolve({
+									sensitive: data.sensitive,
+									porn: data.porn,
+								});
+							} else {
+								resolve(null);
+							}
+						} catch {
+							resolve(null);
+						}
+					}
+				});
+			}).on('error', (err) => {
+				if (err instanceof Error) {
+					// ECONNRESET and EPIPE are resulted from early return
+					if ((err.message.includes('ECONNRESET') || err.message.includes('EPIPE')) && !responseReceived) {
+						return;
+					}
+
+					if (!responseReceived) {
+						reject(err);
+					}
+				}
+			});
+
+			formData.pipe(req);
+		});
 	}
 }

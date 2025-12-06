@@ -19,8 +19,6 @@
 	ignoreDeps: [
 		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
 		'@typescript/lib-webworker',
-		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
-		'nsfwjs',
     // https://github.com/misskey-dev/misskey/issues/15920
     'sharp',
 		'@misskey-dev/sharp-read-bmp',

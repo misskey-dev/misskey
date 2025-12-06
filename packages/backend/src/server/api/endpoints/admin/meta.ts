@@ -220,15 +220,14 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			sensitiveMediaDetectionAvailable: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			sensitiveMediaDetection: {
 				type: 'string',
 				optional: false, nullable: false,
 				enum: ['none', 'all', 'local', 'remote'],
-			},
-			sensitiveMediaDetectionSensitivity: {
-				type: 'string',
-				optional: false, nullable: false,
-				enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
 			},
 			setSensitiveFlagAutomatically: {
 				type: 'boolean',
@@ -683,8 +682,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				mcaptchaSecretKey: instance.mcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,
+				sensitiveMediaDetectionAvailable: this.config.mediaSensitivityDetectorUrl != null,
 				sensitiveMediaDetection: instance.sensitiveMediaDetection,
-				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
 				enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 				proxyAccountId: proxy.id,
