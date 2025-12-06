@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<div :class="$style.divider"></div>
 			<DonateButton v-tooltip.noDelay.right="'Donate to support NeonDystopia'" :class="$style.item" :activeClass="$style.active" to="https://donate.neondystopia.world/">
-				<i :class="$style.itemIcon" class="ti ti-heart ti-fw" style="viewTransitionName: navbar-settings; color: #289404;"></i><span :class="$style.itemText">Donate</span>
+				<i :class="$style.itemIcon" class="ti ti-heart ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">Donate</span>
 			</DonateButton>
 			<MkA v-if="$i != null && ($i.isAdmin || $i.isModerator)" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item" :activeClass="$style.active" to="/admin">
 				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw" style="viewTransitionName: navbar-controlPanel;"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
