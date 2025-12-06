@@ -1,0 +1,122 @@
+name: Report backend memory
+
+on:
+  workflow_run:
+    types: [completed]
+    workflows:
+      - Get backend memory usage # get-backend-memory.yml
+
+jobs:
+  compare-memory:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/github-script@v7.1.0
+        with:
+          script: |
+            const fs = require('fs');
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("memory-artifact-") || artifact.name == "memory-artifact"
+            });
+            await Promise.all(matchArtifacts.map(async (artifact) => {
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+            }));
+      - name: Extract all artifacts
+        run: |
+          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d artifacts ';'
+          ls -la artifacts/
+      - name: Load PR Number
+        id: load-pr-num
+        run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
+
+      - name: Output base
+        run: cat ./artifacts/memory-base.json
+      - name: Output head
+        run: cat ./artifacts/memory-head.json
+      - name: Compare memory usage
+        id: compare
+        run: |
+          BASE_MEMORY=$(cat ./artifacts/memory-base.json)
+          HEAD_MEMORY=$(cat ./artifacts/memory-head.json)
+
+          BASE_RSS=$(echo "$BASE_MEMORY" | jq -r '.memory.rss // 0')
+          HEAD_RSS=$(echo "$HEAD_MEMORY" | jq -r '.memory.rss // 0')
+
+          # Calculate difference
+          if [ "$BASE_RSS" -gt 0 ] && [ "$HEAD_RSS" -gt 0 ]; then
+            DIFF=$((HEAD_RSS - BASE_RSS))
+            DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE_RSS" | bc)
+
+            # Convert to MB for readability
+            BASE_MB=$(echo "scale=2; $BASE_RSS / 1048576" | bc)
+            HEAD_MB=$(echo "scale=2; $HEAD_RSS / 1048576" | bc)
+            DIFF_MB=$(echo "scale=2; $DIFF / 1048576" | bc)
+
+            echo "base_mb=$BASE_MB" >> "$GITHUB_OUTPUT"
+            echo "head_mb=$HEAD_MB" >> "$GITHUB_OUTPUT"
+            echo "diff_mb=$DIFF_MB" >> "$GITHUB_OUTPUT"
+            echo "diff_percent=$DIFF_PERCENT" >> "$GITHUB_OUTPUT"
+            echo "has_data=true" >> "$GITHUB_OUTPUT"
+
+            # Determine if this is a significant change (more than 5% increase)
+            if [ "$(echo "$DIFF_PERCENT > 5" | bc)" -eq 1 ]; then
+              echo "significant_increase=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "significant_increase=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "has_data=false" >> "$GITHUB_OUTPUT"
+          fi
+      - id: build-comment
+        name: Build memory comment
+        run: |
+          HEADER="## Backend Memory Usage Comparison"
+          FOOTER="[See workflow logs for details](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+
+          echo "$HEADER" > ./output.md
+          echo >> ./output.md
+
+          if [ "${{ steps.compare.outputs.has_data }}" == "true" ]; then
+            echo "| Metric | base | head | Diff |" >> ./output.md
+            echo "|--------|------|------|------|" >> ./output.md
+            echo "| RSS | ${{ steps.compare.outputs.base_mb }} MB | ${{ steps.compare.outputs.head_mb }} MB | ${{ steps.compare.outputs.diff_mb }} MB (${{ steps.compare.outputs.diff_percent }}%) |" >> ./output.md
+            echo >> ./output.md
+
+            if [ "${{ steps.compare.outputs.significant_increase }}" == "true" ]; then
+              echo "⚠️ **Warning**: Memory usage has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
+              echo >> ./output.md
+            fi
+          else
+            echo "Could not retrieve memory usage data." >> ./output.md
+            echo >> ./output.md
+          fi
+
+          echo "$FOOTER" >> ./output.md
+      - uses: thollander/actions-comment-pull-request@v2
+        with:
+          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment_tag: show_memory_diff
+          filePath: ./output.md
+      - name: Tell error to PR
+        uses: thollander/actions-comment-pull-request@v2
+        if: failure() && steps.load-pr-num.outputs.pr-number
+        with:
+          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment_tag: show_memory_diff_error
+          message: |
+            An error occurred while comparing backend memory usage. See [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
