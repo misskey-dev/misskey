@@ -708,7 +708,7 @@ onDeactivated(() => {
 	.controlButton {
 		padding: 6px;
 		border-radius: calc(var(--MI-radius) / 2);
-		transition: background-color .2s ease-in-out;
+		transition: background-color .15s ease;
 		font-size: 1.05rem;
 
 		&:hover {
@@ -761,6 +761,23 @@ onDeactivated(() => {
 			display: block;
 			flex-grow: 1;
 		}
+	}
+}
+
+@container (max-width: 300px) {
+	.videoControls {
+		grid-template-areas:
+			"left . right"
+			"seekbar seekbar seekbar";
+		grid-template-columns: auto 1fr auto;
+	}
+
+	.controlsTime {
+		display: none;
+	}
+
+	.controlsVolume {
+		display: none;
 	}
 }
 </style>
