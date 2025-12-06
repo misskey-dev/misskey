@@ -111,10 +111,5 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
-    - run: pnpm --filter misskey-js run build
-      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'frontend' || matrix.workspace == 'sw' }}
-    - run: pnpm --filter misskey-reversi run build
-      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'frontend' }}
-    - run: pnpm --filter misskey-bubble-game run build
-      if: ${{ matrix.workspace == 'frontend' }}
+    - run: pnpm --filter "${{ matrix.workspace }}^..." run build
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck

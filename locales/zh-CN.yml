@@ -877,7 +877,7 @@ noInquiryUrlWarning: "尚未设置联络地址。"
 noBotProtectionWarning: "尚未设置 Bot 防御。"
 configure: "设置"
 postToGallery: "创建新图集"
-postToHashtag: "投稿到这个标签"
+postToHashtag: "发布至该话题"
 gallery: "图集"
 recentPosts: "最新发布"
 popularPosts: "热门投稿"
@@ -3146,7 +3146,7 @@ _selfXssPrevention:
   description3: "详情请看这里。{link}"
 _followRequest:
   recieved: "收到的请求"
-  sent: "已发送的请求"
+  sent: "发送的请求"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "无法与此服务器通信"
