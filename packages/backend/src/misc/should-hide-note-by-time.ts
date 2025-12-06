@@ -20,10 +20,10 @@ export function shouldHideNoteByTime(hiddenBefore: number | null | undefined, cr
 		// 負の値: 作成からの経過時間(秒)で判定
 		const elapsedSeconds = (Date.now() - createdAtTime) / 1000;
 		const hideAfterSeconds = Math.abs(hiddenBefore);
-		return elapsedSeconds > hideAfterSeconds;
+		return elapsedSeconds >= hideAfterSeconds;
 	} else {
 		// 正の値: 絶対的なタイムスタンプ(秒)で判定
 		const createdAtSeconds = createdAtTime / 1000;
-		return createdAtSeconds < hiddenBefore;
+		return createdAtSeconds <= hiddenBefore;
 	}
 }
