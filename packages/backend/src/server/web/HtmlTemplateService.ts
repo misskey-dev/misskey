@@ -12,10 +12,11 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
 import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
-import type { FastifyReply } from 'fastify';
 import type { Config } from '@/config.js';
 import type { MiMeta } from '@/models/Meta.js';
+import { removeDomain } from '@/util.js';
 import type { CommonData } from './views/_.js';
+import type { FastifyReply } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -80,12 +81,12 @@ export class HtmlTemplateService {
 			config: this.config,
 			langs: [...languages],
 			instanceName: this.meta.name ?? 'Misskey',
-			icon: this.meta.iconUrl,
-			appleTouchIcon: this.meta.app512IconUrl,
+			icon: removeDomain(this.meta.iconUrl),
+			appleTouchIcon: removeDomain(this.meta.app512IconUrl),
 			themeColor: this.meta.themeColor,
-			serverErrorImageUrl: this.meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
-			infoImageUrl: this.meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
-			notFoundImageUrl: this.meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
+			serverErrorImageUrl: removeDomain(this.meta.serverErrorImageUrl) ?? 'https://xn--931a.moe/assets/error.jpg',
+			infoImageUrl: removeDomain(this.meta.infoImageUrl) ?? 'https://xn--931a.moe/assets/info.jpg',
+			notFoundImageUrl: removeDomain(this.meta.notFoundImageUrl) ?? 'https://xn--931a.moe/assets/not-found.jpg',
 			instanceUrl: this.config.url,
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(this.meta)),
 			now: Date.now(),
