@@ -8,7 +8,7 @@
  */
 import { get, set } from 'idb-keyval';
 import { I18n } from '@@/js/i18n.js';
-import { FETCH_TIMEOUT_MS } from "@@/js/const";
+import { FETCH_TIMEOUT_MS } from '@@/js/const';
 import type { Locale } from 'i18n';
 
 class SwLang {
