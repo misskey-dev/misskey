@@ -22,14 +22,15 @@ async function respondToNavigation(request: Request): Promise<Response> {
 
 	try {
 		const response = await fetch(request, { signal: controller.signal });
-		globalThis.clearTimeout(timeout);
-		// Return the response as-is, preserving legitimate error status codes
-		return response;
+
+		if (response?.status && response.status < 500) return response;
+		if (response?.type === 'opaqueredirect') return response;
 	} catch (error) {
-		globalThis.clearTimeout(timeout);
 		if (_DEV_) {
 			console.warn('navigation fetch failed; showing offline page', error);
 		}
+	} finally {
+		globalThis.clearTimeout(timeout);
 	}
 
 	// Only show offline page when network request actually fails
