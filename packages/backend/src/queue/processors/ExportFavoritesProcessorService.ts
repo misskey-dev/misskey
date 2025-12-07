@@ -5,7 +5,6 @@
 
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
 import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/_.js';
@@ -17,6 +16,8 @@ import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
@@ -37,6 +38,7 @@ export class ExportFavoritesProcessorService {
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
+		private queryService: QueryService,
 		private idService: IdService,
 		private notificationService: NotificationService,
 	) {
@@ -83,17 +85,20 @@ export class ExportFavoritesProcessorService {
 			});
 
 			while (true) {
-				const favorites = await this.noteFavoritesRepository.find({
-					where: {
-						userId: user.id,
-						...(cursor ? { id: MoreThan(cursor) } : {}),
-					},
-					take: 100,
-					order: {
-						id: 1,
-					},
-					relations: ['note', 'note.user'],
-				}) as (MiNoteFavorite & { note: MiNote & { user: MiUser } })[];
+				const query = this.noteFavoritesRepository.createQueryBuilder('favorite')
+					.leftJoinAndSelect('favorite.note', 'note')
+					.leftJoinAndSelect('note.user', 'user')
+					.where('favorite.userId = :userId', { userId: user.id })
+					.orderBy('favorite.id', 'ASC')
+					.take(100);
+
+				if (cursor) {
+					query.andWhere('favorite.id > :cursor', { cursor });
+				}
+
+				this.queryService.generateVisibilityQuery(query, { id: user.id });
+
+				const favorites = await query.getMany() as (MiNoteFavorite & { note: MiNote & { user: MiUser } })[];
 
 				if (favorites.length === 0) {
 					job.updateProgress(100);
@@ -103,6 +108,11 @@ export class ExportFavoritesProcessorService {
 				cursor = favorites.at(-1)?.id ?? null;
 
 				for (const favorite of favorites) {
+					const noteCreatedAt = this.idService.parse(favorite.note.id).date;
+					if (shouldHideNoteByTime(favorite.note.user.makeNotesHiddenBefore, noteCreatedAt)) {
+						continue;
+					}
+
 					let poll: MiPoll | undefined;
 					if (favorite.note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: favorite.note.id });
