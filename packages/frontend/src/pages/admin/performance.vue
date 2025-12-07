@@ -64,6 +64,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker>
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="showRoleBadgesOfRemoteUsers" @change="onChange_showRoleBadgesOfRemoteUsers">
+							<template #label><SearchLabel>{{ i18n.ts.showRoleBadgesOfRemoteUsers }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
+
+				<SearchMarker>
 					<MkFolder :defaultOpen="true">
 						<template #icon><SearchIcon><i class="ti ti-bolt"></i></SearchIcon></template>
 						<template #label><SearchLabel>Misskey® Fan-out Timeline Technology™ (FTT)</SearchLabel></template>
@@ -199,6 +208,7 @@ const enableChartsForRemoteUser = ref(meta.enableChartsForRemoteUser);
 const enableStatsForFederatedInstances = ref(meta.enableStatsForFederatedInstances);
 const enableChartsForFederatedInstances = ref(meta.enableChartsForFederatedInstances);
 const enableStreamNotesCdnCache = ref(meta.enableStreamNotesCdnCache);
+const showRoleBadgesOfRemoteUsers = ref(meta.showRoleBadgesOfRemoteUsers);
 
 function onChange_enableServerMachineStats(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
@@ -243,6 +253,14 @@ function onChange_enableChartsForFederatedInstances(value: boolean) {
 function onChange_enableStreamNotesCdnCache(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		enableStreamNotesCdnCache: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_showRoleBadgesOfRemoteUsers(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		showRoleBadgesOfRemoteUsers: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

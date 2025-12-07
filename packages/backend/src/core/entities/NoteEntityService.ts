@@ -15,6 +15,7 @@ import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepos
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
+import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -113,22 +114,10 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private shouldHideByTime(beforePreference: number | null | undefined, createdAt: string, now = Date.now()): boolean {
-		if (beforePreference == null) return false;
-
-		const createdAtTime = new Date(createdAt).getTime();
-		if (beforePreference <= 0) {
-			return now - createdAtTime > 0 - (beforePreference * 1000);
-		} else {
-			return createdAtTime < beforePreference * 1000;
-		}
-	}
-
-	@bindThis
 	private treatVisibility(packedNote: Packed<'Note'>): Packed<'Note'>['visibility'] {
 		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
 			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
-			if (followersOnlyBefore != null && this.shouldHideByTime(followersOnlyBefore, packedNote.createdAt)) {
+			if (shouldHideNoteByTime(followersOnlyBefore, packedNote.createdAt)) {
 				packedNote.visibility = 'followers';
 			}
 		}
@@ -148,7 +137,7 @@ export class NoteEntityService implements OnModuleInit {
 
 		if (!hide) {
 			const hiddenBefore = packedNote.user.makeNotesHiddenBefore;
-			if (hiddenBefore != null && this.shouldHideByTime(hiddenBefore, packedNote.createdAt)) {
+			if (shouldHideNoteByTime(hiddenBefore, packedNote.createdAt)) {
 				hide = true;
 			}
 		}
@@ -349,8 +338,8 @@ export class NoteEntityService implements OnModuleInit {
 		return (
 			(this.meta.ugcVisibilityForVisitor !== 'none') &&
 			(note.visibility === 'public' || note.visibility === 'home') &&
-			!this.shouldHideByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now) &&
-			!this.shouldHideByTime(note.user?.makeNotesHiddenBefore, createdAt, now) &&
+			!shouldHideNoteByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now) &&
+			!shouldHideNoteByTime(note.user?.makeNotesHiddenBefore, createdAt, now) &&
 			(note.user?.requireSigninToViewContents === false || note.user?.requireSigninToViewContents == null)
 		);
 	}

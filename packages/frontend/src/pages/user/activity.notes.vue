@@ -36,13 +36,15 @@ const props = defineProps<{
 const chartEl = useTemplateRef('chartEl');
 const legendEl = useTemplateRef('legendEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const chartLimit = 50;
 const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
 async function renderChart() {
+	if (chartEl.value == null) return;
+
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
@@ -114,7 +116,6 @@ async function renderChart() {
 					offset: true,
 					stacked: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -159,7 +160,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],

@@ -12,11 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder v-for="token in items" :key="token.id" :defaultOpen="true">
 					<template #icon>
 						<img v-if="token.iconUrl" :class="$style.appIcon" :src="token.iconUrl" alt=""/>
-						<i v-else class="ti ti-plug"/>
+						<i v-else class="ti ti-plug"></i>
 					</template>
 					<template #label>{{ token.name }}</template>
 					<template #caption>{{ token.description }}</template>
-					<template #suffix><MkTime :time="token.lastUsedAt"/></template>
+					<template v-if="token.lastUsedAt != null" #suffix><MkTime :time="token.lastUsedAt"/></template>
 					<template #footer>
 						<MkButton danger @click="revoke(token)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					</template>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #key>{{ i18n.ts.installedDate }}</template>
 								<template #value><MkTime :time="token.createdAt" :mode="'detail'"/></template>
 							</MkKeyValue>
-							<MkKeyValue oneline>
+							<MkKeyValue v-if="token.lastUsedAt != null" oneline>
 								<template #key>{{ i18n.ts.lastUsedDate }}</template>
 								<template #value><MkTime :time="token.lastUsedAt" :mode="'detail'"/></template>
 							</MkKeyValue>
@@ -86,6 +86,7 @@ definePage(() => ({
 
 <style lang="scss" module>
 .appIcon {
+	display: block;
 	width: 20px;
 	height: 20px;
 	border-radius: 4px;

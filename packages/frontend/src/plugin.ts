@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { isSafeMode } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
-import type { Parser, Interpreter, values } from '@syuilo/aiscript';
+import type { Parser, Interpreter, values, utils as utils_TypeReferenceOnly } from '@syuilo/aiscript';
 import type { FormWithDefault } from '@/utility/form.js';
 import { genId } from '@/utility/id.js';
 import { store } from '@/store.js';
@@ -82,22 +82,23 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 	}
 
 	const metadata = meta.get(null);
-	if (metadata == null) {
-		throw new Error('Metadata not found');
+	if (metadata == null || typeof metadata !== 'object' || Array.isArray(metadata)) {
+		throw new Error('Metadata not found or invalid');
 	}
 
 	const { name, version, author, description, permissions, config } = metadata;
+
 	if (name == null || version == null || author == null) {
 		throw new Error('Required property not found');
 	}
 
 	return {
-		name,
-		version,
-		author,
-		description,
-		permissions,
-		config,
+		name: name as string,
+		version: version as string,
+		author: author as string,
+		description: description as string | undefined,
+		permissions: permissions as string[] | undefined,
+		config: config as Record<string, any> | undefined,
 	};
 }
 
@@ -110,7 +111,7 @@ export async function authorizePlugin(plugin: Plugin) {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: plugin.name,
-			initialPermissions: plugin.permissions,
+			initialPermissions: plugin.permissions as typeof Misskey.permissions[number][],
 		}, {
 			done: async result => {
 				const { name, permissions } = result;
@@ -149,6 +150,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 
 	const plugin = {
 		...realMeta,
+		config: realMeta.config ?? {},
 		installId,
 		active: true,
 		configData: {},
@@ -205,13 +207,13 @@ type HandlerDef = {
 		handler: (note: Misskey.entities.Note) => void;
 	};
 	note_view_interruptor: {
-		handler: (note: Misskey.entities.Note) => unknown;
+		handler: (note: Misskey.entities.Note) => Misskey.entities.Note | null;
 	};
 	note_post_interruptor: {
 		handler: (note: FIXME) => unknown;
 	};
 	page_view_interruptor: {
-		handler: (page: Misskey.entities.Page) => unknown;
+		handler: (page: Misskey.entities.Page) => Misskey.entities.Page;
 	};
 };
 
@@ -233,11 +235,13 @@ function addPluginHandler<K extends keyof HandlerDef>(installId: Plugin['install
 }
 
 export function launchPlugins() {
-	for (const plugin of prefer.s.plugins) {
+	return Promise.all(prefer.s.plugins.map(plugin => {
 		if (plugin.active) {
-			launchPlugin(plugin.installId);
+			return launchPlugin(plugin.installId);
+		} else {
+			return Promise.resolve();
 		}
-	}
+	}));
 }
 
 async function launchPlugin(id: Plugin['installId']): Promise<void> {
@@ -292,7 +296,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	pluginContexts.set(plugin.installId, aiscript);
 
 	const parser = await getParser();
-	aiscript.exec(parser.parse(plugin.src)).then(
+	await aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
 			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 			systemLog('Plugin started');
@@ -351,7 +355,9 @@ export function changePluginActive(plugin: Plugin, active: boolean) {
 async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Promise<Record<string, values.Value>> {
 	const id = opts.plugin.installId;
 
-	const { utils, values } = await import('@syuilo/aiscript');
+	const ais = await import('@syuilo/aiscript');
+	const values = ais.values;
+	const utils: typeof utils_TypeReferenceOnly = ais.utils;
 	const { createAiScriptEnv } = await import('@/aiscript/api.js');
 
 	const config = new Map<string, values.Value>();
@@ -373,7 +379,7 @@ async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Pr
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'post_form_action', {
 				title: title.value,
-				handler: withContext(ctx => (form, update) => {
+				handler: (form, update) => withContext(ctx => {
 					ctx.execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
 						if (!key || !value) {
 							return;
@@ -389,7 +395,7 @@ async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Pr
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'user_action', {
 				title: title.value,
-				handler: withContext(ctx => (user) => {
+				handler: (user) => withContext(ctx => {
 					ctx.execFn(handler, [utils.jsToVal(user)]);
 				}),
 			});
@@ -400,7 +406,7 @@ async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Pr
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_action', {
 				title: title.value,
-				handler: withContext(ctx => (note) => {
+				handler: (note) => withContext(ctx => {
 					ctx.execFn(handler, [utils.jsToVal(note)]);
 				}),
 			});
@@ -409,8 +415,8 @@ async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Pr
 		'Plugin:register:note_view_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_view_interruptor', {
-				handler: withContext(ctx => (note) => {
-					return utils.valToJs(ctx.execFnSync(handler, [utils.jsToVal(note)]));
+				handler: (note) => withContext(ctx => {
+					return utils.valToJs(ctx.execFnSync(handler, [utils.jsToVal(note)])) as Misskey.entities.Note | null;
 				}),
 			});
 		}),
@@ -418,8 +424,8 @@ async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Pr
 		'Plugin:register:note_post_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_post_interruptor', {
-				handler: withContext(ctx => async (note) => {
-					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(note)]));
+				handler: (note) => withContext(ctx => {
+					return utils.valToJs(ctx.execFnSync(handler, [utils.jsToVal(note)]));
 				}),
 			});
 		}),
@@ -427,8 +433,8 @@ async function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Pr
 		'Plugin:register:page_view_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'page_view_interruptor', {
-				handler: withContext(ctx => async (page) => {
-					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(page)]));
+				handler: (page) => withContext(ctx => {
+					return utils.valToJs(ctx.execFnSync(handler, [utils.jsToVal(page)])) as Misskey.entities.Page;
 				}),
 			});
 		}),

@@ -15,7 +15,7 @@ import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
+	block: Extract<Misskey.entities.PageBlock, { type: 'image' }>,
 	page: Misskey.entities.Page,
 }>();
 

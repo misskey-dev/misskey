@@ -5,7 +5,7 @@
 
 import { ref, shallowRef, triggerRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { ComputedRef, Ref, ShallowRef } from 'vue';
+import type { ComputedRef, Ref, ShallowRef, UnwrapRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAX_ITEMS = 30;
@@ -19,13 +19,20 @@ export type MisskeyEntity = {
 	_shouldInsertAd_?: boolean;
 };
 
-type FilterByEpRes<E extends Record<string, any>> = {
+type AbsEndpointType = {
+	req: unknown;
+	res: unknown;
+};
+
+type FilterByEpRes<E extends Record<string, AbsEndpointType>> = {
 	[K in keyof E]: E[K]['res'] extends Array<{ id: string }> ? K : never
 }[keyof E];
 export type PaginatorCompatibleEndpointPaths = FilterByEpRes<Misskey.Endpoints>;
 export type PaginatorCompatibleEndpoints = {
 	[K in PaginatorCompatibleEndpointPaths]: Misskey.Endpoints[K];
 };
+
+export type ExtractorFunction<P extends IPaginator, T> = (item: UnwrapRef<P['items']>[number]) => T;
 
 export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 	/**
@@ -37,6 +44,7 @@ export interface IPaginator<T = unknown, _T = T & MisskeyEntity> {
 	fetchingOlder: Ref<boolean>;
 	fetchingNewer: Ref<boolean>;
 	canFetchOlder: Ref<boolean>;
+	canFetchNewer: Ref<boolean>;
 	canSearch: boolean;
 	error: Ref<boolean>;
 	computedParams: ComputedRef<Misskey.Endpoints[PaginatorCompatibleEndpointPaths]['req'] | null | undefined> | null;
@@ -78,6 +86,7 @@ export class Paginator<
 	public fetchingOlder = ref(false);
 	public fetchingNewer = ref(false);
 	public canFetchOlder = ref(false);
+	public canFetchNewer = ref(false);
 	public canSearch = false;
 	public error = ref(false);
 	private endpoint: Endpoint;
@@ -86,7 +95,12 @@ export class Paginator<
 	public computedParams: ComputedRef<E['req'] | null | undefined> | null;
 	public initialId: MisskeyEntity['id'] | null = null;
 	public initialDate: number | null = null;
+
+	// 初回読み込み時、initialIdを基準にそれより新しいものを取得するか古いものを取得するか
+	// newer: initialIdより新しいものを取得する
+	// older: initialIdより古いものを取得する (default)
 	public initialDirection: 'newer' | 'older';
+
 	private offsetMode: boolean;
 	public noPaging: boolean;
 	public searchQuery = ref<null | string>('');
@@ -117,6 +131,7 @@ export class Paginator<
 		initialId?: MisskeyEntity['id'];
 		initialDate?: number | null;
 		initialDirection?: 'newer' | 'older';
+
 		order?: 'newest' | 'oldest';
 
 		// 一部のAPIはさらに遡れる場合でもパフォーマンス上の理由でlimit以下の結果を返す場合があり、その場合はsafe、それ以外はlimitにすることを推奨
@@ -224,15 +239,15 @@ export class Paginator<
 
 		if (this.canFetchDetection === 'limit') {
 			if (apiRes.length < FIRST_FETCH_LIMIT) {
-				this.canFetchOlder.value = false;
+				(this.initialDirection === 'older' ? this.canFetchOlder : this.canFetchNewer).value = false;
 			} else {
-				this.canFetchOlder.value = true;
+				(this.initialDirection === 'older' ? this.canFetchOlder : this.canFetchNewer).value = true;
 			}
 		} else if (this.canFetchDetection === 'safe' || this.canFetchDetection == null) {
 			if (apiRes.length === 0 || this.noPaging) {
-				this.canFetchOlder.value = false;
+				(this.initialDirection === 'older' ? this.canFetchOlder : this.canFetchNewer).value = false;
 			} else {
-				this.canFetchOlder.value = true;
+				(this.initialDirection === 'older' ? this.canFetchOlder : this.canFetchNewer).value = true;
 			}
 		}
 
@@ -275,7 +290,11 @@ export class Paginator<
 			if (i === 10) item._shouldInsertAd_ = true;
 		}
 
-		this.pushItems(apiRes);
+		if (this.order.value === 'oldest') {
+			this.unshiftItems(apiRes.toReversed(), false);
+		} else {
+			this.pushItems(apiRes);
+		}
 
 		if (this.canFetchDetection === 'limit') {
 			if (apiRes.length < FIRST_FETCH_LIMIT) {
@@ -315,7 +334,11 @@ export class Paginator<
 
 		this.fetchingNewer.value = false;
 
-		if (apiRes == null || apiRes.length === 0) return; // これやらないと余計なre-renderが走る
+		if (apiRes == null || apiRes.length === 0) {
+			this.canFetchNewer.value = false;
+			// 余計なre-renderを防止するためここで終了
+			return;
+		}
 
 		if (options.toQueue) {
 			this.aheadQueue.unshift(...apiRes.toReversed());
@@ -327,9 +350,19 @@ export class Paginator<
 			if (this.order.value === 'oldest') {
 				this.pushItems(apiRes);
 			} else {
-				this.unshiftItems(apiRes.toReversed());
+				this.unshiftItems(apiRes.toReversed(), false);
 			}
 		}
+
+		if (this.canFetchDetection === 'limit') {
+			if (apiRes.length < FIRST_FETCH_LIMIT) {
+				this.canFetchNewer.value = false;
+			} else {
+				this.canFetchNewer.value = true;
+			}
+		}
+		// canFetchDetectionが'safe'の場合・apiRes.length === 0 の場合は apiRes.length === 0 の場合に canFetchNewer.value = false になるが、
+		// 余計な re-render を防ぐために上部で処理している。そのため、ここでは何もしない
 	}
 
 	public trim(trigger = true): void {
@@ -338,10 +371,10 @@ export class Paginator<
 		if (this.useShallowRef && trigger) triggerRef(this.items);
 	}
 
-	public unshiftItems(newItems: T[]): void {
+	public unshiftItems(newItems: T[], trim = true): void {
 		if (newItems.length === 0) return; // これやらないと余計なre-renderが走る
 		this.items.value.unshift(...newItems.filter(x => !this.items.value.some(y => y.id === x.id))); // ストリーミングやポーリングのタイミングによっては重複することがあるため
-		this.trim(false);
+		if (trim) this.trim(true);
 		if (this.useShallowRef) triggerRef(this.items);
 	}
 

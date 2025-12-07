@@ -215,6 +215,14 @@ export type Channels = {
 		};
 		receives: null;
 	};
+	reversi: {
+		params: null;
+		events: {
+			matched: (payload: { game: ReversiGameDetailed }) => void;
+			invited: (payload: { user: User }) => void;
+		};
+		receives: null;
+	};
 	reversiGame: {
 		params: {
 			gameId: string;
