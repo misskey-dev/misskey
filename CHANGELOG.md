@@ -1,17 +1,28 @@
-## 2025.12.0
+## Unreleased
 
 ### General
 -
 
 ### Client
 - Enhance: 画面幅が広いときにメディアを横並びで表示できるようにするオプションを追加
+
+### Server
+-
+
+
+## 2025.12.0
+
+### Note
+- configの`trustProxy`のデフォルト値を`false`に変更しました。アップデート前に現在のconfigをご確認の上、必要に応じて値を変更してください。
+
+### Client
 - Fix: stacking router viewで連続して戻る操作を行うと何も表示されなくなる問題を修正
 
 ### Server
 - Enhance: メモリ使用量を削減しました
 - Enhance: ActivityPubアクティビティを送信する際のパフォーマンス向上
 - Enhance: 依存関係の更新
-
+- Fix: セキュリティに関する修正
 
 ## 2025.11.1
 
