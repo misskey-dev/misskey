@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<SearchMarker>
 					<div class="_panel _gaps_s" style="padding: 16px;">
-						<MkInfo warn>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_conflictedWithUgcSettings }}</MkInfo>
+						<MkInfo v-if="meta.ugcVisibilityForVisitor === 'none'" warn>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_conflictedWithUgcSettings }}</MkInfo>
 						<MkSwitch v-model="enableStreamNotesCdnCache" @change="onChange_enableStreamNotesCdnCache">
 							<template #label><SearchLabel>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
 							<template #caption>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_description }}</template>
@@ -197,6 +197,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkLink from '@/components/MkLink.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 
