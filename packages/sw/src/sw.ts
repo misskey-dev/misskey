@@ -11,8 +11,7 @@ import type { Locale } from 'i18n';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
 import { swLang } from '@/scripts/lang.js';
 import * as swos from '@/scripts/operations.js';
-
-const FETCH_TIMEOUT_MS = 10000;
+import {FETCH_TIMEOUT_MS} from "@@/js/const";
 
 async function respondToNavigation(request: Request): Promise<Response> {
 	const controller = new AbortController();
@@ -44,7 +43,13 @@ async function respondToNavigation(request: Request): Promise<Response> {
 }
 
 async function offlineContentHTML() {
-	const i18n = await (swLang.i18n ?? await swLang.fetchLocale()) as Partial<I18n<Locale>>;
+	let i18n: Partial<I18n<Locale>>;
+	try {
+		i18n = await (swLang.i18n ?? await swLang.fetchLocale()) as Partial<I18n<Locale>>;
+	} catch {
+		i18n = {};
+	}
+
 	const messages = {
 		title: i18n.ts?._offlineScreen.title ?? 'Offline - Could not connect to server',
 		header: i18n.ts?._offlineScreen.header ?? 'Could not connect to server',

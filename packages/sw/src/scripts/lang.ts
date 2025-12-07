@@ -9,6 +9,7 @@
 import { get, set } from 'idb-keyval';
 import { I18n } from '@@/js/i18n.js';
 import type { Locale } from 'i18n';
+import { FETCH_TIMEOUT_MS } from "@@/js/const";
 
 class SwLang {
 	public cacheName = `mk-cache-${_VERSION_}`;
@@ -37,7 +38,15 @@ class SwLang {
 
 		// _DEV_がtrueの場合は常に最新化
 		if (!localeRes || _DEV_) {
-			localeRes = await fetch(localeUrl);
+			const controller = new AbortController();
+			const timeout = globalThis.setTimeout(() => {
+				controller.abort('locale-fetch-timeout');
+			}, FETCH_TIMEOUT_MS);
+
+			localeRes = await fetch(localeUrl, { signal: controller.signal });
+
+			globalThis.clearTimeout(timeout);
+
 			const clone = localeRes.clone();
 			if (!clone.clone().ok) throw new Error('locale fetching error');
 
