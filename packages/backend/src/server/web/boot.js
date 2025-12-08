@@ -42,6 +42,8 @@
 		console.error('invalid lang value detected!!!', typeof lang, lang);
 		lang = 'en-US';
 	}
+
+	localStorage.setItem('lang', lang);
 	//#endregion
 
 	//#region Script
