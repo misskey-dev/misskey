@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import { host } from '@@/js/config.js';
 import type { ClientOptions } from '@/instance.js';
 import MkInput from '@/components/MkInput.vue';

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import type { Theme } from '@/theme.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';

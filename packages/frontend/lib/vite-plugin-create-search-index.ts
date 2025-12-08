@@ -17,7 +17,7 @@ import {
 } from 'vite';
 import fs from 'node:fs';
 import { glob } from 'glob';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import MagicString, { SourceMap } from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';

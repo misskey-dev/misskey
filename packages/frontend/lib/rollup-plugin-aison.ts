@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AiSON, errors } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
+import { AiScriptSyntaxError } from '@syuilo/aiscript/error.js';
 import type { Plugin } from 'rollup';
 import { createFilter, dataToEsm } from '@rollup/pluginutils';
 import { RollupJsonOptions } from '@rollup/plugin-json';
@@ -31,7 +32,7 @@ export default function pluginAison(options: RollupJsonOptions = {}): Plugin {
 					map: { mappings: '' },
 				};
 			} catch (err) {
-				if (!(err instanceof errors.AiScriptSyntaxError)) {
+				if (!(err instanceof AiScriptSyntaxError)) {
 					throw err;
 				}
 				const message = 'Could not parse AiSON file';

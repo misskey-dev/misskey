@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import lightTheme from '@@/themes/_light.aison';
 import darkTheme from '@@/themes/_dark.aison';
 import { host } from '@@/js/config.js';

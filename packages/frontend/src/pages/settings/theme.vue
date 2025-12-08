@@ -206,7 +206,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import defaultLightTheme from '@@/themes/l-light.aison';
 import defaultDarkTheme from '@@/themes/d-green-lime.aison';
 import { isSafeMode } from '@@/js/config.js';

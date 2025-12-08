@@ -9,7 +9,7 @@ import { ref, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.aison';
 import darkTheme from '@@/themes/_dark.aison';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import { version } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { BundledTheme } from 'shiki/themes';

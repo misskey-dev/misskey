@@ -4,7 +4,7 @@
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
-import { AiSON } from '@syuilo/aiscript';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 
 const keys = [
 	'_dark',
