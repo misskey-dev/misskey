@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { promises as fsp, existsSync, globSync as glob } from 'node:fs';
+import { promises as fsp, existsSync, globSync } from 'node:fs';
 import path from 'node:path';
 import { generateSubsettedFont } from './subsetter.js';
 
@@ -46,7 +46,7 @@ async function main() {
 		const iconsToPack = new Set<string>();
 
 		const cwd = path.resolve(process.cwd(), '../../');
-		const files = glob(dir, { cwd });
+		const files = globSync(dir, { cwd });
 		for (const file of files) {
 			//console.log(`Scanning ${file}`);
 			const content = await fsp.readFile(path.resolve(cwd, file), 'utf-8');
