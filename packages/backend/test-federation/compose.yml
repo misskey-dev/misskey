@@ -55,6 +55,10 @@ services:
         target: /misskey/packages/backend/jest.js
         read_only: true
       - type: bind
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true
