@@ -110,10 +110,10 @@ port: 3000
 # Changes how the server interpret the origin IP of the request.
 #
 # Any format supported by Fastify is accepted.
-# Default: trust all proxies (i.e. trustProxy: true)
+# Default: do not trust any proxies (i.e. trustProxy: false)
 # See: https://fastify.dev/docs/latest/reference/server/#trustproxy
 #
-# trustProxy: 1
+# trustProxy: false
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
