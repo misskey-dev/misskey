@@ -22,9 +22,6 @@ importers:
       execa:
         specifier: 9.6.0
         version: 9.6.0
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
       ignore-walk:
         specifier: 8.0.0
         version: 8.0.0
@@ -1008,9 +1005,6 @@ importers:
       eslint-plugin-vue:
         specifier: 10.6.2
         version: 10.6.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(vue-eslint-parser@10.2.0(eslint@9.39.1))
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
       happy-dom:
         specifier: 20.0.11
         version: 20.0.11
@@ -1247,9 +1241,6 @@ importers:
       eslint-plugin-vue:
         specifier: 10.6.2
         version: 10.6.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(vue-eslint-parser@10.2.0(eslint@9.39.1))
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
       happy-dom:
         specifier: 20.0.11
         version: 20.0.11
