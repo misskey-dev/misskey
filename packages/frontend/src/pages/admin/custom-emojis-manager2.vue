@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="headerTab" :tabs="headerTabs" :v-if="canManageCustomEmojis">
+<PageWithHeader v-model:tab="headerTab" :tabs="headerTabs" v-if="canManageCustomEmojis">
 	<XGridLocalComponent v-if="headerTab === 'local'" :class="$style.local"/>
 	<XGridRemoteComponent v-else-if="headerTab === 'remote'" :class="$style.remote"/>
 	<XRegisterComponent v-else-if="headerTab === 'register'" :class="$style.register"/>
