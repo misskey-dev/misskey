@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, globSync as glob } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
 import { GENERATOR, type State, generate } from 'astring';
 import type * as estree from 'estree';
-import glob from 'fast-glob';
 import { format } from 'prettier';
 
 interface SatisfiesExpression extends estree.BaseExpression {
@@ -439,7 +438,7 @@ function toStories(component: string): Promise<string> {
 
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
 (async () => {
-	const globs = await Promise.all([
+	const components = [
 		glob('src/components/global/Mk*.vue'),
 		glob('src/components/global/RouterView.vue'),
 		glob('src/components/MkAbuseReportWindow.vue'),
@@ -469,8 +468,7 @@ function toStories(component: string): Promise<string> {
 		glob('src/pages/admin/overview.ap-requests.vue'),
 		glob('src/pages/user/home.vue'),
 		glob('src/pages/search.vue'),
-	]);
-	const components = globs.flat();
+	].flat();
 	await Promise.all(components.map(async (component) => {
 		const stories = component.replace(/\.vue$/, '.stories.ts');
 		await writeFile(stories, await toStories(component));
