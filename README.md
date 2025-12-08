@@ -23,6 +23,9 @@
 - サーバーとの接続が失われたとき
   - `なにもしない`オプションの追加
 - [ナビゲーションバー拡張](https://github.com/pooza/misskey/pull/342)
+- [カスタム絵文字(beta)](https://github.com/pooza/misskey/pull/391)
+  - `/custom-emojis-manager2` で表示できるように。
+  - 但し、「カスタム絵文字の管理」権限がなければまっしろ。
 - クラシックUIの廃止
 - 各種パラメータ調整
 
