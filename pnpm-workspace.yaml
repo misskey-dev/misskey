@@ -4,6 +4,7 @@ packages:
   - packages/frontend
   - packages/frontend-builder
   - packages/frontend-embed
+  - packages/i18n
   - packages/icons-subsetter
   - packages/sw
   - packages/misskey-js
@@ -14,6 +15,7 @@ onlyBuiltDependencies:
   - '@nestjs/core'
   - '@parcel/watcher'
   - '@sentry/profiling-node'
+  - '@sentry-internal/node-cpu-profiler'
   - '@swc/core'
   - '@tensorflow/tfjs-node'
   - bufferutil
