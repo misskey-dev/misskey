@@ -19,7 +19,7 @@ import type { MiEmoji } from '@/models/Emoji.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiPollVote } from '@/models/PollVote.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
-import { MfmService, type Appender } from '@/core/MfmService.js';
+import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
@@ -28,6 +28,7 @@ import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { IdService } from '@/core/IdService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { escapeHtml } from '@/misc/escape-html.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
@@ -384,7 +385,7 @@ export class ApRendererService {
 			inReplyTo = null;
 		}
 
-		let quote;
+		let quote: string | undefined;
 
 		if (note.renoteId) {
 			const renote = await this.notesRepository.findOneBy({ id: note.renoteId });
@@ -430,29 +431,18 @@ export class ApRendererService {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
 
-		const apAppend: Appender[] = [];
+		let extraHtml: string | null = null;
 
-		if (quote) {
+		if (quote != null) {
 			// Append quote link as `<br><br><span class="quote-inline">RE: <a href="...">...</a></span>`
-			// the claas name `quote-inline` is used in non-misskey clients for styling quote notes.
+			// the class name `quote-inline` is used in non-misskey clients for styling quote notes.
 			// For compatibility, the span part should be kept as possible.
-			apAppend.push((doc, body) => {
-				body.appendChild(doc.createElement('br'));
-				body.appendChild(doc.createElement('br'));
-				const span = doc.createElement('span');
-				span.className = 'quote-inline';
-				span.appendChild(doc.createTextNode('RE: '));
-				const link = doc.createElement('a');
-				link.setAttribute('href', quote);
-				link.textContent = quote;
-				span.appendChild(link);
-				body.appendChild(span);
-			});
+			extraHtml = `<br><br><span class="quote-inline">RE: <a href="${escapeHtml(quote)}">${escapeHtml(quote)}</a></span>`;
 		}
 
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
 
-		const { content, noMisskeyContent } = this.apMfmService.getNoteHtml(note, apAppend);
+		const { content, noMisskeyContent } = this.apMfmService.getNoteHtml(note, extraHtml);
 
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));

@@ -12,14 +12,15 @@
 	"devDependencies": {
 		"@types/estree": "1.0.8",
 		"@types/node": "24.10.1",
-		"@typescript-eslint/eslint-plugin": "8.47.0",
-		"@typescript-eslint/parser": "8.47.0",
+		"@typescript-eslint/eslint-plugin": "8.48.0",
+		"@typescript-eslint/parser": "8.48.0",
 		"rollup": "4.53.3",
 		"typescript": "5.9.3"
 	},
 	"dependencies": {
+		"i18n": "workspace:*",
 		"estree-walker": "3.0.3",
 		"magic-string": "0.30.21",
-		"vite": "7.2.2"
+		"vite": "7.2.4"
 	}
 }
