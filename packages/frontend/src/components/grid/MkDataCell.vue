@@ -16,6 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:data-grid-cell-col="cell.column.index"
 	@keydown="onCellKeyDown"
 	@dblclick.prevent="onCellDoubleClick"
+  @pointerdown="onCellPointerDown"
+  @pointerup="onCellPointerUp"
 >
 	<div
 		:class="[
@@ -196,13 +198,75 @@ function onForceRefreshContentSize() {
 	emitContentSizeChanged();
 }
 
+// 長押し対応
+const LONG_PRESS_MS = 500;
+const DOUBLE_TAP_MS = 300;
+
+let longPressTimer: number | null = null;
+const lastTapTime = ref(0);
+
+function clearLongPressTimer() {
+	if (longPressTimer != null) {
+		clearTimeout(longPressTimer);
+		longPressTimer = null;
+	}
+}
+
+function onCellPointerDown(ev: PointerEvent) {
+	// マウス操作は既存の dblclick に任せる
+	if (ev.pointerType !== 'touch') return;
+	if (editing.value) return;
+	if (!cell.value.selected || !cell.value.column.setting.editable) return;
+
+	// 長押し判定
+	clearLongPressTimer();
+	longPressTimer = window.setTimeout(() => {
+		beginEditing(ev.target as HTMLElement);
+		longPressTimer = null;
+	}, LONG_PRESS_MS);
+}
+
+function onCellPointerUp(ev: PointerEvent) {
+	if (ev.pointerType !== 'touch') return;
+	if (editing.value) {
+		clearLongPressTimer();
+		return;
+	}
+
+	// 長押しキャンセル
+	const hadTimer = longPressTimer != null;
+	clearLongPressTimer();
+
+	if (!cell.value.selected || !cell.value.column.setting.editable) return;
+
+	// 「長押しにならなかったタップ」だけを見る
+	if (hadTimer) {
+		// 簡易ダブルタップ判定
+		const now = performance.now();
+		if (now - lastTapTime.value < DOUBLE_TAP_MS) {
+			beginEditing(ev.target as HTMLElement);
+			lastTapTime.value = 0;
+		} else {
+			lastTapTime.value = now;
+		}
+	}
+}
+// 長押し対応ここまで
+
 function registerOutsideMouseDown() {
 	unregisterOutsideMouseDown();
 	addEventListener('mousedown', onOutsideMouseDown);
+	addEventListener('pointerdown', onOutsidePointerDown);
 }
 
 function unregisterOutsideMouseDown() {
 	removeEventListener('mousedown', onOutsideMouseDown);
+	removeEventListener('pointerdown', onOutsidePointerDown);
+}
+
+function onOutsidePointerDown(ev: PointerEvent) {
+	if (ev.pointerType !== 'touch') return;
+	onOutsideMouseDown(ev as unknown as MouseEvent);
 }
 
 async function beginEditing(target: HTMLElement) {
