@@ -7,6 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<MkButton primary :disabled="min === current" @click="onToPrevButtonClicked">&lt;</MkButton>
 
+	<span :class="$style.mobileIndicator">
+		{{ current }} / {{ max }}
+	</span>
+
 	<div :class="$style.buttons">
 		<div v-if="prevDotVisible" :class="$style.headTailButtons">
 			<MkButton @click="onToHeadButtonClicked">{{ min }}</MkButton>
@@ -119,6 +123,27 @@ function onToTailButtonClicked() {
 
 	span {
 		font-size: 0.75em;
+	}
+}
+
+.mobileIndicator {
+	display: none;
+}
+
+@media (max-width: 480px) {
+	.root {
+		gap: 8px;
+	}
+
+	.buttons {
+		display: none;
+	}
+
+	.mobileIndicator {
+		display: inline-block;
+		font-size: 0.8em;
+		min-width: 4em;
+		text-align: center;
 	}
 }
 </style>
