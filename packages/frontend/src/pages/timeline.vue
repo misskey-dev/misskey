@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="tlComponent"
 			:key="src + withRenotes + withReplies + onlyFiles + withSensitive"
 			:class="$style.tl"
-			:src="src.split(':')[0]"
+			:src="(src.split(':')[0] as (BasicTimelineType | 'list'))"
 			:list="src.split(':')[1]"
 			:withRenotes="withRenotes"
 			:withReplies="withReplies"
@@ -163,7 +163,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 			type: 'link',
 			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
-			to: '/channels',
+			to: '/channels/new',
 		},
 	];
 	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);

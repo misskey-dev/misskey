@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted, useTemplateRef } from 'vue';
+import type { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	type?: 'button' | 'submit' | 'reset';
@@ -45,7 +46,7 @@ const props = defineProps<{
 	inline?: boolean;
 	link?: boolean;
 	to?: string;
-	linkBehavior?: null | 'window' | 'browser';
+	linkBehavior?: MkABehavior;
 	autofocus?: boolean;
 	wait?: boolean;
 	danger?: boolean;
