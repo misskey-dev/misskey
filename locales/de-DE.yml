@@ -1374,7 +1374,12 @@ defaultImageCompressionLevel: "Standard-Bildkomprimierungsstufe"
 defaultImageCompressionLevel_description: "Ein niedrigerer Wert erhält die Bildqualität, erhöht aber die Dateigröße. <br>Höhere Werte reduzieren die Dateigröße, verringern aber die Bildqualität."
 inMinutes: "Minute(n)"
 inDays: "Tag(en)"
+safeModeEnabled: "Der abgesicherte Modus ist aktiviert."
+schedule: "Planen"
+scheduled: "Geplant"
 widgets: "Widgets"
+deviceInfo: "Geräteinformation"
+youAreAdmin: "Sie sind ein Administrator"
 presets: "Vorlage"
 _imageEditing:
   _vars:
