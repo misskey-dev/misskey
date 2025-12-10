@@ -85,8 +85,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
+			// publicのノートのみを返すため、Redisからは多めに取得してDBでフィルタリング
+			const FETCH_MULTIPLIER = 10;
 			let noteIds = await this.fanoutTimelineService.get(`roleTimeline:${role.id}`, untilId, sinceId);
-			noteIds = noteIds.slice(0, ps.limit);
+			noteIds = noteIds.slice(0, ps.limit * FETCH_MULTIPLIER);
 
 			if (noteIds.length === 0) {
 				return [];
@@ -104,8 +106,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.queryService.generateVisibilityQuery(query, me);
 			this.queryService.generateBaseNoteFilteringQuery(query, me);
 
-			const notes = await query.getMany();
+			let notes = await query.getMany();
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
+			notes = notes.slice(0, ps.limit);
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

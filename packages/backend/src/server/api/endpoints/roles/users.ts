@@ -7,10 +7,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { QueryService } from '@/core/QueryService.js';
 import { ApiError } from '../../error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository, RoleAssignmentsRepository } from '@/models/_.js';
+import type { RolesRepository, RoleAssignmentsRepository, UsersRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['role', 'users'],
@@ -52,11 +51,8 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		roleId: { type: 'string', format: 'misskey:id' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', minimum: 0, default: 0 },
 	},
 	required: ['roleId'],
 } as const;
@@ -70,7 +66,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
-		private queryService: QueryService,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -84,8 +82,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
-			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('assign.roleId = :roleId', { roleId: role.id })
+			const query = this.roleAssignmentsRepository.createQueryBuilder('assign')
+				.where('assign.roleId = :roleId', { roleId: role.id })
 				.andWhere(new Brackets(qb => {
 					qb
 						.where('assign.expiresAt IS NULL')
@@ -98,13 +96,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// 新アルゴリズムで人気スコアを計算してソート
 			const scoredAssigns = await Promise.all(assigns.map(async assign => {
+				// ユーザー情報を取得（プライバシー設定に従った表示用）
 				const user = await this.userEntityService.pack(assign.userId, me, { schema: 'UserDetailed' });
+
+				// スコア計算用に実際のフォロワー数をDBから取得（プライバシー設定に関わらず）
+				const userEntity = await this.usersRepository.findOneBy({ id: assign.userId });
+				const actualFollowersCount = userEntity?.followersCount ?? 0;
+				const actualNotesCount = userEntity?.notesCount ?? 0;
+
 				const popularityScore = await this.userEntityService.calculatePopularityScore(
 					assign.userId,
-					user.followersCount || 0,
-					user.notesCount || 0
+					actualFollowersCount,
+					actualNotesCount,
 				);
-				
+
 				return {
 					id: assign.id,
 					user,
@@ -112,10 +117,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				};
 			}));
 			
-			// 人気スコアの降順にソートして上位limit件を返す
+			// 人気スコアの降順にソートしてoffset/limitでスライス
 			return scoredAssigns
 				.sort((a, b) => b.popularityScore - a.popularityScore)
-				.slice(0, ps.limit);
+				.slice(ps.offset, ps.offset + ps.limit);
 		});
 	}
 }

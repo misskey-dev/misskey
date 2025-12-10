@@ -64,9 +64,9 @@ watch(() => props.roleId, () => {
 
 const usersPaginator = markRaw(new Paginator('roles/users', {
 	limit: 30,
+	offsetMode: true,
 	computedParams: computed(() => ({
 		roleId: props.roleId,
-		sort: 'popularity',
 	})),
 }));
 
