@@ -157,7 +157,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		}
 
 		let Sentry: typeof import('@sentry/node') | undefined;
-		if (Sentry != null) {
+		if (this.config.sentryForBackend) {
 			import('@sentry/node').then((mod) => {
 				Sentry = mod;
 			});
