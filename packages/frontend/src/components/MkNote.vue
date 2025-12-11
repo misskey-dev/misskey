@@ -1150,8 +1150,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .deleted {
 	text-align: center;
-	padding: 8px !important;
-	margin: 8px 8px 0 8px;
+	padding: 32px;
+	margin: 6px 28px 32px;
 	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
 	background-size: auto auto;
 	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
