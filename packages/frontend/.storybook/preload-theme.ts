@@ -4,7 +4,7 @@
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 
 const keys = [
 	'_dark',
@@ -30,11 +30,11 @@ const keys = [
 	'd-u0',
 ]
 
-await Promise.all(keys.map((key) => readFile(new URL(`../../frontend-shared/themes/${key}.json5`, import.meta.url), 'utf8'))).then((sources) => {
+await Promise.all(keys.map((key) => readFile(new URL(`../../frontend-shared/themes/${key}.aison`, import.meta.url), 'utf8'))).then((sources) => {
 	writeFile(
 		new URL('./themes.ts', import.meta.url),
 		`export default ${JSON.stringify(
-			Object.fromEntries(sources.map((source, i) => [keys[i], JSON5.parse(source)])),
+			Object.fromEntries(sources.map((source, i) => [keys[i], AiSON.parse(source)])),
 			undefined,
 			2,
 		)} as const;`,

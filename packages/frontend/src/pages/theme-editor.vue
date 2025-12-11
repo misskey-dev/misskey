@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.editCode }}</template>
 
 				<div class="_gaps_m">
-					<MkCodeEditor v-model="themeCode" lang="json5">
+					<MkCodeEditor v-model="themeCode" lang="javascript">
 						<template #label>{{ i18n.ts._theme.code }}</template>
 					</MkCodeEditor>
 					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
@@ -75,9 +75,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
-import JSON5 from 'json5';
-import lightTheme from '@@/themes/_light.json5';
-import darkTheme from '@@/themes/_dark.json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
+import lightTheme from '@@/themes/_light.aison';
+import darkTheme from '@@/themes/_dark.aison';
 import { host } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
 import { genId } from '@/utility/id.js';
@@ -169,7 +169,7 @@ function setFgColor(color) {
 }
 
 function apply() {
-	themeCode.value = JSON5.stringify(theme.value, null, '\t');
+	themeCode.value = AiSON.stringify(theme.value, null, '\t');
 	applyTheme(theme.value, false);
 	changed.value = true;
 }
@@ -178,7 +178,7 @@ function applyThemeCode() {
 	let parsed;
 
 	try {
-		parsed = JSON5.parse(themeCode.value);
+		parsed = AiSON.parse(themeCode.value);
 	} catch (err) {
 		os.alert({
 			type: 'error',

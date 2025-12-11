@@ -1,7 +1,10 @@
 ## Unreleased
 
 ### General
--
+- Enhance: JSON5で記述する部分（レジストリ編集・APIプレイグラウンド・テーマコード）を AiScript ベースのデータ交換フォーマット AiSON に置き換え、JSON5 パーサを削減
+  - 現在Misskeyで使用されている殆どのJSON5表記はAiSONとしても有効なため、既存のJSON5データは引き続き利用可能です。
+  - しかし、AiScriptで無効な記法（例: 指数表記 `1e3` など）は同様にAiSONでは利用できません。このような記述を利用している場合は、適宜修正してください。
+  - AiSONの詳細については、[ドキュメント](https://aiscript-dev.github.io/ja/references/interface/aison.html)をご覧ください。
 
 ### Client
 - Fix: 特定の条件下でMisskeyが起動せず空白のページが表示されることがある問題を軽減

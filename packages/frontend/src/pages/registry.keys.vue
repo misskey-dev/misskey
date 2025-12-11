@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -85,7 +85,7 @@ async function createKey() {
 	os.apiWithDialog('i/registry/set', {
 		scope: result.scope.split('/'),
 		key: result.key,
-		value: JSON5.parse(result.value),
+		value: AiSON.parse(result.value),
 	}).then(() => {
 		fetchKeys();
 	});

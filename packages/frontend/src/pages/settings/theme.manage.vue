@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import type { Theme } from '@/theme.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -67,7 +67,7 @@ const selectedTheme = computed(() => {
 
 const selectedThemeCode = computed(() => {
 	if (selectedTheme.value == null) return null;
-	return JSON5.stringify(selectedTheme.value, null, '\t');
+	return AiSON.stringify(selectedTheme.value, null, '\t');
 });
 
 function copyThemeCode() {

@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkKeyValue>
 				</FormSplit>
 
-				<MkCodeEditor v-model="valueForEditor" lang="json5">
-					<template #label>{{ i18n.ts.value }} (JSON)</template>
+				<MkCodeEditor v-model="valueForEditor" lang="javascript">
+					<template #label>{{ i18n.ts.value }} (AiSON)</template>
 				</MkCodeEditor>
 
 				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -45,7 +45,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
+import type { JsValue } from '@syuilo/aiscript/interpreter/util.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -74,13 +75,13 @@ function fetchValue() {
 		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
 		value.value = res;
-		valueForEditor.value = JSON5.stringify(res.value, null, '\t');
+		valueForEditor.value = AiSON.stringify(res.value as JsValue, null, '\t');
 	});
 }
 
 async function save() {
 	try {
-		JSON5.parse(valueForEditor.value);
+		AiSON.parse(valueForEditor.value);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -96,7 +97,7 @@ async function save() {
 		os.apiWithDialog('i/registry/set', {
 			scope: scope.value,
 			key: key.value,
-			value: JSON5.parse(valueForEditor.value),
+			value: AiSON.parse(valueForEditor.value),
 			domain: props.domain === '@' ? null : props.domain,
 		});
 	});

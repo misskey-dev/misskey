@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" code>
-					<template #label>Params (JSON or JSON5)</template>
+					<template #label>Params (AiSON)</template>
 				</MkTextarea>
 				<MkSwitch v-model="withCredential">
 					With credential
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import JSON5 from 'json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
 import type { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -42,6 +42,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
+import type { JsValue } from '@syuilo/aiscript/interpreter/util.js';
 
 const body = ref('{}');
 const endpoint = ref('');
@@ -56,13 +57,13 @@ misskeyApi('endpoints').then(endpointResponse => {
 
 function send() {
 	sending.value = true;
-	const requestBody = JSON5.parse(body.value);
+	const requestBody: any = AiSON.parse(body.value);
 	misskeyApi(endpoint.value as keyof Endpoints, requestBody, requestBody.i || (withCredential.value ? undefined : null)).then(resp => {
 		sending.value = false;
-		res.value = JSON5.stringify(resp, null, 2);
+		res.value = AiSON.stringify(resp as JsValue, null, 2);
 	}, err => {
 		sending.value = false;
-		res.value = JSON5.stringify(err, null, 2);
+		res.value = AiSON.stringify(err as JsValue, null, 2);
 	});
 }
 
@@ -83,7 +84,7 @@ function onEndpointChange() {
 				p.type === 'Object' ? {} :
 				null;
 		}
-		body.value = JSON5.stringify(endpointBody, null, 2);
+		body.value = AiSON.stringify(endpointBody, null, 2);
 	});
 }
 

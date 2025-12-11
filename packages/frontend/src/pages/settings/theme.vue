@@ -206,9 +206,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import JSON5 from 'json5';
-import defaultLightTheme from '@@/themes/l-light.json5';
-import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import { AiSON } from '@syuilo/aiscript/parser/aison.js';
+import defaultLightTheme from '@@/themes/l-light.aison';
+import defaultDarkTheme from '@@/themes/d-green-lime.aison';
 import { isSafeMode } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
 import * as os from '@/os.js';
@@ -232,10 +232,10 @@ import { checkDragDataType, getDragData, getPlainDragData, setDragData, setPlain
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
 
-const instanceDarkTheme = computed<Theme | null>(() => instance.defaultDarkTheme ? JSON5.parse(instance.defaultDarkTheme) : null);
+const instanceDarkTheme = computed<Theme | null>(() => instance.defaultDarkTheme ? AiSON.parse(instance.defaultDarkTheme) as Theme : null);
 const installedDarkThemes = computed(() => installedThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
 const builtinDarkThemes = computed(() => builtinThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
-const instanceLightTheme = computed<Theme | null>(() => instance.defaultLightTheme ? JSON5.parse(instance.defaultLightTheme) : null);
+const instanceLightTheme = computed<Theme | null>(() => instance.defaultLightTheme ? AiSON.parse(instance.defaultLightTheme) as Theme : null);
 const installedLightThemes = computed(() => installedThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const builtinLightThemes = computed(() => builtinThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const themes = computed(() => uniqueBy([instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value].filter(x => x != null), theme => theme.id));
@@ -314,7 +314,7 @@ function onThemeContextmenu(theme: Theme, ev: MouseEvent) {
 		icon: 'ti ti-clipboard',
 		text: i18n.ts._theme.copyThemeCode,
 		action: () => {
-			copyToClipboard(JSON5.stringify(theme, null, '\t'));
+			copyToClipboard(AiSON.stringify(theme, null, '\t'));
 		},
 	}, {
 		icon: 'ti ti-trash',
@@ -330,7 +330,7 @@ function onThemeDragstart(ev: DragEvent, theme: Theme) {
 	if (!ev.dataTransfer) return;
 
 	ev.dataTransfer.effectAllowed = 'copy';
-	setPlainDragData(ev, JSON5.stringify(theme, null, '\t'));
+	setPlainDragData(ev, AiSON.stringify(theme, null, '\t'));
 }
 
 function onDragover(ev: DragEvent) {
