@@ -719,18 +719,12 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 6.0.2
         version: 6.0.2(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(terser@5.44.1)(tsx@4.20.6))(vue@3.5.25(typescript@5.9.3))
-      '@vue/compiler-sfc':
-        specifier: 3.5.25
-        version: 3.5.25
       aiscript-vscode:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.15
         version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/c3cde89e79a41d93540cf8a48cd619c3f2dcb1b7
       analytics:
         specifier: 0.8.19
         version: 0.8.19(@types/dlv@1.1.5)
-      astring:
-        specifier: 1.9.0
-        version: 1.9.0
       broadcast-channel:
         specifier: 7.2.0
         version: 7.2.0
@@ -767,9 +761,6 @@ importers:
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
-      estree-walker:
-        specifier: 3.0.3
-        version: 3.0.3
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
@@ -803,9 +794,6 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
-      magic-string:
-        specifier: 0.30.21
-        version: 0.30.21
       matter-js:
         specifier: 0.20.0
         version: 0.20.0
@@ -848,9 +836,6 @@ importers:
       shiki:
         specifier: 3.17.0
         version: 3.17.0
-      strict-event-emitter-types:
-        specifier: 2.0.0
-        version: 2.0.0
       textarea-caret:
         specifier: 3.1.0
         version: 3.1.0
@@ -863,15 +848,6 @@ importers:
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
-      tsc-alias:
-        specifier: 1.8.16
-        version: 1.8.16
-      tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       v-code-diff:
         specifier: 1.13.1
         version: 1.13.1(vue@3.5.25(typescript@5.9.3))
@@ -978,9 +954,6 @@ importers:
       '@types/tinycolor2':
         specifier: 1.4.6
         version: 1.4.6
-      '@types/ws':
-        specifier: 8.18.1
-        version: 8.18.1
       '@typescript-eslint/eslint-plugin':
         specifier: 8.48.0
         version: 8.48.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
@@ -993,12 +966,12 @@ importers:
       '@vue/compiler-core':
         specifier: 3.5.25
         version: 3.5.25
-      '@vue/runtime-core':
-        specifier: 3.5.25
-        version: 3.5.25
       acorn:
         specifier: 8.15.0
         version: 8.15.0
+      astring:
+        specifier: 1.9.0
+        version: 1.9.0
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -1011,15 +984,18 @@ importers:
       eslint-plugin-vue:
         specifier: 10.6.2
         version: 10.6.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(vue-eslint-parser@10.2.0(eslint@9.39.1))
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
+      estree-walker:
+        specifier: 3.0.3
+        version: 3.0.3
       happy-dom:
         specifier: 20.0.11
         version: 20.0.11
       intersection-observer:
         specifier: 0.12.2
         version: 0.12.2
+      magic-string:
+        specifier: 0.30.21
+        version: 0.30.21
       micromatch:
         specifier: 4.0.8
         version: 4.0.8
@@ -1059,6 +1035,9 @@ importers:
       tsx:
         specifier: 4.20.6
         version: 4.20.6
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
       vite-plugin-glsl:
         specifier: 1.5.4
         version: 1.5.4(@rollup/pluginutils@5.3.0(rollup@4.53.3))(esbuild@0.27.0)(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(terser@5.44.1)(tsx@4.20.6))
@@ -1135,12 +1114,6 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 6.0.2
         version: 6.0.2(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(terser@5.44.1)(tsx@4.20.6))(vue@3.5.25(typescript@5.9.3))
-      '@vue/compiler-sfc':
-        specifier: 3.5.25
-        version: 3.5.25
-      astring:
-        specifier: 1.9.0
-        version: 1.9.0
       buraha:
         specifier: 0.0.1
         version: 0.0.1
@@ -1180,15 +1153,6 @@ importers:
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
-      tsc-alias:
-        specifier: 1.8.16
-        version: 1.8.16
-      tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       uuid:
         specifier: 13.0.0
         version: 13.0.0
@@ -1277,6 +1241,9 @@ importers:
       tsx:
         specifier: 4.20.6
         version: 4.20.6
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -5262,14 +5229,8 @@ packages:
   '@volar/typescript@2.4.23':
     resolution: {integrity: sha512-lAB5zJghWxVPqfcStmAP1ZqQacMpe90UrP5RJ3arDyrhy4aCUQqmxPPLB2PWDKugvylmO41ljK7vZ+t6INMTag==}
 
-  '@vue/compiler-core@3.5.24':
-    resolution: {integrity: sha512-eDl5H57AOpNakGNAkFDH+y7kTqrQpJkZFXhWZQGyx/5Wh7B1uQYvcWkvZi11BDhscPgj8N7XV3oRwiPnx1Vrig==}
-
   '@vue/compiler-core@3.5.25':
     resolution: {integrity: sha512-vay5/oQJdsNHmliWoZfHPoVZZRmnSWhug0BYT34njkYTPqClh3DNWLkZNJBVSjsNMrg0CCrBfoKkjZQPM/QVUw==}
-
-  '@vue/compiler-dom@3.5.24':
-    resolution: {integrity: sha512-1QHGAvs53gXkWdd3ZMGYuvQFXHW4ksKWPG8HP8/2BscrbZ0brw183q2oNWjMrSWImYLHxHrx1ItBQr50I/q2zw==}
 
   '@vue/compiler-dom@3.5.25':
     resolution: {integrity: sha512-4We0OAcMZsKgYoGlMjzYvaoErltdFI2/25wqanuTu+S4gismOTRTBPi4IASOjxWdzIwrYSjnqONfKvuqkXzE2Q==}
@@ -5312,9 +5273,6 @@ packages:
     resolution: {integrity: sha512-UJaXR54vMG61i8XNIzTSf2Q7MOqZHpp8+x3XLGtE3+fL+nQd+k7O5+X3D/uWrnQXOdMw5VPih+Uremcw+u1woQ==}
     peerDependencies:
       vue: 3.5.25
-
-  '@vue/shared@3.5.24':
-    resolution: {integrity: sha512-9cwHL2EsJBdi8NY22pngYYWzkTDhld6fAD6jlaeloNGciNSJL6bLpbxVgXl96X00Jtc6YWQv96YA/0sxex/k1A==}
 
   '@vue/shared@3.5.25':
     resolution: {integrity: sha512-AbOPdQQnAnzs58H2FrrDxYj/TJfmeS2jdfEEhgiKINy+bnOANmVizIEgq1r+C5zsbs6l1CCQxtcj71rwNQ4jWg==}
@@ -16181,14 +16139,6 @@ snapshots:
       path-browserify: 1.0.1
       vscode-uri: 3.1.0
 
-  '@vue/compiler-core@3.5.24':
-    dependencies:
-      '@babel/parser': 7.28.5
-      '@vue/shared': 3.5.24
-      entities: 4.5.0
-      estree-walker: 2.0.2
-      source-map-js: 1.2.1
-
   '@vue/compiler-core@3.5.25':
     dependencies:
       '@babel/parser': 7.28.5
@@ -16196,11 +16146,6 @@ snapshots:
       entities: 4.5.0
       estree-walker: 2.0.2
       source-map-js: 1.2.1
-
-  '@vue/compiler-dom@3.5.24':
-    dependencies:
-      '@vue/compiler-core': 3.5.24
-      '@vue/shared': 3.5.24
 
   '@vue/compiler-dom@3.5.25':
     dependencies:
@@ -16232,9 +16177,9 @@ snapshots:
   '@vue/language-core@2.2.12(typescript@5.9.3)':
     dependencies:
       '@volar/language-core': 2.4.15
-      '@vue/compiler-dom': 3.5.24
+      '@vue/compiler-dom': 3.5.25
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.24
+      '@vue/shared': 3.5.25
       alien-signals: 1.0.13
       minimatch: 9.0.5
       muggle-string: 0.4.1
@@ -16245,8 +16190,8 @@ snapshots:
   '@vue/language-core@3.1.5(typescript@5.9.3)':
     dependencies:
       '@volar/language-core': 2.4.23
-      '@vue/compiler-dom': 3.5.24
-      '@vue/shared': 3.5.24
+      '@vue/compiler-dom': 3.5.25
+      '@vue/shared': 3.5.25
       alien-signals: 3.1.0
       muggle-string: 0.4.1
       path-browserify: 1.0.1
@@ -16275,8 +16220,6 @@ snapshots:
       '@vue/compiler-ssr': 3.5.25
       '@vue/shared': 3.5.25
       vue: 3.5.25(typescript@5.9.3)
-
-  '@vue/shared@3.5.24': {}
 
   '@vue/shared@3.5.25': {}
 
@@ -23168,7 +23111,7 @@ snapshots:
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
-      '@vue/compiler-dom': 3.5.24
+      '@vue/compiler-dom': 3.5.25
       '@vue/compiler-sfc': 3.5.25
       ast-types: 0.16.1
       esm-resolve: 1.0.11
