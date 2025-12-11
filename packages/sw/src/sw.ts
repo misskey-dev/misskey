@@ -62,8 +62,12 @@ async function offlineContentHTML() {
 globalThis.addEventListener('install', (ev) => {
 	// Opt-out of the ServiceWorkerAutoPreload experiment using Static Routing API
 	if ('addRoutes' in ev) {
+		// doc: https://developer.mozilla.org/en-US/docs/Web/API/InstallEvent/addRoutes
+		// @ts-expect-error 実験的なAPIなので型定義がない
 		ev.addRoutes({
 			condition: {
+				// doc: https://developer.mozilla.org/ja/docs/Web/API/URLPattern
+				// @ts-expect-error 実験的なAPIなので型定義がない
 				urlPattern: new URLPattern({}),
 			},
 			source: 'fetch-event',
