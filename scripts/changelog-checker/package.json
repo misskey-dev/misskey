@@ -11,7 +11,7 @@
   "devDependencies": {
     "@types/mdast": "4.0.4",
     "@types/node": "24.10.1",
-    "@vitest/coverage-v8": "4.0.13",
+    "@vitest/coverage-v8": "4.0.14",
     "mdast-util-to-string": "4.0.0",
     "remark": "15.0.1",
     "remark-parse": "11.0.0",
@@ -19,6 +19,6 @@
     "unified": "11.0.5",
     "vite": "7.2.4",
     "vite-node": "5.2.0",
-    "vitest": "4.0.13"
+    "vitest": "4.0.14"
   }
 }

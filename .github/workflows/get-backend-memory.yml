@@ -56,6 +56,8 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config/default.yml
+    - name: Compile Configure
+      run: pnpm compile-config
     - name: Build
       run: pnpm build
     - name: Run migrations

@@ -20,9 +20,9 @@ jobs:
           script: |
             const fs = require('fs');
             let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: context.payload.workflow_run.id,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
             });
             let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
               return artifact.name.startsWith("memory-artifact-") || artifact.name == "memory-artifact"
@@ -61,18 +61,18 @@ jobs:
           if [ "$BASE_RSS" -gt 0 ] && [ "$HEAD_RSS" -gt 0 ]; then
             DIFF=$((HEAD_RSS - BASE_RSS))
             DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE_RSS" | bc)
-            
+
             # Convert to MB for readability
             BASE_MB=$(echo "scale=2; $BASE_RSS / 1048576" | bc)
             HEAD_MB=$(echo "scale=2; $HEAD_RSS / 1048576" | bc)
             DIFF_MB=$(echo "scale=2; $DIFF / 1048576" | bc)
-            
+
             echo "base_mb=$BASE_MB" >> "$GITHUB_OUTPUT"
             echo "head_mb=$HEAD_MB" >> "$GITHUB_OUTPUT"
             echo "diff_mb=$DIFF_MB" >> "$GITHUB_OUTPUT"
             echo "diff_percent=$DIFF_PERCENT" >> "$GITHUB_OUTPUT"
             echo "has_data=true" >> "$GITHUB_OUTPUT"
-            
+
             # Determine if this is a significant change (more than 5% increase)
             if [ "$(echo "$DIFF_PERCENT > 5" | bc)" -eq 1 ]; then
               echo "significant_increase=true" >> "$GITHUB_OUTPUT"
