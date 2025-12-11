@@ -60,7 +60,8 @@ async function offlineContentHTML() {
 }
 
 globalThis.addEventListener('install', (ev) => {
-	// Opt-out of the ServiceWorkerAutoPreload experiment using Static Routing API
+	// 次の問題が発生するため、ServiceWorkerAutoPreload をオプトアウトする必要がある
+	// https://issues.chromium.org/issues/466790291
 	if ('addRoutes' in ev) {
 		// doc: https://developer.mozilla.org/en-US/docs/Web/API/InstallEvent/addRoutes
 		// @ts-expect-error 実験的なAPIなので型定義がない
