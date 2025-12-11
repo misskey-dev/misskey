@@ -4025,6 +4025,10 @@ export interface Locale extends ILocale {
      */
     "sensitiveMediaDetection": string;
     /**
+     * センシティブメディア検出のプロバイダが設定されていないため、この機能は利用できません。
+     */
+    "sensitiveMediaDetectionNotAvailable": string;
+    /**
      * ローカルのみ
      */
     "localOnly": string;

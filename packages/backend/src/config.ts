@@ -102,6 +102,8 @@ type Source = {
 
 	mediaProxy?: string;
 	videoThumbnailGenerator?: string;
+	mediaSensitivityDetectorUrl?: string;
+	mediaSensitivityDetectorApiKey?: string;
 
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
@@ -194,6 +196,8 @@ export type Config = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
+	mediaSensitivityDetectorUrl: string | null;
+	mediaSensitivityDetectorApiKey: string | null;
 	redis: RedisOptions & RedisOptionsSource;
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
@@ -308,6 +312,10 @@ export function loadConfig(): Config {
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
+		mediaSensitivityDetectorUrl: config.mediaSensitivityDetectorUrl ?
+			config.mediaSensitivityDetectorUrl.endsWith('/') ? config.mediaSensitivityDetectorUrl.substring(0, config.mediaSensitivityDetectorUrl.length - 1) : config.mediaSensitivityDetectorUrl
+			: null,
+		mediaSensitivityDetectorApiKey: config.mediaSensitivityDetectorApiKey ?? null,
 		userAgent: `Misskey/${version} (${config.url})`,
 		frontendEntry: frontendManifest['src/_boot_.ts'],
 		frontendManifestExists: frontendManifestExists,
