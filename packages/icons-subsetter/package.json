@@ -19,7 +19,6 @@
 	"dependencies": {
 		"@tabler/icons-webfont": "3.35.0",
 		"harfbuzzjs": "0.4.13",
-		"tiny-glob": "0.2.9",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3",
 		"wawoff2": "2.0.1"
