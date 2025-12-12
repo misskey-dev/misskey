@@ -403,37 +403,28 @@ export function connectStream<C extends keyof misskey.Channels>(user: UserToken,
 }
 
 export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken, channel: C, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: misskey.Channels[C]['params']) => {
-	return new Promise<boolean>(async (res, rej) => {
-		let timer: NodeJS.Timeout | null = null;
+	let ws: WebSocket | undefined;
 
-		let ws: WebSocket;
-		try {
-			ws = await connectStream(user, channel, msg => {
+	try {
+		let callback: (msg: Record<string, unknown>) => void;
+		const receivedPromise = new Promise<boolean>((resolve) => {
+			callback = (msg: Record<string, unknown>) => {
 				if (cond(msg)) {
-					ws.close();
-					if (timer) clearTimeout(timer);
-					res(true);
+					resolve(true);
 				}
-			}, params);
-		} catch (e) {
-			rej(e);
-		}
+			};
+		});
 
-		if (!ws!) return;
+		ws = await connectStream(user, channel, callback!, params);
+		await trgr();
 
-		timer = setTimeout(() => {
-			ws.close();
-			res(false);
-		}, 3000);
-
-		try {
-			await trgr();
-		} catch (e) {
-			ws.close();
-			if (timer) clearTimeout(timer);
-			rej(e);
-		}
-	});
+		return await Promise.race([
+			receivedPromise,
+			new Promise<void>((r) => setTimeout(() => r(), 3000)).then(() => false),
+		]);
+	} finally {
+		if (ws) ws.close();
+	}
 };
 
 /**
@@ -452,12 +443,12 @@ export function makeStreamCatcher<T>(
 	extractor: (message: Record<string, any>) => T,
 	timeout = 60 * 1000): Promise<T> {
 	let ws: WebSocket;
-	const p = new Promise<T>(async (resolve) => {
-		ws = await connectStream(user, channel, (msg) => {
+	const p = new Promise<T>((resolve, reject) => {
+		connectStream(user, channel, (msg) => {
 			if (cond(msg)) {
 				resolve(extractor(msg));
 			}
-		});
+		}).then(w => { ws = w; }).catch(reject);
 	}).finally(() => {
 		ws.close();
 	});
@@ -661,33 +652,25 @@ export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
 export async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>, port = WEBHOOK_PORT): Promise<T> {
 	const fastify = Fastify();
 
-	let timeoutHandle: NodeJS.Timeout | null = null;
-	const result = await new Promise<string>(async (resolve, reject) => {
-		fastify.all('/', async (req, res) => {
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
-			}
+	let result: string;
 
-			const body = JSON.stringify(req.body);
-			res.status(200).send('ok');
-			await fastify.close();
-			resolve(body);
+	try {
+		const receivePromise = new Promise<string>((resolve) => {
+			fastify.all('/', async (req, res) => {
+				const body = JSON.stringify(req.body);
+				res.status(200).send('ok');
+				await fastify.close();
+				resolve(body);
+			});
 		});
 
 		await fastify.listen({ port });
 
-		timeoutHandle = setTimeout(async () => {
-			await fastify.close();
-			reject(new Error('timeout'));
-		}, 3000);
-
-		try {
-			await postAction();
-		} catch (e) {
-			await fastify.close();
-			reject(e);
-		}
-	});
+		await postAction();
+		result = await timeoutPromise(receivePromise, 3000);
+	} finally {
+		await fastify.close();
+	}
 
 	await fastify.close();
 
