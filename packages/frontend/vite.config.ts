@@ -1,9 +1,9 @@
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { promises as fsp } from 'fs';
+import { promises as fsp } from 'node:fs';
 import locales from 'i18n';
 import * as yaml from 'js-yaml';
-import path from 'path';
+import path from 'node:path';
 import type { UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import pluginGlsl from 'vite-plugin-glsl';

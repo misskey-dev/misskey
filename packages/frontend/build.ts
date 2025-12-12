@@ -1,5 +1,5 @@
 import { execa } from 'execa';
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import locales from 'i18n';
 import path from 'node:path';
 import url from 'node:url';
