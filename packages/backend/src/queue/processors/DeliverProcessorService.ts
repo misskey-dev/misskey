@@ -15,19 +15,15 @@ import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataS
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type Logger from '@/logger.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { InstancesRepository, MiMeta } from '@/models/_.js';
 import type { MiInstance } from '@/models/Instance.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DeliverJobData } from '../types.js';
 
 @Injectable()
 export class DeliverProcessorService {
-	private logger: Logger;
 	private suspendedHostsCache: MemorySingleCache<MiInstance[]>;
-	private latest: string | null;
 
 	constructor(
 		@Inject(DI.meta)
@@ -43,9 +39,7 @@ export class DeliverProcessorService {
 		private instanceChart: InstanceChart,
 		private apRequestChart: ApRequestChart,
 		private federationChart: FederationChart,
-		private queueLoggerService: QueueLoggerService,
 	) {
-		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
 		this.suspendedHostsCache = new MemorySingleCache<MiInstance[]>(1000 * 60 * 60); // 1h
 	}
 

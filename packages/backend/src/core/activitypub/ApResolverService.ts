@@ -5,14 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
-import type { Config } from '@/config.js';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { LoggerService } from '@/core/LoggerService.js';
 import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type Logger from '@/logger.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { FollowRequestsRepository, MiMeta, NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
@@ -26,10 +23,7 @@ import { isCollectionOrOrderedCollection } from './type.js';
 export class Resolver {
 	private history: Set<string>;
 	private user?: MiLocalUser;
-	private logger: Logger;
-
 	constructor(
-		private config: Config,
 		private meta: MiMeta,
 		private usersRepository: UsersRepository,
 		private notesRepository: NotesRepository,
@@ -42,11 +36,9 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
-		private loggerService: LoggerService,
 		private recursionLimit = 256,
 	) {
 		this.history = new Set();
-		this.logger = this.loggerService.getLogger('ap-resolve');
 	}
 
 	@bindThis
@@ -180,9 +172,6 @@ export class Resolver {
 @Injectable()
 export class ApResolverService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
@@ -207,14 +196,12 @@ export class ApResolverService {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
-		private loggerService: LoggerService,
 	) {
 	}
 
 	@bindThis
 	public createResolver(): Resolver {
 		return new Resolver(
-			this.config,
 			this.meta,
 			this.usersRepository,
 			this.notesRepository,
@@ -227,7 +214,6 @@ export class ApResolverService {
 			this.httpRequestService,
 			this.apRendererService,
 			this.apDbResolverService,
-			this.loggerService,
 		);
 	}
 }

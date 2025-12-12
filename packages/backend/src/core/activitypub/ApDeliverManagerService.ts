@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import type { IActivity } from '@/core/activitypub/type.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -40,14 +39,12 @@ class DeliverManager {
 
 	/**
 	 * Constructor
-	 * @param userEntityService
 	 * @param followingsRepository
 	 * @param queueService
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
 	constructor(
-		private userEntityService: UserEntityService,
 		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
 
@@ -154,7 +151,6 @@ export class ApDeliverManagerService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private userEntityService: UserEntityService,
 		private queueService: QueueService,
 	) {
 	}
@@ -167,7 +163,6 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToFollowers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 			actor,
@@ -186,7 +181,6 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToUser(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, to: MiRemoteUser): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 			actor,
@@ -205,7 +199,6 @@ export class ApDeliverManagerService {
 	@bindThis
 	public async deliverToUsers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, targets: MiRemoteUser[]): Promise<void> {
 		const manager = new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 			actor,
@@ -218,7 +211,6 @@ export class ApDeliverManagerService {
 	@bindThis
 	public createDeliverManager(actor: { id: MiUser['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
-			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 

@@ -11,7 +11,6 @@ import type UsersChart from '@/core/chart/charts/users.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MetaService } from '@/core/MetaService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { UserService } from '@/core/UserService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
@@ -42,7 +41,6 @@ export class SignupService {
 		private userService: UserService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private systemAccountService: SystemAccountService,
 		private metaService: MetaService,
 		private usersChart: UsersChart,
 	) {

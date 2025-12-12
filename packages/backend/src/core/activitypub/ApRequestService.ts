@@ -11,12 +11,10 @@ import type { Config } from '@/config.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { LoggerService } from '@/core/LoggerService.js';
 import type { UserKeypairService } from '@/core/UserKeypairService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type Logger from '@/logger.js';
 import type { MiUser } from '@/models/User.js';
 import type { IObject } from './type.js';
 
@@ -139,19 +137,14 @@ export class ApRequestCreator {
 
 @Injectable()
 export class ApRequestService {
-	private logger: Logger;
-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
 
 		private userKeypairService: UserKeypairService,
 		private httpRequestService: HttpRequestService,
-		private loggerService: LoggerService,
 		private utilityService: UtilityService,
 	) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 	}
 
 	@bindThis

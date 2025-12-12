@@ -5,7 +5,6 @@
 
 import { Injectable } from '@nestjs/common';
 import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { MetaService } from '@/core/MetaService.js';
 import type { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
@@ -21,7 +20,6 @@ class GlobalTimelineChannel extends Channel {
 	private withFiles: boolean;
 
 	constructor(
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
@@ -82,7 +80,6 @@ export class GlobalTimelineChannelService implements MiChannelService<false> {
 	public readonly kind = GlobalTimelineChannel.kind;
 
 	constructor(
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
@@ -91,7 +88,6 @@ export class GlobalTimelineChannelService implements MiChannelService<false> {
 	@bindThis
 	public create(id: string, connection: Channel['connection']): GlobalTimelineChannel {
 		return new GlobalTimelineChannel(
-			this.metaService,
 			this.roleService,
 			this.noteEntityService,
 			id,

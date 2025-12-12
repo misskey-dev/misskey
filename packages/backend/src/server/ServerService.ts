@@ -13,14 +13,13 @@ import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
 import type { Config } from '@/config.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
-import type { EmojisRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { EmojisRepository, MiMeta, UsersRepository } from '@/models/_.js';
 import type { ActivityPubServerService } from './ActivityPubServerService.js';
 import type { ApiServerService } from './api/ApiServerService.js';
 import type { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
@@ -49,9 +48,6 @@ export class ServerService implements OnApplicationShutdown {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
@@ -65,7 +61,6 @@ export class ServerService implements OnApplicationShutdown {
 		private fileServerService: FileServerService,
 		private healthServerService: HealthServerService,
 		private clientServerService: ClientServerService,
-		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 		private oauth2ProviderService: OAuth2ProviderService,
 	) {

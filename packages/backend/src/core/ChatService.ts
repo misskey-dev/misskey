@@ -7,7 +7,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import { Brackets } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import type { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -17,7 +16,6 @@ import type { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import type { PushNotificationService } from '@/core/PushNotificationService.js';
 import type { QueryService } from '@/core/QueryService.js';
-import type { QueueService } from '@/core/QueueService.js';
 import type { RoleService } from '@/core/RoleService.js';
 import type { UserBlockingService } from '@/core/UserBlockingService.js';
 import type { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -81,8 +79,6 @@ export class ChatService {
 		private chatEntityService: ChatEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private apRendererService: ApRendererService,
-		private queueService: QueueService,
 		private pushNotificationService: PushNotificationService,
 		private notificationService: NotificationService,
 		private userBlockingService: UserBlockingService,

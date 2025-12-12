@@ -10,7 +10,6 @@ import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { QueueService } from '@/core/QueueService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, MiMeta, MiUser, UsersRepository } from '@/models/_.js';
@@ -32,7 +31,6 @@ export class DeleteAccountService {
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
-		private systemAccountService: SystemAccountService,
 	) {
 	}
 

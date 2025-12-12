@@ -48,7 +48,7 @@ import { isReply } from '@/misc/is-reply.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { concat } from '@/misc/prelude/array.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
-import type { BlockingsRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, FollowingsRepository, InstancesRepository, MiFollowing, MiMeta, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { BlockingsRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, FollowingsRepository, InstancesRepository, MiFollowing, MiMeta, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiApp } from '@/models/App.js';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
@@ -69,7 +69,6 @@ class NotificationManager {
 	}[];
 
 	constructor(
-		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
 		notifier: { id: MiUser['id']; },
 		note: MiNote,
@@ -168,9 +167,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -772,7 +768,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
-			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+			const nm = new NotificationManager(this.notificationService, user, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 

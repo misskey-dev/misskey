@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { IdService } from '@/core/IdService.js';
 import type { ReversiService } from '@/core/ReversiService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -33,7 +32,6 @@ export class CleanProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 		private reversiService: ReversiService,
-		private idService: IdService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean');
 	}
