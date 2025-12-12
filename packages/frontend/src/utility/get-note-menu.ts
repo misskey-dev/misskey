@@ -4,7 +4,7 @@
  */
 
 import type { Ref, ShallowRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';

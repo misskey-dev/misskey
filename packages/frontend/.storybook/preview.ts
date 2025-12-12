@@ -5,7 +5,8 @@
 
 import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
-import { type Preview, setup } from '@storybook/vue3';
+import type { Preview, } from '@storybook/vue3';
+import { setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';

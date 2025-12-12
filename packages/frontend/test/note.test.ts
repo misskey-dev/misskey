@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { cleanup, type RenderResult, render } from '@testing-library/vue';
+import type { RenderResult, } from '@testing-library/vue';
+import { cleanup, render } from '@testing-library/vue';
 import { afterEach, assert, describe, test } from 'vitest';
 import './init';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { components } from '@/components/index.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import { directives } from '@/directives/index.js';

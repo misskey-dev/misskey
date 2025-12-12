@@ -7,7 +7,7 @@ import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue'
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { EventEmitter } from 'eventemitter3';
 import isAnimated from 'is-file-animated';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

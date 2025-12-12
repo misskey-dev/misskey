@@ -454,7 +454,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 		// undefined ... cancel
 		async function resolveConflict(local: ValueOf<K>, remote: ValueOf<K>): Promise<ValueOf<K> | undefined> {
 			const merge = (PREF_DEF as PreferencesDefinition)[key].mergeStrategy;
-			let mergedValue: ValueOf<K> | undefined = undefined; // null と区別したいため
+			let mergedValue: ValueOf<K> | undefined; // null と区別したいため
 			try {
 				if (merge != null) mergedValue = merge(local, remote);
 			} catch (err) {

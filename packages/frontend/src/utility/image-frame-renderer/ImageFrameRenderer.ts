@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ExifReader from 'exifreader';
+import type ExifReader from 'exifreader';
 import QRCodeStyling from 'qr-code-styling';
 import { url } from '@@/js/config.js';
 import { ensureSignin } from '@/i.js';

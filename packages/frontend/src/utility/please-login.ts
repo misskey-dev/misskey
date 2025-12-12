@@ -51,7 +51,7 @@ export async function pleaseLogin(opts: {
 } = {}) {
 	if ($i) return;
 
-	let _openOnRemote: OpenOnRemoteOptions | undefined = undefined;
+	let _openOnRemote: OpenOnRemoteOptions | undefined ;
 
 	// 連合できる場合と、（連合ができなくても）共有する場合は外部連携オプションを設定
 	if (opts.openOnRemote != null && (instance.federation !== 'none' || opts.openOnRemote.type === 'share')) {

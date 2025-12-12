@@ -5,7 +5,7 @@
 
 import { onBeforeUnmount } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 type Events = {
 	themeChanging: () => void;

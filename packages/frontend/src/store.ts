@@ -4,7 +4,7 @@
  */
 
 import { markRaw, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { prefersReducedMotion } from '@@/js/config.js';
 import { hemisphere } from '@@/js/intl-const.js';
 import darkTheme from '@@/themes/d-green-lime.json5';
@@ -502,7 +502,7 @@ export class ColdDeviceStorage {
 	}
 
 	public static getAll(): Partial<typeof this.default> {
-		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce<Partial<typeof this.default>>((acc, key) => {
+		return (Object.keys(ColdDeviceStorage.default) as (keyof typeof this.default)[]).reduce<Partial<typeof this.default>>((acc, key) => {
 			const value = localStorage.getItem(PREFIX + key);
 			if (value != null) {
 				acc[key] = JSON.parse(value);
@@ -522,13 +522,13 @@ export class ColdDeviceStorage {
 
 		miLocalStorage.setItem(`${PREFIX}${key}`, JSON.stringify(value));
 
-		for (const watcher of this.watchers) {
+		for (const watcher of ColdDeviceStorage.watchers) {
 			if (watcher.key === key) watcher.callback(value);
 		}
 	}
 
 	public static watch(key, callback) {
-		this.watchers.push({ key, callback });
+		ColdDeviceStorage.watchers.push({ key, callback });
 	}
 
 	// TODO: VueのcustomRef使うと良い感じになるかも
@@ -536,7 +536,7 @@ export class ColdDeviceStorage {
 		const v = ColdDeviceStorage.get(key);
 		const r = ref(v);
 		// TODO: このままではwatcherがリークするので開放する方法を考える
-		this.watch(key, v => {
+		ColdDeviceStorage.watch(key, v => {
 			r.value = v;
 		});
 		return r;

@@ -5,27 +5,32 @@
 
 /// <reference lib="esnext" />
 
+import type {
+	AttributeNode,
+	DirectiveNode,
+	ElementNode,
+	RootNode,
+	SimpleExpressionNode,
+	TemplateChildNode,
+} from '@vue/compiler-core';
 import {
-	type AttributeNode,
-	type DirectiveNode,
-	type ElementNode,
 	ElementTypes,
 	NodeTypes,
-	type RootNode,
-	type SimpleExpressionNode,
-	type TemplateChildNode,
 } from '@vue/compiler-core';
 import JSON5 from 'json5';
-import MagicString, { SourceMap } from 'magic-string';
+import MagicString from 'magic-string';
+import type { SourceMap } from 'magic-string';
 import { minimatch } from 'minimatch';
+import type {
+	EnvironmentModuleGraph,
+	LogErrorOptions,
+	LogOptions,
+	Plugin,
+	PluginOption
+} from 'vite';
 import {
 	createLogger,
-	type EnvironmentModuleGraph,
-	type LogErrorOptions,
-	type LogOptions,
 	normalizePath,
-	type Plugin,
-	type PluginOption
 } from 'vite';
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
 import fs from 'node:fs';
@@ -60,7 +65,7 @@ interface MarkerRelation {
 }
 
 // ロガー
-let logger = {
+const logger = {
 	info: (msg: string, options?: LogOptions) => { },
 	warn: (msg: string, options?: LogOptions) => { },
 	error: (msg: string, options?: LogErrorOptions | unknown) => { },
@@ -230,8 +235,8 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
  * SearchLabel/SearchText/SearchIconを探して抽出する関数
  */
 function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: string | null; texts: string[]; icon: string | null; } {
-	let label: string | null | undefined = undefined;
-	let icon: string | null | undefined = undefined;
+	let label: string | null | undefined ;
+	let icon: string | null | undefined ;
 	const texts: string[] = [];
 
 	logger.info(`Extracting labels and texts from ${nodes.length} nodes`);
@@ -248,13 +253,14 @@ function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: stri
 
 				label = extractElementText(node, id);
 				return;
-			case 'SearchText':
+			case 'SearchText': {
 				const content = extractElementText(node, id);
 				if (content) {
 					texts.push(content);
 				}
 				return;
-			case 'SearchIcon':
+			}
+			case 'SearchIcon': {
 				if (icon !== undefined) {
 					logger.warn(`Duplicate SearchIcon found, ignoring the second one at ${id}:${node.loc.start.line}`);
 					break; // 2つ目のSearchIconは無視
@@ -272,6 +278,7 @@ function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: stri
 				}
 				icon = getStringProp(findAttribute(iconNode.props, 'class'), id);
 				return;
+			}
 		}
 
 		return;
@@ -289,7 +296,7 @@ function getStringProp(attr: AttributeNode | DirectiveNode | null, id: string): 
 			return null;
 		case NodeTypes.ATTRIBUTE:
 			return attr.value?.content ?? null;
-		case NodeTypes.DIRECTIVE:
+		case NodeTypes.DIRECTIVE: {
 			if (attr.exp == null) return null;
 			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const value = evalExpression(attr.exp.content ?? '');
@@ -298,6 +305,7 @@ function getStringProp(attr: AttributeNode | DirectiveNode | null, id: string): 
 				return null;
 			}
 			return value;
+		}
 	}
 }
 
@@ -309,7 +317,7 @@ function getStringArrayProp(attr: AttributeNode | DirectiveNode | null, id: stri
 		case NodeTypes.ATTRIBUTE:
 			logger.error(`Expected directive, got attribute at ${id}:${attr.loc.start.line}`);
 			return null;
-		case NodeTypes.DIRECTIVE:
+		case NodeTypes.DIRECTIVE: {
 			if (attr.exp == null) return null;
 			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const value = evalExpression(attr.exp.content ?? '');
@@ -318,6 +326,7 @@ function getStringArrayProp(attr: AttributeNode | DirectiveNode | null, id: stri
 				return null;
 			}
 			return value;
+		}
 	}
 }
 
@@ -371,7 +380,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// pathがない場合はファイルパスを設定
 		if (markerInfo.path == null && parentId == null) {
-			markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
+			markerInfo.path = id.match(/.*(\/(admin|settings)\/[^/]+)\.vue$/)?.[1];
 		}
 
 		// SearchLabelとSearchTextを抽出 (AST全体を探索)
@@ -723,13 +732,13 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 
 		async load(id) {
 			if (id == `\0${allSearchIndexFile}`) {
-				const files = options.targetFilePaths.map((filePathPattern) => fs.globSync(filePathPattern)).flat();
+				const files = options.targetFilePaths.flatMap((filePathPattern) => fs.globSync(filePathPattern));
 				let generatedFile = '';
 				let arrayElements = '';
-				for (let file of files) {
+				for (const file of files) {
 					const normalizedRelative = normalizePath(file);
 					const absoluteId = normalizePath(path.join(process.cwd(), normalizedRelative)) + searchIndexSuffix;
-					const variableName = normalizedRelative.replace(/[\/.-]/g, '_');
+					const variableName = normalizedRelative.replace(/[/.-]/g, '_');
 					generatedFile += `import { searchIndexes as ${variableName} } from '${searchIndexPrefix}${absoluteId}';\n`;
 					arrayElements += `  ...${variableName},\n`;
 				}

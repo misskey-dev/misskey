@@ -4,7 +4,8 @@
  */
 
 import type { StorybookConfig } from '@storybook/vue3-vite';
-import { mergeConfig, type Plugin } from 'vite';
+import type { Plugin } from 'vite';
+import { mergeConfig, } from 'vite';
 import turbosnap from 'vite-plugin-turbosnap';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';

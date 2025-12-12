@@ -41,8 +41,8 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
 		'Mk:dialog': values.FN_NATIVE(async ([_title, _text, _type]) => {
-			let title: string | undefined = undefined;
-			let text: string | undefined = undefined;
+			let title: string | undefined;
+			let text: string | undefined;
 			let type: typeof DIALOG_TYPES[number] = 'info';
 
 			if (_title != null) {
@@ -78,8 +78,8 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			return values.NULL;
 		}),
 		'Mk:confirm': values.FN_NATIVE(async ([_title, _text, _type]) => {
-			let title: string | undefined = undefined;
-			let text: string | undefined = undefined;
+			let title: string | undefined;
+			let text: string | undefined;
 			let type: typeof DIALOG_TYPES[number] = 'question';
 
 			if (_title != null) {

@@ -10,5 +10,5 @@ export default (v, fractionDigits = 0) => {
 	const isMinus = v < 0;
 	if (isMinus) v = -v;
 	const i = Math.floor(Math.log(v) / Math.log(1000));
-	return (isMinus ? '-' : '') + (v / Math.pow(1000, i)).toFixed(fractionDigits).replace(/(\.[1-9]*)0+$/, '$1').replace(/\.$/, '') + (sizes[i] ?? `e+${ i * 3 }`);
+	return (isMinus ? '-' : '') + (v / 1000 ** i).toFixed(fractionDigits).replace(/(\.[1-9]*)0+$/, '$1').replace(/\.$/, '') + (sizes[i] ?? `e+${ i * 3 }`);
 };

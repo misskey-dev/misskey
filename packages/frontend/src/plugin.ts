@@ -6,7 +6,7 @@
 import { ref } from 'vue';
 import type { Interpreter, Parser, utils as utils_TypeReferenceOnly, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { isSafeMode } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

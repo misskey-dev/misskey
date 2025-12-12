@@ -27,7 +27,7 @@ export default function pluginWatchLocales() {
 					server.ws.send({
 						type: 'custom',
 						event: 'locale-update',
-						data: filePath.match(/([^\/]+)\.yml$/)?.[1] || null,
+						data: filePath.match(/([^/]+)\.yml$/)?.[1] || null,
 					})
 				}
 			});

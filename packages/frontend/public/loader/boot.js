@@ -16,7 +16,7 @@
 		renderError('SOMETHING_HAPPENED_IN_PROMISE', e.reason || e);
 	};
 
-	let forceError = localStorage.getItem('forceError');
+	const forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
 		return;
@@ -122,7 +122,7 @@
 	}
 
 	async function addStyle(styleText) {
-		let css = document.createElement('style');
+		const css = document.createElement('style');
 		css.appendChild(document.createTextNode(styleText));
 		document.head.appendChild(css);
 	}

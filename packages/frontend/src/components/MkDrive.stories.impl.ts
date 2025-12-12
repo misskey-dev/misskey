@@ -5,7 +5,7 @@
 
 import { action } from 'storybook/actions';
 import type { StoryObj } from '@storybook/vue3';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { HttpResponse, http } from 'msw';
 import { file, folder } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';

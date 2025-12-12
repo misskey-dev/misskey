@@ -4,7 +4,7 @@
  */
 
 import type { StoryObj } from '@storybook/vue3';
-import { entities } from 'misskey-js';
+import type { entities } from 'misskey-js';
 import { delay, HttpResponse, http } from 'msw';
 import { fakeId } from '../../../.storybook/fake-utils.js';
 import { emoji } from '../../../.storybook/fakes.js';

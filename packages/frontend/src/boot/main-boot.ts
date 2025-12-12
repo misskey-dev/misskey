@@ -6,7 +6,7 @@
 import type { Component } from 'vue';
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { compareVersions } from 'compare-versions';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { ui } from '@@/js/config.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';

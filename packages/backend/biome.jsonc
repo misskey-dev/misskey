@@ -91,6 +91,12 @@
 				},
 				"noParameterProperties": {
 					"level": "off"
+				},
+				"useImportType": {
+					"level": "error",
+					"options": {
+						"style": "separatedType"
+					}
 				}
 			},
 			"suspicious": {

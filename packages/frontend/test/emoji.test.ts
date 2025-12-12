@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { cleanup, type RenderResult, render } from '@testing-library/vue';
+import type { RenderResult, } from '@testing-library/vue';
+import { cleanup, render } from '@testing-library/vue';
 import { afterEach, assert, describe, test } from 'vitest';
 import { getEmojiName } from '@@/js/emojilist.js';
 import MkEmoji from '@/components/global/MkEmoji.vue';

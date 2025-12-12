@@ -4,7 +4,7 @@
  */
 
 import { ref } from 'vue';
-import { notificationTypes } from 'misskey-js';
+import type { notificationTypes } from 'misskey-js';
 import * as os from '@/os.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { prefer } from '@/preferences.js';

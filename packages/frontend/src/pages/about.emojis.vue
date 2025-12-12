@@ -49,7 +49,7 @@ function search() {
 		return;
 	}
 
-	const queryarry = q.value.match(/\:([a-z0-9_]*)\:/g);
+	const queryarry = q.value.match(/:([a-z0-9_]*):/g);
 
 	if (queryarry) {
 		searchEmojis.value = customEmojis.value.filter(emoji =>

@@ -8,7 +8,7 @@
 import type { Component, Ref } from 'vue';
 import { defineAsyncComponent, markRaw, nextTick, ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import MkDialog from '@/components/MkDialog.vue';

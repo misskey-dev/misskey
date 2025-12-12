@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type Ref, ref } from 'vue';
+import type { Ref, } from 'vue';
+import { ref } from 'vue';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import { describe, expect, test } from 'vitest';
 import type {

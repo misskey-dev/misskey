@@ -6,7 +6,7 @@
 import type { Reactive } from 'vue';
 import { onUnmounted, reactive } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';

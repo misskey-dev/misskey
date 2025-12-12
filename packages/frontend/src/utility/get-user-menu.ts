@@ -4,7 +4,7 @@
  */
 
 import { defineAsyncComponent, ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';

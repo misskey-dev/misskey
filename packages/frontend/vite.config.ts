@@ -145,7 +145,7 @@ export function getConfig(): UserConfig {
 		css: {
 			modules: {
 				generateScopedName(name, filename, _css): string {
-					const id = (`${path.relative(__dirname, filename.split('?')[0])}-${name}`).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
+					const id = (`${path.relative(__dirname, filename.split('?')[0])}-${name}`).replace(/[\\/.?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
 						return `x${toBase62(hash(id)).substring(0, 4)}`;
 					} else {

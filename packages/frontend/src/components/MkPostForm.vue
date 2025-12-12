@@ -1034,7 +1034,7 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
-	let token: string | undefined = undefined;
+	let token: string | undefined ;
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();

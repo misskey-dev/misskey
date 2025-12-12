@@ -4,7 +4,7 @@
  */
 
 import { defineAsyncComponent, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { apiUrl, host } from '@@/js/config.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';

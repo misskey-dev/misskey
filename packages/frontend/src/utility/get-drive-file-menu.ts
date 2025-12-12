@@ -4,7 +4,7 @@
  */
 
 import { defineAsyncComponent } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { globalEvents } from '@/events.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

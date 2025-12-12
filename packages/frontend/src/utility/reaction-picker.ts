@@ -5,7 +5,7 @@
 
 import type { Ref } from 'vue';
 import { defineAsyncComponent, ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 

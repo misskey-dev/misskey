@@ -16,15 +16,15 @@
 const INTEGRITY_CHECKSUM = '3d6b9f06410d179a7f7404d4bf4c3c70'
 const activeClientIds = new Set()
 
-self.addEventListener('install', function () {
+self.addEventListener('install', () => {
   self.skipWaiting()
 })
 
-self.addEventListener('activate', function (event) {
+self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim())
 })
 
-self.addEventListener('message', async function (event) {
+self.addEventListener('message', async (event) => {
   const clientId = event.source.id
 
   if (!clientId || !self.clients) {
@@ -89,7 +89,7 @@ self.addEventListener('message', async function (event) {
   }
 })
 
-self.addEventListener('fetch', function (event) {
+self.addEventListener('fetch', (event) => {
   const { request } = event
   const accept = request.headers.get('accept') || ''
 
@@ -150,7 +150,7 @@ async function handleRequest(event, requestId) {
   // Ensure MSW is active and ready to handle the message, otherwise
   // this message will pend indefinitely.
   if (client && activeClientIds.has(client.id)) {
-    ;(async function () {
+    ;(async () => {
       const clonedResponse = response.clone()
       sendToClient(client, {
         type: 'RESPONSE',

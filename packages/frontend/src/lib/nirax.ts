@@ -265,7 +265,6 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 				let parts = [..._parts];
 				const props = new Map<string, string>();
 
-				pathMatchLoop:
 				for (const p of parsePath(route.path)) {
 					if (typeof p === 'string') {
 						if (p === parts[0]) {
@@ -282,7 +281,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 								props.set(p.name, safeURIDecode(parts.join('/')));
 								parts = [];
 							}
-							break pathMatchLoop;
+							break;
 						} else {
 							if (p.startsWith) {
 								if (parts[0] == null || !parts[0].startsWith(p.startsWith)) continue forEachRouteLoop;
@@ -310,7 +309,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 								_parsedRoute,
 							};
 						} else {
-							continue forEachRouteLoop;
+							continue;
 						}
 					}
 
@@ -346,10 +345,8 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 								_parsedRoute,
 							};
 						} else {
-							continue forEachRouteLoop;
 						}
 					} else {
-						continue forEachRouteLoop;
 					}
 				}
 			}

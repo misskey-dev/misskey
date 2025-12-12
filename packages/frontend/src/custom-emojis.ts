@@ -4,7 +4,7 @@
  */
 
 import { computed, markRaw, shallowRef, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { get, set } from '@/utility/idb-proxy.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 

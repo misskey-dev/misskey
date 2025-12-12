@@ -158,7 +158,7 @@ function getPasswordStrength(source: string): number {
 	}
 
 	// 記号が混ざってたら
-	if (/[!\x22\#$%&@'()*+,-./_]/.test(source)) {
+	if (/[!\x22#$%&@'()*+,-./_]/.test(source)) {
 		power += 0.02;
 	}
 

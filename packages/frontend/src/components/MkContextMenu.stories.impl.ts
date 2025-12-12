@@ -8,7 +8,7 @@ import { userEvent, within } from '@storybook/test';
 /* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
 import * as os from '@/os.js';
-import MkContextMenu from './MkContextMenu.vue';
+import type MkContextMenu from './MkContextMenu.vue';
 export const Empty = {
 	render(args) {
 		return {

@@ -4,7 +4,7 @@
  */
 
 import type { AnalyticsInstance, AnalyticsPlugin } from 'analytics';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 /**
  * analytics moduleを読み込まなくても動作するようにするためのラッパー
@@ -46,15 +46,15 @@ class AnalyticsProxy implements AnalyticsInstance {
 	}
 
 	public ready(...args: Parameters<AnalyticsInstance['ready']>) {
-		return this.analytics?.ready(...args) ?? function () { void 0; };
+		return this.analytics?.ready(...args) ?? (() => { void 0; });
 	}
 
 	public on(...args: Parameters<AnalyticsInstance['on']>) {
-		return this.analytics?.on(...args) ?? function () { void 0; };
+		return this.analytics?.on(...args) ?? (() => { void 0; });
 	}
 
 	public once(...args: Parameters<AnalyticsInstance['once']>) {
-		return this.analytics?.once(...args) ?? function () { void 0; };
+		return this.analytics?.once(...args) ?? (() => { void 0; });
 	}
 
 	public getState(...args: Parameters<AnalyticsInstance['getState']>) {

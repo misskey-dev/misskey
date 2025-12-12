@@ -5,7 +5,7 @@
 
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import { inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { DI } from './di.js';
 
 export type PageMetadata = {
