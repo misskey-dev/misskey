@@ -1,0 +1,174 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": [
+			"**/*.{ts,tsx,js,cjs,jsonc}",
+			"!**/node_modules",
+			"!built",
+			"!built-test"
+		]
+	},
+	"overrides": [
+		{
+			"includes": [
+				"migration/**/*",
+				"test-server/**/*"
+			],
+			"linter": {
+				"rules": {
+					"correctness": {
+						// in migration, we often have catch without using the error
+						"noUnusedFunctionParameters": "off",
+						"noUnusedVariables": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": [
+				"assets/**/*.js"
+			],
+			"javascript": {
+				"globals": [
+					"document"
+				]
+			}
+		},
+		// rules temporally disable to ease the migration from eslint to biome
+		{
+			"includes": [
+				"**/*"
+			],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useParseIntRadix": {
+							"level": "off"
+						},
+						"noUnusedFunctionParameters": {
+							"level": "off"
+						},
+						"noUnusedVariables": {
+							"level": "off"
+						},
+						"noUnusedImports": {
+							"level": "off"
+						},
+						"noUnusedPrivateClassMembers": {
+							"level": "off"
+						}
+					},
+					"style": {
+						"useNodejsImportProtocol": {
+							"fix": "safe"
+						}
+					},
+					"suspicious": {
+						"noConfusingVoidType": "off",
+						"noGlobalIsNan": "off"
+					},
+					"complexity": {
+						"noUselessTernary": {
+							"level": "off"
+						},
+						"useIndexOf": "off",
+						"useDateNow": "off",
+						"useOptionalChain": "off",
+						"noCommaOperator": "off"
+					}
+				}
+			}
+		}
+	],
+	"formatter": {
+		"enabled": false,
+		"indentStyle": "tab"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noImportantStyles": {
+					"level": "off"
+				},
+				// for services, we declare constructors without parameters
+				"noUselessConstructor": {
+					"level": "off"
+				},
+				"useLiteralKeys": {
+					"level": "off"
+				},
+				"noStaticOnlyClass": {
+					"level": "off"
+				}
+			},
+			"style": {
+				"useTemplate": {
+					"fix": "safe"
+				},
+				"noNonNullAssertion": {
+					"level": "off"
+				},
+				"noParameterProperties": {
+					"level": "off"
+				}
+			},
+			"suspicious": {
+				"noExplicitAny": {
+					"level": "off"
+				},
+				// false positive in script tag
+				// https://github.com/biomejs/biome/issues/8431
+				"noSuspiciousSemicolonInJsx": {
+					"level": "off"
+				},
+				"noShadowRestrictedNames": {
+					"level": "off"
+				},
+				"noControlCharactersInRegex": {
+					"level": "off"
+				},
+				"noThenProperty": {
+					"level": "off"
+				}
+			},
+			"a11y": {
+				"useHtmlLang": {
+					"level": "off"
+				},
+				"useAltText": {
+					"level": "off"
+				},
+				"noSvgWithoutTitle": {
+					"level": "off"
+				},
+				"useButtonType": {
+					"level": "off"
+				}
+			}
+		}
+	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		},
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}

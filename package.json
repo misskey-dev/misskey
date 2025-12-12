@@ -68,6 +68,7 @@
 		"typescript": "5.9.3"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
 		"@eslint/js": "9.39.1",
 		"@misskey-dev/eslint-plugin": "2.2.0",
 		"@types/js-yaml": "4.0.9",
