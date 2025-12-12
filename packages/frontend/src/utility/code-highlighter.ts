@@ -4,7 +4,7 @@
  */
 
 import { createHighlighterCore } from 'shiki/core';
-import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
@@ -36,7 +36,7 @@ export async function getTheme(mode: 'light' | 'dark', getName = false): Promise
 			_res = deepClone(theme.codeHighlighter.overrides);
 		} else {
 			const base = await bundledThemesInfo.find(t => t.id === theme.codeHighlighter!.base)?.import() ?? darkPlus;
-			_res = deepMerge(theme.codeHighlighter.overrides ?? {}, 'default' in base ? base.default : base);
+			_res = deepMerge<ThemeRegistration>(theme.codeHighlighter.overrides ?? {}, 'default' in base ? base.default : base);
 		}
 		if (_res.name == null) {
 			_res.name = theme.id;
@@ -71,7 +71,7 @@ async function initHighlighter() {
 
 	const jsLangInfo = bundledLanguagesInfo.find(t => t.id === 'javascript');
 	const highlighter = await createHighlighterCore({
-		engine: createOnigurumaEngine(() => import('shiki/onig.wasm?init')),
+		engine: createJavaScriptRegexEngine({ forgiving: true }),
 		themes,
 		langs: [
 			...(jsLangInfo ? [async () => await jsLangInfo.import()] : []),

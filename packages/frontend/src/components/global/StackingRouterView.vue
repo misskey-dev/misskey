@@ -74,9 +74,10 @@ function mount() {
 }
 
 function back() {
+	if (tabs.value.length <= 1) return; // transitionの関係でタブが1つの状態でbackが呼ばれることがある
 	const prev = tabs.value[tabs.value.length - 2];
 	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
-	router.replace(prev.fullPath);
+	router?.replaceByPath(prev.fullPath);
 }
 
 router.useListener('change', ({ resolved }) => {
@@ -87,7 +88,7 @@ router.useListener('change', ({ resolved }) => {
 	const fullPath = router.getCurrentFullPath();
 
 	if (tabs.value.some(tab => tab.routePath === routePath && deepEqual(resolved.props, tab.props))) {
-		const newTabs = [];
+		const newTabs = [] as typeof tabs.value;
 		for (const tab of tabs.value) {
 			newTabs.push(tab);
 

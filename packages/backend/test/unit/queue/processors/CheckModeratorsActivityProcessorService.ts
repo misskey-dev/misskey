@@ -141,6 +141,8 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 	beforeEach(async () => {
 		clock = lolex.install({
+			// https://github.com/sinonjs/sinon/issues/2620
+			toFake: Object.keys(lolex.timers).filter((key) => !['nextTick', 'queueMicrotask'].includes(key)) as lolex.FakeMethod[],
 			now: new Date(baseDate),
 			shouldClearNativeTimers: true,
 		});
@@ -157,8 +159,8 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 	afterEach(async () => {
 		clock.uninstall();
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userProfilesRepository.createQueryBuilder().delete().execute();
 		roleService.getModerators.mockReset();
 		announcementService.create.mockReset();
 		emailService.sendEmail.mockReset();

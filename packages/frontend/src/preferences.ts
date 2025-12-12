@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
+import { BroadcastChannel } from 'broadcast-channel';
+import type { StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
@@ -12,26 +13,21 @@ import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { TAB_ID } from '@/tab-id.js';
 
-function createPrefManager(storageProvider: StorageProvider) {
-	let profile: PreferencesProfile;
-
-	const savedProfileRaw = miLocalStorage.getItem('preferences');
-	if (savedProfileRaw == null) {
-		profile = PreferencesManager.newProfile();
-		miLocalStorage.setItem('preferences', JSON.stringify(profile));
-	} else {
-		profile = PreferencesManager.normalizeProfile(JSON.parse(savedProfileRaw));
-	}
-
-	return new PreferencesManager(profile, storageProvider);
-}
-
+// クラウド同期用グループ名
 const syncGroup = 'default';
 
-const storageProvider: StorageProvider = {
+const io: StorageProvider = {
+	load: () => {
+		const savedProfileRaw = miLocalStorage.getItem('preferences');
+		if (savedProfileRaw == null) {
+			return null;
+		} else {
+			return JSON.parse(savedProfileRaw);
+		}
+	},
+
 	save: (ctx) => {
 		miLocalStorage.setItem('preferences', JSON.stringify(ctx.profile));
-		miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
 	},
 
 	cloudGet: async (ctx) => {
@@ -86,9 +82,9 @@ const storageProvider: StorageProvider = {
 		});
 	},
 
-	cloudGets: async (ctx) => {
+	cloudGetBulk: async (ctx) => {
 		// TODO: 値の取得を1つのリクエストで済ませたい(バックエンド側でAPIの新設が必要)
-		const fetchings = ctx.needs.map(need => storageProvider.cloudGet(need).then(res => [need.key, res] as const));
+		const fetchings = ctx.needs.map(need => io.cloudGet(need).then(res => [need.key, res] as const));
 		const cloudDatas = await Promise.all(fetchings);
 
 		const res = {} as Partial<Record<string, any>>;
@@ -102,35 +98,49 @@ const storageProvider: StorageProvider = {
 	},
 };
 
-export const prefer = createPrefManager(storageProvider);
+export const prefer = new PreferencesManager(io, $i);
 
-let latestSyncedAt = Date.now();
+//#region タブ間同期
+let latestPreferencesUpdate: {
+	tabId: string;
+	timestamp: number;
+} | null = null;
 
-function syncBetweenTabs() {
-	const latest = miLocalStorage.getItem('latestPreferencesUpdate');
-	if (latest == null) return;
+const preferencesChannel = new BroadcastChannel<{
+	type: 'preferencesUpdate';
+	tabId: string;
+	timestamp: number;
+}>('preferences');
 
-	const latestTab = latest.split('/')[0];
-	const latestAt = parseInt(latest.split('/')[1]);
-
-	if (latestTab === TAB_ID) return;
-	if (latestAt <= latestSyncedAt) return;
-
-	prefer.rewriteProfile(PreferencesManager.normalizeProfile(JSON.parse(miLocalStorage.getItem('preferences')!)));
-
-	latestSyncedAt = Date.now();
-
-	if (_DEV_) console.log('prefer:synced');
-}
-
-window.setInterval(syncBetweenTabs, 5000);
-
-window.document.addEventListener('visibilitychange', () => {
-	if (window.document.visibilityState === 'visible') {
-		syncBetweenTabs();
-	}
+prefer.on('committed', () => {
+	latestPreferencesUpdate = {
+		tabId: TAB_ID,
+		timestamp: Date.now(),
+	};
+	preferencesChannel.postMessage({
+		type: 'preferencesUpdate',
+		tabId: TAB_ID,
+		timestamp: latestPreferencesUpdate.timestamp,
+	});
 });
 
+preferencesChannel.addEventListener('message', (msg) => {
+	if (msg.type === 'preferencesUpdate') {
+		if (msg.tabId === TAB_ID) return;
+		if (latestPreferencesUpdate != null) {
+			if (msg.timestamp <= latestPreferencesUpdate.timestamp) return;
+		}
+		prefer.reloadProfile();
+		if (_DEV_) console.log('prefer:received update from other tab');
+		latestPreferencesUpdate = {
+			tabId: msg.tabId,
+			timestamp: msg.timestamp,
+		};
+	}
+});
+//#endregion
+
+//#region 定期クラウドバックアップ
 let latestBackupAt = 0;
 
 window.setInterval(() => {
@@ -143,6 +153,7 @@ window.setInterval(() => {
 		latestBackupAt = Date.now();
 	});
 }, 1000 * 60 * 3);
+//#endregion
 
 if (_DEV_) {
 	(window as any).prefer = prefer;

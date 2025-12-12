@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div v-if="state === 'done'" class="_buttonsCenter">
 			<MkButton @click="close">{{ i18n.ts.close }}</MkButton>
 			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else class="_fullInfo">
 			<MkLoading/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -29,7 +29,7 @@ import MkButton from '@/components/MkButton.vue';
 
 const state = ref<'fetching' | 'done'>('fetching');
 
-function fetch() {
+function _fetch_() {
 	const params = new URL(window.location.href).searchParams;
 
 	// acctのほうはdeprecated
@@ -44,12 +44,19 @@ function fetch() {
 	if (uri.startsWith('https://')) {
 		promise = misskeyApi('ap/show', {
 			uri,
-		});
-		promise.then(res => {
+		}).then(res => {
 			if (res.type === 'User') {
-				mainRouter.replace(res.object.host ? `/@${res.object.username}@${res.object.host}` : `/@${res.object.username}`);
+				mainRouter.replace('/@:acct/:page?', {
+					params: {
+						acct: res.object.host != null ? `${res.object.username}@${res.object.host}` : res.object.username,
+					},
+				});
 			} else if (res.type === 'Note') {
-				mainRouter.replace(`/notes/${res.object.id}`);
+				mainRouter.replace('/notes/:noteId/:initialTab?', {
+					params: {
+						noteId: res.object.id,
+					},
+				});
 			} else {
 				os.alert({
 					type: 'error',
@@ -61,9 +68,12 @@ function fetch() {
 		if (uri.startsWith('acct:')) {
 			uri = uri.slice(5);
 		}
-		promise = misskeyApi('users/show', Misskey.acct.parse(uri));
-		promise.then(user => {
-			mainRouter.replace(user.host ? `/@${user.username}@${user.host}` : `/@${user.username}`);
+		promise = misskeyApi('users/show', Misskey.acct.parse(uri)).then(user => {
+			mainRouter.replace('/@:acct/:page?', {
+				params: {
+					acct: user.host != null ? `${user.username}@${user.host}` : user.username,
+				},
+			});
 		});
 	}
 
@@ -83,7 +93,7 @@ function goToMisskey(): void {
 	window.location.href = '/';
 }
 
-fetch();
+_fetch_();
 
 const headerActions = computed(() => []);
 

@@ -5,12 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkSelect v-model="sortModeSelect">
+	<MkSelect v-model="sortModeSelect" :items="sortModeSelectDef">
 		<template #label>{{ i18n.ts.sort }}</template>
-		<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
 	</MkSelect>
 	<div v-if="!fetching">
-		<MkPagination v-slot="{items}" :pagination="pagination">
+		<MkPagination v-slot="{items}" :paginator="paginator">
 			<div class="_gaps">
 				<div
 					v-for="file in items" :key="file.id"
@@ -48,9 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import type { StyleValue } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, markRaw, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
+import type { StyleValue } from 'vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagination from '@/components/MkPagination.vue';
@@ -59,24 +59,29 @@ import { i18n } from '@/i18n.js';
 import bytes from '@/filters/bytes.js';
 import { definePage } from '@/page.js';
 import MkSelect from '@/components/MkSelect.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const sortMode = ref('+size');
-const pagination = {
-	endpoint: 'drive/files' as const,
+const sortMode = ref<Misskey.entities.DriveFilesRequest['sort']>('+size');
+const paginator = markRaw(new Paginator('drive/files', {
 	limit: 10,
-	params: computed(() => ({ sort: sortMode.value })),
-};
-
-const sortOptions = [
-	{ value: 'sizeDesc', displayName: i18n.ts._drivecleaner.orderBySizeDesc },
-	{ value: 'createdAtAsc', displayName: i18n.ts._drivecleaner.orderByCreatedAtAsc },
-];
+	computedParams: computed(() => ({ sort: sortMode.value })),
+}));
 
 const capacity = ref<number>(0);
 const usage = ref<number>(0);
 const fetching = ref(true);
-const sortModeSelect = ref('sizeDesc');
+const {
+	model: sortModeSelect,
+	def: sortModeSelectDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._drivecleaner.orderBySizeDesc, value: 'sizeDesc' },
+		{ label: i18n.ts._drivecleaner.orderByCreatedAtAsc, value: 'createdAtAsc' },
+	],
+	initialValue: 'sizeDesc',
+});
 
 fetchDriveInfo();
 

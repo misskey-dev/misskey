@@ -11,18 +11,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div
 			v-else-if="!input && !select"
-			:class="[$style.icon, {
-				[$style.type_success]: type === 'success',
-				[$style.type_error]: type === 'error',
-				[$style.type_warning]: type === 'warning',
-				[$style.type_info]: type === 'info',
-			}]"
+			:class="[$style.icon]"
 		>
-			<i v-if="type === 'success'" :class="$style.iconInner" class="ti ti-check"></i>
-			<i v-else-if="type === 'error'" :class="$style.iconInner" class="ti ti-circle-x"></i>
-			<i v-else-if="type === 'warning'" :class="$style.iconInner" class="ti ti-alert-triangle"></i>
-			<i v-else-if="type === 'info'" :class="$style.iconInner" class="ti ti-info-circle"></i>
-			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
+			<MkSystemIcon v-if="type === 'success'" :class="$style.iconInner" style="width: 45px;" type="success"/>
+			<MkSystemIcon v-else-if="type === 'error'" :class="$style.iconInner" style="width: 45px;" type="error"/>
+			<MkSystemIcon v-else-if="type === 'warning'" :class="$style.iconInner" style="width: 45px;" type="warn"/>
+			<MkSystemIcon v-else-if="type === 'info'" :class="$style.iconInner" style="width: 45px;" type="info"/>
+			<MkSystemIcon v-else-if="type === 'question'" :class="$style.iconInner" style="width: 45px;" type="question"/>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
 		<header v-if="title" :class="$style.title" class="_selectable"><Mfm :text="title"/></header>
@@ -34,16 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else-if="okButtonDisabledReason === 'charactersBelow'" v-text="i18n.tsx._dialog.charactersBelow({ current: (inputValue as string)?.length ?? 0, min: input.minLength ?? 'NaN' })"/>
 			</template>
 		</MkInput>
-		<MkSelect v-if="select" v-model="selectedValue" autofocus>
-			<template v-if="select.items">
-				<template v-for="item in select.items">
-					<optgroup v-if="'sectionTitle' in item" :label="item.sectionTitle">
-						<option v-for="subItem in item.items" :value="subItem.value">{{ subItem.text }}</option>
-					</optgroup>
-					<option v-else :value="item.value">{{ item.text }}</option>
-				</template>
-			</template>
-		</MkSelect>
+		<MkSelect v-if="select" v-model="selectedValue" :items="selectDef" autofocus></MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
 			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason != null" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
@@ -61,6 +47,8 @@ import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
 
 type Input = {
@@ -72,17 +60,9 @@ type Input = {
 	maxLength?: number;
 };
 
-type SelectItem = {
-	value: any;
-	text: string;
-};
-
 type Select = {
-	items: (SelectItem | {
-		sectionTitle: string;
-		items: SelectItem[];
-	})[];
-	default: string | null;
+	items: MkSelectItem[];
+	default: OptionValue | null;
 };
 
 type Result = string | number | true | null;
@@ -120,7 +100,6 @@ const emit = defineEmits<{
 const modal = useTemplateRef('modal');
 
 const inputValue = ref<string | number | null>(props.input?.default ?? null);
-const selectedValue = ref(props.select?.default ?? null);
 
 const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'charactersBelow'>(() => {
 	if (props.input) {
@@ -137,6 +116,14 @@ const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'character
 	}
 
 	return null;
+});
+
+const {
+	def: selectDef,
+	model: selectedValue,
+} = useMkSelect({
+	items: computed(() => props.select?.items ?? []),
+	initialValue: props.select?.default ?? null,
 });
 
 // overload function を使いたいので lint エラーを無視する
@@ -200,22 +187,6 @@ function onInputKeydown(evt: KeyboardEvent) {
 .iconInner {
 	display: block;
 	margin: 0 auto;
-}
-
-.type_info {
-	color: #55c4dd;
-}
-
-.type_success {
-	color: var(--MI_THEME-success);
-}
-
-.type_error {
-	color: var(--MI_THEME-error);
-}
-
-.type_warning {
-	color: var(--MI_THEME-warn);
 }
 
 .title {

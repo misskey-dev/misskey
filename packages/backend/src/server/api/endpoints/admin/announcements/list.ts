@@ -49,6 +49,34 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				icon: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
+				display: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				isActive: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				forExistingUsers: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				silence: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				needConfirmationToRead: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				userId: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 				imageUrl: {
 					type: 'string',
 					optional: false, nullable: true,
@@ -68,6 +96,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
 		status: { type: 'string', enum: ['all', 'active', 'archived'], default: 'active' },
 	},
@@ -87,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
 
 			if (ps.status === 'archived') {
 				query.andWhere('announcement.isActive = false');

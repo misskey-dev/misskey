@@ -16,7 +16,7 @@ describe('export-clips', () => {
 	let bob: misskey.entities.SignupResponse;
 
 	// XXX: Any better way to get the result?
-	async function pollFirstDriveFile() {
+	async function pollFirstDriveFile(): Promise<any> {
 		while (true) {
 			const files = (await api('drive/files', {}, alice)).body;
 			if (!files.length) {
@@ -168,7 +168,36 @@ describe('export-clips', () => {
 		assert.strictEqual(exported[1].clipNotes[0].note.text, 'baz2');
 	});
 
-	test('Clipping other user\'s note', async () => {
+	test('Clipping other user\'s note (followers only notes are excluded when not following)', async () => {
+		const res = await api('clips/create', {
+			name: 'kawaii',
+			description: 'kawaii',
+		}, alice);
+		assert.strictEqual(res.status, 200);
+		const clip = res.body;
+
+		const note = await post(bob, {
+			text: 'baz',
+			visibility: 'followers',
+		});
+
+		const res2 = await api('clips/add-note', {
+			clipId: clip.id,
+			noteId: note.id,
+		}, alice);
+		assert.strictEqual(res2.status, 204);
+
+		const res3 = await api('i/export-clips', {}, alice);
+		assert.strictEqual(res3.status, 204);
+
+		const exported = await pollFirstDriveFile();
+		assert.strictEqual(exported[0].clipNotes.length, 0);
+	});
+
+	test('Clipping other user\'s note (followers only notes are included when following)', async () => {
+		// Alice follows Bob
+		await api('following/create', { userId: bob.id }, alice);
+
 		const res = await api('clips/create', {
 			name: 'kawaii',
 			description: 'kawaii',

@@ -16,7 +16,7 @@ services:
       "
 
   tester:
-    image: node:20
+    image: node:${NODE_VERSION}
     depends_on:
       a.test:
         condition: service_healthy
@@ -51,12 +51,28 @@ services:
         target: /misskey/packages/backend/jest.config.fed.cjs
         read_only: true
       - type: bind
+        source: ../jest.js
+        target: /misskey/packages/backend/jest.js
+        read_only: true
+      - type: bind
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true
       - type: bind
         source: ../../misskey-js/package.json
         target: /misskey/packages/misskey-js/package.json
+        read_only: true
+      - type: bind
+        source: ../../i18n/built
+        target: /misskey/packages/i18n/built
+        read_only: true
+      - type: bind
+        source: ../../i18n/package.json
+        target: /misskey/packages/i18n/package.json
         read_only: true
       - type: bind
         source: ../../../package.json
@@ -71,8 +87,8 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
-        source: ../../../scripts/dependency-patches
-        target: /misskey/scripts/dependency-patches
+        source: ../../../patches
+        target: /misskey/patches
         read_only: true
       - type: bind
         source: ./certificates/rootCA.crt
@@ -89,7 +105,7 @@ services:
     command: pnpm -F backend test:fed
 
   daemon:
-    image: node:20
+    image: node:${NODE_VERSION}
     depends_on:
       redis.test:
         condition: service_healthy
@@ -119,8 +135,8 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
-        source: ../../../scripts/dependency-patches
-        target: /misskey/scripts/dependency-patches
+        source: ../../../patches
+        target: /misskey/patches
         read_only: true
     working_dir: /misskey
     command: >

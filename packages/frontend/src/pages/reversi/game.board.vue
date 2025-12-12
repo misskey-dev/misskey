@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="500">
+<div class="_spacer" style="--MI_SPACER-w: 500px;">
 	<div :class="$style.root" class="_gaps">
 		<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
 			<span>({{ i18n.ts._reversi.black }})</span>
@@ -138,7 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<img src="/client-assets/reversi/logo.png" style="display: block; max-width: 100%; width: 200px; margin: auto;"/>
 		</MkA>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -158,12 +158,13 @@ import { userPage } from '@/filters/user.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
-	connection?: Misskey.ChannelConnection<Misskey.Channels['reversiGame']> | null;
+	connection?: Misskey.IChannelConnection<Misskey.Channels['reversiGame']> | null;
 }>();
 
 const showBoardLabels = ref<boolean>(false);
@@ -273,7 +274,7 @@ function putStone(pos: number) {
 		playbackRate: 1,
 	});
 
-	const id = Math.random().toString(36).slice(2);
+	const id = genId();
 	props.connection!.send('putStone', {
 		pos: pos,
 		id,

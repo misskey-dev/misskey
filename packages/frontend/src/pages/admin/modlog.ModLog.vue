@@ -84,7 +84,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'deleteChatRoom'">: @{{ log.info.room.name }}</span>
 	</template>
 	<template #icon>
-		<MkAvatar :user="log.user" :class="$style.avatar"/>
+		<i v-if="log.type === 'updateServerSettings'" class="ti ti-settings"></i>
+		<i v-else-if="log.type === 'updateUserNote'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'suspend'" class="ti ti-user-x"></i>
+		<i v-else-if="log.type === 'unsuspend'" class="ti ti-user-check"></i>
+		<i v-else-if="log.type === 'resetPassword'" class="ti ti-key"></i>
+		<i v-else-if="log.type === 'assignRole'" class="ti ti-user-plus"></i>
+		<i v-else-if="log.type === 'unassignRole'" class="ti ti-user-minus"></i>
+		<i v-else-if="log.type === 'createRole'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateRole'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteRole'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'addCustomEmoji'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateCustomEmoji'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteCustomEmoji'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'markSensitiveDriveFile'" class="ti ti-eye-exclamation"></i>
+		<i v-else-if="log.type === 'unmarkSensitiveDriveFile'" class="ti ti-eye"></i>
+		<i v-else-if="log.type === 'suspendRemoteInstance'" class="ti ti-x"></i>
+		<i v-else-if="log.type === 'unsuspendRemoteInstance'" class="ti ti-check"></i>
+		<i v-else-if="log.type === 'createGlobalAnnouncement'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateGlobalAnnouncement'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteGlobalAnnouncement'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createUserAnnouncement'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateUserAnnouncement'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteUserAnnouncement'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteNote'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteDriveFile'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createAd'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateAd'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteAd'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createAvatarDecoration'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateAvatarDecoration'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteAvatarDecoration'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createSystemWebhook'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateSystemWebhook'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteSystemWebhook'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'createAbuseReportNotificationRecipient'" class="ti ti-plus"></i>
+		<i v-else-if="log.type === 'updateAbuseReportNotificationRecipient'" class="ti ti-pencil"></i>
+		<i v-else-if="log.type === 'deleteAbuseReportNotificationRecipient'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteAccount'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deletePage'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteFlash'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteGalleryPost'" class="ti ti-trash"></i>
+		<i v-else-if="log.type === 'deleteChatRoom'" class="ti ti-trash"></i>
 	</template>
 	<template #suffix>
 		<MkTime :time="log.createdAt"/>
@@ -199,11 +240,6 @@ const props = defineProps<{
 </script>
 
 <style lang="scss" module>
-.avatar {
-	width: 18px;
-	height: 18px;
-}
-
 .diff {
 	background: #fff;
 	color: #000;

@@ -39,7 +39,6 @@ class MainChannel extends Channel {
 						const note = await this.noteEntityService.pack(data.body.note.id, this.user, {
 							detail: true,
 						});
-						this.connection.cacheNote(note);
 						data.body.note = note;
 					}
 					break;
@@ -52,7 +51,6 @@ class MainChannel extends Channel {
 						const note = await this.noteEntityService.pack(data.body.id, this.user, {
 							detail: true,
 						});
-						this.connection.cacheNote(note);
 						data.body = note;
 					}
 					break;

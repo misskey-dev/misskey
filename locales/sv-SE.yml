@@ -211,7 +211,6 @@ noUsers: "Det finns inga användare"
 editProfile: "Redigera profil"
 noteDeleteConfirm: "Är du säker på att du vill ta bort denna not?"
 pinLimitExceeded: "Du kan inte fästa fler noter"
-intro: "Misskey har installerats! Vänligen skapa en adminanvändare."
 done: "Klar"
 processing: "Bearbetar..."
 preview: "Förhandsvisning"
@@ -560,6 +559,9 @@ tryAgain: "Försök igen senare"
 signinWithPasskey: "Logga in med nyckel"
 unknownWebAuthnKey: "Okänd nyckel"
 information: "Om"
+_imageEditing:
+  _vars:
+    filename: "Filnamn"
 _chat:
   invitations: "Inbjudan"
   members: "Medlemmar"
@@ -647,6 +649,10 @@ _poll:
 _visibility:
   home: "Hem"
   followers: "Följare"
+  specified: "Direktnoter"
+_postForm:
+  _howToUse:
+    menu_title: "Meny"
 _profile:
   name: "Namn"
   username: "Användarnamn"
@@ -693,6 +699,7 @@ _deck:
     list: "Listor"
     channel: "kanal"
     mentions: "Omnämningar"
+    direct: "Direktnoter"
 _webhookSettings:
   name: "Namn"
   active: "Aktiverad"
@@ -712,3 +719,11 @@ _selfXssPrevention:
   warning: "VARNING"
 _search:
   searchScopeAll: "Allt"
+_watermarkEditor:
+  scale: "Storlek"
+  image: "Bilder"
+_imageEffector:
+  _fxProps:
+    scale: "Storlek"
+    size: "Storlek"
+    color: "Färg"

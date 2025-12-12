@@ -18,5 +18,5 @@ if (isTouchSupported && !isTouchUsing) {
 	}, { passive: true });
 }
 
-/** (MkHorizontalSwipe) 横スワイプ中か？ */
+/** (MkSwiper) 横スワイプ中か？ */
 export const isHorizontalSwipeSwiping = ref(false);

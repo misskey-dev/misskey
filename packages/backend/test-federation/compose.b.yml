@@ -37,8 +37,8 @@ services:
       - internal_network_b
     volumes:
       - type: bind
-        source: ./.config/b.test.default.yml
-        target: /misskey/.config/default.yml
+        source: ./.config/b.test.config.json
+        target: /misskey/built/._config_.json
         read_only: true
 
   db.b.test:

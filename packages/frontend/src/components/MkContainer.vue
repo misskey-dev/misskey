@@ -48,7 +48,6 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	naked?: boolean;
 	foldable?: boolean;
-	onUnfold?: () => boolean; // return false to prevent unfolding
 	scrollable?: boolean;
 	expanded?: boolean;
 	maxHeight?: number | null;
@@ -103,8 +102,6 @@ const omitObserver = new ResizeObserver((entries, observer) => {
 });
 
 function showMore() {
-	if (props.onUnfold && !props.onUnfold()) return;
-
 	ignoreOmit.value = true;
 	omitted.value = false;
 }
@@ -154,6 +151,10 @@ onUnmounted(() => {
 	&.naked {
 		background: transparent !important;
 		box-shadow: none !important;
+
+		> .content {
+			background: transparent !important;
+		}
 	}
 
 	&.scrollable {

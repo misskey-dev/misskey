@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="cwepdizn _gaps_m">
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.backgroundColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
-						<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
+						<button v-for="color in bgColors.filter(x => x.kind === 'light')" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
 							<div class="preview" :style="{ background: color.forPreview }"></div>
 						</button>
 					</div>
 					<div class="row">
-						<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
+						<button v-for="color in bgColors.filter(x => x.kind === 'dark')" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
 							<div class="preview" :style="{ background: color.forPreview }"></div>
 						</button>
 					</div>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.accentColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
-						<button v-for="color in accentColors" :key="color" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
+						<button v-for="color in accentColors" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
 							<div class="preview" :style="{ background: color }"></div>
 						</button>
 					</div>
@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.textColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
-						<button v-for="color in fgColors" :key="color" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
+						<button v-for="color in fgColors" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
 							<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
 						</button>
 					</div>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -75,24 +75,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
-import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import { host } from '@@/js/config.js';
 import type { Theme } from '@/theme.js';
+import { genId } from '@/utility/id.js';
 import MkButton from '@/components/MkButton.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { $i } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { addTheme, applyTheme } from '@/theme.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { useLeaveGuard } from '@/use/use-leave-guard.js';
+import { useLeaveGuard } from '@/composables/use-leave-guard.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+
+const $i = ensureSignin();
 
 const bgColors = [
 	{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
@@ -123,12 +125,15 @@ const fgColors = [
 	{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 ];
 
-const theme = ref<Partial<Theme>>({
+const theme = ref<Theme>({
+	id: genId(),
+	name: 'untitled',
+	author: `@${$i.username}@${toUnicode(host)}`,
 	base: 'light',
 	props: lightTheme.props,
 });
 const description = ref<string | null>(null);
-const themeCode = ref<string | null>(null);
+const themeCode = ref<string>('');
 const changed = ref(false);
 
 useLeaveGuard(changed);
@@ -192,9 +197,8 @@ async function saveAs() {
 	});
 	if (canceled) return;
 
-	theme.value.id = uuid();
+	theme.value.id = genId();
 	theme.value.name = name;
-	theme.value.author = `@${$i.username}@${toUnicode(host)}`;
 	if (description.value) theme.value.desc = description.value;
 	await addTheme(theme.value);
 	applyTheme(theme.value);

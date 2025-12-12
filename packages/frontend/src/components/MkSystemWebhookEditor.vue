@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div style="display: flex; flex-direction: column; min-height: 100%;">
-		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px; flex-grow: 1;">
 			<MkLoading v-if="loading !== 0"/>
 			<div v-else :class="$style.root" class="_gaps_m">
 				<MkInput v-model="title">
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.enable }}</template>
 				</MkSwitch>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footer" class="_buttonsCenter">
 			<MkButton primary rounded :disabled="disableSubmitButton" @click="onSubmitClicked">
 				<i class="ti ti-check"></i>

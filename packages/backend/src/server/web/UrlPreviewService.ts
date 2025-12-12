@@ -4,8 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { summaly } from '@misskey-dev/summaly';
-import { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
+import type { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -37,12 +36,10 @@ export class UrlPreviewService {
 	@bindThis
 	private wrap(url?: string | null): string | null {
 		return url != null
-			? url.match(/^https?:\/\//)
-				? `${this.config.mediaProxy}/preview.webp?${query({
-					url,
-					preview: '1',
-				})}`
-				: url
+			? `${this.config.mediaProxy}/preview.webp?${query({
+				url,
+				preview: '1',
+			})}`
 			: null;
 	}
 
@@ -96,8 +93,8 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
-			// Cache 7days
-			reply.header('Cache-Control', 'max-age=604800, immutable');
+			// Cache 1day
+			reply.header('Cache-Control', 'max-age=86400, immutable');
 
 			return summary;
 		} catch (err) {
@@ -115,7 +112,7 @@ export class UrlPreviewService {
 		}
 	}
 
-	private fetchSummary(url: string, meta: MiMeta, lang?: string): Promise<SummalyResult> {
+	private async fetchSummary(url: string, meta: MiMeta, lang?: string): Promise<SummalyResult> {
 		const agent = this.config.proxy
 			? {
 				http: this.httpRequestService.httpAgent,
@@ -123,8 +120,10 @@ export class UrlPreviewService {
 			}
 			: undefined;
 
+		const { summaly } = await import('@misskey-dev/summaly');
+
 		return summaly(url, {
-			followRedirects: false,
+			followRedirects: this.meta.urlPreviewAllowRedirect,
 			lang: lang ?? 'ja-JP',
 			agent: agent,
 			userAgent: meta.urlPreviewUserAgent ?? undefined,
@@ -139,6 +138,7 @@ export class UrlPreviewService {
 		const queryStr = query({
 			url: url,
 			lang: lang ?? 'ja-JP',
+			followRedirects: this.meta.urlPreviewAllowRedirect,
 			userAgent: meta.urlPreviewUserAgent ?? undefined,
 			operationTimeout: meta.urlPreviewTimeout,
 			contentLengthLimit: meta.urlPreviewMaximumContentLength,

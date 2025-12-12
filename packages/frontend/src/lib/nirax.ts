@@ -58,7 +58,7 @@ export type RouterEvents = {
 		beforeFullPath: string;
 		fullPath: string;
 		route: RouteDef | null;
-		props: Map<string, string> | null;
+		props: Map<string, string | boolean> | null;
 	}) => void;
 	same: () => void;
 };
@@ -76,6 +76,112 @@ export type PathResolvedResult = {
 		hash: string | null;
 	};
 };
+
+//#region Path Types
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {};
+
+type RemoveNever<T> = {
+	[K in keyof T as T[K] extends never ? never : K]: T[K];
+} & {};
+
+type IsPathParameter<Part extends string> = Part extends `${string}:${infer Parameter}` ? Parameter : never;
+
+type GetPathParamKeys<Path extends string> =
+	Path extends `${infer A}/${infer B}`
+		? IsPathParameter<A> | GetPathParamKeys<B>
+		: IsPathParameter<Path>;
+
+type GetPathParams<Path extends string> = Prettify<{
+	[Param in GetPathParamKeys<Path> as Param extends `${string}?` ? never : Param]: string;
+} & {
+	[Param in GetPathParamKeys<Path> as Param extends `${infer OptionalParam}?` ? OptionalParam : never]?: string;
+}>;
+
+type UnwrapReadOnly<T> = T extends ReadonlyArray<infer U>
+	? U
+	: T extends Readonly<infer U>
+		? U
+		: T;
+
+type GetPaths<Def extends RouteDef> = Def extends { path: infer Path }
+	? Path extends string
+		? Def extends { children: infer Children }
+			? Children extends RouteDef[]
+				? Path | `${Path}${FlattenAllPaths<Children>}`
+				: Path
+			: Path
+		: never
+	: never;
+
+type FlattenAllPaths<Defs extends RouteDef[]> = GetPaths<Defs[number]>;
+
+type GetSinglePathQuery<Def extends RouteDef, Path extends FlattenAllPaths<RouteDef[]>> = RemoveNever<
+	Def extends { path: infer BasePath, children: infer Children }
+		? BasePath extends string
+			? Path extends `${BasePath}${infer ChildPath}`
+				? Children extends RouteDef[]
+					? ChildPath extends FlattenAllPaths<Children>
+						? GetPathQuery<Children, ChildPath>
+						: Record<string, never>
+				: never
+				: never
+			: never
+		: Def['path'] extends Path
+			? Def extends { query: infer Query }
+				? Query extends Record<string, string>
+					? UnwrapReadOnly<{ [Key in keyof Query]?: string; }>
+					: Record<string, never>
+			: Record<string, never>
+		: Record<string, never>
+	>;
+
+type GetPathQuery<Defs extends RouteDef[], Path extends FlattenAllPaths<Defs>> = GetSinglePathQuery<Defs[number], Path>;
+
+type RequiredIfNotEmpty<K extends string, T extends Record<string, unknown>> = T extends Record<string, never>
+	? { [Key in K]?: T }
+	: { [Key in K]: T };
+
+type NotRequiredIfEmpty<T extends Record<string, unknown>> = T extends Record<string, never> ? T | undefined : T;
+
+type GetRouterOperationProps<Defs extends RouteDef[], Path extends FlattenAllPaths<Defs>> = NotRequiredIfEmpty<RequiredIfNotEmpty<'params', GetPathParams<Path>> & {
+	query?: GetPathQuery<Defs, Path>;
+	hash?: string;
+}>;
+//#endregion
+
+function buildFullPath(args: {
+	path: string;
+	params?: Record<string, string>;
+	query?: Record<string, string>;
+	hash?: string;
+}) {
+	let fullPath = args.path;
+
+	if (args.params) {
+		for (const key in args.params) {
+			const value = args.params[key];
+			const replaceRegex = new RegExp(`:${key}(\\?)?`, 'g');
+			fullPath = fullPath.replace(replaceRegex, value ? encodeURIComponent(value) : '');
+		}
+		// remove any optional parameters that are not provided
+		fullPath = fullPath.replace(/\/:\w+\?(?=\/|$)/g, '');
+	}
+
+	if (args.query) {
+		const queryString = new URLSearchParams(args.query).toString();
+		if (queryString) {
+			fullPath += '?' + queryString;
+		}
+	}
+
+	if (args.hash) {
+		fullPath += '#' + encodeURIComponent(args.hash);
+	}
+
+	return fullPath;
+}
 
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
@@ -282,7 +388,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 			}
 		}
 
-		if (res.route.loginRequired && !this.isLoggedIn) {
+		if (res.route.loginRequired && !this.isLoggedIn && 'component' in res.route) {
 			res.route.component = this.notFoundPageComponent;
 			res.props.set('showLoginPopup', true);
 		}
@@ -310,14 +416,35 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		return this.currentFullPath;
 	}
 
-	public push(fullPath: string, flag?: RouterFlag) {
+	public push<P extends FlattenAllPaths<DEF>>(path: P, props?: GetRouterOperationProps<DEF, P>, flag?: RouterFlag | null) {
+		const fullPath = buildFullPath({
+			path,
+			params: props?.params,
+			query: props?.query,
+			hash: props?.hash,
+		});
+		this.pushByPath(fullPath, flag);
+	}
+
+	public replace<P extends FlattenAllPaths<DEF>>(path: P, props?: GetRouterOperationProps<DEF, P>) {
+		const fullPath = buildFullPath({
+			path,
+			params: props?.params,
+			query: props?.query,
+			hash: props?.hash,
+		});
+		this.replaceByPath(fullPath);
+	}
+
+	/** どうしても必要な場合に使用（パスが確定している場合は `Nirax.push` を使用すること） */
+	public pushByPath(fullPath: string, flag?: RouterFlag | null) {
 		const beforeFullPath = this.currentFullPath;
 		if (fullPath === beforeFullPath) {
 			this.emit('same');
 			return;
 		}
 		if (this.navHook) {
-			const cancel = this.navHook(fullPath, flag);
+			const cancel = this.navHook(fullPath, flag ?? undefined);
 			if (cancel) return;
 		}
 		const res = this.navigate(fullPath);
@@ -333,14 +460,15 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		}
 	}
 
-	public replace(fullPath: string) {
+	/** どうしても必要な場合に使用（パスが確定している場合は `Nirax.replace` を使用すること） */
+	public replaceByPath(fullPath: string) {
 		const res = this.navigate(fullPath);
 		this.emit('replace', {
 			fullPath: res._parsedRoute.fullPath,
 		});
 	}
 
-	public useListener<E extends keyof RouterEvents, L = RouterEvents[E]>(event: E, listener: L) {
+	public useListener<E extends keyof RouterEvents>(event: E, listener: EventEmitter.EventListener<RouterEvents, E>) {
 		this.addListener(event, listener);
 
 		onBeforeUnmount(() => {

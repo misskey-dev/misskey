@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="flash" :key="flash.id">
 				<Transition :name="prefer.s.animation ? 'zoom' : ''" mode="out-in">
@@ -56,18 +56,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetchFlash()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
-import { Interpreter, Parser, values } from '@syuilo/aiscript';
+import { utils } from '@syuilo/aiscript';
+import { compareVersions } from 'compare-versions';
 import { url } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { Interpreter } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -180,8 +182,6 @@ async function unlike() {
 
 watch(() => props.id, fetchFlash, { immediate: true });
 
-const parser = new Parser();
-
 const started = ref(false);
 const aiscript = shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
@@ -192,13 +192,29 @@ function start() {
 	run();
 }
 
+function getIsLegacy(version: string | null): boolean {
+	if (version == null) return false;
+	try {
+		return compareVersions(version, '1.0.0') < 0;
+	} catch {
+		return false;
+	}
+}
+
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
 
+	const version = utils.getLangVersion(flash.value.script);
+	const isLegacy = version != null && getIsLegacy(version);
+
+	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
+
+	const parser = new Parser();
+
 	components.value = [];
 
-	aiscript.value = new Interpreter({
+	const interpreter = new Interpreter({
 		...createAiScriptEnv({
 			storageKey: 'flash:' + flash.value.id,
 		}),
@@ -217,6 +233,8 @@ async function run() {
 		},
 	});
 
+	aiscript.value = interpreter;
+
 	let ast;
 	try {
 		ast = parser.parse(flash.value.script);
@@ -228,8 +246,8 @@ async function run() {
 		return;
 	}
 	try {
-		await aiscript.value.exec(ast);
-	} catch (err) {
+		await interpreter.exec(ast);
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
 			title: 'AiScript Error',
@@ -238,12 +256,12 @@ async function run() {
 	}
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!flash.value) return;
 
 	const pageUrl = `${url}/play/${flash.value.id}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: flash.value.user,
 		initialComment: `Play: ${pageUrl}\n-----\n`,
 	}, {
@@ -366,6 +384,7 @@ definePage(() => ({
 
 			> .items {
 				display: flex;
+				flex-wrap: wrap;
 				justify-content: center;
 				gap: 12px;
 				padding: 16px;
