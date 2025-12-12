@@ -3,28 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { randomUUID } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import { randomUUID } from 'crypto';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull } from 'typeorm';
+import type { Config } from '@/config.js';
+import type { IdService } from '@/core/IdService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
+import type { WebAuthnService } from '@/core/WebAuthnService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
+import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import type {
 	SigninsRepository,
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import type { Config } from '@/config.js';
-import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { IdService } from '@/core/IdService.js';
-import { bindThis } from '@/decorators.js';
-import { WebAuthnService } from '@/core/WebAuthnService.js';
-import Logger from '@/logger.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import type { IdentifiableError } from '@/misc/identifiable-error.js';
-import { RateLimiterService } from './RateLimiterService.js';
-import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { RateLimiterService } from './RateLimiterService.js';
+import type { SigninService } from './SigninService.js';
 
 @Injectable()
 export class SigninWithPasskeyApiService {

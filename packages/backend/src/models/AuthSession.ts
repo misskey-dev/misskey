@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiApp } from './App.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('auth_session')
 export class MiAuthSession {

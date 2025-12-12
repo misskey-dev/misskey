@@ -5,16 +5,16 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import tinycolor from 'tinycolor2';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
 import * as htmlParser from 'node-html-parser';
-import type { MiInstance } from '@/models/Instance.js';
-import type Logger from '@/logger.js';
-import { DI } from '@/di-symbols.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import tinycolor from 'tinycolor2';
+import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { MiInstance } from '@/models/Instance.js';
 
 type NodeInfo = {
 	openRegistrations?: unknown;

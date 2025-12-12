@@ -6,21 +6,21 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
 import * as net from 'node:net';
-import * as stream from 'node:stream';
-import ipaddr from 'ipaddr.js';
-import CacheableLookup from 'cacheable-lookup';
-import fetch from 'node-fetch';
-import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import { StatusError } from '@/misc/status-error.js';
-import { bindThis } from '@/decorators.js';
-import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
-import type { IObject } from '@/core/activitypub/type.js';
-import type { Response } from 'node-fetch';
+import type * as stream from 'node:stream';
 import type { URL } from 'node:url';
+import { Inject, Injectable } from '@nestjs/common';
+import CacheableLookup from 'cacheable-lookup';
+import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
+import ipaddr from 'ipaddr.js';
+import type { Response } from 'node-fetch';
+import fetch from 'node-fetch';
+import type { Config } from '@/config.js';
+import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import type { IObject } from '@/core/activitypub/type.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { StatusError } from '@/misc/status-error.js';
 
 export type HttpRequestSendOptions = {
 	throwErrorWhenResponseNotOk: boolean;

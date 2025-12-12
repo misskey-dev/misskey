@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['federation'],

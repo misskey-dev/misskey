@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { id } from './util/id.js';
 
 @Entity('emoji')

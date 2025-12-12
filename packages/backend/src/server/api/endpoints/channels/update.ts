@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
-import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
+import type { ChannelsRepository, DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// eslint:disable-next-line:no-unnecessary-initializer
-			let banner = undefined;
+			let banner ;
 			if (ps.bannerId != null) {
 				banner = await this.driveFilesRepository.findOneBy({
 					id: ps.bannerId,

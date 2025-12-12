@@ -1,5 +1,5 @@
-import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
+import globals from 'globals';
 import sharedConfig from '../../shared/eslint.config.js';
 
 export default [

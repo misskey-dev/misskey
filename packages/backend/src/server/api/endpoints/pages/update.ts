@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import ms from 'ms';
+import type { PageService } from '@/core/PageService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
-import { pageNameSchema } from '@/models/Page.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { PageService } from '@/core/PageService.js';
+import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
+import { pageNameSchema } from '@/models/Page.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],

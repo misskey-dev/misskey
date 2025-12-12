@@ -4,13 +4,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import {
 	descriptionSchema,
 } from '@/models/User.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin'],

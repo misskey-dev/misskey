@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import { DI } from '@/di-symbols.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -37,7 +37,7 @@ export const paramDef = {
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
-		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
+		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9/\-*]+$/.toString().slice(1, -1) },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
 		hostname: {
 			type: 'string',

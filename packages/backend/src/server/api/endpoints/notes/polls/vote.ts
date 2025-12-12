@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/_.js';
-import type { MiRemoteUser } from '@/models/User.js';
-import { IdService } from '@/core/IdService.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
-import { QueueService } from '@/core/QueueService.js';
-import { PollService } from '@/core/PollService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { PollService } from '@/core/PollService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
+import type { PollsRepository, PollVotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

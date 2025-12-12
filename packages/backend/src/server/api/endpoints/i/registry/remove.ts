@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistryItemsRepository } from '@/models/_.js';
+import type { RegistryApiService } from '@/core/RegistryApiService.js';
 import { DI } from '@/di-symbols.js';
-import { RegistryApiService } from '@/core/RegistryApiService.js';
+import type { RegistryItemsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

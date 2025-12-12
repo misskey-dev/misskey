@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository } from '@/models/_.js';
+import type { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import type { RolesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin', 'role'],

@@ -4,12 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject } from '@/misc/json-value.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HashtagChannel extends Channel {

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('registration_ticket')
 export class MiRegistrationTicket {

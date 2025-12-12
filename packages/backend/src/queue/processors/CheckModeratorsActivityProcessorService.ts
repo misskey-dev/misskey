@@ -5,16 +5,16 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type Logger from '@/logger.js';
+import type { AnnouncementService } from '@/core/AnnouncementService.js';
+import type { EmailService } from '@/core/EmailService.js';
+import type { MetaService } from '@/core/MetaService.js';
+import type { RoleService } from '@/core/RoleService.js';
+import type { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { EmailService } from '@/core/EmailService.js';
-import { MiUser, type UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
+import type Logger from '@/logger.js';
+import type { MiUser, UserProfilesRepository } from '@/models/_.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 // モデレーターが不在と判断する日付の閾値
 const MODERATOR_INACTIVITY_LIMIT_DAYS = 7;

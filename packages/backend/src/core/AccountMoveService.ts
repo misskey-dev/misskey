@@ -4,28 +4,26 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, In, MoreThan, Not } from 'typeorm';
-
+import { In, IsNull, MoreThan, Not } from 'typeorm';
+import type { AntennaService } from '@/core/AntennaService.js';
+import type { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import type InstanceChart from '@/core/chart/charts/instance.js';
+import type PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { RelayService } from '@/core/RelayService.js';
+import { RoleService } from '@/core/RoleService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
-
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { QueueService } from '@/core/QueueService.js';
-import { RelayService } from '@/core/RelayService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { AntennaService } from '@/core/AntennaService.js';
 
 @Injectable()
 export class AccountMoveService {

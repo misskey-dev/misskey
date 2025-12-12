@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('announcement')
 export class MiAnnouncement {

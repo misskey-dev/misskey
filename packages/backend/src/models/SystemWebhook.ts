@@ -4,7 +4,7 @@
  */
 
 import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
-import { Serialized } from '@/types.js';
+import type { Serialized } from '@/types.js';
 import { id } from './util/id.js';
 
 export const systemWebhookEventTypes = [

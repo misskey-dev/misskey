@@ -4,20 +4,20 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/_.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiNote } from '@/models/Note.js';
-import { IdService } from '@/core/IdService.js';
-import type { MiUserNotePining } from '@/models/UserNotePining.js';
-import { RelayService } from '@/core/RelayService.js';
 import type { Config } from '@/config.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { RelayService } from '@/core/RelayService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
+import { DI } from '@/di-symbols.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import type { NotesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiUserNotePining } from '@/models/UserNotePining.js';
 
 @Injectable()
 export class NotePiningService {

@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import { MiUser, type WebhooksRepository } from '@/models/_.js';
-import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { GlobalEvents } from '@/core/GlobalEventService.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiUser, WebhooksRepository } from '@/models/_.js';
+import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 
 export type UserWebhookPayload<T extends WebhookEventTypes> =
 	T extends 'note' | 'reply' | 'renote' | 'mention' ? {

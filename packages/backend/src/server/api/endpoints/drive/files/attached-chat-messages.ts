@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, ChatMessagesRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
+import type { ChatService } from '@/core/ChatService.js';
+import type { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
-import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
-import { ChatService } from '@/core/ChatService.js';
+import type { ChatMessagesRepository, DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

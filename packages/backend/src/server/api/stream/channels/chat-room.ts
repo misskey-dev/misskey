@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { bindThis } from '@/decorators.js';
+import type { ChatService } from '@/core/ChatService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { bindThis } from '@/decorators.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import { ChatService } from '@/core/ChatService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ChatRoomChannel extends Channel {

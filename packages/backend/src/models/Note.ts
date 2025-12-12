@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities, noteReactionAcceptances } from '@/types.js';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { type noteReactionAcceptances, noteVisibilities } from '@/types.js';
 import { MiChannel } from './Channel.js';
 import type { MiDriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 // Note: When you create a new index for existing column of this table,
 // it might be better to index concurrently under isConcurrentIndexMigrationEnabled flag

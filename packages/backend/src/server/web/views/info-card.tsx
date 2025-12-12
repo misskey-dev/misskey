@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { comment, CommonPropsMinimum } from '@/server/web/views/_.js';
 import type { MiMeta } from '@/models/Meta.js';
+import { type CommonPropsMinimum, comment } from '@/server/web/views/_.js';
 
 export function InfoCardPage(props: CommonPropsMinimum<{
 	meta: MiMeta;

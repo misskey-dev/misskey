@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, UserProfilesRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DeleteAccountService } from '@/core/DeleteAccountService.js';
+import bcrypt from 'bcryptjs';
+import type { DeleteAccountService } from '@/core/DeleteAccountService.js';
+import type { UserAuthService } from '@/core/UserAuthService.js';
 import { DI } from '@/di-symbols.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import type { UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	requireCredential: true,

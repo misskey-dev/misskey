@@ -4,11 +4,11 @@
  */
 
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { type FastifyServerOptions } from 'fastify';
+import { fileURLToPath } from 'node:url';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
+import type { FastifyServerOptions } from 'fastify';
 import type { RedisOptions } from 'ioredis';
 import type { ManifestChunk } from 'vite';
 

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities, noteReactionAcceptances } from '@/types.js';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { type noteReactionAcceptances, noteVisibilities } from '@/types.js';
 import { MiChannel } from './Channel.js';
-import { MiNote } from './Note.js';
 import type { MiDriveFile } from './DriveFile.js';
+import { MiNote } from './Note.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('note_draft')
 @Index('IDX_NOTE_DRAFT_FILE_IDS', { synchronize: false }) // GIN for fileIds in production

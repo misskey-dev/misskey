@@ -5,11 +5,11 @@
 
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { genOpenapiSpec } from './gen-spec.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { genOpenapiSpec } from './gen-spec.js';
 
 const staticAssets = fileURLToPath(new URL('../../../../assets/', import.meta.url));
 

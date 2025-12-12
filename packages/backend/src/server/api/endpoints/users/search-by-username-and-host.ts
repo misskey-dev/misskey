@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { UserSearchService } from '@/core/UserSearchService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserSearchService } from '@/core/UserSearchService.js';
 
 export const meta = {
 	tags: ['users'],

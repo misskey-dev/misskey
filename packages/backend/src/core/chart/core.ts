@@ -10,12 +10,12 @@
  */
 
 import * as nestedProperty from 'nested-property';
-import { EntitySchema, LessThan, Between } from 'typeorm';
-import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { MiRepository, miRepository } from '@/models/_.js';
 import type { DataSource, Repository } from 'typeorm';
+import { Between, EntitySchema, LessThan } from 'typeorm';
+import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
+import { addTime, dateUTC, isTimeBefore, isTimeSame, subtractTime } from '@/misc/prelude/time.js';
+import { type MiRepository, miRepository } from '@/models/_.js';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;

@@ -3,21 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import type { ModuleRef } from '@nestjs/core';
 import { EntityNotFoundError } from 'typeorm';
+import type { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser, MiNote, MiNoteDraft } from '@/models/_.js';
-import type { NoteDraftsRepository, ChannelsRepository } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
-import { IdService } from '@/core/IdService.js';
-import type { OnModuleInit } from '@nestjs/common';
-import type { UserEntityService } from './UserEntityService.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { ChannelsRepository, MiNote, MiNoteDraft, MiUser, NoteDraftsRepository } from '@/models/_.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
+import type { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class NoteDraftEntityService implements OnModuleInit {

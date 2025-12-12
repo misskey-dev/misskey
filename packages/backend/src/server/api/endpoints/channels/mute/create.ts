@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelsRepository } from '@/models/_.js';
+import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { DI } from '@/di-symbols.js';
+import type { ChannelsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
-import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 
 export const meta = {
 	tags: ['channels', 'mute'],

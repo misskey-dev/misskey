@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { RegistryApiService } from '@/core/RegistryApiService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,

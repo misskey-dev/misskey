@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { AbuseReportNotificationRecipientRepository, MiAbuseReportNotificationRecipient } from '@/models/_.js';
+import type { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
-import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { AbuseReportNotificationRecipientRepository, MiAbuseReportNotificationRecipient } from '@/models/_.js';
 
 @Injectable()
 export class AbuseReportNotificationRecipientEntityService {

@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type DriveChart from '@/core/chart/charts/drive.js';
+import { schema } from '@/core/chart/charts/entities/drive.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import DriveChart from '@/core/chart/charts/drive.js';
-import { schema } from '@/core/chart/charts/entities/drive.js';
 
 export const meta = {
 	tags: ['charts', 'drive'],

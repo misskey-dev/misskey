@@ -5,9 +5,9 @@
 
 import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
-import { query as urlQuery } from '@/misc/prelude/url.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import type { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
+import { query as urlQuery } from '@/misc/prelude/url.js';
 
 export type ILink = {
 	href: string;

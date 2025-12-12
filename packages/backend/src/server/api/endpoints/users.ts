@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['users'],

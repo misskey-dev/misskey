@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 

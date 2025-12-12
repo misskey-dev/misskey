@@ -4,18 +4,18 @@
  */
 
 import { URLSearchParams } from 'node:url';
-import * as nodemailer from 'nodemailer';
-import juice from 'juice';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
-import { UtilityService } from '@/core/UtilityService.js';
-import { DI } from '@/di-symbols.js';
+import juice from 'juice';
+import * as nodemailer from 'nodemailer';
 import type { Config } from '@/config.js';
+import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { bindThis } from '@/decorators.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 @Injectable()
 export class EmailService {

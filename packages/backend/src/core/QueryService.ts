@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets, ObjectLiteral } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository, MiMeta } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
 import type { SelectQueryBuilder } from 'typeorm';
+import { Brackets, type ObjectLiteral } from 'typeorm';
+import type { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MiMeta, MutingsRepository, NoteThreadMutingsRepository, RenoteMutingsRepository, UserProfilesRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class QueryService {

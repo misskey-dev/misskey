@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
-import type { MiInstance } from '@/models/Instance.js';
+import type { RoleService } from '@/core/RoleService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
-import { MiMeta } from '@/models/_.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiMeta } from '@/models/_.js';
+import type { MiInstance } from '@/models/Instance.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class InstanceEntityService {

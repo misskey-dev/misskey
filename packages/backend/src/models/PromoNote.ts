@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { MiNote } from './Note.js';
 import type { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('promo_note')
 export class MiPromoNote {

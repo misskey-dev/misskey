@@ -6,22 +6,22 @@
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { DataSource, IsNull } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { MiMeta, UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
-import { MiUser } from '@/models/User.js';
-import { MiUserProfile } from '@/models/UserProfile.js';
-import { IdService } from '@/core/IdService.js';
-import { MiUserKeypair } from '@/models/UserKeypair.js';
-import { MiUsedUsername } from '@/models/UsedUsername.js';
-import { generateNativeUserToken } from '@/misc/token.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { type DataSource, IsNull } from 'typeorm';
+import type UsersChart from '@/core/chart/charts/users.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { MetaService } from '@/core/MetaService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import type { UserService } from '@/core/UserService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import UsersChart from '@/core/chart/charts/users.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { UserService } from '@/core/UserService.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
-import { MetaService } from '@/core/MetaService.js';
+import { DI } from '@/di-symbols.js';
+import { generateNativeUserToken } from '@/misc/token.js';
+import type { MiMeta, UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
+import { MiUsedUsername } from '@/models/UsedUsername.js';
+import { MiUser } from '@/models/User.js';
+import { MiUserKeypair } from '@/models/UserKeypair.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
 
 @Injectable()
 export class SignupService {

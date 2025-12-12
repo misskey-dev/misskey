@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class DriveFolderEntityService {

@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['drive'],

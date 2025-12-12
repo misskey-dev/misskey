@@ -4,30 +4,30 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import * as Reversi from 'misskey-reversi';
-import type { MiChannel } from '@/models/Channel.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiUserProfile } from '@/models/UserProfile.js';
-import type { MiNote } from '@/models/Note.js';
-import type { MiAntenna } from '@/models/Antenna.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiDriveFolder } from '@/models/DriveFolder.js';
-import type { MiUserList } from '@/models/UserList.js';
-import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
-import type { MiSignin } from '@/models/Signin.js';
-import type { MiPage } from '@/models/Page.js';
-import type { MiWebhook } from '@/models/Webhook.js';
-import type { MiSystemWebhook } from '@/models/SystemWebhook.js';
-import type { MiMeta } from '@/models/Meta.js';
-import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { DI } from '@/di-symbols.js';
+import type { EventEmitter } from 'events';
+import type * as Redis from 'ioredis';
+import type * as Reversi from 'misskey-reversi';
+import type Emitter from 'strict-event-emitter-types';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Serialized } from '@/types.js';
-import type Emitter from 'strict-event-emitter-types';
-import type { EventEmitter } from 'events';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
+import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import type { MiAntenna } from '@/models/Antenna.js';
+import type { MiChannel } from '@/models/Channel.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiDriveFolder } from '@/models/DriveFolder.js';
+import type { MiMeta } from '@/models/Meta.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiPage } from '@/models/Page.js';
+import type { MiSignin } from '@/models/Signin.js';
+import type { MiSystemWebhook } from '@/models/SystemWebhook.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiUserList } from '@/models/UserList.js';
+import type { MiUserProfile } from '@/models/UserProfile.js';
+import type { MiWebhook } from '@/models/Webhook.js';
+import type { Serialized } from '@/types.js';
 
 //#region Stream type-body definitions
 export interface BroadcastTypes {

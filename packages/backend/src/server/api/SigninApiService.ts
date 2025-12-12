@@ -4,10 +4,20 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import bcrypt from 'bcryptjs';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import type * as Misskey from 'misskey-js';
 import { IsNull } from 'typeorm';
-import * as Misskey from 'misskey-js';
+import type { Config } from '@/config.js';
+import type { CaptchaService } from '@/core/CaptchaService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { UserAuthService } from '@/core/UserAuthService.js';
+import type { WebAuthnService } from '@/core/WebAuthnService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
 import type {
 	MiMeta,
 	SigninsRepository,
@@ -15,19 +25,9 @@ import type {
 	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import type { Config } from '@/config.js';
-import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser } from '@/models/User.js';
-import { IdService } from '@/core/IdService.js';
-import { bindThis } from '@/decorators.js';
-import { WebAuthnService } from '@/core/WebAuthnService.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
-import { CaptchaService } from '@/core/CaptchaService.js';
-import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
-import { RateLimiterService } from './RateLimiterService.js';
-import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { RateLimiterService } from './RateLimiterService.js';
+import type { SigninService } from './SigninService.js';
 
 @Injectable()
 export class SigninApiService {

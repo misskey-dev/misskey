@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/Blocking.js';
 import type { MiHashtag } from '@/models/Hashtag.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class HashtagEntityService {

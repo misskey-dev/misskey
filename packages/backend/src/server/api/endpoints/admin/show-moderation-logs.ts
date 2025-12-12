@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ModerationLogsRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
+import type { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { ModerationLogsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin'],

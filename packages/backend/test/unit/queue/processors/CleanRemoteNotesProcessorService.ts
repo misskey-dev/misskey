@@ -4,24 +4,24 @@
  */
 
 import { jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import ms from 'ms';
-import {
-	type MiNote,
-	type MiUser,
-	type NotesRepository,
-	type NoteFavoritesRepository,
-	type UserNotePiningsRepository,
-	type UsersRepository,
-	type UserProfilesRepository,
-	MiMeta,
-} from '@/models/_.js';
-import { CleanRemoteNotesProcessorService } from '@/queue/processors/CleanRemoteNotesProcessorService.js';
-import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
-import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import {
+	MiMeta,
+	type MiNote,
+	type MiUser,
+	type NoteFavoritesRepository,
+	type NotesRepository,
+	type UserNotePiningsRepository,
+	type UserProfilesRepository,
+	type UsersRepository,
+} from '@/models/_.js';
+import { CleanRemoteNotesProcessorService } from '@/queue/processors/CleanRemoteNotesProcessorService.js';
+import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
 
 describe('CleanRemoteNotesProcessorService', () => {
 	let app: TestingModule;

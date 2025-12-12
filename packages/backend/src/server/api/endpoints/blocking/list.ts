@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { BlockingsRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
-import { BlockingEntityService } from '@/core/entities/BlockingEntityService.js';
+import type { BlockingEntityService } from '@/core/entities/BlockingEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import type { BlockingsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['account'],

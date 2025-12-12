@@ -5,15 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, EntityNotFoundError } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/User.js';
-import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
+import type { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
 import { bindThis } from '@/decorators.js';
-import { Packed } from '@/misc/json-schema.js';
-import { IdService } from '@/core/IdService.js';
-import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class AnnouncementService {

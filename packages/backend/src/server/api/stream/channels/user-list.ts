@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { DI } from '@/di-symbols.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { DI } from '@/di-symbols.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject } from '@/misc/json-value.js';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class UserListChannel extends Channel {

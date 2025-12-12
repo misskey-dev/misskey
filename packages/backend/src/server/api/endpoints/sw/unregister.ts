@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { PushNotificationService } from '@/core/PushNotificationService.js';
+import { DI } from '@/di-symbols.js';
 import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
-import { PushNotificationService } from '@/core/PushNotificationService.js';
 
 export const meta = {
 	tags: ['account'],

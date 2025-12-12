@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Parser from 'rss-parser';
 import { Injectable } from '@nestjs/common';
+import Parser from 'rss-parser';
+import type { HttpRequestService } from '@/core/HttpRequestService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 const rssParser = new Parser();
 

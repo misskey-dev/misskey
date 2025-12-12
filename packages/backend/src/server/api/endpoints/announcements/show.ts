@@ -5,8 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
+import type { AnnouncementService } from '@/core/AnnouncementService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
 import bcrypt from 'bcryptjs';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { EmailService } from '@/core/EmailService.js';
+import ms from 'ms';
 import type { Config } from '@/config.js';
+import type { EmailService } from '@/core/EmailService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { UserAuthService } from '@/core/UserAuthService.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiMeta, UsersRepository } from '@/models/_.js';
+import { IsNull } from 'typeorm';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
+import type { MiMeta, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['users'],

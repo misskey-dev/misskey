@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnApplicationShutdown, Provider } from '@nestjs/common';
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { DataSource } from 'typeorm';
 import { MeiliSearch } from 'meilisearch';
+import type { DataSource } from 'typeorm';
 import { MiMeta } from '@/models/Meta.js';
+import { type Config, loadConfig } from './config.js';
+import type { GlobalEvents } from './core/GlobalEventService.js';
 import { DI } from './di-symbols.js';
-import { Config, loadConfig } from './config.js';
-import { createPostgresDataSource } from './postgres.js';
-import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
-import { GlobalEvents } from './core/GlobalEventService.js';
-import type { Provider, OnApplicationShutdown } from '@nestjs/common';
+import { RepositoryModule } from './models/RepositoryModule.js';
+import { createPostgresDataSource } from './postgres.js';
 
 const $config: Provider = {
 	provide: DI.config,

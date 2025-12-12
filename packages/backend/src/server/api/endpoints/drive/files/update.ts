@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { DriveService } from '@/core/DriveService.js';
+import type { RoleService } from '@/core/RoleService.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
-import { DriveService } from '@/core/DriveService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

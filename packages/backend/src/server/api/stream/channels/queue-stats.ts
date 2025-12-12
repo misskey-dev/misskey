@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Xev from 'xev';
 import { Injectable } from '@nestjs/common';
+import Xev from 'xev';
 import { bindThis } from '@/decorators.js';
-import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 const ev = new Xev();

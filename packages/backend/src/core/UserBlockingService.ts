@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { IdService } from '@/core/IdService.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiBlocking } from '@/models/Blocking.js';
-import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
-import Logger from '@/logger.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
+import type { ModuleRef } from '@nestjs/core';
+import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { CacheService } from '@/core/CacheService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { UserFollowingService } from '@/core/UserFollowingService.js';
+import type { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { BlockingsRepository, FollowRequestsRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { MiBlocking } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class UserBlockingService implements OnModuleInit {

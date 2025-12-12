@@ -6,17 +6,17 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { Test } from '@nestjs/testing';
-import { Redis } from 'ioredis';
 import type { TestingModule } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
-import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { Test } from '@nestjs/testing';
+import type { Redis } from 'ioredis';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
 
 function mockRedis() {
 	const hash = {} as any;

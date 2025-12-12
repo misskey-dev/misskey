@@ -4,8 +4,9 @@
  */
 
 import { setTimeout } from 'node:timers/promises';
-import { entities } from 'misskey-js';
 import { beforeEach, describe, test } from '@jest/globals';
+import type { INestApplicationContext } from '@nestjs/common';
+import type { entities } from 'misskey-js';
 import {
 	api,
 	captureWebhook,
@@ -13,10 +14,9 @@ import {
 	role,
 	signup,
 	startJobQueue,
-	UserToken,
+	type UserToken,
 	WEBHOOK_HOST,
 } from '../../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 describe('[シナリオ] ユーザ作成', () => {
 	let queue: INestApplicationContext;

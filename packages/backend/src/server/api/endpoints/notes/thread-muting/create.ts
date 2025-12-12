@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

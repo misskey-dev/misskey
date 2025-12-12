@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PagesRepository } from '@/models/_.js';
+import { IsNull } from 'typeorm';
+import type { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { DI } from '@/di-symbols.js';
+import type { PagesRepository, UsersRepository } from '@/models/_.js';
 import type { MiPage } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { PageEntityService } from '@/core/entities/PageEntityService.js';
-import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
 import type { NoteThreadMutingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
-import { DI } from '@/di-symbols.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

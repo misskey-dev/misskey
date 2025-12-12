@@ -22,7 +22,7 @@ export function bindThis(target: any, key: string, descriptor: any) {
 		configurable: true,
 		get() {
 			// eslint-disable-next-line no-prototype-builtins
-			if (this === target.prototype || this.hasOwnProperty(key)) {
+			if (this === target.prototype || Object.hasOwn(this, key)) {
 				return fn;
 			}
 

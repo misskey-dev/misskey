@@ -4,10 +4,10 @@
  */
 
 import { bindThis } from '@/decorators.js';
-import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import type { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('user_ip')
 @Index(['userId', 'ip'], { unique: true })

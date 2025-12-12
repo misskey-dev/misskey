@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typeorm';
-import { id } from './util/id.js';
-import { MiNote } from './Note.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiClip } from './Clip.js';
+import { MiNote } from './Note.js';
+import { id } from './util/id.js';
 
 @Entity('clip_note')
 @Index(['noteId', 'clipId'], { unique: true })

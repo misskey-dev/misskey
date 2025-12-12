@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { In, IsNull } from 'typeorm';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { IdService } from '@/core/IdService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { UtilityService } from '@/core/UtilityService.js';
+import type { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';

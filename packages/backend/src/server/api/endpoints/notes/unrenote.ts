@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, NotesRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import ms from 'ms';
+import type { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import type { NotesRepository, UsersRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

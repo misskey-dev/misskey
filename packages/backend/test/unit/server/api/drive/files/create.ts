@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { FastifyInstance } from 'fastify';
+import { Test, type TestingModule } from '@nestjs/testing';
+import type { FastifyInstance } from 'fastify';
 import request from 'supertest';
-import { randomString } from '../../../../../utils.js';
 import { CoreModule } from '@/core/CoreModule.js';
+import { IdService } from '@/core/IdService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { DriveFoldersRepository, MiDriveFolder, MiRole, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { MiUser } from '@/models/User.js';
+import type { DriveFoldersRepository, MiDriveFolder, MiRole, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { ServerModule } from '@/server/ServerModule.js';
 import { ServerService } from '@/server/ServerService.js';
-import { IdService } from '@/core/IdService.js';
+import { randomString } from '../../../../../utils.js';
 
 // TODO: uploadableFileTypes で許可されていないファイルが弾かれるかのテスト
 

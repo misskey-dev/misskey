@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { UserListService } from '@/core/UserListService.js';
+import { DI } from '@/di-symbols.js';
 import type { UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
-import { DI } from '@/di-symbols.js';
-import { UserListService } from '@/core/UserListService.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import * as os from 'node:os';
 import cluster from 'node:cluster';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
-import Logger from '@/logger.js';
-import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
-import { showMachineInfo } from '@/misc/show-machine-info.js';
+import { loadConfig } from '@/config.js';
 import { envOption } from '@/env.js';
+import Logger from '@/logger.js';
+import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);

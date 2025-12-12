@@ -5,18 +5,18 @@
 
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
+import type * as Bull from 'bullmq';
 import { ZipReader } from 'slacc';
 import { IsNull } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, DriveFilesRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { createTempDir } from '@/misc/create-temp.js';
-import { DriveService } from '@/core/DriveService.js';
-import { DownloadService } from '@/core/DownloadService.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import type { DownloadService } from '@/core/DownloadService.js';
+import type { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { createTempDir } from '@/misc/create-temp.js';
+import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbUserImportJobData } from '../types.js';
 
 // TODO: 名前衝突時の動作を選べるようにする
@@ -75,7 +75,7 @@ export class ImportCustomEmojisProcessorService {
 
 			for (const record of meta.emojis) {
 				if (!record.downloaded) continue;
-				if (!/^[a-zA-Z0-9_]+?([a-zA-Z0-9\.]+)?$/.test(record.fileName)) {
+				if (!/^[a-zA-Z0-9_]+?([a-zA-Z0-9.]+)?$/.test(record.fileName)) {
 					this.logger.error(`invalid filename: ${record.fileName}`);
 					continue;
 				}
@@ -114,7 +114,6 @@ export class ImportCustomEmojisProcessorService {
 					if (e instanceof Error || typeof e === 'string') {
 						this.logger.error(`couldn't import ${emojiPath} for ${emojiInfo.name}: ${e}`);
 					}
-					continue;
 				}
 			}
 

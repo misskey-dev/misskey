@@ -4,15 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiMeta, UsersRepository } from '@/models/_.js';
-import { SignupService } from '@/core/SignupService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { localUsernameSchema, passwordSchema } from '@/models/User.js';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { SignupService } from '@/core/SignupService.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiMeta, UsersRepository } from '@/models/_.js';
+import { localUsernameSchema, passwordSchema } from '@/models/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
-import { Packed } from '@/misc/json-schema.js';
 
 export const meta = {
 	tags: ['admin'],

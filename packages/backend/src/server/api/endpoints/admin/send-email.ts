@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { EmailService } from '@/core/EmailService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { EmailService } from '@/core/EmailService.js';
 
 export const meta = {
 	tags: ['admin'],

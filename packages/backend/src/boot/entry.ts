@@ -14,8 +14,8 @@ import Xev from 'xev';
 import Logger from '@/logger.js';
 import { envOption } from '../env.js';
 import { masterMain } from './master.js';
-import { workerMain } from './worker.js';
 import { readyRef } from './ready.js';
+import { workerMain } from './worker.js';
 
 import 'reflect-metadata';
 

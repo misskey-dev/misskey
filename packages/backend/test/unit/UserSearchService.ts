@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { describe, jest, test } from '@jest/globals';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { In } from 'typeorm';
-import { UserSearchService } from '@/core/UserSearchService.js';
-import { FollowingsRepository, MiUser, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { UserSearchService } from '@/core/UserSearchService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { FollowingsRepository, MiUser, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 
 describe('UserSearchService', () => {
 	let app: TestingModule;

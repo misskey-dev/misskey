@@ -5,21 +5,21 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { CaptchaService } from '@/core/CaptchaService.js';
-import { IdService } from '@/core/IdService.js';
-import { SignupService } from '@/core/SignupService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { EmailService } from '@/core/EmailService.js';
-import { MiLocalUser } from '@/models/User.js';
-import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import type { CaptchaService } from '@/core/CaptchaService.js';
+import type { EmailService } from '@/core/EmailService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { SignupService } from '@/core/SignupService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
-import { SigninService } from './SigninService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { MiMeta, MiRegistrationTicket, RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
+import type { SigninService } from './SigninService.js';
 
 @Injectable()
 export class SignupApiService {

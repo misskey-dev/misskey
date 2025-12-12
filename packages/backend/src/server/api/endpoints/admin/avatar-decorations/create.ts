@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import type { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
-import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],

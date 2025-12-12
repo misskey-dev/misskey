@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
+import type { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
-import { DI } from '@/di-symbols.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

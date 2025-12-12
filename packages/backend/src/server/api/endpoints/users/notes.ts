@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiMeta, NotesRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { Brackets } from 'typeorm';
+import type { CacheService } from '@/core/CacheService.js';
+import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import type { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { CacheService } from '@/core/CacheService.js';
-import { IdService } from '@/core/IdService.js';
-import { QueryService } from '@/core/QueryService.js';
-import { MiLocalUser } from '@/models/User.js';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
-import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
+import type { MiMeta, NotesRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
-import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 
 export const meta = {
 	tags: ['users', 'notes'],

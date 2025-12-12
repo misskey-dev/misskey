@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 
 export const meta = {
 	tags: ['admin', 'abuse-report', 'notification-recipient'],

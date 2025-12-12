@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import type { DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -37,7 +37,7 @@ export const paramDef = {
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
+		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z/\-*]+$/.toString().slice(1, -1) },
 		sort: { type: 'string', nullable: true, enum: ['+createdAt', '-createdAt', '+name', '-name', '+size', '-size', null] },
 	},
 	required: [],

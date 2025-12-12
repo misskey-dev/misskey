@@ -5,15 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiRole } from '@/models/Role.js';
-import { bindThis } from '@/decorators.js';
+import type { IdService } from '@/core/IdService.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { IdService } from '@/core/IdService.js';
-import { Packed } from '@/misc/json-schema.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
+import type { MiRole } from '@/models/Role.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class RoleEntityService {

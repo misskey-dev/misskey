@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, MiMeta } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import ActiveUsersChart from '@/core/chart/charts/active-users.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { Brackets } from 'typeorm';
+import type { CacheService } from '@/core/CacheService.js';
+import type { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import type ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import type { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
-import { IdService } from '@/core/IdService.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
-import { MiLocalUser } from '@/models/User.js';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
-import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import type { MiMeta, NotesRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['notes'],

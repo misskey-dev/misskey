@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import type { ClipsRepository } from '@/models/_.js';
-import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import type { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import type { ClipsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['clips', 'account'],

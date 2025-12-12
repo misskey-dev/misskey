@@ -5,8 +5,8 @@
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Serialized } from '@/types.js';
-import { id } from './util/id.js';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('system_account')
 @Index(['type'], { unique: true })

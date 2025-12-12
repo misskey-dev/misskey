@@ -5,10 +5,10 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 import { WebhookTestService } from '@/core/WebhookTestService.js';
-import { ApiError } from '@/server/api/error.js';
 import { systemWebhookEventTypes } from '@/models/SystemWebhook.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['webhooks'],

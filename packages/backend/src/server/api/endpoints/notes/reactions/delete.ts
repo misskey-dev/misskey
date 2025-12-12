@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ms from 'ms';
 import { Injectable } from '@nestjs/common';
+import ms from 'ms';
+import type { ReactionService } from '@/core/ReactionService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
-import { ReactionService } from '@/core/ReactionService.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

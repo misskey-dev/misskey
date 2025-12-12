@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { IsNull } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import type { Config } from '@/config.js';
+import type { EmailService } from '@/core/EmailService.js';
+import type { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
+import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import type { PasswordResetRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { IdService } from '@/core/IdService.js';
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import { EmailService } from '@/core/EmailService.js';
-import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['reset password'],

@@ -5,9 +5,9 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { webhookEventTypes } from '@/models/Webhook.js';
 import { WebhookTestService } from '@/core/WebhookTestService.js';
+import { webhookEventTypes } from '@/models/Webhook.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
 export const meta = {

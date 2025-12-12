@@ -7,14 +7,23 @@ process.env.NODE_ENV = 'test';
 
 import { setTimeout } from 'node:timers/promises';
 import { describe, jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
+import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
-import type { TestingModule } from '@nestjs/testing';
 import type { MockMetadata } from 'jest-mock';
-import { GlobalModule } from '@/GlobalModule.js';
+import { ModuleMocker } from 'jest-mock';
+import { CacheService } from '@/core/CacheService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { RoleService } from '@/core/RoleService.js';
-import {
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { genAidx } from '@/misc/id/aidx.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import type {
 	MiMeta,
 	MiRole,
 	MiRoleAssignment,
@@ -23,16 +32,7 @@ import {
 	RolesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { MetaService } from '@/core/MetaService.js';
-import { genAidx } from '@/misc/id/aidx.js';
-import { CacheService } from '@/core/CacheService.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { RoleCondFormulaValue } from '@/models/Role.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { RoleCondFormulaValue } from '@/models/Role.js';
 
 const moduleMocker = new ModuleMocker(global);
 

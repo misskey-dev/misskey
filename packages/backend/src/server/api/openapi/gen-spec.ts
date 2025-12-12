@@ -4,9 +4,9 @@
  */
 
 import type { Config } from '@/config.js';
-import endpoints, { IEndpoint } from '../endpoints.js';
+import endpoints, { type IEndpoint } from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
-import { getSchemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import { convertSchemaToOpenApiSchema, getSchemas } from './schemas.js';
 
 export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 	const spec = {

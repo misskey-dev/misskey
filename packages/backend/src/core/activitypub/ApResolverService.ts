@@ -5,23 +5,23 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
-import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { DI } from '@/di-symbols.js';
-import { UtilityService } from '@/core/UtilityService.js';
+import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import { LoggerService } from '@/core/LoggerService.js';
+import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { isCollectionOrOrderedCollection } from './type.js';
-import { ApDbResolverService } from './ApDbResolverService.js';
-import { ApRendererService } from './ApRendererService.js';
-import { ApRequestService } from './ApRequestService.js';
+import type { FollowRequestsRepository, MiMeta, NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import type { ApDbResolverService } from './ApDbResolverService.js';
+import type { ApRendererService } from './ApRendererService.js';
+import type { ApRequestService } from './ApRequestService.js';
 import { FetchAllowSoftFailMask } from './misc/check-against-url.js';
-import type { IObject, ICollection, IOrderedCollection } from './type.js';
+import type { ICollection, IObject, IOrderedCollection } from './type.js';
+import { isCollectionOrOrderedCollection } from './type.js';
 
 export class Resolver {
 	private history: Set<string>;

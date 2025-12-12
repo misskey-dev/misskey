@@ -5,11 +5,11 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository, AuthSessionsRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
+import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import type { AppsRepository, AuthSessionsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

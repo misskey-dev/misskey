@@ -4,19 +4,19 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type * as Bull from 'bullmq';
 import { IsNull } from 'typeorm';
+import type { DownloadService } from '@/core/DownloadService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import type { UserListService } from '@/core/UserListService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, DriveFilesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
-import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { DownloadService } from '@/core/DownloadService.js';
-import { UserListService } from '@/core/UserListService.js';
-import { IdService } from '@/core/IdService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { bindThis } from '@/decorators.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type { DriveFilesRepository, UserListMembershipsRepository, UserListsRepository, UsersRepository } from '@/models/_.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbUserImportJobData } from '../types.js';
 
 @Injectable()

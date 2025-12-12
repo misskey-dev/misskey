@@ -6,24 +6,24 @@
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as stream from 'node:stream/promises';
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { MiLocalUser, MiUser } from '@/models/User.js';
-import type { MiAccessToken } from '@/models/AccessToken.js';
-import type Logger from '@/logger.js';
-import type { MiMeta, UserIpsRepository } from '@/models/_.js';
-import { createTemp } from '@/misc/create-temp.js';
-import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import type { Config } from '@/config.js';
-import { ApiError } from './error.js';
-import { RateLimiterService } from './RateLimiterService.js';
-import { ApiLoggerService } from './ApiLoggerService.js';
-import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
-import type { IEndpointMeta, IEndpoint } from './endpoints.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { Config } from '@/config.js';
+import type { RoleService } from '@/core/RoleService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { createTemp } from '@/misc/create-temp.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
+import type { MiMeta, UserIpsRepository } from '@/models/_.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
+import type { ApiLoggerService } from './ApiLoggerService.js';
+import { type AuthenticateService, AuthenticationError } from './AuthenticateService.js';
+import type { IEndpoint, IEndpointMeta } from './endpoints.js';
+import { ApiError } from './error.js';
+import type { RateLimiterService } from './RateLimiterService.js';
 
 const accessDenied = {
 	message: 'Access denied.',

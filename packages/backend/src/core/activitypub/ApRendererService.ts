@@ -5,32 +5,32 @@
 
 import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { DI } from '@/di-symbols.js';
+import { In } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { MfmService } from '@/core/MfmService.js';
+import type { UserKeypairService } from '@/core/UserKeypairService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { escapeHtml } from '@/misc/escape-html.js';
+import type { DriveFilesRepository, MiMeta, NotesRepository, PollsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiBlocking } from '@/models/Blocking.js';
-import type { MiRelay } from '@/models/Relay.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { MiEmoji } from '@/models/Emoji.js';
+import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiPollVote } from '@/models/PollVote.js';
-import { UserKeypairService } from '@/core/UserKeypairService.js';
-import { MfmService } from '@/core/MfmService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { MiRelay } from '@/models/Relay.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { IdService } from '@/core/IdService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { escapeHtml } from '@/misc/escape-html.js';
-import { JsonLdService } from './JsonLdService.js';
-import { ApMfmService } from './ApMfmService.js';
+import type { ApMfmService } from './ApMfmService.js';
+import type { JsonLdService } from './JsonLdService.js';
 import { CONTEXT } from './misc/contexts.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
@@ -504,7 +504,7 @@ export class ApRendererService {
 		]);
 
 		const tryRewriteUrl = (maybeUrl: string) => {
-			const urlSafeRegex = /^(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/;
+			const urlSafeRegex = /^(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 			try {
 				const match = maybeUrl.match(urlSafeRegex);
 				if (!match) {

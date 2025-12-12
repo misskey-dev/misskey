@@ -4,32 +4,32 @@
  */
 
 import { URL } from 'node:url';
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
-import type Logger from '@/logger.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import ApRequestChart from '@/core/chart/charts/ap-request.js';
-import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/activitypub/type.js';
+import type { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
+import type { ApInboxService } from '@/core/activitypub/ApInboxService.js';
+import type { JsonLdService } from '@/core/activitypub/JsonLdService.js';
+import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import type { IActivity } from '@/core/activitypub/type.js';
+import { getApId } from '@/core/activitypub/type.js';
+import type ApRequestChart from '@/core/chart/charts/ap-request.js';
+import type FederationChart from '@/core/chart/charts/federation.js';
+import type InstanceChart from '@/core/chart/charts/instance.js';
+import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { CollapsedQueue } from '@/misc/collapsed-queue.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { StatusError } from '@/misc/status-error.js';
+import type { MiMeta } from '@/models/Meta.js';
+import type { MiNote } from '@/models/Note.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
-import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
-import { StatusError } from '@/misc/status-error.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
-import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
-import { bindThis } from '@/decorators.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { CollapsedQueue } from '@/misc/collapsed-queue.js';
-import { MiNote } from '@/models/Note.js';
-import { MiMeta } from '@/models/Meta.js';
-import { DI } from '@/di-symbols.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
 
 type UpdateInstanceJob = {

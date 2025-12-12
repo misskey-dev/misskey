@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
+import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { MemorySingleCache } from '@/misc/cache.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
 
 @Injectable()
 export class AvatarDecorationService implements OnApplicationShutdown {

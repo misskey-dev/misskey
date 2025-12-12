@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AbuseUserReportsRepository } from '@/models/_.js';
+import type { AbuseReportService } from '@/core/AbuseReportService.js';
 import { DI } from '@/di-symbols.js';
+import type { AbuseUserReportsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
-import { AbuseReportService } from '@/core/AbuseReportService.js';
 
 export const meta = {
 	tags: ['admin'],

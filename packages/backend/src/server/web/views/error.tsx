@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { comment } from '@/server/web/views/_.js';
 import type { CommonPropsMinimum } from '@/server/web/views/_.js';
+import { comment } from '@/server/web/views/_.js';
 
 export function ErrorPage(props: {
 	title?: string;

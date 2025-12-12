@@ -5,19 +5,19 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { ModuleMocker } from 'jest-mock';
-import { Test } from '@nestjs/testing';
+import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, test } from '@jest/globals';
-import { GlobalModule } from '@/GlobalModule.js';
-import { FileInfo, FileInfoService } from '@/core/FileInfoService.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import * as assert from 'assert';
+import type { MockMetadata } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 //import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
+import { type FileInfo, FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockMetadata } from 'jest-mock';
+import { GlobalModule } from '@/GlobalModule.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

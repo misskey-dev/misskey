@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, NotesRepository, MiUser, UsersRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiGroupedNotification, MiNotification } from '@/models/Notification.js';
-import type { MiNote } from '@/models/Note.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { bindThis } from '@/decorators.js';
-import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
-import { CacheService } from '@/core/CacheService.js';
-import { RoleEntityService } from './RoleEntityService.js';
-import { ChatEntityService } from './ChatEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { UserEntityService } from './UserEntityService.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { ModuleRef } from '@nestjs/core';
+import { In } from 'typeorm';
+import type { CacheService } from '@/core/CacheService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { FollowRequestsRepository, MiUser, NotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiGroupedNotification, MiNotification } from '@/models/Notification.js';
+import type { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
+import type { ChatEntityService } from './ChatEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
+import type { RoleEntityService } from './RoleEntityService.js';
+import type { UserEntityService } from './UserEntityService.js';
 
 const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set([
 	'note',

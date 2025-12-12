@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import type { ChatService } from '@/core/ChatService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '@/server/api/error.js';
-import { ChatService } from '@/core/ChatService.js';
 import type { DriveFilesRepository, MiUser } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '@/server/api/error.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['chat'],

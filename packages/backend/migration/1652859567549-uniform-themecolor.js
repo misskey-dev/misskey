@@ -10,7 +10,7 @@ export class uniformThemecolor1652859567549 {
 
 	async up(queryRunner) {
 		const formatColor = (color) => {
-			let tc = new tinycolor(color);
+			const tc = new tinycolor(color);
 			if (tc.isValid()) {
 				return tc.toHexString();
 			} else {

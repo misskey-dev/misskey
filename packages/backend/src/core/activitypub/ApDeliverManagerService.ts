@@ -5,14 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
+import type { IActivity } from '@/core/activitypub/type.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import { QueueService } from '@/core/QueueService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
-import type { IActivity } from '@/core/activitypub/type.js';
-import { ThinUser } from '@/queue/types.js';
+import type { ThinUser } from '@/queue/types.js';
 
 interface IRecipe {
 	type: string;

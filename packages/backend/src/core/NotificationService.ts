@@ -4,24 +4,24 @@
  */
 
 import { setTimeout } from 'node:timers/promises';
-import * as Redis from 'ioredis';
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { In } from 'typeorm';
+import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { ReplyError } from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiNotification } from '@/models/Notification.js';
-import { bindThis } from '@/decorators.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { PushNotificationService } from '@/core/PushNotificationService.js';
-import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
-import { IdService } from '@/core/IdService.js';
-import { CacheService } from '@/core/CacheService.js';
+import { In } from 'typeorm';
 import type { Config } from '@/config.js';
-import { UserListService } from '@/core/UserListService.js';
-import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
+import type { CacheService } from '@/core/CacheService.js';
+import type { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { PushNotificationService } from '@/core/PushNotificationService.js';
+import type { UserListService } from '@/core/UserListService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiNotification } from '@/models/Notification.js';
+import type { MiUser } from '@/models/User.js';
+import { type FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {

@@ -5,31 +5,30 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { Test } from '@nestjs/testing';
+import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
-
-import { MockResolver } from '../misc/mock-resolver.js';
-import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
-import type { MiRemoteUser } from '@/models/User.js';
-import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
-import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { Test } from '@nestjs/testing';
+import * as assert from 'assert';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { CONTEXT } from '@/core/activitypub/misc/contexts.js';
-import { GlobalModule } from '@/GlobalModule.js';
+import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
+import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import { CoreModule } from '@/core/CoreModule.js';
+import { DownloadService } from '@/core/DownloadService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { DownloadService } from '@/core/DownloadService.js';
+import { GlobalModule } from '@/GlobalModule.js';
 import { genAidx } from '@/misc/id/aidx.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import type { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import { MockResolver } from '../misc/mock-resolver.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

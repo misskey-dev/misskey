@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import type httpSignature from '@peertube/http-signature';
+import type { IActivity } from '@/core/activitypub/type.js';
+import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
 import type { SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
-import type { IActivity } from '@/core/activitypub/type.js';
-import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
-import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
-import type httpSignature from '@peertube/http-signature';
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 
 export type DeliverJobData = {
 	/** Actor */

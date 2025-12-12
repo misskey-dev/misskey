@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/_.js';
-import { DriveService } from '@/core/DriveService.js';
+import type { DriveService } from '@/core/DriveService.js';
 import { DI } from '@/di-symbols.js';
+import type { DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin'],

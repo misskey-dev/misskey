@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
-import { ModuleRef } from '@nestjs/core';
-import { AuthenticationResponseJSON } from '@simplewebauthn/types';
-import type { Config } from '@/config.js';
-import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
-import endpoints from './endpoints.js';
-import { ApiCallService } from './ApiCallService.js';
-import { SignupApiService } from './SignupApiService.js';
-import { SigninApiService } from './SigninApiService.js';
-import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { ModuleRef } from '@nestjs/core';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { Config } from '@/config.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { AccessTokensRepository, InstancesRepository } from '@/models/_.js';
+import type { ApiCallService } from './ApiCallService.js';
+import endpoints from './endpoints.js';
+import type { SigninApiService } from './SigninApiService.js';
+import type { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
+import type { SignupApiService } from './SignupApiService.js';
 
 @Injectable()
 export class ApiServerService {

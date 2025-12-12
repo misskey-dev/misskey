@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Misskey from 'misskey-js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import type * as Misskey from 'misskey-js';
+import type { EmailService } from '@/core/EmailService.js';
+import type { SigninEntityService } from '@/core/entities/SigninEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { NotificationService } from '@/core/NotificationService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { SigninsRepository, UserProfilesRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
 import type { MiLocalUser } from '@/models/User.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
-import { bindThis } from '@/decorators.js';
-import { EmailService } from '@/core/EmailService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class SigninService {

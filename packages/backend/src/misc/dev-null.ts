@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Writable, WritableOptions } from 'node:stream';
+import { Writable, type WritableOptions } from 'node:stream';
 
 export class DevNull extends Writable implements NodeJS.WritableStream {
 	constructor(opts?: WritableOptions) {

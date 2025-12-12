@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import type Redis from 'ioredis';
 import { Brackets, In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiChannelMuting, MiUser } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { RedisKVCache } from '@/misc/cache.js';
+import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiChannelMuting, MiUser } from '@/models/_.js';
 
 @Injectable()
 export class ChannelMutingService {

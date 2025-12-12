@@ -6,10 +6,10 @@
 import * as fs from 'node:fs';
 import _Ajv from 'ajv';
 import type { Schema, SchemaType } from '@/misc/json-schema.js';
-import type { MiLocalUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
-import { ApiError } from './error.js';
+import type { MiLocalUser } from '@/models/User.js';
 import type { IEndpointMeta } from './endpoints.js';
+import { ApiError } from './error.js';
 
 const Ajv = _Ajv.default;
 
@@ -38,7 +38,7 @@ export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
 		const validate = ajv.compile(paramDef);
 
 		this.exec = (params: any, user: T['requireCredential'] extends true ? MiLocalUser : MiLocalUser | null, token: MiAccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => {
-			let cleanup: undefined | (() => void) = undefined;
+			let cleanup: undefined | (() => void) ;
 
 			if (meta.requireFile) {
 				cleanup = () => {

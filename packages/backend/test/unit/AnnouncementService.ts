@@ -6,11 +6,20 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
+import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
+import type { MockMetadata } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { genAidx } from '@/misc/id/aidx.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type {
 	AnnouncementReadsRepository,
 	AnnouncementsRepository,
@@ -18,15 +27,6 @@ import type {
 	MiUser,
 	UsersRepository,
 } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { genAidx } from '@/misc/id/aidx.js';
-import { CacheService } from '@/core/CacheService.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockMetadata } from 'jest-mock';
 
 const moduleMocker = new ModuleMocker(global);
 

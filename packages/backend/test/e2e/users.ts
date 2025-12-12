@@ -5,11 +5,11 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
 import { inspect } from 'node:util';
-import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
+import * as assert from 'assert';
 import type * as misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 
 describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
@@ -308,7 +308,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.name, null);
 		assert.strictEqual(response.username, 'zoe');
 		assert.strictEqual(response.host, null);
-		response.avatarUrl && assert.match(response.avatarUrl, /^[-a-zA-Z0-9@:%._\+~#&?=\/]+$/);
+		response.avatarUrl && assert.match(response.avatarUrl, /^[-a-zA-Z0-9@:%._+~#&?=/]+$/);
 		assert.strictEqual(response.avatarBlurhash, null);
 		assert.deepStrictEqual(response.avatarDecorations, []);
 		assert.strictEqual(response.isBot, false);
@@ -486,7 +486,7 @@ describe('ユーザー', () => {
 		const aliceFile = (await uploadFile(alice)).body;
 		const parameters = { avatarId: aliceFile!.id };
 		const response = await successfulApiCall({ endpoint: 'i/update', parameters: parameters, user: alice });
-		assert.match(response.avatarUrl ?? '.', /^[-a-zA-Z0-9@:%._\+~#&?=\/]+$/);
+		assert.match(response.avatarUrl ?? '.', /^[-a-zA-Z0-9@:%._+~#&?=/]+$/);
 		assert.match(response.avatarBlurhash ?? '.', /[ -~]{54}/);
 		const expected = {
 			...meDetailed(alice, true),
@@ -511,7 +511,7 @@ describe('ユーザー', () => {
 		const aliceFile = (await uploadFile(alice)).body;
 		const parameters = { bannerId: aliceFile!.id };
 		const response = await successfulApiCall({ endpoint: 'i/update', parameters: parameters, user: alice });
-		assert.match(response.bannerUrl ?? '.', /^[-a-zA-Z0-9@:%._\+~#&?=\/]+$/);
+		assert.match(response.bannerUrl ?? '.', /^[-a-zA-Z0-9@:%._+~#&?=/]+$/);
 		assert.match(response.bannerBlurhash ?? '.', /[ -~]{54}/);
 		const expected = {
 			...meDetailed(alice, true),

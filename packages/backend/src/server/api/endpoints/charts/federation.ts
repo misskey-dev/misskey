@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { schema } from '@/core/chart/charts/entities/federation.js';
+import type FederationChart from '@/core/chart/charts/federation.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import FederationChart from '@/core/chart/charts/federation.js';
-import { schema } from '@/core/chart/charts/entities/federation.js';
 
 export const meta = {
 	tags: ['charts'],

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FlashsRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import ms from 'ms';
+import type { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import type { FlashsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['flash'],

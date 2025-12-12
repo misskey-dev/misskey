@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { followersVisibilities, followingVisibilities, type notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { MiPage } from './Page.js';
-import { MiUserList } from './UserList.js';
+import { MiUser } from './User.js';
+import type { MiUserList } from './UserList.js';
+import { id } from './util/id.js';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン

@@ -3,25 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
 import { join } from 'node:path';
 import * as stream from 'node:stream/promises';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Injectable } from '@nestjs/common';
+import * as blurhash from 'blurhash';
 import { FSWatcher } from 'chokidar';
 import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
-import probeImageSize from 'probe-image-size';
-import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import * as blurhash from 'blurhash';
-import { createTempDir } from '@/misc/create-temp.js';
-import { AiService } from '@/core/AiService.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
 import type { PredictionType } from 'nsfwjs';
+import probeImageSize from 'probe-image-size';
+import type { AiService } from '@/core/AiService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
+import { createTempDir } from '@/misc/create-temp.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 export type FileInfo = {
 	size: number;

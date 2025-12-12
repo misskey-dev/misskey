@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
+import { IsNull } from 'typeorm';
+import type { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import type { RoleService } from '@/core/RoleService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { DI } from '@/di-symbols.js';
+import type { FollowingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { birthdaySchema } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

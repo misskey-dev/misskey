@@ -4,12 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
-import { MetaService } from '@/core/MetaService.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { MetaService } from '@/core/MetaService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 

@@ -4,18 +4,18 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiPage } from '@/models/Page.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
-import { UserEntityService } from './UserEntityService.js';
-import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { DriveFilesRepository, PageLikesRepository, PagesRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiPage } from '@/models/Page.js';
+import type { MiUser } from '@/models/User.js';
+import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class PageEntityService {

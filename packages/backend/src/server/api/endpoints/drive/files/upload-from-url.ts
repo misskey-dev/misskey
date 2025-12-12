@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import ms from 'ms';
 import { Injectable } from '@nestjs/common';
+import ms from 'ms';
+import type { DriveService } from '@/core/DriveService.js';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { DriveService } from '@/core/DriveService.js';
 
 export const meta = {
 	tags: ['drive'],

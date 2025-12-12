@@ -4,16 +4,16 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiFollowing } from '@/models/Following.js';
+import type { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
-import { UserEntityService } from './UserEntityService.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { FollowingsRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiFollowing } from '@/models/Following.js';
+import type { MiUser } from '@/models/User.js';
+import type { UserEntityService } from './UserEntityService.js';
 
 type LocalFollowerFollowing = MiFollowing & {
 	followerHost: null;

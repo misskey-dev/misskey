@@ -8,13 +8,13 @@
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
-import * as assert from 'assert';
 import { setTimeout } from 'node:timers/promises';
-import { entities } from 'misskey-js';
+import * as assert from 'assert';
 import { Redis } from 'ioredis';
-import { SignupResponse, Note } from 'misskey-js/entities.js';
-import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, UserToken } from '../utils.js';
+import type { entities } from 'misskey-js';
+import type { Note, SignupResponse } from 'misskey-js/entities.js';
 import { loadConfig } from '@/config.js';
+import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, type UserToken, uploadUrl } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';

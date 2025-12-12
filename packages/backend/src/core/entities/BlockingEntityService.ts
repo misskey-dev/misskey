@@ -4,15 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { BlockingsRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { BlockingsRepository } from '@/models/_.js';
 import type { MiBlocking } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
-import { UserEntityService } from './UserEntityService.js';
+import type { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class BlockingEntityService {

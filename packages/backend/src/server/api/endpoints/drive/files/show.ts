@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { DriveFilesRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
+import type { DriveFilesRepository } from '@/models/_.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

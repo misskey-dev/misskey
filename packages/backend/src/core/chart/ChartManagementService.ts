@@ -3,22 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
-
-import { bindThis } from '@/decorators.js';
-import FederationChart from './charts/federation.js';
-import NotesChart from './charts/notes.js';
-import UsersChart from './charts/users.js';
-import ActiveUsersChart from './charts/active-users.js';
-import InstanceChart from './charts/instance.js';
-import PerUserNotesChart from './charts/per-user-notes.js';
-import PerUserPvChart from './charts/per-user-pv.js';
-import DriveChart from './charts/drive.js';
-import PerUserReactionsChart from './charts/per-user-reactions.js';
-import PerUserFollowingChart from './charts/per-user-following.js';
-import PerUserDriveChart from './charts/per-user-drive.js';
-import ApRequestChart from './charts/ap-request.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
+import type ActiveUsersChart from './charts/active-users.js';
+import type ApRequestChart from './charts/ap-request.js';
+import type DriveChart from './charts/drive.js';
+import type FederationChart from './charts/federation.js';
+import type InstanceChart from './charts/instance.js';
+import type NotesChart from './charts/notes.js';
+import type PerUserDriveChart from './charts/per-user-drive.js';
+import type PerUserFollowingChart from './charts/per-user-following.js';
+import type PerUserNotesChart from './charts/per-user-notes.js';
+import type PerUserPvChart from './charts/per-user-pv.js';
+import type PerUserReactionsChart from './charts/per-user-reactions.js';
+import type UsersChart from './charts/users.js';
 
 @Injectable()
 export class ChartManagementService implements OnApplicationShutdown {

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import type { MiChannel } from "@/models/Channel.js";
 import { noteVisibilities } from '@/types.js';
-import { id } from './util/id.js';
 import { MiNote } from './Note.js';
 import type { MiUser } from './User.js';
-import type { MiChannel } from "@/models/Channel.js";
+import { id } from './util/id.js';
 
 @Entity('poll')
 export class MiPoll {

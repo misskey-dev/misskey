@@ -5,11 +5,11 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteDraftService } from '@/core/NoteDraftService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
+import type { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
+import type { NoteDraftService } from '@/core/NoteDraftService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

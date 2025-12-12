@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUser } from '@/models/User.js';
-import type { RelaysRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { MemorySingleCache } from '@/misc/cache.js';
-import type { MiRelay } from '@/models/Relay.js';
-import { QueueService } from '@/core/QueueService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { DI } from '@/di-symbols.js';
-import { deepClone } from '@/misc/clone.js';
+import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { DI } from '@/di-symbols.js';
+import { MemorySingleCache } from '@/misc/cache.js';
+import { deepClone } from '@/misc/clone.js';
+import type { RelaysRepository } from '@/models/_.js';
+import type { MiRelay } from '@/models/Relay.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class RelayService {

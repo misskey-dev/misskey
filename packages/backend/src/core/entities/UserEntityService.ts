@@ -3,26 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import type { ModuleRef } from '@nestjs/core';
 import _Ajv from 'ajv';
-import { ModuleRef } from '@nestjs/core';
+import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
+import type { AnnouncementService } from '@/core/AnnouncementService.js';
+import type { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import type { ChatService } from '@/core/ChatService.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { RoleService } from '@/core/RoleService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import {
-	birthdaySchema,
-	descriptionSchema,
-	localUsernameSchema,
-	locationSchema,
-	nameSchema,
-	passwordSchema,
-} from '@/models/User.js';
 import type {
 	BlockingsRepository,
 	FollowingsRepository,
@@ -39,16 +40,15 @@ import type {
 	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { IdService } from '@/core/IdService.js';
-import type { AnnouncementService } from '@/core/AnnouncementService.js';
-import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
-import { ChatService } from '@/core/ChatService.js';
-import type { OnModuleInit } from '@nestjs/common';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import {
+	birthdaySchema,
+	descriptionSchema,
+	localUsernameSchema,
+	locationSchema,
+	nameSchema,
+	passwordSchema,
+} from '@/models/User.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
 

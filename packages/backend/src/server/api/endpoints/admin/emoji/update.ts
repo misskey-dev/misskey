@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository, MiEmoji } from '@/models/_.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { DI } from '@/di-symbols.js';
+import type { DriveFilesRepository, MiEmoji } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

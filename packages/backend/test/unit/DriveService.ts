@@ -5,19 +5,19 @@
 
 process.env.NODE_ENV = 'test';
 
-import { Test } from '@nestjs/testing';
 import {
 	DeleteObjectCommand,
-	DeleteObjectCommandOutput,
+	type DeleteObjectCommandOutput,
 	InvalidObjectState,
 	NoSuchKey,
 	S3Client,
 } from '@aws-sdk/client-s3';
-import { mockClient } from 'aws-sdk-client-mock';
-import { GlobalModule } from '@/GlobalModule.js';
-import { DriveService } from '@/core/DriveService.js';
-import { CoreModule } from '@/core/CoreModule.js';
 import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import { mockClient } from 'aws-sdk-client-mock';
+import { CoreModule } from '@/core/CoreModule.js';
+import { DriveService } from '@/core/DriveService.js';
+import { GlobalModule } from '@/GlobalModule.js';
 
 describe('DriveService', () => {
 	let app: TestingModule;

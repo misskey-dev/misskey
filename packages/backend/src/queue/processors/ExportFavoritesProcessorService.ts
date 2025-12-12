@@ -5,21 +5,21 @@
 
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { format as dateFormat } from 'date-fns';
-import { DI } from '@/di-symbols.js';
-import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { DriveService } from '@/core/DriveService.js';
-import { createTemp } from '@/misc/create-temp.js';
-import type { MiPoll } from '@/models/Poll.js';
-import type { MiNote } from '@/models/Note.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { QueryService } from '@/core/QueryService.js';
-import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
+import { format as dateFormat } from 'date-fns';
+import type { DriveService } from '@/core/DriveService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { NotificationService } from '@/core/NotificationService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { createTemp } from '@/misc/create-temp.js';
+import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
+import type { MiNoteFavorite, MiUser, NoteFavoritesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()

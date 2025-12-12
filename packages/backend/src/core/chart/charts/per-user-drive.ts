@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable, Inject } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import * as Redis from 'ioredis';
+import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import type { DataSource } from 'typeorm';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import { DI } from '@/di-symbols.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { bindThis } from '@/decorators.js';
-import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
-import Chart from '../core.js';
-import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from './entities/per-user-drive.js';
+import type { ChartLoggerService } from '../ChartLoggerService.js';
 import type { KVs } from '../core.js';
+import Chart from '../core.js';
+import { name, schema } from './entities/per-user-drive.js';
 
 /**
  * ユーザーごとのドライブに関するチャート

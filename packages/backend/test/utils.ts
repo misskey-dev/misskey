@@ -4,24 +4,23 @@
  */
 
 import * as assert from 'node:assert';
+import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { basename, isAbsolute } from 'node:path';
-import { randomUUID } from 'node:crypto';
 import { inspect } from 'node:util';
-import WebSocket, { ClientOptions } from 'ws';
-import fetch, { File, RequestInit, type Headers } from 'node-fetch';
+import Fastify from 'fastify';
+import type * as misskey from 'misskey-js';
+import fetch, { File, type Headers, type RequestInit, type Response } from 'node-fetch';
 import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
-import { type Response } from 'node-fetch';
-import Fastify from 'fastify';
-import { entities } from '../src/postgres.js';
-import { loadConfig } from '../src/config.js';
-import type * as misskey from 'misskey-js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import WebSocket, { type ClientOptions } from 'ws';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { ApiError } from '@/server/api/error.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import type { ApiError } from '@/server/api/error.js';
+import { loadConfig } from '../src/config.js';
+import { entities } from '../src/postgres.js';
 
-export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
+export { jobQueue as startJobQueue, server as startServer } from '@/boot/common.js';
 
 export interface UserToken {
 	token: string;

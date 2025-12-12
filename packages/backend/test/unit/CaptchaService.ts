@@ -4,20 +4,20 @@
  */
 
 import { afterAll, beforeAll, beforeEach, describe, expect, jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Response } from 'node-fetch';
+import { Test, type TestingModule } from '@nestjs/testing';
+import type { Response } from 'node-fetch';
 import {
 	CaptchaError,
-	CaptchaErrorCode,
-	captchaErrorCodes,
-	CaptchaSaveResult,
+	type CaptchaErrorCode,
+	type CaptchaSaveResult,
 	CaptchaService,
+	captchaErrorCodes,
 } from '@/core/CaptchaService.js';
-import { GlobalModule } from '@/GlobalModule.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { MiMeta } from '@/models/Meta.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { MiMeta } from '@/models/Meta.js';
 
 describe('CaptchaService', () => {
 	let app: TestingModule;

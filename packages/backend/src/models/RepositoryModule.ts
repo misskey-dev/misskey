@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Provider } from '@nestjs/common';
 import { Module } from '@nestjs/common';
+import type { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import {
 	MiAbuseReportNotificationRecipient,
@@ -22,6 +24,11 @@ import {
 	MiChannelFavorite,
 	MiChannelFollowing,
 	MiChannelMuting,
+	MiChatApproval,
+	MiChatMessage,
+	MiChatRoom,
+	MiChatRoomInvitation,
+	MiChatRoomMembership,
 	MiClip,
 	MiClipFavorite,
 	MiClipNote,
@@ -40,10 +47,10 @@ import {
 	MiModerationLog,
 	MiMuting,
 	MiNote,
+	MiNoteDraft,
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,
-	MiNoteDraft,
 	MiPage,
 	MiPageLike,
 	MiPasswordResetRequest,
@@ -55,8 +62,7 @@ import {
 	MiRegistryItem,
 	MiRelay,
 	MiRenoteMuting,
-	MiRepository,
-	miRepository,
+	type MiRepository,
 	MiRetentionAggregation,
 	MiReversiGame,
 	MiRole,
@@ -79,14 +85,8 @@ import {
 	MiUserPublickey,
 	MiUserSecurityKey,
 	MiWebhook,
-	MiChatMessage,
-	MiChatRoom,
-	MiChatRoomMembership,
-	MiChatRoomInvitation,
-	MiChatApproval,
+	miRepository,
 } from './_.js';
-import type { Provider } from '@nestjs/common';
-import type { DataSource } from 'typeorm';
 
 const $usersRepository: Provider = {
 	provide: DI.usersRepository,

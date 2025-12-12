@@ -3,38 +3,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import RE2 from 're2';
-import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
+import * as mfm from 'mfm-js';
 import ms from 'ms';
 import * as htmlParser from 'node-html-parser';
+import RE2 from 're2';
+import type { Config } from '@/config.js';
+import type { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import type { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import type { CacheService } from '@/core/CacheService.js';
+import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { HashtagService } from '@/core/HashtagService.js';
+import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import type { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import type { RolePolicies, RoleService } from '@/core/RoleService.js';
+import type { UserFollowingService } from '@/core/UserFollowingService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { DI } from '@/di-symbols.js';
+import * as Acct from '@/misc/acct.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
-import * as Acct from '@/misc/acct.js';
-import type { UsersRepository, DriveFilesRepository, MiMeta, UserProfilesRepository, PagesRepository } from '@/models/_.js';
+import { langmap } from '@/misc/langmap.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { safeForSql } from '@/misc/safe-for-sql.js';
+import type { DriveFilesRepository, MiMeta, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { notificationRecieveConfig } from '@/models/json-schema/user.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, followedMessageSchema, locationSchema, nameSchema } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
-import { AccountUpdateService } from '@/core/AccountUpdateService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { HashtagService } from '@/core/HashtagService.js';
-import { DI } from '@/di-symbols.js';
-import { RolePolicies, RoleService } from '@/core/RoleService.js';
-import { CacheService } from '@/core/CacheService.js';
-import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { Config } from '@/config.js';
-import { safeForSql } from '@/misc/safe-for-sql.js';
-import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
-import { notificationRecieveConfig } from '@/models/json-schema/user.js';
-import { ApiLoggerService } from '../../ApiLoggerService.js';
+import type { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

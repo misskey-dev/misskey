@@ -4,12 +4,17 @@
  */
 
 import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
-import { Brackets, In, IsNull, Not } from 'typeorm';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
 import sanitizeHtml from 'sanitize-html';
-import { DI } from '@/di-symbols.js';
+import { Brackets, In, IsNull, Not } from 'typeorm';
+import type { EmailService } from '@/core/EmailService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { RoleService } from '@/core/RoleService.js';
+import type { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
@@ -17,13 +22,8 @@ import type {
 	MiMeta,
 	MiUser,
 } from '@/models/_.js';
-import { EmailService } from '@/core/EmailService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { IdService } from './IdService.js';
+import type { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
+import type { IdService } from './IdService.js';
 
 @Injectable()
 export class AbuseReportNotificationService implements OnApplicationShutdown {

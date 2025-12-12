@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueueService } from '@/core/QueueService.js';
-import type { AntennasRepository, DriveFilesRepository, UsersRepository, MiAntenna as _Antenna } from '@/models/_.js';
+import type { DownloadService } from '@/core/DownloadService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
-import { DownloadService } from '@/core/DownloadService.js';
+import type { MiAntenna as _Antenna, AntennasRepository, DriveFilesRepository, UsersRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

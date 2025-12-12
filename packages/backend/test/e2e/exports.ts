@@ -5,10 +5,10 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { api, port, post, signup, startJobQueue } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import * as assert from 'assert';
 import type * as misskey from 'misskey-js';
+import { api, port, post, signup, startJobQueue } from '../utils.js';
 
 describe('export-clips', () => {
 	let queue: INestApplicationContext;

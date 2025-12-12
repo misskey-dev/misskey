@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
-import { MiDriveFile } from './DriveFile.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiChatRoom } from './ChatRoom.js';
+import { MiDriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('chat_message')
 export class MiChatMessage {

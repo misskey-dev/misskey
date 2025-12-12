@@ -6,8 +6,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { api, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import { api, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
 
 describe('Drive', () => {
 	let alice: misskey.entities.SignupResponse;

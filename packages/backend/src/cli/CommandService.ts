@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
+import type { MetaService } from '@/core/MetaService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class CommandService {

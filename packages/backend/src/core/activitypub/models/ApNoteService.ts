@@ -4,39 +4,38 @@
  */
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { MiRemoteUser } from '@/models/User.js';
-import type { MiNote } from '@/models/Note.js';
-import { acquireApObjectLock } from '@/misc/distributed-lock.js';
-import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import type { MiEmoji } from '@/models/Emoji.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import { NoteCreateService } from '@/core/NoteCreateService.js';
-import type Logger from '@/logger.js';
-import { IdService } from '@/core/IdService.js';
-import { PollService } from '@/core/PollService.js';
-import { StatusError } from '@/misc/status-error.js';
-import { UtilityService } from '@/core/UtilityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { NoteCreateService } from '@/core/NoteCreateService.js';
+import type { PollService } from '@/core/PollService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
-import { ApLoggerService } from '../ApLoggerService.js';
-import { ApMfmService } from '../ApMfmService.js';
-import { ApDbResolverService } from '../ApDbResolverService.js';
-import { ApResolverService } from '../ApResolverService.js';
-import { ApAudienceService } from '../ApAudienceService.js';
-import { ApPersonService } from './ApPersonService.js';
-import { extractApHashtags } from './tag.js';
-import { ApMentionService } from './ApMentionService.js';
-import { ApQuestionService } from './ApQuestionService.js';
-import { ApImageService } from './ApImageService.js';
-import type { Resolver } from '../ApResolverService.js';
+import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
+import { StatusError } from '@/misc/status-error.js';
+import type { EmojisRepository, MiMeta, PollsRepository } from '@/models/_.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import type { ApAudienceService } from '../ApAudienceService.js';
+import type { ApDbResolverService } from '../ApDbResolverService.js';
+import type { ApLoggerService } from '../ApLoggerService.js';
+import type { ApMfmService } from '../ApMfmService.js';
+import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
+import { getApId, getApType, getOneApHrefNullable, getOneApId, isEmoji, validPost } from '../type.js';
+import type { ApImageService } from './ApImageService.js';
+import type { ApMentionService } from './ApMentionService.js';
+import { ApPersonService } from './ApPersonService.js';
+import type { ApQuestionService } from './ApQuestionService.js';
+import { extractApHashtags } from './tag.js';
 
 @Injectable()
 export class ApNoteService {

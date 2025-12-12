@@ -4,18 +4,18 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type * as Bull from 'bullmq';
 import { IsNull } from 'typeorm';
+import type { DownloadService } from '@/core/DownloadService.js';
+import type { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import type { UserMutingService } from '@/core/UserMutingService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, DriveFilesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
-import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { DownloadService } from '@/core/DownloadService.js';
-import { UserMutingService } from '@/core/UserMutingService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { bindThis } from '@/decorators.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type { DriveFilesRepository, UsersRepository } from '@/models/_.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbUserImportJobData } from '../types.js';
 
 @Injectable()

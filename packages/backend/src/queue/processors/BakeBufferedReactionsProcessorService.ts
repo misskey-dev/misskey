@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
-import { MiMeta } from '@/models/_.js';
+import type { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { MiMeta } from '@/models/_.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class BakeBufferedReactionsProcessorService {

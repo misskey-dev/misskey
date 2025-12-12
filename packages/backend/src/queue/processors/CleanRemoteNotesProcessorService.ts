@@ -5,14 +5,14 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, IsNull, LessThan, QueryFailedError, Not } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
+import { type DataSource, IsNull, LessThan, Not, QueryFailedError } from 'typeorm';
+import type { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class CleanRemoteNotesProcessorService {

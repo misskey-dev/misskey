@@ -1,8 +1,8 @@
 import { deepStrictEqual, strictEqual } from 'assert';
 import { readFile } from 'fs/promises';
+import * as Misskey from 'misskey-js';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import * as Misskey from 'misskey-js';
 import { WebSocket } from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);

@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { UserFollowingService } from '@/core/UserFollowingService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

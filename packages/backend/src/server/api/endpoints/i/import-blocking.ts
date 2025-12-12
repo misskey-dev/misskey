@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueueService } from '@/core/QueueService.js';
-import { AccountMoveService } from '@/core/AccountMoveService.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { AccountMoveService } from '@/core/AccountMoveService.js';
+import type { QueueService } from '@/core/QueueService.js';
 import { DI } from '@/di-symbols.js';
+import type { DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

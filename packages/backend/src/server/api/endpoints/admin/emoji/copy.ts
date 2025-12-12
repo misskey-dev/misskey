@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import type { DriveService } from '@/core/DriveService.js';
+import type { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { DI } from '@/di-symbols.js';
 import type { EmojisRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import { DI } from '@/di-symbols.js';
-import { DriveService } from '@/core/DriveService.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

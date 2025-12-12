@@ -6,22 +6,30 @@
 import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fastifyProxy from '@fastify/http-proxy';
+import fastifyStatic from '@fastify/static';
 import { Inject, Injectable } from '@nestjs/common';
+import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
-import fastifyStatic from '@fastify/static';
-import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
 import type { Config } from '@/config.js';
+import type { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import type { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import type { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import type { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { PageEntityService } from '@/core/entities/PageEntityService.js';
+import type { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { PageEntityService } from '@/core/entities/PageEntityService.js';
-import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
-import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
-import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
+import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
 import type {
 	AnnouncementsRepository,
 	ChannelsRepository,
@@ -35,36 +43,26 @@ import type {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
-import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
-import { bindThis } from '@/decorators.js';
-import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
-import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
-import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
-import { FeedService } from './FeedService.js';
-import { UrlPreviewService } from './UrlPreviewService.js';
-import { ClientLoggerService } from './ClientLoggerService.js';
+import type { ClientLoggerService } from './ClientLoggerService.js';
+import type { FeedService } from './FeedService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
-
+import type { UrlPreviewService } from './UrlPreviewService.js';
+import { AnnouncementPage } from './views/announcement.js';
 import { BasePage } from './views/base.js';
-import { UserPage } from './views/user.js';
+import { BaseEmbed } from './views/base-embed.js';
+import { BiosPage } from './views/bios.js';
+import { ChannelPage } from './views/channel.js';
+import { CliPage } from './views/cli.js';
+import { ClipPage } from './views/clip.js';
+import { ErrorPage } from './views/error.js';
+import { FlashPage } from './views/flash.js';
+import { FlushPage } from './views/flush.js';
+import { GalleryPostPage } from './views/gallery-post.js';
+import { InfoCardPage } from './views/info-card.js';
 import { NotePage } from './views/note.js';
 import { PagePage } from './views/page.js';
-import { ClipPage } from './views/clip.js';
-import { FlashPage } from './views/flash.js';
-import { GalleryPostPage } from './views/gallery-post.js';
-import { ChannelPage } from './views/channel.js';
 import { ReversiGamePage } from './views/reversi-game.js';
-import { AnnouncementPage } from './views/announcement.js';
-import { BaseEmbed } from './views/base-embed.js';
-import { InfoCardPage } from './views/info-card.js';
-import { BiosPage } from './views/bios.js';
-import { CliPage } from './views/cli.js';
-import { FlushPage } from './views/flush.js';
-import { ErrorPage } from './views/error.js';
-
-import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import { UserPage } from './views/user.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

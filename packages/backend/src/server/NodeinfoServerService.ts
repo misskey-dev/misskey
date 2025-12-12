@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { MemorySingleCache } from '@/misc/cache.js';
-import { bindThis } from '@/decorators.js';
-import NotesChart from '@/core/chart/charts/notes.js';
-import UsersChart from '@/core/chart/charts/users.js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { Config } from '@/config.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import type NotesChart from '@/core/chart/charts/notes.js';
+import type UsersChart from '@/core/chart/charts/users.js';
+import type { MetaService } from '@/core/MetaService.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemorySingleCache } from '@/misc/cache.js';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';

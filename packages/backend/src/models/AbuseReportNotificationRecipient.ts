@@ -6,8 +6,8 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
-import { id } from './util/id.js';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 /**
  * 通報受信時に通知を送信する方法.

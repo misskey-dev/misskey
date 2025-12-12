@@ -5,16 +5,16 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { MiNoteDraft, NoteDraftsRepository, MiNote, MiDriveFile, MiChannel, UsersRepository, DriveFilesRepository, NotesRepository, BlockingsRepository, ChannelsRepository } from '@/models/_.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import { IdService } from '@/core/IdService.js';
-import type { MiLocalUser, MiUser } from '@/models/User.js';
+import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { isRenote, isQuote } from '@/misc/is-renote.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { QueueService } from '@/core/QueueService.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
+import type { BlockingsRepository, ChannelsRepository, DriveFilesRepository, MiChannel, MiDriveFile, MiNote, MiNoteDraft, NoteDraftsRepository, NotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 
 export type NoteDraftOptions = Omit<MiNoteDraft, 'id' | 'userId' | 'user' | 'reply' | 'renote' | 'channel'>;
 

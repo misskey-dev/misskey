@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 // TODO: 同じdomain、同じscope、同じkeyのレコードは二つ以上存在しないように制約付けたい
 @Entity('registry_item')

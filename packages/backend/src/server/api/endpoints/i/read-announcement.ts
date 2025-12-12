@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { AnnouncementService } from '@/core/AnnouncementService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 export const meta = {
 	tags: ['account'],

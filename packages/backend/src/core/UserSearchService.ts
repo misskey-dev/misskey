@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import { type FollowingsRepository, MiUser, type MutingsRepository, type UserProfilesRepository, type UsersRepository } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { Brackets, type SelectQueryBuilder } from 'typeorm';
 import type { Config } from '@/config.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { FollowingsRepository, MiUser, MutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 
 function defaultActiveThreshold() {
 	return new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);

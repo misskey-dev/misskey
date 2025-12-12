@@ -4,22 +4,22 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, In, Not } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import {
-	type NotesRepository,
-	MiPage,
-	type PagesRepository,
-	MiDriveFile,
-	type UsersRepository,
-	MiNote,
-} from '@/models/_.js';
+import { type DataSource, In, Not } from 'typeorm';
+import type { IdService } from '@/core/IdService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import { IdService } from '@/core/IdService.js';
-import type { MiUser } from '@/models/User.js';
+import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import {
+	type MiDriveFile,
+	MiNote,
+	MiPage,
+	type NotesRepository,
+	type PagesRepository,
+	type UsersRepository,
+} from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 
 export interface PageBody {
 	title: string;

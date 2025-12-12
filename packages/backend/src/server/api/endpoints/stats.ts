@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type NotesChart from '@/core/chart/charts/notes.js';
+import type UsersChart from '@/core/chart/charts/users.js';
+import { DI } from '@/di-symbols.js';
 import type { InstancesRepository, NoteReactionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
-import NotesChart from '@/core/chart/charts/notes.js';
-import UsersChart from '@/core/chart/charts/users.js';
 
 export const meta = {
 	requireCredential: false,

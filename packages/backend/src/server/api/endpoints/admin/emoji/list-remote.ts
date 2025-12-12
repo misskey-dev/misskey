@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import type { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { EmojisRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin'],

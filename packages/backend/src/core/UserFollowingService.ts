@@ -3,30 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
+import type { ModuleRef } from '@nestjs/core';
 import { Brackets, IsNull } from 'typeorm';
-import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { QueueService } from '@/core/QueueService.js';
-import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { IdService } from '@/core/IdService.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { bindThis } from '@/decorators.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
-import { AccountMoveService } from '@/core/AccountMoveService.js';
-import { UtilityService } from '@/core/UtilityService.js';
+import type { AccountMoveService } from '@/core/AccountMoveService.js';
+import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import type { CacheService } from '@/core/CacheService.js';
+import type InstanceChart from '@/core/chart/charts/instance.js';
+import type PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { NotificationService } from '@/core/NotificationService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import type { UserBlockingService } from '@/core/UserBlockingService.js';
+import type { UserWebhookService } from '@/core/UserWebhookService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { ThinUser } from '@/queue/types.js';
 import Logger from '../logger.js';
 

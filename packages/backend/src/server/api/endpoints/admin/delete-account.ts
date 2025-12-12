@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { DeleteAccountService } from '@/core/DeleteAccountService.js';
+import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DeleteAccountService } from '@/core/DeleteAccountService.js';
-import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],

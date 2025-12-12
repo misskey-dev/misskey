@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import type { FlashService } from '@/core/FlashService.js';
+import { DI } from '@/di-symbols.js';
 import type { FlashsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
-import { DI } from '@/di-symbols.js';
-import { FlashService } from '@/core/FlashService.js';
 
 export const meta = {
 	tags: ['flash'],

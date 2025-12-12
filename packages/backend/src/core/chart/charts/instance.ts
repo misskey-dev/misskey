@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable, Inject } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import * as Redis from 'ioredis';
-import type { DriveFilesRepository, FollowingsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import type { DataSource } from 'typeorm';
+import type { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
+import type { DriveFilesRepository, FollowingsRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
-import { DI } from '@/di-symbols.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { bindThis } from '@/decorators.js';
-import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
-import Chart from '../core.js';
-import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from './entities/instance.js';
+import type { ChartLoggerService } from '../ChartLoggerService.js';
 import type { KVs } from '../core.js';
+import Chart from '../core.js';
+import { name, schema } from './entities/instance.js';
 
 /**
  * インスタンスごとのチャート

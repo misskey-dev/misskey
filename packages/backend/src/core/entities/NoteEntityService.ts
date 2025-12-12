@@ -3,25 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
+import type { ModuleRef } from '@nestjs/core';
 import { EntityNotFoundError, In } from 'typeorm';
-import { ModuleRef } from '@nestjs/core';
+import type { IdService } from '@/core/IdService.js';
+import type { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
-import { IdService } from '@/core/IdService.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
 import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
-import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import type { OnModuleInit } from '@nestjs/common';
+import type { ChannelsRepository, FollowingsRepository, MiMeta, NoteReactionsRepository, NotesRepository, PollsRepository, PollVotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
-import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { UserEntityService } from './UserEntityService.js';
 
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {

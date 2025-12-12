@@ -6,9 +6,9 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { api, channel, clip, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
-import type { SimpleGetResponse } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import type { SimpleGetResponse } from '../utils.js';
+import { api, channel, clip, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
 
 // Request Accept in lowercase
 const ONLY_AP = 'application/activity+json';

@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 
 export const meta = {
 	tags: ['admin'],

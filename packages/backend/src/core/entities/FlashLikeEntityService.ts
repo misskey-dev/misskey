@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { FlashLikesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
 import type { MiFlashLike } from '@/models/FlashLike.js';
-import { bindThis } from '@/decorators.js';
-import { FlashEntityService } from './FlashEntityService.js';
+import type { MiUser } from '@/models/User.js';
+import type { FlashEntityService } from './FlashEntityService.js';
 
 @Injectable()
 export class FlashLikeEntityService {

@@ -6,21 +6,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { Not } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { InstancesRepository, MiMeta } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { MemorySingleCache } from '@/misc/cache.js';
-import type { MiInstance } from '@/models/Instance.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import ApRequestChart from '@/core/chart/charts/ap-request.js';
-import FederationChart from '@/core/chart/charts/federation.js';
-import { StatusError } from '@/misc/status-error.js';
-import { UtilityService } from '@/core/UtilityService.js';
+import type { ApRequestService } from '@/core/activitypub/ApRequestService.js';
+import type ApRequestChart from '@/core/chart/charts/ap-request.js';
+import type FederationChart from '@/core/chart/charts/federation.js';
+import type InstanceChart from '@/core/chart/charts/instance.js';
+import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { MemorySingleCache } from '@/misc/cache.js';
+import { StatusError } from '@/misc/status-error.js';
+import type { InstancesRepository, MiMeta } from '@/models/_.js';
+import type { MiInstance } from '@/models/Instance.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DeliverJobData } from '../types.js';
 
 @Injectable()

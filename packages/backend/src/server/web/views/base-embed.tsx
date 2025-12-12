@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { comment } from '@/server/web/views/_.js';
+import type { Children, PropsWithChildren } from '@kitajs/html';
 import type { CommonProps } from '@/server/web/views/_.js';
+import { comment } from '@/server/web/views/_.js';
 import { Splash } from '@/server/web/views/_splash.js';
-import type { PropsWithChildren, Children } from '@kitajs/html';
 
 export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 	title?: string;

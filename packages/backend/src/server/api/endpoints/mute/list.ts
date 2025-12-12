@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MutingsRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
-import { MutingEntityService } from '@/core/entities/MutingEntityService.js';
+import type { MutingEntityService } from '@/core/entities/MutingEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import type { MutingsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['account'],

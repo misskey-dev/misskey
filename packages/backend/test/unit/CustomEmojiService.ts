@@ -4,7 +4,7 @@
  */
 
 import { afterEach, beforeAll, describe, test } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -13,8 +13,8 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { EmojisRepository } from '@/models/_.js';
-import { MiEmoji } from '@/models/Emoji.js';
+import type { EmojisRepository } from '@/models/_.js';
+import type { MiEmoji } from '@/models/Emoji.js';
 
 describe('CustomEmojiService', () => {
 	let app: TestingModule;

@@ -4,15 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, NoteReactionsRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
+import type { CacheService } from '@/core/CacheService.js';
+import type { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
+import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { QueryService } from '@/core/QueryService.js';
+import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import type { NoteReactionsRepository, UserProfilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

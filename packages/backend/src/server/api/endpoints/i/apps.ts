@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AccessTokensRepository } from '@/models/_.js';
+import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { IdService } from '@/core/IdService.js';
+import type { AccessTokensRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	requireCredential: true,

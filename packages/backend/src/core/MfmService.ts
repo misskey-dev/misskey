@@ -5,18 +5,18 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import * as htmlParser from 'node-html-parser';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import { intersperse } from '@/misc/prelude/array.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import type { IMentionedRemoteUsers } from '@/models/Note.js';
-import { bindThis } from '@/decorators.js';
-import { escapeHtml } from '@/misc/escape-html.js';
 import type * as mfm from 'mfm-js';
+import * as htmlParser from 'node-html-parser';
+import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { escapeHtml } from '@/misc/escape-html.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { intersperse } from '@/misc/prelude/array.js';
+import type { IMentionedRemoteUsers } from '@/models/Note.js';
 
-const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
-const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
+const urlRegex = /^https?:\/\/[\w/:%#@$&?!()[\]~.,=+-]+/;
+const urlRegexFull = /^https?:\/\/[\w/:%#@$&?!()[\]~.,=+-]+$/;
 
 @Injectable()
 export class MfmService {

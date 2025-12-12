@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistrationTicketsRepository } from '@/models/_.js';
-import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
-import { IdService } from '@/core/IdService.js';
+import type { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DI } from '@/di-symbols.js';
 import { generateInviteCode } from '@/misc/generate-invite-code.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { RegistrationTicketsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

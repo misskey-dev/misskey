@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistrationTicketsRepository } from '@/models/_.js';
-import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
+import type { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { DI } from '@/di-symbols.js';
+import type { RegistrationTicketsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin'],

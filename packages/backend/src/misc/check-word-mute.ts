@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AhoCorasick } from 'slacc';
 import RE2 from 're2';
+import { AhoCorasick } from 'slacc';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
 

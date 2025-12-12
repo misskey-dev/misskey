@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { MiMeta } from '@/models/Meta.js';
+import type { MiMeta } from '@/models/Meta.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

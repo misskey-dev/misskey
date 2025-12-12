@@ -4,11 +4,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { RoleService } from '@/core/RoleService.js';
+import type { SearchService } from '@/core/SearchService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { SearchService } from '@/core/SearchService.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

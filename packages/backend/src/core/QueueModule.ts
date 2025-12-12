@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
+import type { Provider } from '@nestjs/common';
+import { Inject, Module, type OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { baseQueueOptions, QUEUE } from '@/queue/const.js';
+import { DI } from '@/di-symbols.js';
 import { allSettled } from '@/misc/promise-tracker.js';
-import {
+import { baseQueueOptions, QUEUE } from '@/queue/const.js';
+import type {
 	DeliverJobData,
 	EndedPollNotificationJobData,
 	InboxJobData,
-	RelationshipJobData,
-	UserWebhookDeliverJobData,
-	SystemWebhookDeliverJobData,
 	PostScheduledNoteJobData,
+	RelationshipJobData,
+	SystemWebhookDeliverJobData,
+	UserWebhookDeliverJobData,
 } from '../queue/types.js';
-import type { Provider } from '@nestjs/common';
 
 export type SystemQueue = Bull.Queue<Record<string, unknown>>;
 export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData>;

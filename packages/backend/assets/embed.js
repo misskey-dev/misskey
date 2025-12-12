@@ -7,7 +7,7 @@
 	/** @type {NodeListOf<HTMLIFrameElement>} */
 	const els = document.querySelectorAll('iframe[data-misskey-embed-id]');
 
-	window.addEventListener('message', function (event) {
+	window.addEventListener('message', (event) => {
 		els.forEach((el) => {
 			if (event.source !== el.contentWindow) {
 				return;

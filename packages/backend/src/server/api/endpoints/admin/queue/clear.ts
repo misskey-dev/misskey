@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QUEUE_TYPES, type QueueService } from '@/core/QueueService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	tags: ['admin'],
