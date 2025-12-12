@@ -63,7 +63,7 @@ async function setAntenna() {
 				})),
 			} : undefined),
 		],
-		default: antennas.find(x => x.id === props.column.antennaId),
+		default: antennas.find(x => x.id === props.column.antennaId)?.id,
 	});
 
 	if (canceled || antennaIdOrOperation == null) return;
