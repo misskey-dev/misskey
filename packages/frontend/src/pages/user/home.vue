@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dl>
 						</div>
 						<div class="status">
-							<MkA :to="userPage(user)">
+							<MkA :to="userPage(user, 'notes')">
 								<b>{{ number(user.notesCount) }}</b>
 								<span>{{ i18n.ts.notes }}</span>
 							</MkA>
@@ -368,23 +368,19 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 
 				> .banner-container {
 					position: relative;
-					height: 250px;
+					--bannerHeight: 250px;
+					height: var(--bannerHeight);
 					overflow: clip;
-					background-size: cover;
-					background-position: center;
 
 					> .banner {
-						position: absolute;
-						top: 50%;
-						left: 0;
 						width: 100%;
-						height: 300%;
-						background-size: 100% auto;
+						height: 100%;
+						background-size: cover;
 						background-color: #4c5e6d;
 						background-repeat: repeat-y;
-						background-position: center;
-						will-change: transform;
-						transform: translateY(-50%);
+						background-position-x: center;
+						background-position-y: 50%;
+						will-change: background-position-y;
 					}
 
 					> .fade {
@@ -677,7 +673,8 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 		> .main {
 			> .profile > .main {
 				> .banner-container {
-					height: 140px;
+					--bannerHeight: 140px;
+					height: var(--bannerHeight);
 
 					> .fade {
 						display: none;
@@ -763,10 +760,10 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 
 @keyframes bannerParallaxKeyframes {
 	from {
-		transform: translateY(-50%);
+		background-position-y: 50%;
 	}
 	to {
-		transform: translateY(-30%);
+		background-position-y: calc(50% + var(--bannerHeight, 250px) / 3);
 	}
 }
 </style>
