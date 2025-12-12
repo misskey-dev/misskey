@@ -48,9 +48,6 @@
 			"linter": {
 				"rules": {
 					"correctness": {
-						"useParseIntRadix": {
-							"level": "off"
-						},
 						"noUnusedFunctionParameters": {
 							"level": "off"
 						},
@@ -88,6 +85,11 @@
 					"level": "off"
 				},
 				"noStaticOnlyClass": {
+					"level": "off"
+				}
+			},
+			"correctness": {
+				"useParseIntRadix": {
 					"level": "off"
 				}
 			},
