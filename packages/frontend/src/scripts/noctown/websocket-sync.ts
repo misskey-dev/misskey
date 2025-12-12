@@ -61,6 +61,11 @@ export class WebSocketSyncManager {
 	private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 	private heartbeatIntervalMs = 30000;
 
+	// Reconnection settings (Misskey stream handles actual reconnection)
+	private static readonly MAX_RECONNECT_ATTEMPTS = 3;
+	private reconnectAttempts = 0;
+	private onDisconnectCallback: (() => void) | null = null;
+
 	constructor() {
 		// Initialize handler maps
 		const eventTypes: NoctownEventType[] = [
@@ -82,6 +87,9 @@ export class WebSocketSyncManager {
 		this.stream = useStream();
 		this.connection = this.stream.useChannel('noctown');
 
+		// Set up stream connection state listeners
+		this.setupStreamStateListeners();
+
 		// Set up event listeners
 		this.setupEventListeners();
 
@@ -89,6 +97,33 @@ export class WebSocketSyncManager {
 		this.startHeartbeat();
 
 		this.state.isConnected = true;
+		this.reconnectAttempts = 0;
+	}
+
+	private setupStreamStateListeners(): void {
+		if (!this.stream) return;
+
+		// Listen for stream disconnection
+		this.stream.on('_disconnected_', () => {
+			console.log('Noctown: Stream disconnected, waiting for reconnection...');
+			this.state.isConnected = false;
+			this.reconnectAttempts++;
+
+			// If too many reconnection attempts by the underlying stream, switch to offline mode
+			if (this.reconnectAttempts >= WebSocketSyncManager.MAX_RECONNECT_ATTEMPTS) {
+				console.log('Noctown: Too many reconnection attempts, switching to offline mode');
+				if (this.onDisconnectCallback) {
+					this.onDisconnectCallback();
+				}
+			}
+		});
+
+		// Listen for stream reconnection
+		this.stream.on('_connected_', () => {
+			console.log('Noctown: Stream reconnected');
+			this.state.isConnected = true;
+			this.reconnectAttempts = 0;
+		});
 	}
 
 	private setupEventListeners(): void {
@@ -290,6 +325,22 @@ export class WebSocketSyncManager {
 
 		this.state.isConnected = false;
 		this.stream = null;
+		this.reconnectAttempts = 0;
+	}
+
+	/**
+	 * Set callback for when connection is permanently lost (after all retry attempts)
+	 * This is called when switching to offline/NPC mode
+	 */
+	public setOnDisconnect(callback: () => void): void {
+		this.onDisconnectCallback = callback;
+	}
+
+	/**
+	 * Reset reconnection counter (e.g., when user manually triggers reconnect)
+	 */
+	public resetReconnectAttempts(): void {
+		this.reconnectAttempts = 0;
 	}
 }
 

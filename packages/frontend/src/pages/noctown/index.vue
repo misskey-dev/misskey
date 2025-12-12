@@ -102,6 +102,8 @@ import MkNoctownQuestPanel from '@/components/MkNoctownQuestPanel.vue';
 import MkNoctownNpcDialog from '@/components/MkNoctownNpcDialog.vue';
 import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
 import { useStream } from '@/stream.js';
+import { $i } from '@/i.js';
+import { apiUrl } from '@@/js/config.js';
 import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData } from '@/scripts/noctown/engine.js';
 
 // Noctown locale (type-safe access)
@@ -164,14 +166,32 @@ interface InventoryItem {
 	acquiredAt: string;
 }
 
+// Use $i token for API requests (standard Misskey pattern)
 function getToken(): string | null {
-	const account = localStorage.getItem('account');
-	if (!account) return null;
-	try {
-		return JSON.parse(account).token;
-	} catch {
-		return null;
+	return $i?.token ?? null;
+}
+
+// Helper function for Noctown API requests
+async function noctownApi<T>(endpoint: string, data: Record<string, unknown> = {}): Promise<T> {
+	const token = getToken();
+	if (!token) {
+		throw new Error('Not logged in');
 	}
+
+	const res = await window.fetch(`${apiUrl}/${endpoint}`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'omit',
+		cache: 'no-cache',
+		body: JSON.stringify({ i: token, ...data }),
+	});
+
+	if (!res.ok) {
+		const errorBody = await res.json().catch(() => ({}));
+		throw new Error(errorBody.error?.message || `API error: ${res.status}`);
+	}
+
+	return res.json();
 }
 
 async function initialize(): Promise<void> {
@@ -179,19 +199,13 @@ async function initialize(): Promise<void> {
 		isLoading.value = true;
 		error.value = null;
 
-		// Fetch player data using fetch API directly
-		const res = await window.fetch('/api/noctown/player', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
-			body: JSON.stringify({ i: getToken() }),
-		});
-
-		if (!res.ok) {
-			throw new Error('Failed to fetch player data');
+		// Check if user is logged in
+		if (!$i) {
+			throw new Error('ログインが必要です');
 		}
 
-		const data: NoctownPlayerResponse = await res.json();
+		// Fetch player data using noctownApi helper
+		const data = await noctownApi<NoctownPlayerResponse>('noctown/player');
 		playerData.value = {
 			id: data.id,
 			userId: '',
@@ -289,16 +303,11 @@ function handlePlayerLeft(data: { playerId: string }): void {
 
 async function fetchNearbyPlayers(): Promise<void> {
 	try {
-		const res = await window.fetch('/api/noctown/players/nearby', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
-			body: JSON.stringify({ i: getToken(), x: currentX, z: currentZ, radius: 50 }),
+		const players = await noctownApi<PlayerData[]>('noctown/players/nearby', {
+			x: currentX,
+			z: currentZ,
+			radius: 50,
 		});
-
-		if (!res.ok) return;
-
-		const players = await res.json();
 
 		if (!engine) return;
 
@@ -318,16 +327,10 @@ async function loadNearbyChunks(x: number, z: number): Promise<void> {
 	for (let dx = -1; dx <= 1; dx++) {
 		for (let dz = -1; dz <= 1; dz++) {
 			try {
-				const res = await window.fetch('/api/noctown/map/chunk', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					credentials: 'same-origin',
-					body: JSON.stringify({ i: getToken(), chunkX: chunkX + dx, chunkZ: chunkZ + dz }),
+				const chunk = await noctownApi<ChunkData>('noctown/map/chunk', {
+					chunkX: chunkX + dx,
+					chunkZ: chunkZ + dz,
 				});
-
-				if (!res.ok) continue;
-
-				const chunk: ChunkData = await res.json();
 				if (engine) {
 					engine.loadChunk(chunk);
 				}
@@ -343,18 +346,13 @@ async function loadNearbyItems(x: number, z: number): Promise<void> {
 
 	// Load dropped items
 	try {
-		const droppedRes = await window.fetch('/api/noctown/item/dropped', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
-			body: JSON.stringify({ i: getToken(), x, z, radius: 30 }),
+		const droppedItems = await noctownApi<DroppedItemData[]>('noctown/item/dropped', {
+			x,
+			z,
+			radius: 30,
 		});
-
-		if (droppedRes.ok) {
-			const droppedItems: DroppedItemData[] = await droppedRes.json();
-			for (const item of droppedItems) {
-				engine.addDroppedItem(item);
-			}
+		for (const item of droppedItems) {
+			engine.addDroppedItem(item);
 		}
 	} catch (e) {
 		console.error('Failed to load dropped items:', e);
@@ -362,18 +360,13 @@ async function loadNearbyItems(x: number, z: number): Promise<void> {
 
 	// Load placed items
 	try {
-		const placedRes = await window.fetch('/api/noctown/item/placed', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
-			body: JSON.stringify({ i: getToken(), x, z, radius: 30 }),
+		const placedItems = await noctownApi<PlacedItemData[]>('noctown/item/placed', {
+			x,
+			z,
+			radius: 30,
 		});
-
-		if (placedRes.ok) {
-			const placedItems: PlacedItemData[] = await placedRes.json();
-			for (const item of placedItems) {
-				engine.addPlacedItem(item);
-			}
+		for (const item of placedItems) {
+			engine.addPlacedItem(item);
 		}
 	} catch (e) {
 		console.error('Failed to load placed items:', e);
@@ -520,18 +513,13 @@ async function loadNearbyNpcs(x: number, z: number): Promise<void> {
 	if (!engine) return;
 
 	try {
-		const res = await window.fetch('/api/noctown/npc/nearby', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
-			body: JSON.stringify({ i: getToken(), x, z, radius: 30 }),
+		const npcs = await noctownApi<NpcData[]>('noctown/npc/nearby', {
+			x,
+			z,
+			radius: 30,
 		});
-
-		if (res.ok) {
-			const npcs: NpcData[] = await res.json();
-			for (const npc of npcs) {
-				engine.addNpc(npc);
-			}
+		for (const npc of npcs) {
+			engine.addNpc(npc);
 		}
 	} catch (e) {
 		console.error('Failed to load NPCs:', e);
@@ -558,24 +546,15 @@ async function onPlaceClick(): Promise<void> {
 	const placeZ = pos.z + Math.cos(currentRotation) * 2;
 
 	try {
-		const res = await window.fetch('/api/noctown/item/place', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
-			body: JSON.stringify({
-				i: getToken(),
-				playerItemId: selectedItemForPlace.id,
-				x: placeX,
-				y: 0,
-				z: placeZ,
-				rotation: currentRotation,
-			}),
+		await noctownApi('noctown/item/place', {
+			playerItemId: selectedItemForPlace.id,
+			x: placeX,
+			y: 0,
+			z: placeZ,
+			rotation: currentRotation,
 		});
-
-		if (res.ok) {
-			// Refresh items
-			await loadNearbyItems(currentX, currentZ);
-		}
+		// Refresh items
+		await loadNearbyItems(currentX, currentZ);
 	} catch (e) {
 		console.error('Failed to place item:', e);
 	}
@@ -625,11 +604,32 @@ function retry(): void {
 	initialize();
 }
 
+// FR-175: Mobile scrollbar prevention
+function setupMobileScrollPrevention(): void {
+	if (window.innerWidth <= 768) {
+		document.body.style.overflow = 'hidden';
+		document.body.style.position = 'fixed';
+		document.body.style.width = '100%';
+		document.body.style.height = '100%';
+		document.documentElement.style.overflow = 'hidden';
+	}
+}
+
+function cleanupMobileScrollPrevention(): void {
+	document.body.style.overflow = '';
+	document.body.style.position = '';
+	document.body.style.width = '';
+	document.body.style.height = '';
+	document.documentElement.style.overflow = '';
+}
+
 onMounted(() => {
+	setupMobileScrollPrevention();
 	initialize();
 });
 
 onUnmounted(() => {
+	cleanupMobileScrollPrevention();
 	cleanup();
 });
 
@@ -645,6 +645,20 @@ definePage(() => ({
 	flex-direction: column;
 	height: calc(100vh - 60px);
 	min-height: 400px;
+
+	// FR-175: Mobile scrollbar prevention
+	@media (max-width: 768px) {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 100vh;
+		height: 100dvh; // Dynamic viewport height for mobile browsers
+		width: 100vw;
+		overflow: hidden;
+		touch-action: none; // Prevent pull-to-refresh and overscroll
+	}
 }
 
 .header {
