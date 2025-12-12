@@ -120,7 +120,7 @@ onMounted(() => {
 		immediate: true,
 	});
 
-	if (rootEl.value) rootEl.value.style.setProperty('--maxHeight', props.maxHeight + 'px');
+	if (rootEl.value) rootEl.value.style.setProperty('--maxHeight', `${props.maxHeight}px`);
 
 	calcOmit();
 

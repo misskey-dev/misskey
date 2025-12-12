@@ -176,7 +176,7 @@ function minimize() {
 	minimized.value = true;
 	unResizedWidth = rootEl.value.style.width;
 	unResizedHeight = rootEl.value.style.height;
-	rootEl.value.style.width = minWidth + 'px';
+	rootEl.value.style.width = `${minWidth}px`;
 	rootEl.value.style.height = props.mini ? '32px' : '39px';
 }
 
@@ -193,8 +193,8 @@ function unMinimize() {
 	const windowHeight = main.offsetHeight;
 
 	const position = main.getBoundingClientRect();
-	if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';
-	if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';
+	if (position.top + windowHeight > browserHeight) main.style.top = `${browserHeight - windowHeight}px`;
+	if (position.left + windowWidth > browserWidth) main.style.left = `${browserWidth - windowWidth}px`;
 }
 
 function onBodyMousedown() {
@@ -270,8 +270,8 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 		if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
 
 		if (rootEl.value) {
-			rootEl.value.style.left = moveLeft + 'px';
-			rootEl.value.style.top = moveTop + 'px';
+			rootEl.value.style.left = `${moveLeft}px`;
+			rootEl.value.style.top = `${moveTop}px`;
 		}
 	}
 
@@ -420,23 +420,23 @@ function onBottomLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 // 高さを適用
 function applyTransformHeight(height) {
 	if (height > window.innerHeight) height = window.innerHeight;
-	if (rootEl.value) rootEl.value.style.height = height + 'px';
+	if (rootEl.value) rootEl.value.style.height = `${height}px`;
 }
 
 // 幅を適用
 function applyTransformWidth(width) {
 	if (width > window.innerWidth) width = window.innerWidth;
-	if (rootEl.value) rootEl.value.style.width = width + 'px';
+	if (rootEl.value) rootEl.value.style.width = `${width}px`;
 }
 
 // Y座標を適用
 function applyTransformTop(top) {
-	if (rootEl.value) rootEl.value.style.top = top + 'px';
+	if (rootEl.value) rootEl.value.style.top = `${top}px`;
 }
 
 // X座標を適用
 function applyTransformLeft(left) {
-	if (rootEl.value) rootEl.value.style.left = left + 'px';
+	if (rootEl.value) rootEl.value.style.left = `${left}px`;
 }
 
 function onBrowserResize() {
@@ -449,8 +449,8 @@ function onBrowserResize() {
 	const windowWidth = main.offsetWidth;
 	const windowHeight = main.offsetHeight;
 	if (position.left < 0) main.style.left = '0'; // 左はみ出し
-	if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px'; // 下はみ出し
-	if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px'; // 右はみ出し
+	if (position.top + windowHeight > browserHeight) main.style.top = `${browserHeight - windowHeight}px`; // 下はみ出し
+	if (position.left + windowWidth > browserWidth) main.style.left = `${browserWidth - windowWidth}px`; // 右はみ出し
 	if (position.top < 0) main.style.top = '0'; // 上はみ出し
 }
 

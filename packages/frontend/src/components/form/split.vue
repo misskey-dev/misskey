@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<{
 
 provide('splited', true);
 
-const minWidth = props.minWidth + 'px';
+const minWidth = `${props.minWidth}px`;
 </script>
 
 <style lang="scss" module>

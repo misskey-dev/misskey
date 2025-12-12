@@ -216,7 +216,7 @@ async function run() {
 
 	const interpreter = new Interpreter({
 		...createAiScriptEnv({
-			storageKey: 'flash:' + flash.value.id,
+			storageKey: `flash:${flash.value.id}`,
 		}),
 		...registerAsUiLib(components.value, (_root) => {
 			root.value = _root.value;

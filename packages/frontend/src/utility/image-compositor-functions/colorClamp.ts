@@ -33,7 +33,7 @@ export const uiDefinition = {
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		min: {
 			label: i18n.ts._imageEffector._fxProps.min,
@@ -42,7 +42,7 @@ export const uiDefinition = {
 			min: -1.0,
 			max: 0.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 	},
 } satisfies ImageEffectorUiDefinition<typeof fn>;

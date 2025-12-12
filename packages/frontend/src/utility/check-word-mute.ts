@@ -9,7 +9,7 @@ export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+		const text = (`${note.cw ?? ''}\n${note.text ?? ''}`).trim();
 
 		if (text === '') return false;
 

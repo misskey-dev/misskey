@@ -116,7 +116,7 @@ const containerStyle = computed(() => {
 		backgroundColor: c.bgColor,
 		color: c.fgColor,
 		padding: c.padding ? `${c.padding}px` : 0,
-		borderRadius: (c.borderRadius ?? (c.rounded ? 8 : 0)) + 'px',
+		borderRadius: `${c.borderRadius ?? (c.rounded ? 8 : 0)}px`,
 		...border,
 	};
 });

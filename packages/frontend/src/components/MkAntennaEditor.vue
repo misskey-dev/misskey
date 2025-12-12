@@ -185,7 +185,7 @@ async function deleteAntenna() {
 function addUser() {
 	os.selectUser({ includeSelf: true }).then(user => {
 		users.value = users.value.trim();
-		users.value += '\n@' + Misskey.acct.toString(user);
+		users.value += `\n@${Misskey.acct.toString(user)}`;
 		users.value = users.value.trim();
 	});
 }

@@ -81,7 +81,7 @@ export async function getNoteClipMenu(props: {
 					} else {
 						os.alert({
 							type: 'error',
-							text: err.message + '\n' + err.id,
+							text: `${err.message}\n${err.id}`,
 						});
 					}
 				},

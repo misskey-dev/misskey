@@ -8,14 +8,30 @@
 	"files": {
 		"ignoreUnknown": false
 	},
+	"overrides": [
+		{
+			"includes": ["**/*.min.js"],
+			"linter": {
+				"enabled": false
+			},
+			"formatter": {
+				"enabled": false
+			}
+		}
+	],
 	"formatter": {
 		"enabled": false,
 		"indentStyle": "tab"
 	},
 	"linter": {
-		"enabled": false,
+		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"style": {
+				"useTemplate": {
+					"fix": "safe"
+				}
+			}
 		}
 	},
 	"javascript": {

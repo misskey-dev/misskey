@@ -176,7 +176,7 @@ const importEmoji = (emoji) => {
 const remoteMenu = (emoji, ev: MouseEvent) => {
 	os.popupMenu([{
 		type: 'label',
-		text: ':' + emoji.name + ':',
+		text: `:${emoji.name}:`,
 	}, {
 		text: i18n.ts.details,
 		icon: 'ti ti-info-circle',

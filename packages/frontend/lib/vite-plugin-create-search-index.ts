@@ -164,7 +164,7 @@ function customStringify(obj: unknown): string {
 		// propertyAccessProxy が i18n 参照を "${i18n.xxx}"のような形に変換してるので、これをそのまま`${i18n.xxx}`
 		// のような形にすると、実行時にi18nのプロパティにアクセスするようになる。
 		// objectのkeyでは``が使えないので、${ が使われている場合にのみ``に置き換えるようにする
-		return group.includes('${') ? '`' + group + '`' : all;
+		return group.includes('${') ? `\`${group}\`` : all;
 	});
 }
 
@@ -442,7 +442,7 @@ function propertyAccessProxyToJSON(this: AccessProxy, hint: string) {
 			return `${prev}['${current}']`;
 		}
 	});
-	return '$\{' + expression + '}';
+	return `$\{${expression}}`;
 }
 
 /**
@@ -711,7 +711,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 
 		async resolveId(id) {
 			if (id == allSearchIndexFile) {
-				return '\0' + allSearchIndexFile;
+				return `\0${allSearchIndexFile}`;
 			}
 
 			const searchIndexFilePath = parseSearchIndexFileId(id);
@@ -722,7 +722,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		},
 
 		async load(id) {
-			if (id == '\0' + allSearchIndexFile) {
+			if (id == `\0${allSearchIndexFile}`) {
 				const files = options.targetFilePaths.map((filePathPattern) => fs.globSync(filePathPattern)).flat();
 				let generatedFile = '';
 				let arrayElements = '';

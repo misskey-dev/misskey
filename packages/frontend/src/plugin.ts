@@ -169,7 +169,7 @@ export async function uninstallPlugin(plugin: Plugin) {
 	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
 
 	Object.keys(window.localStorage).forEach(key => {
-		if (key.startsWith('aiscript:plugins:' + plugin.installId)) {
+		if (key.startsWith(`aiscript:plugins:${plugin.installId}`)) {
 			window.localStorage.removeItem(key);
 		}
 	});
@@ -272,7 +272,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 
 	const aiscript = new Interpreter(await createPluginEnv({
 		plugin: plugin,
-		storageKey: 'plugins:' + plugin.installId,
+		storageKey: `plugins:${plugin.installId}`,
 	}), {
 		in: aiScriptReadline,
 		out: (value): void => {
@@ -298,11 +298,11 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	const parser = await getParser();
 	await aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
-			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+			console.info('Plugin installed:', plugin.name, `v${plugin.version}`);
 			systemLog('Plugin started');
 		},
 		(err) => {
-			console.error('Plugin install failed:', plugin.name, 'v' + plugin.version);
+			console.error('Plugin install failed:', plugin.name, `v${plugin.version}`);
 			systemLog(`${err}`, true);
 			throw err;
 		},

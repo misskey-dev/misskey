@@ -73,7 +73,7 @@ export function uploadFile(file: File | Blob, options: {
 			reject(new UploadAbortedError());
 		}, { once: true });
 
-		xhr.open('POST', apiUrl + '/drive/files/create', true);
+		xhr.open('POST', `${apiUrl}/drive/files/create`, true);
 		xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
 			if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 				if (xhr.status === 413) {

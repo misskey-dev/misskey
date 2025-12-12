@@ -104,7 +104,7 @@
 
 	const fontSize = localStorage.getItem('fontSize');
 	if (fontSize) {
-		document.documentElement.classList.add('f-' + fontSize);
+		document.documentElement.classList.add(`f-${fontSize}`);
 	}
 
 	const useSystemFont = localStorage.getItem('useSystemFont');

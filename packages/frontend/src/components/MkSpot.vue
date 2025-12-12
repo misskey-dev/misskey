@@ -84,8 +84,8 @@ function setPosition() {
 	});
 
 	bodyEl.value.style.transformOrigin = data.transformOrigin;
-	bodyEl.value.style.left = data.left + 'px';
-	bodyEl.value.style.top = data.top + 'px';
+	bodyEl.value.style.left = `${data.left}px`;
+	bodyEl.value.style.top = `${data.top}px`;
 }
 
 let loopHandler;

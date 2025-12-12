@@ -36,7 +36,7 @@ const io: StorageProvider = {
 		try {
 			const cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
-				key: syncGroup + ':' + ctx.key,
+				key: `${syncGroup}:${ctx.key}`,
 			}) as [any, any][];
 			const target = cloudData.find(([scope]) => isSameScope(scope, ctx.scope));
 			if (target == null) return null;
@@ -57,7 +57,7 @@ const io: StorageProvider = {
 		try {
 			cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
-				key: syncGroup + ':' + ctx.key,
+				key: `${syncGroup}:${ctx.key}`,
 			}) as [any, any][];
 		} catch (err: any) {
 			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
@@ -77,7 +77,7 @@ const io: StorageProvider = {
 
 		await misskeyApi('i/registry/set', {
 			scope: ['client', 'preferences', 'sync'],
-			key: syncGroup + ':' + ctx.key,
+			key: `${syncGroup}:${ctx.key}`,
 			value: cloudData,
 		});
 	},

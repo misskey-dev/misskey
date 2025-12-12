@@ -33,25 +33,25 @@ export async function getAccounts(): Promise<{
 		host,
 		id: user.id,
 		username: user.username,
-		user: accountInfos[host + '/' + user.id],
-		token: tokens[host + '/' + user.id] ?? null,
+		user: accountInfos[`${host}/${user.id}`],
+		token: tokens[`${host}/${user.id}`] ?? null,
 	}));
 }
 
 async function addAccount(host: string, user: Misskey.entities.MeDetailed, token: AccountWithToken['token']) {
 	if (!prefer.s.accounts.some(x => x[0] === host && x[1].id === user.id)) {
-		store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + user.id]: token });
-		store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + user.id]: user });
+		store.set('accountTokens', { ...store.s.accountTokens, [`${host}/${user.id}`]: token });
+		store.set('accountInfos', { ...store.s.accountInfos, [`${host}/${user.id}`]: user });
 		prefer.commit('accounts', [...prefer.s.accounts, [host, { id: user.id, username: user.username }]]);
 	}
 }
 
 export async function removeAccount(host: string, id: AccountWithToken['id']) {
 	const tokens = JSON.parse(JSON.stringify(store.s.accountTokens));
-	delete tokens[host + '/' + id];
+	delete tokens[`${host}/${id}`];
 	store.set('accountTokens', tokens);
 	const accountInfos = JSON.parse(JSON.stringify(store.s.accountInfos));
-	delete accountInfos[host + '/' + id];
+	delete accountInfos[`${host}/${id}`];
 	store.set('accountInfos', accountInfos);
 
 	prefer.commit('accounts', prefer.s.accounts.filter(x => x[0] !== host || x[1].id !== id));
@@ -131,7 +131,7 @@ export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
-	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
+	store.set('accountInfos', { ...store.s.accountInfos, [`${host}/${$i.id}`]: $i });
 	$i.token = token;
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
@@ -142,7 +142,7 @@ export function updateCurrentAccountPartial(accountData: Partial<Misskey.entitie
 		$i[key] = value;
 	}
 
-	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
+	store.set('accountInfos', { ...store.s.accountInfos, [`${host}/${$i.id}`]: $i });
 
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
@@ -195,13 +195,13 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 }
 
 export async function switchAccount(host: string, id: string) {
-	const token = store.s.accountTokens[host + '/' + id];
+	const token = store.s.accountTokens[`${host}/${id}`];
 	if (token) {
 		login(token);
 	} else {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
-				store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + res.id]: res.i });
+				store.set('accountTokens', { ...store.s.accountTokens, [`${host}/${res.id}`]: res.i });
 				login(res.i);
 			},
 			closed: () => {
@@ -261,7 +261,7 @@ export async function getAccountMenu(opts: {
 						initialUsername: username,
 					}, {
 						done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
-							store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + res.id]: res.i });
+							store.set('accountTokens', { ...store.s.accountTokens, [`${host}/${res.id}`]: res.i });
 
 							if (callback) {
 								fetchAccount(res.i, id).then(account => {

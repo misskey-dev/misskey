@@ -159,7 +159,7 @@ const tzOffset = computed(() => widgetProps.timezone === null
 	? 0 - new Date().getTimezoneOffset()
 	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.offset ?? 0);
 
-const tzOffsetLabel = computed(() => (tzOffset.value >= 0 ? '+' : '-') + Math.floor(tzOffset.value / 60).toString().padStart(2, '0') + ':' + (tzOffset.value % 60).toString().padStart(2, '0'));
+const tzOffsetLabel = computed(() => `${(tzOffset.value >= 0 ? '+' : '-') + Math.floor(tzOffset.value / 60).toString().padStart(2, '0')}:${(tzOffset.value % 60).toString().padStart(2, '0')}`);
 
 defineExpose<WidgetComponentExpose>({
 	name,

@@ -85,7 +85,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 			const currentLineSpaces = currentLine.match(/^\s+/);
 			const posDelta = currentLineSpaces ? currentLineSpaces[0].length : 0;
 			ev.preventDefault();
-			v.value = v.value.slice(0, pos) + '\n' + (currentLineSpaces ? currentLineSpaces[0] : '') + v.value.slice(pos);
+			v.value = `${v.value.slice(0, pos)}\n${currentLineSpaces ? currentLineSpaces[0] : ''}${v.value.slice(pos)}`;
 			nextTick(() => {
 				inputEl.value?.setSelectionRange(pos + 1 + posDelta, pos + 1 + posDelta);
 			});
@@ -96,7 +96,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.key === 'Tab') {
 		const pos = inputEl.value?.selectionStart ?? 0;
 		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
-		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		v.value = `${v.value.slice(0, pos)}\t${v.value.slice(posEnd)}`;
 		nextTick(() => {
 			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
 		});

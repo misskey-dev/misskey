@@ -32,7 +32,7 @@ function menu(ev) {
 	const menuItems: MenuItem[] = [];
 	menuItems.push({
 		type: 'label',
-		text: ':' + props.emoji.name + ':',
+		text: `:${props.emoji.name}:`,
 	}, {
 		text: i18n.ts.copy,
 		icon: 'ti ti-copy',

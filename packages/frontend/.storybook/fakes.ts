@@ -360,7 +360,7 @@ export function role(params: {
 	canEditMembersByModerator?: boolean,
 	usersCount?: number,
 }, seed?: string): entities.Role {
-	const prefix = params.displayOrder ? params.displayOrder.toString().padStart(3, '0') + '-' : '';
+	const prefix = params.displayOrder ? `${params.displayOrder.toString().padStart(3, '0')}-` : '';
 	const genId = text(36, seed);
 	const createdAt = params.createdAt ?? date({}, seed).toISOString();
 	const updatedAt = params.updatedAt ?? date({}, seed).toISOString();

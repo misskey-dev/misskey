@@ -47,8 +47,8 @@ function setPosition() {
 	if (rootRect.top + top + myRect.height >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
 		top = top - ((rootRect.top + top + myRect.height) - (window.innerHeight - SCROLLBAR_THICKNESS));
 	}
-	el.value.style.left = left + 'px';
-	el.value.style.top = top + 'px';
+	el.value.style.left = `${left}px`;
+	el.value.style.top = `${top}px`;
 }
 
 function onChildClosed(actioned?: boolean) {

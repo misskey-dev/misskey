@@ -218,7 +218,7 @@ async function initialize() {
 			const confirm = await os.confirm({
 				type: 'question',
 				title: r.name,
-				text: i18n.ts._chat.youAreNotAMemberOfThisRoomButInvited + '\n' + i18n.ts._chat.doYouAcceptInvitation,
+				text: `${i18n.ts._chat.youAreNotAMemberOfThisRoomButInvited}\n${i18n.ts._chat.doYouAcceptInvitation}`,
 			});
 			if (confirm.canceled) {
 				initializing.value = false;

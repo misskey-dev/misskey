@@ -139,7 +139,7 @@ const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 		userId: page.value.user.id,
 	}) : undefined),
 }));
-const path = computed(() => props.username + '/' + props.pageName);
+const path = computed(() => `${props.username}/${props.pageName}`);
 
 function fetchPage() {
 	page.value = null;

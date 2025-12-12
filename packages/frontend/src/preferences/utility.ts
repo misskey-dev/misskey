@@ -80,7 +80,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 		type: 'divider',
 	}, {
 		type: 'link',
-		text: i18n.ts._preferencesProfile.manageProfiles + '...',
+		text: `${i18n.ts._preferencesProfile.manageProfiles}...`,
 		icon: 'ti ti-settings-cog',
 		to: '/settings/profiles',
 	}];
@@ -101,7 +101,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 async function renameProfile() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts._preferencesProfile.profileName,
-		text: i18n.ts._preferencesProfile.profileNameDescription + '\n' + i18n.ts._preferencesProfile.profileNameDescription2,
+		text: `${i18n.ts._preferencesProfile.profileNameDescription}\n${i18n.ts._preferencesProfile.profileNameDescription2}`,
 		placeholder: prefer.profile.name || null,
 		default: prefer.profile.name || null,
 	});
@@ -186,7 +186,7 @@ export async function restoreFromCloudBackup() {
 
 	const select = await os.select({
 		title: i18n.ts._preferencesBackup.selectBackupToRestore,
-		text: 'ℹ️ ' + i18n.ts._preferencesProfile.shareSameProfileBetweenDevicesIsNotRecommended + ' ' + i18n.ts._preferencesProfile.useSyncBetweenDevicesOptionIfYouWantToSyncSetting,
+		text: `ℹ️ ${i18n.ts._preferencesProfile.shareSameProfileBetweenDevicesIsNotRecommended} ${i18n.ts._preferencesProfile.useSyncBetweenDevicesOptionIfYouWantToSyncSetting}`,
 		items: backups.map(backup => ({
 			label: backup.name,
 			value: backup.name,

@@ -149,7 +149,7 @@ const embedPreviewUrl = computed(() => {
 		const maxHeight = parseInt(paramClass.get('maxHeight')!);
 		paramClass.set('maxHeight', maxHeight === 0 ? '500' : Math.min(maxHeight, 700).toString()); // プレビューであまりにも縮小されると見づらいため、700pxまでに制限
 	}
-	return `${url}/embed/${props.entity}/${props.id}${paramClass.toString() ? '?' + paramClass.toString() : ''}`;
+	return `${url}/embed/${props.entity}/${props.id}${paramClass.toString() ? `?${paramClass.toString()}` : ''}`;
 });
 
 const isEmbedWithScrollbar = computed(() => embedRouteWithScrollbar.includes(props.entity));

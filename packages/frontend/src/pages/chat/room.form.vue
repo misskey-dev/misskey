@@ -65,7 +65,7 @@ let autocompleteInstance: Autocomplete | null = null;
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
 
 function getDraftKey() {
-	return props.user ? 'user:' + props.user.id : 'room:' + props.room?.id;
+	return props.user ? `user:${props.user.id}` : `room:${props.room?.id}`;
 }
 
 watch([text, file], saveDraft);

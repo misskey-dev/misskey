@@ -127,7 +127,7 @@ export function useUploader(options: {
 	function initializeFile(file: File) {
 		const id = genId();
 		const filename = file.name ?? 'untitled';
-		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+		const extension = filename.split('.').length > 1 ? `.${filename.split('.').pop()}` : '';
 		const watermarkPreset = uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null;
 		items.value.push({
 			id,

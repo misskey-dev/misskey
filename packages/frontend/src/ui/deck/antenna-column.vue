@@ -93,7 +93,7 @@ async function setAntenna() {
 }
 
 function editAntenna() {
-	os.pageWindow('my/antennas/' + props.column.antennaId);
+	os.pageWindow(`my/antennas/${props.column.antennaId}`);
 }
 
 const menu: MenuItem[] = [

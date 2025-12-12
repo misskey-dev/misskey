@@ -43,7 +43,7 @@ function errorWithPos<T extends errors.AiScriptError>(
 ): T {
 	const pos = { line, column };
 	error.pos = pos;
-	error.message = error.message + `\n  at <root> (Line ${pos.line}, Column ${pos.column})`;
+	error.message = `${error.message}\n  at <root> (Line ${pos.line}, Column ${pos.column})`;
 	return error;
 }
 

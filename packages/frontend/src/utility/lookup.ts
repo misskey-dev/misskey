@@ -61,7 +61,7 @@ export async function apLookup(query: string) {
 
 	os.promiseDialog(promise, null, (err) => {
 		let title = i18n.ts.somethingHappened;
-		let text = err.message + '\n' + err.id;
+		let text = `${err.message}\n${err.id}`;
 
 		switch (err.id) {
 			case '974b799e-1a29-4889-b706-18d4dd93e266':

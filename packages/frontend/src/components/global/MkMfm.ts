@@ -131,7 +131,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = `font-size: 150%;${useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : ''}`;
 						break;
 					}
 					case 'jelly': {
@@ -331,7 +331,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
 				} else {
 					return h('span', {
-						style: 'display: inline-block; ' + style,
+						style: `display: inline-block; ${style}`,
 					}, genEl(token.children, scale));
 				}
 			}

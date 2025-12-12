@@ -95,7 +95,7 @@ onMounted(async () => {
 						text: 'Rate (%)',
 					},
 					ticks: {
-						callback: (value, index, values) => value + '%',
+						callback: (value, index, values) => `${value}%`,
 					},
 					min: 0,
 				},
@@ -116,7 +116,7 @@ onMounted(async () => {
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex] as unknown as { x: string, y: number, d: string };
-							const p = Math.round(v.y) + '%';
+							const p = `${Math.round(v.y)}%`;
 							return `${v.d} ${p}`;
 						},
 					},

@@ -214,7 +214,7 @@ function getMenu() {
 
 	menuItems.push({
 		type: 'parent',
-		text: i18n.ts.move + '...',
+		text: `${i18n.ts.move}...`,
 		icon: 'ti ti-arrows-move',
 		children: moveToMenuItems,
 	}, {

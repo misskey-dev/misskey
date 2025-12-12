@@ -44,12 +44,12 @@ export function normalizeEmbedParams(params: EmbedParams): Record<string, string
  * 埋め込みコードを生成（iframe IDの発番もやる）
  */
 export function getEmbedCode(path: string, params?: EmbedParams): string {
-	const iframeId = 'v1_' + genId(); // 将来embed.jsのバージョンが上がったとき用にv1_を付けておく
+	const iframeId = `v1_${genId()}`; // 将来embed.jsのバージョンが上がったとき用にv1_を付けておく
 
 	let paramString = '';
 	if (params) {
 		const searchParams = new URLSearchParams(normalizeEmbedParams(params));
-		paramString = searchParams.toString() === '' ? '' : '?' + searchParams.toString();
+		paramString = searchParams.toString() === '' ? '' : `?${searchParams.toString()}`;
 	}
 
 	const iframeCode = [

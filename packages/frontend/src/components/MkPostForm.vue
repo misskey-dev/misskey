@@ -354,7 +354,7 @@ if (props.mention) {
 }
 
 if (replyTargetNote.value && (replyTargetNote.value.user.username !== $i.username || (replyTargetNote.value.user.host != null && replyTargetNote.value.user.host !== host))) {
-	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? '@' + toASCII(replyTargetNote.value.user.host) : ''} `;
+	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? `@${toASCII(replyTargetNote.value.user.host)}` : ''} `;
 }
 
 if (replyTargetNote.value && replyTargetNote.value.text != null) {
@@ -662,7 +662,7 @@ function showOtherSettings() {
 		},
 	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
 		icon: 'ti ti-calendar-time',
-		text: i18n.ts.schedulePost + '...',
+		text: `${i18n.ts.schedulePost}...`,
 		action: () => {
 			schedule();
 		},
@@ -766,7 +766,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(`${url}/notes/`)) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -1008,7 +1008,7 @@ async function post(ev?: MouseEvent) {
 	};
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
-		const hashtags_ = hashtags.value.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
+		const hashtags_ = hashtags.value.trim().split(' ').map(x => x.startsWith('#') ? x : `#${x}`).join(' ');
 		if (!postData.text) {
 			postData.text = hashtags_;
 		} else {
@@ -1016,7 +1016,7 @@ async function post(ev?: MouseEvent) {
 			if (postTextLines[postTextLines.length - 1].trim() === '') {
 				postTextLines[postTextLines.length - 1] += hashtags_;
 			} else {
-				postTextLines[postTextLines.length - 1] += ' ' + hashtags_;
+				postTextLines[postTextLines.length - 1] += ` ${hashtags_}`;
 			}
 			postData.text = postTextLines.join('\n');
 		}
@@ -1121,7 +1121,7 @@ async function post(ev?: MouseEvent) {
 		posting.value = false;
 		os.alert({
 			type: 'error',
-			text: err.message + '\n' + (err as any).id,
+			text: `${err.message}\n${(err as any).id}`,
 		});
 	});
 }
@@ -1140,7 +1140,7 @@ function cancel() {
 
 function insertMention() {
 	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
-		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
+		insertTextAtCursor(textareaEl.value, `@${Misskey.acct.toString(user)} `);
 	});
 }
 

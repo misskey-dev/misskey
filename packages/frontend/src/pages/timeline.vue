@@ -264,7 +264,7 @@ const headerActions = computed(() => {
 });
 
 const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
+	key: `list:${l.id}`,
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: true,

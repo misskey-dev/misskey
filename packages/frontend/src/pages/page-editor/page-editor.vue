@@ -188,8 +188,8 @@ async function del() {
 }
 
 async function duplicate() {
-	title.value = title.value + ' - copy';
-	name.value = name.value + '-copy';
+	title.value = `${title.value} - copy`;
+	name.value = `${name.value}-copy`;
 
 	const created = await os.apiWithDialog('pages/create', getSaveOptions(), undefined, {
 		'4650348e-301c-499a-83c9-6aa988c66bc1': {

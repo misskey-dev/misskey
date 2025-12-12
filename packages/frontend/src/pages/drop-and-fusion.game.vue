@@ -912,7 +912,7 @@ function getGameImageDriveFile() {
 					formData.append('folderId', prefer.s.uploadFolder);
 				}
 
-				window.fetch(apiUrl + '/drive/files/create', {
+				window.fetch(`${apiUrl}/drive/files/create`, {
 					method: 'POST',
 					body: formData,
 				})
@@ -1141,7 +1141,7 @@ function attachGameEvents() {
 
 			misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
-				key: 'highScore:' + props.gameMode,
+				key: `highScore:${props.gameMode}`,
 				value: highScore.value,
 			});
 		}
@@ -1160,7 +1160,7 @@ onMounted(async () => {
 	try {
 		highScore.value = await misskeyApi('i/registry/get', {
 			scope: ['dropAndFusionGame'],
-			key: 'highScore:' + props.gameMode,
+			key: `highScore:${props.gameMode}`,
 		});
 	} catch (err) {
 		highScore.value = null;

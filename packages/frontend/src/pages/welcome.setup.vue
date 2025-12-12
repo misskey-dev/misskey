@@ -162,7 +162,7 @@ function createAccount() {
 		accountCreating.value = false;
 
 		let title = i18n.ts.somethingHappened;
-		let text = err.message + '\n' + err.id;
+		let text = `${err.message}\n${err.id}`;
 
 		if (err.code === 'ACCESS_DENIED') {
 			title = i18n.ts.permissionDeniedError;

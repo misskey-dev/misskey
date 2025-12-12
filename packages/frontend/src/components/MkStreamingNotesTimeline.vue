@@ -181,7 +181,7 @@ if (props.src === 'antenna') {
 		useShallowRef: true,
 	}));
 } else {
-	throw new Error('Unrecognized timeline type: ' + props.src);
+	throw new Error(`Unrecognized timeline type: ${props.src}`);
 }
 
 onMounted(() => {

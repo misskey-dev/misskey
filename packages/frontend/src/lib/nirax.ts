@@ -172,12 +172,12 @@ function buildFullPath(args: {
 	if (args.query) {
 		const queryString = new URLSearchParams(args.query).toString();
 		if (queryString) {
-			fullPath += '?' + queryString;
+			fullPath += `?${queryString}`;
 		}
 	}
 
 	if (args.hash) {
-		fullPath += '#' + encodeURIComponent(args.hash);
+		fullPath += `#${encodeURIComponent(args.hash)}`;
 	}
 
 	return fullPath;
@@ -369,7 +369,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		const res = this.resolve(this.currentFullPath);
 
 		if (res == null) {
-			throw new Error('no route found for: ' + fullPath);
+			throw new Error(`no route found for: ${fullPath}`);
 		}
 
 		for (let current: PathResolvedResult | undefined = res; current; current = current.child) {
@@ -378,7 +378,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 				if (typeof current.route.redirect === 'function') {
 					redirectPath = current.route.redirect(current.props);
 				} else {
-					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? '?' + current._parsedRoute.queryString : '') + (current._parsedRoute.hash ? '#' + current._parsedRoute.hash : '');
+					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? `?${current._parsedRoute.queryString}` : '') + (current._parsedRoute.hash ? `#${current._parsedRoute.hash}` : '');
 				}
 				if (_DEV_) console.log('Redirecting to: ', redirectPath);
 				if (_redirected && this.redirectCount++ > 10) {

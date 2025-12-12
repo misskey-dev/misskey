@@ -35,7 +35,7 @@ export const uiDefinition = {
 			min: -1,
 			max: 1,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		contrast: {
 			label: i18n.ts._imageEffector._fxProps.contrast,
@@ -44,7 +44,7 @@ export const uiDefinition = {
 			min: 0,
 			max: 4,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		hue: {
 			label: i18n.ts._imageEffector._fxProps.hue,
@@ -53,7 +53,7 @@ export const uiDefinition = {
 			min: -1,
 			max: 1,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 180) + '°',
+			toViewValue: v => `${Math.round(v * 180)}°`,
 		},
 		brightness: {
 			label: i18n.ts._imageEffector._fxProps.brightness,
@@ -62,7 +62,7 @@ export const uiDefinition = {
 			min: 0,
 			max: 4,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		saturation: {
 			label: i18n.ts._imageEffector._fxProps.saturation,
@@ -71,7 +71,7 @@ export const uiDefinition = {
 			min: 0,
 			max: 4,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 	},
 } satisfies ImageEffectorUiDefinition<typeof fn>;

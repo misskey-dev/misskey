@@ -1001,7 +1001,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
 				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JP.json').then(x => x.default);
 				case 'ja-JP_hira': return import('../../unicode-emoji-indexes/ja-JP_hira.json').then(x => x.default);
-				default: throw new Error('unrecognized lang: ' + lang);
+				default: throw new Error(`unrecognized lang: ${lang}`);
 			}
 		}
 

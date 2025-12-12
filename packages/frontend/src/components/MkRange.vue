@@ -75,16 +75,16 @@ const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math
 const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
 const rightTrackWidth = computed(() => {
-	return Math.max(0, (steppedRawValue.value - minRatio.value) * 100) + '%';
+	return `${Math.max(0, (steppedRawValue.value - minRatio.value) * 100)}%`;
 });
 const leftTrackWidth = computed(() => {
-	return Math.max(0, (minRatio.value - steppedRawValue.value) * 100) + '%';
+	return `${Math.max(0, (minRatio.value - steppedRawValue.value) * 100)}%`;
 });
 const rightTrackPosition = computed(() => {
-	return (Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100 + '%';
+	return `${(Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100}%`;
 });
 const leftTrackPosition = computed(() => {
-	return (Math.min(minRatio.value, steppedRawValue.value) * 100) + '%';
+	return `${Math.min(minRatio.value, steppedRawValue.value) * 100}%`;
 });
 
 const calcRawValue = (value: number) => {
