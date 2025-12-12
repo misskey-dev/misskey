@@ -455,10 +455,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (game.isEnded) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 
-		const myColor =
-			((game.user1Id === user.id) && game.black === 1) || ((game.user2Id === user.id) && game.black === 2)
-				? true
-				: false;
+		const myColor = game.user1Id === user.id ? game.black === 1
+			: game.user2Id === user.id ? game.black === 2
+			: false;
 
 		const engine = Reversi.Serializer.restoreGame({
 			map: game.map,

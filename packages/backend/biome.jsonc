@@ -74,9 +74,6 @@
 						"noGlobalIsNan": "off"
 					},
 					"complexity": {
-						"noUselessTernary": {
-							"level": "off"
-						},
 						"useIndexOf": "off",
 						"useDateNow": "off",
 						"useOptionalChain": "off"
