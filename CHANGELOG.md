@@ -1,17 +1,33 @@
-## 2025.12.0
+## Unreleased
 
 ### General
 -
 
 ### Client
+- Fix: 特定の条件下でMisskeyが起動せず空白のページが表示されることがある問題を軽減
+- Fix: 初回読み込み時などに、言語設定で不整合が発生することがある問題を修正
+- Fix: 削除されたノートのリノートが正しく動作されない問題を修正
+- Fix: チャンネルオーナーが削除済みの時にチャンネルのヘッダーメニューが表示されない不具合を修正
 - Fix: リアルタイム通信の接続が瞬間的に切れすぐに復旧した場合には再接続を促すダイアログが表示されないように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/172)
+
+### Server
+- Fix: ジョブキューでSentryが有効にならない問題を修正
+
+
+## 2025.12.0
+
+### Note
+- configの`trustProxy`のデフォルト値を`false`に変更しました。アップデート前に現在のconfigをご確認の上、必要に応じて値を変更してください。
+
+### Client
+- Fix: stacking router viewで連続して戻る操作を行うと何も表示されなくなる問題を修正
 
 ### Server
 - Enhance: メモリ使用量を削減しました
 - Enhance: ActivityPubアクティビティを送信する際のパフォーマンス向上
 - Enhance: 依存関係の更新
-
+- Fix: セキュリティに関する修正
 
 ## 2025.11.1
 
