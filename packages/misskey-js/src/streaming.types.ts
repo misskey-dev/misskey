@@ -237,6 +237,68 @@ export type Channels = {
 			claimTimeIsUp: null | Record<string, never>;
 		}
 	};
+	noctown: {
+		params: null;
+		events: {
+			playerMoved: (payload: {
+				id: string;
+				userId: string;
+				username: string;
+				avatarUrl: string | null;
+				positionX: number;
+				positionY: number;
+				positionZ: number;
+				rotation: number;
+				isOnline: boolean;
+			}) => void;
+			playerJoined: (payload: {
+				id: string;
+				userId: string;
+				username: string;
+				avatarUrl: string | null;
+				positionX: number;
+				positionY: number;
+				positionZ: number;
+				rotation: number;
+				isOnline: boolean;
+			}) => void;
+			playerLeft: (payload: { playerId: string }) => void;
+			itemDropped: (payload: {
+				id: string;
+				itemId: string;
+				positionX: number;
+				positionY: number;
+				positionZ: number;
+			}) => void;
+			itemPicked: (payload: {
+				droppedItemId: string;
+				playerId: string;
+			}) => void;
+		};
+		receives: {
+			move: {
+				x: number;
+				y: number;
+				z: number;
+				rotation?: number;
+			};
+			pickItem: {
+				droppedItemId: string;
+			};
+			placeItem: {
+				playerItemId: string;
+				x: number;
+				y: number;
+				z: number;
+				rotation?: number;
+			};
+			interact: {
+				targetType: string;
+				targetId: string;
+			};
+			heartbeat: Record<string, never>;
+		};
+	};
 	chatUser: {
 		params: {
 			otherId: string;

@@ -19,6 +19,7 @@ export const meta = {
 	tags: ['notes', 'channels'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',

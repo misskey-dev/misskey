@@ -128,6 +128,11 @@ export const moderationLogTypes = [
 	'deleteGalleryPost',
 	'deleteChatRoom',
 	'updateProxyAccountDescription',
+	'createNoctownGacha',
+	'updateNoctownGacha',
+	'deleteNoctownGacha',
+	'addNoctownGachaItem',
+	'removeNoctownGachaItem',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -387,6 +392,30 @@ export type ModerationLogPayloads = {
 	updateProxyAccountDescription: {
 		before: string | null;
 		after: string | null;
+	};
+	createNoctownGacha: {
+		gachaId: string;
+		gachaName: string;
+	};
+	updateNoctownGacha: {
+		gachaId: string;
+		before: any;
+		after: any;
+	};
+	deleteNoctownGacha: {
+		gachaId: string;
+		gachaName: string;
+	};
+	addNoctownGachaItem: {
+		gachaId: string;
+		gachaName: string;
+		itemId: string;
+		itemName: string;
+	};
+	removeNoctownGachaItem: {
+		gachaItemId: string;
+		gachaId: string;
+		itemId: string;
 	};
 };
 

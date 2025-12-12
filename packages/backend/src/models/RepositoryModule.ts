@@ -86,6 +86,44 @@ import {
 	MiChatRoomInvitation,
 	MiChatApproval,
 	MiChatSecretSettings,
+	NoctownPlayer,
+	NoctownItem,
+	NoctownPlayerItem,
+	NoctownWallet,
+	NoctownQuest,
+	NoctownNpc,
+	NoctownPlacedItem,
+	NoctownDroppedItem,
+	NoctownWorld,
+	NoctownWorldChunk,
+	NoctownPlayerScore,
+	NoctownPlayerStatistics,
+	NoctownFarmPlot,
+	NoctownCrop,
+	NoctownChicken,
+	NoctownCow,
+	NoctownRecipe,
+	NoctownRecipeIngredient,
+	NoctownTrade,
+	NoctownTradeItem,
+	NoctownInteriorMap,
+	NoctownShopInventory,
+	NoctownTreasureChest,
+	NoctownHouse,
+	NoctownHouseWallItem,
+	NoctownHouseFurniture,
+	NoctownBulletinBoard,
+	NoctownBulletinPost,
+	NoctownBulletinLike,
+	NoctownAgent,
+	NoctownGacha,
+	NoctownGachaItem,
+	NoctownGachaPull,
+	NoctownEvent,
+	NoctownEventReward,
+	NoctownEventParticipation,
+	NoctownUniqueItem,
+	NoctownRankingBoard,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -558,6 +596,234 @@ const $reversiGamesRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $noctownPlayersRepository: Provider = {
+	provide: DI.noctownPlayersRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownPlayer).extend(miRepository as MiRepository<NoctownPlayer>),
+	inject: [DI.db],
+};
+
+const $noctownItemsRepository: Provider = {
+	provide: DI.noctownItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownItem).extend(miRepository as MiRepository<NoctownItem>),
+	inject: [DI.db],
+};
+
+const $noctownPlayerItemsRepository: Provider = {
+	provide: DI.noctownPlayerItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownPlayerItem).extend(miRepository as MiRepository<NoctownPlayerItem>),
+	inject: [DI.db],
+};
+
+const $noctownWalletsRepository: Provider = {
+	provide: DI.noctownWalletsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownWallet).extend(miRepository as MiRepository<NoctownWallet>),
+	inject: [DI.db],
+};
+
+const $noctownQuestsRepository: Provider = {
+	provide: DI.noctownQuestsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownQuest).extend(miRepository as MiRepository<NoctownQuest>),
+	inject: [DI.db],
+};
+
+const $noctownNpcsRepository: Provider = {
+	provide: DI.noctownNpcsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownNpc).extend(miRepository as MiRepository<NoctownNpc>),
+	inject: [DI.db],
+};
+
+const $noctownPlacedItemsRepository: Provider = {
+	provide: DI.noctownPlacedItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownPlacedItem).extend(miRepository as MiRepository<NoctownPlacedItem>),
+	inject: [DI.db],
+};
+
+const $noctownDroppedItemsRepository: Provider = {
+	provide: DI.noctownDroppedItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownDroppedItem).extend(miRepository as MiRepository<NoctownDroppedItem>),
+	inject: [DI.db],
+};
+
+const $noctownWorldsRepository: Provider = {
+	provide: DI.noctownWorldsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownWorld).extend(miRepository as MiRepository<NoctownWorld>),
+	inject: [DI.db],
+};
+
+const $noctownWorldChunksRepository: Provider = {
+	provide: DI.noctownWorldChunksRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownWorldChunk).extend(miRepository as MiRepository<NoctownWorldChunk>),
+	inject: [DI.db],
+};
+
+const $noctownPlayerScoresRepository: Provider = {
+	provide: DI.noctownPlayerScoresRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownPlayerScore).extend(miRepository as MiRepository<NoctownPlayerScore>),
+	inject: [DI.db],
+};
+
+const $noctownPlayerStatisticsRepository: Provider = {
+	provide: DI.noctownPlayerStatisticsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownPlayerStatistics).extend(miRepository as MiRepository<NoctownPlayerStatistics>),
+	inject: [DI.db],
+};
+
+const $noctownFarmPlotsRepository: Provider = {
+	provide: DI.noctownFarmPlotsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownFarmPlot).extend(miRepository as MiRepository<NoctownFarmPlot>),
+	inject: [DI.db],
+};
+
+const $noctownCropsRepository: Provider = {
+	provide: DI.noctownCropsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownCrop).extend(miRepository as MiRepository<NoctownCrop>),
+	inject: [DI.db],
+};
+
+const $noctownChickensRepository: Provider = {
+	provide: DI.noctownChickensRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownChicken).extend(miRepository as MiRepository<NoctownChicken>),
+	inject: [DI.db],
+};
+
+const $noctownCowsRepository: Provider = {
+	provide: DI.noctownCowsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownCow).extend(miRepository as MiRepository<NoctownCow>),
+	inject: [DI.db],
+};
+
+const $noctownRecipesRepository: Provider = {
+	provide: DI.noctownRecipesRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownRecipe).extend(miRepository as MiRepository<NoctownRecipe>),
+	inject: [DI.db],
+};
+
+const $noctownRecipeIngredientsRepository: Provider = {
+	provide: DI.noctownRecipeIngredientsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownRecipeIngredient).extend(miRepository as MiRepository<NoctownRecipeIngredient>),
+	inject: [DI.db],
+};
+
+const $noctownTradesRepository: Provider = {
+	provide: DI.noctownTradesRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownTrade).extend(miRepository as MiRepository<NoctownTrade>),
+	inject: [DI.db],
+};
+
+const $noctownTradeItemsRepository: Provider = {
+	provide: DI.noctownTradeItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownTradeItem).extend(miRepository as MiRepository<NoctownTradeItem>),
+	inject: [DI.db],
+};
+
+const $noctownInteriorMapsRepository: Provider = {
+	provide: DI.noctownInteriorMapsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownInteriorMap).extend(miRepository as MiRepository<NoctownInteriorMap>),
+	inject: [DI.db],
+};
+
+const $noctownShopInventoriesRepository: Provider = {
+	provide: DI.noctownShopInventoriesRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownShopInventory).extend(miRepository as MiRepository<NoctownShopInventory>),
+	inject: [DI.db],
+};
+
+const $noctownTreasureChestsRepository: Provider = {
+	provide: DI.noctownTreasureChestsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownTreasureChest).extend(miRepository as MiRepository<NoctownTreasureChest>),
+	inject: [DI.db],
+};
+
+const $noctownHousesRepository: Provider = {
+	provide: DI.noctownHousesRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownHouse).extend(miRepository as MiRepository<NoctownHouse>),
+	inject: [DI.db],
+};
+
+const $noctownHouseWallItemsRepository: Provider = {
+	provide: DI.noctownHouseWallItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownHouseWallItem).extend(miRepository as MiRepository<NoctownHouseWallItem>),
+	inject: [DI.db],
+};
+
+const $noctownHouseFurnituresRepository: Provider = {
+	provide: DI.noctownHouseFurnituresRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownHouseFurniture).extend(miRepository as MiRepository<NoctownHouseFurniture>),
+	inject: [DI.db],
+};
+
+const $noctownBulletinBoardsRepository: Provider = {
+	provide: DI.noctownBulletinBoardsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownBulletinBoard).extend(miRepository as MiRepository<NoctownBulletinBoard>),
+	inject: [DI.db],
+};
+
+const $noctownBulletinPostsRepository: Provider = {
+	provide: DI.noctownBulletinPostsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownBulletinPost).extend(miRepository as MiRepository<NoctownBulletinPost>),
+	inject: [DI.db],
+};
+
+const $noctownBulletinLikesRepository: Provider = {
+	provide: DI.noctownBulletinLikesRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownBulletinLike).extend(miRepository as MiRepository<NoctownBulletinLike>),
+	inject: [DI.db],
+};
+
+const $noctownAgentsRepository: Provider = {
+	provide: DI.noctownAgentsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownAgent).extend(miRepository as MiRepository<NoctownAgent>),
+	inject: [DI.db],
+};
+
+const $noctownGachasRepository: Provider = {
+	provide: DI.noctownGachasRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownGacha).extend(miRepository as MiRepository<NoctownGacha>),
+	inject: [DI.db],
+};
+
+const $noctownGachaItemsRepository: Provider = {
+	provide: DI.noctownGachaItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownGachaItem).extend(miRepository as MiRepository<NoctownGachaItem>),
+	inject: [DI.db],
+};
+
+const $noctownGachaPullsRepository: Provider = {
+	provide: DI.noctownGachaPullsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownGachaPull).extend(miRepository as MiRepository<NoctownGachaPull>),
+	inject: [DI.db],
+};
+
+const $noctownEventsRepository: Provider = {
+	provide: DI.noctownEventsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownEvent).extend(miRepository as MiRepository<NoctownEvent>),
+	inject: [DI.db],
+};
+
+const $noctownEventRewardsRepository: Provider = {
+	provide: DI.noctownEventRewardsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownEventReward).extend(miRepository as MiRepository<NoctownEventReward>),
+	inject: [DI.db],
+};
+
+const $noctownEventParticipationsRepository: Provider = {
+	provide: DI.noctownEventParticipationsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownEventParticipation).extend(miRepository as MiRepository<NoctownEventParticipation>),
+	inject: [DI.db],
+};
+
+const $noctownUniqueItemsRepository: Provider = {
+	provide: DI.noctownUniqueItemsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownUniqueItem).extend(miRepository as MiRepository<NoctownUniqueItem>),
+	inject: [DI.db],
+};
+
+const $noctownRankingBoardsRepository: Provider = {
+	provide: DI.noctownRankingBoardsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownRankingBoard).extend(miRepository as MiRepository<NoctownRankingBoard>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -639,6 +905,44 @@ const $reversiGamesRepository: Provider = {
 		$chatSecretSettingsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$noctownPlayersRepository,
+		$noctownItemsRepository,
+		$noctownPlayerItemsRepository,
+		$noctownWalletsRepository,
+		$noctownQuestsRepository,
+		$noctownNpcsRepository,
+		$noctownPlacedItemsRepository,
+		$noctownDroppedItemsRepository,
+		$noctownWorldsRepository,
+		$noctownWorldChunksRepository,
+		$noctownPlayerScoresRepository,
+		$noctownPlayerStatisticsRepository,
+		$noctownFarmPlotsRepository,
+		$noctownCropsRepository,
+		$noctownChickensRepository,
+		$noctownCowsRepository,
+		$noctownRecipesRepository,
+		$noctownRecipeIngredientsRepository,
+		$noctownTradesRepository,
+		$noctownTradeItemsRepository,
+		$noctownInteriorMapsRepository,
+		$noctownShopInventoriesRepository,
+		$noctownTreasureChestsRepository,
+		$noctownHousesRepository,
+		$noctownHouseWallItemsRepository,
+		$noctownHouseFurnituresRepository,
+		$noctownBulletinBoardsRepository,
+		$noctownBulletinPostsRepository,
+		$noctownBulletinLikesRepository,
+		$noctownAgentsRepository,
+		$noctownGachasRepository,
+		$noctownGachaItemsRepository,
+		$noctownGachaPullsRepository,
+		$noctownEventsRepository,
+		$noctownEventRewardsRepository,
+		$noctownEventParticipationsRepository,
+		$noctownUniqueItemsRepository,
+		$noctownRankingBoardsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -719,6 +1023,44 @@ const $reversiGamesRepository: Provider = {
 		$chatSecretSettingsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$noctownPlayersRepository,
+		$noctownItemsRepository,
+		$noctownPlayerItemsRepository,
+		$noctownWalletsRepository,
+		$noctownQuestsRepository,
+		$noctownNpcsRepository,
+		$noctownPlacedItemsRepository,
+		$noctownDroppedItemsRepository,
+		$noctownWorldsRepository,
+		$noctownWorldChunksRepository,
+		$noctownPlayerScoresRepository,
+		$noctownPlayerStatisticsRepository,
+		$noctownFarmPlotsRepository,
+		$noctownCropsRepository,
+		$noctownChickensRepository,
+		$noctownCowsRepository,
+		$noctownRecipesRepository,
+		$noctownRecipeIngredientsRepository,
+		$noctownTradesRepository,
+		$noctownTradeItemsRepository,
+		$noctownInteriorMapsRepository,
+		$noctownShopInventoriesRepository,
+		$noctownTreasureChestsRepository,
+		$noctownHousesRepository,
+		$noctownHouseWallItemsRepository,
+		$noctownHouseFurnituresRepository,
+		$noctownBulletinBoardsRepository,
+		$noctownBulletinPostsRepository,
+		$noctownBulletinLikesRepository,
+		$noctownAgentsRepository,
+		$noctownGachasRepository,
+		$noctownGachaItemsRepository,
+		$noctownGachaPullsRepository,
+		$noctownEventsRepository,
+		$noctownEventRewardsRepository,
+		$noctownEventParticipationsRepository,
+		$noctownUniqueItemsRepository,
+		$noctownRankingBoardsRepository,
 	],
 })
 export class RepositoryModule {

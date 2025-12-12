@@ -11451,6 +11451,168 @@ export interface Locale extends ILocale {
          */
         "useAvatarAsStone": string;
     };
+    "_noctown": {
+        /**
+         * 接続中
+         */
+        "connected": string;
+        /**
+         * ゲームを読み込み中...
+         */
+        "loading": string;
+        /**
+         * で移動
+         */
+        "moveHint": string;
+        /**
+         * オンライン
+         */
+        "online": string;
+        /**
+         * オフライン
+         */
+        "offline": string;
+        /**
+         * 農場
+         */
+        "farm": string;
+        /**
+         * 畑
+         */
+        "farmPlots": string;
+        /**
+         * 畑がありません
+         */
+        "noFarmPlots": string;
+        /**
+         * 空の畑
+         */
+        "emptyPlot": string;
+        /**
+         * 畑を作成しました
+         */
+        "farmPlotCreated": string;
+        /**
+         * 畑の上限に達しました
+         */
+        "maxPlotsReached": string;
+        /**
+         * この場所は既に使用されています
+         */
+        "locationOccupied": string;
+        /**
+         * 種を選択
+         */
+        "selectSeed": string;
+        /**
+         * 種がありません
+         */
+        "noSeeds": string;
+        /**
+         * 種を植えました
+         */
+        "seedPlanted": string;
+        /**
+         * 水をやりました
+         */
+        "cropWatered": string;
+        /**
+         * 収穫しました
+         */
+        "cropHarvested": string;
+        /**
+         * 種
+         */
+        "cropStageSeed": string;
+        /**
+         * 芽
+         */
+        "cropStageSprout": string;
+        /**
+         * 成長中
+         */
+        "cropStageGrowing": string;
+        /**
+         * 成熟
+         */
+        "cropStageMature": string;
+        /**
+         * 収穫可能
+         */
+        "cropStageHarvestable": string;
+        /**
+         * 枯れ
+         */
+        "cropStageWithered": string;
+        /**
+         * ニワトリ
+         */
+        "chickens": string;
+        /**
+         * ニワトリがいません
+         */
+        "noChickens": string;
+        /**
+         * ニワトリの名前
+         */
+        "nameChicken": string;
+        /**
+         * ニワトリを配置しました
+         */
+        "chickenPlaced": string;
+        /**
+         * ニワトリの上限に達しました
+         */
+        "maxChickensReached": string;
+        /**
+         * エサをあげました
+         */
+        "chickenFed": string;
+        /**
+         * 卵を回収しました
+         */
+        "eggsCollected": string;
+        /**
+         * ウシ
+         */
+        "cows": string;
+        /**
+         * ウシがいません
+         */
+        "noCows": string;
+        /**
+         * ウシの名前
+         */
+        "nameCow": string;
+        /**
+         * ウシを配置しました
+         */
+        "cowPlaced": string;
+        /**
+         * ウシの上限に達しました
+         */
+        "maxCowsReached": string;
+        /**
+         * エサをあげました
+         */
+        "cowFed": string;
+        /**
+         * ミルクを回収しました
+         */
+        "milkCollected": string;
+        /**
+         * 名前なし
+         */
+        "unnamed": string;
+        /**
+         * 任意
+         */
+        "optional": string;
+        /**
+         * エサがありません
+         */
+        "noFeedItems": string;
+    };
     "_offlineScreen": {
         /**
          * オフライン - サーバーに接続できません

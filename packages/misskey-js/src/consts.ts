@@ -125,6 +125,8 @@ export const permissions = [
 	'read:admin:drive',
 	'write:admin:ad',
 	'read:admin:ad',
+	'write:admin:noctown',
+	'read:admin:noctown',
 	'write:invite-codes',
 	'read:invite-codes',
 	'write:clip-favorite',

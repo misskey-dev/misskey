@@ -80,6 +80,7 @@ import { DrawingCanvasService } from './DrawingCanvasService.js';
 import { DrawingSettingsService } from './DrawingSettingsService.js';
 import { RegistryApiService } from './RegistryApiService.js';
 import { ReversiService } from './ReversiService.js';
+import { NoctownService } from './NoctownService.js';
 import { PageService } from './PageService.js';
 
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
@@ -232,6 +233,7 @@ const $DrawingCanvasService: Provider = { provide: 'DrawingCanvasService', useEx
 const $DrawingSettingsService: Provider = { provide: 'DrawingSettingsService', useExisting: DrawingSettingsService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
+const $NoctownService: Provider = { provide: 'NoctownService', useExisting: NoctownService };
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
@@ -387,6 +389,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		DrawingSettingsService,
 		RegistryApiService,
 		ReversiService,
+		NoctownService,
 		PageService,
 
 		ChartLoggerService,
@@ -538,6 +541,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$DrawingSettingsService,
 		$RegistryApiService,
 		$ReversiService,
+		$NoctownService,
 		$PageService,
 
 		$ChartLoggerService,

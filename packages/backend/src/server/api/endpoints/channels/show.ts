@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'object',

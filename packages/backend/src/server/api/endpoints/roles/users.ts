@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository, RoleAssignmentsRepository, UsersRepository } from '@/models/_.js';
+import type { RolesRepository, RoleAssignmentsRepository, UsersRepository, NoctownPlayerScoresRepository, NoctownPlayersRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['role', 'users'],
@@ -69,6 +69,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.noctownPlayerScoresRepository)
+		private noctownPlayerScoresRepository: NoctownPlayerScoresRepository,
+
+		@Inject(DI.noctownPlayersRepository)
+		private noctownPlayersRepository: NoctownPlayersRepository,
+
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -94,21 +100,37 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// 全メンバーを取得（スコア計算後にソートするため）
 			const assigns = await query.getMany();
 
+			// ロール名が「ノクタウン」の場合は専用スコアを使用
+			const isNoctownRole = role.name === 'ノクタウン' || role.name === 'Noctown';
+
 			// 新アルゴリズムで人気スコアを計算してソート
 			const scoredAssigns = await Promise.all(assigns.map(async assign => {
 				// ユーザー情報を取得（プライバシー設定に従った表示用）
 				const user = await this.userEntityService.pack(assign.userId, me, { schema: 'UserDetailed' });
 
-				// スコア計算用に実際のフォロワー数をDBから取得（プライバシー設定に関わらず）
-				const userEntity = await this.usersRepository.findOneBy({ id: assign.userId });
-				const actualFollowersCount = userEntity?.followersCount ?? 0;
-				const actualNotesCount = userEntity?.notesCount ?? 0;
+				let popularityScore: number;
 
-				const popularityScore = await this.userEntityService.calculatePopularityScore(
-					assign.userId,
-					actualFollowersCount,
-					actualNotesCount,
-				);
+				if (isNoctownRole) {
+					// ノクタウンロールの場合、ノクタウンスコアを使用
+					const noctownPlayer = await this.noctownPlayersRepository.findOneBy({ userId: assign.userId });
+					if (noctownPlayer) {
+						const noctownScore = await this.noctownPlayerScoresRepository.findOneBy({ playerId: noctownPlayer.id });
+						popularityScore = noctownScore?.totalScore ?? 0;
+					} else {
+						popularityScore = 0;
+					}
+				} else {
+					// 通常のロールの場合、従来のスコア計算を使用
+					const userEntity = await this.usersRepository.findOneBy({ id: assign.userId });
+					const actualFollowersCount = userEntity?.followersCount ?? 0;
+					const actualNotesCount = userEntity?.notesCount ?? 0;
+
+					popularityScore = await this.userEntityService.calculatePopularityScore(
+						assign.userId,
+						actualFollowersCount,
+						actualNotesCount,
+					);
+				}
 
 				return {
 					id: assign.id,

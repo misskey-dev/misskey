@@ -393,6 +393,14 @@ export type GlobalEvents = {
 		name: `reversiGameStream:${MiReversiGame['id']}`;
 		payload: EventTypesToEventPayload<ReversiGameEventTypes>;
 	};
+	noctown: {
+		name: 'noctownStream';
+		payload: { type: string; body: Record<string, unknown> | null };
+	};
+	noctownPlayer: {
+		name: `noctownPlayerStream:${string}`;
+		payload: { type: string; body: Record<string, unknown> | null };
+	};
 };
 
 // API event definitions
@@ -503,5 +511,15 @@ export class GlobalEventService {
 	@bindThis
 	public publishReversiGameStream<K extends keyof ReversiGameEventTypes>(gameId: MiReversiGame['id'], type: K, value?: ReversiGameEventTypes[K]): void {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishNoctownStream(type: string, value?: Record<string, unknown>): void {
+		this.publish('noctownStream', type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishNoctownPlayerStream(playerId: string, type: string, value?: Record<string, unknown>): void {
+		this.publish(`noctownPlayerStream:${playerId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }
