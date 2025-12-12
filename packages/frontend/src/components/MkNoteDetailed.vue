@@ -43,7 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		</div>
 	</div>
-	<article :class="$style.note" @contextmenu.stop="onContextmenu">
+	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
+		{{ i18n.ts.deletedNote }}
+	</div>
+	<article v-else :class="$style.note" @contextmenu.stop="onContextmenu">
 		<header :class="$style.noteHeader">
 			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
 			<div :class="$style.noteHeaderBody">
@@ -943,5 +946,15 @@ function loadConversation() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.deleted {
+	text-align: center;
+	padding: 32px;
+	margin: 6px 32px 32px;
+	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	border-radius: 8px;
 }
 </style>
