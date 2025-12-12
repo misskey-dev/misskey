@@ -79,8 +79,7 @@
 						},
 						"useIndexOf": "off",
 						"useDateNow": "off",
-						"useOptionalChain": "off",
-						"noCommaOperator": "off"
+						"useOptionalChain": "off"
 					}
 				}
 			}
