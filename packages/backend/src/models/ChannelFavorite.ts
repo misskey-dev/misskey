@@ -20,7 +20,7 @@ export class MiChannelFavorite {
 	})
 	public channelId: MiChannel['id'];
 
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(() => MiChannel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -32,7 +32,7 @@ export class MiChannelFavorite {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

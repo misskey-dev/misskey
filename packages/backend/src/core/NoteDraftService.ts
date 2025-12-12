@@ -187,9 +187,9 @@ export class NoteDraftService {
 		}
 
 		//#region visibleUsers
-		let visibleUsers: MiUser[] = [];
+		let _visibleUsers: MiUser[] = [];
 		if (data.visibleUserIds != null && data.visibleUserIds.length > 0) {
-			visibleUsers = await this.usersRepository.findBy({
+			_visibleUsers = await this.usersRepository.findBy({
 				id: In(data.visibleUserIds),
 			});
 		}

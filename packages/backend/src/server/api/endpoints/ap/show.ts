@@ -215,7 +215,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					type: 'Note',
 					object,
 				};
-			} catch (e) {
+			} catch (_) {
 				return null;
 			}
 		}

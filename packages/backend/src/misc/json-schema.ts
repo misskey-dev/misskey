@@ -262,8 +262,6 @@ type ObjectSchemaTypeDef<p extends Schema> =
 				never :
 			any;
 
-type ObjectSchemaType<p extends Schema> = NullOrUndefined<p, ObjectSchemaTypeDef<p>>;
-
 export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'null' ? null :
 	p['type'] extends 'integer' ? number :

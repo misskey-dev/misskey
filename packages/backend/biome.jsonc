@@ -18,6 +18,8 @@
 		{
 			"includes": [
 				"migration/**/*",
+				"test/**/*",
+				"test-federation/test/**/*",
 				"test-server/**/*"
 			],
 			"linter": {
@@ -49,9 +51,6 @@
 				"rules": {
 					"correctness": {
 						"noUnusedFunctionParameters": {
-							"level": "off"
-						},
-						"noUnusedVariables": {
 							"level": "off"
 						}
 					}
@@ -85,6 +84,14 @@
 			"correctness": {
 				"useParseIntRadix": {
 					"level": "off"
+				},
+				"noUnusedVariables": {
+					"level": "warn",
+					"options": {
+						// https://github.com/biomejs/biome/issues/8353
+						// https://github.com/biomejs/biome/pull/8398
+						"ignoreRestSiblings": true
+					}
 				}
 			},
 			"style": {
