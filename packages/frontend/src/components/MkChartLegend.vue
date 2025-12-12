@@ -22,7 +22,7 @@ const type = shallowRef<string>();
 const items = shallowRef<LegendItem[]>([]);
 
 function update(_chart: Chart, _items: LegendItem[]) {
-	chart.value = _chart,
+	chart.value = _chart;
 	items.value = _items;
 	if ('type' in _chart.config) type.value = _chart.config.type;
 }

@@ -47,7 +47,7 @@ const shareData = computed(() => ({
 	text: i18n.ts._qr.shareText,
 	url: userProfileUrl.value,
 }));
-const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
+const canShare = computed(() => navigator.canShare?.(shareData.value));
 
 const qrCodeEl = useTemplateRef('qrCodeEl');
 

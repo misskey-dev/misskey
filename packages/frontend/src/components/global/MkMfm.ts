@@ -431,7 +431,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						return [h(MkCustomEmoji, {
 							key: Math.random(),
 							name: token.props.name,
-							url: props.emojiUrls && props.emojiUrls[token.props.name],
+							url: props.emojiUrls?.[token.props.name],
 							normal: props.plain,
 							host: props.author.host,
 							useOriginalSize: scale >= 2.5,

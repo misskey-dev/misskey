@@ -279,7 +279,7 @@ async function onSubmit(): Promise<void> {
 		return null;
 	});
 
-	if (res && res.ok) {
+	if (res?.ok) {
 		if (res.status === 204 || instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',

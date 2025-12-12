@@ -27,7 +27,7 @@ export async function getTheme(mode: 'light' | 'dark', getName = false): Promise
 
 	if (theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
-		if (base && base.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
+		if (base?.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
 	}
 
 	if (theme.codeHighlighter) {

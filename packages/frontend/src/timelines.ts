@@ -37,11 +37,11 @@ export function isAvailableBasicTimeline(timeline: BasicTimelineType | undefined
 		case 'home':
 			return $i != null;
 		case 'local':
-			return ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
+			return $i == null ? instance.policies.ltlAvailable : $i.policies.ltlAvailable;
 		case 'social':
-			return $i != null && $i.policies.ltlAvailable;
+			return $i == null ? false : $i.policies.ltlAvailable;
 		case 'global':
-			return ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
+			return $i == null ? instance.policies.gtlAvailable : $i.policies.gtlAvailable;
 		default:
 			return false;
 	}

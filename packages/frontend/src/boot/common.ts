@@ -232,7 +232,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 
 	//#region Fetch user
-	if ($i && $i.token) {
+	if ($i?.token) {
 		if (_DEV_) {
 			console.log('account cache found. refreshing...');
 		}

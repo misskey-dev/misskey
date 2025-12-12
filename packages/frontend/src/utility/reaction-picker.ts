@@ -16,10 +16,6 @@ class ReactionPicker {
 	private onChosen?: (reaction: string) => void;
 	private onClosed?: () => void;
 
-	constructor() {
-		// nop
-	}
-
 	public async init() {
 		const reactionsRef = ref<string[]>([]);
 

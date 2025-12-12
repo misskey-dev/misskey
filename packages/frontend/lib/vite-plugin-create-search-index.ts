@@ -103,6 +103,7 @@ type WalkVueNode = RootNode | TemplateChildNode | SimpleExpressionNode;
  * @param context The context value passed to callback. you can update context for children by returning value in callback
  * @param callback Returns false if you don't want to walk inner tree
  */
+// biome-ignore lint/complexity/noBannedTypes: Possibly false positive: this is type constraint https://github.com/biomejs/biome/issues/8434
 function walkVueElements<C extends {} | null>(nodes: WalkVueNode[], context: C, callback: (node: ElementNode, context: C) => C | undefined | void | false): void {
 	for (const node of nodes) {
 		let currentContext = context;

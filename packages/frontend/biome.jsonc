@@ -40,6 +40,9 @@
 	},
 	"linter": {
 		"enabled": true,
+		"domains": {
+			"vue": "recommended"
+		},
 		"rules": {
 			"recommended": true,
 			"style": {

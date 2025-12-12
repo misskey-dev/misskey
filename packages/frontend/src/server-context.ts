@@ -13,7 +13,7 @@ export type ServerContext = {
 	user?: Misskey.entities.UserDetailed;
 } | null;
 
-export const serverContext: ServerContext = (providedContextEl && providedContextEl.textContent) ? JSON.parse(providedContextEl.textContent) : null;
+export const serverContext: ServerContext = (providedContextEl?.textContent) ? JSON.parse(providedContextEl.textContent) : null;
 
 export function assertServerContext<K extends keyof NonNullable<ServerContext>>(ctx: ServerContext, entity: K): ctx is Required<Pick<NonNullable<ServerContext>, K>> {
 	if (ctx == null) return false;

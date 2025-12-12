@@ -479,6 +479,7 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: deprecated member
 export class ColdDeviceStorage {
 	public static default = {
 		lightTheme, // TODO: 消す(preferに移行済みのため)

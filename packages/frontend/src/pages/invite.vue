@@ -41,8 +41,8 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const currentInviteLimit = ref<null | number>(null);
-const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
-const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
+const inviteLimit = (($i?.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
+const inviteLimitCycle = (($i?.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
 const paginator = markRaw(new Paginator('invite/list', {
 	limit: 10,

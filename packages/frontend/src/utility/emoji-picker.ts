@@ -20,10 +20,6 @@ class EmojiPicker {
 	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
 
-	constructor() {
-		// nop
-	}
-
 	public async init() {
 		const emojisRef = ref<string[]>([]);
 

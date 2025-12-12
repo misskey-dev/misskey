@@ -144,9 +144,9 @@ export function removeColumn(id: Column['id']) {
 
 export function swapColumn(a: Column['id'], b: Column['id']) {
 	const aX = layout.value.findIndex(ids => ids.indexOf(a) !== -1);
-	const aY = layout.value[aX].findIndex(id => id === a);
+	const aY = layout.value[aX].indexOf(a);
 	const bX = layout.value.findIndex(ids => ids.indexOf(b) !== -1);
-	const bY = layout.value[bX].findIndex(id => id === b);
+	const bY = layout.value[bX].indexOf(b);
 	const newLayout = deepClone(layout.value);
 	newLayout[aX][aY] = b;
 	newLayout[bX][bY] = a;

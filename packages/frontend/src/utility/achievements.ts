@@ -487,7 +487,7 @@ export const ACHIEVEMENT_BADGES = {
  */
 } as const;
 
-export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
+export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i?.achievements) ? $i.achievements.map(x => x.name) : [];
 
 const claimingQueue = new Set<string>();
 
