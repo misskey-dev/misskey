@@ -34,7 +34,7 @@ function getNoise(): string {
 }
 
 export function genAidx(t: number): string {
-	if (isNaN(t)) throw new Error('Failed to create AIDX: Invalid Date');
+	if (Number.isNaN(t)) throw new Error('Failed to create AIDX: Invalid Date');
 	counter++;
 	return getTime(t) + nodeId + getNoise();
 }

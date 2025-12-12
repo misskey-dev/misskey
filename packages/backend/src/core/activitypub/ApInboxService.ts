@@ -89,10 +89,10 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
-		let result = undefined as string | void;
+	public async performActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | undefined> {
+		let result = undefined as string | undefined;
 		if (isCollectionOrOrderedCollection(activity)) {
-			const results = [] as [string, string | void][];
+			const results = [] as [string, string | undefined][];
 			// eslint-disable-next-line no-param-reassign
 			resolver ??= this.apResolverService.createResolver();
 
@@ -139,7 +139,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
+	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | undefined> {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
@@ -257,7 +257,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async add(actor: MiRemoteUser, activity: IAdd, resolver?: Resolver): Promise<string | void> {
+	private async add(actor: MiRemoteUser, activity: IAdd, resolver?: Resolver): Promise<string | undefined> {
 		if (actor.uri !== activity.actor) {
 			return 'invalid actor';
 		}
@@ -277,7 +277,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announce(actor: MiRemoteUser, activity: IAnnounce, resolver?: Resolver): Promise<string | void> {
+	private async announce(actor: MiRemoteUser, activity: IAnnounce, resolver?: Resolver): Promise<string | undefined> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Announce: ${uri}`);
@@ -300,7 +300,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | void> {
+	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | undefined> {
 		const uri = getApId(activity);
 
 		if (actor.isSuspended) {
@@ -355,6 +355,7 @@ export class ApInboxService {
 				visibleUsers: activityAudience.visibleUsers,
 				uri,
 			});
+			return undefined;
 		} finally {
 			unlock();
 		}
@@ -379,7 +380,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async create(actor: MiRemoteUser, activity: ICreate, resolver?: Resolver): Promise<string | void> {
+	private async create(actor: MiRemoteUser, activity: ICreate, resolver?: Resolver): Promise<string | undefined> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Create: ${uri}`);
@@ -414,6 +415,7 @@ export class ApInboxService {
 
 		if (isPost(object)) {
 			await this.createNote(resolver, actor, object, false, activity);
+			return undefined;
 		} else {
 			return `Unknown type: ${getApType(object)}`;
 		}
@@ -611,7 +613,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async remove(actor: MiRemoteUser, activity: IRemove, resolver?: Resolver): Promise<string | void> {
+	private async remove(actor: MiRemoteUser, activity: IRemove, resolver?: Resolver): Promise<string | undefined> {
 		if (actor.uri !== activity.actor) {
 			return 'invalid actor';
 		}

@@ -19,7 +19,7 @@ const ajv = new Ajv({
 
 ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 
-export type Response = Record<string, any> | void;
+export type Response = Record<string, any> | undefined;
 
 type File = {
 	name: string | null;

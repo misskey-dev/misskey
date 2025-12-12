@@ -68,10 +68,6 @@
 						"useNodejsImportProtocol": {
 							"fix": "safe"
 						}
-					},
-					"suspicious": {
-						"noConfusingVoidType": "off",
-						"noGlobalIsNan": "off"
 					}
 				}
 			}

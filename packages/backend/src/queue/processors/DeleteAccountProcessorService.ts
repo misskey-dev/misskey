@@ -49,7 +49,7 @@ export class DeleteAccountProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
+	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | undefined> {
 		this.logger.info(`Deleting account of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });

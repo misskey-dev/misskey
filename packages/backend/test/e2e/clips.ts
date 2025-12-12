@@ -671,25 +671,25 @@ describe('クリップ', () => {
 		];
 
 		const addNote = async (parameters: Misskey.entities.ClipsAddNoteRequest, request: Partial<ApiRequest<'clips/add-note'>> = {}): Promise<void> => {
-			return successfulApiCall({
+			await successfulApiCall({
 				endpoint: 'clips/add-note',
 				parameters,
 				user: alice,
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			});
 		};
 
 		const removeNote = async (parameters: Misskey.entities.ClipsRemoveNoteRequest, request: Partial<ApiRequest<'clips/remove-note'>> = {}): Promise<void> => {
-			return successfulApiCall({
+			await successfulApiCall({
 				endpoint: 'clips/remove-note',
 				parameters,
 				user: alice,
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			});
 		};
 
 		const notes = async (parameters: Misskey.entities.ClipsNotesRequest, request: Partial<ApiRequest<'clips/notes'>> = {}): Promise<Misskey.entities.Note[]> => {
