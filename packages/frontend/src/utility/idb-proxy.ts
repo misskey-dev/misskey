@@ -6,10 +6,10 @@
 // FirefoxのプライベートモードなどではindexedDBが使用不可能なので、
 // indexedDBが使えない環境ではlocalStorageを使う
 import {
+	clear as iclear,
+	del as idel,
 	get as iget,
 	set as iset,
-	del as idel,
-	clear as iclear,
 } from 'idb-keyval';
 import { miLocalStorage } from '@/local-storage.js';
 

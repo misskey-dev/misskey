@@ -89,14 +89,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import MkSwitch from '@/components/MkSwitch.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
-import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
-import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { selectFile } from '@/utility/drive.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
 

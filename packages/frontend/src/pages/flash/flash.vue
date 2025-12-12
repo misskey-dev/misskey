@@ -61,29 +61,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
-import * as Misskey from 'misskey-js';
+import type { Ref } from 'vue';
+import { computed, defineAsyncComponent, onDeactivated, onUnmounted, ref, shallowRef, watch } from 'vue';
+import type { Interpreter } from '@syuilo/aiscript';
 import { utils } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
+import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import type { Ref } from 'vue';
-import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
-import type { MenuItem } from '@/types/menu.js';
-import type { Interpreter } from '@syuilo/aiscript';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import MkAsUi from '@/components/MkAsUi.vue';
-import { registerAsUiLib } from '@/aiscript/ui.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
-import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
-import { prefer } from '@/preferences.js';
+import MkFolder from '@/components/MkFolder.vue';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 import { $i } from '@/i.js';
-import { isSupportShare } from '@/utility/navigator.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { isSupportShare } from '@/utility/navigator.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 
 const props = defineProps<{

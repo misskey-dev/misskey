@@ -11,10 +11,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, markRaw } from 'vue';
-import { i18n } from '@/i18n.js';
+import { computed, markRaw, ref } from 'vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{

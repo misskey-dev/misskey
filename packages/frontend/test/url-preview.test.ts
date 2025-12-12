@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, test, assert, afterEach } from 'vitest';
-import { render, cleanup, type RenderResult } from '@testing-library/vue';
+import { cleanup, type RenderResult, render } from '@testing-library/vue';
+import { afterEach, assert, describe, test } from 'vitest';
 import './init';
 import type { summaly } from '@misskey-dev/summaly';
 import { components } from '@/components/index.js';
-import { directives } from '@/directives/index.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
+import { directives } from '@/directives/index.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 

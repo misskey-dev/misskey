@@ -44,22 +44,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { markRaw, ref, useTemplateRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { computed, markRaw, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, useTemplateRef, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
+import { MFM_PARAMS, MFM_TAGS } from '@@/js/const.js';
+import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@@/js/emoji-base.js';
 import { emojilist, getEmojiName } from '@@/js/emojilist.js';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
-import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
-import type { EmojiDef } from '@/utility/search-emoji.js';
-import contains from '@/utility/contains.js';
+import { customEmojis } from '@/custom-emojis.js';
 import { acct } from '@/filters/user.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { customEmojis } from '@/custom-emojis.js';
-import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import contains from '@/utility/contains.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import type { EmojiDef } from '@/utility/search-emoji.js';
+import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
 
 export type CompleteInfo = {
 	user: {

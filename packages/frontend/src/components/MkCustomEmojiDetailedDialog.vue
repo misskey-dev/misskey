@@ -56,12 +56,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { useTemplateRef } from 'vue';
-import MkLink from '@/components/MkLink.vue';
-import { i18n } from '@/i18n.js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import * as Misskey from 'misskey-js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	emoji: Misskey.entities.EmojiDetailed,

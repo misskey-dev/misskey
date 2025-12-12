@@ -32,12 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import MkInput from '@/components/MkInput.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import XMessage from './XMessage.vue';
 
 const props = defineProps<{
 	userId?: string;

@@ -28,11 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import XPv from './activity.pv.vue';
-import XNotes from './activity.notes.vue';
-import XFollowing from './activity.following.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkHeatmap from '@/components/MkHeatmap.vue';
+import XFollowing from './activity.following.vue';
+import XNotes from './activity.notes.vue';
+import XPv from './activity.pv.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User;

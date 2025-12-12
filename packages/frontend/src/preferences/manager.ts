@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Ref, WritableComputedRef } from 'vue';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import { host, version } from '@@/js/config.js';
-import { PREF_DEF } from './def.js';
-import type { Ref, WritableComputedRef } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
-import { genId } from '@/utility/id.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { deepEqual } from '@/utility/deep-equal.js';
+import { genId } from '@/utility/id.js';
+import { PREF_DEF } from './def.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 

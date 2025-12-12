@@ -26,9 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
-import MkModal from '@/components/MkModal.vue';
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n';
 import { deviceKind } from '@/utility/device-kind.js';
 

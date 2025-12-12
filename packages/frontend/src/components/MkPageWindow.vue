@@ -32,19 +32,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
-import type { PageMetadata } from '@/page.js';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { popout as _popout } from '@/utility/popout.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
-import { openingWindowsCount } from '@/os.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { createRouter, mainRouter } from '@/router.js';
 import { analytics } from '@/analytics.js';
 import { DI } from '@/di.js';
+import { i18n } from '@/i18n.js';
+import { openingWindowsCount } from '@/os.js';
+import type { PageMetadata } from '@/page.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { createRouter, mainRouter } from '@/router.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { popout as _popout } from '@/utility/popout.js';
 
 const props = defineProps<{
 	initialPath: string;

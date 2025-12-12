@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { ref, reactive } from 'vue';
-import { i18n } from '@/i18n.js';
+import MkNote from '@/components/MkNote.vue';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/i.js';
-import MkNote from '@/components/MkNote.vue';
+import { i18n } from '@/i18n.js';
 import { genId } from '@/utility/id.js';
 
 const props = defineProps<{

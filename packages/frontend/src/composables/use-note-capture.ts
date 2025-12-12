@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { onUnmounted, reactive } from 'vue';
-import * as Misskey from 'misskey-js';
-import { EventEmitter } from 'eventemitter3';
 import type { Reactive } from 'vue';
-import { useStream } from '@/stream.js';
-import { $i } from '@/i.js';
-import { store } from '@/store.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { prefer } from '@/preferences.js';
+import { onUnmounted, reactive } from 'vue';
+import { EventEmitter } from 'eventemitter3';
+import * as Misskey from 'misskey-js';
 import { globalEvents } from '@/events.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import { useStream } from '@/stream.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export const noteEvents = new EventEmitter<{
 	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;

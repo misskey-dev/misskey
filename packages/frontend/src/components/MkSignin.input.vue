@@ -55,16 +55,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref } from 'vue';
 import { toUnicode } from 'punycode.js';
-
-import { query, extractDomain } from '@@/js/url.js';
 import { host as configHost } from '@@/js/config.js';
-import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import { extractDomain, query } from '@@/js/url.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkInfo from '@/components/MkInfo.vue';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 
 const props = withDefaults(defineProps<{
 	message?: string,

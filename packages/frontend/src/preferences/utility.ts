@@ -4,17 +4,17 @@
  */
 
 import { ref, watch } from 'vue';
-import type { PreferencesProfile } from './manager.js';
-import type { MenuItem } from '@/types/menu.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
-import { $i } from '@/i.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import type { PreferencesProfile } from './manager.js';
 
 function canAutoBackup() {
 	return prefer.profile.name != null && prefer.profile.name.trim() !== '';

@@ -1,21 +1,20 @@
-import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import pluginGlsl from 'vite-plugin-glsl';
+import { promises as fsp } from 'fs';
+import locales from 'i18n';
+import * as yaml from 'js-yaml';
+import path from 'path';
 import type { UserConfig } from 'vite';
 import { defineConfig } from 'vite';
-import * as yaml from 'js-yaml';
-import { promises as fsp } from 'fs';
-
-import locales from 'i18n';
+import pluginGlsl from 'vite-plugin-glsl';
 import meta from '../../package.json';
-import packageInfo from './package.json' with { type: 'json' };
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
-import pluginJson5 from './vite.json5.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
-import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
+import packageInfo from './package.json' with { type: 'json' };
+import pluginJson5 from './vite.json5.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;

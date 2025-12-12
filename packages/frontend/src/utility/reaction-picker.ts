@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
-import { defineAsyncComponent, ref, watch } from 'vue';
 import type { Ref } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 

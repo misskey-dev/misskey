@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import { login } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { login } from '@/accounts.js';
 
 const submitting = ref(false);
 

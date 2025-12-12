@@ -110,20 +110,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { computed, onActivated, onDeactivated, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { MenuItem } from '@/types/menu.js';
-import type { Keymap } from '@/utility/hotkey.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard';
+import MkMediaRange from '@/components/MkMediaRange.vue';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
+import { $i, iAmModerator } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
-import hasAudio from '@/utility/media-has-audio.js';
-import MkMediaRange from '@/components/MkMediaRange.vue';
-import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard';
+import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import hasAudio from '@/utility/media-has-audio.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;

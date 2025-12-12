@@ -3,39 +3,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Mfm from './global/MkMfm.js';
+import type { App } from 'vue';
+import I18n from './global/I18n.vue';
 import MkA from './global/MkA.vue';
 import MkAcct from './global/MkAcct.vue';
+import MkAd from './global/MkAd.vue';
 import MkAvatar from './global/MkAvatar.vue';
-import MkEmoji from './global/MkEmoji.vue';
 import MkCondensedLine from './global/MkCondensedLine.vue';
 import MkCustomEmoji from './global/MkCustomEmoji.vue';
-import MkUserName from './global/MkUserName.vue';
 import MkEllipsis from './global/MkEllipsis.vue';
-import MkTime from './global/MkTime.vue';
-import MkUrl from './global/MkUrl.vue';
-import I18n from './global/I18n.vue';
-import RouterView from './global/RouterView.vue';
-import NestedRouterView from './global/NestedRouterView.vue';
-import StackingRouterView from './global/StackingRouterView.vue';
-import MkLoading from './global/MkLoading.vue';
+import MkEmoji from './global/MkEmoji.vue';
 import MkError from './global/MkError.vue';
-import MkSuspense from './global/MkSuspense.vue';
-import MkAd from './global/MkAd.vue';
-import MkPageHeader from './global/MkPageHeader.vue';
-import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
+import MkLoading from './global/MkLoading.vue';
+import Mfm from './global/MkMfm.js';
+import MkPageHeader from './global/MkPageHeader.vue';
 import MkResult from './global/MkResult.vue';
+import MkStickyContainer from './global/MkStickyContainer.vue';
+import MkSuspense from './global/MkSuspense.vue';
 import MkSystemIcon from './global/MkSystemIcon.vue';
+import MkTime from './global/MkTime.vue';
 import MkTip from './global/MkTip.vue';
-import PageWithHeader from './global/PageWithHeader.vue';
+import MkUrl from './global/MkUrl.vue';
+import MkUserName from './global/MkUserName.vue';
+import NestedRouterView from './global/NestedRouterView.vue';
 import PageWithAnimBg from './global/PageWithAnimBg.vue';
-import SearchMarker from './global/SearchMarker.vue';
-import SearchLabel from './global/SearchLabel.vue';
-import SearchText from './global/SearchText.vue';
+import PageWithHeader from './global/PageWithHeader.vue';
+import RouterView from './global/RouterView.vue';
 import SearchIcon from './global/SearchIcon.vue';
-
-import type { App } from 'vue';
+import SearchLabel from './global/SearchLabel.vue';
+import SearchMarker from './global/SearchMarker.vue';
+import SearchText from './global/SearchText.vue';
+import StackingRouterView from './global/StackingRouterView.vue';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(components)) {

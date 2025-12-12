@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import tinycolor from 'tinycolor2';
-import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { store } from '@/store.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { alpha } from '@/utility/color.js';
 import { initChart } from '@/utility/init-chart.js';

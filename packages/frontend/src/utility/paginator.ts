@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ComputedRef, Ref, ShallowRef, UnwrapRef } from 'vue';
 import { ref, shallowRef, triggerRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { ComputedRef, Ref, ShallowRef, UnwrapRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAX_ITEMS = 30;

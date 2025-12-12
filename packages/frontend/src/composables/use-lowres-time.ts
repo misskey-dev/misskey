@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, readonly, computed } from 'vue';
+import { computed, readonly, ref } from 'vue';
 
 const time = ref(Date.now());
 

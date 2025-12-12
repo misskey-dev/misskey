@@ -15,11 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import MkDigitalClock from '@/components/MkDigitalClock.vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { timezones } from '@/utility/timezones.js';
-import MkDigitalClock from '@/components/MkDigitalClock.vue';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const name = 'digitalClock';
 

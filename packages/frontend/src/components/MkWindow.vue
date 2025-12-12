@@ -53,12 +53,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, useTemplateRef, ref } from 'vue';
+import { onBeforeUnmount, onMounted, provide, ref, useTemplateRef } from 'vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu.js';
 import contains from '@/utility/contains.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
 
 type WindowButton = {
 	title: string;

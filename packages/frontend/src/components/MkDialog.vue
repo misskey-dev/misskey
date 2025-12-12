@@ -42,12 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed } from 'vue';
-import MkModal from '@/components/MkModal.vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
+import MkModal from '@/components/MkModal.vue';
 import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
 

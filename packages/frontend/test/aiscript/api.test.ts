@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { miLocalStorage } from '@/local-storage.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
@@ -15,6 +13,8 @@ import {
 	test,
 	vi
 } from 'vitest';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 async function exe(script: string): Promise<values.Value[]> {
 	const outputs: values.Value[] = [];

@@ -16,12 +16,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import MkChatHistories from '@/components/MkChatHistories.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import type { Column } from '@/deck.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '../../i18n.js';
 import XColumn from './column.vue';
-import type { Column } from '@/deck.js';
-import MkInfo from '@/components/MkInfo.vue';
-import MkChatHistories from '@/components/MkChatHistories.vue';
 
 defineProps<{
 	column: Column;

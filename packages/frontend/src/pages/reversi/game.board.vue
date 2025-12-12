@@ -145,20 +145,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
-import { useInterval } from '@@/js/use-interval.js';
 import { url } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { deepClone } from '@/utility/clone.js';
+import { userPage } from '@/filters/user.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { userPage } from '@/filters/user.js';
-import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
+import { deepClone } from '@/utility/clone.js';
 import { confetti } from '@/utility/confetti.js';
 import { genId } from '@/utility/id.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import * as sound from '@/utility/sound.js';
 
 const $i = ensureSignin();
 

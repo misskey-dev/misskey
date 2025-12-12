@@ -4,4 +4,5 @@
  */
 
 import MkChartTooltip from './MkChartTooltip.vue';
+
 void MkChartTooltip;

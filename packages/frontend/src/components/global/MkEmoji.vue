@@ -11,15 +11,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import { colorizeEmoji, getEmojiName } from '@@/js/emojilist.js';
 import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@@/js/emoji-base.js';
-import type { MenuItem } from '@/types/menu.js';
-import * as os from '@/os.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
+import { colorizeEmoji, getEmojiName } from '@@/js/emojilist.js';
 import { DI } from '@/di.js';
-import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { checkMuted as checkMutedEmoji, mute as muteEmoji, unmute as unmuteEmoji } from '@/utility/emoji-mute.js';
 
 const props = defineProps<{
 	emoji: string;

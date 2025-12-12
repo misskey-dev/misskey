@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, reactive, watch } from 'vue';
 import type { Reactive } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { deepEqual } from '@/utility/deep-equal';
 
 function copy<T>(v: T): T {

@@ -8,11 +8,12 @@ import { action } from 'storybook/actions';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
+import { tick } from '@/utility/test-utils.js';
 import { userDetailed } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAutocomplete from './MkAutocomplete.vue';
 import MkInput from './MkInput.vue';
-import { tick } from '@/utility/test-utils.js';
+
 const common = {
 	render(args) {
 		return {

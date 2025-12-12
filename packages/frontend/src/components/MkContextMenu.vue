@@ -18,12 +18,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, useTemplateRef, ref } from 'vue';
-import MkMenu from './MkMenu.vue';
+import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu.js';
 import contains from '@/utility/contains.js';
-import { prefer } from '@/preferences.js';
-import * as os from '@/os.js';
+import MkMenu from './MkMenu.vue';
 
 const props = defineProps<{
 	items: MenuItem[];

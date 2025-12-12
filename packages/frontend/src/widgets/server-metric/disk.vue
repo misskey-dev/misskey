@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import XPie from './pie.vue';
 import bytes from '@/filters/bytes.js';
+import XPie from './pie.vue';
 
 const props = defineProps<{
 	meta: Misskey.entities.ServerInfoResponse;

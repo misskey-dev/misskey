@@ -30,14 +30,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import type { Ref } from 'vue';
 import { ref, useTemplateRef } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkSwitch from './MkSwitch.vue';
-import MkInfo from './MkInfo.vue';
-import MkButton from './MkButton.vue';
-import type { Ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import MkButton from './MkButton.vue';
+import MkInfo from './MkInfo.vue';
+import MkSwitch from './MkSwitch.vue';
 
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 

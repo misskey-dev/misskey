@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, test, assert, afterEach } from 'vitest';
 import { Window } from 'happy-dom';
+import { afterEach, assert, describe, test } from 'vitest';
 import { onScrollBottom, onScrollTop } from '@@/js/scroll.js';
 
 describe('Scroll', () => {

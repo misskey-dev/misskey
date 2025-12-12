@@ -5,22 +5,6 @@
 
 /// <reference lib="esnext" />
 
-import { parse as vueSfcParse } from 'vue/compiler-sfc';
-import {
-	createLogger,
-	type EnvironmentModuleGraph,
-	type LogErrorOptions,
-	type LogOptions,
-	normalizePath,
-	type Plugin,
-	type PluginOption
-} from 'vite';
-import fs from 'node:fs';
-import JSON5 from 'json5';
-import MagicString, { SourceMap } from 'magic-string';
-import path from 'node:path'
-import { hash, toBase62 } from '../vite.config';
-import { minimatch } from 'minimatch';
 import {
 	type AttributeNode,
 	type DirectiveNode,
@@ -31,6 +15,22 @@ import {
 	type SimpleExpressionNode,
 	type TemplateChildNode,
 } from '@vue/compiler-core';
+import JSON5 from 'json5';
+import MagicString, { SourceMap } from 'magic-string';
+import { minimatch } from 'minimatch';
+import {
+	createLogger,
+	type EnvironmentModuleGraph,
+	type LogErrorOptions,
+	type LogOptions,
+	normalizePath,
+	type Plugin,
+	type PluginOption
+} from 'vite';
+import { parse as vueSfcParse } from 'vue/compiler-sfc';
+import fs from 'node:fs';
+import path from 'node:path'
+import { hash, toBase62 } from '../vite.config';
 
 export interface SearchIndexItem {
 	id: string;

@@ -20,12 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { mainRouter } from '@/router.js';
-import MkButton from '@/components/MkButton.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const state = ref<'fetching' | 'done'>('fetching');
 

@@ -45,15 +45,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkCwButton from '@/components/MkCwButton.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
-import MkCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js';
 import { userPage } from '@/filters/user.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note | null;

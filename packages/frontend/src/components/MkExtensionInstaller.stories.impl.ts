@@ -4,8 +4,8 @@
  */
 
 import type { StoryObj } from '@storybook/vue3';
-import MkExtensionInstaller from './MkExtensionInstaller.vue';
 import lightTheme from '@@/themes/_light.json5';
+import MkExtensionInstaller from './MkExtensionInstaller.vue';
 
 export const Plugin = {
 	render(args) {

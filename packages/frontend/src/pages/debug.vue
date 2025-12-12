@@ -38,15 +38,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { definePage } from '@/page.js';
+import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkButton from '@/components/MkButton.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import * as os from '@/os.js';
+import { definePage } from '@/page.js';
 
 const {
 	model: resultType,

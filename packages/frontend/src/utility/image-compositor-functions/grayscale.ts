@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import shader from './grayscale.glsl';
-import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
-import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import shader from './grayscale.glsl';
 
 export const fn = defineImageCompositorFunction({
 	shader,

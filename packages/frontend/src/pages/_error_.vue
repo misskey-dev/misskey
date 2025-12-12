@@ -25,18 +25,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { prefer } from '@/preferences.js';
-import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	error?: Error;

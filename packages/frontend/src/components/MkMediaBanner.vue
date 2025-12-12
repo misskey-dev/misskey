@@ -26,9 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkMediaAudio from '@/components/MkMediaAudio.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import MkMediaAudio from '@/components/MkMediaAudio.vue';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{

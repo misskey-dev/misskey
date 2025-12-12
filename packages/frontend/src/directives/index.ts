@@ -4,18 +4,17 @@
  */
 
 import type { App, Directive } from 'vue';
-
-import { userPreviewDirective } from './user-preview.js';
+import { adaptiveBgDirective } from './adaptive-bg.js';
+import { adaptiveBorderDirective } from './adaptive-border.js';
+import { animDirective } from './anim.js';
+import { appearDirective } from './appear.js';
+import { clickAnimeDirective } from './click-anime.js';
 import { getSizeDirective } from './get-size.js';
+import { hotkeyDirective } from './hotkey.js';
+import { panelDirective } from './panel.js';
 import { rippleDirective } from './ripple.js';
 import { tooltipDirective } from './tooltip.js';
-import { hotkeyDirective } from './hotkey.js';
-import { appearDirective } from './appear.js';
-import { animDirective } from './anim.js';
-import { clickAnimeDirective } from './click-anime.js';
-import { panelDirective } from './panel.js';
-import { adaptiveBorderDirective } from './adaptive-border.js';
-import { adaptiveBgDirective } from './adaptive-bg.js';
+import { userPreviewDirective } from './user-preview.js';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(directives)) {

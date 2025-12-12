@@ -59,34 +59,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import * as Misskey from 'misskey-js';
+
 import { computed, onMounted, ref, useCssModule } from 'vue';
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { DroppedFile } from '@/utility/file-drop.js';
+import * as Misskey from 'misskey-js';
+import { validators } from '@/components/grid/cell-validators.js';
 import type { GridSetting } from '@/components/grid/grid.js';
+import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import MkGrid from '@/components/grid/MkGrid.vue';
 import type { GridRow } from '@/components/grid/row.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
-import MkGrid from '@/components/grid/MkGrid.vue';
-import { i18n } from '@/i18n.js';
-import MkSelect from '@/components/MkSelect.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { validators } from '@/components/grid/cell-validators.js';
-import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
-import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
-import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-
 import { prefer } from '@/preferences.js';
+import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
+import type { DroppedFile } from '@/utility/file-drop.js';
+import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 

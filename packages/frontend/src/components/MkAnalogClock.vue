@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
 import { defaultIdlingRenderScheduler } from '@/utility/idle-render.js';

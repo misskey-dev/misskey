@@ -22,15 +22,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 
-import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
+import { defineAsyncComponent, inject, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XContainer from '../page-editor.container.vue';
-import { genId } from '@/utility/id.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
+import { deepClone } from '@/utility/clone.js';
+import { genId } from '@/utility/id.js';
+import XContainer from '../page-editor.container.vue';
 
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 

@@ -55,19 +55,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
-import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
-import { store } from '@/store.js';
+import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
+import { navbarItemDef } from '@/navbar.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import { prefer } from '@/preferences.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 import { genId } from '@/utility/id.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));

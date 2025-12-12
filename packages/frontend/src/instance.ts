@@ -5,8 +5,8 @@
 
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 

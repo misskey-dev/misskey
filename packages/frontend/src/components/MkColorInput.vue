@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, toRefs } from 'vue';
+import { ref, toRefs, useTemplateRef } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;

@@ -163,19 +163,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, ref } from 'vue';
 import JSON5 from 'json5';
-import type { TlEvent } from '@/components/MkTl.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import MkTabs from '@/components/MkTabs.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkTabs from '@/components/MkTabs.vue';
+import type { TlEvent } from '@/components/MkTl.vue';
 import MkTl from '@/components/MkTl.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 function msSMH(v: number | null) {

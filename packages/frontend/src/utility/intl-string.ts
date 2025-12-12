@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { versatileLang } from '@@/js/intl-const.js';
 import type { toHiragana as toHiraganaType } from 'wanakana';
+import { versatileLang } from '@@/js/intl-const.js';
 
 let toHiragana: typeof toHiraganaType = (str?: string) => str ?? '';
 let isWanakanaLoaded = false;

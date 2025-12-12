@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { onBeforeUnmount } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import { onBeforeUnmount } from 'vue';
 
 type Events = {
 	themeChanging: () => void;

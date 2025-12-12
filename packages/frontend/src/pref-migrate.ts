@@ -4,14 +4,14 @@
  */
 
 import type { DeckProfile } from '@/deck.js';
-import { genId } from '@/utility/id.js';
-import { ColdDeviceStorage, store } from '@/store.js';
-import { prefer } from '@/preferences.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { deckStore } from '@/ui/deck/deck-store.js';
-import { unisonReload } from '@/utility/unison-reload.js';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { ColdDeviceStorage, store } from '@/store.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
+import { genId } from '@/utility/id.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {

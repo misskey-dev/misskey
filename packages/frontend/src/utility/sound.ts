@@ -4,9 +4,9 @@
  */
 
 import type { SoundStore } from '@/preferences/def.js';
-import { prefer } from '@/preferences.js';
 import { PREF_DEF } from '@/preferences/def.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
+import { prefer } from '@/preferences.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();

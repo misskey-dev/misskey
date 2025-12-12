@@ -375,21 +375,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import FormSplit from '@/components/form/split.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { fetchInstance, instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import { useForm } from '@/composables/use-form.js';
+import { i18n } from '@/i18n.js';
+import { fetchInstance, instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const meta = await misskeyApi('admin/meta');
 

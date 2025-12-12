@@ -72,18 +72,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, markRaw, ref } from 'vue';
+import FormSplit from '@/components/form/split.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormSplit from '@/components/form/split.vue';
-import { selectFile } from '@/utility/drive.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
+import { selectFile } from '@/utility/drive.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const tab = ref('local');

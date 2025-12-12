@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { utils, values } from '@syuilo/aiscript';
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { assertStringAndIsIn } from './common.js';
 import type { Ref } from 'vue';
+import { ref } from 'vue';
+import { utils, values } from '@syuilo/aiscript';
+import * as Misskey from 'misskey-js';
 import { genId } from '@/utility/id.js';
+import { assertStringAndIsIn } from './common.js';
 
 const ALIGNS = ['left', 'center', 'right'] as const;
 const FONTS = ['serif', 'sans-serif', 'monospace'] as const;

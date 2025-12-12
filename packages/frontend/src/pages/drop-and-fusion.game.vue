@@ -191,28 +191,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as Matter from 'matter-js';
-import * as Misskey from 'misskey-js';
-import { DropAndFusionGame } from 'misskey-bubble-game';
-import { useInterval } from '@@/js/use-interval.js';
-import { apiUrl } from '@@/js/config.js';
 import type { Mono } from 'misskey-bubble-game';
-import { definePage } from '@/page.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import * as os from '@/os.js';
+import { DropAndFusionGame } from 'misskey-bubble-game';
+import * as Misskey from 'misskey-js';
+import { apiUrl } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
+import MkButton from '@/components/MkButton.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
-import MkButton from '@/components/MkButton.vue';
-import { claimAchievement } from '@/utility/achievements.js';
-import { store } from '@/store.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js';
-import * as sound from '@/utility/sound.js';
 import MkRange from '@/components/MkRange.vue';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import * as sound from '@/utility/sound.js';
 
 type FrontendMonoDefinition = {
 	id: string;

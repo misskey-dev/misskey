@@ -5,8 +5,8 @@
 
 import type { Directive } from 'vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { prefer } from '@/preferences.js';
 import { popup } from '@/os.js';
+import { prefer } from '@/preferences.js';
 
 export const rippleDirective = {
 	mounted(el, binding) {

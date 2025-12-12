@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type SharedOptions, http, HttpResponse } from 'msw';
+import { HttpResponse, http, type SharedOptions } from 'msw';
 
 export const onUnhandledRequest = ((req, print) => {
 	const url = new URL(req.url);

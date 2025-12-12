@@ -7,8 +7,8 @@
 /* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
 import { http } from 'msw';
-import { commonHandlers } from '../../.storybook/mocks.js';
 import { getChartResolver } from '../../.storybook/charts.js';
+import { commonHandlers } from '../../.storybook/mocks.js';
 import MkChart from './MkChart.vue';
 
 const Base = {

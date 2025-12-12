@@ -7,6 +7,7 @@
 /* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
 import MkCode from './MkCode.vue';
+
 const code = `for (let i, 100) {
 	<: if (i % 15 == 0) "FizzBuzz"
 		elif (i % 3 == 0) "Fizz"

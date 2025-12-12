@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed } from 'vue';
 import type { Ref, ShallowRef } from 'vue';
+import { computed } from 'vue';
 
 export function getDateText(dateInstance: Date) {
 	const date = dateInstance.getDate();

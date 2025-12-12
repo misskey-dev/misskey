@@ -32,14 +32,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
-import * as os from '@/os.js';
-import { lookupFile } from '@/utility/admin-lookup.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { lookupFile } from '@/utility/admin-lookup.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const {

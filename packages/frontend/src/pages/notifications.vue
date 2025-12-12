@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
-import * as os from '@/os.js';
+import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
 

@@ -52,14 +52,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref, shallowRef } from 'vue';
-import type { IPaginator } from '@/utility/paginator.js';
-import MkFlashPreview from '@/components/MkFlashPreview.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkFlashPreview from '@/components/MkFlashPreview.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
+import type { IPaginator } from '@/utility/paginator.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();

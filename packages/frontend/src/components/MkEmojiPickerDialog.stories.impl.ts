@@ -4,4 +4,5 @@
  */
 
 import MkEmojiPickerDialog from './MkEmojiPickerDialog.vue';
+
 void MkEmojiPickerDialog;

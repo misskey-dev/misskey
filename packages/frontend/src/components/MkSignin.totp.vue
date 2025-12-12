@@ -29,11 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
-import { i18n } from '@/i18n.js';
-
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'totpSubmitted', token: string): void;

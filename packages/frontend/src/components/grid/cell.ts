@@ -4,11 +4,11 @@
  */
 
 import type { ValidateViolation } from '@/components/grid/cell-validators.js';
-import type { Size } from '@/components/grid/grid.js';
 import type { GridColumn } from '@/components/grid/column.js';
+import type { Size } from '@/components/grid/grid.js';
+import type { GridContext } from '@/components/grid/grid-event.js';
 import type { GridRow } from '@/components/grid/row.js';
 import type { MenuItem } from '@/types/menu.js';
-import type { GridContext } from '@/components/grid/grid-event.js';
 
 export type CellValue = string | boolean | number | undefined | null | Array<unknown> | NonNullable<unknown>;
 

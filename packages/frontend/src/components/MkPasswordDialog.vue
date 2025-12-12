@@ -39,12 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
-import MkInput from '@/components/MkInput.vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
 

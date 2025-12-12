@@ -4,8 +4,8 @@
  */
 
 import type { Directive } from 'vue';
-import { getBgColor } from '@/utility/get-bg-color.js';
 import { globalEvents } from '@/events.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
 const handlerMap = new WeakMap<HTMLElement, () => void>();
 

@@ -19,18 +19,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i } from '@/i.js';
-import { switchAccount, removeAccount, login, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts } from '@/accounts.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import { getAccounts, getAccountWithSigninDialog, getAccountWithSignupDialog, login, removeAccount, switchAccount } from '@/accounts.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const accounts = await getAccounts();
 

@@ -66,17 +66,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import bytes from '@/filters/bytes.js';
+import { $i, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
-import bytes from '@/filters/bytes.js';
-import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { $i, iAmModerator } from '@/i.js';
-import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;

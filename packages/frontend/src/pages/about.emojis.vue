@@ -30,15 +30,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref } from 'vue';
+import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories } from '@/custom-emojis.js';
-import { i18n } from '@/i18n.js';
+import MkInput from '@/components/MkInput.vue';
+import { customEmojiCategories, customEmojis } from '@/custom-emojis.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import XEmoji from './emojis.emoji.vue';
 
 const q = ref('');
 const searchEmojis = ref<Misskey.entities.EmojiSimple[] | null>(null);

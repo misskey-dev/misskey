@@ -84,23 +84,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
+import { computed, nextTick, onDeactivated, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
-import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
+import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { getEmbedCode, normalizeEmbedParams } from '@/utility/get-embed-code.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;

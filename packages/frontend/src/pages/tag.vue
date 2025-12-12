@@ -20,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref } from 'vue';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { $i } from '@/i.js';
-import { store } from '@/store.js';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { store } from '@/store.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { Paginator } from '@/utility/paginator.js';
 

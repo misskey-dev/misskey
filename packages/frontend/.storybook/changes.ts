@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import fs from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
 import micromatch from 'micromatch';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import main from './main.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));

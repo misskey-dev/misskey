@@ -31,20 +31,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
-import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
-import type { PageMetadata } from '@/page.js';
-import { i18n } from '@/i18n.js';
-import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import { computed, onActivated, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import MkInfo from '@/components/MkInfo.vue';
+import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
+import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { lookup } from '@/utility/lookup.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { lookupUser, lookupUserByEmail, lookupFile } from '@/utility/admin-lookup.js';
+import type { PageMetadata } from '@/page.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { useRouter } from '@/router.js';
+import { lookupFile, lookupUser, lookupUserByEmail } from '@/utility/admin-lookup.js';
 import { genSearchIndexes } from '@/utility/inapp-search.js';
+import { lookup } from '@/utility/lookup.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const searchIndex = await import('search-index:admin').then(({ searchIndexes }) => genSearchIndexes(searchIndexes));
 

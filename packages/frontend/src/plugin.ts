@@ -4,17 +4,17 @@
  */
 
 import { ref } from 'vue';
+import type { Interpreter, Parser, utils as utils_TypeReferenceOnly, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
-import { isSafeMode } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
-import type { Parser, Interpreter, values, utils as utils_TypeReferenceOnly } from '@syuilo/aiscript';
+import { isSafeMode } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 import type { FormWithDefault } from '@/utility/form.js';
 import { genId } from '@/utility/id.js';
-import { store } from '@/store.js';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
 
 export type Plugin = {
 	installId: string;

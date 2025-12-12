@@ -38,18 +38,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, inject, ref } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
-import { customEmojisMap } from '@/custom-emojis.js';
-import * as os from '@/os.js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
-import { $i } from '@/i.js';
-import { prefer } from '@/preferences.js';
+import { customEmojisMap } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
-import { makeEmojiMuteKey, mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkEmojiMuted } from '@/utility/emoji-mute';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { checkMuted as checkEmojiMuted, makeEmojiMuteKey, mute as muteEmoji, unmute as unmuteEmoji } from '@/utility/emoji-mute';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	name: string;

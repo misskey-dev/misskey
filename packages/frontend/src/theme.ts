@@ -5,19 +5,19 @@
 
 // TODO: (可能な部分を)sharedに抽出して frontend-embed と共通化
 
-import { ref, nextTick } from 'vue';
-import tinycolor from 'tinycolor2';
-import lightTheme from '@@/themes/_light.json5';
-import darkTheme from '@@/themes/_dark.json5';
-import JSON5 from 'json5';
-import { version } from '@@/js/config.js';
 import type { Ref } from 'vue';
+import { nextTick, ref } from 'vue';
+import JSON5 from 'json5';
 import type { BundledTheme } from 'shiki/themes';
-import { deepClone } from '@/utility/clone.js';
+import tinycolor from 'tinycolor2';
+import { version } from '@@/js/config.js';
+import darkTheme from '@@/themes/_dark.json5';
+import lightTheme from '@@/themes/_light.json5';
 import { globalEvents } from '@/events.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/i.js';
+import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
+import { deepClone } from '@/utility/clone.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 
 export type Theme = {

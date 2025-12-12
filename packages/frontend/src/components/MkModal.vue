@@ -42,15 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, useTemplateRef, computed } from 'vue';
-import type { Keymap } from '@/utility/hotkey.js';
-import * as os from '@/os.js';
-import { isTouchUsing } from '@/utility/touch.js';
-import { deviceKind } from '@/utility/device-kind.js';
-import { focusTrap } from '@/utility/focus-trap.js';
-import { focusParent } from '@/utility/focus.js';
-import { prefer } from '@/preferences.js';
+import { computed, nextTick, normalizeClass, onMounted, onUnmounted, provide, ref, useTemplateRef, watch } from 'vue';
 import { DI } from '@/di.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { focusParent } from '@/utility/focus.js';
+import { focusTrap } from '@/utility/focus-trap.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;

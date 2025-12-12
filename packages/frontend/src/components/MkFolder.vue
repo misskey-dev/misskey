@@ -97,11 +97,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { prefer } from '@/preferences.js';
-import { getBgColor } from '@/utility/get-bg-color.js';
-import { pageFolderTeleportCount, popup } from '@/os.js';
 import MkFolderPage from '@/components/MkFolderPage.vue';
+import { pageFolderTeleportCount, popup } from '@/os.js';
+import { prefer } from '@/preferences.js';
 import { deviceKind } from '@/utility/device-kind.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;

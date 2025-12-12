@@ -15,11 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, useTemplateRef, onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
+import XContainer from '../page-editor.container.vue';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.PageBlock & { type: 'text' }

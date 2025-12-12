@@ -159,33 +159,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref, useTemplateRef } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
-import MkNote from '@/components/MkNote.vue';
-import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
-import MkFukidashi from '@/components/MkFukidashi.vue';
-import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkOmit from '@/components/MkOmit.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getUserMenu } from '@/utility/get-user-menu.js';
+import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkFukidashi from '@/components/MkFukidashi.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkOmit from '@/components/MkOmit.vue';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
+import MkSparkle from '@/components/MkSparkle.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import { dateString } from '@/filters/date.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { $i, iAmModerator } from '@/i.js';
-import { dateString } from '@/filters/date.js';
-import { confetti } from '@/utility/confetti.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
-import { useRouter } from '@/router.js';
-import { getStaticImageUrl } from '@/utility/media-proxy.js';
-import MkSparkle from '@/components/MkSparkle.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
-import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import { useRouter } from '@/router.js';
+import { confetti } from '@/utility/confetti.js';
+import { getUserMenu } from '@/utility/get-user-menu.js';
+import { isFollowersVisibleForMe, isFollowingVisibleForMe } from '@/utility/isFfVisibleForMe.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

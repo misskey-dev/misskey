@@ -58,15 +58,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
-import MkChannelPreview from '@/components/MkChannelPreview.vue';
-import MkChannelList from '@/components/MkChannelList.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkChannelList from '@/components/MkChannelList.vue';
+import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { definePage } from '@/page.js';
+import MkInput from '@/components/MkInput.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import { i18n } from '@/i18n.js';
+import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
 

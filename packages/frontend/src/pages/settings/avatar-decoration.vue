@@ -47,17 +47,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, defineAsyncComponent, computed } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import XDecoration from './avatar-decoration.decoration.vue';
 import XDialog from './avatar-decoration.dialog.vue';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { ensureSignin } from '@/i.js';
-import MkInfo from '@/components/MkInfo.vue';
-import { definePage } from '@/page.js';
 
 const $i = ensureSignin();
 

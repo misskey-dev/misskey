@@ -4,4 +4,5 @@
  */
 
 import MkCode_core from './MkCode.core.vue';
+
 void MkCode_core;

@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
-import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
-import isAnimated from 'is-file-animated';
-import { EventEmitter } from 'eventemitter3';
 import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
-import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
-import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
-import { genId } from '@/utility/id.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
-import { isWebpSupported } from '@/utility/isWebpSupported.js';
-import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
-import * as os from '@/os.js';
+import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
+import { EventEmitter } from 'eventemitter3';
+import isAnimated from 'is-file-animated';
+import * as Misskey from 'misskey-js';
 import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { UploadAbortedError, uploadFile } from '@/utility/drive.js';
+import { genId } from '@/utility/id.js';
+import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import { isWebpSupported } from '@/utility/isWebpSupported.js';
+import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 
 export type UploaderFeatures = {
 	imageEditing?: boolean;

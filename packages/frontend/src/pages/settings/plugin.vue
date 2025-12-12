@@ -95,23 +95,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed } from 'vue';
-import type { Plugin } from '@/plugin.js';
+import { computed, nextTick, ref } from 'vue';
+import { isSafeMode } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
-import { prefer } from '@/preferences.js';
-import { isSafeMode } from '@@/js/config.js';
 import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import type { Plugin } from '@/plugin.js';
+import { changePluginActive, configPlugin, pluginLogs, reloadPlugin, uninstallPlugin } from '@/plugin.js';
+import { prefer } from '@/preferences.js';
 
 const plugins = prefer.r.plugins;
 

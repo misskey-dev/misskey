@@ -34,16 +34,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { MenuItem } from '@/types/menu.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+import { globalEvents } from '@/events.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { prefer } from '@/preferences.js';
-import { globalEvents } from '@/events.js';
-import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 import { selectDriveFolder } from '@/utility/drive.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;

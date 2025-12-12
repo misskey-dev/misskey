@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { MaybeRefOrGetter, Ref } from 'vue';
 import { ref } from 'vue';
-import type { Ref, MaybeRefOrGetter } from 'vue';
-import type { MkSelectItem, OptionValue, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+import type { GetMkSelectValueTypesFromDef, MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
 
 type UnwrapReadonlyItems<T> = T extends readonly (infer U)[] ? U[] : T;
 

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/i.js';
 export const pendingApiRequestsCount = ref(0);

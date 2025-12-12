@@ -55,24 +55,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed, useTemplateRef } from 'vue';
+import { computed, onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
-import MkSelect from '@/components/MkSelect.vue';
-import type { MkSelectItem, ItemOption } from '@/components/MkSelect.vue';
-import MkChart from '@/components/MkChart.vue';
 import type { ChartSrc } from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
-import { $i } from '@/i.js';
-import * as os from '@/os.js';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
-import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import MkHeatmap from '@/components/MkHeatmap.vue';
+import MkChart from '@/components/MkChart.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
-import { initChart } from '@/utility/init-chart.js';
+import type { ItemOption, MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { initChart } from '@/utility/init-chart.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 
 initChart();
 

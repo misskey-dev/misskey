@@ -32,8 +32,8 @@ import { computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	session: string;

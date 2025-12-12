@@ -31,15 +31,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 // SPECIFICATION: https://misskey-hub.net/docs/for-users/features/share-form/
 
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePage } from '@/page.js';
-import { postMessageToParentWindow } from '@/utility/post-message.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { postMessageToParentWindow } from '@/utility/post-message.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const localOnlyQuery = urlParams.get('localOnly');

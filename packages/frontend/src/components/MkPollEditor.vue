@@ -46,14 +46,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { addTime } from '@/utility/time.js';
+import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
 import MkSwitch from './MkSwitch.vue';
-import MkButton from './MkButton.vue';
-import { formatDateTimeString } from '@/utility/format-time-string.js';
-import { addTime } from '@/utility/time.js';
-import { i18n } from '@/i18n.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
 
 export type PollEditorModelValue = {
 	expiresAt: number | null;

@@ -44,12 +44,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed, markRaw } from 'vue';
+import { computed, markRaw, ref, watch } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
-import { definePage } from '@/page.js';
+import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
+import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
 

@@ -3,28 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import { claimAchievement } from './achievements.js';
-import type { Ref, ShallowRef } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { clipsCache, favoritedChannelsCache } from '@/cache.js';
+import { globalEvents } from '@/events.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { store } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { getUserMenu } from '@/utility/get-user-menu.js';
-import { clipsCache, favoritedChannelsCache } from '@/cache.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { isSupportShare } from '@/utility/navigator.js';
+import * as os from '@/os.js';
+import { getPluginHandlers } from '@/plugin.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
-import { prefer } from '@/preferences.js';
-import { getPluginHandlers } from '@/plugin.js';
-import { globalEvents } from '@/events.js';
+import { getUserMenu } from '@/utility/get-user-menu.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { isSupportShare } from '@/utility/navigator.js';
+import { claimAchievement } from './achievements.js';
 
 const isInBrowserTranslationAvailable = (
 	'LanguageDetector' in window &&

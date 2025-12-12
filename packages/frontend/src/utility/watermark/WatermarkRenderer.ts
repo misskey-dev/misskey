@@ -4,14 +4,14 @@
  */
 
 import QRCodeStyling from 'qr-code-styling';
-import { url, host } from '@@/js/config.js';
+import { host, url } from '@@/js/config.js';
+import { ensureSignin } from '@/i.js';
+import { ImageCompositor } from '@/lib/ImageCompositor.js';
+import { fn as fn_checker } from '@/utility/image-compositor-functions/checker.js';
+import { fn as fn_poladot } from '@/utility/image-compositor-functions/polkadot.js';
+import { fn as fn_stripe } from '@/utility/image-compositor-functions/stripe.js';
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { fn as fn_watermark } from './watermark.js';
-import { fn as fn_stripe } from '@/utility/image-compositor-functions/stripe.js';
-import { fn as fn_poladot } from '@/utility/image-compositor-functions/polkadot.js';
-import { fn as fn_checker } from '@/utility/image-compositor-functions/checker.js';
-import { ImageCompositor } from '@/lib/ImageCompositor.js';
-import { ensureSignin } from '@/i.js';
 
 type Align = { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; margin?: number; };
 

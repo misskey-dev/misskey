@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
 import type { AnalyticsInstance, AnalyticsPlugin } from 'analytics';
+import * as Misskey from 'misskey-js';
 
 /**
  * analytics moduleを読み込まなくても動作するようにするためのラッパー

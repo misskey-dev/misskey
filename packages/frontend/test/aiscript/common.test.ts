@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { assertStringAndIsIn } from "@/aiscript/common.js";
 import { values } from "@syuilo/aiscript";
 import { describe, expect, test } from "vitest";
+import { assertStringAndIsIn } from "@/aiscript/common.js";
 
 describe('AiScript common script', () => {
 	test('assertStringAndIsIn', () => {

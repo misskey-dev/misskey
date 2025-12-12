@@ -15,12 +15,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
+import { useStream } from '@/stream.js';
 
 const zIndex = os.claimZIndex('high');
 

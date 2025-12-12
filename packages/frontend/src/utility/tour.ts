@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, ref, shallowRef, watch, defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue';
 import * as os from '@/os.js';
 
 type TourStep = {

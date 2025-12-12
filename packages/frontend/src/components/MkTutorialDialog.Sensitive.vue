@@ -24,14 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { ref, reactive } from 'vue';
-import { i18n } from '@/i18n.js';
-import MkPostForm from '@/components/MkPostForm.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNote from '@/components/MkNote.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'succeeded'): void;

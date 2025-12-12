@@ -25,13 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const name = i18n.ts._widgets.birthdayFollowings;
 

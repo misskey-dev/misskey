@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { shallowRef, computed, markRaw, watch } from 'vue';
+import { computed, markRaw, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { get, set } from '@/utility/idb-proxy.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 
 const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { vi } from 'vitest';
-import createFetchMock from 'vitest-fetch-mock';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
 // Set i18n
 import locales from 'i18n';
+import { vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
 import { updateI18n } from '@/i18n.js';
 
 const fetchMocker = createFetchMock(vi);

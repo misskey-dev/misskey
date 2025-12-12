@@ -7,9 +7,9 @@
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import type { StoryObj } from '@storybook/vue3';
 import { onBeforeUnmount } from 'vue';
-import MkSignupServerRules from './MkSignupDialog.rules.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import MkSignupServerRules from './MkSignupDialog.rules.vue';
 export const Empty = {
 	render(args) {
 		return {

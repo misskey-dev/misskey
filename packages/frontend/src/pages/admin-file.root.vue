@@ -83,19 +83,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkObjectView from '@/components/MkObjectView.vue';
-import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSection from '@/components/form/section.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import bytes from '@/filters/bytes.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { iAmAdmin, iAmModerator } from '@/i.js';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkObjectView from '@/components/MkObjectView.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkTabs from '@/components/MkTabs.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import bytes from '@/filters/bytes.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	file: Misskey.entities.DriveFile,

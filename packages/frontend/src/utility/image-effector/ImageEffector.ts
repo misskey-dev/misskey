@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FXS } from './fxs.js';
 import type { ImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
+import { FXS } from './fxs.js';
 
 export type ImageEffectorRGB = [r: number, g: number, b: number];
 

@@ -22,18 +22,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager } from '../widget.js';
-import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from '../widget.js';
-import XCpuMemory from './cpu-mem.vue';
-import XNet from './net.vue';
-import XCpu from './cpu.vue';
-import XMemory from './mem.vue';
-import XDisk from './disk.vue';
 import MkContainer from '@/components/MkContainer.vue';
+import { i18n } from '@/i18n.js';
+import { useStream } from '@/stream.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from '../widget.js';
+import { useWidgetPropsManager } from '../widget.js';
+import XCpu from './cpu.vue';
+import XCpuMemory from './cpu-mem.vue';
+import XDisk from './disk.vue';
+import XMemory from './mem.vue';
+import XNet from './net.vue';
 
 const name = 'serverMetric';
 

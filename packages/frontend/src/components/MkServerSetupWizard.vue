@@ -192,15 +192,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkLink from '@/components/MkLink.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkLink from '@/components/MkLink.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const emit = defineEmits<{
 	(ev: 'finished'): void;

@@ -172,24 +172,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkTabs from '@/components/MkTabs.vue';
+import MkTl from '@/components/MkTl.vue';
+import bytes from '@/filters/bytes.js';
+import kmg from '@/filters/kmg.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import XChart from './job-queue.chart.vue';
 import XJob from './job-queue.job.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import MkTabs from '@/components/MkTabs.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkTl from '@/components/MkTl.vue';
-import kmg from '@/filters/kmg.js';
-import MkInput from '@/components/MkInput.vue';
-import bytes from '@/filters/bytes.js';
 
 const tab = ref<typeof Misskey.queueTypes[number] | '-'>('-');
 const jobState = ref<'all' | 'latest' | 'completed' | 'failed' | 'active' | 'delayed' | 'wait' | 'paused'>('all');

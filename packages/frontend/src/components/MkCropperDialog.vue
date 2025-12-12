@@ -29,13 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref, onUnmounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import Cropper from 'cropperjs';
+import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	imageFile: File | Blob;

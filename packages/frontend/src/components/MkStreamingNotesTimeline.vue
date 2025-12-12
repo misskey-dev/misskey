@@ -56,27 +56,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, provide, ref, shallowRef, TransitionGroup, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useInterval } from '@@/js/use-interval.js';
-import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
-import type { BasicTimelineType } from '@/timelines.js';
-import type { SoundStore } from '@/preferences/def.js';
-import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
+import { useInterval } from '@@/js/use-interval.js';
+import MkButton from '@/components/MkButton.vue';
+import MkNote from '@/components/MkNote.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import { useStream } from '@/stream.js';
-import * as sound from '@/utility/sound.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import type { SoundStore } from '@/preferences/def.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
-import MkNote from '@/components/MkNote.vue';
-import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
-import { globalEvents, useGlobalEvent } from '@/events.js';
-import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { useStream } from '@/stream.js';
+import type { BasicTimelineType } from '@/timelines.js';
+import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
 import { Paginator } from '@/utility/paginator.js';
+import * as sound from '@/utility/sound.js';
+import { getSeparatorInfo, isSeparatorNeeded } from '@/utility/timeline-date-separate.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';

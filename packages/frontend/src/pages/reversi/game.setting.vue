@@ -110,19 +110,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
-import { i18n } from '@/i18n.js';
-import { ensureSignin } from '@/i.js';
-import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import type { MenuItem } from '@/types/menu.js';
 import { useRouter } from '@/router.js';
+import type { MenuItem } from '@/types/menu.js';
+import { deepClone } from '@/utility/clone.js';
 
 const $i = ensureSignin();
 

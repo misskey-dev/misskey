@@ -20,16 +20,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import isChromatic from 'chromatic';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
-import { chartVLine } from '@/utility/chart-vline.js';
 import { store } from '@/store.js';
+import { chartVLine } from '@/utility/chart-vline.js';
 import { alpha } from '@/utility/color.js';
 import { initChart } from '@/utility/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 initChart();
 

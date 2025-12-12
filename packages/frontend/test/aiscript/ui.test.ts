@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { registerAsUiLib } from '@/aiscript/ui.js';
+import { type Ref, ref } from 'vue';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import { describe, expect, test } from 'vitest';
-import { type Ref, ref } from 'vue';
 import type {
 	AsUiButton,
 	AsUiButtons,
@@ -20,6 +19,7 @@ import type {
 	AsUiTextarea,
 	AsUiTextInput,
 } from '@/aiscript/ui.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 
 type ExeResult = {
 	root: AsUiRoot;

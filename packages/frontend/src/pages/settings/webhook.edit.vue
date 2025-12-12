@@ -69,17 +69,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const router = useRouter();
 

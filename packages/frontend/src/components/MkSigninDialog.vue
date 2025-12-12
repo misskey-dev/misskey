@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { useTemplateRef } from 'vue';
-import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
-import MkSignin from '@/components/MkSignin.vue';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
+import MkSignin from '@/components/MkSignin.vue';
 import { i18n } from '@/i18n.js';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 
 withDefaults(defineProps<{
 	autoSet?: boolean;

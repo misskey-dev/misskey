@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
-import { i18n } from './i18n.js';
-import type { BasicTimelineType } from '@/timelines.js';
-import type { SoundStore } from '@/preferences/def.js';
-import type { MenuItem } from '@/types/menu.js';
-import { genId } from '@/utility/id.js';
-import { deepClone } from '@/utility/clone.js';
-import { prefer } from '@/preferences.js';
+import { notificationTypes } from 'misskey-js';
 import * as os from '@/os.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
+import type { BasicTimelineType } from '@/timelines.js';
+import type { MenuItem } from '@/types/menu.js';
+import { deepClone } from '@/utility/clone.js';
+import { genId } from '@/utility/id.js';
+import { i18n } from './i18n.js';
 
 export type DeckProfile = {
 	name: string;

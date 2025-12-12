@@ -5,11 +5,11 @@
 
 import { defineAsyncComponent } from 'vue';
 import { host } from '@@/js/config.js';
-import type { MenuItem } from '@/types/menu.js';
-import * as os from '@/os.js';
-import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import type { MenuItem } from '@/types/menu.js';
 
 function toolsMenuItems(): MenuItem[] {
 	const items: MenuItem[] = [{

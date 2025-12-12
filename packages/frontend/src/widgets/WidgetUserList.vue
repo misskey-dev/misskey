@@ -26,15 +26,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
-import MkContainer from '@/components/MkContainer.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const name = 'userList';
 

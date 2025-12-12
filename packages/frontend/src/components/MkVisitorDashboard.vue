@@ -56,19 +56,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { instanceName } from '@@/js/config.js';
-import type { MenuItem } from '@/types/menu.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkNumber from '@/components/MkNumber.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import MkButton from '@/components/MkButton.vue';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import MkNumber from '@/components/MkNumber.vue';
-import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
+import * as os from '@/os.js';
+import type { MenuItem } from '@/types/menu.js';
 import { openInstanceMenu } from '@/ui/_common_/common.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 

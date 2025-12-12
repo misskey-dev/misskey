@@ -158,18 +158,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { selectFile } from '@/utility/drive.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
-import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { selectFile } from '@/utility/drive.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);

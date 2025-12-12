@@ -26,8 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
 import { i18n } from '@/i18n.js';
-import { isHorizontalSwipeSwiping } from '@/utility/touch.js';
 import { haptic } from '@/utility/haptic.js';
+import { isHorizontalSwipeSwiping } from '@/utility/touch.js';
 
 const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;

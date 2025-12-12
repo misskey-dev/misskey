@@ -5,9 +5,9 @@
 
 import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
-import search_ from './search.vue';
 import { userDetailed } from '@/../.storybook/fakes.js';
 import { commonHandlers } from '@/../.storybook/mocks.js';
+import search_ from './search.vue';
 
 const localUser = userDetailed('someuserid', 'miskist', null, 'Local Misskey User');
 

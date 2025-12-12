@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { onUpdated, ref, useTemplateRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import XNote from '@/pages/welcome.timeline.note.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';

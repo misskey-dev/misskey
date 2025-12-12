@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { prefer } from '@/preferences.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);

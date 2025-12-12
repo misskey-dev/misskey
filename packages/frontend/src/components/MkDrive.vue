@@ -132,26 +132,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, computed, TransitionGroup, markRaw } from 'vue';
+import { computed, markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, TransitionGroup, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from './MkButton.vue';
-import type { MenuItem } from '@/types/menu.js';
-import XNavFolder from '@/components/MkDrive.navFolder.vue';
-import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { prefer } from '@/preferences.js';
-import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
-import { store } from '@/store.js';
-import { makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
-import { globalEvents, useGlobalEvent } from '@/events.js';
+import XFolder from '@/components/MkDrive.folder.vue';
+import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import { useStream } from '@/stream.js';
+import type { MenuItem } from '@/types/menu.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
+import { makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import MkButton from './MkButton.vue';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;

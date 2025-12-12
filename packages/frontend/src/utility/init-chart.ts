@@ -4,26 +4,26 @@
  */
 
 import {
-	Chart,
 	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
 	BarController,
-	LineController,
-	DoughnutController,
+	BarElement,
 	CategoryScale,
-	LinearScale,
-	TimeScale,
+	Chart,
+	DoughnutController,
+	Filler,
 	Legend,
+	LinearScale,
+	LineController,
+	LineElement,
+	PointElement,
+	SubTitle,
+	TimeScale,
 	Title,
 	Tooltip,
-	SubTitle,
-	Filler,
 } from 'chart.js';
+import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import gradient from 'chartjs-plugin-gradient';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import { store } from '@/store.js';
 import 'chartjs-adapter-date-fns';
 

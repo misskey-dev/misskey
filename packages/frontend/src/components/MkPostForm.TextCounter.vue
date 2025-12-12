@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, useTemplateRef } from 'vue';
-import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 const props = defineProps<{
 	textLength: number;

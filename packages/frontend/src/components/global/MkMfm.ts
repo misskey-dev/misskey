@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { SetupContext, VNode } from 'vue';
 import { h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import type { VNode, SetupContext } from 'vue';
 import type { MkABehavior } from '@/components/global/MkA.vue';
-import MkUrl from '@/components/global/MkUrl.vue';
-import MkTime from '@/components/global/MkTime.vue';
-import MkLink from '@/components/MkLink.vue';
-import MkMention from '@/components/MkMention.vue';
-import MkEmoji from '@/components/global/MkEmoji.vue';
+import MkA from '@/components/global/MkA.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
+import MkTime from '@/components/global/MkTime.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkMention from '@/components/MkMention.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
-import MkA from '@/components/global/MkA.vue';
 import { prefer } from '@/preferences.js';
 
 function safeParseFloat(str: unknown): number | null {

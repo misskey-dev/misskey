@@ -6,16 +6,16 @@
 import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { apiUrl, host } from '@@/js/config.js';
-import type { MenuItem } from '@/types/menu.js';
-import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { waiting, popup, popupMenu, success, alert } from '@/os.js';
-import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
+import { alert, popup, popupMenu, success, waiting } from '@/os.js';
 import { prefer } from '@/preferences.js';
-import { store } from '@/store.js';
-import { $i } from '@/i.js';
 import { signout } from '@/signout.js';
+import { store } from '@/store.js';
+import type { MenuItem } from '@/types/menu.js';
+import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
+import { reloadChannel, unisonReload } from '@/utility/unison-reload.js';
 
 type AccountWithToken = Misskey.entities.MeDetailed & { token: string };
 

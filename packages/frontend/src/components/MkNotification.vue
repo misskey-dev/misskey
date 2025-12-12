@@ -178,14 +178,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getNoteSummary } from '@/utility/get-note-summary.js';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const $i = ensureSignin();
 

@@ -15,17 +15,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
+import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import { prefer } from '@/preferences.js';
 import { deleteCloudBackup, listCloudBackups } from '@/preferences/utility.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const backups = await listCloudBackups();
 

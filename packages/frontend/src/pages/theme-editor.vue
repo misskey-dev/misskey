@@ -72,27 +72,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { computed, ref, watch } from 'vue';
+import JSON5 from 'json5';
 import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
-import JSON5 from 'json5';
-import lightTheme from '@@/themes/_light.json5';
-import darkTheme from '@@/themes/_dark.json5';
 import { host } from '@@/js/config.js';
-import type { Theme } from '@/theme.js';
-import { genId } from '@/utility/id.js';
+import darkTheme from '@@/themes/_dark.json5';
+import lightTheme from '@@/themes/_light.json5';
 import MkButton from '@/components/MkButton.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { ensureSignin } from '@/i.js';
-import { addTheme, applyTheme } from '@/theme.js';
-import * as os from '@/os.js';
-import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
+import MkTextarea from '@/components/MkTextarea.vue';
 import { useLeaveGuard } from '@/composables/use-leave-guard.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import type { Theme } from '@/theme.js';
+import { addTheme, applyTheme } from '@/theme.js';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 

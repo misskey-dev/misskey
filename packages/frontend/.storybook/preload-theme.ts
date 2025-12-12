@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readFile, writeFile } from 'node:fs/promises';
 import JSON5 from 'json5';
+import { readFile, writeFile } from 'node:fs/promises';
 
 const keys = [
 	'_dark',

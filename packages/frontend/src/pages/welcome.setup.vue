@@ -129,12 +129,12 @@ import * as Misskey from 'misskey-js';
 import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { login } from '@/accounts.js';
 import MkLink from '@/components/MkLink.vue';
 import MkServerSetupWizard from '@/components/MkServerSetupWizard.vue';
+import { login } from '@/accounts.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const username = ref('');
 const password = ref('');

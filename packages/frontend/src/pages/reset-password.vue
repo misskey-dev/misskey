@@ -19,11 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, ref, computed } from 'vue';
-import MkInput from '@/components/MkInput.vue';
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { mainRouter } from '@/router.js';
 

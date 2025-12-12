@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/utility/achievements.js';
+import { instance } from '@/instance.js';
 import { definePage } from '@/page.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 const XOverview = defineAsyncComponent(() => import('@/pages/about.overview.vue'));
 const XEmojis = defineAsyncComponent(() => import('@/pages/about.emojis.vue'));

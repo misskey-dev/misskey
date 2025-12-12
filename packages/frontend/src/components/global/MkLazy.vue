@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onActivated, onBeforeUnmount, ref, useTemplateRef } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
 
 const rootEl = useTemplateRef('rootEl');
 const showing = ref(false);

@@ -39,15 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { url as local, host } from '@@/js/config.js';
+import { computed, ref } from 'vue';
+import { host, url as local } from '@@/js/config.js';
+import MkButton from '@/components/MkButton.vue';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import MkButton from '@/components/MkButton.vue';
-import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 
 type Ad = (typeof instance)['ads'][number];
 

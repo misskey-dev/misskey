@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, onBeforeUnmount, ref, useTemplateRef } from 'vue';
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 
 const loaded = !!window.TagCanvas;

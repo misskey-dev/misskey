@@ -7,15 +7,15 @@
 
 // TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
 
+import type { Ref } from 'vue';
 import { onUnmounted, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
-import type { Ref } from 'vue';
 import { $i } from '@/i.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { get, set } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
 import { deepClone } from '@/utility/clone.js';
+import { get, set } from '@/utility/idb-proxy.js';
 import { deepMerge } from '@/utility/merge.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';

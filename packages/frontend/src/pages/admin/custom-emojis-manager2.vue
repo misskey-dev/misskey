@@ -16,8 +16,8 @@ import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.list.vue';
-import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
 import XRegisterComponent from '@/pages/admin/custom-emojis-manager.register.vue';
+import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
 
 type PageMode = 'local' | 'remote';
 

@@ -10,19 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import GameSetting from './game.setting.vue';
-import GameBoard from './game.board.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePage } from '@/page.js';
-import { useStream } from '@/stream.js';
-import { ensureSignin } from '@/i.js';
-import { useRouter } from '@/router.js';
-import * as os from '@/os.js';
 import { url } from '@@/js/config.js';
-import { i18n } from '@/i18n.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { useRouter } from '@/router.js';
+import { useStream } from '@/stream.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import GameBoard from './game.board.vue';
+import GameSetting from './game.setting.vue';
 
 const $i = ensureSignin();
 

@@ -79,19 +79,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { toUnicode } from 'punycode.js';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { toUnicode } from 'punycode.js';
 import * as config from '@@/js/config.js';
-import MkButton from './MkButton.vue';
-import MkInput from './MkInput.vue';
 import type { Captcha } from '@/components/MkCaptcha.vue';
 import MkCaptcha from '@/components/MkCaptcha.vue';
+import { login } from '@/accounts.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import { login } from '@/accounts.js';
+import MkButton from './MkButton.vue';
+import MkInput from './MkInput.vue';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;

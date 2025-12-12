@@ -14,11 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, provide, ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
-import XCommon from './_common_/common.vue';
+import { DI } from '@/di.js';
 import type { PageMetadata } from '@/page.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { mainRouter } from '@/router.js';
-import { DI } from '@/di.js';
+import XCommon from './_common_/common.vue';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 

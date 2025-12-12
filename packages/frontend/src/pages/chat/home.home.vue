@@ -43,18 +43,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onActivated, onDeactivated, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { ensureSignin } from '@/i.js';
-import { useRouter } from '@/router.js';
-import * as os from '@/os.js';
-import { updateCurrentAccountPartial } from '@/accounts.js';
-import MkInput from '@/components/MkInput.vue';
+import MkChatHistories from '@/components/MkChatHistories.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkChatHistories from '@/components/MkChatHistories.vue';
+import MkInput from '@/components/MkInput.vue';
+import { updateCurrentAccountPartial } from '@/accounts.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import XMessage from './XMessage.vue';
 
 const $i = ensureSignin();
 

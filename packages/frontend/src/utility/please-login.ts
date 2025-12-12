@@ -4,8 +4,8 @@
  */
 
 import { $i } from '@/i.js';
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { popupAsyncWithDialog } from '@/os.js';
 
 export type OpenOnRemoteOptions = {

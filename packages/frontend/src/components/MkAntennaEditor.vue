@@ -46,19 +46,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { DeepPartial } from '@/utility/merge.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { deepMerge } from '@/utility/merge.js';
+import MkTextarea from '@/components/MkTextarea.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { DeepPartial } from '@/utility/merge.js';
+import { deepMerge } from '@/utility/merge.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;

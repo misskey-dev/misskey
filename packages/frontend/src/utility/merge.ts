@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { deepClone } from './clone.js';
 import type { Cloneable } from './clone.js';
+import { deepClone } from './clone.js';
 
 export type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends Record<PropertyKey, unknown> ? DeepPartial<T[P]> : T[P];

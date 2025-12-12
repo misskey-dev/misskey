@@ -7,16 +7,16 @@ import { defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
-import { $i } from '@/i.js';
-import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
-import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { useStream } from '@/stream.js';
 import { genId } from '@/utility/id.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 type UploadReturnType = {
 	filePromise: Promise<Misskey.entities.DriveFile>;

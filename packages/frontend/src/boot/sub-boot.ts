@@ -4,9 +4,9 @@
  */
 
 import { createApp, defineAsyncComponent } from 'vue';
-import { common } from './common.js';
-import { emojiPicker } from '@/utility/emoji-picker.js';
 import UiMinimum from '@/ui/minimum.vue';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import { common } from './common.js';
 
 export async function subBoot() {
 	const { isClientUpdated } = await common(async () => createApp(UiMinimum));

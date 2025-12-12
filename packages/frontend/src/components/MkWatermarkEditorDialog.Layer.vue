@@ -343,19 +343,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
-import { i18n } from '@/i18n.js';
+import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkRange from '@/components/MkRange.vue';
-import FormSlot from '@/components/form/slot.vue';
 import MkPositionSelector from '@/components/MkPositionSelector.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { selectFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 
 const layer = defineModel<WatermarkPreset['layers'][number]>('layer', { required: true });
 

@@ -4,10 +4,10 @@
  */
 
 import seedrandom from 'seedrandom';
-import shader from './blockNoise.glsl';
-import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
-import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import shader from './blockNoise.glsl';
 
 export const fn = defineImageCompositorFunction<{
 	amount: number;

@@ -49,17 +49,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, useTemplateRef, watch } from 'vue';
-import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
-import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
-import type { GridColumn } from '@/components/grid/column.js';
-import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
-import type { MenuItem } from '@/types/menu.js';
-import { GridEventEmitter } from '@/components/grid/grid.js';
-import MkDataRow from '@/components/grid/MkDataRow.vue';
-import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
-import { cellValidation } from '@/components/grid/cell-validators.js';
 import { CELL_ADDRESS_NONE, createCell, resetCell } from '@/components/grid/cell.js';
+import { cellValidation } from '@/components/grid/cell-validators.js';
+import type { GridColumn } from '@/components/grid/column.js';
+import { createColumn } from '@/components/grid/column.js';
+import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
+import { GridEventEmitter } from '@/components/grid/grid.js';
+import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
 import {
 	copyGridDataToClipboard,
 	equalCellAddress,
@@ -68,9 +65,12 @@ import {
 	pasteToGridFromClipboard,
 	removeDataFromGrid,
 } from '@/components/grid/grid-utils.js';
-import * as os from '@/os.js';
-import { createColumn } from '@/components/grid/column.js';
+import MkDataRow from '@/components/grid/MkDataRow.vue';
+import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
+import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
 import { createRow, defaultGridRowSetting, resetRow } from '@/components/grid/row.js';
+import * as os from '@/os.js';
+import type { MenuItem } from '@/types/menu.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 
 type RowHolder = {

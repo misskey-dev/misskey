@@ -5,9 +5,9 @@
 
 import { parse } from 'acorn';
 import { generate } from 'astring';
+import type * as estree from 'estree';
 import { describe, expect, it } from 'vitest';
 import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name.js';
-import type * as estree from 'estree';
 
 function parseExpression(code: string): estree.Expression {
 	const program = parse(code, { ecmaVersion: 'latest', sourceType: 'module' }) as unknown as estree.Program;

@@ -149,21 +149,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import { host } from '@@/js/config.js';
-import type { ClientOptions } from '@/instance.js';
-import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { instance, fetchInstance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import { i18n } from '@/i18n.js';
+import type { ClientOptions } from '@/instance.js';
+import { fetchInstance, instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const meta = await misskeyApi('admin/meta');
 

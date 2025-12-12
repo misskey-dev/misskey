@@ -55,24 +55,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
-import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Ref } from 'vue';
-import type { AsUiComponent } from '@/aiscript/ui.js';
-import type { AsUiRoot } from '@/aiscript/ui.js';
+import { computed, onDeactivated, onUnmounted, ref, watch } from 'vue';
+import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Value } from '@syuilo/aiscript/interpreter/value.js';
-import MkContainer from '@/components/MkContainer.vue';
+import MkAsUi from '@/components/MkAsUi.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
-import * as os from '@/os.js';
+import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import { registerAsUiLib } from '@/aiscript/ui.js';
-import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
 import { claimAchievement } from '@/utility/achievements.js';
 
 const parser = new Parser();

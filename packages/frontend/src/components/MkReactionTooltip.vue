@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import MkTooltip from './MkTooltip.vue';
 
 defineProps<{
 	showing: boolean;

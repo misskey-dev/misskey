@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
+import { getChartResolver } from '../../.storybook/charts.js';
 import { federationInstance } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
-import { getChartResolver } from '../../.storybook/charts.js';
 import MkInstanceCardMini from './MkInstanceCardMini.vue';
-import type { StoryObj } from '@storybook/vue3';
 
 export const Default = {
 	render(args) {

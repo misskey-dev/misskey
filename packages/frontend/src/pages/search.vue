@@ -27,11 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, toRef } from 'vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { notesSearchAvailable, usersSearchAvailable } from '@/utility/check-permissions.js';
-import MkInfo from '@/components/MkInfo.vue';
 
 const props = withDefaults(defineProps<{
 	query?: string,

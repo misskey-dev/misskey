@@ -60,15 +60,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import FormInfo from '@/components/MkInfo.vue';
-import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import FormInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { ensureSignin } from '@/i.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
 const $i = ensureSignin();
