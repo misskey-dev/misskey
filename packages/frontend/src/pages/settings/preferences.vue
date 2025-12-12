@@ -475,6 +475,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="disableShowingAnimatedImages">
 									<MkSwitch v-model="disableShowingAnimatedImages">
 										<template #label><SearchLabel>{{ i18n.ts.disableShowingAnimatedImages }}</SearchLabel></template>
+										<template #caption>{{ i18n.ts.disableShowingAnimatedImages_caption }}</template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -598,6 +599,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkSwitch :modelValue="!reduceAnimation" @update:modelValue="v => reduceAnimation = !v">
 									<template #label><SearchLabel>{{ i18n.ts._settings.uiAnimations }}</SearchLabel></template>
 									<template #caption><SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif']">
+							<MkPreferenceContainer k="disableShowingAnimatedImages">
+								<MkSwitch :modelValue="!disableShowingAnimatedImages" @update:modelValue="v => disableShowingAnimatedImages = !v">
+									<template #label><SearchLabel>{{ i18n.ts._settings.enableAnimatedImages }}</SearchLabel></template>
+									<template #caption>
+										<SearchText>{{ i18n.ts.turnOffToImprovePerformance }}</SearchText>
+										<div>{{ i18n.ts.disableShowingAnimatedImages_caption }}</div>
+									</template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>

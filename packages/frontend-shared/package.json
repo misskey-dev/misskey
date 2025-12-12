@@ -21,20 +21,21 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.18.6",
-		"@typescript-eslint/eslint-plugin": "8.44.1",
-		"@typescript-eslint/parser": "8.44.1",
-		"esbuild": "0.25.10",
-		"eslint-plugin-vue": "10.5.0",
-		"nodemon": "3.1.10",
-		"typescript": "5.9.2",
+		"@types/node": "24.10.1",
+		"@typescript-eslint/eslint-plugin": "8.48.0",
+		"@typescript-eslint/parser": "8.48.0",
+		"esbuild": "0.27.0",
+		"eslint-plugin-vue": "10.6.2",
+		"nodemon": "3.1.11",
+		"typescript": "5.9.3",
 		"vue-eslint-parser": "10.2.0"
 	},
 	"files": [
 		"js-built"
 	],
 	"dependencies": {
+		"i18n": "workspace:*",
 		"misskey-js": "workspace:*",
-		"vue": "3.5.22"
+		"vue": "3.5.25"
 	}
 }

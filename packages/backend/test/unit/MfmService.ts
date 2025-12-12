@@ -24,25 +24,25 @@ describe('MfmService', () => {
 	describe('toHtml', () => {
 		test('br', () => {
 			const input = 'foo\nbar\nbaz';
-			const output = '<p><span>foo<br />bar<br />baz</span></p>';
+			const output = 'foo<br />bar<br />baz';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('br alt', () => {
 			const input = 'foo\r\nbar\rbaz';
-			const output = '<p><span>foo<br />bar<br />baz</span></p>';
+			const output = 'foo<br />bar<br />baz';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('Do not generate unnecessary span', () => {
 			const input = 'foo $[tada bar]';
-			const output = '<p>foo <i>bar</i></p>';
+			const output = 'foo <i>bar</i>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('escape', () => {
 			const input = '```\n<p>Hello, world!</p>\n```';
-			const output = '<p><pre><code>&lt;p&gt;Hello, world!&lt;/p&gt;</code></pre></p>';
+			const output = '<pre><code>&lt;p&gt;Hello, world!&lt;/p&gt;</code></pre>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 	});
@@ -118,7 +118,7 @@ describe('MfmService', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp> b</ruby> c</p>'), 'a Misskey(ミス キー) b c');
 			assert.deepStrictEqual(
 				mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp></ruby> b</p>'),
-				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b'
+				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b',
 			);
 		});
 
