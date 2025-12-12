@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}
 		</p>
-		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts['no-image'] }}</p>
+		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts.nothing }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>

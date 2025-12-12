@@ -52,7 +52,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const parser = new Parser();
 
-const run = async () => {
+async function run() {
 	const aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'widget',
 		token: $i?.token,
@@ -84,7 +84,7 @@ const run = async () => {
 			text: err instanceof Error ? err.message : String(err),
 		});
 	}
-};
+}
 
 defineExpose<WidgetComponentExpose>({
 	name,

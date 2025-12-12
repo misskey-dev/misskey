@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useTemplateRef, computed } from 'vue';
-import { notificationTypes } from '@@/js/const.js';
+import { notificationTypes } from 'misskey-js';
 import XNotificationConfig from './notifications.notification-config.vue';
 import type { NotificationConfig } from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
@@ -85,7 +85,7 @@ const $i = ensureSignin();
 
 const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] satisfies (typeof notificationTypes[number])[] as string[];
 
-const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken'] satisfies (typeof notificationTypes[number])[] as string[];
+const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'] satisfies (typeof notificationTypes[number])[] as string[];
 
 const allowButton = useTemplateRef('allowButton');
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);

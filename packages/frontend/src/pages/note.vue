@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note">
 				<div v-if="showNext" class="_margin">
-					<MkNotesTimeline direction="up" :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true"/>
+					<MkNotesTimeline direction="up" :withControl="false" :pullToRefresh="false" class="" :paginator="showNext === 'channel' ? nextChannelPaginator : nextUserPaginator" :noGap="true" :forceDisableInfiniteScroll="true" />
 				</div>
 
 				<div class="_margin">
@@ -136,10 +136,10 @@ function fetchNote() {
 			});
 		}
 	}).catch(err => {
-		if (err.id === '8e75455b-738c-471d-9f80-62693f33372e') {
+		if (['fbcc002d-37d9-4944-a6b0-d9e29f2d33ab', '145f88d2-b03d-4087-8143-a78928883c4b'].includes(err.id)) {
 			pleaseLogin({
 				path: '/',
-				message: i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor,
+				message: err.id === 'fbcc002d-37d9-4944-a6b0-d9e29f2d33ab' ? i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor : i18n.ts.signinOrContinueOnRemote,
 				openOnRemote: {
 					type: 'lookup',
 					url: `https://${host}/notes/${props.noteId}`,

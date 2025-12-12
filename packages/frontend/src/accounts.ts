@@ -211,13 +211,13 @@ export async function switchAccount(host: string, id: string) {
 	}
 }
 
-export async function openAccountMenu(opts: {
+export async function getAccountMenu(opts: {
 	includeCurrentAccount?: boolean;
 	withExtraOperation: boolean;
 	active?: Misskey.entities.User['id'];
 	onChoose?: (account: Misskey.entities.MeDetailed) => void;
-}, ev: MouseEvent) {
-	if (!$i) return;
+}) {
+	if ($i == null) throw new Error('No current account');
 	const me = $i;
 
 	const callback = opts.onChoose;
@@ -251,13 +251,30 @@ export async function openAccountMenu(opts: {
 					}
 				},
 			};
-		} else {
+		} else { // プロファイルを復元した場合などはアカウントのトークンや詳細情報はstoreにキャッシュされていない
 			return {
 				type: 'button' as const,
 				text: username,
 				active: opts.active != null ? opts.active === id : false,
 				action: async () => {
-					// TODO
+					const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
+						initialUsername: username,
+					}, {
+						done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
+							store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + res.id]: res.i });
+
+							if (callback) {
+								fetchAccount(res.i, id).then(account => {
+									callback(account);
+								});
+							} else {
+								switchAccount(host, id);
+							}
+						},
+						closed: () => {
+							dispose();
+						},
+					});
 				},
 			};
 		}
@@ -321,9 +338,7 @@ export async function openAccountMenu(opts: {
 		menuItems.push(...accountItems);
 	}
 
-	popupMenu(menuItems, ev.currentTarget ?? ev.target, {
-		align: 'left',
-	});
+	return menuItems;
 }
 
 export function getAccountWithSigninDialog(): Promise<{ id: string, token: string } | null> {

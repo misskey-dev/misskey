@@ -44,8 +44,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkPagination>
 		</div>
-		<div v-else-if="tab === 'owned'">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+		<div v-else-if="tab === 'owned'" class="_gaps">
+			<MkButton link primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
@@ -126,15 +126,7 @@ async function search() {
 	key.value = query + type;
 }
 
-function create() {
-	router.push('/channels/new');
-}
-
-const headerActions = computed(() => [{
-	icon: 'ti ti-plus',
-	text: i18n.ts.create,
-	handler: create,
-}]);
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'search',

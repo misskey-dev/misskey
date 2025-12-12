@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XSidebar v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'left'"/>
 
 		<div :class="[$style.main, { [$style.withWallpaper]: withWallpaper, [$style.withSidebarAndTitlebar]: !isMobile && prefer.r['deck.navbarPosition'].value === 'left' && prefer.r.showTitlebar.value }]" :style="{ backgroundImage: prefer.s['deck.wallpaper'] != null ? `url(${ prefer.s['deck.wallpaper'] })` : '' }">
-			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'top'"/>
+			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'top'" :acrylic="withWallpaper"/>
 
 			<XReloadSuggestion v-if="shouldSuggestReload"/>
 			<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'bottom'"/>
+			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'bottom'" :acrylic="withWallpaper"/>
 
 			<XMobileFooterMenu v-if="isMobile" v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 		</div>
@@ -167,8 +167,8 @@ const columnsEl = useTemplateRef('columnsEl');
 const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
-		items: columnTypes.map(column => ({
-			value: column, text: i18n.ts._deck._columns[column],
+		items: columnTypes.filter(column => column !== 'chat' || $i == null || $i.policies.chatAvailability !== 'unavailable').map(column => ({
+			value: column, label: i18n.ts._deck._columns[column],
 		})),
 	});
 	if (canceled || column == null) return;
