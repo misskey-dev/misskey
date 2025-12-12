@@ -150,7 +150,7 @@ function showNodejsVersion(): void {
 
 function loadConfigBoot(): Config {
 	const configLogger = bootLogger.createSubLogger('config');
-	let config;
+	let config: Config;
 
 	try {
 		config = loadConfig();

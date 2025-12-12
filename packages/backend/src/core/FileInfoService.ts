@@ -305,7 +305,7 @@ export class FileInfoService {
 			watcher.close();
 		});
 		command.run();
-		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		for (let i = 1; ; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);
@@ -493,7 +493,7 @@ export class FileInfoService {
 				.toBuffer((err, buffer, info) => {
 					if (err) return reject(err);
 
-					let hash;
+					let hash: string;
 
 					try {
 						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);

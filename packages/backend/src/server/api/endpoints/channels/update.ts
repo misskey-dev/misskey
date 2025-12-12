@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import type { ChannelsRepository, DriveFilesRepository } from '@/models/_.js';
+import type { ChannelsRepository, DriveFilesRepository, MiDriveFile } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -93,8 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			// eslint:disable-next-line:no-unnecessary-initializer
-			let banner ;
+			let banner: MiDriveFile | null = null;
 			if (ps.bannerId != null) {
 				banner = await this.driveFilesRepository.findOneBy({
 					id: ps.bannerId,

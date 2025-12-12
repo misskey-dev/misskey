@@ -150,7 +150,7 @@ export class NotificationService implements OnApplicationShutdown {
 		let notification: FilterUnionByProperty<MiNotification, 'type', T>;
 		let redisId: string;
 
-		do {
+		while (true) {
 			notification = {
 				id: this.idService.gen(),
 				createdAt,
@@ -174,8 +174,7 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 
 			break;
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		} while (true);
+		}
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
 

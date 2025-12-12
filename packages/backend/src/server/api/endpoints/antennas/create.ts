@@ -9,7 +9,7 @@ import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { IdService } from '@/core/IdService.js';
 import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UserListsRepository } from '@/models/_.js';
+import type { AntennasRepository, MiUserList, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -104,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.tooManyAntennas);
 			}
 
-			let userList;
+			let userList: MiUserList | null = null;
 
 			if (ps.src === 'list' && ps.userListId) {
 				userList = await this.userListsRepository.findOneBy({

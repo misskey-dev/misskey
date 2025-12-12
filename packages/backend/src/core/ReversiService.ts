@@ -341,7 +341,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
 		if (engine.isEnded) {
-			let winnerId;
+			let winnerId: string | null;
 			if (engine.winner === true) {
 				winnerId = bw === 1 ? updatedGame.user1Id : updatedGame.user2Id;
 			} else if (engine.winner === false) {
@@ -501,7 +501,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		if (engine.isEnded) {
-			let winnerId;
+			let winnerId: string | null;
 			if (engine.winner === true) {
 				winnerId = game.black === 1 ? game.user1Id : game.user2Id;
 			} else if (engine.winner === false) {

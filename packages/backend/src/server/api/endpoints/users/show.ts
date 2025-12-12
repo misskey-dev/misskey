@@ -121,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			//	throw new ApiError(meta.errors.noSuchUser);
 			//}
 
-			let user;
+			let user: MiUser | null;
 
 			const isModerator = await this.roleService.isModerator(me);
 			if ('username' in ps) {

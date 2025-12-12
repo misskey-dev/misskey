@@ -360,7 +360,7 @@ export class ApRendererService {
 			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
 		};
 
-		let inReplyTo;
+		let inReplyTo: string | IPost | null | undefined;
 		let inReplyToNote: MiNote | null;
 
 		if (note.replyId) {

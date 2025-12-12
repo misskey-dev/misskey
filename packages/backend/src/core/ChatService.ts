@@ -833,7 +833,7 @@ export class ChatService {
 
 	@bindThis
 	public async react(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
-		let reaction;
+		let reaction: string;
 
 		const custom = reaction_.match(isCustomEmojiRegexp);
 
@@ -899,7 +899,7 @@ export class ChatService {
 
 	@bindThis
 	public async unreact(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
-		let reaction;
+		let reaction: string;
 
 		const custom = reaction_.match(isCustomEmojiRegexp);
 

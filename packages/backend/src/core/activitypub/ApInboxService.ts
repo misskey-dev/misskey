@@ -28,7 +28,7 @@ import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import { StatusError } from '@/misc/status-error.js';
-import type { AbuseUserReportsRepository, FollowingsRepository, FollowRequestsRepository, MiMeta, NotesRepository, UsersRepository } from '@/models/_.js';
+import type { AbuseUserReportsRepository, FollowingsRepository, FollowRequestsRepository, MiMeta, MiNote, NotesRepository, UsersRepository } from '@/models/_.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { ApAudienceService } from './ApAudienceService.js';
 import type { ApDbResolverService } from './ApDbResolverService.js';
@@ -320,7 +320,7 @@ export class ApInboxService {
 			}
 
 			// Announce対象をresolve
-			let renote;
+			let renote: MiNote | null;
 			try {
 				renote = await this.apNoteService.resolveNote(target, { resolver });
 				if (renote == null) return 'announce target is null';

@@ -11,6 +11,7 @@
 export function query(obj: Record<string, unknown>): string {
 	const params = Object.entries(obj)
 		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
+		// biome-ignore lint/suspicious/noAssignInExpressions: ignore for now
 		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>);
 
 	return Object.entries(params)

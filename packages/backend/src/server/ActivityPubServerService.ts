@@ -7,7 +7,7 @@ import * as crypto from 'node:crypto';
 import type { IncomingMessage } from 'node:http';
 import fastifyAccepts from '@fastify/accepts';
 import { Inject, Injectable } from '@nestjs/common';
-import httpSignature from '@peertube/http-signature';
+import httpSignature, { type IParsedSignature } from '@peertube/http-signature';
 import accepts from 'accepts';
 import type { FastifyBodyParser, FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import secureJson from 'secure-json-parse';
@@ -112,7 +112,7 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		let signature;
+		let signature: IParsedSignature;
 
 		try {
 			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });

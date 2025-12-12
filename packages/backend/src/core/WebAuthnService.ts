@@ -9,6 +9,8 @@ import {
 	generateRegistrationOptions, verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
+import type { VerifiedAuthenticationResponse } from '@simplewebauthn/server/esm/authentication/verifyAuthenticationResponse.js';
+import type { VerifiedRegistrationResponse } from '@simplewebauthn/server/esm/registration/verifyRegistrationResponse.js';
 import { type AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
 import type {
 	AuthenticationResponseJSON,
@@ -102,7 +104,7 @@ export class WebAuthnService {
 
 		const relyingParty = this.getRelyingParty();
 
-		let verification;
+		let verification: VerifiedRegistrationResponse;
 		try {
 			verification = await verifyRegistrationResponse({
 				response: response,
@@ -203,7 +205,7 @@ export class WebAuthnService {
 
 		const relyingParty = await this.getRelyingParty();
 
-		let verification;
+		let verification: VerifiedAuthenticationResponse;
 		try {
 			verification = await verifyAuthenticationResponse({
 				response: response,
@@ -283,7 +285,7 @@ export class WebAuthnService {
 
 		const relyingParty = this.getRelyingParty();
 
-		let verification;
+		let verification: VerifiedAuthenticationResponse;
 		try {
 			verification = await verifyAuthenticationResponse({
 				response: response,

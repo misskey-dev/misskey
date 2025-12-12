@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, MiEmoji } from '@/models/_.js';
+import type { DriveFilesRepository, MiDriveFile, MiEmoji } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
@@ -88,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let driveFile;
+			let driveFile: MiDriveFile | null = null;
 			if (ps.fileId) {
 				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);

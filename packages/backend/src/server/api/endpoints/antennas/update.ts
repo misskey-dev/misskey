@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UserListsRepository } from '@/models/_.js';
+import type { AntennasRepository, MiUserList, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -105,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			let userList;
+			let userList: MiUserList | null = null;
 
 			if ((ps.src === 'list' || antenna.src === 'list') && ps.userListId) {
 				userList = await this.userListsRepository.findOneBy({

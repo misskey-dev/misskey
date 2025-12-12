@@ -10,7 +10,7 @@ import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activit
 import type { IObject } from '@/core/activitypub/type.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 
-export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
+const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
 	return {
 		scheme: 'Signature',
 		params: {
@@ -77,7 +77,7 @@ describe('ap-request', () => {
 			'https://alice.example.com/abc',
 			FetchAllowSoftFailMask.Any,
 		), 'validation should fail no matter what if the response URL is inconsistent with the object ID');
-		
+
 		assert.doesNotThrow(() => assertActivityMatchesUrl(
 			'https://alice.example.com/abc#test',
 			{ id: 'https://alice.example.com/abc' } as IObject,
