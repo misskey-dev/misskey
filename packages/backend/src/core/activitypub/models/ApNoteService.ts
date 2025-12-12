@@ -299,7 +299,7 @@ export class ApNoteService {
 			};
 
 			if (note.name) {
-				return await tryCreateVote(note.name, poll.choices.findIndex(x => x === note.name));
+				return await tryCreateVote(note.name, poll.choices.indexOf(note.name));
 			}
 		}
 

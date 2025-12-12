@@ -649,7 +649,7 @@ export class ApRendererService {
 	@bindThis
 	public renderUpdate(object: string | IObject, user: { id: MiUser['id'] }): IUpdate {
 		return {
-			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
+			id: `${this.config.url}/users/${user.id}#updates/${Date.now()}`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
 			type: 'Update',
 			to: ['https://www.w3.org/ns/activitystreams#Public'],

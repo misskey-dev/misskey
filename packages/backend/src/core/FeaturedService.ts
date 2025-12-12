@@ -26,7 +26,7 @@ export class FeaturedService {
 
 	@bindThis
 	private getCurrentWindow(windowRange: number): number {
-		const passed = new Date().getTime() - featuredEpoc;
+		const passed = Date.now() - featuredEpoc;
 		return Math.floor(passed / windowRange);
 	}
 

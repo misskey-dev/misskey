@@ -74,8 +74,6 @@
 						"noGlobalIsNan": "off"
 					},
 					"complexity": {
-						"useIndexOf": "off",
-						"useDateNow": "off",
 						"useOptionalChain": "off"
 					}
 				}
