@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<div v-if="game.ready" :class="$style.game">
 		<div :class="$style.cps" class="">{{ number(cps) }}cps</div>
-		<div :class="$style.count" class=""><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(cookies) }}</div>
+		<div :class="$style.count" class="" data-testid="count"><i class="ti ti-cookie" style="font-size: 70%;"></i> {{ number(cookies) }}</div>
 		<button v-click-anime class="_button" @click="onClick">
 			<img src="/client-assets/cookie.png" :class="$style.img">
 		</button>
@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import * as game from '@/scripts/clicker-game.js';
+import { useInterval } from '@@/js/use-interval.js';
+import * as game from '@/utility/clicker-game.js';
 import number from '@/filters/number.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);
@@ -35,7 +35,9 @@ const prevCookies = ref(0);
 function onClick(ev: MouseEvent) {
 	const x = ev.clientX;
 	const y = ev.clientY;
-	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
+	const { dispose } = os.popup(MkPlusOneEffect, { x, y }, {
+		end: () => dispose(),
+	});
 
 	saveData.value!.cookies++;
 	saveData.value!.totalCookies++;

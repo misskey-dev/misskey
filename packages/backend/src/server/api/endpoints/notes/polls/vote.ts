@@ -144,12 +144,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// Create vote
-			const vote = await this.pollVotesRepository.insert({
+			const vote = await this.pollVotesRepository.insertOne({
 				id: this.idService.gen(createdAt.getTime()),
 				noteId: note.id,
 				userId: me.id,
 				choice: ps.choice,
-			}).then(x => this.pollVotesRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			// Increment votes count
 			const index = ps.choice + 1; // In SQL, array index is 1 based

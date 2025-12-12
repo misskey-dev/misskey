@@ -5,6 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class DriveChannel extends Channel {
@@ -14,7 +15,7 @@ class DriveChannel extends Channel {
 	public static kind = 'read:account';
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
 		// Subscribe drive stream
 		this.subscriber.on(`driveStream:${this.user!.id}`, data => {
 			this.send(data);

@@ -30,6 +30,9 @@ export class MutingEntityService {
 	public async pack(
 		src: MiMuting['id'] | MiMuting,
 		me?: { id: MiUser['id'] } | null | undefined,
+		hints?: {
+			packedMutee?: Packed<'UserDetailedNotMe'>,
+		},
 	): Promise<Packed<'Muting'>> {
 		const muting = typeof src === 'object' ? src : await this.mutingsRepository.findOneByOrFail({ id: src });
 
@@ -38,18 +41,21 @@ export class MutingEntityService {
 			createdAt: this.idService.parse(muting.id).date.toISOString(),
 			expiresAt: muting.expiresAt ? muting.expiresAt.toISOString() : null,
 			muteeId: muting.muteeId,
-			mutee: this.userEntityService.pack(muting.muteeId, me, {
+			mutee: hints?.packedMutee ?? this.userEntityService.pack(muting.muteeId, me, {
 				schema: 'UserDetailedNotMe',
 			}),
 		});
 	}
 
 	@bindThis
-	public packMany(
-		mutings: any[],
+	public async packMany(
+		mutings: MiMuting[],
 		me: { id: MiUser['id'] },
 	) {
-		return Promise.all(mutings.map(x => this.pack(x, me)));
+		const _mutees = mutings.map(({ mutee, muteeId }) => mutee ?? muteeId);
+		const _userMap = await this.userEntityService.packMany(_mutees, me, { schema: 'UserDetailedNotMe' })
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(mutings.map(muting => this.pack(muting, me, { packedMutee: _userMap.get(muting.muteeId) })));
 	}
 }
 

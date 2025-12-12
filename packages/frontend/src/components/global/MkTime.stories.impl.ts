@@ -5,10 +5,10 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/test';
-import { StoryObj } from '@storybook/vue3';
+import type { StoryObj } from '@storybook/vue3';
 import MkTime from './MkTime.vue';
 import { i18n } from '@/i18n.js';
-import { dateTimeFormat } from '@/scripts/intl-const.js';
+import { dateTimeFormat } from '@@/js/intl-const.js';
 const now = new Date('2023-04-01T00:00:00.000Z');
 const future = new Date('2024-04-01T00:00:00.000Z');
 const oneHourAgo = new Date(now.getTime() - 3600000);
@@ -60,7 +60,7 @@ export const RelativeFuture = {
 export const AbsoluteFuture = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -97,7 +97,7 @@ export const RelativeNow = {
 export const AbsoluteNow = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -136,7 +136,7 @@ export const RelativeOneHourAgo = {
 export const AbsoluteOneHourAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -175,7 +175,7 @@ export const RelativeOneDayAgo = {
 export const AbsoluteOneDayAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -214,7 +214,7 @@ export const RelativeOneWeekAgo = {
 export const AbsoluteOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -253,7 +253,7 @@ export const RelativeOneMonthAgo = {
 export const AbsoluteOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,
@@ -292,7 +292,7 @@ export const RelativeOneYearAgo = {
 export const AbsoluteOneYearAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
-		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(args.time));
+		await expect(canvasElement).toHaveTextContent(dateTimeFormat.format(typeof args.time === 'string' ? new Date(args.time) : args.time ?? undefined));
 	},
 	args: {
 		...Empty.args,

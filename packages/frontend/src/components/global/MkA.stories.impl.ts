@@ -5,9 +5,9 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect, userEvent, within } from '@storybook/test';
-import { StoryObj } from '@storybook/vue3';
+import type { StoryObj } from '@storybook/vue3';
 import MkA from './MkA.vue';
-import { tick } from '@/scripts/test-utils.js';
+import { tick } from '@/utility/test-utils.js';
 export const Default = {
 	render(args) {
 		return {
@@ -35,12 +35,10 @@ export const Default = {
 		// FIXME: 通るけどその後落ちるのでコメントアウト
 		// await expect(a.href).toMatch(/^https?:\/\/.*#test$/);
 		await userEvent.pointer({ keys: '[MouseRight]', target: a });
-		await tick();
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
 		await userEvent.click(a);
 		a.blur();
-		await tick();
 		await expect(menu).not.toBeInTheDocument();
 	},
 	args: {

@@ -23,7 +23,7 @@ const _dirname = dirname(_filename);
 const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
 
 const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta', false);
+const bootLogger = logger.createSubLogger('boot', 'magenta');
 
 const themeColor = chalk.hex('#86b300');
 
@@ -39,7 +39,7 @@ function greet() {
 		//#endregion
 
 		console.log(' Misskey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please consider donating to support dev. https://misskey-hub.net/docs/donate/'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
@@ -71,25 +71,57 @@ export async function masterMain() {
 
 	bootLogger.succ('Misskey initialized');
 
-	if (envOption.disableClustering) {
+	if (config.sentryForBackend) {
+		const Sentry = await import('@sentry/node');
+		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
+
+		Sentry.init({
+			integrations: [
+				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
+			],
+
+			// Performance Monitoring
+			tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+			// Set sampling rate for profiling - this is relative to tracesSampleRate
+			profilesSampleRate: 1.0,
+
+			maxBreadcrumbs: 0,
+
+			...config.sentryForBackend.options,
+		});
+	}
+
+	bootLogger.info(
+		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,
+	);
+
+	if (!envOption.disableClustering) {
+		// clusterモジュール有効時
+
 		if (envOption.onlyServer) {
-			await server();
+			// onlyServer かつ enableCluster な場合、メインプロセスはforkのみに制限する(listenしない)。
+			// ワーカープロセス側でlistenすると、メインプロセスでポートへの着信を受け入れてワーカープロセスへの分配を行う動作をする。
+			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
+			// see: https://nodejs.org/api/cluster.html#cluster
 		} else if (envOption.onlyQueue) {
 			await jobQueue();
-		} else {
-			await server();
-			await jobQueue();
-		}
-	} else {
-		if (envOption.onlyServer) {
-			// nop
-		} else if (envOption.onlyQueue) {
-			// nop
 		} else {
 			await server();
 		}
 
 		await spawnWorkers(config.clusterLimit);
+	} else {
+		// clusterモジュール無効時
+
+		if (envOption.onlyServer) {
+			await server();
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
 	}
 
 	if (envOption.onlyQueue) {

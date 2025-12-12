@@ -12,6 +12,7 @@ import { DI } from '@/di-symbols.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -27,7 +28,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'NoteReaction',
+			ref: 'NoteReactionWithNote',
 		},
 	},
 
@@ -74,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const userIdsWhoBlockingMe = me ? await this.cacheService.userBlockedCache.fetch(me.id) : new Set<string>();
 			const iAmModerator = me ? await this.roleService.isModerator(me) : false; // Moderators can see reactions of all users
 			if (!iAmModerator) {
 				const user = await this.cacheService.findUserById(ps.userId);
@@ -85,20 +87,40 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if ((me == null || me.id !== ps.userId) && !profile.publicReactions) {
 					throw new ApiError(meta.errors.reactionsNotPublic);
 				}
+
+				// early return if me is blocked by requesting user
+				if (userIdsWhoBlockingMe.has(ps.userId)) {
+					return [];
+				}
 			}
+
+			const userIdsWhoMeMuting = me ? await this.cacheService.userMutingsCache.fetch(me.id) : new Set<string>();
 
 			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('reaction.userId = :userId', { userId: ps.userId })
-				.leftJoinAndSelect('reaction.note', 'note');
+				.leftJoinAndSelect('reaction.note', 'note')
+				.leftJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateBlockedHostQueryForNote(query);
+			this.queryService.generateSuspendedUserQueryForNote(query);
 
-			const reactions = await query
+			const reactions = (await query
 				.limit(ps.limit)
-				.getMany();
+				.getMany()).filter(reaction => {
+				if (reaction.note?.userId === ps.userId) return true; // we can see reactions to note of requesting user
+				if (me && isUserRelated(reaction.note, userIdsWhoBlockingMe)) return false;
+				if (me && isUserRelated(reaction.note, userIdsWhoMeMuting)) return false;
 
-			return await this.noteReactionEntityService.packMany(reactions, me, { withNote: true });
+				return true;
+			});
+
+			return await this.noteReactionEntityService.packManyWithNote(reactions, me);
 		});
 	}
 }

@@ -48,20 +48,19 @@ export class TickChartsProcessorService {
 	public async process(): Promise<void> {
 		this.logger.info('Tick charts...');
 
-		await Promise.all([
-			this.federationChart.tick(false),
-			this.notesChart.tick(false),
-			this.usersChart.tick(false),
-			this.activeUsersChart.tick(false),
-			this.instanceChart.tick(false),
-			this.perUserNotesChart.tick(false),
-			this.perUserPvChart.tick(false),
-			this.driveChart.tick(false),
-			this.perUserReactionsChart.tick(false),
-			this.perUserFollowingChart.tick(false),
-			this.perUserDriveChart.tick(false),
-			this.apRequestChart.tick(false),
-		]);
+		// DBへの同時接続を避けるためにPromise.allを使わずひとつずつ実行する
+		await this.federationChart.tick(false);
+		await this.notesChart.tick(false);
+		await this.usersChart.tick(false);
+		await this.activeUsersChart.tick(false);
+		await this.instanceChart.tick(false);
+		await this.perUserNotesChart.tick(false);
+		await this.perUserPvChart.tick(false);
+		await this.driveChart.tick(false);
+		await this.perUserReactionsChart.tick(false);
+		await this.perUserFollowingChart.tick(false);
+		await this.perUserDriveChart.tick(false);
+		await this.apRequestChart.tick(false);
 
 		this.logger.succ('All charts successfully ticked.');
 	}

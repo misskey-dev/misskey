@@ -50,11 +50,14 @@ export class UserListEntityService {
 	public async packMembershipsMany(
 		memberships: MiUserListMembership[],
 	) {
+		const _users = memberships.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users)
+			.then(users => new Map(users.map(u => [u.id, u])));
 		return Promise.all(memberships.map(async x => ({
 			id: x.id,
 			createdAt: this.idService.parse(x.id).date.toISOString(),
 			userId: x.userId,
-			user: await this.userEntityService.pack(x.userId),
+			user: _userMap.get(x.userId) ?? await this.userEntityService.pack(x.userId),
 			withReplies: x.withReplies,
 		})));
 	}

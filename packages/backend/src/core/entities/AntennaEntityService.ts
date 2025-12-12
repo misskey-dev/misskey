@@ -38,12 +38,13 @@ export class AntennaEntityService {
 			users: antenna.users,
 			caseSensitive: antenna.caseSensitive,
 			localOnly: antenna.localOnly,
-			notify: antenna.notify,
 			excludeBots: antenna.excludeBots,
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
+			excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
 			isActive: antenna.isActive,
 			hasUnreadNote: false, // TODO
+			notify: false, // 後方互換性のため
 		};
 	}
 }

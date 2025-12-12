@@ -53,7 +53,7 @@ export class FileServerService {
 		private internalStorageService: InternalStorageService,
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService.getLogger('server', 'gray', false);
+		this.logger = this.loggerService.getLogger('server', 'gray');
 
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -82,7 +82,7 @@ export class FileServerService {
 					.catch(err => this.errorHandler(request, reply, err));
 			});
 			fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
-				return await reply.redirect(301, `${this.config.url}/files/${request.params.key}`);
+				return await reply.redirect(`${this.config.url}/files/${request.params.key}`, 301);
 			});
 			done();
 		});
@@ -147,12 +147,12 @@ export class FileServerService {
 						url.searchParams.set('static', '1');
 
 						file.cleanup();
-						return await reply.redirect(301, url.toString());
+						return await reply.redirect(url.toString(), 301);
 					} else if (file.mime.startsWith('video/')) {
 						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
 						if (externalThumbnail) {
 							file.cleanup();
-							return await reply.redirect(301, externalThumbnail);
+							return await reply.redirect(externalThumbnail, 301);
 						}
 
 						image = await this.videoProcessingService.generateVideoThumbnail(file.path);
@@ -167,7 +167,7 @@ export class FileServerService {
 						url.searchParams.set('url', file.url);
 
 						file.cleanup();
-						return await reply.redirect(301, url.toString());
+						return await reply.redirect(url.toString(), 301);
 					}
 				}
 
@@ -214,6 +214,8 @@ export class FileServerService {
 				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+				reply.header('Content-Length', file.file.size);
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition',
 					contentDisposition(
 						'inline',
@@ -256,6 +258,7 @@ export class FileServerService {
 				return fs.createReadStream(file.path);
 			} else {
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
+				reply.header('Content-Length', file.file.size);
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition', contentDisposition('inline', file.filename));
 
@@ -311,9 +314,15 @@ export class FileServerService {
 			}
 
 			return await reply.redirect(
-				301,
 				url.toString(),
+				301,
 			);
+		}
+
+		if (!request.headers['user-agent']) {
+			throw new StatusError('User-Agent is required', 400, 'User-Agent is required');
+		} else if (request.headers['user-agent'].toLowerCase().indexOf('misskey/') !== -1) {
+			throw new StatusError('Refusing to proxy a request from another proxy', 403, 'Proxy is recursive');
 		}
 
 		// Create temp file
@@ -488,7 +497,7 @@ export class FileServerService {
 
 	@bindThis
 	private async downloadAndDetectTypeFromUrl(url: string): Promise<
-		{ state: 'remote' ; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
+		{ state: 'remote'; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
 	> {
 		const [path, cleanup] = await createTemp();
 		try {
@@ -530,9 +539,7 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (!(file.isLink && file.uri)) return '204';
 			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
-			if (!file.size) {
-				file.size = (await fs.promises.stat(result.path)).size;
-			}
+			file.size = (await fs.promises.stat(result.path)).size;	// DB file.sizeは正確とは限らないので
 			return {
 				...result,
 				url: file.uri,

@@ -4,10 +4,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ChannelChannel extends Channel {
@@ -18,7 +21,6 @@ class ChannelChannel extends Channel {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
-
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -27,8 +29,9 @@ class ChannelChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
-		this.channelId = params.channelId as string;
+	public async init(params: JsonObject) {
+		if (typeof params.channelId !== 'string') return;
+		this.channelId = params.channelId;
 
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
@@ -38,23 +41,49 @@ class ChannelChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
-		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+		if (note.user.requireSigninToViewContents && this.user == null) return;
+		if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
+		if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
 
-		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && note.renoteId && !note.text) {
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;
 			}
 		}
 
-		this.connection.cacheNote(note);
-
 		this.send('note', note);
+	}
+
+	/*
+	 * ミュートとブロックされてるを処理する
+	 */
+	protected override isNoteMutedOrBlocked(note: Packed<'Note'>): boolean {
+		// 流れてきたNoteがインスタンスミュートしたインスタンスが関わる
+		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return true;
+
+		// 流れてきたNoteがミュートしているユーザーが関わる
+		if (isUserRelated(note, this.userIdsWhoMeMuting)) return true;
+		// 流れてきたNoteがブロックされているユーザーが関わる
+		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return true;
+
+		// 流れてきたNoteがリノートをミュートしてるユーザが行ったもの
+		if (isRenotePacked(note) && !isQuotePacked(note) && this.userIdsWhoMeMutingRenotes.has(note.user.id)) return true;
+
+		// このソケットで見ているチャンネルがミュートされていたとしても、チャンネルを直接見ている以上は流すようにしたい
+		// ただし、他のミュートしているチャンネルは流さないようにもしたい
+		// ノート自体のチャンネルIDはonNoteでチェックしているので、ここではリノートのチャンネルIDをチェックする
+		if (
+			(note.renote) &&
+			(note.renote.channelId !== this.channelId) &&
+			(note.renote.channelId && this.mutingChannels.has(note.renote.channelId))
+		) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@bindThis

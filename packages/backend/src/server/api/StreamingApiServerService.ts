@@ -9,13 +9,13 @@ import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository, MiAccessToken } from '@/models/_.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
@@ -35,12 +35,12 @@ export class StreamingApiServerService {
 		private usersRepository: UsersRepository,
 
 		private cacheService: CacheService,
-		private noteReadService: NoteReadService,
 		private authenticateService: AuthenticateService,
 		private channelsService: ChannelsService,
 		private notificationService: NotificationService,
 		private usersService: UserService,
 		private channelFollowingService: ChannelFollowingService,
+		private channelMutingService: ChannelMutingService,
 	) {
 	}
 
@@ -96,10 +96,10 @@ export class StreamingApiServerService {
 
 			const stream = new MainStreamConnection(
 				this.channelsService,
-				this.noteReadService,
 				this.notificationService,
 				this.cacheService,
 				this.channelFollowingService,
+				this.channelMutingService,
 				user, app,
 			);
 

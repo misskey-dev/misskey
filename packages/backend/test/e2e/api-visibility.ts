@@ -410,21 +410,21 @@ describe('API visibility', () => {
 		test('[HTL] public-post が 自分が見れる', async () => {
 			const res = await api('notes/timeline', { limit: 100 }, alice);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === pub.id);
+			const notes = res.body.filter(n => n.id === pub.id);
 			assert.strictEqual(notes[0].text, 'x');
 		});
 
 		test('[HTL] public-post が 非フォロワーから見れない', async () => {
 			const res = await api('notes/timeline', { limit: 100 }, other);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === pub.id);
+			const notes = res.body.filter(n => n.id === pub.id);
 			assert.strictEqual(notes.length, 0);
 		});
 
 		test('[HTL] followers-post が フォロワーから見れる', async () => {
 			const res = await api('notes/timeline', { limit: 100 }, follower);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === fol.id);
+			const notes = res.body.filter(n => n.id === fol.id);
 			assert.strictEqual(notes[0].text, 'x');
 		});
 		//#endregion
@@ -433,21 +433,21 @@ describe('API visibility', () => {
 		test('[replies] followers-reply が フォロワーから見れる', async () => {
 			const res = await api('notes/replies', { noteId: tgt.id, limit: 100 }, follower);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === folR.id);
+			const notes = res.body.filter(n => n.id === folR.id);
 			assert.strictEqual(notes[0].text, 'x');
 		});
 
 		test('[replies] followers-reply が 非フォロワー (リプライ先ではない) から見れない', async () => {
 			const res = await api('notes/replies', { noteId: tgt.id, limit: 100 }, other);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === folR.id);
+			const notes = res.body.filter(n => n.id === folR.id);
 			assert.strictEqual(notes.length, 0);
 		});
 
 		test('[replies] followers-reply が 非フォロワー (リプライ先である) から見れる', async () => {
 			const res = await api('notes/replies', { noteId: tgt.id, limit: 100 }, target);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === folR.id);
+			const notes = res.body.filter(n => n.id === folR.id);
 			assert.strictEqual(notes[0].text, 'x');
 		});
 		//#endregion
@@ -456,14 +456,14 @@ describe('API visibility', () => {
 		test('[mentions] followers-reply が 非フォロワー (リプライ先である) から見れる', async () => {
 			const res = await api('notes/mentions', { limit: 100 }, target);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === folR.id);
+			const notes = res.body.filter(n => n.id === folR.id);
 			assert.strictEqual(notes[0].text, 'x');
 		});
 
 		test('[mentions] followers-mention が 非フォロワー (メンション先である) から見れる', async () => {
 			const res = await api('notes/mentions', { limit: 100 }, target);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id === folM.id);
+			const notes = res.body.filter(n => n.id === folM.id);
 			assert.strictEqual(notes[0].text, '@target x');
 		});
 		//#endregion

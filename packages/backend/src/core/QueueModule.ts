@@ -7,19 +7,29 @@ import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { QUEUE, baseQueueOptions } from '@/queue/const.js';
+import { baseQueueOptions, QUEUE } from '@/queue/const.js';
 import { allSettled } from '@/misc/promise-tracker.js';
+import {
+	DeliverJobData,
+	EndedPollNotificationJobData,
+	InboxJobData,
+	RelationshipJobData,
+	UserWebhookDeliverJobData,
+	SystemWebhookDeliverJobData,
+	PostScheduledNoteJobData,
+} from '../queue/types.js';
 import type { Provider } from '@nestjs/common';
-import type { DeliverJobData, InboxJobData, EndedPollNotificationJobData, WebhookDeliverJobData, RelationshipJobData } from '../queue/types.js';
 
 export type SystemQueue = Bull.Queue<Record<string, unknown>>;
 export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData>;
+export type PostScheduledNoteQueue = Bull.Queue<PostScheduledNoteJobData>;
 export type DeliverQueue = Bull.Queue<DeliverJobData>;
 export type InboxQueue = Bull.Queue<InboxJobData>;
 export type DbQueue = Bull.Queue;
 export type RelationshipQueue = Bull.Queue<RelationshipJobData>;
 export type ObjectStorageQueue = Bull.Queue;
-export type WebhookDeliverQueue = Bull.Queue<WebhookDeliverJobData>;
+export type UserWebhookDeliverQueue = Bull.Queue<UserWebhookDeliverJobData>;
+export type SystemWebhookDeliverQueue = Bull.Queue<SystemWebhookDeliverJobData>;
 
 const $system: Provider = {
 	provide: 'queue:system',
@@ -30,6 +40,12 @@ const $system: Provider = {
 const $endedPollNotification: Provider = {
 	provide: 'queue:endedPollNotification',
 	useFactory: (config: Config) => new Bull.Queue(QUEUE.ENDED_POLL_NOTIFICATION, baseQueueOptions(config, QUEUE.ENDED_POLL_NOTIFICATION)),
+	inject: [DI.config],
+};
+
+const $postScheduledNote: Provider = {
+	provide: 'queue:postScheduledNote',
+	useFactory: (config: Config) => new Bull.Queue(QUEUE.POST_SCHEDULED_NOTE, baseQueueOptions(config, QUEUE.POST_SCHEDULED_NOTE)),
 	inject: [DI.config],
 };
 
@@ -63,9 +79,15 @@ const $objectStorage: Provider = {
 	inject: [DI.config],
 };
 
-const $webhookDeliver: Provider = {
-	provide: 'queue:webhookDeliver',
-	useFactory: (config: Config) => new Bull.Queue(QUEUE.WEBHOOK_DELIVER, baseQueueOptions(config, QUEUE.WEBHOOK_DELIVER)),
+const $userWebhookDeliver: Provider = {
+	provide: 'queue:userWebhookDeliver',
+	useFactory: (config: Config) => new Bull.Queue(QUEUE.USER_WEBHOOK_DELIVER, baseQueueOptions(config, QUEUE.USER_WEBHOOK_DELIVER)),
+	inject: [DI.config],
+};
+
+const $systemWebhookDeliver: Provider = {
+	provide: 'queue:systemWebhookDeliver',
+	useFactory: (config: Config) => new Bull.Queue(QUEUE.SYSTEM_WEBHOOK_DELIVER, baseQueueOptions(config, QUEUE.SYSTEM_WEBHOOK_DELIVER)),
 	inject: [DI.config],
 };
 
@@ -75,34 +97,40 @@ const $webhookDeliver: Provider = {
 	providers: [
 		$system,
 		$endedPollNotification,
+		$postScheduledNote,
 		$deliver,
 		$inbox,
 		$db,
 		$relationship,
 		$objectStorage,
-		$webhookDeliver,
+		$userWebhookDeliver,
+		$systemWebhookDeliver,
 	],
 	exports: [
 		$system,
 		$endedPollNotification,
+		$postScheduledNote,
 		$deliver,
 		$inbox,
 		$db,
 		$relationship,
 		$objectStorage,
-		$webhookDeliver,
+		$userWebhookDeliver,
+		$systemWebhookDeliver,
 	],
 })
 export class QueueModule implements OnApplicationShutdown {
 	constructor(
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
+		@Inject('queue:postScheduledNote') public postScheduledNoteQueue: PostScheduledNoteQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
-		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
+		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
+		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {}
 
 	public async dispose(): Promise<void> {
@@ -112,12 +140,14 @@ export class QueueModule implements OnApplicationShutdown {
 		await Promise.all([
 			this.systemQueue.close(),
 			this.endedPollNotificationQueue.close(),
+			this.postScheduledNoteQueue.close(),
 			this.deliverQueue.close(),
 			this.inboxQueue.close(),
 			this.dbQueue.close(),
 			this.relationshipQueue.close(),
 			this.objectStorageQueue.close(),
-			this.webhookDeliverQueue.close(),
+			this.userWebhookDeliverQueue.close(),
+			this.systemWebhookDeliverQueue.close(),
 		]);
 	}
 

@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
 	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
-	<div v-if="onceReacted"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
+	<div v-if="onceReacted"><b style="color: var(--MI_THEME-accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
 </div>
 </template>
 
@@ -27,8 +27,9 @@ import * as Misskey from 'misskey-js';
 import { ref, reactive } from 'vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkNote from '@/components/MkNote.vue';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	phase: 'aboutNote' | 'howToReact';
@@ -76,8 +77,6 @@ const onceReacted = ref<boolean>(false);
 function addReaction(emoji) {
 	onceReacted.value = true;
 	emit('reacted');
-	exampleNote.reactions[emoji] = 1;
-	exampleNote.myReaction = emoji;
 	doNotification(emoji);
 }
 
@@ -85,7 +84,7 @@ function doNotification(emoji: string): void {
 	if (!$i || !emoji) return;
 
 	const notification: Misskey.entities.Notification = {
-		id: Math.random().toString(),
+		id: genId(),
 		createdAt: new Date().toUTCString(),
 		type: 'reaction',
 		reaction: emoji,
@@ -105,13 +104,13 @@ function removeReaction(emoji) {
 
 <style lang="scss" module>
 .exampleNoteRoot {
-	border-radius: var(--radius);
-	border: var(--panelBorder);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	border: var(--MI_THEME-panelBorder);
+	background: var(--MI_THEME-panel);
 }
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 </style>

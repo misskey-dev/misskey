@@ -8,6 +8,7 @@ import { noteVisibilities } from '@/types.js';
 import { id } from './util/id.js';
 import { MiNote } from './Note.js';
 import type { MiUser } from './User.js';
+import type { MiChannel } from "@/models/Channel.js";
 
 @Entity('poll')
 export class MiPoll {
@@ -58,6 +59,14 @@ export class MiPoll {
 		comment: '[Denormalized]',
 	})
 	public userHost: string | null;
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+		comment: '[Denormalized]',
+	})
+	public channelId: MiChannel['id'] | null;
 	//#endregion
 
 	constructor(data: Partial<MiPoll>) {

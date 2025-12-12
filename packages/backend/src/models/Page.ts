@@ -47,7 +47,7 @@ export class MiPage {
 	@Column('varchar', {
 		length: 32,
 	})
-	public font: string;
+	public font: 'serif' | 'sans-serif';
 
 	@Index()
 	@Column({
@@ -69,7 +69,7 @@ export class MiPage {
 	public eyeCatchingImageId: MiDriveFile['id'] | null;
 
 	@ManyToOne(type => MiDriveFile, {
-		onDelete: 'CASCADE',
+		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
 	public eyeCatchingImage: MiDriveFile | null;
@@ -118,3 +118,5 @@ export class MiPage {
 		}
 	}
 }
+
+export const pageNameSchema = { type: 'string', pattern: /^[^\s:\/?#\[\]@!$&'()*+,;=\\%\x00-\x20]{1,256}$/.source } as const;

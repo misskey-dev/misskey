@@ -13,20 +13,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { initChart } from '@/scripts/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { initChart } from '@/utility/init-chart.js';
 
 initChart();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const chartEl = useTemplateRef('chartEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const chartLimit = 7;
 const fetching = ref(true);
 
@@ -36,6 +36,8 @@ async function renderChart() {
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
+
+	if (chartEl.value == null) return;
 
 	const getDate = (ago: number) => {
 		const y = now.getFullYear();
@@ -54,7 +56,7 @@ async function renderChart() {
 
 	const raw = await misskeyApi('charts/active-users', { limit: chartLimit, span: 'day' });
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const colorRead = '#3498db';
 	const colorWrite = '#2ecc71';
@@ -105,7 +107,6 @@ async function renderChart() {
 					type: 'time',
 					offset: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -149,7 +150,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

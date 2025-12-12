@@ -3,29 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FORCE_REMOUNT } from '@storybook/core-events';
+import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
-import { initialize, mswDecorator } from 'msw-storybook-addon';
+import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
-import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
 
 const appInitialized = Symbol();
 
-let lastStory = null;
+let lastStory: string | null = null;
 let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
+function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
 	unobserve();
-	const theme = themes[document.documentElement.dataset.misskeyTheme];
+	const theme = themes[window.document.documentElement.dataset.misskeyTheme];
 	if (theme) {
-		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
+		applyTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
 	} else {
 		applyTheme(themes['l-light']);
 	}
@@ -42,7 +41,7 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 			}
 		}
 	});
-	observer.observe(document.documentElement, {
+	observer.observe(window.document.documentElement, {
 		attributes: true,
 		attributeFilter: ['data-misskey-theme'],
 	});
@@ -55,7 +54,6 @@ function initLocalStorage() {
 		...userDetailed(),
 		policies: {},
 	}));
-	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
 initialize({
@@ -64,13 +62,13 @@ initialize({
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
-		import('../src/components'),
-		import('../src/directives'),
-		import('../src/widgets'),
-		import('../src/scripts/theme'),
-		import('../src/store'),
-		import('../src/os'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { defaultStore }, os]) => {
+		import('../src/components/index.js'),
+		import('../src/directives/index.js'),
+		import('../src/widgets/index.js'),
+		import('../src/theme.js'),
+		import('../src/preferences.js'),
+		import('../src/os.js'),
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
@@ -83,7 +81,7 @@ queueMicrotask(() => {
 			widgets(app);
 			misskeyOS = os;
 			if (isChromatic()) {
-				defaultStore.set('animation', false);
+				prefer.commit('animation', false);
 			}
 		});
 	});
@@ -104,13 +102,13 @@ const preview = {
 							}
 						}).catch(() => {})
 					: Promise.resolve();
-				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
+				const resetDefaultStorePromise = import('../src/store').then(({ store }) => {
 					// @ts-expect-error
-					defaultStore.init();
+					store.init();
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();
-					channel.emit(FORCE_REMOUNT, { storyId: context.id });
+					channel.emit(FORCE_RE_RENDER, { storyId: context.id });
 				});
 			}
 			const story = Story();
@@ -122,7 +120,6 @@ const preview = {
 			}
 			return story;
 		},
-		mswDecorator,
 		(Story, context) => {
 			return {
 				setup() {
@@ -137,6 +134,7 @@ const preview = {
 			};
 		},
 	],
+	loaders: [mswLoader],
 	parameters: {
 		controls: {
 			exclude: /^__/,

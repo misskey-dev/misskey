@@ -19,7 +19,7 @@ import {
 	ResourceOwnerPassword,
 } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
@@ -72,11 +72,12 @@ const clientConfig: ModuleOptions<'client_id'> = {
 	},
 };
 
-function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined } {
-	const fragment = JSDOM.fragment(html);
+function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined, clientLogo: string | undefined } {
+	const doc = htmlParser.parse(`<div>${html}</div>`);
 	return {
-		transactionId: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content,
-		clientName: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content,
+		transactionId: doc.querySelector('meta[name="misskey:oauth:transaction-id"]')?.attributes.content,
+		clientName: doc.querySelector('meta[name="misskey:oauth:client-name"]')?.attributes.content,
+		clientLogo: doc.querySelector('meta[name="misskey:oauth:client-logo"]')?.attributes.content,
 	};
 }
 
@@ -147,7 +148,7 @@ function assertIndirectError(response: Response, error: string): void {
 async function assertDirectError(response: Response, status: number, error: string): Promise<void> {
 	assert.strictEqual(response.status, status);
 
-	const data = await response.json();
+	const data = await response.json() as any;
 	assert.strictEqual(data.error, error);
 }
 
@@ -703,7 +704,7 @@ describe('OAuth', () => {
 		const response = await fetch(new URL('.well-known/oauth-authorization-server', host));
 		assert.strictEqual(response.status, 200);
 
-		const body = await response.json();
+		const body = await response.json() as any;
 		assert.strictEqual(body.issuer, 'http://misskey.local');
 		assert.ok(body.scopes_supported.includes('write:notes'));
 	});
@@ -913,6 +914,59 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
+		});
+
+		test('With Logo', async () => {
+			sender = (reply): void => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app">
+						<a href="/" class="u-url p-name">Misklient</a>
+						<img src="/logo.png" class="u-logo" />
+					</div>
+				`);
+				reply.send();
+			};
+
+			const client = new AuthorizationCode(clientConfig);
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			} as AuthorizationParamsExtended));
+			assert.strictEqual(response.status, 200);
+			const meta = getMeta(await response.text());
+			assert.strictEqual(meta.clientName, 'Misklient');
+			assert.strictEqual(meta.clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
+		});
+
+		test('Missing Logo', async () => {
+			sender = (reply): void => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app"><a href="/" class="u-url p-name">Misklient
+				`);
+				reply.send();
+			};
+
+			const client = new AuthorizationCode(clientConfig);
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			} as AuthorizationParamsExtended));
+			assert.strictEqual(response.status, 200);
+			const meta = getMeta(await response.text());
+			assert.strictEqual(meta.clientName, 'Misklient');
+			assert.strictEqual(meta.clientLogo, undefined);
 		});
 
 		test('Mismatching URL in h-app', async () => {

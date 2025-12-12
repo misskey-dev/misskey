@@ -14,7 +14,8 @@ import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { Repository, DataSource } from 'typeorm';
+import { MiRepository, miRepository } from '@/models/_.js';
+import type { DataSource, Repository } from 'typeorm';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
@@ -145,10 +146,10 @@ export default abstract class Chart<T extends Schema> {
 		group: string | null;
 	}[] = [];
 	// ↓にしたいけどfindOneとかで型エラーになる
-	//private repositoryForHour: Repository<RawRecord<T>>;
-	//private repositoryForDay: Repository<RawRecord<T>>;
-	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }>;
-	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }>;
+	//private repositoryForHour: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
+	//private repositoryForDay: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
+	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
+	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
 
 	/**
 	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
@@ -211,6 +212,10 @@ export default abstract class Chart<T extends Schema> {
 	} {
 		const createEntity = (span: 'hour' | 'day'): EntitySchema => new EntitySchema({
 			name:
+				span === 'hour' ? `ChartX${name}` :
+				span === 'day' ? `ChartDayX${name}` :
+				new Error('not happen') as never,
+			tableName:
 				span === 'hour' ? `__chart__${camelToSnake(name)}` :
 				span === 'day' ? `__chart_day__${camelToSnake(name)}` :
 				new Error('not happen') as never,
@@ -271,8 +276,8 @@ export default abstract class Chart<T extends Schema> {
 		this.logger = logger;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour);
-		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day);
+		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour).extend(miRepository as MiRepository<{ id: number; group?: string | null; date: number; }>);
+		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day).extend(miRepository as MiRepository<{ id: number; group?: string | null; date: number; }>);
 	}
 
 	@bindThis
@@ -387,11 +392,11 @@ export default abstract class Chart<T extends Schema> {
 			}
 
 			// 新規ログ挿入
-			log = await repository.insert({
+			log = await repository.insertOne({
 				date: date,
 				...(group ? { group: group } : {}),
 				...columns,
-			}).then(x => repository.findOneByOrFail(x.identifiers[0])) as RawRecord<T>;
+			}) as RawRecord<T>;
 
 			this.logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 

@@ -47,6 +47,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 	},
 	required: ['noteId'],
 } as const;
@@ -61,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('reaction.noteId = :noteId', { noteId: ps.noteId })
 				.leftJoinAndSelect('reaction.user', 'user')
 				.leftJoinAndSelect('reaction.note', 'note');
@@ -76,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const reactions = await query.limit(ps.limit).getMany();
 
-			return await Promise.all(reactions.map(reaction => this.noteReactionEntityService.pack(reaction, me)));
+			return await this.noteReactionEntityService.packMany(reactions, me);
 		});
 	}
 }

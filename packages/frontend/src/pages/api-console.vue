@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
 				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
@@ -29,20 +28,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkTextarea>
 			</div>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
-import { Endpoints } from 'misskey-js';
+import type { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 
 const body = ref('{}');
 const endpoint = ref('');
@@ -69,6 +68,11 @@ function send() {
 
 function onEndpointChange() {
 	misskeyApi('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
+		if (resp == null) {
+			body.value = '{}';
+			return;
+		}
+
 		const endpointBody = {};
 		for (const p of resp.params) {
 			endpointBody[p.name] =
@@ -87,7 +91,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'API console',
 	icon: 'ti ti-terminal-2',
 }));

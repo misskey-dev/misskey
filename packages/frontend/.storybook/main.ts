@@ -15,6 +15,7 @@ const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+	staticDirs: [{ from: '../assets', to: '/client-assets' }],
 	addons: [
 		getAbsolutePath('@storybook/addon-essentials'),
 		getAbsolutePath('@storybook/addon-interactions'),
@@ -34,10 +35,14 @@ const config = {
 		disableTelemetry: true,
 	},
 	async viteFinal(config) {
-		const replacePluginForIsChromatic = config.plugins?.findIndex((plugin) => plugin && (plugin as Partial<Plugin>)?.name === 'replace') ?? -1;
+		const replacePluginForIsChromatic = config.plugins?.findIndex((plugin: Plugin) => plugin && plugin.name === 'replace') ?? -1;
 		if (~replacePluginForIsChromatic) {
 			config.plugins?.splice(replacePluginForIsChromatic, 1);
 		}
+
+		//pluginsからcreateSearchIndexを削除、複数あるかもしれないので全て削除
+		config.plugins = config.plugins?.filter((plugin: Plugin) => plugin && plugin.name !== 'createSearchIndex') ?? [];
+
 		return mergeConfig(config, {
 			plugins: [
 				{
