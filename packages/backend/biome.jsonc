@@ -41,21 +41,6 @@
 					"document"
 				]
 			}
-		},
-		// rules temporally disable to ease the migration from eslint to biome
-		{
-			"includes": [
-				"**/*"
-			],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnusedFunctionParameters": {
-							"level": "off"
-						}
-					}
-				}
-			}
 		}
 	],
 	"formatter": {
@@ -82,6 +67,9 @@
 				}
 			},
 			"correctness": {
+				"noUnusedFunctionParameters": {
+					"level": "off"
+				},
 				"useParseIntRadix": {
 					"level": "off"
 				},
