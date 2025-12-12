@@ -130,7 +130,57 @@ export class NoctownService {
 			calculatedAt: new Date(),
 		});
 
+		// Grant starter kit
+		await this.grantStarterKit(playerId);
+
 		return player;
+	}
+
+	@bindThis
+	private async grantStarterKit(playerId: string): Promise<void> {
+		// Starter kit definition: 木材x10, 石x5, 種袋x5, 斧x1, 500ノクタコイン
+		const starterItems = [
+			{ name: '木材', flavorText: '木材。様々なアイテムの材料になる。', quantity: 10 },
+			{ name: '石', flavorText: '石。様々なアイテムの材料になる。', quantity: 5 },
+			{ name: '種袋', flavorText: '野菜の種が入った袋。畑に植えて育てよう。', quantity: 5 },
+			{ name: '斧', flavorText: '木を伐採するための斧。木材を集めるのに必要。', quantity: 1 },
+		];
+
+		for (const starterItem of starterItems) {
+			// Find or create the item
+			let item = await this.noctownItemsRepository.findOneBy({ name: starterItem.name });
+			if (!item) {
+				item = await this.noctownItemsRepository.save({
+					id: this.idService.gen(),
+					name: starterItem.name,
+					flavorText: starterItem.flavorText,
+					imageUrl: null,
+					fullImageUrl: null,
+					rarity: starterItem.name === '斧' ? 1 : 0,
+					itemType: starterItem.name === '斧' ? 'tool' : (starterItem.name === '種袋' ? 'seed' : 'normal'),
+					isUnique: false,
+					isPlayerCreated: false,
+					creatorId: null,
+					shopPrice: null,
+					shopSellPrice: starterItem.name === '斧' ? 30 : (starterItem.name === '種袋' ? 15 : 5),
+				});
+			}
+
+			// Add item to player inventory
+			await this.noctownPlayerItemsRepository.insert({
+				id: this.idService.gen(),
+				playerId,
+				itemId: item.id,
+				quantity: starterItem.quantity,
+				acquiredAt: new Date(),
+			});
+		}
+
+		// Grant 500 ノクタコイン
+		await this.noctownWalletsRepository.update(
+			{ playerId },
+			{ balance: '500' },
+		);
 	}
 
 	@bindThis
@@ -196,6 +246,17 @@ export class NoctownService {
 			playerId,
 			itemId: droppedItem.itemId,
 		});
+
+		// Check inventory capacity (max 300 unique item types)
+		if (!existingPlayerItem) {
+			const INVENTORY_MAX_CAPACITY = 300;
+			const currentItemCount = await this.noctownPlayerItemsRepository.count({
+				where: { playerId },
+			});
+			if (currentItemCount >= INVENTORY_MAX_CAPACITY) {
+				return false; // Inventory full
+			}
+		}
 
 		if (existingPlayerItem) {
 			// Increment quantity

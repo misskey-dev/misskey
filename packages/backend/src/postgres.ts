@@ -91,6 +91,46 @@ import { MiSystemAccount } from '@/models/SystemAccount.js';
 import { MiDrawingRoomSettings } from '@/models/DrawingRoomSettings.js';
 import { MiDrawingUserSettings } from '@/models/DrawingUserSettings.js';
 
+// Noctown entities
+import { NoctownPlayer } from '@/models/noctown/NoctownPlayer.js';
+import { NoctownItem } from '@/models/noctown/NoctownItem.js';
+import { NoctownPlayerItem } from '@/models/noctown/NoctownPlayerItem.js';
+import { NoctownWallet } from '@/models/noctown/NoctownWallet.js';
+import { NoctownQuest } from '@/models/noctown/NoctownQuest.js';
+import { NoctownNpc } from '@/models/noctown/NoctownNpc.js';
+import { NoctownPlacedItem } from '@/models/noctown/NoctownPlacedItem.js';
+import { NoctownDroppedItem } from '@/models/noctown/NoctownDroppedItem.js';
+import { NoctownWorld } from '@/models/noctown/NoctownWorld.js';
+import { NoctownWorldChunk } from '@/models/noctown/NoctownWorldChunk.js';
+import { NoctownPlayerScore } from '@/models/noctown/NoctownPlayerScore.js';
+import { NoctownPlayerStatistics } from '@/models/noctown/NoctownPlayerStatistics.js';
+import { NoctownFarmPlot } from '@/models/noctown/NoctownFarmPlot.js';
+import { NoctownCrop } from '@/models/noctown/NoctownCrop.js';
+import { NoctownChicken } from '@/models/noctown/NoctownChicken.js';
+import { NoctownCow } from '@/models/noctown/NoctownCow.js';
+import { NoctownRecipe } from '@/models/noctown/NoctownRecipe.js';
+import { NoctownRecipeIngredient } from '@/models/noctown/NoctownRecipeIngredient.js';
+import { NoctownTrade } from '@/models/noctown/NoctownTrade.js';
+import { NoctownTradeItem } from '@/models/noctown/NoctownTradeItem.js';
+import { NoctownInteriorMap } from '@/models/noctown/NoctownInteriorMap.js';
+import { NoctownShopInventory } from '@/models/noctown/NoctownShopInventory.js';
+import { NoctownTreasureChest } from '@/models/noctown/NoctownTreasureChest.js';
+import { NoctownHouse } from '@/models/noctown/NoctownHouse.js';
+import { NoctownHouseWallItem } from '@/models/noctown/NoctownHouseWallItem.js';
+import { NoctownHouseFurniture } from '@/models/noctown/NoctownHouseFurniture.js';
+import { NoctownBulletinBoard } from '@/models/noctown/NoctownBulletinBoard.js';
+import { NoctownBulletinPost } from '@/models/noctown/NoctownBulletinPost.js';
+import { NoctownBulletinLike } from '@/models/noctown/NoctownBulletinLike.js';
+import { NoctownAgent } from '@/models/noctown/NoctownAgent.js';
+import { NoctownGacha } from '@/models/noctown/NoctownGacha.js';
+import { NoctownGachaItem } from '@/models/noctown/NoctownGachaItem.js';
+import { NoctownGachaPull } from '@/models/noctown/NoctownGachaPull.js';
+import { NoctownEvent } from '@/models/noctown/NoctownEvent.js';
+import { NoctownEventReward } from '@/models/noctown/NoctownEventReward.js';
+import { NoctownEventParticipation } from '@/models/noctown/NoctownEventParticipation.js';
+import { NoctownUniqueItem } from '@/models/noctown/NoctownUniqueItem.js';
+import { NoctownRankingBoard } from '@/models/noctown/NoctownRankingBoard.js';
+
 pg.types.setTypeParser(20, Number);
 
 export const dbLogger = new MisskeyLogger('db');
@@ -265,6 +305,45 @@ export const entities = [
 	MiReversiGame,
 	MiDrawingRoomSettings,
 	MiDrawingUserSettings,
+	// Noctown entities
+	NoctownPlayer,
+	NoctownItem,
+	NoctownPlayerItem,
+	NoctownWallet,
+	NoctownQuest,
+	NoctownNpc,
+	NoctownPlacedItem,
+	NoctownDroppedItem,
+	NoctownWorld,
+	NoctownWorldChunk,
+	NoctownPlayerScore,
+	NoctownPlayerStatistics,
+	NoctownFarmPlot,
+	NoctownCrop,
+	NoctownChicken,
+	NoctownCow,
+	NoctownRecipe,
+	NoctownRecipeIngredient,
+	NoctownTrade,
+	NoctownTradeItem,
+	NoctownInteriorMap,
+	NoctownShopInventory,
+	NoctownTreasureChest,
+	NoctownHouse,
+	NoctownHouseWallItem,
+	NoctownHouseFurniture,
+	NoctownBulletinBoard,
+	NoctownBulletinPost,
+	NoctownBulletinLike,
+	NoctownAgent,
+	NoctownGacha,
+	NoctownGachaItem,
+	NoctownGachaPull,
+	NoctownEvent,
+	NoctownEventReward,
+	NoctownEventParticipation,
+	NoctownUniqueItem,
+	NoctownRankingBoard,
 	...charts,
 ];
 
