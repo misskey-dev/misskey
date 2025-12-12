@@ -57,6 +57,9 @@
 					"options": {
 						"style": "separatedType"
 					}
+				},
+				"noNonNullAssertion": {
+					"level": "off"
 				}
 			},
 			"suspicious": {
@@ -80,6 +83,9 @@
 			},
 			"complexity": {
 				"noUselessContinue": {
+					"level": "off"
+				},
+				"useLiteralKeys": {
 					"level": "off"
 				}
 			},
