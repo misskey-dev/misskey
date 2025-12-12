@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import type { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import type { UserListFavoritesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 

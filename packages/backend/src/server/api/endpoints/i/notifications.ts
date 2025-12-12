@@ -3,17 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import { In } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import type { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import type { IdService } from '@/core/IdService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
-import { DI } from '@/di-symbols.js';
-import type { NotesRepository } from '@/models/_.js';
-import { MiNotification } from '@/models/Notification.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { FilterUnionByProperty, notificationTypes, obsoleteNotificationTypes } from '@/types.js';
+import { notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],

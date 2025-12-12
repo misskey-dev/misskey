@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
+import { Injectable } from '@nestjs/common';
 import type { ChatService } from '@/core/ChatService.js';
 import type { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import type { IdService } from '@/core/IdService.js';
-import { DI } from '@/di-symbols.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 

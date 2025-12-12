@@ -54,9 +54,6 @@
 						"noUnusedVariables": {
 							"level": "off"
 						},
-						"noUnusedImports": {
-							"level": "off"
-						},
 						"noUnusedPrivateClassMembers": {
 							"level": "off"
 						}

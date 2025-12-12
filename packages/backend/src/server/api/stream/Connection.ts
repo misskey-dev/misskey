@@ -11,7 +11,6 @@ import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
-import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { MiFollowing, MiUserProfile } from '@/models/_.js';

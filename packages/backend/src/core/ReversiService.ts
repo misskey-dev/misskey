@@ -9,7 +9,7 @@ import type { ModuleRef } from '@nestjs/core';
 import type * as Redis from 'ioredis';
 import { reversiUpdateKeys } from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
-import { IsNull, LessThan, MoreThan } from 'typeorm';
+import { LessThan, MoreThan } from 'typeorm';
 import type { CacheService } from '@/core/CacheService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';

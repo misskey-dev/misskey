@@ -9,7 +9,6 @@ import type { GalleryPostEntityService } from '@/core/entities/GalleryPostEntity
 import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
 import { MiGalleryPost } from '@/models/GalleryPost.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 

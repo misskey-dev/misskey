@@ -4,7 +4,6 @@
  */
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Serialized } from '@/types.js';
 import { MiUser } from './User.js';
 import { id } from './util/id.js';
 

@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { Brackets } from 'typeorm';
 import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';

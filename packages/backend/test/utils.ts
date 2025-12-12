@@ -10,7 +10,7 @@ import { basename, isAbsolute } from 'node:path';
 import { inspect } from 'node:util';
 import Fastify from 'fastify';
 import type * as misskey from 'misskey-js';
-import fetch, { File, type Headers, type RequestInit, type Response } from 'node-fetch';
+import fetch, { type Headers, type RequestInit, type Response } from 'node-fetch';
 import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
 import WebSocket, { type ClientOptions } from 'ws';

@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type * as Bull from 'bullmq';
 import { In, LessThan } from 'typeorm';
 import type { Config } from '@/config.js';
 import type { IdService } from '@/core/IdService.js';

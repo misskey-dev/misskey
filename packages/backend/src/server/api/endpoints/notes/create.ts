@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { In } from 'typeorm';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { NoteCreateService } from '@/core/NoteCreateService.js';

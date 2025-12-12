@@ -5,7 +5,6 @@
 
 import { describe, jest, test } from '@jest/globals';
 import { Test, type TestingModule } from '@nestjs/testing';
-import { In } from 'typeorm';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { UserSearchService } from '@/core/UserSearchService.js';

@@ -8,7 +8,6 @@ import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityServ
 import type { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 

@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type * as Bull from 'bullmq';
 import type { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';

@@ -9,7 +9,7 @@ import type { IdService } from '@/core/IdService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
+import { RedisKVCache } from '@/misc/cache.js';
 import type { InstancesRepository } from '@/models/_.js';
 import type { MiInstance } from '@/models/Instance.js';
 

@@ -9,7 +9,6 @@ import type { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiChatRoomInvitation, MiChatRoomMembership, MiUser } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';

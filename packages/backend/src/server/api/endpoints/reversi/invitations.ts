@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { ReversiService } from '@/core/ReversiService.js';
-import { DI } from '@/di-symbols.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

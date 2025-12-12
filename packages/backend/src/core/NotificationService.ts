@@ -7,7 +7,6 @@ import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import { ReplyError } from 'ioredis';
-import { In } from 'typeorm';
 import type { Config } from '@/config.js';
 import type { CacheService } from '@/core/CacheService.js';
 import type { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
@@ -21,7 +20,7 @@ import { trackPromise } from '@/misc/promise-tracker.js';
 import type { UsersRepository } from '@/models/_.js';
 import type { MiNotification } from '@/models/Notification.js';
 import type { MiUser } from '@/models/User.js';
-import { type FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
+import type { FilterUnionByProperty, } from '@/types.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {

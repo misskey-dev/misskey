@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { reversiUpdateKeys } from 'misskey-js';
 import type { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import type { ReversiService } from '@/core/ReversiService.js';
 import { bindThis } from '@/decorators.js';
-import { DI } from '@/di-symbols.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { MiReversiGame } from '@/models/_.js';

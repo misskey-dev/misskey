@@ -4,7 +4,6 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type * as Bull from 'bullmq';
 import type DriveChart from '@/core/chart/charts/drive.js';
 import type NotesChart from '@/core/chart/charts/notes.js';
 import type UsersChart from '@/core/chart/charts/users.js';

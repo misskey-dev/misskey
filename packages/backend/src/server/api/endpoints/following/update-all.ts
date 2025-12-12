@@ -5,13 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
-import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['following', 'users'],

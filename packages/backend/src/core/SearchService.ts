@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { Index, MeiliSearch } from 'meilisearch';
-import { In } from 'typeorm';
 import type { Config, FulltextSearchProvider } from '@/config.js';
 import type { CacheService } from '@/core/CacheService.js';
 import type { IdService } from '@/core/IdService.js';

@@ -17,7 +17,7 @@ import type { QueryService } from '@/core/QueryService.js';
 import type { RoleService } from '@/core/RoleService.js';
 import type { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
-import type { ChannelFollowingsRepository, MiMeta, NotesRepository } from '@/models/_.js';
+import type { MiMeta, NotesRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';

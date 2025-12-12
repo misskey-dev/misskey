@@ -5,7 +5,6 @@
 
 import dns from 'node:dns/promises';
 import type { ServerResponse } from 'node:http';
-import { fileURLToPath } from 'node:url';
 import fastifyCors from '@fastify/cors';
 import fastifyExpress from '@fastify/express';
 import { Inject, Injectable } from '@nestjs/common';

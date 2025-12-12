@@ -14,7 +14,7 @@ import { Redis } from 'ioredis';
 import type { entities } from 'misskey-js';
 import type { Note, SignupResponse } from 'misskey-js/entities.js';
 import { loadConfig } from '@/config.js';
-import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, type UserToken, uploadUrl } from '../utils.js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, type UserToken, uploadUrl } from '../utils.js';
 
 function genHost() {
 	return randomString() + '.example.com';

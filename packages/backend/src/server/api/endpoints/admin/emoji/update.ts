@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, MiDriveFile, MiEmoji } from '@/models/_.js';
+import type { DriveFilesRepository, MiDriveFile, } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
