@@ -158,6 +158,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				oldest: null,
 				newest: null,
 				skipped: true,
+				transientErrors: 0,
 			});
 		});
 
@@ -172,6 +173,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				oldest: null,
 				newest: null,
 				skipped: false,
+				transientErrors: 0,
 			});
 		}, 3000);
 
@@ -199,6 +201,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				oldest: expect.any(Number),
 				newest: expect.any(Number),
 				skipped: false,
+				transientErrors: 0,
 			});
 
 			// Check side-by-side from all notes
@@ -267,6 +270,24 @@ describe('CleanRemoteNotesProcessorService', () => {
 			// Create old remote note that is clipped
 			const clippedNote = await createNote({
 				clippedCount: 1, // Clipped
+			}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(0);
+			expect(result.skipped).toBe(false);
+
+			const remainingNote = await notesRepository.findOneBy({ id: clippedNote.id });
+			expect(remainingNote).not.toBeNull();
+		});
+
+		// ページ
+		test('should not delete note that is embedded in a page', async () => {
+			const job = createMockJob();
+
+			// Create old remote note that is embedded in a page
+			const clippedNote = await createNote({
+				pageCount: 1, // Embedded in a page
 			}, bob, Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 1000);
 
 			const result = await service.process(job as any);

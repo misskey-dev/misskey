@@ -41,6 +41,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		scheduled: { type: 'boolean', nullable: true },
 	},
 	required: [],
 } as const;
@@ -57,6 +58,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery<MiNoteDraft>(this.noteDraftsRepository.createQueryBuilder('drafts'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('drafts.userId = :meId', { meId: me.id });
+
+			if (ps.scheduled === true) {
+				query.andWhere('drafts.isActuallyScheduled = true');
+			} else if (ps.scheduled === false) {
+				query.andWhere('drafts.isActuallyScheduled = false');
+			}
 
 			const drafts = await query
 				.limit(ps.limit)

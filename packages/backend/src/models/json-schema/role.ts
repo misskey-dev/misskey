@@ -317,6 +317,10 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
+		scheduledNoteLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
 		watermarkAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,

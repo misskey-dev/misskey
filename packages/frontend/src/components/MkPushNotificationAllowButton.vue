@@ -42,10 +42,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { instanceName } from '@@/js/config.js';
 import { $i } from '@/i.js';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance.js';
-import { apiWithDialog, promiseDialog } from '@/os.js';
+import { apiWithDialog, promiseDialog, alert } from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { getAccounts } from '@/accounts.js';
@@ -72,11 +73,28 @@ const supported = ref(false);
 const pushSubscription = ref<PushSubscription | null>(null);
 const pushRegistrationInServer = ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
 
-function subscribe() {
+async function subscribe() {
 	if (!registration.value || !supported.value || !instance.swPublickey) return;
 
+	if ('Notification' in window) {
+		let permission = Notification.permission;
+
+		if (Notification.permission === 'default') {
+			permission = await promiseDialog(Notification.requestPermission(), null, null, i18n.ts.pleaseAllowPushNotification);
+		}
+
+		if (permission !== 'granted') {
+			alert({
+				type: 'error',
+				title: i18n.ts.browserPushNotificationDisabled,
+				text: i18n.tsx.browserPushNotificationDisabledDescription({ serverName: instanceName }),
+			});
+			return;
+		}
+	}
+
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
-	return promiseDialog(registration.value.pushManager.subscribe({
+	await promiseDialog(registration.value.pushManager.subscribe({
 		userVisibleOnly: true,
 		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
 	})
@@ -90,7 +108,7 @@ function subscribe() {
 				publickey: encode(subscription.getKey('p256dh')),
 			});
 		}, async err => { // When subscribe failed
-		// 通知が許可されていなかったとき
+			// 通知が許可されていなかったとき
 			if (err?.name === 'NotAllowedError') {
 				console.info('User denied the notification permission request.');
 				return;
@@ -114,14 +132,13 @@ async function unsubscribe() {
 
 	if ($i && accounts.length >= 2) {
 		apiWithDialog('sw/unregister', {
-			i: $i.token,
 			endpoint,
-		});
+		}, $i.token);
 	} else {
 		pushSubscription.value.unsubscribe();
 		apiWithDialog('sw/unregister', {
 			endpoint,
-		});
+		}, null);
 		pushSubscription.value = null;
 	}
 }
@@ -134,7 +151,7 @@ function encode(buffer: ArrayBuffer | null) {
  * Convert the URL safe base64 string to a Uint8Array
  * @param base64String base64 string
  */
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string): BufferSource {
 	const padding = '='.repeat((4 - base64String.length % 4) % 4);
 	const base64 = (base64String + padding)
 		.replace(/-/g, '+')

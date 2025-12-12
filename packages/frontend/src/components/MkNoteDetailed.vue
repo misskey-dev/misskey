@@ -43,7 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		</div>
 	</div>
-	<article :class="$style.note" @contextmenu.stop="onContextmenu">
+	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
+		{{ i18n.ts.deletedNote }}
+	</div>
+	<article v-else :class="$style.note" @contextmenu.stop="onContextmenu">
 		<header :class="$style.noteHeader">
 			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
 			<div :class="$style.noteHeaderBody">
@@ -302,7 +305,7 @@ if (noteViewInterruptors.length > 0) {
 }
 
 const isRenote = Misskey.note.isPureRenote(note);
-const appearNote = getAppearNote(note);
+const appearNote = getAppearNote(note) ?? note;
 const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
 	note: appearNote,
 	parentNote: note,
@@ -392,6 +395,9 @@ const reactionsPaginator = markRaw(new Paginator('notes/reactions', {
 }));
 
 useTooltip(renoteButton, async (showing) => {
+	const anchorElement = renoteButton.value;
+	if (anchorElement == null) return;
+
 	const renotes = await misskeyApi('notes/renotes', {
 		noteId: appearNote.id,
 		limit: 11,
@@ -405,7 +411,7 @@ useTooltip(renoteButton, async (showing) => {
 		showing,
 		users,
 		count: appearNote.renoteCount,
-		targetElement: renoteButton.value,
+		anchorElement: anchorElement,
 	}, {
 		closed: () => dispose(),
 	});
@@ -428,7 +434,7 @@ if (appearNote.reactionAcceptance === 'likeOnly') {
 			reaction: '❤️',
 			users,
 			count: $appearNote.reactionCount,
-			targetElement: reactButton.value!,
+			anchorElement: reactButton.value!,
 		}, {
 			closed: () => dispose(),
 		});
@@ -940,5 +946,15 @@ function loadConversation() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.deleted {
+	text-align: center;
+	padding: 32px;
+	margin: 6px 32px 32px;
+	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	border-radius: 8px;
 }
 </style>

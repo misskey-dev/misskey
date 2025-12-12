@@ -26,7 +26,7 @@ initChart();
 
 const chartEl = useTemplateRef('chartEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const chartLimit = 7;
 const fetching = ref(true);
 
@@ -36,6 +36,8 @@ async function renderChart() {
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
+
+	if (chartEl.value == null) return;
 
 	const getDate = (ago: number) => {
 		const y = now.getFullYear();
@@ -105,7 +107,6 @@ async function renderChart() {
 					type: 'time',
 					offset: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -149,7 +150,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

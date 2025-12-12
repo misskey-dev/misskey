@@ -10,7 +10,7 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "ES2022",
+		"module": "esnext",
 		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
@@ -22,6 +22,7 @@
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
 		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
@@ -35,6 +36,7 @@
 		],
 		"types": [
 			"vite/client",
+			"vite-plugin-glsl/ext",
 			"vitest/importMeta",
 		],
 		"lib": [
@@ -46,8 +48,6 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		"./build.ts",
-		"./lib/**/*.ts",
 		"./src/**/*.ts",
 		"./src/**/*.vue",
 		"./test/**/*.ts",
@@ -55,6 +55,6 @@
 		"./@types/**/*.ts"
 	],
 	"exclude": [
-		".storybook/**/*"
+		"./src/**/*.stories.ts"
 	]
 }

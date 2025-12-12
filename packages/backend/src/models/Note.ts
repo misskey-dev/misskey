@@ -114,6 +114,13 @@ export class MiNote {
 	})
 	public clippedCount: number;
 
+	// The number of note page blocks referencing this note.
+	// This column is used by Remote Note Cleaning and manually updated rather than automatically with triggers.
+	@Column('smallint', {
+		default: 0,
+	})
+	public pageCount: number;
+
 	@Column('jsonb', {
 		default: {},
 	})
@@ -240,6 +247,14 @@ export class MiNote {
 		comment: '[Denormalized]',
 	})
 	public renoteUserHost: string | null;
+
+	@Column({
+		...id(),
+		nullable: true,
+		comment: '[Denormalized]',
+	})
+	public renoteChannelId: MiChannel['id'] | null;
+	//#endregion
 
 	constructor(data: Partial<MiNote>) {
 		if (data == null) return;

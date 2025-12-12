@@ -186,7 +186,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	}
 
 	private createBody(mono: Mono, x: number, y: number) {
-		const options: Matter.IBodyDefinition = {
+		const options = {
 			label: mono.id,
 			density: this.gameMode === 'space' ? 0.01 : ((mono.sizeX * mono.sizeY) / 10000),
 			restitution: this.gameMode === 'space' ? 0.5 : 0.2,
@@ -196,7 +196,7 @@ export class DropAndFusionGame extends EventEmitter<{
 			slop: this.gameMode === 'space' ? 0.01 : 0.7,
 			//mass: 0,
 			render: this.getMonoRenderOptions ? this.getMonoRenderOptions(mono) : undefined,
-		};
+		} satisfies Matter.IChamferableBodyDefinition;
 		if (mono.shape === 'circle') {
 			return Matter.Bodies.circle(x, y, mono.sizeX / 2, options);
 		} else if (mono.shape === 'rectangle') {
