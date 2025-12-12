@@ -393,7 +393,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				imageObject,
 			);
-			assert.ok(driveFile && driveFile.isLink);
+			assert.ok(driveFile?.isLink);
 
 			const sensitiveImageObject: IApDocument = {
 				type: 'Document',
@@ -406,7 +406,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(sensitiveDriveFile && sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile?.isLink);
 		});
 
 		test('cacheRemoteSensitiveFiles=false only affects sensitive files', async () => {
@@ -435,7 +435,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(sensitiveDriveFile && sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile?.isLink);
 		});
 
 		test('Link is not an attachment files', async () => {

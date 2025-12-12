@@ -166,7 +166,7 @@ export class NoteEntityService implements OnModuleInit {
 				} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
 					// 自分の投稿に対するリプライ
 					hide = false;
-				} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
+				} else if (packedNote.mentions?.some(id => meId === id)) {
 					// 自分へのメンション
 					hide = false;
 				} else {
@@ -300,7 +300,7 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (note.reply && (meId === note.reply.userId)) {
 				// 自分の投稿に対するリプライ
 				return true;
-			} else if (note.mentions && note.mentions.some(id => meId === id)) {
+			} else if (note.mentions.some(id => meId === id)) {
 				// 自分へのメンション
 				return true;
 			} else {

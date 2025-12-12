@@ -16,7 +16,7 @@ export function UserPage(props: CommonProps<{
 	const title = props.user.name ? `${props.user.name} (@${props.user.username}${props.user.host ? `@${props.user.host}` : ''})` : `@${props.user.username}${props.user.host ? `@${props.user.host}` : ''}`;
 	const me = props.profile.fields
 		? props.profile.fields
-			.filter(field => field.value != null && field.value.match(/^https?:/))
+			.filter(field => field.value?.match(/^https?:/))
 			.map(field => field.value)
 		: [];
 

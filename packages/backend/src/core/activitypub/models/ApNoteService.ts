@@ -172,7 +172,7 @@ export class ApNoteService {
 		// ローカルで投稿者を検索し、もし凍結されていたらスキップ
 		// eslint-disable-next-line no-param-reassign
 		actor ??= await this.apPersonService.fetchPerson(uri) as MiRemoteUser | undefined;
-		if (actor && actor.isSuspended) {
+		if (actor?.isSuspended) {
 			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
 		}
 
@@ -282,7 +282,7 @@ export class ApNoteService {
 		}
 
 		// vote
-		if (reply && reply.hasPoll) {
+		if (reply?.hasPoll) {
 			const poll = await this.pollsRepository.findOneByOrFail({ noteId: reply.id });
 
 			const tryCreateVote = async (name: string, index: number): Promise<null> => {

@@ -258,7 +258,7 @@ export class ApPersonService implements OnModuleInit {
 			// icon and image may be arrays
 			// see https://www.w3.org/TR/activitystreams-vocabulary/#dfn-icon
 			if (Array.isArray(img)) {
-				img = img.find(item => item && item.url) ?? null;
+				img = img.find(item => item?.url) ?? null;
 			}
 
 			// if we have an explicitly missing image, return an

@@ -44,7 +44,7 @@ export class ReactionsBufferingService implements OnApplicationShutdown {
 			switch (type) {
 				case 'metaUpdated': {
 					// リアクションバッファリングが有効→無効になったら即bake
-					if (body.before != null && body.before.enableReactionsBuffering && !body.after.enableReactionsBuffering) {
+					if (body.before?.enableReactionsBuffering && !body.after.enableReactionsBuffering) {
 						this.bake();
 					}
 					break;

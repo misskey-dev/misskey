@@ -35,7 +35,7 @@ class MainChannel extends Channel {
 					if (isUserFromMutedInstance(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 					if (data.body.userId && this.userIdsWhoMeMuting.has(data.body.userId)) return;
 
-					if (data.body.note && data.body.note.isHidden) {
+					if (data.body.note?.isHidden) {
 						const note = await this.noteEntityService.pack(data.body.note.id, this.user, {
 							detail: true,
 						});

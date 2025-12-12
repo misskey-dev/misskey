@@ -72,9 +72,6 @@
 					"suspicious": {
 						"noConfusingVoidType": "off",
 						"noGlobalIsNan": "off"
-					},
-					"complexity": {
-						"useOptionalChain": "off"
 					}
 				}
 			}

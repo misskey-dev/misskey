@@ -489,12 +489,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// ローカルのみをRenoteしたらローカルのみにする
-		if (data.renote && data.renote.localOnly && data.channel == null) {
+		if (data.renote?.localOnly && data.channel == null) {
 			data.localOnly = true;
 		}
 
 		// ローカルのみにリプライしたらローカルのみにする
-		if (data.reply && data.reply.localOnly && data.channel == null) {
+		if (data.reply?.localOnly && data.channel == null) {
 			data.localOnly = true;
 		}
 
@@ -518,7 +518,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (!tags || !emojis || !mentionedUsers) {
 			const tokens = (data.text ? mfm.parse(data.text)! : []);
 			const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
-			const choiceTokens = data.poll && data.poll.choices
+			const choiceTokens = data.poll?.choices
 				? concat(data.poll.choices.map(choice => mfm.parse(choice)!))
 				: [];
 
@@ -743,7 +743,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.incRenoteCount(data.renote);
 		}
 
-		if (data.poll && data.poll.expiresAt) {
+		if (data.poll?.expiresAt) {
 			const delay = data.poll.expiresAt.getTime() - Date.now();
 			this.queueService.endedPollNotificationQueue.add(note.id, {
 				noteId: note.id,

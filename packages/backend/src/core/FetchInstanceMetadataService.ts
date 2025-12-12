@@ -83,7 +83,7 @@ export class FetchInstanceMetadataService {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetchOrRegister(host);
 				const now = Date.now();
-				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
+				if (_instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
 					// unlock at the finally caluse
 					return;
 				}
@@ -231,7 +231,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchIconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
-		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
+		if (manifest?.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
 			const url = 'https://' + instance.host;
 			return (new URL(manifest.icons[0].src, url)).href;
 		}
@@ -272,7 +272,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async getSiteName(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
-		if (info && info.metadata) {
+		if (info?.metadata) {
 			if (typeof info.metadata.nodeName === 'string') {
 				return info.metadata.nodeName;
 			} else if (typeof info.metadata.name === 'string') {
@@ -297,7 +297,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async getDescription(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
-		if (info && info.metadata) {
+		if (info?.metadata) {
 			if (typeof info.metadata.nodeDescription === 'string') {
 				return info.metadata.nodeDescription;
 			} else if (typeof info.metadata.description === 'string') {

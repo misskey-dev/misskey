@@ -41,8 +41,8 @@ export class ReversiGameEntityService {
 		return await awaitAll({
 			id: game.id,
 			createdAt: this.idService.parse(game.id).date.toISOString(),
-			startedAt: game.startedAt && game.startedAt.toISOString(),
-			endedAt: game.endedAt && game.endedAt.toISOString(),
+			startedAt: game.startedAt?.toISOString() ?? null,
+			endedAt: game.endedAt?.toISOString() ?? null,
 			isStarted: game.isStarted,
 			isEnded: game.isEnded,
 			form1: game.form1,
@@ -103,8 +103,8 @@ export class ReversiGameEntityService {
 		return await awaitAll({
 			id: game.id,
 			createdAt: this.idService.parse(game.id).date.toISOString(),
-			startedAt: game.startedAt && game.startedAt.toISOString(),
-			endedAt: game.endedAt && game.endedAt.toISOString(),
+			startedAt: game.startedAt?.toISOString() ?? null,
+			endedAt: game.endedAt?.toISOString() ?? null,
 			isStarted: game.isStarted,
 			isEnded: game.isEnded,
 			user1Id: game.user1Id,

@@ -638,7 +638,7 @@ export class ClientServerService {
 				id: request.params.clip,
 			});
 
-			if (clip && clip.isPublic) {
+			if (clip?.isPublic) {
 				const _clip = await this.clipEntityService.pack(clip);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
 				reply.header('Cache-Control', 'public, max-age=15');

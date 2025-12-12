@@ -224,7 +224,7 @@ export class CheckModeratorsActivityProcessorService {
 		const mail = generateModeratorInactivityMail(remainingTime);
 		for (const moderator of moderators) {
 			const profile = moderatorProfiles.get(moderator.id);
-			if (profile && profile.email && profile.emailVerified) {
+			if (profile?.email && profile.emailVerified) {
 				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text);
 			}
 		}
@@ -257,7 +257,7 @@ export class CheckModeratorsActivityProcessorService {
 			});
 
 			const profile = moderatorProfiles.get(moderator.id);
-			if (profile && profile.email && profile.emailVerified) {
+			if (profile?.email && profile.emailVerified) {
 				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text);
 			}
 		}

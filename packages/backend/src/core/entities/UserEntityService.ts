@@ -463,12 +463,12 @@ export class UserEntityService implements OnModuleInit {
 
 		const followingCount = profile == null ? null :
 			(profile.followingVisibility === 'public') || isMe || iAmModerator ? user.followingCount :
-			(profile.followingVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
+			(profile.followingVisibility === 'followers') && (relation?.isFollowing) ? user.followingCount :
 			null;
 
 		const followersCount = profile == null ? null :
 			(profile.followersVisibility === 'public') || isMe || iAmModerator ? user.followersCount :
-			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
+			(profile.followersVisibility === 'followers') && (relation?.isFollowing) ? user.followersCount :
 			null;
 
 		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : undefined;

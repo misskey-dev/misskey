@@ -259,7 +259,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(signinResponse.body.next, 'passkey');
 		assert.notEqual(signinResponse.body.authRequest.challenge, undefined);
 		assert.notEqual(signinResponse.body.authRequest.allowCredentials, undefined);
-		assert.strictEqual(signinResponse.body.authRequest.allowCredentials && signinResponse.body.authRequest.allowCredentials[0]?.id, credentialId.toString('base64url'));
+		assert.strictEqual(signinResponse.body.authRequest.allowCredentials?.[0]?.id, credentialId.toString('base64url'));
 
 		const signinResponse2 = await api('signin-flow', signinWithSecurityKeyParam({
 			keyName,
