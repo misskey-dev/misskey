@@ -53,9 +53,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['language', 'locale']">
-			<MkSelect v-model="profile.lang">
+			<MkSelect v-model="profile.lang" :items="Object.entries(langmap).map(([code, def]) => ({ label: def.nativeName, value: code }))">
 				<template #label><SearchLabel>{{ i18n.ts.language }}</SearchLabel></template>
-				<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
 			</MkSelect>
 		</SearchMarker>
 
@@ -117,13 +116,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['reaction']">
-			<MkSelect v-model="reactionAcceptance">
+			<MkSelect
+				v-model="reactionAcceptance"
+				:items="[
+					{ label: i18n.ts.all, value: null },
+					{ label: i18n.ts.likeOnlyForRemote, value: 'likeOnlyForRemote' },
+					{ label: i18n.ts.nonSensitiveOnly, value: 'nonSensitiveOnly' },
+					{ label: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote, value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' },
+					{ label: i18n.ts.likeOnly, value: 'likeOnly' },
+				]"
+			>
 				<template #label><SearchLabel>{{ i18n.ts.reactionAcceptance }}</SearchLabel></template>
-				<option :value="null">{{ i18n.ts.all }}</option>
-				<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
-				<option value="nonSensitiveOnly">{{ i18n.ts.nonSensitiveOnly }}</option>
-				<option value="nonSensitiveOnlyForLocalLikeOnlyForRemote">{{ i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote }}</option>
-				<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
 			</MkSelect>
 		</SearchMarker>
 
@@ -148,6 +151,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</SearchMarker>
+
+		<hr>
+
+		<SearchMarker :keywords="['qrcode']">
+			<FormLink to="/qr">
+				<template #icon><i class="ti ti-qrcode"></i></template>
+				<SearchLabel>{{ i18n.ts.qr }}</SearchLabel>
+			</FormLink>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -161,6 +173,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
+import FormLink from '@/components/form/link.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';

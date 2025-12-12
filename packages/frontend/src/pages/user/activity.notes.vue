@@ -116,7 +116,6 @@ async function renderChart() {
 					offset: true,
 					stacked: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -161,7 +160,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],

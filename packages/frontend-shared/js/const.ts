@@ -54,68 +54,6 @@ https://github.com/sindresorhus/file-type/blob/main/core.js
 https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
 */
 
-export const notificationTypes = [
-	'note',
-	'follow',
-	'mention',
-	'reply',
-	'renote',
-	'quote',
-	'reaction',
-	'pollEnded',
-	'receiveFollowRequest',
-	'followRequestAccepted',
-	'roleAssigned',
-	'chatRoomInvitationReceived',
-	'achievementEarned',
-	'exportCompleted',
-	'login',
-	'createToken',
-	'test',
-	'app',
-] as const;
-export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
-
-export const ROLE_POLICIES = [
-	'gtlAvailable',
-	'ltlAvailable',
-	'canPublicNote',
-	'mentionLimit',
-	'canInvite',
-	'inviteLimit',
-	'inviteLimitCycle',
-	'inviteExpirationTime',
-	'canManageCustomEmojis',
-	'canManageAvatarDecorations',
-	'canSearchNotes',
-	'canSearchUsers',
-	'canUseTranslator',
-	'canHideAds',
-	'driveCapacityMb',
-	'maxFileSizeMb',
-	'alwaysMarkNsfw',
-	'canUpdateBioMedia',
-	'pinLimit',
-	'antennaLimit',
-	'wordMuteLimit',
-	'webhookLimit',
-	'clipLimit',
-	'noteEachClipsLimit',
-	'userListLimit',
-	'userEachUserListsLimit',
-	'rateLimitFactor',
-	'avatarDecorationLimit',
-	'canImportAntennas',
-	'canImportBlocking',
-	'canImportFollowing',
-	'canImportMuting',
-	'canImportUserLists',
-	'chatAvailability',
-	'uploadableFileTypes',
-	'noteDraftLimit',
-	'watermarkAvailable',
-] as const;
-
 export const MFM_TAGS = ['tada', 'jelly', 'twitch', 'shake', 'spin', 'jump', 'bounce', 'flip', 'x2', 'x3', 'x4', 'scale', 'position', 'fg', 'bg', 'border', 'font', 'blur', 'rainbow', 'sparkle', 'rotate', 'ruby', 'unixtime'];
 export const MFM_PARAMS: Record<typeof MFM_TAGS[number], string[]> = {
 	tada: ['speed=', 'delay='],

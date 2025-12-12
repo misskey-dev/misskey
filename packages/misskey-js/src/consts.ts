@@ -17,7 +17,28 @@ import type {
 	ChatRoom,
 } from './autogen/models.js';
 
-export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'roleAssigned', 'chatRoomInvitationReceived', 'achievementEarned'] as const;
+export const notificationTypes = [
+	'note',
+	'follow',
+	'mention',
+	'reply',
+	'renote',
+	'quote',
+	'reaction',
+	'pollEnded',
+	'scheduledNotePosted',
+	'scheduledNotePostFailed',
+	'receiveFollowRequest',
+	'followRequestAccepted',
+	'app',
+	'roleAssigned',
+	'chatRoomInvitationReceived',
+	'achievementEarned',
+	'exportCompleted',
+	'test',
+	'login',
+	'createToken',
+] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
@@ -170,9 +191,51 @@ export const moderationLogTypes = [
 	'updateProxyAccountDescription',
 ] as const;
 
+export const rolePolicies = [
+	'gtlAvailable',
+	'ltlAvailable',
+	'canPublicNote',
+	'mentionLimit',
+	'canInvite',
+	'inviteLimit',
+	'inviteLimitCycle',
+	'inviteExpirationTime',
+	'canManageCustomEmojis',
+	'canManageAvatarDecorations',
+	'canSearchNotes',
+	'canSearchUsers',
+	'canUseTranslator',
+	'canHideAds',
+	'driveCapacityMb',
+	'maxFileSizeMb',
+	'alwaysMarkNsfw',
+	'canUpdateBioMedia',
+	'pinLimit',
+	'antennaLimit',
+	'wordMuteLimit',
+	'webhookLimit',
+	'clipLimit',
+	'noteEachClipsLimit',
+	'userListLimit',
+	'userEachUserListsLimit',
+	'rateLimitFactor',
+	'avatarDecorationLimit',
+	'canImportAntennas',
+	'canImportBlocking',
+	'canImportFollowing',
+	'canImportMuting',
+	'canImportUserLists',
+	'chatAvailability',
+	'uploadableFileTypes',
+	'noteDraftLimit',
+	'scheduledNoteLimit',
+	'watermarkAvailable',
+] as const;
+
 export const queueTypes = [
 	'system',
 	'endedPollNotification',
+	'postScheduledNote',
 	'deliver',
 	'inbox',
 	'db',
