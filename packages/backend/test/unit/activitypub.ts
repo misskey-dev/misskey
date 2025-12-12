@@ -21,7 +21,6 @@ import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/ac
 import { CoreModule } from '@/core/CoreModule.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { LoggerService } from '@/core/LoggerService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { genAidx } from '@/misc/id/aidx.js';
@@ -150,7 +149,7 @@ describe('ActivityPub', () => {
 		rendererService = app.get<ApRendererService>(ApRendererService);
 		imageService = app.get<ApImageService>(ApImageService);
 		jsonLdService = app.get<JsonLdService>(JsonLdService);
-		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
+		resolver = new MockResolver();
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
 		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);

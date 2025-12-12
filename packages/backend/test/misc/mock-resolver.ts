@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Config } from '@/config.js';
 import type { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import type { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { Resolver } from '@/core/activitypub/ApResolverService.js';
 import type { IObject } from '@/core/activitypub/type.js';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { LoggerService } from '@/core/LoggerService.js';
 import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
@@ -32,9 +30,8 @@ export class MockResolver extends Resolver {
 	#responseMap = new Map<string, MockResponse>();
 	#remoteGetTrials: string[] = [];
 
-	constructor(loggerService: LoggerService) {
+	constructor() {
 		super(
-			{} as Config,
 			{} as MiMeta,
 			{} as UsersRepository,
 			{} as NotesRepository,
@@ -46,8 +43,7 @@ export class MockResolver extends Resolver {
 			{} as ApRequestService,
 			{} as HttpRequestService,
 			{} as ApRendererService,
-			{} as ApDbResolverService,
-			loggerService,
+			{} as ApDbResolverService
 		);
 	}
 

@@ -4,13 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { VerifiedAuthenticationResponse, VerifiedRegistrationResponse } from '@simplewebauthn/server';
 import {
 	generateAuthenticationOptions,
 	generateRegistrationOptions, verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
-import type { VerifiedAuthenticationResponse } from '@simplewebauthn/server/esm/authentication/verifyAuthenticationResponse.js';
-import type { VerifiedRegistrationResponse } from '@simplewebauthn/server/esm/registration/verifyRegistrationResponse.js';
 import { type AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
 import type {
 	AuthenticationResponseJSON,
