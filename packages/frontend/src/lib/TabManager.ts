@@ -10,7 +10,7 @@ import { BroadcastChannel } from 'broadcast-channel';
 type TabState = {
 	id: string;
 	lastActiveTime: number; // ユーザーが最後に操作した時間
-	lastHeartbeat: number;  // 最後に生存報告を受け取った時間
+	lastHeartbeat: number; // 最後に生存報告を受け取った時間
 };
 
 type BroadcastMessage = {
@@ -44,7 +44,7 @@ export class TabManager extends EventEmitter<EventTypes> {
 	// 定数設定
 	private readonly BROADCAST_CHANNEL_NAME = 'tabSync';
 	private readonly HEARTBEAT_INTERVAL = 1000; // 1秒ごとに定期処理
-	private readonly PEER_TIMEOUT = 3000;       // 3秒連絡がなければ死亡とみなす
+	private readonly PEER_TIMEOUT = 3000; // 3秒連絡がなければ死亡とみなす
 
 	constructor(tabId: string) {
 		super();
@@ -183,7 +183,7 @@ export class TabManager extends EventEmitter<EventTypes> {
 
 		if (this.isMain !== amILeader) {
 			this.isMain = amILeader;
-			if (window.document.hasFocus()) {
+			if (window.document.hasFocus() && 'requestIdleCallback' in window) {
 				window.requestIdleCallback(() => {
 					this.onChangeStatus(this.isMain);
 				}, { timeout: 100 });
@@ -208,7 +208,7 @@ export class TabManager extends EventEmitter<EventTypes> {
 	 * リソースの解放
 	 */
 	public destroy() {
-		if (this.heartbeatIntervalId != null) clearInterval(this.heartbeatIntervalId);
+		if (this.heartbeatIntervalId != null) window.clearInterval(this.heartbeatIntervalId);
 		window.removeEventListener('focus', this.updateActivity);
 		window.removeEventListener('click', this.updateActivity);
 		window.removeEventListener('keydown', this.updateActivity);
