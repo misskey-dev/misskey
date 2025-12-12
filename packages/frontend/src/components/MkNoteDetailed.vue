@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-if="!muted && !isDeleted"
+	v-if="!muted && !hideByPlugin && !isDeleted"
 	ref="rootEl"
 	v-hotkey="keymap"
 	:class="$style.root"
@@ -292,6 +292,7 @@ let note = deepClone(props.note);
 
 // plugin
 const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+const hideByPlugin = ref(false);
 if (noteViewInterruptors.length > 0) {
 	let result: Misskey.entities.Note | null = deepClone(note);
 	for (const interruptor of noteViewInterruptors) {
@@ -301,7 +302,11 @@ if (noteViewInterruptors.length > 0) {
 			console.error(err);
 		}
 	}
-	note = result as Misskey.entities.Note;
+	if (result == null) {
+		hideByPlugin.value = true;
+	} else {
+		note = result as Misskey.entities.Note;
+	}
 }
 
 const isRenote = Misskey.note.isPureRenote(note);
