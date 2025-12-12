@@ -166,6 +166,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -185,6 +186,7 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
+import { replaceCurrentAccountData, updateCurrentAccount } from '@/accounts.js';
 
 const $i = ensureSignin();
 
@@ -260,7 +262,10 @@ function save() {
 			title: i18n.ts.yourNameContainsProhibitedWords,
 			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
 		},
+	}).then((res) => {
+		replaceCurrentAccountData(res);
 	});
+
 	claimAchievement('profileFilled');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
 		claimAchievement('setNameToSyuilo');
@@ -270,18 +275,20 @@ function save() {
 	}
 }
 
-function changeAvatar(ev) {
-	async function done(driveFile) {
+function changeAvatar(ev: MouseEvent) {
+	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: driveFile.id,
 		}, undefined, {
-			'AVATAR_IS_SENSITIVE': {
+			'71bb5e53-4742-4609-b465-36081e131208': {
 				title: i18n.ts.cannotSelectSensitiveMedia,
 				text: i18n.ts.cannotSelectSensitiveMediaDescription,
 			},
 		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
+		updateCurrentAccount({
+			avatarId: i.avatarId,
+			avatarUrl: i.avatarUrl,
+		});
 		claimAchievement('profileFilled');
 	}
 
@@ -317,7 +324,7 @@ function changeAvatar(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			chooseDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false, excludeSensitive: true }).then(files => {
 				done(files[0]);
 			});
 		},
@@ -330,27 +337,31 @@ function changeAvatar(ev) {
 				action: () => {
 					os.apiWithDialog('i/update', {
 						avatarId: null,
-					}).then(() => {
-						$i.avatarId = null;
-						$i.avatarUrl = null;
+					}).then((res) => {
+						updateCurrentAccount({
+							avatarId: res.avatarId,
+							avatarUrl: res.avatarUrl,
+						});
 					});
 				},
 			},
 		] : [])], ev.currentTarget ?? ev.target);
 }
 
-function changeBanner(ev) {
-	async function done(driveFile) {
+function changeBanner(ev: MouseEvent) {
+	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: driveFile.id,
 		}, undefined, {
-			'BANNER_IS_SENSITIVE': {
+			'e148b34c-9f33-4300-93e0-7817008fb366': {
 				title: i18n.ts.cannotSelectSensitiveMedia,
 				text: i18n.ts.cannotSelectSensitiveMediaDescription,
 			},
 		});
-		$i.bannerId = i.bannerId;
-		$i.bannerUrl = i.bannerUrl;
+		updateCurrentAccount({
+			bannerId: i.bannerId,
+			bannerUrl: i.bannerUrl,
+		});
 	}
 
 	os.popupMenu([{
@@ -385,7 +396,7 @@ function changeBanner(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			chooseDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false, excludeSensitive: true }).then(files => {
 				done(files[0]);
 			});
 		},
@@ -398,9 +409,11 @@ function changeBanner(ev) {
 				action: () => {
 					os.apiWithDialog('i/update', {
 						bannerId: null,
-					}).then(() => {
-						$i.bannerId = null;
-						$i.bannerUrl = null;
+					}).then((res) => {
+						updateCurrentAccount({
+							bannerId: res.bannerId,
+							bannerUrl: res.bannerUrl,
+						});
 					});
 				},
 			},
