@@ -7,8 +7,8 @@ import type { INestApplicationContext } from '@nestjs/common';
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import { setTimeout } from 'node:timers/promises';
-import * as assert from 'assert';
 import type * as misskey from 'misskey-js';
 import { jobQueue } from '@/boot/common.js';
 import { loadConfig } from '@/config.js';

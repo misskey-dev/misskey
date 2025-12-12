@@ -5,7 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { relativeFetch } from '../utils.js';
 
 describe('nodeinfo', () => {

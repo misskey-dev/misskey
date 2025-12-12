@@ -63,11 +63,6 @@
 						"noUnusedPrivateClassMembers": {
 							"level": "off"
 						}
-					},
-					"style": {
-						"useNodejsImportProtocol": {
-							"fix": "safe"
-						}
 					}
 				}
 			}

@@ -5,6 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import * as crypto from 'node:crypto';
 import type {
 	AuthenticationResponseJSON,
@@ -14,7 +15,6 @@ import type {
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
-import * as assert from 'assert';
 import cbor from 'cbor';
 import type * as misskey from 'misskey-js';
 import * as OTPAuth from 'otpauth';

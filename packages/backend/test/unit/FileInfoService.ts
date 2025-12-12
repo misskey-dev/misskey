@@ -5,12 +5,12 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, test } from '@jest/globals';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import * as assert from 'assert';
 import type { MockMetadata } from 'jest-mock';
 import { ModuleMocker } from 'jest-mock';
 //import { DI } from '@/di-symbols.js';

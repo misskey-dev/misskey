@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EventEmitter } from 'node:events';
 import type * as http from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
-import { EventEmitter } from 'events';
 import type * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
 import type { CacheService } from '@/core/CacheService.js';

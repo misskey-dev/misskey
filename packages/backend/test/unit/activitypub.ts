@@ -5,12 +5,12 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
-import * as assert from 'assert';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { CONTEXT } from '@/core/activitypub/misc/contexts.js';

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { EventEmitter } from 'node:events';
 import { Inject, Injectable } from '@nestjs/common';
-import type { EventEmitter } from 'events';
 import type * as Redis from 'ioredis';
 import type * as Reversi from 'misskey-reversi';
 import type Emitter from 'strict-event-emitter-types';

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as assert from 'node:assert';
 import httpSignature from '@peertube/http-signature';
-import * as assert from 'assert';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from '@/core/activitypub/type.js';

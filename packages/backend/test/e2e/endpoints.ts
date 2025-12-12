@@ -5,7 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664

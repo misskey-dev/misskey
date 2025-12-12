@@ -5,9 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import type { jest } from '@jest/globals';
 import * as lolex from '@sinonjs/fake-timers';
-import * as assert from 'assert';
 import type * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { loadConfig } from '@/config.js';

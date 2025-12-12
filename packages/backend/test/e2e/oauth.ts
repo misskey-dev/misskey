@@ -10,7 +10,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import type * as misskey from 'misskey-js';
 import * as htmlParser from 'node-html-parser';

@@ -5,7 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
 import { api, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
 

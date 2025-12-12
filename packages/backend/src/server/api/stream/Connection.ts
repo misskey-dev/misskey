@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { EventEmitter } from 'events';
+import type { EventEmitter } from 'node:events';
 import type * as WebSocket from 'ws';
 import type { CacheService } from '@/core/CacheService.js';
 import type { ChannelFollowingService } from '@/core/ChannelFollowingService.js';

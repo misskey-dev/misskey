@@ -1,4 +1,4 @@
-import assert, { deepStrictEqual, strictEqual } from 'assert';
+import assert, { deepStrictEqual, strictEqual } from 'node:assert';
 import type * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, type LoginUser, resolveRemoteUser, sleep } from './utils.js';
 

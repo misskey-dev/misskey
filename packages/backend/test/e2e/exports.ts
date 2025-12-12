@@ -5,8 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import type { INestApplicationContext } from '@nestjs/common';
-import * as assert from 'assert';
 import type * as misskey from 'misskey-js';
 import { api, port, post, signup, startJobQueue } from '../utils.js';
 

@@ -8,8 +8,8 @@
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
+import * as assert from 'node:assert';
 import { setTimeout } from 'node:timers/promises';
-import * as assert from 'assert';
 import { Redis } from 'ioredis';
 import type { entities } from 'misskey-js';
 import type { Note, SignupResponse } from 'misskey-js/entities.js';

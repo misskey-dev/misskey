@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
-import { randomUUID } from 'crypto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull } from 'typeorm';
 import type { Config } from '@/config.js';

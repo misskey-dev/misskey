@@ -5,8 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import { inspect } from 'node:util';
-import * as assert from 'assert';
 import type * as misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
