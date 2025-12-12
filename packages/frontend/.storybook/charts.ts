@@ -5,7 +5,7 @@
 
 import { action } from 'storybook/actions';
 import type { DefaultBodyType, HttpResponseResolver, JsonBodyType, PathParams } from 'msw';
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, } from 'msw';
 import seedrandom from 'seedrandom';
 
 function getChartArray(seed: string, limit: number, option?: { accumulate?: boolean, mul?: number }): number[] {

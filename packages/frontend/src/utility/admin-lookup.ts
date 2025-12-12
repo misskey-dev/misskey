@@ -36,7 +36,7 @@ export async function lookupUser() {
 			notFound();
 		}
 	});
-	idPromise.then(show).catch(err => {
+	idPromise.then(show).catch(_ => {
 		notFound();
 	});
 }

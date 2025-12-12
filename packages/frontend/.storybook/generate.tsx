@@ -95,6 +95,7 @@ type SplitCamel<
 	: YN;
 
 // @ts-expect-error
+// biome-ignore lint/correctness/noUnusedVariables: ignore
 type SplitKebab<T extends string> = T extends `${infer XH}-${infer XR}`
 	? [XH, ...SplitKebab<XR>]
 	: [T];
@@ -111,6 +112,7 @@ type ToKebab<T extends readonly string[]> = T extends readonly [
 	: '';
 
 // @ts-expect-error
+// biome-ignore lint/correctness/noUnusedVariables: ignore
 type ToPascal<T extends readonly string[]> = T extends readonly [
 	infer XH extends string,
 	...infer XR extends readonly string[]
@@ -118,6 +120,7 @@ type ToPascal<T extends readonly string[]> = T extends readonly [
 	? `${Capitalize<XH>}${ToPascal<XR>}`
 	: '';
 
+// biome-ignore lint/correctness/noUnusedVariables: ignore
 function h<T extends estree.Node>(
 	component: T['type'],
 	props: Omit<T, 'type'>

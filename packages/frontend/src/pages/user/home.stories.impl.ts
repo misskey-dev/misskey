@@ -44,7 +44,7 @@ export const Default = {
 				}),
 				http.get('/api/charts/user/notes', ({ request }) => {
 					const url = new URL(request.url);
-					const length = Math.max(Math.min(parseInt(url.searchParams.get('limit') ?? '30', 10), 1), 300);
+					const length = Math.max(Math.min(parseInt(url.searchParams.get('limit') ?? '30', 10), 300), 1);
 					return HttpResponse.json({
 						total: Array.from({ length }, () => 0),
 						inc: Array.from({ length }, () => 0),
@@ -59,7 +59,7 @@ export const Default = {
 				}),
 				http.get('/api/charts/user/pv', ({ request }) => {
 					const url = new URL(request.url);
-					const length = Math.max(Math.min(parseInt(url.searchParams.get('limit') ?? '30', 10), 1), 300);
+					const length = Math.max(Math.min(parseInt(url.searchParams.get('limit') ?? '30', 10), 300), 1);
 					return HttpResponse.json({
 						upv: {
 							user: Array.from({ length }, () => 0),

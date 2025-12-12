@@ -100,6 +100,9 @@
 						// https://github.com/biomejs/biome/pull/8398
 						"ignoreRestSiblings": true
 					}
+				},
+				"noUnusedFunctionParameters": {
+					"level": "off"
 				}
 			}
 		}

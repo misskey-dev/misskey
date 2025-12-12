@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-type EndoRelation<T> = (a: T, b: T) => boolean;
 type Predicate<T> = (x: T) => boolean;
 
 /**

@@ -73,7 +73,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 				isClientUpdated = true;
 			}
-		} catch (err) { /* empty */ }
+		} catch (_) { /* empty */ }
 	}
 	//#endregion
 
@@ -243,7 +243,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 
 	try {
 		await fetchCustomEmojis();
-	} catch (err) { /* empty */ }
+	} catch (_) { /* empty */ }
 
 	// analytics
 	fetchInstanceMetaPromise.then(async () => {

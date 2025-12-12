@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent } from 'vue';
 import { host } from '@@/js/config.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';

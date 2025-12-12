@@ -4,7 +4,7 @@
  */
 
 import QRCodeStyling from 'qr-code-styling';
-import { host, url } from '@@/js/config.js';
+import { url } from '@@/js/config.js';
 import { ensureSignin } from '@/i.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
 import { fn as fn_checker } from '@/utility/image-compositor-functions/checker.js';

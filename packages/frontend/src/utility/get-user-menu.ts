@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode.js';
 import { host, url } from '@@/js/config.js';

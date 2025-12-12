@@ -4,7 +4,7 @@
  */
 
 import { Window } from 'happy-dom';
-import { afterEach, assert, describe, test } from 'vitest';
+import { assert, describe, test } from 'vitest';
 import { onScrollBottom, onScrollTop } from '@@/js/scroll.js';
 
 describe('Scroll', () => {
@@ -25,7 +25,7 @@ describe('Scroll', () => {
 		*/
 
 		test('No onScrollTop callback for disconnected elements', () => {
-			const { document } = new Window();
+			const { document: _ } = new Window();
 			const div = window.document.createElement('div');
 			assert.strictEqual(div.scrollTop, 0);
 
@@ -53,7 +53,7 @@ describe('Scroll', () => {
 		*/
 
 		test('No onScrollBottom callback for disconnected elements', () => {
-			const { document } = new Window();
+			const { document: _ } = new Window();
 			const div = window.document.createElement('div');
 			assert.strictEqual(div.scrollTop, 0);
 

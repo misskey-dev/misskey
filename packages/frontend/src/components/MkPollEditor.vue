@@ -143,7 +143,6 @@ function get(): PollEditorModelValue {
 			// @ts-expect-error fallthrough
 			// biome-ignore lint/suspicious/noFallthroughSwitchClause: allows
 			case 'minute': base *= 60;
-			// biome-ignore lint/suspicious/noFallthroughSwitchClause: allows
 			// eslint-disable-next-line no-fallthrough
 			case 'second': return base *= 1000;
 			default: return null;

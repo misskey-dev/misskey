@@ -201,12 +201,12 @@ export class ImageFrameRenderer {
 					qrSize,
 				);
 				qrImageBitmap.close();
-			} catch (err) {
+			} catch (_) {
 				// nop
 			}
 		}
 
-		return labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height); ;
+		return labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height);
 	}
 
 	public async render(params: ImageFrameParams): Promise<void> {

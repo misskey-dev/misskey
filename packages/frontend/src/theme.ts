@@ -18,7 +18,6 @@ import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
-import { deepEqual } from '@/utility/deep-equal.js';
 
 export type Theme = {
 	id: string;
@@ -232,7 +231,7 @@ export function parseThemeCode(code: string): Theme {
 
 	try {
 		theme = JSON5.parse<Theme>(code);
-	} catch (err) {
+	} catch (_) {
 		throw new Error('Failed to parse theme json');
 	}
 	if (!validateTheme(theme)) {

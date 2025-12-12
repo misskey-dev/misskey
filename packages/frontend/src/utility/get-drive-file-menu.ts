@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { globalEvents } from '@/events.js';
 import { i18n } from '@/i18n.js';
@@ -89,7 +88,7 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
-	const isImage = file.type.startsWith('image/');
+	const _isImage = file.type.startsWith('image/');
 
 	const menuItems: MenuItem[] = [];
 

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';

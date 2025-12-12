@@ -4,7 +4,7 @@
  */
 
 import type { Ref } from 'vue';
-import { nextTick, onActivated, onDeactivated, onUnmounted, watch } from 'vue';
+import { nextTick, onActivated, onDeactivated, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
 
 // note render skippingがオンだとズレるため、遷移直前にスクロール範囲に表示されているdata-scroll-anchor要素を特定して、復元時に当該要素までスクロールするようにする

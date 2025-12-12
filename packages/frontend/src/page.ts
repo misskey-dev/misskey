@@ -4,7 +4,7 @@
  */
 
 import type { MaybeRefOrGetter, Ref } from 'vue';
-import { inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
+import { inject, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { DI } from './di.js';
 

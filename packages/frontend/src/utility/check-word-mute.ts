@@ -29,7 +29,7 @@ export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.
 
 				try {
 					return new RegExp(regexp[1], regexp[2]).test(text);
-				} catch (err) {
+				} catch (_) {
 					// This should never happen due to input sanitisation.
 					return false;
 				}

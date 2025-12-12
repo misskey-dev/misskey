@@ -4,12 +4,12 @@
  */
 
 import { ref } from 'vue';
-import {
+import type {
 	Ast,
-	type Interpreter,
-	type Parser,
-	type utils as utils_TypeReferenceOnly,
-	type values
+	Interpreter,
+	Parser,
+	utils as utils_TypeReferenceOnly,
+	values
 } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import type * as Misskey from 'misskey-js';
@@ -55,7 +55,7 @@ async function getParser(): Promise<Parser> {
 export function isSupportedAiScriptVersion(version: string): boolean {
 	try {
 		return (compareVersions(version, '0.12.0') >= 0);
-	} catch (err) {
+	} catch (_) {
 		return false;
 	}
 }
@@ -78,7 +78,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 	try {
 		const parser = await getParser();
 		ast = parser.parse(code);
-	} catch (err) {
+	} catch (_) {
 		throw new Error('Aiscript syntax error');
 	}
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, markRaw, onMounted, onUnmounted, ref, triggerRef } from 'vue';
+import { computed, markRaw, onUnmounted, ref, triggerRef } from 'vue';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { EventEmitter } from 'eventemitter3';
 import isAnimated from 'is-file-animated';
@@ -15,7 +15,7 @@ import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu.js';
 import { UploadAbortedError, uploadFile } from '@/utility/drive.js';
 import { genId } from '@/utility/id.js';
-import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import type { ImageFrameParams, } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 
