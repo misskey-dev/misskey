@@ -104,6 +104,7 @@ type WalkVueNode = RootNode | TemplateChildNode | SimpleExpressionNode;
  * @param callback Returns false if you don't want to walk inner tree
  */
 // biome-ignore lint/complexity/noBannedTypes: Possibly false positive: this is type constraint https://github.com/biomejs/biome/issues/8434
+// biome-ignore lint/suspicious/noConfusingVoidType: We do allow returning void
 function walkVueElements<C extends {} | null>(nodes: WalkVueNode[], context: C, callback: (node: ElementNode, context: C) => C | undefined | void | false): void {
 	for (const node of nodes) {
 		let currentContext = context;
@@ -347,7 +348,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// マーカーID取得
 		const markerIdProp = node.props?.find(p => p.name === 'markerId');
-		const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
+		const markerId = markerIdProp?.type === NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
 
 		// SearchMarkerにマーカーIDがない場合はエラー
 		if (markerId == null) {
@@ -434,10 +435,10 @@ const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
 		if (p in target) {
 			return (target as any)[p];
 		}
-		if (p == "toJSON" || p == Symbol.toPrimitive) {
+		if (p === "toJSON" || p === Symbol.toPrimitive) {
 			return propertyAccessProxyToJSON;
 		}
-		if (typeof p == 'string') {
+		if (typeof p === 'string') {
 			return target[p] = propertyAccessProxy([...target[propertyAccessProxySymbol], p]);
 		}
 		return undefined;
@@ -720,7 +721,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		enforce: 'post',
 
 		async resolveId(id) {
-			if (id == allSearchIndexFile) {
+			if (id === allSearchIndexFile) {
 				return `\0${allSearchIndexFile}`;
 			}
 
@@ -732,7 +733,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		},
 
 		async load(id) {
-			if (id == `\0${allSearchIndexFile}`) {
+			if (id === `\0${allSearchIndexFile}`) {
 				const files = options.targetFilePaths.flatMap((filePathPattern) => fs.globSync(filePathPattern));
 				let generatedFile = '';
 				let arrayElements = '';

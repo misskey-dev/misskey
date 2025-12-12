@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { Interpreter, Parser } from '@syuilo/aiscript';
+import { Ast, Interpreter, Parser } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
@@ -66,7 +66,7 @@ async function run() {
 		},
 	});
 
-	let ast;
+	let ast: Ast.Node[];
 	try {
 		ast = parser.parse(widgetProps.script);
 	} catch (err) {

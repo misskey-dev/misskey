@@ -77,7 +77,7 @@ async function save() {
 		return lines;
 	};
 
-	let parsed;
+	let parsed: (string[] | string)[];
 	try {
 		parsed = parseMutes(mutedWords.value);
 	} catch (err) {

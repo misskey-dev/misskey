@@ -296,7 +296,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent): void | boolean {
+function onDrop(ev: DragEvent): void {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;
@@ -333,8 +333,8 @@ function onDrop(ev: DragEvent): void | boolean {
 		if (droppedData != null) {
 			const droppedFolder = droppedData[0];
 			// 移動先が自分自身ならreject
-			if (folder.value && droppedFolder.id === folder.value.id) return false;
-			if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return false;
+			if (folder.value && droppedFolder.id === folder.value.id) return;
+			if (foldersPaginator.items.value.some(f => f.id === droppedFolder.id)) return;
 			misskeyApi('drive/folders/update', {
 				folderId: droppedFolder.id,
 				parentId: folder.value ? folder.value.id : null,

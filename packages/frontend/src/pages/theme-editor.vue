@@ -175,10 +175,10 @@ function apply() {
 }
 
 function applyThemeCode() {
-	let parsed;
+	let parsed: Theme;
 
 	try {
-		parsed = JSON5.parse(themeCode.value);
+		parsed = JSON5.parse<Theme>(themeCode.value);
 	} catch (err) {
 		os.alert({
 			type: 'error',

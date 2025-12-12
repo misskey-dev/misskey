@@ -46,7 +46,7 @@ export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
 
-	let res;
+	let res: { emojis: Misskey.entities.EmojiSimple[] };
 	if (force) {
 		res = await misskeyApi('emojis', {});
 	} else {
@@ -60,7 +60,7 @@ export async function fetchCustomEmojis(force = false) {
 	set('lastEmojisFetchedAt', now);
 }
 
-let cachedTags;
+let cachedTags: FIXME;
 export function getCustomEmojiTags() {
 	if (cachedTags) return cachedTags;
 

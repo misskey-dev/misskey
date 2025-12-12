@@ -228,10 +228,10 @@ export function validateTheme(theme: Record<string, any>): boolean {
 }
 
 export function parseThemeCode(code: string): Theme {
-	let theme;
+	let theme: Theme;
 
 	try {
-		theme = JSON5.parse(code);
+		theme = JSON5.parse<Theme>(code);
 	} catch (err) {
 		throw new Error('Failed to parse theme json');
 	}

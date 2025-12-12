@@ -220,7 +220,7 @@ const q_adminName = ref('');
 const q_adminEmail = ref('');
 
 const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
-	let enableReactionsBuffering;
+	let enableReactionsBuffering: boolean;
 	if (q_use.value === 'single') {
 		enableReactionsBuffering = false;
 	} else {

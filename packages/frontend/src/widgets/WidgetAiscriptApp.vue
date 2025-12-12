@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 import { onMounted, ref, watch } from 'vue';
-import { Interpreter, Parser } from '@syuilo/aiscript';
+import { Ast, Interpreter, Parser } from '@syuilo/aiscript';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
@@ -80,7 +80,7 @@ async function run() {
 		},
 	});
 
-	let ast;
+	let ast: Ast.Node[];
 	try {
 		ast = parser.parse(widgetProps.script);
 	} catch (err) {

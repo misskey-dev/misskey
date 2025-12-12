@@ -71,7 +71,7 @@ function setPosition() {
 	el.value.style.top = `${data.top}px`;
 }
 
-let loopHandler;
+let loopHandler: number;
 
 onMounted(() => {
 	nextTick(() => {

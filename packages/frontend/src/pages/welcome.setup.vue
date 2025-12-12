@@ -143,7 +143,7 @@ const accountCreating = ref(false);
 const accountCreated = ref(false);
 const step = ref(0);
 
-let token;
+let token : string;
 
 function createAccount() {
 	if (accountCreating.value) return;

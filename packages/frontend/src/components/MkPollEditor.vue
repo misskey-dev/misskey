@@ -135,11 +135,15 @@ function get(): PollEditorModelValue {
 		let base = parseInt(after.value.toString());
 		switch (unit.value) {
 			// @ts-expect-error fallthrough
+			// biome-ignore lint/suspicious/noFallthroughSwitchClause: allows
 			case 'day': base *= 24;
 			// @ts-expect-error fallthrough
+			// biome-ignore lint/suspicious/noFallthroughSwitchClause: allows
 			case 'hour': base *= 60;
 			// @ts-expect-error fallthrough
+			// biome-ignore lint/suspicious/noFallthroughSwitchClause: allows
 			case 'minute': base *= 60;
+			// biome-ignore lint/suspicious/noFallthroughSwitchClause: allows
 			// eslint-disable-next-line no-fallthrough
 			case 'second': return base *= 1000;
 			default: return null;

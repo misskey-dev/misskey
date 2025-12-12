@@ -50,7 +50,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
-let timeoutId;
+let timeoutId: number;
 
 const saveMemo = () => {
 	store.set('memo', text.value);

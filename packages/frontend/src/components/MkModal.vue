@@ -184,8 +184,8 @@ const align = () => {
 	const width = content.value!.offsetWidth;
 	const height = content.value!.offsetHeight;
 
-	let left;
-	let top;
+	let left: number;
+	let top: number;
 
 	const x = anchorRect.left + (fixed.value ? 0 : window.scrollX);
 	const y = anchorRect.top + (fixed.value ? 0 : window.scrollY);

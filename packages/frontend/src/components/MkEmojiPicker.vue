@@ -471,9 +471,9 @@ function onKeydown(ev: KeyboardEvent) {
 	}
 }
 
-function done(query?: string): boolean | void {
+function done(query?: string): boolean {
 	if (query == null) query = q.value;
-	if (query == null || typeof query !== 'string') return;
+	if (query == null || typeof query !== 'string') return false;
 
 	const q2 = query.replace(/:/g, '');
 	const exactMatchCustom = customEmojisMap.get(q2);
@@ -494,6 +494,7 @@ function done(query?: string): boolean | void {
 		chosen(searchResultUnicode.value[0]);
 		return true;
 	}
+	return false;
 }
 
 function settings() {

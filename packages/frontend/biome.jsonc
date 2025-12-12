@@ -59,6 +59,25 @@
 					}
 				}
 			},
+			"suspicious": {
+				"noExplicitAny": {
+					"level": "off"
+				},
+				"noTemplateCurlyInString": {
+					"level": "off"
+				},
+				"noAssignInExpressions": {
+					"level": "off"
+				},
+				"noShadowRestrictedNames": {
+					"level": "off"
+				},
+				"useIterableCallbackReturn": {
+					// false positives with .forEach.
+					// https://github.com/biomejs/biome/issues/8024
+					"level": "off"
+				}
+			},
 			"complexity": {
 				"noUselessContinue": {
 					"level": "off"

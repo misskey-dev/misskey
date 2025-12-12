@@ -4,7 +4,13 @@
  */
 
 import { ref } from 'vue';
-import type { Interpreter, Parser, utils as utils_TypeReferenceOnly, values } from '@syuilo/aiscript';
+import {
+	Ast,
+	type Interpreter,
+	type Parser,
+	type utils as utils_TypeReferenceOnly,
+	type values
+} from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import type * as Misskey from 'misskey-js';
 import { isSafeMode } from '@@/js/config.js';
@@ -68,7 +74,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		throw new Error(`Aiscript version '${lv}' is not supported`);
 	}
 
-	let ast;
+	let ast: Ast.Node[];
 	try {
 		const parser = await getParser();
 		ast = parser.parse(code);
@@ -106,8 +112,9 @@ export async function authorizePlugin(plugin: Plugin) {
 	if (plugin.permissions == null || plugin.permissions.length === 0) return;
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) return;
 
-	const token = await new Promise<string>(async (res, rej) => {
-		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {
+	const token = await new Promise<string>((res, rej) => {
+		let dispose: () => void;
+		os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: plugin.name,
@@ -123,7 +130,7 @@ export async function authorizePlugin(plugin: Plugin) {
 				res(token);
 			},
 			closed: () => dispose(),
-		});
+		}).then(d => dispose = d.dispose, err => rej(err));
 	});
 
 	store.set('pluginTokens', {

@@ -18,7 +18,7 @@ function containsFocusTrappedElements(el: HTMLElement): boolean {
 
 function getZIndex(el: HTMLElement): number {
 	const zIndex = parseInt(window.getComputedStyle(el).zIndex || '0', 10);
-	if (isNaN(zIndex)) {
+	if (Number.isNaN(zIndex)) {
 		return 0;
 	}
 	return zIndex;
@@ -80,6 +80,7 @@ function releaseFocusTrap(el: HTMLElement): void {
 
 export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEls: boolean, parent: true): void;
 export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEls?: boolean, parent?: false): { release: () => void; };
+// biome-ignore lint/suspicious/noConfusingVoidType: overloads
 export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEls = false, parent = false): { release: () => void; } | void {
 	const highestZIndexElement = getHighestZIndexElement();
 

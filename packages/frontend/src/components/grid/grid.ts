@@ -44,6 +44,7 @@ export type AdditionalStyle = {
 };
 
 export class GridEventEmitter extends EventEmitter<{
+	// biome-ignore lint/suspicious/noConfusingVoidType: False positive for event emitter
 	'forceRefreshContentSize': void;
 }> {
 }

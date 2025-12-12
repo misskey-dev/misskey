@@ -22,7 +22,7 @@ export function useTooltip(
 
 	let changeShowingState: (() => void) | null;
 
-	let autoHidingTimer;
+	let autoHidingTimer: number;
 
 	const open = () => {
 		close();

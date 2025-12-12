@@ -85,6 +85,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { pleaseLogin } from '@/utility/please-login.js';
+import type * as Ast from '@syuilo/aiscript/node';
 
 const props = defineProps<{
 	id: string;
@@ -235,7 +236,7 @@ async function run() {
 
 	aiscript.value = interpreter;
 
-	let ast;
+	let ast: Ast.Node[];
 	try {
 		ast = parser.parse(flash.value.script);
 	} catch (err) {

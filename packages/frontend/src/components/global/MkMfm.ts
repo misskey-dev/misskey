@@ -25,7 +25,7 @@ import { prefer } from '@/preferences.js';
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;
 	const num = parseFloat(str);
-	if (isNaN(num)) return null;
+	if (Number.isNaN(num)) return null;
 	return num;
 }
 
