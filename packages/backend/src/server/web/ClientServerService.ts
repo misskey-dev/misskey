@@ -872,9 +872,6 @@ export class ClientServerService {
 			}));
 		});
 
-		const override = (source: string, target: string, depth = 0) =>
-			[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
-
 		fastify.get('/flush', async (request, reply) => {
 			let sendHeader = true;
 

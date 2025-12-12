@@ -155,7 +155,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					birthday.shift(); // 年の部分を削除
 					// なぜか get_birthday_date() = :birthday だとインデックスが効かないので、BETWEEN で対応
 					query.andWhere('get_birthday_date(followeeProfile.birthday) BETWEEN :birthday AND :birthday', { birthday: parseInt(birthday.join('')) });
-				} catch (err) {
+				} catch (_) {
 					throw new ApiError(meta.errors.birthdayInvalid);
 				}
 			}

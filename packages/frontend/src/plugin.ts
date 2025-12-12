@@ -49,7 +49,7 @@ async function getParser(): Promise<Parser> {
 export function isSupportedAiScriptVersion(version: string): boolean {
 	try {
 		return (compareVersions(version, '0.12.0') >= 0);
-	} catch (err) {
+	} catch (_) {
 		return false;
 	}
 }
@@ -72,7 +72,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 	try {
 		const parser = await getParser();
 		ast = parser.parse(code);
-	} catch (err) {
+	} catch (_) {
 		throw new Error('Aiscript syntax error');
 	}
 

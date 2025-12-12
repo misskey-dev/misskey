@@ -463,7 +463,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 			let mergedValue: ValueOf<K> | undefined = undefined; // null と区別したいため
 			try {
 				if (merge != null) mergedValue = merge(local, remote);
-			} catch (err) {
+			} catch (_) {
 				// nop
 			}
 			const { canceled, result: choice } = await os.select({
