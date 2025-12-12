@@ -83,6 +83,19 @@ import { ReversiService } from './ReversiService.js';
 import { NoctownService } from './NoctownService.js';
 import { PageService } from './PageService.js';
 
+// Noctown misc services
+import { ShopNpcService } from '@/misc/noctown/shop-npc-service.js';
+import { TradeService } from '@/misc/noctown/trade-service.js';
+import { PlayerItemService } from '@/misc/noctown/player-item-service.js';
+import { UniqueItemService } from '@/misc/noctown/unique-item-service.js';
+import { ItemDropService } from '@/misc/noctown/item-drop-service.js';
+import { ChestRespawnService } from '@/misc/noctown/chest-respawn-service.js';
+import { FenceService } from '@/misc/noctown/fence-service.js';
+import { ScoreCalculatorService } from '@/misc/noctown/score-calculator.js';
+import { NoctownPermissionService } from '@/misc/noctown/permission-check.js';
+import { NoctownNoteSubscriptionService } from '@/misc/noctown/note-subscription.js';
+import { RecipeSeedService } from '@/misc/noctown/recipe-seed.js';
+
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
 import NotesChart from './chart/charts/notes.js';
@@ -235,6 +248,19 @@ const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisti
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
 const $NoctownService: Provider = { provide: 'NoctownService', useExisting: NoctownService };
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
+
+// Noctown misc services providers
+const $ShopNpcService: Provider = { provide: 'ShopNpcService', useExisting: ShopNpcService };
+const $TradeService: Provider = { provide: 'TradeService', useExisting: TradeService };
+const $PlayerItemService: Provider = { provide: 'PlayerItemService', useExisting: PlayerItemService };
+const $UniqueItemService: Provider = { provide: 'UniqueItemService', useExisting: UniqueItemService };
+const $ItemDropService: Provider = { provide: 'ItemDropService', useExisting: ItemDropService };
+const $ChestRespawnService: Provider = { provide: 'ChestRespawnService', useExisting: ChestRespawnService };
+const $FenceService: Provider = { provide: 'FenceService', useExisting: FenceService };
+const $ScoreCalculatorService: Provider = { provide: 'ScoreCalculatorService', useExisting: ScoreCalculatorService };
+const $NoctownPermissionService: Provider = { provide: 'NoctownPermissionService', useExisting: NoctownPermissionService };
+const $NoctownNoteSubscriptionService: Provider = { provide: 'NoctownNoteSubscriptionService', useExisting: NoctownNoteSubscriptionService };
+const $RecipeSeedService: Provider = { provide: 'RecipeSeedService', useExisting: RecipeSeedService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -392,6 +418,19 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoctownService,
 		PageService,
 
+		// Noctown misc services
+		ShopNpcService,
+		TradeService,
+		PlayerItemService,
+		UniqueItemService,
+		ItemDropService,
+		ChestRespawnService,
+		FenceService,
+		ScoreCalculatorService,
+		NoctownPermissionService,
+		NoctownNoteSubscriptionService,
+		RecipeSeedService,
+
 		ChartLoggerService,
 		FederationChart,
 		NotesChart,
@@ -544,6 +583,19 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoctownService,
 		$PageService,
 
+		// Noctown misc services (string-based)
+		$ShopNpcService,
+		$TradeService,
+		$PlayerItemService,
+		$UniqueItemService,
+		$ItemDropService,
+		$ChestRespawnService,
+		$FenceService,
+		$ScoreCalculatorService,
+		$NoctownPermissionService,
+		$NoctownNoteSubscriptionService,
+		$RecipeSeedService,
+
 		$ChartLoggerService,
 		$FederationChart,
 		$NotesChart,
@@ -694,7 +746,21 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		DrawingSettingsService,
 		RegistryApiService,
 		ReversiService,
+		NoctownService,
 		PageService,
+
+		// Noctown misc services
+		ShopNpcService,
+		TradeService,
+		PlayerItemService,
+		UniqueItemService,
+		ItemDropService,
+		ChestRespawnService,
+		FenceService,
+		ScoreCalculatorService,
+		NoctownPermissionService,
+		NoctownNoteSubscriptionService,
+		RecipeSeedService,
 
 		FederationChart,
 		NotesChart,
@@ -843,7 +909,21 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$DrawingSettingsService,
 		$RegistryApiService,
 		$ReversiService,
+		$NoctownService,
 		$PageService,
+
+		// Noctown misc services (string-based)
+		$ShopNpcService,
+		$TradeService,
+		$PlayerItemService,
+		$UniqueItemService,
+		$ItemDropService,
+		$ChestRespawnService,
+		$FenceService,
+		$ScoreCalculatorService,
+		$NoctownPermissionService,
+		$NoctownNoteSubscriptionService,
+		$RecipeSeedService,
 
 		$FederationChart,
 		$NotesChart,
