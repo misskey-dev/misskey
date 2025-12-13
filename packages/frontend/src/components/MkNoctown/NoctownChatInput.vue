@@ -68,9 +68,10 @@ defineExpose({
 
 <style lang="scss" module>
 // T130: Position chat input at bottom-center (above emotion buttons)
+// Updated: bottom 120px for better spacing on mobile
 .chatContainer {
 	position: absolute;
-	bottom: 80px;
+	bottom: 120px;
 	left: 50%;
 	transform: translateX(-50%);
 	display: flex;

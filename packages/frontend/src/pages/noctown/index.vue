@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.controls">
 				<div :class="$style.controlHint">
-					<span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> {{ noctownI18n.moveHint }}</span>
+					<span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> {{ noctownI18n.moveHint }}</span>
 					<span><kbd>I</kbd> インベントリ</span>
 					<span><kbd>Q</kbd> クエスト</span>
 					<span><kbd>F</kbd> 農場</span>
@@ -373,7 +373,7 @@ function handlePlayerStatusChanged(data: PlayerData): void {
 	engine.setPlayerOnlineStatus(data.id, data.isOnline);
 }
 
-// T038: Handle chunkGenerated event and render terrain
+// FR-073, FR-074: Handle chunkGenerated event and render terrain with grid
 function handleChunkGenerated(data: ChunkData): void {
 	if (!engine) return;
 
@@ -381,8 +381,25 @@ function handleChunkGenerated(data: ChunkData): void {
 	const chunkKey = `${data.chunkX},${data.chunkZ}`;
 	loadedChunks.add(chunkKey);
 
-	// Render terrain
-	engine.loadChunk(data);
+	// Render terrain with grid lines
+	engine.renderChunk(data);
+
+	// FR-074: VIEW_DISTANCE=2 chunk management (remove chunks outside view distance)
+	const VIEW_DISTANCE = 2;
+	const playerChunkX = Math.floor(currentX.value / CHUNK_SIZE);
+	const playerChunkZ = Math.floor(currentZ.value / CHUNK_SIZE);
+
+	// Remove chunks outside VIEW_DISTANCE
+	for (const chunkKey of loadedChunks) {
+		const [cx, cz] = chunkKey.split(',').map(Number);
+		const dx = Math.abs(cx - playerChunkX);
+		const dz = Math.abs(cz - playerChunkZ);
+
+		if (dx > VIEW_DISTANCE || dz > VIEW_DISTANCE) {
+			engine.removeChunk(cx, cz);
+			loadedChunks.delete(chunkKey);
+		}
+	}
 }
 
 function handlePlayerEmoted(data: { playerId: string; emoji: string }): void {
@@ -596,8 +613,11 @@ function startHeartbeat(): void {
 }
 
 function handleKeyDown(e: KeyboardEvent): void {
-	// T133: Disable WASD keys when chat input is focused
+	// FR-072: Disable Misskey global shortcuts when chat input is focused
 	if (chatInputFocused.value) {
+		// Stop event propagation to prevent Misskey shortcuts (n, p, t, etc.)
+		e.stopPropagation();
+
 		// Allow only Escape to work during chat input
 		if (e.code === 'Escape') {
 			// Blur chat input
@@ -992,7 +1012,7 @@ definePage(() => ({
 
 .emotionPanel {
 	position: absolute;
-	bottom: 80px;
+	bottom: 50px;
 	right: 20px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);

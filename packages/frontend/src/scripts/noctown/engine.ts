@@ -189,6 +189,47 @@ export class NoctownEngine {
 		this.scene.add(ground);
 	}
 
+	/**
+	 * Render chunk with grid lines (FR-073, FR-074)
+	 * @param chunkData Chunk data from server
+	 */
+	public renderChunk(chunkData: ChunkData): void {
+		const key = `${chunkData.chunkX}_${chunkData.chunkZ}`;
+		if (this.chunks.has(key)) return; // Already rendered
+
+		const CHUNK_SIZE = 16;
+		const offsetX = chunkData.chunkX * CHUNK_SIZE;
+		const offsetZ = chunkData.chunkZ * CHUNK_SIZE;
+
+		const chunkGroup = new THREE.Group();
+		chunkGroup.position.set(offsetX, 0, offsetZ);
+
+		// FR-073: Add grid helper (character-demo+5準拠)
+		const gridHelper = new THREE.GridHelper(CHUNK_SIZE, CHUNK_SIZE, 0x2d4a2d, 0x2d4a2d);
+		gridHelper.position.set(0, 0.01, 0); // y=0.01 to avoid z-fighting
+		chunkGroup.add(gridHelper);
+
+		this.scene.add(chunkGroup);
+		this.chunks.set(key, chunkGroup);
+
+		// Add environment entities (trees, rocks) to the scene
+		addRandomEnvironmentEntities(this.scene, chunkData.chunkX, chunkData.chunkZ, CHUNK_SIZE);
+	}
+
+	/**
+	 * Remove chunk from scene (FR-074: VIEW_DISTANCE management)
+	 * @param chunkX Chunk X coordinate
+	 * @param chunkZ Chunk Z coordinate
+	 */
+	public removeChunk(chunkX: number, chunkZ: number): void {
+		const key = `${chunkX}_${chunkZ}`;
+		const chunk = this.chunks.get(key);
+		if (chunk) {
+			this.scene.remove(chunk);
+			this.chunks.delete(key);
+		}
+	}
+
 	private setupEventListeners(): void {
 		window.addEventListener('resize', this.onResize);
 		window.addEventListener('keydown', this.onKeyDown);
@@ -227,11 +268,11 @@ export class NoctownEngine {
 		const deltaTime = this.lastFrameTime > 0 ? (now - this.lastFrameTime) / 1000 : 0.016;
 		this.lastFrameTime = now;
 
-		// Update currentInput from keyboard state
-		this.currentInput.up = this.keys.has('KeyW') || this.keys.has('ArrowUp');
-		this.currentInput.down = this.keys.has('KeyS') || this.keys.has('ArrowDown');
-		this.currentInput.left = this.keys.has('KeyA') || this.keys.has('ArrowLeft');
-		this.currentInput.right = this.keys.has('KeyD') || this.keys.has('ArrowRight');
+		// Update currentInput from keyboard state (WASD removed, arrow keys only)
+		this.currentInput.up = this.keys.has('ArrowUp');
+		this.currentInput.down = this.keys.has('ArrowDown');
+		this.currentInput.left = this.keys.has('ArrowLeft');
+		this.currentInput.right = this.keys.has('ArrowRight');
 		this.currentInput.sprint = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
 
 		// T088: Update character animations with input-based animation (like character-demo.html)
@@ -246,6 +287,9 @@ export class NoctownEngine {
 
 		// Update remote player animations based on their movement
 		for (const [playerId, character] of this.remotePlayers) {
+			// FR-070: Update lerp position for smooth WebSocket sync
+			character.updateLerp();
+
 			const lastPos = this.remotePlayerLastPos.get(playerId);
 			if (!lastPos) {
 				// No previous position data, assume idle
@@ -297,6 +341,9 @@ export class NoctownEngine {
 		this.localPlayer.setPosition(data.positionX, data.positionY, data.positionZ);
 		this.localPlayer.setRotation(data.rotation);
 		this.localPlayer.setCastShadow(true);
+
+		// Initialize name display (character-demo+12準拠)
+		this.localPlayer.initializeName(data.username);
 
 		// Set icon if available
 		if (data.avatarUrl) {
@@ -365,6 +412,12 @@ export class NoctownEngine {
 		character.setPosition(data.positionX, data.positionY, data.positionZ);
 		character.setRotation(data.rotation);
 		character.setCastShadow(true);
+
+		// FR-070: Enable linear interpolation for smooth WebSocket position sync
+		character.enableLerp(100); // 100ms lerp duration
+
+		// Initialize name display (character-demo+12準拠)
+		character.initializeName(data.username);
 
 		// Set icon if available
 		if (data.avatarUrl) {
@@ -795,15 +848,15 @@ export class NoctownEngine {
 		return null;
 	}
 
-	// Input handling
+	// Input handling (WASD removed, arrow keys only)
 	public getMovementInput(): { x: number; z: number; rotation: number } {
 		let x = 0;
 		let z = 0;
 
-		if (this.keys.has('KeyW') || this.keys.has('ArrowUp')) z -= 1;
-		if (this.keys.has('KeyS') || this.keys.has('ArrowDown')) z += 1;
-		if (this.keys.has('KeyA') || this.keys.has('ArrowLeft')) x -= 1;
-		if (this.keys.has('KeyD') || this.keys.has('ArrowRight')) x += 1;
+		if (this.keys.has('ArrowUp')) z -= 1;
+		if (this.keys.has('ArrowDown')) z += 1;
+		if (this.keys.has('ArrowLeft')) x -= 1;
+		if (this.keys.has('ArrowRight')) x += 1;
 
 		// Fix: Match character-demo+1-emotion.html rotation calculation (line 356)
 		// this.targetRotation = Math.atan2(moveDir.x, moveDir.z);
@@ -812,9 +865,7 @@ export class NoctownEngine {
 	}
 
 	public isMoving(): boolean {
-		return this.keys.has('KeyW') || this.keys.has('KeyS') ||
-			this.keys.has('KeyA') || this.keys.has('KeyD') ||
-			this.keys.has('ArrowUp') || this.keys.has('ArrowDown') ||
+		return this.keys.has('ArrowUp') || this.keys.has('ArrowDown') ||
 			this.keys.has('ArrowLeft') || this.keys.has('ArrowRight');
 	}
 

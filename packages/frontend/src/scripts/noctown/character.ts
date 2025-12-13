@@ -31,6 +31,13 @@ export class Character {
 	private lastPosition: THREE.Vector3;
 	private lastUpdateTime: number;
 
+	// Linear interpolation for remote players (FR-070)
+	private lerpEnabled: boolean = false;
+	private lerpStartPos: THREE.Vector3 | null = null;
+	private lerpTargetPos: THREE.Vector3 | null = null;
+	private lerpStartTime: number = 0;
+	private lerpDuration: number = 100; // 100ms lerp duration
+
 	// Body parts
 	private torso!: THREE.Mesh;
 	private head!: THREE.Mesh;
@@ -62,6 +69,12 @@ export class Character {
 	private chatTexture!: THREE.CanvasTexture;
 	private chatTimer: number = 0;
 	private chatDuration: number = 5.0;
+
+	// Name display (character-demo+12-pond-and-lake.html準拠)
+	private nameSprite!: THREE.Sprite;
+	private nameCanvas!: HTMLCanvasElement;
+	private nameContext!: CanvasRenderingContext2D;
+	private nameTexture!: THREE.CanvasTexture;
 
 	constructor() {
 		this.group = new THREE.Group();
@@ -370,6 +383,43 @@ export class Character {
 	}
 
 	/**
+	 * Initialize name display sprite (character-demo+12準拠)
+	 * @param username Username to display (maxlength 12)
+	 */
+	public initializeName(username: string): void {
+		// Truncate username to 12 characters
+		const displayName = username.substring(0, 12);
+
+		// Create canvas for name
+		this.nameCanvas = document.createElement('canvas');
+		this.nameCanvas.width = 256;
+		this.nameCanvas.height = 64;
+		this.nameContext = this.nameCanvas.getContext('2d')!;
+
+		// Draw background (semi-transparent white)
+		this.nameContext.fillStyle = 'rgba(255, 255, 255, 0.8)';
+		this.nameContext.fillRect(0, 0, this.nameCanvas.width, this.nameCanvas.height);
+
+		// Draw text
+		this.nameContext.font = 'bold 28px Arial';
+		this.nameContext.fillStyle = '#333';
+		this.nameContext.textAlign = 'center';
+		this.nameContext.textBaseline = 'middle';
+		this.nameContext.fillText(displayName, this.nameCanvas.width / 2, this.nameCanvas.height / 2);
+
+		// Create texture and sprite
+		this.nameTexture = new THREE.CanvasTexture(this.nameCanvas);
+		const material = new THREE.SpriteMaterial({
+			map: this.nameTexture,
+			depthTest: false,
+		});
+		this.nameSprite = new THREE.Sprite(material);
+		this.nameSprite.position.y = -0.3; // character-demo+12準拠
+		this.nameSprite.scale.set(3, 0.75, 1); // character-demo+12準拠
+		this.group.add(this.nameSprite);
+	}
+
+	/**
 	 * Set icon texture on head front face
 	 * @param url Icon image URL
 	 */
@@ -463,7 +513,42 @@ export class Character {
 	 * @param z Z coordinate
 	 */
 	public setPosition(x: number, y: number, z: number): void {
-		this.group.position.set(x, y, z);
+		if (this.lerpEnabled) {
+			// Store current position as lerp start
+			this.lerpStartPos = this.group.position.clone();
+			this.lerpTargetPos = new THREE.Vector3(x, y, z);
+			this.lerpStartTime = performance.now();
+		} else {
+			this.group.position.set(x, y, z);
+		}
+	}
+
+	/**
+	 * Enable linear interpolation for remote players (FR-070)
+	 */
+	public enableLerp(duration: number = 100): void {
+		this.lerpEnabled = true;
+		this.lerpDuration = duration;
+	}
+
+	/**
+	 * Update lerp position (call every frame)
+	 */
+	public updateLerp(): void {
+		if (!this.lerpEnabled || !this.lerpStartPos || !this.lerpTargetPos) return;
+
+		const now = performance.now();
+		const elapsed = now - this.lerpStartTime;
+		const t = Math.min(elapsed / this.lerpDuration, 1.0);
+
+		// Linear interpolation
+		this.group.position.lerpVectors(this.lerpStartPos, this.lerpTargetPos, t);
+
+		// Clear lerp state when done
+		if (t >= 1.0) {
+			this.lerpStartPos = null;
+			this.lerpTargetPos = null;
+		}
 	}
 
 	/**
