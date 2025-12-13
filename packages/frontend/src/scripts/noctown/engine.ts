@@ -83,6 +83,8 @@ export class NoctownEngine {
 		right: false,
 		sprint: false,
 	};
+	// Track remote player positions for movement direction calculation
+	private remotePlayerLastPos: Map<string, { x: number; z: number; time: number }> = new Map();
 
 	// World management
 	private chunks: Map<string, THREE.Group> = new Map();
@@ -242,9 +244,35 @@ export class NoctownEngine {
 			this.localPlayer.updateAnimation(moveX, moveZ, deltaTime);
 		}
 
-		// Update remote player animations (idle animation only)
-		for (const [, character] of this.remotePlayers) {
-			character.updateAnimation(0, 0, deltaTime);
+		// Update remote player animations based on their movement
+		for (const [playerId, character] of this.remotePlayers) {
+			const lastPos = this.remotePlayerLastPos.get(playerId);
+			if (!lastPos) {
+				// No previous position data, assume idle
+				character.updateAnimation(0, 0, deltaTime);
+				continue;
+			}
+
+			// Get current position
+			const currentPos = character.getPosition();
+			const now = Date.now();
+			const timeDiff = now - lastPos.time;
+
+			// Calculate movement direction (if moved recently)
+			let moveX = 0;
+			let moveZ = 0;
+			if (timeDiff < 200) { // Only animate if position updated within last 200ms
+				const dx = currentPos.x - lastPos.x;
+				const dz = currentPos.z - lastPos.z;
+				const moveLength = Math.sqrt(dx * dx + dz * dz);
+
+				if (moveLength > 0.001) {
+					moveX = dx / moveLength;
+					moveZ = dz / moveLength;
+				}
+			}
+
+			character.updateAnimation(moveX, moveZ, deltaTime);
 		}
 
 		// Update camera to follow player
@@ -343,6 +371,32 @@ export class NoctownEngine {
 	public updateRemotePlayer(data: PlayerData): void {
 		const character = this.remotePlayers.get(data.id);
 		if (!character) return;
+
+		// Get previous position to calculate movement direction
+		const lastPos = this.remotePlayerLastPos.get(data.id);
+		const now = Date.now();
+
+		// Calculate movement direction from position change
+		let moveX = 0;
+		let moveZ = 0;
+		if (lastPos) {
+			const dx = data.positionX - lastPos.x;
+			const dz = data.positionZ - lastPos.z;
+			const moveLength = Math.sqrt(dx * dx + dz * dz);
+
+			// If player moved significantly, normalize direction
+			if (moveLength > 0.01) {
+				moveX = dx / moveLength;
+				moveZ = dz / moveLength;
+			}
+		}
+
+		// Store current position for next update
+		this.remotePlayerLastPos.set(data.id, {
+			x: data.positionX,
+			z: data.positionZ,
+			time: now,
+		});
 
 		character.setPosition(data.positionX, data.positionY, data.positionZ);
 		character.setRotation(data.rotation);
@@ -740,7 +794,9 @@ export class NoctownEngine {
 		if (this.keys.has('KeyA') || this.keys.has('ArrowLeft')) x -= 1;
 		if (this.keys.has('KeyD') || this.keys.has('ArrowRight')) x += 1;
 
-		const rotation = Math.atan2(x, -z);
+		// Fix: Match character-demo+1-emotion.html rotation calculation (line 356)
+		// this.targetRotation = Math.atan2(moveDir.x, moveDir.z);
+		const rotation = Math.atan2(x, z);
 		return { x, z, rotation };
 	}
 
