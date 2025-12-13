@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { promises as fsp } from 'fs';
 import { compress } from 'wawoff2';
+import { promises as fsp } from 'node:fs';
 
 export async function generateSubsettedFont(ttfPath: string, unicodeRangeValues: Map<string, number[]>) {
 	const ttf = await fsp.readFile(ttfPath);
@@ -44,7 +44,7 @@ export async function generateSubsettedFont(ttfPath: string, unicodeRangeValues:
 		}
 
 		// サブセットを作成
-		let subset;
+		let subset: any;
 		try {
 			subset = harfbuzzWasm.hb_subset_or_fail(face, input);
 			if (subset === 0) {

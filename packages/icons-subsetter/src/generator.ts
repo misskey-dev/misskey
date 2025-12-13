@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { promises as fsp, existsSync } from 'node:fs';
+import { existsSync, promises as fsp } from 'node:fs';
 import path from 'node:path';
 import { generateSubsettedFont } from './subsetter.js';
 
@@ -36,7 +36,7 @@ async function main() {
 
 	// 4. フォールバック用のtabler-icons.woff2をコピー
 	const fontPath = 'node_modules/@tabler/icons-webfont/dist/fonts/';
-	await fsp.copyFile(fontPath + 'tabler-icons.woff2', './built/tabler-icons.woff2');
+	await fsp.copyFile(`${fontPath}tabler-icons.woff2`, './built/tabler-icons.woff2');
 
 	// 5. 各チャンクごとにファイルをスキャンして、使用されているアイコンを抽出
 	const unicodeRangeValues = new Map<string, number[]>();
@@ -66,7 +66,7 @@ async function main() {
 	}
 
 	// 7. Tabler Iconフォントをサブセット化
-	const subsettedFonts = await generateSubsettedFont(fontPath + 'tabler-icons.ttf', unicodeRangeValues);
+	const subsettedFonts = await generateSubsettedFont(`${fontPath}tabler-icons.ttf`, unicodeRangeValues);
 
 	// 8. サブセット化したフォント・CSSを書き出し
 	await Promise.allSettled(Array.from(subsettedFonts.entries()).map(async ([key, buffer]) => {
@@ -127,7 +127,7 @@ async function main() {
 			}
 		}
 
-		await fsp.writeFile(`./built/tabler-icons-${key}.css`, cssRules.join('\n') + '\n');
+		await fsp.writeFile(`./built/tabler-icons-${key}.css`, `${cssRules.join('\n')}\n`);
 	}));
 
 	const end = performance.now();
