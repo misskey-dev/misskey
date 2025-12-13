@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Mono } from './game.js';
+import type { Mono } from './game.js';
 
 const NORMAL_BASE_SIZE = 32;
 export const NORAML_MONOS: Mono[] = [{
