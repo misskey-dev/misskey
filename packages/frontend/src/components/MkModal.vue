@@ -194,16 +194,22 @@ const align = () => {
 		left = x + (props.anchorElement.offsetWidth / 2) - (width / 2);
 	} else if (props.anchor.x === 'left') {
 		// TODO
+		throw new Error(`Unsupported anchor.x value: ${props.anchor.x}`);
 	} else if (props.anchor.x === 'right') {
 		left = x + props.anchorElement.offsetWidth;
+	} else {
+		throw new Error(`Invalid anchor.x value: ${props.anchor.x}`);
 	}
 
 	if (props.anchor.y === 'center') {
 		top = (y - (height / 2));
 	} else if (props.anchor.y === 'top') {
 		// TODO
+		throw new Error(`Unsupported anchor.y value: ${props.anchor.y}`);
 	} else if (props.anchor.y === 'bottom') {
 		top = y + props.anchorElement.offsetHeight;
+	} else {
+		throw new Error(`Invalid anchor.y value: ${props.anchor.y}`);
 	}
 
 	if (fixed.value) {

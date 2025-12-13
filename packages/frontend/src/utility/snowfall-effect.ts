@@ -9,6 +9,38 @@ import vertexSource from './snowfall-effect.vertex.glsl';
 export class SnowfallEffect {
 	private VERTEX_SOURCE = vertexSource;
 	private FRAGMENT_SOURCE = fragmentSource;
+
+	// biome-ignore-start lint/correctness/noUnusedPrivateClassMembers: https://github.com/biomejs/biome/issues/6974
+	private gl: WebGLRenderingContext;
+	private program: WebGLProgram;
+	private canvas: HTMLCanvasElement;
+	private buffers: Record<string, {
+		size: number;
+		value: number[] | Float32Array;
+		location: number;
+		ref: WebGLBuffer;
+	}>;
+	private uniforms: Record<string, {
+		type: string;
+		value: number[] | Float32Array;
+		location: WebGLUniformLocation;
+	}>;
+	private texture: WebGLTexture;
+	private camera: {
+		fov: number;
+		near: number;
+		far: number;
+		aspect: number;
+		z: number;
+	};
+	private wind: {
+		current: number;
+		force: number;
+		target: number;
+		min: number;
+		max: number;
+		easing: number;
+	};
 	private time: {
 		start: number;
 		previous: number;
@@ -17,6 +49,7 @@ export class SnowfallEffect {
 			previous: 0,
 		};
 	private raf = 0;
+	// biome-ignore-end lint/correctness/noUnusedPrivateClassMembers: https://github.com/biomejs/biome/issues/6974
 
 	private density: number = 1 / 90;
 	private depth = 100;

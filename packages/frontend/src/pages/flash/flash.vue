@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 import { computed, defineAsyncComponent, onDeactivated, onUnmounted, ref, shallowRef, watch } from 'vue';
-import type { Interpreter } from '@syuilo/aiscript';
+import type { Interpreter, Ast } from '@syuilo/aiscript';
 import { utils } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import * as Misskey from 'misskey-js';
@@ -85,7 +85,6 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { pleaseLogin } from '@/utility/please-login.js';
-import type * as Ast from '@syuilo/aiscript/node';
 
 const props = defineProps<{
 	id: string;

@@ -73,7 +73,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { claimAchievement } from '@/utility/achievements.js';
-import type * as Ast from '@syuilo/aiscript/node';
+import type { Ast } from '@syuilo/aiscript';
 
 const parser = new Parser();
 let aiscript: Interpreter;

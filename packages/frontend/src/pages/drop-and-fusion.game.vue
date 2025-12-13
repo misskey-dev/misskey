@@ -674,7 +674,7 @@ function tick() {
 }
 
 function tickReplay() {
-	let hasNextTick: boolean;
+	let hasNextTick = false;
 	for (let i = 0; i < replayPlaybackRate.value; i++) {
 		const log = logs!.find(x => x.frame === game.frame);
 		if (log) {
