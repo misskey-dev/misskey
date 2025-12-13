@@ -122,7 +122,7 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 	});
 }
 
-export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
+export function replaceCurrentAccountData(accountData: Misskey.entities.MeDetailed) {
 	if (!$i) return;
 	const token = $i.token;
 	for (const key of Object.keys($i)) {
@@ -136,7 +136,7 @@ export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
 
-export function updateCurrentAccountPartial(accountData: Partial<Misskey.entities.MeDetailed>) {
+export function updateCurrentAccount(accountData: Partial<Misskey.entities.MeDetailed>) {
 	if (!$i) return;
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
@@ -150,7 +150,7 @@ export function updateCurrentAccountPartial(accountData: Partial<Misskey.entitie
 export async function refreshCurrentAccount() {
 	if (!$i) return;
 	const me = $i;
-	return fetchAccount($i.token, $i.id).then(updateCurrentAccount).catch(reason => {
+	return fetchAccount($i.token, $i.id).then(replaceCurrentAccountData).catch(reason => {
 		if (reason === isAccountDeleted) {
 			removeAccount(host, me.id);
 			if (Object.keys(store.s.accountTokens).length > 0) {
