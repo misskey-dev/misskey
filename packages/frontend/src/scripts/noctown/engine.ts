@@ -73,7 +73,6 @@ export class NoctownEngine {
 	// Player management
 	private localPlayer: Character | null = null;
 	private remotePlayers: Map<string, Character> = new Map();
-	private playerLabels: Map<string, CSS2DObject> = new Map();
 	private lastMoveDirection: { x: number; z: number } = { x: 0, z: 0 };
 	private lastFrameTime: number = 0;
 	private currentInput: { up: boolean; down: boolean; left: boolean; right: boolean; sprint: boolean } = {
@@ -342,8 +341,9 @@ export class NoctownEngine {
 		this.localPlayer.setRotation(data.rotation);
 		this.localPlayer.setCastShadow(true);
 
-		// Initialize name display (character-demo+12準拠)
-		this.localPlayer.initializeName(data.username);
+		// T008, T009: Set player name and online status
+		this.localPlayer.setName(data.username);
+		this.localPlayer.setOnline(data.isOnline);
 
 		// Set icon if available
 		if (data.avatarUrl) {
@@ -416,8 +416,9 @@ export class NoctownEngine {
 		// FR-070: Enable linear interpolation for smooth WebSocket position sync
 		character.enableLerp(100); // 100ms lerp duration
 
-		// Initialize name display (character-demo+12準拠)
-		character.initializeName(data.username);
+		// Set player name and online status
+		character.setName(data.username);
+		character.setOnline(data.isOnline);
 
 		// Set icon if available
 		if (data.avatarUrl) {
@@ -426,10 +427,6 @@ export class NoctownEngine {
 
 		this.scene.add(character.group);
 		this.remotePlayers.set(data.id, character);
-
-		// Create name label
-		const labelObject = this.createPlayerLabel(data.id, data.username, data.avatarUrl, data.isOnline, character.group.position);
-		character.group.add(labelObject);
 	}
 
 	public updateRemotePlayer(data: PlayerData): void {
@@ -448,10 +445,14 @@ export class NoctownEngine {
 			const dz = data.positionZ - lastPos.z;
 			const moveLength = Math.sqrt(dx * dx + dz * dz);
 
-			// If player moved significantly, normalize direction
+			// If player moved significantly, normalize direction and calculate rotation
 			if (moveLength > 0.01) {
 				moveX = dx / moveLength;
 				moveZ = dz / moveLength;
+
+				// Calculate rotation from movement vector
+				const targetRotation = Math.atan2(moveX, moveZ);
+				character.setRotation(targetRotation);
 			}
 		}
 
@@ -463,14 +464,9 @@ export class NoctownEngine {
 		});
 
 		character.setPosition(data.positionX, data.positionY, data.positionZ);
-		character.setRotation(data.rotation);
 
-		// Update label data
-		this.updatePlayerLabel(data.id, {
-			username: data.username,
-			avatarUrl: data.avatarUrl,
-			isOnline: data.isOnline,
-		});
+		// Update online status
+		character.setOnline(data.isOnline);
 	}
 
 	public removeRemotePlayer(playerId: string): void {
@@ -478,12 +474,6 @@ export class NoctownEngine {
 		if (character) {
 			this.scene.remove(character.group);
 			this.remotePlayers.delete(playerId);
-		}
-
-		const label = this.playerLabels.get(playerId);
-		if (label) {
-			this.scene.remove(label);
-			this.playerLabels.delete(playerId);
 		}
 	}
 
@@ -507,107 +497,8 @@ export class NoctownEngine {
 			}
 		});
 
-		// Update player label to show online/offline status
-		this.updatePlayerLabel(playerId, { isOnline });
-	}
-
-	public createPlayerLabel(playerId: string, username: string, avatarUrl: string | null, isOnline: boolean, position: THREE.Vector3): CSS2DObject {
-		// Create a div element for the label that matches NoctownPlayerLabel component structure
-		const labelDiv = document.createElement('div');
-		labelDiv.className = 'player-label-wrapper';
-		labelDiv.setAttribute('data-player-id', playerId);
-		labelDiv.style.pointerEvents = 'none';
-
-		// Build the HTML structure to match NoctownPlayerLabel.vue
-		const statusColor = isOnline ? '#22c55e' : '#ef4444'; // green/red
-
-		labelDiv.innerHTML = `
-			<div style="
-				display: flex;
-				align-items: center;
-				gap: 6px;
-				padding: 4px 8px;
-				background-color: rgba(0, 0, 0, 0.7);
-				border-radius: 12px;
-				font-size: 12px;
-				color: white;
-				white-space: nowrap;
-			">
-				<div style="
-					width: 8px;
-					height: 8px;
-					border-radius: 50%;
-					flex-shrink: 0;
-					background-color: ${statusColor};
-				" data-status-mark></div>
-				${avatarUrl ? `
-					<img src="${avatarUrl}" alt="${username}" style="
-						width: 20px;
-						height: 20px;
-						border-radius: 50%;
-						object-fit: cover;
-						flex-shrink: 0;
-					" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-					<div style="
-						width: 20px;
-						height: 20px;
-						display: none;
-						align-items: center;
-						justify-content: center;
-						font-size: 16px;
-						flex-shrink: 0;
-					">👤</div>
-				` : `
-					<div style="
-						width: 20px;
-						height: 20px;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						font-size: 16px;
-						flex-shrink: 0;
-					">👤</div>
-				`}
-				<div style="
-					font-weight: 500;
-					max-width: 120px;
-					overflow: hidden;
-					text-overflow: ellipsis;
-				" data-username>${username}</div>
-			</div>
-		`;
-
-		const labelObject = new CSS2DObject(labelDiv);
-		labelObject.position.copy(position);
-		labelObject.position.y += 2;
-
-		this.playerLabels.set(playerId, labelObject);
-		return labelObject;
-	}
-
-	public updatePlayerLabel(playerId: string, data: Partial<{ username: string; avatarUrl: string | null; isOnline: boolean }>): void {
-		const labelObject = this.playerLabels.get(playerId);
-		if (!labelObject) return;
-
-		const labelDiv = labelObject.element as HTMLDivElement;
-
-		// Update status color
-		if (data.isOnline !== undefined) {
-			const statusMark = labelDiv.querySelector('[data-status-mark]') as HTMLDivElement;
-			if (statusMark) {
-				statusMark.style.backgroundColor = data.isOnline ? '#22c55e' : '#ef4444';
-			}
-		}
-
-		// Update username
-		if (data.username !== undefined) {
-			const usernameEl = labelDiv.querySelector('[data-username]') as HTMLDivElement;
-			if (usernameEl) {
-				usernameEl.textContent = data.username;
-			}
-		}
-
-		// Avatar update is more complex and not commonly needed, skip for now
+		// Update player name sprite to show online/offline status
+		character.setOnline(isOnline);
 	}
 
 	// Chunk management

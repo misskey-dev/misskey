@@ -70,11 +70,13 @@ export class Character {
 	private chatTimer: number = 0;
 	private chatDuration: number = 5.0;
 
-	// Name display (character-demo+12-pond-and-lake.html準拠)
+	// Name display (character-demo+9-player-name.html準拠)
 	private nameSprite!: THREE.Sprite;
 	private nameCanvas!: HTMLCanvasElement;
 	private nameContext!: CanvasRenderingContext2D;
 	private nameTexture!: THREE.CanvasTexture;
+	private accountName: string = 'Player'; // Default name
+	private isOnline: boolean = true; // Default online status
 
 	constructor() {
 		this.group = new THREE.Group();
@@ -92,6 +94,7 @@ export class Character {
 		this.createBody();
 		this.createEmoteSprite();
 		this.createChatSprite();
+		this.createNameSprite();
 	}
 
 	private createBody(): void {
@@ -274,6 +277,102 @@ export class Character {
 		this.chatSprite.scale.set(5, 2.5, 1); // Scale 5x2.5 for 512x256 canvas
 		this.chatSprite.visible = false;
 		this.group.add(this.chatSprite);
+	}
+
+	/**
+	 * T004: Create name sprite at character's feet
+	 * Based on character-demo+9-player-name.html implementation
+	 */
+	private createNameSprite(): void {
+		// Create 512x128 canvas for name display
+		this.nameCanvas = document.createElement('canvas');
+		this.nameCanvas.width = 512;
+		this.nameCanvas.height = 128;
+		this.nameContext = this.nameCanvas.getContext('2d')!;
+
+		// Create texture from canvas
+		this.nameTexture = new THREE.CanvasTexture(this.nameCanvas);
+		this.nameTexture.minFilter = THREE.LinearFilter;
+
+		// Create sprite material (depthTest: false to avoid hiding behind objects)
+		const material = new THREE.SpriteMaterial({
+			map: this.nameTexture,
+			transparent: true,
+			depthTest: false,
+		});
+
+		// Create sprite
+		this.nameSprite = new THREE.Sprite(material);
+		this.nameSprite.position.y = -0.3; // At character's feet
+		this.nameSprite.scale.set(3, 0.75, 1); // Scale 3x0.75
+		this.group.add(this.nameSprite);
+
+		// Initialize name sprite rendering
+		this.updateNameSprite();
+	}
+
+	/**
+	 * T005: Update name sprite canvas rendering
+	 * Draws background, online/offline status mark, and username
+	 */
+	private updateNameSprite(): void {
+		const ctx = this.nameContext;
+		ctx.clearRect(0, 0, 512, 128);
+
+		// T010: Use default name if accountName is empty
+		const displayName = this.accountName.trim() === '' ? 'Player' : this.accountName;
+
+		// Measure text width
+		ctx.font = 'bold 40px Arial';
+		const textWidth = ctx.measureText(displayName).width;
+		const circleRadius = 12;
+		const padding = 30;
+		const gap = 15;
+		const totalWidth = circleRadius * 2 + gap + textWidth + padding * 2;
+		const bgX = 256 - totalWidth / 2;
+
+		// T005: Draw background (semi-transparent black with rounded corners)
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+		ctx.beginPath();
+		ctx.roundRect(bgX, 30, totalWidth, 68, 15);
+		ctx.fill();
+
+		// T005: Draw online/offline status mark (circle)
+		const circleX = bgX + padding + circleRadius;
+		const circleY = 64;
+		ctx.beginPath();
+		ctx.arc(circleX, circleY, circleRadius, 0, Math.PI * 2);
+		ctx.fillStyle = this.isOnline ? '#44ff44' : '#ff4444'; // Green for online, red for offline
+		ctx.fill();
+
+		// T005: Draw username text (white, bold, 40px Arial)
+		ctx.fillStyle = 'white';
+		ctx.font = 'bold 40px Arial';
+		ctx.textAlign = 'left';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(displayName, circleX + circleRadius + gap, 64);
+
+		// T009: Mark texture as needing update
+		this.nameTexture.needsUpdate = true;
+	}
+
+	/**
+	 * T006: Set player name and update name sprite
+	 * @param name Player username (max 12 characters)
+	 */
+	public setName(name: string): void {
+		// T011: Limit name to 12 characters
+		this.accountName = name.substring(0, 12);
+		this.updateNameSprite();
+	}
+
+	/**
+	 * T007: Set online/offline status and update name sprite
+	 * @param online Online status (true = online/green, false = offline/red)
+	 */
+	public setOnline(online: boolean): void {
+		this.isOnline = online;
+		this.updateNameSprite();
 	}
 
 	/**

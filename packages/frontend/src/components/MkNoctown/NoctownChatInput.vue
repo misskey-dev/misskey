@@ -87,9 +87,14 @@ defineExpose({
 	border: none;
 	border-radius: 25px;
 	font-size: 16px;
+	color: #000;
 	background: rgba(255, 255, 255, 0.95);
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 	outline: none;
+}
+
+.chatInput::placeholder {
+	color: #666;
 }
 
 .chatInput:focus {
