@@ -148,7 +148,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (this.utilityService.isSelfHost(host)) return null;
 
 		// リモートから一旦オブジェクトフェッチ
-		const resolver = this.apResolverService.createResolver();
+		const resolver = await this.apResolverService.createResolver();
 		// allow ap/show exclusively to lookup URLs that are cross-origin or non-canonical (like https://alice.example.com/@bob@bob.example.com -> https://bob.example.com/@bob)
 		const object = await resolver.resolve(uri, FetchAllowSoftFailMask.CrossOrigin | FetchAllowSoftFailMask.NonCanonicalId).catch((err) => {
 			if (err instanceof IdentifiableError) {
