@@ -41,6 +41,12 @@ export class NoctownWorldChunk {
 	})
 	public terrainData: Record<string, unknown>;
 
+	@Column('jsonb', {
+		nullable: true,
+		comment: 'Environment objects (trees, rocks, etc.)',
+	})
+	public environmentObjects: Record<string, unknown> | null;
+
 	@Column('varchar', {
 		length: 64,
 		default: 'plains',

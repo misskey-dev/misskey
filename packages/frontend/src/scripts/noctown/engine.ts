@@ -23,6 +23,14 @@ export interface PlayerData {
 	isOnline: boolean;
 }
 
+export interface EnvironmentObjectData {
+	type: string;
+	localX: number;
+	localZ: number;
+	variant?: number;
+	scale?: number;
+}
+
 export interface ChunkData {
 	chunkX: number;
 	chunkZ: number;
@@ -31,6 +39,7 @@ export interface ChunkData {
 		version: number;
 	};
 	biome: string;
+	environmentObjects?: EnvironmentObjectData[];
 }
 
 export interface DroppedItemData {
@@ -285,8 +294,24 @@ export class NoctownEngine {
 		this.scene.add(chunkGroup);
 		this.chunks.set(key, chunkGroup);
 
-		// Add environment entities (trees, rocks) to the scene
-		addRandomEnvironmentEntities(this.scene, chunkData.chunkX, chunkData.chunkZ, CHUNK_SIZE);
+		// FR-010: Add environment entities from backend data
+		if (chunkData.environmentObjects && Array.isArray(chunkData.environmentObjects)) {
+			const { addTree, addRock } = await import('./environment.js');
+			for (const obj of chunkData.environmentObjects) {
+				const worldX = offsetX + obj.localX;
+				const worldZ = offsetZ + obj.localZ;
+
+				if (obj.type === 'tree') {
+					addTree(this.scene, worldX, worldZ);
+				} else if (obj.type === 'rock') {
+					const scale = obj.scale ?? 1.0;
+					addRock(this.scene, worldX, worldZ, scale);
+				}
+			}
+		} else {
+			// Fallback: Use client-side generation if no backend data
+			addRandomEnvironmentEntities(this.scene, chunkData.chunkX, chunkData.chunkZ, CHUNK_SIZE);
+		}
 	}
 
 	/**

@@ -137,6 +137,8 @@ export class WebSocketSyncManager {
 
 		// Player events
 		this.connection.on('playerMoved', (data: PlayerData) => {
+			// FR-010: 自プレイヤーの移動イベントは自分自身に対しては無視
+			if (data.id === this.state.playerId) return;
 			this.emit('playerMoved', data);
 		});
 

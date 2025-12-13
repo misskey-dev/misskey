@@ -1865,6 +1865,23 @@ export class NoctownService {
 		});
 
 		if (existingChunk) {
+			// FR-010: チャンクにenvironmentObjectsがない場合は、決定論的に再生成して保存
+			if (!existingChunk.environmentObjects || (Array.isArray(existingChunk.environmentObjects) && (existingChunk.environmentObjects as any[]).length === 0)) {
+				const generator = getChunkGenerator(12345);
+				const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
+
+				const environmentObjects = chunkTerrainData.environmentObjects.map(obj => ({
+					type: obj.type,
+					localX: obj.localX,
+					localZ: obj.localZ,
+					variant: obj.variant,
+					scale: obj.scale,
+				}));
+
+				(existingChunk as any).environmentObjects = environmentObjects;
+				await this.noctownWorldChunksRepository.save(existingChunk);
+			}
+
 			// Chunk already exists - return existing chunk data
 			return existingChunk;
 		}
@@ -1881,6 +1898,15 @@ export class NoctownService {
 			terrainData[i] = chunkTerrainData.terrainData[localX][localZ];
 		}
 
+		// FR-010: environmentObjectsをデータベースに保存用に整形
+		const environmentObjects = chunkTerrainData.environmentObjects.map(obj => ({
+			type: obj.type,
+			localX: obj.localX,
+			localZ: obj.localZ,
+			variant: obj.variant,
+			scale: obj.scale,
+		}));
+
 		// T033: Save generated chunk to database
 		const chunkId = this.idService.gen();
 		const newChunk = this.noctownWorldChunksRepository.create({
@@ -1893,6 +1919,8 @@ export class NoctownService {
 		});
 		// FR-001: terrainDataをデータベースに保存（チャンク生成器から取得したデータ）
 		(newChunk as any).terrainData = terrainData;
+		// FR-010: environmentObjectsをデータベースに保存
+		(newChunk as any).environmentObjects = environmentObjects;
 		const chunk = await this.noctownWorldChunksRepository.save(newChunk);
 
 		return chunk;

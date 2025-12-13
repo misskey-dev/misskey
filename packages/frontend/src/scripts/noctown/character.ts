@@ -121,7 +121,7 @@ export class Character {
 
 		// Head group
 		this.headGroup = new THREE.Group();
-		this.headGroup.position.y = 2.55;
+		this.headGroup.position.y = 2.2; // FR-010: 頭が体から離れないように調整（torso上端y=2.0 + 0.2）
 		this.group.add(this.headGroup);
 
 		// Head (cube with 6 materials for icon texture)
