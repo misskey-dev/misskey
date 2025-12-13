@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setTimeout } from 'node:timers/promises';
 import { beforeEach, describe, test } from '@jest/globals';
 import type { INestApplicationContext } from '@nestjs/common';
 import type { entities } from 'misskey-js';
+import { setTimeout } from 'node:timers/promises';
+import type {
+	UserToken,
+} from '../../utils.js';
 import {
 	api,
 	captureWebhook,
@@ -14,7 +17,6 @@ import {
 	role,
 	signup,
 	startJobQueue,
-	type UserToken,
 	WEBHOOK_HOST,
 } from '../../utils.js';
 

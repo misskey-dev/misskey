@@ -4,7 +4,8 @@
  */
 
 import { jest } from '@jest/globals';
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { addHours, addSeconds, subDays, subHours, subSeconds } from 'date-fns';
 import { AnnouncementService } from '@/core/AnnouncementService.js';

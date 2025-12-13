@@ -5,10 +5,6 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'node:assert';
-import * as fs from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -27,6 +23,10 @@ import { genAidx } from '@/misc/id/aidx.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
 import type { MiRemoteUser } from '@/models/User.js';
+import * as assert from 'node:assert';
+import * as fs from 'node:fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -127,7 +127,7 @@ describe('ActivityPub', () => {
 				async downloadUrl(url: string, path: string): Promise<{ filename: string }> {
 					if (url.endsWith('.png')) {
 						fs.copyFileSync(
-							_dirname + '/../resources/hw.png',
+							`${_dirname}/../resources/hw.png`,
 							path,
 						);
 					}

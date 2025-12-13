@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { randomUUID } from 'node:crypto';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import type * as Redis from 'ioredis';
-import { type DataSource, IsNull } from 'typeorm';
+import type { DataSource, } from 'typeorm';
+import { IsNull } from 'typeorm';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
@@ -16,9 +16,11 @@ import { DI } from '@/di-symbols.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { generateNativeUserToken } from '@/misc/token.js';
-import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, type SystemAccountsRepository, type UsersRepository } from '@/models/_.js';
-import { type MiLocalUser, MiUser } from '@/models/User.js';
+import type { MiMeta, SystemAccountsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, } from '@/models/_.js';
+import type { MiLocalUser, } from '@/models/User.js';
+import { MiUser } from '@/models/User.js';
+import { randomUUID } from 'node:crypto';
 
 export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy'] as const;
 

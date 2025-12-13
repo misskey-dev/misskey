@@ -18,8 +18,8 @@ import {
 	NodeTypes,
 } from '@vue/compiler-core';
 import JSON5 from 'json5';
-import MagicString from 'magic-string';
 import type { SourceMap } from 'magic-string';
+import MagicString from 'magic-string';
 import { minimatch } from 'minimatch';
 import type {
 	EnvironmentModuleGraph,

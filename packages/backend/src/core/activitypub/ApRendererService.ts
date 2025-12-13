@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as mfm from 'mfm-js';
 import { In } from 'typeorm';
@@ -29,6 +28,7 @@ import type { MiPollVote } from '@/models/PollVote.js';
 import type { MiRelay } from '@/models/Relay.js';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
+import { createPublicKey, randomUUID } from 'node:crypto';
 import type { ApMfmService } from './ApMfmService.js';
 import type { JsonLdService } from './JsonLdService.js';
 import { CONTEXT } from './misc/contexts.js';

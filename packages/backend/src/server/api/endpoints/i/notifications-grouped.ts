@@ -9,9 +9,11 @@ import type { IdService } from '@/core/IdService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import type { MiGroupedNotification, } from '@/models/Notification.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type {
+	FilterUnionByProperty,
+	groupedNotificationTypes,
+} from '@/types.js';
 import {
-	type FilterUnionByProperty,
-	type groupedNotificationTypes,
 	notificationTypes,
 	obsoleteNotificationTypes,
 } from '@/types.js';

@@ -95,19 +95,19 @@ export function getConfig(): UserConfig {
 		resolve: {
 			extensions,
 			alias: {
-				'@/': __dirname + '/src/',
-				'@@/': __dirname + '/../frontend-shared/',
-				'/client-assets/': __dirname + '/assets/',
-				'/static-assets/': __dirname + '/../backend/assets/'
+				'@/': `${__dirname}/src/`,
+				'@@/': `${__dirname}/../frontend-shared/`,
+				'/client-assets/': `${__dirname}/assets/`,
+				'/static-assets/': `${__dirname}/../backend/assets/`
 			},
 		},
 
 		css: {
 			modules: {
 				generateScopedName(name, filename, _css): string {
-					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\/.?&=]/g, '-').replace(/(src-|vue-)/g, '');
+					const id = (`${path.relative(__dirname, filename.split('?')[0])}-${name}`).replace(/[\\/.?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
-						return 'x' + toBase62(hash(id)).substring(0, 4);
+						return `x${toBase62(hash(id)).substring(0, 4)}`;
 					} else {
 						return id;
 					}
@@ -165,7 +165,7 @@ export function getConfig(): UserConfig {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_frontend_embed_vite_',
+			outDir: `${__dirname}/../../built/_frontend_embed_vite_`,
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',

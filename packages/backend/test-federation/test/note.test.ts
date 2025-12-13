@@ -1,6 +1,7 @@
-import assert, { rejects, strictEqual } from 'node:assert';
 import type * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import assert, { rejects, strictEqual } from 'node:assert';
+import type { LoginUser, } from './utils.js';
+import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;

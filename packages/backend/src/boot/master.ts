@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import cluster from 'node:cluster';
-import * as fs from 'node:fs';
-import * as os from 'node:os';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import type { Config } from '@/config.js';
@@ -15,6 +10,11 @@ import { loadConfig } from '@/config.js';
 import { envOption } from '@/env.js';
 import Logger from '@/logger.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
+import cluster from 'node:cluster';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -35,7 +35,7 @@ function greet() {
 		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
 		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
 		console.log(themeColor(' |_|_|_|_|___|___|_,_|___|_  |'));
-		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
+		console.log(` ${chalk.gray(v)}${themeColor('                        |___|\n'.substring(v.length))}`);
 		//#endregion
 
 		console.log(' Misskey is an open-source decentralized microblogging platform.');
@@ -65,7 +65,7 @@ export async function masterMain() {
 		//await connectDb();
 		if (config.pidFile) fs.writeFileSync(config.pidFile, process.pid.toString());
 	} catch (e) {
-		bootLogger.error('Fatal error occurred during initialization: ' + e, null, true);
+		bootLogger.error(`Fatal error occurred during initialization: ${e}`, null, true);
 		process.exit(1);
 	}
 

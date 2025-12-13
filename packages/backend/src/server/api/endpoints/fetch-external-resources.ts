@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createHash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { createHash } from 'node:crypto';
 import { ApiError } from '../error.js';
 
 export const meta = {

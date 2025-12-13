@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import { Writable } from 'node:stream';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
@@ -20,6 +18,8 @@ import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import type { ClipNotesRepository, ClipsRepository, MiClip, MiClipNote, MiUser, PollsRepository, UsersRepository } from '@/models/_.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiPoll } from '@/models/Poll.js';
+import * as fs from 'node:fs';
+import { Writable } from 'node:stream';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 
@@ -77,7 +77,7 @@ export class ExportClipsProcessorService {
 
 			this.logger.succ(`Exported to: ${path}`);
 
-			const fileName = 'clips-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
+			const fileName = `clips-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.json`;
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'json' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
@@ -122,7 +122,7 @@ export class ExportClipsProcessorService {
 				// Stringify but remove the last `]}`
 				const content = JSON.stringify(this.serializeClip(clip)).slice(0, -2);
 				const isFirst = exportedClipsCount === 0;
-				await writer.write(isFirst ? content : ',\n' + content);
+				await writer.write(isFirst ? content : `,\n${content}`);
 
 				await this.processClipNotes(writer, clip.id, user.id);
 
@@ -172,7 +172,7 @@ export class ExportClipsProcessorService {
 				}
 				const content = JSON.stringify(this.serializeClipNote(clipNote, poll));
 				const isFirst = exportedClipNotesCount === 0;
-				await writer.write(isFirst ? content : ',\n' + content);
+				await writer.write(isFirst ? content : `,\n${content}`);
 
 				exportedClipNotesCount++;
 			}

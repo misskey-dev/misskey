@@ -5,7 +5,6 @@
 
 import type { permissions } from 'misskey-js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
-
 import * as endpointsObject from './endpoint-list.js';
 
 interface IEndpointMetaBase {

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { query as urlQuery } from '@/misc/prelude/url.js';
+import { URL } from 'node:url';
 
 export type ILink = {
 	href: string;
@@ -40,7 +40,7 @@ export class WebfingerService {
 	private genUrl(query: string): string {
 		if (query.match(urlRegex)) {
 			const u = new URL(query);
-			return `${u.protocol}//${u.hostname}/.well-known/webfinger?` + urlQuery({ resource: query });
+			return `${u.protocol}//${u.hostname}/.well-known/webfinger?${urlQuery({ resource: query })}`;
 		}
 
 		const m = query.match(mRegex);

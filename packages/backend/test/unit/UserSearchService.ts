@@ -4,7 +4,8 @@
  */
 
 import { describe, jest, test } from '@jest/globals';
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { UserSearchService } from '@/core/UserSearchService.js';

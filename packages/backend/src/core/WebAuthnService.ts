@@ -10,7 +10,8 @@ import {
 	generateRegistrationOptions, verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
-import { type AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
+import type { AttestationFormat, } from '@simplewebauthn/server/helpers';
+import { isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
 import type {
 	AuthenticationResponseJSON,
 	AuthenticatorTransportFuture,

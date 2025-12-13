@@ -25,7 +25,7 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+		const text = (`${note.cw ?? ''}\n${note.text ?? ''}`).trim();
 
 		if (text === '') return false;
 

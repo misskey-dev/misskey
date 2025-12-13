@@ -8,7 +8,7 @@ const TESTER_IP_ADDRESS = '172.20.1.1';
  */
 function getIpHash(ip: string) {
 	const prefix = IPCIDR.createAddress(ip).mask(64);
-	return `ip-${BigInt('0b' + prefix).toString(36)}`;
+	return `ip-${BigInt(`0b${prefix}`).toString(36)}`;
 }
 
 /**

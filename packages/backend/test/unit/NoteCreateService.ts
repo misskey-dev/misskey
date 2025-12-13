@@ -4,7 +4,6 @@
  */
 
 import { Test } from '@nestjs/testing';
-
 import { CoreModule } from '@/core/CoreModule.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { GlobalModule } from '@/GlobalModule.js';

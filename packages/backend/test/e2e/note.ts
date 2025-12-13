@@ -7,10 +7,10 @@ import type { Repository } from "typeorm";
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { MiNote } from '@/models/Note.js';
+import * as assert from 'node:assert';
 import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
 
 describe('Note', () => {

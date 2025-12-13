@@ -5,7 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
-import { type DataSource, IsNull, Not } from 'typeorm';
+import type { DataSource, } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';

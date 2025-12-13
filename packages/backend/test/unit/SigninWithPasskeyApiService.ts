@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { IncomingHttpHeaders } from 'node:http';
 import { afterAll, beforeAll, beforeEach, describe, expect, jest, } from '@jest/globals';
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { HttpHeader } from 'fastify/types/utils.js';
-import { type MockMetadata, ModuleMocker } from 'jest-mock';
+import type { MockMetadata, } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import { CoreModule } from '@/core/CoreModule.js';
 import { IdService } from '@/core/IdService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
@@ -21,6 +22,7 @@ import type { MiUser } from '@/models/User.js';
 import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { SigninWithPasskeyApiService } from '@/server/api/SigninWithPasskeyApiService.js';
+import type { IncomingHttpHeaders } from 'node:http';
 
 const moduleMocker = new ModuleMocker(global);
 

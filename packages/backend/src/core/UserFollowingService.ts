@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import type { ModuleRef } from '@nestjs/core';
 import { Brackets, IsNull } from 'typeorm';
 import type { Config } from '@/config.js';

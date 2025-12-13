@@ -1,6 +1,7 @@
-import assert, { rejects, strictEqual } from 'node:assert';
 import type * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
+import assert, { rejects, strictEqual } from 'node:assert';
+import type { LoginUser, } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 const [aAdmin, bAdmin] = await Promise.all([
 	fetchAdmin('a.test'),

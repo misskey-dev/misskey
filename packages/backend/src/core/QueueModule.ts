@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Provider } from '@nestjs/common';
-import { Inject, Module, type OnApplicationShutdown } from '@nestjs/common';
+import type { OnApplicationShutdown, Provider } from '@nestjs/common';
+import { Inject, Module, } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';

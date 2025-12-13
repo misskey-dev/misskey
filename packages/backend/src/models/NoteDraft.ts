@@ -4,7 +4,8 @@
  */
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { type noteReactionAcceptances, noteVisibilities } from '@/types.js';
+import type { noteReactionAcceptances, } from '@/types.js';
+import { noteVisibilities } from '@/types.js';
 import { MiChannel } from './Channel.js';
 import type { MiDriveFile } from './DriveFile.js';
 import { MiNote } from './Note.js';

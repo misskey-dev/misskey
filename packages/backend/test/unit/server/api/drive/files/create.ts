@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import type { FastifyInstance } from 'fastify';
 import request from 'supertest';
 import { CoreModule } from '@/core/CoreModule.js';
@@ -155,7 +156,7 @@ describe('/drive/files/create', () => {
 			fileContent: Buffer.from('a'.repeat(1000 * 1000)),
 		});
 		expect(result.statusCode).toBe(200);
-		expect(result.body.name).toBe(name + '.unknown');
+		expect(result.body.name).toBe(`${name}.unknown`);
 		expect(result.body.comment).toBe(comment);
 		expect(result.body.isSensitive).toBe(true);
 		expect(result.body.folderId).toBe(folder.id);
@@ -191,7 +192,7 @@ describe('/drive/files/create', () => {
 			fileContent: Buffer.from('a'.repeat(10)),
 		});
 		expect(result.statusCode).toBe(200);
-		expect(result.body.name).toBe(name + '.unknown');
+		expect(result.body.name).toBe(`${name}.unknown`);
 		expect(result.body.comment).toBe(comment);
 		expect(result.body.isSensitive).toBe(true);
 		expect(result.body.folderId).toBe(folder.id);

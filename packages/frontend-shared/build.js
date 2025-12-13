@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
-const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
+const _package = JSON.parse(fs.readFileSync(`${_dirname}/package.json`, 'utf-8'));
 
 const entryPoints = fs.globSync('./js/**/**.{ts,tsx}');
 

@@ -1,0 +1,185 @@
+{
+	"$schema": "https://biomejs.dev/schemas/latest/schema.json",
+	"root": true,
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false
+	},
+	"overrides": [
+		// disable linting for minified files
+		{
+			"includes": ["**/*.min.js"],
+			"linter": {
+				"enabled": false
+			},
+			"formatter": {
+				"enabled": false
+			}
+		},
+		// relax rules for vue files as biome support is not complete
+		{
+			"includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		}
+	],
+	"formatter": {
+		"enabled": false,
+		"indentStyle": "tab"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": {
+				"useHtmlLang": {
+					"level": "off"
+				},
+				"useAltText": {
+					"level": "off"
+				},
+				"noSvgWithoutTitle": {
+					"level": "off"
+				},
+				"useButtonType": {
+					"level": "off"
+				}
+			},
+			"complexity": {
+				// with nested ifs, continue is useful to understand the end of flow
+				"noUselessContinue": {
+					"level": "off"
+				},
+				// We are carefully with important styles but sometimes they are necessary
+				"noImportantStyles": {
+					"level": "off"
+				},
+				// we prefer A["key"] if A is a string-keyed dictionary
+				"useLiteralKeys": {
+					"level": "off"
+				}
+			},
+			"correctness": {
+				"noUnusedFunctionParameters": {
+					"level": "off"
+				},
+				"noUnusedVariables": {
+					"level": "warn",
+					"options": {
+						// https://github.com/biomejs/biome/issues/8353
+						// https://github.com/biomejs/biome/pull/8398
+						"ignoreRestSiblings": true
+					}
+				},
+				"useParseIntRadix": {
+					"level": "off"
+				}
+			},
+			"style": {
+				// non null assertion is necessary because of lack of control flow analysis in typescript
+				"noNonNullAssertion": {
+					"level": "off"
+				},
+				// nuxt service definition use parameter properties
+				"noParameterProperties": {
+					"level": "off"
+				},
+				// prefer `` over '' or ""
+				"useTemplate": {
+					"level": "info",
+					"fix": "safe"
+				},
+				// not always better. especially when we except extending function type
+				"useShorthandFunctionType": {
+					"level": "off"
+				},
+				// we prefer import type {T} from 'mod' instead of import {type T} from 'mod'
+				"useImportType": {
+					"level": "error",
+					"options": {
+						"style": "separatedType"
+					}
+				}
+			},
+			"suspicious": {
+				// not always suspicious
+				"noAssignInExpressions": {
+					"level": "off"
+				},
+				// we sometimes want to check control characters with regex, and why not?
+				"noControlCharactersInRegex": {
+					"level": "off"
+				},
+				// we still use any in some cases. TODO: reduce its usage
+				"noExplicitAny": {
+					"level": "off"
+				},
+				// we want to allow toString, Error, etc., especially for exports
+				"noShadowRestrictedNames": {
+					"level": "off"
+				},
+				// false positive in script tag
+				// https://github.com/biomejs/biome/issues/8431
+				"noSuspiciousSemicolonInJsx": {
+					"level": "off"
+				},
+				// Do ${} in '' is suspicious? We don't think so. In addition, we cannot avoid that.
+				"noTemplateCurlyInString": {
+					"level": "off"
+				},
+				// the endpoint meta object use 'then' object
+				"noThenProperty": {
+					"level": "off"
+				},
+				// false positives with .forEach.
+				// https://github.com/biomejs/biome/issues/8024
+				"useIterableCallbackReturn": {
+					"level": "off"
+				}
+			}
+		}
+	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		},
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							"storybook/**",
+							"@storybook/**",
+							"vue",
+							":PACKAGE:",
+							"@@/**",
+							"@/components/**",
+							["@/**", "!@/components/**"]
+						]
+					}
+				}
+			}
+		}
+	}
+}

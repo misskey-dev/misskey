@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import type Redis from 'ioredis';
 import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 import type { IdService } from '@/core/IdService.js';

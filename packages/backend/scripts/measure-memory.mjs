@@ -11,9 +11,9 @@
  */
 
 import { fork } from 'node:child_process';
+import { dirname, join } from 'node:path';
 import { setTimeout } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,8 +22,6 @@ const STARTUP_TIMEOUT = 120000; // 120 seconds timeout for server startup
 const MEMORY_SETTLE_TIME = 10000; // Wait 10 seconds after startup for memory to settle
 
 async function measureMemory() {
-	const startTime = Date.now();
-
 	// Start the Misskey backend server using fork to enable IPC
 	const serverProcess = fork(join(__dirname, '../built/boot/entry.js'), [], {
 		cwd: join(__dirname, '..'),

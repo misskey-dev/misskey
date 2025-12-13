@@ -15,7 +15,8 @@ import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
 import type { AbuseReportResolveType } from '@/models/AbuseUserReport.js';
-import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import type { SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import { MiSystemWebhook, } from '@/models/SystemWebhook.js';
 import type { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
 export type AbuseReportPayload = {

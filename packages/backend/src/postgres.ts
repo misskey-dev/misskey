@@ -5,7 +5,8 @@
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-import { DataSource, type Logger, type QueryRunner } from 'typeorm';
+import type { Logger, QueryRunner } from 'typeorm';
+import { DataSource, } from 'typeorm';
 import type { Config } from '@/config.js';
 import { entities as charts } from '@/core/chart/entities.js';
 import { bindThis } from '@/decorators.js';

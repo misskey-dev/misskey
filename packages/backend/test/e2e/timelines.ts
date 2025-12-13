@@ -8,16 +8,17 @@
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
-import * as assert from 'node:assert';
-import { setTimeout } from 'node:timers/promises';
 import { Redis } from 'ioredis';
 import type { entities } from 'misskey-js';
 import type { Note, SignupResponse } from 'misskey-js/entities.js';
 import { loadConfig } from '@/config.js';
-import { api, post, randomString, sendEnvUpdateRequest, signup, type UserToken, uploadUrl } from '../utils.js';
+import * as assert from 'node:assert';
+import { setTimeout } from 'node:timers/promises';
+import type { UserToken, } from '../utils.js';
+import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl } from '../utils.js';
 
 function genHost() {
-	return randomString() + '.example.com';
+	return `${randomString()}.example.com`;
 }
 
 let redisForTimelines: Redis;
@@ -3032,7 +3033,7 @@ describe('Timelines', () => {
 				const noteSince = await post(alice, { text: 'Note where id will be `sinceId`.' });
 				const note1 = await post(alice, { text: '1' });
 				const note2 = await post(alice, { text: '2' });
-				await redisForTimelines.del('list:userTimeline:' + alice.id);
+				await redisForTimelines.del(`list:userTimeline:${alice.id}`);
 				const note3 = await post(alice, { text: '3' });
 
 				const res = await api('users/notes', { userId: alice.id, sinceId: noteSince.id });
@@ -3044,7 +3045,7 @@ describe('Timelines', () => {
 				const noteSince = await post(alice, { text: 'Note where id will be `sinceId`.' });
 				const note1 = await post(alice, { text: '1' });
 				const note2 = await post(alice, { text: '2' });
-				await redisForTimelines.del('list:userTimeline:' + alice.id);
+				await redisForTimelines.del(`list:userTimeline:${alice.id}`);
 				const note3 = await post(alice, { text: '3' });
 				const noteUntil = await post(alice, { text: 'Note where id will be `untilId`.' });
 				await post(alice, { text: '4' });

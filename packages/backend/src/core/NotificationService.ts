@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setTimeout } from 'node:timers/promises';
-import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import { ReplyError } from 'ioredis';
 import type { Config } from '@/config.js';
@@ -21,6 +21,7 @@ import type { UsersRepository } from '@/models/_.js';
 import type { MiNotification } from '@/models/Notification.js';
 import type { MiUser } from '@/models/User.js';
 import type { FilterUnionByProperty, } from '@/types.js';
+import { setTimeout } from 'node:timers/promises';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -244,7 +245,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 	private toXListId(id: string): string {
 		const { date, additional } = this.idService.parseFull(id);
-		return date.toString() + '-' + additional.toString();
+		return `${date.toString()}-${additional.toString()}`;
 	}
 
 	@bindThis
@@ -276,14 +277,14 @@ export class NotificationService implements OnApplicationShutdown {
 			if (sinceTime && !untilTime) {
 				notificationsRes = await this.redisClient.xrange(
 					`notificationTimeline:${userId}`,
-					'(' + sinceTime,
+					`(${sinceTime}`,
 					'+',
 					'COUNT', limit);
 			} else {
 				notificationsRes = await this.redisClient.xrevrange(
 					`notificationTimeline:${userId}`,
-					untilTime ? '(' + untilTime : '+',
-					sinceTime ? '(' + sinceTime : '-',
+					untilTime ? `(${untilTime}` : '+',
+					sinceTime ? `(${sinceTime}` : '-',
 					'COUNT', limit);
 			}
 

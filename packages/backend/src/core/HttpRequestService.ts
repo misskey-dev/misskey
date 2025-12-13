@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as http from 'node:http';
-import * as https from 'node:https';
-import * as net from 'node:net';
-import type * as stream from 'node:stream';
-import type { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import CacheableLookup from 'cacheable-lookup';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
@@ -21,6 +16,11 @@ import type { IObject } from '@/core/activitypub/type.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { StatusError } from '@/misc/status-error.js';
+import * as http from 'node:http';
+import * as https from 'node:https';
+import * as net from 'node:net';
+import type * as stream from 'node:stream';
+import type { URL } from 'node:url';
 
 export type HttpRequestSendOptions = {
 	throwErrorWhenResponseNotOk: boolean;

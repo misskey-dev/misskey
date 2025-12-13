@@ -4,12 +4,15 @@
  */
 
 import { afterAll, beforeAll, beforeEach, describe, expect, jest } from '@jest/globals';
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import type { Response } from 'node-fetch';
+import type {
+	CaptchaErrorCode,
+	CaptchaSaveResult,
+} from '@/core/CaptchaService.js';
 import {
 	CaptchaError,
-	type CaptchaErrorCode,
-	type CaptchaSaveResult,
 	CaptchaService,
 	captchaErrorCodes,
 } from '@/core/CaptchaService.js';

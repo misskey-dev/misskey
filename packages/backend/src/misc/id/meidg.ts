@@ -32,7 +32,7 @@ function getRandom() {
 }
 
 export function genMeidg(t: number): string {
-	return 'g' + getTime(t) + getRandom();
+	return `g${getTime(t)}${getRandom()}`;
 }
 
 export function parseMeidg(id: string): { date: Date; } {

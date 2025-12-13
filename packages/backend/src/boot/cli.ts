@@ -4,11 +4,11 @@
  */
 
 import 'reflect-metadata';
-import { EventEmitter } from 'node:events';
 import { NestFactory } from '@nestjs/core';
 import { CommandModule } from '@/cli/CommandModule.js';
 import { CommandService } from '@/cli/CommandService.js';
 import { NestLogger } from '@/NestLogger.js';
+import { EventEmitter } from 'node:events';
 
 process.title = 'Misskey Cli';
 

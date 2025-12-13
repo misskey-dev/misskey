@@ -6,7 +6,8 @@
 /* eslint-disable */
 
 import { afterEach, beforeEach, describe, expect } from '@jest/globals';
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { ChannelFollowingService } from "@/core/ChannelFollowingService.js";
 import { CoreModule } from '@/core/CoreModule.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

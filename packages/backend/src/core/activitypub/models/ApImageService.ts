@@ -16,7 +16,8 @@ import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 import type { ApResolverService } from '../ApResolverService.js';
-import { type IObject, isDocument } from '../type.js';
+import type { IObject, } from '../type.js';
+import { isDocument } from '../type.js';
 
 @Injectable()
 export class ApImageService {

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ReadableStream, TextEncoderStream } from 'node:stream/web';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
@@ -22,6 +21,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiPoll } from '@/models/Poll.js';
+import { ReadableStream, TextEncoderStream } from 'node:stream/web';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 
@@ -150,7 +150,7 @@ export class ExportNotesProcessorService {
 
 			this.logger.succ(`Exported to: ${path}`);
 
-			const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
+			const fileName = `notes-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.json`;
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'json' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);

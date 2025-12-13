@@ -5,7 +5,6 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'node:assert';
 import type { jest } from '@jest/globals';
 import * as lolex from '@sinonjs/fake-timers';
 import type * as Redis from 'ioredis';
@@ -20,6 +19,7 @@ import TestGroupedChart from '@/core/chart/charts/test-grouped.js';
 import TestIntersectionChart from '@/core/chart/charts/test-intersection.js';
 import TestUniqueChart from '@/core/chart/charts/test-unique.js';
 import Logger from '@/logger.js';
+import * as assert from 'node:assert';
 
 describe('Chart', () => {
 	const config = loadConfig();

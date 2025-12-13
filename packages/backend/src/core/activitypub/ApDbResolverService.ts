@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import type { CacheService } from '@/core/CacheService.js';
 import type { UtilityService } from '@/core/UtilityService.js';

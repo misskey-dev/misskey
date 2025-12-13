@@ -1,1 +1,9 @@
-../frontend/biome.jsonc
+{
+	"$schema": "https://biomejs.dev/schemas/latest/schema.json",
+	"extends": "//",
+	"linter": {
+		"domains": {
+			"vue": "recommended"
+		}
+	}
+}

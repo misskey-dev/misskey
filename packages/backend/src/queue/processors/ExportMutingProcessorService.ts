@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
@@ -16,6 +15,7 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { MiMuting, MutingsRepository, UsersRepository } from '@/models/_.js';
+import * as fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 
@@ -90,7 +90,7 @@ export class ExportMutingProcessorService {
 
 					const content = this.utilityService.getFullApAccount(u.username, u.host);
 					await new Promise<void>((res, rej) => {
-						stream.write(content + '\n', err => {
+						stream.write(`${content}\n`, err => {
 							if (err) {
 								this.logger.error(err);
 								rej(err);
@@ -108,7 +108,7 @@ export class ExportMutingProcessorService {
 			stream.end();
 			this.logger.succ(`Exported to: ${path}`);
 
-			const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
+			const fileName = `mute-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.csv`;
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);

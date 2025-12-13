@@ -92,11 +92,11 @@ export class LocaleInliner {
 	}
 
 	isScriptFile(fileName: string) {
-		return fileName.startsWith(this.scriptsDir + '/') && fileName.endsWith('.js');
+		return fileName.startsWith(`${this.scriptsDir}/`) && fileName.endsWith('.js');
 	}
 
 	stripScriptDir(fileName: string) {
-		if (!fileName.startsWith(this.scriptsDir + '/')) {
+		if (!fileName.startsWith(`${this.scriptsDir}/`)) {
 			throw new Error(`${fileName} does not start with ${this.scriptsDir}/`);
 		}
 		return fileName.slice(this.scriptsDir.length + 1);

@@ -4,7 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { type FeaturedService, GALLERY_POSTS_RANKING_WINDOW } from '@/core/FeaturedService.js';
+import type { FeaturedService, } from '@/core/FeaturedService.js';
+import { GALLERY_POSTS_RANKING_WINDOW } from '@/core/FeaturedService.js';
 import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';

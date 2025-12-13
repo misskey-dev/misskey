@@ -179,8 +179,8 @@ export class ReversiService implements OnApplicationShutdown {
 			await this.redisClient.zrem('reversi:matchAny',
 				me.id,
 				matchedUserId,
-				me.id + ':noIrregularRules',
-				matchedUserId + ':noIrregularRules');
+				`${me.id}:noIrregularRules`,
+				`${matchedUserId}:noIrregularRules`);
 
 			const game = await this.matched(matchedUserId, me.id, {
 				noIrregularRules: options.noIrregularRules || option === 'noIrregularRules',
@@ -190,7 +190,7 @@ export class ReversiService implements OnApplicationShutdown {
 		} else {
 			const redisPipeline = this.redisClient.pipeline();
 			if (options.noIrregularRules) {
-				redisPipeline.zadd('reversi:matchAny', Date.now(), me.id + ':noIrregularRules');
+				redisPipeline.zadd('reversi:matchAny', Date.now(), `${me.id}:noIrregularRules`);
 			} else {
 				redisPipeline.zadd('reversi:matchAny', Date.now(), me.id);
 			}
@@ -207,7 +207,7 @@ export class ReversiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async matchAnyUserCancel(user: MiUser) {
-		await this.redisClient.zrem('reversi:matchAny', user.id, user.id + ':noIrregularRules');
+		await this.redisClient.zrem('reversi:matchAny', user.id, `${user.id}:noIrregularRules`);
 	}
 
 	@bindThis

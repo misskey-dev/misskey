@@ -4,7 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { QUEUE_TYPES, type QueueService } from '@/core/QueueService.js';
+import type { QueueService } from '@/core/QueueService.js';
+import { QUEUE_TYPES, } from '@/core/QueueService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

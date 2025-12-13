@@ -5,9 +5,11 @@
 
 process.env.NODE_ENV = 'test';
 
+import type {
+	DeleteObjectCommandOutput,
+} from '@aws-sdk/client-s3';
 import {
 	DeleteObjectCommand,
-	type DeleteObjectCommandOutput,
 	InvalidObjectState,
 	NoSuchKey,
 	S3Client,

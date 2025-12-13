@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setTimeout } from 'node:timers/promises';
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -18,6 +18,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import type { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
 import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { MiUser } from '@/models/User.js';
+import { setTimeout } from 'node:timers/promises';
 import { randomString } from '../utils.js';
 
 describe('SystemWebhookService', () => {

@@ -166,7 +166,7 @@ export class AntennaService implements OnApplicationShutdown {
 		if (keywords.length > 0) {
 			if (note.text == null && note.cw == null) return false;
 
-			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+			const _text = `${note.text ?? ''}\n${note.cw ?? ''}`;
 
 			const matched = keywords.some(and =>
 				and.every(keyword =>
@@ -186,7 +186,7 @@ export class AntennaService implements OnApplicationShutdown {
 		if (excludeKeywords.length > 0) {
 			if (note.text == null && note.cw == null) return false;
 
-			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+			const _text = `${note.text ?? ''}\n${note.cw ?? ''}`;
 
 			const matched = excludeKeywords.some(and =>
 				and.every(keyword =>
@@ -237,7 +237,7 @@ export class AntennaService implements OnApplicationShutdown {
 		const antennaIds = antennasToMigrate.map(x => x.id);
 
 		// Update the antennas by appending dst users acct to the users list
-		const dstUserAcct = '@' + Acct.toString({ username: dst.username, host: dst.host });
+		const dstUserAcct = `@${Acct.toString({ username: dst.username, host: dst.host })}`;
 
 		await this.antennasRepository.createQueryBuilder('antenna')
 			.update()

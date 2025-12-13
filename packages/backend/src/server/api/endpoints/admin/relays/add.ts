@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
 import type { RelayService } from '@/core/RelayService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { URL } from 'node:url';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

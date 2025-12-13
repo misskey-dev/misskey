@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
@@ -15,7 +12,8 @@ import type { Config } from '@/config.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import type { DownloadService } from '@/core/DownloadService.js';
 import type { FileInfoService } from '@/core/FileInfoService.js';
-import { type IImageStreamable, type ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
+import type { IImageStreamable, ImageProcessingService, } from '@/core/ImageProcessingService.js';
+import { webpDefault } from '@/core/ImageProcessingService.js';
 import type { InternalStorageService } from '@/core/InternalStorageService.js';
 import type { LoggerService } from '@/core/LoggerService.js';
 import type { VideoProcessingService } from '@/core/VideoProcessingService.js';
@@ -29,6 +27,9 @@ import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
+import * as fs from 'node:fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -292,7 +293,7 @@ export class FileServerService {
 
 	@bindThis
 	private async proxyHandler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
-		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
+		const url = 'url' in request.query ? request.query.url : `https://${request.params.url}`;
 
 		if (typeof url !== 'string') {
 			reply.code(400);

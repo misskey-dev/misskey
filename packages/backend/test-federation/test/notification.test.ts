@@ -1,5 +1,6 @@
 import type * as Misskey from 'misskey-js';
-import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
+import type { LoginUser, } from './utils.js';
+import { assertNotificationReceived, createAccount, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 
 describe('Notification', () => {
 	let alice: LoginUser, bob: LoginUser;

@@ -67,7 +67,7 @@ export class ApiServerService {
 				name: endpoint.name,
 				meta: endpoint.meta,
 				params: endpoint.params,
-				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
+				exec: this.moduleRef.get(`ep:${endpoint.name}`, { strict: false }).exec,
 			};
 
 			if (endpoint.meta.requireFile) {
@@ -75,7 +75,7 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, async (request, reply) => {
+				}>(`/${endpoint.name}`, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();
@@ -91,7 +91,7 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
+				}>(`/${endpoint.name}`, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();

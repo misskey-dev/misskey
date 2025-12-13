@@ -19,7 +19,7 @@ export class MediaProxy {
 		const localProxy = `${this.url}/proxy`;
 		let _imageUrl = imageUrl;
 
-		if (imageUrl.startsWith(this.serverMetadata.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {
+		if (imageUrl.startsWith(`${this.serverMetadata.mediaProxy}/`) || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(`${localProxy}/`)) {
 			// もう既にproxyっぽそうだったらurlを取り出す
 			_imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
 		}
@@ -49,7 +49,7 @@ export class MediaProxy {
 			return u.href;
 		}
 
-		if (u.href.startsWith(this.serverMetadata.mediaProxy + '/')) {
+		if (u.href.startsWith(`${this.serverMetadata.mediaProxy}/`)) {
 			// もう既にproxyっぽそうだったらsearchParams付けるだけ
 			u.searchParams.set('static', '1');
 			return u.href;

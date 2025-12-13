@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EventEmitter } from 'node:events';
-import type * as http from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
@@ -17,7 +15,10 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiAccessToken, UsersRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
-import { type AuthenticateService, AuthenticationError } from './AuthenticateService.js';
+import { EventEmitter } from 'node:events';
+import type * as http from 'node:http';
+import type { AuthenticateService, } from './AuthenticateService.js';
+import { AuthenticationError } from './AuthenticateService.js';
 import type { ChannelsService } from './stream/ChannelsService.js';
 import MainStreamConnection from './stream/Connection.js';
 
@@ -77,10 +78,10 @@ export class StreamingApiServerService {
 				}
 			} catch (e) {
 				if (e instanceof AuthenticationError) {
-					socket.write([
+					socket.write(`${[
 						'HTTP/1.1 401 Unauthorized',
 						'WWW-Authenticate: Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"',
-					].join('\r\n') + '\r\n\r\n');
+					].join('\r\n')}\r\n\r\n`);
 				} else {
 					socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n');
 				}

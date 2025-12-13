@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { randomUUID } from 'node:crypto';
-import * as fs from 'node:fs';
 import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Inject, Injectable } from '@nestjs/common';
@@ -42,6 +40,8 @@ import type { DriveFilesRepository, DriveFoldersRepository, MiMeta, UserProfiles
 import { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
+import { randomUUID } from 'node:crypto';
+import * as fs from 'node:fs';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -224,8 +224,8 @@ export class DriveService {
 			return await this.driveFilesRepository.insertOne(file);
 		} else { // use internal storage
 			const accessKey = randomUUID();
-			const thumbnailAccessKey = 'thumbnail-' + randomUUID();
-			const webpublicAccessKey = 'webpublic-' + randomUUID();
+			const thumbnailAccessKey = `thumbnail-${randomUUID()}`;
+			const webpublicAccessKey = `webpublic-${randomUUID()}`;
 
 			const url = this.internalStorageService.saveFromPath(accessKey, path);
 
@@ -620,8 +620,8 @@ export class DriveService {
 				file.url = url;
 				// ローカルプロキシ用
 				file.accessKey = randomUUID();
-				file.thumbnailAccessKey = 'thumbnail-' + randomUUID();
-				file.webpublicAccessKey = 'webpublic-' + randomUUID();
+				file.thumbnailAccessKey = `thumbnail-${randomUUID()}`;
+				file.webpublicAccessKey = `webpublic-${randomUUID()}`;
 			}
 		}
 
@@ -820,8 +820,8 @@ export class DriveService {
 				storedInternal: false,
 				// ローカルプロキシ用
 				accessKey: randomUUID(),
-				thumbnailAccessKey: 'thumbnail-' + randomUUID(),
-				webpublicAccessKey: 'webpublic-' + randomUUID(),
+				thumbnailAccessKey: `thumbnail-${randomUUID()}`,
+				webpublicAccessKey: `webpublic-${randomUUID()}`,
 			});
 		} else {
 			await this.driveFilesRepository.delete(file.id);

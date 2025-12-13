@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -182,7 +183,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: System: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: System: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -239,7 +240,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: DB: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: DB: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -441,7 +442,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Relationship: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: Relationship: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -486,7 +487,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: ObjectStorage: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: ObjectStorage: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}

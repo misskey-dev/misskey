@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as crypto from 'node:crypto';
-import type { IncomingMessage } from 'node:http';
 import fastifyAccepts from '@fastify/accepts';
 import { Inject, Injectable } from '@nestjs/common';
 import httpSignature, { type IParsedSignature } from '@peertube/http-signature';
@@ -33,6 +31,8 @@ import type { EmojisRepository, FollowingsRepository, FollowRequestsRepository, 
 import type { MiFollowing } from '@/models/Following.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import * as crypto from 'node:crypto';
+import type { IncomingMessage } from 'node:http';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';

@@ -56,7 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.type) {
 				if (ps.type.endsWith('/*')) {
-					query.andWhere('file.type like :type', { type: ps.type.replace('/*', '/') + '%' });
+					query.andWhere('file.type like :type', { type: `${ps.type.replace('/*', '/')}%` });
 				} else {
 					query.andWhere('file.type = :type', { type: ps.type });
 				}

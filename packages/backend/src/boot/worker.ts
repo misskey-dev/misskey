@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import cluster from 'node:cluster';
 import { loadConfig } from '@/config.js';
 import { envOption } from '@/env.js';
+import cluster from 'node:cluster';
 import { jobQueue, server } from './common.js';
 
 /**

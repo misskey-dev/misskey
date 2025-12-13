@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as mfm from 'mfm-js';
 import * as htmlParser from 'node-html-parser';
@@ -14,6 +13,7 @@ import { escapeHtml } from '@/misc/escape-html.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { intersperse } from '@/misc/prelude/array.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
+import { URL } from 'node:url';
 
 const urlRegex = /^https?:\/\/[\w/:%#@$&?!()[\]~.,=+-]+/;
 const urlRegexFull = /^https?:\/\/[\w/:%#@$&?!()[\]~.,=+-]+$/;

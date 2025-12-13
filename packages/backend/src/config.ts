@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { FastifyServerOptions } from 'fastify';
 import type { RedisOptions } from 'ioredis';
 import type { ManifestChunk } from 'vite';
+import * as fs from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
@@ -228,8 +228,8 @@ export function loadConfig(): Config {
 
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
 
-	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
-	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
+	const frontendManifestExists = fs.existsSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`);
+	const frontendEmbedManifestExists = fs.existsSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`);
 	const frontendManifest = frontendManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
 		: { 'src/_boot_.ts': { file: null } };

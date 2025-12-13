@@ -243,7 +243,7 @@ export class EmailService {
 		valid: boolean;
 		reason: 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | null;
 	}> {
-		const endpoint = 'https://verifymail.io/api/' + emailAddress + '?key=' + verifymailAuthKey;
+		const endpoint = `https://verifymail.io/api/${emailAddress}?key=${verifymailAuthKey}`;
 		const res = await this.httpRequestService.send(endpoint, {
 			method: 'GET',
 			headers: {
@@ -312,7 +312,7 @@ export class EmailService {
 		valid: boolean;
 		reason: 'used' | 'format' | 'blacklist' | 'mx' | 'smtp' | 'network' | T | null;
 	}> {
-		const endpoint = truemailInstance + '?email=' + emailAddress;
+		const endpoint = `${truemailInstance}?email=${emailAddress}`;
 		try {
 			const res = await this.httpRequestService.send(endpoint, {
 				method: 'POST',

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import archiver from 'archiver';
 import type * as Bull from 'bullmq';
@@ -19,6 +18,7 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import type { EmojisRepository, UsersRepository } from '@/models/_.js';
+import * as fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
@@ -56,7 +56,7 @@ export class ExportCustomEmojisProcessorService {
 
 		this.logger.info(`Temp dir is ${path}`);
 
-		const metaPath = path + '/meta.json';
+		const metaPath = `${path}/meta.json`;
 
 		fs.writeFileSync(metaPath, '', 'utf-8');
 
@@ -92,8 +92,8 @@ export class ExportCustomEmojisProcessorService {
 				continue;
 			}
 			const ext = mime.extension(emoji.type ?? 'image/png');
-			const fileName = emoji.name + (ext ? '.' + ext : '');
-			const emojiPath = path + '/' + fileName;
+			const fileName = emoji.name + (ext ? `.${ext}` : '');
+			const emojiPath = `${path}/${fileName}`;
 			fs.writeFileSync(emojiPath, '', 'binary');
 			let downloaded = false;
 
@@ -115,7 +115,7 @@ export class ExportCustomEmojisProcessorService {
 			});
 			const isFirst = customEmojis.indexOf(emoji) === 0;
 
-			await writeMeta(isFirst ? content : ',\n' + content);
+			await writeMeta(isFirst ? content : `,\n${content}`);
 		}
 
 		await writeMeta(']}');
@@ -132,7 +132,7 @@ export class ExportCustomEmojisProcessorService {
 			archiveStream.on('close', async () => {
 				this.logger.succ(`Exported to: ${archivePath}`);
 
-				const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
+				const fileName = `custom-emojis-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.zip`;
 				const driveFile = await this.driveService.addFile({ user, path: archivePath, name: fileName, force: true });
 
 				this.logger.succ(`Exported to: ${driveFile.id}`);

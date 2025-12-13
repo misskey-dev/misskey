@@ -1,5 +1,6 @@
 import assert, { strictEqual } from 'node:assert';
-import { createAccount, type LoginUser, sleep } from './utils.js';
+import type { LoginUser, } from './utils.js';
+import { createAccount, sleep } from './utils.js';
 
 describe('Move', () => {
 	test('Minimum move', async () => {

@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.username) {
-				query.andWhere('user.usernameLower like :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });
+				query.andWhere('user.usernameLower like :username', { username: `${sqlLikeEscape(ps.username.toLowerCase())}%` });
 			}
 
 			if (ps.hostname) {

@@ -10,18 +10,20 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'node:assert';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import type * as misskey from 'misskey-js';
 import * as htmlParser from 'node-html-parser';
 import pkceChallenge from 'pkce-challenge';
+import type {
+	AuthorizationTokenConfig,
+	ModuleOptions,
+} from 'simple-oauth2';
 import {
 	AuthorizationCode,
-	type AuthorizationTokenConfig,
 	ClientCredentials,
-	type ModuleOptions,
 	ResourceOwnerPassword,
 } from 'simple-oauth2';
+import * as assert from 'node:assert';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
 
 const host = `http://127.0.0.1:${port}`;
@@ -365,7 +367,7 @@ describe('OAuth', () => {
 		const code_verifier = 'Ew8VSBiH59JirLlg7ocFpLQ6NXuFC1W_rn8gmRzBKc8';
 
 		const tests: Record<string, string | undefined> = {
-			'Code followed by some junk code': code_verifier + 'x',
+			'Code followed by some junk code': `${code_verifier}x`,
 			'Clipped code': code_verifier.slice(0, 80),
 			'Some part of code is replaced': code_verifier.slice(0, -10) + 'x'.repeat(10),
 			'No verifier': undefined,

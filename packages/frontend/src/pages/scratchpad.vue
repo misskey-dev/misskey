@@ -57,6 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 import { computed, onDeactivated, onUnmounted, ref, watch } from 'vue';
+import type { Ast } from '@syuilo/aiscript';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Value } from '@syuilo/aiscript/interpreter/value.js';
 import MkAsUi from '@/components/MkAsUi.vue';
@@ -73,7 +74,6 @@ import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { claimAchievement } from '@/utility/achievements.js';
-import type { Ast } from '@syuilo/aiscript';
 
 const parser = new Parser();
 let aiscript: Interpreter;

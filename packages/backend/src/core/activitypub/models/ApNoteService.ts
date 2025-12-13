@@ -151,20 +151,20 @@ export class ApNoteService {
 		}
 
 		if (!checkHttps(note.id)) {
-			throw new Error('unexpected schema of note.id: ' + note.id);
+			throw new Error(`unexpected schema of note.id: ${note.id}`);
 		}
 
 		const url = getOneApHrefNullable(note.url);
 
 		if (url && !checkHttps(url)) {
-			throw new Error('unexpected schema of note url: ' + url);
+			throw new Error(`unexpected schema of note url: ${url}`);
 		}
 
 		this.logger.info(`Creating the Note: ${note.id}`);
 
 		// 投稿者をフェッチ
 		if (note.attributedTo == null) {
-			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
+			throw new Error(`invalid note.attributedTo: ${note.attributedTo}`);
 		}
 
 		const uri = getOneApId(note.attributedTo);

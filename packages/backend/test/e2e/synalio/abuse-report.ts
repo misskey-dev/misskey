@@ -6,6 +6,9 @@
 import { beforeEach, describe, test } from '@jest/globals';
 import type { INestApplicationContext } from '@nestjs/common';
 import type { entities } from 'misskey-js';
+import type {
+	UserToken,
+} from '../../utils.js';
 import {
 	api,
 	captureWebhook,
@@ -13,7 +16,6 @@ import {
 	role,
 	signup,
 	startJobQueue,
-	type UserToken,
 	WEBHOOK_HOST,
 } from '../../utils.js';
 

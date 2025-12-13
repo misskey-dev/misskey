@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { randomUUID } from 'node:crypto';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import fastifyProxy from '@fastify/http-proxy';
 import fastifyStatic from '@fastify/static';
 import { Inject, Injectable } from '@nestjs/common';
@@ -43,6 +40,9 @@ import type {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
+import { randomUUID } from 'node:crypto';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ClientLoggerService } from './ClientLoggerService.js';
 import type { FeedService } from './FeedService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
@@ -228,14 +228,14 @@ export class ClientServerService {
 
 			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: urlOriginWithoutPort + ':' + port,
+				upstream: `${urlOriginWithoutPort}:${port}`,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
 
 			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
 			fastify.register(fastifyProxy, {
-				upstream: urlOriginWithoutPort + ':' + embedPort,
+				upstream: `${urlOriginWithoutPort}:${embedPort}`,
 				prefix: '/embed_vite',
 				rewritePrefix: '/embed_vite',
 			});
@@ -529,7 +529,7 @@ export class ClientServerService {
 
 			vary(reply.raw, 'Accept');
 
-			reply.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+			reply.redirect(`/@${user.username}${ user.host == null ? '' : `@${user.host}`}`);
 		});
 
 		// Note

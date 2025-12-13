@@ -165,7 +165,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.host) {
-				query.andWhere('instance.host like :host', { host: '%' + sqlLikeEscape(ps.host.toLowerCase()) + '%' });
+				query.andWhere('instance.host like :host', { host: `%${sqlLikeEscape(ps.host.toLowerCase())}%` });
 			}
 
 			const instances = await query.limit(ps.limit).offset(ps.offset).getMany();

@@ -105,14 +105,14 @@ export class ApQuestionService {
 		}
 
 		const apChoices = question.oneOf ?? question.anyOf;
-		if (apChoices == null) throw new Error('invalid apChoices: ' + apChoices);
+		if (apChoices == null) throw new Error(`invalid apChoices: ${apChoices}`);
 
 		let changed = false;
 
 		for (const choice of poll.choices) {
 			const oldCount = poll.votes[poll.choices.indexOf(choice)];
 			const newCount = apChoices.filter(ap => ap.name === choice).at(0)?.replies?.totalItems;
-			if (newCount == null || !(Number.isInteger(newCount) && newCount >= 0)) throw new Error('invalid newCount: ' + newCount);
+			if (newCount == null || !(Number.isInteger(newCount) && newCount >= 0)) throw new Error(`invalid newCount: ${newCount}`);
 
 			if (oldCount !== newCount) {
 				changed = true;

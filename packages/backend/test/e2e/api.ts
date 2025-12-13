@@ -5,9 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
+import type * as misskey from 'misskey-js';
 import * as assert from 'node:assert';
 import type { IncomingMessage } from 'node:http';
-import type * as misskey from 'misskey-js';
 import {
 	api,
 	connectStream,

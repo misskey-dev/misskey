@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, type TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';

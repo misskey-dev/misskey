@@ -312,7 +312,7 @@ export class ApPersonService implements OnModuleInit {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
-		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
+		if (object.id == null) throw new Error(`invalid object.id: ${object.id}`);
 
 		const person = this.validateActor(object, uri);
 
@@ -348,7 +348,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		if (url && !checkHttps(url)) {
-			throw new Error('unexpected schema of person url: ' + url);
+			throw new Error(`unexpected schema of person url: ${url}`);
 		}
 
 		// Create user
@@ -546,7 +546,7 @@ export class ApPersonService implements OnModuleInit {
 
 		if (url != null) {
 			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of person url: ' + url);
+				throw new Error(`unexpected schema of person url: ${url}`);
 			}
 
 			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {

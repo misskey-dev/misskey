@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import dns from 'node:dns/promises';
-import type { ServerResponse } from 'node:http';
 import fastifyCors from '@fastify/cors';
 import fastifyExpress from '@fastify/express';
 import { Inject, Injectable } from '@nestjs/common';
@@ -14,7 +12,9 @@ import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import { permissions as kinds } from 'misskey-js';
 import * as htmlParser from 'node-html-parser';
-import oauth2orize, { AuthorizationError, type MiddlewareRequest, type OAuth2, type OAuth2Req, type ValidateFunctionArity2 } from 'oauth2orize';
+import type oauth2orize from 'oauth2orize';
+import type { MiddlewareRequest, OAuth2, OAuth2Req, ValidateFunctionArity2 } from 'oauth2orize';
+import { AuthorizationError, } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import { verifyChallenge } from 'pkce-challenge';
 import type { Config } from '@/config.js';
@@ -32,6 +32,8 @@ import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
+import dns from 'node:dns/promises';
+import type { ServerResponse } from 'node:http';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.

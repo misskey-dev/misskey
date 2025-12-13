@@ -5,9 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
 import type { ReversiMatchResponse } from 'misskey-js/entities.js';
+import * as assert from 'node:assert';
 import { api, signup } from '../utils.js';
 
 describe('ReversiGame', () => {

@@ -7,6 +7,9 @@ import type { Provider } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
+import type {
+	MiRepository,
+} from './_.js';
 import {
 	MiAbuseReportNotificationRecipient,
 	MiAbuseUserReport,
@@ -62,7 +65,6 @@ import {
 	MiRegistryItem,
 	MiRelay,
 	MiRenoteMuting,
-	type MiRepository,
 	MiRetentionAggregation,
 	MiReversiGame,
 	MiRole,

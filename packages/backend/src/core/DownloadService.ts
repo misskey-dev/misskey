@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import { parse } from 'content-disposition';
@@ -17,6 +15,8 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { StatusError } from '@/misc/status-error.js';
+import * as fs from 'node:fs';
+import * as stream from 'node:stream/promises';
 
 @Injectable()
 export class DownloadService {

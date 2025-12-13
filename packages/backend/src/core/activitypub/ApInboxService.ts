@@ -550,7 +550,7 @@ export class ApInboxService {
 		const uris = getApIds(activity.object);
 
 		const userIds = uris
-			.filter(uri => uri.startsWith(this.config.url + '/users/'))
+			.filter(uri => uri.startsWith(`${this.config.url}/users/`))
 			.map(uri => uri.split('/').at(-1))
 			.filter(x => x != null);
 		const users = await this.usersRepository.findBy({

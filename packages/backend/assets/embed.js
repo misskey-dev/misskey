@@ -24,7 +24,7 @@
 				}, '*');
 			}
 			if (event.data.type === 'misskey:embed:changeHeight' && event.data.iframeId === id) {
-				el.style.height = event.data.payload.height + 'px';
+				el.style.height = `${event.data.payload.height}px`;
 			}
 		});
 	});

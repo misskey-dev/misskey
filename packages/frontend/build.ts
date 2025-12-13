@@ -1,6 +1,6 @@
 import { execa } from 'execa';
-import * as fs from 'node:fs/promises';
 import locales from 'i18n';
+import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import url from 'node:url';
 import { LocaleInliner } from '../frontend-builder/locale-inliner.js'

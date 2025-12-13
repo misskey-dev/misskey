@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { SelectQueryBuilder } from 'typeorm';
-import { Brackets, type ObjectLiteral } from 'typeorm';
+import type { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
+import { Brackets, } from 'typeorm';
 import type { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';

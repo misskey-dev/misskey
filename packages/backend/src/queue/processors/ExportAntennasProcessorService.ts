@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as DateFormat } from 'date-fns';
@@ -17,6 +16,7 @@ import type Logger from '@/logger.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { AntennasRepository, MiUser, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
 import type { ExportedAntenna } from '@/queue/processors/ImportAntennasProcessorService.js';
+import fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DBExportAntennasData } from '../types.js';
 
@@ -96,9 +96,9 @@ export class ExportAntennasProcessorService {
 			write(']');
 			stream.end();
 
-			const fileName = 'antennas-' + DateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
+			const fileName = `antennas-${DateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.json`;
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'json' });
-			this.logger.succ('Exported to: ' + driveFile.id);
+			this.logger.succ(`Exported to: ${driveFile.id}`);
 
 			this.notificationService.createNotification(user.id, 'exportCompleted', {
 				exportedEntity: 'antenna',

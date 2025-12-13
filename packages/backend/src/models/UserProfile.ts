@@ -4,7 +4,8 @@
  */
 
 import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { followersVisibilities, followingVisibilities, type notificationTypes, } from '@/types.js';
+import type { notificationTypes, } from '@/types.js';
+import { followersVisibilities, followingVisibilities, } from '@/types.js';
 import { MiPage } from './Page.js';
 import { MiUser } from './User.js';
 import type { MiUserList } from './UserList.js';

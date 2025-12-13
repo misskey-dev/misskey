@@ -8,10 +8,10 @@
  * ビルド前に実行し、ランタイムにjs-yamlを含まないようにする
  */
 
+import yaml from 'js-yaml';
 import fs from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import yaml from 'js-yaml';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

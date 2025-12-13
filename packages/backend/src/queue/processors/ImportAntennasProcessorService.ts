@@ -99,7 +99,7 @@ export class ImportAntennasProcessorService {
 					withFile: antenna.withFile,
 					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
 				});
-				this.logger.succ('Antenna created: ' + result.id);
+				this.logger.succ(`Antenna created: ${result.id}`);
 				this.globalEventService.publishInternalEvent('antennaCreated', result);
 			}
 		} catch (err: any) {
