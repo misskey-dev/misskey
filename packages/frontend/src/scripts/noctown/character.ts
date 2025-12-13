@@ -735,7 +735,7 @@ export class Character {
 	public updateAnimation(moveX: number = 0, moveZ: number = 0, deltaTime: number = 0.016): void {
 		// Determine if moving based on movement input
 		const moveLength = Math.sqrt(moveX * moveX + moveZ * moveZ);
-		this.isMoving = moveLength > 0.01;
+		this.isMoving = moveLength > 0;
 
 		// Update target rotation even when not moving (for remote players)
 		// This ensures rotation updates when receiving small position changes from WebSocket
