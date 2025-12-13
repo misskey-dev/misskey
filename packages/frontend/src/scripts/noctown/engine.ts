@@ -156,10 +156,10 @@ export class NoctownEngine {
 	}
 
 	private setupLights(): void {
-		// Nocturne Theme Lighting (夜の月明かり)
+		// Nocturne Theme Lighting (夜の月明かり) - character-demo+14-fishing.html準拠
 
 		// アンビエントライト（夜の静けさ、青みがかった暗さ）
-		const ambient = new THREE.AmbientLight(0x334466, 0.7);
+		const ambient = new THREE.AmbientLight(0x3344666, 0.7);
 		this.scene.add(ambient);
 
 		// 月明かり（青白い光）
@@ -343,12 +343,13 @@ export class NoctownEngine {
 			// Calculate movement direction (if moved recently)
 			let moveX = 0;
 			let moveZ = 0;
-			if (timeDiff < 200) { // Only animate if position updated within last 200ms
+			if (timeDiff < 500) { // Only animate if position updated within last 500ms (increased from 200ms)
 				const dx = currentPos.x - lastPos.x;
 				const dz = currentPos.z - lastPos.z;
 				const moveLength = Math.sqrt(dx * dx + dz * dz);
 
-				if (moveLength > 0.001) {
+				// Lower threshold for remote players to ensure rotation updates
+				if (moveLength > 0.0001) {
 					moveX = dx / moveLength;
 					moveZ = dz / moveLength;
 				}
@@ -486,25 +487,6 @@ export class NoctownEngine {
 		const lastPos = this.remotePlayerLastPos.get(data.id);
 		const now = Date.now();
 
-		// Calculate movement direction from position change
-		let moveX = 0;
-		let moveZ = 0;
-		if (lastPos) {
-			const dx = data.positionX - lastPos.x;
-			const dz = data.positionZ - lastPos.z;
-			const moveLength = Math.sqrt(dx * dx + dz * dz);
-
-			// If player moved significantly, normalize direction and calculate rotation
-			if (moveLength > 0.01) {
-				moveX = dx / moveLength;
-				moveZ = dz / moveLength;
-
-				// Calculate rotation from movement vector
-				const targetRotation = Math.atan2(moveX, moveZ);
-				character.setRotation(targetRotation);
-			}
-		}
-
 		// Store current position for next update
 		this.remotePlayerLastPos.set(data.id, {
 			x: data.positionX,
@@ -513,6 +495,10 @@ export class NoctownEngine {
 		});
 
 		character.setPosition(data.positionX, data.positionY, data.positionZ);
+
+		// Let Character.updateAnimation() handle rotation based on movement direction
+		// This prevents rotation jitter from frequent WebSocket updates
+		// Rotation is calculated in animate() loop (lines 327-357) from position deltas
 
 		// Update online status
 		character.setOnline(data.isOnline);

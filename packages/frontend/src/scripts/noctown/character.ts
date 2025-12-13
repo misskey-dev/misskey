@@ -661,9 +661,14 @@ export class Character {
 		const moveLength = Math.sqrt(moveX * moveX + moveZ * moveZ);
 		this.isMoving = moveLength > 0.01;
 
-		if (this.isMoving) {
+		// Update target rotation even when not moving (for remote players)
+		// This ensures rotation updates when receiving small position changes from WebSocket
+		if (moveLength > 0.0001) {
 			// Calculate target rotation from movement direction
 			this.targetRotation = Math.atan2(moveX, moveZ);
+		}
+
+		if (this.isMoving) {
 
 			// Walk animation with smooth cycle
 			const walkSpeed = 12;
