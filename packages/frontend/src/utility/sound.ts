@@ -92,7 +92,6 @@ export type OperationType = typeof operationTypes[number];
  * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
  */
 export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (ctx == null) {
 		ctx = new AudioContext();
 

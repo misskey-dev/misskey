@@ -118,7 +118,6 @@ function createRender(params: {
 						const body = await new Response(bodyStream).json() as entities.AdminEmojiAddRequest;
 
 						const fileId = body.fileId;
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						const file = storedDriveFiles.find(f => f.id === fileId)!;
 
 						const em = emoji({

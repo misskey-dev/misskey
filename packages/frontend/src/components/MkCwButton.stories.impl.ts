@@ -5,8 +5,6 @@
 
 import { action } from 'storybook/actions';
 import { expect, userEvent, within } from '@storybook/test';
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
 import { i18n } from '@/i18n.js';
 import { file } from '../../.storybook/fakes.js';

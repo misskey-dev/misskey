@@ -57,7 +57,6 @@ type MfmEvents = {
 	clickEv(id: string): void;
 };
 
-// eslint-disable-next-line import/no-default-export
 export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
 	// こうしたいところだけど functional component 内では provide は使えない
 	//provide('linkNavigationBehavior', props.linkNavigationBehavior);
@@ -65,7 +64,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
 	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
@@ -424,7 +422,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						fallbackToImage: false,
 					})];
 				} else {
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					if (props.emojiUrls && (props.emojiUrls[token.props.name] == null)) {
 						return [h('span', `:${token.props.name}:`)];
 					} else {

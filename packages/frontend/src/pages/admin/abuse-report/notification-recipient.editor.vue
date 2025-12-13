@@ -174,7 +174,6 @@ async function onSubmitClicked() {
 					break;
 				}
 				case 'edit': {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					await misskeyApi('admin/abuse-report/notification-recipient/update', { id: id.value!, ...params });
 					break;
 				}
@@ -182,7 +181,6 @@ async function onSubmitClicked() {
 
 			dialogEl.value?.close();
 			emit('submitted');
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (ex: any) {
 			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });

@@ -55,7 +55,6 @@ export const paramDef = {
 	required: ['password', 'name', 'credential'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(

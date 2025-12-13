@@ -72,7 +72,6 @@ export class NodeinfoServerService {
 
 			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const document: any = {
 				software: {
 					name: 'misskey',

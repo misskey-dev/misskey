@@ -4,8 +4,6 @@
  */
 
 import { action } from 'storybook/actions';
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
 import MkCodeEditor from './MkCodeEditor.vue';
 

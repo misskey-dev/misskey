@@ -167,11 +167,8 @@ import MkTextarea from '@/components/MkTextarea.vue';
 
 const meta = await misskeyApi('admin/meta');
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const entrancePageStyle = ref<ClientOptions['entrancePageStyle']>(meta.clientOptions.entrancePageStyle ?? 'classic');
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const showTimelineForVisitor = ref<ClientOptions['showTimelineForVisitor']>(meta.clientOptions.showTimelineForVisitor ?? true);
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const showActivitiesForVisitor = ref<ClientOptions['showActivitiesForVisitor']>(meta.clientOptions.showActivitiesForVisitor ?? true);
 
 const iconUrl = ref(meta.iconUrl);

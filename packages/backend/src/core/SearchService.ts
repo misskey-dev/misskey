@@ -188,7 +188,6 @@ export class SearchService {
 				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
 			}
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const _: never = this.provider;
 				return [];
 			}

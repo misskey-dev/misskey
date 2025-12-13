@@ -10,7 +10,6 @@ type ReconnectingWebSocket = _ReconnectingWebSocket.default;
 export function urlQuery(obj: Record<string, string | number | boolean | undefined>): string {
 	const params = Object.entries(obj)
 		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		.reduce((a, [k, v]) => Object.assign(a, { [k]: v! }), {} as Record<string, string | number | boolean>);
 
 	return Object.entries(params)
@@ -46,7 +45,6 @@ export interface IStream extends EventEmitter<StreamEvents> {
 /**
  * Misskey stream connection
  */
-// eslint-disable-next-line import/no-default-export
 export default class Stream extends EventEmitter<StreamEvents> implements IStream {
 	private stream: ReconnectingWebSocket;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
@@ -74,7 +72,6 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 		this.send = this.send.bind(this);
 		this.close = this.close.bind(this);
 
-		// eslint-disable-next-line no-param-reassign
 		options = options ?? { };
 
 		const query = urlQuery({

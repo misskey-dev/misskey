@@ -131,7 +131,6 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!isSupported) {
 		fileLogger.error(`Duplicated identifier "${localI18nIdentifier}" in variable declaration. Skipping inlining.`);
 		return modifications;
@@ -206,7 +205,6 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!preserveI18nImport) {
 		fileLogger.debug('removing i18n import statement');
 		modifications.push({

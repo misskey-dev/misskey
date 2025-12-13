@@ -215,7 +215,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
@@ -402,7 +402,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.googleAnalyticsMeasurementId !== undefined) {
 				// 空文字列をnullにしたいので??は使わない
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				set.googleAnalyticsMeasurementId = ps.googleAnalyticsMeasurementId || null;
 			}
 

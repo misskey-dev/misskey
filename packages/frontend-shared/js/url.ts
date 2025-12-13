@@ -10,7 +10,7 @@
  */
 export function query(obj: Record<string, string | number | boolean>): string {
 	const params = Object.entries(obj)
-		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
 		.reduce<Record<string, string | number | boolean>>((a, [k, v]) => Object.assign(a, { [k]: v }), {});
 
 	return Object.entries(params)

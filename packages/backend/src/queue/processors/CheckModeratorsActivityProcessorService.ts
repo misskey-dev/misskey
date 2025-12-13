@@ -186,11 +186,9 @@ export class CheckModeratorsActivityProcessorService {
 		const moderators = await this.fetchModerators()
 			.then(it => it.filter(it => it.lastActiveDate != null));
 		const inactiveModerators = moderators
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			.filter(it => it.lastActiveDate!.getTime() < inactivePeriod.getTime());
 
 		// 残りの猶予を示したいので、最終アクティブ日時が一番若いモデレータの日数を基準に猶予を計算する
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const newestLastActiveDate = new Date(Math.max(...moderators.map(it => it.lastActiveDate!.getTime())));
 		const remainingTime = newestLastActiveDate.getTime() - inactivePeriod.getTime();
 		const remainingTimeAsDays = Math.floor(remainingTime / ONE_DAY_MILLI_SEC);

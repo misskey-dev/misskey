@@ -96,7 +96,6 @@ export class ChannelEntityService {
 			pinnedNotes.push(
 				...(
 					opts?.pinnedNotes
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						? channel.pinnedNoteIds.map(it => opts.pinnedNotes!.get(it)).filter(it => it != null)
 						: await this.notesRepository.findBy({ id: In(channel.pinnedNoteIds) })
 				),

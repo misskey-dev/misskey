@@ -123,7 +123,6 @@ export class AnnouncementService {
 			updatedAt: new Date(),
 			title: values.title,
 			text: values.text,
-			/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
 			imageUrl: values.imageUrl || null,
 			display: values.display,
 			icon: values.icon,

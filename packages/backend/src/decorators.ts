@@ -10,7 +10,6 @@
  * The getter will return a .bind version of the function
  * and memoize the result against a symbol on the instance
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bindThis(target: any, key: string, descriptor: any) {
 	const fn = descriptor.value;
 
@@ -21,7 +20,6 @@ export function bindThis(target: any, key: string, descriptor: any) {
 	return {
 		configurable: true,
 		get() {
-			// eslint-disable-next-line no-prototype-builtins
 			if (this === target.prototype || Object.hasOwn(this, key)) {
 				return fn;
 			}

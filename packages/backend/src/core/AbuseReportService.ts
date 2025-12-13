@@ -96,7 +96,6 @@ export class AbuseReportService {
 		});
 
 		for (const report of reports) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const ps = paramsMap.get(report.id)!;
 
 			await this.abuseUserReportsRepository.update(report.id, {

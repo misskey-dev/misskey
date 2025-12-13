@@ -315,7 +315,6 @@ When you create a new component (in this example, `MyComponent.vue`), the story 
 You can override the default story by creating a impl story file (`MyComponent.stories.impl.ts`).
 
 ```ts
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import MyComponent from './MyComponent.vue';
 export const Default = {

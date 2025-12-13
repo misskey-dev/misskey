@@ -305,13 +305,13 @@ export class FileInfoService {
 			watcher.close();
 		});
 		command.run();
-		for (let i = 1; ; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		for (let i = 1; ; i++) {
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);
 			if (await this.exists(join(cwd, next))) {
 				yield framePath;
-			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+			} else if (!finished) {
 				watcher.add(next);
 				await new Promise<void>((resolve, reject) => {
 					watcher.on('add', function onAdd(path) {

@@ -310,6 +310,6 @@ export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFol
 				resolve(folders);
 			},
 			closed: () => dispose(),
-		}).then(d => dispose = d.dispose, reject)
+		}).then(d => dispose = d.dispose, reject);
 	});
 }

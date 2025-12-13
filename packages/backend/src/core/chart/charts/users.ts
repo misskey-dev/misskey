@@ -22,7 +22,7 @@ import { name, schema } from './entities/users.js';
  * ユーザー数に関するチャート
  */
 @Injectable()
-export default class UsersChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
+export default class UsersChart extends Chart<typeof schema> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

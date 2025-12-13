@@ -627,7 +627,6 @@ function loadMonoTextures() {
 
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		} else if (monoTextures[mono.img]) {
 			src = URL.createObjectURL(monoTextures[mono.img]);
 			monoTextureUrls[mono.img] = src;
@@ -652,8 +651,6 @@ function getTextureImageUrl(mono: Mono) {
 
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if (monoTextures[def.img]) {
 		// Gameクラス内にキャッシュがある場合はそれを使う
 		const out = URL.createObjectURL(monoTextures[def.img]);

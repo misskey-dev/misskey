@@ -1,15 +1,14 @@
-import pluginMisskey from '@misskey-dev/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import parser from 'vue-eslint-parser';
-import sharedConfig from '../shared/eslint.config.js';
+import sharedConfig, { typescriptConfig } from '../shared/eslint.config.js';
 
 export default [
 	...sharedConfig,
 	{
 		files: ['src/**/*.vue'],
-		...pluginMisskey.configs.typescript,
+		...typescriptConfig,
 	},
 	...pluginVue.configs['flat/recommended'],
 	{
@@ -41,11 +40,6 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
-			'@typescript-eslint/no-empty-interface': ['error', {
-				allowSingleExtends: true,
-			}],
-			'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 			// window ... グローバルスコープと衝突し、予期せぬ結果を招くため
 			// e ... error や event など、複数のキーワードの頭文字であり分かりにくいため
 			// close ... window.closeと衝突 or 紛らわしい

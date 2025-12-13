@@ -135,7 +135,6 @@ export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatt
 /**
  * 様々なチャートの管理を司るクラス
  */
-// eslint-disable-next-line import/no-default-export
 export default abstract class Chart<T extends Schema> {
 	private logger: Logger;
 

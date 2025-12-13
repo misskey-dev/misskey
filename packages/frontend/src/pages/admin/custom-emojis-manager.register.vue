@@ -58,7 +58,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';

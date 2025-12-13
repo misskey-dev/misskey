@@ -247,7 +247,6 @@ onMounted(async () => {
 					for (const ev of Object.keys(events.value)) {
 						events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
 					}
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (ex: any) {
 					const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 					await os.alert({ type: 'error', title: i18n.ts.error, text: msg });

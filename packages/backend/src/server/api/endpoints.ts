@@ -141,5 +141,4 @@ const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) 
 	};
 });
 
-// eslint-disable-next-line import/no-default-export
 export default endpoints;

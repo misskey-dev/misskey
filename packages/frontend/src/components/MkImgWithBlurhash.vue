@@ -53,7 +53,6 @@ import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
 
 // テスト環境で Web Worker インスタンスは作成できない
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 const isTest = (import.meta.env.MODE === 'test' || window.Cypress != null);
 

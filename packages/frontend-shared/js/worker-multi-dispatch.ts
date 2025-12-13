@@ -48,14 +48,12 @@ export class WorkerMultiDispatch<POST = unknown, RETURN = unknown> {
 		return workerNumber;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public addListener(callback: (this: Worker, ev: MessageEvent<RETURN>) => any, options?: boolean | AddEventListenerOptions) {
 		this.workers.forEach(worker => {
 			worker.addEventListener('message', callback, options);
 		});
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public removeListener(callback: (this: Worker, ev: MessageEvent<RETURN>) => any, options?: boolean | AddEventListenerOptions) {
 		this.workers.forEach(worker => {
 			worker.removeEventListener('message', callback, options);

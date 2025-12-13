@@ -38,7 +38,7 @@ export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
 		const validate = ajv.compile(paramDef);
 
 		this.exec = (params: any, user: T['requireCredential'] extends true ? MiLocalUser : MiLocalUser | null, token: MiAccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => {
-			let cleanup: undefined | (() => void) ;
+			let cleanup: undefined | (() => void);
 
 			if (meta.requireFile) {
 				cleanup = () => {

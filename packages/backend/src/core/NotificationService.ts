@@ -96,7 +96,6 @@ export class NotificationService implements OnApplicationShutdown {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 
 		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const recieveConfig = profile.notificationRecieveConfig?.[type];
 		if (recieveConfig?.type === 'never') {
 			return null;

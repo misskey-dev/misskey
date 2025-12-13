@@ -17,7 +17,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const REQUIRED_CPU_FLAGS_X64 = ['avx2', 'fma'];
-let isSupportedCpu: undefined | boolean ;
+let isSupportedCpu: undefined | boolean;
 
 @Injectable()
 export class AiService {

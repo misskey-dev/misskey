@@ -19,7 +19,7 @@ import { name, schema } from './entities/drive.js';
  * ドライブに関するチャート
  */
 @Injectable()
-export default class DriveChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
+export default class DriveChart extends Chart<typeof schema> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

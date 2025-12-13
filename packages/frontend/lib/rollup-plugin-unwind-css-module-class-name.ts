@@ -470,7 +470,6 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 	});
 }
 
-// eslint-disable-next-line import/no-default-export
 export default function pluginUnwindCssModuleClassName(): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',

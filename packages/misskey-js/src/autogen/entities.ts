@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/naming-convention: 0 */
 import { operations } from './types.js';
 
 export type EmptyRequest = Record<string, unknown> | undefined;

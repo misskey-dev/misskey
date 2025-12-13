@@ -18,7 +18,6 @@ type Context = {
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
-// eslint-disable-next-line import/no-default-export
 export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;

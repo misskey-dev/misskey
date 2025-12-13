@@ -57,7 +57,6 @@ export type Channels = {
 			registryUpdated: (payload: {
 				scope?: string[];
 				key: string;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				value: any | null;
 			}) => void;
 			driveFileCreated: (payload: DriveFile) => void;

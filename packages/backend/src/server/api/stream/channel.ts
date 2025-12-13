@@ -15,7 +15,6 @@ import type Connection from './Connection.js';
 /**
  * Stream channel
  */
-// eslint-disable-next-line import/no-default-export
 export default abstract class Channel {
 	protected connection: Connection;
 	public id: string;

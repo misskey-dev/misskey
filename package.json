@@ -69,11 +69,11 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
+		"@eslint/compat": "2.0.0",
 		"@eslint/js": "9.39.1",
-		"@misskey-dev/eslint-plugin": "2.2.0",
+		"@stylistic/eslint-plugin": "5.6.1",
 		"@types/js-yaml": "4.0.9",
 		"@types/node": "24.10.1",
-		"@typescript-eslint/eslint-plugin": "8.47.0",
 		"@typescript-eslint/parser": "8.47.0",
 		"cross-env": "10.1.0",
 		"cypress": "15.7.0",
