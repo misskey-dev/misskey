@@ -64,7 +64,7 @@ onUnmounted(() => {
 /* FR-024: Position joystick higher to avoid overlap with chat input on mobile */
 .joystickContainer {
 	position: fixed;
-	bottom: 200px;
+	bottom: 103px; /* スマホ */
 	left: 20px;
 	width: 160px;
 	height: 160px;

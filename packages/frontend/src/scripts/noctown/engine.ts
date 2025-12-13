@@ -601,6 +601,11 @@ export class NoctownEngine {
 		return this.remotePlayers;
 	}
 
+	// FR-014: 表示中のプレイヤーIDリストを取得
+	public getVisiblePlayerIds(): string[] {
+		return Array.from(this.remotePlayers.keys());
+	}
+
 	// Chunk management
 	public loadChunk(data: ChunkData): void {
 		const key = `${data.chunkX},${data.chunkZ}`;

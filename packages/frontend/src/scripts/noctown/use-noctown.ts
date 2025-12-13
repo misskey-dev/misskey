@@ -12,6 +12,8 @@ export interface NoctownState {
 	isLoading: Ref<boolean>;
 	error: Ref<string | null>;
 	playerData: Ref<PlayerData | null>;
+	// FR-014: エモーション/チャット時に表示中プレイヤーにPingを送信
+	sendPingToVisiblePlayers: () => void;
 }
 
 interface NoctownPlayerResponse {
@@ -85,6 +87,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	let reconnectAttempts = 0;
 	const MAX_RECONNECT_ATTEMPTS = 10;
 	const RECONNECT_DELAY_MS = 3000;
+
+	// FR-014: Ping/Pongオフライン検出
+	const PING_TIMEOUT_MS = 3000; // 3秒タイムアウト
+	const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof setTimeout> }>();
 
 	// Movement state
 	let currentX = 0;
@@ -175,6 +181,14 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			// T038: Handle chunkGenerated event and render terrain
 			channel.on('chunkGenerated', (body: ChunkData) => {
 				handleChunkGenerated(body);
+			});
+
+			// FR-014: Ping/Pongオフライン検出
+			channel.on('playerPingReceived', (body: { senderPlayerId: string; pingId: string }) => {
+				handlePlayerPingReceived(body);
+			});
+			channel.on('playerPongReceived', (body: { responderPlayerId: string; pingId: string }) => {
+				handlePlayerPongReceived(body);
 			});
 
 			// Monitor connection state (check if stream object exists and has state)
@@ -283,6 +297,74 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 		// Render terrain
 		engine.loadChunk(data);
+	}
+
+	// FR-014: Ping受信時に即座にPongを返送
+	function handlePlayerPingReceived(data: { senderPlayerId: string; pingId: string }): void {
+		if (!channel || !isConnected.value || !playerData.value) return;
+
+		// 即座にpongを返送
+		try {
+			channel.send('playerPong', {
+				senderPlayerId: data.senderPlayerId,
+				pingId: data.pingId,
+			});
+		} catch (e) {
+			console.error('Failed to send pong:', e);
+		}
+	}
+
+	// FR-014: Pong受信時にタイムアウトをクリアし、プレイヤーがオンラインであることを確認
+	function handlePlayerPongReceived(data: { responderPlayerId: string; pingId: string }): void {
+		const pendingPing = pendingPings.get(data.pingId);
+		if (pendingPing) {
+			// タイムアウトをクリア
+			clearTimeout(pendingPing.timeoutId);
+			pendingPings.delete(data.pingId);
+		}
+	}
+
+	// FR-014: 表示中の全プレイヤーにPingを送信
+	function sendPingToVisiblePlayers(): void {
+		if (!channel || !isConnected.value || !engine || !playerData.value) return;
+
+		// エンジンから表示中のプレイヤーIDリストを取得
+		const visiblePlayerIds = engine.getVisiblePlayerIds();
+		if (visiblePlayerIds.length === 0) return;
+
+		// 一意のpingIdを生成
+		const pingId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+		// 各プレイヤーに対してタイムアウトを設定
+		for (const targetPlayerId of visiblePlayerIds) {
+			if (targetPlayerId === playerData.value.id) continue; // 自分自身はスキップ
+
+			const timeoutId = setTimeout(() => {
+				// FR-014: 3秒以内にpongが返ってこなかった場合、画面から削除
+				if (engine) {
+					engine.removeRemotePlayer(targetPlayerId);
+				}
+				pendingPings.delete(pingId);
+			}, PING_TIMEOUT_MS);
+
+			pendingPings.set(pingId, { playerId: targetPlayerId, timeoutId });
+		}
+
+		// WebSocketでpingを送信
+		try {
+			channel.send('playerPing', {
+				targetPlayerIds: visiblePlayerIds.filter(id => id !== playerData.value?.id),
+				pingId,
+			});
+		} catch (e) {
+			console.error('Failed to send ping:', e);
+			// エラー時はタイムアウトをクリア
+			const pendingPing = pendingPings.get(pingId);
+			if (pendingPing) {
+				clearTimeout(pendingPing.timeoutId);
+				pendingPings.delete(pingId);
+			}
+		}
 	}
 
 	async function fetchNearbyPlayers(): Promise<void> {
@@ -499,5 +581,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		isLoading,
 		error,
 		playerData,
+		// FR-014: エモーション/チャット時に表示中プレイヤーにPingを送信
+		sendPingToVisiblePlayers,
 	};
 }

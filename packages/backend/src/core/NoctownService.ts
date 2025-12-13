@@ -1735,6 +1735,26 @@ export class NoctownService {
 		return { success: true };
 	}
 
+	// FR-014: Ping/Pongオフライン検出 - 対象プレイヤーにpingを送信
+	@bindThis
+	public sendPlayerPing(senderPlayerId: string, targetPlayerId: string, pingId: string): void {
+		// 対象プレイヤーのストリームにpingを送信
+		this.globalEventService.publishNoctownPlayerStream(targetPlayerId, 'playerPingReceived', {
+			senderPlayerId,
+			pingId,
+		});
+	}
+
+	// FR-014: Ping/Pongオフライン検出 - ping送信元にpongを返送
+	@bindThis
+	public sendPlayerPong(responderPlayerId: string, senderPlayerId: string, pingId: string): void {
+		// ping送信元のストリームにpongを返送
+		this.globalEventService.publishNoctownPlayerStream(senderPlayerId, 'playerPongReceived', {
+			responderPlayerId,
+			pingId,
+		});
+	}
+
 	/**
 	 * Fix player Y position if out of valid range (T014)
 	 * Auto-correct Y position to ground level if too low or too high

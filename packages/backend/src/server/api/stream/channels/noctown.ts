@@ -91,6 +91,14 @@ class NoctownChannel extends Channel {
 				if (!isJsonObject(body)) return;
 				this.handleGenerateChunk(body);
 				break;
+			case 'playerPing':
+				if (!isJsonObject(body)) return;
+				this.handlePlayerPing(body);
+				break;
+			case 'playerPong':
+				if (!isJsonObject(body)) return;
+				this.handlePlayerPong(body);
+				break;
 		}
 	}
 
@@ -180,6 +188,38 @@ class NoctownChannel extends Channel {
 			isOnline: true,
 			lastActiveAt: new Date(),
 		});
+	}
+
+	// FR-014: Ping/Pongオフライン検出 - pingを受信して対象プレイヤーに転送
+	@bindThis
+	private handlePlayerPing(body: JsonObject) {
+		if (this.user == null || this.playerId == null) return;
+
+		const targetPlayerIds = Array.isArray(body.targetPlayerIds)
+			? (body.targetPlayerIds as unknown[]).filter((id): id is string => typeof id === 'string')
+			: [];
+		const pingId = typeof body.pingId === 'string' ? body.pingId : null;
+
+		if (targetPlayerIds.length === 0 || pingId == null) return;
+
+		// 各対象プレイヤーにpingを転送
+		for (const targetPlayerId of targetPlayerIds) {
+			this.noctownService.sendPlayerPing(this.playerId, targetPlayerId, pingId);
+		}
+	}
+
+	// FR-014: Ping/Pongオフライン検出 - pong応答を送信元プレイヤーに返送
+	@bindThis
+	private handlePlayerPong(body: JsonObject) {
+		if (this.user == null || this.playerId == null) return;
+
+		const senderPlayerId = typeof body.senderPlayerId === 'string' ? body.senderPlayerId : null;
+		const pingId = typeof body.pingId === 'string' ? body.pingId : null;
+
+		if (senderPlayerId == null || pingId == null) return;
+
+		// ping送信元にpongを返送
+		this.noctownService.sendPlayerPong(this.playerId, senderPlayerId, pingId);
 	}
 
 	@bindThis
