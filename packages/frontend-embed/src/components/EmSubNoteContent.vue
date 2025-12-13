@@ -32,13 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import type * as Misskey from 'misskey-js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
+import { url } from '@@/js/config.js';
+import EmA from '@/components/EmA.vue';
 import EmMediaList from '@/components/EmMediaList.vue';
+import EmMfm from '@/components/EmMfm.js';
 import EmPoll from '@/components/EmPoll.vue';
 import { i18n } from '@/i18n.js';
-import { url } from '@@/js/config.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
-import EmA from '@/components/EmA.vue';
-import EmMfm from '@/components/EmMfm.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

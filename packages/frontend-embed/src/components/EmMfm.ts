@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { SetupContext, VNode } from 'vue';
 import { h } from 'vue';
-import type { VNode, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import EmUrl from '@/components/EmUrl.vue';
-import EmTime from '@/components/EmTime.vue';
+import EmA from '@/components/EmA.vue';
+import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
+import EmEmoji from '@/components/EmEmoji.vue';
 import EmLink from '@/components/EmLink.vue';
 import EmMention from '@/components/EmMention.vue';
-import EmEmoji from '@/components/EmEmoji.vue';
-import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
-import EmA from '@/components/EmA.vue';
+import EmTime from '@/components/EmTime.vue';
+import EmUrl from '@/components/EmUrl.vue';
 
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;

@@ -35,12 +35,12 @@ import { ref } from 'vue';
 import type * as Misskey from 'misskey-js';
 import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
+import EmMfm from '@/components/EmMfm.js';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
-import { notePage } from '@/utils.js';
-import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import EmMfm from '@/components/EmMfm.js';
+import { misskeyApi } from '@/misskey-api.js';
+import { notePage } from '@/utils.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

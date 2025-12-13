@@ -27,10 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type * as Misskey from 'misskey-js';
+import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from './EmMediaBanner.vue';
 import XImage from './EmMediaImage.vue';
 import XVideo from './EmMediaVideo.vue';
-import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];

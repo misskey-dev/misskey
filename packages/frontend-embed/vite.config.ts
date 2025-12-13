@@ -1,15 +1,14 @@
-import path from 'node:path';
 import pluginVue from '@vitejs/plugin-vue';
+import locales from 'i18n';
+import * as yaml from 'js-yaml';
 import type { UserConfig } from 'vite';
 import { defineConfig, } from 'vite';
-import * as yaml from 'js-yaml';
 import { promises as fsp } from 'node:fs';
-
-import locales from 'i18n';
+import path from 'node:path';
 import meta from '../../package.json';
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
-import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;

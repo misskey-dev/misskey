@@ -39,9 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type * as Misskey from 'misskey-js';
-import EmImgWithBlurhash from './EmImgWithBlurhash.vue';
-import EmA from './EmA.vue';
 import { userPage } from '@/utils.js';
+import EmA from './EmA.vue';
+import EmImgWithBlurhash from './EmImgWithBlurhash.vue';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;

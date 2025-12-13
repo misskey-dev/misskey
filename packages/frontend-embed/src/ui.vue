@@ -33,16 +33,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
-import { postMessageToParentWindow } from '@/post-message.js';
-import { DI } from '@/di.js';
+import { inject, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
-import EmNotePage from '@/pages/note.vue';
-import EmUserTimelinePage from '@/pages/user-timeline.vue';
-import EmClipPage from '@/pages/clip.vue';
-import EmTagPage from '@/pages/tag.vue';
-import XNotFound from '@/pages/not-found.vue';
 import EmLoading from '@/components/EmLoading.vue';
+import { DI } from '@/di.js';
+import EmClipPage from '@/pages/clip.vue';
+import XNotFound from '@/pages/not-found.vue';
+import EmNotePage from '@/pages/note.vue';
+import EmTagPage from '@/pages/tag.vue';
+import EmUserTimelinePage from '@/pages/user-timeline.vue';
+import { postMessageToParentWindow } from '@/post-message.js';
 
 function safeURIDecode(str: string): string {
 	try {

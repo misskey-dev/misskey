@@ -1,8 +1,8 @@
-import * as fs from 'node:fs/promises';
-import url from 'node:url';
-import path from 'node:path';
 import { execa } from 'execa';
 import locales from 'i18n';
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import url from 'node:url';
 import { LocaleInliner } from '../frontend-builder/locale-inliner.js'
 import { createLogger } from '../frontend-builder/logger';
 
