@@ -80,6 +80,10 @@ class NoctownChannel extends Channel {
 				if (!isJsonObject(body)) return;
 				this.handleEmotion(body);
 				break;
+			case 'chat':
+				if (!isJsonObject(body)) return;
+				this.handleChat(body);
+				break;
 			case 'heartbeat':
 				this.handleHeartbeat();
 				break;
@@ -152,6 +156,19 @@ class NoctownChannel extends Channel {
 
 		// Broadcast emotion to nearby players
 		await this.noctownService.broadcastEmotion(this.playerId, this.user.id, emoji, isCustomEmoji);
+	}
+
+	@bindThis
+	private async handleChat(body: JsonObject) {
+		if (this.user == null || this.playerId == null) return;
+
+		const message = typeof body.message === 'string' ? body.message : null;
+
+		if (message == null || message.trim().length === 0) return;
+		if (message.length > 100) return; // T131: Max 100 characters
+
+		// T143, T144: Broadcast chat to nearby players
+		await this.noctownService.broadcastChat(this.playerId, this.user.id, message.trim());
 	}
 
 	@bindThis

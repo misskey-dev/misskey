@@ -339,6 +339,17 @@ export class NoctownEngine {
 		character.showEmote(emoji);
 	}
 
+	public showLocalPlayerChat(message: string): void {
+		if (!this.localPlayer) return;
+		this.localPlayer.showChatMessage(message);
+	}
+
+	public showRemotePlayerChat(playerId: string, message: string): void {
+		const character = this.remotePlayers.get(playerId);
+		if (!character) return;
+		character.showChatMessage(message);
+	}
+
 	public setInput(input: { up: boolean; down: boolean; left: boolean; right: boolean; sprint: boolean }): void {
 		this.currentInput = { ...input };
 	}

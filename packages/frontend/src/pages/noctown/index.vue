@@ -90,6 +90,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span>クリックで設置 / ESCでキャンセル</span>
 				</div>
 
+				<!-- T151: Chat input component -->
+				<NoctownChatInput
+					@send="handleChatSend"
+					@focused="chatInputFocused = true"
+					@blurred="chatInputFocused = false"
+				/>
+
 				<!-- Emotion buttons -->
 				<div :class="$style.emotionPanel">
 					<button
@@ -127,6 +134,7 @@ import MkNoctownQuestPanel from '@/components/MkNoctownQuestPanel.vue';
 import MkNoctownNpcDialog from '@/components/MkNoctownNpcDialog.vue';
 import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
+import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
 import { isMobileDevice } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
@@ -156,6 +164,7 @@ const placeMode = ref(false);
 const inventoryRef = ref<{ refresh: () => void } | null>(null);
 const questPanelRef = ref<{ refresh: () => void } | null>(null);
 const selectedNpc = ref<NpcData | null>(null);
+const chatInputFocused = ref(false);
 
 // Selected item for placing
 let selectedItemForPlace: { id: string; itemId: string } | null = null;
@@ -323,8 +332,11 @@ async function connectStream(): Promise<void> {
 	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
 	});
-	connection.value.on('playerEmoted', (body: { playerId: string; emoji: string }) => {
+	connection.value.on('playerEmotion', (body: { playerId: string; emoji: string }) => {
 		handlePlayerEmoted(body);
+	});
+	connection.value.on('playerChatted', (body: { playerId: string; message: string }) => {
+		handlePlayerChatted(body);
 	});
 
 	isConnected.value = true;
@@ -376,6 +388,23 @@ function handleChunkGenerated(data: ChunkData): void {
 function handlePlayerEmoted(data: { playerId: string; emoji: string }): void {
 	if (!engine) return;
 	engine.showRemotePlayerEmote(data.playerId, data.emoji);
+}
+
+function handlePlayerChatted(data: { playerId: string; message: string }): void {
+	if (!engine) return;
+	engine.showRemotePlayerChat(data.playerId, data.message);
+}
+
+function handleChatSend(message: string): void {
+	if (!engine || !connection.value) return;
+
+	// Show chat on local player
+	engine.showLocalPlayerChat(message);
+
+	// Send chat event to server via WebSocket
+	connection.value.send('chat', {
+		message,
+	});
 }
 
 async function fetchNearbyPlayers(): Promise<void> {
@@ -567,6 +596,16 @@ function startHeartbeat(): void {
 }
 
 function handleKeyDown(e: KeyboardEvent): void {
+	// T133: Disable WASD keys when chat input is focused
+	if (chatInputFocused.value) {
+		// Allow only Escape to work during chat input
+		if (e.code === 'Escape') {
+			// Blur chat input
+			(e.target as HTMLInputElement)?.blur();
+		}
+		return;
+	}
+
 	if (e.code === 'KeyI') {
 		toggleInventory();
 	} else if (e.code === 'KeyQ') {
@@ -629,8 +668,9 @@ function showEmotion(emoji: string): void {
 
 	// Send emotion event to server via WebSocket
 	if (connection.value) {
-		connection.value.send('playerEmoted', {
+		connection.value.send('emotion', {
 			emoji,
+			isCustomEmoji: false,
 		});
 	}
 }

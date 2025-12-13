@@ -378,6 +378,27 @@ export class NoctownService {
 	}
 
 	@bindThis
+	public async broadcastChat(
+		playerId: string,
+		userId: string,
+		message: string,
+	): Promise<void> {
+		// Get player position for proximity-based broadcast
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		if (!player) return;
+
+		// T143, T144: Broadcast chat to all connected players
+		this.globalEventService.publishNoctownStream('playerChatted', {
+			playerId,
+			userId,
+			message,
+			positionX: player.positionX,
+			positionY: player.positionY,
+			positionZ: player.positionZ,
+		});
+	}
+
+	@bindThis
 	public async getPlayer(userId: MiUser['id']): Promise<NoctownPlayer | null> {
 		return this.noctownPlayersRepository.findOneBy({ userId });
 	}

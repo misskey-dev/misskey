@@ -55,6 +55,14 @@ export class Character {
 	private emoteDuration: number = 2.0;
 	private emoteScale: number = 0;
 
+	// Chat bubble sprite
+	private chatSprite!: THREE.Sprite;
+	private chatCanvas!: HTMLCanvasElement;
+	private chatContext!: CanvasRenderingContext2D;
+	private chatTexture!: THREE.CanvasTexture;
+	private chatTimer: number = 0;
+	private chatDuration: number = 5.0;
+
 	constructor() {
 		this.group = new THREE.Group();
 		this.velocity = new THREE.Vector3();
@@ -70,6 +78,7 @@ export class Character {
 
 		this.createBody();
 		this.createEmoteSprite();
+		this.createChatSprite();
 	}
 
 	private createBody(): void {
@@ -221,6 +230,143 @@ export class Character {
 
 		// Update texture
 		this.emoteTexture.needsUpdate = true;
+	}
+
+	/**
+	 * Create chat bubble sprite above character head
+	 * T135, T136, T137: Chat bubble with rounded rect, triangle tail, black border
+	 */
+	private createChatSprite(): void {
+		// T136: Create 512x256 canvas for chat bubble
+		this.chatCanvas = document.createElement('canvas');
+		this.chatCanvas.width = 512;
+		this.chatCanvas.height = 256;
+		this.chatContext = this.chatCanvas.getContext('2d')!;
+
+		// Create texture from canvas
+		this.chatTexture = new THREE.CanvasTexture(this.chatCanvas);
+		this.chatTexture.minFilter = THREE.LinearFilter;
+		this.chatTexture.magFilter = THREE.LinearFilter;
+
+		// Create sprite material
+		const material = new THREE.SpriteMaterial({
+			map: this.chatTexture,
+			transparent: true,
+			opacity: 1,
+		});
+
+		// Create sprite
+		this.chatSprite = new THREE.Sprite(material);
+		this.chatSprite.position.y = 4; // T140: Above head
+		this.chatSprite.scale.set(3, 1.5, 1);
+		this.chatSprite.visible = false;
+		this.group.add(this.chatSprite);
+	}
+
+	/**
+	 * Show chat message above character head
+	 * T136-T141: Chat bubble implementation
+	 * @param message Chat message text (max 100 characters)
+	 */
+	public showChatMessage(message: string): void {
+		// T147: Allow chat override
+		this.chatTimer = 0;
+		this.chatSprite.visible = true;
+
+		// Clear canvas
+		this.chatContext.clearRect(0, 0, 512, 256);
+
+		// T137: Draw chat bubble (white rounded rect with black border)
+		const padding = 20;
+		const cornerRadius = 15;
+		const bubbleWidth = 480;
+		const bubbleHeight = 200;
+		const bubbleX = 16;
+		const bubbleY = 16;
+
+		// Draw rounded rectangle background
+		this.chatContext.fillStyle = '#ffffff';
+		this.chatContext.strokeStyle = '#000000';
+		this.chatContext.lineWidth = 3;
+
+		this.chatContext.beginPath();
+		this.chatContext.moveTo(bubbleX + cornerRadius, bubbleY);
+		this.chatContext.lineTo(bubbleX + bubbleWidth - cornerRadius, bubbleY);
+		this.chatContext.quadraticCurveTo(bubbleX + bubbleWidth, bubbleY, bubbleX + bubbleWidth, bubbleY + cornerRadius);
+		this.chatContext.lineTo(bubbleX + bubbleWidth, bubbleY + bubbleHeight - cornerRadius);
+		this.chatContext.quadraticCurveTo(bubbleX + bubbleWidth, bubbleY + bubbleHeight, bubbleX + bubbleWidth - cornerRadius, bubbleY + bubbleHeight);
+
+		// Draw triangle tail
+		const tailX = bubbleX + bubbleWidth / 2;
+		const tailY = bubbleY + bubbleHeight;
+		this.chatContext.lineTo(tailX + 20, tailY);
+		this.chatContext.lineTo(tailX, tailY + 30);
+		this.chatContext.lineTo(tailX - 20, tailY);
+
+		this.chatContext.lineTo(bubbleX + cornerRadius, bubbleY + bubbleHeight);
+		this.chatContext.quadraticCurveTo(bubbleX, bubbleY + bubbleHeight, bubbleX, bubbleY + bubbleHeight - cornerRadius);
+		this.chatContext.lineTo(bubbleX, bubbleY + cornerRadius);
+		this.chatContext.quadraticCurveTo(bubbleX, bubbleY, bubbleX + cornerRadius, bubbleY);
+		this.chatContext.closePath();
+
+		this.chatContext.fill();
+		this.chatContext.stroke();
+
+		// T138, T139: Draw text with auto line-break, max 3 lines, ellipsis
+		this.chatContext.fillStyle = '#000000';
+		this.chatContext.font = 'bold 28px sans-serif';
+		this.chatContext.textAlign = 'left';
+		this.chatContext.textBaseline = 'top';
+
+		const maxWidth = bubbleWidth - padding * 2;
+		const lineHeight = 36;
+		const maxLines = 3;
+		const lines = this.wrapText(message, maxWidth, maxLines);
+
+		const textX = bubbleX + padding;
+		let textY = bubbleY + padding + 10;
+
+		lines.forEach((line) => {
+			this.chatContext.fillText(line, textX, textY);
+			textY += lineHeight;
+		});
+
+		// Update texture
+		this.chatTexture.needsUpdate = true;
+	}
+
+	/**
+	 * Wrap text to fit within max width, with max lines and ellipsis
+	 * T138, T139: Auto line-break with max 3 lines
+	 */
+	private wrapText(text: string, maxWidth: number, maxLines: number): string[] {
+		const words = text.split('');
+		const lines: string[] = [];
+		let currentLine = '';
+
+		for (let i = 0; i < words.length; i++) {
+			const testLine = currentLine + words[i];
+			const metrics = this.chatContext.measureText(testLine);
+
+			if (metrics.width > maxWidth && currentLine.length > 0) {
+				lines.push(currentLine);
+				currentLine = words[i];
+
+				// If we've reached max lines, add ellipsis and stop
+				if (lines.length >= maxLines) {
+					currentLine = currentLine.slice(0, -1) + '…';
+					break;
+				}
+			} else {
+				currentLine = testLine;
+			}
+		}
+
+		if (currentLine.length > 0 && lines.length < maxLines) {
+			lines.push(currentLine);
+		}
+
+		return lines;
 	}
 
 	/**
@@ -394,6 +540,14 @@ export class Character {
 
 			// Apply scale
 			this.emoteSprite.scale.set(this.emoteScale, this.emoteScale, 1);
+		}
+
+		// T141: Update chat bubble timer (5 seconds duration)
+		if (this.chatSprite.visible) {
+			this.chatTimer += deltaTime;
+			if (this.chatTimer >= this.chatDuration) {
+				this.chatSprite.visible = false;
+			}
 		}
 	}
 
