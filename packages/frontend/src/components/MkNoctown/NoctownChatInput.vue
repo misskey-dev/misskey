@@ -67,11 +67,11 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-// T130: Position chat input at bottom-center (above emotion buttons)
-// Updated: bottom 120px for better spacing on mobile
+// FR-026: Position chat input at the very bottom of screen on mobile (10px from bottom)
+// This prevents overlap with joystick (200px) and emotion panel (200px)
 .chatContainer {
 	position: absolute;
-	bottom: 120px;
+	bottom: 10px;
 	left: 50%;
 	transform: translateX(-50%);
 	display: flex;

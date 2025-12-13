@@ -61,10 +61,10 @@ onUnmounted(() => {
 </script>
 
 <style module>
-/* T029: Position joystick at bottom-left corner */
+/* FR-024: Position joystick higher to avoid overlap with chat input on mobile */
 .joystickContainer {
 	position: fixed;
-	bottom: 20px;
+	bottom: 200px;
 	left: 20px;
 	width: 160px;
 	height: 160px;

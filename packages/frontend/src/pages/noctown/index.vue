@@ -1021,9 +1021,10 @@ definePage(() => ({
 	z-index: 50;
 }
 
+/* FR-025: Position emotion panel at same height as joystick on mobile (200px from bottom) */
 .emotionPanel {
 	position: absolute;
-	bottom: 50px;
+	bottom: 200px;
 	right: 20px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
