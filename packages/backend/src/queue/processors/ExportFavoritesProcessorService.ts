@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
@@ -18,7 +19,6 @@ import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import type { MiNoteFavorite, MiUser, NoteFavoritesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiPoll } from '@/models/Poll.js';
-import * as fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 

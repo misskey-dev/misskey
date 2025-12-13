@@ -52,11 +52,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from 'vue';
-import MkButton from '@/components/MkButton.vue';
-import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
@@ -65,6 +60,11 @@ import { genId } from '@/utility/id.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import MkButton from '@/components/MkButton.vue';
+import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const props = defineProps<{
 	image: File;

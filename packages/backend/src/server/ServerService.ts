@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import cluster from 'node:cluster';
+import * as fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
@@ -18,9 +21,6 @@ import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import type { EmojisRepository, MiMeta, UsersRepository } from '@/models/_.js';
-import cluster from 'node:cluster';
-import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import type { ActivityPubServerService } from './ActivityPubServerService.js';
 import type { ApiServerService } from './api/ApiServerService.js';
 import type { OpenApiServerService } from './api/openapi/OpenApiServerService.js';

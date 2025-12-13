@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
+import * as fs from 'node:fs';
 import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Inject, Injectable } from '@nestjs/common';
@@ -40,8 +42,6 @@ import type { DriveFilesRepository, DriveFoldersRepository, MiMeta, UserProfiles
 import { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
-import { randomUUID } from 'node:crypto';
-import * as fs from 'node:fs';
 
 type AddFileArgs = {
 	/** User who wish to add file */

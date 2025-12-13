@@ -8,6 +8,7 @@ import { h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
+import { prefer } from '@/preferences.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 import MkA from '@/components/global/MkA.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
@@ -20,7 +21,6 @@ import MkGoogle from '@/components/MkGoogle.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
-import { prefer } from '@/preferences.js';
 
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;

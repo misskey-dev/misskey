@@ -65,11 +65,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from 'vue';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -79,6 +74,11 @@ import { deepClone } from '@/utility/clone.js';
 import { genId } from '@/utility/id.js';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
 
 const $i = ensureSignin();
 

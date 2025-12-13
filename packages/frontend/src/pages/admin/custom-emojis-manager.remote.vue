@@ -142,6 +142,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useLoading } from '@/composables/use-loading.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import { emptyStrToUndefined, gridSortOrderKeys } from '@/pages/admin/custom-emojis-manager.impl.js';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
+import { deviceKind } from '@/utility/device-kind.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import type { GridSetting } from '@/components/grid/grid.js';
 import type { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
@@ -152,14 +160,6 @@ import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
-import { useLoading } from '@/composables/use-loading.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import { emptyStrToUndefined, gridSortOrderKeys } from '@/pages/admin/custom-emojis-manager.impl.js';
-import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
-import { deviceKind } from '@/utility/device-kind.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 type GridItem = {
 	checked: boolean;

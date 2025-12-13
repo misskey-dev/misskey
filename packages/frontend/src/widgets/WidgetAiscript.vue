@@ -22,13 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { Ast, Interpreter, Parser, utils } from '@syuilo/aiscript';
 import type { Value } from '@syuilo/aiscript/interpreter/value.js';
-import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { genId } from '@/utility/id.js';
+import MkContainer from '@/components/MkContainer.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

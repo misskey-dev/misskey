@@ -12,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkClickerGame from '@/components/MkClickerGame.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

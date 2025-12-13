@@ -68,10 +68,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { reactive, useTemplateRef } from 'vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n.js';
 import type { EnumFormItem, Form, RadioFormItem } from '@/utility/form.js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkButton from './MkButton.vue';
 import XFile from './MkFormDialog.file.vue';
 import MkInput from './MkInput.vue';

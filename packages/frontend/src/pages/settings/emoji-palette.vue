@@ -124,6 +124,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import { genId } from '@/utility/id.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
@@ -133,12 +139,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { prefer } from '@/preferences.js';
-import { emojiPicker } from '@/utility/emoji-picker.js';
-import { genId } from '@/utility/id.js';
 import XPalette from './emoji-palette.palette.vue';
 
 const emojiPaletteForReaction = prefer.model('emojiPaletteForReaction');

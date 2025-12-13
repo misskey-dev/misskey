@@ -130,6 +130,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, nextTick, ref, useTemplateRef, watch } from 'vue';
 import { host } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { store } from '@/store.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -137,10 +141,6 @@ import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowB
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import * as os from '@/os.js';
-import { store } from '@/store.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

@@ -108,9 +108,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { markRaw, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -121,6 +118,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as sound from '@/utility/sound.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const myGamesPaginator = markRaw(new Paginator('reversi/games', {
 	limit: 10,

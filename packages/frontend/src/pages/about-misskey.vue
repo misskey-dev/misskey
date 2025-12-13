@@ -138,10 +138,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, ref, useTemplateRef } from 'vue';
 import { host, version } from '@@/js/config.js';
-import FormLink from '@/components/form/link.vue';
-import FormSection from '@/components/form/section.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -150,6 +146,10 @@ import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { physics } from '@/utility/physics.js';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',

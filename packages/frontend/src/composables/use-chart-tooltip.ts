@@ -4,8 +4,8 @@
  */
 
 import { onDeactivated, onUnmounted, ref } from 'vue';
-import MkChartTooltip from '@/components/MkChartTooltip.vue';
 import * as os from '@/os.js';
+import MkChartTooltip from '@/components/MkChartTooltip.vue';
 
 export function useChartTooltip(opts: { position: 'top' | 'middle' } = { position: 'top' }) {
 	const tooltipShowing = ref(false);

@@ -61,10 +61,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, provide, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -75,6 +71,10 @@ import { mainRouter } from '@/router.js';
 import { selectFile } from '@/utility/drive.js';
 import { genId } from '@/utility/id.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import XBlocks from './page-editor.blocks.vue';
 
 const props = defineProps<{

@@ -123,6 +123,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { dateString } from '@/filters/date.js';
+import number from '@/filters/number.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { Paginator } from '@/utility/paginator.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -136,16 +146,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { dateString } from '@/filters/date.js';
-import number from '@/filters/number.js';
-import { iAmAdmin, iAmModerator } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { Paginator } from '@/utility/paginator.js';
 
 const props = defineProps<{
 	host: string;

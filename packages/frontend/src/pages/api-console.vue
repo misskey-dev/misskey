@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import type { Endpoints } from 'misskey-js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { definePage } from '@/page.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 const body = ref('{}');
 const endpoint = ref('');

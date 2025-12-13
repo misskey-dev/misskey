@@ -6,7 +6,6 @@
 import type { Ref, ShallowRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/i.js';
@@ -24,6 +23,7 @@ import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { getUserMenu } from '@/utility/get-user-menu.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { claimAchievement } from './achievements.js';
 
 const isInBrowserTranslationAvailable = (

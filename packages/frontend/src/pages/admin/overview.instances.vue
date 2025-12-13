@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 
 const instances = ref<Misskey.entities.FederationInstance[]>([]);
 const fetching = ref(true);

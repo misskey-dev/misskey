@@ -58,16 +58,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw } from 'vue';
-import FormSection from '@/components/form/section.vue';
-import FormSlot from '@/components/form/slot.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
+import FormSection from '@/components/form/section.vue';
+import FormSlot from '@/components/form/slot.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import X2fa from './2fa.vue';
 
 const paginator = markRaw(new Paginator('i/signin-history', {

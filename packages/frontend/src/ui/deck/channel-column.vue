@@ -21,8 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { favoritedChannelsCache } from '@/cache.js';
 import type { Column } from '@/deck.js';
 import { updateColumn } from '@/deck.js';
@@ -32,6 +30,8 @@ import type { SoundStore } from '@/preferences/def.js';
 import type { MenuItem } from '@/types/menu.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import XColumn from './column.vue';
 
 const props = defineProps<{

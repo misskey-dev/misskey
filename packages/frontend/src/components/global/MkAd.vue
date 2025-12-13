@@ -41,13 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { host, url as local } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
+import MkButton from '@/components/MkButton.vue';
 
 type Ad = (typeof instance)['ads'][number];
 

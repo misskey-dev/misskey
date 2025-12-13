@@ -157,15 +157,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkRange from '@/components/MkRange.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -175,6 +166,15 @@ import { deepClone } from '@/utility/clone.js';
 import { genId } from '@/utility/id.js';
 import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const $i = ensureSignin();
 

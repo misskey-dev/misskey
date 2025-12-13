@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 import type * as Misskey from 'misskey-js';
-import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
 import { DI } from '@/di.js';
 import { misskeyApi } from '@/misskey-api.js';
 import XNotFound from '@/pages/not-found.vue';
 import { assertServerContext } from '@/server-context';
+import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
 
 const props = defineProps<{
 	noteId: string;

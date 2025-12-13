@@ -94,6 +94,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -104,9 +107,6 @@ import type {
 	MkSystemWebhookResult,
 	SystemWebhookEventType,
 } from '@/components/MkSystemWebhookEditor.impl.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 type EventType = {
 	abuseReport: boolean;

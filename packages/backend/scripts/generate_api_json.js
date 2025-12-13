@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { execa } from 'execa';
 import { existsSync, writeFileSync } from "node:fs";
+import { execa } from 'execa';
 
 async function main() {
 	if (!process.argv.includes('--no-build')) {

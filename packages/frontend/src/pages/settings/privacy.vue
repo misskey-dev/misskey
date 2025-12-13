@@ -213,6 +213,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkDisableSection from '@/components/MkDisableSection.vue';
@@ -222,14 +230,6 @@ import MkInput from '@/components/MkInput.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { formatDateTimeString } from '@/utility/format-time-string.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 const $i = ensureSignin();
 

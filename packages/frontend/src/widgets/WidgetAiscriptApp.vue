@@ -17,14 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import type { Ref } from 'vue';
 import { onMounted, ref, watch } from 'vue';
 import { Ast, Interpreter, Parser } from '@syuilo/aiscript';
-import MkAsUi from '@/components/MkAsUi.vue';
-import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import MkAsUi from '@/components/MkAsUi.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

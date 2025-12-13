@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import type { Locale } from 'i18n';
 import MagicString from 'magic-string';
 import type { Manifest as ViteManifest } from 'vite';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import type { Logger } from './logger.js';

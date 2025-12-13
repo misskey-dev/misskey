@@ -44,10 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { toRefs } from 'vue';
 import { entities } from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
 	(ev: 'edit', value: entities.SystemWebhook): void;

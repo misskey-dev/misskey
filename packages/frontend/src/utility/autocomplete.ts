@@ -7,8 +7,8 @@ import type { Ref } from 'vue';
 import { defineAsyncComponent, nextTick, ref } from 'vue';
 import { toASCII } from 'punycode.js';
 import getCaretCoordinates from 'textarea-caret';
-import type { CompleteInfo } from '@/components/MkAutocomplete.vue';
 import { popup } from '@/os.js';
+import type { CompleteInfo } from '@/components/MkAutocomplete.vue';
 
 export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';
 

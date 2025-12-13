@@ -21,12 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkContainer from '@/components/MkContainer.vue';
-import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkContainer from '@/components/MkContainer.vue';
+import MkTagCloud from '@/components/MkTagCloud.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

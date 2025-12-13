@@ -28,9 +28,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onActivated, onMounted, provide, ref, useTemplateRef, watch } from 'vue';
-import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
-import MkPostForm from '@/components/MkPostForm.vue';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { antennasCache, favoritedChannelsCache, userListsCache } from '@/cache.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -44,6 +41,9 @@ import { availableBasicTimelines, basicTimelineIconClass, hasWithReplies, isAvai
 import type { MenuItem } from '@/types/menu.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { deepMerge } from '@/utility/merge.js';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 
 const tlComponent = useTemplateRef('tlComponent');
 

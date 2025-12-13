@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import semver from 'semver';
 import child_process from 'node:child_process';
 import path from 'node:path';
 import url from 'node:url';
+import semver from 'semver';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

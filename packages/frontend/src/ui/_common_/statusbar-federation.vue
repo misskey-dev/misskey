@@ -34,9 +34,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';

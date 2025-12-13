@@ -31,10 +31,10 @@ import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkContainer from '@/components/MkContainer.vue';
-import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { shuffle } from '@/utility/shuffle.js';
+import MkContainer from '@/components/MkContainer.vue';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

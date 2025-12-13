@@ -80,17 +80,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { provide, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { dateString } from '@/filters/date.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { createRouter } from '@/router.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import RouterView from '@/components/global/RouterView.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { dateString } from '@/filters/date.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { createRouter } from '@/router.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const props = defineProps<{
 	report: Misskey.entities.AdminAbuseUserReportsResponse[number];

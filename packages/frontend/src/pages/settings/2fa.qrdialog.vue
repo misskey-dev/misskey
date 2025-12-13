@@ -108,6 +108,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, useTemplateRef } from 'vue';
 import { hostname, port } from '@@/js/config';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { confetti } from '@/utility/confetti.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -115,10 +119,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { confetti } from '@/utility/confetti.js';
 
 const $i = ensureSignin();
 

@@ -162,17 +162,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
-import MkAccountMoved from '@/components/MkAccountMoved.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkFollowButton from '@/components/MkFollowButton.vue';
-import MkFukidashi from '@/components/MkFukidashi.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkNote from '@/components/MkNote.vue';
-import MkOmit from '@/components/MkOmit.vue';
-import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkSparkle from '@/components/MkSparkle.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import { dateString } from '@/filters/date.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
@@ -186,6 +175,17 @@ import { getUserMenu } from '@/utility/get-user-menu.js';
 import { isFollowersVisibleForMe, isFollowingVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkAccountMoved from '@/components/MkAccountMoved.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkFukidashi from '@/components/MkFukidashi.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkOmit from '@/components/MkOmit.vue';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
+import MkSparkle from '@/components/MkSparkle.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);

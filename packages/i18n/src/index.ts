@@ -7,8 +7,8 @@
  * Languages Loader
  */
 
-import * as yaml from 'js-yaml';
 import * as fs from 'node:fs';
+import * as yaml from 'js-yaml';
 import type { Locale } from './autogen/locale.js';
 import { languages, primaries } from './const.js';
 import type { ILocale, ParameterizedString } from './types.js';

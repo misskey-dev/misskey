@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URLSearchParams } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -11,7 +12,6 @@ import { DI } from '@/di-symbols.js';
 import type { MiMeta } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { GetterService } from '@/server/api/GetterService.js';
-import { URLSearchParams } from 'node:url';
 import { ApiError } from '../../error.js';
 
 export const meta = {

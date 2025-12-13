@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setImmediate } from 'node:timers/promises';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
 import type * as Redis from 'ioredis';
@@ -58,7 +59,6 @@ import { MiNote } from '@/models/Note.js';
 import type { IPoll } from '@/models/Poll.js';
 import { MiPoll } from '@/models/Poll.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import { setImmediate } from 'node:timers/promises';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 

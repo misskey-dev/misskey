@@ -31,11 +31,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import type * as Misskey from 'misskey-js';
+import { notePage, userPage } from '@/utils.js';
 import EmA from '@/components/EmA.vue';
 import EmAcct from '@/components/EmAcct.vue';
 import EmTime from '@/components/EmTime.vue';
 import EmUserName from '@/components/EmUserName.vue';
-import { notePage, userPage } from '@/utils.js';
 
 defineProps<{
 	note: Misskey.entities.Note;

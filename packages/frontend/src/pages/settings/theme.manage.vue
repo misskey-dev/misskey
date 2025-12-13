@@ -27,11 +27,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import type { MkSelectItem } from '@/components/MkSelect.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -39,6 +34,11 @@ import { definePage } from '@/page.js';
 import type { Theme } from '@/theme.js';
 import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();

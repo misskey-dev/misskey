@@ -8,12 +8,12 @@
 // How to run:
 // pnpm jest -- e2e/timelines.ts
 
+import * as assert from 'node:assert';
+import { setTimeout } from 'node:timers/promises';
 import { Redis } from 'ioredis';
 import type { entities } from 'misskey-js';
 import type { Note, SignupResponse } from 'misskey-js/entities.js';
 import { loadConfig } from '@/config.js';
-import * as assert from 'node:assert';
-import { setTimeout } from 'node:timers/promises';
 import type { UserToken, } from '../utils.js';
 import { api, post, randomString, sendEnvUpdateRequest, signup, uploadUrl } from '../utils.js';
 

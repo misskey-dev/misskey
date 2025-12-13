@@ -169,13 +169,17 @@
 					"level": "on",
 					"options": {
 						"groups": [
+							":NODE:",
 							"storybook/**",
 							"@storybook/**",
 							"vue",
 							":PACKAGE:",
 							"@@/**",
+							["@/**", "!@/components/**"],
 							"@/components/**",
-							["@/**", "!@/components/**"]
+							"../**",
+							"./**",
+							{ "type": true }
 						]
 					}
 				}

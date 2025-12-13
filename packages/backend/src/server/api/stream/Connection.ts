@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { EventEmitter } from 'node:events';
 import type * as WebSocket from 'ws';
 import type { CacheService } from '@/core/CacheService.js';
 import type { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
@@ -15,7 +16,6 @@ import { isJsonObject } from '@/misc/json-value.js';
 import type { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type { MiUser } from '@/models/User.js';
-import type { EventEmitter } from 'node:events';
 import type { ChannelsService } from './ChannelsService.js';
 import type Channel from './channel.js';
 

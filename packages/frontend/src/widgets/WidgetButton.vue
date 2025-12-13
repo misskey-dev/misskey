@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { Ast, Interpreter, Parser } from '@syuilo/aiscript';
-import MkButton from '@/components/MkButton.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import MkButton from '@/components/MkButton.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

@@ -21,11 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 
 const router = useRouter();
 

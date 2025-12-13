@@ -1,10 +1,10 @@
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
 import pluginVue from '@vitejs/plugin-vue';
 import locales from 'i18n';
 import * as yaml from 'js-yaml';
 import type { UserConfig } from 'vite';
 import { defineConfig, } from 'vite';
-import { promises as fsp } from 'node:fs';
-import path from 'node:path';
 import meta from '../../package.json';
 import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 import packageInfo from './package.json' with { type: 'json' };

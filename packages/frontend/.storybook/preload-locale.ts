@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import locales from 'i18n';
 import { writeFile } from 'node:fs/promises';
+import locales from 'i18n';
 
 await writeFile(
 	new URL('locale.ts', import.meta.url),

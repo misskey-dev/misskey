@@ -5,8 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import type * as misskey from 'misskey-js';
 import * as assert from 'node:assert';
+import type * as misskey from 'misskey-js';
 import { api, post, signup, uploadUrl } from '../utils.js';
 
 describe('users/notes', () => {

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { execa } from 'execa';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execa } from 'execa';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type { AccessTokensRepository, AppsRepository, AuthSessionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import * as crypto from 'node:crypto';
 import { ApiError } from '../../error.js';
 
 export const meta = {

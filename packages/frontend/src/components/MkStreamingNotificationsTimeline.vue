@@ -48,15 +48,15 @@ import { notificationTypes } from 'misskey-js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkNote from '@/components/MkNote.vue';
-import XNotification from '@/components/MkNotification.vue';
-import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { useStream } from '@/stream.js';
 import { Paginator } from '@/utility/paginator.js';
 import { getSeparatorInfo, isSeparatorNeeded } from '@/utility/timeline-date-separate.js';
+import MkNote from '@/components/MkNote.vue';
+import XNotification from '@/components/MkNotification.vue';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][] | null;

@@ -47,12 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
+import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import type { InstanceForPie } from './overview.pie.vue';
 import XPie from './overview.pie.vue';
 

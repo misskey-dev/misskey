@@ -852,6 +852,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { throttle } from 'throttle-debounce';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { deepClone } from '@/utility/clone.js';
 import FormSlot from '@/components/form/slot.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -861,9 +864,6 @@ import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/Mk
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { deepClone } from '@/utility/clone.js';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 
 const emit = defineEmits<{

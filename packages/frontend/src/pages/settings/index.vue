@@ -31,9 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import MkInfo from '@/components/MkInfo.vue';
-import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
-import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -46,6 +43,9 @@ import { signout } from '@/signout.js';
 import { store } from '@/store.js';
 import { clearCache } from '@/utility/clear-cache.js';
 import { genSearchIndexes } from '@/utility/inapp-search.js';
+import MkInfo from '@/components/MkInfo.vue';
+import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
+import MkSuperMenu from '@/components/MkSuperMenu.vue';
 
 const searchIndex = await import('search-index:settings').then(({ searchIndexes }) => genSearchIndexes(searchIndexes));
 

@@ -91,8 +91,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getScrollContainer } from '@@/js/scroll.js';
-import MkButton from '@/components/MkButton.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import { useMutationObserver } from '@/composables/use-mutation-observer.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -106,6 +104,8 @@ import type { PageHeaderItem } from '@/types/page-header.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
 import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import XForm from './room.form.vue';
 import XInfo from './room.info.vue';
 import XMembers from './room.members.vue';

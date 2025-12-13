@@ -5,6 +5,7 @@
 
 /* eslint-disable */
 
+import { setTimeout } from 'node:timers/promises';
 import { afterEach, beforeEach, describe, expect } from '@jest/globals';
 import type { TestingModule } from '@nestjs/testing';
 import { Test, } from '@nestjs/testing';
@@ -25,7 +26,6 @@ import type {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { setTimeout } from 'node:timers/promises';
 
 describe('ChannelMutingService', () => {
 	let app: TestingModule;

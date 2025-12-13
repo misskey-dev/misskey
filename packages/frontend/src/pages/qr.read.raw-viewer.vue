@@ -37,12 +37,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as mfm from 'mfm-js';
+import { i18n } from '@/i18n.js';
+import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm';
 import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTabs from '@/components/MkTabs.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import { i18n } from '@/i18n.js';
-import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm';
 
 const props = defineProps<{
 	data: string;

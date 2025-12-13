@@ -5,6 +5,8 @@
 
 /// <reference lib="esnext" />
 
+import fs from 'node:fs';
+import path from 'node:path'
 import type {
 	AttributeNode,
 	DirectiveNode,
@@ -33,8 +35,6 @@ import {
 	normalizePath,
 } from 'vite';
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
-import fs from 'node:fs';
-import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
 
 export interface SearchIndexItem {

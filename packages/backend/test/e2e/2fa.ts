@@ -5,6 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
+import * as crypto from 'node:crypto';
 import type {
 	AuthenticationResponseJSON,
 	AuthenticatorAssertionResponseJSON,
@@ -17,8 +19,6 @@ import cbor from 'cbor';
 import type * as misskey from 'misskey-js';
 import * as OTPAuth from 'otpauth';
 import { loadConfig } from '@/config.js';
-import * as assert from 'node:assert';
-import * as crypto from 'node:crypto';
 import { api, signup } from '../utils.js';
 
 describe('2要素認証', () => {

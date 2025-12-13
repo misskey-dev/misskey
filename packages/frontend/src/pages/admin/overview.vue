@@ -67,13 +67,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
 import { genId } from '@/utility/id.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import XActiveUsers from './overview.active-users.vue';
 import XApRequests from './overview.ap-requests.vue';
 import XFederation from './overview.federation.vue';

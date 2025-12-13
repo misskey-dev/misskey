@@ -62,16 +62,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
-import { validators } from '@/components/grid/cell-validators.js';
-import type { GridSetting } from '@/components/grid/grid.js';
-import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
-import MkGrid from '@/components/grid/MkGrid.vue';
-import type { GridRow } from '@/components/grid/row.js';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -87,6 +77,16 @@ import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
 import type { DroppedFile } from '@/utility/file-drop.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { validators } from '@/components/grid/cell-validators.js';
+import type { GridSetting } from '@/components/grid/grid.js';
+import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
+import MkGrid from '@/components/grid/MkGrid.vue';
+import type { GridRow } from '@/components/grid/row.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 

@@ -825,18 +825,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { langs } from '@@/js/config.js';
-import FormLink from '@/components/form/link.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkDisableSection from '@/components/MkDisableSection.vue';
-import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkLink from '@/components/MkLink.vue';
-import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkRange from '@/components/MkRange.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import { globalEvents } from '@/events.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -850,6 +838,18 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { genId } from '@/utility/id.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
+import FormLink from '@/components/form/link.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkDisableSection from '@/components/MkDisableSection.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const $i = ensureSignin();
 

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { FastifyServerOptions } from 'fastify';
 import type { RedisOptions } from 'ioredis';
 import type { ManifestChunk } from 'vite';
-import * as fs from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;

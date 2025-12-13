@@ -29,9 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
-import MkInviteCode from '@/components/MkInviteCode.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -39,6 +36,9 @@ import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInviteCode from '@/components/MkInviteCode.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i?.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;

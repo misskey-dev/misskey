@@ -40,12 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import bytes from '@/filters/bytes.js';
 import { dateString } from '@/filters/date.js';
 import { i18n } from '@/i18n.js';
 import type { Paginator } from '@/utility/paginator.js';
+import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 defineProps<{
 	paginator: Paginator<'admin/drive/files'>;

@@ -42,13 +42,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, nextTick, ref } from 'vue';
-import FormSection from '@/components/form/section.vue';
-import MkLoading from '@/components/global/MkLoading.vue';
-import MkUrl from '@/components/global/MkUrl.vue';
-import MkButton from '@/components/MkButton.vue';
-import type { Extension } from '@/components/MkExtensionInstaller.vue';
-import MkExtensionInstaller from '@/components/MkExtensionInstaller.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
@@ -57,6 +50,13 @@ import { installPlugin, parsePluginMeta } from '@/plugin.js';
 import { installTheme, parseThemeCode } from '@/theme.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import FormSection from '@/components/form/section.vue';
+import MkLoading from '@/components/global/MkLoading.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
+import MkButton from '@/components/MkButton.vue';
+import type { Extension } from '@/components/MkExtensionInstaller.vue';
+import MkExtensionInstaller from '@/components/MkExtensionInstaller.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{

@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import EmNote from '@/components/EmNote.vue';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmPagination from '@/components/EmPagination.vue';
-import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	pagination: Paging;

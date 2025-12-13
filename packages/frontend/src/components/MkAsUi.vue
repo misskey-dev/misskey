@@ -64,6 +64,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 import { computed, ref } from 'vue';
+import type { AsUiComponent, AsUiPostFormButton, AsUiRoot } from '@/aiscript/ui.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -71,9 +74,6 @@ import MkPostForm from '@/components/MkPostForm.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import type { AsUiComponent, AsUiPostFormButton, AsUiRoot } from '@/aiscript/ui.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;

@@ -147,9 +147,6 @@ import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import { url } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import { userPage } from '@/filters/user.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -159,6 +156,9 @@ import { confetti } from '@/utility/confetti.js';
 import { genId } from '@/utility/id.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const $i = ensureSignin();
 

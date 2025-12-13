@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
@@ -20,7 +21,6 @@ import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
-import { randomUUID } from 'node:crypto';
 import type {
 	DbJobData,
 	DeliverJobData,

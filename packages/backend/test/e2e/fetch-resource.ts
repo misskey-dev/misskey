@@ -5,8 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import type * as misskey from 'misskey-js';
 import * as assert from 'node:assert';
+import type * as misskey from 'misskey-js';
 import type { SimpleGetResponse } from '../utils.js';
 import { api, channel, clip, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
 

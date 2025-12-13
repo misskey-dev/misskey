@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -22,7 +23,6 @@ import type {
 	UsersRepository,
 } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { randomUUID } from 'node:crypto';
 import type { RateLimiterService } from './RateLimiterService.js';
 import type { SigninService } from './SigninService.js';
 

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as crypto from 'node:crypto';
+import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import * as htmlParser from 'node-html-parser';
 import type { Config } from '@/config.js';
@@ -14,8 +16,6 @@ import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
-import * as crypto from 'node:crypto';
-import { URL } from 'node:url';
 import type { IObject } from './type.js';
 
 type Request = {

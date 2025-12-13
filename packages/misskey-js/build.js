@@ -1,9 +1,9 @@
-import * as esbuild from 'esbuild';
-import { build } from 'esbuild';
-import { execa } from 'execa';
 import fs from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as esbuild from 'esbuild';
+import { build } from 'esbuild';
+import { execa } from 'execa';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

@@ -13,10 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { markRaw, ref } from 'vue';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import type { Column } from '@/deck.js';
 import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import XColumn from './column.vue';
 
 defineProps<{

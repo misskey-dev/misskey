@@ -88,13 +88,13 @@ import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
 import { maybeMakeRelative } from '@@/js/url.js';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { transformPlayerUrl } from '@/utility/url-preview.js';
+import MkButton from '@/components/MkButton.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 

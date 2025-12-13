@@ -46,11 +46,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref, watchEffect } from 'vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { dateString } from '@/filters/date.js';
 import { i18n } from '@/i18n.js';
@@ -59,6 +54,11 @@ import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { lookupUser } from '@/utility/admin-lookup.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 type SearchQuery = {
 	sort?: '-createdAt' | '+createdAt' | '-updatedAt' | '+updatedAt';

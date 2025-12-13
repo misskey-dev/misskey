@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fastifyProxy from '@fastify/http-proxy';
 import fastifyStatic from '@fastify/static';
 import { Inject, Injectable } from '@nestjs/common';
@@ -40,9 +43,6 @@ import type {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { randomUUID } from 'node:crypto';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { ClientLoggerService } from './ClientLoggerService.js';
 import type { FeedService } from './FeedService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';

@@ -85,16 +85,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent } from 'vue';
 import { parseCreationOptionsFromJSON, create as webAuthnCreate, supported as webAuthnSupported } from '@github/webauthn-json/browser-ponyfill';
+import { updateCurrentAccountPartial } from '@/accounts.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { updateCurrentAccountPartial } from '@/accounts.js';
-import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
 
 const $i = ensureSignin();
 

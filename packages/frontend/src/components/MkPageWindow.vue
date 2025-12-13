@@ -32,8 +32,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
-import RouterView from '@/components/global/RouterView.vue';
-import MkWindow from '@/components/MkWindow.vue';
 import { analytics } from '@/analytics.js';
 import { DI } from '@/di.js';
 import { i18n } from '@/i18n.js';
@@ -45,6 +43,8 @@ import { createRouter, mainRouter } from '@/router.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { popout as _popout } from '@/utility/popout.js';
+import RouterView from '@/components/global/RouterView.vue';
+import MkWindow from '@/components/MkWindow.vue';
 
 const props = defineProps<{
 	initialPath: string;

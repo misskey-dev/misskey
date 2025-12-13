@@ -6,8 +6,8 @@
 // AID
 // 長さ8の[2000年1月1日からの経過ミリ秒をbase36でエンコードしたもの] + 長さ2の[ノイズ文字列]
 
-import { parseBigInt36 } from '@/misc/bigint.js';
 import * as crypto from 'node:crypto';
+import { parseBigInt36 } from '@/misc/bigint.js';
 
 export const aidRegExp = /^[0-9a-z]{10}$/;
 

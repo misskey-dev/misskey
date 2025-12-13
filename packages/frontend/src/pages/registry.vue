@@ -24,13 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as Misskey from 'misskey-js';
-import FormLink from '@/components/form/link.vue';
-import FormSection from '@/components/form/section.vue';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const scopesWithDomain = ref<Misskey.entities.IRegistryScopesWithDomainResponse | null>(null);
 

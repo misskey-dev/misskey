@@ -61,9 +61,6 @@ import * as Misskey from 'misskey-js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkButton from '@/components/MkButton.vue';
-import MkNote from '@/components/MkNote.vue';
-import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -77,6 +74,9 @@ import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
 import { Paginator } from '@/utility/paginator.js';
 import * as sound from '@/utility/sound.js';
 import { getSeparatorInfo, isSeparatorNeeded } from '@/utility/timeline-date-separate.js';
+import MkButton from '@/components/MkButton.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';

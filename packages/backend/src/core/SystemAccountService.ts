@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
@@ -20,7 +21,6 @@ import type { MiMeta, SystemAccountsRepository, UserProfilesRepository, UsersRep
 import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, } from '@/models/_.js';
 import type { MiLocalUser, } from '@/models/User.js';
 import { MiUser } from '@/models/User.js';
-import { randomUUID } from 'node:crypto';
 
 export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy'] as const;
 

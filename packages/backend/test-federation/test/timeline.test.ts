@@ -1,5 +1,5 @@
-import type * as Misskey from 'misskey-js';
 import { strictEqual } from 'node:assert';
+import type * as Misskey from 'misskey-js';
 import type { LoginUser, Request, } from './utils.js';
 import { createAccount, createRole, fetchAdmin, isFired, isNoteUpdatedEventFired, resolveRemoteUser, sleep } from './utils.js';
 

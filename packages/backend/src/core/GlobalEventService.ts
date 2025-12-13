@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { EventEmitter } from 'node:events';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import type * as Reversi from 'misskey-reversi';
@@ -27,7 +28,6 @@ import type { MiUserList } from '@/models/UserList.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { MiWebhook } from '@/models/Webhook.js';
 import type { Serialized } from '@/types.js';
-import type { EventEmitter } from 'node:events';
 
 //#region Stream type-body definitions
 export interface BroadcastTypes {

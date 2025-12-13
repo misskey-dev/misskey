@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import cluster from 'node:cluster';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
 import type { KEYWORD } from 'color-convert/conversions.js';
 import { format as dateFormat } from 'date-fns';
 import { bindThis } from '@/decorators.js';
-import cluster from 'node:cluster';
 import { envOption } from './env.js';
 
 type Context = {

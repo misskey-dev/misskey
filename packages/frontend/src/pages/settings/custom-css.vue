@@ -18,13 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import { isSafeMode } from '@@/js/config.js';
-import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import FormInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
+import FormInfo from '@/components/MkInfo.vue';
 
 const localCustomCss = ref(miLocalStorage.getItem('customCss') ?? '');
 

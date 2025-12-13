@@ -49,6 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, useTemplateRef, watch } from 'vue';
+import * as os from '@/os.js';
+import type { MenuItem } from '@/types/menu.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import { CELL_ADDRESS_NONE, createCell, resetCell } from '@/components/grid/cell.js';
 import { cellValidation } from '@/components/grid/cell-validators.js';
@@ -69,9 +72,6 @@ import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
 import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
 import { createRow, defaultGridRowSetting, resetRow } from '@/components/grid/row.js';
-import * as os from '@/os.js';
-import type { MenuItem } from '@/types/menu.js';
-import { makeHotkey } from '@/utility/hotkey.js';
 
 type RowHolder = {
 	row: GridRow,

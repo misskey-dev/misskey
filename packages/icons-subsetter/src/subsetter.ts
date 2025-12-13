@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { compress } from 'wawoff2';
 import { promises as fsp } from 'node:fs';
+import { compress } from 'wawoff2';
 
 export async function generateSubsettedFont(ttfPath: string, unicodeRangeValues: Map<string, number[]>) {
 	const ttf = await fsp.readFile(ttfPath);

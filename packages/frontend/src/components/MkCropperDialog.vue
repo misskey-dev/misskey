@@ -33,9 +33,9 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import Cropper from 'cropperjs';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
-import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 
 const props = defineProps<{
 	imageFile: File | Blob;

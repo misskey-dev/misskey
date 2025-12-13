@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import * as htmlParser from 'node-html-parser';
@@ -14,7 +15,6 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { MiInstance } from '@/models/Instance.js';
-import { URL } from 'node:url';
 
 type NodeInfo = {
 	openRegistrations?: unknown;

@@ -57,14 +57,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
-import type { ChartSrc } from '@/components/MkChart.vue';
-import MkChart from '@/components/MkChart.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkHeatmap from '@/components/MkHeatmap.vue';
-import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
-import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
-import type { ItemOption, MkSelectItem } from '@/components/MkSelect.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { $i } from '@/i.js';
@@ -73,6 +65,14 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { initChart } from '@/utility/init-chart.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
+import type { ChartSrc } from '@/components/MkChart.vue';
+import MkChart from '@/components/MkChart.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkHeatmap from '@/components/MkHeatmap.vue';
+import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
+import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
+import type { ItemOption, MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 initChart();
 

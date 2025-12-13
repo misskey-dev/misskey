@@ -26,9 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import MkDrive from '@/components/MkDrive.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import dns from 'node:dns/promises';
+import type { ServerResponse } from 'node:http';
 import fastifyCors from '@fastify/cors';
 import fastifyExpress from '@fastify/express';
 import { Inject, Injectable } from '@nestjs/common';
@@ -32,8 +34,6 @@ import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
-import dns from 'node:dns/promises';
-import type { ServerResponse } from 'node:http';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.

@@ -31,8 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, provide, ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { DI } from '@/di.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -40,6 +38,8 @@ import * as os from '@/os.js';
 import type { PageMetadata } from '@/page.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { mainRouter } from '@/router.js';
+import MkButton from '@/components/MkButton.vue';
+import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import XCommon from './_common_/common.vue';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');

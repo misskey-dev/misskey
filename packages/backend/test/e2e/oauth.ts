@@ -10,6 +10,7 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import type * as misskey from 'misskey-js';
 import * as htmlParser from 'node-html-parser';
@@ -23,7 +24,6 @@ import {
 	ClientCredentials,
 	ResourceOwnerPassword,
 } from 'simple-oauth2';
-import * as assert from 'node:assert';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
 
 const host = `http://127.0.0.1:${port}`;

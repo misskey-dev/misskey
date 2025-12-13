@@ -37,7 +37,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import MkFollowButton from '@/components/MkFollowButton.vue';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import { $i } from '@/i.js';
@@ -45,6 +44,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { isFollowersVisibleForMe, isFollowingVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import MkFollowButton from '@/components/MkFollowButton.vue';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

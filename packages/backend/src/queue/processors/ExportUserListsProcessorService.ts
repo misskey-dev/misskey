@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
@@ -15,7 +16,6 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { UserListMembershipsRepository, UserListsRepository, UsersRepository } from '@/models/_.js';
-import * as fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 

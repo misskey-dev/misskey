@@ -64,14 +64,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host as currentHost, hostname } from '@@/js/config.js';
-import FormSplit from '@/components/form/split.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import FormSplit from '@/components/form/split.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import walk from 'ignore-walk';
-import { Pack } from 'tar/pack';
 import { createWriteStream, promises as fsp } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import walk from 'ignore-walk';
+import { Pack } from 'tar/pack';
 import meta from '../package.json' with { type: "json" };
 
 const cwd = fileURLToPath(new URL('..', import.meta.url));

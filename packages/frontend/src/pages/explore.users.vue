@@ -71,13 +71,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkTab from '@/components/MkTab.vue';
-import MkUserList from '@/components/MkUserList.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkTab from '@/components/MkTab.vue';
+import MkUserList from '@/components/MkUserList.vue';
 
 const props = defineProps<{
 	tag?: string;

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as os from 'node:os';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import si from 'systeminformation';
 import type { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import * as os from 'node:os';
 
 export const meta = {
 	requireCredential: true,

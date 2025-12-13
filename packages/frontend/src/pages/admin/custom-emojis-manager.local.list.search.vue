@@ -126,6 +126,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -133,8 +135,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
 import type { GridSortOrderKey } from './custom-emojis-manager.impl.js';
 import {
 	gridSortOrderKeys,

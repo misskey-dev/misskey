@@ -48,11 +48,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkClipPreview from '@/components/MkClipPreview.vue';
-import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
-import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import { dateString } from '@/filters/date.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -63,6 +58,11 @@ import { getAppearNote } from '@/utility/get-appear-note.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
 import { pleaseLogin } from '@/utility/please-login.js';
+import MkButton from '@/components/MkButton.vue';
+import MkClipPreview from '@/components/MkClipPreview.vue';
+import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_NOTE = !$i && assertServerContext(serverContext, 'note') ? serverContext.note : null;

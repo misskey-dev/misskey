@@ -166,6 +166,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
@@ -174,9 +177,6 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkTabs from '@/components/MkTabs.vue';
 import type { TlEvent } from '@/components/MkTl.vue';
 import MkTl from '@/components/MkTl.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 function msSMH(v: number | null) {
 	if (v == null) return 'N/A';

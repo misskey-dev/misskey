@@ -210,12 +210,6 @@ import JSON5 from 'json5';
 import { isSafeMode } from '@@/js/config.js';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
-import FormLink from '@/components/form/link.vue';
-import FormSection from '@/components/form/section.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkThemePreview from '@/components/MkThemePreview.vue';
 import { checkDragDataType, getDragData, getPlainDragData, setDragData, setPlainDragData } from '@/drag-and-drop.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -228,6 +222,12 @@ import { getBuiltinThemesRef, getThemesRef, installTheme, parseThemeCode, remove
 import { uniqueBy } from '@/utility/array.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkThemePreview from '@/components/MkThemePreview.vue';
 
 const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();

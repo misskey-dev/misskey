@@ -38,9 +38,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { prefer } from '@/preferences.js';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 import MkModal from '@/components/MkModal.vue';
-import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;

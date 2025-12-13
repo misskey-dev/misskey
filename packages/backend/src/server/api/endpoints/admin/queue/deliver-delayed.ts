@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import type { DeliverQueue } from '@/core/QueueModule.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { URL } from 'node:url';
 
 export const meta = {
 	tags: ['admin'],

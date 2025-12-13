@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import MkButton from '@/components/MkButton.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const props = defineProps<{
 	muted: (string[] | string)[];

@@ -38,7 +38,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, inject, ref } from 'vue';
-import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { $i } from '@/i.js';
@@ -50,6 +49,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { checkMuted as checkEmojiMuted, makeEmojiMuteKey, mute as muteEmoji, unmute as unmuteEmoji } from '@/utility/emoji-mute';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
 	name: string;

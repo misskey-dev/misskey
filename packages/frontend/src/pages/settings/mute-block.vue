@@ -173,12 +173,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref, watch } from 'vue';
-import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -188,6 +182,12 @@ import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { Paginator } from '@/utility/paginator.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import XEmojiMute from './mute-block.emoji-mute.vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';

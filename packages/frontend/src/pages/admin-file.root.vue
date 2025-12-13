@@ -83,6 +83,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import bytes from '@/filters/bytes.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
@@ -92,10 +96,6 @@ import MkObjectView from '@/components/MkObjectView.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTabs from '@/components/MkTabs.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import bytes from '@/filters/bytes.js';
-import { iAmAdmin, iAmModerator } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
 
 const props = defineProps<{
 	file: Misskey.entities.DriveFile,

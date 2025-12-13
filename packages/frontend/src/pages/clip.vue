@@ -33,8 +33,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, markRaw, provide, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { clipsCache } from '@/cache.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -47,6 +45,8 @@ import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_CLIP = !$i && assertServerContext(serverContext, 'clip') ? serverContext.clip : null;

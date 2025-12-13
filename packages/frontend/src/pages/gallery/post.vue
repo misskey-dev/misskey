@@ -65,11 +65,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkContainer from '@/components/MkContainer.vue';
-import MkFollowButton from '@/components/MkFollowButton.vue';
-import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -81,6 +76,11 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const router = useRouter();
 

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
@@ -27,9 +30,6 @@ import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
-import * as fs from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

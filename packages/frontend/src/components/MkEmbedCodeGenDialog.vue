@@ -88,6 +88,12 @@ import { computed, nextTick, onDeactivated, onMounted, onUnmounted, ref, useTemp
 import { url } from '@@/js/config.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { getEmbedCode, normalizeEmbedParams } from '@/utility/get-embed-code.js';
 import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -95,12 +101,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { prefer } from '@/preferences.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { getEmbedCode, normalizeEmbedParams } from '@/utility/get-embed-code.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;

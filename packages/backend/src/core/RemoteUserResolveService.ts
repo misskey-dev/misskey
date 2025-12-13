@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import { IsNull } from 'typeorm';
@@ -17,7 +18,6 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { UsersRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import { URL } from 'node:url';
 
 @Injectable()
 export class RemoteUserResolveService {

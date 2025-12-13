@@ -7,9 +7,9 @@ import type { RenderResult, } from '@testing-library/vue';
 import { cleanup, render } from '@testing-library/vue';
 import { afterEach, assert, describe, test } from 'vitest';
 import { getEmojiName } from '@@/js/emojilist.js';
+import { directives } from '@/directives/index.js';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import { components } from '@/components/index.js';
-import { directives } from '@/directives/index.js';
 import { preferState } from './init.js';
 
 describe('Emoji', () => {

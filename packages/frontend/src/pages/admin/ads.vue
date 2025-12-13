@@ -95,6 +95,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import FormSplit from '@/components/form/split.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -103,11 +108,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 const ads = ref<Misskey.entities.Ad[]>([]);
 

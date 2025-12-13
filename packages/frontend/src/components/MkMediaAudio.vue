@@ -90,7 +90,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onActivated, onDeactivated, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkMediaRange from '@/components/MkMediaRange.vue';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import { $i, iAmModerator } from '@/i.js';
@@ -100,6 +99,7 @@ import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import type { Keymap } from '@/utility/hotkey.js';
+import MkMediaRange from '@/components/MkMediaRange.vue';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;

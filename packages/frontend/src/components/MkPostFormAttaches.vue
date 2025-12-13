@@ -35,7 +35,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { i18n } from '@/i18n.js';
@@ -44,6 +43,7 @@ import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

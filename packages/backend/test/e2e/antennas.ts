@@ -5,9 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import * as assert from 'node:assert';
 import {
 	api,
 	failedApiCall,

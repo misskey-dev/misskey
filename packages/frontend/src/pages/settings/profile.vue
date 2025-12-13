@@ -166,6 +166,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, reactive, ref, watch } from 'vue';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { store } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { chooseDriveFile } from '@/utility/drive.js';
+import { genId } from '@/utility/id.js';
+import { langmap } from '@/utility/langmap.js';
 import FormLink from '@/components/form/link.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -176,15 +185,6 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { ensureSignin } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { store } from '@/store.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { chooseDriveFile } from '@/utility/drive.js';
-import { genId } from '@/utility/id.js';
-import { langmap } from '@/utility/langmap.js';
 
 const $i = ensureSignin();
 

@@ -34,7 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import type { Column } from '@/deck.js';
 import { removeColumn, updateColumn } from '@/deck.js';
 import { i18n } from '@/i18n.js';
@@ -43,6 +42,7 @@ import type { SoundStore } from '@/preferences/def.js';
 import { basicTimelineIconClass, hasWithReplies, isAvailableBasicTimeline } from '@/timelines.js';
 import type { MenuItem } from '@/types/menu.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import XColumn from './column.vue';
 
 const props = defineProps<{

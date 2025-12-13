@@ -21,9 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmojiOrNull } from '@@/js/emojilist.js';
-import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import XDetails from '@/components/MkReactionsViewer.details.vue';
 import { noteEvents } from '@/composables/use-note-capture.js';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import { customEmojisMap } from '@/custom-emojis.js';
@@ -38,6 +35,9 @@ import { checkMuted as isEmojiMuted, mute as muteEmoji, unmute as unmuteEmoji } 
 import { haptic } from '@/utility/haptic.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
+import MkReactionEffect from '@/components/MkReactionEffect.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{

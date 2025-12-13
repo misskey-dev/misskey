@@ -10,7 +10,6 @@ import { apiUrl, isSafeMode, lang, version } from '@@/js/config.js';
 import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
-import components from '@/components/index.js';
 import { login, refreshCurrentAccount } from '@/accounts.js';
 import { analytics, initAnalytics } from '@/analytics.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
@@ -30,6 +29,7 @@ import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { getUrlWithoutLoginId } from '@/utility/login-id.js';
 import { reloadChannel } from '@/utility/unison-reload.js';
 import widgets from '@/widgets/index.js';
+import components from '@/components/index.js';
 
 export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);

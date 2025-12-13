@@ -84,6 +84,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, reactive, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import type { StatusbarStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
+import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -91,11 +96,6 @@ import MkRange from '@/components/MkRange.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import type { StatusbarStore } from '@/preferences/def.js';
-import { prefer } from '@/preferences.js';
-import { deepClone } from '@/utility/clone.js';
 
 const props = defineProps<{
 	_id: string;

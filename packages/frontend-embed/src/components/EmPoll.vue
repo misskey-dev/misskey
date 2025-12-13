@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type * as Misskey from 'misskey-js';
-import EmMfm from '@/components/EmMfm.js';
 import { i18n } from '@/i18n.js';
+import EmMfm from '@/components/EmMfm.js';
 
 function sum(xs: number[]): number {
 	return xs.reduce((a, b) => a + b, 0);

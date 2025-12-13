@@ -209,6 +209,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { acct } from '@/filters/user.js';
+import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { Paginator } from '@/utility/paginator.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -224,14 +232,6 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { acct } from '@/filters/user.js';
-import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { Paginator } from '@/utility/paginator.js';
 
 const $i = ensureSignin();
 

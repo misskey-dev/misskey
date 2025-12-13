@@ -37,11 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { reactive } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import MkFormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import { i18n } from '@/i18n.js';
 
 const exampleCWNote = reactive<Misskey.entities.Note>({
 	id: '0000000000',

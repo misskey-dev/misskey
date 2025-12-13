@@ -159,6 +159,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import { useForm } from '@/composables/use-form.js';
+import { i18n } from '@/i18n.js';
+import { fetchInstance } from '@/instance.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -166,12 +172,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { useForm } from '@/composables/use-form.js';
-import { i18n } from '@/i18n.js';
-import { fetchInstance } from '@/instance.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import XBotProtection from './bot-protection.vue';
 
 const meta = await misskeyApi('admin/meta');

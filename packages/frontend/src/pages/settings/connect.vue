@@ -62,17 +62,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, markRaw, ref } from 'vue';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { Paginator } from '@/utility/paginator.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { definePage } from '@/page.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { Paginator } from '@/utility/paginator.js';
 
 const isDesktop = ref(window.innerWidth >= 1100);
 

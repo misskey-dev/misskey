@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
+import * as fs from 'node:fs';
+import * as stream from 'node:stream/promises';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -16,9 +19,6 @@ import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiMeta, UserIpsRepository } from '@/models/_.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { randomUUID } from 'node:crypto';
-import * as fs from 'node:fs';
-import * as stream from 'node:stream/promises';
 import type { ApiLoggerService } from './ApiLoggerService.js';
 import type { AuthenticateService, } from './AuthenticateService.js';
 import { AuthenticationError } from './AuthenticateService.js';

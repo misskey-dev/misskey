@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Injectable } from '@nestjs/common';
 import { Mutex } from 'async-mutex';
 import fetch from 'node-fetch';
 import type { NSFWJS, PredictionType } from 'nsfwjs';
 import si from 'systeminformation';
 import { bindThis } from '@/decorators.js';
-import * as fs from 'node:fs';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

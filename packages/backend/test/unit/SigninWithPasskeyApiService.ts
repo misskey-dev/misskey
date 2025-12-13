@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { IncomingHttpHeaders } from 'node:http';
 import { afterAll, beforeAll, beforeEach, describe, expect, jest, } from '@jest/globals';
 import type { TestingModule } from '@nestjs/testing';
 import { Test, } from '@nestjs/testing';
@@ -22,7 +23,6 @@ import type { MiUser } from '@/models/User.js';
 import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { SigninWithPasskeyApiService } from '@/server/api/SigninWithPasskeyApiService.js';
-import type { IncomingHttpHeaders } from 'node:http';
 
 const moduleMocker = new ModuleMocker(global);
 

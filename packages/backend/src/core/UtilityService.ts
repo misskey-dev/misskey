@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { domainToASCII, URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import semver from 'semver';
@@ -11,7 +12,6 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiInstance } from '@/models/Instance.js';
 import type { MiMeta, SoftwareSuspension } from '@/models/Meta.js';
-import { domainToASCII, URL } from 'node:url';
 
 @Injectable()
 export class UtilityService {

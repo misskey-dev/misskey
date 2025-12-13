@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { ZipReader } from 'slacc';
@@ -15,7 +16,6 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTempDir } from '@/misc/create-temp.js';
 import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
-import * as fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbUserImportJobData } from '../types.js';
 

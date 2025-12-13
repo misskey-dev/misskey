@@ -129,8 +129,6 @@ import {
 	getEmojiName,
 	getUnicodeEmoji,
 } from '@@/js/emojilist.js';
-import XSection from '@/components/MkEmojiPicker.section.vue';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -142,6 +140,8 @@ import { checkReactionPermissions } from '@/utility/check-reaction-permissions.j
 import { deviceKind } from '@/utility/device-kind.js';
 import { haptic } from '@/utility/haptic.js';
 import { isTouchUsing } from '@/utility/touch.js';
+import XSection from '@/components/MkEmojiPicker.section.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const router = useRouter();
 

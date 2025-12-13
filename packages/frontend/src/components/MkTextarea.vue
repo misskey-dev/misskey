@@ -38,10 +38,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { debounce } from 'throttle-debounce';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import type { SuggestionType } from '@/utility/autocomplete.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
 	modelValue: string | null;

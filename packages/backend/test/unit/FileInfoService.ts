@@ -5,6 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, test } from '@jest/globals';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
@@ -16,9 +19,6 @@ import type { FileInfo, } from '@/core/FileInfoService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import * as assert from 'node:assert';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

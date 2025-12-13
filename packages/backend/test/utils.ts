@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as assert from 'node:assert';
+import { randomUUID } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import { basename, isAbsolute } from 'node:path';
+import { inspect } from 'node:util';
 import Fastify from 'fastify';
 import type * as misskey from 'misskey-js';
 import fetch, { type Headers, type RequestInit, type Response } from 'node-fetch';
@@ -12,11 +17,6 @@ import WebSocket, { type ClientOptions } from 'ws';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import type { ApiError } from '@/server/api/error.js';
-import * as assert from 'node:assert';
-import { randomUUID } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import { basename, isAbsolute } from 'node:path';
-import { inspect } from 'node:util';
 import { loadConfig } from '../src/config.js';
 import { entities } from '../src/postgres.js';
 

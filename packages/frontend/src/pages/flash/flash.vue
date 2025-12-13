@@ -68,10 +68,6 @@ import { utils } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkAsUi from '@/components/MkAsUi.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkCode from '@/components/MkCode.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
@@ -85,6 +81,10 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { pleaseLogin } from '@/utility/please-login.js';
+import MkAsUi from '@/components/MkAsUi.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkCode from '@/components/MkCode.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
 	id: string;

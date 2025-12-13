@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as os from 'node:os';
 import sysUtils from 'systeminformation';
 import type Logger from '@/logger.js';
-import * as os from 'node:os';
 
 export async function showMachineInfo(parentLogger: Logger) {
 	const logger = parentLogger.createSubLogger('machine');

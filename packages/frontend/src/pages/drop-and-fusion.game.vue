@@ -198,11 +198,6 @@ import { DropAndFusionGame } from 'misskey-bubble-game';
 import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
-import MkButton from '@/components/MkButton.vue';
-import MkNumber from '@/components/MkNumber.vue';
-import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
-import MkRange from '@/components/MkRange.vue';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -213,6 +208,11 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
+import MkButton from '@/components/MkButton.vue';
+import MkNumber from '@/components/MkNumber.vue';
+import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 type FrontendMonoDefinition = {
 	id: string;

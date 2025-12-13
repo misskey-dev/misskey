@@ -5,9 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
 import { MiUser } from '@/models/_.js';
-import * as assert from 'node:assert';
 import { api, castAsError, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
 
 describe('Endpoints', () => {

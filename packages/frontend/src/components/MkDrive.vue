@@ -134,9 +134,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, TransitionGroup, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XFile from '@/components/MkDrive.file.vue';
-import XFolder from '@/components/MkDrive.folder.vue';
-import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { i18n } from '@/i18n.js';
@@ -151,6 +148,9 @@ import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
 import { makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import XFile from '@/components/MkDrive.file.vue';
+import XFolder from '@/components/MkDrive.folder.vue';
+import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import MkButton from './MkButton.vue';
 
 const props = withDefaults(defineProps<{

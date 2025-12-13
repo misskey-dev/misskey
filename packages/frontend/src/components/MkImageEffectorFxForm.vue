@@ -54,12 +54,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { i18n } from '@/i18n.js';
+import type { ImageEffectorFxParamDefs, ImageEffectorRGB } from '@/utility/image-effector/ImageEffector.js';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n.js';
-import type { ImageEffectorFxParamDefs, ImageEffectorRGB } from '@/utility/image-effector/ImageEffector.js';
 
 defineProps<{
 	paramDefs: ImageEffectorFxParamDefs;

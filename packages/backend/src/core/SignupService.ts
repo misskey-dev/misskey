@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import type { DataSource, } from 'typeorm';
@@ -21,7 +22,6 @@ import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { MiUser } from '@/models/User.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
-import { generateKeyPair } from 'node:crypto';
 
 @Injectable()
 export class SignupService {

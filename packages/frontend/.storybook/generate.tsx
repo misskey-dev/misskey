@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { existsSync, globSync, readFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
+import { basename, dirname } from 'node:path/posix';
 import type { State } from 'astring';
 import { GENERATOR, generate, } from 'astring';
 import type * as estree from 'estree';
 import { format } from 'prettier';
-import { existsSync, globSync, readFileSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
-import { basename, dirname } from 'node:path/posix';
 
 interface SatisfiesExpression extends estree.BaseExpression {
 	type: 'SatisfiesExpression';

@@ -33,8 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import type { Ref } from 'vue';
 import { ref, useTemplateRef } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkSwitch from './MkSwitch.vue';

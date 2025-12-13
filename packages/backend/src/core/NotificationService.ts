@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setTimeout } from 'node:timers/promises';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
 import type * as Redis from 'ioredis';
@@ -21,7 +22,6 @@ import type { UsersRepository } from '@/models/_.js';
 import type { MiNotification } from '@/models/Notification.js';
 import type { MiUser } from '@/models/User.js';
 import type { FilterUnionByProperty, } from '@/types.js';
-import { setTimeout } from 'node:timers/promises';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { URL } from 'node:url';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
@@ -29,7 +30,6 @@ import type { MiMeta } from '@/models/Meta.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
-import { URL } from 'node:url';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
 

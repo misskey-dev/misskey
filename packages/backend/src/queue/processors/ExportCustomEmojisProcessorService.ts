@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import archiver from 'archiver';
 import type * as Bull from 'bullmq';
@@ -18,7 +19,6 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import type { EmojisRepository, UsersRepository } from '@/models/_.js';
-import * as fs from 'node:fs';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()

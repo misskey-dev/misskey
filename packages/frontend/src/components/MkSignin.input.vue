@@ -57,12 +57,12 @@ import { ref } from 'vue';
 import { toUnicode } from 'punycode.js';
 import { host as configHost } from '@@/js/config.js';
 import { extractDomain, query } from '@@/js/url.js';
-import MkButton from '@/components/MkButton.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
 
 const props = withDefaults(defineProps<{
 	message?: string,

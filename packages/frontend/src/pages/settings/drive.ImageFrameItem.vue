@@ -22,13 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
 	preset: ImageFramePreset;

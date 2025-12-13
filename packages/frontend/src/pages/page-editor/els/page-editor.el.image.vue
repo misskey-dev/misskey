@@ -23,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n.js';
 import { chooseDriveFile } from '@/utility/drive.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import XContainer from '../page-editor.container.vue';
 
 const props = defineProps<{

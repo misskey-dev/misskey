@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setTimeout } from 'node:timers/promises';
 import { beforeEach, describe, test } from '@jest/globals';
 import type { INestApplicationContext } from '@nestjs/common';
 import type { entities } from 'misskey-js';
-import { setTimeout } from 'node:timers/promises';
 import type {
 	UserToken,
 } from '../../utils.js';

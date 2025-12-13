@@ -8,9 +8,9 @@ import { cleanup, render } from '@testing-library/vue';
 import { afterEach, assert, describe, test } from 'vitest';
 import './init';
 import type * as Misskey from 'misskey-js';
-import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
 import XHome from '@/pages/user/home.vue';
+import { components } from '@/components/index.js';
 import 'intersection-observer';
 
 describe('XHome', () => {

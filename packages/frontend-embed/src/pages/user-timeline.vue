@@ -51,17 +51,17 @@ import { instanceName, url } from '@@/js/config.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { isLink } from '@@/js/is-link.js';
 import { scrollToTop } from '@@/js/scroll.js';
+import { DI } from '@/di.js';
+import { i18n } from '@/i18n.js';
+import { misskeyApi } from '@/misskey-api.js';
+import XNotFound from '@/pages/not-found.vue';
+import { assertServerContext } from '@/server-context.js';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import I18n from '@/components/I18n.vue';
-import { DI } from '@/di.js';
-import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/misskey-api.js';
-import XNotFound from '@/pages/not-found.vue';
-import { assertServerContext } from '@/server-context.js';
 
 const props = defineProps<{
 	userId: string;

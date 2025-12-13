@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import fs from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { watch as chokidarWatch } from 'chokidar';
 import type { BuildOptions, BuildResult, Plugin, PluginBuild } from 'esbuild';
 import * as esbuild from 'esbuild';
 import { build } from 'esbuild';
 import { execa } from 'execa';
-import fs from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { generateLocaleInterface } from './scripts/generateLocaleInterface.js';
 
 const _filename = fileURLToPath(import.meta.url);

@@ -60,7 +60,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkFollowButton from '@/components/MkFollowButton.vue';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import { $i } from '@/i.js';
@@ -71,6 +70,7 @@ import { getUserMenu } from '@/utility/get-user-menu.js';
 import { isFollowersVisibleForMe, isFollowingVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkFollowButton from '@/components/MkFollowButton.vue';
 
 const props = defineProps<{
 	showing: boolean;

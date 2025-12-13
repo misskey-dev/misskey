@@ -32,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { inject, ref, TransitionGroup, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { isSupportedEmoji } from '@@/js/emojilist.js';
-import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 
 const props = withDefaults(defineProps<{
 	noteId: Misskey.entities.Note['id'];

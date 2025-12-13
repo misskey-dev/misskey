@@ -110,6 +110,8 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { shouldCollapsed } from '@@/js/collapsed.js';
 import { url } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { userPage } from '@/utils.js';
 import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmInstanceTicker from '@/components/EmInstanceTicker.vue';
@@ -123,8 +125,6 @@ import EmReactionsViewer from '@/components/EmReactionsViewer.vue';
 import EmTime from '@/components/EmTime.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import I18n from '@/components/I18n.vue';
-import { i18n } from '@/i18n.js';
-import { userPage } from '@/utils.js';
 
 function getAppearNote(note: Misskey.entities.Note) {
 	return Misskey.note.isPureRenote(note) ? note.renote : note;

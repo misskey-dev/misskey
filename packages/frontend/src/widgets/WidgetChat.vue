@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkChatHistories from '@/components/MkChatHistories.vue';
-import MkContainer from '@/components/MkContainer.vue';
 import { i18n } from '@/i18n.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import MkChatHistories from '@/components/MkChatHistories.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { useWidgetPropsManager } from './widget.js';
 

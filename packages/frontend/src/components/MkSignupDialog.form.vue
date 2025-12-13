@@ -83,13 +83,13 @@ import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode.js';
 import * as config from '@@/js/config.js';
-import type { Captcha } from '@/components/MkCaptcha.vue';
-import MkCaptcha from '@/components/MkCaptcha.vue';
 import { login } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import type { Captcha } from '@/components/MkCaptcha.vue';
+import MkCaptcha from '@/components/MkCaptcha.vue';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 

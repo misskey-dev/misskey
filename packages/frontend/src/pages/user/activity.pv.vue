@@ -19,13 +19,13 @@ import type { ChartDataset } from 'chart.js';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import * as Misskey from 'misskey-js';
-import MkChartLegend from '@/components/MkChartLegend.vue';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { store } from '@/store.js';
 import { chartLegend } from '@/utility/chart-legend.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { initChart } from '@/utility/init-chart.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
 

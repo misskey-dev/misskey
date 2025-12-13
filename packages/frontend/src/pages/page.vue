@@ -100,14 +100,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkContainer from '@/components/MkContainer.vue';
-import MkFollowButton from '@/components/MkFollowButton.vue';
-import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import MkMediaImage from '@/components/MkMediaImage.vue';
-import MkPagePreview from '@/components/MkPagePreview.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import XPage from '@/components/page/page.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -123,6 +115,14 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import MkMediaImage from '@/components/MkMediaImage.vue';
+import MkPagePreview from '@/components/MkPagePreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import XPage from '@/components/page/page.vue';
 
 const router = useRouter();
 

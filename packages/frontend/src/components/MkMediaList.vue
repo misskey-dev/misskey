@@ -34,12 +34,12 @@ import PhotoSwipe from 'photoswipe';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
-import XBanner from '@/components/MkMediaBanner.vue';
-import XImage from '@/components/MkMediaImage.vue';
-import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { focusParent } from '@/utility/focus.js';
+import XBanner from '@/components/MkMediaBanner.vue';
+import XImage from '@/components/MkMediaImage.vue';
+import XVideo from '@/components/MkMediaVideo.vue';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];

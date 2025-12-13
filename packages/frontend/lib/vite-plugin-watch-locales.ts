@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import locales from 'i18n';
 import path from 'node:path'
+import locales from 'i18n';
 
 const localesDir = path.resolve(__dirname, '../../../locales')
 

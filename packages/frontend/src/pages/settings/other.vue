@@ -154,15 +154,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import FormLink from '@/components/form/link.vue';
-import FormSection from '@/components/form/section.vue';
-import FormSlot from '@/components/form/slot.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import FormInfo from '@/components/MkInfo.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkRolePreview from '@/components/MkRolePreview.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -174,6 +165,15 @@ import { signout } from '@/signout.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import FormSlot from '@/components/form/slot.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import FormInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import XMigration from './migration.vue';
 
 const $i = ensureSignin();

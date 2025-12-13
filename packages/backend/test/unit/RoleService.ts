@@ -5,6 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
+import { setTimeout } from 'node:timers/promises';
 import { describe, jest } from '@jest/globals';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
@@ -32,7 +33,6 @@ import type {
 	UsersRepository,
 } from '@/models/_.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
-import { setTimeout } from 'node:timers/promises';
 
 const moduleMocker = new ModuleMocker(global);
 
