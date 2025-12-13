@@ -1004,28 +1004,28 @@ definePage(() => ({
 	z-index: 50;
 }
 
-/* FR-025: Position emotion panel at same height as joystick on mobile (200px from bottom) */
+/* FR-010: Emotion panel positioned higher for better visibility */
 .emotionPanel {
 	position: absolute;
-	bottom: 200px;
+	bottom: 100px;
 	right: 20px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 8px;
 	z-index: 50;
 
-	// FR-007-2: モバイルで親指操作しやすいよう位置を下げる
-	// デスクトップ（200px）→ モバイル（100px）→ 小型（80px）
-	/* Mobile: Lower position for better thumb reach (PWA safe area aware) */
+	// FR-007-2: モバイルで親指操作しやすいよう位置を調整
+	// デスクトップ（250px）→ モバイル（150px）→ 小型（120px）
+	/* Mobile: Adjusted position for better thumb reach (PWA safe area aware) */
 	@media (max-width: 768px) {
-		bottom: 100px;
+		bottom: 150px;
 		right: 16px;
 	}
 
-	// 小型モバイル: さらに低く配置して親指で届きやすく
-	/* Small mobile screens: Even lower for easier reach */
+	// 小型モバイル: 親指で届きやすく配置
+	/* Small mobile screens: Positioned for easier reach */
 	@media (max-width: 480px) {
-		bottom: 80px;
+		bottom: 150px;
 		right: 12px;
 		gap: 6px;
 	}
