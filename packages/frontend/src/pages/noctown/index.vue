@@ -28,8 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div ref="canvasContainer" :class="$style.gameCanvas">
 				<!-- Three.js canvas will be mounted here -->
 				<!-- T044, T045, T047, T048: Player coordinate display (top-left) -->
+				<!-- FR-014, FR-015: Display X, Y, Z coordinates (Y is height, X/Z are horizontal position) -->
 				<div v-if="!isLoading && !error" :class="$style.coordinateDisplay">
-					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}
+					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}, Z: {{ currentZ.toFixed(1) }}
 				</div>
 
 				<div v-if="isLoading" :class="$style.overlay">
@@ -148,7 +149,7 @@ let selectedItemForPlace: { id: string; itemId: string } | null = null;
 let engine: import('@/scripts/noctown/engine.js').NoctownEngine | null = null;
 let stream: ReturnType<typeof useStream> | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let connection: any = null;
+const connection = ref<any>(null); // Use ref like drawing chat for better reactivity
 let moveInterval: ReturnType<typeof setInterval> | null = null;
 let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -165,6 +166,11 @@ const isMobile = computed(() => isMobileDevice());
 
 // T030: Joystick movement state
 let joystickMovement = { x: 0, z: 0 };
+
+// T039: Cache loaded chunks in memory to avoid redundant database queries
+const loadedChunks = new Set<string>();
+const CHUNK_SIZE = 16;
+const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
 
 interface NoctownPlayerResponse {
 	id: string;
@@ -276,26 +282,30 @@ async function initialize(): Promise<void> {
 
 async function connectStream(): Promise<void> {
 	stream = useStream();
-	connection = stream.useChannel('noctown');
+	connection.value = stream.useChannel('noctown');
 
 	// Handle incoming events
-	connection.on('playerMoved', (body: PlayerData) => {
+	connection.value.on('playerMoved', (body: PlayerData) => {
 		handlePlayerMoved(body);
 	});
-	connection.on('playerJoined', (body: PlayerData) => {
+	connection.value.on('playerJoined', (body: PlayerData) => {
 		handlePlayerJoined(body);
 	});
-	connection.on('playerLeft', (body: { playerId: string }) => {
+	connection.value.on('playerLeft', (body: { playerId: string }) => {
 		handlePlayerLeft(body);
 	});
 	// T017: Handle playerStatusChanged event for online/offline transitions
-	connection.on('playerStatusChanged', (body: PlayerData) => {
+	connection.value.on('playerStatusChanged', (body: PlayerData) => {
 		handlePlayerStatusChanged(body);
 	});
-	connection.on('itemDropped', (body: DroppedItemData) => {
+	// T038: Handle chunkGenerated event and render terrain
+	connection.value.on('chunkGenerated', (body: ChunkData) => {
+		handleChunkGenerated(body);
+	});
+	connection.value.on('itemDropped', (body: DroppedItemData) => {
 		if (engine) engine.addDroppedItem(body);
 	});
-	connection.on('itemPicked', (body: { droppedItemId: string }) => {
+	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
 	});
 
@@ -333,6 +343,18 @@ function handlePlayerStatusChanged(data: PlayerData): void {
 	engine.setPlayerOnlineStatus(data.id, data.isOnline);
 }
 
+// T038: Handle chunkGenerated event and render terrain
+function handleChunkGenerated(data: ChunkData): void {
+	if (!engine) return;
+
+	// Mark chunk as loaded (T039: cache)
+	const chunkKey = `${data.chunkX},${data.chunkZ}`;
+	loadedChunks.add(chunkKey);
+
+	// Render terrain
+	engine.loadChunk(data);
+}
+
 async function fetchNearbyPlayers(): Promise<void> {
 	try {
 		const players = await noctownApi<PlayerData[]>('noctown/players/nearby', {
@@ -351,23 +373,37 @@ async function fetchNearbyPlayers(): Promise<void> {
 	}
 }
 
+// T036-T037: Load nearby chunks using WebSocket chunk generation
 async function loadNearbyChunks(x: number, z: number): Promise<void> {
-	const chunkX = Math.floor(x / 16);
-	const chunkZ = Math.floor(z / 16);
+	if (!connection.value || !isConnected.value) return;
 
-	// Load 3x3 chunks around player
-	for (let dx = -1; dx <= 1; dx++) {
-		for (let dz = -1; dz <= 1; dz++) {
+	const playerChunkX = Math.floor(x / CHUNK_SIZE);
+	const playerChunkZ = Math.floor(z / CHUNK_SIZE);
+
+	// T037: Request chunk generation when player approaches ungenerated area (2 chunks ahead)
+	for (let dx = -CHUNK_LOAD_DISTANCE; dx <= CHUNK_LOAD_DISTANCE; dx++) {
+		for (let dz = -CHUNK_LOAD_DISTANCE; dz <= CHUNK_LOAD_DISTANCE; dz++) {
+			const chunkX = playerChunkX + dx;
+			const chunkZ = playerChunkZ + dz;
+			const chunkKey = `${chunkX},${chunkZ}`;
+
+			// T039: Skip if chunk already loaded (cache check)
+			if (loadedChunks.has(chunkKey)) {
+				continue;
+			}
+
+			// Request chunk generation via WebSocket
+			// T040: Concurrent request limit is handled in websocket-sync.ts (MAX_CONCURRENT_CHUNK_REQUESTS = 5)
 			try {
-				const chunk = await noctownApi<ChunkData>('noctown/map/chunk', {
-					chunkX: chunkX + dx,
-					chunkZ: chunkZ + dz,
+				connection.value.send('generateChunk', {
+					chunkX,
+					chunkZ,
+					worldId: 'default',
 				});
-				if (engine) {
-					engine.loadChunk(chunk);
-				}
+
+				// Optimistically mark as requested (will be added to loadedChunks when chunkGenerated event arrives)
 			} catch (e) {
-				console.error(`Failed to load chunk ${chunkX + dx},${chunkZ + dz}:`, e);
+				console.error(`Failed to request chunk ${chunkX},${chunkZ}:`, e);
 			}
 		}
 	}
@@ -408,6 +444,8 @@ async function loadNearbyItems(x: number, z: number): Promise<void> {
 function startMovementLoop(): void {
 	let lastSendTime = 0;
 	const sendInterval = 100; // Send position every 100ms max
+	let lastChunkCheckTime = 0;
+	const chunkCheckInterval = 1000; // Check for new chunks every 1 second
 
 	moveInterval = setInterval(() => {
 		if (!engine || !isConnected.value) return;
@@ -430,7 +468,12 @@ function startMovementLoop(): void {
 			// Use keyboard input (PC)
 			finalInput = keyboardInput;
 		} else {
-			// No movement
+			// No movement - but still check for chunk loading
+			const now = Date.now();
+			if (now - lastChunkCheckTime >= chunkCheckInterval) {
+				loadNearbyChunks(currentX.value, currentZ.value);
+				lastChunkCheckTime = now;
+			}
 			return;
 		}
 
@@ -441,8 +484,14 @@ function startMovementLoop(): void {
 			currentRotation = finalInput.rotation;
 		}
 
-		// Update engine
+		// Update engine (Y座標は地形に応じて自動調整される)
 		engine.updateLocalPlayerPosition(currentX.value, currentY.value, currentZ.value, currentRotation);
+
+		// FR-015, FR-016: Get updated Y position from engine (terrain-adjusted)
+		const updatedPos = engine.getLocalPlayerPosition();
+		if (updatedPos) {
+			currentY.value = updatedPos.y;
+		}
 
 		// Send to server (throttled)
 		const now = Date.now();
@@ -450,14 +499,21 @@ function startMovementLoop(): void {
 			sendPosition();
 			lastSendTime = now;
 		}
+
+		// T036: Implement player position monitoring for nearby chunk detection
+		// T037: Request chunk generation when player approaches ungenerated area
+		if (now - lastChunkCheckTime >= chunkCheckInterval) {
+			loadNearbyChunks(currentX.value, currentZ.value);
+			lastChunkCheckTime = now;
+		}
 	}, 16); // ~60fps
 }
 
 function sendPosition(): void {
-	if (!connection || !isConnected.value) return;
+	if (!connection.value || !isConnected.value) return;
 
 	try {
-		connection.send('move', {
+		connection.value.send('move', {
 		 x: currentX.value,
 		 y: currentY.value,
 		 z: currentZ.value,
@@ -470,8 +526,8 @@ function sendPosition(): void {
 
 function startHeartbeat(): void {
 	heartbeatInterval = setInterval(() => {
-		if (!connection || !isConnected.value) return;
-		connection.send('heartbeat', {});
+		if (!connection.value || !isConnected.value) return;
+		connection.value.send('heartbeat', {});
 	}, 30000); // Every 30 seconds
 }
 
@@ -538,8 +594,8 @@ async function tryInteract(): Promise<void> {
 	}
 
 	// If no NPC, try to pick up item
-	if (!connection) return;
-	connection.send('pickItem', {
+	if (!connection.value) return;
+	connection.value.send('pickItem', {
 		droppedItemId: 'nearest',
 	});
 }
@@ -646,9 +702,9 @@ function cleanup(): void {
 		heartbeatInterval = null;
 	}
 
-	if (connection) {
-		connection.dispose();
-		connection = null;
+	if (connection.value) {
+		connection.value.dispose();
+		connection.value = null;
 	}
 
 	if (engine) {
@@ -705,8 +761,9 @@ definePage(() => ({
 .container {
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 60px);
+	height: calc(100vh - 80px); // Increased from 60px to 80px to prevent scrollbar
 	min-height: 400px;
+	overflow: hidden; // Prevent scrollbar
 
 	// FR-175: Mobile scrollbar prevention
 	@media (max-width: 768px) {

@@ -225,8 +225,9 @@ export class NoctownEngine {
 			roughness: 0.5,
 		});
 		this.localPlayer = new THREE.Mesh(geometry, material);
-		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
-		const displayY = data.positionY === 0 ? 1.5 : data.positionY + 1.5;
+		// FR-016: Use correct Y position (terrain height + player height offset)
+		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
+		const displayY = data.positionY + 1.0;
 		this.localPlayer.position.set(data.positionX, displayY, data.positionZ);
 		this.localPlayer.rotation.y = data.rotation;
 		this.localPlayer.castShadow = true;
@@ -235,8 +236,9 @@ export class NoctownEngine {
 
 	public updateLocalPlayerPosition(x: number, y: number, z: number, rotation: number): void {
 		if (!this.localPlayer) return;
-		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
-		const displayY = y === 0 ? 1.5 : y + 1.5;
+		// FR-016: Use correct Y position (terrain height + player height offset)
+		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
+		const displayY = y + 1.0;
 		this.localPlayer.position.set(x, displayY, z);
 		this.localPlayer.rotation.y = rotation;
 	}
@@ -253,8 +255,9 @@ export class NoctownEngine {
 			roughness: 0.5,
 		});
 		const mesh = new THREE.Mesh(geometry, material);
-		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
-		const displayY = data.positionY === 0 ? 1.5 : data.positionY + 1.5;
+		// FR-016: Use correct Y position (terrain height + player height offset)
+		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
+		const displayY = data.positionY + 1.0;
 		mesh.position.set(data.positionX, displayY, data.positionZ);
 		mesh.rotation.y = data.rotation;
 		mesh.castShadow = true;
@@ -270,8 +273,9 @@ export class NoctownEngine {
 		const mesh = this.remotePlayers.get(data.id);
 		if (!mesh) return;
 
-		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
-		const displayY = data.positionY === 0 ? 1.5 : data.positionY + 1.5;
+		// FR-016: Use correct Y position (terrain height + player height offset)
+		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
+		const displayY = data.positionY + 1.0;
 		mesh.position.set(data.positionX, displayY, data.positionZ);
 		mesh.rotation.y = data.rotation;
 
@@ -320,6 +324,15 @@ export class NoctownEngine {
 				}
 			}
 		});
+
+		// Update player label to show online/offline status
+		this.updatePlayerLabel(playerId, { isOnline });
+
+		// Update material color based on online status
+		const material = mesh.material as THREE.MeshStandardMaterial;
+		if (material) {
+			material.color.setHex(isOnline ? 0x90d94a : 0x808080);
+		}
 	}
 
 	public createPlayerLabel(playerId: string, username: string, avatarUrl: string | null, isOnline: boolean, position: THREE.Vector3): CSS2DObject {
@@ -552,9 +565,10 @@ export class NoctownEngine {
 
 	public getLocalPlayerPosition(): { x: number; y: number; z: number } | null {
 		if (!this.localPlayer) return null;
+		// FR-015: Return actual terrain-level position (subtract player height offset)
 		return {
 			x: this.localPlayer.position.x,
-			y: this.localPlayer.position.y - 1,
+			y: this.localPlayer.position.y - 1.0,
 			z: this.localPlayer.position.z,
 		};
 	}
