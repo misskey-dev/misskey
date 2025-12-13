@@ -40,6 +40,9 @@
 		{
 			"includes": ["packages/frontend*/**"],
 			"linter": {
+				"domains": {
+					"vue": "recommended"
+				},
 				"rules": {
 					"style": {
 						"noRestrictedGlobals": {
@@ -160,11 +163,14 @@
 					"level": "on",
 					"fix": "safe"
 				},
+				"useThrowOnlyError": {
+					"level": "on"
+				},
 
 				// disables
 				// non null assertion is necessary because of lack of control flow analysis in typescript
 				"noNonNullAssertion": {
-					"level": "info",
+					"level": "off",
 					"fix": "none"
 				},
 				// nuxt service definition use parameter properties
@@ -174,9 +180,6 @@
 				// not always better. especially when we except extending function type
 				"useShorthandFunctionType": {
 					"level": "off"
-				},
-				"useThrowOnlyError": {
-					"level": "on"
 				},
 				// we prefer import type {T} from 'mod' instead of import {type T} from 'mod'
 				"useImportType": {
@@ -197,7 +200,7 @@
 				},
 				// we still use any in some cases.
 				"noExplicitAny": {
-					"level": "info"
+					"level": "off"
 				},
 				// we want to allow toString, Error, etc., especially for exports
 				"noShadowRestrictedNames": {
