@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "NodeNext",
+		"lib": ["es2023"],
 		"moduleResolution": "NodeNext",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,

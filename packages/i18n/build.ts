@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
 import { watch as chokidarWatch } from 'chokidar';
+import type { BuildOptions, BuildResult, Plugin, PluginBuild } from 'esbuild';
 import * as esbuild from 'esbuild';
 import { build } from 'esbuild';
 import { execa } from 'execa';
+import fs from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { generateLocaleInterface } from './scripts/generateLocaleInterface.js';
-import type { BuildOptions, BuildResult, Plugin, PluginBuild } from 'esbuild';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
-const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
+const _package = JSON.parse(fs.readFileSync(`${_dirname}/package.json`, 'utf-8'));
 const _rootPackageDir = resolve(_dirname, '../../');
 const _rootPackage = JSON.parse(fs.readFileSync(resolve(_rootPackageDir, 'package.json'), 'utf-8'));
 const _frontendLocalesDir = resolve(_dirname, '../../built/_frontend_dist_/locales');
