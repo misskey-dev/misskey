@@ -33,6 +33,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}, Z: {{ currentZ.toFixed(1) }}
 				</div>
 
+				<!-- FR-016: Reload button (top-right, safe-area aware) -->
+				<button
+					v-if="!isLoading && !error"
+					:class="[$style.reloadButton, { [$style.reloadButtonDisabled]: isReloading || reloadCooldown }]"
+					:disabled="isReloading || reloadCooldown"
+					@click="handleReload"
+				>
+					<i v-if="isReloading" class="ti ti-loader-2" :class="$style.reloadSpinner"></i>
+					<i v-else class="ti ti-refresh"></i>
+				</button>
+
 				<div v-if="isLoading" :class="$style.overlay">
 					<MkLoading/>
 					<p>{{ noctownI18n.loading }}</p>
@@ -165,6 +176,10 @@ const inventoryRef = ref<{ refresh: () => void } | null>(null);
 const questPanelRef = ref<{ refresh: () => void } | null>(null);
 const selectedNpc = ref<NpcData | null>(null);
 const chatInputFocused = ref(false);
+
+// FR-016: Reload button state
+const isReloading = ref(false);
+const reloadCooldown = ref(false);
 
 // Selected item for placing
 let selectedItemForPlace: { id: string; itemId: string } | null = null;
@@ -694,6 +709,66 @@ function handleFarmUpdated(): void {
 	loadNearbyItems(currentX.value, currentZ.value);
 }
 
+// FR-016: Reload button handler
+async function handleReload(): Promise<void> {
+	if (isReloading.value || reloadCooldown.value) return;
+
+	isReloading.value = true;
+	try {
+		// 1. Unload all chunks
+		if (engine) {
+			engine.unloadAllChunks();
+		}
+
+		// 2. Remove all remote players
+		if (engine) {
+			engine.removeAllRemotePlayers();
+		}
+
+		// 3. Clear loaded chunks cache
+		loadedChunks.clear();
+
+		// 4. Disconnect WebSocket
+		if (connection.value) {
+			connection.value.dispose();
+			connection.value = null;
+		}
+		isConnected.value = false;
+
+		// 5. Re-fetch player position from server
+		const data = await noctownApi<NoctownPlayerResponse>('noctown/player');
+		currentX.value = data.positionX;
+		currentY.value = data.positionY;
+		currentZ.value = data.positionZ;
+		currentRotation = data.rotation;
+
+		// 6. Reconnect WebSocket
+		await connectStream();
+
+		// 7. Reload chunks around player
+		await loadNearbyChunks(currentX.value, currentZ.value);
+
+		// 8. Reload nearby players
+		await fetchNearbyPlayers();
+
+		// 9. Reload nearby items
+		await loadNearbyItems(currentX.value, currentZ.value);
+
+		// 10. Reload nearby NPCs
+		await loadNearbyNpcs(currentX.value, currentZ.value);
+	} catch (e) {
+		console.error('Failed to reload:', e);
+	} finally {
+		isReloading.value = false;
+
+		// 2-second cooldown
+		reloadCooldown.value = true;
+		setTimeout(() => {
+			reloadCooldown.value = false;
+		}, 2000);
+	}
+}
+
 async function tryInteract(): Promise<void> {
 	if (!engine) return;
 
@@ -986,6 +1061,64 @@ definePage(() => ({
 	z-index: 100;
 	pointer-events: none;
 	user-select: none;
+}
+
+// FR-016: Reload button (top-right, safe-area aware)
+.reloadButton {
+	position: absolute;
+	top: env(safe-area-inset-top, 16px);
+	right: 16px;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.5);
+	border: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 20px;
+	z-index: 100;
+	transition: opacity 0.2s, transform 0.2s;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.7);
+		transform: scale(1.05);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
+
+	// Mobile: ensure minimum touch target and safe area
+	@media (max-width: 768px) {
+		top: calc(env(safe-area-inset-top, 10px) + 10px);
+		right: 10px;
+	}
+}
+
+.reloadButtonDisabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.5);
+		transform: none;
+	}
+}
+
+.reloadSpinner {
+	animation: reloadSpin 1s linear infinite;
+}
+
+@keyframes reloadSpin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 .placeModeIndicator {

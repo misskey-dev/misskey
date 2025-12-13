@@ -1135,6 +1135,34 @@ export class NoctownEngine {
 			this.keys.has('ArrowLeft') || this.keys.has('ArrowRight');
 	}
 
+	// FR-016: Unload all chunks for full reload
+	public unloadAllChunks(): void {
+		for (const [key, group] of this.chunks) {
+			// Dispose of all meshes in the chunk group
+			group.traverse((obj) => {
+				if (obj instanceof THREE.Mesh) {
+					obj.geometry.dispose();
+					if (obj.material instanceof THREE.Material) {
+						obj.material.dispose();
+					} else if (Array.isArray(obj.material)) {
+						obj.material.forEach(m => m.dispose());
+					}
+				}
+			});
+			this.scene.remove(group);
+		}
+		this.chunks.clear();
+	}
+
+	// FR-016: Remove all remote players for full reload
+	public removeAllRemotePlayers(): void {
+		for (const [playerId, character] of this.remotePlayers) {
+			this.scene.remove(character.group);
+		}
+		this.remotePlayers.clear();
+		this.remotePlayerLastPos.clear();
+	}
+
 	public dispose(): void {
 		this.isDisposed = true;
 
