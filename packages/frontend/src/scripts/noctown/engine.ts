@@ -10,6 +10,101 @@ import { addRandomEnvironmentEntities } from './environment.js';
 import { createPondMesh } from './pond.js';
 import { createLakeMesh } from './lake.js';
 import { createFarmPlotMesh } from './farm-plot.js';
+import { ChunkEnvironmentRenderer, type EnvironmentObjectData } from './environment-objects.js';
+
+// FR-008: 時間帯別ライティング設定
+type TimePeriod = 'morning' | 'day' | 'evening' | 'night';
+
+interface LightingConfig {
+	ambient: { color: number; intensity: number };
+	directional: { color: number; intensity: number; position: [number, number, number] };
+	background: number;
+	fog: number;
+}
+
+const LIGHTING_CONFIG: Record<TimePeriod, LightingConfig> = {
+	morning: {
+		ambient: { color: 0xffd4a6, intensity: 0.6 },
+		directional: { color: 0xffaa77, intensity: 0.7, position: [-20, 15, 0] },
+		background: 0x87ceeb, // 朝の空
+		fog: 0x87ceeb,
+	},
+	day: {
+		ambient: { color: 0xffffff, intensity: 0.8 },
+		directional: { color: 0xffffee, intensity: 1.0, position: [0, 25, 0] },
+		background: 0x87ceeb, // 昼の空
+		fog: 0x87ceeb,
+	},
+	evening: {
+		ambient: { color: 0xff8844, intensity: 0.5 },
+		directional: { color: 0xff6644, intensity: 0.6, position: [20, 15, 0] },
+		background: 0xff6b35, // 夕焼け
+		fog: 0xff6b35,
+	},
+	night: {
+		ambient: { color: 0x334466, intensity: 0.7 },
+		directional: { color: 0x8899dd, intensity: 0.9, position: [10, 20, 10] },
+		background: 0x0f1225, // 夜空
+		fog: 0x0f1225,
+	},
+};
+
+// 時間帯判定関数
+function getCurrentTimePeriod(): TimePeriod {
+	const hour = new Date().getHours();
+	if (hour >= 6 && hour < 9) return 'morning';
+	if (hour >= 9 && hour < 17) return 'day';
+	if (hour >= 17 && hour < 19) return 'evening';
+	return 'night';
+}
+
+// グラデーション遷移用ヘルパー関数
+function lerp(a: number, b: number, t: number): number {
+	return a + (b - a) * t;
+}
+
+function lerpColor(colorA: number, colorB: number, t: number): number {
+	const rA = (colorA >> 16) & 0xff;
+	const gA = (colorA >> 8) & 0xff;
+	const bA = colorA & 0xff;
+	const rB = (colorB >> 16) & 0xff;
+	const gB = (colorB >> 8) & 0xff;
+	const bB = colorB & 0xff;
+	const r = Math.round(lerp(rA, rB, t));
+	const g = Math.round(lerp(gA, gB, t));
+	const b = Math.round(lerp(bA, bB, t));
+	return (r << 16) | (g << 8) | b;
+}
+
+// 時間帯境界でのグラデーション遷移を計算
+function getTransitionProgress(): { from: TimePeriod; to: TimePeriod; progress: number } | null {
+	const now = new Date();
+	const hour = now.getHours();
+	const minute = now.getMinutes();
+	const totalMinutes = hour * 60 + minute;
+
+	// 各境界時刻（分）: 朝6:00, 昼9:00, 夕17:00, 夜19:00
+	const transitions: { time: number; from: TimePeriod; to: TimePeriod }[] = [
+		{ time: 6 * 60, from: 'night', to: 'morning' },
+		{ time: 9 * 60, from: 'morning', to: 'day' },
+		{ time: 17 * 60, from: 'day', to: 'evening' },
+		{ time: 19 * 60, from: 'evening', to: 'night' },
+	];
+
+	const TRANSITION_DURATION = 5; // 5分間でグラデーション遷移
+
+	for (const transition of transitions) {
+		const start = transition.time - Math.floor(TRANSITION_DURATION / 2);
+		const end = transition.time + Math.ceil(TRANSITION_DURATION / 2);
+
+		if (totalMinutes >= start && totalMinutes < end) {
+			const progress = (totalMinutes - start) / TRANSITION_DURATION;
+			return { from: transition.from, to: transition.to, progress: Math.max(0, Math.min(1, progress)) };
+		}
+	}
+
+	return null;
+}
 
 export interface PlayerData {
 	id: string;
@@ -21,14 +116,6 @@ export interface PlayerData {
 	positionZ: number;
 	rotation: number;
 	isOnline: boolean;
-}
-
-export interface EnvironmentObjectData {
-	type: string;
-	localX: number;
-	localZ: number;
-	variant?: number;
-	scale?: number;
 }
 
 export interface ChunkData {
@@ -115,13 +202,17 @@ export class NoctownEngine {
 	private keys: Set<string> = new Set();
 	private isDisposed = false;
 
+	// FR-008: 時間帯別ライティング
+	private ambientLight: THREE.AmbientLight | null = null;
+	private directionalLight: THREE.DirectionalLight | null = null;
+	private currentTimePeriod: TimePeriod = 'night';
+	private lastTimeCheck: number = 0;
+
 	constructor(container: HTMLElement) {
 		this.container = container;
 
-		// Scene - Nocturne Theme (夜の月明かり)
+		// Scene - FR-008: 背景色と霧はsetupLights()で時間帯に応じて設定
 		this.scene = new THREE.Scene();
-		this.scene.background = new THREE.Color(0x0f1225); // 深い夜空
-		this.scene.fog = new THREE.Fog(0x0f1225, 50, 120); // 霧で遠くを暗く（孤独感の演出）
 
 		// Camera - Quarter View (Orthographic)
 		const aspect = container.clientWidth / container.clientHeight;
@@ -168,31 +259,40 @@ export class NoctownEngine {
 	}
 
 	private setupLights(): void {
-		// Nocturne Theme Lighting (夜の月明かり) - character-demo+14-fishing.html準拠
+		// FR-008: 時間帯別ライティング設定
+		this.currentTimePeriod = getCurrentTimePeriod();
+		const config = LIGHTING_CONFIG[this.currentTimePeriod];
 
-		// アンビエントライト（夜の静けさ、青みがかった暗さ）
-		const ambient = new THREE.AmbientLight(0x3344666, 0.7);
-		this.scene.add(ambient);
+		// 背景色と霧を時間帯に合わせて設定
+		this.scene.background = new THREE.Color(config.background);
+		this.scene.fog = new THREE.Fog(config.fog, 50, 120);
 
-		// 月明かり（青白い光）
-		const moonLight = new THREE.DirectionalLight(0x8899dd, 0.9);
-		moonLight.position.set(10, 20, 10);
-		moonLight.castShadow = true;
-		moonLight.shadow.mapSize.width = 2048;
-		moonLight.shadow.mapSize.height = 2048;
-		moonLight.shadow.camera.near = 0.5;
-		moonLight.shadow.camera.far = 50;
-		moonLight.shadow.camera.left = -20;
-		moonLight.shadow.camera.right = 20;
-		moonLight.shadow.camera.top = 20;
-		moonLight.shadow.camera.bottom = -20;
-		this.scene.add(moonLight);
+		// アンビエントライト
+		this.ambientLight = new THREE.AmbientLight(config.ambient.color, config.ambient.intensity);
+		this.scene.add(this.ambientLight);
 
-		// 月を追加
+		// ディレクショナルライト（太陽/月）
+		this.directionalLight = new THREE.DirectionalLight(config.directional.color, config.directional.intensity);
+		this.directionalLight.position.set(...config.directional.position);
+		this.directionalLight.castShadow = true;
+		this.directionalLight.shadow.mapSize.width = 2048;
+		this.directionalLight.shadow.mapSize.height = 2048;
+		this.directionalLight.shadow.camera.near = 0.5;
+		this.directionalLight.shadow.camera.far = 50;
+		this.directionalLight.shadow.camera.left = -20;
+		this.directionalLight.shadow.camera.right = 20;
+		this.directionalLight.shadow.camera.top = 20;
+		this.directionalLight.shadow.camera.bottom = -20;
+		this.scene.add(this.directionalLight);
+		this.scene.add(this.directionalLight.target);
+
+		// 月を追加（夜のみ表示）
 		const moonGeo = new THREE.SphereGeometry(3, 32, 32);
 		const moonMat = new THREE.MeshBasicMaterial({ color: 0xffffee });
 		const moon = new THREE.Mesh(moonGeo, moonMat);
 		moon.position.set(50, 60, -80);
+		moon.name = 'moon';
+		moon.visible = this.currentTimePeriod === 'night';
 		this.scene.add(moon);
 
 		// 月のグロー効果
@@ -204,9 +304,11 @@ export class NoctownEngine {
 		});
 		const moonGlow = new THREE.Mesh(moonGlowGeo, moonGlowMat);
 		moonGlow.position.set(50, 60, -80);
+		moonGlow.name = 'moonGlow';
+		moonGlow.visible = this.currentTimePeriod === 'night';
 		this.scene.add(moonGlow);
 
-		// 星空を追加
+		// 星空を追加（夜のみ表示）
 		const starsGeometry = new THREE.BufferGeometry();
 		const starPositions: number[] = [];
 		for (let i = 0; i < 1000; i++) {
@@ -223,7 +325,108 @@ export class NoctownEngine {
 			opacity: 0.8
 		});
 		const stars = new THREE.Points(starsGeometry, starsMaterial);
+		stars.name = 'stars';
+		stars.visible = this.currentTimePeriod === 'night';
 		this.scene.add(stars);
+	}
+
+	// FR-008: 時間帯別ライティング更新
+	private updateLighting(): void {
+		// DirectionalLightのプレイヤー追従は毎フレーム実行
+		if (this.directionalLight && this.localPlayer) {
+			const config = LIGHTING_CONFIG[this.currentTimePeriod];
+			const basePos = config.directional.position;
+			const playerPos = this.localPlayer.getPosition();
+			this.directionalLight.position.set(
+				playerPos.x + basePos[0],
+				basePos[1],
+				playerPos.z + basePos[2]
+			);
+			this.directionalLight.target.position.set(playerPos.x, 0, playerPos.z);
+		}
+
+		const now = Date.now();
+		// 1秒ごとに時間帯をチェック（パフォーマンス最適化）
+		if (now - this.lastTimeCheck < 1000) return;
+		this.lastTimeCheck = now;
+
+		const transition = getTransitionProgress();
+		let targetConfig: LightingConfig;
+		let needsUpdate = false;
+
+		if (transition) {
+			// グラデーション遷移中
+			const fromConfig = LIGHTING_CONFIG[transition.from];
+			const toConfig = LIGHTING_CONFIG[transition.to];
+			const t = transition.progress;
+
+			targetConfig = {
+				ambient: {
+					color: lerpColor(fromConfig.ambient.color, toConfig.ambient.color, t),
+					intensity: lerp(fromConfig.ambient.intensity, toConfig.ambient.intensity, t),
+				},
+				directional: {
+					color: lerpColor(fromConfig.directional.color, toConfig.directional.color, t),
+					intensity: lerp(fromConfig.directional.intensity, toConfig.directional.intensity, t),
+					position: [
+						lerp(fromConfig.directional.position[0], toConfig.directional.position[0], t),
+						lerp(fromConfig.directional.position[1], toConfig.directional.position[1], t),
+						lerp(fromConfig.directional.position[2], toConfig.directional.position[2], t),
+					] as [number, number, number],
+				},
+				background: lerpColor(fromConfig.background, toConfig.background, t),
+				fog: lerpColor(fromConfig.fog, toConfig.fog, t),
+			};
+			needsUpdate = true;
+
+			// 時間帯が変わったかチェック
+			const newPeriod = t >= 0.5 ? transition.to : transition.from;
+			if (newPeriod !== this.currentTimePeriod) {
+				this.currentTimePeriod = newPeriod;
+				this.updateNightObjects();
+			}
+		} else {
+			const newPeriod = getCurrentTimePeriod();
+			if (newPeriod !== this.currentTimePeriod) {
+				this.currentTimePeriod = newPeriod;
+				targetConfig = LIGHTING_CONFIG[newPeriod];
+				this.updateNightObjects();
+				needsUpdate = true;
+			} else {
+				return; // 時間帯の変更なし、プレイヤー追従は上で処理済み
+			}
+		}
+
+		if (!needsUpdate) return;
+
+		// ライティングを更新
+		if (this.ambientLight) {
+			this.ambientLight.color.setHex(targetConfig.ambient.color);
+			this.ambientLight.intensity = targetConfig.ambient.intensity;
+		}
+
+		if (this.directionalLight) {
+			this.directionalLight.color.setHex(targetConfig.directional.color);
+			this.directionalLight.intensity = targetConfig.directional.intensity;
+		}
+
+		// 背景色と霧を更新
+		(this.scene.background as THREE.Color).setHex(targetConfig.background);
+		if (this.scene.fog instanceof THREE.Fog) {
+			this.scene.fog.color.setHex(targetConfig.fog);
+		}
+	}
+
+	// 夜専用オブジェクト（月、星）の表示/非表示を切り替え
+	private updateNightObjects(): void {
+		const isNight = this.currentTimePeriod === 'night';
+		const moon = this.scene.getObjectByName('moon');
+		const moonGlow = this.scene.getObjectByName('moonGlow');
+		const stars = this.scene.getObjectByName('stars');
+
+		if (moon) moon.visible = isNight;
+		if (moonGlow) moonGlow.visible = isNight;
+		if (stars) stars.visible = isNight;
 	}
 
 	private createGroundPlane(): void {
@@ -425,6 +628,9 @@ export class NoctownEngine {
 			this.camera.lookAt(this.localPlayer.group.position);
 		}
 
+		// FR-008: 時間帯別ライティング更新
+		this.updateLighting();
+
 		this.renderer.render(this.scene, this.camera);
 		this.labelRenderer.render(this.scene, this.camera);
 	};
@@ -611,8 +817,14 @@ export class NoctownEngine {
 		const key = `${data.chunkX},${data.chunkZ}`;
 		if (this.chunks.has(key)) return;
 
+		const CHUNK_SIZE = 16;
 		const group = new THREE.Group();
-		group.position.set(data.chunkX * 16, 0, data.chunkZ * 16);
+		group.position.set(data.chunkX * CHUNK_SIZE, 0, data.chunkZ * CHUNK_SIZE);
+
+		// SC-013: Add grid helper for ground grid lines (character-demo+14-fishing準拠)
+		const gridHelper = new THREE.GridHelper(CHUNK_SIZE, CHUNK_SIZE, 0x2a3a3a, 0x2a3a3a);
+		gridHelper.position.set(CHUNK_SIZE / 2, 0.01, CHUNK_SIZE / 2); // Center in chunk, y=0.01 to avoid z-fighting
+		group.add(gridHelper);
 
 		// Check if terrainData is an array (new format) or object (old format)
 		if (Array.isArray(data.terrainData)) {
@@ -675,11 +887,37 @@ export class NoctownEngine {
 			}
 		}
 
+		// FR-010: Add environment objects from backend data (trees, flowers, etc.)
+		if (data.environmentObjects && data.environmentObjects.length > 0) {
+			const envRenderer = new ChunkEnvironmentRenderer();
+			// heightMapを取得（terrainDataが配列形式の場合は仮の高さマップを使用）
+			const heightMap: number[][] = [];
+			if (Array.isArray(data.terrainData)) {
+				// 仮の高さマップ（すべて8）
+				for (let x = 0; x < CHUNK_SIZE; x++) {
+					heightMap[x] = [];
+					for (let z = 0; z < CHUNK_SIZE; z++) {
+						heightMap[x][z] = 8;
+					}
+				}
+			} else {
+				// 旧形式のheightMapを使用
+				for (let x = 0; x < CHUNK_SIZE; x++) {
+					heightMap[x] = [];
+					for (let z = 0; z < CHUNK_SIZE; z++) {
+						heightMap[x][z] = data.terrainData.heightMap[x]?.[z] ?? 8;
+					}
+				}
+			}
+			envRenderer.addObjects(data.environmentObjects, data.chunkX, data.chunkZ, heightMap);
+			group.add(envRenderer.getGroup());
+		} else {
+			// フォールバック: environmentObjectsがない場合はランダム生成
+			addRandomEnvironmentEntities(this.scene, data.chunkX, data.chunkZ, 16);
+		}
+
 		this.scene.add(group);
 		this.chunks.set(key, group);
-
-		// T085: Add random environment entities (trees, rocks) to chunk
-		addRandomEnvironmentEntities(this.scene, data.chunkX, data.chunkZ, 16);
 	}
 
 	private getBiomeColor(biome: string): number {
