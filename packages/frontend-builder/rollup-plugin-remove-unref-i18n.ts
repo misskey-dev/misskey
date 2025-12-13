@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { CallExpression, Expression, Program } from 'estree';
 import * as estreeWalker from 'estree-walker';
 import MagicString from 'magic-string';
-import { assertType } from './utils.js';
-import type { Plugin } from 'vite';
-import type { CallExpression, Expression, Program } from 'estree';
 import type { AstNode } from 'rollup';
+import type { Plugin } from 'vite';
+import { assertType } from './utils.js';
 
 // This plugin transforms `unref(i18n)` to `i18n` in the code, which is useful for removing unnecessary unref calls
 // and helps locale inliner runs after vite build to inline the locale data into the final build.
