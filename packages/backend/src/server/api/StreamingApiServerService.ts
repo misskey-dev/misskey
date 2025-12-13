@@ -87,7 +87,7 @@ export class StreamingApiServerService {
 			this.moduleRef.registerRequestByContextId<ConnectionRequest>({
 				user,
 				token: app,
-			}, contextId)
+			}, contextId);
 			const stream = await this.moduleRef.create(MainStreamConnection, contextId);
 
 			await stream.init();

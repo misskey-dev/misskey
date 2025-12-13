@@ -17,7 +17,7 @@ import { REQUEST } from '@nestjs/core';
 @Injectable({ scope: Scope.TRANSIENT })
 export class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
-	public static shouldShare: false = false;
+	public static shouldShare = false as const;
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
 	private withReplies: boolean;

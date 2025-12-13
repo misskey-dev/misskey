@@ -57,5 +57,4 @@ export class ChannelsService {
 				throw new Error(`no such channel: ${name}`);
 		}
 	}
-
 }
