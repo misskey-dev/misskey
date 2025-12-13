@@ -1,4 +1,4 @@
-## Unreleased
+## 2025.12.1
 
 ### General
 - Feat: サーバーがCDN等を利用している場合、タイムラインのリアルタイム更新時にCDN等のキャッシュを併用できるように（上級者向け）
@@ -6,10 +6,13 @@
   - Based on https://github.com/MisskeyIO/misskey/pull/834, https://github.com/MisskeyIO/misskey/pull/851, https://github.com/MisskeyIO/misskey/pull/853
 
 ### Client
--
+- Fix: 特定の条件下でMisskeyが起動せず空白のページが表示されることがある問題を軽減
+- Fix: 初回読み込み時などに、言語設定で不整合が発生することがある問題を修正
+- Fix: 削除されたノートのリノートが正しく動作されない問題を修正
+- Fix: チャンネルオーナーが削除済みの時にチャンネルのヘッダーメニューが表示されない不具合を修正
 
 ### Server
--
+- Fix: ジョブキューでSentryが有効にならない問題を修正
 
 
 ## 2025.12.0
