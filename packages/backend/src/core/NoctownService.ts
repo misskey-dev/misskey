@@ -4,11 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Not } from 'typeorm';
+import { Not, LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { getChunkGenerator } from '@/misc/noctown/chunk-generator.js';
 import type {
 	NoctownPlayersRepository,
 	NoctownPlayerItemsRepository,
@@ -25,6 +26,7 @@ import type {
 	NoctownChickensRepository,
 	NoctownCowsRepository,
 	NoctownHousesRepository,
+	NoctownWorldChunksRepository,
 } from '@/models/_.js';
 import type { NoctownCropStage } from '@/models/noctown/NoctownCrop.js';
 import type { NoctownQuestType, NoctownQuestStatus } from '@/models/noctown/NoctownQuest.js';
@@ -79,6 +81,9 @@ export class NoctownService {
 		@Inject(DI.noctownHousesRepository)
 		private noctownHousesRepository: NoctownHousesRepository,
 
+		@Inject(DI.noctownWorldChunksRepository)
+		private noctownWorldChunksRepository: NoctownWorldChunksRepository,
+
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {}
@@ -88,11 +93,12 @@ export class NoctownService {
 		const playerId = this.idService.gen();
 
 		// Create player record
+		// Note: positionY is set to 0 (ground level), will be auto-corrected to proper height on first spawn
 		const player = await this.noctownPlayersRepository.insertOne({
 			id: playerId,
 			userId,
 			positionX: 0,
-			positionY: 0,
+			positionY: 0, // T015: Set to 0 (ground level)
 			positionZ: 0,
 			rotation: 0,
 			isOnline: false,
@@ -191,18 +197,6 @@ export class NoctownService {
 		});
 
 		this.globalEventService.publishNoctownStream('playerOnline', {
-			playerId,
-			userId,
-		});
-	}
-
-	@bindThis
-	public async setPlayerOffline(playerId: string, userId: string): Promise<void> {
-		await this.noctownPlayersRepository.update(playerId, {
-			isOnline: false,
-		});
-
-		this.globalEventService.publishNoctownStream('playerOffline', {
 			playerId,
 			userId,
 		});
@@ -1609,5 +1603,188 @@ export class NoctownService {
 		});
 
 		return { success: true };
+	}
+
+	/**
+	 * Fix player Y position if out of valid range (T014)
+	 * Auto-correct Y position to ground level if too low or too high
+	 */
+	@bindThis
+	public async fixPlayerYPosition(playerId: string): Promise<void> {
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		if (!player) return;
+
+		// Y position validation: should be between -10 and 100
+		// If out of range, reset to ground level (0)
+		if (player.positionY < -10 || player.positionY > 100) {
+			await this.noctownPlayersRepository.update(
+				{ id: playerId },
+				{ positionY: 0 },
+			);
+		}
+	}
+
+	/**
+	 * Find players that should transition to offline status
+	 * @param timeoutSeconds Timeout in seconds (default: 30)
+	 */
+	@bindThis
+	public async findPlayersForOfflineTransition(timeoutSeconds: number = 30): Promise<NoctownPlayer[]> {
+		const threshold = new Date(Date.now() - timeoutSeconds * 1000);
+		return this.noctownPlayersRepository.find({
+			where: {
+				isOnline: true,
+				lastActiveAt: LessThan(threshold),
+			},
+		});
+	}
+
+	/**
+	 * Set player offline status and broadcast full PlayerData
+	 */
+	@bindThis
+	public async setPlayerOfflineAndBroadcast(playerId: string): Promise<void> {
+		// Update database
+		await this.noctownPlayersRepository.update(
+			{ id: playerId },
+			{ isOnline: false },
+		);
+
+		// Get full player data for broadcast
+		const player = await this.noctownPlayersRepository.findOne({
+			where: { id: playerId },
+			relations: ['user'],
+		});
+
+		if (!player) return;
+
+		// Broadcast full PlayerData (not just playerId)
+		this.globalEventService.publishNoctownStream('playerOffline', {
+			id: player.id,
+			userId: player.userId,
+			username: player.user?.username ?? '',
+			displayName: player.user?.name ?? '',
+			avatarUrl: player.user?.avatarUrl ?? null,
+			positionX: player.positionX,
+			positionY: player.positionY,
+			positionZ: player.positionZ,
+			rotation: player.rotation,
+			skinId: player.equippedSkinId,
+			skinData: null, // TODO: Implement skin data loading
+			isOnline: false,
+		});
+	}
+
+	/**
+	 * Set player offline status (legacy method, kept for compatibility)
+	 */
+	@bindThis
+	public async setPlayerOffline(playerId: string): Promise<void> {
+		await this.noctownPlayersRepository.update(
+			{ id: playerId },
+			{ isOnline: false },
+		);
+	}
+
+	/**
+	 * Background job: Transition inactive players to offline status
+	 * Should be called every 1 minute
+	 */
+	@bindThis
+	public async processOfflineTransitions(): Promise<void> {
+		const players = await this.findPlayersForOfflineTransition(30);
+
+		for (const player of players) {
+			await this.setPlayerOfflineAndBroadcast(player.id);
+		}
+	}
+
+	/**
+	 * Update player's last active timestamp
+	 */
+	@bindThis
+	public async updatePlayerLastActive(playerId: string): Promise<void> {
+		await this.noctownPlayersRepository.update(
+			{ id: playerId },
+			{ lastActiveAt: new Date() },
+		);
+	}
+
+	/**
+	 * Find multiple chunks by coordinates (T005)
+	 */
+	@bindThis
+	public async findChunks(
+		worldId: string,
+		chunks: { chunkX: number; chunkZ: number }[],
+	) {
+		if (chunks.length === 0) return [];
+
+		const query = this.noctownWorldChunksRepository.createQueryBuilder('chunk')
+			.where('chunk.worldId = :worldId', { worldId });
+
+		// Build OR condition for each chunk coordinate pair
+		const orConditions = chunks.map((_, i) => `(chunk.chunkX = :x${i} AND chunk.chunkZ = :z${i})`).join(' OR ');
+		query.andWhere(`(${orConditions})`);
+
+		// Add parameters
+		const params: Record<string, number> = {};
+		chunks.forEach((chunk, i) => {
+			params[`x${i}`] = chunk.chunkX;
+			params[`z${i}`] = chunk.chunkZ;
+		});
+		query.setParameters(params);
+
+		return query.getMany();
+	}
+
+	/**
+	 * Check if a chunk exists (T006)
+	 */
+	@bindThis
+	public async chunkExists(worldId: string, chunkX: number, chunkZ: number): Promise<boolean> {
+		const count = await this.noctownWorldChunksRepository.count({
+			where: { worldId, chunkX, chunkZ },
+		});
+		return count > 0;
+	}
+
+	/**
+	 * Generate a new chunk (T032-T033-T034)
+	 * Returns null if chunk already exists (T034)
+	 */
+	@bindThis
+	public async generateChunk(worldId: string, chunkX: number, chunkZ: number) {
+		// T034: Check if chunk already exists (UNIQUE constraint handling)
+		const existingChunk = await this.noctownWorldChunksRepository.findOneBy({
+			worldId,
+			chunkX,
+			chunkZ,
+		});
+
+		if (existingChunk) {
+			// Chunk already exists - return existing chunk data
+			return existingChunk;
+		}
+
+		// T032: Generate chunk using Perlin noise
+		const generator = getChunkGenerator(12345); // Use consistent seed for deterministic generation
+		const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
+
+		// T033: Save generated chunk to database
+		const chunkId = this.idService.gen();
+		const newChunk = this.noctownWorldChunksRepository.create({
+			id: chunkId,
+			worldId,
+			chunkX,
+			chunkZ,
+			biome: chunkTerrainData.biome,
+			generatedAt: new Date(),
+		});
+		// Set terrainData separately to avoid type issues
+		(newChunk as any).terrainData = chunkTerrainData;
+		const chunk = await this.noctownWorldChunksRepository.save(newChunk);
+
+		return chunk;
 	}
 }

@@ -60,9 +60,43 @@ export class PlayerRenderer {
 	private players: Map<string, PlayerMesh> = new Map();
 	private particleSystems: Map<string, THREE.Points> = new Map();
 	private glowMeshes: Map<string, THREE.Mesh> = new Map();
+	private raycaster: THREE.Raycaster = new THREE.Raycaster();
+	private terrainMeshes: THREE.Object3D[] = []; // T011: Reference to terrain meshes for raycasting
 
 	constructor(scene: THREE.Scene) {
 		this.scene = scene;
+	}
+
+	/**
+	 * Set terrain meshes for Y position calculation (T011)
+	 */
+	public setTerrainMeshes(meshes: THREE.Object3D[]): void {
+		this.terrainMeshes = meshes;
+	}
+
+	/**
+	 * Calculate correct Y position using raycasting (T011, T012)
+	 * @returns Y position (default: 1.5 if no terrain found)
+	 */
+	private calculateTerrainY(x: number, z: number): number {
+		const DEFAULT_Y = 1.5; // T012: Default player Y position (ground level + character height)
+
+		if (this.terrainMeshes.length === 0) {
+			return DEFAULT_Y;
+		}
+
+		// Raycast from above to find terrain height
+		const rayOrigin = new THREE.Vector3(x, 100, z);
+		const rayDirection = new THREE.Vector3(0, -1, 0);
+		this.raycaster.set(rayOrigin, rayDirection);
+
+		const intersects = this.raycaster.intersectObjects(this.terrainMeshes, true);
+		if (intersects.length > 0) {
+			// Return terrain height + character height offset (1.5)
+			return intersects[0].point.y + 1.5;
+		}
+
+		return DEFAULT_Y;
 	}
 
 	/**
@@ -85,8 +119,11 @@ export class PlayerRenderer {
 			this.scene.add(playerMesh);
 		}
 
-		// Update position
-		playerMesh.position.set(data.positionX, data.positionY, data.positionZ);
+		// T011: Calculate correct Y position using raycasting
+		const correctedY = this.calculateTerrainY(data.positionX, data.positionZ);
+
+		// Update position with terrain-corrected Y
+		playerMesh.position.set(data.positionX, correctedY, data.positionZ);
 		playerMesh.rotation.y = data.rotation;
 	}
 
@@ -397,6 +434,38 @@ export class PlayerRenderer {
 			// Smooth interpolation
 			player.position.lerp(new THREE.Vector3(x, y, z), 0.3);
 			player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, rotation, 0.3);
+		}
+	}
+
+	/**
+	 * T018: Update player visual effects based on online/offline status
+	 * @param playerId Player ID
+	 * @param isOnline Online status
+	 */
+	public setPlayerOnlineStatus(playerId: string, isOnline: boolean): void {
+		const player = this.players.get(playerId);
+		if (!player) return;
+
+		// Apply visual effects for offline players
+		if (isOnline) {
+			// Online: restore normal appearance
+			player.traverse((child) => {
+				if (child instanceof THREE.Mesh && child.material instanceof THREE.Material) {
+					child.material.opacity = 1.0;
+					child.material.transparent = false;
+				}
+			});
+		} else {
+			// Offline: reduce opacity and stop animations
+			player.traverse((child) => {
+				if (child instanceof THREE.Mesh && child.material instanceof THREE.Material) {
+					child.material.opacity = 0.7;
+					child.material.transparent = true;
+				}
+			});
+
+			// Stop animations by resetting animation time
+			player.userData.animationTime = 0;
 		}
 	}
 

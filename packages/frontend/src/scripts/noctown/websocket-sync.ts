@@ -4,12 +4,13 @@
  */
 
 import { useStream } from '@/stream.js';
-import type { PlayerData, DroppedItemData, PlacedItemData, NpcData } from './engine.js';
+import type { PlayerData, DroppedItemData, PlacedItemData, NpcData, ChunkData } from './engine.js';
 
 export type NoctownEventType =
 	| 'playerMoved'
 	| 'playerJoined'
 	| 'playerLeft'
+	| 'playerStatusChanged'
 	| 'itemDropped'
 	| 'itemPicked'
 	| 'itemPlaced'
@@ -17,7 +18,8 @@ export type NoctownEventType =
 	| 'npcDespawned'
 	| 'questCompleted'
 	| 'emotionBroadcast'
-	| 'noteBubble';
+	| 'noteBubble'
+	| 'chunkGenerated';
 
 export interface NoctownSyncState {
 	isConnected: boolean;
@@ -61,6 +63,10 @@ export class WebSocketSyncManager {
 	private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 	private heartbeatIntervalMs = 30000;
 
+	// Chunk generation (T040: concurrent request limit)
+	private pendingChunkRequests: Set<string> = new Set();
+	private static readonly MAX_CONCURRENT_CHUNK_REQUESTS = 5;
+
 	// Reconnection settings (Misskey stream handles actual reconnection)
 	private static readonly MAX_RECONNECT_ATTEMPTS = 3;
 	private reconnectAttempts = 0;
@@ -69,10 +75,10 @@ export class WebSocketSyncManager {
 	constructor() {
 		// Initialize handler maps
 		const eventTypes: NoctownEventType[] = [
-			'playerMoved', 'playerJoined', 'playerLeft',
+			'playerMoved', 'playerJoined', 'playerLeft', 'playerStatusChanged',
 			'itemDropped', 'itemPicked', 'itemPlaced',
 			'npcSpawned', 'npcDespawned', 'questCompleted',
-			'emotionBroadcast', 'noteBubble',
+			'emotionBroadcast', 'noteBubble', 'chunkGenerated',
 		];
 		for (const type of eventTypes) {
 			this.handlers.set(type, new Set());
@@ -138,8 +144,10 @@ export class WebSocketSyncManager {
 			this.emit('playerJoined', data);
 		});
 
-		this.connection.on('playerOffline', (data: { playerId: string }) => {
-			this.emit('playerLeft', data);
+		// T016: Modify playerOffline to receive full PlayerData and emit playerStatusChanged
+		this.connection.on('playerOffline', (data: PlayerData) => {
+			// T017: Emit playerStatusChanged instead of playerLeft to keep offline players visible
+			this.emit('playerStatusChanged', data);
 		});
 
 		// Item events
@@ -177,6 +185,15 @@ export class WebSocketSyncManager {
 		// Note bubble events
 		this.connection.on('noteBubble', (data: NoteBubbleData) => {
 			this.emit('noteBubble', data);
+		});
+
+		// Chunk generation events (T038)
+		this.connection.on('chunkGenerated', (data: ChunkData) => {
+			// Remove from pending requests
+			const key = `${data.chunkX},${data.chunkZ}`;
+			this.pendingChunkRequests.delete(key);
+
+			this.emit('chunkGenerated', data);
 		});
 	}
 
@@ -282,6 +299,36 @@ export class WebSocketSyncManager {
 			this.connection.send('emotion', { emoji, isCustomEmoji });
 		} catch (e) {
 			console.error('Failed to send emotion:', e);
+		}
+	}
+
+	/**
+	 * Request chunk generation (T040)
+	 * Returns false if request limit reached
+	 */
+	public sendGenerateChunk(chunkX: number, chunkZ: number, worldId = 'default'): boolean {
+		if (!this.connection || !this.state.isConnected) return false;
+
+		const key = `${chunkX},${chunkZ}`;
+
+		// T040: Check concurrent request limit
+		if (this.pendingChunkRequests.size >= WebSocketSyncManager.MAX_CONCURRENT_CHUNK_REQUESTS) {
+			console.warn(`Chunk request limit reached (${WebSocketSyncManager.MAX_CONCURRENT_CHUNK_REQUESTS}), skipping chunk ${key}`);
+			return false;
+		}
+
+		// Skip if already requested
+		if (this.pendingChunkRequests.has(key)) {
+			return false;
+		}
+
+		try {
+			this.connection.send('generateChunk', { chunkX, chunkZ, worldId });
+			this.pendingChunkRequests.add(key);
+			return true;
+		} catch (e) {
+			console.error('Failed to send generate chunk:', e);
+			return false;
 		}
 	}
 

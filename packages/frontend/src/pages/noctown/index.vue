@@ -27,6 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div ref="canvasContainer" :class="$style.gameCanvas">
 				<!-- Three.js canvas will be mounted here -->
+				<!-- T044, T045, T047, T048: Player coordinate display (top-left) -->
+				<div v-if="!isLoading && !error" :class="$style.coordinateDisplay">
+					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}
+				</div>
+
 				<div v-if="isLoading" :class="$style.overlay">
 					<MkLoading/>
 					<p>{{ noctownI18n.loading }}</p>
@@ -71,6 +76,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@farmUpdated="handleFarmUpdated"
 				/>
 
+				<!-- T028: Virtual joystick for mobile devices -->
+				<NoctownJoystick
+					v-if="isMobile"
+					@move="handleJoystickMove"
+					@end="handleJoystickEnd"
+				/>
+
 				<!-- Place mode indicator -->
 				<div v-if="placeMode" :class="$style.placeModeIndicator">
 					<i class="ti ti-box"></i>
@@ -92,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -101,7 +113,9 @@ import MkNoctownInventory from '@/components/MkNoctownInventory.vue';
 import MkNoctownQuestPanel from '@/components/MkNoctownQuestPanel.vue';
 import MkNoctownNpcDialog from '@/components/MkNoctownNpcDialog.vue';
 import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
+import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import { useStream } from '@/stream.js';
+import { isMobileDevice } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
 import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData } from '@/scripts/noctown/engine.js';
@@ -139,11 +153,18 @@ let moveInterval: ReturnType<typeof setInterval> | null = null;
 let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
 // Movement state
-let currentX = 0;
-let currentY = 0;
-let currentZ = 0;
+// T045: Make coordinates reactive for UI display
+const currentX = ref(0);
+const currentY = ref(0);
+const currentZ = ref(0);
 let currentRotation = 0;
 const moveSpeed = 0.15;
+
+// T027, T028: Mobile device detection
+const isMobile = computed(() => isMobileDevice());
+
+// T030: Joystick movement state
+let joystickMovement = { x: 0, z: 0 };
 
 interface NoctownPlayerResponse {
 	id: string;
@@ -218,9 +239,9 @@ async function initialize(): Promise<void> {
 			isOnline: data.isOnline,
 		};
 
-		currentX = data.positionX;
-		currentY = data.positionY;
-		currentZ = data.positionZ;
+		currentX.value = data.positionX;
+		currentY.value = data.positionY;
+		currentZ.value = data.positionZ;
 		currentRotation = data.rotation;
 
 		// Dynamically import engine to avoid SSR issues
@@ -230,13 +251,13 @@ async function initialize(): Promise<void> {
 			engine.createLocalPlayer(playerData.value);
 
 			// Load initial chunks around player
-			await loadNearbyChunks(currentX, currentZ);
+			await loadNearbyChunks(currentX.value, currentZ.value);
 
 			// Load nearby items
-			await loadNearbyItems(currentX, currentZ);
+			await loadNearbyItems(currentX.value, currentZ.value);
 
 			// Load nearby NPCs
-			await loadNearbyNpcs(currentX, currentZ);
+			await loadNearbyNpcs(currentX.value, currentZ.value);
 		}
 
 		// Connect to WebSocket
@@ -266,6 +287,10 @@ async function connectStream(): Promise<void> {
 	});
 	connection.on('playerLeft', (body: { playerId: string }) => {
 		handlePlayerLeft(body);
+	});
+	// T017: Handle playerStatusChanged event for online/offline transitions
+	connection.on('playerStatusChanged', (body: PlayerData) => {
+		handlePlayerStatusChanged(body);
 	});
 	connection.on('itemDropped', (body: DroppedItemData) => {
 		if (engine) engine.addDroppedItem(body);
@@ -301,11 +326,18 @@ function handlePlayerLeft(data: { playerId: string }): void {
 	engine.removeRemotePlayer(data.playerId);
 }
 
+// T017, T018: Handle player status change (online/offline transition)
+function handlePlayerStatusChanged(data: PlayerData): void {
+	if (!engine || data.id === playerData.value?.id) return;
+	// Update player's online status visual effects
+	engine.setPlayerOnlineStatus(data.id, data.isOnline);
+}
+
 async function fetchNearbyPlayers(): Promise<void> {
 	try {
 		const players = await noctownApi<PlayerData[]>('noctown/players/nearby', {
-			x: currentX,
-			z: currentZ,
+		 x: currentX.value,
+		 z: currentZ.value,
 			radius: 50,
 		});
 
@@ -380,18 +412,37 @@ function startMovementLoop(): void {
 	moveInterval = setInterval(() => {
 		if (!engine || !isConnected.value) return;
 
-		const input = engine.getMovementInput();
-		if (!engine.isMoving()) return;
+		// T030: Combine keyboard and joystick input
+		const keyboardInput = engine.getMovementInput();
+
+		// Merge keyboard and joystick inputs
+		let finalInput = { x: 0, z: 0, rotation: currentRotation };
+
+		if (joystickMovement.x !== 0 || joystickMovement.z !== 0) {
+			// Use joystick input (mobile)
+			finalInput.x = joystickMovement.x;
+			finalInput.z = joystickMovement.z;
+			// Calculate rotation from joystick direction
+			if (joystickMovement.x !== 0 || joystickMovement.z !== 0) {
+				finalInput.rotation = Math.atan2(joystickMovement.x, joystickMovement.z);
+			}
+		} else if (engine.isMoving()) {
+			// Use keyboard input (PC)
+			finalInput = keyboardInput;
+		} else {
+			// No movement
+			return;
+		}
 
 		// Update local position
-		currentX += input.x * moveSpeed;
-		currentZ += input.z * moveSpeed;
-		if (input.x !== 0 || input.z !== 0) {
-			currentRotation = input.rotation;
+		currentX.value += finalInput.x * moveSpeed;
+		currentZ.value += finalInput.z * moveSpeed;
+		if (finalInput.x !== 0 || finalInput.z !== 0) {
+			currentRotation = finalInput.rotation;
 		}
 
 		// Update engine
-		engine.updateLocalPlayerPosition(currentX, currentY, currentZ, currentRotation);
+		engine.updateLocalPlayerPosition(currentX.value, currentY.value, currentZ.value, currentRotation);
 
 		// Send to server (throttled)
 		const now = Date.now();
@@ -407,9 +458,9 @@ function sendPosition(): void {
 
 	try {
 		connection.send('move', {
-			x: currentX,
-			y: currentY,
-			z: currentZ,
+		 x: currentX.value,
+		 y: currentY.value,
+		 z: currentZ.value,
 			rotation: currentRotation,
 		});
 	} catch (e) {
@@ -469,7 +520,7 @@ function toggleFarmPanel(): void {
 
 function handleFarmUpdated(): void {
 	// Refresh nearby items when farm is updated
-	loadNearbyItems(currentX, currentZ);
+	loadNearbyItems(currentX.value, currentZ.value);
 }
 
 async function tryInteract(): Promise<void> {
@@ -554,7 +605,7 @@ async function onPlaceClick(): Promise<void> {
 			rotation: currentRotation,
 		});
 		// Refresh items
-		await loadNearbyItems(currentX, currentZ);
+		await loadNearbyItems(currentX.value, currentZ.value);
 	} catch (e) {
 		console.error('Failed to place item:', e);
 	}
@@ -571,6 +622,17 @@ function cancelPlaceMode(): void {
 async function handleDropItem(item: InventoryItem): Promise<void> {
 	// For now, dropping is not implemented (would need a drop endpoint)
 	console.log('Drop item:', item);
+}
+
+// T030: Joystick event handlers
+function handleJoystickMove(direction: { x: number; z: number }): void {
+	// Update joystick movement state
+	joystickMovement = direction;
+}
+
+function handleJoystickEnd(): void {
+	// Reset joystick movement when released
+	joystickMovement = { x: 0, z: 0 };
 }
 
 function cleanup(): void {
@@ -724,6 +786,23 @@ definePage(() => ({
 	background: rgba(0, 0, 0, 0.7);
 	color: var(--MI_THEME-fg);
 	z-index: 10;
+}
+
+// T048: Style coordinate display with readable font and background
+.coordinateDisplay {
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-family: 'Courier New', monospace;
+	font-size: 14px;
+	font-weight: 600;
+	z-index: 100;
+	pointer-events: none;
+	user-select: none;
 }
 
 .placeModeIndicator {

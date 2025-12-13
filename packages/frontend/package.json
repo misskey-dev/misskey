@@ -63,6 +63,7 @@
 		"misskey-bubble-game": "workspace:*",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
+		"nipplejs": "0.10.2",
 		"photoswipe": "5.4.4",
 		"punycode.js": "2.3.1",
 		"rollup": "4.50.1",

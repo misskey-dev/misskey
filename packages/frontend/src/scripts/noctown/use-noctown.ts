@@ -48,6 +48,26 @@ function getToken(): string | null {
 	}
 }
 
+/**
+ * T027: Mobile device detection utility
+ * @returns true if the device is a mobile device (phone or tablet)
+ */
+export function isMobileDevice(): boolean {
+	// Check user agent for mobile devices
+	const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+	// Match common mobile device patterns
+	const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+
+	// Check for touch support
+	const hasTouchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+	// Check screen width (mobile devices typically have smaller screens)
+	const isSmallScreen = window.innerWidth <= 768;
+
+	return mobileRegex.test(userAgent) || (hasTouchSupport && isSmallScreen);
+}
+
 export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState {
 	const isConnected = ref(false);
 	const isLoading = ref(true);
@@ -67,6 +87,11 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	let currentZ = 0;
 	let currentRotation = 0;
 	const moveSpeed = 0.15;
+
+	// T039: Cache loaded chunks in memory to avoid redundant database queries
+	const loadedChunks = new Set<string>();
+	const CHUNK_SIZE = 16;
+	const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
 
 	async function initialize(): Promise<void> {
 		try {
@@ -138,6 +163,11 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			handlePlayerLeft(body);
 		});
 
+		// T038: Handle chunkGenerated event and render terrain
+		channel.on('chunkGenerated', (body: ChunkData) => {
+			handleChunkGenerated(body);
+		});
+
 		isConnected.value = true;
 
 		// Start movement loop
@@ -165,6 +195,18 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		engine.removeRemotePlayer(data.playerId);
 	}
 
+	// T038: Handle chunkGenerated event and render terrain
+	function handleChunkGenerated(data: ChunkData): void {
+		if (!engine) return;
+
+		// Mark chunk as loaded (T039: cache)
+		const chunkKey = `${data.chunkX},${data.chunkZ}`;
+		loadedChunks.add(chunkKey);
+
+		// Render terrain
+		engine.loadChunk(data);
+	}
+
 	async function fetchNearbyPlayers(): Promise<void> {
 		try {
 			const res = await window.fetch('/api/noctown/players/nearby', {
@@ -188,29 +230,37 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		}
 	}
 
+	// T036-T037: Load nearby chunks using WebSocket chunk generation
 	async function loadNearbyChunks(x: number, z: number): Promise<void> {
-		const chunkX = Math.floor(x / 16);
-		const chunkZ = Math.floor(z / 16);
+		if (!channel || !isConnected.value) return;
 
-		// Load 3x3 chunks around player
-		for (let dx = -1; dx <= 1; dx++) {
-			for (let dz = -1; dz <= 1; dz++) {
+		const playerChunkX = Math.floor(x / CHUNK_SIZE);
+		const playerChunkZ = Math.floor(z / CHUNK_SIZE);
+
+		// T037: Request chunk generation when player approaches ungenerated area (2 chunks ahead)
+		for (let dx = -CHUNK_LOAD_DISTANCE; dx <= CHUNK_LOAD_DISTANCE; dx++) {
+			for (let dz = -CHUNK_LOAD_DISTANCE; dz <= CHUNK_LOAD_DISTANCE; dz++) {
+				const chunkX = playerChunkX + dx;
+				const chunkZ = playerChunkZ + dz;
+				const chunkKey = `${chunkX},${chunkZ}`;
+
+				// T039: Skip if chunk already loaded (cache check)
+				if (loadedChunks.has(chunkKey)) {
+					continue;
+				}
+
+				// Request chunk generation via WebSocket
+				// T040: Concurrent request limit is handled in websocket-sync.ts (MAX_CONCURRENT_CHUNK_REQUESTS = 5)
 				try {
-					const res = await window.fetch('/api/noctown/map/chunk', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						credentials: 'same-origin',
-						body: JSON.stringify({ i: getToken(), chunkX: chunkX + dx, chunkZ: chunkZ + dz }),
+					channel.send('generateChunk', {
+						chunkX,
+						chunkZ,
+						worldId: 'default',
 					});
 
-					if (!res.ok) continue;
-
-					const chunk: ChunkData = await res.json();
-					if (engine) {
-						engine.loadChunk(chunk);
-					}
+					// Optimistically mark as requested (will be added to loadedChunks when chunkGenerated event arrives)
 				} catch (e) {
-					console.error(`Failed to load chunk ${chunkX + dx},${chunkZ + dz}:`, e);
+					console.error(`Failed to request chunk ${chunkX},${chunkZ}:`, e);
 				}
 			}
 		}
@@ -219,6 +269,8 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	function startMovementLoop(): void {
 		let lastSendTime = 0;
 		const sendInterval = 100; // Send position every 100ms max
+		let lastChunkCheckTime = 0;
+		const chunkCheckInterval = 1000; // Check for new chunks every 1 second
 
 		moveInterval = setInterval(() => {
 			if (!engine || !isConnected.value) return;
@@ -241,6 +293,13 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			if (now - lastSendTime >= sendInterval) {
 				sendPosition();
 				lastSendTime = now;
+			}
+
+			// T036: Implement player position monitoring for nearby chunk detection
+			// T037: Request chunk generation when player approaches ungenerated area
+			if (now - lastChunkCheckTime >= chunkCheckInterval) {
+				loadNearbyChunks(currentX, currentZ);
+				lastChunkCheckTime = now;
 			}
 		}, 16); // ~60fps
 	}

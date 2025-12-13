@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 export interface PlayerData {
 	id: string;
@@ -63,13 +64,14 @@ export class NoctownEngine {
 	private scene: THREE.Scene;
 	private camera: THREE.PerspectiveCamera;
 	private renderer: THREE.WebGLRenderer;
+	private labelRenderer: CSS2DRenderer;
 	private container: HTMLElement;
 	private animationId: number | null = null;
 
 	// Player management
 	private localPlayer: THREE.Mesh | null = null;
 	private remotePlayers: Map<string, THREE.Mesh> = new Map();
-	private playerLabels: Map<string, THREE.Sprite> = new Map();
+	private playerLabels: Map<string, CSS2DObject> = new Map();
 
 	// World management
 	private chunks: Map<string, THREE.Group> = new Map();
@@ -113,6 +115,14 @@ export class NoctownEngine {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		container.appendChild(this.renderer.domElement);
+
+		// CSS2D Renderer for labels
+		this.labelRenderer = new CSS2DRenderer();
+		this.labelRenderer.setSize(container.clientWidth, container.clientHeight);
+		this.labelRenderer.domElement.style.position = 'absolute';
+		this.labelRenderer.domElement.style.top = '0';
+		this.labelRenderer.domElement.style.pointerEvents = 'none';
+		container.appendChild(this.labelRenderer.domElement);
 
 		// Lights
 		this.setupLights();
@@ -177,6 +187,7 @@ export class NoctownEngine {
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
 		this.renderer.setSize(width, height);
+		this.labelRenderer.setSize(width, height);
 	};
 
 	private onKeyDown = (e: KeyboardEvent): void => {
@@ -199,6 +210,7 @@ export class NoctownEngine {
 		}
 
 		this.renderer.render(this.scene, this.camera);
+		this.labelRenderer.render(this.scene, this.camera);
 	};
 
 	// Player management
@@ -213,7 +225,9 @@ export class NoctownEngine {
 			roughness: 0.5,
 		});
 		this.localPlayer = new THREE.Mesh(geometry, material);
-		this.localPlayer.position.set(data.positionX, data.positionY + 1, data.positionZ);
+		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
+		const displayY = data.positionY === 0 ? 1.5 : data.positionY + 1.5;
+		this.localPlayer.position.set(data.positionX, displayY, data.positionZ);
 		this.localPlayer.rotation.y = data.rotation;
 		this.localPlayer.castShadow = true;
 		this.scene.add(this.localPlayer);
@@ -221,7 +235,9 @@ export class NoctownEngine {
 
 	public updateLocalPlayerPosition(x: number, y: number, z: number, rotation: number): void {
 		if (!this.localPlayer) return;
-		this.localPlayer.position.set(x, y + 1, z);
+		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
+		const displayY = y === 0 ? 1.5 : y + 1.5;
+		this.localPlayer.position.set(x, displayY, z);
 		this.localPlayer.rotation.y = rotation;
 	}
 
@@ -237,33 +253,38 @@ export class NoctownEngine {
 			roughness: 0.5,
 		});
 		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(data.positionX, data.positionY + 1, data.positionZ);
+		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
+		const displayY = data.positionY === 0 ? 1.5 : data.positionY + 1.5;
+		mesh.position.set(data.positionX, displayY, data.positionZ);
 		mesh.rotation.y = data.rotation;
 		mesh.castShadow = true;
 		this.scene.add(mesh);
 		this.remotePlayers.set(data.id, mesh);
 
 		// Create name label
-		this.createPlayerLabel(data.id, data.username, mesh.position);
+		const labelObject = this.createPlayerLabel(data.id, data.username, data.avatarUrl, data.isOnline, mesh.position);
+		mesh.add(labelObject);
 	}
 
 	public updateRemotePlayer(data: PlayerData): void {
 		const mesh = this.remotePlayers.get(data.id);
 		if (!mesh) return;
 
-		mesh.position.set(data.positionX, data.positionY + 1, data.positionZ);
+		// T011, T012: Use correct Y position (terrain height is 0, player height offset is 1.5)
+		const displayY = data.positionY === 0 ? 1.5 : data.positionY + 1.5;
+		mesh.position.set(data.positionX, displayY, data.positionZ);
 		mesh.rotation.y = data.rotation;
 
 		// Update material color based on online status
 		const material = mesh.material as THREE.MeshStandardMaterial;
 		material.color.setHex(data.isOnline ? 0x90d94a : 0x808080);
 
-		// Update label position
-		const label = this.playerLabels.get(data.id);
-		if (label) {
-			label.position.copy(mesh.position);
-			label.position.y += 2;
-		}
+		// Update label data
+		this.updatePlayerLabel(data.id, {
+			username: data.username,
+			avatarUrl: data.avatarUrl,
+			isOnline: data.isOnline,
+		});
 	}
 
 	public removeRemotePlayer(playerId: string): void {
@@ -280,28 +301,124 @@ export class NoctownEngine {
 		}
 	}
 
-	private createPlayerLabel(playerId: string, username: string, position: THREE.Vector3): void {
-		const canvas = document.createElement('canvas');
-		const context = canvas.getContext('2d');
-		if (!context) return;
+	// T018: Set player online/offline status with visual effects
+	public setPlayerOnlineStatus(playerId: string, isOnline: boolean): void {
+		const mesh = this.remotePlayers.get(playerId);
+		if (!mesh) return;
 
-		canvas.width = 256;
-		canvas.height = 64;
-		context.fillStyle = 'rgba(0, 0, 0, 0.5)';
-		context.fillRect(0, 0, canvas.width, canvas.height);
-		context.font = 'bold 24px sans-serif';
-		context.fillStyle = 'white';
-		context.textAlign = 'center';
-		context.fillText(username, canvas.width / 2, canvas.height / 2 + 8);
+		// Apply visual effects based on online status
+		mesh.traverse((child) => {
+			if (child instanceof THREE.Mesh && child.material instanceof THREE.Material) {
+				if (isOnline) {
+					// Online: restore normal appearance
+					child.material.opacity = 1.0;
+					child.material.transparent = false;
+				} else {
+					// Offline: reduce opacity
+					child.material.opacity = 0.7;
+					child.material.transparent = true;
+				}
+			}
+		});
+	}
 
-		const texture = new THREE.CanvasTexture(canvas);
-		const material = new THREE.SpriteMaterial({ map: texture });
-		const sprite = new THREE.Sprite(material);
-		sprite.scale.set(4, 1, 1);
-		sprite.position.copy(position);
-		sprite.position.y += 2;
-		this.scene.add(sprite);
-		this.playerLabels.set(playerId, sprite);
+	public createPlayerLabel(playerId: string, username: string, avatarUrl: string | null, isOnline: boolean, position: THREE.Vector3): CSS2DObject {
+		// Create a div element for the label that matches NoctownPlayerLabel component structure
+		const labelDiv = document.createElement('div');
+		labelDiv.className = 'player-label-wrapper';
+		labelDiv.setAttribute('data-player-id', playerId);
+		labelDiv.style.pointerEvents = 'none';
+
+		// Build the HTML structure to match NoctownPlayerLabel.vue
+		const statusColor = isOnline ? '#22c55e' : '#ef4444'; // green/red
+
+		labelDiv.innerHTML = `
+			<div style="
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				padding: 4px 8px;
+				background-color: rgba(0, 0, 0, 0.7);
+				border-radius: 12px;
+				font-size: 12px;
+				color: white;
+				white-space: nowrap;
+			">
+				<div style="
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					flex-shrink: 0;
+					background-color: ${statusColor};
+				" data-status-mark></div>
+				${avatarUrl ? `
+					<img src="${avatarUrl}" alt="${username}" style="
+						width: 20px;
+						height: 20px;
+						border-radius: 50%;
+						object-fit: cover;
+						flex-shrink: 0;
+					" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+					<div style="
+						width: 20px;
+						height: 20px;
+						display: none;
+						align-items: center;
+						justify-content: center;
+						font-size: 16px;
+						flex-shrink: 0;
+					">👤</div>
+				` : `
+					<div style="
+						width: 20px;
+						height: 20px;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						font-size: 16px;
+						flex-shrink: 0;
+					">👤</div>
+				`}
+				<div style="
+					font-weight: 500;
+					max-width: 120px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				" data-username>${username}</div>
+			</div>
+		`;
+
+		const labelObject = new CSS2DObject(labelDiv);
+		labelObject.position.copy(position);
+		labelObject.position.y += 2;
+
+		this.playerLabels.set(playerId, labelObject);
+		return labelObject;
+	}
+
+	public updatePlayerLabel(playerId: string, data: Partial<{ username: string; avatarUrl: string | null; isOnline: boolean }>): void {
+		const labelObject = this.playerLabels.get(playerId);
+		if (!labelObject) return;
+
+		const labelDiv = labelObject.element as HTMLDivElement;
+
+		// Update status color
+		if (data.isOnline !== undefined) {
+			const statusMark = labelDiv.querySelector('[data-status-mark]') as HTMLDivElement;
+			if (statusMark) {
+				statusMark.style.backgroundColor = data.isOnline ? '#22c55e' : '#ef4444';
+			}
+		}
+
+		// Update username
+		if (data.username !== undefined) {
+			const usernameEl = labelDiv.querySelector('[data-username]') as HTMLDivElement;
+			if (usernameEl) {
+				usernameEl.textContent = data.username;
+			}
+		}
+
+		// Avatar update is more complex and not commonly needed, skip for now
 	}
 
 	// Chunk management
@@ -583,5 +700,10 @@ export class NoctownEngine {
 
 		this.renderer.dispose();
 		this.container.removeChild(this.renderer.domElement);
+
+		// Cleanup CSS2D renderer
+		if (this.labelRenderer && this.labelRenderer.domElement.parentElement) {
+			this.labelRenderer.domElement.parentElement.removeChild(this.labelRenderer.domElement);
+		}
 	}
 }

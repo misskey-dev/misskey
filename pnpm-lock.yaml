@@ -850,6 +850,9 @@ importers:
       misskey-reversi:
         specifier: workspace:*
         version: link:../misskey-reversi
+      nipplejs:
+        specifier: 0.10.2
+        version: 0.10.2
       photoswipe:
         specifier: 5.4.4
         version: 5.4.4
@@ -8524,6 +8527,9 @@ packages:
   nice-napi@1.0.2:
     resolution: {integrity: sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==}
     os: ['!win32']
+
+  nipplejs@0.10.2:
+    resolution: {integrity: sha512-XGxFY8C2DOtobf1fK+MXINTzkkXJLjZDDpfQhOUZf4TSytbc9s4bmA0lB9eKKM8iDivdr9NQkO7DpIQfsST+9g==}
 
   nise@6.1.1:
     resolution: {integrity: sha512-aMSAzLVY7LyeM60gvBS423nBmIPP+Wy7St7hsb+8/fc1HmeoHJfLO8CKse4u3BtOZvQLJghYPI2i/1WZrEj5/g==}
@@ -20177,6 +20183,8 @@ snapshots:
       node-addon-api: 3.2.1
       node-gyp-build: 4.6.0
     optional: true
+
+  nipplejs@0.10.2: {}
 
   nise@6.1.1:
     dependencies:

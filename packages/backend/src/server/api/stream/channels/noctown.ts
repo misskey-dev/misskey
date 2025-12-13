@@ -83,6 +83,10 @@ class NoctownChannel extends Channel {
 			case 'heartbeat':
 				this.handleHeartbeat();
 				break;
+			case 'generateChunk':
+				if (!isJsonObject(body)) return;
+				this.handleGenerateChunk(body);
+				break;
 		}
 	}
 
@@ -160,6 +164,39 @@ class NoctownChannel extends Channel {
 	}
 
 	@bindThis
+	private async handleGenerateChunk(body: JsonObject) {
+		if (this.user == null || this.playerId == null) return;
+
+		const chunkX = typeof body.chunkX === 'number' ? body.chunkX : null;
+		const chunkZ = typeof body.chunkZ === 'number' ? body.chunkZ : null;
+		const worldId = typeof body.worldId === 'string' ? body.worldId : 'default';
+
+		if (chunkX == null || chunkZ == null) return;
+
+		// Validate chunk coordinates (security check)
+		if (!Number.isInteger(chunkX) || !Number.isInteger(chunkZ)) return;
+		if (chunkX < -1000 || chunkX > 1000 || chunkZ < -1000 || chunkZ > 1000) return;
+
+		try {
+			const chunk = await this.noctownService.generateChunk(worldId, chunkX, chunkZ);
+			if (chunk && 'terrainData' in chunk && 'biome' in chunk) {
+				// Send generated chunk data back to requesting client only
+				this.send('chunkGenerated', {
+					chunkX,
+					chunkZ,
+					worldId,
+					terrainData: chunk.terrainData as JsonValue,
+					biome: chunk.biome as JsonValue,
+				} as JsonValue);
+			}
+		} catch (error) {
+			// If chunk already exists or generation failed, silently fail
+			// (client will retry if needed)
+			console.error('Chunk generation error:', error);
+		}
+	}
+
+	@bindThis
 	public async dispose() {
 		// Unsubscribe events
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,9 +205,12 @@ class NoctownChannel extends Channel {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(this.subscriber as any).off(`noctownPlayerStream:${this.playerId}`, this.send);
 
-			// Mark player as offline
+			// Mark player as offline and broadcast full PlayerData
+			// Note: Offline transition now happens through background job (processOfflineTransitions)
+			// which checks lastActiveAt > 30 seconds
+			// This immediate call is kept for explicit disconnections
 			if (this.user) {
-				await this.noctownService.setPlayerOffline(this.playerId, this.user.id);
+				await this.noctownService.setPlayerOfflineAndBroadcast(this.playerId);
 			}
 		}
 	}
