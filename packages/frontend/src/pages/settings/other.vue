@@ -171,7 +171,6 @@ import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
-import { migrateOldSettings } from '@/pref-migrate.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
@@ -215,7 +214,8 @@ async function deleteAccount() {
 	await signout();
 }
 
-function migrate() {
+async function migrate() {
+	const { migrateOldSettings } = await import('@/pref-migrate.js');
 	migrateOldSettings();
 }
 

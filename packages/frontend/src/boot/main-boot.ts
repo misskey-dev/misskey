@@ -27,7 +27,6 @@ import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
-import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
 export async function mainBoot() {
@@ -73,6 +72,8 @@ export async function mainBoot() {
 		// TODO: そのうち消す
 		if (lastVersion && (compareVersions('2025.3.2-alpha.0', lastVersion) === 1)) {
 			console.log('Preferences migration');
+
+			const { migrateOldSettings } = await import('@/pref-migrate.js');
 
 			migrateOldSettings();
 		}
