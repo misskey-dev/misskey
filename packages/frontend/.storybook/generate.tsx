@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, globSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
 import { GENERATOR, type State, generate } from 'astring';
 import type * as estree from 'estree';
-import glob from 'fast-glob';
 import { format } from 'prettier';
 
 interface SatisfiesExpression extends estree.BaseExpression {
@@ -439,38 +438,37 @@ function toStories(component: string): Promise<string> {
 
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
 (async () => {
-	const globs = await Promise.all([
-		glob('src/components/global/Mk*.vue'),
-		glob('src/components/global/RouterView.vue'),
-		glob('src/components/MkAbuseReportWindow.vue'),
-		glob('src/components/MkAccountMoved.vue'),
-		glob('src/components/MkAchievements.vue'),
-		glob('src/components/MkAnalogClock.vue'),
-		glob('src/components/MkAnimBg.vue'),
-		glob('src/components/MkAnnouncementDialog.vue'),
-		glob('src/components/MkAntennaEditor.vue'),
-		glob('src/components/MkAntennaEditorDialog.vue'),
-		glob('src/components/MkAsUi.vue'),
-		glob('src/components/MkAutocomplete.vue'),
-		glob('src/components/MkAvatars.vue'),
-		glob('src/components/Mk[B-E]*.vue'),
-		glob('src/components/MkFlashPreview.vue'),
-		glob('src/components/MkGalleryPostPreview.vue'),
-		glob('src/components/MkSignupServerRules.vue'),
-		glob('src/components/MkUserSetupDialog.vue'),
-		glob('src/components/MkUserSetupDialog.*.vue'),
-		glob('src/components/MkImgPreviewDialog.vue'),
-		glob('src/components/MkInstanceCardMini.vue'),
-		glob('src/components/MkInviteCode.vue'),
-		glob('src/components/MkTagItem.vue'),
-		glob('src/components/MkRoleSelectDialog.vue'),
-		glob('src/components/grid/MkGrid.vue'),
-		glob('src/pages/admin/custom-emojis-manager2.vue'),
-		glob('src/pages/admin/overview.ap-requests.vue'),
-		glob('src/pages/user/home.vue'),
-		glob('src/pages/search.vue'),
-	]);
-	const components = globs.flat();
+	const components = [
+		globSync('src/components/global/Mk*.vue'),
+		globSync('src/components/global/RouterView.vue'),
+		globSync('src/components/MkAbuseReportWindow.vue'),
+		globSync('src/components/MkAccountMoved.vue'),
+		globSync('src/components/MkAchievements.vue'),
+		globSync('src/components/MkAnalogClock.vue'),
+		globSync('src/components/MkAnimBg.vue'),
+		globSync('src/components/MkAnnouncementDialog.vue'),
+		globSync('src/components/MkAntennaEditor.vue'),
+		globSync('src/components/MkAntennaEditorDialog.vue'),
+		globSync('src/components/MkAsUi.vue'),
+		globSync('src/components/MkAutocomplete.vue'),
+		globSync('src/components/MkAvatars.vue'),
+		globSync('src/components/Mk[B-E]*.vue'),
+		globSync('src/components/MkFlashPreview.vue'),
+		globSync('src/components/MkGalleryPostPreview.vue'),
+		globSync('src/components/MkSignupServerRules.vue'),
+		globSync('src/components/MkUserSetupDialog.vue'),
+		globSync('src/components/MkUserSetupDialog.*.vue'),
+		globSync('src/components/MkImgPreviewDialog.vue'),
+		globSync('src/components/MkInstanceCardMini.vue'),
+		globSync('src/components/MkInviteCode.vue'),
+		globSync('src/components/MkTagItem.vue'),
+		globSync('src/components/MkRoleSelectDialog.vue'),
+		globSync('src/components/grid/MkGrid.vue'),
+		globSync('src/pages/admin/custom-emojis-manager2.vue'),
+		globSync('src/pages/admin/overview.ap-requests.vue'),
+		globSync('src/pages/user/home.vue'),
+		globSync('src/pages/search.vue'),
+	].flat();
 	await Promise.all(components.map(async (component) => {
 		const stories = component.replace(/\.vue$/, '.stories.ts');
 		await writeFile(stories, await toStories(component));
