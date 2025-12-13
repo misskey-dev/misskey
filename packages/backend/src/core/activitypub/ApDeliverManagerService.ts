@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
-import { IActivity } from '@/core/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';

@@ -5,7 +5,7 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { DeliverQueue } from '@/core/QueueModule.js';
+import type { DeliverQueue } from '@/core/QueueModule.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

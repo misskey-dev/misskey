@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
-import { MiChannelService } from './channel.js';
+import type { MiChannelService } from './channel.js';
 import { AdminChannelService } from './channels/admin.js';
 import { AntennaChannelService } from './channels/antenna.js';
 import { ChannelChannelService } from './channels/channel.js';
