@@ -206,6 +206,7 @@ class NoctownChannel extends Channel {
 					worldId,
 					terrainData: chunk.terrainData as JsonValue,
 					biome: chunk.biome as JsonValue,
+					environmentObjects: chunk.environmentObjects as JsonValue,
 				} as JsonValue);
 			}
 		} catch (error) {
