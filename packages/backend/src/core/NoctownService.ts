@@ -27,6 +27,7 @@ import type {
 	NoctownCowsRepository,
 	NoctownHousesRepository,
 	NoctownWorldChunksRepository,
+	UsersRepository,
 } from '@/models/_.js';
 import type { NoctownCropStage } from '@/models/noctown/NoctownCrop.js';
 import type { NoctownQuestType, NoctownQuestStatus } from '@/models/noctown/NoctownQuest.js';
@@ -83,6 +84,9 @@ export class NoctownService {
 
 		@Inject(DI.noctownWorldChunksRepository)
 		private noctownWorldChunksRepository: NoctownWorldChunksRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
