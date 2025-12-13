@@ -7,6 +7,9 @@ import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { Character } from './character.js';
 import { addRandomEnvironmentEntities } from './environment.js';
+import { createPondMesh } from './pond.js';
+import { createLakeMesh } from './lake.js';
+import { createFarmPlotMesh } from './farm-plot.js';
 
 export interface PlayerData {
 	id: string;
@@ -23,7 +26,7 @@ export interface PlayerData {
 export interface ChunkData {
 	chunkX: number;
 	chunkZ: number;
-	terrainData: {
+	terrainData: number[] | {
 		heightMap: number[][];
 		version: number;
 	};
@@ -549,33 +552,65 @@ export class NoctownEngine {
 		const group = new THREE.Group();
 		group.position.set(data.chunkX * 16, 0, data.chunkZ * 16);
 
-		// Create terrain from height map
-		const heightMap = data.terrainData.heightMap;
-		if (heightMap && heightMap.length > 0) {
-			const geometry = new THREE.PlaneGeometry(16, 16, 15, 15);
-			const positions = geometry.attributes.position;
+		// Check if terrainData is an array (new format) or object (old format)
+		if (Array.isArray(data.terrainData)) {
+			// New format: terrainData is number[] (地形タイプ配列)
+			const terrainTypes = data.terrainData;
 
-			for (let i = 0; i < positions.count; i++) {
-				const x = Math.floor(i % 16);
-				const z = Math.floor(i / 16);
-				if (heightMap[x] && heightMap[x][z] !== undefined) {
-					positions.setZ(i, heightMap[x][z] * 0.2);
+			for (let i = 0; i < terrainTypes.length; i++) {
+				const terrainType = terrainTypes[i];
+				const localX = i % 16;
+				const localZ = Math.floor(i / 16);
+
+				// seed値の計算（チャンク座標から決定論的に生成）
+				const worldX = data.chunkX * 16 + localX;
+				const worldZ = data.chunkZ * 16 + localZ;
+				const seed = worldX * 1000 + worldZ;
+
+				if (terrainType === 1) {
+					// 池を生成
+					const pond = createPondMesh(localX, localZ, seed);
+					group.add(pond);
+				} else if (terrainType === 2) {
+					// 湖を生成
+					const lake = createLakeMesh(localX, localZ, seed);
+					group.add(lake);
+				} else if (terrainType === 3) {
+					// 農園プロットを生成
+					const farmPlot = createFarmPlotMesh(localX, localZ);
+					group.add(farmPlot.group);
 				}
+				// terrainType === 0（草原）は既存のグラス生成ロジックで処理
 			}
-			geometry.computeVertexNormals();
+		} else {
+			// Old format: terrainData is { heightMap, version }
+			const heightMap = data.terrainData.heightMap;
+			if (heightMap && heightMap.length > 0) {
+				const geometry = new THREE.PlaneGeometry(16, 16, 15, 15);
+				const positions = geometry.attributes.position;
 
-			const color = this.getBiomeColor(data.biome);
-			const material = new THREE.MeshStandardMaterial({
-				color,
-				roughness: 0.8,
-				flatShading: true,
-			});
+				for (let i = 0; i < positions.count; i++) {
+					const x = Math.floor(i % 16);
+					const z = Math.floor(i / 16);
+					if (heightMap[x] && heightMap[x][z] !== undefined) {
+						positions.setZ(i, heightMap[x][z] * 0.2);
+					}
+				}
+				geometry.computeVertexNormals();
 
-			const terrain = new THREE.Mesh(geometry, material);
-			terrain.rotation.x = -Math.PI / 2;
-			terrain.position.set(8, 0, 8);
-			terrain.receiveShadow = true;
-			group.add(terrain);
+				const color = this.getBiomeColor(data.biome);
+				const material = new THREE.MeshStandardMaterial({
+					color,
+					roughness: 0.8,
+					flatShading: true,
+				});
+
+				const terrain = new THREE.Mesh(geometry, material);
+				terrain.rotation.x = -Math.PI / 2;
+				terrain.position.set(8, 0, 8);
+				terrain.receiveShadow = true;
+				group.add(terrain);
+			}
 		}
 
 		this.scene.add(group);

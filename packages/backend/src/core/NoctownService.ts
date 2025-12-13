@@ -1781,6 +1781,26 @@ export class NoctownService {
 	}
 
 	/**
+	 * Seeded random number generator
+	 */
+	private seededRandom(seed: number): number {
+		return Math.abs(Math.sin(seed) * 10000) % 1;
+	}
+
+	/**
+	 * Hash coordinates to generate a deterministic seed
+	 */
+	private hashCoordinates(worldId: string, chunkX: number, chunkZ: number): number {
+		// Simple hash function
+		let hash = 0;
+		for (let i = 0; i < worldId.length; i++) {
+			hash = ((hash << 5) - hash) + worldId.charCodeAt(i);
+			hash = hash & hash;
+		}
+		return hash + chunkX * 1000 + chunkZ;
+	}
+
+	/**
 	 * Generate a new chunk (T032-T033-T034)
 	 * Returns null if chunk already exists (T034)
 	 */
@@ -1802,6 +1822,34 @@ export class NoctownService {
 		const generator = getChunkGenerator(12345); // Use consistent seed for deterministic generation
 		const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
 
+		// Generate terrain types (0: grass, 1: pond, 2: lake, 3: farm plot)
+		const seed = this.hashCoordinates(worldId, chunkX, chunkZ);
+		const terrainData = new Array(256).fill(0);
+
+		for (let i = 0; i < 256; i++) {
+			const localX = i % 16;
+			const localZ = Math.floor(i / 16);
+			const worldX = chunkX * 16 + localX;
+			const worldZ = chunkZ * 16 + localZ;
+
+			// Farm plot判定（固定位置）
+			if ((worldX === -6 || worldX === -4 || worldX === -2) &&
+				(worldZ === 2 || worldZ === 4)) {
+				terrainData[i] = 3;
+				continue;
+			}
+
+			// 池・湖判定
+			const tileSeed = seed + i;
+			const tileRandom = this.seededRandom(tileSeed);
+			if (tileRandom < 0.08) {
+				terrainData[i] = 1; // 池
+			} else if (tileRandom < 0.11) {
+				terrainData[i] = 2; // 湖
+			}
+			// else: terrainData[i] = 0 (草原、デフォルト)
+		}
+
 		// T033: Save generated chunk to database
 		const chunkId = this.idService.gen();
 		const newChunk = this.noctownWorldChunksRepository.create({
@@ -1812,8 +1860,8 @@ export class NoctownService {
 			biome: chunkTerrainData.biome,
 			generatedAt: new Date(),
 		});
-		// Set terrainData separately to avoid type issues
-		(newChunk as any).terrainData = chunkTerrainData;
+		// Set terrainData with terrain types
+		(newChunk as any).terrainData = terrainData;
 		const chunk = await this.noctownWorldChunksRepository.save(newChunk);
 
 		return chunk;

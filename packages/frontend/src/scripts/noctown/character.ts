@@ -42,6 +42,13 @@ export class Character {
 	private torso!: THREE.Mesh;
 	private head!: THREE.Mesh;
 	private headMaterials: THREE.Material[];
+	private headGroup!: THREE.Group;
+	private backHair!: THREE.Mesh;
+	private topHair!: THREE.Mesh;
+	private leftSideHair!: THREE.Mesh;
+	private rightSideHair!: THREE.Mesh;
+	private leftShoe!: THREE.Mesh;
+	private rightShoe!: THREE.Mesh;
 
 	// Limbs with pivot groups
 	private leftArmPivot!: THREE.Group;
@@ -100,6 +107,9 @@ export class Character {
 	private createBody(): void {
 		const bodyColor = 0x4a90d9;
 		const skinColor = 0xffdbac;
+		const hairColor = 0x3a2010;
+		const shoeColor = 0x1a1a1a;
+		const pantsColor = 0x2a2a3a;
 
 		// Torso (body)
 		const torsoGeo = new THREE.BoxGeometry(0.8, 1, 0.5);
@@ -108,6 +118,11 @@ export class Character {
 		this.torso.position.y = 1.5;
 		this.torso.castShadow = true;
 		this.group.add(this.torso);
+
+		// Head group
+		this.headGroup = new THREE.Group();
+		this.headGroup.position.y = 2.55;
+		this.group.add(this.headGroup);
 
 		// Head (cube with 6 materials for icon texture)
 		const headGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
@@ -124,9 +139,40 @@ export class Character {
 		];
 
 		this.head = new THREE.Mesh(headGeo, this.headMaterials);
-		this.head.position.y = 2.55;
+		this.head.position.y = 0; // 相対位置に変更
 		this.head.castShadow = true;
-		this.group.add(this.head);
+		this.headGroup.add(this.head);
+
+		// Hair parts
+		const hairMat = new THREE.MeshStandardMaterial({ color: hairColor });
+
+		// Back hair
+		const backHairGeo = new THREE.BoxGeometry(1.1, 1.4, 0.5);
+		this.backHair = new THREE.Mesh(backHairGeo, hairMat);
+		this.backHair.position.set(0, -0.25, -0.5);
+		this.backHair.castShadow = true;
+		this.headGroup.add(this.backHair);
+
+		// Top hair
+		const topHairGeo = new THREE.BoxGeometry(1.0, 0.3, 1.0);
+		this.topHair = new THREE.Mesh(topHairGeo, hairMat);
+		this.topHair.position.set(0, 0.55, -0.05);
+		this.topHair.castShadow = true;
+		this.headGroup.add(this.topHair);
+
+		// Left side hair
+		const leftSideHairGeo = new THREE.BoxGeometry(0.25, 1.2, 0.8);
+		this.leftSideHair = new THREE.Mesh(leftSideHairGeo, hairMat);
+		this.leftSideHair.position.set(-0.55, -0.15, -0.05);
+		this.leftSideHair.castShadow = true;
+		this.headGroup.add(this.leftSideHair);
+
+		// Right side hair
+		const rightSideHairGeo = new THREE.BoxGeometry(0.25, 1.2, 0.8);
+		this.rightSideHair = new THREE.Mesh(rightSideHairGeo, hairMat);
+		this.rightSideHair.position.set(0.55, -0.15, -0.05);
+		this.rightSideHair.castShadow = true;
+		this.headGroup.add(this.rightSideHair);
 
 		// Arms with pivot groups
 		const armGeo = new THREE.BoxGeometry(0.25, 0.8, 0.25);
@@ -152,7 +198,7 @@ export class Character {
 
 		// Legs with pivot groups
 		const legGeo = new THREE.BoxGeometry(0.3, 0.8, 0.3);
-		const legMat = new THREE.MeshStandardMaterial({ color: 0x2d2d4a });
+		const legMat = new THREE.MeshStandardMaterial({ color: pantsColor });
 
 		// Left leg pivot
 		this.leftLegPivot = new THREE.Group();
@@ -171,6 +217,22 @@ export class Character {
 		this.rightLeg.castShadow = true;
 		this.rightLegPivot.add(this.rightLeg);
 		this.group.add(this.rightLegPivot);
+
+		// Shoes (独立メッシュ)
+		const shoeGeo = new THREE.BoxGeometry(0.32, 0.15, 0.38);
+		const shoeMat = new THREE.MeshStandardMaterial({ color: shoeColor });
+
+		// Left shoe
+		this.leftShoe = new THREE.Mesh(shoeGeo, shoeMat);
+		this.leftShoe.position.set(-0.2, 0.08, 0.02);
+		this.leftShoe.castShadow = true;
+		this.group.add(this.leftShoe);
+
+		// Right shoe
+		this.rightShoe = new THREE.Mesh(shoeGeo, shoeMat);
+		this.rightShoe.position.set(0.2, 0.08, 0.02);
+		this.rightShoe.castShadow = true;
+		this.group.add(this.rightShoe);
 	}
 
 	/**
