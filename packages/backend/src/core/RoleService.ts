@@ -5,7 +5,7 @@
 
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ModuleRef } from '@nestjs/core';
+import { ModuleRef } from '@nestjs/core';
 import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import { CacheService } from '@/core/CacheService.js';

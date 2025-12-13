@@ -5,7 +5,7 @@
 
 import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
-import type { ModuleRef } from '@nestjs/core';
+import { ModuleRef } from '@nestjs/core';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';

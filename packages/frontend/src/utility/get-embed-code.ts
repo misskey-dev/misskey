@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 import { url } from '@@/js/config.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';

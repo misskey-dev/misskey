@@ -5,7 +5,7 @@
 
 import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ModuleRef } from '@nestjs/core';
+import { ModuleRef } from '@nestjs/core';
 import promiseLimit from 'promise-limit';
 import type { DataSource } from 'typeorm';
 import type { Config } from '@/config.js';

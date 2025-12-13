@@ -5,7 +5,7 @@
 
 import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ModuleRef } from '@nestjs/core';
+import { ModuleRef } from '@nestjs/core';
 import { In } from 'typeorm';
 import { CacheService } from '@/core/CacheService.js';
 import { bindThis } from '@/decorators.js';

@@ -5,9 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
-import type {
-	AbuseReportNotificationRecipientEntityService,
-} from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
+import { AbuseReportNotificationRecipientEntityService } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

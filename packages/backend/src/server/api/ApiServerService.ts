@@ -6,7 +6,7 @@
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ModuleRef } from '@nestjs/core';
+import { ModuleRef } from '@nestjs/core';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import type { Config } from '@/config.js';

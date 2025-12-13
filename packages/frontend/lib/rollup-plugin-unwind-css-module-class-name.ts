@@ -80,7 +80,7 @@ function normalizeClassWalker(tree: estree.Node, stack: string | undefined): str
 
 export function normalizeClass(tree: estree.Node, stack?: string): string | null {
 	const walked = normalizeClassWalker(tree, stack);
-	return walked?.replace(/^\s+|\s+(?=\s)|\s+$/g, '');
+	return walked?.replace(/^\s+|\s+(?=\s)|\s+$/g, '') ?? null;
 }
 
 export function unwindCssModuleClassName(ast: estree.Node): void {
