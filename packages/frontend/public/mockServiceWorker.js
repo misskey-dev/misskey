@@ -214,7 +214,7 @@ async function getResponse(event, client, requestId) {
     // are immutable.
     delete headers['x-msw-bypass']
 
-    return fetch(clonedRequest, { headers })
+    return window.fetch(clonedRequest, { headers })
   }
 
   // Bypass mocking when the client is not active.
@@ -298,7 +298,7 @@ function sendToClient(client, message) {
 
 function sleep(timeMs) {
   return new Promise((resolve) => {
-    setTimeout(resolve, timeMs)
+    window.setTimeout(resolve, timeMs)
   })
 }
 

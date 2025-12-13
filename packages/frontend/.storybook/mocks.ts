@@ -17,7 +17,7 @@ export const onUnhandledRequest = ((req, print) => {
 export const commonHandlers = [
 	http.get('/fluent-emoji/:codepoints.png', async ({ params }) => {
 		const { codepoints } = params;
-		const value = await fetch(`https://raw.githubusercontent.com/misskey-dev/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
+		const value = await window.fetch(`https://raw.githubusercontent.com/misskey-dev/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
 		return new HttpResponse(value, {
 			headers: {
 				'Content-Type': 'image/png',
@@ -26,7 +26,7 @@ export const commonHandlers = [
 	}),
 	http.get('/fluent-emojis/:codepoints.png', async ({ params }) => {
 		const { codepoints } = params;
-		const value = await fetch(`https://raw.githubusercontent.com/misskey-dev/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
+		const value = await window.fetch(`https://raw.githubusercontent.com/misskey-dev/emojis/main/dist/${codepoints}.png`).then((response) => response.blob());
 		return new HttpResponse(value, {
 			headers: {
 				'Content-Type': 'image/png',
@@ -35,7 +35,7 @@ export const commonHandlers = [
 	}),
 	http.get('/twemoji/:codepoints.svg', async ({ params }) => {
 		const { codepoints } = params;
-		const value = await fetch(`https://unpkg.com/@discordapp/twemoji@16.0.1/dist/svg/${codepoints}.svg`).then((response) => response.blob());
+		const value = await window.fetch(`https://unpkg.com/@discordapp/twemoji@16.0.1/dist/svg/${codepoints}.svg`).then((response) => response.blob());
 		return new HttpResponse(value, {
 			headers: {
 				'Content-Type': 'image/svg+xml',
