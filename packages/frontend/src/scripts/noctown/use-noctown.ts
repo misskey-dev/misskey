@@ -80,6 +80,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	let channel: any = null;
 	let moveInterval: ReturnType<typeof setInterval> | null = null;
 	let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+	let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+	let reconnectAttempts = 0;
+	const MAX_RECONNECT_ATTEMPTS = 10;
+	const RECONNECT_DELAY_MS = 3000;
 
 	// Movement state
 	let currentX = 0;
@@ -149,35 +153,82 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	}
 
 	async function connectStream(): Promise<void> {
-		stream = useStream();
-		channel = stream.useChannel('noctown');
+		try {
+			stream = useStream();
+			channel = stream.useChannel('noctown');
 
-		// Handle incoming events
-		channel.on('playerMoved', (body: PlayerData) => {
-			handlePlayerMoved(body);
-		});
-		channel.on('playerJoined', (body: PlayerData) => {
-			handlePlayerJoined(body);
-		});
-		channel.on('playerLeft', (body: { playerId: string }) => {
-			handlePlayerLeft(body);
-		});
+			// Handle incoming events
+			channel.on('playerMoved', (body: PlayerData) => {
+				handlePlayerMoved(body);
+			});
+			channel.on('playerJoined', (body: PlayerData) => {
+				handlePlayerJoined(body);
+			});
+			channel.on('playerLeft', (body: { playerId: string }) => {
+				handlePlayerLeft(body);
+			});
+			channel.on('playerOnline', (body: { playerId: string; userId: string }) => {
+				handlePlayerOnline(body);
+			});
 
-		// T038: Handle chunkGenerated event and render terrain
-		channel.on('chunkGenerated', (body: ChunkData) => {
-			handleChunkGenerated(body);
-		});
+			// T038: Handle chunkGenerated event and render terrain
+			channel.on('chunkGenerated', (body: ChunkData) => {
+				handleChunkGenerated(body);
+			});
 
-		isConnected.value = true;
+			// Monitor connection state (check if stream object exists and has state)
+			if (stream && typeof stream.on === 'function') {
+				stream.on('_disconnected_', handleDisconnect);
+			}
 
-		// Start movement loop
-		startMovementLoop();
+			isConnected.value = true;
+			reconnectAttempts = 0;
 
-		// Start heartbeat
-		startHeartbeat();
+			// Start movement loop
+			startMovementLoop();
 
-		// Fetch nearby players
-		await fetchNearbyPlayers();
+			// Start heartbeat
+			startHeartbeat();
+
+			// Fetch nearby players
+			await fetchNearbyPlayers();
+		} catch (e) {
+			console.error('Failed to connect to stream:', e);
+			scheduleReconnect();
+		}
+	}
+
+	function handleDisconnect(): void {
+		console.log('WebSocket disconnected, attempting to reconnect...');
+		isConnected.value = false;
+		scheduleReconnect();
+	}
+
+	function scheduleReconnect(): void {
+		if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+			console.error('Max reconnect attempts reached');
+			error.value = '接続が失われました。ページをリロードしてください。';
+			return;
+		}
+
+		reconnectAttempts++;
+		console.log(`Reconnect attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS} in ${RECONNECT_DELAY_MS}ms`);
+
+		reconnectTimeout = setTimeout(async () => {
+			try {
+				// Cleanup old connection
+				if (channel) {
+					channel.dispose();
+					channel = null;
+				}
+
+				// Attempt reconnection
+				await connectStream();
+			} catch (e) {
+				console.error('Reconnect failed:', e);
+				scheduleReconnect();
+			}
+		}, RECONNECT_DELAY_MS);
 	}
 
 	function handlePlayerMoved(data: PlayerData): void {
@@ -193,6 +244,32 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	function handlePlayerLeft(data: { playerId: string }): void {
 		if (!engine) return;
 		engine.removeRemotePlayer(data.playerId);
+	}
+
+	async function handlePlayerOnline(data: { playerId: string; userId: string }): Promise<void> {
+		if (!engine || data.playerId === playerData.value?.id) return;
+
+		// Fetch the player's current data and add/update in scene
+		try {
+			const res = await window.fetch('/api/noctown/players/nearby', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({ i: getToken(), x: currentX, z: currentZ, radius: 100 }),
+			});
+
+			if (!res.ok) return;
+
+			const players: NoctownNearbyPlayer[] = await res.json();
+			const onlinePlayer = players.find(p => p.id === data.playerId);
+
+			if (onlinePlayer) {
+				// Re-add or update player in the scene
+				engine.addRemotePlayer(onlinePlayer);
+			}
+		} catch (e) {
+			console.error('Failed to fetch online player data:', e);
+		}
 	}
 
 	// T038: Handle chunkGenerated event and render terrain
@@ -335,6 +412,11 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		if (heartbeatInterval) {
 			clearInterval(heartbeatInterval);
 			heartbeatInterval = null;
+		}
+
+		if (reconnectTimeout) {
+			clearTimeout(reconnectTimeout);
+			reconnectTimeout = null;
 		}
 
 		if (channel) {

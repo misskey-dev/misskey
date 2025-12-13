@@ -106,10 +106,10 @@ export class NoctownEngine {
 	constructor(container: HTMLElement) {
 		this.container = container;
 
-		// Scene
+		// Scene - Nocturne Theme (夜の月明かり)
 		this.scene = new THREE.Scene();
-		this.scene.background = new THREE.Color(0x87ceeb); // Sky blue
-		this.scene.fog = new THREE.Fog(0x87ceeb, 50, 200);
+		this.scene.background = new THREE.Color(0x0f1225); // 深い夜空
+		this.scene.fog = new THREE.Fog(0x0f1225, 50, 120); // 霧で遠くを暗く（孤独感の演出）
 
 		// Camera - Quarter View (Orthographic)
 		const aspect = container.clientWidth / container.clientHeight;
@@ -156,30 +156,69 @@ export class NoctownEngine {
 	}
 
 	private setupLights(): void {
-		// Ambient light (character-demo.html style)
-		const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+		// Nocturne Theme Lighting (夜の月明かり)
+
+		// アンビエントライト（夜の静けさ、青みがかった暗さ）
+		const ambient = new THREE.AmbientLight(0x334466, 0.7);
 		this.scene.add(ambient);
 
-		// Directional light (sun) with shadow configuration
-		const sun = new THREE.DirectionalLight(0xffffff, 0.8);
-		sun.position.set(10, 20, 10);
-		sun.castShadow = true;
-		sun.shadow.mapSize.width = 2048;
-		sun.shadow.mapSize.height = 2048;
-		sun.shadow.camera.near = 0.5;
-		sun.shadow.camera.far = 50;
-		sun.shadow.camera.left = -20;
-		sun.shadow.camera.right = 20;
-		sun.shadow.camera.top = 20;
-		sun.shadow.camera.bottom = -20;
-		this.scene.add(sun);
+		// 月明かり（青白い光）
+		const moonLight = new THREE.DirectionalLight(0x8899dd, 0.9);
+		moonLight.position.set(10, 20, 10);
+		moonLight.castShadow = true;
+		moonLight.shadow.mapSize.width = 2048;
+		moonLight.shadow.mapSize.height = 2048;
+		moonLight.shadow.camera.near = 0.5;
+		moonLight.shadow.camera.far = 50;
+		moonLight.shadow.camera.left = -20;
+		moonLight.shadow.camera.right = 20;
+		moonLight.shadow.camera.top = 20;
+		moonLight.shadow.camera.bottom = -20;
+		this.scene.add(moonLight);
+
+		// 月を追加
+		const moonGeo = new THREE.SphereGeometry(3, 32, 32);
+		const moonMat = new THREE.MeshBasicMaterial({ color: 0xffffee });
+		const moon = new THREE.Mesh(moonGeo, moonMat);
+		moon.position.set(50, 60, -80);
+		this.scene.add(moon);
+
+		// 月のグロー効果
+		const moonGlowGeo = new THREE.SphereGeometry(4, 32, 32);
+		const moonGlowMat = new THREE.MeshBasicMaterial({
+			color: 0x4466aa,
+			transparent: true,
+			opacity: 0.3
+		});
+		const moonGlow = new THREE.Mesh(moonGlowGeo, moonGlowMat);
+		moonGlow.position.set(50, 60, -80);
+		this.scene.add(moonGlow);
+
+		// 星空を追加
+		const starsGeometry = new THREE.BufferGeometry();
+		const starPositions: number[] = [];
+		for (let i = 0; i < 1000; i++) {
+			const x = (Math.random() - 0.5) * 500;
+			const y = Math.random() * 100 + 30;
+			const z = (Math.random() - 0.5) * 500;
+			starPositions.push(x, y, z);
+		}
+		starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+		const starsMaterial = new THREE.PointsMaterial({
+			color: 0xffffff,
+			size: 0.3,
+			transparent: true,
+			opacity: 0.8
+		});
+		const stars = new THREE.Points(starsGeometry, starsMaterial);
+		this.scene.add(stars);
 	}
 
 	private createGroundPlane(): void {
 		const geometry = new THREE.PlaneGeometry(500, 500);
 		const material = new THREE.MeshStandardMaterial({
-			color: 0x3d8c40,
-			roughness: 0.8,
+			color: 0x2a3a2a, // 夜の草地（少し明るめ）
+			roughness: 0.9,
 		});
 		const ground = new THREE.Mesh(geometry, material);
 		ground.rotation.x = -Math.PI / 2;
