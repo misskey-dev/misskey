@@ -246,8 +246,8 @@ export class NoctownEngine {
 		const chunkGroup = new THREE.Group();
 		chunkGroup.position.set(offsetX, 0, offsetZ);
 
-		// FR-073: Add grid helper (character-demo+5準拠)
-		const gridHelper = new THREE.GridHelper(CHUNK_SIZE, CHUNK_SIZE, 0x2d4a2d, 0x2d4a2d);
+		// FR-001: Add grid helper (character-demo+14-fishing準拠)
+		const gridHelper = new THREE.GridHelper(CHUNK_SIZE, CHUNK_SIZE, 0x2a3a3a, 0x2a3a3a);
 		gridHelper.position.set(0, 0.01, 0); // y=0.01 to avoid z-fighting
 		chunkGroup.add(gridHelper);
 
