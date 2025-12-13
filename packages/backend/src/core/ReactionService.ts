@@ -8,7 +8,7 @@ import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
+import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';

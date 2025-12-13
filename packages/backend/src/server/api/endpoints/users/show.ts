@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FindOptionsWhere } from 'typeorm';
 import { In, IsNull } from 'typeorm';
-import type PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
+import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { RoleService } from '@/core/RoleService.js';

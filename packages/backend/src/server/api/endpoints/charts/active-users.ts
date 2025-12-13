@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { schema } from '@/core/chart/charts/entities/active-users.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

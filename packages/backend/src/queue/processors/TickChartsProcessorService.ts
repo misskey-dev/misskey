@@ -4,18 +4,18 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type ActiveUsersChart from '@/core/chart/charts/active-users.js';
-import type ApRequestChart from '@/core/chart/charts/ap-request.js';
-import type DriveChart from '@/core/chart/charts/drive.js';
-import type FederationChart from '@/core/chart/charts/federation.js';
-import type InstanceChart from '@/core/chart/charts/instance.js';
-import type NotesChart from '@/core/chart/charts/notes.js';
-import type PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
-import type PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
-import type PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
-import type PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
-import type PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
-import type UsersChart from '@/core/chart/charts/users.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import ApRequestChart from '@/core/chart/charts/ap-request.js';
+import DriveChart from '@/core/chart/charts/drive.js';
+import FederationChart from '@/core/chart/charts/federation.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
+import NotesChart from '@/core/chart/charts/notes.js';
+import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
+import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
+import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
+import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
+import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
+import UsersChart from '@/core/chart/charts/users.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';

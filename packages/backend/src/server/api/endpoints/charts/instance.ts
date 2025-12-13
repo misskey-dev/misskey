@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { schema } from '@/core/chart/charts/entities/instance.js';
-import type InstanceChart from '@/core/chart/charts/instance.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 

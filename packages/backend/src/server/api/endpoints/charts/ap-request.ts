@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type ApRequestChart from '@/core/chart/charts/ap-request.js';
+import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import { schema } from '@/core/chart/charts/entities/ap-request.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

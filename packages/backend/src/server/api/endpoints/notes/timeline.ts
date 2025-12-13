@@ -8,7 +8,7 @@ import { Brackets } from 'typeorm';
 import { CacheService } from '@/core/CacheService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import type ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { IdService } from '@/core/IdService.js';

@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { schema } from '@/core/chart/charts/entities/per-user-reactions.js';
-import type PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
+import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
