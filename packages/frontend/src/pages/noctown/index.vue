@@ -358,12 +358,23 @@ function handlePlayerMoved(data: PlayerData): void {
 
 function handlePlayerJoined(data: PlayerData): void {
 	if (!engine || data.id === playerData.value?.id) return;
-	engine.addRemotePlayer(data);
+
+	// FR-020: If player already exists as NPC, update online status instead of adding again
+	const existingPlayers = engine.getRemotePlayers();
+	if (existingPlayers && existingPlayers.has(data.id)) {
+		// Player was offline (NPC), now coming back online
+		engine.setPlayerOnlineStatus(data.id, true);
+		engine.updateRemotePlayer(data); // Update position
+	} else {
+		// New player joining
+		engine.addRemotePlayer(data);
+	}
 }
 
 function handlePlayerLeft(data: { playerId: string }): void {
 	if (!engine) return;
-	engine.removeRemotePlayer(data.playerId);
+	// FR-019: Don't remove player, just set offline status (NPC化)
+	engine.setPlayerOnlineStatus(data.playerId, false);
 }
 
 // T017, T018: Handle player status change (online/offline transition)

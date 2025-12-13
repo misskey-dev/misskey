@@ -427,6 +427,16 @@ export class NoctownEngine {
 
 		this.scene.add(character.group);
 		this.remotePlayers.set(data.id, character);
+
+		// FR-022: Apply visual effects for offline players (NPC)
+		if (!data.isOnline) {
+			character.group.traverse((child) => {
+				if (child instanceof THREE.Mesh && child.material instanceof THREE.Material) {
+					child.material.opacity = 0.7;
+					child.material.transparent = true;
+				}
+			});
+		}
 	}
 
 	public updateRemotePlayer(data: PlayerData): void {
@@ -499,6 +509,11 @@ export class NoctownEngine {
 
 		// Update player name sprite to show online/offline status
 		character.setOnline(isOnline);
+	}
+
+	// FR-020: Get remote players map for checking existence
+	public getRemotePlayers(): Map<string, Character> {
+		return this.remotePlayers;
 	}
 
 	// Chunk management
