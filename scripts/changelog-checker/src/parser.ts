@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import { Heading, List, Node } from 'mdast';
+import type { Heading, List, Node } from 'mdast';
 import { toString } from 'mdast-util-to-string';
+import remarkParse from 'remark-parse';
+import { unified } from 'unified';
+import * as fs from 'node:fs';
 
 export class Release {
 	public readonly releaseName: string;

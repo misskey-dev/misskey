@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Release } from './parser.js';
+import type { Release } from './parser.js';
 
 export class Result {
 	public readonly success: boolean;
