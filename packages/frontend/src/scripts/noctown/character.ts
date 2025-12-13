@@ -121,7 +121,7 @@ export class Character {
 
 		// Head group
 		this.headGroup = new THREE.Group();
-		this.headGroup.position.y = 2.2; // FR-010: 頭が体から離れないように調整（torso上端y=2.0 + 0.2）
+		this.headGroup.position.y = 2.55;
 		this.group.add(this.headGroup);
 
 		// Head (cube with 6 materials for icon texture)
@@ -139,7 +139,7 @@ export class Character {
 		];
 
 		this.head = new THREE.Mesh(headGeo, this.headMaterials);
-		this.head.position.y = 0; // 相対位置に変更
+		this.head.position.y = -0.1; // FR-010: Torso上端(y=2.0)に接続するように調整
 		this.head.castShadow = true;
 		this.headGroup.add(this.head);
 
@@ -661,7 +661,7 @@ export class Character {
 
 			// Subtle body bob
 			this.torso.position.y = 1.5 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
-			this.head.position.y = 2.55 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
+			this.headGroup.position.y = 2.55 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
 		} else {
 			// Idle - return to neutral pose
 			this.walkCycle = 0;
@@ -671,7 +671,7 @@ export class Character {
 			this.rightLegPivot.rotation.x *= 0.85;
 
 			this.torso.position.y = 1.5;
-			this.head.position.y = 2.55;
+			this.headGroup.position.y = 2.55;
 		}
 
 		// Smooth rotation
@@ -759,7 +759,7 @@ export class Character {
 
 			// Subtle body bob
 			this.torso.position.y = 1.5 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
-			this.head.position.y = 2.55 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
+			this.headGroup.position.y = 2.55 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
 		} else {
 			// Idle - return to neutral pose smoothly
 			this.walkCycle = 0;
@@ -769,7 +769,7 @@ export class Character {
 			this.rightLegPivot.rotation.x *= 0.85;
 
 			this.torso.position.y = 1.5;
-			this.head.position.y = 2.55;
+			this.headGroup.position.y = 2.55;
 		}
 
 		// Smooth rotation towards target
