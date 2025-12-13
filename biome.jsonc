@@ -35,6 +35,35 @@
 					}
 				}
 			}
+		},
+		// restrict usage of certain globals in frontend packages
+		{
+			"includes": ["packages/frontend*/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedGlobals": {
+							"level": "on",
+							"options": {
+								"deniedGlobals": {
+									"open": "Use `window.open`.",
+									"close": "Use `window.close`.",
+									"fetch": "Use `window.fetch`.",
+									"location": "Use `window.location`.",
+									"document": "Use `window.document`.",
+									"history": "Use `window.history`.",
+									"scroll": "Use `window.scroll`.",
+									"setTimeout": "Use `window.setTimeout`.",
+									"setInterval": "Use `window.setInterval`.",
+									"clearTimeout": "Use `window.clearTimeout`.",
+									"clearInterval": "Use `window.clearInterval`.",
+									"name": "Use `window.name`. もしくは name という変数名を定義し忘れている"
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	],
 	"formatter": {
