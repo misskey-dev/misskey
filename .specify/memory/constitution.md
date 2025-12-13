@@ -1,19 +1,20 @@
 <!--
 Sync Impact Report
 ==================
-Version change: 1.0.0 (initial)
-Modified principles: N/A (new constitution)
+Version change: 1.0.0 → 1.1.0
+Modified principles: None
 Added sections:
-  - Core Principles (5 principles)
-  - 技術制約
-  - 開発ワークフロー
-  - Governance
-Removed sections: N/A
+  - Principle VI. 仕様管理規約 (Specification Management)
+  - Principle VII. 継続性保証 (Continuity Guarantee)
+Removed sections: None
 Templates requiring updates:
-  - .specify/templates/plan-template.md: Constitution Check section exists - compatible
-  - .specify/templates/spec-template.md: Requirements section - compatible
-  - .specify/templates/tasks-template.md: Test tasks optional - compatible
-Follow-up TODOs: None
+  - .specify/templates/plan-template.md: ✅ Compatible (Constitution Check section exists)
+  - .specify/templates/spec-template.md: ✅ Compatible (external file references encouraged, not mandatory)
+  - .specify/templates/tasks-template.md: ✅ Compatible (task organization unchanged)
+  - .specify/templates/commands/*.md: ✅ Compatible (no outdated references)
+Follow-up TODOs:
+  - Consider creating .claude/skills/ examples for common investigation patterns
+  - Document spec.md size threshold guidelines (e.g., >500 lines → consider splitting)
 -->
 
 # Misskey noc.ski Constitution
@@ -37,7 +38,7 @@ Follow-up TODOs: None
 
 - 「コミットしてください」と明確に指示された場合のみコミット実行
 - Conventional Commits形式を使用: feat/fix/docs/style/refactor/test/chore
-- git pushは完全禁止（ローカル操作のみ許可）
+- git pushは完全禁止(ローカル操作のみ許可)
 
 **理由**: 意図しない変更のコミットを防止し、ユーザーがコード変更の最終承認権を持つため。
 
@@ -75,6 +76,30 @@ Claude作業ファイルは `claude/` ディレクトリに配置し、既存フ
 - 疑問がある場合は作業を中断して質問すること
 
 **理由**: 正確な情報提供と、プロジェクトの長期的な保守性を確保するため。
+
+### VI. 仕様管理規約 (Specification Management)
+
+spec.mdの肥大化を防ぎ、保守性を高めるため外部ファイルとスキル化を活用すること。
+
+- spec.mdが大きくなる場合、詳細は外部ファイルに分割してインデックス参照すること
+  - 例: `docs/architecture.md`、`docs/api-design.md`、チェックリストファイル等
+  - spec.mdには概要とファイルリンクのみを記載
+- 共通して利用できる機能はスキル化し `.claude/skills/` に登録すること
+  - 例: データベース調査、特定システムのデバッグ、定型タスク等
+- 調査結果やファイルインデックスも `.claude/skills/` に登録し再利用可能にすること
+  - 例: コードベース構造調査結果、依存関係マップ等
+
+**理由**: spec.mdの可読性維持、仕様の再利用性向上、調査コストの削減のため。
+
+### VII. 継続性保証 (Continuity Guarantee)
+
+作業は途中で中断せず、完了まで継続し続けること。
+
+- タスク開始後は完了するまで中断しないこと
+- 分割が必要な大規模タスクは事前に分割計画を立てること
+- 予期せぬ問題発生時は状況を報告し、対応方針を確認してから継続すること
+
+**理由**: 作業の中断による品質低下や進捗損失を防ぎ、効率的な開発を実現するため。
 
 ## 技術制約
 
@@ -147,4 +172,4 @@ Claude作業ファイルは `claude/` ディレクトリに配置し、既存フ
 - 複雑さは正当化が必要
 - ランタイム開発ガイダンスは `CLAUDE.md` を参照
 
-**Version**: 1.0.0 | **Ratified**: 2025-12-09 | **Last Amended**: 2025-12-09
+**Version**: 1.1.0 | **Ratified**: 2025-12-09 | **Last Amended**: 2025-12-14
