@@ -5,6 +5,8 @@
 
 import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { Character } from './character.js';
+import { addRandomEnvironmentEntities } from './environment.js';
 
 export interface PlayerData {
 	id: string;
@@ -62,15 +64,15 @@ export interface NpcData {
 
 export class NoctownEngine {
 	private scene: THREE.Scene;
-	private camera: THREE.PerspectiveCamera;
+	private camera: THREE.OrthographicCamera;
 	private renderer: THREE.WebGLRenderer;
 	private labelRenderer: CSS2DRenderer;
 	private container: HTMLElement;
 	private animationId: number | null = null;
 
 	// Player management
-	private localPlayer: THREE.Mesh | null = null;
-	private remotePlayers: Map<string, THREE.Mesh> = new Map();
+	private localPlayer: Character | null = null;
+	private remotePlayers: Map<string, Character> = new Map();
 	private playerLabels: Map<string, CSS2DObject> = new Map();
 
 	// World management
@@ -99,14 +101,20 @@ export class NoctownEngine {
 		this.scene.background = new THREE.Color(0x87ceeb); // Sky blue
 		this.scene.fog = new THREE.Fog(0x87ceeb, 50, 200);
 
-		// Camera
-		this.camera = new THREE.PerspectiveCamera(
-			60,
-			container.clientWidth / container.clientHeight,
+		// Camera - Quarter View (Orthographic)
+		const aspect = container.clientWidth / container.clientHeight;
+		const viewSize = 10;
+		this.camera = new THREE.OrthographicCamera(
+			-viewSize * aspect,
+			viewSize * aspect,
+			viewSize,
+			-viewSize,
 			0.1,
 			1000,
 		);
-		this.camera.position.set(0, 10, 15);
+		// Animal Crossing style - front top-down view
+		this.camera.position.set(0, 15, 20);
+		this.camera.lookAt(0, 0, 0);
 
 		// Renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -138,27 +146,23 @@ export class NoctownEngine {
 	}
 
 	private setupLights(): void {
-		// Ambient light
-		const ambient = new THREE.AmbientLight(0x404040, 0.5);
+		// Ambient light (character-demo.html style)
+		const ambient = new THREE.AmbientLight(0xffffff, 0.6);
 		this.scene.add(ambient);
 
-		// Directional light (sun)
-		const sun = new THREE.DirectionalLight(0xffffff, 1);
-		sun.position.set(50, 100, 50);
+		// Directional light (sun) with shadow configuration
+		const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+		sun.position.set(10, 20, 10);
 		sun.castShadow = true;
 		sun.shadow.mapSize.width = 2048;
 		sun.shadow.mapSize.height = 2048;
 		sun.shadow.camera.near = 0.5;
-		sun.shadow.camera.far = 500;
-		sun.shadow.camera.left = -100;
-		sun.shadow.camera.right = 100;
-		sun.shadow.camera.top = 100;
-		sun.shadow.camera.bottom = -100;
+		sun.shadow.camera.far = 50;
+		sun.shadow.camera.left = -20;
+		sun.shadow.camera.right = 20;
+		sun.shadow.camera.top = 20;
+		sun.shadow.camera.bottom = -20;
 		this.scene.add(sun);
-
-		// Hemisphere light
-		const hemi = new THREE.HemisphereLight(0x87ceeb, 0x3d5c3d, 0.3);
-		this.scene.add(hemi);
 	}
 
 	private createGroundPlane(): void {
@@ -184,7 +188,12 @@ export class NoctownEngine {
 		if (this.isDisposed) return;
 		const width = this.container.clientWidth;
 		const height = this.container.clientHeight;
-		this.camera.aspect = width / height;
+		const aspect = width / height;
+		const viewSize = 10;
+		this.camera.left = -viewSize * aspect;
+		this.camera.right = viewSize * aspect;
+		this.camera.top = viewSize;
+		this.camera.bottom = -viewSize;
 		this.camera.updateProjectionMatrix();
 		this.renderer.setSize(width, height);
 		this.labelRenderer.setSize(width, height);
@@ -202,11 +211,21 @@ export class NoctownEngine {
 		if (this.isDisposed) return;
 		this.animationId = requestAnimationFrame(this.animate);
 
+		// T088: Update character animations
+		if (this.localPlayer) {
+			this.localPlayer.updateAnimation();
+		}
+
+		// Update remote player animations
+		for (const [, character] of this.remotePlayers) {
+			character.updateAnimation();
+		}
+
 		// Update camera to follow player
 		if (this.localPlayer) {
-			const targetPos = this.localPlayer.position.clone().add(this.cameraOffset);
+			const targetPos = this.localPlayer.group.position.clone().add(this.cameraOffset);
 			this.camera.position.lerp(targetPos, 0.1);
-			this.camera.lookAt(this.localPlayer.position);
+			this.camera.lookAt(this.localPlayer.group.position);
 		}
 
 		this.renderer.render(this.scene, this.camera);
@@ -216,31 +235,27 @@ export class NoctownEngine {
 	// Player management
 	public createLocalPlayer(data: PlayerData): void {
 		if (this.localPlayer) {
-			this.scene.remove(this.localPlayer);
+			this.scene.remove(this.localPlayer.group);
 		}
 
-		const geometry = new THREE.CapsuleGeometry(0.4, 1.2, 8, 16);
-		const material = new THREE.MeshStandardMaterial({
-			color: 0x4a90d9,
-			roughness: 0.5,
-		});
-		this.localPlayer = new THREE.Mesh(geometry, material);
-		// FR-016: Use correct Y position (terrain height + player height offset)
-		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
-		const displayY = data.positionY + 1.0;
-		this.localPlayer.position.set(data.positionX, displayY, data.positionZ);
-		this.localPlayer.rotation.y = data.rotation;
-		this.localPlayer.castShadow = true;
-		this.scene.add(this.localPlayer);
+		// Create Character instance
+		this.localPlayer = new Character();
+		this.localPlayer.setPosition(data.positionX, data.positionY, data.positionZ);
+		this.localPlayer.setRotation(data.rotation);
+		this.localPlayer.setCastShadow(true);
+
+		// Set icon if available
+		if (data.avatarUrl) {
+			this.localPlayer.setIcon(data.avatarUrl);
+		}
+
+		this.scene.add(this.localPlayer.group);
 	}
 
 	public updateLocalPlayerPosition(x: number, y: number, z: number, rotation: number): void {
 		if (!this.localPlayer) return;
-		// FR-016: Use correct Y position (terrain height + player height offset)
-		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
-		const displayY = y + 1.0;
-		this.localPlayer.position.set(x, displayY, z);
-		this.localPlayer.rotation.y = rotation;
+		this.localPlayer.setPosition(x, y, z);
+		this.localPlayer.setRotation(rotation);
 	}
 
 	public addRemotePlayer(data: PlayerData): void {
@@ -249,39 +264,31 @@ export class NoctownEngine {
 			return;
 		}
 
-		const geometry = new THREE.CapsuleGeometry(0.4, 1.2, 8, 16);
-		const material = new THREE.MeshStandardMaterial({
-			color: data.isOnline ? 0x90d94a : 0x808080,
-			roughness: 0.5,
-		});
-		const mesh = new THREE.Mesh(geometry, material);
-		// FR-016: Use correct Y position (terrain height + player height offset)
-		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
-		const displayY = data.positionY + 1.0;
-		mesh.position.set(data.positionX, displayY, data.positionZ);
-		mesh.rotation.y = data.rotation;
-		mesh.castShadow = true;
-		this.scene.add(mesh);
-		this.remotePlayers.set(data.id, mesh);
+		// Create Character instance
+		const character = new Character();
+		character.setPosition(data.positionX, data.positionY, data.positionZ);
+		character.setRotation(data.rotation);
+		character.setCastShadow(true);
+
+		// Set icon if available
+		if (data.avatarUrl) {
+			character.setIcon(data.avatarUrl);
+		}
+
+		this.scene.add(character.group);
+		this.remotePlayers.set(data.id, character);
 
 		// Create name label
-		const labelObject = this.createPlayerLabel(data.id, data.username, data.avatarUrl, data.isOnline, mesh.position);
-		mesh.add(labelObject);
+		const labelObject = this.createPlayerLabel(data.id, data.username, data.avatarUrl, data.isOnline, character.group.position);
+		character.group.add(labelObject);
 	}
 
 	public updateRemotePlayer(data: PlayerData): void {
-		const mesh = this.remotePlayers.get(data.id);
-		if (!mesh) return;
+		const character = this.remotePlayers.get(data.id);
+		if (!character) return;
 
-		// FR-016: Use correct Y position (terrain height + player height offset)
-		// Player height offset is 1.0 (half of capsule height 1.2) to avoid sinking into ground
-		const displayY = data.positionY + 1.0;
-		mesh.position.set(data.positionX, displayY, data.positionZ);
-		mesh.rotation.y = data.rotation;
-
-		// Update material color based on online status
-		const material = mesh.material as THREE.MeshStandardMaterial;
-		material.color.setHex(data.isOnline ? 0x90d94a : 0x808080);
+		character.setPosition(data.positionX, data.positionY, data.positionZ);
+		character.setRotation(data.rotation);
 
 		// Update label data
 		this.updatePlayerLabel(data.id, {
@@ -292,9 +299,9 @@ export class NoctownEngine {
 	}
 
 	public removeRemotePlayer(playerId: string): void {
-		const mesh = this.remotePlayers.get(playerId);
-		if (mesh) {
-			this.scene.remove(mesh);
+		const character = this.remotePlayers.get(playerId);
+		if (character) {
+			this.scene.remove(character.group);
 			this.remotePlayers.delete(playerId);
 		}
 
@@ -307,11 +314,11 @@ export class NoctownEngine {
 
 	// T018: Set player online/offline status with visual effects
 	public setPlayerOnlineStatus(playerId: string, isOnline: boolean): void {
-		const mesh = this.remotePlayers.get(playerId);
-		if (!mesh) return;
+		const character = this.remotePlayers.get(playerId);
+		if (!character) return;
 
 		// Apply visual effects based on online status
-		mesh.traverse((child) => {
+		character.group.traverse((child) => {
 			if (child instanceof THREE.Mesh && child.material instanceof THREE.Material) {
 				if (isOnline) {
 					// Online: restore normal appearance
@@ -327,12 +334,6 @@ export class NoctownEngine {
 
 		// Update player label to show online/offline status
 		this.updatePlayerLabel(playerId, { isOnline });
-
-		// Update material color based on online status
-		const material = mesh.material as THREE.MeshStandardMaterial;
-		if (material) {
-			material.color.setHex(isOnline ? 0x90d94a : 0x808080);
-		}
 	}
 
 	public createPlayerLabel(playerId: string, username: string, avatarUrl: string | null, isOnline: boolean, position: THREE.Vector3): CSS2DObject {
@@ -473,6 +474,9 @@ export class NoctownEngine {
 
 		this.scene.add(group);
 		this.chunks.set(key, group);
+
+		// T085: Add random environment entities (trees, rocks) to chunk
+		addRandomEnvironmentEntities(this.scene, data.chunkX, data.chunkZ, 16);
 	}
 
 	private getBiomeColor(biome: string): number {
@@ -565,11 +569,12 @@ export class NoctownEngine {
 
 	public getLocalPlayerPosition(): { x: number; y: number; z: number } | null {
 		if (!this.localPlayer) return null;
-		// FR-015: Return actual terrain-level position (subtract player height offset)
+		// Return Character position
+		const pos = this.localPlayer.getPosition();
 		return {
-			x: this.localPlayer.position.x,
-			y: this.localPlayer.position.y - 1.0,
-			z: this.localPlayer.position.z,
+			x: pos.x,
+			y: pos.y,
+			z: pos.z,
 		};
 	}
 
