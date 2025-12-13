@@ -196,9 +196,23 @@ export class NoctownService {
 			lastActiveAt: new Date(),
 		});
 
+		// FR-010: 完全なプレイヤーデータを取得して送信
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		if (!player) return;
+
+		const user = await this.usersRepository.findOneBy({ id: userId });
+
 		this.globalEventService.publishNoctownStream('playerOnline', {
+			id: playerId,
 			playerId,
 			userId,
+			username: user?.username ?? '',
+			avatarUrl: user?.avatarUrl ?? null,
+			positionX: player.positionX,
+			positionY: player.positionY,
+			positionZ: player.positionZ,
+			rotation: player.rotation,
+			isOnline: true,
 		});
 	}
 
@@ -226,12 +240,15 @@ export class NoctownService {
 
 		// オフラインからオンラインに変わった場合は playerOnline イベントを送信
 		if (wasOffline) {
+			// FR-010: ユーザー情報を取得
+			const user = await this.usersRepository.findOneBy({ id: userId });
+
 			this.globalEventService.publishNoctownStream('playerOnline', {
 				id: playerId,
 				playerId,
 				userId,
-				username: '', // 後でユーザー名を取得して設定
-				avatarUrl: null, // 後でアバターURLを取得して設定
+				username: user?.username ?? '',
+				avatarUrl: user?.avatarUrl ?? null,
 				positionX: x,
 				positionY: y,
 				positionZ: z,
@@ -240,12 +257,15 @@ export class NoctownService {
 			});
 		}
 
+		// FR-010: ユーザー情報を取得
+		const user = await this.usersRepository.findOneBy({ id: userId });
+
 		this.globalEventService.publishNoctownStream('playerMoved', {
 			id: playerId, // プレイヤー識別子 - フロントエンドで自分のプレイヤーかどうか判定するために使用
 			playerId, // 後方互換性のため残す
 			userId,
-			username: '', // 後でユーザー名を取得して設定
-			avatarUrl: null, // 後でアバターURLを取得して設定
+			username: user?.username ?? '',
+			avatarUrl: user?.avatarUrl ?? null,
 			positionX: x,
 			positionY: y,
 			positionZ: z,
@@ -395,13 +415,16 @@ export class NoctownService {
 				lastActiveAt: new Date(),
 			});
 
+			// FR-010: ユーザー情報を取得
+			const user = await this.usersRepository.findOneBy({ id: userId });
+
 			// オフラインからオンラインに変わった場合は playerOnline イベントを送信
 			this.globalEventService.publishNoctownStream('playerOnline', {
 				id: playerId,
 				playerId,
 				userId,
-				username: '', // 後でユーザー名を取得して設定
-				avatarUrl: null, // 後でアバターURLを取得して設定
+				username: user?.username ?? '',
+				avatarUrl: user?.avatarUrl ?? null,
 				positionX: player.positionX,
 				positionY: player.positionY,
 				positionZ: player.positionZ,
@@ -441,13 +464,16 @@ export class NoctownService {
 				lastActiveAt: new Date(),
 			});
 
+			// FR-010: ユーザー情報を取得
+			const user = await this.usersRepository.findOneBy({ id: userId });
+
 			// オフラインからオンラインに変わった場合は playerOnline イベントを送信
 			this.globalEventService.publishNoctownStream('playerOnline', {
 				id: playerId,
 				playerId,
 				userId,
-				username: '', // 後でユーザー名を取得して設定
-				avatarUrl: null, // 後でアバターURLを取得して設定
+				username: user?.username ?? '',
+				avatarUrl: user?.avatarUrl ?? null,
 				positionX: player.positionX,
 				positionY: player.positionY,
 				positionZ: player.positionZ,
