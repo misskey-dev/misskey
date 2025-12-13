@@ -508,6 +508,7 @@ function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder
 		goRoot();
 		return;
 	} else if (typeof target === 'object') {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		target = target.id;
 	}
 

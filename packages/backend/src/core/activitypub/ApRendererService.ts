@@ -692,9 +692,7 @@ export class ApRendererService {
 
 		const jsonLd = this.jsonLdService.use();
 		jsonLd.debug = false;
-		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
-
-		return activity;
+		return await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 	}
 
 	/**

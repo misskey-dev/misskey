@@ -12,6 +12,7 @@ interface Json5SyntaxError extends SyntaxError {
 	columnNumber: number;
 }
 
+// biome-ignore lint/style/noDefaultExport: plugin convention
 export default function json5(options: RollupJsonOptions = {}): Plugin {
 	const filter = createFilter(options.include, options.exclude);
 	const indent = 'indent' in options ? options.indent : '\t';

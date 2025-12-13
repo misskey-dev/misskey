@@ -32,7 +32,7 @@ export const countryDict = [
 	'Vietnam', 'Kenya', 'Saudi Arabia', 'Netherlands', 'Colombia', 'Poland', 'Chile', 'Malaysia', 'Ukraine', 'New Zealand', 'Peru',
 ]
 
-export function text(length: number = 10, seed?: string): string {
+export function text(length = 10, seed?: string): string {
 	let result = "";
 
 	// シード値を使う場合、同じ数値が羅列されるが、ランダム文字列という意味では満たせていると思うのでこのまま使っておく
@@ -44,7 +44,7 @@ export function text(length: number = 10, seed?: string): string {
 	return result.substring(0, length);
 }
 
-export function integer(min: number = 0, max: number = 9999, seed?: string): number {
+export function integer(min = 0, max = 9999, seed?: string): number {
 	const rand = seed ? seedrandom(seed)() : Math.random();
 	return Math.floor(rand * (max - min)) + min;
 }

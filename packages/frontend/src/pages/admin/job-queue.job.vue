@@ -183,6 +183,7 @@ function msSMH(v: number | null) {
 	if (v === 0) return '0';
 	const suffixes = ['ms', 's', 'm', 'h'];
 	const isMinus = v < 0;
+	// biome-ignore lint/style/noParameterAssign: allow
 	if (isMinus) v = -v;
 	const i = Math.floor(Math.log(v) / Math.log(1000));
 	const value = v / 1000 ** i;

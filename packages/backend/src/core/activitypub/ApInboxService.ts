@@ -93,7 +93,7 @@ export class ApInboxService {
 		let result = undefined as string | undefined;
 		if (isCollectionOrOrderedCollection(activity)) {
 			const results = [] as [string, string | undefined][];
-			// eslint-disable-next-line no-param-reassign
+			// biome-ignore lint/style/noParameterAssign: parameter normalization
 			resolver ??= this.apResolverService.createResolver();
 
 			const items = toArray(isCollection(activity) ? activity.items : activity.orderedItems);
@@ -219,7 +219,7 @@ export class ApInboxService {
 
 		this.logger.info(`Accept: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(err => {
@@ -282,7 +282,7 @@ export class ApInboxService {
 
 		this.logger.info(`Announce: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		if (!activity.object) return 'skip: activity has no object property';
@@ -405,7 +405,7 @@ export class ApInboxService {
 			activity.object.attributedTo = activity.actor;
 		}
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
@@ -575,7 +575,7 @@ export class ApInboxService {
 
 		this.logger.info(`Reject: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
@@ -642,7 +642,7 @@ export class ApInboxService {
 
 		this.logger.info(`Undo: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
@@ -774,7 +774,7 @@ export class ApInboxService {
 
 		this.logger.debug('Update');
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {

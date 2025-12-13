@@ -29,6 +29,7 @@ export class MfmService {
 	@bindThis
 	public fromHtml(html: string, hashtagNames?: string[]): string {
 		// some AP servers like Pixelfed use br tags as well as newlines
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		html = html.replace(/<br\s?\/?>\r?\n/gi, '\n');
 
 		const normalizedHashtagNames = hashtagNames == null ? undefined : new Set<string>(hashtagNames.map(x => normalizeForSearch(x)));

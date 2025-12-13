@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default function(reaction: string): string {
 	switch (reaction) {
 		case 'like': return '👍';

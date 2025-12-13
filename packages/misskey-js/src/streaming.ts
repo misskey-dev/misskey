@@ -45,6 +45,7 @@ export interface IStream extends EventEmitter<StreamEvents> {
 /**
  * Misskey stream connection
  */
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default class Stream extends EventEmitter<StreamEvents> implements IStream {
 	private stream: ReconnectingWebSocket;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
@@ -72,6 +73,7 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 		this.send = this.send.bind(this);
 		this.close = this.close.bind(this);
 
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		options = options ?? { };
 
 		const query = urlQuery({

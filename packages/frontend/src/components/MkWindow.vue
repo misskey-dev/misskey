@@ -419,12 +419,14 @@ function onBottomLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 
 // 高さを適用
 function applyTransformHeight(height) {
+	// biome-ignore lint/style/noParameterAssign: allow
 	if (height > window.innerHeight) height = window.innerHeight;
 	if (rootEl.value) rootEl.value.style.height = `${height}px`;
 }
 
 // 幅を適用
 function applyTransformWidth(width) {
+	// biome-ignore lint/style/noParameterAssign: allow
 	if (width > window.innerWidth) width = window.innerWidth;
 	if (rootEl.value) rootEl.value.style.width = `${width}px`;
 }

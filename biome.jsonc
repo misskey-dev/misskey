@@ -64,6 +64,24 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": [
+				// config files will include global exports
+				"**/*.config.{js,ts}",
+				"ormconfig.{js,ts}",
+				// rollup/vue plugin files use default exports
+				"**/{rollup,vite}-plugin-*.{js,ts}",
+				// vue component files use default exports
+				"**/components/**/*.{js,ts,vue}"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
+					}
+				}
+			}
 		}
 	],
 	"formatter": {
@@ -119,22 +137,46 @@
 				}
 			},
 			"style": {
+				// enables
+				// we never use require import.
+				"noCommonJs": {
+					"level": "on"
+				},
+				// we prefer named exports, except for certain cases
+				// global exclusion defined above in overrides
+				"noDefaultExport": {
+					"level": "on"
+				},
+				// omit type as possible
+				"noInferrableTypes": {
+					"level": "on"
+				},
+				// we should redeclare variables instead of reassigning them
+				"noParameterAssign": {
+					"level": "on"
+				},
+				// prefer `` over '' or ""
+				"useTemplate": {
+					"level": "on",
+					"fix": "safe"
+				},
+
+				// disables
 				// non null assertion is necessary because of lack of control flow analysis in typescript
 				"noNonNullAssertion": {
-					"level": "off"
+					"level": "info",
+					"fix": "none"
 				},
 				// nuxt service definition use parameter properties
 				"noParameterProperties": {
 					"level": "off"
 				},
-				// prefer `` over '' or ""
-				"useTemplate": {
-					"level": "info",
-					"fix": "safe"
-				},
 				// not always better. especially when we except extending function type
 				"useShorthandFunctionType": {
 					"level": "off"
+				},
+				"useThrowOnlyError": {
+					"level": "on"
 				},
 				// we prefer import type {T} from 'mod' instead of import {type T} from 'mod'
 				"useImportType": {
@@ -153,9 +195,9 @@
 				"noControlCharactersInRegex": {
 					"level": "off"
 				},
-				// we still use any in some cases. TODO: reduce its usage
+				// we still use any in some cases.
 				"noExplicitAny": {
-					"level": "off"
+					"level": "info"
 				},
 				// we want to allow toString, Error, etc., especially for exports
 				"noShadowRestrictedNames": {

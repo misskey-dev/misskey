@@ -55,6 +55,7 @@ export class HashtagService {
 
 	@bindThis
 	public async updateHashtag(user: { id: MiUser['id']; host: MiUser['host']; }, tag: string, isUserAttached = false, inc = true) {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		tag = normalizeForSearch(tag);
 
 		// TODO: サンプリング

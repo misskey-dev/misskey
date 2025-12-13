@@ -127,4 +127,6 @@ async function writeFrontendLocalesJson(destDir: string, version: string): Promi
 
 export { locales, languages, build, writeFrontendLocalesJson };
 export type { Language, Locale, ILocale, ParameterizedString };
+
+// biome-ignore lint/style/noDefaultExport: the (almost) only export so allowed
 export default locales;

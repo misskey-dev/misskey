@@ -54,6 +54,7 @@ export class RemoteUserResolveService {
 			}) as MiLocalUser;
 		}
 
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		if (host === this.utilityService.toPuny(this.config.host)) {

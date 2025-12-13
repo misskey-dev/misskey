@@ -13,6 +13,7 @@ const CHARS = '0123456789abcdef';
 export const meidgRegExp = /^g[0-9a-f]{23}$/;
 
 function getTime(time: number) {
+	// biome-ignore lint/style/noParameterAssign: parameter fallback
 	if (time < 0) time = 0;
 	if (time === 0) {
 		return CHARS[0];

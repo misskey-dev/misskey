@@ -50,7 +50,8 @@ const hash = (str: string, seed = 0): number => {
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function toBase62(n: number): string {
+function toBase62(value: number): string {
+	let n = value;
 	if (n === 0) {
 		return '0';
 	}

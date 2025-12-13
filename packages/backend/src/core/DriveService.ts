@@ -372,7 +372,9 @@ export class DriveService {
 	 */
 	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
+		// biome-ignore lint/style/noParameterAssign: parameter sanitization
 		if (type === 'image/apng') type = 'image/png';
+		// biome-ignore lint/style/noParameterAssign: parameter sanitization
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
 		const params = {

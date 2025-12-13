@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export default (v, fractionDigits = 0) => {
+// biome-ignore lint/style/noDefaultExport: historical reason
+export default (value, fractionDigits = 0) => {
+	let v = value;
 	if (v == null) return 'N/A';
 	if (v === 0) return '0';
 	const sizes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'];

@@ -146,4 +146,5 @@ const preview = {
 	},
 } satisfies Preview;
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default preview;

@@ -64,6 +64,8 @@ const config = {
 		});
 	},
 } satisfies StorybookConfig;
+
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default config;
 
 function getAbsolutePath(value: string): string {

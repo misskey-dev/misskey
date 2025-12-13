@@ -11,14 +11,13 @@ const CHARS = '0123456789abcdef';
 export const meidRegExp = /^[0-9a-f]{24}$/;
 
 function getTime(time: number) {
+	// biome-ignore lint/style/noParameterAssign: parameter normalization
 	if (time < 0) time = 0;
 	if (time === 0) {
 		return CHARS[0];
 	}
 
-	time += 0x800000000000;
-
-	return time.toString(16).padStart(12, CHARS[0]);
+	return (time + 0x800000000000).toString(16).padStart(12, CHARS[0]);
 }
 
 function getRandom() {

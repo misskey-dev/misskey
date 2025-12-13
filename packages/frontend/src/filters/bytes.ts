@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export default (v, digits = 0) => {
+// biome-ignore lint/style/noDefaultExport: historical reason
+export default (bytes, digits = 0) => {
+	let v = bytes;
 	if (v == null) return '?';
 	const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'RB', 'QB'];
 	if (v === 0) return '0';

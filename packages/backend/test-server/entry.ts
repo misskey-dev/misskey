@@ -95,4 +95,5 @@ async function startControllerEndpoints(port = config.port + 1000) {
 	await fastify.listen({ port: port, host: 'localhost' });
 }
 
+// biome-ignore lint/style/noDefaultExport: used by jest
 export default launch;

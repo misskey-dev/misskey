@@ -78,18 +78,15 @@ function initLogger(options: Options) {
 	const viteLogger = createLogger(options.verbose ? 'info' : 'warn');
 
 	logger.info = (msg, options) => {
-		msg = `[create-search-index] ${msg}`;
-		viteLogger.info(msg, options);
+		viteLogger.info(`[create-search-index] ${msg}`, options);
 	}
 
 	logger.warn = (msg, options) => {
-		msg = `[create-search-index] ${msg}`;
-		viteLogger.warn(msg, options);
+		viteLogger.warn(`[create-search-index] ${msg}`, options);
 	}
 
 	logger.error = (msg, options) => {
-		msg = `[create-search-index] ${msg}`;
-		viteLogger.error(msg, options);
+		viteLogger.error(`[create-search-index] ${msg}`, options);
 	}
 }
 

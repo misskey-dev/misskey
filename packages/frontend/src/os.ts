@@ -656,6 +656,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 	onClosing?: () => void;
 }): Promise<void> {
 	if (!(anchorElement instanceof HTMLElement)) {
+		// biome-ignore lint/style/noParameterAssign: parameter sanitization
 		anchorElement = null;
 	}
 

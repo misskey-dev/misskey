@@ -85,6 +85,7 @@ export class FollowingEntityService {
 	): Promise<Packed<'Following'>> {
 		const following = typeof src === 'object' ? src : await this.followingsRepository.findOneByOrFail({ id: src });
 
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (opts == null) opts = {};
 
 		return await awaitAll({

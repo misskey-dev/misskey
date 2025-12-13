@@ -1157,6 +1157,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	public checkProhibitedWordsContain(content: Parameters<UtilityService['concatNoteContentsForKeyWordCheck']>[0], prohibitedWords?: string[]) {
 		if (prohibitedWords == null) {
+			// biome-ignore lint/style/noParameterAssign: parameter fallback
 			prohibitedWords = this.meta.prohibitedWords;
 		}
 

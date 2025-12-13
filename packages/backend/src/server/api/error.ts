@@ -14,6 +14,7 @@ export class ApiError extends Error {
 	public info?: any;
 
 	constructor(err?: E | null | undefined, info?: any | null | undefined) {
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (err == null) err = {
 			message: 'Internal error occurred. Please contact us if the error persists.',
 			code: 'INTERNAL_ERROR',

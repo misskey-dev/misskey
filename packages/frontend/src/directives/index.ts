@@ -16,6 +16,7 @@ import { rippleDirective } from './ripple.js';
 import { tooltipDirective } from './tooltip.js';
 import { userPreviewDirective } from './user-preview.js';
 
+// biome-ignore lint/style/noDefaultExport: historical reasons
 export default function(app: App) {
 	for (const [key, value] of Object.entries(directives)) {
 		app.directive(key, value);

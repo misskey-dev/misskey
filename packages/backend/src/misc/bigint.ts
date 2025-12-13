@@ -7,6 +7,7 @@ function parseBigIntChunked(str: string, base: number, chunkSize: number, powerO
 	const chunks = [];
 	while (str.length > 0) {
 		chunks.unshift(str.slice(-chunkSize));
+		// biome-ignore lint/style/noParameterAssign: known
 		str = str.slice(0, -chunkSize);
 	}
 	let result = 0n;

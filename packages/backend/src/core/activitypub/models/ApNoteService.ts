@@ -126,7 +126,7 @@ export class ApNoteService {
 	 */
 	@bindThis
 	public async createNote(value: string | IObject, actor?: MiRemoteUser, resolver?: Resolver, silent = false): Promise<MiNote | null> {
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(value);
@@ -170,7 +170,7 @@ export class ApNoteService {
 		const uri = getOneApId(note.attributedTo);
 
 		// ローカルで投稿者を検索し、もし凍結されていたらスキップ
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		actor ??= await this.apPersonService.fetchPerson(uri) as MiRemoteUser | undefined;
 		if (actor?.isSuspended) {
 			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
@@ -204,7 +204,7 @@ export class ApNoteService {
 		}
 		//#endregion
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		actor ??= await this.apPersonService.resolvePerson(uri, resolver) as MiRemoteUser;
 
 		// 解決した投稿者が凍結されていたらスキップ
@@ -380,7 +380,7 @@ export class ApNoteService {
 
 	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<MiEmoji[]> {
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		const eomjiTags = toArray(tags).filter(isEmoji);

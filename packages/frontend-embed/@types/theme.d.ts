@@ -8,5 +8,6 @@ declare module '@@/themes/*.json5' {
 
 	const theme: Theme;
 
+	// biome-ignore lint/style/noDefaultExport: json is so
 	export default theme;
 }

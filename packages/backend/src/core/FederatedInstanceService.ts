@@ -49,6 +49,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 
 	@bindThis
 	public async fetchOrRegister(host: string): Promise<MiInstance> {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		const cached = await this.federatedInstanceCache.get(host);
@@ -73,6 +74,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 
 	@bindThis
 	public async fetch(host: string): Promise<MiInstance | null> {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		const cached = await this.federatedInstanceCache.get(host);

@@ -472,6 +472,7 @@ function onKeydown(ev: KeyboardEvent) {
 }
 
 function done(query?: string): boolean {
+	// biome-ignore lint/style/noParameterAssign: parameter fallback
 	if (query == null) query = q.value;
 	if (query == null || typeof query !== 'string') return false;
 

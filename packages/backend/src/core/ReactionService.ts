@@ -343,6 +343,7 @@ export class ReactionService {
 	 */
 	@bindThis
 	public convertLegacyReaction(reaction: string): string {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		reaction = this.decodeReaction(reaction).reaction;
 		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
 		return reaction;

@@ -14,6 +14,26 @@
 					"correctness": {
 						// in migration, we often have catch without using the error
 						"noUnusedVariables": "off"
+					},
+					"style": {
+						// migration class have different naming convention
+						"useNamingConvention": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": [
+				// endpoints and chart will use default exports
+				"src/core/chart/**/*.ts",
+				"src/server/api/stream/*.ts",
+				"src/server/api/endpoints/**/*.ts",
+				"src/server/api/endpoints.ts"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
 					}
 				}
 			}
@@ -25,6 +45,11 @@
 				// for services, we declare constructors without parameters
 				"noUselessConstructor": {
 					"level": "off"
+				}
+			},
+			"correctness": {
+				"noGlobalDirnameFilename": {
+					"level": "on"
 				}
 			}
 		}

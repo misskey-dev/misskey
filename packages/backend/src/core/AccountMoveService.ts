@@ -339,6 +339,7 @@ export class AccountMoveService {
 			if (Date.now() - (dst.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
 				await this.apPersonService.updatePerson(dst.uri);
 			}
+			// biome-ignore lint/style/noParameterAssign: intended
 			dst = await this.apPersonService.fetchPerson(dst.uri) ?? dst;
 		}
 

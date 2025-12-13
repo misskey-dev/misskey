@@ -258,6 +258,7 @@ export class ApPersonService implements OnModuleInit {
 			// icon and image may be arrays
 			// see https://www.w3.org/TR/activitystreams-vocabulary/#dfn-icon
 			if (Array.isArray(img)) {
+				// biome-ignore lint/style/noParameterAssign: parameter normalization
 				img = img.find(item => item?.url) ?? null;
 			}
 
@@ -308,7 +309,7 @@ export class ApPersonService implements OnModuleInit {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
@@ -498,7 +499,7 @@ export class ApPersonService implements OnModuleInit {
 		if (exist === null) return;
 		//#endregion
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
@@ -677,7 +678,7 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		// リモートサーバーからフェッチしてきて登録
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}

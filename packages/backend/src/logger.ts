@@ -18,6 +18,7 @@ type Context = {
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;
@@ -76,6 +77,7 @@ export default class Logger {
 	@bindThis
 	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
+			// biome-ignore lint/style/noParameterAssign: parameter fallback
 			data = data ?? {};
 			data.e = x;
 			this.log('error', x.toString(), data, important);

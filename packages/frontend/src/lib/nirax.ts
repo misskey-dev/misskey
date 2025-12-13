@@ -186,6 +186,7 @@ function buildFullPath(args: {
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
 
+	// biome-ignore lint/style/noParameterAssign: allow
 	path = path.substring(1);
 
 	for (const part of path.split('/')) {
