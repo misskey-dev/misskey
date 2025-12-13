@@ -14,6 +14,9 @@ export type BiomeType = 'plains' | 'forest' | 'desert' | 'mountain' | 'ocean' | 
 // Terrain tile types
 export type TileType = 'grass' | 'dirt' | 'sand' | 'stone' | 'water' | 'snow' | 'mud';
 
+// FR-001: 地形タイプの定義（0: 草原、1: 池、2: 湖、3: 農園プロット）
+export type TerrainType = 0 | 1 | 2 | 3;
+
 // Environment object types
 export type EnvironmentType = 'tree' | 'rock' | 'flower' | 'grass_tuft' | 'cactus' | 'bush' | 'mushroom' | 'ice_crystal';
 
@@ -71,6 +74,8 @@ export interface ChunkTerrainData {
 	treasureChests: TreasureChestData[];
 	ponds: PondData[];
 	isVillage: boolean;
+	// FR-001: 地形タイプを記録する配列（16×16のチャンクサイズ）
+	terrainData: TerrainType[][];
 	version: number;
 }
 
@@ -202,6 +207,15 @@ export class ChunkGenerator {
 		// Generate tile types
 		const tileTypes = this.generateTileTypes(heightMap, biome, biomeConfig);
 
+		// FR-001: terrainData配列を初期化（すべて0: 草原）
+		const terrainData: TerrainType[][] = [];
+		for (let x = 0; x < CHUNK_SIZE; x++) {
+			terrainData[x] = [];
+			for (let z = 0; z < CHUNK_SIZE; z++) {
+				terrainData[x][z] = 0; // 0: grass
+			}
+		}
+
 		// Generate buildings if village
 		const buildings = isVillage
 			? this.generateBuildings(chunkX, chunkZ, heightMap)
@@ -241,14 +255,18 @@ export class ChunkGenerator {
 			isVillage,
 		);
 
-		// Generate ponds for fishing
-		const ponds = this.generatePonds(
+		// FR-001: 池（8%）と湖（3%）の生成
+		const ponds = this.generatePondsAndLakes(
 			chunkX,
 			chunkZ,
 			biome,
 			occupiedTiles,
 			heightMap,
+			terrainData,
 		);
+
+		// FR-001: 農園プロット（固定6箇所）の生成
+		this.generateFarmPlots(chunkX, chunkZ, terrainData);
 
 		return {
 			heightMap,
@@ -259,7 +277,8 @@ export class ChunkGenerator {
 			treasureChests,
 			ponds,
 			isVillage,
-			version: 5, // Version 5 adds ponds
+			terrainData,
+			version: 6, // Version 6 adds terrainData and farm plots
 		};
 	}
 
@@ -770,88 +789,156 @@ export class ChunkGenerator {
 	}
 
 	/**
-	 * Generate ponds for fishing in the chunk
+	 * FR-001: 池（8%）と湖（3%）の生成
+	 * terrainData配列に地形タイプを記録する
 	 */
-	private generatePonds(
+	private generatePondsAndLakes(
 		chunkX: number,
 		chunkZ: number,
 		biome: BiomeType,
 		occupiedTiles: Set<string>,
 		heightMap: number[][],
+		terrainData: TerrainType[][],
 	): PondData[] {
 		const ponds: PondData[] = [];
 
-		// Ponds only spawn in certain biomes
+		// Ponds and lakes only spawn in certain biomes
 		const pondBiomes: BiomeType[] = ['plains', 'forest', 'swamp'];
 		if (!pondBiomes.includes(biome)) {
 			return ponds;
 		}
 
-		// Pond spawn probability based on biome
-		const pondProbability: Record<string, number> = {
-			plains: 0.15,
-			forest: 0.10,
-			swamp: 0.25,
-		};
-
-		// Check if this chunk should have a pond
+		// FR-001: 池の出現確率8%
 		const pondNoise = this.villageNoise.noise2D(
 			chunkX * 0.3 + 2000,
 			chunkZ * 0.3 + 2000,
 		);
-		const normalizedNoise = (pondNoise + 1) * 0.5;
+		const normalizedPondNoise = (pondNoise + 1) * 0.5;
 
-		if (normalizedNoise > (1 - (pondProbability[biome] ?? 0.1))) {
-			// Find suitable location for pond
-			const posNoise1 = this.detailNoise.noise2D(
-				chunkX * 20 + 3000,
-				chunkZ * 20 + 3000,
-			);
-			const posNoise2 = this.detailNoise.noise2D(
-				chunkX * 20 + 4000,
-				chunkZ * 20 + 4000,
-			);
+		// FR-001: 湖の出現確率3%
+		const lakeNoise = this.villageNoise.noise2D(
+			chunkX * 0.3 + 3000,
+			chunkZ * 0.3 + 3000,
+		);
+		const normalizedLakeNoise = (lakeNoise + 1) * 0.5;
 
-			// Pond size (3-6 tiles)
-			const sizeNoise = this.detailNoise.noise2D(
-				chunkX * 15 + 5000,
-				chunkZ * 15 + 5000,
-			);
-			const width = 3 + Math.floor((sizeNoise + 1) * 1.5); // 3-6
-			const depth = 3 + Math.floor(((sizeNoise * 0.7) + 1) * 1.5); // 3-6
-
-			// Position with margin for pond size
-			const margin = Math.max(width, depth) + 1;
-			const centerX = Math.floor((posNoise1 + 1) * 0.5 * (CHUNK_SIZE - margin * 2)) + margin;
-			const centerZ = Math.floor((posNoise2 + 1) * 0.5 * (CHUNK_SIZE - margin * 2)) + margin;
-
-			// Validate pond placement
-			if (this.canPlacePond(centerX, centerZ, width, depth, occupiedTiles, heightMap)) {
-				// Generate fishing spots around the pond edges
-				const fishingSpots = this.generateFishingSpots(centerX, centerZ, width, depth, chunkX, chunkZ);
-
-				// Mark pond tiles as occupied
-				for (let dx = -Math.floor(width / 2); dx <= Math.ceil(width / 2); dx++) {
-					for (let dz = -Math.floor(depth / 2); dz <= Math.ceil(depth / 2); dz++) {
-						const x = centerX + dx;
-						const z = centerZ + dz;
-						if (x >= 0 && x < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE) {
-							occupiedTiles.add(`${x},${z}`);
-						}
-					}
-				}
-
-				ponds.push({
-					localX: centerX,
-					localZ: centerZ,
-					width,
-					depth,
-					fishingSpots,
-				});
-			}
+		// 池が8%、湖が3%の確率で生成される（池と湖は同時に生成されない）
+		if (normalizedPondNoise < 0.08) {
+			// FR-001: 池を生成（1: pond）
+			const pond = this.generatePond(chunkX, chunkZ, occupiedTiles, heightMap, terrainData, 1);
+			if (pond) ponds.push(pond);
+		} else if (normalizedLakeNoise < 0.03) {
+			// FR-001: 湖を生成（2: lake）
+			const lake = this.generatePond(chunkX, chunkZ, occupiedTiles, heightMap, terrainData, 2);
+			if (lake) ponds.push(lake);
 		}
 
 		return ponds;
+	}
+
+	/**
+	 * FR-001: 池または湖を生成するヘルパーメソッド
+	 */
+	private generatePond(
+		chunkX: number,
+		chunkZ: number,
+		occupiedTiles: Set<string>,
+		heightMap: number[][],
+		terrainData: TerrainType[][],
+		terrainType: 1 | 2, // 1: pond, 2: lake
+	): PondData | null {
+		// Find suitable location for pond/lake
+		const posNoise1 = this.detailNoise.noise2D(
+			chunkX * 20 + 3000,
+			chunkZ * 20 + 3000,
+		);
+		const posNoise2 = this.detailNoise.noise2D(
+			chunkX * 20 + 4000,
+			chunkZ * 20 + 4000,
+		);
+
+		// Pond/lake size (3-6 tiles for pond, 5-9 for lake)
+		const sizeNoise = this.detailNoise.noise2D(
+			chunkX * 15 + 5000,
+			chunkZ * 15 + 5000,
+		);
+		const width = terrainType === 1
+			? 3 + Math.floor((sizeNoise + 1) * 1.5) // Pond: 3-6
+			: 5 + Math.floor((sizeNoise + 1) * 2); // Lake: 5-9
+		const depth = terrainType === 1
+			? 3 + Math.floor(((sizeNoise * 0.7) + 1) * 1.5) // Pond: 3-6
+			: 4 + Math.floor(((sizeNoise * 0.7) + 1) * 2); // Lake: 4-8
+
+		// Position with margin for pond/lake size
+		const margin = Math.max(width, depth) + 1;
+		const centerX = Math.floor((posNoise1 + 1) * 0.5 * (CHUNK_SIZE - margin * 2)) + margin;
+		const centerZ = Math.floor((posNoise2 + 1) * 0.5 * (CHUNK_SIZE - margin * 2)) + margin;
+
+		// Validate pond/lake placement
+		if (this.canPlacePond(centerX, centerZ, width, depth, occupiedTiles, heightMap)) {
+			// Generate fishing spots around the pond edges
+			const fishingSpots = this.generateFishingSpots(centerX, centerZ, width, depth, chunkX, chunkZ);
+
+			// FR-001: terrainData配列に地形タイプを記録
+			for (let dx = -Math.floor(width / 2); dx <= Math.ceil(width / 2); dx++) {
+				for (let dz = -Math.floor(depth / 2); dz <= Math.ceil(depth / 2); dz++) {
+					const x = centerX + dx;
+					const z = centerZ + dz;
+					if (x >= 0 && x < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE) {
+						terrainData[x][z] = terrainType;
+						occupiedTiles.add(`${x},${z}`);
+					}
+				}
+			}
+
+			return {
+				localX: centerX,
+				localZ: centerZ,
+				width,
+				depth,
+				fishingSpots,
+			};
+		}
+
+		return null;
+	}
+
+	/**
+	 * FR-001: 農園プロット（固定6箇所）の生成
+	 * x: -6,-4,-2, z: 2,4 の組み合わせで配置
+	 */
+	private generateFarmPlots(
+		chunkX: number,
+		chunkZ: number,
+		terrainData: TerrainType[][],
+	): void {
+		// FR-001: 農園プロットの固定位置（x: -6,-4,-2, z: 2,4）
+		const farmPlotWorldPositions = [
+			{ x: -6, z: 2 },
+			{ x: -6, z: 4 },
+			{ x: -4, z: 2 },
+			{ x: -4, z: 4 },
+			{ x: -2, z: 2 },
+			{ x: -2, z: 4 },
+		];
+
+		for (const worldPos of farmPlotWorldPositions) {
+			// ワールド座標からチャンク座標とローカル座標を計算
+			const plotChunkX = Math.floor(worldPos.x / CHUNK_SIZE);
+			const plotChunkZ = Math.floor(worldPos.z / CHUNK_SIZE);
+
+			// このチャンクに農園プロットが含まれるかチェック
+			if (plotChunkX === chunkX && plotChunkZ === chunkZ) {
+				const localX = worldPos.x - chunkX * CHUNK_SIZE;
+				const localZ = worldPos.z - chunkZ * CHUNK_SIZE;
+
+				// ローカル座標が範囲内であることを確認
+				if (localX >= 0 && localX < CHUNK_SIZE && localZ >= 0 && localZ < CHUNK_SIZE) {
+					// FR-001: terrainData配列に農園プロット（3）を記録
+					terrainData[localX][localZ] = 3;
+				}
+			}
+		}
 	}
 
 	/**

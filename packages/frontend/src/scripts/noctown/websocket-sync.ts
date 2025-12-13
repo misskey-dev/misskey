@@ -144,10 +144,9 @@ export class WebSocketSyncManager {
 			this.emit('playerJoined', data);
 		});
 
-		// T016: Modify playerOffline to receive full PlayerData and emit playerStatusChanged
-		this.connection.on('playerOffline', (data: PlayerData) => {
-			// T017: Emit playerStatusChanged instead of playerLeft to keep offline players visible
-			this.emit('playerStatusChanged', data);
+		// FR-007-6: オフライン時は画面からプレイヤーを削除
+		this.connection.on('playerOffline', (data: { playerId: string }) => {
+			this.emit('playerLeft', data);
 		});
 
 		// Item events

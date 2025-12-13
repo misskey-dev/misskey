@@ -198,6 +198,8 @@ const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
 
 interface NoctownPlayerResponse {
 	id: string;
+	username: string;
+	avatarUrl: string | null;
 	positionX: number;
 	positionY: number;
 	positionZ: number;
@@ -260,8 +262,8 @@ async function initialize(): Promise<void> {
 		playerData.value = {
 			id: data.id,
 			userId: '',
-			username: '',
-			avatarUrl: null,
+			username: data.username,
+			avatarUrl: data.avatarUrl,
 			positionX: data.positionX,
 			positionY: data.positionY,
 			positionZ: data.positionZ,
@@ -318,10 +320,6 @@ async function connectStream(): Promise<void> {
 	connection.value.on('playerLeft', (body: { playerId: string }) => {
 		handlePlayerLeft(body);
 	});
-	// T017: Handle playerStatusChanged event for online/offline transitions
-	connection.value.on('playerStatusChanged', (body: PlayerData) => {
-		handlePlayerStatusChanged(body);
-	});
 	// T038: Handle chunkGenerated event and render terrain
 	connection.value.on('chunkGenerated', (body: ChunkData) => {
 		handleChunkGenerated(body);
@@ -356,44 +354,29 @@ function handlePlayerMoved(data: PlayerData): void {
 	engine.updateRemotePlayer(data);
 }
 
+// FR-007-6: プレイヤー参加時は常に新規追加（オフライン時は既に削除されているため）
 function handlePlayerJoined(data: PlayerData): void {
 	if (!engine || data.id === playerData.value?.id) return;
-
-	// FR-020: If player already exists as NPC, update online status instead of adding again
-	const existingPlayers = engine.getRemotePlayers();
-	if (existingPlayers && existingPlayers.has(data.id)) {
-		// Player was offline (NPC), now coming back online
-		engine.setPlayerOnlineStatus(data.id, true);
-		engine.updateRemotePlayer(data); // Update position
-	} else {
-		// New player joining
-		engine.addRemotePlayer(data);
-	}
+	engine.addRemotePlayer(data);
 }
 
+// FR-007-6: オフライン時は画面からプレイヤーを削除
 function handlePlayerLeft(data: { playerId: string }): void {
 	if (!engine) return;
-	// FR-019: Don't remove player, just set offline status (NPC化)
-	engine.setPlayerOnlineStatus(data.playerId, false);
-}
-
-// T017, T018: Handle player status change (online/offline transition)
-function handlePlayerStatusChanged(data: PlayerData): void {
-	if (!engine || data.id === playerData.value?.id) return;
-	// Update player's online status visual effects
-	engine.setPlayerOnlineStatus(data.id, data.isOnline);
+	engine.removeRemotePlayer(data.playerId);
 }
 
 // FR-073, FR-074: Handle chunkGenerated event and render terrain with grid
-function handleChunkGenerated(data: ChunkData): void {
+// FR-001: async修正（terrainDataに基づく地形生成のため）
+async function handleChunkGenerated(data: ChunkData): Promise<void> {
 	if (!engine) return;
 
 	// Mark chunk as loaded (T039: cache)
 	const chunkKey = `${data.chunkX},${data.chunkZ}`;
 	loadedChunks.add(chunkKey);
 
-	// Render terrain with grid lines
-	engine.renderChunk(data);
+	// FR-001: terrainDataに基づいて地形を生成（await追加）
+	await engine.renderChunk(data);
 
 	// FR-074: VIEW_DISTANCE=2 chunk management (remove chunks outside view distance)
 	const VIEW_DISTANCE = 2;
@@ -1030,6 +1013,22 @@ definePage(() => ({
 	grid-template-columns: repeat(3, 1fr);
 	gap: 8px;
 	z-index: 50;
+
+	// FR-007-2: モバイルで親指操作しやすいよう位置を下げる
+	// デスクトップ（200px）→ モバイル（100px）→ 小型（80px）
+	/* Mobile: Lower position for better thumb reach (PWA safe area aware) */
+	@media (max-width: 768px) {
+		bottom: 100px;
+		right: 16px;
+	}
+
+	// 小型モバイル: さらに低く配置して親指で届きやすく
+	/* Small mobile screens: Even lower for easier reach */
+	@media (max-width: 480px) {
+		bottom: 80px;
+		right: 12px;
+		gap: 6px;
+	}
 }
 
 .emotionBtn {
@@ -1053,6 +1052,23 @@ definePage(() => ({
 
 	&:active {
 		transform: scale(0.95);
+	}
+
+	// FR-007-2: モバイルでボタンサイズを調整（タッチ操作に最適化）
+	// デスクトップ（48px）→ モバイル（44px）→ 小型（40px）
+	/* Mobile: Slightly smaller buttons for better touch target density */
+	@media (max-width: 768px) {
+		width: 44px;
+		height: 44px;
+		font-size: 26px;
+	}
+
+	// 小型モバイル: 小さめのボタンで密度を上げる
+	/* Small mobile screens: Even smaller */
+	@media (max-width: 480px) {
+		width: 40px;
+		height: 40px;
+		font-size: 24px;
 	}
 }
 

@@ -211,13 +211,34 @@ export class NoctownService {
 		z: number,
 		rotation: number | null,
 	): Promise<void> {
+		// FR-007-4: プレイヤーがオフライン状態の場合、移動時にオンライン化して他のプレイヤーに表示
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const wasOffline = player && !player.isOnline;
+
 		await this.noctownPlayersRepository.update(playerId, {
 			positionX: x,
 			positionY: y,
 			positionZ: z,
 			...(rotation != null ? { rotation } : {}),
+			isOnline: true, // 移動時は必ずオンライン化
 			lastActiveAt: new Date(),
 		});
+
+		// オフラインからオンラインに変わった場合は playerOnline イベントを送信
+		if (wasOffline) {
+			this.globalEventService.publishNoctownStream('playerOnline', {
+				id: playerId,
+				playerId,
+				userId,
+				username: '', // 後でユーザー名を取得して設定
+				avatarUrl: null, // 後でアバターURLを取得して設定
+				positionX: x,
+				positionY: y,
+				positionZ: z,
+				rotation: rotation ?? 0,
+				isOnline: true,
+			});
+		}
 
 		this.globalEventService.publishNoctownStream('playerMoved', {
 			id: playerId, // プレイヤー識別子 - フロントエンドで自分のプレイヤーかどうか判定するために使用
@@ -365,6 +386,30 @@ export class NoctownService {
 		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
 		if (!player) return;
 
+		// FR-007-4: プレイヤーがオフライン状態の場合、エモーション時にオンライン化して他のプレイヤーに表示
+		const wasOffline = !player.isOnline;
+
+		if (wasOffline) {
+			await this.noctownPlayersRepository.update(playerId, {
+				isOnline: true,
+				lastActiveAt: new Date(),
+			});
+
+			// オフラインからオンラインに変わった場合は playerOnline イベントを送信
+			this.globalEventService.publishNoctownStream('playerOnline', {
+				id: playerId,
+				playerId,
+				userId,
+				username: '', // 後でユーザー名を取得して設定
+				avatarUrl: null, // 後でアバターURLを取得して設定
+				positionX: player.positionX,
+				positionY: player.positionY,
+				positionZ: player.positionZ,
+				rotation: player.rotation,
+				isOnline: true,
+			});
+		}
+
 		// Broadcast emotion to all connected players
 		this.globalEventService.publishNoctownStream('playerEmotion', {
 			playerId,
@@ -386,6 +431,30 @@ export class NoctownService {
 		// Get player position for proximity-based broadcast
 		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
 		if (!player) return;
+
+		// FR-007-4: プレイヤーがオフライン状態の場合、チャット時にオンライン化して他のプレイヤーに表示
+		const wasOffline = !player.isOnline;
+
+		if (wasOffline) {
+			await this.noctownPlayersRepository.update(playerId, {
+				isOnline: true,
+				lastActiveAt: new Date(),
+			});
+
+			// オフラインからオンラインに変わった場合は playerOnline イベントを送信
+			this.globalEventService.publishNoctownStream('playerOnline', {
+				id: playerId,
+				playerId,
+				userId,
+				username: '', // 後でユーザー名を取得して設定
+				avatarUrl: null, // 後でアバターURLを取得して設定
+				positionX: player.positionX,
+				positionY: player.positionY,
+				positionZ: player.positionZ,
+				rotation: player.rotation,
+				isOnline: true,
+			});
+		}
 
 		// T143, T144: Broadcast chat to all connected players
 		this.globalEventService.publishNoctownStream('playerChatted', {
@@ -1674,6 +1743,7 @@ export class NoctownService {
 	 * Set player offline status and broadcast full PlayerData
 	 */
 	@bindThis
+	// FR-007-6: オフライン時は画面からプレイヤーを削除
 	public async setPlayerOfflineAndBroadcast(playerId: string): Promise<void> {
 		// Update database
 		await this.noctownPlayersRepository.update(
@@ -1681,28 +1751,9 @@ export class NoctownService {
 			{ isOnline: false },
 		);
 
-		// Get full player data for broadcast
-		const player = await this.noctownPlayersRepository.findOne({
-			where: { id: playerId },
-			relations: ['user'],
-		});
-
-		if (!player) return;
-
-		// Broadcast full PlayerData (not just playerId)
+		// FR-007-6: playerIdのみを送信してフロントエンドで削除させる
 		this.globalEventService.publishNoctownStream('playerOffline', {
-			id: player.id,
-			userId: player.userId,
-			username: player.user?.username ?? '',
-			displayName: player.user?.name ?? '',
-			avatarUrl: player.user?.avatarUrl ?? null,
-			positionX: player.positionX,
-			positionY: player.positionY,
-			positionZ: player.positionZ,
-			rotation: player.rotation,
-			skinId: player.equippedSkinId,
-			skinData: null, // TODO: Implement skin data loading
-			isOnline: false,
+			playerId,
 		});
 	}
 
@@ -1822,32 +1873,12 @@ export class NoctownService {
 		const generator = getChunkGenerator(12345); // Use consistent seed for deterministic generation
 		const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
 
-		// Generate terrain types (0: grass, 1: pond, 2: lake, 3: farm plot)
-		const seed = this.hashCoordinates(worldId, chunkX, chunkZ);
-		const terrainData = new Array(256).fill(0);
-
+		// FR-001: chunk-generator.tsのterrainDataを1次元配列に変換（16×16 = 256要素）
+		const terrainData = new Array(256);
 		for (let i = 0; i < 256; i++) {
 			const localX = i % 16;
 			const localZ = Math.floor(i / 16);
-			const worldX = chunkX * 16 + localX;
-			const worldZ = chunkZ * 16 + localZ;
-
-			// Farm plot判定（固定位置）
-			if ((worldX === -6 || worldX === -4 || worldX === -2) &&
-				(worldZ === 2 || worldZ === 4)) {
-				terrainData[i] = 3;
-				continue;
-			}
-
-			// 池・湖判定
-			const tileSeed = seed + i;
-			const tileRandom = this.seededRandom(tileSeed);
-			if (tileRandom < 0.08) {
-				terrainData[i] = 1; // 池
-			} else if (tileRandom < 0.11) {
-				terrainData[i] = 2; // 湖
-			}
-			// else: terrainData[i] = 0 (草原、デフォルト)
+			terrainData[i] = chunkTerrainData.terrainData[localX][localZ];
 		}
 
 		// T033: Save generated chunk to database
@@ -1860,7 +1891,7 @@ export class NoctownService {
 			biome: chunkTerrainData.biome,
 			generatedAt: new Date(),
 		});
-		// Set terrainData with terrain types
+		// FR-001: terrainDataをデータベースに保存（チャンク生成器から取得したデータ）
 		(newChunk as any).terrainData = terrainData;
 		const chunk = await this.noctownWorldChunksRepository.save(newChunk);
 

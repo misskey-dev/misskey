@@ -234,7 +234,8 @@ export class NoctownEngine {
 	 * Render chunk with grid lines (FR-073, FR-074)
 	 * @param chunkData Chunk data from server
 	 */
-	public renderChunk(chunkData: ChunkData): void {
+	// FR-001: terrainDataに基づいてチャンクを生成
+	public async renderChunk(chunkData: ChunkData): Promise<void> {
 		const key = `${chunkData.chunkX}_${chunkData.chunkZ}`;
 		if (this.chunks.has(key)) return; // Already rendered
 
@@ -249,6 +250,37 @@ export class NoctownEngine {
 		const gridHelper = new THREE.GridHelper(CHUNK_SIZE, CHUNK_SIZE, 0x2d4a2d, 0x2d4a2d);
 		gridHelper.position.set(0, 0.01, 0); // y=0.01 to avoid z-fighting
 		chunkGroup.add(gridHelper);
+
+		// FR-001: terrainDataに基づいて地形を生成
+		if (chunkData.terrainData && Array.isArray(chunkData.terrainData)) {
+			const { createPondMesh } = await import('./pond.js');
+			const { createLakeMesh } = await import('./lake.js');
+			const { createFarmPlotMesh } = await import('./farm-plot.js');
+
+			// terrainDataを走査して地形タイプに応じたメッシュを追加
+			for (let x = 0; x < CHUNK_SIZE; x++) {
+				for (let z = 0; z < CHUNK_SIZE; z++) {
+					const terrainType = chunkData.terrainData[x * CHUNK_SIZE + z];
+					const worldX = offsetX + x;
+					const worldZ = offsetZ + z;
+					const seed = worldX * 1000 + worldZ;
+
+					if (terrainType === 1) {
+						// FR-001: 池を生成
+						const pond = createPondMesh(worldX, worldZ, seed);
+						this.scene.add(pond);
+					} else if (terrainType === 2) {
+						// FR-001: 湖を生成
+						const lake = createLakeMesh(worldX, worldZ, seed);
+						this.scene.add(lake);
+					} else if (terrainType === 3) {
+						// FR-001: 農園プロットを生成
+						const farmPlot = createFarmPlotMesh(worldX, worldZ);
+						this.scene.add(farmPlot);
+					}
+				}
+			}
+		}
 
 		this.scene.add(chunkGroup);
 		this.chunks.set(key, chunkGroup);

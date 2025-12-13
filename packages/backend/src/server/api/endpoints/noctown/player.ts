@@ -27,6 +27,8 @@ export const meta = {
 		optional: false, nullable: false,
 		properties: {
 			id: { type: 'string' },
+			username: { type: 'string' },
+			avatarUrl: { type: 'string', nullable: true },
 			positionX: { type: 'number' },
 			positionY: { type: 'number' },
 			positionZ: { type: 'number' },
@@ -87,6 +89,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return {
 				id: player.id,
+				username: user?.username ?? '',
+				avatarUrl: user?.avatarUrl ?? null,
 				positionX: player.positionX,
 				positionY: player.positionY,
 				positionZ: player.positionZ,

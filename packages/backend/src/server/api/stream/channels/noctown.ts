@@ -171,11 +171,13 @@ class NoctownChannel extends Channel {
 		await this.noctownService.broadcastChat(this.playerId, this.user.id, message.trim());
 	}
 
+	// FR-007-6: ハートビートでオンライン状態を維持
 	@bindThis
 	private async handleHeartbeat() {
 		if (this.playerId == null) return;
 
 		await this.noctownPlayersRepository.update(this.playerId, {
+			isOnline: true,
 			lastActiveAt: new Date(),
 		});
 	}

@@ -79,6 +79,23 @@ defineExpose({
 	width: 90%;
 	max-width: 400px;
 	z-index: 100;
+
+	// FR-007-3: モバイルでチャット入力が画面下部に隠れないよう位置を上げる
+	// PWAのセーフエリアとナビゲーションバーを考慮
+	/* Mobile: Higher position to avoid PWA safe area and virtual keyboard */
+	@media (max-width: 768px) {
+		bottom: 20px;
+		width: 85%;
+		/* PWA safe area support */
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	// 小型モバイル: さらに上に配置して視認性を確保
+	/* Small mobile screens: Even higher for better visibility */
+	@media (max-width: 480px) {
+		bottom: 30px;
+		width: 80%;
+	}
 }
 
 .chatInput {

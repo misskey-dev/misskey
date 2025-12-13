@@ -450,12 +450,30 @@ export class Character {
 		// Clear canvas
 		this.chatContext.clearRect(0, 0, 512, 256);
 
-		// T137: Draw chat bubble (white rounded rect with black border)
+		// FR-007-5: 文字数に応じて吹き出しサイズを動的に調整
 		const padding = 20;
 		const cornerRadius = 15;
-		const bubbleWidth = 480;
-		const bubbleHeight = 200;
-		const bubbleX = 16;
+		const lineHeight = 36;
+		const maxLines = 3;
+
+		// フォント設定（テキスト幅測定のため先に設定）
+		this.chatContext.font = 'bold 28px sans-serif';
+
+		// テキストを折り返して行数を計算（最大幅480px - padding）
+		const maxTextWidth = 480 - padding * 2;
+		const lines = this.wrapText(message, maxTextWidth, maxLines);
+
+		// 各行の実際の幅を測定して最大幅を取得
+		let actualMaxWidth = 0;
+		for (const line of lines) {
+			const metrics = this.chatContext.measureText(line);
+			actualMaxWidth = Math.max(actualMaxWidth, metrics.width);
+		}
+
+		// 吹き出しサイズを計算（最小幅100px、最大幅480px）
+		const bubbleWidth = Math.max(100, Math.min(480, actualMaxWidth + padding * 2));
+		const bubbleHeight = lines.length * lineHeight + padding * 2 + 20; // 20pxは上下の余白
+		const bubbleX = (512 - bubbleWidth) / 2; // 中央配置
 		const bubbleY = 16;
 
 		// Draw rounded rectangle background
@@ -488,14 +506,8 @@ export class Character {
 
 		// T138, T139: Draw text with auto line-break, max 3 lines, ellipsis
 		this.chatContext.fillStyle = '#000000';
-		this.chatContext.font = 'bold 28px sans-serif';
 		this.chatContext.textAlign = 'left';
 		this.chatContext.textBaseline = 'top';
-
-		const maxWidth = bubbleWidth - padding * 2;
-		const lineHeight = 36;
-		const maxLines = 3;
-		const lines = this.wrapText(message, maxWidth, maxLines);
 
 		const textX = bubbleX + padding;
 		let textY = bubbleY + padding + 10;
@@ -633,7 +645,9 @@ export class Character {
 			this.group.position.add(this.velocity);
 
 			// Rotate to face movement direction
-			this.targetRotation = Math.atan2(moveDir.x, moveDir.z);
+			// Face icon is on +Z face, so rotate to point +Z toward movement direction
+			// In Three.js, rotation.y = atan2(-x, -z) makes +Z point toward (x, z)
+			this.targetRotation = Math.atan2(-moveDir.x, -moveDir.z);
 
 			// Walk animation
 			const walkSpeed = input.sprint ? 18 : 12;
@@ -727,7 +741,8 @@ export class Character {
 		// This ensures rotation updates when receiving small position changes from WebSocket
 		if (moveLength > 0.0001) {
 			// Calculate target rotation from movement direction
-			this.targetRotation = Math.atan2(moveX, moveZ);
+			// Face icon is on +Z face, so rotate to point +Z toward movement direction
+			this.targetRotation = Math.atan2(-moveX, -moveZ);
 		}
 
 		if (this.isMoving) {
