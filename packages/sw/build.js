@@ -5,9 +5,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 import locales from 'i18n';
+import { fileURLToPath } from 'node:url';
 import meta from '../../package.json' with { type: 'json' };
 
 const watch = process.argv[2]?.includes('watch');

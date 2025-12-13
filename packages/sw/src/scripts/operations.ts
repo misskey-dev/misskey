@@ -8,9 +8,9 @@
  * 各種操作
  */
 import * as Misskey from 'misskey-js';
-import type { SwMessage, SwMessageOrderType } from '@/types.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { getUrlWithLoginId } from '@/scripts/login-id.js';
+import type { SwMessage, SwMessageOrderType } from '@/types.js';
 
 export const cli = new Misskey.api.APIClient({ origin, fetch: (...args): Promise<Response> => fetch(...args) });
 
@@ -34,7 +34,7 @@ export async function api<
 
 // mark-all-as-read送出を1秒間隔に制限する
 const readBlockingStatus = new Map<string, boolean>();
-export function sendMarkAllAsRead(userId: string): Promise<null | undefined | void> {
+export function sendMarkAllAsRead(userId: string): Promise<void> {
 	if (readBlockingStatus.get(userId)) return Promise.resolve();
 	readBlockingStatus.set(userId, true);
 	return new Promise(resolve => {

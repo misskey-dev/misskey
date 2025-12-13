@@ -1,5 +1,5 @@
-import globals from 'globals';
 import pluginMisskey from '@misskey-dev/eslint-plugin';
+import globals from 'globals';
 
 export default [
 	...pluginMisskey.configs['recommended'],
