@@ -192,6 +192,12 @@ const connection = ref<any>(null); // Use ref like drawing chat for better react
 let moveInterval: ReturnType<typeof setInterval> | null = null;
 let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
+// FR-017: Ping/pong for player status mark color
+let pingInterval: ReturnType<typeof setInterval> | null = null;
+let warningCheckInterval: ReturnType<typeof setInterval> | null = null;
+// Track pending pings: playerId -> sendTime
+const pendingPings = new Map<string, number>();
+
 // Movement state
 // T045: Make coordinates reactive for UI display
 const currentX = ref(0);
@@ -352,6 +358,11 @@ async function connectStream(): Promise<void> {
 		handlePlayerChatted(body);
 	});
 
+	// FR-017: Handle pong response for player status mark color
+	connection.value.on('pong', (body: { playerId: string }) => {
+		handlePongReceived(body);
+	});
+
 	isConnected.value = true;
 
 	// Start movement loop
@@ -359,6 +370,10 @@ async function connectStream(): Promise<void> {
 
 	// Start heartbeat
 	startHeartbeat();
+
+	// FR-017: Start ping/pong for status mark color
+	startPingPong();
+	startWarningCheck();
 
 	// Fetch nearby players
 	await fetchNearbyPlayers();
@@ -619,6 +634,49 @@ function startHeartbeat(): void {
 		if (!connection.value || !isConnected.value) return;
 		connection.value.send('heartbeat', {});
 	}, 30000); // Every 30 seconds
+}
+
+// FR-017: Start ping/pong interval for player status mark color
+function startPingPong(): void {
+	pingInterval = setInterval(() => {
+		if (!connection.value || !isConnected.value || !engine) return;
+
+		// Get all remote player IDs from engine
+		const remotePlayerIds = engine.getRemotePlayerIds();
+
+		for (const playerId of remotePlayerIds) {
+			// Record ping send time
+			pendingPings.set(playerId, Date.now());
+
+			// Send ping to each remote player
+			connection.value.send('ping', { targetPlayerId: playerId });
+		}
+	}, 1000); // Every 1 second
+}
+
+// FR-017: Handle pong response and update player mark color
+function handlePongReceived(data: { playerId: string }): void {
+	if (!engine) return;
+
+	const sendTime = pendingPings.get(data.playerId);
+	if (!sendTime) return;
+
+	// Calculate response time
+	const responseTime = Date.now() - sendTime;
+	pendingPings.delete(data.playerId);
+
+	// Update player mark color based on response time
+	engine.updateRemotePlayerPingStatus(data.playerId, responseTime);
+}
+
+// FR-017: Start warning check interval for 3+ seconds since last ping
+function startWarningCheck(): void {
+	warningCheckInterval = setInterval(() => {
+		if (!engine) return;
+
+		// Check all remote players for warning status
+		engine.checkRemotePlayerWarnings();
+	}, 1000); // Every 1 second
 }
 
 function handleKeyDown(e: KeyboardEvent): void {
@@ -902,6 +960,17 @@ function cleanup(): void {
 		clearInterval(heartbeatInterval);
 		heartbeatInterval = null;
 	}
+
+	// FR-017: Clear ping/pong intervals
+	if (pingInterval) {
+		clearInterval(pingInterval);
+		pingInterval = null;
+	}
+	if (warningCheckInterval) {
+		clearInterval(warningCheckInterval);
+		warningCheckInterval = null;
+	}
+	pendingPings.clear();
 
 	if (connection.value) {
 		connection.value.dispose();

@@ -85,6 +85,12 @@ export class Character {
 	private accountName: string = 'Player'; // Default name
 	private isOnline: boolean = true; // Default online status
 
+	// FR-017: プレイヤー名前マークの色仕様
+	public lastPingTime: number = 0; // Date.now()のタイムスタンプ
+	public lastPingResponseTime: number = 0; // 最後のpong応答時間（ms）
+	private statusMarkColor: string = '#44ff44'; // デフォルトは緑
+	private isLocalPlayer: boolean = false; // 自プレイヤーフラグ
+
 	constructor() {
 		this.group = new THREE.Group();
 		this.velocity = new THREE.Vector3();
@@ -435,6 +441,118 @@ export class Character {
 	public setOnline(online: boolean): void {
 		this.isOnline = online;
 		this.updateNameSprite();
+	}
+
+	/**
+	 * FR-017: Set name label (status mark) color and update sprite
+	 * @param color Hex color string (e.g., '#00ff00')
+	 */
+	public setNameLabelColor(color: string): void {
+		this.statusMarkColor = color;
+		this.updateNameSpriteWithColor();
+	}
+
+	/**
+	 * FR-017: Update ping status and calculate color from response time
+	 * RGB linear interpolation: 0ms = green (0,255,0), 500ms = red (255,0,0)
+	 * @param responseTimeMs Ping response time in milliseconds
+	 */
+	public updatePingStatus(responseTimeMs: number): void {
+		// Skip color calculation for local player (always green)
+		if (this.isLocalPlayer) return;
+
+		this.lastPingResponseTime = responseTimeMs;
+		this.lastPingTime = Date.now();
+
+		// Clamp to 0-500ms range
+		const clampedTime = Math.max(0, Math.min(500, responseTimeMs));
+
+		// RGB linear interpolation
+		// R = (ping / 500) * 255, G = ((500 - ping) / 500) * 255, B = 0
+		const r = Math.round((clampedTime / 500) * 255);
+		const g = Math.round(((500 - clampedTime) / 500) * 255);
+		const b = 0;
+
+		// Convert to hex color
+		this.statusMarkColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+		this.updateNameSpriteWithColor();
+	}
+
+	/**
+	 * FR-017: Set warning color (yellow) for players with 3+ seconds since last ping
+	 */
+	public setWarningColor(): void {
+		// Skip warning for local player (always green)
+		if (this.isLocalPlayer) return;
+
+		this.statusMarkColor = '#ffff00'; // Yellow warning
+		this.updateNameSpriteWithColor();
+	}
+
+	/**
+	 * FR-017: Mark this character as the local player (always green)
+	 */
+	public setAsLocalPlayer(): void {
+		this.isLocalPlayer = true;
+		this.statusMarkColor = '#00ff00'; // Permanent green for local player
+		this.updateNameSpriteWithColor();
+	}
+
+	/**
+	 * FR-017: Check if player needs warning color (3+ seconds since last ping)
+	 * @returns true if warning should be displayed
+	 */
+	public needsWarningColor(): boolean {
+		if (this.isLocalPlayer) return false;
+		if (this.lastPingTime === 0) return false;
+
+		const timeSinceLastPing = Date.now() - this.lastPingTime;
+		return timeSinceLastPing >= 3000; // 3 seconds
+	}
+
+	/**
+	 * FR-017: Update name sprite with current status mark color
+	 * Similar to updateNameSprite but uses statusMarkColor instead of isOnline
+	 */
+	private updateNameSpriteWithColor(): void {
+		const ctx = this.nameContext;
+		ctx.clearRect(0, 0, 512, 128);
+
+		// Use default name if accountName is empty
+		const displayName = this.accountName.trim() === '' ? 'Player' : this.accountName;
+
+		// Measure text width
+		ctx.font = 'bold 40px Arial';
+		const textWidth = ctx.measureText(displayName).width;
+		const circleRadius = 12;
+		const padding = 30;
+		const gap = 15;
+		const totalWidth = circleRadius * 2 + gap + textWidth + padding * 2;
+		const bgX = 256 - totalWidth / 2;
+
+		// Draw background (semi-transparent black with rounded corners)
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+		ctx.beginPath();
+		ctx.roundRect(bgX, 30, totalWidth, 68, 15);
+		ctx.fill();
+
+		// Draw status mark (circle) with current statusMarkColor
+		const circleX = bgX + padding + circleRadius;
+		const circleY = 64;
+		ctx.beginPath();
+		ctx.arc(circleX, circleY, circleRadius, 0, Math.PI * 2);
+		ctx.fillStyle = this.statusMarkColor;
+		ctx.fill();
+
+		// Draw username text (white, bold, 40px Arial)
+		ctx.fillStyle = 'white';
+		ctx.font = 'bold 40px Arial';
+		ctx.textAlign = 'left';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(displayName, circleX + circleRadius + gap, 64);
+
+		// Mark texture as needing update
+		this.nameTexture.needsUpdate = true;
 	}
 
 	/**

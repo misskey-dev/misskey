@@ -651,6 +651,9 @@ export class NoctownEngine {
 		this.localPlayer.setName(data.username);
 		this.localPlayer.setOnline(data.isOnline);
 
+		// FR-017: Mark as local player (always green status mark)
+		this.localPlayer.setAsLocalPlayer();
+
 		// Set icon if available
 		if (data.avatarUrl) {
 			this.localPlayer.setIcon(data.avatarUrl);
@@ -810,6 +813,28 @@ export class NoctownEngine {
 	// FR-014: 表示中のプレイヤーIDリストを取得
 	public getVisiblePlayerIds(): string[] {
 		return Array.from(this.remotePlayers.keys());
+	}
+
+	// FR-017: Get remote player IDs for ping/pong
+	public getRemotePlayerIds(): string[] {
+		return Array.from(this.remotePlayers.keys());
+	}
+
+	// FR-017: Update remote player ping status and mark color
+	public updateRemotePlayerPingStatus(playerId: string, responseTimeMs: number): void {
+		const character = this.remotePlayers.get(playerId);
+		if (!character) return;
+
+		character.updatePingStatus(responseTimeMs);
+	}
+
+	// FR-017: Check all remote players for warning status (3+ seconds since last ping)
+	public checkRemotePlayerWarnings(): void {
+		for (const [playerId, character] of this.remotePlayers) {
+			if (character.needsWarningColor()) {
+				character.setWarningColor();
+			}
+		}
 	}
 
 	// Chunk management
