@@ -1,0 +1,15 @@
+{
+	"$schema": "https://biomejs.dev/schemas/latest/schema.json",
+	"extends": "//",
+	"overrides": [
+		{
+			"includes": ["src/autogen/**"],
+			"linter": {
+				"enabled": false
+			},
+			"assist": {
+				"enabled": false
+			}
+		}
+	]
+}

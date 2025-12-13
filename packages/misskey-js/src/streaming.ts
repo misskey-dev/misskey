@@ -1,5 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
-import _ReconnectingWebSocket, { Options } from 'reconnecting-websocket';
+import type { Options } from 'reconnecting-websocket';
+import _ReconnectingWebSocket from 'reconnecting-websocket';
 import type { BroadcastEvents, Channels } from './streaming.types.js';
 
 // コンストラクタとクラスそのものの定義が上手く解決出来ないため再定義
@@ -10,7 +11,7 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 	const params = Object.entries(obj)
 		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		.reduce((a, [k, v]) => (a[k] = v!, a), {} as Record<string, string | number | boolean>);
+		.reduce((a, [k, v]) => Object.assign(a, { [k]: v! }), {} as Record<string, string | number | boolean>);
 
 	return Object.entries(params)
 		.map((e) => `${e[0]}=${encodeURIComponent(e[1])}`)
@@ -19,10 +20,12 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 
 type AnyOf<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
+// biome-ignore-start lint/suspicious/noConfusingVoidType: event type
 export type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
 } & BroadcastEvents;
+// biome-ignore-end lint/suspicious/noConfusingVoidType: event type
 
 export interface IStream extends EventEmitter<StreamEvents> {
 	state: 'initializing' | 'reconnecting' | 'connected';

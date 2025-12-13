@@ -1,7 +1,7 @@
 import './autogen/apiClientJSDoc.js';
 
+import type { Endpoints, SwitchCaseResponseType } from './api.types.js';
 import { endpointReqTypes } from './autogen/endpoint.js';
-import type { SwitchCaseResponseType, Endpoints } from './api.types.js';
 
 export type {
 	SwitchCaseResponseType,

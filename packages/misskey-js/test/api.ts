@@ -1,4 +1,4 @@
-import { vi, describe, test, expect } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { APIClient, isAPIError } from '../src/api.js';
 
 describe('API', () => {

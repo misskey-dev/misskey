@@ -1,11 +1,11 @@
-import assert from 'assert';
-import { mkdir, readFile, writeFile } from 'fs/promises';
-import type { OpenAPIV3_1 } from 'openapi-types';
-import { toPascal } from 'ts-case-convert';
 import { parse } from '@readme/openapi-parser';
-import openapiTS, { astToString } from 'openapi-typescript';
+import type { OpenAPIV3_1 } from 'openapi-types';
 import type { OpenAPI3, OperationObject, PathItemObject } from 'openapi-typescript';
+import openapiTS, { astToString } from 'openapi-typescript';
+import { toPascal } from 'ts-case-convert';
 import ts from 'typescript';
+import assert from 'node:assert';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { removeNeverPropertiesFromAST } from './ast-transformer.js';
 
 async function generateBaseTypes(
@@ -171,14 +171,14 @@ async function generateEndpoints(
 
 	endpointOutputLine.push('import type {');
 	endpointOutputLine.push(
-		...[emptyRequest, emptyResponse, ...entities].map(it => '\t' + it.generateName() + ','),
+		...[emptyRequest, emptyResponse, ...entities].map(it => `\t${it.generateName()},`),
 	);
 	endpointOutputLine.push(`} from '${toImportPath(entitiesOutputPath)}';`);
 	endpointOutputLine.push('');
 
 	endpointOutputLine.push('export type Endpoints = {');
 	endpointOutputLine.push(
-		...endpoints.map(it => '\t' + it.toLine()),
+		...endpoints.map(it => `\t${it.toLine()}`),
 	);
 	endpointOutputLine.push('};');
 	endpointOutputLine.push('');
@@ -193,7 +193,7 @@ async function generateEndpoints(
 	endpointOutputLine.push('export const endpointReqTypes = {');
 
 	endpointOutputLine.push(
-		...endpointReqMediaTypes.map(it => '\t' + it.toLine()),
+		...endpointReqMediaTypes.map(it => `\t${it.toLine()}`),
 	);
 
 	endpointOutputLine.push(`} as const satisfies ${generateEndpointReqMediaTypesType()};`);
@@ -251,7 +251,7 @@ async function generateApiClientJSDoc(
 			'    /**',
 			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
 			'     */',
-			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
+			`    request<E extends '${endpoint.path}', P extends Endpoints[E]['req']>(`,
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
@@ -347,7 +347,7 @@ class EmptyTypeAlias implements IOperationTypeAlias {
 	}
 
 	generateName(): string {
-		return 'Empty' + this.type;
+		return `Empty${this.type}`;
 	}
 
 	toLine(): string {
