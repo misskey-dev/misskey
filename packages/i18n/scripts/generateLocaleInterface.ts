@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as yaml from 'js-yaml';
-import ts from 'typescript';
+import ts, { SyntaxKind } from 'typescript';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -69,16 +69,16 @@ export async function generateLocaleInterface(localesDir: string): Promise<void>
 		ts.factory.createImportDeclaration(
 			undefined,
 			ts.factory.createImportClause(
-				false,
+				ts.SyntaxKind.TypeKeyword,
 				undefined,
 				ts.factory.createNamedImports([
 					ts.factory.createImportSpecifier(
-						true,
+						false,
 						undefined,
 						ts.factory.createIdentifier('ILocale'),
 					),
 					ts.factory.createImportSpecifier(
-						true,
+						false,
 						undefined,
 						ts.factory.createIdentifier('ParameterizedString'),
 					),
