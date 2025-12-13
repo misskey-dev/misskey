@@ -276,7 +276,7 @@ export class NoctownEngine {
 					} else if (terrainType === 3) {
 						// FR-001: 農園プロットを生成
 						const farmPlot = createFarmPlotMesh(worldX, worldZ);
-						this.scene.add(farmPlot);
+						this.scene.add(farmPlot.group);
 					}
 				}
 			}
